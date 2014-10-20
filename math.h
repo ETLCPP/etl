@@ -34,19 +34,19 @@ SOFTWARE.
 namespace etl 
 {
   //***************************************************************************
-  /// The base generic Log template.
+  /// The base generic log template.
   /// Defines 'value' as the log of the number at the specified base.
   /// The result is rounded down to the next integer.
   ///\tparam N    The number to find the log of.
   ///\tparam BASE The base of the log.
   //***************************************************************************
   template <const size_t N, const size_t BASE>
-  struct Log
+  struct log
   {
-    enum Value
+    enum value_type
     {
       // Recursive definition.
-      value = (N >= BASE) ? 1 + Log<N / BASE, BASE>::value : 0
+      value = (N >= BASE) ? 1 + log<N / BASE, BASE>::value : 0
     };
   };
 
@@ -54,9 +54,9 @@ namespace etl
   /// Specialisation for N = 1
   //***************************************************************************
   template <const size_t BASE>
-  struct Log<1, BASE>
+  struct log<1, BASE>
   {
-    enum Value
+    enum value_type
     {
       value = 0
     };
@@ -66,9 +66,9 @@ namespace etl
   /// Specialisation for N = 0
   //***************************************************************************
   template <const size_t BASE>
-  struct Log<0, BASE>
+  struct log<0, BASE>
   {
-    enum Value
+    enum value_type
     {
       value = 0
     };
@@ -80,9 +80,9 @@ namespace etl
   template <const size_t N>
   struct Log2
   {
-    enum Value
+    enum value_type
     {
-      value = Log<N, 2>::value
+      value = log<N, 2>::value
     };
   };
 
@@ -92,9 +92,9 @@ namespace etl
   template <const size_t N>
   struct Log10
   {
-    enum Value
+    enum value_type
     {
-      value = Log<N, 10>::value
+      value = log<N, 10>::value
     };
   };
 }
