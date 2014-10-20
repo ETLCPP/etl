@@ -31,123 +31,30 @@ SOFTWARE.
 
 #include <cstddef>
 
-#include "exception.h"
+#include "queue_base.h"
 
 namespace etl
 {
-#ifdef USE_ETL_EXCEPTIONS
-  //***************************************************************************
-  /// The base class for queue exceptions.
-  //***************************************************************************
-  class queue_exception : public exception
-  {
-  public:
-
-    queue_exception(const char* what)
-      : exception(what)
-    {
-    }
-  };
-
-  //***************************************************************************
-  /// The exception thrown when the queue is full.
-  //***************************************************************************
-  class queue_full_exception : public queue_exception
-  {
-  public:
-
-    queue_full_exception()
-      : queue_exception("queue full exception")
-    {
-    }
-  };
-
-  //***************************************************************************
-  /// The exception thrown when the queue is empty.
-  //***************************************************************************
-  class queue_empty_exception : public queue_exception
-  {
-  public:
-
-    queue_empty_exception()
-      : queue_exception("queue empty exception")
-    {
-    }
-  };
-#endif
-
   //***************************************************************************
   /// A fixed capacity queue written in the STL style.
   /// This queue cannot be used for concurrent access from multiple threads.
   /// \tparam T The type of item that the queue holds.
   //***************************************************************************
   template <typename T>
-  class iqueue
+  class iqueue : public queue_base
   {
   public:
 
-    typedef size_t   size_type;
-    typedef T        value_type;
-    typedef T&       reference;
-    typedef const T& const_reference;
-    typedef T*       pointer;
-    typedef const T* const_pointer;
-
-    //*************************************************************************
-    /// Returns the current number of items in the queue.
-    //*************************************************************************
-    size_type size() const
-    {
-      return size;
-    }
-
-    //*************************************************************************
-    /// Returns the maximum number of items that can be queued.
-    //*************************************************************************
-    size_type capacity() const
-    {
-      return MAX_SIZE;
-    }
-
-    //*************************************************************************
-    /// Returns the maximum number of items that can be queued.
-    //*************************************************************************
-    size_type max_size() const
-    {
-      return MAX_SIZE;
-    }
-
-    //*************************************************************************
-    /// Clears the queue to the empty state.
-    //*************************************************************************
-    void clear()
-    {
-      in   = 0;
-      out  = 0;
-      size = 0;
-    }
-
-    //*************************************************************************
-    /// Checks to see if the queue is empty.
-    /// \return <b>true</b> if the queue is empty, otherwise <b>false</b>
-    //*************************************************************************
-    bool empty() const
-    {
-      return size == 0;
-    }
-
-    //*************************************************************************
-    /// Checks to see if the queue is full.
-    /// \return <b>true</b> if the queue is full, otherwise <b>false</b>
-    //*************************************************************************
-    bool full() const
-    {
-      return size == MAX_SIZE;
-    }
+    typedef queue_base::size_type size_type;
+    typedef T                     value_type;
+    typedef T&                    reference;
+    typedef const T&              const_reference;
+    typedef T*                    pointer;
+    typedef const T*              const_pointer;
 
     //*************************************************************************
     /// Adds an item to the queue.
-    /// If USE_ETL_EXCEPTIONS is defined, throws a queue_full_exception is the queue is already full,
+    /// If ETL_USE_EXCEPTIONS is defined, throws a queue_full_exception is the queue is already full,
     /// otherwise does nothing if full.
     ///\param item The item to push to the queue.
     //*************************************************************************
@@ -156,10 +63,10 @@ namespace etl
       if (!full())
       {
         buffer[in++] = item;
-        in %= MAX_SIZE;
+        in = (in == (MAX_SIZE - 1)) ? 0 : ++in;
         ++size;
       }
-#ifdef USE_ETL_EXCEPTIONS
+#ifdef ETL_USE_EXCEPTIONS
       else
       {
         throw queue_full_exception();
@@ -171,21 +78,20 @@ namespace etl
     /// Allows a possibly more efficient 'push' by moving to the next input item
     /// and returning a reference to it.
     /// This may eliminate a copy by allowing direct construction in-place.
-    /// If USE_ETL_EXCEPTIONS is defined, throws a queue_full_exception is the queue is already full,
+    /// If ETL_USE_EXCEPTIONS is defined, throws a queue_full_exception is the queue is already full,
     /// otherwise does nothing if full.
     /// \return A reference to the position to 'push' to.
     //*************************************************************************
     reference push()
     {
-      size_type next = in;
+      const size_type next = in;
 
       if (!full())
       {
-        ++in;
-        in %= MAX_SIZE;
+        in = (in == (MAX_SIZE - 1)) ? 0 : ++in;
         ++size;
       }
-#ifdef USE_ETL_EXCEPTIONS
+#ifdef ETL_USE_EXCEPTIONS
       else
       {
         throw queue_full_exception();
@@ -196,27 +102,14 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Removes the oldest item from the back of the queue.
-    /// Does nothing if the queue is already empty.
-    //*************************************************************************
-    void pop()
-    {
-      if (!empty())
-      {
-        out = (out + 1) % MAX_SIZE;
-        --size;
-      }
-    }
-
-    //*************************************************************************
     /// Gets a reference to the item at the front of the queue.
-    /// If USE_ETL_EXCEPTIONS is defined, throws a queue_empty_exception if the queue is empty.
-    /// If USE_ETL_EXCEPTIONS is not defined and the queue is empty, the return value is undefined.
+    /// If ETL_USE_EXCEPTIONS is defined, throws a queue_empty_exception if the queue is empty.
+    /// If ETL_USE_EXCEPTIONS is not defined and the queue is empty, the return value is undefined.
     /// \return A reference to the item at the front of the queue.
     //*************************************************************************
     reference front()
     {
-#ifdef USE_ETL_EXCEPTIONS
+#ifdef ETL_USE_EXCEPTIONS
       if (empty())
       {
         throw queue_empty_exception();
@@ -228,13 +121,13 @@ namespace etl
 
     //*************************************************************************
     /// Gets a const reference to the item at the front of the queue.
-    /// If USE_ETL_EXCEPTIONS is defined, throws a queue_empty_exception if the queue is empty.
-    /// If USE_ETL_EXCEPTIONS is not defined and the queue is empty, the return value is undefined.
+    /// If ETL_USE_EXCEPTIONS is defined, throws a queue_empty_exception if the queue is empty.
+    /// If ETL_USE_EXCEPTIONS is not defined and the queue is empty, the return value is undefined.
     /// \return A const reference to the item at the front of the queue.
     //*************************************************************************
     const_reference front() const
     {
-#ifdef USE_ETL_EXCEPTIONS
+#ifdef ETL_USE_EXCEPTIONS
       if (empty())
       {
         throw queue_empty_exception();
@@ -250,19 +143,14 @@ namespace etl
     /// The constructor that is called from derived classes.
     //*************************************************************************
     queue(T* buffer, size_type max_size)
-      : buffer(buffer),
-        MAX_SIZE(max_size)
+      : queue_base(max_size),
+        buffer(buffer)
     {
-      clear();
     }
 
   private:
 
-    size_type in;             ///< Where to input new data.
-    size_type out;            ///< Where to get the oldest data.
-    size_type size;           ///< The number of items in the queue.
-    const size_type MAX_SIZE; ///< The maximum number of items in the queue.
-    T* buffer;                ///< The internal buffer.
+    T* buffer; ///< The internal buffer.
   };
 }
 
