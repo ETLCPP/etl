@@ -29,11 +29,15 @@ SOFTWARE.
 #ifndef __etl_exception__
 #define __etl_exception__
 
+///\defgroup Exception Exceptions
+/// The base class for all ETL exceptions.
+///\ingroup Utilities
+
 namespace etl 
 {
   //***************************************************************************
+  ///\ingroup Exception
   /// A low overhead exception base class.
-  ///</summary>
   //***************************************************************************
   class exception
   {
@@ -51,7 +55,7 @@ namespace etl
 
     //***************************************************************************
     /// Gets the reason for the exception.
-    /// \return const char* to the reason.</returns>
+    /// \return const char* to the reason.
     //***************************************************************************
     value_type what() const
     {
