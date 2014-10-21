@@ -33,11 +33,20 @@ SOFTWARE.
 
 #include "queue_base.h"
 
+///\defgroup Queue Queue
+///\ingroup Containers
+
 namespace etl
 {
   //***************************************************************************
-  /// A fixed capacity queue written in the STL style.
-  /// This queue cannot be used for concurrent access from multiple threads.
+  ///\ingroup Queue
+  ///\brief This is the base for all queues that contain a particular type.
+  ///\detail Normally a reference to this type will be taken from a derived queue.
+  ///\code
+  /// etl::queue<int, 10> myQueue;
+  /// etl::iqueue<int>& iQueue = myQueue;
+  ///\endcode
+  /// \warning This queue cannot be used for concurrent access from multiple threads.
   /// \tparam T The type of item that the queue holds.
   //***************************************************************************
   template <typename T>
@@ -45,16 +54,16 @@ namespace etl
   {
   public:
 
-    typedef queue_base::size_type size_type;
-    typedef T                     value_type;
-    typedef T&                    reference;
-    typedef const T&              const_reference;
-    typedef T*                    pointer;
-    typedef const T*              const_pointer;
+    typedef queue_base::size_type size_type;       ///< The type used for determining the size of queue.
+    typedef T                     value_type;      ///< The type stored in the queue.
+    typedef T&                    reference;       ///< A reference to the type used in the queue.
+    typedef const T&              const_reference; ///< A const reference to the type used in the queue.
+    typedef T*                    pointer;         ///< A pointer to the type used in the queue.
+    typedef const T*              const_pointer;   ///< A const pointer to the type used in the queue.
 
     //*************************************************************************
     /// Adds an item to the queue.
-    /// If ETL_USE_EXCEPTIONS is defined, throws a queue_full_exception is the queue is already full,
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_full_exception is the queue is already full,
     /// otherwise does nothing if full.
     ///\param item The item to push to the queue.
     //*************************************************************************
@@ -77,8 +86,8 @@ namespace etl
     //*************************************************************************
     /// Allows a possibly more efficient 'push' by moving to the next input item
     /// and returning a reference to it.
-    /// This may eliminate a copy by allowing direct construction in-place.
-    /// If ETL_USE_EXCEPTIONS is defined, throws a queue_full_exception is the queue is already full,
+    /// This may eliminate a copy by allowing direct construction in-place.<br>
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_full_exception is the queue is already full,
     /// otherwise does nothing if full.
     /// \return A reference to the position to 'push' to.
     //*************************************************************************
@@ -102,8 +111,8 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets a reference to the item at the front of the queue.
-    /// If ETL_USE_EXCEPTIONS is defined, throws a queue_empty_exception if the queue is empty.
+    /// Gets a reference to the item at the front of the queue.<br>
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_empty_exception if the queue is empty.<br>
     /// If ETL_USE_EXCEPTIONS is not defined and the queue is empty, the return value is undefined.
     /// \return A reference to the item at the front of the queue.
     //*************************************************************************
@@ -120,8 +129,8 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets a const reference to the item at the front of the queue.
-    /// If ETL_USE_EXCEPTIONS is defined, throws a queue_empty_exception if the queue is empty.
+    /// Gets a const reference to the item at the front of the queue.<br>
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_empty_exception if the queue is empty.<br>
     /// If ETL_USE_EXCEPTIONS is not defined and the queue is empty, the return value is undefined.
     /// \return A const reference to the item at the front of the queue.
     //*************************************************************************

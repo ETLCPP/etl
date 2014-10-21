@@ -1,5 +1,3 @@
-///\file
-
 /******************************************************************************
 The MIT License(MIT)
 
@@ -26,46 +24,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_queue__
-#define __etl_queue__
+///\defgroup ETL Embedded Template Library
 
-#include <cstddef>
+///\defgroup Containers Containers
+///\ingroup ETL
 
-#include "IQueue.h"
+///\defgroup Utilities Utilities
+///\ingroup ETL
 
-//*****************************************************************************
-///\defgroup Queue Queue
-/// A First-in / first-out queue with the capacity defined at compile time, 
-/// written in the STL style.
-///\ingroup Containers
-//*****************************************************************************
+///\defgroup Math Math
+///\ingroup ETL
 
-namespace etl
-{ 
-  //***************************************************************************
-  ///\ingroup Queue
-  /// A fixed capacity queue.
-  /// This queue does not support concurrent access by different threads.
-  /// \tparam T    The type this queue should support.
-  /// \tparam SIZE The maximum capacity of the queue.
-  //***************************************************************************
-  template <typename T, const size_t SIZE>
-  class queue : public iqueue<T>
-  {
-  public:
+///\ingroup ETL
+namespace etl {}
 
-    //*************************************************************************
-    /// Default constructor.
-    //*************************************************************************
-    queue()
-      : iqueue<T>(buffer, SIZE)
-    {
-    }
 
-  private:
-
-    T buffer[SIZE]; ///< The internal buffer.
-  };
-}
-
-#endif

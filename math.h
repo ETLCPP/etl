@@ -34,6 +34,7 @@ SOFTWARE.
 namespace etl 
 {
   //***************************************************************************
+  ///\ingroup Math
   /// The base generic log template.
   /// Defines 'value' as the log of the number at the specified base.
   /// The result is rounded down to the next integer.
@@ -51,6 +52,7 @@ namespace etl
   };
 
   //***************************************************************************
+  ///\ingroup Math
   /// Specialisation for N = 1
   //***************************************************************************
   template <const size_t BASE>
@@ -63,6 +65,7 @@ namespace etl
   };
 
   //***************************************************************************
+  ///\ingroup Math
   /// Specialisation for N = 0
   //***************************************************************************
   template <const size_t BASE>
@@ -75,6 +78,7 @@ namespace etl
   };
 
   //***************************************************************************
+  ///\ingroup Math
   /// The specialisation for base 2 logs.
   //***************************************************************************
   template <const size_t N>
@@ -87,6 +91,7 @@ namespace etl
   };
 
   //***************************************************************************
+  ///\ingroup Math
   /// The specialisation for base 10 logs.
   //***************************************************************************
   template <const size_t N>

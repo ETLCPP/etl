@@ -33,10 +33,16 @@ SOFTWARE.
 
 #include "exception.h"
 
+///\defgroup Queue Queue
+///\ingroup Containers
+
 namespace etl
 {
 #ifdef ETL_USE_EXCEPTIONS
   //***************************************************************************
+  ///\ingroup Queue
+  ///\brief This is the base for all queues.
+  ///\detail This is the base for all queues. Instances or references to this type should never need to be created.
   /// The base class for queue exceptions.
   //***************************************************************************
   class queue_exception : public exception
@@ -50,6 +56,7 @@ namespace etl
   };
 
   //***************************************************************************
+  ///\ingroup Queue
   /// The exception thrown when the queue is full.
   //***************************************************************************
   class queue_full_exception : public queue_exception
@@ -63,6 +70,7 @@ namespace etl
   };
 
   //***************************************************************************
+  ///\ingroup Queue
   /// The exception thrown when the queue is empty.
   //***************************************************************************
   class queue_empty_exception : public queue_exception
@@ -77,14 +85,15 @@ namespace etl
 #endif
 
   //***************************************************************************
+  ///\ingroup Queue
   /// A fixed capacity queue written in the STL style.
-  /// This queue cannot be used for concurrent access from multiple threads.
+  /// \warning This queue cannot be used for concurrent access from multiple threads.
   //***************************************************************************
   class queue_base
   {
   public:
 
-    typedef size_t size_type;
+    typedef size_t size_type; ///< The type used for determining the size of queue.
 
     //*************************************************************************
     /// Returns the current number of items in the queue.
