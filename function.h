@@ -30,18 +30,18 @@ SOFTWARE.
 #define __etl_function__
 
 //*****************************************************************************
-///\defgroup Function Function
+///\defgroup function function
 /// A set of wrapper templates to allow a member or static function to be called
 /// without the caller having to know the specific details of the callee.
 /// This template class may be used to link interrupt vectors to specific member
 /// functions of a handler class.
-///\ingroup Utilities
+///\ingroup utilities
 //*****************************************************************************
 
 namespace etl
 {
   //***************************************************************************
-  ///\ingroup Function
+  ///\ingroup function
   /// The base interface template for function template specialisations.
   ///\tparam TParameter The parameter type expected by the function.
   //***************************************************************************
@@ -59,7 +59,7 @@ namespace etl
   };
 
   //***************************************************************************
-  ///\ingroup Function
+  ///\ingroup function
   /// The base interface template for functions taking <b>void</b> parameters.
   //***************************************************************************
   template <>
@@ -74,7 +74,7 @@ namespace etl
   };
 
   //***************************************************************************
-  ///\ingroup Function
+  ///\ingroup function
   /// A derived function template that takes an object type and parameter type.
   ///\tparam TObject    The object type that contains the member function.
   ///\tparam TParameter The parameter type accepted by the member function.
@@ -116,7 +116,7 @@ namespace etl
   };
 
   //***************************************************************************
-  ///\ingroup Function
+  ///\ingroup function
   /// A derived function template that takes a parameter type.
   ///\tparam TObject The object type that contains the member function.
   //***************************************************************************
@@ -152,7 +152,7 @@ namespace etl
   };
 
   //***************************************************************************
-  ///\ingroup Function
+  ///\ingroup function
   /// Specialisation for static or global functions that take a parameter.
   //***************************************************************************
   template <typename TParameter>
@@ -185,7 +185,7 @@ namespace etl
   };
 
   //***************************************************************************
-  ///\ingroup Function
+  ///\ingroup function
   /// Specialisation static functions taking void parameter.
   //***************************************************************************
   template <>

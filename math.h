@@ -31,10 +31,17 @@ SOFTWARE.
 
 #include <cstddef>
 
+///\defgroup log log
+/// A set of templates to generate compile time constants.<br>
+/// log<N, BASE> : Calculates logs to any base, rounded down to the nearest integer.<br>
+/// log2<N>      : Calculates logs to base 2, rounded down to the nearest integer.<br>
+/// log10<N>     : Calculates logs to base 10, rounded down to the nearest integer.<br>
+///\ingroup math
+
 namespace etl 
 {
   //***************************************************************************
-  ///\ingroup Math
+  ///\ingroup log
   /// The base generic log template.
   /// Defines 'value' as the log of the number at the specified base.
   /// The result is rounded down to the next integer.
@@ -52,8 +59,7 @@ namespace etl
   };
 
   //***************************************************************************
-  ///\ingroup Math
-  /// Specialisation for N = 1
+  // Specialisation for N = 1
   //***************************************************************************
   template <const size_t BASE>
   struct log<1, BASE>
@@ -65,8 +71,7 @@ namespace etl
   };
 
   //***************************************************************************
-  ///\ingroup Math
-  /// Specialisation for N = 0
+  // Specialisation for N = 0
   //***************************************************************************
   template <const size_t BASE>
   struct log<0, BASE>
@@ -78,8 +83,8 @@ namespace etl
   };
 
   //***************************************************************************
-  ///\ingroup Math
-  /// The specialisation for base 2 logs.
+  ///\ingroup log
+  /// Calculates base 2 logs.
   //***************************************************************************
   template <const size_t N>
   struct Log2
@@ -91,8 +96,8 @@ namespace etl
   };
 
   //***************************************************************************
-  ///\ingroup Math
-  /// The specialisation for base 10 logs.
+  ///\ingroup log
+  /// Calculates base 10 logs.
   //***************************************************************************
   template <const size_t N>
   struct Log10

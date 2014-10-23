@@ -29,14 +29,14 @@ SOFTWARE.
 #ifndef __etl_exception__
 #define __etl_exception__
 
-///\defgroup Exception Exceptions
+///\defgroup exception exception
 /// The base class for all ETL exceptions.
-///\ingroup Utilities
+///\ingroup utilities
 
 namespace etl 
 {
   //***************************************************************************
-  ///\ingroup Exception
+  ///\ingroup exception
   /// A low overhead exception base class.
   //***************************************************************************
   class exception

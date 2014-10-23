@@ -24,18 +24,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-///\defgroup ETL Embedded Template Library
+///\defgroup etl Embedded Template Library
 
-///\defgroup Containers Containers
-///\ingroup ETL
+///\defgroup containers Containers
+///\ingroup etl
 
-///\defgroup Utilities Utilities
-///\ingroup ETL
+///\defgroup utilities Utilities
+/// A set of utility templates.
+///\ingroup etl
 
-///\defgroup Math Math
-///\ingroup ETL
+///\defgroup math Math
+///\ingroup etl
 
-///\ingroup ETL
+///\ingroup etl
 namespace etl {}
 
 

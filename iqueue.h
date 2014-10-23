@@ -33,15 +33,12 @@ SOFTWARE.
 
 #include "queue_base.h"
 
-///\defgroup Queue Queue
-///\ingroup Containers
-
 namespace etl
 {
   //***************************************************************************
-  ///\ingroup Queue
+  ///\ingroup queue
   ///\brief This is the base for all queues that contain a particular type.
-  ///\detail Normally a reference to this type will be taken from a derived queue.
+  ///\details Normally a reference to this type will be taken from a derived queue.
   ///\code
   /// etl::queue<int, 10> myQueue;
   /// etl::iqueue<int>& iQueue = myQueue;

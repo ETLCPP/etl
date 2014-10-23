@@ -34,7 +34,7 @@ SOFTWARE.
 #include "IQueue.h"
 
 //*****************************************************************************
-///\defgroup Queue Queue
+///\defgroup queue queue
 /// A First-in / first-out queue with the capacity defined at compile time, 
 /// written in the STL style.
 ///\ingroup Containers
@@ -43,7 +43,7 @@ SOFTWARE.
 namespace etl
 { 
   //***************************************************************************
-  ///\ingroup Queue
+  ///\ingroup queue
   /// A fixed capacity queue.
   /// This queue does not support concurrent access by different threads.
   /// \tparam T    The type this queue should support.

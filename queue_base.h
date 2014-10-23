@@ -33,16 +33,14 @@ SOFTWARE.
 
 #include "exception.h"
 
-///\defgroup Queue Queue
-///\ingroup Containers
+///\defgroup queue Queue
+///\ingroup containers
 
 namespace etl
 {
 #ifdef ETL_USE_EXCEPTIONS
   //***************************************************************************
-  ///\ingroup Queue
-  ///\brief This is the base for all queues.
-  ///\detail This is the base for all queues. Instances or references to this type should never need to be created.
+  ///\ingroup queue
   /// The base class for queue exceptions.
   //***************************************************************************
   class queue_exception : public exception
@@ -56,7 +54,7 @@ namespace etl
   };
 
   //***************************************************************************
-  ///\ingroup Queue
+  ///\ingroup queue
   /// The exception thrown when the queue is full.
   //***************************************************************************
   class queue_full_exception : public queue_exception
@@ -64,13 +62,13 @@ namespace etl
   public:
 
     queue_full_exception()
-      : queue_exception("queue full exception")
+      : queue_exception("queue full")
     {
     }
   };
 
   //***************************************************************************
-  ///\ingroup Queue
+  ///\ingroup queue
   /// The exception thrown when the queue is empty.
   //***************************************************************************
   class queue_empty_exception : public queue_exception
@@ -78,14 +76,14 @@ namespace etl
   public:
 
     queue_empty_exception()
-      : queue_exception("queue empty exception")
+      : queue_exception("queue empty")
     {
     }
   };
 #endif
 
   //***************************************************************************
-  ///\ingroup Queue
+  ///\ingroup queue
   /// A fixed capacity queue written in the STL style.
   /// \warning This queue cannot be used for concurrent access from multiple threads.
   //***************************************************************************
