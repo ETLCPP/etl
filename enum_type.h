@@ -83,12 +83,12 @@ SOFTWARE.
 	inline TypeName() {} \
 	inline TypeName(const TypeName &other) : value(other.value) {} \
 	inline TypeName(enum_type value) : value(value) {} \
-  inline TypeName& operator=(const TypeName &other) { value = other.value} \
-  inline explicit TypeName(ValueType value) : value(static_cast<enum_type>(value)) {} \
-	inline operator ValueType() const {return (static_cast<ValueType>(value));} \
-  inline ValueType get_value() const {return (static_cast<ValueType>(value));} \
+  inline TypeName& operator=(const TypeName &other) {value = other.value; return *this;} \
+  inline explicit TypeName(value_type value) : value(static_cast<enum_type>(value)) {} \
+	inline operator value_type() const {return static_cast<value_type>(value);} \
+  inline value_type get_value() const {return static_cast<value_type>(value);} \
   inline enum_type get_enum() const {return value;} \
-  const char* to_string() const \
+  const char* c_str() const \
   { \
     switch (value) \
     {
