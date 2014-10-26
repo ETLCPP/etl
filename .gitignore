@@ -1,3 +1,11 @@
+
+#################
+## Personal
+#################
+docs/
+test/msvs/Debug
+test/msvs/Release
+
 #################
 ## Eclipse
 #################
@@ -7,7 +15,6 @@
 .metadata
 bin/
 tmp/
-docs/
 *.tmp
 *.bak
 *.swp

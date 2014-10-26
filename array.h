@@ -353,7 +353,7 @@ namespace etl
 	///\param rhs Reference to the second array.
 	//*************************************************************************
   template <typename T, const size_t SIZE>
-  void swap(elt::array<T, SIZE> &lhs, etl::array<T, SIZE> &rhs)
+  void swap(etl::array<T, SIZE> &lhs, etl::array<T, SIZE> &rhs)
 	{
 		lhs.swap(rhs);
 	}
@@ -367,7 +367,7 @@ namespace etl
   ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
   //*************************************************************************
   template <typename T, std::size_t SIZE>
-  bool operator ==(const elt::array<T, SIZE>& lhs, const elt::array<T, SIZE>& rhs)
+  bool operator ==(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
     return std::equal(lhs.cbegin(), lhs.cend(), rhs.cbegin());
   }
@@ -379,7 +379,7 @@ namespace etl
   ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
   //*************************************************************************
   template <typename T, std::size_t SIZE>
-  bool operator !=(const elt::array<T, SIZE>& lhs, const elt::array<T, SIZE>& rhs)
+  bool operator !=(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
     return !(lhs == rhs);
   }
@@ -391,7 +391,7 @@ namespace etl
   ///\return <b>true</b> if the first array is lexicographically less than the second, otherwise <b>false</b>
   //*************************************************************************
   template <typename T, std::size_t SIZE>
-  bool operator <(const elt::array<T, SIZE>& lhs, const elt::array<T, SIZE>& rhs)
+  bool operator <(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
     return std::lexicographical_compare(lhs.cbegin(),
                                         lhs.cend(), 
@@ -406,7 +406,7 @@ namespace etl
   ///\return <b>true</b> if the first array is lexicographically less than or equal to the second, otherwise <b>false</b>
   //*************************************************************************
   template <typename T, std::size_t SIZE>
-  bool operator <=(const elt::array<T, SIZE>& lhs, const elt::array<T, SIZE>& rhs)
+  bool operator <=(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
     return !std::lexicographical_compare(lhs.cbegin(),
                                          lhs.cend(), 
@@ -422,7 +422,7 @@ namespace etl
   ///\return <b>true</b> if the first array is lexicographically greater than the second, otherwise <b>false</b>
   template <typename T, std::size_t SIZE>
   //*************************************************************************
-  bool operator >(const elt::array<T, SIZE>& lhs, const elt::array<T, SIZE>& rhs)
+  bool operator >(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
     return std::lexicographical_compare(lhs.cbegin(),
                                         lhs.cend(), 
@@ -438,7 +438,7 @@ namespace etl
   ///\return <b>true</b> if the first array is lexicographically greater than or equal to the second, otherwise <b>false</b>
   //*************************************************************************
   template <typename T, std::size_t SIZE>
-  bool operator >=(const elt::array<T, SIZE>& lhs, const elt::array<T, SIZE>& rhs)
+  bool operator >=(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
     return !std::lexicographical_compare(lhs.cbegin(), 
                                          lhs.cend(), 
