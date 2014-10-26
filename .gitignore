@@ -3,8 +3,8 @@
 ## Personal
 #################
 docs/
-test/msvs/Debug
-test/msvs/Release
+test/vs2013/Debug
+test/vs2013/Release
 
 #################
 ## Eclipse
