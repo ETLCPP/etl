@@ -26,15 +26,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
+#ifndef __etl_in_iqueue_h__
+#error This header is a private element of etl::queue & etl::iqueue
+#endif
+
 #ifndef __etl_queue_base__
 #define __etl_queue_base__
 
 #include <cstddef>
 
 #include "exception.h"
-
-///\defgroup queue Queue
-///\ingroup containers
 
 namespace etl
 {
@@ -98,7 +99,7 @@ namespace etl
     //*************************************************************************
     size_type size() const
     {
-      return size;
+      return current_size;
     }
 
     //*************************************************************************
@@ -122,9 +123,9 @@ namespace etl
     //*************************************************************************
     void clear()
     {
-      in   = 0;
-      out  = 0;
-      size = 0;
+      in  = 0;
+      out = 0;
+      current_size = 0;
     }
 
     //*************************************************************************
@@ -133,7 +134,7 @@ namespace etl
     //*************************************************************************
     bool empty() const
     {
-      return size == 0;
+      return current_size == 0;
     }
 
     //*************************************************************************
@@ -142,7 +143,7 @@ namespace etl
     //*************************************************************************
     bool full() const
     {
-      return size == MAX_SIZE;
+      return current_size == MAX_SIZE;
     }
 
     //*************************************************************************
@@ -154,7 +155,7 @@ namespace etl
       if (!empty())
       {
         out = (out == (MAX_SIZE - 1)) ? 0 : ++out;
-        --size;
+        --current_size;
       }
     }
 
@@ -171,8 +172,9 @@ namespace etl
 
     size_type in;             ///< Where to input new data.
     size_type out;            ///< Where to get the oldest data.
-    size_type size;           ///< The number of items in the queue.
+    size_type current_size;   ///< The number of items in the queue.
     const size_type MAX_SIZE; ///< The maximum number of items in the queue.
   };
 }
 
+#endif

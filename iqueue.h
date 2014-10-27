@@ -28,6 +28,7 @@ SOFTWARE.
 
 #ifndef __etl_iqueue__
 #define __etl_iqueue__
+#define __etl_in_iqueue_h__
 
 #include <cstddef>
 
@@ -51,7 +52,7 @@ namespace etl
   {
   public:
 
-    typedef queue_base::size_type size_type;       ///< The type used for determining the size of queue.
+    typedef queue_base::size_type size_type;       ///< The type used for determining the size of the queue.
     typedef T                     value_type;      ///< The type stored in the queue.
     typedef T&                    reference;       ///< A reference to the type used in the queue.
     typedef const T&              const_reference; ///< A const reference to the type used in the queue.
@@ -68,9 +69,9 @@ namespace etl
     {
       if (!full())
       {
-        buffer[in++] = item;
+        buffer[in] = item;
         in = (in == (MAX_SIZE - 1)) ? 0 : ++in;
-        ++size;
+        ++current_size;
       }
 #ifdef ETL_USE_EXCEPTIONS
       else
@@ -95,7 +96,7 @@ namespace etl
       if (!full())
       {
         in = (in == (MAX_SIZE - 1)) ? 0 : ++in;
-        ++size;
+        ++current_size;
       }
 #ifdef ETL_USE_EXCEPTIONS
       else
@@ -143,12 +144,48 @@ namespace etl
       return buffer[out];
     }
 
+    //*************************************************************************
+    /// Gets a reference to the item at the back of the queue.<br>
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_empty_exception if the queue is empty.<br>
+    /// If ETL_USE_EXCEPTIONS is not defined and the queue is empty, the return value is undefined.
+    /// \return A reference to the item at the back of the queue.
+    //*************************************************************************
+    reference back()
+    {
+#ifdef ETL_USE_EXCEPTIONS
+      if (empty())
+      {
+        throw queue_empty_exception();
+      }
+#endif
+
+      return buffer[in == 0 ? MAX_SIZE - 1 : in - 1];
+    }
+
+    //*************************************************************************
+    /// Gets a const reference to the item at the back of the queue.<br>
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_empty_exception if the queue is empty.<br>
+    /// If ETL_USE_EXCEPTIONS is not defined and the queue is empty, the return value is undefined.
+    /// \return A const reference to the item at the back of the queue.
+    //*************************************************************************
+    const_reference back() const
+    {
+#ifdef ETL_USE_EXCEPTIONS
+      if (empty())
+      {
+        throw queue_empty_exception();
+      }
+#endif
+
+      return buffer[in == 0 ? MAX_SIZE - 1 : in - 1];
+    }
+
   protected:
 
     //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
-    queue(T* buffer, size_type max_size)
+    iqueue(T* buffer, size_type max_size)
       : queue_base(max_size),
         buffer(buffer)
     {
@@ -160,3 +197,5 @@ namespace etl
   };
 }
 
+#undef __etl_in_iqueue_h__
+#endif

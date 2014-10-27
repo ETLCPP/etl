@@ -31,7 +31,7 @@ SOFTWARE.
 
 #include <cstddef>
 
-#include "IQueue.h"
+#include "iqueue.h"
 
 //*****************************************************************************
 ///\defgroup queue queue
