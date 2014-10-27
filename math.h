@@ -87,7 +87,7 @@ namespace etl
   /// Calculates base 2 logs.
   //***************************************************************************
   template <const size_t N>
-  struct Log2
+  struct log2
   {
     enum value_type
     {
@@ -100,11 +100,37 @@ namespace etl
   /// Calculates base 10 logs.
   //***************************************************************************
   template <const size_t N>
-  struct Log10
+  struct log10
   {
     enum value_type
     {
       value = log<N, 10>::value
+    };
+  };
+
+  //***************************************************************************
+  ///\ingroup exp
+  /// Calculates powers.
+  //***************************************************************************
+  template <const size_t N, const size_t POWER>
+  struct pow
+  {
+    enum value_type
+    {
+      value = N * pow<N, POWER - 1>::value
+    };
+  };
+
+  //***************************************************************************
+  ///\ingroup exp
+  /// Specialisation for POWER == 0
+  //***************************************************************************
+  template <const size_t N>
+  struct pow<N, 0>
+  {
+    enum value_type
+    {
+      value = 1
     };
   };
 }
