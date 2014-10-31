@@ -26,11 +26,11 @@ SOFTWARE.
 
 #include <UnitTest++/UnitTest++.h>
 
-#include "../math.h"
+#include "../maths.h"
 
 namespace
 {		
-  SUITE(TestMath)
+  SUITE(TestMaths)
   {
     //*************************************************************************
     TEST(TestLog0_BASE)
