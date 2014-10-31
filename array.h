@@ -346,9 +346,7 @@ namespace etl
 	};
 
   //*************************************************************************
-	/// <summary>
 	/// Overloaded std::swap for etl::array<T, SIZE>
-	/// </summary>
 	///\param lhs Reference to the first array.
 	///\param rhs Reference to the second array.
 	//*************************************************************************
@@ -359,9 +357,7 @@ namespace etl
 	}
 
   //*************************************************************************
-  /// <summary>
   /// Equal operator.
-  /// </summary>
   ///\param lhs Reference to the first array.
   ///\param rhs Reference to the second array.
   ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
