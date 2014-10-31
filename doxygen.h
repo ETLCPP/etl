@@ -33,7 +33,10 @@ SOFTWARE.
 /// A set of utility templates.
 ///\ingroup etl
 
-///\defgroup math Math
+///\defgroup Maths Maths
+///\ingroup etl
+
+///\defgroup patterns Patterns
 ///\ingroup etl
 
 ///\ingroup etl
