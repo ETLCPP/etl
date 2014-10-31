@@ -1,0 +1,221 @@
+///\file
+
+/******************************************************************************
+The MIT License(MIT)
+
+Embedded Template Library.
+
+Copyright(c) 2014 jwellbelove
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files(the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions :
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+******************************************************************************/
+
+#ifndef __etl_in_ivector_h__
+#error This header is a private element of etl::vector & etl::ivector
+#endif
+
+#ifndef __etl_vector_base__
+#define __etl_vector_base__
+
+#include <cstddef>
+
+#include "exception.h"
+
+namespace etl
+{
+#ifdef ETL_USE_EXCEPTIONS
+  //***************************************************************************
+  ///\ingroup vector
+  /// exception base  for vectors
+  //***************************************************************************
+  class vector_exception : public exception
+  {
+  public:
+
+    vector_exception(const char* what)
+      : exception(what)
+    {
+    }
+  };
+
+  //***************************************************************************
+  ///\ingroup vector
+  /// Vector full exception.
+  //***************************************************************************
+  class vector_full_exception : public vector_exception
+  {
+  public:
+
+    vector_full_exception()
+      : vector_exception("vector full")
+    {
+    }
+  };
+
+  //***************************************************************************
+  ///\ingroup vector
+  /// Vector empty exception.
+  //***************************************************************************
+  class vector_empty_exception : public vector_exception
+  {
+  public:
+
+    vector_empty_exception()
+      : vector_exception("vector empty")
+    {
+    }
+  };
+
+  //***************************************************************************
+  ///\ingroup vector
+  /// Vector out of bounds exception.
+  //***************************************************************************
+  class vector_out_of_bounds_exception : public vector_exception
+  {
+  public:
+
+    vector_out_of_bounds_exception()
+      : vector_exception("vector out of bounds")
+    {
+    }
+  };
+
+  //***************************************************************************
+  ///\ingroup vector
+  /// Vector iterator exception.
+  //***************************************************************************
+  class vector_iterator_exception : public vector_exception
+  {
+  public:
+
+    vector_iterator_exception()
+      : vector_exception("vector iterator error")
+    {
+    }
+  };
+#endif
+
+  //***************************************************************************
+  ///\ingroup vector
+  /// The base class for all templated vector types.
+  //***************************************************************************
+  class vector_base
+  {
+  public:
+
+    typedef size_t size_type;
+
+    //*************************************************************************
+    /// Gets the current size of the vector.
+    ///\return The current size of the vector.
+    //*************************************************************************
+    size_type size() const
+    {
+      return current_size;
+    }
+
+    //*************************************************************************
+    /// Checks the 'empty' state of the vector.
+    ///\return <b>true</b> if empty.
+    //*************************************************************************
+    bool empty() const
+    {
+      return (current_size == 0);
+    }
+
+    //*************************************************************************
+    /// Checks the 'full' state of the vector.
+    ///\return <b>true</b> if full.
+    //*************************************************************************
+    bool full() const
+    {
+      return current_size == MAX_SIZE;
+    }
+
+    //*************************************************************************
+    /// Returns the capacity of the vector.
+    ///\return The capacity of the vector.
+    //*************************************************************************
+    size_type capacity() const
+    {
+      return MAX_SIZE;
+    }
+
+    //*************************************************************************
+    /// Returns the maximum possible size of the vector.
+    ///\return The maximum size of the vector.
+    //*************************************************************************
+    size_type max_size() const
+    {
+      return MAX_SIZE;
+    }
+
+    //*************************************************************************
+    /// Clears the vector.
+    //*************************************************************************
+    void clear()
+    {
+      current_size = 0;
+    }
+
+    //*************************************************************************
+    /// Increases the size of the vector by one, but does not initialise the new element.
+    /// If ETL_USE_EXCEPTIONS is defined, throws a vector_full_exception if the vector is already full.
+    //*************************************************************************
+    void push_back()
+    {
+#ifdef ETL_USE_EXCEPTIONS
+      if (current_size == MAX_SIZE)
+      {
+        throw vector_full_exception();
+      }
+#endif
+
+      ++current_size;
+    }
+
+    //*************************************************************************
+    /// Removes an element from the end of the vector.
+    /// Does nothing if the vector is empty.
+    //*************************************************************************
+    void pop_back()
+    {
+      if (current_size > 0)
+      {
+        --current_size;
+      }
+    }
+
+  protected:
+
+    //*************************************************************************
+    /// Constructor.
+    //*************************************************************************
+    vector_base(size_t max_size)
+      : current_size(0),
+        MAX_SIZE(max_size)
+    {
+    }
+
+    size_type       current_size; ///<The current number of elements in the vector.
+    const size_type MAX_SIZE;     ///<The maximum number of elements in the vector.
+  };
+}
+
+#endif
