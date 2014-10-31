@@ -37,7 +37,7 @@ SOFTWARE.
 ///\defgroup stack stack
 /// A First-in / first-out stack with the capacity defined at compile time, 
 /// written in the STL style.
-///\ingroup Containers
+///\ingroup containers
 //*****************************************************************************
 
 namespace etl
@@ -46,6 +46,7 @@ namespace etl
   ///\ingroup stack
   /// A fixed capacity stack.
   /// This stack does not support concurrent access by different threads.
+  ///\note Uses a predefined array, so MAX_SIZE_ elements will be always be constructed.
   /// \tparam T    The type this stack should support.
   /// \tparam SIZE The maximum capacity of the stack.
   //***************************************************************************
