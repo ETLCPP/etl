@@ -1,0 +1,145 @@
+/******************************************************************************
+The MIT License(MIT)
+
+Embedded Template Library.
+
+Copyright(c) 2014 jwellbelove
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files(the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions :
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+******************************************************************************/
+
+#include <UnitTest++/UnitTest++.h>
+
+#include "../container.h"
+
+#include <list>
+
+namespace 
+{		
+  SUITE(ContainerTest)
+  {
+    //*************************************************************************
+    TEST(TestSTLContainer)
+    {
+      const size_t SIZE = 10;
+      std::list<int> data(SIZE);
+
+      std::list<int>::iterator iBegin = etl::begin(data);
+      CHECK(data.begin() == iBegin);
+
+      std::list<int>::iterator iEnd = etl::end(data);
+      CHECK(data.end() == iEnd);
+    }
+
+    //*************************************************************************
+    TEST(TestConstSTLContainer)
+    {
+      const size_t SIZE = 10;
+      const std::list<int> data(SIZE);
+
+      std::list<int>::const_iterator iBegin = etl::begin(data);
+      CHECK(data.begin() == iBegin);
+
+      const std::list<int>::const_iterator iEnd = etl::end(data);
+      CHECK(data.end() == iEnd);
+    }
+
+    //*************************************************************************
+    TEST(TestCArray)
+    {
+      const size_t SIZE = 10;
+      int data[SIZE];
+
+      int* iBegin = etl::begin(data);
+      CHECK(&data[0] == iBegin);
+
+      int* iEnd = etl::end(data);
+      CHECK(&data[SIZE] == iEnd);
+    }
+
+    //*************************************************************************
+    TEST(TestConstCArray)
+    {
+      const size_t SIZE = 10;
+      const int data[SIZE] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      const int* const iBegin = etl::begin(data);
+      CHECK(&data[0] == iBegin);
+
+      const int* const iEnd = etl::end(data);
+      CHECK(&data[SIZE] == iEnd);
+    }
+
+
+    //*************************************************************************
+    TEST(TestNext)
+    {
+      const int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      const int* p;
+
+      p = etl::next(std::begin(data));
+      CHECK_EQUAL(data[1], *p);
+
+      p = etl::next(std::begin(data), 1);
+      CHECK_EQUAL(data[1], *p);
+
+      p = etl::next(std::begin(data), 5);
+      CHECK_EQUAL(data[5], *p);
+    }
+
+    //*************************************************************************
+    TEST(TestPrev)
+    {
+      const int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      const int* p;
+
+      p = etl::prev(std::end(data));
+      CHECK_EQUAL(data[9], *p);
+
+      p = etl::prev(std::end(data), 1);
+      CHECK_EQUAL(data[9], *p);
+
+      p = etl::prev(std::end(data), 5);
+      CHECK_EQUAL(data[5], *p);
+    }
+
+    //*************************************************************************
+    TEST(TestSTLContainerSize)
+    {
+      const size_t SIZE = 10;
+      std::list<int> data(SIZE);
+
+      size_t runtime_size = etl::size(data);
+      CHECK_EQUAL(SIZE, runtime_size);
+    }
+
+    //*************************************************************************
+    TEST(TestCArraySize)
+    {
+      const size_t SIZE = 10;
+      int data[SIZE];
+
+      size_t runtime_size = etl::size(data);
+      CHECK_EQUAL(SIZE, runtime_size);
+
+      size_t compiletime_size = sizeof(etl::array_size(data));
+      CHECK_EQUAL(SIZE, compiletime_size);
+    }
+  };
+}
