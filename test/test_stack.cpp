@@ -129,25 +129,12 @@ namespace
     {
       etl::stack<int, 4> stack;
 
-      bool gotException = false;
-
-      try
+      for (size_t i = 0; i < stack.capacity(); ++i)
       {
-        for (size_t i = 0; i < stack.capacity() + 1; ++i)
-        {
-          stack.push(1);
-        }
-      }
-      catch (etl::stack_full_exception&)
-      {
-        gotException = true;
-      }
-      catch (...)
-      {
-        CHECK(false);
+        stack.push(1);
       }
 
-      CHECK(gotException);
+      CHECK_THROW(stack.push(1), etl::stack_full_exception);
     }
 
     //*************************************************************************
@@ -203,22 +190,7 @@ namespace
     {
       etl::stack<int, 4> stack;
 
-      bool gotException = false;
-
-      try
-      {
-        stack.top();
-      }
-      catch (etl::stack_empty_exception&)
-      {
-        gotException = true;
-      }
-      catch (...)
-      {
-        CHECK(false);
-      }
-
-      CHECK(gotException);
+      CHECK_THROW(stack.top(), etl::stack_empty_exception);
     }
 
     //*************************************************************************

@@ -129,25 +129,12 @@ namespace
     {
       etl::queue<int, 4> queue;
 
-      bool gotException = false;
-
-      try
+      for (size_t i = 0; i < queue.capacity(); ++i)
       {
-        for (size_t i = 0; i < queue.capacity() + 1; ++i)
-        {
-          queue.push(1);
-        }
-      }
-      catch (etl::queue_full_exception&)
-      {
-        gotException = true;
-      }
-      catch (...)
-      {
-        CHECK(false);
+        queue.push(1);
       }
 
-      CHECK(gotException);
+      CHECK_THROW(queue.push(1), etl::queue_full_exception);      
     }
 
     //*************************************************************************
@@ -203,22 +190,7 @@ namespace
     {
       etl::queue<int, 4> queue;
 
-      bool gotException = false;
-
-      try
-      {
-        queue.front();
-      }
-      catch (etl::queue_empty_exception&)
-      {
-        gotException = true;
-      }
-      catch (...)
-      {
-        CHECK(false);
-      }
-
-      CHECK(gotException);
+      CHECK_THROW(queue.front(), etl::queue_empty_exception);
     }
 
     //*************************************************************************
@@ -257,22 +229,7 @@ namespace
     {
       etl::queue<int, 4> queue;
 
-      bool gotException = false;
-
-      try
-      {
-        queue.back();
-      }
-      catch (etl::queue_empty_exception&)
-      {
-        gotException = true;
-      }
-      catch (...)
-      {
-        CHECK(false);
-      }
-
-      CHECK(gotException);
+      CHECK_THROW(queue.back(), etl::queue_empty_exception);
     }
 
     //*************************************************************************

@@ -153,18 +153,7 @@ namespace
         CHECK_EQUAL(data.at(i), testData.at(i));
       }
 
-      bool gotException = false;
-
-      try
-      {
-        data.at(data.size());
-      }
-      catch (etl::array_out_of_range_exception)
-      {
-        gotException = true;
-      }
-
-      CHECK(gotException);
+      CHECK_THROW(data.at(data.size()), etl::array_out_of_range_exception);
     }
 
     //*************************************************************************
@@ -175,18 +164,7 @@ namespace
         CHECK_EQUAL(data.at(i), testData.at(i));
       }
 
-      bool gotException = false;
-
-      try
-      {
-        data.at(data.size());
-      }
-      catch (etl::array_out_of_range_exception)
-      {
-        gotException = true;
-      }
-
-      CHECK(gotException);
+      CHECK_THROW(data.at(data.size()), etl::array_out_of_range_exception);
     }
 
     //*************************************************************************
