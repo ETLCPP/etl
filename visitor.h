@@ -1,0 +1,460 @@
+///\file
+
+/******************************************************************************
+The MIT License(MIT)
+
+Embedded Template Library.
+
+Copyright(c) 2014 jwellbelove
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files(the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions :
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+******************************************************************************/
+
+#ifndef __etl_visitor__
+#define __etl_visitor__
+
+//*****************************************************************************
+///\defgroup visitor visitor
+/// A set of template classes for easy implementation of the visitor pattern.<br>
+/// The visitor design pattern is a way of separating an algorithm from an object
+/// structure on which it operates. A practical result of this separation is the
+/// ability to add new operations to existing object structures without modifying
+/// those structures. It is one way to easily follow the open/closed principle.
+/// In essence, the visitor allows one to add new virtual functions to a family 
+/// of classes without modifying the classes themselves; instead, one creates a 
+/// visitor class that implements all of the appropriate specialisations of the
+/// virtual function. The visitor takes the instance as input, and implements 
+/// the goal through double dispatch.<br>
+/// \ingroup patterns
+//*****************************************************************************
+
+namespace etl
+{
+  //*****************************************************************
+  /// The visitable base class for four visitor types.
+  /// Derive visitable classes from this.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename T1, typename T2 = void, typename T3 = void, typename T4 = void>
+  class visitable
+  {
+  public:
+
+    virtual void accept(T1&) = 0;
+    virtual void accept(T2&) = 0;
+    virtual void accept(T3&) = 0;
+    virtual void accept(T4&) = 0;
+  };
+
+  //*****************************************************************
+  /// The visitable base class for three visitor types.
+  /// Derive visitable classes from this.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename T1, typename T2, typename T3>
+  class visitable<T1, T2, T3>
+  {
+  public:
+
+    virtual void accept(T1&) = 0;
+    virtual void accept(T2&) = 0;
+    virtual void accept(T3&) = 0;
+  };
+
+  //*****************************************************************
+  /// The visitable base class for two visitor types.
+  /// Derive visitable classes from this.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename T1, typename T2>
+  class visitable<T1, T2>
+  {
+  public:
+
+    virtual void accept(T1&) = 0;
+    virtual void accept(T2&) = 0;
+  };
+
+  //*****************************************************************
+  /// The visitable base class for one visitor type.
+  /// Derive visitable classes from this.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename T1>
+  class visitable<T1>
+  {
+  public:
+
+    virtual void accept(T1&) = 0;
+  };
+
+  //*****************************************************************
+  /// The visitor base class for sixteen types.
+  /// Derive visitors from this.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename T1,         typename T2  = void, typename T3  = void, typename T4  = void,
+            typename T5  = void, typename T6  = void, typename T7  = void, typename T8  = void,
+            typename T9  = void, typename T10 = void, typename T11 = void, typename T12 = void, 
+            typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void>
+  class visitor
+  {
+  public:
+
+    virtual void visit(T1&) = 0;
+    virtual void visit(T2&) = 0;
+    virtual void visit(T3&) = 0;
+    virtual void visit(T4&) = 0;
+    virtual void visit(T5&) = 0;
+    virtual void visit(T6&) = 0;
+    virtual void visit(T7&) = 0;
+    virtual void visit(T8&) = 0;
+    virtual void visit(T9&) = 0;
+    virtual void visit(T10&) = 0;
+    virtual void visit(T11&) = 0;
+    virtual void visit(T12&) = 0;
+    virtual void visit(T13&) = 0;
+    virtual void visit(T14&) = 0;
+    virtual void visit(T15&) = 0;
+    virtual void visit(T16&) = 0;
+  };
+
+  //*****************************************************************
+  /// The visitor base class for fifteen types.
+  /// Derive visitors from this.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename T1,  typename T2,  typename T3,  typename T4,
+            typename T5,  typename T6,  typename T7,  typename T8,
+            typename T9,  typename T10, typename T11, typename T12,
+            typename T13, typename T14, typename T15>
+  class visitor<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>
+  {
+  public:
+
+    virtual void visit(T1&) = 0;
+    virtual void visit(T2&) = 0;
+    virtual void visit(T3&) = 0;
+    virtual void visit(T4&) = 0;
+    virtual void visit(T5&) = 0;
+    virtual void visit(T6&) = 0;
+    virtual void visit(T7&) = 0;
+    virtual void visit(T8&) = 0;
+    virtual void visit(T9&) = 0;
+    virtual void visit(T10&) = 0;
+    virtual void visit(T11&) = 0;
+    virtual void visit(T12&) = 0;
+    virtual void visit(T13&) = 0;
+    virtual void visit(T14&) = 0;
+    virtual void visit(T15&) = 0;
+  };
+
+  //*****************************************************************
+  /// The visitor base class for fourteen types.
+  /// Derive visitors from this.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename T1,  typename T2,  typename T3,  typename T4,
+            typename T5,  typename T6,  typename T7,  typename T8,
+            typename T9,  typename T10, typename T11, typename T12,
+            typename T13, typename T14>
+  class visitor<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>
+  {
+  public:
+
+    virtual void visit(T1&) = 0;
+    virtual void visit(T2&) = 0;
+    virtual void visit(T3&) = 0;
+    virtual void visit(T4&) = 0;
+    virtual void visit(T5&) = 0;
+    virtual void visit(T6&) = 0;
+    virtual void visit(T7&) = 0;
+    virtual void visit(T8&) = 0;
+    virtual void visit(T9&) = 0;
+    virtual void visit(T10&) = 0;
+    virtual void visit(T11&) = 0;
+    virtual void visit(T12&) = 0;
+    virtual void visit(T13&) = 0;
+    virtual void visit(T14&) = 0;
+  };
+
+  //*****************************************************************
+  /// The visitor base class for thirteen types.
+  /// Derive visitors from this.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename T1, typename T2,  typename T3,  typename T4,
+            typename T5, typename T6,  typename T7,  typename T8,
+            typename T9, typename T10, typename T11, typename T12,
+            typename T13>
+  class visitor<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>
+  {
+  public:
+
+    virtual void visit(T1&) = 0;
+    virtual void visit(T2&) = 0;
+    virtual void visit(T3&) = 0;
+    virtual void visit(T4&) = 0;
+    virtual void visit(T5&) = 0;
+    virtual void visit(T6&) = 0;
+    virtual void visit(T7&) = 0;
+    virtual void visit(T8&) = 0;
+    virtual void visit(T9&) = 0;
+    virtual void visit(T10&) = 0;
+    virtual void visit(T11&) = 0;
+    virtual void visit(T12&) = 0;
+    virtual void visit(T13&) = 0;
+  };
+
+  //*****************************************************************
+  /// The visitor base class for twelve types.
+  /// Derive visitors from this.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename T1, typename T2,  typename T3,  typename T4,
+            typename T5, typename T6,  typename T7,  typename T8,
+            typename T9, typename T10, typename T11, typename T12>
+  class visitor<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>
+  {
+  public:
+
+    virtual void visit(T1&) = 0;
+    virtual void visit(T2&) = 0;
+    virtual void visit(T3&) = 0;
+    virtual void visit(T4&) = 0;
+    virtual void visit(T5&) = 0;
+    virtual void visit(T6&) = 0;
+    virtual void visit(T7&) = 0;
+    virtual void visit(T8&) = 0;
+    virtual void visit(T9&) = 0;
+    virtual void visit(T10&) = 0;
+    virtual void visit(T11&) = 0;
+    virtual void visit(T12&) = 0;
+  };
+
+  //*****************************************************************
+  /// The visitor base class for eleven types.
+  /// Derive visitors from this.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename T1, typename T2,  typename T3, typename T4,
+            typename T5, typename T6,  typename T7, typename T8,
+            typename T9, typename T10, typename T11>
+  class visitor<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>
+  {
+  public:
+
+    virtual void visit(T1&) = 0;
+    virtual void visit(T2&) = 0;
+    virtual void visit(T3&) = 0;
+    virtual void visit(T4&) = 0;
+    virtual void visit(T5&) = 0;
+    virtual void visit(T6&) = 0;
+    virtual void visit(T7&) = 0;
+    virtual void visit(T8&) = 0;
+    virtual void visit(T9&) = 0;
+    virtual void visit(T10&) = 0;
+    virtual void visit(T11&) = 0;
+  };
+
+  //*****************************************************************
+  /// The visitor base class for ten types.
+  /// Derive visitors from this.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7, typename T8,
+            typename T9, typename T10>
+  class visitor<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>
+  {
+  public:
+
+    virtual void visit(T1&) = 0;
+    virtual void visit(T2&) = 0;
+    virtual void visit(T3&) = 0;
+    virtual void visit(T4&) = 0;
+    virtual void visit(T5&) = 0;
+    virtual void visit(T6&) = 0;
+    virtual void visit(T7&) = 0;
+    virtual void visit(T8&) = 0;
+    virtual void visit(T9&) = 0;
+    virtual void visit(T10&) = 0;
+  };
+
+  //*****************************************************************
+  /// The visitor base class for nine types.
+  /// Derive visitors from this.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7, typename T8,
+            typename T9>
+  class visitor<T1, T2, T3, T4, T5, T6, T7, T8, T9>
+  {
+  public:
+
+    virtual void visit(T1&) = 0;
+    virtual void visit(T2&) = 0;
+    virtual void visit(T3&) = 0;
+    virtual void visit(T4&) = 0;
+    virtual void visit(T5&) = 0;
+    virtual void visit(T6&) = 0;
+    virtual void visit(T7&) = 0;
+    virtual void visit(T8&) = 0;
+    virtual void visit(T9&) = 0;
+  };
+  
+  //*****************************************************************
+  /// The visitor base class for eight types.
+  /// Derive visitors from this.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7, typename T8>
+  class visitor<T1, T2, T3, T4, T5, T6, T7, T8>
+  {
+  public:
+
+    virtual void visit(T1&) = 0;
+    virtual void visit(T2&) = 0;
+    virtual void visit(T3&) = 0;
+    virtual void visit(T4&) = 0;
+    virtual void visit(T5&) = 0;
+    virtual void visit(T6&) = 0;
+    virtual void visit(T7&) = 0;
+    virtual void visit(T8&) = 0;
+  };
+
+  //*****************************************************************
+  /// The visitor base class for seven types.
+  /// Derive visitors from this.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7>
+  class visitor<T1, T2, T3, T4, T5, T6, T7>
+  {
+  public:
+
+      virtual void visit(T1&) = 0;
+      virtual void visit(T2&) = 0;
+      virtual void visit(T3&) = 0;
+      virtual void visit(T4&) = 0;
+      virtual void visit(T5&) = 0;
+      virtual void visit(T6&) = 0;
+      virtual void visit(T7&) = 0;
+  };
+
+  //*****************************************************************
+  /// The visitor base class for six types.
+  /// Derive visitors from this.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6>
+  class visitor<T1, T2, T3, T4, T5, T6>
+  {
+  public:
+
+      virtual void visit(T1&) = 0;
+      virtual void visit(T2&) = 0;
+      virtual void visit(T3&) = 0;
+      virtual void visit(T4&) = 0;
+      virtual void visit(T5&) = 0;
+      virtual void visit(T6&) = 0;
+  };
+
+  //*****************************************************************
+  /// The visitor base class for five types.
+  /// Derive visitors from this.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename T1, typename T2, typename T3, typename T4,
+            typename T5>
+  class visitor<T1, T2, T3, T4, T5>
+  {
+  public:
+
+      virtual void visit(T1&) = 0;
+      virtual void visit(T2&) = 0;
+      virtual void visit(T3&) = 0;
+      virtual void visit(T4&) = 0;
+      virtual void visit(T5&) = 0;
+  };
+
+  //*****************************************************************
+  /// The visitor base class for four types.
+  /// Derive visitors from this.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename T1, typename T2, typename T3, typename T4>
+  class visitor<T1, T2, T3, T4>
+  {
+  public:
+
+      virtual void visit(T1&) = 0;
+      virtual void visit(T2&) = 0;
+      virtual void visit(T3&) = 0;
+      virtual void visit(T4&) = 0;
+  };
+
+  //*****************************************************************
+  /// The visitor base class for three types.
+  /// Derive visitors from this.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename T1, typename T2, typename T3>
+  class visitor<T1, T2, T3>
+  {
+  public:
+
+      virtual void visit(T1&) = 0;
+      virtual void visit(T2&) = 0;
+      virtual void visit(T3&) = 0;
+  };
+
+  //*****************************************************************
+  /// The visitor base class for two types.
+  /// Derive visitors from this.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename T1, typename T2>
+  class visitor<T1, T2>
+  {
+  public:
+
+      virtual void visit(T1&) = 0;
+      virtual void visit(T2&) = 0;
+  };
+
+  //*****************************************************************
+  /// The visitor base class for one type.
+  /// Derive visitors from this.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename T1>
+  class visitor<T1>
+  {
+  public:
+
+      virtual void visit(T1&) = 0;
+  };
+}
+
+#endif
