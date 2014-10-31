@@ -22,26 +22,20 @@
     <Filter Include="UnitTest++\Win32">
       <UniqueIdentifier>{107d7e33-580f-4dc5-be11-a4b2076c2c10}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ETL\Containers">
+      <UniqueIdentifier>{dc39d09c-75c9-453f-8feb-9631a200c0f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Utilities">
+      <UniqueIdentifier>{ab41d19f-82fe-4974-a73b-16aebfa1d03f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Patterns">
+      <UniqueIdentifier>{d56ca96b-66e1-46cb-83fd-1cd72c51d962}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Maths">
+      <UniqueIdentifier>{1c55dd7d-c04b-428c-810b-dd3a08fc4c65}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\array.h">
-      <Filter>ETL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\enum_type.h">
-      <Filter>ETL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\exception.h">
-      <Filter>ETL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\function.h">
-      <Filter>ETL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\math.h">
-      <Filter>ETL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\queue.h">
-      <Filter>ETL</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\AssertException.h">
       <Filter>UnitTest++</Filter>
     </ClInclude>
@@ -129,6 +123,78 @@
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\Win32\TimeHelpers.h">
       <Filter>UnitTest++\Win32</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\doxygen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\enum_type.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\exception.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\function.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\array.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\iqueue.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\istack.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\container.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ivector.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\queue.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\queue_base.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\stack.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\stack_base.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\vector.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\vector_base.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\largest.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\nullptr.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\numeric.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cyclic_value.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\static_assert.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\type_traits.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\visitor.h">
+      <Filter>ETL\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maths.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\observer.h">
+      <Filter>ETL\Patterns</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\AssertException.cpp">
@@ -191,5 +257,52 @@
     <ClCompile Include="..\test_array.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_enum_type.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_exception.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_function.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_math.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_stack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_vector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_largest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_numeric.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_container.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_type_traits.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_cyclic_value.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_visitor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_observer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Doxyfile">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

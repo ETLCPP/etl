@@ -112,11 +112,29 @@
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\Win32\TimeHelpers.h" />
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\XmlTestReporter.h" />
     <ClInclude Include="..\..\array.h" />
+    <ClInclude Include="..\..\cyclic_value.h" />
+    <ClInclude Include="..\..\doxygen.h" />
     <ClInclude Include="..\..\enum_type.h" />
     <ClInclude Include="..\..\exception.h" />
     <ClInclude Include="..\..\function.h" />
-    <ClInclude Include="..\..\math.h" />
+    <ClInclude Include="..\..\iqueue.h" />
+    <ClInclude Include="..\..\istack.h" />
+    <ClInclude Include="..\..\container.h" />
+    <ClInclude Include="..\..\ivector.h" />
+    <ClInclude Include="..\..\largest.h" />
+    <ClInclude Include="..\..\maths.h" />
+    <ClInclude Include="..\..\nullptr.h" />
+    <ClInclude Include="..\..\numeric.h" />
+    <ClInclude Include="..\..\observer.h" />
     <ClInclude Include="..\..\queue.h" />
+    <ClInclude Include="..\..\queue_base.h" />
+    <ClInclude Include="..\..\stack.h" />
+    <ClInclude Include="..\..\stack_base.h" />
+    <ClInclude Include="..\..\static_assert.h" />
+    <ClInclude Include="..\..\type_traits.h" />
+    <ClInclude Include="..\..\vector.h" />
+    <ClInclude Include="..\..\vector_base.h" />
+    <ClInclude Include="..\..\visitor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\AssertException.cpp" />
@@ -142,6 +160,23 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </AdditionalIncludeDirectories>
     </ClCompile>
+    <ClCompile Include="..\test_container.cpp" />
+    <ClCompile Include="..\test_cyclic_value.cpp" />
+    <ClCompile Include="..\test_enum_type.cpp" />
+    <ClCompile Include="..\test_exception.cpp" />
+    <ClCompile Include="..\test_function.cpp" />
+    <ClCompile Include="..\test_largest.cpp" />
+    <ClCompile Include="..\test_math.cpp" />
+    <ClCompile Include="..\test_numeric.cpp" />
+    <ClCompile Include="..\test_observer.cpp" />
+    <ClCompile Include="..\test_queue.cpp" />
+    <ClCompile Include="..\test_stack.cpp" />
+    <ClCompile Include="..\test_type_traits.cpp" />
+    <ClCompile Include="..\test_vector.cpp" />
+    <ClCompile Include="..\test_visitor.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Doxyfile" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
