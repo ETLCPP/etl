@@ -33,11 +33,14 @@ SOFTWARE.
 /// A set of utility templates.
 ///\ingroup etl
 
-///\defgroup Maths Maths
+///\defgroup maths Maths
 ///\ingroup etl
 
 ///\defgroup patterns Patterns
 ///\ingroup etl
+
+///\defgroup crc CRC calculations
+///\ingroup maths
 
 ///\ingroup etl
 namespace etl {}
