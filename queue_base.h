@@ -41,8 +41,8 @@ namespace etl
 {
 #ifdef ETL_USE_EXCEPTIONS
   //***************************************************************************
-  ///\ingroup queue
   /// The base class for queue exceptions.
+  ///\ingroup queue
   //***************************************************************************
   class queue_exception : public exception
   {
@@ -55,8 +55,8 @@ namespace etl
   };
 
   //***************************************************************************
-  ///\ingroup queue
   /// The exception thrown when the queue is full.
+  ///\ingroup queue
   //***************************************************************************
   class queue_full_exception : public queue_exception
   {
@@ -69,8 +69,8 @@ namespace etl
   };
 
   //***************************************************************************
-  ///\ingroup queue
   /// The exception thrown when the queue is empty.
+  ///\ingroup queue
   //***************************************************************************
   class queue_empty_exception : public queue_exception
   {
@@ -84,9 +84,8 @@ namespace etl
 #endif
 
   //***************************************************************************
+  /// The base class for all queues.
   ///\ingroup queue
-  /// A fixed capacity queue written in the STL style.
-  /// \warning This queue cannot be used for concurrent access from multiple threads.
   //***************************************************************************
   class queue_base
   {
