@@ -44,12 +44,13 @@ SOFTWARE.
 namespace etl
 {
   template <typename T, const size_t MAX_SIZE_>
-  //*************************************************************************====
+  //***************************************************************************
   /// A vector implementation that uses a fixed size buffer.
   ///\note Uses a predefined array, so MAX_SIZE_ elements will be always be constructed.
   ///\tparam T The element type.
   ///\tparam MAX_SIZE_ The maximum number of elements that can be stored.
-  //*************************************************************************====
+  ///\ingroup vector
+  //***************************************************************************
   class vector : public ivector<T>
   {
   public:
