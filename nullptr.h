@@ -33,7 +33,8 @@ SOFTWARE.
 /// A definition of nullptr for compilers that don't support it as standard.
 ///\ingroup utilities
 
-namespace etl
+#if defined(_MSC_VER) && (_MSC_VER < 1600)
+namespace std
 {
   //*****************************************************************************
   /// A null pointer type.
@@ -70,5 +71,40 @@ namespace etl
   const nullptr_t nullptr = {};
 }
 
+//*****************************************************************************
+/// A null pointer type.
+///\ingroup nullptr
+//*****************************************************************************
+class nullptr_t
+{
+public:
+
+  // Convertible to any type of null non-member pointer.
+  template<class T>
+  inline operator T*() const
+  {
+    return 0;
+  }
+
+  // Or any type of null member pointer.
+  template<class C, class T>
+  inline operator T C::*() const
+  {
+    return 0;
+  }
+
+private:
+
+  // Can't take address of nullptr.
+  void operator&() const;
+};
+
+//*****************************************************************************
+/// A null pointer.
+///\ingroup nullptr
+//*****************************************************************************
+const nullptr_t nullptr = {};
+
+#endif
 #endif
 
