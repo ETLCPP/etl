@@ -107,6 +107,12 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, ConstructorSizeExcess)
+    {
+      CHECK_THROW(Data data(SIZE + 1), etl::vector_full_exception);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, ConstructorRange)
     {
       TestData testData(initial_data.begin(), initial_data.end());
