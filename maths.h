@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_Maths__
-#define __etl_Maths__
+#ifndef __etl_maths__
+#define __etl_maths__
 
 #include <cstddef>
 
