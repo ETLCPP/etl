@@ -117,11 +117,15 @@
     <ClInclude Include="..\..\enum_type.h" />
     <ClInclude Include="..\..\exception.h" />
     <ClInclude Include="..\..\function.h" />
+    <ClInclude Include="..\..\functional.h" />
+    <ClInclude Include="..\..\ilist.h" />
     <ClInclude Include="..\..\iqueue.h" />
     <ClInclude Include="..\..\istack.h" />
     <ClInclude Include="..\..\container.h" />
     <ClInclude Include="..\..\ivector.h" />
     <ClInclude Include="..\..\largest.h" />
+    <ClInclude Include="..\..\list.h" />
+    <ClInclude Include="..\..\list_base.h" />
     <ClInclude Include="..\..\maths.h" />
     <ClInclude Include="..\..\nullptr.h" />
     <ClInclude Include="..\..\numeric.h" />
@@ -166,6 +170,7 @@
     <ClCompile Include="..\test_exception.cpp" />
     <ClCompile Include="..\test_function.cpp" />
     <ClCompile Include="..\test_largest.cpp" />
+    <ClCompile Include="..\test_list.cpp" />
     <ClCompile Include="..\test_math.cpp" />
     <ClCompile Include="..\test_numeric.cpp" />
     <ClCompile Include="..\test_observer.cpp" />
