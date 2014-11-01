@@ -112,6 +112,10 @@
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\Win32\TimeHelpers.h" />
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\XmlTestReporter.h" />
     <ClInclude Include="..\..\array.h" />
+    <ClInclude Include="..\..\crc16.h" />
+    <ClInclude Include="..\..\crc16_ccitt.h" />
+    <ClInclude Include="..\..\crc32.h" />
+    <ClInclude Include="..\..\crc64_ecma.h" />
     <ClInclude Include="..\..\crc8.h" />
     <ClInclude Include="..\..\cyclic_value.h" />
     <ClInclude Include="..\..\doxygen.h" />
