@@ -39,10 +39,11 @@ SOFTWARE.
 
 namespace etl
 {
-  //***************************************************************************==
+  //***************************************************************************
   /// The base class for specifically sized vectors.
   /// Can be used as a reference type for all vectors containing a specific type.
-  //***************************************************************************==
+  ///\ingroup vector
+  //***************************************************************************
   template <typename T>
   class ivector : public vector_base
   {
@@ -540,6 +541,7 @@ namespace etl
   ///\param lhs Reference to the first array.
   ///\param rhs Reference to the second array.
   ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
+  ///\ingroup vector
   //***************************************************************************
   template <typename T>
   bool operator ==(const etl::ivector<T>& lhs, const etl::ivector<T>& rhs)
@@ -552,6 +554,7 @@ namespace etl
   ///\param lhs Reference to the first array.
   ///\param rhs Reference to the second array.
   ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
+  ///\ingroup vector
   //***************************************************************************
   template <typename T>
   bool operator !=(const etl::ivector<T>& lhs, const etl::ivector<T>& rhs)
@@ -564,6 +567,7 @@ namespace etl
   ///\param lhs Reference to the first array.
   ///\param rhs Reference to the second array.
   ///\return <b>true</b> if the first array is lexigraphically less than the second, otherwise <b>false</b>
+  ///\ingroup vector
   //***************************************************************************
   template <typename T>
   bool operator <(const etl::ivector<T>& lhs, const etl::ivector<T>& rhs)
@@ -576,6 +580,7 @@ namespace etl
   ///\param lhs Reference to the first array.
   ///\param rhs Reference to the second array.
   ///\return <b>true</b> if the first array is lexigraphically greater than the second, otherwise <b>false</b>
+  ///\ingroup vector
   //***************************************************************************
   template <typename T>
   bool operator >(const etl::ivector<T>& lhs, const etl::ivector<T>& rhs)
@@ -588,6 +593,7 @@ namespace etl
   ///\param lhs Reference to the first array.
   ///\param rhs Reference to the second array.
   ///\return <b>true</b> if the first array is lexigraphically less than or equal to the second, otherwise <b>false</b>
+  ///\ingroup vector
   //***************************************************************************
   template <typename T>
   bool operator <=(const etl::ivector<T>& lhs, const etl::ivector<T>& rhs)
@@ -600,6 +606,7 @@ namespace etl
   ///\param lhs Reference to the first array.
   ///\param rhs Reference to the second array.
   ///\return <b>true</b> if the first array is lexigraphically greater than or equal to the second, otherwise <b>false</b>
+  ///\ingroup vector
   //***************************************************************************
   template <typename T>
   bool operator >=(const etl::ivector<T>& lhs, const etl::ivector<T>& rhs)
