@@ -112,6 +112,7 @@
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\Win32\TimeHelpers.h" />
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\XmlTestReporter.h" />
     <ClInclude Include="..\..\array.h" />
+    <ClInclude Include="..\..\crc8.h" />
     <ClInclude Include="..\..\cyclic_value.h" />
     <ClInclude Include="..\..\doxygen.h" />
     <ClInclude Include="..\..\enum_type.h" />
@@ -165,6 +166,7 @@
       </AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="..\test_container.cpp" />
+    <ClCompile Include="..\test_crc.cpp" />
     <ClCompile Include="..\test_cyclic_value.cpp" />
     <ClCompile Include="..\test_enum_type.cpp" />
     <ClCompile Include="..\test_exception.cpp" />
