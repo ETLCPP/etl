@@ -27,8 +27,9 @@ SOFTWARE.
 #include <UnitTest++/UnitTest++.h>
 
 #include <iterator>
+#include <string>
 #include <cstdint>
-#include "../crc8.h"
+#include "../crc8_ccitt.h"
 #include "../crc16.h"
 #include "../crc16_ccitt.h"
 #include "../crc16_kermit.h"
@@ -42,9 +43,9 @@ namespace
     //*************************************************************************
     TEST(TestCRC8)
     {
-      unsigned char data[] = { '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+      std::string data("123456789");
 
-      uint8_t crc = etl::crc8(std::begin(data), std::end(data));
+      uint8_t crc = etl::crc8_ccitt(data.begin(), data.end());
 
       CHECK_EQUAL(0xF4, crc);
     }
@@ -52,9 +53,9 @@ namespace
     //*************************************************************************
     TEST(TestCRC16)
     {
-      unsigned char data[] = { '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+      std::string data("123456789");
 
-      uint16_t crc = etl::crc16(std::begin(data), std::end(data));
+      uint16_t crc = etl::crc16(data.begin(), data.end());
 
       CHECK_EQUAL(0xBB3D, crc);
     }
@@ -62,9 +63,9 @@ namespace
     //*************************************************************************
     TEST(TestCRC16CCITT)
     {
-      unsigned char data[] = { '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+      std::string data("123456789");
 
-      uint16_t crc = etl::crc16_ccitt(std::begin(data), std::end(data));
+      uint16_t crc = etl::crc16_ccitt(data.begin(), data.end());
 
       CHECK_EQUAL(0x29B1, crc);
     }
@@ -72,9 +73,9 @@ namespace
     //*************************************************************************
     TEST(TestCRC16Kermit)
     {
-      unsigned char data[] = { '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+      std::string data("123456789");
 
-      uint16_t crc = etl::crc16_kermit(std::begin(data), std::end(data));
+      uint16_t crc = etl::crc16_kermit(data.begin(), data.end());
 
       CHECK_EQUAL(0x2189, crc);
     }
@@ -82,9 +83,9 @@ namespace
     //*************************************************************************
     TEST(TestCRC32)
     {
-      unsigned char data[] = { '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+      std::string data("123456789");
 
-      uint32_t crc = etl::crc32(std::begin(data), std::end(data));
+      uint32_t crc = etl::crc32(data.begin(), data.end());
 
       CHECK_EQUAL(0xCBF43926, crc);
     }
@@ -92,9 +93,9 @@ namespace
     //*************************************************************************
     TEST(TestCRC64ECMA)
     {
-      unsigned char data[] = { '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+      std::string data("123456789");
 
-      uint64_t crc = etl::crc64_ecma(std::begin(data), std::end(data));
+      uint64_t crc = etl::crc64_ecma(data.begin(), data.end());
 
       CHECK_EQUAL(0x6C40DF5F0B497347, crc);
     }
