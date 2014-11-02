@@ -395,12 +395,12 @@ namespace
       compare_data.push_front(6);
 
 #ifdef CHECK_NO_THROW
-      CHECK_NO_THROW(data.push_front(1), etl::list_full_exception);
-      CHECK_NO_THROW(data.push_front(2), etl::list_full_exception);
-      CHECK_NO_THROW(data.push_front(3), etl::list_full_exception);
-      CHECK_NO_THROW(data.push_front(4), etl::list_full_exception);
-      CHECK_NO_THROW(data.push_front(5), etl::list_full_exception);
-      CHECK_NO_THROW(data.push_front(6), etl::list_full_exception);
+      CHECK_NO_THROW(data.push_front(1));
+      CHECK_NO_THROW(data.push_front(2));
+      CHECK_NO_THROW(data.push_front(3));
+      CHECK_NO_THROW(data.push_front(4));
+      CHECK_NO_THROW(data.push_front(5));
+      CHECK_NO_THROW(data.push_front(6));
 #else
       data.push_front(1);
       data.push_front(2);
@@ -422,16 +422,16 @@ namespace
       Data data;
 
 #ifdef CHECK_NO_THROW
-      CHECK_NO_THROW(data.push_front(1), etl::list_full_exception);
-      CHECK_NO_THROW(data.push_front(2), etl::list_full_exception);
-      CHECK_NO_THROW(data.push_front(3), etl::list_full_exception);
-      CHECK_NO_THROW(data.push_front(4), etl::list_full_exception);
-      CHECK_NO_THROW(data.push_front(5), etl::list_full_exception);
-      CHECK_NO_THROW(data.push_front(6), etl::list_full_exception);
-      CHECK_NO_THROW(data.push_front(7), etl::list_full_exception);
-      CHECK_NO_THROW(data.push_front(8), etl::list_full_exception);
-      CHECK_NO_THROW(data.push_front(9), etl::list_full_exception);
-      CHECK_NO_THROW(data.push_front(10), etl::list_full_exception);
+      CHECK_NO_THROW(data.push_front(1));
+      CHECK_NO_THROW(data.push_front(2));
+      CHECK_NO_THROW(data.push_front(3));
+      CHECK_NO_THROW(data.push_front(4));
+      CHECK_NO_THROW(data.push_front(5));
+      CHECK_NO_THROW(data.push_front(6));
+      CHECK_NO_THROW(data.push_front(7));
+      CHECK_NO_THROW(data.push_front(8));
+      CHECK_NO_THROW(data.push_front(9));
+      CHECK_NO_THROW(data.push_front(10));
 #else
       data.push_front(1);
       data.push_front(2);
@@ -456,7 +456,7 @@ namespace
       for (size_t i = 0; i < 2 * data.max_size(); ++i)
       {
 #ifdef CHECK_NO_THROW
-        CHECK_NO_THROW(data.push_front(i), etl::list_full_exception);
+        CHECK_NO_THROW(data.push_front(i));
 #else
         data.push_back(i);
 #endif
@@ -474,7 +474,7 @@ namespace
       for (size_t i = 0; i < 2 * data.max_size(); ++i)
       {
 #ifdef CHECK_NO_THROW
-        CHECK_NO_THROW(data.push_front(i), etl::list_full_exception);
+        CHECK_NO_THROW(data.push_front(i));
 #else
         data.push_back(i);
 #endif
@@ -492,7 +492,7 @@ namespace
       for (size_t i = 0; i < 2 * data.max_size(); ++i)
       {
 #ifdef CHECK_NO_THROW
-        CHECK_NO_THROW(data.push_front(i), etl::list_full_exception);
+        CHECK_NO_THROW(data.push_front(i));
 #else
         data.push_back(i);
 #endif
@@ -510,7 +510,7 @@ namespace
       for (size_t i = 0; i < 2 * data.max_size(); ++i)
       {
 #ifdef CHECK_NO_THROW
-        CHECK_NO_THROW(data.push_front(i), etl::list_full_exception);
+        CHECK_NO_THROW(data.push_front(i));
 #else
         data.push_back(i);
 #endif
@@ -534,12 +534,12 @@ namespace
       compare_data.push_back(6);
 
 #ifdef CHECK_NO_THROW
-      CHECK_NO_THROW(data.push_back(1), etl::list_full_exception);
-      CHECK_NO_THROW(data.push_back(2), etl::list_full_exception);
-      CHECK_NO_THROW(data.push_back(3), etl::list_full_exception);
-      CHECK_NO_THROW(data.push_back(4), etl::list_full_exception);
-      CHECK_NO_THROW(data.push_back(5), etl::list_full_exception);
-      CHECK_NO_THROW(data.push_back(6), etl::list_full_exception);
+      CHECK_NO_THROW(data.push_back(1));
+      CHECK_NO_THROW(data.push_back(2));
+      CHECK_NO_THROW(data.push_back(3));
+      CHECK_NO_THROW(data.push_back(4));
+      CHECK_NO_THROW(data.push_back(5));
+      CHECK_NO_THROW(data.push_back(6));
 #else
       data.push_back(1);
       data.push_back(2);
