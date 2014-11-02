@@ -26,36 +26,36 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_crc16__
-#define __etl_crc16__
+#ifndef __etl_crc8_ccitt__
+#define __etl_crc8_ccitt__
 
 #include <cstdint>
 
-///\defgroup crc16 Sixteen bit CRC calculation
+///\defgroup crc8_ccitt Eight bit CRC calculation
 ///\ingroup crc
 
 namespace etl
 {
   //***************************************************************************
-  /// CRC16 table
-  /// \ingroup crc16
+  /// CRC8 table
+  /// \ingroup crc8_ccitt
   //***************************************************************************
-  extern const uint16_t CRC16[];
+  extern const uint8_t CRC8_CCITT[];
 
   //***************************************************************************
-  /// Calculates CRC16 using polynomial 0x8005.
-  /// \ingroup crc16
+  /// Calculates CRC8 CCITT using polynomial 0x07.
+  /// \ingroup crc8_ccitt
   //***************************************************************************
-  class crc16
+  class crc8_ccitt
   {
   public:
 
-    typedef uint16_t value_type;
+    typedef uint8_t value_type;
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    crc16()
+    crc8_ccitt()
     {
       reset();
     }
@@ -67,7 +67,7 @@ namespace etl
     /// \return The CRC result.
     //*************************************************************************
     template<typename TIterator>
-    crc16(TIterator begin, const TIterator end)
+    crc8_ccitt(TIterator begin, const TIterator end)
     {
       reset();
       add(begin, end);
@@ -95,7 +95,7 @@ namespace etl
 
       for (size_t i = 0; i < steps; ++i)
       {
-        crc = (crc >> 8) ^ CRC16[(crc ^ p_data[i]) & 0xFF];
+        crc = CRC8_CCITT[crc ^ p_data[i]];
       }
     }
 
