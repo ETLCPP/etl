@@ -26,7 +26,8 @@ SOFTWARE.
 
 #include <UnitTest++/UnitTest++.h>
 
-#include "../maths.h"
+#include "../log.h"
+#include "../pow.h"
 
 namespace
 {		
