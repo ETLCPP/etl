@@ -420,7 +420,7 @@ namespace
       observable.add_observer(observer4);
       CHECK_EQUAL(4, observable.number_of_observers());
 
-      CHECK_THROW(observable.add_observer(observer5), etl::observer_list_full_exception);
+      CHECK_THROW(observable.add_observer(observer5), etl::observer_list_full);
 
       observable.remove_observer(observer3);
       CHECK_EQUAL(3, observable.number_of_observers());

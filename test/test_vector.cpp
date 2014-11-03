@@ -109,7 +109,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, ConstructorSizeExcess)
     {
-      CHECK_THROW(Data data(SIZE + 1), etl::vector_full_exception);
+      CHECK_THROW(Data data(SIZE + 1), etl::vector_full);
     }
 
     //*************************************************************************
@@ -217,7 +217,7 @@ namespace
 
       Data data(INITIAL_SIZE);
 
-      CHECK_THROW(data.resize(NEW_SIZE), etl::vector_full_exception);
+      CHECK_THROW(data.resize(NEW_SIZE), etl::vector_full);
     }
 
     //*************************************************************************
@@ -318,7 +318,7 @@ namespace
 
       Data data;
       
-      CHECK_THROW(data.assign(EXCESS_SIZE, INITIAL_VALUE), etl::vector_full_exception);
+      CHECK_THROW(data.assign(EXCESS_SIZE, INITIAL_VALUE), etl::vector_full);
     }
 
     //*************************************************************************
@@ -376,15 +376,15 @@ namespace
 
       size_t offset = 2;
 
-      CHECK_THROW(data.insert(data.begin() + offset, INITIAL_VALUE), etl::vector_full_exception);
+      CHECK_THROW(data.insert(data.begin() + offset, INITIAL_VALUE), etl::vector_full);
 
       offset = 0;
 
-      CHECK_THROW(data.insert(data.begin() + offset, INITIAL_VALUE), etl::vector_full_exception);
+      CHECK_THROW(data.insert(data.begin() + offset, INITIAL_VALUE), etl::vector_full);
 
       offset = data.size();
 
-      CHECK_THROW(data.insert(data.begin() + offset, INITIAL_VALUE), etl::vector_full_exception);
+      CHECK_THROW(data.insert(data.begin() + offset, INITIAL_VALUE), etl::vector_full);
     }
 
     //*************************************************************************
@@ -449,15 +449,15 @@ namespace
 
       size_t offset = 2;
 
-      CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, INITIAL_VALUE), etl::vector_full_exception);
+      CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, INITIAL_VALUE), etl::vector_full);
 
       offset = 0;
      
-      CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, INITIAL_VALUE), etl::vector_full_exception);
+      CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, INITIAL_VALUE), etl::vector_full);
 
       offset = data.size();
 
-      CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, INITIAL_VALUE), etl::vector_full_exception);
+      CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, INITIAL_VALUE), etl::vector_full);
     }
 
     //*************************************************************************
@@ -518,15 +518,15 @@ namespace
 
       size_t offset = 2; 
 
-      CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full_exception);
+      CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full);
 
       offset = 0;
 
-      CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full_exception);
+      CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full);
 
       offset = data.size();
 
-      CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full_exception);
+      CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full);
     }
 
     //*************************************************************************
@@ -580,7 +580,7 @@ namespace
         data.push_back(i);
       }
 
-      CHECK_THROW(data.push_back(SIZE), etl::vector_full_exception);
+      CHECK_THROW(data.push_back(SIZE), etl::vector_full);
     }
 
     //*************************************************************************
@@ -689,7 +689,7 @@ namespace
         CHECK_EQUAL(data.at(i), testData.at(i));
       }
 
-      CHECK_THROW(data.at(data.size()), etl::vector_out_of_bounds_exception);
+      CHECK_THROW(data.at(data.size()), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************

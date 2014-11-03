@@ -188,7 +188,7 @@ namespace
     {
       etl::cyclic_value<int> value;
       
-      CHECK_THROW(value.set(2, 7, 4), etl::cyclic_value_illegal_range_exception);
+      CHECK_THROW(value.set(2, 7, 4), etl::cyclic_value_illegal_range);
     }
   };
 }

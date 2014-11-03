@@ -134,7 +134,7 @@ namespace
         stack.push(1);
       }
 
-      CHECK_THROW(stack.push(1), etl::stack_full_exception);
+      CHECK_THROW(stack.push(1), etl::stack_full);
     }
 
     //*************************************************************************
@@ -190,7 +190,7 @@ namespace
     {
       etl::stack<int, 4> stack;
 
-      CHECK_THROW(stack.top(), etl::stack_empty_exception);
+      CHECK_THROW(stack.top(), etl::stack_empty);
     }
 
     //*************************************************************************

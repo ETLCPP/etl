@@ -153,7 +153,7 @@ namespace
         CHECK_EQUAL(data.at(i), testData.at(i));
       }
 
-      CHECK_THROW(data.at(data.size()), etl::array_out_of_range_exception);
+      CHECK_THROW(data.at(data.size()), etl::array_out_of_range);
     }
 
     //*************************************************************************
@@ -164,7 +164,7 @@ namespace
         CHECK_EQUAL(data.at(i), testData.at(i));
       }
 
-      CHECK_THROW(data.at(data.size()), etl::array_out_of_range_exception);
+      CHECK_THROW(data.at(data.size()), etl::array_out_of_range);
     }
 
     //*************************************************************************

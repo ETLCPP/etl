@@ -25,6 +25,7 @@ SOFTWARE.
 ******************************************************************************/
 
 #include <UnitTest++/UnitTest++.h>
+#include "ExtraCheckMacros.h"
 
 #include "../list.h"
 
@@ -84,7 +85,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, ConstructorSizeExcess)
     {
-      CHECK_THROW(Data data(SIZE + 1), etl::list_full_exception);
+      CHECK_THROW(Data data(SIZE + 1), etl::list_full);
     }
 
     //*************************************************************************
@@ -215,7 +216,7 @@ namespace
       const size_t INITIAL_SIZE = 4;
       Data data(INITIAL_SIZE);
 
-      CHECK_THROW(data.resize(data.max_size() + 1), etl::list_full_exception);
+      CHECK_THROW(data.resize(data.max_size() + 1), etl::list_full);
     }
 
     //*************************************************************************
@@ -284,7 +285,7 @@ namespace
 
       Data data;
 
-      CHECK_THROW(data.assign(data.max_size() + 1, VALUE), etl::list_full_exception);
+      CHECK_THROW(data.assign(data.max_size() + 1, VALUE), etl::list_full);
     }
 
     //*************************************************************************
@@ -394,21 +395,12 @@ namespace
       compare_data.push_front(5);
       compare_data.push_front(6);
 
-#ifdef CHECK_NO_THROW
       CHECK_NO_THROW(data.push_front(1));
       CHECK_NO_THROW(data.push_front(2));
       CHECK_NO_THROW(data.push_front(3));
       CHECK_NO_THROW(data.push_front(4));
       CHECK_NO_THROW(data.push_front(5));
       CHECK_NO_THROW(data.push_front(6));
-#else
-      data.push_front(1);
-      data.push_front(2);
-      data.push_front(3);
-      data.push_front(4);
-      data.push_front(5);
-      data.push_front(6);
-#endif
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
 
@@ -418,10 +410,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, PushFrontExcess)
     {  
-      bool gotException = false;
       Data data;
 
-#ifdef CHECK_NO_THROW
       CHECK_NO_THROW(data.push_front(1));
       CHECK_NO_THROW(data.push_front(2));
       CHECK_NO_THROW(data.push_front(3));
@@ -432,20 +422,8 @@ namespace
       CHECK_NO_THROW(data.push_front(8));
       CHECK_NO_THROW(data.push_front(9));
       CHECK_NO_THROW(data.push_front(10));
-#else
-      data.push_front(1);
-      data.push_front(2);
-      data.push_front(3);
-      data.push_front(4);
-      data.push_front(5);
-      data.push_front(6);
-      data.push_front(7);
-      data.push_front(8);
-      data.push_front(9);
-      data.push_front(10);
-#endif
 
-      CHECK_THROW(data.push_front(11) , etl::list_full_exception);
+      CHECK_THROW(data.push_front(11) , etl::list_full);
     }
 
     //*************************************************************************
@@ -455,11 +433,7 @@ namespace
 
       for (size_t i = 0; i < 2 * data.max_size(); ++i)
       {
-#ifdef CHECK_NO_THROW
         CHECK_NO_THROW(data.push_front(i));
-#else
-        data.push_back(i);
-#endif
         data.pop_front();
       }
       
@@ -473,11 +447,7 @@ namespace
 
       for (size_t i = 0; i < 2 * data.max_size(); ++i)
       {
-#ifdef CHECK_NO_THROW
         CHECK_NO_THROW(data.push_front(i));
-#else
-        data.push_back(i);
-#endif
         data.pop_back();
       }
 
@@ -491,11 +461,7 @@ namespace
 
       for (size_t i = 0; i < 2 * data.max_size(); ++i)
       {
-#ifdef CHECK_NO_THROW
         CHECK_NO_THROW(data.push_front(i));
-#else
-        data.push_back(i);
-#endif
         data.pop_front();
       }
       
@@ -509,11 +475,7 @@ namespace
 
       for (size_t i = 0; i < 2 * data.max_size(); ++i)
       {
-#ifdef CHECK_NO_THROW
         CHECK_NO_THROW(data.push_front(i));
-#else
-        data.push_back(i);
-#endif
         data.pop_back();
       }
       
@@ -533,32 +495,21 @@ namespace
       compare_data.push_back(5);
       compare_data.push_back(6);
 
-#ifdef CHECK_NO_THROW
       CHECK_NO_THROW(data.push_back(1));
       CHECK_NO_THROW(data.push_back(2));
       CHECK_NO_THROW(data.push_back(3));
       CHECK_NO_THROW(data.push_back(4));
       CHECK_NO_THROW(data.push_back(5));
       CHECK_NO_THROW(data.push_back(6));
-#else
-      data.push_back(1);
-      data.push_back(2);
-      data.push_back(3);
-      data.push_back(4);
-      data.push_back(5);
-      data.push_back(6);
-#endif
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
 
       CHECK(are_equal);
     }
-
-
+    
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, PushBackExcess)
     {
-      bool gotException = false;
       Data data;
 
       data.push_back(1);
@@ -572,7 +523,7 @@ namespace
       data.push_back(9);
       data.push_back(10);
 
-      CHECK_THROW(data.push_back(11), etl::list_full_exception);
+      CHECK_THROW(data.push_back(11), etl::list_full);
     }
 
     //*************************************************************************

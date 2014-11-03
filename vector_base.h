@@ -58,11 +58,11 @@ namespace etl
   ///\ingroup vector
   /// Vector full exception.
   //***************************************************************************
-  class vector_full_exception : public vector_exception
+  class vector_full : public vector_exception
   {
   public:
 
-    vector_full_exception()
+    vector_full()
       : vector_exception("vector full")
     {
     }
@@ -72,11 +72,11 @@ namespace etl
   ///\ingroup vector
   /// Vector empty exception.
   //***************************************************************************
-  class vector_empty_exception : public vector_exception
+  class vector_empty : public vector_exception
   {
   public:
 
-    vector_empty_exception()
+    vector_empty()
       : vector_exception("vector empty")
     {
     }
@@ -86,11 +86,11 @@ namespace etl
   ///\ingroup vector
   /// Vector out of bounds exception.
   //***************************************************************************
-  class vector_out_of_bounds_exception : public vector_exception
+  class vector_out_of_bounds : public vector_exception
   {
   public:
 
-    vector_out_of_bounds_exception()
+    vector_out_of_bounds()
       : vector_exception("vector out of bounds")
     {
     }
@@ -100,11 +100,11 @@ namespace etl
   ///\ingroup vector
   /// Vector iterator exception.
   //***************************************************************************
-  class vector_iterator_exception : public vector_exception
+  class vector_iterator : public vector_exception
   {
   public:
 
-    vector_iterator_exception()
+    vector_iterator()
       : vector_exception("vector iterator error")
     {
     }
@@ -176,14 +176,14 @@ namespace etl
 
     //*************************************************************************
     /// Increases the size of the vector by one, but does not initialise the new element.
-    /// If ETL_USE_EXCEPTIONS is defined, throws a vector_full_exception if the vector is already full.
+    /// If ETL_USE_EXCEPTIONS is defined, throws a vector_full if the vector is already full.
     //*************************************************************************
     void push_back()
     {
 #ifdef ETL_USE_EXCEPTIONS
       if (current_size == MAX_SIZE)
       {
-        throw vector_full_exception();
+        throw vector_full();
       }
 #endif
 

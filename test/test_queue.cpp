@@ -134,7 +134,7 @@ namespace
         queue.push(1);
       }
 
-      CHECK_THROW(queue.push(1), etl::queue_full_exception);      
+      CHECK_THROW(queue.push(1), etl::queue_full);      
     }
 
     //*************************************************************************
@@ -190,7 +190,7 @@ namespace
     {
       etl::queue<int, 4> queue;
 
-      CHECK_THROW(queue.front(), etl::queue_empty_exception);
+      CHECK_THROW(queue.front(), etl::queue_empty);
     }
 
     //*************************************************************************
@@ -229,7 +229,7 @@ namespace
     {
       etl::queue<int, 4> queue;
 
-      CHECK_THROW(queue.back(), etl::queue_empty_exception);
+      CHECK_THROW(queue.back(), etl::queue_empty);
     }
 
     //*************************************************************************
