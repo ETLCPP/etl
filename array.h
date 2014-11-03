@@ -61,11 +61,11 @@ namespace etl
   ///\ingroup array
   /// The out of range exceptions.
   //***************************************************************************
-  class array_out_of_range_exception : public array_exception
+  class array_out_of_range : public array_exception
   {
   public:
 
-    array_out_of_range_exception()
+    array_out_of_range()
       : array_exception("array out of range")
     {
     }
@@ -194,7 +194,7 @@ namespace etl
 
     //*************************************************************************
     /// Returns a reference to the value at index 'i'.
-    /// If ETL_USE_EXCEPTIONS is defined then am array_out_of_range_exception is
+    /// If ETL_USE_EXCEPTIONS is defined then am array_out_of_range is
     /// thown if the index is out of range.
     ///\param i The index of the element to access.
     //*************************************************************************
@@ -203,7 +203,7 @@ namespace etl
 #if ETL_USE_EXCEPTIONS
       if (i >= SIZE)
       {
-        throw array_out_of_range_exception();
+        throw array_out_of_range();
       }
 #endif
 
@@ -212,7 +212,7 @@ namespace etl
 
     //*************************************************************************
     /// Returns a const reference to the value at index 'i'.
-    /// If ETL_USE_EXCEPTIONS is defined then am array_out_of_range_exception is
+    /// If ETL_USE_EXCEPTIONS is defined then am array_out_of_range is
     /// thown if the index is out of range.
     ///\param i The index of the element to access.
     //*************************************************************************
@@ -221,7 +221,7 @@ namespace etl
 #if ETL_USE_EXCEPTIONS
       if (i >= SIZE)
       {
-        throw array_out_of_range_exception();
+        throw array_out_of_range();
       }
 #endif
 
