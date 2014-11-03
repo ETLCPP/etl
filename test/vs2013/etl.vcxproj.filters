@@ -189,9 +189,6 @@
     <ClInclude Include="..\..\visitor.h">
       <Filter>ETL\Patterns</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\maths.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\observer.h">
       <Filter>ETL\Patterns</Filter>
     </ClInclude>
@@ -207,9 +204,6 @@
     <ClInclude Include="..\..\list_base.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\crc8.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\crc16.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
@@ -221,6 +215,27 @@
     </ClInclude>
     <ClInclude Include="..\..\crc64_ecma.h">
       <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\crc8_ccitt.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\log.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\pow.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\deque.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\deque_base.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ideque.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ExtraCheckMacros.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -330,6 +345,24 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_crc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\crc16.cpp">
+      <Filter>ETL\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\crc16_ccitt.cpp">
+      <Filter>ETL\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\crc32.cpp">
+      <Filter>ETL\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\crc64_ecma.cpp">
+      <Filter>ETL\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\crc8_ccitt.cpp">
+      <Filter>ETL\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_deque.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
