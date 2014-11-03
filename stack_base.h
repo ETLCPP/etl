@@ -58,11 +58,11 @@ namespace etl
   ///\ingroup stack
   /// The exception thrown when the stack is full.
   //***************************************************************************
-  class stack_full_exception : public stack_exception
+  class stack_full : public stack_exception
   {
   public:
 
-    stack_full_exception()
+    stack_full()
       : stack_exception("stack full")
     {
     }
@@ -72,11 +72,11 @@ namespace etl
   ///\ingroup stack
   /// The exception thrown when the stack is empty.
   //***************************************************************************
-  class stack_empty_exception : public stack_exception
+  class stack_empty : public stack_exception
   {
   public:
 
-    stack_empty_exception()
+    stack_empty()
       : stack_exception("stack empty")
     {
     }

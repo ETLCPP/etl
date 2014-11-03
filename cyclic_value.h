@@ -61,11 +61,11 @@ namespace etl
   ///\ingroup cyclic_value
   /// The illegal range exception.
   //***************************************************************************
-  class cyclic_value_illegal_range_exception : public cyclic_value_exception
+  class cyclic_value_illegal_range : public cyclic_value_exception
   {
   public:
 
-    cyclic_value_illegal_range_exception()
+    cyclic_value_illegal_range()
       : cyclic_value_exception("cyclic_value illegal range")
     {
     }
@@ -146,7 +146,7 @@ namespace etl
 #if ETL_USE_EXCEPTIONS
       if (((last_value - first_value + 1) % step_value) != 0)
       {
-        throw cyclic_value_illegal_range_exception();
+        throw cyclic_value_illegal_range();
       }
 #endif
 		}

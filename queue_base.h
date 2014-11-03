@@ -58,11 +58,11 @@ namespace etl
   /// The exception thrown when the queue is full.
   ///\ingroup queue
   //***************************************************************************
-  class queue_full_exception : public queue_exception
+  class queue_full : public queue_exception
   {
   public:
 
-    queue_full_exception()
+    queue_full()
       : queue_exception("queue full")
     {
     }
@@ -72,11 +72,11 @@ namespace etl
   /// The exception thrown when the queue is empty.
   ///\ingroup queue
   //***************************************************************************
-  class queue_empty_exception : public queue_exception
+  class queue_empty : public queue_exception
   {
   public:
 
-    queue_empty_exception()
+    queue_empty()
       : queue_exception("queue empty")
     {
     }

@@ -57,11 +57,11 @@ namespace etl
   /// Full exception for the list.
   ///\ingroup list
   //***************************************************************************
-  class list_full_exception : public list_exception
+  class list_full : public list_exception
   {
   public:
 
-    list_full_exception()
+    list_full()
       : list_exception("List full")
     {
     }
@@ -71,11 +71,11 @@ namespace etl
   /// Iterator exception for the list.
   ///\ingroup list
   //***************************************************************************
-  class list_iterator_exception : public list_exception
+  class list_iterator : public list_exception
   {
   public:
 
-    list_iterator_exception()
+    list_iterator()
       : list_exception("Iterator problem")
     {
     }

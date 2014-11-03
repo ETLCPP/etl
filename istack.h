@@ -61,7 +61,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds an item to the stack.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::stack_full_exception is the stack is already full,
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::stack_full is the stack is already full,
     /// otherwise does nothing if full.
     ///\param item The item to push to the stack.
     //*************************************************************************
@@ -75,7 +75,7 @@ namespace etl
 #ifdef ETL_USE_EXCEPTIONS
       else
       {
-        throw stack_full_exception();
+        throw stack_full();
       }
 #endif
     }
@@ -84,7 +84,7 @@ namespace etl
     /// Allows a possibly more efficient 'push' by moving to the next input item
     /// and returning a reference to it.
     /// This may eliminate a copy by allowing direct construction in-place.<br>
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::stack_full_exception is the stack is already full,
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::stack_full is the stack is already full,
     /// otherwise does nothing if full.
     /// \return A reference to the position to 'push' to.
     //*************************************************************************
@@ -97,7 +97,7 @@ namespace etl
 #ifdef ETL_USE_EXCEPTIONS
       else
       {
-        throw stack_full_exception();
+        throw stack_full();
       }
 #endif
 
@@ -106,7 +106,7 @@ namespace etl
 
     //*************************************************************************
     /// Gets a reference to the item at the top of the stack.<br>
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::stack_empty_exception if the stack is empty.<br>
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::stack_empty if the stack is empty.<br>
     /// If ETL_USE_EXCEPTIONS is not defined and the stack is empty, the return value is undefined.
     /// \return A reference to the item at the top of the stack.
     //*************************************************************************
@@ -115,7 +115,7 @@ namespace etl
 #ifdef ETL_USE_EXCEPTIONS
       if (empty())
       {
-        throw stack_empty_exception();
+        throw stack_empty();
       }
 #endif
 
@@ -124,7 +124,7 @@ namespace etl
 
     //*************************************************************************
     /// Gets a const reference to the item at the top of the stack.<br>
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::stack_empty_exception if the stack is empty.<br>
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::stack_empty if the stack is empty.<br>
     /// If ETL_USE_EXCEPTIONS is not defined and the stack is empty, the return value is undefined.
     /// \return A const reference to the item at the top of the stack.
     //*************************************************************************
@@ -133,7 +133,7 @@ namespace etl
 #ifdef ETL_USE_EXCEPTIONS
       if (empty())
       {
-        throw stack_empty_exception();
+        throw stack_empty();
       }
 #endif
 

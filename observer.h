@@ -74,11 +74,11 @@ namespace etl
   ///\ingroup observer
   /// The exception thrown when the observer list is full.
   //***************************************************************************
-  class observer_list_full_exception : public observer_exception
+  class observer_list_full : public observer_exception
   {
   public:
 
-    observer_list_full_exception()
+    observer_list_full()
       : observer_exception("observer list full")
     {
     }
@@ -125,7 +125,7 @@ namespace etl
 #if ETL_USE_EXCEPTIONS
         else
         {
-          throw observer_list_full_exception();
+          throw observer_list_full();
         }
 #endif
       }

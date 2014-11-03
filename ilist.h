@@ -456,8 +456,8 @@ namespace etl
 
     //*************************************************************************
     /// Assigns a range of values to the list.
-		/// If ETL_USE_EXCEPTIONS is defined throws etl::list_full_exception if the list does not have enough free space.
-    /// If ETL_USE_EXCEPTIONS & _DEBUG are defined throws list_iterator_exception if the iterators are reversed.
+		/// If ETL_USE_EXCEPTIONS is defined throws etl::list_full if the list does not have enough free space.
+    /// If ETL_USE_EXCEPTIONS & _DEBUG are defined throws list_iterator if the iterators are reversed.
     //*************************************************************************
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
@@ -466,7 +466,7 @@ namespace etl
       if (std::distance(first, last) < 0)
       {
 #ifdef ETL_USE_EXCEPTIONS
-        throw list_iterator_exception();
+        throw list_iterator();
 #endif
       }
       else
@@ -483,7 +483,7 @@ namespace etl
 #ifdef ETL_USE_EXCEPTIONS
           if (i == MAX_SIZE)
           {
-            throw list_full_exception();
+            throw list_full();
           }
 #endif
           Node& node = node_pool[i];
@@ -540,7 +540,7 @@ namespace etl
 #ifdef ETL_USE_EXCEPTIONS
       else
       {
-        throw list_full_exception();
+        throw list_full();
       }
 #endif
     }
@@ -559,7 +559,7 @@ namespace etl
 #ifdef ETL_USE_EXCEPTIONS
       else
       {
-        throw list_full_exception();
+        throw list_full();
       }
 #endif
     }
@@ -579,7 +579,7 @@ namespace etl
 #ifdef ETL_USE_EXCEPTIONS
       else
       {
-        throw list_full_exception();
+        throw list_full();
       }
 #endif
     }
@@ -598,7 +598,7 @@ namespace etl
 #if ETL_USE_EXCEPTIONS
       else
       {
-        throw list_full_exception();
+        throw list_full();
       }
 #endif
     }
@@ -618,7 +618,7 @@ namespace etl
 #if ETL_USE_EXCEPTIONS
       else
       {
-        throw list_full_exception();
+        throw list_full();
       }
 #endif
     }
@@ -675,7 +675,7 @@ namespace etl
 #if ETL_USE_EXCEPTIONS
       else
       {
-        throw list_full_exception();
+        throw list_full();
       }
 #endif
     }
@@ -718,7 +718,7 @@ namespace etl
 #if ETL_USE_EXCEPTIONS
       else
       {
-        throw list_full_exception();
+        throw list_full();
       }
 #endif
     }
@@ -742,7 +742,7 @@ namespace etl
 #if ETL_USE_EXCEPTIONS
       else
       {
-        throw list_full_exception();
+        throw list_full();
       }
 #endif
     }
@@ -768,7 +768,7 @@ namespace etl
 #if ETL_USE_EXCEPTIONS
       else
       {
-        throw list_full_exception();
+        throw list_full();
       }
 #endif
     }

@@ -61,7 +61,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds an item to the queue.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_full_exception is the queue is already full,
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_full is the queue is already full,
     /// otherwise does nothing if full.
     ///\param item The item to push to the queue.
     //*************************************************************************
@@ -76,7 +76,7 @@ namespace etl
 #ifdef ETL_USE_EXCEPTIONS
       else
       {
-        throw queue_full_exception();
+        throw queue_full();
       }
 #endif
     }
@@ -85,7 +85,7 @@ namespace etl
     /// Allows a possibly more efficient 'push' by moving to the next input item
     /// and returning a reference to it.
     /// This may eliminate a copy by allowing direct construction in-place.<br>
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_full_exception is the queue is already full,
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_full is the queue is already full,
     /// otherwise does nothing if full.
     /// \return A reference to the position to 'push' to.
     //*************************************************************************
@@ -101,7 +101,7 @@ namespace etl
 #ifdef ETL_USE_EXCEPTIONS
       else
       {
-        throw queue_full_exception();
+        throw queue_full();
       }
 #endif
 
@@ -110,7 +110,7 @@ namespace etl
 
     //*************************************************************************
     /// Gets a reference to the item at the front of the queue.<br>
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_empty_exception if the queue is empty.<br>
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_empty if the queue is empty.<br>
     /// If ETL_USE_EXCEPTIONS is not defined and the queue is empty, the return value is undefined.
     /// \return A reference to the item at the front of the queue.
     //*************************************************************************
@@ -119,7 +119,7 @@ namespace etl
 #ifdef ETL_USE_EXCEPTIONS
       if (empty())
       {
-        throw queue_empty_exception();
+        throw queue_empty();
       }
 #endif
 
@@ -128,7 +128,7 @@ namespace etl
 
     //*************************************************************************
     /// Gets a const reference to the item at the front of the queue.<br>
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_empty_exception if the queue is empty.<br>
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_empty if the queue is empty.<br>
     /// If ETL_USE_EXCEPTIONS is not defined and the queue is empty, the return value is undefined.
     /// \return A const reference to the item at the front of the queue.
     //*************************************************************************
@@ -137,7 +137,7 @@ namespace etl
 #ifdef ETL_USE_EXCEPTIONS
       if (empty())
       {
-        throw queue_empty_exception();
+        throw queue_empty();
       }
 #endif
 
@@ -146,7 +146,7 @@ namespace etl
 
     //*************************************************************************
     /// Gets a reference to the item at the back of the queue.<br>
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_empty_exception if the queue is empty.<br>
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_empty if the queue is empty.<br>
     /// If ETL_USE_EXCEPTIONS is not defined and the queue is empty, the return value is undefined.
     /// \return A reference to the item at the back of the queue.
     //*************************************************************************
@@ -155,7 +155,7 @@ namespace etl
 #ifdef ETL_USE_EXCEPTIONS
       if (empty())
       {
-        throw queue_empty_exception();
+        throw queue_empty();
       }
 #endif
 
@@ -164,7 +164,7 @@ namespace etl
 
     //*************************************************************************
     /// Gets a const reference to the item at the back of the queue.<br>
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_empty_exception if the queue is empty.<br>
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_empty if the queue is empty.<br>
     /// If ETL_USE_EXCEPTIONS is not defined and the queue is empty, the return value is undefined.
     /// \return A const reference to the item at the back of the queue.
     //*************************************************************************
@@ -173,7 +173,7 @@ namespace etl
 #ifdef ETL_USE_EXCEPTIONS
       if (empty())
       {
-        throw queue_empty_exception();
+        throw queue_empty();
       }
 #endif
 
