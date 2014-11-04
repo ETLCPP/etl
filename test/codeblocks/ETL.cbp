@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="ETL" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/ETL" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-std=c++11" />
+					<Add option="-g" />
+					<Add option="-DETL_USE_EXCEPTIONS" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/ETL" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-std=c++11" />
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+			<Add directory="../../../unittest-cpp" />
+		</Compiler>
+		<Unit filename="../../../unittest-cpp/UnitTest++/AssertException.cpp" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/AssertException.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/CheckMacros.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/Checks.cpp" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/Checks.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/CompositeTestReporter.cpp" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/CompositeTestReporter.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/Config.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/CurrentTest.cpp" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/CurrentTest.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/DeferredTestReporter.cpp" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/DeferredTestReporter.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/DeferredTestResult.cpp" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/DeferredTestResult.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/ExceptionMacros.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/ExecuteTest.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/HelperMacros.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/MemoryOutStream.cpp" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/MemoryOutStream.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/Posix/SignalTranslator.cpp" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/Posix/SignalTranslator.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/Posix/TimeHelpers.cpp" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/Posix/TimeHelpers.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/ReportAssert.cpp" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/ReportAssert.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/ReportAssertImpl.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/Test.cpp" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/Test.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/TestDetails.cpp" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/TestDetails.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/TestList.cpp" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/TestList.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/TestMacros.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/TestReporter.cpp" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/TestReporter.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/TestReporterStdout.cpp" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/TestReporterStdout.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/TestResults.cpp" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/TestResults.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/TestRunner.cpp" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/TestRunner.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/TestSuite.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/TimeConstraint.cpp" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/TimeConstraint.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/TimeHelpers.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/UnitTest++.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/UnitTestPP.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/Win32/TimeHelpers.cpp" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/Win32/TimeHelpers.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/XmlTestReporter.cpp" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/XmlTestReporter.h" />
+		<Unit filename="../../.gitattributes" />
+		<Unit filename="../../.gitignore" />
+		<Unit filename="../../Doxyfile" />
+		<Unit filename="../../LICENSE" />
+		<Unit filename="../../README.md" />
+		<Unit filename="../../array.h" />
+		<Unit filename="../../container.h" />
+		<Unit filename="../../crc16.cpp" />
+		<Unit filename="../../crc16.h" />
+		<Unit filename="../../crc16_ccitt.cpp" />
+		<Unit filename="../../crc16_ccitt.h" />
+		<Unit filename="../../crc16_kermit.h" />
+		<Unit filename="../../crc32.cpp" />
+		<Unit filename="../../crc32.h" />
+		<Unit filename="../../crc64_ecma.cpp" />
+		<Unit filename="../../crc64_ecma.h" />
+		<Unit filename="../../crc8_ccitt.cpp" />
+		<Unit filename="../../crc8_ccitt.h" />
+		<Unit filename="../../cyclic_value.h" />
+		<Unit filename="../../deque.h" />
+		<Unit filename="../../deque_base.h" />
+		<Unit filename="../../doxygen.h" />
+		<Unit filename="../../enum_type.h" />
+		<Unit filename="../../etl.jpg" />
+		<Unit filename="../../exception.h" />
+		<Unit filename="../../function.h" />
+		<Unit filename="../../functional.h" />
+		<Unit filename="../../ideque.h" />
+		<Unit filename="../../ilist.h" />
+		<Unit filename="../../iqueue.h" />
+		<Unit filename="../../istack.h" />
+		<Unit filename="../../ivector.h" />
+		<Unit filename="../../largest.h" />
+		<Unit filename="../../list.h" />
+		<Unit filename="../../list_base.h" />
+		<Unit filename="../../log.h" />
+		<Unit filename="../../nullptr.h" />
+		<Unit filename="../../numeric.h" />
+		<Unit filename="../../observer.h" />
+		<Unit filename="../../pow.h" />
+		<Unit filename="../../queue.h" />
+		<Unit filename="../../queue_base.h" />
+		<Unit filename="../../stack.h" />
+		<Unit filename="../../stack_base.h" />
+		<Unit filename="../../static_assert.h" />
+		<Unit filename="../../type_traits.h" />
+		<Unit filename="../../vector.h" />
+		<Unit filename="../../vector_base.h" />
+		<Unit filename="../../visitor.h" />
+		<Unit filename="../ExtraCheckMacros.h" />
+		<Unit filename="../main.cpp" />
+		<Unit filename="../test_array.cpp" />
+		<Unit filename="../test_container.cpp" />
+		<Unit filename="../test_crc.cpp" />
+		<Unit filename="../test_cyclic_value.cpp" />
+		<Unit filename="../test_deque.cpp" />
+		<Unit filename="../test_enum_type.cpp" />
+		<Unit filename="../test_exception.cpp" />
+		<Unit filename="../test_function.cpp" />
+		<Unit filename="../test_largest.cpp" />
+		<Unit filename="../test_list.cpp" />
+		<Unit filename="../test_math.cpp" />
+		<Unit filename="../test_numeric.cpp" />
+		<Unit filename="../test_observer.cpp" />
+		<Unit filename="../test_queue.cpp" />
+		<Unit filename="../test_stack.cpp" />
+		<Unit filename="../test_type_traits.cpp" />
+		<Unit filename="../test_vector.cpp" />
+		<Unit filename="../test_visitor.cpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
