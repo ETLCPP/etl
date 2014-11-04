@@ -42,7 +42,7 @@ SOFTWARE.
 #include "nullptr.h"
 #include "list_base.h"
 
-namespace etl 
+namespace etl
 {
   //***************************************************************************
   /// A templated base for all etl::list types.
@@ -86,7 +86,7 @@ namespace etl
     };
 
   private:
-		
+
     Node   terminal_node;  ///< The node that acts as the list start and end.
     Node*  node_pool;      ///< The pool of nodes used in the list.
 
@@ -98,8 +98,6 @@ namespace etl
     typedef T&       reference;
     typedef const T& const_reference;
     typedef size_t   size_type;
-
-    typedef size_t size_type; ///< The type used for determining the size of list.
 
     //*************************************************************************
     /// iterator.
@@ -146,7 +144,7 @@ namespace etl
 
       iterator operator --(int)
       {
-        iterator temp(*this);           
+        iterator temp(*this);
         p_node = p_node->previous;
         return temp;
       }
@@ -257,7 +255,7 @@ namespace etl
 
       const_iterator operator --(int)
       {
-        const_iterator temp(*this);           
+        const_iterator temp(*this);
         p_node = p_node->previous;
         return temp;
       }
@@ -304,7 +302,7 @@ namespace etl
     };
 
 		typedef typename std::iterator_traits<iterator>::difference_type difference_type;
-		
+
     typedef std::reverse_iterator<iterator>       reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
@@ -461,7 +459,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
-    {	
+    {
 #ifdef _DEBUG
       if (std::distance(first, last) < 0)
       {
@@ -629,7 +627,7 @@ namespace etl
     void pop_front()
     {
       if (!empty())
-      {             
+      {
         remove_node(get_head());
       }
     }
@@ -790,7 +788,7 @@ namespace etl
     /// Erases a range of elements.
     //*************************************************************************
     iterator erase(iterator first, iterator last)
-    {    
+    {
       Node* p_first = first.p_node;
       Node* p_last  = last.p_node;
       Node* p_next;
@@ -800,7 +798,7 @@ namespace etl
 
       // Erase the ones in between.
       while (p_first != p_last)
-      {  
+      {
         // Update the position of the earliest free node in the pool.
         size_t new_free = std::distance(&node_pool[0], p_first);
         next_free       = std::min(next_free, new_free);
@@ -808,11 +806,11 @@ namespace etl
         // One less.
         --count;
 
-        p_next = p_first->next;  // Remember the next node.            
+        p_next = p_first->next;  // Remember the next node.
         p_first->mark_as_free(); // Free the current node.
         p_first = p_next;        // Move to the next node.
       }
-     
+
       return last;
     }
 
@@ -850,7 +848,7 @@ namespace etl
     /// Sort using in-place merge sort algorithm.
     /// Uses 'less-than operator as the predicate.
     //*************************************************************************
-    void sort() 
+    void sort()
     {
       sort(std::less<T>());
     }
@@ -861,7 +859,7 @@ namespace etl
     /// This is not my algorithm. I got it off the web somewhere.
     //*************************************************************************
     template <typename TCompare>
-    void sort(TCompare compare) 
+    void sort(TCompare compare)
     {
       Node* p_left;
       Node* p_right;
@@ -886,14 +884,14 @@ namespace etl
 
         number_of_merges = 0;  // Count the number of merges we do in this pass.
 
-        while (p_left != &terminal_node) 
+        while (p_left != &terminal_node)
         {
           ++number_of_merges;  // There exists a merge to be done.
           p_right = p_left;
           left_size = 0;
 
           // Step 'list_size' places along from left
-          for (int i = 0; i < list_size; ++i) 
+          for (int i = 0; i < list_size; ++i)
           {
             ++left_size;
 
@@ -909,35 +907,35 @@ namespace etl
           right_size = list_size;
 
           // Now we have two lists. Merge them.
-          while (left_size > 0 || (right_size > 0 && p_right != &terminal_node)) 
+          while (left_size > 0 || (right_size > 0 && p_right != &terminal_node))
           {
             // Decide whether the next node of merge comes from left or right.
-            if (left_size == 0) 
+            if (left_size == 0)
             {
 		          // Left is empty. The node must come from right.
-		          p_node = p_right; 
-              p_right = p_right->next; 
+		          p_node = p_right;
+              p_right = p_right->next;
               --right_size;
-		        } 
+		        }
             else if (right_size == 0 || p_right == &terminal_node)
             {
 		          // Right is empty. The node must come from left.
-		          p_node = p_left; 
-              p_left = p_left->next; 
+		          p_node = p_left;
+              p_left = p_left->next;
               --left_size;
 		        }
-            else if (compare(p_left->value, p_right->value)) 
+            else if (compare(p_left->value, p_right->value))
             {
 		          // First node of left is lower or same. The node must come from left.
-		          p_node = p_left; 
-              p_left = p_left->next; 
+		          p_node = p_left;
+              p_left = p_left->next;
               --left_size;
 		        }
             else
             {
 		          // First node of right is lower. The node must come from right.
-		          p_node  = p_right; 
-              p_right = p_right->next; 
+		          p_node  = p_right;
+              p_right = p_right->next;
               --right_size;
 		        }
 

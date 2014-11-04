@@ -26,7 +26,21 @@ SOFTWARE.
 
 #include <UnitTest++/UnitTest++.h>
 
+#if (__GNUC__)
+#define __GXX_EXPERIMENTAL_CXX0X__
+#endif
+
 #include <type_traits>
+
+#if (__GNUC__)
+namespace std
+{
+  template <typename T>
+  struct add_reference : public std::add_lvalue_reference<T>
+  {
+  };
+}
+#endif
 
 #include "../type_traits.h"
 
@@ -228,7 +242,7 @@ namespace
     //*************************************************************************
     TEST(add_reference)
     {
-      CHECK((std::is_same<etl::add_reference<int>::type,                 std::add_reference<int>::type>::value));
+      CHECK((std::is_same<etl::add_reference<int>::type,                 std::add_lvalue_reference<int>::type>::value));
       CHECK((std::is_same<etl::add_reference<int&>::type,                std::add_reference<int&>::type>::value));
       CHECK((std::is_same<etl::add_reference<const int&>::type,          std::add_reference<const int&>::type>::value));
       CHECK((std::is_same<etl::add_reference<volatile int&>::type,       std::add_reference<volatile int&>::type>::value));
@@ -270,7 +284,7 @@ namespace
 
     //*************************************************************************
     TEST(remove_volatile)
-    {   
+    {
       CHECK((std::is_same<etl::remove_volatile<int>::type,                std::remove_volatile<int>::type>::value));
       CHECK((std::is_same<etl::remove_volatile<volatile int>::type,       std::remove_volatile<volatile int>::type>::value));
       CHECK((std::is_same<etl::remove_volatile<const volatile int>::type, std::remove_volatile<const volatile int>::type>::value));
@@ -278,7 +292,7 @@ namespace
 
     //*************************************************************************
     TEST(add_volatile)
-    {   
+    {
       CHECK((std::is_same<etl::add_volatile<int>::type,                std::add_volatile<int>::type>::value));
       CHECK((std::is_same<etl::add_volatile<volatile int>::type,       std::add_volatile<volatile int>::type>::value));
       CHECK((std::is_same<etl::add_volatile<const volatile int>::type, std::add_volatile<const volatile int>::type>::value));
@@ -286,7 +300,7 @@ namespace
 
     //*************************************************************************
     TEST(remove_cv)
-    {   
+    {
       CHECK((std::is_same<etl::remove_cv<int>::type,                std::remove_cv<int>::type>::value));
       CHECK((std::is_same<etl::remove_cv<const int>::type,          std::remove_cv<const int>::type>::value));
       CHECK((std::is_same<etl::remove_cv<volatile int>::type,       std::remove_cv<volatile int>::type>::value));
@@ -295,7 +309,7 @@ namespace
 
     //*************************************************************************
     TEST(add_cv)
-    {   
+    {
 
       typedef etl::add_cv<int>::type t1;
       typedef std::add_cv<int>::type t2;
@@ -372,7 +386,7 @@ namespace
 
     //*************************************************************************
     TEST(is_void)
-    {   
+    {
       CHECK(etl::is_void<int>::value  == std::is_void<int>::value);
       CHECK(etl::is_void<void>::value == std::is_void<void>::value);
     }
@@ -437,7 +451,7 @@ namespace
 
     //*************************************************************************
     TEST(remove_extent)
-    {   
+    {
       CHECK((std::is_same<etl::remove_extent<int>::type,     std::remove_extent<int>::type>::value));
       CHECK((std::is_same<etl::remove_extent<int[]>::type,   std::remove_extent<int[]>::type>::value));
       CHECK((std::is_same<etl::remove_extent<int[10]>::type, std::remove_extent<int[10]>::type>::value));
@@ -445,7 +459,7 @@ namespace
 
     //*************************************************************************
     TEST(remove_all_extents)
-    {   
+    {
       CHECK((std::is_same<etl::remove_all_extents<int>::type,         std::remove_all_extents<int>::type>::value));
       CHECK((std::is_same<etl::remove_all_extents<int[10]>::type,     std::remove_all_extents<int[10]>::type>::value));
       CHECK((std::is_same<etl::remove_all_extents<int[10][10]>::type, std::remove_all_extents<int[10][10]>::type>::value));
@@ -453,7 +467,7 @@ namespace
 
     //*************************************************************************
     TEST(rank)
-    {   
+    {
       CHECK(etl::rank<int>::value         == std::rank<int>::value);
       CHECK(etl::rank<int[10]>::value     == std::rank<int[10]>::value);
       CHECK(etl::rank<int[10][10]>::value == std::rank<int[10][10]>::value);

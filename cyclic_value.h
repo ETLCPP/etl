@@ -40,7 +40,7 @@ SOFTWARE.
 #include "static_assert.h"
 #include "exception.h"
 
-namespace etl 
+namespace etl
 {
 #ifdef ETL_USE_EXCEPTIONS
   //***************************************************************************
@@ -123,9 +123,9 @@ namespace etl
     //*************************************************************************
     cyclic_value(const T& first_, const T& last_, const T& step_)
       : value(first_),
-      first_value(first_),
-      last_value(last_),
-      step_value(step_)
+        first_value(first_),
+        last_value(last_),
+        step_value(step_)
     {
     }
 
@@ -288,7 +288,7 @@ namespace etl
     {
       return step_value;
     }
-    
+
     //*************************************************************************
     /// Gets the number of steps in a cycle.
     //*************************************************************************
@@ -299,10 +299,10 @@ namespace etl
 
 	private:
 
-		T first_value; ///< The first value in the range.
+    T value;       ///< The current value.
+    T first_value; ///< The first value in the range.
 		T last_value;  ///< The last value in the range.
     T step_value;  ///< The value to step.
-    T value;       ///< The current value.
 	};
 }
 

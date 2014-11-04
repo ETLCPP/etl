@@ -54,7 +54,7 @@ namespace etl
   class deque : public ideque<T>
   {
   public:
-  
+
     static const size_t MAX_SIZE = MAX_SIZE_;
 
   private:
@@ -70,7 +70,7 @@ namespace etl
     typedef const T& const_reference;
     typedef size_t   size_type;
     typedef typename std::iterator_traits<pointer>::difference_type difference_type;
-        
+
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
@@ -123,18 +123,18 @@ namespace etl
     void swap(deque<T, MAX_SIZE>& other)
     {
       // Swap the internal iterators.
-      first.swap(other.first);
-      last.swap(other.last);
+      this->first.swap(other.first);
+      this->last.swap(other.last);
 
       // Swap the other data.
       std::swap_ranges(etl::begin(buffer), etl::end(buffer), etl::begin(other.buffer));
-      std::swap(current_size, other.current_size);
+      std::swap(this->current_size, other.current_size);
     }
 
   private:
 
     /// The buffer.
-    T buffer[BUFFER_SIZE]; 
+    T buffer[BUFFER_SIZE];
   };
 }
 

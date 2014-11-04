@@ -30,6 +30,7 @@ SOFTWARE.
 #define __etl_type_traits__
 
 #include <cstddef>
+#include "nullptr.h"
 
 ///\defgroup type_traits type_traits
 /// A set of type traits definitions for compilers that do not support the standard header.
@@ -42,7 +43,7 @@ namespace etl
   template <typename T, const T VALUE>
   struct integral_constant
   {
-	  static const T value = VALUE; 
+	  static const T value = VALUE;
 
 	  typedef T value_type;
 
@@ -56,7 +57,7 @@ namespace etl
   ///\ingroup type_traits
   typedef integral_constant<bool, false> false_type;
   typedef integral_constant<bool, true>  true_type;
-  
+
   /// remove_reference
   ///\ingroup type_traits
   template <typename T> struct remove_reference { typedef T type; };
@@ -200,7 +201,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_fundamental : integral_constant<bool, is_arithmetic<T>::value ||
                                                                         is_void<T>::value  ||
-                                                                        is_same<nullptr_t, 
+                                                                        is_same<std::nullptr_t,
                                                                   typename remove_cv<T>::type>::value> {};
 
   /// is_array
@@ -261,16 +262,16 @@ namespace etl
   ///\ingroup type_traits
   template <typename T, size_t N = 0>
   struct extent : std::integral_constant<std::size_t, 0> {};
- 
+
   template <typename T>
   struct extent<T[], 0> : std::integral_constant<std::size_t, 0> {};
- 
+
   template <typename T, size_t N>
   struct extent<T[], N> : std::integral_constant<std::size_t, std::extent<T, N - 1>::value> {};
- 
+
   template <typename T, std::size_t N>
   struct extent<T[N], 0> : std::integral_constant<std::size_t, N> {};
- 
+
   template <typename T, std::size_t I, size_t N>
   struct extent<T[I], N> : std::integral_constant<std::size_t, std::extent<T, N - 1>::value> {};
 
@@ -291,7 +292,7 @@ namespace etl
   template <typename T>struct rank : integral_constant<std::size_t, 0> {};
   template <typename T> struct rank<T[]> : public integral_constant<std::size_t, rank<T>::value + 1> {};
   template <typename T, size_t N> struct rank<T[N]> : public integral_constant<std::size_t, rank<T>::value + 1> {};
-    
+
   /// Alignment templates.
   /// These require compiler specific intrinsics.
   ///\ingroup type_traits

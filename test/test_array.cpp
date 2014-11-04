@@ -32,8 +32,8 @@ SOFTWARE.
 #include <vector>
 #include <algorithm>
 
-namespace 
-{		
+namespace
+{
   SUITE(TestArray)
   {
     static const size_t SIZE = 10;
@@ -57,7 +57,7 @@ namespace
         testData.assign(std::begin(n), std::end(n));
       }
     };
-    
+
     //*************************************************************************
     TEST(DefaultConstructor)
     {

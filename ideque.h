@@ -55,7 +55,7 @@ namespace etl
     typedef size_t   size_type;
     typedef T        value_type;
     typedef typename std::iterator_traits<pointer>::difference_type difference_type;
-       
+
   private:
 
     //*************************************************************************
@@ -66,79 +66,25 @@ namespace etl
     {
     };
 
-    //*************************************************************************
-    /// Iterator common parts.
-    //*************************************************************************
-    struct iterator_common
-    {
-      //***************************************************
-      iterator_common()    
-        : index(0),
-          p_buffer(nullptr),
-          p_deque(nullptr)
-      {
-      }
-
-      //***************************************************
-      iterator_common(difference_type index,
-                     ideque&          the_deque,
-                     pointer          p_buffer)
-        : index(index),
-          p_deque(&the_deque),
-          p_buffer(p_buffer)
-      {
-      }
-
-      //***************************************************
-      inline difference_type get_index() const
-      {
-        return index;
-      }
-
-      //***************************************************
-      inline ideque& get_deque() const
-      {
-        return *p_deque;
-      }
-
-      //***************************************************
-      inline pointer get_buffer() const
-      {
-        return p_buffer;
-      }
-
-      //***************************************************
-      void swap(iterator_common& other)
-      {
-        std::swap(index, other.index);
-      }
-
-    protected:
-
-      difference_type index;
-      pointer         p_buffer;
-      ideque*         p_deque;
-    };
-
   public:
 
     //*************************************************************************
     /// Iterator
     //*************************************************************************
-    struct iterator : public iterator_common,
-                      public std::iterator<std::random_access_iterator_tag, T>
+    struct iterator : public std::iterator<std::random_access_iterator_tag, T>
     {
       friend class ideque;
 
       //***************************************************
       iterator()
-        : iterator_common()
       {
       }
 
       //***************************************************
       iterator(const iterator& other)
-        : iterator_common(other.index, *other.p_deque, other.p_buffer)
+        : index(other.index),
+          p_deque(other.p_deque),
+          p_buffer(other.p_buffer)
       {
       }
 
@@ -171,7 +117,7 @@ namespace etl
         {
           operator -= (-offset);
         }
-        
+
         return p_buffer[index];
       }
 
@@ -266,38 +212,70 @@ namespace etl
         return !(lhs == rhs);
       }
 
+      //***************************************************
+      inline difference_type get_index() const
+      {
+        return index;
+      }
+
+      //***************************************************
+      inline ideque& get_deque() const
+      {
+        return *p_deque;
+      }
+
+      //***************************************************
+      inline pointer get_buffer() const
+      {
+        return p_buffer;
+      }
+
+      //***************************************************
+      void swap(iterator& other)
+      {
+        std::swap(index, other.index);
+      }
+
     private:
 
       //***************************************************
       iterator(difference_type index, ideque& the_deque, pointer p_buffer)
-        : iterator_common(index, the_deque, p_buffer)
+        : index(index),
+          p_deque(&the_deque),
+          p_buffer(p_buffer)
       {
       }
+
+      difference_type index;
+      ideque*         p_deque;
+      pointer         p_buffer;
     };
 
     //*************************************************************************
     /// Const Iterator
     //*************************************************************************
-    struct const_iterator : public iterator_common,
-                            public std::iterator<std::random_access_iterator_tag, const T>
+    struct const_iterator : public std::iterator<std::random_access_iterator_tag, const T>
     {
       friend class ideque;
 
       //***************************************************
       const_iterator()
-        : iterator_common()
       {
       }
 
       //***************************************************
       const_iterator(const const_iterator& other)
-        : iterator_common(other.index, *other.p_deque, other.p_buffer)
+        : index(other.index),
+          p_deque(other.p_deque),
+          p_buffer(other.p_buffer)
       {
       }
 
       //***************************************************
       const_iterator(const typename ideque::iterator& other)
-        : iterator_common(other.get_index(), other.get_deque(), other.get_buffer())
+        : index(other.index),
+          p_deque(other.p_deque),
+          p_buffer(other.p_buffer)
       {
       }
 
@@ -413,10 +391,34 @@ namespace etl
         return !(lhs == rhs);
       }
 
+      //***************************************************
+      inline difference_type get_index() const
+      {
+        return index;
+      }
+
+      //***************************************************
+      inline ideque& get_deque() const
+      {
+        return *p_deque;
+      }
+
+      //***************************************************
+      inline pointer get_buffer() const
+      {
+        return p_buffer;
+      }
+
+      //***************************************************
+      void swap(const_iterator& other)
+      {
+        std::swap(index, other.index);
+      }
+
     private:
 
       //***************************************************
-      static difference_type distance(difference_type firstIndex, difference_type index)
+      difference_type distance(difference_type firstIndex, difference_type index)
       {
         if (index < firstIndex)
         {
@@ -430,14 +432,20 @@ namespace etl
 
       //***************************************************
       const_iterator(difference_type index, ideque& the_deque, pointer p_buffer)
-        : iterator_common(index, the_deque, p_buffer)
+        : index(index),
+          p_deque(&the_deque),
+          p_buffer(p_buffer)
       {
       }
+
+      difference_type index;
+      ideque*         p_deque;
+      pointer         p_buffer;
     };
 
     typedef std::reverse_iterator<iterator>       reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-    
+
     //*************************************************************************
     /// Clears the deque.
     //*************************************************************************
@@ -495,7 +503,7 @@ namespace etl
     {
       return ++const_iterator(last);
     }
-    
+
     //*************************************************************************
     /// Gets a reverse iterator to the end of the deque.
     //*************************************************************************
@@ -577,11 +585,11 @@ namespace etl
       clear();
 
       std::fill_n(p_buffer, n, value);
- 
+
       first.index = 0;
       last.index  = n - 1;
       current_size        = n;
-    } 
+    }
 
     //*************************************************************************
     /// Resizes the deque.
@@ -1265,7 +1273,7 @@ namespace etl
     template <typename TIterator1, typename TIterator2>
     static difference_type distance(const TIterator1& range_begin, const TIterator2& range_end)
     {
-      difference_type distance1 = distance(range_begin); 
+      difference_type distance1 = distance(range_begin);
       difference_type distance2 = distance(range_end);
 
       return distance2 - distance1;

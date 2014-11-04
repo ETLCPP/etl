@@ -29,6 +29,8 @@ SOFTWARE.
 
 #if (WIN32)
   #define STATIC_ASSERT(Condition, Message) static_assert(Condition, Message)
+#elif (__GNUG__)
+  #define STATIC_ASSERT(Condition, Message) static_assert(Condition, Message)
 #else
   template <bool Condition, const char* Message>
   struct STATIC_ASSERTION_FAILURE;
