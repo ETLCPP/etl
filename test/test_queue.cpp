@@ -134,7 +134,7 @@ namespace
         queue.push(1);
       }
 
-      CHECK_THROW(queue.push(1), etl::queue_full);      
+      CHECK_THROW(queue.push(1), etl::queue_full);
     }
 
     //*************************************************************************

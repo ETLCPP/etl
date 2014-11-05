@@ -394,50 +394,50 @@ namespace
     //*************************************************************************
     TEST(make_signed)
     {
-      CHECK((std::is_same<etl::make_signed<char>::type, std::make_signed<char>::type>::value));
-      CHECK((std::is_same<etl::make_signed<signed char>::type, std::make_signed<signed char>::type>::value));
-      CHECK((std::is_same<etl::make_signed<unsigned char>::type, std::make_signed<unsigned char>::type>::value));
-      CHECK((std::is_same<etl::make_signed<wchar_t>::type, std::make_signed<wchar_t>::type>::value));
-      CHECK((std::is_same<etl::make_signed<short>::type, std::make_signed<short>::type>::value));
-      CHECK((std::is_same<etl::make_signed<signed short>::type, std::make_signed<signed short>::type>::value));
-      CHECK((std::is_same<etl::make_signed<unsigned short>::type, std::make_signed<unsigned short>::type>::value));
-      CHECK((std::is_same<etl::make_signed<int>::type, std::make_signed<int>::type>::value));
-      CHECK((std::is_same<etl::make_signed<signed int>::type, std::make_signed<signed int>::type>::value));
-      CHECK((std::is_same<etl::make_signed<unsigned int>::type, std::make_signed<unsigned int>::type>::value));
-      CHECK((std::is_same<etl::make_signed<long>::type, std::make_signed<long>::type>::value));
-      CHECK((std::is_same<etl::make_signed<signed long>::type, std::make_signed<signed long>::type>::value));
-      CHECK((std::is_same<etl::make_signed<unsigned long>::type, std::make_signed<unsigned long>::type>::value));
-      CHECK((std::is_same<etl::make_signed<long long>::type, std::make_signed<long long>::type>::value));
-      CHECK((std::is_same<etl::make_signed<signed long long>::type, std::make_signed<signed long long>::type>::value));
+      CHECK((std::is_same<etl::make_signed<char>::type,               std::make_signed<char>::type>::value));
+      CHECK((std::is_same<etl::make_signed<signed char>::type,        std::make_signed<signed char>::type>::value));
+      CHECK((std::is_same<etl::make_signed<unsigned char>::type,      std::make_signed<unsigned char>::type>::value));
+      CHECK((std::is_same<etl::make_signed<wchar_t>::type,            std::make_signed<wchar_t>::type>::value));
+      CHECK((std::is_same<etl::make_signed<short>::type,              std::make_signed<short>::type>::value));
+      CHECK((std::is_same<etl::make_signed<signed short>::type,       std::make_signed<signed short>::type>::value));
+      CHECK((std::is_same<etl::make_signed<unsigned short>::type,     std::make_signed<unsigned short>::type>::value));
+      CHECK((std::is_same<etl::make_signed<int>::type,                std::make_signed<int>::type>::value));
+      CHECK((std::is_same<etl::make_signed<signed int>::type,         std::make_signed<signed int>::type>::value));
+      CHECK((std::is_same<etl::make_signed<unsigned int>::type,       std::make_signed<unsigned int>::type>::value));
+      CHECK((std::is_same<etl::make_signed<long>::type,               std::make_signed<long>::type>::value));
+      CHECK((std::is_same<etl::make_signed<signed long>::type,        std::make_signed<signed long>::type>::value));
+      CHECK((std::is_same<etl::make_signed<unsigned long>::type,      std::make_signed<unsigned long>::type>::value));
+      CHECK((std::is_same<etl::make_signed<long long>::type,          std::make_signed<long long>::type>::value));
+      CHECK((std::is_same<etl::make_signed<signed long long>::type,   std::make_signed<signed long long>::type>::value));
       CHECK((std::is_same<etl::make_signed<unsigned long long>::type, std::make_signed<unsigned long long>::type>::value));
-      CHECK((std::is_same<etl::make_signed<const int>::type, std::make_signed<const int>::type>::value));
-      CHECK((std::is_same<etl::make_signed<volatile int>::type, std::make_signed<volatile int>::type>::value));
-      CHECK((std::is_same<etl::make_signed<const int>::type, std::make_signed<const int>::type>::value));
+      CHECK((std::is_same<etl::make_signed<const int>::type,          std::make_signed<const int>::type>::value));
+      CHECK((std::is_same<etl::make_signed<volatile int>::type,       std::make_signed<volatile int>::type>::value));
+      CHECK((std::is_same<etl::make_signed<const int>::type,          std::make_signed<const int>::type>::value));
       CHECK((std::is_same<etl::make_signed<const volatile int>::type, std::make_signed<const volatile int>::type>::value));
     }
 
     //*************************************************************************
     TEST(make_unsigned)
     {
-      CHECK((std::is_same<etl::make_unsigned<char>::type, std::make_unsigned<char>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<signed char>::type, std::make_unsigned<signed char>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<unsigned char>::type, std::make_unsigned<unsigned char>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<wchar_t>::type, std::make_unsigned<wchar_t>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<short>::type, std::make_unsigned<short>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<signed short>::type, std::make_unsigned<signed short>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<unsigned short>::type, std::make_unsigned<unsigned short>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<int>::type, std::make_unsigned<int>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<signed int>::type, std::make_unsigned<signed int>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<unsigned int>::type, std::make_unsigned<unsigned int>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<long>::type, std::make_unsigned<long>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<signed long>::type, std::make_unsigned<signed long>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<unsigned long>::type, std::make_unsigned<unsigned long>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<long long>::type, std::make_unsigned<long long>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<signed long long>::type, std::make_unsigned<signed long long>::type>::value));
+      CHECK((std::is_same<etl::make_unsigned<char>::type,               std::make_unsigned<char>::type>::value));
+      CHECK((std::is_same<etl::make_unsigned<signed char>::type,        std::make_unsigned<signed char>::type>::value));
+      CHECK((std::is_same<etl::make_unsigned<unsigned char>::type,      std::make_unsigned<unsigned char>::type>::value));
+      CHECK((std::is_same<etl::make_unsigned<wchar_t>::type,            std::make_unsigned<wchar_t>::type>::value));
+      CHECK((std::is_same<etl::make_unsigned<short>::type,              std::make_unsigned<short>::type>::value));
+      CHECK((std::is_same<etl::make_unsigned<signed short>::type,       std::make_unsigned<signed short>::type>::value));
+      CHECK((std::is_same<etl::make_unsigned<unsigned short>::type,     std::make_unsigned<unsigned short>::type>::value));
+      CHECK((std::is_same<etl::make_unsigned<int>::type,                std::make_unsigned<int>::type>::value));
+      CHECK((std::is_same<etl::make_unsigned<signed int>::type,         std::make_unsigned<signed int>::type>::value));
+      CHECK((std::is_same<etl::make_unsigned<unsigned int>::type,       std::make_unsigned<unsigned int>::type>::value));
+      CHECK((std::is_same<etl::make_unsigned<long>::type,               std::make_unsigned<long>::type>::value));
+      CHECK((std::is_same<etl::make_unsigned<signed long>::type,        std::make_unsigned<signed long>::type>::value));
+      CHECK((std::is_same<etl::make_unsigned<unsigned long>::type,      std::make_unsigned<unsigned long>::type>::value));
+      CHECK((std::is_same<etl::make_unsigned<long long>::type,          std::make_unsigned<long long>::type>::value));
+      CHECK((std::is_same<etl::make_unsigned<signed long long>::type,   std::make_unsigned<signed long long>::type>::value));
       CHECK((std::is_same<etl::make_unsigned<unsigned long long>::type, std::make_unsigned<unsigned long long>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<const int>::type, std::make_unsigned<const int>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<volatile int>::type, std::make_unsigned<volatile int>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<const int>::type, std::make_unsigned<const int>::type>::value));
+      CHECK((std::is_same<etl::make_unsigned<const int>::type,          std::make_unsigned<const int>::type>::value));
+      CHECK((std::is_same<etl::make_unsigned<volatile int>::type,       std::make_unsigned<volatile int>::type>::value));
+      CHECK((std::is_same<etl::make_unsigned<const int>::type,          std::make_unsigned<const int>::type>::value));
       CHECK((std::is_same<etl::make_unsigned<const volatile int>::type, std::make_unsigned<const volatile int>::type>::value));
     }
 
@@ -483,19 +483,19 @@ namespace
         float c;
       };
 
-      CHECK_EQUAL(std::alignment_of<char>::value, etl::alignment_of<char>::value);
-      CHECK_EQUAL(std::alignment_of<unsigned char>::value, etl::alignment_of<unsigned char>::value);
-      CHECK_EQUAL(std::alignment_of<short>::value, etl::alignment_of<short>::value);
-      CHECK_EQUAL(std::alignment_of<unsigned short>::value, etl::alignment_of<unsigned short>::value);
-      CHECK_EQUAL(std::alignment_of<int>::value, etl::alignment_of<int>::value);
-      CHECK_EQUAL(std::alignment_of<unsigned int>::value, etl::alignment_of<unsigned int>::value);
-      CHECK_EQUAL(std::alignment_of<long>::value, etl::alignment_of<long>::value);
-      CHECK_EQUAL(std::alignment_of<unsigned long>::value, etl::alignment_of<unsigned long>::value);
-      CHECK_EQUAL(std::alignment_of<long long>::value, etl::alignment_of<long long>::value);
-      CHECK_EQUAL(std::alignment_of<unsigned long long>::value, etl::alignment_of<unsigned long long>::value);
-      CHECK_EQUAL(std::alignment_of<float>::value, etl::alignment_of<float>::value);
-      CHECK_EQUAL(std::alignment_of<double>::value, etl::alignment_of<double>::value);
-      CHECK_EQUAL(std::alignment_of<Test>::value, etl::alignment_of<Test>::value);
+      CHECK(std::alignment_of<char>::value               == etl::alignment_of<char>::value);
+      CHECK(std::alignment_of<unsigned char>::value      == etl::alignment_of<unsigned char>::value);
+      CHECK(std::alignment_of<short>::value              == etl::alignment_of<short>::value);
+      CHECK(std::alignment_of<unsigned short>::value     == etl::alignment_of<unsigned short>::value);
+      CHECK(std::alignment_of<int>::value                == etl::alignment_of<int>::value);
+      CHECK(std::alignment_of<unsigned int>::value       == etl::alignment_of<unsigned int>::value);
+      CHECK(std::alignment_of<long>::value               == etl::alignment_of<long>::value);
+      CHECK(std::alignment_of<unsigned long>::value      == etl::alignment_of<unsigned long>::value);
+      CHECK(std::alignment_of<long long>::value          == etl::alignment_of<long long>::value);
+      CHECK(std::alignment_of<unsigned long long>::value == etl::alignment_of<unsigned long long>::value);
+      CHECK(std::alignment_of<float>::value              == etl::alignment_of<float>::value);
+      CHECK(std::alignment_of<double>::value             == etl::alignment_of<double>::value);
+      CHECK(std::alignment_of<Test>::value               == etl::alignment_of<Test>::value);
     }
   };
 }

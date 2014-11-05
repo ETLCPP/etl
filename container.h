@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_container__
-#define __etl_container__
+#ifndef __ETL_CONTAINER__
+#define __ETL_CONTAINER__
 
 #include <cstddef>
 

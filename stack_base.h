@@ -26,12 +26,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_in_istack_h__
+#ifndef __ETL_IN_ISTACK_H__
 #error This header is a private element of etl::stack & etl::istack
 #endif
 
-#ifndef __etl_stack_base__
-#define __etl_stack_base__
+#ifndef __ETL_STACK_BASE__
+#define __ETL_STACK_BASE__
 
 #include <cstddef>
 
@@ -123,7 +123,7 @@ namespace etl
     //*************************************************************************
     void clear()
     {
-      top_index = 0;
+      top_index    = 0;
       current_size = 0;
     }
 

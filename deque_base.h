@@ -26,12 +26,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_in_ideque_h__
+#ifndef __ETL_IN_IDEQUE_H__
 #error This header is a private element of etl::deque & etl::ideque
 #endif
 
-#ifndef __etl_deque_base__
-#define __etl_deque_base__
+#ifndef __ETL_DEQUE_BASE__
+#define __ETL_DEQUE_BASE__
 
 #include <cstddef>
 

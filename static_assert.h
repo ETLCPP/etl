@@ -24,8 +24,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_static_assert__
-#define __etl_static_assert__
+#ifndef __ETL_STATIC_ASSERT__
+#define __ETL_STATIC_ASSERT__
 
 #if (WIN32)
   #define STATIC_ASSERT(Condition, Message) static_assert(Condition, Message)

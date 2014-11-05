@@ -180,6 +180,34 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, DataPointer)
+    {
+      TestData testData(initial_data.begin(), initial_data.end());
+
+      Data data(testData.begin(), testData.end());
+
+      bool isEqual = std::equal(data.data(),
+                                data.data() + data.size(),
+                                testData.begin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, DataConstPointer)
+    {
+      TestData testData(initial_data.begin(), initial_data.end());
+
+      const Data data(testData.begin(), testData.end());
+
+      bool isEqual = std::equal(data.data(),
+                                data.data() + data.size(),
+                                testData.begin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, ResizeUp)
     {
       const size_t INITIAL_SIZE = 5;
@@ -235,7 +263,6 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, Indexing)
     {
-      const size_t INITIAL_SIZE = 5;
       TestData testData(initial_data.begin(), initial_data.end());
 
       Data data(testData.begin(), testData.end());
@@ -249,7 +276,6 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, IndexingConst)
     {
-      const size_t INITIAL_SIZE = 5;
       const TestData testData(initial_data.begin(), initial_data.end());
 
       const Data data(testData.begin(), testData.end());
@@ -263,7 +289,6 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, Clear)
     {
-      const size_t INITIAL_SIZE = 5;
       TestData testData(initial_data.begin(), initial_data.end());
 
       Data data(testData.begin(), testData.end());
@@ -275,7 +300,6 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, AssignRange)
     {
-      const size_t INITIAL_SIZE = 5;
       TestData testData(initial_data.begin(), initial_data.end());
 
       Data data;
@@ -326,7 +350,6 @@ namespace
     {
       const size_t INITIAL_SIZE = 5;
       const int INITIAL_VALUE = 1;
-      const int INSERT_VALUE = 2;
 
       TestData testData(INITIAL_SIZE, INITIAL_VALUE);
       Data data(INITIAL_SIZE, INITIAL_VALUE);
@@ -370,7 +393,6 @@ namespace
     {
       const size_t INITIAL_SIZE = SIZE;
       const int INITIAL_VALUE = 1;
-      const int INSERT_VALUE = 2;
 
       Data data(INITIAL_SIZE, INITIAL_VALUE);
 
@@ -393,7 +415,6 @@ namespace
       const size_t INITIAL_SIZE = 5;
       const size_t INSERT_SIZE  = 3;
       const int INITIAL_VALUE   = 1;
-      const int INSERT_VALUE    = 2;
 
       TestData testData;
       Data data;
@@ -443,7 +464,6 @@ namespace
       const size_t INITIAL_SIZE = SIZE;
       const size_t INSERT_SIZE = 4;
       const int INITIAL_VALUE = 1;
-      const int INSERT_VALUE = 2;
 
       Data data(INITIAL_SIZE, INITIAL_VALUE);
 

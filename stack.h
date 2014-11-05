@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_stack__
-#define __etl_stack__
+#ifndef __ETL_STACK__
+#define __ETL_STACK__
 
 #include <cstddef>
 

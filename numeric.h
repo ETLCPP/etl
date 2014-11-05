@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_numeric__
-#define __etl_numeric__
+#ifndef __ETL_NUMERIC__
+#define __ETL_NUMERIC__
 
 ///\defgroup numeric numeric
 ///\ingroup utilities

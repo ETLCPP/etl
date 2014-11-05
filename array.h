@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_array__
-#define __etl_array__
+#ifndef __ETL_ARRAY__
+#define __ETL_ARRAY__
 
 #include <iterator>
 #include <functional>

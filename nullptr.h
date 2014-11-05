@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_nullptr__
-#define __etl_nullptr__
+#ifndef __ETL_NULLPTR__
+#define __ETL_NULLPTR__
 
 ///\defgroup nullptr nullptr
 /// A definition of nullptr for compilers that don't support it as standard.

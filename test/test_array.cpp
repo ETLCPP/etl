@@ -31,6 +31,7 @@ SOFTWARE.
 #include <array>
 #include <vector>
 #include <algorithm>
+#include <iterator>
 
 namespace
 {

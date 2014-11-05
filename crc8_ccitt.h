@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_crc8_ccitt__
-#define __etl_crc8_ccitt__
+#ifndef __ETL_CRC8_CCITT__
+#define __ETL_CRC8_CCITT__
 
 #include <cstdint>
 

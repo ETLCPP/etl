@@ -26,9 +26,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_istack__
-#define __etl_istack__
-#define __etl_in_istack_h__
+#ifndef __ETL_ISTACK__
+#define __ETL_ISTACK__
+#define __ETL_IN_ISTACK_H__
 
 #include <cstddef>
 

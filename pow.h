@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_pow__
-#define __etl_pow__
+#ifndef __ETL_POW__
+#define __ETL_POW__
 
 #include <cstddef>
 

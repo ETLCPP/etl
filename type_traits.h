@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_type_traits__
-#define __etl_type_traits__
+#ifndef __ETL_TYPE_TRAITS__
+#define __ETL_TYPE_TRAITS__
 
 #include <cstddef>
 #include "nullptr.h"
@@ -225,7 +225,9 @@ namespace etl
   template <typename T> struct make_signed { typedef  T type; };
   template <> struct make_signed<char> { typedef  signed char type; };
   template <> struct make_signed<unsigned char> { typedef  signed char type; };
+#ifdef WIN32
   template <> struct make_signed<wchar_t> { typedef  short type; };
+#endif
   template <> struct make_signed<unsigned short> { typedef  short type; };
   template <> struct make_signed<unsigned int> { typedef int type; };
   template <> struct make_signed<unsigned long> { typedef  long type; };
@@ -239,8 +241,10 @@ namespace etl
   template <typename T> struct make_unsigned { typedef  T type; };
   template <> struct make_unsigned<char> { typedef unsigned char type; };
   template <> struct make_unsigned<signed char> { typedef unsigned char type; };
-  template <> struct make_unsigned<wchar_t> { typedef unsigned short type; };
   template <> struct make_unsigned<short> { typedef unsigned short type; };
+#ifdef WIN32
+  template <> struct make_unsigned<wchar_t> { typedef unsigned short type; };
+#endif
   template <> struct make_unsigned<int> { typedef unsigned int type; };
   template <> struct make_unsigned<long> { typedef unsigned long type; };
   template <> struct make_unsigned<long long> { typedef unsigned long long type; };
@@ -297,13 +301,11 @@ namespace etl
   /// These require compiler specific intrinsics.
   ///\ingroup type_traits
 #ifdef _MSC_VER
-	// alignment_of
 	template <typename T> struct alignment_of : integral_constant <size_t, __alignof(T)> {};
 #endif
 
 #ifdef __GNUC__
-  // alignment_of
-  template <typename T> struct alignment_of : integral_constant <size_t, __alignof__(T)> {};
+  template <typename T> struct alignment_of : integral_constant <size_t, size_t(__alignof__(T))> {};
 #endif
 }
 

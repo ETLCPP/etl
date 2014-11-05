@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_cyclic_value__
-#define __etl_cyclic_value__
+#ifndef __ETL_CYCLIC_VALUE__
+#define __ETL_CYCLIC_VALUE__
 
 #include <cstddef>
 

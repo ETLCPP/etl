@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_deque__
-#define __etl_deque__
+#ifndef __ETL_DEQUE__
+#define __ETL_DEQUE__
 
 #include <cstddef>
 #include <iterator>

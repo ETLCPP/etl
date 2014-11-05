@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_observer__
-#define __etl_observer__
+#ifndef __ETL_OBSERVER__
+#define __ETL_OBSERVER__
 
 //*****************************************************************************
 ///\defgroup observer observer
@@ -201,14 +201,15 @@ namespace etl
   class observer
   {
   public:
-      virtual void notification(T1) = 0;
-      virtual void notification(T2) = 0;
-      virtual void notification(T3) = 0;
-      virtual void notification(T4) = 0;
-      virtual void notification(T5) = 0;
-      virtual void notification(T6) = 0;
-      virtual void notification(T7) = 0;
-      virtual void notification(T8) = 0;
+    virtual ~observer() {}
+    virtual void notification(T1) = 0;
+    virtual void notification(T2) = 0;
+    virtual void notification(T3) = 0;
+    virtual void notification(T4) = 0;
+    virtual void notification(T5) = 0;
+    virtual void notification(T6) = 0;
+    virtual void notification(T7) = 0;
+    virtual void notification(T8) = 0;
   };
 
   //*********************************************************************
@@ -226,13 +227,14 @@ namespace etl
   {
   public:
 
-      virtual void notification(T1) = 0;
-      virtual void notification(T2) = 0;
-      virtual void notification(T3) = 0;
-      virtual void notification(T4) = 0;
-      virtual void notification(T5) = 0;
-      virtual void notification(T6) = 0;
-      virtual void notification(T7) = 0;
+    virtual ~observer() {}
+    virtual void notification(T1) = 0;
+    virtual void notification(T2) = 0;
+    virtual void notification(T3) = 0;
+    virtual void notification(T4) = 0;
+    virtual void notification(T5) = 0;
+    virtual void notification(T6) = 0;
+    virtual void notification(T7) = 0;
   };
 
   //*********************************************************************
@@ -249,12 +251,13 @@ namespace etl
   {
   public:
 
-      virtual void notification(T1) = 0;
-      virtual void notification(T2) = 0;
-      virtual void notification(T3) = 0;
-      virtual void notification(T4) = 0;
-      virtual void notification(T5) = 0;
-      virtual void notification(T6) = 0;
+    virtual ~observer() {}
+    virtual void notification(T1) = 0;
+    virtual void notification(T2) = 0;
+    virtual void notification(T3) = 0;
+    virtual void notification(T4) = 0;
+    virtual void notification(T5) = 0;
+    virtual void notification(T6) = 0;
   };
 
   //*********************************************************************
@@ -270,11 +273,12 @@ namespace etl
   {
   public:
 
-      virtual void notification(T1) = 0;
-      virtual void notification(T2) = 0;
-      virtual void notification(T3) = 0;
-      virtual void notification(T4) = 0;
-      virtual void notification(T5) = 0;
+    virtual ~observer() {}
+    virtual void notification(T1) = 0;
+    virtual void notification(T2) = 0;
+    virtual void notification(T3) = 0;
+    virtual void notification(T4) = 0;
+    virtual void notification(T5) = 0;
   };
 
   //*********************************************************************
@@ -289,10 +293,11 @@ namespace etl
   {
   public:
 
-      virtual void notification(T1) = 0;
-      virtual void notification(T2) = 0;
-      virtual void notification(T3) = 0;
-      virtual void notification(T4) = 0;
+    virtual ~observer() {}
+    virtual void notification(T1) = 0;
+    virtual void notification(T2) = 0;
+    virtual void notification(T3) = 0;
+    virtual void notification(T4) = 0;
   };
 
   //*********************************************************************
@@ -306,9 +311,10 @@ namespace etl
   {
   public:
 
-      virtual void notification(T1) = 0;
-      virtual void notification(T2) = 0;
-      virtual void notification(T3) = 0;
+    virtual ~observer() {}
+    virtual void notification(T1) = 0;
+    virtual void notification(T2) = 0;
+    virtual void notification(T3) = 0;
   };
 
   //*********************************************************************
@@ -321,8 +327,9 @@ namespace etl
   {
   public:
 
-      virtual void notification(T1) = 0;
-      virtual void notification(T2) = 0;
+    virtual ~observer() {}
+    virtual void notification(T1) = 0;
+    virtual void notification(T2) = 0;
   };
 
   //*********************************************************************
@@ -334,7 +341,8 @@ namespace etl
   {
   public:
 
-      virtual void notification(T1) = 0;
+    virtual ~observer() {}
+    virtual void notification(T1) = 0;
   };
 }
 

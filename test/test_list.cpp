@@ -280,7 +280,6 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, AssignSizeValueExcess)
     {
-      const size_t EXCESS_SIZE = SIZE + 1;
       const int VALUE = 1;
 
       Data data;
@@ -569,7 +568,9 @@ namespace
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
 
       CHECK(are_equal);
-      CHECK(i_data == data.begin());
+
+      are_equal = i_data == data.begin();
+      CHECK(are_equal);
 
       // Move to the last value and erase.
       i_compare_data = compare_data.begin();
@@ -583,7 +584,8 @@ namespace
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
 
       CHECK(are_equal);
-      CHECK(i_data == data.end());
+      are_equal = i_data == data.end();
+      CHECK(are_equal);
     }
 
     //*************************************************************************

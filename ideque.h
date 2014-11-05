@@ -26,9 +26,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_ideque__
-#define __etl_ideque__
-#define __etl_in_ideque_h__
+#ifndef __ETL_IDEQUE__
+#define __ETL_IDEQUE__
+#define __ETL_IN_IDEQUE_H__
 
 #include <cstddef>
 #include <iterator>
@@ -77,6 +77,9 @@ namespace etl
 
       //***************************************************
       iterator()
+      : index(0),
+        p_deque(0),
+        p_buffer(0)
       {
       }
 
@@ -106,7 +109,7 @@ namespace etl
       }
 
       //***************************************************
-      reference operator +=(difference_type offset)
+      iterator operator +=(difference_type offset)
       {
         if (offset > 0)
         {
@@ -118,11 +121,11 @@ namespace etl
           operator -= (-offset);
         }
 
-        return p_buffer[index];
+        return *this;
       }
 
       //***************************************************
-      reference operator -=(difference_type offset)
+      iterator operator -=(difference_type offset)
       {
         if (offset > 0)
         {
@@ -134,7 +137,7 @@ namespace etl
           operator += (-offset);
         }
 
-        return p_buffer[index];
+        return *this;
       }
 
       //***************************************************
@@ -213,19 +216,19 @@ namespace etl
       }
 
       //***************************************************
-      inline difference_type get_index() const
+      difference_type get_index() const
       {
         return index;
       }
 
       //***************************************************
-      inline ideque& get_deque() const
+      ideque& get_deque() const
       {
         return *p_deque;
       }
 
       //***************************************************
-      inline pointer get_buffer() const
+      pointer get_buffer() const
       {
         return p_buffer;
       }
@@ -260,6 +263,9 @@ namespace etl
 
       //***************************************************
       const_iterator()
+        : index(0),
+          p_deque(0),        
+          p_buffer(0)
       {
       }
 
@@ -297,7 +303,7 @@ namespace etl
       }
 
       //***************************************************
-      reference operator +=(difference_type offset)
+      const_iterator operator +=(difference_type offset)
       {
         if (offset > 0)
         {
@@ -309,11 +315,11 @@ namespace etl
           operator -= (-offset);
         }
 
-        return p_buffer[index];
+        return *this;
       }
 
       //***************************************************
-      reference operator -=(difference_type offset)
+      const_iterator operator -=(difference_type offset)
       {
         if (offset > 0)
         {
@@ -325,7 +331,7 @@ namespace etl
           operator += (-offset);
         }
 
-        return p_buffer[index];
+        return *this;
       }
 
       //***************************************************
@@ -392,19 +398,19 @@ namespace etl
       }
 
       //***************************************************
-      inline difference_type get_index() const
+      difference_type get_index() const
       {
         return index;
       }
 
       //***************************************************
-      inline ideque& get_deque() const
+      ideque& get_deque() const
       {
         return *p_deque;
       }
 
       //***************************************************
-      inline pointer get_buffer() const
+      pointer get_buffer() const
       {
         return p_buffer;
       }
@@ -459,7 +465,7 @@ namespace etl
     //*************************************************************************
     /// Gets an iterator to the beginning of the deque.
     //*************************************************************************
-    inline iterator begin()
+    iterator begin()
     {
       return first;
     }
@@ -467,7 +473,7 @@ namespace etl
     //*************************************************************************
     /// Gets an iterator to the end of the deque.
     //*************************************************************************
-    inline iterator end()
+    iterator end()
     {
       return ++iterator(last);
     }
@@ -475,7 +481,7 @@ namespace etl
     //*************************************************************************
     /// Gets a const iterator to the beginning of the deque.
     //*************************************************************************
-    inline const_iterator begin() const
+    const_iterator begin() const
     {
       return first;
     }
@@ -483,7 +489,7 @@ namespace etl
     //*************************************************************************
     /// Gets a const iterator to the end of the deque.
     //*************************************************************************
-    inline const_iterator end() const
+    const_iterator end() const
     {
       return ++iterator(last);
     }
@@ -491,7 +497,7 @@ namespace etl
     //*************************************************************************
     /// Gets a const iterator to the beginning of the deque.
     //*************************************************************************
-    inline const_iterator cbegin() const
+    const_iterator cbegin() const
     {
       return first;
     }
@@ -499,7 +505,7 @@ namespace etl
     //*************************************************************************
     /// Gets a const iterator to the end of the deque.
     //*************************************************************************
-    inline const_iterator cend() const
+    const_iterator cend() const
     {
       return ++const_iterator(last);
     }
@@ -507,7 +513,7 @@ namespace etl
     //*************************************************************************
     /// Gets a reverse iterator to the end of the deque.
     //*************************************************************************
-    inline reverse_iterator rbegin()
+    reverse_iterator rbegin()
     {
       return reverse_iterator(end());
     }
@@ -515,7 +521,7 @@ namespace etl
     //*************************************************************************
     /// Gets a reverse iterator to the beginning of the deque.
     //*************************************************************************
-    inline reverse_iterator rend()
+    reverse_iterator rend()
     {
       return reverse_iterator(begin());
     }
@@ -523,7 +529,7 @@ namespace etl
     //*************************************************************************
     /// Gets a const reverse iterator to the end of the deque.
     //*************************************************************************
-    inline const_reverse_iterator rbegin() const
+    const_reverse_iterator rbegin() const
     {
       return const_reverse_iterator(end());
     }
@@ -531,7 +537,7 @@ namespace etl
     //*************************************************************************
     /// Gets a const reverse iterator to the beginning of the deque.
     //*************************************************************************
-    inline const_reverse_iterator rend() const
+    const_reverse_iterator rend() const
     {
       return const_reverse_iterator(begin());
     }
@@ -539,7 +545,7 @@ namespace etl
     //*************************************************************************
     /// Gets a const reverse iterator to the end of the deque.
     //*************************************************************************
-    inline const_reverse_iterator crbegin() const
+    const_reverse_iterator crbegin() const
     {
       return const_reverse_iterator(cend());
     }
@@ -547,7 +553,7 @@ namespace etl
     //*************************************************************************
     /// Gets a const reverse iterator to the beginning of the deque.
     //*************************************************************************
-    inline const_reverse_iterator crend() const
+    const_reverse_iterator crend() const
     {
       return const_reverse_iterator(cbegin());
     }

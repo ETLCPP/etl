@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_functional__
-#define __etl_functional__
+#ifndef __ETL_FUNCTIONAL__
+#define __ETL_FUNCTIONAL__
 
 ///\defgroup functional functional
 ///\ingroup Utilities

@@ -63,10 +63,6 @@ namespace
       struct S2 { char a; short b; char c; };
       struct S3 { int  a; short b; char c; };
 
-      size_t a = sizeof(S1);
-      size_t b = sizeof(S2);
-      size_t c = sizeof(S3);
-
       size = etl::largest<S1, S2, S3>::size;
       type = std::is_same<S3, etl::largest<S1, S2, S3>::type>::value;
 

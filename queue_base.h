@@ -26,12 +26,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_in_iqueue_h__
+#ifndef __ETL_IN_IQUEUE_H__
 #error This header is a private element of etl::queue & etl::iqueue
 #endif
 
-#ifndef __etl_queue_base__
-#define __etl_queue_base__
+#ifndef __ETL_QUEUE_BASE__
+#define __ETL_QUEUE_BASE__
 
 #include <cstddef>
 
@@ -153,7 +153,7 @@ namespace etl
     {
       if (!empty())
       {
-        out = (out == (MAX_SIZE - 1)) ? 0 : ++out;
+        out = (out == (MAX_SIZE - 1)) ? 0 : out + 1;
         --current_size;
       }
     }

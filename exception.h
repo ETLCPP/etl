@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_exception__
-#define __etl_exception__
+#ifndef __ETL_EXCEPTION__
+#define __ETL_EXCEPTION__
 
 ///\defgroup exception exception
 /// The base class for all ETL exceptions.

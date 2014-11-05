@@ -26,9 +26,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_ilist__
-#define __etl_ilist__
-#define __etl_in_ilist_h__
+#ifndef __ETL_ILIST__
+#define __ETL_ILIST__
+#define __ETL_IN_ILIST_H__
 
 #if WIN32
 #undef min
@@ -717,6 +717,11 @@ namespace etl
       else
       {
         throw list_full();
+        return end();
+      }
+#else
+      {
+        return end();
       }
 #endif
     }

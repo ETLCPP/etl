@@ -816,7 +816,8 @@ namespace FixedDequeTest
       data.push_back(5);
       data.push_back(6);
 
-      Data::iterator i_next = data.erase(data.end() - 1);
+      Data::iterator i_erase = data.end() - 1;
+      Data::iterator i_next  = data.erase(i_erase);
 
       CHECK_EQUAL(Data::difference_type(expected.size()), std::distance(data.begin(), data.end()));
       CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
@@ -839,7 +840,8 @@ namespace FixedDequeTest
       data.push_back(6);
 
       // Erase near beginning.
-      Data::iterator i_next = data.erase(data.begin() + 1);
+      Data::iterator i_erase = data.begin() + 1;
+      Data::iterator i_next  = data.erase(i_erase);
 
       CHECK_EQUAL(Data::difference_type(expected1.size()), std::distance(data.begin(), data.end()));
       CHECK(std::equal(expected1.begin(), expected1.end(), data.begin()));

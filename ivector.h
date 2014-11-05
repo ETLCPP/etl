@@ -26,9 +26,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_ivector__
-#define __etl_ivector__
-#define __etl_in_ivector_h__
+#ifndef __ETL_IVECTOR__
+#define __ETL_IVECTOR__
+#define __ETL_IN_IVECTOR_H__
 
 #include <iterator>
 #include <algorithm>
@@ -67,7 +67,7 @@ namespace etl
     //*********************************************************************
     iterator begin()
     {
-      return &buffer[0];
+      return &p_buffer[0];
     }
     
     //*********************************************************************
@@ -76,7 +76,7 @@ namespace etl
     //*********************************************************************
     const_iterator begin() const
     {
-      return &buffer[0];
+      return &p_buffer[0];
     }        
 
     //*********************************************************************
@@ -85,7 +85,7 @@ namespace etl
     //*********************************************************************
     const_iterator cbegin() const
     {
-      return &buffer[0];
+      return &p_buffer[0];
     } 
 
     //*********************************************************************
@@ -121,7 +121,7 @@ namespace etl
     //*********************************************************************
     iterator end()
     {
-      return &buffer[current_size];
+      return &p_buffer[current_size];
     }
   
     //*********************************************************************
@@ -130,7 +130,7 @@ namespace etl
     //*********************************************************************
     const_iterator end() const
     {
-      return &buffer[current_size];
+      return &p_buffer[current_size];
     }
 
     //*********************************************************************
@@ -139,7 +139,7 @@ namespace etl
     //*********************************************************************
     const_iterator cend() const
     {
-      return &buffer[current_size];
+      return &p_buffer[current_size];
     } 
 
     //*********************************************************************
@@ -170,6 +170,24 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Returns a pointer to the beginning of the vector data.
+    ///\return A pointer to the beginning of the vector data.
+    //*********************************************************************
+    pointer data()
+    {
+      return p_buffer;
+    }
+
+    //*********************************************************************
+    /// Returns a const pointer to the beginning of the vector data.
+    ///\return A const pointer to the beginning of the vector data.
+    //*********************************************************************
+    const_pointer data() const
+    {
+      return p_buffer;
+    }
+
+    //*********************************************************************
     /// Resizes the vector.
     /// If ETL_USE_EXCEPTIONS is defined and the new size is larger than the
     /// maximum then a vector_full is thrown.
@@ -187,7 +205,7 @@ namespace etl
 
 	    if (newSize > current_size)
 	    {
-		    std::fill(&buffer[current_size], &buffer[newSize], value);
+		    std::fill(&p_buffer[current_size], &p_buffer[newSize], value);
 	    }
 
 	    current_size = newSize;
@@ -310,7 +328,6 @@ namespace etl
       }
     }
 
-    template <class TIterator>
     //*********************************************************************
     /// Inserts a range of values to the vector.
     /// If ETL_USE_EXCEPTIONS is defined, throws vector_full if the vector does not have enough free space.
@@ -318,13 +335,16 @@ namespace etl
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.
     //*********************************************************************
+    template <class TIterator>
     void insert(iterator position, TIterator first, TIterator last)
     {
       size_t count = std::distance(first, last);
 
       if ((current_size + count) > MAX_SIZE)
       {
+#ifdef ETL_USE_EXCEPTIONS
         throw vector_full();
+#endif
       }
       else
       {
@@ -341,15 +361,15 @@ namespace etl
     //*********************************************************************
     void push_back(const T& value)
     {
-	    if (current_size == MAX_SIZE)
-	    {
+      if (current_size == MAX_SIZE)
+      {
 #ifdef ETL_USE_EXCEPTIONS
         throw vector_full();
 #endif
       }
       else
       {
-        buffer[current_size++] = value;
+        p_buffer[current_size++] = value;
       }
     }
 
@@ -418,7 +438,7 @@ namespace etl
     //*********************************************************************
     reference front()
     {
-      return buffer[0];
+      return p_buffer[0];
     }
 
     //*********************************************************************
@@ -427,7 +447,7 @@ namespace etl
     //*********************************************************************
     const_reference front() const
     {
-      return buffer[0];
+      return p_buffer[0];
     }
 
     //*********************************************************************
@@ -436,7 +456,7 @@ namespace etl
     //*********************************************************************
     reference back()
     {
-      return buffer[current_size - 1];
+      return p_buffer[current_size - 1];
     }
 
     //*********************************************************************
@@ -445,7 +465,7 @@ namespace etl
     //*********************************************************************
     const_reference back() const
     {
-      return buffer[current_size - 1];
+      return p_buffer[current_size - 1];
     }
 
     //*********************************************************************
@@ -463,7 +483,7 @@ namespace etl
       }
 #endif
 
-      return buffer[i];
+      return p_buffer[i];
     }
 
     //*********************************************************************
@@ -481,7 +501,7 @@ namespace etl
       }
 #endif
 
-      return buffer[i];
+      return p_buffer[i];
     } 
 
     //*********************************************************************
@@ -491,7 +511,7 @@ namespace etl
     //*********************************************************************
     reference operator[](size_t i)
     {
-      return buffer[i];
+      return p_buffer[i];
     }
 
     //*********************************************************************
@@ -501,7 +521,7 @@ namespace etl
     //*********************************************************************
     const_reference operator[](size_t i) const
     {
-      return buffer[i];
+      return p_buffer[i];
     } 
    
     //*********************************************************************
@@ -514,7 +534,7 @@ namespace etl
     {
       const size_t length = std::min(MAX_SIZE, other.size());
 
-      std::copy(other.begin(), other.begin() + length, buffer);
+      std::copy(other.begin(), other.begin() + length, p_buffer);
       current_size = length;
 
       return *this;
@@ -525,15 +545,15 @@ namespace etl
     //*********************************************************************
     /// Constructor.
     //*********************************************************************
-    ivector(T* buffer, size_t MAX_SIZE)
+    ivector(T* p_buffer, size_t MAX_SIZE)
       : vector_base(MAX_SIZE),
-        buffer(buffer)
+        p_buffer(p_buffer)
     {
     }
 
   private:
 
-    T* buffer;
+    T* p_buffer;
   };
 
   //***************************************************************************

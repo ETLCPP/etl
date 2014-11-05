@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_largest__
-#define __etl_largest__
+#ifndef __ETL_LARGEST__
+#define __ETL_LARGEST__
 
 ///\defgroup largest largest
 ///\ingroup utilities

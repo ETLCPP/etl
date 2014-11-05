@@ -26,12 +26,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_in_ivector_h__
+#ifndef __ETL_IN_IVECTOR_H__
 #error This header is a private element of etl::vector & etl::ivector
 #endif
 
-#ifndef __etl_vector_base__
-#define __etl_vector_base__
+#ifndef __ETL_VECTOR_BASE__
+#define __ETL_VECTOR_BASE__
 
 #include <cstddef>
 

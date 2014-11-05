@@ -26,9 +26,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_iqueue__
-#define __etl_iqueue__
-#define __etl_in_iqueue_h__
+#ifndef __ETL_IQUEUE__
+#define __ETL_IQUEUE__
+#define __ETL_IN_IQUEUE_H__
 
 #include <cstddef>
 
@@ -70,7 +70,7 @@ namespace etl
       if (!full())
       {
         buffer[in] = item;
-        in = (in == (MAX_SIZE - 1)) ? 0 : ++in;
+        in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
         ++current_size;
       }
 #ifdef ETL_USE_EXCEPTIONS
@@ -95,7 +95,7 @@ namespace etl
 
       if (!full())
       {
-        in = (in == (MAX_SIZE - 1)) ? 0 : ++in;
+        in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
         ++current_size;
       }
 #ifdef ETL_USE_EXCEPTIONS

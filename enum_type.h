@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_enum_type__
-#define __etl_enum_type__
+#ifndef __ETL_ENUM_TYPE__
+#define __ETL_ENUM_TYPE__
 
 ///\defgroup enum_type enum_type
 /// Smart enumerations.<br>
