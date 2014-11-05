@@ -15,7 +15,12 @@
 					<Add option="-std=c++11" />
 					<Add option="-g" />
 					<Add option="-DETL_USE_EXCEPTIONS" />
+					<Add option="-DUNITTEST_MINGW" />
 				</Compiler>
+				<ExtraCommands>
+					<Add after="bin\Debug\ETL.exe" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Release">
 				<Option output="bin/Release/ETL" prefix_auto="1" extension_auto="1" />
@@ -55,10 +60,6 @@
 		<Unit filename="../../../unittest-cpp/UnitTest++/HelperMacros.h" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/MemoryOutStream.cpp" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/MemoryOutStream.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/Posix/SignalTranslator.cpp" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/Posix/SignalTranslator.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/Posix/TimeHelpers.cpp" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/Posix/TimeHelpers.h" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/ReportAssert.cpp" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/ReportAssert.h" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/ReportAssertImpl.h" />
