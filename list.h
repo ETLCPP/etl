@@ -32,6 +32,7 @@ SOFTWARE.
 #include <cstddef>
 
 #include "ilist.h"
+#include "container.h"
 
 //*****************************************************************************
 ///\defgroup list list
@@ -39,7 +40,7 @@ SOFTWARE.
 ///\ingroup containers
 //*****************************************************************************
 
-namespace etl 
+namespace etl
 {
   //*************************************************************************
   /// A templated list implementation that uses a fixed size buffer.
@@ -109,11 +110,89 @@ namespace etl
       return *this;
     }
 
+    //*************************************************************************
+    /// Swap
+    //*************************************************************************
+    void swap(list& other)
+    {
+      // Re-align the node pointers for this list.
+      if (this->terminal_node.previous != 0)
+      {
+        size_t index = std::distance(&node_pool[0], this->terminal_node.previous);
+        this->terminal_node.previous = &node_pool[index];
+      }
+
+      if (this->terminal_node.next != 0)
+      {
+        size_t index = std::distance(&node_pool[0], this->terminal_node.next);
+        this->terminal_node.next = &node_pool[index];
+      }
+
+      for (size_t i = 0; i < MAX_SIZE; ++i)
+      {
+        typename ilist<T>::Data_Node& data_node = node_pool[i];
+
+        if (!data_node.is_free())
+        {
+          size_t index;
+
+          index = std::distance(&node_pool[0], data_node.previous);
+          data_node.previous = &other.node_pool[index];
+
+          index = std::distance(&node_pool[0], data_node.next);
+          data_node.next = &other.node_pool[index];
+        }
+      }
+
+      // Re-align the node pointers for the other list.
+      if (other.terminal_node.previous != 0)
+      {
+        size_t index = std::distance(&other.node_pool[0], other.terminal_node.previous);
+        other.terminal_node.previous = &other.node_pool[index];
+      }
+
+      if (other.terminal_node.next != 0)
+      {
+        size_t index = std::distance(&other.node_pool[0], other.terminal_node.next);
+        other.terminal_node.next = &other.node_pool[index];
+      }
+
+      for (size_t i = 0; i < MAX_SIZE; ++i)
+      {
+        typename ilist<T>::Data_Node& data_node = other.node_pool[i];
+
+        if (!data_node.is_free())
+        {
+          size_t index;
+
+          index = std::distance(&other.node_pool[0], data_node.previous);
+          data_node.previous = &node_pool[index];
+
+          index = std::distance(&other.node_pool[0], data_node.next);
+          data_node.next = &node_pool[index];
+        }
+      }
+
+      // Swap the data.
+      std::swap_ranges(etl::begin(node_pool), etl::end(node_pool), etl::begin(other.node_pool));
+      std::swap(this->next_free, other.next_free);
+      std::swap(this->count, other.count);
+    }
+
   private:
 
     /// The pool of nodes used in the list.
-    typename ilist<T>::Node node_pool[MAX_SIZE];
+    typename ilist<T>::Data_Node node_pool[MAX_SIZE];
   };
+
+  //*************************************************************************
+  /// Swap
+  //*************************************************************************
+  template <typename T, const size_t MAX_SIZE>
+  void swap(etl::list<T, MAX_SIZE>& first, etl::list<T, MAX_SIZE>& second)
+  {
+    first.swap(second);
+  }
 }
 
 #endif

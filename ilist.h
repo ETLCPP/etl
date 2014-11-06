@@ -56,6 +56,8 @@ namespace etl
     //*************************************************************************
     /// The node element in the list.
     //*************************************************************************
+    struct Data_Node;
+
     struct Node
     {
       Node()
@@ -80,15 +82,25 @@ namespace etl
         std::swap(previous, next);
       }
 
-      T     value;
-      Node* previous;
-      Node* next;
+      Data_Node* previous;
+      Data_Node* next;
     };
+
+    //*************************************************************************
+    /// The data node element in the list.
+    //*************************************************************************
+    struct Data_Node : public Node
+    {
+      T value;
+    };
+
+  protected:
+
+    Node terminal_node;  ///< The node that acts as the list start and end.
 
   private:
 
-    Node   terminal_node;  ///< The node that acts as the list start and end.
-    Node*  node_pool;      ///< The pool of nodes used in the list.
+    Data_Node* node_pool;      ///< The pool of data nodes used in the list.
 
   public:
 
@@ -113,7 +125,7 @@ namespace etl
       {
       }
 
-      iterator(Node& node)
+      iterator(Data_Node& node)
         : p_node(&node)
       {
       }
@@ -197,7 +209,7 @@ namespace etl
 
     private:
 
-      Node* p_node;
+      Data_Node* p_node;
     };
 
     //*************************************************************************
@@ -214,12 +226,12 @@ namespace etl
       {
       }
 
-      const_iterator(Node& node)
+      const_iterator(Data_Node& node)
         : p_node(&node)
       {
       }
 
-      const_iterator(const Node& node)
+      const_iterator(const Data_Node& node)
         : p_node(&node)
       {
       }
@@ -273,15 +285,15 @@ namespace etl
 
       const_pointer operator &() const
       {
-        return &(p_node->value);
+        return p_node->value;
       }
 
-      Node* operator ->()
+      Data_Node* operator ->()
       {
         return p_node;
       }
 
-      const Node* operator ->() const
+      const Data_Node* operator ->() const
       {
         return p_node;
       }
@@ -298,7 +310,7 @@ namespace etl
 
     private:
 
-      const Node* p_node;
+      const Data_Node* p_node;
     };
 
 		typedef typename std::iterator_traits<iterator>::difference_type difference_type;
@@ -335,7 +347,7 @@ namespace etl
     //*************************************************************************
     reverse_iterator rbegin()
     {
-      return reverse_iterator(terminal_node);
+      return reverse_iterator(static_cast<Data_Node&>(terminal_node));
     }
 
     //*************************************************************************
@@ -343,7 +355,7 @@ namespace etl
     //*************************************************************************
     const_reverse_iterator rbegin() const
     {
-      return const_reverse_iterator(terminal_node);
+      return const_reverse_iterator(static_cast<const Data_Node&>(terminal_node));
     }
 
     //*************************************************************************
@@ -351,7 +363,7 @@ namespace etl
     //*************************************************************************
     const_reverse_iterator crbegin() const
     {
-      return const_reverse_iterator(terminal_node);
+      return const_reverse_iterator(static_cast<const Data_Node&>(terminal_node));
     }
 
     //*************************************************************************
@@ -359,7 +371,7 @@ namespace etl
     //*************************************************************************
     iterator end()
     {
-        return iterator(terminal_node);
+      return iterator(static_cast<Data_Node&>(terminal_node));
     }
 
     //*************************************************************************
@@ -367,7 +379,7 @@ namespace etl
     //*************************************************************************
     const_iterator end() const
     {
-      return const_iterator(terminal_node);
+      return const_iterator(static_cast<const Data_Node&>(terminal_node));
     }
 
     //*************************************************************************
@@ -375,7 +387,7 @@ namespace etl
     //*************************************************************************
     const_iterator cend() const
     {
-      return const_iterator(terminal_node);
+      return const_iterator(static_cast<const Data_Node&>(terminal_node));
     }
 
     //*************************************************************************
@@ -484,10 +496,10 @@ namespace etl
             throw list_full();
           }
 #endif
-          Node& node = node_pool[i];
-          node.value = *first++;
-          join(*terminal_node.previous, node);
-          join(node, terminal_node);
+          Data_Node& data_node = node_pool[i];
+          data_node.value = *first++;
+          join(*terminal_node.previous, data_node);
+          join(data_node, terminal_node);
           ++i;
         }
 
@@ -518,10 +530,10 @@ namespace etl
         // Add all of the elements.
         while (i < n)
         {
-          Node& node = node_pool[i];
-          node.value = value;
-          join(*terminal_node.previous, node);
-          join(node, terminal_node);
+          Data_Node& data_node = node_pool[i];
+          data_node.value = value;
+          join(*terminal_node.previous, data_node);
+          join(data_node, terminal_node);
           ++i;
         }
 
@@ -550,9 +562,9 @@ namespace etl
     {
       if (!full())
       {
-        Node& node = node_pool[next_free];
+        Data_Node& data_node = node_pool[next_free];
 
-        insert_node(get_head(), node);
+        insert_node(get_head(), data_node);
       }
 #ifdef ETL_USE_EXCEPTIONS
       else
@@ -569,10 +581,10 @@ namespace etl
     {
       if (!full())
       {
-        Node& node  = node_pool[next_free];
-        node.value  = value;
+        Data_Node& data_node = node_pool[next_free];
+        data_node.value = value;
 
-        insert_node(get_head(), node);
+        insert_node(get_head(), data_node);
       }
 #ifdef ETL_USE_EXCEPTIONS
       else
@@ -589,9 +601,9 @@ namespace etl
     {
       if (!full())
       {
-        Node& node = node_pool[next_free];
+        Data_Node& data_node = node_pool[next_free];
 
-        insert_node(terminal_node, node);
+        insert_node(terminal_node, data_node);
       }
 #if ETL_USE_EXCEPTIONS
       else
@@ -608,10 +620,10 @@ namespace etl
     {
       if (!full())
       {
-        Node& node  = node_pool[next_free];
-        node.value  = value;
+        Data_Node& data_node = node_pool[next_free];
+        data_node.value = value;
 
-        insert_node(terminal_node, node);
+        insert_node(terminal_node, data_node);
       }
 #if ETL_USE_EXCEPTIONS
       else
@@ -706,12 +718,12 @@ namespace etl
     {
       if (!full())
       {
-        Node& node = node_pool[next_free];
-        node.value = value;
+        Data_Node& data_node = node_pool[next_free];
+        data_node.value = value;
 
-        insert_node(*position.p_node, node);
+        insert_node(*position.p_node, data_node);
 
-        return iterator(node);
+        return iterator(data_node);
       }
 #if ETL_USE_EXCEPTIONS
       else
@@ -736,10 +748,10 @@ namespace etl
         for (size_t i = 0; !full() && (i < n); ++i)
         {
           // Set up the next free node.
-          Node& node  = node_pool[next_free];
-          node.value  = value;
+          Data_Node& data_node = node_pool[next_free];
+          data_node.value = value;
 
-          insert_node(*position.p_node, node);
+          insert_node(*position.p_node, data_node);
         }
       }
 #if ETL_USE_EXCEPTIONS
@@ -761,10 +773,10 @@ namespace etl
         while (first != last)
         {
           // Set up the next free node.
-          Node& node = node_pool[next_free];
-          node.value = *first;
+          Data_Node& data_node = node_pool[next_free];
+          data_node.value = *first;
 
-          insert_node(*position.p_node, node);
+          insert_node(*position.p_node, data_node);
           ++first;
         }
       }
@@ -805,7 +817,7 @@ namespace etl
       while (p_first != p_last)
       {
         // Update the position of the earliest free node in the pool.
-        size_t new_free = std::distance(&node_pool[0], p_first);
+        size_t new_free = std::distance(&node_pool[0], static_cast<Data_Node*>(p_first));
         next_free       = std::min(next_free, new_free);
 
         // One less.
@@ -835,11 +847,11 @@ namespace etl
     template <typename TIsEqual>
     void unique(TIsEqual isEqual)
     {
-      Node* current = get_head().next;
+      Data_Node* current = get_head().next;
 
       while (current != &terminal_node)
       {
-        Node* next = current->next;
+        Data_Node* next = current->next;
         if (isEqual(current->previous->value, current->value))
         {
           remove_node(*current);
@@ -866,11 +878,11 @@ namespace etl
     template <typename TCompare>
     void sort(TCompare compare)
     {
-      Node* p_left;
-      Node* p_right;
-      Node* p_node;
-      Node* p_head;
-      Node* p_tail;
+      Data_Node* p_left;
+      Data_Node* p_right;
+      Data_Node* p_node;
+      Data_Node* p_head;
+      Data_Node* p_tail;
       int   list_size = 1;
       int   number_of_merges;
       int   left_size;
@@ -884,8 +896,8 @@ namespace etl
       while (true)
       {
         p_left = &get_head();
-        p_head = &terminal_node;
-        p_tail = &terminal_node;
+        p_head = &static_cast<Data_Node&>(terminal_node);
+        p_tail = &static_cast<Data_Node&>(terminal_node);
 
         number_of_merges = 0;  // Count the number of merges we do in this pass.
 
@@ -1021,7 +1033,7 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    ilist(Node* node_pool, size_t max_size_)
+    ilist(Data_Node* node_pool, size_t max_size_)
       : list_base(max_size_),
         node_pool(node_pool)
     {
@@ -1034,6 +1046,15 @@ namespace etl
     /// Join two nodes.
     //*************************************************************************
     void join(Node& left, Node& right)
+    {
+      left.next      = &static_cast<Data_Node&>(right);
+      right.previous = &static_cast<Data_Node&>(left);
+    }
+
+    //*************************************************************************
+    /// Join two nodes.
+    //*************************************************************************
+    void join(Data_Node& left, Data_Node& right)
     {
       left.next      = &right;
       right.previous = &left;
@@ -1084,7 +1105,7 @@ namespace etl
     //*************************************************************************
     /// Remove a node.
     //*************************************************************************
-    void remove_node(Node& node)
+    void remove_node(Data_Node& node)
     {
       // Update the position of the next free node in the pool.
       size_t new_free = std::distance(&node_pool[0], &node);
@@ -1101,33 +1122,33 @@ namespace etl
     //*************************************************************************
     /// Get the head node.
     //*************************************************************************
-    Node& get_head()
+    Data_Node& get_head()
     {
-      return *terminal_node.next;
+      return static_cast<Data_Node&>(*terminal_node.next);
     }
 
     //*************************************************************************
     /// Get the head node.
     //*************************************************************************
-    const Node& get_head() const
+    const Data_Node& get_head() const
     {
-      return *terminal_node.next;
+      return static_cast<Data_Node&>(*terminal_node.next);
     }
 
     //*************************************************************************
     /// Get the tail node.
     //*************************************************************************
-    Node& get_tail()
+    Data_Node& get_tail()
     {
-      return *terminal_node.previous;
+      return static_cast<Data_Node&>(*terminal_node.previous);
     }
 
     //*************************************************************************
     /// Get the tail node.
     //*************************************************************************
-    const Node& get_tail() const
+    const Data_Node& get_tail() const
     {
-      return *terminal_node.previous;
+      return static_cast<Data_Node&>(*terminal_node.previous);
     }
 
     //*************************************************************************
