@@ -847,6 +847,11 @@ namespace etl
     template <typename TIsEqual>
     void unique(TIsEqual isEqual)
     {
+      if (empty())
+      {
+        return;
+      }
+
       Data_Node* current = get_head().next;
 
       while (current != &terminal_node)
@@ -1152,7 +1157,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// initialise the list.
+    /// Initialise the list.
     //*************************************************************************
     void initialise()
     {
