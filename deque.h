@@ -46,6 +46,7 @@ namespace etl
 {
   //***************************************************************************
   /// A fixed capacity double ended queue.
+  ///\node The deque allocates one more element than the specified maximum size.
   ///\tparam T         The type of items this deque holds.
   ///\tparam MAX_SIZE_ The capacity of the deque
   ///\ingroup deque
@@ -120,7 +121,7 @@ namespace etl
     //*************************************************************************
     /// Swap
     //*************************************************************************
-    void swap(deque<T, MAX_SIZE>& other)
+    void swap(deque& other)
     {
       // Swap the internal iterators.
       this->first.swap(other.first);
@@ -136,15 +137,12 @@ namespace etl
     /// The buffer.
     T buffer[BUFFER_SIZE];
   };
-}
 
-namespace std
-{
   //*************************************************************************
   /// Swap
   //*************************************************************************
   template <typename T, const size_t MAX_SIZE>
-  void swap(etl::deque< T, MAX_SIZE>& first, etl::deque< T, MAX_SIZE>& second)
+  void swap(etl::deque<T, MAX_SIZE>& first, etl::deque< T, MAX_SIZE>& second)
   {
     first.swap(second);
   }

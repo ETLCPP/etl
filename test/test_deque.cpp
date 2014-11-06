@@ -122,7 +122,7 @@ namespace FixedDequeTest
 		}
 
     //*************************************************************************
-		TEST(StdSwap)
+		TEST(Swap)
 		{
       CompareData compare_data1 = { 1, 2, 3, 4, 5, 6 };
       CompareData compare_data2 = { 6, 5, 4 };
@@ -130,7 +130,7 @@ namespace FixedDequeTest
       Data data1(compare_data1.begin(), compare_data1.end());
       Data data2(compare_data2.begin(), compare_data2.end());
 
-      std::swap(data1, data2);
+      swap(data1, data2);
 
       CHECK_EQUAL(compare_data2.size(), data1.size());
       CHECK_EQUAL(compare_data1.size(), data2.size());

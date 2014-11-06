@@ -48,6 +48,7 @@ namespace
     InitialData unsorted_data;
     InitialData sorted_data;
     InitialData non_unique_data;
+    InitialData small_data;
 
     bool are_equal;
 
@@ -58,7 +59,8 @@ namespace
       {
         unsorted_data   = { 1, 0, 3, 2, 5, 4, 7, 6, 9, 8 };
         sorted_data     = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-        non_unique_data = { 0, 0, 1, 1, 2, 3, 3, 3, 4, 5  };
+        non_unique_data = { 0, 0, 1, 1, 2, 3, 3, 3, 4, 5 };
+        small_data      = { 0, 1, 2, 3, 4, 5 };
       }
     };
 
@@ -731,6 +733,21 @@ namespace
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
 
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, Swap)
+    {
+      Data first(unsorted_data.begin(), unsorted_data.end());
+      Data second(small_data.begin(),   small_data.end());
+
+      swap(first, second);
+
+      are_equal = std::equal(first.begin(), first.end(), small_data.begin());
+      CHECK(are_equal);
+
+      are_equal = std::equal(second.begin(), second.end(), unsorted_data.begin());
       CHECK(are_equal);
     }
   };

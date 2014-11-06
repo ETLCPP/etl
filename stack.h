@@ -30,18 +30,20 @@ SOFTWARE.
 #define __ETL_STACK__
 
 #include <cstddef>
+#include <algorithm>
 
 #include "istack.h"
+#include "container.h"
 
 //*****************************************************************************
 ///\defgroup stack stack
-/// A First-in / first-out stack with the capacity defined at compile time, 
+/// A First-in / first-out stack with the capacity defined at compile time,
 /// written in the STL style.
 ///\ingroup containers
 //*****************************************************************************
 
 namespace etl
-{ 
+{
   //***************************************************************************
   ///\ingroup stack
   /// A fixed capacity stack.
@@ -63,10 +65,29 @@ namespace etl
     {
     }
 
+    //*************************************************************************
+    /// Swap
+    //*************************************************************************
+    void swap(stack& other)
+    {
+      std::swap_ranges(etl::begin(buffer), etl::end(buffer), etl::begin(other.buffer));
+      std::swap(this->top_index, other.top_index);
+      std::swap(this->current_size, other.current_size);
+    }
+
   private:
 
     T buffer[SIZE]; ///< The internal buffer.
   };
+
+  //*************************************************************************
+  /// Swap
+  //*************************************************************************
+  template <typename T, const size_t MAX_SIZE>
+  void swap(etl::stack<T, MAX_SIZE>& first, etl::stack<T, MAX_SIZE>& second)
+  {
+    first.swap(second);
+  }
 }
 
 #endif

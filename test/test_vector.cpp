@@ -743,6 +743,27 @@ namespace
     }
 
     //*************************************************************************
+    TEST(Swap)
+    {
+      std::vector<int> first  = { 1, 2, 3, 4, 5, 6 };
+      std::vector<int> second = { 6, 5, 4 };
+
+      Data data1(first.begin(),  first.end());
+      Data data2(second.begin(), second.end());
+
+      swap(data1, data2);
+
+      CHECK_EQUAL(second.size(), data1.size());
+      CHECK_EQUAL(first.size(),  data2.size());
+
+      CHECK_EQUAL(std::distance(second.begin(), second.end()), std::distance(data1.begin(), data1.end()));
+      CHECK_EQUAL(std::distance(first.begin(),  first.end()),  std::distance(data2.begin(), data2.end()));
+
+      CHECK(std::equal(second.begin(), second.end(), data1.begin()));
+      CHECK(std::equal(first.begin(),  first.end(),  data2.begin()));
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, Equal)
     {
       const Data initial1(initial_data.begin(), initial_data.end());

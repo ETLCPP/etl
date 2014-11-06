@@ -32,17 +32,18 @@ SOFTWARE.
 #include <cstddef>
 
 #include "iqueue.h"
+#include "container.h"
 
 //*****************************************************************************
 ///\defgroup queue queue
-/// A First-in / first-out queue with the capacity defined at compile time, 
+/// A First-in / first-out queue with the capacity defined at compile time,
 /// written in the STL style.
 ///\note Uses a predefined array, so MAX_SIZE_ elements will be always be constructed.
 ///\ingroup containers
 //*****************************************************************************
 
 namespace etl
-{ 
+{
   //***************************************************************************
   ///\ingroup queue
   /// A fixed capacity queue.
@@ -63,10 +64,30 @@ namespace etl
     {
     }
 
+    //*************************************************************************
+    /// Swap
+    //*************************************************************************
+    void swap(queue& other)
+    {
+      std::swap_ranges(etl::begin(buffer), etl::end(buffer), etl::begin(other.buffer));
+      std::swap(this->in, other.in);
+      std::swap(this->out, other.out);
+      std::swap(this->current_size, other.current_size);
+    }
+
   private:
 
     T buffer[SIZE]; ///< The internal buffer.
   };
+
+  //*************************************************************************
+  /// Swap
+  //*************************************************************************
+  template <typename T, const size_t MAX_SIZE>
+  void swap(etl::queue<T, MAX_SIZE>& first, etl::queue<T, MAX_SIZE>& second)
+  {
+    first.swap(second);
+  }
 }
 
 #endif

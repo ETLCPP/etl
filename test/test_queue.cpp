@@ -26,6 +26,8 @@ SOFTWARE.
 
 #include <UnitTest++/UnitTest++.h>
 
+#include <queue>
+
 #include "../queue.h"
 
 namespace
@@ -296,6 +298,50 @@ namespace
       }
 
       CHECK(pass);
+    }
+
+    //*************************************************************************
+    TEST(Swap)
+    {
+      std::queue<int> compare1;
+      std::queue<int> compare2;
+      etl::queue<int, 4> queue1;
+      etl::queue<int, 4> stack2;
+
+      compare1.push(1);
+      compare1.push(2);
+      compare1.push(3);
+      compare1.push(4);
+
+      queue1.push(1);
+      queue1.push(2);
+      queue1.push(3);
+      queue1.push(4);
+
+      compare2.push(5);
+      compare2.push(6);
+
+      stack2.push(5);
+      stack2.push(6);
+
+      swap(queue1, stack2);
+
+      CHECK_EQUAL(compare2.size(), queue1.size());
+      CHECK_EQUAL(compare1.size(), stack2.size());
+
+      for (size_t i = 0; i < queue1.size(); ++i)
+      {
+        CHECK_EQUAL(compare2.front(), queue1.front());
+        compare2.pop();
+        queue1.pop();
+      }
+
+      for (size_t i = 0; i < stack2.size(); ++i)
+      {
+        CHECK_EQUAL(compare1.front(), stack2.front());
+        compare1.pop();
+        stack2.pop();
+      }
     }
   };
 }

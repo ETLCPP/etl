@@ -26,6 +26,8 @@ SOFTWARE.
 
 #include <UnitTest++/UnitTest++.h>
 
+#include <stack>
+
 #include "../stack.h"
 
 namespace
@@ -257,6 +259,50 @@ namespace
       }
 
       CHECK(pass);
+    }
+
+    //*************************************************************************
+    TEST(Swap)
+    {
+      std::stack<int> compare1;
+      std::stack<int> compare2;
+      etl::stack<int, 4> stack1;
+      etl::stack<int, 4> stack2;
+
+      compare1.push(1);
+      compare1.push(2);
+      compare1.push(3);
+      compare1.push(4);
+
+      stack1.push(1);
+      stack1.push(2);
+      stack1.push(3);
+      stack1.push(4);
+
+      compare2.push(5);
+      compare2.push(6);
+
+      stack2.push(5);
+      stack2.push(6);
+
+      swap(stack1, stack2);
+
+      CHECK_EQUAL(compare2.size(), stack1.size());
+      CHECK_EQUAL(compare1.size(), stack2.size());
+
+      for (size_t i = 0; i < stack1.size(); ++i)
+      {
+        CHECK_EQUAL(compare2.top(), stack1.top());
+        compare2.pop();
+        stack1.pop();
+      }
+
+      for (size_t i = 0; i < stack2.size(); ++i)
+      {
+        CHECK_EQUAL(compare1.top(), stack2.top());
+        compare1.pop();
+        stack2.pop();
+      }
     }
   };
 }

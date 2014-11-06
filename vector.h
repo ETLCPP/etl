@@ -33,6 +33,7 @@ SOFTWARE.
 #include <iterator>
 
 #include "ivector.h"
+#include "container.h"
 
 //*****************************************************************************
 ///\defgroup vector vector
@@ -108,11 +109,29 @@ namespace etl
 
       return *this;
     }
-		
+
+    //*************************************************************************
+    /// Swap
+    //*************************************************************************
+    void swap(vector& other)
+    {
+      std::swap_ranges(etl::begin(buffer), etl::end(buffer), etl::begin(other.buffer));
+      std::swap(this->current_size, other.current_size);
+    }
+
   private:
 
     T buffer[MAX_SIZE]; ///<The array that stores the elements.
   };
+
+  //*************************************************************************
+  /// Swap
+  //*************************************************************************
+  template <typename T, const size_t MAX_SIZE>
+  void swap(etl::vector<T, MAX_SIZE>& first, etl::vector<T, MAX_SIZE>& second)
+  {
+    first.swap(second);
+  }
 }
 
 #endif
