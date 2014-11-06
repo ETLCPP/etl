@@ -45,8 +45,7 @@ namespace etl
   //*************************************************************************
   /// A templated list implementation that uses a fixed size buffer.
   /// MAX_SIZE_ elements will be always be constructed.
-  /// The list will allocate one more element than 'MAX_SIZE'.
-  ///\note 'merge', 'swap' and 'splice' and are not supported.
+  ///\note 'merge' and 'splice' and are not supported.
   //*************************************************************************
   template <typename T, const size_t MAX_SIZE_>
   class list : public ilist<T>
