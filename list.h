@@ -117,13 +117,13 @@ namespace etl
       // Re-align the node pointers for this list.
       if (this->terminal_node.previous != 0)
       {
-        size_t index = std::distance(&node_pool[0], this->terminal_node.previous);
+        size_t index = std::distance(&node_pool[0], static_cast<Data_Node*>(this->terminal_node.previous));
         this->terminal_node.previous = &node_pool[index];
       }
 
       if (this->terminal_node.next != 0)
       {
-        size_t index = std::distance(&node_pool[0], this->terminal_node.next);
+        size_t index = std::distance(&node_pool[0], static_cast<Data_Node*>(this->terminal_node.next));
         this->terminal_node.next = &node_pool[index];
       }
 
@@ -135,10 +135,10 @@ namespace etl
         {
           size_t index;
 
-          index = std::distance(&node_pool[0], data_node.previous);
+          index = std::distance(&node_pool[0], static_cast<Data_Node*>(data_node.previous));
           data_node.previous = &other.node_pool[index];
 
-          index = std::distance(&node_pool[0], data_node.next);
+          index = std::distance(&node_pool[0], static_cast<Data_Node*>(data_node.next));
           data_node.next = &other.node_pool[index];
         }
       }
@@ -146,13 +146,13 @@ namespace etl
       // Re-align the node pointers for the other list.
       if (other.terminal_node.previous != 0)
       {
-        size_t index = std::distance(&other.node_pool[0], other.terminal_node.previous);
+        size_t index = std::distance(&other.node_pool[0], static_cast<Data_Node*>(other.terminal_node.previous));
         other.terminal_node.previous = &other.node_pool[index];
       }
 
       if (other.terminal_node.next != 0)
       {
-        size_t index = std::distance(&other.node_pool[0], other.terminal_node.next);
+        size_t index = std::distance(&other.node_pool[0], static_cast<Data_Node*>(other.terminal_node.next));
         other.terminal_node.next = &other.node_pool[index];
       }
 
@@ -164,10 +164,10 @@ namespace etl
         {
           size_t index;
 
-          index = std::distance(&other.node_pool[0], data_node.previous);
+          index = std::distance(&other.node_pool[0], static_cast<Data_Node*>(data_node.previous));
           data_node.previous = &node_pool[index];
 
-          index = std::distance(&other.node_pool[0], data_node.next);
+          index = std::distance(&other.node_pool[0], static_cast<Data_Node*>(data_node.next));
           data_node.next = &node_pool[index];
         }
       }
