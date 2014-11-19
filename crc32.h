@@ -31,6 +31,10 @@ SOFTWARE.
 
 #include <cstdint>
 
+#include "static_assert.h"
+#include "type_traits.h"
+#include "endian.h"
+
 ///\defgroup crc32 Thirty two bit CRC calculation
 ///\ingroup crc
 
@@ -46,6 +50,7 @@ namespace etl
   /// Calculates CRC32 using polynomial 0x04C11DB7.
   /// \ingroup crc32
   //***************************************************************************
+  template <const int ENDIANNESS = endian::little>
   class crc32
   {
   public:
@@ -86,17 +91,37 @@ namespace etl
     /// \return The CRC result.
     //*************************************************************************
     template<typename TValue>
-    void add(TValue value)
+    value_type add(TValue value)
     {
-      // How many steps in a value?
-      size_t steps = sizeof(TValue) / sizeof(uint8_t);
+      static_assert(is_integral<TValue>::value, "Non-integral parameter");
 
-      uint8_t* p_data = reinterpret_cast<uint8_t*>(&value);
-
-      for (size_t i = 0; i < steps; ++i)
+      if (ENDIANNESS == endian::little)
       {
-        crc = (crc >> 8) ^ CRC32[(crc ^ p_data[i]) & 0xFF];        
+        for (int i = 0; i < sizeof(TValue); ++i)
+        {
+          add(uint8_t((value >> (i * 8)) & 0xFF));
+        }
       }
+      else
+      {
+        for (int i = sizeof(TValue) - 1; i >= 0; --i)
+        {
+          add(uint8_t((value >> (i * 8)) & 0xFF));
+        }
+      }
+
+      return crc;
+    }
+
+    //*************************************************************************
+    /// \param value The uint8_t to add to the CRC.
+    /// \return The CRC result.
+    //*************************************************************************
+    value_type add(uint8_t value)
+    {
+      crc = (crc >> 8) ^ CRC32[(crc ^ value) & 0xFF];
+
+      return crc;
     }
 
     //*************************************************************************
@@ -105,13 +130,15 @@ namespace etl
     /// \return The CRC result.
     //*************************************************************************
     template<typename TIterator>
-    void add(TIterator begin, const TIterator end)
+    value_type add(TIterator begin, const TIterator end)
     {
       while (begin != end)
       {
         add(*begin);
         ++begin;
       }
+
+      return crc;
     }
 
     //*************************************************************************
@@ -120,6 +147,17 @@ namespace etl
     value_type value() const
     {
       return crc ^ 0xFFFFFFFF;
+    }
+
+    //*************************************************************************
+    /// \param value The value to add to the CRC.
+    //*************************************************************************
+    template<typename TValue>
+    crc32<ENDIANNESS>& operator +=(TValue value)
+    {
+      add(value);
+
+      return *this;
     }
 
     //*************************************************************************
