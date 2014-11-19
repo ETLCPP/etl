@@ -33,6 +33,8 @@ SOFTWARE.
 #include <cstddef>
 
 #include "stack_base.h"
+#include "type_traits.h"
+#include "parameter_type.h"
 
 namespace etl
 {
@@ -59,13 +61,19 @@ namespace etl
     typedef T*                    pointer;         ///< A pointer to the type used in the stack.
     typedef const T*              const_pointer;   ///< A const pointer to the type used in the stack.
 
+  private:
+
+    typedef typename parameter_type<T, is_fundamental<T>::value || is_pointer<T>::value>::type parameter_t;
+
+  public:
+
     //*************************************************************************
     /// Adds an item to the stack.
     /// If ETL_USE_EXCEPTIONS is defined, throws an etl::stack_full is the stack is already full,
     /// otherwise does nothing if full.
     ///\param item The item to push to the stack.
     //*************************************************************************
-    void push(const_reference item)
+    void push(parameter_t item)
     {
       if (!full())
       {

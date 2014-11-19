@@ -36,6 +36,8 @@ SOFTWARE.
 #include <cstddef>
 
 #include "vector_base.h"
+#include "type_traits.h"
+#include "parameter_type.h"
 
 namespace etl
 {
@@ -60,6 +62,12 @@ namespace etl
     typedef size_t                                size_type;
     typedef T                                     value_type;
     typedef typename std::iterator_traits<iterator>::difference_type difference_type;
+
+  protected:
+
+    typedef typename parameter_type<T, is_fundamental<T>::value || is_pointer<T>::value>::type parameter_t;
+
+  public:
 
     //*********************************************************************
     /// Returns an iterator to the beginning of the vector.
@@ -258,7 +266,7 @@ namespace etl
     ///\param n     The number of elements to add.
     ///\param value The value to insert for each element.
     //*********************************************************************
-    void assign(size_t n, const T& value)
+    void assign(size_t n, parameter_t value)
     {
       if (n > MAX_SIZE)
       {
@@ -279,7 +287,7 @@ namespace etl
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, const T& value)
+    iterator insert(iterator position, parameter_t value)
     {
       if (position == end())
       {
@@ -312,7 +320,7 @@ namespace etl
     ///\param n        The number of elements to add.
     ///\param value    The value to insert.
     //*********************************************************************
-    void insert(iterator position, size_t n, const T& value)
+    void insert(iterator position, size_t n, parameter_t value)
     {
       if ((current_size + n) > MAX_SIZE)
       {
@@ -359,7 +367,7 @@ namespace etl
     /// If ETL_USE_EXCEPTIONS is defined, throws vector_full if the vector is already full.
     ///\param value The value to add.
     //*********************************************************************
-    void push_back(const T& value)
+    void push_back(parameter_t value)
     {
       if (current_size == MAX_SIZE)
       {
@@ -509,7 +517,7 @@ namespace etl
     ///\param i The index.
     ///\return A reference to the value at index 'i'
     //*********************************************************************
-    reference operator[](size_t i)
+    reference operator [](size_t i)
     {
       return p_buffer[i];
     }
@@ -519,7 +527,7 @@ namespace etl
     ///\param i The index.
     ///\return A const reference to the value at index 'i'
     //*********************************************************************
-    const_reference operator[](size_t i) const
+    const_reference operator [](size_t i) const
     {
       return p_buffer[i];
     } 
