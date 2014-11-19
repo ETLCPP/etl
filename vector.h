@@ -81,7 +81,7 @@ namespace etl
     ///\param initialSize  The initial size of the vector.
     ///\param value        The value to fill the vector with.
     //*************************************************************************
-    vector(size_t initialSize, const T& value)
+    vector(size_t initialSize, typename ivector<T>::parameter_t value)
       :  ivector<T>(buffer, MAX_SIZE)
     {
       ivector<T>::resize(initialSize, value);

@@ -41,6 +41,8 @@ SOFTWARE.
 
 #include "nullptr.h"
 #include "list_base.h"
+#include "type_traits.h"
+#include "parameter_type.h"
 
 namespace etl
 {
@@ -51,8 +53,20 @@ namespace etl
   template <typename T>
   class ilist : public list_base
   {
+  public:
+
+    typedef T        value_type;
+    typedef T*       pointer;
+    typedef const T* const_pointer;
+    typedef T&       reference;
+    typedef const T& const_reference;
+    typedef size_t   size_type;
+
   protected:
     
+    typedef typename parameter_type<T, is_fundamental<T>::value || is_pointer<T>::value>::type parameter_t;
+
+
     //*************************************************************************
     /// The node element in the list.
     //*************************************************************************
@@ -145,13 +159,6 @@ namespace etl
     }
 
   public:
-
-    typedef T        value_type;
-    typedef T*       pointer;
-    typedef const T* const_pointer;
-    typedef T&       reference;
-    typedef const T& const_reference;
-    typedef size_t   size_type;
 
     //*************************************************************************
     /// iterator.
@@ -330,11 +337,6 @@ namespace etl
         return ilist::data_cast(p_node)->value;
       }
 
-      inline Data_Node* operator ->()
-      {
-        return p_node;
-      }
-
       inline const Data_Node* operator ->() const
       {
         return p_node;
@@ -361,6 +363,16 @@ namespace etl
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
     //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    inline ilist& operator = (const ilist& rhs)
+    {
+      assign(rhs.cbegin(), rhs.cend());
+
+      return *this;
+    }
+
+    //*************************************************************************
     /// Gets the beginning of the list.
     //*************************************************************************
     inline iterator begin()
@@ -374,38 +386,6 @@ namespace etl
     inline const_iterator begin() const
     {
       return const_iterator(get_head());
-    }
-
-    //*************************************************************************
-    /// Gets the beginning of the list.
-    //*************************************************************************
-    inline const_iterator cbegin() const
-    {
-      return const_iterator(get_head());
-    }
-
-    //*************************************************************************
-    /// Gets the reverse beginning of the list.
-    //*************************************************************************
-    inline reverse_iterator rbegin()
-    {
-      return reverse_iterator(terminal_node);
-    }
-
-    //*************************************************************************
-    /// Gets the reverse beginning of the list.
-    //*************************************************************************
-    inline const_reverse_iterator rbegin() const
-    {
-      return const_reverse_iterator(static_cast<const Data_Node&>(terminal_node));
-    }
-
-    //*************************************************************************
-    /// Gets the reverse beginning of the list.
-    //*************************************************************************
-    inline const_reverse_iterator crbegin() const
-    {
-      return const_reverse_iterator(static_cast<const Data_Node&>(terminal_node));
     }
 
     //*************************************************************************
@@ -425,11 +405,35 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Gets the beginning of the list.
+    //*************************************************************************
+    inline const_iterator cbegin() const
+    {
+      return const_iterator(get_head());
+    }
+
+    //*************************************************************************
     /// Gets the end of the list.
     //*************************************************************************
     inline const_iterator cend() const
     {
       return const_iterator(static_cast<const Data_Node&>(terminal_node));
+    }
+
+    //*************************************************************************
+    /// Gets the reverse beginning of the list.
+    //*************************************************************************
+    inline reverse_iterator rbegin()
+    {
+      return reverse_iterator(terminal_node);
+    }
+
+    //*************************************************************************
+    /// Gets the reverse beginning of the list.
+    //*************************************************************************
+    inline const_reverse_iterator rbegin() const
+    {
+      return const_reverse_iterator(static_cast<const Data_Node&>(terminal_node));
     }
 
     //*************************************************************************
@@ -441,11 +445,11 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the reverse end of the list.
+    /// Gets the reverse beginning of the list.
     //*************************************************************************
-    inline const_reverse_iterator rend() const
+    inline const_reverse_iterator crbegin() const
     {
-      return const_reverse_iterator(get_head());
+      return const_reverse_iterator(static_cast<const Data_Node&>(terminal_node));
     }
 
     //*************************************************************************
@@ -454,24 +458,6 @@ namespace etl
     inline const_reverse_iterator crend() const
     {
       return const_reverse_iterator(get_head());
-    }
-
-    //*************************************************************************
-    /// Assignment operator.
-    //*************************************************************************
-    inline ilist& operator = (const ilist& rhs)
-    {
-      assign(rhs.cbegin(), rhs.cend());
-
-      return *this;
-    }
-
-    //*************************************************************************
-    /// Clears the list.
-    //*************************************************************************
-    inline void clear()
-    {
-      initialise();
     }
 
     //*************************************************************************
@@ -550,7 +536,7 @@ namespace etl
     //*************************************************************************
     /// Assigns 'n' copies of a value to the list.
     //*************************************************************************
-    void assign(size_t n, const_reference value)
+    void assign(size_t n, parameter_t value)
     {
       // Reset the links.
       join(terminal_node, terminal_node);
@@ -606,7 +592,7 @@ namespace etl
     //*************************************************************************
     /// Pushes a value to the front of the list.
     //*************************************************************************
-    void push_front(const_reference value)
+    void push_front(parameter_t value)
     {
       if (!full())
       {
@@ -620,6 +606,17 @@ namespace etl
         throw list_full();
       }
 #endif
+    }
+
+    //*************************************************************************
+    /// Removes a value from the front of the list.
+    //*************************************************************************
+    void pop_front()
+    {
+      if (!empty())
+      {
+        remove_node(get_head());
+      }
     }
 
     //*************************************************************************
@@ -643,7 +640,7 @@ namespace etl
     //*************************************************************************
     /// Pushes a value to the back of the list..
     //*************************************************************************
-    void push_back(const_reference value)
+    void push_back(parameter_t value)
     {
       if (!full())
       {
@@ -660,17 +657,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Removes a value from the front of the list.
-    //*************************************************************************
-    void pop_front()
-    {
-      if (!empty())
-      {
-        remove_node(get_head());
-      }
-    }
-
-    //*************************************************************************
     /// Removes a value from the back of the list.
     //*************************************************************************
     void pop_back()
@@ -679,64 +665,6 @@ namespace etl
       {
         remove_node(get_tail());
       }
-    }
-
-    //*************************************************************************
-    /// Resizes the list.
-    //*************************************************************************
-    void resize(size_t n)
-    {
-        resize(n, T());
-    }
-
-    //*************************************************************************
-    /// Resizes the list.
-    //*************************************************************************
-    void resize(size_t n, T value)
-    {
-      if (n > MAX_SIZE)
-      {
-#if ETL_USE_EXCEPTIONS
-        throw list_full();
-#else
-        n = MAX_SIZE;
-#endif
-      }
-
-      // Smaller?
-      if (n < size())
-      {
-        iterator i_start = end();
-        std::advance(i_start, -difference_type(size() - n));
-        erase(i_start, end());
-      }
-      // Larger?
-      else if (n > size())
-      {
-        insert(end(), n - size(), value);
-      }
-    }
-
-    //*************************************************************************
-    /// Reverses the list.
-    //*************************************************************************
-    void reverse()
-    {
-      if (is_trivial_list())
-      {
-        return;
-      }
-
-      iterator i_item = begin();
-
-      while (i_item != end())
-      {
-        i_item.p_node->reverse();
-        --i_item; // Now we've reversed it, we must decrement it.
-      }
-
-      // Terminal node.
-      i_item.p_node->reverse();
     }
 
     //*************************************************************************
@@ -854,6 +782,91 @@ namespace etl
       }
 
       return last;
+    }
+
+    //*************************************************************************
+    /// Resizes the list.
+    //*************************************************************************
+    void resize(size_t n)
+    {
+      resize(n, T());
+    }
+
+    //*************************************************************************
+    /// Resizes the list.
+    //*************************************************************************
+    void resize(size_t n, T value)
+    {
+      if (n > MAX_SIZE)
+      {
+#if ETL_USE_EXCEPTIONS
+        throw list_full();
+#else
+        n = MAX_SIZE;
+#endif
+      }
+
+      // Smaller?
+      if (n < size())
+      {
+        iterator i_start = end();
+        std::advance(i_start, -difference_type(size() - n));
+        erase(i_start, end());
+      }
+      // Larger?
+      else if (n > size())
+      {
+        insert(end(), n - size(), value);
+      }
+    }
+
+    //*************************************************************************
+    /// Clears the list.
+    //*************************************************************************
+    inline void clear()
+    {
+      initialise();
+    }
+
+    //*************************************************************************
+    // Removes the values specified.
+    //*************************************************************************
+    void remove(const value_type& value)
+    {
+      iterator iValue = begin();
+
+      while (iValue != end())
+      {
+        if (value == *iValue)
+        {
+          iValue = erase(iValue);
+        }
+        else
+        {
+          ++iValue;
+        }
+      }
+    }
+
+    //*************************************************************************
+    /// Removes according to a predicate.
+    //*************************************************************************
+    template <typename TPredicate>
+    void remove_if(TPredicate predicate)
+    {
+      iterator iValue = begin();
+
+      while (iValue != end())
+      {
+        if (predicate(*iValue))
+        {
+          iValue = erase(iValue);
+        }
+        else
+        {
+          ++iValue;
+        }
+      }
     }
 
     //*************************************************************************
@@ -1018,44 +1031,25 @@ namespace etl
     }
 
     //*************************************************************************
-    // Removes the values specified.
+    /// Reverses the list.
     //*************************************************************************
-    void remove(const value_type& value)
+    void reverse()
     {
-      iterator iValue = begin();
-
-      while (iValue != end())
+      if (is_trivial_list())
       {
-        if (value == *iValue)
-        {
-          iValue = erase(iValue);
-        }
-        else
-        {
-          ++iValue;
-        }
+        return;
       }
-    }
 
-    //*************************************************************************
-    /// Removes according to a predicate.
-    //*************************************************************************
-    template <typename TPredicate>
-    void remove_if(TPredicate predicate)
-    {
-      iterator iValue = begin();
+      iterator i_item = begin();
 
-      while (iValue != end())
+      while (i_item != end())
       {
-        if (predicate(*iValue))
-        {
-          iValue = erase(iValue);
-        }
-        else
-        {
-          ++iValue;
-        }
+        i_item.p_node->reverse();
+        --i_item; // Now we've reversed it, we must decrement it.
       }
+
+      // Terminal node.
+      i_item.p_node->reverse();
     }
 
   protected:

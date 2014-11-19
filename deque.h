@@ -102,7 +102,7 @@ namespace etl
     //*************************************************************************
     /// Assigns data to the deque.
     //*************************************************************************
-    explicit deque(size_t n, const value_type& value = value_type())
+    explicit deque(size_t n, typename ideque<T>::parameter_t value = value_type())
       : ideque<T>(&buffer[0], MAX_SIZE, BUFFER_SIZE)
     {
       ideque<T>::assign(n, value);

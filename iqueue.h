@@ -33,6 +33,8 @@ SOFTWARE.
 #include <cstddef>
 
 #include "queue_base.h"
+#include "type_traits.h"
+#include "parameter_type.h"
 
 namespace etl
 {
@@ -57,7 +59,13 @@ namespace etl
     typedef T&                    reference;       ///< A reference to the type used in the queue.
     typedef const T&              const_reference; ///< A const reference to the type used in the queue.
     typedef T*                    pointer;         ///< A pointer to the type used in the queue.
-    typedef const T*              const_pointer;   ///< A const pointer to the type used in the queue.
+    typedef const T*              const_pointer;   ///< A const pointer to the type used in the qu
+
+  private:
+
+    typedef typename parameter_type<T, is_fundamental<T>::value || is_pointer<T>::value>::type parameter_t;
+
+  public:
 
     //*************************************************************************
     /// Adds an item to the queue.
@@ -65,7 +73,7 @@ namespace etl
     /// otherwise does nothing if full.
     ///\param item The item to push to the queue.
     //*************************************************************************
-    void push(const_reference item)
+    void push(parameter_t item)
     {
       if (!full())
       {

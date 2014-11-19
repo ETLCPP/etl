@@ -35,6 +35,7 @@ SOFTWARE.
 
 #include "type_traits.h"
 #include "deque_base.h"
+#include "parameter_type.h"
 
 namespace etl
 {
@@ -48,15 +49,17 @@ namespace etl
   {
   public:
 
-    typedef T*       pointer;
-    typedef const T* const_pointer;
+    typedef T        value_type;
+    typedef size_t   size_type;
     typedef T&       reference;
     typedef const T& const_reference;
-    typedef size_t   size_type;
-    typedef T        value_type;
+    typedef T*       pointer;
+    typedef const T* const_pointer;
     typedef typename std::iterator_traits<pointer>::difference_type difference_type;
 
-  private:
+  protected:
+
+    typedef typename parameter_type<T, is_fundamental<T>::value || is_pointer<T>::value>::type parameter_t;
 
     //*************************************************************************
     /// Test for an iterator.
@@ -453,109 +456,13 @@ namespace etl
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
     //*************************************************************************
-    /// Clears the deque.
+    /// Assignment operator.
     //*************************************************************************
-    void clear()
+    ideque& operator =(const ideque& other)
     {
-      first = iterator(0, *this, p_buffer);
-      last  = iterator(0, *this, p_buffer);
-      current_size  = 0;
-    }
+      assign(other.begin(), other.end());
 
-    //*************************************************************************
-    /// Gets an iterator to the beginning of the deque.
-    //*************************************************************************
-    iterator begin()
-    {
-      return first;
-    }
-
-    //*************************************************************************
-    /// Gets an iterator to the end of the deque.
-    //*************************************************************************
-    iterator end()
-    {
-      return ++iterator(last);
-    }
-
-    //*************************************************************************
-    /// Gets a const iterator to the beginning of the deque.
-    //*************************************************************************
-    const_iterator begin() const
-    {
-      return first;
-    }
-
-    //*************************************************************************
-    /// Gets a const iterator to the end of the deque.
-    //*************************************************************************
-    const_iterator end() const
-    {
-      return ++iterator(last);
-    }
-
-    //*************************************************************************
-    /// Gets a const iterator to the beginning of the deque.
-    //*************************************************************************
-    const_iterator cbegin() const
-    {
-      return first;
-    }
-
-    //*************************************************************************
-    /// Gets a const iterator to the end of the deque.
-    //*************************************************************************
-    const_iterator cend() const
-    {
-      return ++const_iterator(last);
-    }
-
-    //*************************************************************************
-    /// Gets a reverse iterator to the end of the deque.
-    //*************************************************************************
-    reverse_iterator rbegin()
-    {
-      return reverse_iterator(end());
-    }
-
-    //*************************************************************************
-    /// Gets a reverse iterator to the beginning of the deque.
-    //*************************************************************************
-    reverse_iterator rend()
-    {
-      return reverse_iterator(begin());
-    }
-
-    //*************************************************************************
-    /// Gets a const reverse iterator to the end of the deque.
-    //*************************************************************************
-    const_reverse_iterator rbegin() const
-    {
-      return const_reverse_iterator(end());
-    }
-
-    //*************************************************************************
-    /// Gets a const reverse iterator to the beginning of the deque.
-    //*************************************************************************
-    const_reverse_iterator rend() const
-    {
-      return const_reverse_iterator(begin());
-    }
-
-    //*************************************************************************
-    /// Gets a const reverse iterator to the end of the deque.
-    //*************************************************************************
-    const_reverse_iterator crbegin() const
-    {
-      return const_reverse_iterator(cend());
-    }
-
-    //*************************************************************************
-    /// Gets a const reverse iterator to the beginning of the deque.
-    //*************************************************************************
-    const_reverse_iterator crend() const
-    {
-      return const_reverse_iterator(cbegin());
+      return *this;
     }
 
     //*************************************************************************
@@ -563,7 +470,7 @@ namespace etl
     //*************************************************************************
     template<typename TIterator>
     typename etl::enable_if<is_iterator<TIterator>::value, void>::type
-    assign(TIterator range_begin, TIterator range_end)
+      assign(TIterator range_begin, TIterator range_end)
     {
       clear();
 
@@ -593,170 +500,74 @@ namespace etl
       std::fill_n(p_buffer, n, value);
 
       first.index = 0;
-      last.index  = n - 1;
-      current_size        = n;
+      last.index = n - 1;
+      current_size = n;
     }
 
     //*************************************************************************
-    /// Resizes the deque.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_full is 'new_size' is too large.
-    ///\param new_size The new size of the deque.
-    ///\param value   The value to assign if the new size is larger. Default = Default constructed value.
+    /// Gets a reference to the item at the index.
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_out_of_bounds if the index is out of range.
+    ///\return A reference to the item at the index.
     //*************************************************************************
-    void resize(size_t new_size, const value_type& value = value_type())
+    reference at(size_t index)
     {
-      if (new_size <= MAX_SIZE)
-      {
-        // Make it smaller?
-        if (new_size < current_size)
-        {
-          last -= (current_size - new_size);
-        }
-        // Make it larger?
-        else if (new_size > current_size)
-        {
-          size_t count = new_size - current_size;
-
-          for (size_t i = 0; i < count; ++i)
-          {
-            *(++last) = value;
-          }
-        }
-
-        current_size = new_size;
-      }
 #ifdef ETL_USE_EXCEPTIONS
-      else
+      if (index >= current_size)
       {
         throw deque_out_of_bounds();
       }
 #endif
+
+      iterator result(first);
+      result += index;
+
+      return *result;
     }
 
     //*************************************************************************
-    /// Adds an item to the front of the deque.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_full is the deque is already full.
-    ///\param item The item to push to the deque.
+    /// Gets a const reference to the item at the index.
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_out_of_bounds if the index is out of range.
+    ///\return A const reference to the item at the index.
     //*************************************************************************
-    void push_front(const_reference item)
+    const_reference at(size_t index) const
     {
-      if (!full())
-      {
-        if (!empty())
-        {
-          --first;
-        }
-
-        *first = item;
-        ++current_size;
-      }
 #ifdef ETL_USE_EXCEPTIONS
-      else
+      if (index >= current_size)
       {
-        throw deque_full();
-      }
-#endif
-    }
-
-    //*************************************************************************
-    /// Adds one to the front of the deque and returns a reference to the new element.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_full is the deque is already full.
-    ///\return A reference to the item to assign to.
-    //*************************************************************************
-    reference push_front()
-    {
-      if (!full())
-      {
-        if (!empty())
-        {
-          --first;
-        }
-
-        ++current_size;
-      }
-#ifdef ETL_USE_EXCEPTIONS
-      else
-      {
-        throw deque_full();
+        throw deque_out_of_bounds();
       }
 #endif
 
-      return *first;
+      iterator result(first);
+      result += index;
+
+      return *result;
+    }
+    
+    //*************************************************************************
+    /// Gets a reference to the item at the index.
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_out_of_bounds if the index is out of range.
+    ///\return A reference to the item at the index.
+    //*************************************************************************
+    reference operator [](size_t index)
+    {
+      iterator result(first);
+      result += index;
+
+      return *result;
     }
 
     //*************************************************************************
-    /// Adds an item to the back of the deque.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_full is the deque is already full.
-    ///\param "item The item to push to the deque.
+    /// Gets a const reference to the item at the index.
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_out_of_bounds if the index is out of range.
+    ///\return A const reference to the item at the index.
     //*************************************************************************
-    void push_back(const_reference item)
+    const_reference operator [](size_t index) const
     {
-      if (!full())
-      {
-        if (!empty())
-        {
-          ++last;
-        }
+      iterator result(first);
+      result += index;
 
-        *last = item;
-        ++current_size;
-      }
-#ifdef ETL_USE_EXCEPTIONS
-      else
-      {
-        throw deque_full();
-      }
-#endif
-    }
-
-    //*************************************************************************
-    /// Adds one to the front of the deque and returns a reference to the new element.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_full is the deque is already full.
-    ///\return A reference to the item to assign to.
-    //*************************************************************************
-    reference push_back()
-    {
-      if (!full())
-      {
-        if (!empty())
-        {
-          ++last;
-        }
-
-        ++current_size;
-      }
-#ifdef ETL_USE_EXCEPTIONS
-      else
-      {
-        throw deque_full();
-      }
-#endif
-
-      return *last;
-    }
-
-    //*************************************************************************
-    /// Removes the oldest item from the deque.
-    //*************************************************************************
-    void pop_front()
-    {
-      if (!empty())
-      {
-        ++first;
-        --current_size;
-      }
-    }
-
-    //*************************************************************************
-    /// Removes the oldest item from the deque.
-    //*************************************************************************
-    void pop_back()
-    {
-      if (!empty())
-      {
-        --last;
-        --current_size;
-      }
+      return *result;
     }
 
     //*************************************************************************
@@ -828,43 +639,109 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets a reference to the item at the index.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_out_of_bounds if the index is out of range.
-    ///\return A reference to the item at the index.
+    /// Gets an iterator to the beginning of the deque.
     //*************************************************************************
-    reference operator [](size_t index)
+    iterator begin()
     {
-#ifdef ETL_USE_EXCEPTIONS
-      if (index >= current_size)
-      {
-        throw deque_out_of_bounds();
-      }
-#endif
-
-      iterator result(first);
-      result += index;
-
-      return *result;
+      return first;
     }
 
     //*************************************************************************
-    /// Gets a const reference to the item at the index.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_out_of_bounds if the index is out of range.
-    ///\return A const reference to the item at the index.
+    /// Gets a const iterator to the beginning of the deque.
     //*************************************************************************
-    const_reference operator [](size_t index) const
+    const_iterator begin() const
     {
-#ifdef ETL_USE_EXCEPTIONS
-      if (index >= current_size)
-      {
-        throw deque_out_of_bounds();
-      }
-#endif
+      return first;
+    }
+    
+    //*************************************************************************
+    /// Gets a const iterator to the beginning of the deque.
+    //*************************************************************************
+    const_iterator cbegin() const
+    {
+      return first;
+    }
 
-      iterator result(first);
-      result += index;
+    //*************************************************************************
+    /// Gets an iterator to the end of the deque.
+    //*************************************************************************
+    iterator end()
+    {
+      return ++iterator(last);
+    }
 
-      return *result;
+    //*************************************************************************
+    /// Gets a const iterator to the end of the deque.
+    //*************************************************************************
+    const_iterator end() const
+    {
+      return ++iterator(last);
+    }
+
+    //*************************************************************************
+    /// Gets a const iterator to the end of the deque.
+    //*************************************************************************
+    const_iterator cend() const
+    {
+      return ++const_iterator(last);
+    }
+
+    //*************************************************************************
+    /// Gets a reverse iterator to the end of the deque.
+    //*************************************************************************
+    reverse_iterator rbegin()
+    {
+      return reverse_iterator(end());
+    }
+
+    //*************************************************************************
+    /// Gets a const reverse iterator to the end of the deque.
+    //*************************************************************************
+    const_reverse_iterator rbegin() const
+    {
+      return const_reverse_iterator(end());
+    }
+
+    //*************************************************************************
+    /// Gets a const reverse iterator to the end of the deque.
+    //*************************************************************************
+    const_reverse_iterator crbegin() const
+    {
+      return const_reverse_iterator(cend());
+    }
+
+    //*************************************************************************
+    /// Gets a reverse iterator to the beginning of the deque.
+    //*************************************************************************
+    reverse_iterator rend()
+    {
+      return reverse_iterator(begin());
+    }
+
+    //*************************************************************************
+    /// Gets a const reverse iterator to the beginning of the deque.
+    //*************************************************************************
+    const_reverse_iterator rend() const
+    {
+      return const_reverse_iterator(begin());
+    }
+
+    //*************************************************************************
+    /// Gets a const reverse iterator to the beginning of the deque.
+    //*************************************************************************
+    const_reverse_iterator crend() const
+    {
+      return const_reverse_iterator(cbegin());
+    }
+   
+    //*************************************************************************
+    /// Clears the deque.
+    //*************************************************************************
+    void clear()
+    {
+      first = iterator(0, *this, p_buffer);
+      last  = iterator(0, *this, p_buffer);
+      current_size = 0;
     }
 
     //*************************************************************************
@@ -1177,7 +1054,7 @@ namespace etl
             position += length;
           }
           else
-            // Must be closer to the back.
+          // Must be closer to the back.
           {
             // Move the items.
             std::copy(position + length, last + 1, position);
@@ -1198,13 +1075,173 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Assignment operator.
+    /// Adds an item to the back of the deque.
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_full is the deque is already full.
+    ///\param item The item to push to the deque.
     //*************************************************************************
-    ideque& operator =(const ideque& other)
+    void push_back(parameter_t item)
     {
-      assign(other.begin(), other.end());
+      if (!full())
+      {
+        if (!empty())
+        {
+          ++last;
+        }
 
-      return *this;
+        *last = item;
+        ++current_size;
+      }
+#ifdef ETL_USE_EXCEPTIONS
+      else
+      {
+        throw deque_full();
+      }
+#endif
+    }
+
+    //*************************************************************************
+    /// Adds one to the front of the deque and returns a reference to the new element.
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_full is the deque is already full.
+    ///\return A reference to the item to assign to.
+    //*************************************************************************
+    reference push_back()
+    {
+      if (!full())
+      {
+        if (!empty())
+        {
+          ++last;
+        }
+
+        ++current_size;
+      }
+#ifdef ETL_USE_EXCEPTIONS
+      else
+      {
+        throw deque_full();
+      }
+#endif
+
+      return *last;
+    }
+
+    //*************************************************************************
+    /// Removes the oldest item from the deque.
+    //*************************************************************************
+    void pop_back()
+    {
+      if (!empty())
+      {
+        --current_size;
+
+        if (!empty())
+        {
+          --last;
+        }
+      }
+    }
+
+    //*************************************************************************
+    /// Adds an item to the front of the deque.
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_full is the deque is already full.
+    ///\param item The item to push to the deque.
+    //*************************************************************************
+    void push_front(parameter_t item)
+    {
+      if (!full())
+      {
+        if (!empty())
+        {
+          --first;
+        }
+
+        *first = item;
+        ++current_size;
+      }
+#ifdef ETL_USE_EXCEPTIONS
+      else
+      {
+        throw deque_full();
+      }
+#endif
+    }
+
+    //*************************************************************************
+    /// Adds one to the front of the deque and returns a reference to the new element.
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_full is the deque is already full.
+    ///\return A reference to the item to assign to.
+    //*************************************************************************
+    reference push_front()
+    {
+      if (!full())
+      {
+        if (!empty())
+        {
+          --first;
+        }
+
+        ++current_size;
+      }
+#ifdef ETL_USE_EXCEPTIONS
+      else
+      {
+        throw deque_full();
+      }
+#endif
+
+      return *first;
+    }
+
+    //*************************************************************************
+    /// Removes the oldest item from the deque.
+    //*************************************************************************
+    void pop_front()
+    {
+      if (!empty())
+      {
+        --current_size;
+
+        if (!empty())
+        {
+          ++first;
+        }
+      }
+    }
+
+    //*************************************************************************
+    /// Resizes the deque.
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_full is 'new_size' is too large.
+    ///\param new_size The new size of the deque.
+    ///\param value   The value to assign if the new size is larger. Default = Default constructed value.
+    //*************************************************************************
+    void resize(size_t new_size, const value_type& value = value_type())
+    {
+      if (new_size <= MAX_SIZE)
+      {
+        // Make it smaller?
+        if (new_size < current_size)
+        {
+          last -= (current_size - new_size);
+        }
+        // Make it larger?
+        else if (new_size > current_size)
+        {
+          size_t count = new_size - current_size;
+
+          for (size_t i = 0; i < count; ++i)
+          {
+            *(++last) = value;
+          }
+        }
+
+        current_size = new_size;
+      }
+#ifdef ETL_USE_EXCEPTIONS
+      else
+      {
+        throw deque_out_of_bounds();
+      }
+#endif
     }
 
     //*************************************************************************
@@ -1239,37 +1276,21 @@ namespace etl
       return distance(lhs.base(), rhs.base());
     }
 
-    //*************************************************************************
-    /// Equality operator.
-    //*************************************************************************
-    friend bool operator ==(const ideque& lhs, const ideque& rhs)
-    {
-      return (lhs.size() == rhs.size()) && std::equal(lhs.begin(), lhs.end(), rhs.begin());
-    }
-
-    //*************************************************************************
-    /// Inequality operator.
-    //*************************************************************************
-    friend bool operator !=(const ideque& lhs, const ideque& rhs)
-    {
-      return !(lhs == rhs);
-    }
-
   protected:
 
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    ideque(T* p_buffer, size_t max_size, size_t buffer_size)
+    ideque(pointer p_buffer, size_t max_size, size_t buffer_size)
       : deque_base(max_size, buffer_size),
         p_buffer(p_buffer)
     {
       clear();
     }
 
-    iterator first; ///Iterator to the first item in the deque.
-    iterator last;  ///Iterator to the last item in the deque.
-    T* p_buffer;    ///The buffer.
+    iterator first;    ///Iterator to the first item in the deque.
+    iterator last;     ///Iterator to the last item in the deque.
+    pointer  p_buffer; ///The buffer for the deque.
 
   private:
 
@@ -1289,11 +1310,11 @@ namespace etl
     /// Measures the distance from the first iterator to the specified iterator.
     //*************************************************************************
     template <typename TIterator>
-    static difference_type distance(const TIterator& it)
+    static difference_type distance(const TIterator& other)
     {
-      const difference_type index           = it.get_index();
-      const difference_type reference_index = it.get_deque().first.index;
-      const size_t buffer_size              = it.get_deque().BUFFER_SIZE;
+      const difference_type index           = other.get_index();
+      const difference_type reference_index = other.get_deque().first.index;
+      const size_t buffer_size              = other.get_deque().BUFFER_SIZE;
 
       if (index < reference_index)
       {
@@ -1309,8 +1330,8 @@ namespace etl
 
 //***************************************************************************
 /// Equal operator.
-///\param lhs  Reference to the first array.
-///\param rhs  Reference to the second array.
+///\param lhs  Reference to the first deque.
+///\param rhs  Reference to the second deque.
 ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
 ///\ingroup deque
 //***************************************************************************
@@ -1322,8 +1343,8 @@ bool operator ==(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
 
 //***************************************************************************
 /// Not equal operator.
-///\param lhs  Reference to the first array.
-///\param rhs  Reference to the second array.
+///\param lhs  Reference to the first deque.
+///\param rhs  Reference to the second deque.
 ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
 ///\ingroup deque
 //***************************************************************************
@@ -1335,9 +1356,9 @@ bool operator !=(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
 
 //***************************************************************************
 /// Less than operator.
-///\param lhs  Reference to the first array.
-///\param rhs  Reference to the second array.
-///\return <b>true</b> if the first array is lexigraphically less than the second, otherwise <b>false</b>
+///\param lhs  Reference to the first deque.
+///\param rhs  Reference to the second deque.
+///\return <b>true</b> if the first deque is lexigraphically less than the second, otherwise <b>false</b>
 ///\ingroup deque
 //***************************************************************************
 template <typename T>
@@ -1350,10 +1371,23 @@ bool operator <(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
 }
 
 //***************************************************************************
+/// Less than or equal operator.
+///\param lhs  Reference to the first deque.
+///\param rhs  Reference to the second deque.
+///\return <b>true</b> if the first deque is lexigraphically less than or equal to the second, otherwise <b>false</b>
+///\ingroup deque
+//***************************************************************************
+template <typename T>
+bool operator <=(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
+{
+  return !operator >(lhs, rhs);
+}
+
+//***************************************************************************
 /// Greater than operator.
-///\param lhs  Reference to the first array.
-///\param rhs  Reference to the second array.
-///\return <b>true</b> if the first array is lexigraphically greater than the second, otherwise <b>false</b>
+///\param lhs  Reference to the first deque.
+///\param rhs  Reference to the second deque.
+///\return <b>true</b> if the first deque is lexigraphically greater than the second, otherwise <b>false</b>
 ///\ingroup deque
 //***************************************************************************
 template <typename T>
@@ -1367,23 +1401,10 @@ bool operator >(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
 }
 
 //***************************************************************************
-/// Less than or equal operator.
-///\param lhs  Reference to the first array.
-///\param rhs  Reference to the second array.
-///\return <b>true</b> if the first array is lexigraphically less than or equal to the second, otherwise <b>false</b>
-///\ingroup deque
-//***************************************************************************
-template <typename T>
-bool operator <=(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
-{
-  return !operator >(lhs, rhs);
-}
-
-//***************************************************************************
 /// Greater than or equal operator.
-///\param "lhs  Reference to the first array.
-///\param "rhs  Reference to the second array.
-///\return <b>true</b> if the first array is lexigraphically greater than or equal to the second, otherwise <b>false</b>
+///\param "lhs  Reference to the first deque.
+///\param "rhs  Reference to the second deque.
+///\return <b>true</b> if the first deque is lexigraphically greater than or equal to the second, otherwise <b>false</b>
 ///\ingroup deque
 //***************************************************************************
 template <typename T>
