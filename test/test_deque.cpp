@@ -34,14 +34,14 @@ SOFTWARE.
 const size_t SIZE = 6;
 
 typedef etl::deque<int, SIZE> Data;
-typedef std::vector<int>      CompareData;
+typedef std::vector<int>      Compare_Data;
 
-namespace FixedDequeTest
+namespace
 {		
-	SUITE(TestDeque)
+	SUITE(test_deque)
 	{
     //*************************************************************************
-		TEST(Contruct)
+		TEST(test_constructor)
 		{
       Data data;
 
@@ -50,9 +50,9 @@ namespace FixedDequeTest
 		}
 
     //*************************************************************************
-    TEST(ContructFill)
+    TEST(test_constructor_fill)
     {
-      CompareData compare_data = { 5, 5, 5, 5, 5, 5};
+      Compare_Data compare_data = { 5, 5, 5, 5, 5, 5};
       Data data(SIZE, 5);
 
       CHECK_EQUAL(compare_data.size(), data.size());
@@ -60,15 +60,15 @@ namespace FixedDequeTest
     }
 
     //*************************************************************************
-    TEST(ContructFillExcess)
+    TEST(test_constructor_fill_excess)
     {
       CHECK_THROW(Data(SIZE + 1, 5), etl::deque_full);
     }
 
     //*************************************************************************
-    TEST(ContructRange)
+    TEST(test_constructor_range)
     {
-      CompareData compare_data = { 1, 2, 3, 4, 5 };
+      Compare_Data compare_data = { 1, 2, 3, 4, 5 };
       Data data(compare_data.begin(), compare_data.end());
 
       CHECK_EQUAL(compare_data.size(), data.size());
@@ -76,86 +76,44 @@ namespace FixedDequeTest
     }
 
     //*************************************************************************
-    TEST(ContructRangeExcess)
+    TEST(test_constructor_range_excess)
     {
-      CompareData compare_data = { 1, 2, 3, 4, 5, 6, 7 };
+      Compare_Data compare_data = { 1, 2, 3, 4, 5, 6, 7 };
       
       CHECK_THROW(Data data(compare_data.begin(), compare_data.end()), etl::deque_full);
     }
 
     //*************************************************************************
-		TEST(CopyContruct)
+		TEST(test_copy_constructor)
 		{
-      CompareData original = { 1, 2, 3, 4, 5, 6 };
-      CompareData modified = { 6, 5, 4, 3, 2, 1 };
+      Compare_Data compare_data = { 1, 2, 3, 4, 5, 6 };
+      Compare_Data modified = { 6, 5, 4, 3, 2, 1 };
      
-      Data testDeque1(original.begin(), original.end());
-      Data testDeque2(testDeque1);
+      Data deque1(compare_data.begin(), compare_data.end());
+      Data deque2(deque1);
 
-      CHECK_EQUAL(testDeque1.size(), testDeque2.size());
-      CHECK(std::equal(original.begin(), original.end(), testDeque2.begin()));
-
-      // Change testDeque2's data.
-      std::copy(modified.begin(), modified.end(), testDeque2.begin());
-      CHECK(std::equal(original.begin(), original.end(), testDeque1.begin()));
-      CHECK(std::equal(modified.begin(), modified.end(), testDeque2.begin()));
+      CHECK_EQUAL(deque1.size(), deque2.size());
+      CHECK(std::equal(compare_data.begin(), compare_data.end(), deque2.begin()));
 		}
 
     //*************************************************************************
-		TEST(Assignment)
+		TEST(test_assignment)
 		{
-      CompareData original = { 1, 2, 3, 4, 5, 6 };
-      CompareData modified = { 6, 5, 4, 3, 2, 1 };
+      Compare_Data compare_data = { 1, 2, 3, 4, 5, 6 };
      
-      Data testDeque1(original.begin(), original.end());
-      Data testDeque2;
+      Data deque1(compare_data.begin(), compare_data.end());
+      Data deque2;
       
-      testDeque2 = testDeque1;
+      deque2 = deque1;
 
-      CHECK_EQUAL(testDeque1.size(), testDeque2.size());
-      CHECK(std::equal(original.begin(), original.end(), testDeque2.begin()));
-
-      // Change testDeque2's data.
-      std::copy(modified.begin(), modified.end(), testDeque2.begin());
-      CHECK(std::equal(original.begin(), original.end(), testDeque1.begin()));
-      CHECK(std::equal(modified.begin(), modified.end(), testDeque2.begin()));
+      CHECK_EQUAL(deque1.size(), deque2.size());
+      CHECK(std::equal(compare_data.begin(), compare_data.end(), deque2.begin()));
 		}
 
     //*************************************************************************
-		TEST(Swap)
-		{
-      CompareData compare_data1 = { 1, 2, 3, 4, 5, 6 };
-      CompareData compare_data2 = { 6, 5, 4 };
-     
-      Data data1(compare_data1.begin(), compare_data1.end());
-      Data data2(compare_data2.begin(), compare_data2.end());
-
-      swap(data1, data2);
-
-      CHECK_EQUAL(compare_data2.size(), data1.size());
-      CHECK_EQUAL(compare_data1.size(), data2.size());
-
-      CHECK_EQUAL(std::distance(compare_data2.begin(), compare_data2.end()), std::distance(data1.begin(), data1.end()));
-      CHECK_EQUAL(std::distance(compare_data1.begin(), compare_data1.end()), std::distance(data2.begin(), data2.end()));
-      
-      CHECK(std::equal(compare_data2.begin(), compare_data2.end(), data1.begin()));
-      CHECK(std::equal(compare_data1.begin(), compare_data1.end(), data2.begin()));
-		}
-
-    //*************************************************************************
-    TEST(Clear)
+    TEST(test_assign_range)
     {
-      Data data;
-
-      data.resize(SIZE);
-      data.clear();
-      CHECK(data.empty());
-    }
-
-    //*************************************************************************
-    TEST(AssignFromRange)
-    {
-      CompareData compare_data = { 1, 2, 3, 4, 5 };
+      Compare_Data compare_data = { 1, 2, 3, 4, 5 };
       Data data;
 
       CHECK_NO_THROW(data.assign(compare_data.begin(), compare_data.end()));
@@ -165,18 +123,18 @@ namespace FixedDequeTest
     }
 
     //*************************************************************************
-    TEST(AssignFromRangeExcess)
+    TEST(test_assign_range_excess)
     {
-      CompareData compare_data = { 1, 2, 3, 4, 5, 6, 7 };
+      Compare_Data compare_data = { 1, 2, 3, 4, 5, 6, 7 };
       Data data;
 
       CHECK_THROW(data.assign(compare_data.begin(), compare_data.end()), etl::deque_full);
     }
 
     //*************************************************************************
-    TEST(AssignFill)
+    TEST(test_assign_fill)
     {
-      CompareData compare_data = { 5, 5, 5, 5, 5, 5 };
+      Compare_Data compare_data = { 5, 5, 5, 5, 5, 5 };
 
       Data data;
 
@@ -187,7 +145,7 @@ namespace FixedDequeTest
     }
 
     //*************************************************************************
-    TEST(AssignFillExcess)
+    TEST(test_assign_fill_excess)
     {
       Data data;
 
@@ -195,9 +153,747 @@ namespace FixedDequeTest
     }
 
     //*************************************************************************
-    TEST(PushBackNoValue)
+    TEST(test_at)
     {
-      CompareData compare_data = { 1, 2, 3, 4, 5 };
+      Compare_Data compare_data = { 1, 2, 3, 4, 5 };
+      Data data(compare_data.begin(), compare_data.end());
+
+      CHECK_EQUAL(compare_data[0], data.at(0));
+      CHECK_EQUAL(compare_data[1], data.at(1));
+      CHECK_EQUAL(compare_data[2], data.at(2));
+      CHECK_EQUAL(compare_data[3], data.at(3));
+      CHECK_EQUAL(compare_data[4], data.at(4));
+    }
+
+    //*************************************************************************
+    TEST(test_at_const)
+    {
+      Compare_Data compare_data = { 1, 2, 3, 4, 5 };
+      Data data(compare_data.begin(), compare_data.end());
+      const Data& cdata(data);
+
+      CHECK_EQUAL(compare_data[0], cdata.at(0));
+      CHECK_EQUAL(compare_data[1], cdata.at(1));
+      CHECK_EQUAL(compare_data[2], cdata.at(2));
+      CHECK_EQUAL(compare_data[3], cdata.at(3));
+      CHECK_EQUAL(compare_data[4], cdata.at(4));
+    }
+
+    //*************************************************************************
+    TEST(test_index_operator)
+    {
+      Compare_Data compare_data = { 1, 2, 3, 4, 5 };
+      Data data(compare_data.begin(), compare_data.end());
+
+      CHECK_EQUAL(compare_data[0], data[0]);
+      CHECK_EQUAL(compare_data[1], data[1]);
+      CHECK_EQUAL(compare_data[2], data[2]);
+      CHECK_EQUAL(compare_data[3], data[3]);
+      CHECK_EQUAL(compare_data[4], data[4]);
+    }
+
+    //*************************************************************************
+    TEST(test_index_operator_const)
+    {
+      Compare_Data compare_data = { 1, 2, 3, 4, 5 };
+      Data data(compare_data.begin(), compare_data.end());
+      const Data& ctestDeque(data);
+
+      CHECK_EQUAL(compare_data[0], ctestDeque[0]);
+      CHECK_EQUAL(compare_data[1], ctestDeque[1]);
+      CHECK_EQUAL(compare_data[2], ctestDeque[2]);
+      CHECK_EQUAL(compare_data[3], ctestDeque[3]);
+      CHECK_EQUAL(compare_data[4], ctestDeque[4]);
+    }
+    
+    //*************************************************************************
+    TEST(test_front)
+    {
+      Data data;
+
+      data.push_front(1);
+      CHECK_EQUAL(1, data.front());
+
+      data.push_front(2);
+      CHECK_EQUAL(2, data.front());
+
+      data.push_front(3);
+      CHECK_EQUAL(3, data.front());
+
+      data.push_front(4);
+      CHECK_EQUAL(4, data.front());
+
+      data.push_front(5);
+      CHECK_EQUAL(5, data.front());
+    }
+
+    //*************************************************************************
+    TEST(test_front_empty)
+    {
+      Data data;
+
+      CHECK_THROW(int i = data.front(), etl::deque_empty);
+    }
+
+    //*************************************************************************
+    TEST(test_front_const)
+    {
+      Data data;
+      const Data& ctestDeque = data;
+
+      data.push_front(1);
+      CHECK_EQUAL(1, ctestDeque.front());
+
+      data.push_front(2);
+      CHECK_EQUAL(2, ctestDeque.front());
+
+      data.push_front(3);
+      CHECK_EQUAL(3, ctestDeque.front());
+
+      data.push_front(4);
+      CHECK_EQUAL(4, ctestDeque.front());
+
+      data.push_front(5);
+      CHECK_EQUAL(5, ctestDeque.front());
+    }
+
+    //*************************************************************************
+    TEST(test_back)
+    {
+      Data data;
+
+      data.push_back(1);
+      CHECK_EQUAL(1, data.back());
+
+      data.push_back(2);
+      CHECK_EQUAL(2, data.back());
+
+      data.push_back(3);
+      CHECK_EQUAL(3, data.back());
+
+      data.push_back(4);
+      CHECK_EQUAL(4, data.back());
+
+      data.push_back(5);
+      CHECK_EQUAL(5, data.back());
+    }
+
+    //*************************************************************************
+    TEST(test_back_const)
+    {
+      Data data;
+      const Data& ctestDeque = data;
+
+      data.push_back(1);
+      CHECK_EQUAL(1, ctestDeque.back());
+
+      data.push_back(2);
+      CHECK_EQUAL(2, ctestDeque.back());
+
+      data.push_back(3);
+      CHECK_EQUAL(3, ctestDeque.back());
+
+      data.push_back(4);
+      CHECK_EQUAL(4, ctestDeque.back());
+
+      data.push_back(5);
+      CHECK_EQUAL(5, ctestDeque.back());
+    }
+
+    //*************************************************************************
+    TEST(test_back_empty)
+    {
+      Data data;
+
+      CHECK_THROW(int i = data.back(), etl::deque_empty);
+    }
+
+    //*************************************************************************
+    TEST(test_iterator_comparison)
+    {
+      Data data(6, 0);
+
+      Data::iterator first = data.begin() + 1;
+      Data::iterator second = data.begin() + 4;
+
+      CHECK(first < second);
+      CHECK(!(second < first));
+    }
+
+    //*************************************************************************
+    TEST(test_const_iterator_comparison)
+    {
+      Data data(6, 0);
+
+      Data::const_iterator first = data.cbegin() + 1;
+      Data::const_iterator second = data.cbegin() + 4;
+
+      CHECK(first < second);
+      CHECK(!(second < first));
+    }
+
+    //*************************************************************************
+    TEST(test_iterator_comparison_rollover_left)
+    {
+      Data data(6, 0);
+
+      data.pop_back();
+      data.pop_back();
+      data.pop_back();
+      data.push_front(1);
+      data.push_front(1);
+      data.push_front(1);
+
+      Data::const_iterator first = data.cbegin() + 1;
+      Data::const_iterator second = data.cbegin() + 4;
+
+      CHECK(first < second);
+      CHECK(!(second < first));
+    }
+
+    //*************************************************************************
+    TEST(test_const_iterator_comparison_rollover_left)
+    {
+      Data data(6, 0);
+
+      data.pop_back();
+      data.pop_back();
+      data.pop_back();
+      data.push_front(1);
+      data.push_front(1);
+      data.push_front(1);
+
+      Data::const_iterator first = data.cbegin() + 1;
+      Data::const_iterator second = data.cbegin() + 4;
+
+      CHECK(first < second);
+      CHECK(!(second < first));
+    }
+
+    //*************************************************************************
+    TEST(test_iterator_comparison_rollover_right)
+    {
+      Data data(6, 0);
+
+      data.pop_front();
+      data.pop_front();
+      data.pop_front();
+      data.push_back(1);
+      data.push_back(1);
+      data.push_back(1);
+
+      Data::iterator first = data.begin() + 1;
+      Data::iterator second = data.begin() + 4;
+
+      CHECK(first < second);
+      CHECK(!(second < first));
+    }
+
+    //*************************************************************************
+    TEST(test_const_iterator_comparison_rollover_right)
+    {
+      Data data(6, 0);
+
+      data.pop_front();
+      data.pop_front();
+      data.pop_front();
+      data.push_back(1);
+      data.push_back(1);
+      data.push_back(1);
+
+      Data::const_iterator first = data.cbegin() + 1;
+      Data::const_iterator second = data.cbegin() + 4;
+
+      CHECK(first < second);
+      CHECK(!(second < first));
+    }
+
+    //*************************************************************************
+    TEST(test_reverse_iterator_comparison)
+    {
+      Data data(6, 0);
+
+      Data::reverse_iterator first = data.rbegin() + 1;
+      Data::reverse_iterator second = data.rbegin() + 4;
+
+      CHECK(first < second);
+      CHECK(!(second < first));
+    }
+
+    //*************************************************************************
+    TEST(test_const_reverse_iterator_comparison)
+    {
+      Data data(6, 0);
+
+      Data::const_reverse_iterator first = data.crbegin() + 1;
+      Data::const_reverse_iterator second = data.crbegin() + 4;
+
+      CHECK(first < second);
+      CHECK(!(second < first));
+    }
+
+    //*************************************************************************
+    TEST(test_reverse_iterator_comparison_rollover_left)
+    {
+      Data data(6, 0);
+
+      data.pop_back();
+      data.pop_back();
+      data.pop_back();
+      data.push_front(1);
+      data.push_front(1);
+      data.push_front(1);
+
+      Data::reverse_iterator first = data.rbegin() + 1;
+      Data::reverse_iterator second = data.rbegin() + 4;
+
+      CHECK(first < second);
+      CHECK(!(second < first));
+    }
+
+    //*************************************************************************
+    TEST(test_const_reverse_iterator_comparison_rollover_left)
+    {
+      Data data(6, 0);
+
+      data.pop_back();
+      data.pop_back();
+      data.pop_back();
+      data.push_front(1);
+      data.push_front(1);
+      data.push_front(1);
+
+      Data::const_reverse_iterator first = data.crbegin() + 1;
+      Data::const_reverse_iterator second = data.crbegin() + 4;
+
+      CHECK(first < second);
+      CHECK(!(second < first));
+    }
+
+    //*************************************************************************
+    TEST(test_reverse_iterator_comparison_rollover_right)
+    {
+      Data data(6, 0);
+
+      data.pop_front();
+      data.pop_front();
+      data.pop_front();
+      data.push_back(1);
+      data.push_back(1);
+      data.push_back(1);
+
+      Data::reverse_iterator first = data.rbegin() + 1;
+      Data::reverse_iterator second = data.rbegin() + 4;
+
+      CHECK(first < second);
+      CHECK(!(second < first));
+    }
+
+    //*************************************************************************
+    TEST(test_const_reverse_iterator_comparison_rollover_right)
+    {
+      Data data(6, 0);
+
+      data.pop_front();
+      data.pop_front();
+      data.pop_front();
+      data.push_back(1);
+      data.push_back(1);
+      data.push_back(1);
+
+      Data::const_reverse_iterator first = data.crbegin() + 1;
+      Data::const_reverse_iterator second = data.crbegin() + 4;
+
+      CHECK(first < second);
+      CHECK(!(second < first));
+    }
+
+    //*************************************************************************
+    TEST(test_empty)
+    {
+      Data data;
+
+      CHECK(data.empty());
+    }
+
+    //*************************************************************************
+    TEST(test_full)
+    {
+      Data data;
+      data.resize(SIZE);
+
+      CHECK(data.full());
+    }
+
+    //*************************************************************************
+    TEST(test_clear)
+    {
+      Data data;
+
+      data.resize(SIZE);
+      data.clear();
+      CHECK(data.empty());
+    }
+
+    //*************************************************************************
+    TEST(test_insert_value_begin)
+    {
+      Compare_Data compare_data = { 1, 2, 3, 4 };
+      Compare_Data expected = { 5, 1, 2, 3, 4 };
+      Data data(compare_data.begin(), compare_data.end());
+
+      Data::iterator position = data.insert(data.begin(), 5);
+
+      CHECK_EQUAL(expected.size(), data.size());
+      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
+      CHECK_EQUAL(0, std::distance(data.begin(), position));
+    }
+
+    //*************************************************************************
+    TEST(test_insert_value_end)
+    {
+      Compare_Data compare_data = { 1, 2, 3, 4 };
+      Compare_Data expected = { 1, 2, 3, 4, 5 };
+      Data data(compare_data.begin(), compare_data.end());
+
+      Data::iterator position = data.insert(data.end(), 5);
+
+      CHECK_EQUAL(expected.size(), data.size());
+      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
+      CHECK_EQUAL(4, std::distance(data.begin(), position));
+    }
+
+    //*************************************************************************
+    TEST(test_insert_value_middle)
+    {
+      Compare_Data compare_data = { 1, 2, 3, 4 };
+      Compare_Data expected1 = { 1, 5, 2, 3, 4 };
+      Compare_Data expected2 = { 1, 2, 5, 3, 4 };
+      Data data(compare_data.begin(), compare_data.end());
+
+      Data::iterator position = data.insert(data.begin() + 1, 5);
+
+      CHECK_EQUAL(expected1.size(), data.size());
+      CHECK(std::equal(expected1.begin(), expected1.end(), data.begin()));
+      CHECK_EQUAL(1, std::distance(data.begin(), position));
+
+      data.assign(compare_data.begin(), compare_data.end());
+
+      position = data.insert(data.begin() + 2, 5);
+
+      CHECK_EQUAL(expected2.size(), data.size());
+      CHECK(std::equal(expected2.begin(), expected2.end(), data.begin()));
+      CHECK_EQUAL(2, std::distance(data.begin(), position));
+    }
+
+    //*************************************************************************
+    TEST(test_insert_n_value_begin)
+    {
+      Compare_Data compare_data = { 1, 2, 3 };
+      Compare_Data expected = { 5, 5, 1, 2, 3 };
+      Data data(compare_data.begin(), compare_data.end());
+
+      Data::iterator position = data.insert(data.begin(), 2, 5);
+
+      CHECK_EQUAL(expected.size(), data.size());
+      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
+      CHECK_EQUAL(0, std::distance(data.begin(), position));
+    }
+
+    //*************************************************************************
+    TEST(test_insert_n_value_end)
+    {
+      Compare_Data compare_data = { 1, 2, 3 };
+      Compare_Data expected = { 1, 2, 3, 5, 5 };
+      Data data(compare_data.begin(), compare_data.end());
+
+      Data::iterator position = data.insert(data.end(), 2, 5);
+
+      CHECK_EQUAL(expected.size(), data.size());
+      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
+      CHECK_EQUAL(3, std::distance(data.begin(), position));
+    }
+
+    //*************************************************************************
+    TEST(test_insert_n_value_middle)
+    {
+      Compare_Data compare_data = { 1, 2, 3, 4 };
+      Compare_Data expected1 = { 1, 5, 5, 2, 3, 4 };
+      Compare_Data expected2 = { 1, 2, 3, 5, 5, 4 };
+      Data data(compare_data.begin(), compare_data.end());
+
+      Data::iterator position = data.insert(data.begin() + 1, 2, 5);
+
+      CHECK_EQUAL(expected1.size(), data.size());
+      CHECK(std::equal(expected1.begin(), expected1.end(), data.begin()));
+      CHECK_EQUAL(1, std::distance(data.begin(), position));
+
+      data.assign(data.max_size(), -1);
+      data.assign(compare_data.begin(), compare_data.end());
+
+      position = data.insert(data.begin() + 3, 2, 5);
+
+      CHECK_EQUAL(expected2.size(), data.size());
+      CHECK(std::equal(expected2.begin(), expected2.end(), data.begin()));
+      CHECK_EQUAL(3, std::distance(data.begin(), position));
+    }
+
+    //*************************************************************************
+    TEST(test_insert_n_value_excess)
+    {
+      Compare_Data compare_data = { 1, 2, 3, 4 };
+      Data data(compare_data.begin(), compare_data.end());
+
+      CHECK_THROW(data.insert(data.begin(), 3, 5), etl::deque_full);
+      CHECK_THROW(data.insert(data.end(), 3, 5), etl::deque_full);
+      CHECK_THROW(data.insert(data.begin() + 2, 3, 5), etl::deque_full);
+    }
+
+    //*************************************************************************
+    TEST(test_insert_range_begin)
+    {
+      Compare_Data compare_data = { 1, 2, 3 };
+      Compare_Data range = { 4, 5 };
+      Compare_Data expected = { 4, 5, 1, 2, 3 };
+      Data data(compare_data.begin(), compare_data.end());
+
+      Data::iterator position = data.insert(data.begin(), range.begin(), range.end());
+
+      CHECK_EQUAL(expected.size(), data.size());
+      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_insert_range_end)
+    {
+      Compare_Data compare_data = { 1, 2, 3 };
+      Compare_Data range = { 4, 5 };
+      Compare_Data expected = { 1, 2, 3, 4, 5 };
+      Data data(compare_data.begin(), compare_data.end());
+
+      Data::iterator position = data.insert(data.end(), range.cbegin(), range.cend());
+
+      CHECK_EQUAL(expected.size(), data.size());
+      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_insert_range_middle)
+    {
+      Compare_Data compare_data = { 1, 2, 3, 4 };
+      Compare_Data range = { 5, 6 };
+      Compare_Data expected1 = { 1, 5, 6, 2, 3, 4 };
+      Compare_Data expected2 = { 1, 2, 3, 5, 6, 4 };
+      Data data(compare_data.begin(), compare_data.end());
+
+      Data::iterator position = data.insert(data.begin() + 1, range.begin(), range.end());
+
+      CHECK_EQUAL(expected1.size(), data.size());
+      CHECK(std::equal(expected1.begin(), expected1.end(), data.begin()));
+      CHECK_EQUAL(1, std::distance(data.begin(), position));
+
+      data.assign(compare_data.begin(), compare_data.end());
+
+      position = data.insert(data.begin() + 3, range.begin(), range.end());
+
+      CHECK_EQUAL(expected2.size(), data.size());
+      CHECK(std::equal(expected2.begin(), expected2.end(), data.begin()));
+      CHECK_EQUAL(3, std::distance(data.begin(), position));
+    }
+
+    //*************************************************************************
+    TEST(test_insert_range_excess)
+    {
+      Compare_Data compare_data = { 1, 2, 3, 4 };
+      Compare_Data range = { 5, 6, 7 };
+      Data data(compare_data.begin(), compare_data.end());
+
+      CHECK_THROW(data.insert(data.begin(), range.begin(), range.end()), etl::deque_full);
+      CHECK_THROW(data.insert(data.end(), range.begin(), range.end()), etl::deque_full);
+      CHECK_THROW(data.insert(data.begin() + 2, range.begin(), range.end()), etl::deque_full);
+    }
+
+    //*************************************************************************
+    TEST(test_erase_begin)
+    {
+      Compare_Data compare_data = { 0, 0, 1, 2, 3, 4 };
+      Compare_Data expected = { 2, 3, 4, 5, 6 };
+      Data data(compare_data.begin(), compare_data.end());
+
+      // Cause rollover.
+      data.pop_front();
+      data.pop_front();
+      data.push_back(5);
+      data.push_back(6);
+
+      Data::iterator i_next = data.erase(data.begin());
+
+      CHECK_EQUAL(Data::difference_type(expected.size()), std::distance(data.begin(), data.end()));
+      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
+      CHECK_EQUAL(i_next.get_index(), data.begin().get_index());
+    }
+
+    //*************************************************************************
+    TEST(test_erase_end)
+    {
+      Compare_Data compare_data = { 0, 0, 1, 2, 3, 4 };
+      Compare_Data expected = { 1, 2, 3, 4, 5 };
+      Data data(compare_data.begin(), compare_data.end());
+
+      // Cause rollover.
+      data.pop_front();
+      data.pop_front();
+      data.push_back(5);
+      data.push_back(6);
+
+      Data::iterator i_erase = data.end() - 1;
+      Data::iterator i_next = data.erase(i_erase);
+
+      CHECK_EQUAL(Data::difference_type(expected.size()), std::distance(data.begin(), data.end()));
+      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
+      CHECK_EQUAL(i_next.get_index(), data.end().get_index());
+    }
+
+    //*************************************************************************
+    TEST(test_erase_middle)
+    {
+      Compare_Data compare_data = { 0, 0, 1, 2, 3, 4 };
+      Compare_Data expected1 = { 1, 3, 4, 5, 6 };
+      Compare_Data expected2 = { 1, 2, 3, 4, 6 };
+
+      Data data(compare_data.begin(), compare_data.end());
+
+      // Cause rollover.
+      data.pop_front();
+      data.pop_front();
+      data.push_back(5);
+      data.push_back(6);
+
+      // Erase near beginning.
+      Data::iterator i_erase = data.begin() + 1;
+      Data::iterator i_next = data.erase(i_erase);
+
+      CHECK_EQUAL(Data::difference_type(expected1.size()), std::distance(data.begin(), data.end()));
+      CHECK(std::equal(expected1.begin(), expected1.end(), data.begin()));
+      CHECK_EQUAL(i_next.get_index(), data.begin().get_index() + 1);
+
+      data.assign(compare_data.begin(), compare_data.end());
+
+      // Cause rollover.
+      data.pop_front();
+      data.pop_front();
+      data.push_back(5);
+      data.push_back(6);
+
+      // Erase near end.
+      i_next = data.erase(data.begin() + 4);
+
+      CHECK_EQUAL(Data::difference_type(expected2.size()), std::distance(data.begin(), data.end()));
+      CHECK(std::equal(expected2.begin(), expected2.end(), data.begin()));
+      CHECK_EQUAL(i_next.get_index(), data.begin().get_index() + 4);
+    }
+
+    //*************************************************************************
+    TEST(test_erase_range_begin)
+    {
+      Compare_Data compare_data = { 0, 0, 1, 2, 3, 4 };
+      Compare_Data expected = { 3, 4, 5, 6 };
+      Data data(compare_data.begin(), compare_data.end());
+
+      // Cause rollover.
+      data.pop_front();
+      data.pop_front();
+      data.push_back(5);
+      data.push_back(6);
+
+      Data::iterator i_next = data.erase(data.begin(), data.begin() + 2);
+
+      CHECK_EQUAL(Data::difference_type(expected.size()), std::distance(data.begin(), data.end()));
+      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
+      CHECK_EQUAL(i_next.get_index(), data.begin().get_index());
+    }
+
+    //*************************************************************************
+    TEST(test_erase_range_end)
+    {
+      Compare_Data compare_data = { 0, 0, 1, 2, 3, 4 };
+      Compare_Data expected = { 1, 2, 3, 4 };
+      Data data(compare_data.begin(), compare_data.end());
+
+      // Cause rollover.
+      data.pop_front();
+      data.pop_front();
+      data.push_back(5);
+      data.push_back(6);
+
+      Data::iterator i_next = data.erase(data.end() - 2, data.end());
+
+      CHECK_EQUAL(Data::difference_type(expected.size()), std::distance(data.begin(), data.end()));
+      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
+      CHECK_EQUAL(i_next.get_index(), data.end().get_index());
+    }
+
+    //*************************************************************************
+    TEST(test_erase_range_middle)
+    {
+      Compare_Data compare_data = { 0, 0, 1, 2, 3, 4 };
+      Compare_Data expected1 = { 1, 4, 5, 6 };
+      Compare_Data expected2 = { 1, 2, 3, 6 };
+
+      Data data(compare_data.begin(), compare_data.end());
+
+      // Cause rollover.
+      data.pop_front();
+      data.pop_front();
+      data.push_back(5);
+      data.push_back(6);
+
+      Data::iterator i_next = data.erase(data.begin() + 1, data.begin() + 3);
+
+      CHECK_EQUAL(Data::difference_type(expected1.size()), std::distance(data.begin(), data.end()));
+      CHECK(std::equal(expected1.begin(), expected1.end(), data.begin()));
+      CHECK_EQUAL(i_next.get_index(), (data.begin() + 1).get_index());
+
+      data.assign(compare_data.begin(), compare_data.end());
+
+      // Cause rollover.
+      data.pop_front();
+      data.pop_front();
+      data.push_back(5);
+      data.push_back(6);
+
+      i_next = data.erase(data.begin() + 3, data.begin() + 5);
+
+      CHECK_EQUAL(Data::difference_type(expected2.size()), std::distance(data.begin(), data.end()));
+      CHECK(std::equal(expected2.begin(), expected2.end(), data.begin()));
+      CHECK_EQUAL(i_next.get_index(), (data.begin() + 3).get_index());
+
+      Compare_Data original2 = { 0, 0, 0, 0, 1, 2 };
+      Compare_Data expected3 = { 1, 2, 5, 6 };
+
+      data.assign(original2.begin(), original2.end());
+
+      // Cause rollover.
+      data.pop_front();
+      data.pop_front();
+      data.pop_front();
+      data.pop_front();
+      data.push_back(3);
+      data.push_back(4);
+      data.push_back(5);
+      data.push_back(6);
+
+      i_next = data.erase(data.begin() + 2, data.begin() + 4);
+
+      CHECK_EQUAL(Data::difference_type(expected3.size()), std::distance(data.begin(), data.end()));
+      CHECK(std::equal(expected3.begin(), expected3.end(), data.begin()));
+      CHECK_EQUAL(i_next.get_index(), (data.begin() + 2).get_index());
+    }
+
+    //*************************************************************************
+    TEST(test_push_back_null)
+    {
+      Compare_Data compare_data = { 1, 2, 3, 4, 5 };
       Data data;
 
       CHECK_NO_THROW(data.push_back());
@@ -224,9 +920,9 @@ namespace FixedDequeTest
     }
 
     //*************************************************************************
-    TEST(push_back)
+    TEST(test_push_back)
     {
-      CompareData compare_data = { 1, 2, 3, 4, 5};
+      Compare_Data compare_data = { 1, 2, 3, 4, 5};
       Data data;
 
       CHECK_NO_THROW(data.push_back(1));
@@ -251,7 +947,7 @@ namespace FixedDequeTest
     }
 
     //*************************************************************************
-    TEST(PushBackExcess)
+    TEST(test_push_back_excess)
     {
       Data data;
 
@@ -265,9 +961,37 @@ namespace FixedDequeTest
     }
 
     //*************************************************************************
-    TEST(PushFrontNoValue)
+    TEST(test_pop_back)
     {
-      CompareData compare_data = {5,  4, 3, 2, 1 };
+      Compare_Data compare_data = { 1, 2, 3, 4, 5 };
+      Data data;
+
+      data.assign(compare_data.begin(), compare_data.end());
+
+      data.pop_back();
+      CHECK_EQUAL(size_t(4), data.size());
+      CHECK(std::equal(compare_data.begin(), compare_data.end() - 1, data.begin()));
+
+      data.pop_back();
+      CHECK_EQUAL(size_t(3), data.size());
+      CHECK(std::equal(compare_data.begin(), compare_data.end() - 2, data.begin()));
+
+      data.pop_back();
+      CHECK_EQUAL(size_t(2), data.size());
+      CHECK(std::equal(compare_data.begin(), compare_data.end() - 3, data.begin()));
+
+      data.pop_back();
+      CHECK_EQUAL(size_t(1), data.size());
+      CHECK(std::equal(compare_data.begin(), compare_data.end() - 4, data.begin()));
+
+      data.pop_back();
+      CHECK_EQUAL(size_t(0), data.size());
+    }
+
+    //*************************************************************************
+    TEST(test_push_front_null)
+    {
+      Compare_Data compare_data = {5,  4, 3, 2, 1 };
       Data data;
 
       CHECK_NO_THROW(data.push_front());
@@ -294,9 +1018,9 @@ namespace FixedDequeTest
     }
 
     //*************************************************************************
-    TEST(PushFront)
+    TEST(test_push_front)
     {
-      CompareData compare_data = { 5, 4, 3, 2, 1 };
+      Compare_Data compare_data = { 5, 4, 3, 2, 1 };
       Data data;
 
       CHECK_NO_THROW(data.push_front(1));
@@ -321,7 +1045,7 @@ namespace FixedDequeTest
     }
 
     //*************************************************************************
-    TEST(PushFrontExcess)
+    TEST(test_push_front_excess)
     {
       Data data;
 
@@ -334,9 +1058,9 @@ namespace FixedDequeTest
     }
 
     //*************************************************************************
-    TEST(PushFrontPushBack)
+    TEST(test_push_front_push_back)
     {
-      CompareData compare_data = { 1, 2, 3, 4, 5};
+      Compare_Data compare_data = { 1, 2, 3, 4, 5};
       Data data;
 
       CHECK_NO_THROW(data.push_back(3));
@@ -349,9 +1073,32 @@ namespace FixedDequeTest
     }
 
     //*************************************************************************
-    TEST(PopFront)
+    TEST(test_push_back_pop_front_push_back)
     {
-      CompareData compare_data = { 1, 2, 3, 4, 5 };
+      Compare_Data compare_data = { 6, 7, 8 };
+      Data data;
+
+      data.push_back(1);
+      data.push_back(2);
+      data.push_back(3);
+      data.push_back(4);
+      data.push_back(5);
+      data.pop_front();
+      data.pop_front();
+      data.pop_front();
+      data.pop_front();
+      data.pop_front();
+      data.push_back(6);
+      data.push_back(7);
+      data.push_back(8);
+
+      CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_pop_front)
+    {
+      Compare_Data compare_data = { 1, 2, 3, 4, 5 };
       Data data;
 
       data.assign(compare_data.begin(), compare_data.end());
@@ -377,40 +1124,21 @@ namespace FixedDequeTest
     }
 
     //*************************************************************************
-    TEST(PopBack)
+    TEST(test_resize_up)
     {
-      CompareData compare_data = { 1, 2, 3, 4, 5 };
+      Compare_Data compare_data = { 1, 2, 0, 0, 0 };
       Data data;
 
-      data.assign(compare_data.begin(), compare_data.end());
-
-      data.pop_back();
-      CHECK_EQUAL(size_t(4), data.size());
-      CHECK(std::equal(compare_data.begin(), compare_data.end() - 1, data.begin()));
-
-      data.pop_back();
-      CHECK_EQUAL(size_t(3), data.size());
-      CHECK(std::equal(compare_data.begin(), compare_data.end() - 2, data.begin()));
-
-      data.pop_back();
-      CHECK_EQUAL(size_t(2), data.size());
-      CHECK(std::equal(compare_data.begin(), compare_data.end() - 3, data.begin()));
-
-      data.pop_back();
-      CHECK_EQUAL(size_t(1), data.size());
-      CHECK(std::equal(compare_data.begin(), compare_data.end() - 4, data.begin()));
-
-      data.pop_back();
-      CHECK_EQUAL(size_t(0), data.size());
-    }
-
-    //*************************************************************************
-    TEST(Resize)
-    {
-      CompareData compare_data = { 1, 2, 0, 0, 0 };
-      Data data;
-
-      data.push_front(1);
+      // Cause rollover.
+      data.push_back(0);
+      data.push_back(0);
+      data.push_back(0);
+      data.push_back(0);
+      data.pop_front();
+      data.pop_front();
+      data.pop_front();
+      data.pop_front();
+      data.push_back(1);
       data.push_back(2);
       data.resize(SIZE);
 
@@ -419,9 +1147,34 @@ namespace FixedDequeTest
     }
 
     //*************************************************************************
-    TEST(ResizeWithValue)
+    TEST(test_resize_down)
     {
-      CompareData compare_data = { 1, 2, 3, 3, 3 };
+      Compare_Data compare_data = { 1, 2 };
+      Data data;
+
+      // Cause rollover.
+      data.push_back(0);
+      data.push_back(0);
+      data.push_back(0);
+      data.pop_front();
+      data.pop_front();
+      data.pop_front();
+      data.push_back(1);
+      data.push_back(2);
+      data.push_back(3);
+      data.push_back(4);
+      data.push_back(5);
+      data.push_back(6);
+      data.resize(data.size() - 4);
+
+      CHECK_EQUAL(size_t(2), data.size());
+      CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_resize_value)
+    {
+      Compare_Data compare_data = { 1, 2, 3, 3, 3 };
       Data data;
 
       data.push_front(1);
@@ -433,7 +1186,7 @@ namespace FixedDequeTest
     }
 
     //*************************************************************************
-    TEST(ResizeExcess)
+    TEST(test_resize_excess)
     {
       Data data;
 
@@ -441,1538 +1194,58 @@ namespace FixedDequeTest
     }
 
     //*************************************************************************
-    TEST(Full)
+    TEST(test_swap)
     {
-      Data data;
-      data.resize(SIZE);
+      Compare_Data compare_data1 = { 1, 2, 3, 4, 5, 6 };
+      Compare_Data compare_data2 = { 6, 5, 4 };
 
-      CHECK(data.full());
-    }
-
-    //*************************************************************************
-    TEST(empty)
-    {
-      Data data;
-      
-      CHECK(data.empty());
-    }
-
-    //*************************************************************************
-    TEST(Front)
-    {
-      Data data;
-
-      data.push_front(1);
-      CHECK_EQUAL(1, data.front());
-
-      data.push_front(2);
-      CHECK_EQUAL(2, data.front());
-
-      data.push_front(3);
-      CHECK_EQUAL(3, data.front());
-
-      data.push_front(4);
-      CHECK_EQUAL(4, data.front());
-
-      data.push_front(5);
-      CHECK_EQUAL(5, data.front());
-    }
-
-    //*************************************************************************
-    TEST(FrontEmpty)
-    {
-      Data data;
-
-      CHECK_THROW(int i = data.front(), etl::deque_empty);
-    }
-
-    //*************************************************************************
-    TEST(FrontConst)
-    {
-      Data data;
-      const Data& ctestDeque = data;
-
-      data.push_front(1);
-      CHECK_EQUAL(1, ctestDeque.front());
-
-      data.push_front(2);
-      CHECK_EQUAL(2, ctestDeque.front());
-
-      data.push_front(3);
-      CHECK_EQUAL(3, ctestDeque.front());
-
-      data.push_front(4);
-      CHECK_EQUAL(4, ctestDeque.front());
-
-      data.push_front(5);
-      CHECK_EQUAL(5, ctestDeque.front());
-    }
-
-    //*************************************************************************
-    TEST(Back)
-    {
-      Data data;
-
-      data.push_back(1);
-      CHECK_EQUAL(1, data.back());
-
-      data.push_back(2);
-      CHECK_EQUAL(2, data.back());
-
-      data.push_back(3);
-      CHECK_EQUAL(3, data.back());
-
-      data.push_back(4);
-      CHECK_EQUAL(4, data.back());
-
-      data.push_back(5);
-      CHECK_EQUAL(5, data.back());
-    }
-
-    //*************************************************************************
-    TEST(BackConst)
-    {
-      Data data;
-      const Data& ctestDeque = data;
-
-      data.push_back(1);
-      CHECK_EQUAL(1, ctestDeque.back());
-
-      data.push_back(2);
-      CHECK_EQUAL(2, ctestDeque.back());
-
-      data.push_back(3);
-      CHECK_EQUAL(3, ctestDeque.back());
-
-      data.push_back(4);
-      CHECK_EQUAL(4, ctestDeque.back());
-
-      data.push_back(5);
-      CHECK_EQUAL(5, ctestDeque.back());
-    }
-
-    //*************************************************************************
-    TEST(BackEmpty)
-    {
-      Data data;
-
-      CHECK_THROW(int i = data.back(), etl::deque_empty);
-    }
-
-    //*************************************************************************
-    TEST(Index)
-    {
-      CompareData compare_data = { 1, 2, 3, 4, 5 };
-      Data data(compare_data.begin(), compare_data.end());
-
-      CHECK_EQUAL(compare_data[0], data[0]);
-      CHECK_EQUAL(compare_data[1], data[1]);
-      CHECK_EQUAL(compare_data[2], data[2]);
-      CHECK_EQUAL(compare_data[3], data[3]);
-      CHECK_EQUAL(compare_data[4], data[4]);
-    }
-
-    //*************************************************************************
-    TEST(IndexOutOfRange)
-    {
-      CompareData compare_data = { 1, 2, 3, 4, 5 };
-      Data data(compare_data.begin(), compare_data.end());
-
-      CHECK_THROW(int i = data[5], etl::deque_out_of_bounds);
-    }
-
-    //*************************************************************************
-    TEST(IndexConst)
-    {
-      CompareData compare_data = { 1, 2, 3, 4, 5 };
-      Data data(compare_data.begin(), compare_data.end());
-      const Data& ctestDeque(data);
-
-      CHECK_EQUAL(compare_data[0], ctestDeque[0]);
-      CHECK_EQUAL(compare_data[1], ctestDeque[1]);
-      CHECK_EQUAL(compare_data[2], ctestDeque[2]);
-      CHECK_EQUAL(compare_data[3], ctestDeque[3]);
-      CHECK_EQUAL(compare_data[4], ctestDeque[4]);
-    }
-
-    //*************************************************************************
-    TEST(IndexConstOutOfRange)
-    {
-      CompareData compare_data = { 1, 2, 3, 4, 5 };
-      Data data(compare_data.begin(), compare_data.end());
-      const Data& ctestDeque(data);
-
-      CHECK_THROW(int i = ctestDeque[5], etl::deque_out_of_bounds);
-    }
-
-    //*************************************************************************
-    TEST(InsertValueBegin)
-    {
-      CompareData original = { 1, 2, 3, 4 };
-      CompareData expected = { 5, 1, 2, 3, 4 };
-      Data data(original.begin(), original.end());
-
-      Data::iterator position = data.insert(data.begin(), 5);
-
-      CHECK_EQUAL(expected.size(), data.size());
-      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
-      CHECK_EQUAL(0, std::distance(data.begin(), position));
-    }
-
-    //*************************************************************************
-    TEST(InsertValueEnd)
-    {
-      CompareData original = { 1, 2, 3, 4 };
-      CompareData expected = { 1, 2, 3, 4, 5 };
-      Data data(original.begin(), original.end());
-
-      Data::iterator position = data.insert(data.end(), 5);
-
-      CHECK_EQUAL(expected.size(), data.size());
-      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
-      CHECK_EQUAL(4, std::distance(data.begin(), position));
-    }
-
-    //*************************************************************************
-    TEST(InsertValueMiddle)
-    {
-      CompareData original = { 1, 2, 3, 4 };
-      CompareData expected1 = { 1, 5, 2, 3, 4 };
-      CompareData expected2 = { 1, 2, 5, 3, 4 };
-      Data data(original.begin(), original.end());
-
-      Data::iterator position = data.insert(data.begin() + 1, 5);
-
-      CHECK_EQUAL(expected1.size(), data.size());
-      CHECK(std::equal(expected1.begin(), expected1.end(), data.begin()));
-      CHECK_EQUAL(1, std::distance(data.begin(), position));
-
-      data.assign(original.begin(), original.end());
-
-      position = data.insert(data.begin() + 2, 5);
-
-      CHECK_EQUAL(expected2.size(), data.size());
-      CHECK(std::equal(expected2.begin(), expected2.end(), data.begin()));
-      CHECK_EQUAL(2, std::distance(data.begin(), position));
-    }
-
-    //*************************************************************************
-    TEST(InsertNValueBegin)
-    {
-      CompareData original = { 1, 2, 3 };
-      CompareData expected = { 5, 5, 1, 2, 3 };
-      Data data(original.begin(), original.end());
-
-      Data::iterator position = data.insert(data.begin(), 2, 5);
-
-      CHECK_EQUAL(expected.size(), data.size());
-      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
-      CHECK_EQUAL(0, std::distance(data.begin(), position));
-    }
-
-    //*************************************************************************
-    TEST(InsertNValueEnd)
-    {
-      CompareData original = { 1, 2, 3 };
-      CompareData expected = { 1, 2, 3, 5, 5 };
-      Data data(original.begin(), original.end());
-
-      Data::iterator position = data.insert(data.end(), 2, 5);
-
-      CHECK_EQUAL(expected.size(), data.size());
-      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
-      CHECK_EQUAL(3, std::distance(data.begin(), position));
-    }
-
-    //*************************************************************************
-    TEST(InsertNValueMiddle)
-    {
-      CompareData original  = { 1, 2, 3, 4 };
-      CompareData expected1 = { 1, 5, 5, 2, 3, 4 };
-      CompareData expected2 = { 1, 2, 3, 5, 5, 4 };
-      Data data(original.begin(), original.end());
-
-      Data::iterator position = data.insert(data.begin() + 1, 2, 5);
-
-      CHECK_EQUAL(expected1.size(), data.size());
-      CHECK(std::equal(expected1.begin(), expected1.end(), data.begin()));
-      CHECK_EQUAL(1, std::distance(data.begin(), position));
-
-      data.assign(data.max_size(), -1);
-      data.assign(original.begin(), original.end());
-
-      position = data.insert(data.begin() + 3, 2, 5);
-
-      CHECK_EQUAL(expected2.size(), data.size());
-      CHECK(std::equal(expected2.begin(), expected2.end(), data.begin()));
-      CHECK_EQUAL(3, std::distance(data.begin(), position));
-    }
-
-    //*************************************************************************
-    TEST(InsertNValueExcess)
-    {
-      CompareData original = { 1, 2, 3, 4 };
-      Data data(original.begin(), original.end());
-
-      CHECK_THROW(data.insert(data.begin(), 3, 5), etl::deque_full);
-      CHECK_THROW(data.insert(data.end(), 3, 5), etl::deque_full);
-      CHECK_THROW(data.insert(data.begin() + 2, 3, 5), etl::deque_full);
-    }
-
-    //*************************************************************************
-    TEST(InsertRangeBegin)
-    {
-      CompareData original = { 1, 2, 3 };
-      CompareData range = { 4, 5 };
-      CompareData expected = { 4, 5, 1, 2, 3 };
-      Data data(original.begin(), original.end());
-
-      Data::iterator position = data.insert(data.begin(), range.begin(), range.end());
-
-      CHECK_EQUAL(expected.size(), data.size());
-      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
-    }
-
-    //*************************************************************************
-    TEST(InsertRangeEnd)
-    {
-      CompareData original = { 1, 2, 3 };
-      CompareData range = { 4, 5 };
-      CompareData expected = { 1, 2, 3, 4, 5 };
-      Data data(original.begin(), original.end());
-
-      Data::iterator position = data.insert(data.end(), range.cbegin(), range.cend());
-
-      CHECK_EQUAL(expected.size(), data.size());
-      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
-    }
-
-    //*************************************************************************
-    TEST(InsertRangeMiddle)
-    {
-      CompareData original = { 1, 2, 3, 4 };
-      CompareData range = { 5, 6 };
-      CompareData expected1 = { 1, 5, 6, 2, 3, 4 };
-      CompareData expected2 = { 1, 2, 3, 5, 6, 4 };
-      Data data(original.begin(), original.end());
-
-      Data::iterator position = data.insert(data.begin() + 1, range.begin(), range.end());
-
-      CHECK_EQUAL(expected1.size(), data.size());
-      CHECK(std::equal(expected1.begin(), expected1.end(), data.begin()));
-      CHECK_EQUAL(1, std::distance(data.begin(), position));
-
-      data.assign(original.begin(), original.end());
-
-      position = data.insert(data.begin() + 3, range.begin(), range.end());
-
-      CHECK_EQUAL(expected2.size(), data.size());
-      CHECK(std::equal(expected2.begin(), expected2.end(), data.begin()));
-      CHECK_EQUAL(3, std::distance(data.begin(), position));
-    }
-
-    //*************************************************************************
-    TEST(InsertRangeExcess)
-    {
-      CompareData original = { 1, 2, 3, 4 };
-      CompareData range = { 5, 6, 7 };
-      Data data(original.begin(), original.end());
-
-      CHECK_THROW(data.insert(data.begin(), range.begin(), range.end()), etl::deque_full);
-      CHECK_THROW(data.insert(data.end(), range.begin(), range.end()), etl::deque_full);
-      CHECK_THROW(data.insert(data.begin() + 2, range.begin(), range.end()), etl::deque_full);
-    }
-
-    //*************************************************************************
-    TEST(EraseBegin)
-    {
-      CompareData original = { 0, 0, 1, 2, 3, 4 };
-      CompareData expected = { 2, 3, 4, 5, 6 };
-      Data data(original.begin(), original.end());
-
-      // Cause rollover.
-      data.pop_front();
-      data.pop_front();
-      data.push_back(5);
-      data.push_back(6);
-
-      Data::iterator i_next = data.erase(data.begin());
-
-      CHECK_EQUAL(Data::difference_type(expected.size()), std::distance(data.begin(), data.end()));
-      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
-      CHECK_EQUAL(i_next.get_index(), data.begin().get_index());
-    }
-
-    //*************************************************************************
-    TEST(EraseEnd)
-    {
-      CompareData original = { 0, 0, 1, 2, 3, 4 };
-      CompareData expected = { 1, 2, 3, 4, 5 };
-      Data data(original.begin(), original.end());
-
-      // Cause rollover.
-      data.pop_front();
-      data.pop_front();
-      data.push_back(5);
-      data.push_back(6);
-
-      Data::iterator i_erase = data.end() - 1;
-      Data::iterator i_next  = data.erase(i_erase);
-
-      CHECK_EQUAL(Data::difference_type(expected.size()), std::distance(data.begin(), data.end()));
-      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
-      CHECK_EQUAL(i_next.get_index(), data.end().get_index());
-    }
-
-    //*************************************************************************
-    TEST(EraseMiddle)
-    {
-      CompareData original = { 0, 0, 1, 2, 3, 4 };
-      CompareData expected1 = { 1, 3, 4, 5, 6 };
-      CompareData expected2 = { 1, 2, 3, 4, 6 };
-
-      Data data(original.begin(), original.end());
-
-      // Cause rollover.
-      data.pop_front();
-      data.pop_front();
-      data.push_back(5);
-      data.push_back(6);
-
-      // Erase near beginning.
-      Data::iterator i_erase = data.begin() + 1;
-      Data::iterator i_next  = data.erase(i_erase);
-
-      CHECK_EQUAL(Data::difference_type(expected1.size()), std::distance(data.begin(), data.end()));
-      CHECK(std::equal(expected1.begin(), expected1.end(), data.begin()));
-      CHECK_EQUAL(i_next.get_index(), data.begin().get_index() + 1);
-
-      data.assign(original.begin(), original.end());
-
-      // Cause rollover.
-      data.pop_front();
-      data.pop_front();
-      data.push_back(5);
-      data.push_back(6);
-
-      // Erase near end.
-      i_next = data.erase(data.begin() + 4);
-
-      CHECK_EQUAL(Data::difference_type(expected2.size()), std::distance(data.begin(), data.end()));
-      CHECK(std::equal(expected2.begin(), expected2.end(), data.begin()));
-      CHECK_EQUAL(i_next.get_index(), data.begin().get_index() + 4);
-    }
-
-    //*************************************************************************
-    TEST(EraseRangeBegin)
-    {
-      CompareData original = { 0, 0, 1, 2, 3, 4 };
-      CompareData expected = { 3, 4, 5, 6 };
-      Data data(original.begin(), original.end());
-
-      // Cause rollover.
-      data.pop_front();
-      data.pop_front();
-      data.push_back(5);
-      data.push_back(6);
-      
-      Data::iterator i_next = data.erase(data.begin(), data.begin() + 2);
-
-      CHECK_EQUAL(Data::difference_type(expected.size()), std::distance(data.begin(), data.end()));
-      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
-      CHECK_EQUAL(i_next.get_index(), data.begin().get_index());
-    }
-
-    //*************************************************************************
-    TEST(EraseRangeEnd)
-    {
-      CompareData original = { 0, 0, 1, 2, 3, 4 };
-      CompareData expected = { 1, 2, 3, 4 };
-      Data data(original.begin(), original.end());
-
-      // Cause rollover.
-      data.pop_front();
-      data.pop_front();
-      data.push_back(5);
-      data.push_back(6);
-
-      Data::iterator i_next = data.erase(data.end() - 2, data.end());
-
-      CHECK_EQUAL(Data::difference_type(expected.size()), std::distance(data.begin(), data.end()));
-      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
-      CHECK_EQUAL(i_next.get_index(), data.end().get_index());
-    }
-
-    //*************************************************************************
-    TEST(EraseRangeMiddle)
-    {
-      CompareData original  = { 0, 0, 1, 2, 3, 4 };
-      CompareData expected1 = { 1, 4, 5, 6 };
-      CompareData expected2 = { 1, 2, 3, 6 };
-
-      Data data(original.begin(), original.end());
-
-      // Cause rollover.
-      data.pop_front();
-      data.pop_front();
-      data.push_back(5);
-      data.push_back(6);
-
-      Data::iterator i_next = data.erase(data.begin() + 1, data.begin() + 3);
-
-      CHECK_EQUAL(Data::difference_type(expected1.size()), std::distance(data.begin(), data.end()));
-      CHECK(std::equal(expected1.begin(), expected1.end(), data.begin()));
-      CHECK_EQUAL(i_next.get_index(), (data.begin() + 1).get_index());
-
-      data.assign(original.begin(), original.end());
-
-      // Cause rollover.
-      data.pop_front();
-      data.pop_front();
-      data.push_back(5);
-      data.push_back(6);
-
-      i_next = data.erase(data.begin() + 3, data.begin() + 5);
-
-      CHECK_EQUAL(Data::difference_type(expected2.size()), std::distance(data.begin(), data.end()));
-      CHECK(std::equal(expected2.begin(), expected2.end(), data.begin()));
-      CHECK_EQUAL(i_next.get_index(), (data.begin() + 3).get_index());
-
-      CompareData original2 = { 0, 0, 0, 0, 1, 2};
-      CompareData expected3 = { 1, 2, 5, 6 };
-
-      data.assign(original2.begin(), original2.end());
-
-      // Cause rollover.
-      data.pop_front();
-      data.pop_front();
-      data.pop_front();
-      data.pop_front();
-      data.push_back(3);
-      data.push_back(4);
-      data.push_back(5);
-      data.push_back(6);
-
-      i_next = data.erase(data.begin() + 2, data.begin() + 4);
-
-      CHECK_EQUAL(Data::difference_type(expected3.size()), std::distance(data.begin(), data.end()));
-      CHECK(std::equal(expected3.begin(), expected3.end(), data.begin()));
-      CHECK_EQUAL(i_next.get_index(), (data.begin() + 2).get_index());
-    }
-
-    //*************************************************************************
-    TEST(Sort)
-    {
-      CompareData original = { 5, 3, 4, 1, 2 };
-      CompareData expected = { 1, 2, 3, 4, 5 };
-      Data data(original.begin(), original.end());
-
-      std::sort(data.begin(), data.end());
-
-      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
-    }
-
-    //*************************************************************************
-    TEST(ReverseForwardIterators)
-    {
-      CompareData original = { 1, 2, 3, 4, 5 };
-      CompareData expected = { 5, 4, 3, 2, 1 };
-      Data data(original.begin(), original.end());
-
-      std::reverse(data.begin(), data.end());
+      Data data1(compare_data1.begin(), compare_data1.end());
+      Data data2(compare_data2.begin(), compare_data2.end());
 
-      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
-    }
-
-    //*************************************************************************
-    TEST(ReverseReverseIterators)
-    {
-      CompareData original = { 1, 2, 3, 4, 5 };
-      CompareData expected = { 5, 4, 3, 2, 1 };
-      Data data(original.begin(), original.end());
-
-      std::reverse(data.rbegin(), data.rend());
-
-      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
-    }
-
-    //*************************************************************************
-    TEST(BeginEnd)
-    {
-      CompareData original = { 1, 2, 3, 4, 5 };
-      Data data(original.begin(), original.end());
-
-      Data::iterator begin = data.begin();
-      Data::iterator end   = data.end();
-
-      CHECK_EQUAL(Data::difference_type(original.size()), std::distance(begin, end));
-      CHECK(std::equal(begin, end, data.begin()));
-    }
-
-    //*************************************************************************
-    TEST(BeginEndConst)
-    {
-      CompareData original = { 1, 2, 3, 4, 5 };
-      Data data(original.begin(), original.end());
-
-      Data::const_iterator begin = data.begin();
-      Data::const_iterator end   = data.end();
-
-      CHECK_EQUAL(Data::difference_type(original.size()), std::distance(begin, end));
-      CHECK(std::equal(begin, end, original.begin()));
-    }
-
-    //*************************************************************************
-    TEST(CBeginCEnd)
-    {
-      CompareData original = { 1, 2, 3, 4, 5 };
-      Data data(original.begin(), original.end());
-
-      Data::const_iterator begin = data.cbegin();
-      Data::const_iterator end   = data.cend();
-
-      CHECK_EQUAL(Data::difference_type(original.size()), std::distance(begin, end));
-      CHECK(std::equal(begin, end, original.begin()));
-    }
-
-    //*************************************************************************
-    TEST(RBeginREnd)
-    {
-      CompareData original = { 1, 2, 3, 4, 5 };
-      CompareData expected = { 5, 4, 3, 2, 1 };
-      Data data(original.begin(), original.end());
-
-      Data::reverse_iterator begin = data.rbegin();
-      Data::reverse_iterator end   = data.rend();
-
-      CHECK_EQUAL(Data::difference_type(expected.size()), std::distance(begin, end));
-      CHECK(std::equal(begin, end, expected.begin()));
-    }
-
-    //*************************************************************************
-    TEST(RBeginREndConst)
-    {
-      CompareData original = { 1, 2, 3, 4, 5 };
-      CompareData expected = { 5, 4, 3, 2, 1 };
-      Data data(original.begin(), original.end());
-
-      Data::const_reverse_iterator begin = data.rbegin();
-      Data::const_reverse_iterator end   = data.rend();
-
-      CHECK_EQUAL(Data::difference_type(expected.size()), std::distance(begin, end));
-      CHECK(std::equal(begin, end, expected.begin()));
-    }
-
-    //*************************************************************************
-    TEST(CRBeginCREnd)
-    {
-      CompareData original = { 1, 2, 3, 4, 5 };
-      CompareData expected = { 5, 4, 3, 2, 1 };
-      Data data(original.begin(), original.end());
-
-      Data::const_reverse_iterator begin = data.crbegin();
-      Data::const_reverse_iterator end   = data.crend();
-
-      CHECK_EQUAL(Data::difference_type(expected.size()), std::distance(begin, end));
-      CHECK(std::equal(begin, end, expected.begin()));
-    }
-
-    //*************************************************************************
-    TEST(Iterators)
-    {
-      CompareData original = { 1, 2, 3, 4, 5 };
-      Data data(original.begin(), original.end());
-
-      Data::iterator begin = data.begin();
-      Data::iterator end   = data.begin();
-     
-      CHECK_EQUAL(0, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(1, *end);
-      ++end;
-      CHECK_EQUAL(1, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(2, *end);
-      ++end;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(3, *end);
-      ++end;
-      CHECK_EQUAL(3, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(4, *end);
-      ++end;
-      CHECK_EQUAL(4, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(3, std::distance(begin, end));
-      CHECK_EQUAL(2, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(3, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(1, std::distance(begin, end));
-      CHECK_EQUAL(4, *begin);
-      CHECK_EQUAL(5, *end);
-      begin -= 3;
-      CHECK_EQUAL(4, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(5, *end);
-      end -= 2;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(3, *end);
-    }
-
-    //*************************************************************************
-    TEST(IteratorsRolloverRight)
-    {
-      CompareData original = { 1, 2, 3, 4, 5 };
-      Data data(original.begin(), original.end());
-
-      // Cause rollover right.
-      data.pop_front();
-      data.pop_front(); 
-      data.pop_front();
-      data.push_back(6);
-      data.push_back(7);
-      data.push_back(8);
-
-      Data::iterator begin = data.begin();
-      Data::iterator end   = data.begin();
-
-      CHECK_EQUAL(0, std::distance(begin, end));
-      CHECK_EQUAL(4, *begin);
-      CHECK_EQUAL(4, *end);
-      ++end;
-      CHECK_EQUAL(1, std::distance(begin, end));
-      CHECK_EQUAL(4, *begin);
-      CHECK_EQUAL(5, *end);
-      ++end;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(4, *begin);
-      CHECK_EQUAL(6, *end);
-      ++end;
-      CHECK_EQUAL(3, std::distance(begin, end));
-      CHECK_EQUAL(4, *begin);
-      CHECK_EQUAL(7, *end);
-      ++end;
-      CHECK_EQUAL(4, std::distance(begin, end));
-      CHECK_EQUAL(4, *begin);
-      CHECK_EQUAL(8, *end);
-      ++begin;
-      CHECK_EQUAL(3, std::distance(begin, end));
-      CHECK_EQUAL(5, *begin);
-      CHECK_EQUAL(8, *end);
-      ++begin;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(6, *begin);
-      CHECK_EQUAL(8, *end);
-      ++begin;
-      CHECK_EQUAL(1, std::distance(begin, end));
-      CHECK_EQUAL(7, *begin);
-      CHECK_EQUAL(8, *end);
-      begin -= 3;
-      CHECK_EQUAL(4, std::distance(begin, end));
-      CHECK_EQUAL(4, *begin);
-      CHECK_EQUAL(8, *end);
-      end -= 2;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(4, *begin);
-      CHECK_EQUAL(6, *end);
-    }
-
-    //*************************************************************************
-    TEST(IteratorsRolloverLeft)
-    {
-      CompareData original = { 4, 5, 6, 7, 8 };
-      Data data(original.begin(), original.end());
-
-      // Cause rollover left.
-      data.pop_back(); 
-      data.pop_back();
-      data.pop_back();
-      data.push_front(3);
-      data.push_front(2);
-      data.push_front(1);
-
-      Data::iterator begin = data.begin();
-      Data::iterator end = data.begin();
-
-      CHECK_EQUAL(0, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(1, *end);
-      ++end;
-      CHECK_EQUAL(1, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(2, *end);
-      ++end;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(3, *end);
-      ++end;
-      CHECK_EQUAL(3, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(4, *end);
-      ++end;
-      CHECK_EQUAL(4, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(3, std::distance(begin, end));
-      CHECK_EQUAL(2, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(3, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(1, std::distance(begin, end));
-      CHECK_EQUAL(4, *begin);
-      CHECK_EQUAL(5, *end);
-      begin -= 3;
-      CHECK_EQUAL(4, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(5, *end);
-      end -= 2;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(3, *end);
-    }
-
-    //*************************************************************************
-    TEST(ConstIterators)
-    {
-      CompareData original = { 1, 2, 3, 4, 5 };
-      Data data(original.begin(), original.end());
-
-      Data::const_iterator begin = data.cbegin();
-      Data::const_iterator end   = data.cbegin();
-
-      CHECK_EQUAL(0, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(1, *end);
-      ++end;
-      CHECK_EQUAL(1, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(2, *end);
-      ++end;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(3, *end);
-      ++end;
-      CHECK_EQUAL(3, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(4, *end);
-      ++end;
-      CHECK_EQUAL(4, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(3, std::distance(begin, end));
-      CHECK_EQUAL(2, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(3, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(1, std::distance(begin, end));
-      CHECK_EQUAL(4, *begin);
-      CHECK_EQUAL(5, *end);
-      begin -= 3;
-      CHECK_EQUAL(4, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(5, *end);
-      end -= 2;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(3, *end);
-    }
-
-    //*************************************************************************
-    TEST(ConstIteratorsRolloverRight)
-    {
-      CompareData original = { 1, 2, 3, 4, 5 };
-      Data data(original.begin(), original.end());
-
-      // Cause rollover right.
-      data.pop_front(); 
-      data.pop_front(); 
-      data.pop_front();
-      data.push_back(6);
-      data.push_back(7);
-      data.push_back(8);
-
-      Data::const_iterator begin = data.cbegin();
-      Data::const_iterator end   = data.cbegin();
-
-      CHECK_EQUAL(0, std::distance(begin, end));
-      CHECK_EQUAL(4, *begin);
-      CHECK_EQUAL(4, *end);
-      ++end;
-      CHECK_EQUAL(1, std::distance(begin, end));
-      CHECK_EQUAL(4, *begin);
-      CHECK_EQUAL(5, *end);
-      ++end;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(4, *begin);
-      CHECK_EQUAL(6, *end);
-      ++end;
-      CHECK_EQUAL(3, std::distance(begin, end));
-      CHECK_EQUAL(4, *begin);
-      CHECK_EQUAL(7, *end);
-      ++end;
-      CHECK_EQUAL(4, std::distance(begin, end));
-      CHECK_EQUAL(4, *begin);
-      CHECK_EQUAL(8, *end);
-      ++begin;
-      CHECK_EQUAL(3, std::distance(begin, end));
-      CHECK_EQUAL(5, *begin);
-      CHECK_EQUAL(8, *end);
-      ++begin;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(6, *begin);
-      CHECK_EQUAL(8, *end);
-      ++begin;
-      CHECK_EQUAL(1, std::distance(begin, end));
-      CHECK_EQUAL(7, *begin);
-      CHECK_EQUAL(8, *end);
-      begin -= 3;
-      CHECK_EQUAL(4, std::distance(begin, end));
-      CHECK_EQUAL(4, *begin);
-      CHECK_EQUAL(8, *end);
-      end -= 2;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(4, *begin);
-      CHECK_EQUAL(6, *end);
-    }
-
-    //*************************************************************************
-    TEST(ConstIteratorsRolloverLeft)
-    {
-      CompareData original = { 4, 5, 6, 7, 8 };
-      Data data(original.begin(), original.end());
-
-      // Cause rollover left.
-      data.pop_back();
-      data.pop_back();
-      data.pop_back();
-      data.push_front(3);
-      data.push_front(2);
-      data.push_front(1);
-            
-      Data::const_iterator begin = data.cbegin();
-      Data::const_iterator end   = data.cbegin();
-
-      CHECK_EQUAL(0, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(1, *end);
-      ++end;
-      CHECK_EQUAL(1, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(2, *end);
-      ++end;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(3, *end);
-      ++end;
-      CHECK_EQUAL(3, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(4, *end);
-      ++end;
-      CHECK_EQUAL(4, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(3, std::distance(begin, end));
-      CHECK_EQUAL(2, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(3, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(1, std::distance(begin, end));
-      CHECK_EQUAL(4, *begin);
-      CHECK_EQUAL(5, *end);
-      begin -= 3;
-      CHECK_EQUAL(4, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(5, *end);
-      end -= 2;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(3, *end);
-    }
-
-    //*************************************************************************
-    TEST(ReverseIterators)
-    {
-      CompareData original = { 5, 4, 3, 2, 1 };
-      Data data(original.begin(), original.end());
-
-      Data::reverse_iterator begin = data.rbegin();
-      Data::reverse_iterator end   = data.rbegin();
-
-      CHECK_EQUAL(0, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(1, *end);
-      ++end;
-      CHECK_EQUAL(1, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(2, *end);
-      ++end;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(3, *end);
-      ++end;
-      CHECK_EQUAL(3, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(4, *end);
-      ++end;
-      CHECK_EQUAL(4, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(3, std::distance(begin, end));
-      CHECK_EQUAL(2, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(3, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(1, std::distance(begin, end));
-      CHECK_EQUAL(4, *begin);
-      CHECK_EQUAL(5, *end);
-      begin -= 3;
-      CHECK_EQUAL(4, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(5, *end);
-      end -= 2;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(3, *end);
-    }
-
-    //*************************************************************************
-    TEST(ReverseIteratorsRolloverRight)
-    {
-      CompareData original = { 0, 0, 0, 5, 4 };
-      Data data(original.begin(), original.end());
-
-      // Cause rollover right.
-      data.pop_front(); 
-      data.pop_front();  
-      data.pop_front();
-      data.push_back(3);
-      data.push_back(2);
-      data.push_back(1);
-
-      Data::reverse_iterator begin = data.rbegin();
-      Data::reverse_iterator end   = data.rbegin();
-
-      CHECK_EQUAL(0, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(1, *end);
-      ++end;
-      CHECK_EQUAL(1, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(2, *end);
-      ++end;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(3, *end);
-      ++end;
-      CHECK_EQUAL(3, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(4, *end);
-      ++end;
-      CHECK_EQUAL(4, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(3, std::distance(begin, end));
-      CHECK_EQUAL(2, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(3, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(1, std::distance(begin, end));
-      CHECK_EQUAL(4, *begin);
-      CHECK_EQUAL(5, *end);
-      begin -= 3;
-      CHECK_EQUAL(4, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(5, *end);
-      end -= 2;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(3, *end);
-    }
-
-    //*************************************************************************
-    TEST(ReverseIteratorsRolloverLeft)
-    {
-      CompareData original = { 2, 1, 0, 0, 0 };
-      Data data(original.begin(), original.end());
-
-      // Cause rollover left.
-      data.pop_back(); 
-      data.pop_back();
-      data.pop_back();
-      data.push_front(3);
-      data.push_front(4);
-      data.push_front(5);
-
-      Data::reverse_iterator begin = data.rbegin();
-      Data::reverse_iterator end   = data.rbegin();
-
-      CHECK_EQUAL(0, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(1, *end);
-      ++end;
-      CHECK_EQUAL(1, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(2, *end);
-      ++end;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(3, *end);
-      ++end;
-      CHECK_EQUAL(3, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(4, *end);
-      ++end;
-      CHECK_EQUAL(4, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(3, std::distance(begin, end));
-      CHECK_EQUAL(2, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(3, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(1, std::distance(begin, end));
-      CHECK_EQUAL(4, *begin);
-      CHECK_EQUAL(5, *end);
-      begin -= 3;
-      CHECK_EQUAL(4, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(5, *end);
-      end -= 2;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(3, *end);
-    }
-
-    //*************************************************************************
-    TEST(ConstReverseIterators)
-    {
-      CompareData original = { 5, 4, 3, 2, 1 };
-      Data data(original.begin(), original.end());
-
-      Data::const_reverse_iterator begin = data.crbegin();
-      Data::const_reverse_iterator end   = data.crbegin();
-
-      CHECK_EQUAL(0, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(1, *end);
-      ++end;
-      CHECK_EQUAL(1, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(2, *end);
-      ++end;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(3, *end);
-      ++end;
-      CHECK_EQUAL(3, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(4, *end);
-      ++end;
-      CHECK_EQUAL(4, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(3, std::distance(begin, end));
-      CHECK_EQUAL(2, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(3, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(1, std::distance(begin, end));
-      CHECK_EQUAL(4, *begin);
-      CHECK_EQUAL(5, *end);
-      begin -= 3;
-      CHECK_EQUAL(4, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(5, *end);
-      end -= 2;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(3, *end);
-    }
-
-    //*************************************************************************
-    TEST(ConstReverseIteratorsRolloverRight)
-    {
-      CompareData original = { 0, 0, 0, 5, 4 };
-      Data data(original.begin(), original.end());
-
-      // Cause rollover right.
-      data.pop_front();
-      data.pop_front();
-      data.pop_front();
-      data.push_back(3);
-      data.push_back(2);
-      data.push_back(1);
-
-      Data::const_reverse_iterator begin = data.crbegin();
-      Data::const_reverse_iterator end   = data.crbegin();
-
-      CHECK_EQUAL(0, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(1, *end);
-      ++end;
-      CHECK_EQUAL(1, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(2, *end);
-      ++end;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(3, *end);
-      ++end;
-      CHECK_EQUAL(3, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(4, *end);
-      ++end;
-      CHECK_EQUAL(4, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(3, std::distance(begin, end));
-      CHECK_EQUAL(2, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(3, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(1, std::distance(begin, end));
-      CHECK_EQUAL(4, *begin);
-      CHECK_EQUAL(5, *end);
-      begin -= 3;
-      CHECK_EQUAL(4, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(5, *end);
-      end -= 2;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(3, *end);
-    }
-
-    //*************************************************************************
-    TEST(ConstReverseIteratorsRolloverLeft)
-    {
-      CompareData original = { 2, 1, 0, 0, 0 };
-      Data data(original.begin(), original.end());
-
-      // Cause rollover left.
-      data.pop_back();
-      data.push_front(3);
-      data.pop_back();
-      data.push_front(4);
-      data.pop_back();
-      data.push_front(5);
-
-      Data::const_reverse_iterator begin = data.crbegin();
-      Data::const_reverse_iterator end   = data.crbegin();
-
-      CHECK_EQUAL(0, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(1, *end);
-      ++end;
-      CHECK_EQUAL(1, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(2, *end);
-      ++end;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(3, *end);
-      ++end;
-      CHECK_EQUAL(3, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(4, *end);
-      ++end;
-      CHECK_EQUAL(4, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(3, std::distance(begin, end));
-      CHECK_EQUAL(2, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(3, *begin);
-      CHECK_EQUAL(5, *end);
-      ++begin;
-      CHECK_EQUAL(1, std::distance(begin, end));
-      CHECK_EQUAL(4, *begin);
-      CHECK_EQUAL(5, *end);
-      begin -= 3;
-      CHECK_EQUAL(4, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(5, *end);
-      end -= 2;
-      CHECK_EQUAL(2, std::distance(begin, end));
-      CHECK_EQUAL(1, *begin);
-      CHECK_EQUAL(3, *end);
-    }
-
-    //*************************************************************************
-    TEST(IteratorsNegativeDistance)
-    {
-      CompareData original = { 2, 1, 0, 0, 0 };
-      Data data(original.begin(), original.end());
-
-      CHECK_EQUAL(-5, std::distance(data.end(), data.begin()));
-    }
-
-    //*************************************************************************
-    TEST(ConstIteratorsNegativeDistance)
-    {
-      CompareData original = { 2, 1, 0, 0, 0 };
-      Data data(original.begin(), original.end());
-
-      CHECK_EQUAL(-5, std::distance(data.cend(), data.cbegin()));
-    }
-
-    //*************************************************************************
-    TEST(ReverseIteratorsNegativeDistance)
-    {
-      CompareData original = { 2, 1, 0, 0, 0 };
-      Data data(original.begin(), original.end());
-
-      CHECK_EQUAL(-5, std::distance(data.rend(), data.rbegin()));
-    }
-
-    //*************************************************************************
-    TEST(ConstReverseIteratorsNegativeDistance)
-    {
-      CompareData original = { 2, 1, 0, 0, 0 };
-      Data data(original.begin(), original.end());
-
-      CHECK_EQUAL(-5, std::distance(data.crend(), data.crbegin()));
-    }
-
-    //*************************************************************************
-    TEST(IteratorsComparison)
-    {
-      Data data(6, 0);
-
-      Data::iterator first  = data.begin() + 1;
-      Data::iterator second = data.begin() + 4;
-
-      CHECK(first < second);
-      CHECK(!(second < first));
-    }
-
-    //*************************************************************************
-    TEST(IteratorsComparisonRolloverRight)
-    {
-      Data data(6, 0);
-
-      data.pop_front();
-      data.pop_front();
-      data.pop_front();
-      data.push_back(1);
-      data.push_back(1);
-      data.push_back(1);
-
-      Data::iterator first  = data.begin() + 1;
-      Data::iterator second = data.begin() + 4;
-
-      CHECK(first < second);
-      CHECK(!(second < first));
-    }
-
-    //*************************************************************************
-    TEST(ConstIteratorsComparison)
-    {
-      Data data(6, 0);
-
-      Data::const_iterator first  = data.cbegin() + 1;
-      Data::const_iterator second = data.cbegin() + 4;
-
-      CHECK(first < second);
-      CHECK(!(second < first));
-    }
-
-    //*************************************************************************
-    TEST(ConstIteratorsComparisonRolloverRight)
-    {
-      Data data(6, 0);
-
-      data.pop_front();
-      data.pop_front();
-      data.pop_front();
-      data.push_back(1);
-      data.push_back(1);
-      data.push_back(1);
-
-      Data::const_iterator first  = data.cbegin() + 1;
-      Data::const_iterator second = data.cbegin() + 4;
-
-      CHECK(first < second);
-      CHECK(!(second < first));
-    }
-
-    //*************************************************************************
-    TEST(ConstIteratorsComparisonRolloverLeft)
-    {
-      Data data(6, 0);
-
-      data.pop_back();
-      data.pop_back();
-      data.pop_back();
-      data.push_front(1);
-      data.push_front(1);
-      data.push_front(1);
-
-      Data::const_iterator first  = data.cbegin() + 1;
-      Data::const_iterator second = data.cbegin() + 4;
-
-      CHECK(first < second);
-      CHECK(!(second < first));
-    }
-
-    //*************************************************************************
-    TEST(ReverseIteratorsComparison)
-    {
-      Data data(6, 0);
-
-      Data::reverse_iterator first  = data.rbegin() + 1;
-      Data::reverse_iterator second = data.rbegin() + 4;
-
-      CHECK(first < second);
-      CHECK(!(second < first));
-    }
-
-    //*************************************************************************
-    TEST(ReverseIteratorsComparisonRolloverRight)
-    {
-      Data data(6, 0);
-
-      data.pop_front();
-      data.pop_front();
-      data.pop_front();
-      data.push_back(1);
-      data.push_back(1);
-      data.push_back(1);
-
-      Data::reverse_iterator first  = data.rbegin() + 1;
-      Data::reverse_iterator second = data.rbegin() + 4;
-
-      CHECK(first < second);
-      CHECK(!(second < first));
-    }
-
-    //*************************************************************************
-    TEST(ReverseIteratorsComparisonRolloverLeft)
-    {
-      Data data(6, 0);
-
-      data.pop_back();
-      data.pop_back();
-      data.pop_back();
-      data.push_front(1);
-      data.push_front(1);
-      data.push_front(1);
-
-      Data::reverse_iterator first  = data.rbegin() + 1;
-      Data::reverse_iterator second = data.rbegin() + 4;
-
-      CHECK(first < second);
-      CHECK(!(second < first));
-    }
-
-    //*************************************************************************
-    TEST(ConstReverseIteratorsComparison)
-    {
-      Data data(6, 0);
-
-      Data::const_reverse_iterator first  = data.crbegin() + 1;
-      Data::const_reverse_iterator second = data.crbegin() + 4;
-
-      CHECK(first < second);
-      CHECK(!(second < first));
-    }
-
-    //*************************************************************************
-    TEST(ConstReverseIteratorsComparisonRolloverRight)
-    {
-      Data data(6, 0);
-
-      data.pop_front();
-      data.pop_front();
-      data.pop_front();
-      data.push_back(1);
-      data.push_back(1);
-      data.push_back(1);
-
-      Data::const_reverse_iterator first  = data.crbegin() + 1;
-      Data::const_reverse_iterator second = data.crbegin() + 4;
-
-      CHECK(first < second);
-      CHECK(!(second < first));
-    }
-
-    //*************************************************************************
-    TEST(ConstReverseIteratorsComparisonRolloverLeft)
-    {
-      Data data(6, 0);
+      swap(data1, data2);
 
-      data.pop_back();
-      data.pop_back();
-      data.pop_back();
-      data.push_front(1);
-      data.push_front(1);
-      data.push_front(1);
+      CHECK_EQUAL(compare_data2.size(), data1.size());
+      CHECK_EQUAL(compare_data1.size(), data2.size());
 
-      Data::const_reverse_iterator first = data.crbegin() + 1;
-      Data::const_reverse_iterator second = data.crbegin() + 4;
+      CHECK_EQUAL(std::distance(compare_data2.begin(), compare_data2.end()), std::distance(data1.begin(), data1.end()));
+      CHECK_EQUAL(std::distance(compare_data1.begin(), compare_data1.end()), std::distance(data2.begin(), data2.end()));
 
-      CHECK(first < second);
-      CHECK(!(second < first));
+      CHECK(std::equal(compare_data2.begin(), compare_data2.end(), data1.begin()));
+      CHECK(std::equal(compare_data1.begin(), compare_data1.end(), data2.begin()));
     }
 
     //*************************************************************************
-		TEST(OperatorEqual)
+		TEST(test_equality_operator)
 		{
-      CompareData original = { 1, 2, 3, 4, 5, 6 };
-      CompareData modified = { 6, 5, 4, 3, 2, 1 };
+      Compare_Data same      = { 1, 2, 3, 4, 5, 6 };
+      Compare_Data different = { 6, 5, 4, 3, 2, 1 };
      
-      Data testDeque1(original.begin(), original.end());
-      Data testDeque2(testDeque1);
+      Data deque1(same.begin(), same.end());
+      Data deque2(deque1);
 
-      CHECK(testDeque1 == testDeque2);
+      CHECK(deque1 == deque2);
 
-      // Change testDeque2's data.
-      std::copy(modified.begin(), modified.end(), testDeque2.begin());
+      // Change deque2's data.
+      std::copy(different.begin(), different.end(), deque2.begin());
 
-      CHECK(testDeque1 != testDeque2);
+      CHECK(!(deque1 == deque2));
 		}
+
+    //*************************************************************************
+    TEST(test_inequality_operator)
+    {
+      Compare_Data same = { 1, 2, 3, 4, 5, 6 };
+      Compare_Data different = { 6, 5, 4, 3, 2, 1 };
+
+      Data deque1(same.begin(), same.end());
+      Data deque2(deque1);
+
+      CHECK(!(deque1 != deque2));
+
+      // Change deque2's data.
+      std::copy(different.begin(), different.end(), deque2.begin());
+
+      CHECK(deque1 != deque2);
+    }
 	};
 }

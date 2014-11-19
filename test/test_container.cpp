@@ -35,7 +35,7 @@ namespace
   SUITE(ContainerTest)
   {
     //*************************************************************************
-    TEST(TestSTLContainer)
+    TEST(test_stl_style_container)
     {
       const size_t SIZE = 10;
       std::list<int> data(SIZE);
@@ -48,7 +48,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(TestConstSTLContainer)
+    TEST(test_const_stl_style_container)
     {
       const size_t SIZE = 10;
       const std::list<int> data(SIZE);
@@ -61,7 +61,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(TestCArray)
+    TEST(test_c_array)
     {
       const size_t SIZE = 10;
       int data[SIZE];
@@ -74,7 +74,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(TestConstCArray)
+    TEST(test_const_c_array)
     {
       const size_t SIZE = 10;
       const int data[SIZE] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -88,7 +88,7 @@ namespace
 
 
     //*************************************************************************
-    TEST(TestNext)
+    TEST(test_next)
     {
       const int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
       const int* p;
@@ -104,7 +104,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(TestPrev)
+    TEST(test_prev)
     {
       const int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
       const int* p;
@@ -120,7 +120,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(TestSTLContainerSize)
+    TEST(test_stl_style_container_size)
     {
       const size_t SIZE = 10;
       std::list<int> data(SIZE);
@@ -130,7 +130,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(TestCArraySize)
+    TEST(test_c_array_size)
     {
       const size_t SIZE = 10;
       int data[SIZE];

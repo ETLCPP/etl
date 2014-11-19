@@ -35,26 +35,26 @@ namespace
   SUITE(TestLargest)
   {
     //*************************************************************************
-    TEST(PODTest)
+    TEST(test_pod_type)
     {
       size_t size;
       bool   type;
 
-      size = etl::largest<char, short, int>::size;
-      type = std::is_same<int, etl::largest<char, short, int>::type>::value;
+      size = etl::largest_type<char, short, int>::size;
+      type = std::is_same<int, etl::largest_type<char, short, int>::type>::value;
 
       CHECK_EQUAL(sizeof(int), size);
       CHECK(type);
 
-      size = etl::largest<int, char, short>::size;
-      type = std::is_same<int, etl::largest<char, short, int>::type>::value;
+      size = etl::largest_type<int, char, short>::size;
+      type = std::is_same<int, etl::largest_type<char, short, int>::type>::value;
 
       CHECK_EQUAL(sizeof(int), size);
       CHECK(type);
     }
 
     //*************************************************************************
-    TEST(NonPODTest)
+    TEST(test_non_pod_type)
     {
       size_t size;
       bool   type;
@@ -63,17 +63,37 @@ namespace
       struct S2 { char a; short b; char c; };
       struct S3 { int  a; short b; char c; };
 
-      size = etl::largest<S1, S2, S3>::size;
-      type = std::is_same<S3, etl::largest<S1, S2, S3>::type>::value;
+      size = etl::largest_type<S1, S2, S3>::size;
+      type = std::is_same<S3, etl::largest_type<S1, S2, S3>::type>::value;
 
       CHECK_EQUAL(sizeof(S3), size);
       CHECK(type);
 
-      size = etl::largest<S2, S3, S1>::size;
-      type = std::is_same<S3, etl::largest<S2, S3, S1>::type>::value;
+      size = etl::largest_type<S2, S3, S1>::size;
+      type = std::is_same<S3, etl::largest_type<S2, S3, S1>::type>::value;
 
       CHECK_EQUAL(sizeof(S3), size);
       CHECK(type);
+    }
+
+    //*************************************************************************
+    TEST(test_pod_alignment)
+    {
+      size_t size = etl::largest_alignment<char, short, int, double>::value;
+
+      CHECK_EQUAL(std::alignment_of<double>::value, size);
+    }
+
+    //*************************************************************************
+    TEST(test_non_pod_alignment)
+    {
+      struct S1 { char a; char  b; char c; };
+      struct S2 { char a; short b; char c; };
+      struct S3 { int  a; short b; char c; };
+      
+      size_t size = etl::largest_alignment<S1, S2, S3>::value;
+
+      CHECK_EQUAL(std::alignment_of<S3>::value, size);
     }
   };
 }
