@@ -1,61 +1,110 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Session Name="U:\Users\John\Documents\Programming\GitHub\etl\test\codelite\ETL.workspace">
-  <int Value="5" Name="m_selectedTab"/>
+  <int Value="13" Name="m_selectedTab"/>
   <wxString Value="U:\Users\John\Documents\Programming\GitHub\etl\test\codelite\ETL.workspace" Name="m_workspaceName"/>
   <TabInfoArray Name="TabInfoArray">
     <TabInfo>
-      <wxString Value="c:\mingw\lib\gcc\mingw32\4.8.1\include\c++\bits\c++0x_warning.h" Name="FileName"/>
-      <int Value="0" Name="FirstVisibleLine"/>
-      <int Value="28" Name="CurrentLine"/>
-      <wxArrayString Name="Bookmarks"/>
-      <IntVector Name="CollapsedFolds"/>
-    </TabInfo>
-    <TabInfo>
-      <wxString Value="U:\Users\John\Documents\Programming\GitHub\unittest-cpp\UnitTest++\HelperMacros.h" Name="FileName"/>
-      <int Value="0" Name="FirstVisibleLine"/>
-      <int Value="3" Name="CurrentLine"/>
-      <wxArrayString Name="Bookmarks"/>
-      <IntVector Name="CollapsedFolds"/>
-    </TabInfo>
-    <TabInfo>
-      <wxString Value="U:\Users\John\Documents\Programming\GitHub\unittest-cpp\UnitTest++\Config.h" Name="FileName"/>
-      <int Value="17" Name="FirstVisibleLine"/>
-      <int Value="27" Name="CurrentLine"/>
-      <wxArrayString Name="Bookmarks"/>
-      <IntVector Name="CollapsedFolds"/>
-    </TabInfo>
-    <TabInfo>
-      <wxString Value="U:\Users\John\Documents\Programming\GitHub\etl\test\main.cpp" Name="FileName"/>
-      <int Value="0" Name="FirstVisibleLine"/>
-      <int Value="19" Name="CurrentLine"/>
-      <wxArrayString Name="Bookmarks"/>
-      <IntVector Name="CollapsedFolds"/>
-    </TabInfo>
-    <TabInfo>
-      <wxString Value="U:\Users\John\Documents\Programming\GitHub\etl\test\test_largest.cpp" Name="FileName"/>
-      <int Value="27" Name="FirstVisibleLine"/>
-      <int Value="64" Name="CurrentLine"/>
-      <wxArrayString Name="Bookmarks"/>
-      <IntVector Name="CollapsedFolds"/>
-    </TabInfo>
-    <TabInfo>
-      <wxString Value="U:\Users\John\Documents\Programming\GitHub\etl\test\test_deque.cpp" Name="FileName"/>
-      <int Value="516" Name="FirstVisibleLine"/>
-      <int Value="595" Name="CurrentLine"/>
+      <wxString Value="U:\Users\John\Documents\Programming\GitHub\etl\array.h" Name="FileName"/>
+      <int Value="61" Name="FirstVisibleLine"/>
+      <int Value="55" Name="CurrentLine"/>
       <wxArrayString Name="Bookmarks"/>
       <IntVector Name="CollapsedFolds"/>
     </TabInfo>
     <TabInfo>
       <wxString Value="U:\Users\John\Documents\Programming\GitHub\etl\ideque.h" Name="FileName"/>
-      <int Value="261" Name="FirstVisibleLine"/>
-      <int Value="267" Name="CurrentLine"/>
+      <int Value="40" Name="FirstVisibleLine"/>
+      <int Value="61" Name="CurrentLine"/>
       <wxArrayString Name="Bookmarks"/>
       <IntVector Name="CollapsedFolds"/>
     </TabInfo>
     <TabInfo>
-      <wxString Value="U:\Users\John\Documents\Programming\GitHub\etl\deque.h" Name="FileName"/>
-      <int Value="34" Name="FirstVisibleLine"/>
-      <int Value="35" Name="CurrentLine"/>
+      <wxString Value="U:\Users\John\Documents\Programming\GitHub\etl\smallest.h" Name="FileName"/>
+      <int Value="0" Name="FirstVisibleLine"/>
+      <int Value="30" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds"/>
+    </TabInfo>
+    <TabInfo>
+      <wxString Value="U:\Users\John\Documents\Programming\GitHub\etl\static_assert.h" Name="FileName"/>
+      <int Value="0" Name="FirstVisibleLine"/>
+      <int Value="40" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds"/>
+    </TabInfo>
+    <TabInfo>
+      <wxString Value="U:\Users\John\Documents\Programming\GitHub\etl\cyclic_value.h" Name="FileName"/>
+      <int Value="87" Name="FirstVisibleLine"/>
+      <int Value="116" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds"/>
+    </TabInfo>
+    <TabInfo>
+      <wxString Value="U:\Users\John\Documents\Programming\GitHub\etl\test\test_type_traits.cpp" Name="FileName"/>
+      <int Value="415" Name="FirstVisibleLine"/>
+      <int Value="424" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds"/>
+    </TabInfo>
+    <TabInfo>
+      <wxString Value="U:\Users\John\Documents\Programming\GitHub\etl\variant.h" Name="FileName"/>
+      <int Value="706" Name="FirstVisibleLine"/>
+      <int Value="735" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds"/>
+    </TabInfo>
+    <TabInfo>
+      <wxString Value="U:\Users\John\Documents\Programming\GitHub\etl\iforward_list.h" Name="FileName"/>
+      <int Value="55" Name="FirstVisibleLine"/>
+      <int Value="66" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds"/>
+    </TabInfo>
+    <TabInfo>
+      <wxString Value="U:\Users\John\Documents\Programming\GitHub\etl\parameter_type.h" Name="FileName"/>
+      <int Value="7" Name="FirstVisibleLine"/>
+      <int Value="37" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds"/>
+    </TabInfo>
+    <TabInfo>
+      <wxString Value="U:\Users\John\Documents\Programming\GitHub\etl\ilist.h" Name="FileName"/>
+      <int Value="55" Name="FirstVisibleLine"/>
+      <int Value="66" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds"/>
+    </TabInfo>
+    <TabInfo>
+      <wxString Value="U:\Users\John\Documents\Programming\GitHub\etl\iqueue.h" Name="FileName"/>
+      <int Value="33" Name="FirstVisibleLine"/>
+      <int Value="70" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds"/>
+    </TabInfo>
+    <TabInfo>
+      <wxString Value="U:\Users\John\Documents\Programming\GitHub\etl\istack.h" Name="FileName"/>
+      <int Value="64" Name="FirstVisibleLine"/>
+      <int Value="103" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds"/>
+    </TabInfo>
+    <TabInfo>
+      <wxString Value="U:\Users\John\Documents\Programming\GitHub\etl\ivector.h" Name="FileName"/>
+      <int Value="368" Name="FirstVisibleLine"/>
+      <int Value="399" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds"/>
+    </TabInfo>
+    <TabInfo>
+      <wxString Value="U:\Users\John\Documents\Programming\GitHub\etl\test\test_variant.cpp" Name="FileName"/>
+      <int Value="81" Name="FirstVisibleLine"/>
+      <int Value="90" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds"/>
+    </TabInfo>
+    <TabInfo>
+      <wxString Value="U:\Users\John\Documents\Programming\GitHub\etl\type_traits.h" Name="FileName"/>
+      <int Value="277" Name="FirstVisibleLine"/>
+      <int Value="293" Name="CurrentLine"/>
       <wxArrayString Name="Bookmarks"/>
       <IntVector Name="CollapsedFolds"/>
     </TabInfo>
