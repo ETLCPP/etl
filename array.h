@@ -35,6 +35,8 @@ SOFTWARE.
 #include <cstddef>
 
 #include "exception.h"
+#include "type_traits.h"
+#include "parameter_type.h"
 
 ///\defgroup array array
 /// A replacement for std::array if you haven't got C++0x11.
@@ -79,118 +81,27 @@ namespace etl
   template <typename T, const size_t SIZE>
   class array
 	{
+  private:
+
+    typedef typename parameter_type<T, is_fundamental<T>::value || is_pointer<T>::value>::type parameter_t;
+
 	public:
 
-		//*************************************************************************
-		/// STL style typedefs.
-		//*************************************************************************
-		typedef T*                                    iterator;
+    typedef T                                     value_type;
+    typedef std::size_t                           size_type;
+    typedef std::ptrdiff_t                        difference_type;
+    typedef T&                                    reference;
+    typedef const T&                              const_reference;
+    typedef T*                                    pointer;
+    typedef const T*                              const_pointer;
+    typedef T*                                    iterator;
 		typedef const T*                              const_iterator;
 		typedef std::reverse_iterator<iterator>       reverse_iterator;
 		typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-		typedef T*                                    pointer;
-		typedef const T*                              const_pointer;
-		typedef T&                                    reference;
-		typedef const T&                              const_reference;
-		typedef std::ptrdiff_t                        difference_type;
-		typedef std::size_t                           size_type;
-		typedef T                                     value_type;
 
-		//*************************************************************************
-		/// Returns an iterator to the beginning of the array.
-		//*************************************************************************
-		inline iterator begin()
-		{
-			return &_buffer[0];
-		}
-    
-		//*************************************************************************
-		/// Returns a const iterator to the beginning of the array.
-		//*************************************************************************
-		inline const_iterator begin() const
-		{
-			return &_buffer[0];
-		}        
-
-		//*************************************************************************
-		/// Returns a const iterator to the beginning of the array.
-		//*************************************************************************
-		inline const_iterator cbegin() const
-		{
-			return begin();
-		} 
-  
-		//*************************************************************************
-		// Returns an reverse iterator to the reverse beginning of the array.
-		//*************************************************************************
-		inline reverse_iterator rbegin()
-		{
-			return reverse_iterator(end());
-		}
-    
-		//*************************************************************************
-		/// Returns a const reverse iterator to the reverse beginning of the array.
-		//*************************************************************************
-		inline const_reverse_iterator rbegin() const
-		{
-			return const_reverse_iterator(end());
-		}        
-
-		//*************************************************************************
-		/// Returns a const reverse iterator to the reverse beginning of the array.
-		//*************************************************************************
-		inline const_reverse_iterator crbegin() const
-		{
-			return const_reverse_iterator(end());
-		} 
-
-		//*************************************************************************
-		/// Returns an iterator to the end of the array.
-		//*************************************************************************
-		inline iterator end()
-		{
-			return &_buffer[SIZE];
-		}
-  
-		//*************************************************************************
-		/// Returns a const iterator to the end of the array.
-		//*************************************************************************
-		inline const_iterator end() const
-		{
-			return &_buffer[SIZE];
-		}
-
-		//*************************************************************************
-		// Returns a const iterator to the end of the array.
-		//*************************************************************************
-		inline const_iterator cend() const
-		{
-			return &_buffer[SIZE];
-		} 
-
-		//*************************************************************************
-		/// Returns a reverse iterator to the end of the array.
-		//*************************************************************************
-		inline reverse_iterator rend()
-		{
-			return reverse_iterator(begin());
-		}
-  
-		//*************************************************************************
-		/// Returns a const reverse iterator to the end of the array.
-		//*************************************************************************
-		inline const_reverse_iterator rend() const
-		{
-			return const_reverse_iterator(begin());
-		}
-
-		//*************************************************************************
-		/// Returns a const reverse iterator to the end of the array.
-		//*************************************************************************
-		inline const_reverse_iterator crend() const
-		{
-			return const_reverse_iterator(begin());
-		} 
+    //*************************************************************************
+    // Element access
+    //*************************************************************************
 
     //*************************************************************************
     /// Returns a reference to the value at index 'i'.
@@ -249,6 +160,158 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Returns a reference to the first element.
+    //*************************************************************************
+    inline reference front()
+    {
+      return _buffer[0];
+    }
+
+    //*************************************************************************
+    /// Returns a const reference to the first element.
+    //*************************************************************************
+    inline const_reference front() const
+    {
+      return _buffer[0];
+    }
+
+    //*************************************************************************
+    /// Returns a reference to the last element.
+    //*************************************************************************
+    inline reference back()
+    {
+      return _buffer[SIZE - 1];
+    }
+
+    //*************************************************************************
+    /// Returns a const reference to the last element.
+    //*************************************************************************
+    inline const_reference back() const
+    {
+      return _buffer[SIZE - 1];
+    }
+
+    //*************************************************************************
+    /// Returns a pointer to the first element of the internal buffer.
+    //*************************************************************************
+    inline pointer data()
+    {
+      return &_buffer[0];
+    }
+
+    //*************************************************************************
+    /// Returns a const pointer to the first element of the internal buffer.
+    //*************************************************************************
+    inline const_pointer data() const
+    {
+      return &_buffer[0];
+    }
+
+    //*************************************************************************
+    // Iterators
+    //*************************************************************************
+
+		//*************************************************************************
+		/// Returns an iterator to the beginning of the array.
+		//*************************************************************************
+		inline iterator begin()
+		{
+			return &_buffer[0];
+		}
+    
+		//*************************************************************************
+		/// Returns a const iterator to the beginning of the array.
+		//*************************************************************************
+		inline const_iterator begin() const
+		{
+			return &_buffer[0];
+		}        
+
+		//*************************************************************************
+		/// Returns a const iterator to the beginning of the array.
+		//*************************************************************************
+		inline const_iterator cbegin() const
+		{
+			return begin();
+		} 
+
+    //*************************************************************************
+    /// Returns an iterator to the end of the array.
+    //*************************************************************************
+    inline iterator end()
+    {
+      return &_buffer[SIZE];
+    }
+
+    //*************************************************************************
+    /// Returns a const iterator to the end of the array.
+    //*************************************************************************
+    inline const_iterator end() const
+    {
+      return &_buffer[SIZE];
+    }
+
+    //*************************************************************************
+    // Returns a const iterator to the end of the array.
+    //*************************************************************************
+    inline const_iterator cend() const
+    {
+      return &_buffer[SIZE];
+    }
+
+		//*************************************************************************
+		// Returns an reverse iterator to the reverse beginning of the array.
+		//*************************************************************************
+		inline reverse_iterator rbegin()
+		{
+			return reverse_iterator(end());
+		}
+    
+		//*************************************************************************
+		/// Returns a const reverse iterator to the reverse beginning of the array.
+		//*************************************************************************
+		inline const_reverse_iterator rbegin() const
+		{
+			return const_reverse_iterator(end());
+		}        
+
+		//*************************************************************************
+		/// Returns a const reverse iterator to the reverse beginning of the array.
+		//*************************************************************************
+		inline const_reverse_iterator crbegin() const
+		{
+			return const_reverse_iterator(end());
+		} 
+
+		//*************************************************************************
+		/// Returns a reverse iterator to the end of the array.
+		//*************************************************************************
+		inline reverse_iterator rend()
+		{
+			return reverse_iterator(begin());
+		}
+  
+		//*************************************************************************
+		/// Returns a const reverse iterator to the end of the array.
+		//*************************************************************************
+		inline const_reverse_iterator rend() const
+		{
+			return const_reverse_iterator(begin());
+		}
+
+		//*************************************************************************
+		/// Returns a const reverse iterator to the end of the array.
+		//*************************************************************************
+		inline const_reverse_iterator crend() const
+		{
+			return const_reverse_iterator(begin());
+		} 
+
+    //*************************************************************************
+    // Capacity
+    //*************************************************************************
+
+    //*************************************************************************
     /// Returns <b>true</b> if the array size is zero.
     /// </summary>
     //*************************************************************************
@@ -274,10 +337,14 @@ namespace etl
 		} 
 
     //*************************************************************************
+    // Operations
+    //*************************************************************************
+
+    //*************************************************************************
     /// Fills the array with the specified value.
     ///\param value The value to fill the array with.
     //*************************************************************************
-    void fill(const T& value)
+    void fill(parameter_t value)
     {
       std::fill(begin(), end(), value);
     }
@@ -293,62 +360,15 @@ namespace etl
         std::swap(_buffer[i], other._buffer[i]);
       }
     }
-    
-		//*************************************************************************
-		/// Returns a reference to the first element.
-		//*************************************************************************
-		inline reference front()
-		{
-			return _buffer[0];
-		}
 
-		//*************************************************************************
-		/// Returns a const reference to the first element.
-		//*************************************************************************
-		inline const_reference front() const
-		{
-			return _buffer[0];
-		}
-
-		//*************************************************************************
-		/// Returns a reference to the last element.
-		//*************************************************************************
-		inline reference back()
-		{
-			return _buffer[SIZE - 1];
-		}
-
-		//*************************************************************************
-		/// Returns a const reference to the last element.
-		//*************************************************************************
-		inline const_reference back() const
-		{
-			return _buffer[SIZE - 1];
-		}
-               
-		//*************************************************************************
-		/// Returns a pointer to the first element of the internal buffer.
-		//*************************************************************************
-		inline pointer data()
-		{
-			return &_buffer[0];
-		}
-    
-		//*************************************************************************
-		/// Returns a const pointer to the first element of the internal buffer.
-		//*************************************************************************
-		inline const_pointer data() const
-		{
-			return &_buffer[0];
-		}
-                   	
-		T _buffer[SIZE]; ///< The buffer that stores the array data.
-	};
+    /// The array data.
+    T _buffer[SIZE];
+  };
 
   //*************************************************************************
-	/// Overloaded std::swap for etl::array<T, SIZE>
-	///\param lhs Reference to the first array.
-	///\param rhs Reference to the second array.
+	/// Overloaded swap for etl::array<T, SIZE>
+	///\param lhs The first array.
+	///\param rhs The second array.
 	//*************************************************************************
   template <typename T, const size_t SIZE>
   void swap(etl::array<T, SIZE> &lhs, etl::array<T, SIZE> &rhs)
@@ -358,8 +378,8 @@ namespace etl
 
   //*************************************************************************
   /// Equal operator.
-  ///\param lhs Reference to the first array.
-  ///\param rhs Reference to the second array.
+  ///\param lhs The first array.
+  ///\param rhs The second array.
   ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
   //*************************************************************************
   template <typename T, std::size_t SIZE>
@@ -370,8 +390,8 @@ namespace etl
 
   //*************************************************************************
   /// Not equal operator.
-  ///\param lhs Reference to the first array.
-  ///\param rhs Reference to the second array.
+  ///\param lhs The first array.
+  ///\param rhs The second array.
   ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
   //*************************************************************************
   template <typename T, std::size_t SIZE>
@@ -382,8 +402,8 @@ namespace etl
   
   //*************************************************************************
   /// Less than operator.
-  ///\param lhs Reference to the first array.
-  ///\param rhs Reference to the second array.
+  ///\param lhs The first array.
+  ///\param rhs The second array.
   ///\return <b>true</b> if the first array is lexicographically less than the second, otherwise <b>false</b>
   //*************************************************************************
   template <typename T, std::size_t SIZE>
@@ -397,8 +417,8 @@ namespace etl
 
   //*************************************************************************
   /// Less than or equal operator.
-  ///\param lhs Reference to the first array.
-  ///\param rhs Reference to the second array.
+  ///\param lhs The first array.
+  ///\param rhs The second array.
   ///\return <b>true</b> if the first array is lexicographically less than or equal to the second, otherwise <b>false</b>
   //*************************************************************************
   template <typename T, std::size_t SIZE>
@@ -413,8 +433,8 @@ namespace etl
 
   //*************************************************************************
   /// Greater than operator.
-  ///\param lhs Reference to the first array.
-  ///\param rhs Reference to the second array.
+  ///\param lhs The first array.
+  ///\param rhs The second array.
   ///\return <b>true</b> if the first array is lexicographically greater than the second, otherwise <b>false</b>
   template <typename T, std::size_t SIZE>
   //*************************************************************************
@@ -429,8 +449,8 @@ namespace etl
 
   //*************************************************************************
   /// Greater than or equal operator.
-  ///\param lhs Reference to the first array.
-  ///\param rhs Reference to the second array.
+  ///\param lhs The first array.
+  ///\param rhs The second array.
   ///\return <b>true</b> if the first array is lexicographically greater than or equal to the second, otherwise <b>false</b>
   //*************************************************************************
   template <typename T, std::size_t SIZE>
