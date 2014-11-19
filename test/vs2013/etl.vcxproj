@@ -52,7 +52,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;ETL_USE_EXCEPTIONS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;COMPILER_MICROSOFT;PLATFORM_WINDOWS;_SCL_SECURE_NO_WARNINGS;ETL_USE_EXCEPTIONS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../../../unittest-cpp</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -111,9 +111,12 @@
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\UnitTestPP.h" />
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\Win32\TimeHelpers.h" />
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\XmlTestReporter.h" />
+    <ClInclude Include="..\..\aligned_variable.h" />
     <ClInclude Include="..\..\array.h" />
+    <ClInclude Include="..\..\bitset.h" />
     <ClInclude Include="..\..\crc16.h" />
     <ClInclude Include="..\..\crc16_ccitt.h" />
+    <ClInclude Include="..\..\crc16_kermit.h" />
     <ClInclude Include="..\..\crc32.h" />
     <ClInclude Include="..\..\crc64_ecma.h" />
     <ClInclude Include="..\..\crc8_ccitt.h" />
@@ -121,12 +124,17 @@
     <ClInclude Include="..\..\deque.h" />
     <ClInclude Include="..\..\deque_base.h" />
     <ClInclude Include="..\..\doxygen.h" />
+    <ClInclude Include="..\..\endian.h" />
     <ClInclude Include="..\..\enum_type.h" />
     <ClInclude Include="..\..\exception.h" />
+    <ClInclude Include="..\..\forward_list.h" />
+    <ClInclude Include="..\..\forward_list_base.h" />
     <ClInclude Include="..\..\function.h" />
     <ClInclude Include="..\..\functional.h" />
     <ClInclude Include="..\..\ideque.h" />
+    <ClInclude Include="..\..\iforward_list.h" />
     <ClInclude Include="..\..\ilist.h" />
+    <ClInclude Include="..\..\integral_limits.h" />
     <ClInclude Include="..\..\iqueue.h" />
     <ClInclude Include="..\..\istack.h" />
     <ClInclude Include="..\..\container.h" />
@@ -141,10 +149,12 @@
     <ClInclude Include="..\..\pow.h" />
     <ClInclude Include="..\..\queue.h" />
     <ClInclude Include="..\..\queue_base.h" />
+    <ClInclude Include="..\..\smallest.h" />
     <ClInclude Include="..\..\stack.h" />
     <ClInclude Include="..\..\stack_base.h" />
     <ClInclude Include="..\..\static_assert.h" />
     <ClInclude Include="..\..\type_traits.h" />
+    <ClInclude Include="..\..\variant.h" />
     <ClInclude Include="..\..\vector.h" />
     <ClInclude Include="..\..\vector_base.h" />
     <ClInclude Include="..\..\visitor.h" />
@@ -171,6 +181,7 @@
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\XmlTestReporter.cpp" />
     <ClCompile Include="..\..\crc16.cpp" />
     <ClCompile Include="..\..\crc16_ccitt.cpp" />
+    <ClCompile Include="..\..\crc16_kermit.cpp" />
     <ClCompile Include="..\..\crc32.cpp" />
     <ClCompile Include="..\..\crc64_ecma.cpp" />
     <ClCompile Include="..\..\crc8_ccitt.cpp" />
@@ -179,21 +190,26 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </AdditionalIncludeDirectories>
     </ClCompile>
+    <ClCompile Include="..\test_bitset.cpp" />
     <ClCompile Include="..\test_container.cpp" />
     <ClCompile Include="..\test_crc.cpp" />
     <ClCompile Include="..\test_cyclic_value.cpp" />
     <ClCompile Include="..\test_deque.cpp" />
     <ClCompile Include="..\test_enum_type.cpp" />
     <ClCompile Include="..\test_exception.cpp" />
+    <ClCompile Include="..\test_forward_list.cpp" />
     <ClCompile Include="..\test_function.cpp" />
+    <ClCompile Include="..\test_integral_limits.cpp" />
     <ClCompile Include="..\test_largest.cpp" />
     <ClCompile Include="..\test_list.cpp" />
     <ClCompile Include="..\test_math.cpp" />
     <ClCompile Include="..\test_numeric.cpp" />
     <ClCompile Include="..\test_observer.cpp" />
     <ClCompile Include="..\test_queue.cpp" />
+    <ClCompile Include="..\test_smallest.cpp" />
     <ClCompile Include="..\test_stack.cpp" />
     <ClCompile Include="..\test_type_traits.cpp" />
+    <ClCompile Include="..\test_variant.cpp" />
     <ClCompile Include="..\test_vector.cpp" />
     <ClCompile Include="..\test_visitor.cpp" />
   </ItemGroup>
