@@ -27,9 +27,9 @@ SOFTWARE.
 #ifndef __ETL_STATIC_ASSERT__
 #define __ETL_STATIC_ASSERT__
 
-#if (WIN32)
+#if defined(COMPILER_MICROSOFT)
   #define STATIC_ASSERT(Condition, Message) static_assert(Condition, Message)
-#elif (__GNUG__)
+#elif defined(COMPILER_GCC)
   #define STATIC_ASSERT(Condition, Message) static_assert(Condition, Message)
 #else
   template <bool Condition, const char* Message>
