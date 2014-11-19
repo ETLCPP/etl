@@ -93,6 +93,11 @@
       <File Name="../test_type_traits.cpp"/>
       <File Name="../test_vector.cpp"/>
       <File Name="../test_visitor.cpp"/>
+      <File Name="../test_bitset.cpp"/>
+      <File Name="../test_forward_list.cpp"/>
+      <File Name="../test_integral_limits.cpp"/>
+      <File Name="../test_variant.cpp"/>
+      <File Name="../test_smallest.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="ETL">
       <File Name="../../array.h"/>
@@ -138,6 +143,15 @@
       <File Name="../../crc16_ccitt.cpp"/>
       <File Name="../../crc32.cpp"/>
       <File Name="../../crc64_ecma.cpp"/>
+      <File Name="../../bitset.h"/>
+      <File Name="../../integral_limits.h"/>
+      <File Name="../../smallest.h"/>
+      <File Name="../../aligned_variable.h"/>
+      <File Name="../../forward_list.h"/>
+      <File Name="../../forward_list_base.h"/>
+      <File Name="../../iforward_list.h"/>
+      <File Name="../../variant.h"/>
+      <File Name="../../crc16_kermit.cpp"/>
     </VirtualDirectory>
   </VirtualDirectory>
   <Settings Type="Executable">
@@ -155,6 +169,8 @@
         <IncludePath Value="."/>
         <IncludePath Value="../../../unittest-cpp"/>
         <Preprocessor Value="ETL_USE_EXCEPTIONS"/>
+        <Preprocessor Value="PLATFORM_WINDOWS"/>
+        <Preprocessor Value="COMPILER_GCC"/>
       </Compiler>
       <Linker Options="" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>

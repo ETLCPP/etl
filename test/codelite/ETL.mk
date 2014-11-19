@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=John
-Date                   :=11/05/14
+Date                   :=11/19/14
 CodeLitePath           :="C:\Program Files (x86)\CodeLite"
 LinkerName             :=C:/MinGW/bin/g++.exe 
 SharedObjectLinkerName :=C:/MinGW/bin/g++.exe -shared -fPIC
@@ -28,7 +28,7 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/$(ProjectName)
-Preprocessors          :=$(PreprocessorSwitch)ETL_USE_EXCEPTIONS 
+Preprocessors          :=$(PreprocessorSwitch)ETL_USE_EXCEPTIONS $(PreprocessorSwitch)PLATFORM_WINDOWS $(PreprocessorSwitch)COMPILER_GCC 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
@@ -52,7 +52,7 @@ LibPath                := $(LibraryPathSwitch).
 AR       := C:/MinGW/bin/ar.exe rcu
 CXX      := C:/MinGW/bin/g++.exe 
 CC       := C:/MinGW/bin/gcc.exe 
-CXXFLAGS :=  -g -O0 -Wall -std=c++11 -Wno-unused-variable $(Preprocessors)
+CXXFLAGS :=  -g -O0 -Wall -std=c++11 -Wno-unused-variable -Wno-unused-but-set $(Preprocessors)
 CFLAGS   :=  -g -O0 -Wall $(Preprocessors)
 ASFLAGS  := 
 AS       := C:/MinGW/bin/as.exe 
@@ -66,10 +66,10 @@ UNIT_TEST_PP_SRC_DIR:=C:\UnitTest++-1.3
 Objects0=$(IntermediateDirectory)/UnitTest++_AssertException.cpp$(ObjectSuffix) $(IntermediateDirectory)/UnitTest++_Checks.cpp$(ObjectSuffix) $(IntermediateDirectory)/UnitTest++_CompositeTestReporter.cpp$(ObjectSuffix) $(IntermediateDirectory)/UnitTest++_CurrentTest.cpp$(ObjectSuffix) $(IntermediateDirectory)/UnitTest++_DeferredTestReporter.cpp$(ObjectSuffix) $(IntermediateDirectory)/UnitTest++_DeferredTestResult.cpp$(ObjectSuffix) $(IntermediateDirectory)/UnitTest++_MemoryOutStream.cpp$(ObjectSuffix) $(IntermediateDirectory)/UnitTest++_ReportAssert.cpp$(ObjectSuffix) $(IntermediateDirectory)/UnitTest++_Test.cpp$(ObjectSuffix) $(IntermediateDirectory)/UnitTest++_TestDetails.cpp$(ObjectSuffix) \
 	$(IntermediateDirectory)/UnitTest++_TestList.cpp$(ObjectSuffix) $(IntermediateDirectory)/UnitTest++_TestReporter.cpp$(ObjectSuffix) $(IntermediateDirectory)/UnitTest++_TestReporterStdout.cpp$(ObjectSuffix) $(IntermediateDirectory)/UnitTest++_TestResults.cpp$(ObjectSuffix) $(IntermediateDirectory)/UnitTest++_TestRunner.cpp$(ObjectSuffix) $(IntermediateDirectory)/UnitTest++_TimeConstraint.cpp$(ObjectSuffix) $(IntermediateDirectory)/UnitTest++_XmlTestReporter.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_main.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_array.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_container.cpp$(ObjectSuffix) \
 	$(IntermediateDirectory)/test_test_crc.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_cyclic_value.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_deque.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_enum_type.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_exception.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_function.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_largest.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_list.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_math.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_numeric.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/test_test_observer.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_queue.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_stack.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_type_traits.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_vector.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_visitor.cpp$(ObjectSuffix) 
+	$(IntermediateDirectory)/test_test_observer.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_queue.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_stack.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_type_traits.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_vector.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_visitor.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_bitset.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_forward_list.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_integral_limits.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_test_variant.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/test_test_smallest.cpp$(ObjectSuffix) 
 
-Objects1=$(IntermediateDirectory)/etl_crc8_ccitt.cpp$(ObjectSuffix) $(IntermediateDirectory)/etl_crc16.cpp$(ObjectSuffix) $(IntermediateDirectory)/etl_crc16_ccitt.cpp$(ObjectSuffix) $(IntermediateDirectory)/etl_crc32.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/etl_crc64_ecma.cpp$(ObjectSuffix) $(IntermediateDirectory)/Win32_TimeHelpers.cpp$(ObjectSuffix) 
+Objects1=$(IntermediateDirectory)/etl_crc8_ccitt.cpp$(ObjectSuffix) $(IntermediateDirectory)/etl_crc16.cpp$(ObjectSuffix) $(IntermediateDirectory)/etl_crc16_ccitt.cpp$(ObjectSuffix) $(IntermediateDirectory)/etl_crc32.cpp$(ObjectSuffix) $(IntermediateDirectory)/etl_crc64_ecma.cpp$(ObjectSuffix) $(IntermediateDirectory)/etl_crc16_kermit.cpp$(ObjectSuffix) $(IntermediateDirectory)/Win32_TimeHelpers.cpp$(ObjectSuffix) 
 
 
 
@@ -390,6 +390,46 @@ $(IntermediateDirectory)/test_test_visitor.cpp$(DependSuffix): ../test_visitor.c
 $(IntermediateDirectory)/test_test_visitor.cpp$(PreprocessSuffix): ../test_visitor.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/test_test_visitor.cpp$(PreprocessSuffix) "../test_visitor.cpp"
 
+$(IntermediateDirectory)/test_test_bitset.cpp$(ObjectSuffix): ../test_bitset.cpp $(IntermediateDirectory)/test_test_bitset.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "U:/Users/John/Documents/Programming/GitHub/etl/test/test_bitset.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/test_test_bitset.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/test_test_bitset.cpp$(DependSuffix): ../test_bitset.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/test_test_bitset.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/test_test_bitset.cpp$(DependSuffix) -MM "../test_bitset.cpp"
+
+$(IntermediateDirectory)/test_test_bitset.cpp$(PreprocessSuffix): ../test_bitset.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/test_test_bitset.cpp$(PreprocessSuffix) "../test_bitset.cpp"
+
+$(IntermediateDirectory)/test_test_forward_list.cpp$(ObjectSuffix): ../test_forward_list.cpp $(IntermediateDirectory)/test_test_forward_list.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "U:/Users/John/Documents/Programming/GitHub/etl/test/test_forward_list.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/test_test_forward_list.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/test_test_forward_list.cpp$(DependSuffix): ../test_forward_list.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/test_test_forward_list.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/test_test_forward_list.cpp$(DependSuffix) -MM "../test_forward_list.cpp"
+
+$(IntermediateDirectory)/test_test_forward_list.cpp$(PreprocessSuffix): ../test_forward_list.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/test_test_forward_list.cpp$(PreprocessSuffix) "../test_forward_list.cpp"
+
+$(IntermediateDirectory)/test_test_integral_limits.cpp$(ObjectSuffix): ../test_integral_limits.cpp $(IntermediateDirectory)/test_test_integral_limits.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "U:/Users/John/Documents/Programming/GitHub/etl/test/test_integral_limits.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/test_test_integral_limits.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/test_test_integral_limits.cpp$(DependSuffix): ../test_integral_limits.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/test_test_integral_limits.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/test_test_integral_limits.cpp$(DependSuffix) -MM "../test_integral_limits.cpp"
+
+$(IntermediateDirectory)/test_test_integral_limits.cpp$(PreprocessSuffix): ../test_integral_limits.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/test_test_integral_limits.cpp$(PreprocessSuffix) "../test_integral_limits.cpp"
+
+$(IntermediateDirectory)/test_test_variant.cpp$(ObjectSuffix): ../test_variant.cpp $(IntermediateDirectory)/test_test_variant.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "U:/Users/John/Documents/Programming/GitHub/etl/test/test_variant.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/test_test_variant.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/test_test_variant.cpp$(DependSuffix): ../test_variant.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/test_test_variant.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/test_test_variant.cpp$(DependSuffix) -MM "../test_variant.cpp"
+
+$(IntermediateDirectory)/test_test_variant.cpp$(PreprocessSuffix): ../test_variant.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/test_test_variant.cpp$(PreprocessSuffix) "../test_variant.cpp"
+
+$(IntermediateDirectory)/test_test_smallest.cpp$(ObjectSuffix): ../test_smallest.cpp $(IntermediateDirectory)/test_test_smallest.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "U:/Users/John/Documents/Programming/GitHub/etl/test/test_smallest.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/test_test_smallest.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/test_test_smallest.cpp$(DependSuffix): ../test_smallest.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/test_test_smallest.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/test_test_smallest.cpp$(DependSuffix) -MM "../test_smallest.cpp"
+
+$(IntermediateDirectory)/test_test_smallest.cpp$(PreprocessSuffix): ../test_smallest.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/test_test_smallest.cpp$(PreprocessSuffix) "../test_smallest.cpp"
+
 $(IntermediateDirectory)/etl_crc8_ccitt.cpp$(ObjectSuffix): ../../crc8_ccitt.cpp $(IntermediateDirectory)/etl_crc8_ccitt.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "U:/Users/John/Documents/Programming/GitHub/etl/crc8_ccitt.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/etl_crc8_ccitt.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/etl_crc8_ccitt.cpp$(DependSuffix): ../../crc8_ccitt.cpp
@@ -429,6 +469,14 @@ $(IntermediateDirectory)/etl_crc64_ecma.cpp$(DependSuffix): ../../crc64_ecma.cpp
 
 $(IntermediateDirectory)/etl_crc64_ecma.cpp$(PreprocessSuffix): ../../crc64_ecma.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/etl_crc64_ecma.cpp$(PreprocessSuffix) "../../crc64_ecma.cpp"
+
+$(IntermediateDirectory)/etl_crc16_kermit.cpp$(ObjectSuffix): ../../crc16_kermit.cpp $(IntermediateDirectory)/etl_crc16_kermit.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "U:/Users/John/Documents/Programming/GitHub/etl/crc16_kermit.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/etl_crc16_kermit.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/etl_crc16_kermit.cpp$(DependSuffix): ../../crc16_kermit.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/etl_crc16_kermit.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/etl_crc16_kermit.cpp$(DependSuffix) -MM "../../crc16_kermit.cpp"
+
+$(IntermediateDirectory)/etl_crc16_kermit.cpp$(PreprocessSuffix): ../../crc16_kermit.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/etl_crc16_kermit.cpp$(PreprocessSuffix) "../../crc16_kermit.cpp"
 
 $(IntermediateDirectory)/Win32_TimeHelpers.cpp$(ObjectSuffix): ../../../unittest-cpp/UnitTest++/Win32/TimeHelpers.cpp $(IntermediateDirectory)/Win32_TimeHelpers.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "U:/Users/John/Documents/Programming/GitHub/unittest-cpp/UnitTest++/Win32/TimeHelpers.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Win32_TimeHelpers.cpp$(ObjectSuffix) $(IncludePath)
