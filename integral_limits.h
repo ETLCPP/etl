@@ -40,7 +40,7 @@ SOFTWARE.
 
 //*****************************************************************************
 ///\defgroup integral_limits integral_limits
-/// A set of templated compile time constants.
+/// A set of templated compile time constants that mirror some of std::numeric_limits funtionality.
 ///\ingroup utilities
 //*****************************************************************************
 
@@ -48,11 +48,25 @@ namespace etl
 {
   //***************************************************************************
   ///\ingroup integral_limits
+  //***************************************************************************
   template <typename T>
   struct integral_limits;
 
   //***************************************************************************
   ///\ingroup integral_limits
+  //***************************************************************************
+  template <>
+  struct integral_limits<void>
+  {
+    static const int min        = 0;
+    static const int max        = 0;
+    static const int bits       = 0;
+    static const bool is_signed = false;
+  };
+
+  //***************************************************************************
+  ///\ingroup integral_limits
+  //***************************************************************************
   template <>
   struct integral_limits<signed char>
   {
@@ -64,6 +78,7 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup integral_limits
+  //***************************************************************************
   template <>
   struct integral_limits<unsigned char>
   {
@@ -75,9 +90,10 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup integral_limits
+  //***************************************************************************
   template <>
   struct integral_limits<char>
-  {
+  {  
     static const char min       = (etl::is_signed<char>::value) ? SCHAR_MIN : 0;
     static const char max       = (etl::is_signed<char>::value) ? SCHAR_MAX : UCHAR_MAX;
     static const int bits       = CHAR_BIT;
@@ -86,6 +102,7 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup integral_limits
+  //***************************************************************************
   template <>
   struct integral_limits<short>
   {
@@ -97,6 +114,7 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup integral_limits
+  //***************************************************************************
   template <>
   struct integral_limits<unsigned short>
   {
@@ -108,6 +126,7 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup integral_limits
+  //***************************************************************************
   template <>
   struct integral_limits<int>
   {
@@ -119,6 +138,7 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup integral_limits
+  //***************************************************************************
   template <>
   struct integral_limits<unsigned int>
   {
@@ -130,6 +150,7 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup integral_limits
+  //***************************************************************************
   template <>
   struct integral_limits<long>
   {
@@ -141,6 +162,7 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup integral_limits
+  //***************************************************************************
   template <>
   struct integral_limits<unsigned long>
   {
@@ -152,6 +174,7 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup integral_limits
+  //***************************************************************************
   template <>
   struct integral_limits<long long>
   {
@@ -163,6 +186,7 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup integral_limits
+  //***************************************************************************
   template <>
   struct integral_limits<unsigned long long>
   {
