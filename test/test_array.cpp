@@ -29,284 +29,376 @@ SOFTWARE.
 #include "../array.h"
 
 #include <array>
-#include <vector>
 #include <algorithm>
 #include <iterator>
 
+#include "../integral_limits.h"
+
 namespace
 {
-  SUITE(TestArray)
+  SUITE(test_array)
   {
     static const size_t SIZE = 10;
 
     typedef etl::array<int, SIZE> Data;
-    typedef std::vector<int>      TestData;
+    typedef std::array<int, SIZE> Compare_Data;
 
-    Data data;
-    TestData testData;
-    TestData initialData;
-
-    //*************************************************************************
-    struct SetupFixture
-    {
-      SetupFixture()
-      {
-        int n[] = { 2, 1, 4, 3, 6, 5, 8, 7, 10, 9 };
-
-        std::copy(std::begin(n), std::end(n), data.begin());
-        initialData.assign(std::begin(n), std::end(n));
-        testData.assign(std::begin(n), std::end(n));
-      }
-    };
+    Compare_Data compare_data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    Compare_Data swap_data    = { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
 
     //*************************************************************************
-    TEST(DefaultConstructor)
+    TEST(test_constructor)
     {
-      Data data;
+      Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
       CHECK_EQUAL(data.size(), size_t(SIZE));
       CHECK_EQUAL(data.max_size(), SIZE);
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, Iterator)
-    {
-      bool isEqual = std::equal(data.begin(),
-                                data.end(),
-                                testData.begin());
-
-      CHECK(isEqual);
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, ConstIterator)
-    {
-      bool isEqual = std::equal(data.cbegin(),
-                                data.cend(),
-                                testData.cbegin());
-
-      CHECK(isEqual);
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, ReverseIterator)
-    {
-      bool isEqual = std::equal(data.rbegin(),
-                                data.rend(),
-                                testData.rbegin());
-
-      CHECK(isEqual);
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, ConstReverseIterator)
-    {
-      bool isEqual = std::equal(data.crbegin(),
-                                data.crend(),
-                                testData.crbegin());
-
-      CHECK(isEqual);
-    }
-
-    //*************************************************************************
-    TEST(Begin)
+    TEST(test_assignment)
     {
       Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      const Data constData = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-
-      CHECK_EQUAL(data.begin(), &data[0]);
-      CHECK_EQUAL(constData.cbegin(), &constData[0]);
-    }
-
-    //*************************************************************************
-    TEST(End)
-    {
-      Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      const Data constData = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-
-      CHECK_EQUAL(data.end(), &data[SIZE]);
-      CHECK_EQUAL(constData.cend(), &constData[SIZE]);
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, Indexing)
-    {
-      for (size_t i = 0; i < data.size(); ++i)
-      {
-        CHECK_EQUAL(data[i], testData[i]);
-      }
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, IndexingConst)
-    {
-      for (size_t i = 0; i < data.size(); ++i)
-      {
-        CHECK_EQUAL(data[i], testData[i]);
-      }
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, at)
-    {
-      for (size_t i = 0; i < data.size(); ++i)
-      {
-        CHECK_EQUAL(data.at(i), testData.at(i));
-      }
-
-      CHECK_THROW(data.at(data.size()), etl::array_out_of_range);
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, AtConst)
-    {
-      for (size_t i = 0; i < data.size(); ++i)
-      {
-        CHECK_EQUAL(data.at(i), testData.at(i));
-      }
-
-      CHECK_THROW(data.at(data.size()), etl::array_out_of_range);
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, Front)
-    {
-      CHECK(data.front() == testData.front());
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, Back)
-    {
-      CHECK(data.back() == testData.back());
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, Assignment)
-    {
       Data otherData;
 
       otherData = data;
 
-      bool isEqual = std::equal(data.begin(),
-                                data.end(),
-                                otherData.begin());
+      bool isEqual = std::equal(data.begin(), data.end(), otherData.begin());
 
       CHECK(isEqual);
     }
 
     //*************************************************************************
-    TEST(Fill)
+    TEST(test_at)
+    {
+      Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      for (size_t i = 0; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(data.at(i), compare_data.at(i));
+      }
+
+      CHECK_THROW(data.at(data.size()), etl::array_out_of_range);
+    }
+
+    //*************************************************************************
+    TEST(test_at_const)
+    {
+      Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      for (size_t i = 0; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(data.at(i), compare_data.at(i));
+      }
+
+      CHECK_THROW(data.at(data.size()), etl::array_out_of_range);
+    }
+
+    //*************************************************************************
+    TEST(test_index_operator)
+    {
+      Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      for (size_t i = 0; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(data[i], compare_data[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_index_operator_const)
+    {
+      Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      for (size_t i = 0; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(data[i], compare_data[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_front)
+    {
+      Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      int& ref = data.front();
+      CHECK(ref == compare_data.front());
+
+      ++ref;
+      CHECK(ref == compare_data.front() + 1);
+    }
+
+    //*************************************************************************
+    TEST(test_front_const)
+    {
+      Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      const int& ref = data.front();
+      CHECK(ref == compare_data.front());
+    }
+
+    //*************************************************************************
+    TEST(test_back)
+    {
+      Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      int& ref = data.back();
+      CHECK(ref == compare_data.back());
+
+      ++ref;
+      CHECK(ref == compare_data.back() + 1);
+    }
+
+    //*************************************************************************
+    TEST(test_back_const)
+    {
+      Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      const int& ref = data.back();
+      CHECK(ref == compare_data.back());
+    }
+
+    //*************************************************************************
+    TEST(test_data)
+    {
+      Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      bool isEqual = std::equal(data.begin(), data.end(), data.data());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(test_data_const)
+    {
+      const Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      bool isEqual = std::equal(data.begin(), data.end(), data.data());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(test_begin)
+    {
+      Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      CHECK_EQUAL(data.begin(), &data[0]);
+    }
+
+    //*************************************************************************
+    TEST(test_end)
+    {
+      Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      CHECK_EQUAL(data.end(), &data[SIZE]);
+    }
+
+    //*************************************************************************
+    TEST(test_cbegin)
+    {
+      const Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      CHECK_EQUAL(data.cbegin(), &data[0]);
+    }
+
+    //*************************************************************************
+    TEST(test_cend)
+    {
+      const Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      CHECK_EQUAL(data.cend(), &data[SIZE]);
+    }
+    
+    //*************************************************************************
+    TEST(test_rbegin)
+    {
+      Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      CHECK(data.rbegin() == Data::reverse_iterator(&data[SIZE]));
+    }
+
+    //*************************************************************************
+    TEST(test_rend)
+    {
+      Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      CHECK(data.rend() == Data::reverse_iterator(&data[0]));
+    }
+
+    //*************************************************************************
+    TEST(test_crbegin)
+    {
+      const Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      CHECK(data.crbegin() == Data::const_reverse_iterator(&data[SIZE]));
+    }
+
+    //*************************************************************************
+    TEST(test_crend)
+    {
+      const Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      CHECK(data.crend() == Data::const_reverse_iterator(&data[0]));
+    }
+    
+    //*************************************************************************
+    TEST(test_iterator)
+    {
+      Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      bool isEqual = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(test_const_iterator)
+    {
+      Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      bool isEqual = std::equal(data.cbegin(), data.cend(), compare_data.cbegin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(test_reverse_iterator)
+    {
+      Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      bool isEqual = std::equal(data.rbegin(), data.rend(), compare_data.rbegin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(test_const_reverse_iterator)
+    {
+      Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      bool isEqual = std::equal(data.crbegin(), data.crend(), compare_data.crbegin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(test_empty)
+    {
+      Data data;
+
+      CHECK(!data.empty());
+    }
+
+    //*************************************************************************
+    TEST(test_size)
+    {
+      Data data;
+
+      CHECK_EQUAL(SIZE, data.size());
+    }
+
+    //*************************************************************************
+    TEST(test_max_size)
+    {
+      Data data;
+
+      CHECK_EQUAL(SIZE, data.max_size());
+    }
+
+
+    //*************************************************************************
+    TEST(test_fill)
     {
       Data data;
       data.fill(1);
 
-      TestData testData(data.max_size(), 1);
+      Compare_Data compare_data;
+      compare_data.fill(1);
 
-      bool isEqual = std::equal(data.begin(),
-                                data.end(),
-                                testData.begin());
-
-      CHECK(isEqual);
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, DataAccess)
-    {
-      bool isEqual = std::equal(data.begin(),
-                                data.end(),
-                                data.data());
+      bool isEqual = std::equal(data.begin(), data.end(), compare_data.begin());
 
       CHECK(isEqual);
     }
-
+    
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, Swap)
+    TEST(test_swap)
     {
-      TestData testData2(initialData.begin() + 2, initialData.end());
-      Data otherData;
-      std::copy(initialData.begin() + 2, initialData.end(), otherData.begin());
+      Data data1 = { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
+      Data data2 = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-      testData.swap(testData2);
+      swap(data1, data2);
 
-      data.swap(otherData);
-
-      bool isEqual = std::equal(testData.begin(),
-                                testData.end(),
-                                data.begin());
-
-      CHECK(isEqual);
+      CHECK(std::equal(compare_data.begin(), compare_data.end(), data1.begin()));
+      CHECK(std::equal(swap_data.begin(), swap_data.end(), data2.begin()));
     }
 
     //*************************************************************************
-    TEST(Equal)
+    TEST(test_equal)
     {
-      const Data data1 = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      const Data data2 = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      Data data1 = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      Data data2 = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
       CHECK(data1 == data2);
-
-      const Data data = { 1, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      CHECK(data1 != data);
     }
 
     //*************************************************************************
-    TEST(NotEqual)
+    TEST(test_not_equal)
     {
-      const Data data1 = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      const Data data2 = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      CHECK(data1 == data2);
+      Data data1 = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      Data data2 = { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
 
-      const Data data3 = { 1, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      CHECK(data1 != data3);
+      CHECK(data1 != data2);
     }
 
     //*************************************************************************
-    TEST(GreaterThan)
+    TEST(test_less_than)
     {
-      const Data lesser = { 0, 1, 2, 3, 4, 4, 6, 7, 8, 9 };
-      const Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      CHECK(lesser <= data);
+      Data data    = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      Data greater = { 0, 1, 2, 3, 5, 5, 6, 7, 8, 9 };
+      Data lesser  = { 0, 1, 2, 3, 4, 4, 6, 7, 8, 9 };
 
-      const Data greater = { 0, 1, 2, 3, 5, 5, 6, 7, 8, 9 };
-      CHECK(greater > data);
+      CHECK(lesser    < data);
+      CHECK(!(data    < data));
+      CHECK(!(greater < data));
     }
 
     //*************************************************************************
-    TEST(LessThan)
+    TEST(test_less_than_equal)
     {
-      const Data lesser  = { 0, 1, 2, 3, 4, 4, 6, 7, 8, 9 };
-      const Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      CHECK(lesser < data);
+      Data data    = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      Data greater = { 0, 1, 2, 3, 5, 5, 6, 7, 8, 9 };
+      Data lesser  = { 0, 1, 2, 3, 4, 4, 6, 7, 8, 9 };
 
-      const Data greater = { 0, 1, 2, 3, 5, 5, 6, 7, 8, 9 };
-      CHECK(greater >= data);
+      CHECK(lesser    <= data);
+      CHECK(data      <= data);
+      CHECK(!(greater <= data));
     }
 
     //*************************************************************************
-    TEST(GreaterThanEqual)
+    TEST(test_greater_than)
     {
-      const Data lesser = { 0, 1, 2, 3, 4, 4, 6, 7, 8, 9 };
-      const Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      CHECK(lesser < data);
+      Data data    = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      Data greater = { 0, 1, 2, 3, 5, 5, 6, 7, 8, 9 };
+      Data lesser  = { 0, 1, 2, 3, 4, 4, 6, 7, 8, 9 };
 
-      const Data greater = { 0, 1, 2, 3, 5, 5, 6, 7, 8, 9 };
-      CHECK(greater >= data);
-
-      const Data data2 = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      CHECK(data2 >= data);
+      CHECK(greater  > data);
+      CHECK(!(data   > data));
+      CHECK(!(lesser > data));
     }
 
     //*************************************************************************
-    TEST(LessThanEqual)
+    TEST(test_greater_than_equal)
     {
-      const Data lesser  = { 0, 1, 2, 3, 4, 4, 6, 7, 8, 9 };
-      const Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      CHECK(lesser <= data);
+      Data data    = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      Data greater = { 0, 1, 2, 3, 5, 5, 6, 7, 8, 9 };
+      Data lesser  = { 0, 1, 2, 3, 4, 4, 6, 7, 8, 9 };
 
-      const Data greater = { 0, 1, 2, 3, 5, 5, 6, 7, 8, 9 };
-      CHECK(greater > data);
-
-      const Data data2 = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      CHECK(data2 <= data);
+      CHECK(greater  >= data);
+      CHECK(data     >= data);
+      CHECK(!(lesser >= data));
     }
+
+
   };
 }
