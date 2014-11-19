@@ -147,6 +147,9 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_signed : false_type { };
   template <> struct is_signed<char> : true_type { };
+#ifdef PLATFORM_LINUX
+  template <> struct is_signed<wchar_t> : true_type { };
+#endif
   template <> struct is_signed<signed char> : true_type { };
   template <> struct is_signed<short> : true_type { };
   template <> struct is_signed<int> : true_type { };
@@ -164,7 +167,9 @@ namespace etl
   template <typename T> struct is_unsigned : false_type { };
   template <> struct is_unsigned<bool> : true_type { };
   template <> struct is_unsigned<unsigned char> : true_type { };
+#ifndef PLATFORM_LINUX
   template <> struct is_unsigned<wchar_t> : true_type { };
+#endif
   template <> struct is_unsigned<unsigned short> : true_type { };
   template <> struct is_unsigned<unsigned int> : true_type { };
   template <> struct is_unsigned<unsigned long> : true_type { };
@@ -225,7 +230,7 @@ namespace etl
   template <typename T> struct make_signed { typedef  T type; };
   template <> struct make_signed<char> { typedef  signed char type; };
   template <> struct make_signed<unsigned char> { typedef  signed char type; };
-#ifdef WIN32
+#ifdef COMPILER_MICROSOFT
   template <> struct make_signed<wchar_t> { typedef  short type; };
 #endif
   template <> struct make_signed<unsigned short> { typedef  short type; };
@@ -242,7 +247,7 @@ namespace etl
   template <> struct make_unsigned<char> { typedef unsigned char type; };
   template <> struct make_unsigned<signed char> { typedef unsigned char type; };
   template <> struct make_unsigned<short> { typedef unsigned short type; };
-#ifdef WIN32
+#ifdef COMPILER_MICROSOFT
   template <> struct make_unsigned<wchar_t> { typedef unsigned short type; };
 #endif
   template <> struct make_unsigned<int> { typedef unsigned int type; };
@@ -300,13 +305,25 @@ namespace etl
   /// Alignment templates.
   /// These require compiler specific intrinsics.
   ///\ingroup type_traits
-#ifdef _MSC_VER
-	template <typename T> struct alignment_of : integral_constant <size_t, __alignof(T)> {};
+#ifdef COMPILER_MICROSOFT
+  template <typename T> struct alignment_of : integral_constant <size_t, size_t(__alignof(T))> {};
 #endif
 
-#ifdef __GNUC__
+#ifdef COMPILER_KEIL_ARM
   template <typename T> struct alignment_of : integral_constant <size_t, size_t(__alignof__(T))> {};
 #endif
+
+#ifdef COMPILER_IAR_ARM
+  template <typename T> struct alignment_of : integral_constant <size_t, size_t(__ALIGNOF__(T))> {};
+#endif
+
+#ifdef COMPILER_GCC
+  template <typename T> struct alignment_of : integral_constant <size_t, size_t(__alignof__(T))> {};
+#endif
+
+  /// Specialisation of 'alignment_of' for 'void'.
+  ///\ingroup type_traits
+  template <> struct alignment_of<void> : integral_constant <size_t, 0>{};
 }
 
 #endif
