@@ -47,10 +47,10 @@ SOFTWARE.
 ///   };
 ///
 ///   DECLARE_ENUM_TYPE(CompassDirection, int)
-///   ENUM_TYPE("North", North)
-///   ENUM_TYPE("South", South)
-///   ENUM_TYPE("East",  East)
-///   ENUM_TYPE("West",  West)
+///   ENUM_TYPE(North, "North")
+///   ENUM_TYPE(South, "South")
+///   ENUM_TYPE(East,  "East")
+///   ENUM_TYPE(West,  "West")
 ///   END_ENUM_TYPE
 /// };
 ///\endcode
