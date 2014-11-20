@@ -10,13 +10,12 @@ The library is intended for any compiler that supports C++ 03.
 **Main features:**
 
  - A set of fixed capacity containers. (stack, queue, list, forward_list, vector, deque)
- - Compile time template constants.
+ - Templated compile time constants.
  - Templated design pattern base classes (Visitor, Observer)
  - Reverse engineered C++ 0x11 features (type traits, algorithms, containers etc.)
  - Smart enumerations
  - 8, 16, 32 & 64 bit CRC calculations
  - Many utilities for template support.
- - Compile time constants.
  - Variants (a type that can store many types in a type-safe interface.
  - Optional exceptions on errors.
 
