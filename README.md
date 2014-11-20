@@ -16,6 +16,6 @@ The library is intended for any compiler that supports C++ 03.
  - Smart enumerations
  - 8, 16, 32 & 64 bit CRC calculations
  - Many utilities for template support.
- - Variants (a type that can store many types in a type-safe interface.
+ - Variants (a type that can store many types in a type-safe interface)
  - Optional exceptions on errors.
 
