@@ -29,30 +29,32 @@ SOFTWARE.
 #ifndef __ETL_PARAMETER__
 #define __ETL_PARAMETER__
 
+#include "type_traits.h"
+
 namespace etl
 {
   //*************************************************************************
   /// Determine how to pass parameters.
   //*************************************************************************
-  template <typename U, const bool should_pass_by_value>
+  template <typename T, const bool should_pass_by_value = is_fundamental<T>::value || is_pointer<T>::value>
   struct parameter_type;
 
   //*************************************************************************
   /// Pass by value.
   //*************************************************************************
-  template <typename U>
-  struct parameter_type<U, true>
+  template <typename T>
+  struct parameter_type<T, true>
   {
-    typedef U type;
+    typedef T type;
   };
 
   //*************************************************************************
   /// Pass by const reference.
   //*************************************************************************
-  template <typename U>
-  struct parameter_type<U, false>
+  template <typename T>
+  struct parameter_type<T, false>
   {
-    typedef const U& type;
+    typedef const T& type;
   };
 }
 
