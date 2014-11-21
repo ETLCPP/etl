@@ -32,7 +32,7 @@ SOFTWARE.
 
 namespace
 {		
-  SUITE(TestLargest)
+  SUITE(test_largest)
   {
     //*************************************************************************
     TEST(test_pod_type)

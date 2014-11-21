@@ -95,6 +95,24 @@ namespace etl
     typedef size_t size_type; ///< The type used for determining the size of stack.
 
     //*************************************************************************
+    /// Checks to see if the stack is empty.
+    /// \return <b>true</b> if the stack is empty, otherwise <b>false</b>
+    //*************************************************************************
+    bool empty() const
+    {
+      return current_size == 0;
+    }
+
+    //*************************************************************************
+    /// Checks to see if the stack is full.
+    /// \return <b>true</b> if the stack is full, otherwise <b>false</b>
+    //*************************************************************************
+    bool full() const
+    {
+      return current_size == MAX_SIZE;
+    }
+
+    //*************************************************************************
     /// Returns the current number of items top the stack.
     //*************************************************************************
     size_type size() const
@@ -125,24 +143,6 @@ namespace etl
     {
       top_index    = 0;
       current_size = 0;
-    }
-
-    //*************************************************************************
-    /// Checks to see if the stack is empty.
-    /// \return <b>true</b> if the stack is empty, otherwise <b>false</b>
-    //*************************************************************************
-    bool empty() const
-    {
-      return current_size == 0;
-    }
-
-    //*************************************************************************
-    /// Checks to see if the stack is full.
-    /// \return <b>true</b> if the stack is full, otherwise <b>false</b>
-    //*************************************************************************
-    bool full() const
-    {
-      return current_size == MAX_SIZE;
     }
 
     //*************************************************************************

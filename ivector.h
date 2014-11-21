@@ -51,23 +51,42 @@ namespace etl
   {
   public:
 
+    typedef T                                     value_type;
+    typedef T&                                    reference;
+    typedef const T&                              const_reference;
+    typedef T*                                    pointer;
+    typedef const T*                              const_pointer;
     typedef T*                                    iterator;
     typedef const T*                              const_iterator;
     typedef std::reverse_iterator<iterator>       reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-    typedef T*                                    pointer;
-    typedef const T*                              const_pointer;
-    typedef T&                                    reference;
-    typedef const T&                              const_reference;
     typedef size_t                                size_type;
-    typedef T                                     value_type;
     typedef typename std::iterator_traits<iterator>::difference_type difference_type;
 
   protected:
 
-    typedef typename parameter_type<T, is_fundamental<T>::value || is_pointer<T>::value>::type parameter_t;
+    typedef typename parameter_type<T>::type parameter_t;
 
   public:
+
+    // Use the base class void push_back().
+    using vector_base::push_back;
+
+    //*********************************************************************
+    /// Assignment operator.
+    /// The source vector can be larger than the destination, but 
+    /// only the elements that will fit in the destination will be copied.
+    ///\param other The other vector.
+    //*********************************************************************
+    ivector& operator = (ivector& other)
+    {
+      const size_t length = std::min(MAX_SIZE, other.size());
+
+      std::copy(other.begin(), other.begin() + length, p_buffer);
+      current_size = length;
+
+      return *this;
+    }
 
     //*********************************************************************
     /// Returns an iterator to the beginning of the vector.
@@ -88,6 +107,24 @@ namespace etl
     }        
 
     //*********************************************************************
+    /// Returns an iterator to the end of the vector.
+    ///\return An iterator to the end of the vector.
+    //*********************************************************************
+    iterator end()
+    {
+      return &p_buffer[current_size];
+    }
+
+    //*********************************************************************
+    /// Returns a const_iterator to the end of the vector.
+    ///\return A const iterator to the end of the vector.
+    //*********************************************************************
+    const_iterator end() const
+    {
+      return &p_buffer[current_size];
+    }
+
+    //*********************************************************************
     /// Returns a const_iterator to the beginning of the vector.
     ///\return A const iterator to the beginning of the vector.
     //*********************************************************************
@@ -95,6 +132,15 @@ namespace etl
     {
       return &p_buffer[0];
     } 
+
+    //*********************************************************************
+    /// Returns a const_iterator to the end of the vector.
+    ///\return A const iterator to the end of the vector.
+    //*********************************************************************
+    const_iterator cend() const
+    {
+      return &p_buffer[current_size];
+    }
 
     //*********************************************************************
     /// Returns an reverse iterator to the reverse beginning of the vector.
@@ -115,6 +161,24 @@ namespace etl
     }        
 
     //*********************************************************************
+    /// Returns a reverse iterator to the end + 1 of the vector.
+    ///\return Reverse iterator to the end + 1 of the vector.
+    //*********************************************************************
+    reverse_iterator rend()
+    {
+      return reverse_iterator(begin());
+    }
+
+    //*********************************************************************
+    /// Returns a const reverse iterator to the end + 1 of the vector.
+    ///\return Const reverse iterator to the end + 1 of the vector.
+    //*********************************************************************
+    const_reverse_iterator rend() const
+    {
+      return const_reverse_iterator(begin());
+    }
+
+    //*********************************************************************
     /// Returns a const reverse iterator to the reverse beginning of the vector.
     ///\return Const reverse iterator to the reverse beginning of the vector.
     //*********************************************************************
@@ -124,75 +188,12 @@ namespace etl
     } 
 
     //*********************************************************************
-    /// Returns an iterator to the end of the vector.
-    ///\return An iterator to the end of the vector.
-    //*********************************************************************
-    iterator end()
-    {
-      return &p_buffer[current_size];
-    }
-  
-    //*********************************************************************
-    /// Returns a const_iterator to the end of the vector.
-    ///\return A const iterator to the end of the vector.
-    //*********************************************************************
-    const_iterator end() const
-    {
-      return &p_buffer[current_size];
-    }
-
-    //*********************************************************************
-    /// Returns a const_iterator to the end of the vector.
-    ///\return A const iterator to the end of the vector.
-    //*********************************************************************
-    const_iterator cend() const
-    {
-      return &p_buffer[current_size];
-    } 
-
-    //*********************************************************************
-    /// Returns a reverse iterator to the end + 1 of the vector.
-    ///\return Reverse iterator to the end + 1 of the vector.
-    //*********************************************************************
-    reverse_iterator rend()
-    {
-	    return reverse_iterator(begin());
-    }
-  
-    //*********************************************************************
-    /// Returns a const reverse iterator to the end + 1 of the vector.
-    ///\return Const reverse iterator to the end + 1 of the vector.
-    //*********************************************************************
-    const_reverse_iterator rend() const
-    {
-	    return const_reverse_iterator(begin());
-    }
-
-    //*********************************************************************
     /// Returns a const reverse iterator to the end + 1 of the vector.
     ///\return Const reverse iterator to the end + 1 of the vector.
     //*********************************************************************
     const_reverse_iterator crend() const
     {
 	    return const_reverse_iterator(cbegin());
-    }
-
-    //*********************************************************************
-    /// Returns a pointer to the beginning of the vector data.
-    ///\return A pointer to the beginning of the vector data.
-    //*********************************************************************
-    pointer data()
-    {
-      return p_buffer;
-    }
-
-    //*********************************************************************
-    /// Returns a const pointer to the beginning of the vector data.
-    ///\return A const pointer to the beginning of the vector data.
-    //*********************************************************************
-    const_pointer data() const
-    {
-      return p_buffer;
     }
 
     //*********************************************************************
@@ -220,12 +221,113 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Clears the vector.
-    /// Does not call the destructor for any elements.
+    /// Returns a reference to the value at index 'i'
+    ///\param i The index.
+    ///\return A reference to the value at index 'i'
     //*********************************************************************
-    void clear()
+    reference operator [](size_t i)
     {
-	    current_size = 0;
+      return p_buffer[i];
+    }
+
+    //*********************************************************************
+    /// Returns a const reference to the value at index 'i'
+    ///\param i The index.
+    ///\return A const reference to the value at index 'i'
+    //*********************************************************************
+    const_reference operator [](size_t i) const
+    {
+      return p_buffer[i];
+    }
+
+    //*********************************************************************
+    /// Returns a reference to the value at index 'i'
+    /// If ETL_USE_EXCEPTIONS is defined, throws a std::range_error if the index is out of range.
+    ///\param i The index.
+    ///\return A reference to the value at index 'i'
+    //*********************************************************************
+    reference at(size_t i)
+    {
+#ifdef ETL_USE_EXCEPTIONS
+      if (i >= current_size)
+      {
+        throw vector_out_of_bounds();
+      }
+#endif
+
+      return p_buffer[i];
+    }
+
+    //*********************************************************************
+    /// Returns a const reference to the value at index 'i'
+    /// If ETL_USE_EXCEPTIONS is defined, throws a std::range_error if the index is out of range.
+    ///\param i The index.
+    ///\return A const reference to the value at index 'i'
+    //*********************************************************************
+    const_reference at(size_t i) const
+    {
+#ifdef ETL_USE_EXCEPTIONS
+      if (i >= current_size)
+      {
+        throw vector_out_of_bounds();
+      }
+#endif
+
+      return p_buffer[i];
+    }
+
+    //*********************************************************************
+    /// Returns a reference to the first element.
+    ///\return A reference to the first element.
+    //*********************************************************************
+    reference front()
+    {
+      return p_buffer[0];
+    }
+
+    //*********************************************************************
+    /// Returns a const reference to the first element.
+    ///\return A const reference to the first element.
+    //*********************************************************************
+    const_reference front() const
+    {
+      return p_buffer[0];
+    }
+
+    //*********************************************************************
+    /// Returns a reference to the last element.
+    ///\return A reference to the last element.
+    //*********************************************************************
+    reference back()
+    {
+      return p_buffer[current_size - 1];
+    }
+
+    //*********************************************************************
+    /// Returns a const reference to the last element.
+    ///\return A const reference to the last element.
+    //*********************************************************************
+    const_reference back() const
+    {
+      return p_buffer[current_size - 1];
+    }
+
+    //*********************************************************************
+    /// Returns a pointer to the beginning of the vector data.
+    ///\return A pointer to the beginning of the vector data.
+    //*********************************************************************
+    pointer data()
+    {
+      return p_buffer;
+    }
+
+    //*********************************************************************
+    /// Returns a const pointer to the beginning of the vector data.
+    ///\return A const pointer to the beginning of the vector data.
+    //*********************************************************************
+    const_pointer data() const
+    {
+      return p_buffer;
     }
 
     //*********************************************************************
@@ -278,6 +380,25 @@ namespace etl
       {
         std::fill_n(begin(), n, value);
         current_size = n;
+      }
+    }
+
+    //*********************************************************************
+    /// Inserts a value at the end of the vector.
+    /// If ETL_USE_EXCEPTIONS is defined, throws vector_full if the vector is already full.
+    ///\param value The value to add.
+    //*********************************************************************
+    void push_back(parameter_t value)
+    {
+      if (current_size == MAX_SIZE)
+      {
+#ifdef ETL_USE_EXCEPTIONS
+        throw vector_full();
+#endif
+      }
+      else
+      {
+        p_buffer[current_size++] = value;
       }
     }
 
@@ -363,65 +484,16 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Inserts a value at the end of the vector.
-    /// If ETL_USE_EXCEPTIONS is defined, throws vector_full if the vector is already full.
-    ///\param value The value to add.
-    //*********************************************************************
-    void push_back(parameter_t value)
-    {
-      if (current_size == MAX_SIZE)
-      {
-#ifdef ETL_USE_EXCEPTIONS
-        throw vector_full();
-#endif
-      }
-      else
-      {
-        p_buffer[current_size++] = value;
-      }
-    }
-
-    //*********************************************************************
-    /// Increases the size of the vector by one, but does not initialise the new element.
-    /// If ETL_USE_EXCEPTIONS is defined, throws vector_full if the vector is already full.
-    //*********************************************************************
-    void push_back()
-    {
-      if (current_size == MAX_SIZE)
-      {
-#ifdef ETL_USE_EXCEPTIONS
-        throw vector_full();
-#endif
-      }
-      else
-      {
-        ++current_size;
-      }
-    }
-
-    //*********************************************************************
-    /// Removes an element from the end of the vector.
-    /// Does nothing if the vector is empty.
-    //*********************************************************************
-    void pop_back()
-    {
-	    if (current_size > 0)
-	    {
-		    --current_size;
-	    }
-    }
-
-    //*********************************************************************
     /// Erases an element.
     ///\param iElement Iterator to the element.
     ///\return An iterator pointing to the element that followed the erased element.
     //*********************************************************************
     iterator erase(iterator iElement)
     {
-	    std::copy(iElement + 1, end(), iElement);
-	    --current_size;
+      std::copy(iElement + 1, end(), iElement);
+      --current_size;
 
-	    return iElement;
+      return iElement;
     }
 
     //*********************************************************************
@@ -434,118 +506,19 @@ namespace etl
     //*********************************************************************
     iterator erase(iterator first, iterator last)
     {
-	    std::copy(last, end(), first);
-	    current_size -= std::distance(first, last);
+      std::copy(last, end(), first);
+      current_size -= std::distance(first, last);
 
-	    return first;
+      return first;
     }
 
     //*********************************************************************
-    /// Returns a reference to the first element.
-    ///\return A reference to the first element.
+    /// Clears the vector.
+    /// Does not call the destructor for any elements.
     //*********************************************************************
-    reference front()
+    void clear()
     {
-      return p_buffer[0];
-    }
-
-    //*********************************************************************
-    /// Returns a const reference to the first element.
-    ///\return A const reference to the first element.
-    //*********************************************************************
-    const_reference front() const
-    {
-      return p_buffer[0];
-    }
-
-    //*********************************************************************
-    /// Returns a reference to the last element.
-    ///\return A reference to the last element.
-    //*********************************************************************
-    reference back()
-    {
-      return p_buffer[current_size - 1];
-    }
-
-    //*********************************************************************
-    /// Returns a const reference to the last element.
-    ///\return A const reference to the last element.
-    //*********************************************************************
-    const_reference back() const
-    {
-      return p_buffer[current_size - 1];
-    }
-
-    //*********************************************************************
-    /// Returns a reference to the value at index 'i'
-    /// If ETL_USE_EXCEPTIONS is defined, throws a std::range_error if the index is out of range.
-    ///\param i The index.
-    ///\return A reference to the value at index 'i'
-    //*********************************************************************
-    reference at(size_t i)
-    {
-#ifdef ETL_USE_EXCEPTIONS
-      if (i >= current_size)
-      {
-        throw vector_out_of_bounds();
-      }
-#endif
-
-      return p_buffer[i];
-    }
-
-    //*********************************************************************
-    /// Returns a const reference to the value at index 'i'
-    /// If ETL_USE_EXCEPTIONS is defined, throws a std::range_error if the index is out of range.
-    ///\param i The index.
-    ///\return A const reference to the value at index 'i'
-    //*********************************************************************
-    const_reference at(size_t i) const
-    {
-#ifdef ETL_USE_EXCEPTIONS
-      if (i >= current_size)
-      {
-        throw vector_out_of_bounds();
-      }
-#endif
-
-      return p_buffer[i];
-    } 
-
-    //*********************************************************************
-    /// Returns a reference to the value at index 'i'
-    ///\param i The index.
-    ///\return A reference to the value at index 'i'
-    //*********************************************************************
-    reference operator [](size_t i)
-    {
-      return p_buffer[i];
-    }
-
-    //*********************************************************************
-    /// Returns a const reference to the value at index 'i'
-    ///\param i The index.
-    ///\return A const reference to the value at index 'i'
-    //*********************************************************************
-    const_reference operator [](size_t i) const
-    {
-      return p_buffer[i];
-    } 
-   
-    //*********************************************************************
-    /// Assignment operator.
-    /// The source vector can be larger than the destination, but 
-    /// only the elements that will fit in the destination will be copied.
-    ///\param other The other vector.
-    //*********************************************************************
-    ivector& operator = (ivector& other)
-    {
-      const size_t length = std::min(MAX_SIZE, other.size());
-
-      std::copy(other.begin(), other.begin() + length, p_buffer);
-      current_size = length;
-
-      return *this;
+	    current_size = 0;
     }
 
   protected:

@@ -54,18 +54,36 @@ namespace etl
   {
   public:
 
-    typedef stack_base::size_type size_type;       ///< The type used for determining the size of the stack.
     typedef T                     value_type;      ///< The type stored in the stack.
     typedef T&                    reference;       ///< A reference to the type used in the stack.
     typedef const T&              const_reference; ///< A const reference to the type used in the stack.
     typedef T*                    pointer;         ///< A pointer to the type used in the stack.
     typedef const T*              const_pointer;   ///< A const pointer to the type used in the stack.
+    typedef stack_base::size_type size_type;       ///< The type used for determining the size of the stack.
 
   private:
 
-    typedef typename parameter_type<T, is_fundamental<T>::value || is_pointer<T>::value>::type parameter_t;
+    typedef typename parameter_type<T>::type parameter_t;
 
   public:
+
+    //*************************************************************************
+    /// Gets a reference to the item at the top of the stack.<br>
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::stack_empty if the stack is empty.<br>
+    /// If ETL_USE_EXCEPTIONS is not defined and the stack is empty, the return value is undefined.
+    /// \return A reference to the item at the top of the stack.
+    //*************************************************************************
+    reference top()
+    {
+#ifdef ETL_USE_EXCEPTIONS
+      if (empty())
+      {
+        throw stack_empty();
+      }
+#endif
+
+      return buffer[top_index];
+    }
 
     //*************************************************************************
     /// Adds an item to the stack.
@@ -106,24 +124,6 @@ namespace etl
       else
       {
         throw stack_full();
-      }
-#endif
-
-      return buffer[top_index];
-    }
-
-    //*************************************************************************
-    /// Gets a reference to the item at the top of the stack.<br>
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::stack_empty if the stack is empty.<br>
-    /// If ETL_USE_EXCEPTIONS is not defined and the stack is empty, the return value is undefined.
-    /// \return A reference to the item at the top of the stack.
-    //*************************************************************************
-    reference top()
-    {
-#ifdef ETL_USE_EXCEPTIONS
-      if (empty())
-      {
-        throw stack_empty();
       }
 #endif
 

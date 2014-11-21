@@ -32,7 +32,7 @@ SOFTWARE.
 
 namespace 
 {		
-  SUITE(ContainerTest)
+  SUITE(test_container)
   {
     //*************************************************************************
     TEST(test_stl_style_container)

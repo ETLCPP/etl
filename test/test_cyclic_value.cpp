@@ -32,10 +32,10 @@ SOFTWARE.
 
 namespace
 {		
-  SUITE(TestCyclicValue)
+  SUITE(test_cyclic_value)
   {
     //*************************************************************************
-    TEST(CompileTimeInitialisation)
+    TEST(test_compile_time_initialisation)
     {
       etl::cyclic_value<int, 2, 7> value;
 
@@ -45,9 +45,9 @@ namespace
     }
 
     //*************************************************************************
-    TEST(RunTimeInitialisation)
+    TEST(test_run_time_initialisation)
     {
-      etl::cyclic_value<int> value(2, 7, 1);
+      etl::cyclic_value<int> value(2, 7);
 
       CHECK_EQUAL(2, value);
       CHECK_EQUAL(2, value.first());
@@ -55,7 +55,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(set)
+    TEST(test_set)
     {
       etl::cyclic_value<int> value;
 
@@ -67,7 +67,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(ToFirst)
+    TEST(test_to_first)
     {
       etl::cyclic_value<int> value;
 
@@ -79,7 +79,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(ToLast)
+    TEST(test_to_last)
     {
       etl::cyclic_value<int> value;
 
@@ -90,7 +90,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Increment)
+    TEST(test_increment)
     {
       etl::cyclic_value<int> value;
 
@@ -104,7 +104,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Decrement)
+    TEST(test_decrement)
     {
       etl::cyclic_value<int> value;
 
@@ -119,7 +119,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(IncrementWrap)
+    TEST(test_increment_wrap)
     {
       etl::cyclic_value<int> value;
 
@@ -135,7 +135,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(DecrementWrap)
+    TEST(test_decrement_wrap)
     {
       etl::cyclic_value<int> value;
 
@@ -151,21 +151,9 @@ namespace
     }
 
     //*************************************************************************
-    TEST(NumberOfSteps)
+    TEST(test_advance_positive)
     {
-      etl::cyclic_value<int> value;
-
-      value.set(2, 7, 1);
-      CHECK_EQUAL(7 - 2 + 1, value.number_of_steps());
-
-      value.set(2, 7, 2);
-      CHECK_EQUAL((7 - 2 + 1) / 2, value.number_of_steps());
-    }
-
-    //*************************************************************************
-    TEST(AdvancePositive)
-    {
-      etl::cyclic_value<int, 2, 7, 1> value;
+      etl::cyclic_value<int, 2, 7> value;
 
       value.advance(2);
 
@@ -173,22 +161,14 @@ namespace
     }
 
     //*************************************************************************
-    TEST(AdvanceNegative)
+    TEST(test_advance_negative)
     {
-      etl::cyclic_value<int, 2, 7, 1> value;
+      etl::cyclic_value<int, 2, 7> value;
 
       value.to_last();
       value.advance(-2);
 
       CHECK_EQUAL(5, value);
-    }
-
-    //*************************************************************************
-    TEST(TestException)
-    {
-      etl::cyclic_value<int> value;
-      
-      CHECK_THROW(value.set(2, 7, 4), etl::cyclic_value_illegal_range);
     }
   };
 }

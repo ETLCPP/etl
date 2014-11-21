@@ -196,10 +196,10 @@ public:
 
 namespace
 {
-  SUITE(TestObserver)
+  SUITE(test_observer)
   {
     //*************************************************************************
-    TEST(Test2Observables2Observers3Notifications)
+    TEST(test_2_observables_2_observers_3_notifications)
     {
       // The observable objects.
       Observable1 observable1;
@@ -282,7 +282,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test8Notifications)
+    TEST(test_8_notifications)
     {
       typedef etl::observer<Notification<1>, Notification<2>, Notification<3>, Notification<4>, Notification<5>, Notification<6>, Notification<7>, Notification<8>> Observer;
 
@@ -295,7 +295,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test7Notifications)
+    TEST(test_7_notifications)
     {
       typedef etl::observer<Notification<1>, Notification<2>, Notification<3>, Notification<4>, Notification<5>, Notification<6>, Notification<7>> Observer;
 
@@ -308,7 +308,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test6Notifications)
+    TEST(test_6_notifications)
     {
       typedef etl::observer<Notification<1>, Notification<2>, Notification<3>, Notification<4>, Notification<5>, Notification<6>> Observer;
 
@@ -321,7 +321,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test5Notifications)
+    TEST(test_5_notifications)
     {
       typedef etl::observer<Notification<1>, Notification<2>, Notification<3>, Notification<4>, Notification<5>> Observer;
 
@@ -334,7 +334,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test4Notifications)
+    TEST(test_4_notifications)
     {
       typedef etl::observer<Notification<1>, Notification<2>, Notification<3>, Notification<4>> Observer;
 
@@ -347,7 +347,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test3Notifications)
+    TEST(test_3_notifications)
     {
       typedef etl::observer<Notification<1>, Notification<2>, Notification<3>> Observer;
 
@@ -360,7 +360,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test2Notifications)
+    TEST(test_2_notifications)
     {
       typedef etl::observer<Notification<1>, Notification<2>> Observer;
 
@@ -373,7 +373,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test1Notification)
+    TEST(test_1_notification)
     {
       typedef etl::observer<Notification<1>> Observer;
 
@@ -386,7 +386,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(TestObserverList)
+    TEST(test_observer_list)
     {
       class Observer : public etl::observer<Notification1>
       {

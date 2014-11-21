@@ -32,41 +32,10 @@ SOFTWARE.
 
 namespace
 {		
-  SUITE(TestStack)
+  SUITE(test_stack)
   {
     //*************************************************************************
-    TEST(Size)
-    {
-      etl::stack<int, 4> stack;
-
-      stack.push(1);
-      stack.push(2);
-      stack.push(3);
-
-      CHECK_EQUAL(3, stack.size());
-    }
-
-    //*************************************************************************
-    TEST(Capacity)
-    {
-      etl::stack<int, 4> stack;
-
-      CHECK_EQUAL(4, stack.capacity());
-    }
-
-    //*************************************************************************
-    TEST(Clear)
-    {
-      etl::stack<int, 4> stack;
-
-      stack.push(1);
-      stack.push(2);
-      stack.clear();
-      CHECK_EQUAL(0, stack.size());
-    }
-
-    //*************************************************************************
-    TEST(Empty)
+    TEST(test_empty)
     {
       etl::stack<int, 4> stack;
 
@@ -78,7 +47,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Full)
+    TEST(test_full)
     {
       etl::stack<int, 4> stack;
 
@@ -93,7 +62,38 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Push)
+    TEST(test_size)
+    {
+      etl::stack<int, 4> stack;
+
+      stack.push(1);
+      stack.push(2);
+      stack.push(3);
+
+      CHECK_EQUAL(3, stack.size());
+    }
+
+    //*************************************************************************
+    TEST(test_capacity)
+    {
+      etl::stack<int, 4> stack;
+
+      CHECK_EQUAL(4, stack.capacity());
+    }
+
+    //*************************************************************************
+    TEST(test_clear)
+    {
+      etl::stack<int, 4> stack;
+
+      stack.push(1);
+      stack.push(2);
+      stack.clear();
+      CHECK_EQUAL(0, stack.size());
+    }
+
+    //*************************************************************************
+    TEST(test_push)
     {
       etl::stack<int, 4> stack;
 
@@ -110,7 +110,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(PushVoid)
+    TEST(test_push_void)
     {
       etl::stack<int, 4> stack;
 
@@ -127,7 +127,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(PushExcess)
+    TEST(test_push_excess)
     {
       etl::stack<int, 4> stack;
 
@@ -140,7 +140,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Pop)
+    TEST(test_pop)
     {
       etl::stack<int, 4> stack;
 
@@ -151,7 +151,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Top)
+    TEST(test_top)
     {
       etl::stack<int, 4> stack;
 
@@ -169,7 +169,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(TopConst)
+    TEST(test_top_const)
     {
       etl::stack<int, 4> stack;
       const etl::stack<int, 4>& constQueue = stack;
@@ -188,7 +188,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(TopException)
+    TEST(test_top_exception)
     {
       etl::stack<int, 4> stack;
 
@@ -196,7 +196,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(CheckMultiplePush)
+    TEST(test_multiple_push)
     {
       etl::stack<int, 4> stack;
 
@@ -229,7 +229,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(CheckMultiplePushVoid)
+    TEST(test_multiple_push_void)
     {
       etl::stack<int, 4> stack;
 
@@ -262,7 +262,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Swap)
+    TEST(test_swap)
     {
       std::stack<int> compare1;
       std::stack<int> compare2;

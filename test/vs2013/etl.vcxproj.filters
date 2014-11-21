@@ -267,6 +267,9 @@
     <ClInclude Include="..\..\aligned_variable.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\parameter_type.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\AssertException.cpp">
@@ -336,9 +339,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_function.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_math.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_queue.cpp">
@@ -411,6 +411,9 @@
       <Filter>ETL\Maths</Filter>
     </ClCompile>
     <ClCompile Include="..\test_smallest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_maths.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

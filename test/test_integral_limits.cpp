@@ -37,10 +37,10 @@ SOFTWARE.
 
 namespace
 {
-  SUITE(TestIntegralLimits)
+  SUITE(test_integral_limits)
   {
     //*************************************************************************
-    TEST(MinTest)
+    TEST(test_min)
     {
       CHECK_EQUAL(std::numeric_limits<char>::min(),               (char)etl::integral_limits<char>::min);
       CHECK_EQUAL(std::numeric_limits<signed char>::min(),        (signed char)etl::integral_limits<signed char>::min);
@@ -56,7 +56,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(MaxTest)
+    TEST(test_max)
     {
       CHECK_EQUAL(std::numeric_limits<char>::max(),               (char)etl::integral_limits<char>::max);
       CHECK_EQUAL(std::numeric_limits<signed char>::max(),        (signed char)etl::integral_limits<signed char>::max);
@@ -72,7 +72,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(BitsTest)
+    TEST(test_bits)
     {
       CHECK_EQUAL(std::numeric_limits<std::make_unsigned<char>::type>::digits,        (int)etl::integral_limits<char>::bits);
       CHECK_EQUAL(std::numeric_limits<std::make_unsigned<signed char>::type>::digits, (int)etl::integral_limits<signed char>::bits);
@@ -88,7 +88,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(IsSignedTest)
+    TEST(test_is_signed)
     {
       CHECK_EQUAL(std::numeric_limits<char>::is_signed,               (bool)etl::integral_limits<char>::is_signed);
       CHECK_EQUAL(std::numeric_limits<signed char>::is_signed,        (bool)etl::integral_limits<signed char>::is_signed);

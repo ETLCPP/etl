@@ -26,13 +26,13 @@ SOFTWARE.
 
 #include <UnitTest++/UnitTest++.h>
 
-#if (__GNUC__)
+#if (COMPILER_GCC)
 #define __GXX_EXPERIMENTAL_CXX0X__
 #endif
 
 #include <type_traits>
 
-#if (__GNUC__)
+#if (COMPILER_GCC)
 namespace std
 {
   template <typename T>
@@ -52,10 +52,10 @@ struct Test
 
 namespace
 {
-  SUITE(TestTypeTraits)
+  SUITE(test_type_traits)
   {
     //*************************************************************************
-    TEST(is_integral)
+    TEST(test_is_integral)
     {
       CHECK(etl::is_integral<bool>::value               == std::is_integral<bool>::value);
       CHECK(etl::is_integral<char>::value               == std::is_integral<char>::value);
@@ -85,7 +85,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(is_signed)
+    TEST(test_is_signed)
     {
       CHECK(etl::is_signed<bool>::value               == std::is_signed<bool>::value);
       CHECK(etl::is_signed<char>::value               == std::is_signed<char>::value);
@@ -115,7 +115,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(is_unsigned)
+    TEST(test_is_unsigned)
     {
       CHECK(etl::is_unsigned<bool>::value               == std::is_unsigned<bool>::value);
       CHECK(etl::is_unsigned<char>::value               == std::is_unsigned<char>::value);
@@ -146,7 +146,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(is_floating_point)
+    TEST(test_is_floating_point)
     {
       CHECK(etl::is_floating_point<bool>::value               == std::is_floating_point<bool>::value);
       CHECK(etl::is_floating_point<char>::value               == std::is_floating_point<char>::value);
@@ -176,7 +176,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(is_pointer)
+    TEST(test_is_pointer)
     {
       CHECK(etl::is_pointer<int>::value                 == std::is_pointer<int>::value);
       CHECK(etl::is_pointer<int*>::value                == std::is_pointer<int*>::value);
@@ -186,7 +186,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(is_reference)
+    TEST(test_is_reference)
     {
       CHECK(etl::is_reference<int>::value                 == std::is_reference<int>::value);
       CHECK(etl::is_reference<int&>::value                == std::is_reference<int&>::value);
@@ -196,21 +196,21 @@ namespace
     }
 
     //*************************************************************************
-    TEST(is_same)
+    TEST(test_is_same)
     {
       CHECK((etl::is_same<int, int>::value  == std::is_same<int, int>::value));
       CHECK((etl::is_same<char, int>::value == std::is_same<char, int>::value));
     }
 
     //*************************************************************************
-    TEST(is_array)
+    TEST(test_is_array)
     {
       CHECK(etl::is_array<int>::value     == std::is_array<int>::value);
       CHECK(etl::is_array<int[10]>::value == std::is_array<int[10]>::value);
     }
 
     //*************************************************************************
-    TEST(remove_pointer)
+    TEST(test_remove_pointer)
     {
       CHECK((std::is_same<etl::remove_pointer<int>::type,                 std::remove_pointer<int>::type>::value));
       CHECK((std::is_same<etl::remove_pointer<int*>::type, std::remove_pointer<int*>::type>::value));
@@ -220,7 +220,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(add_pointer)
+    TEST(test_add_pointer)
     {
       CHECK((std::is_same<etl::add_pointer<int>::type,                 std::add_pointer<int>::type>::value));
       CHECK((std::is_same<etl::add_pointer<int*>::type,                std::add_pointer<int*>::type>::value));
@@ -230,7 +230,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(remove_reference)
+    TEST(test_remove_reference)
     {
       CHECK((std::is_same<etl::remove_reference<int>::type,                 std::remove_reference<int>::type>::value));
       CHECK((std::is_same<etl::remove_reference<int&>::type,                std::remove_reference<int&>::type>::value));
@@ -240,7 +240,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(add_reference)
+    TEST(test_add_reference)
     {
       CHECK((std::is_same<etl::add_reference<int>::type,                 std::add_lvalue_reference<int>::type>::value));
       CHECK((std::is_same<etl::add_reference<int&>::type,                std::add_reference<int&>::type>::value));
@@ -251,7 +251,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(remove_const)
+    TEST(test_remove_const)
     {
       CHECK((std::is_same<etl::remove_const<int>::type,                std::remove_const<int>::type>::value));
       CHECK((std::is_same<etl::remove_const<const int>::type,          std::remove_const<const int>::type>::value));
@@ -259,7 +259,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(add_const)
+    TEST(test_add_const)
     {
       CHECK((std::is_same<etl::add_const<int>::type,                std::add_const<int>::type>::value));
       CHECK((std::is_same<etl::add_const<const int>::type,          std::add_const<const int>::type>::value));
@@ -267,7 +267,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(is_const)
+    TEST(test_is_const)
     {
       CHECK(etl::is_const<int>::value                == std::is_const<int>::value);
       CHECK(etl::is_const<const int>::value          == std::is_const<const int>::value);
@@ -275,7 +275,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(is_volatile)
+    TEST(test_is_volatile)
     {
       CHECK(etl::is_volatile<int>::value                == std::is_volatile<int>::value);
       CHECK(etl::is_volatile<volatile int>::value       == std::is_volatile<volatile int>::value);
@@ -283,7 +283,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(remove_volatile)
+    TEST(test_remove_volatile)
     {
       CHECK((std::is_same<etl::remove_volatile<int>::type,                std::remove_volatile<int>::type>::value));
       CHECK((std::is_same<etl::remove_volatile<volatile int>::type,       std::remove_volatile<volatile int>::type>::value));
@@ -291,7 +291,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(add_volatile)
+    TEST(test_add_volatile)
     {
       CHECK((std::is_same<etl::add_volatile<int>::type,                std::add_volatile<int>::type>::value));
       CHECK((std::is_same<etl::add_volatile<volatile int>::type,       std::add_volatile<volatile int>::type>::value));
@@ -299,7 +299,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(remove_cv)
+    TEST(test_remove_cv)
     {
       CHECK((std::is_same<etl::remove_cv<int>::type,                std::remove_cv<int>::type>::value));
       CHECK((std::is_same<etl::remove_cv<const int>::type,          std::remove_cv<const int>::type>::value));
@@ -308,7 +308,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(add_cv)
+    TEST(test_add_cv)
     {
 
       typedef etl::add_cv<int>::type t1;
@@ -324,7 +324,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(is_arithmetic)
+    TEST(test_is_arithmetic)
     {
       CHECK(etl::is_arithmetic<bool>::value               == std::is_arithmetic<bool>::value);
       CHECK(etl::is_arithmetic<char>::value               == std::is_arithmetic<char>::value);
@@ -354,7 +354,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(is_fundamental)
+    TEST(test_is_fundamental)
     {
       CHECK(etl::is_fundamental<void>::value               == std::is_fundamental<void>::value);
       CHECK(etl::is_fundamental<bool>::value               == std::is_fundamental<bool>::value);
@@ -385,14 +385,45 @@ namespace
     }
 
     //*************************************************************************
-    TEST(is_void)
+    TEST(test_is_compound)
+    {
+      CHECK(etl::is_compound<void>::value               == std::is_compound<void>::value);
+      CHECK(etl::is_compound<bool>::value               == std::is_compound<bool>::value);
+      CHECK(etl::is_compound<char>::value               == std::is_compound<char>::value);
+      CHECK(etl::is_compound<signed char>::value        == std::is_compound<signed char>::value);
+      CHECK(etl::is_compound<unsigned char>::value      == std::is_compound<unsigned char>::value);
+      CHECK(etl::is_compound<wchar_t>::value            == std::is_compound<wchar_t>::value);
+      CHECK(etl::is_compound<short>::value              == std::is_compound<short>::value);
+      CHECK(etl::is_compound<signed short>::value       == std::is_compound<signed short>::value);
+      CHECK(etl::is_compound<unsigned short>::value     == std::is_compound<unsigned short>::value);
+      CHECK(etl::is_compound<int>::value                == std::is_compound<int>::value);
+      CHECK(etl::is_compound<signed int>::value         == std::is_compound<signed int>::value);
+      CHECK(etl::is_compound<unsigned int>::value       == std::is_compound<unsigned int>::value);
+      CHECK(etl::is_compound<long>::value               == std::is_compound<long>::value);
+      CHECK(etl::is_compound<signed long>::value        == std::is_compound<signed long>::value);
+      CHECK(etl::is_compound<unsigned long>::value      == std::is_compound<unsigned long>::value);
+      CHECK(etl::is_compound<long long>::value          == std::is_compound<long long>::value);
+      CHECK(etl::is_compound<signed long long>::value   == std::is_compound<signed long long>::value);
+      CHECK(etl::is_compound<unsigned long long>::value == std::is_compound<unsigned long long>::value);
+      CHECK(etl::is_compound<const int>::value          == std::is_compound<const int>::value);
+      CHECK(etl::is_compound<volatile int>::value       == std::is_compound<volatile int>::value);
+      CHECK(etl::is_compound<const int>::value          == std::is_compound<const int>::value);
+      CHECK(etl::is_compound<const volatile int>::value == std::is_compound<const volatile int>::value);
+      CHECK(etl::is_compound<float>::value              == std::is_compound<float>::value);
+      CHECK(etl::is_compound<double>::value             == std::is_compound<double>::value);
+      CHECK(etl::is_compound<long double>::value        == std::is_compound<long double>::value);
+      CHECK(etl::is_compound<Test>::value               == std::is_compound<Test>::value);
+    }
+
+    //*************************************************************************
+    TEST(test_is_void)
     {
       CHECK(etl::is_void<int>::value  == std::is_void<int>::value);
       CHECK(etl::is_void<void>::value == std::is_void<void>::value);
     }
 
     //*************************************************************************
-    TEST(make_signed)
+    TEST(test_make_signed)
     {
       CHECK((std::is_same<etl::make_signed<char>::type,               std::make_signed<char>::type>::value));
       CHECK((std::is_same<etl::make_signed<signed char>::type,        std::make_signed<signed char>::type>::value));
@@ -417,7 +448,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(make_unsigned)
+    TEST(test_make_unsigned)
     {
       CHECK((std::is_same<etl::make_unsigned<char>::type,               std::make_unsigned<char>::type>::value));
       CHECK((std::is_same<etl::make_unsigned<signed char>::type,        std::make_unsigned<signed char>::type>::value));
@@ -442,7 +473,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(extent)
+    TEST(test_extent)
     {
       CHECK((std::is_same<etl::extent<int>::type,     std::extent<int>::type>::value));
       CHECK((std::is_same<etl::extent<int[]>::type,   std::extent<int[]>::type>::value));
@@ -450,7 +481,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(remove_extent)
+    TEST(test_remove_extent)
     {
       CHECK((std::is_same<etl::remove_extent<int>::type,     std::remove_extent<int>::type>::value));
       CHECK((std::is_same<etl::remove_extent<int[]>::type,   std::remove_extent<int[]>::type>::value));
@@ -458,7 +489,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(remove_all_extents)
+    TEST(test_remove_all_extents)
     {
       CHECK((std::is_same<etl::remove_all_extents<int>::type,         std::remove_all_extents<int>::type>::value));
       CHECK((std::is_same<etl::remove_all_extents<int[10]>::type,     std::remove_all_extents<int[10]>::type>::value));
@@ -466,7 +497,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(rank)
+    TEST(test_rank)
     {
       CHECK(etl::rank<int>::value         == std::rank<int>::value);
       CHECK(etl::rank<int[10]>::value     == std::rank<int[10]>::value);
@@ -474,7 +505,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(alignment_of)
+    TEST(test_alignment_of)
     {
       struct Test
       {

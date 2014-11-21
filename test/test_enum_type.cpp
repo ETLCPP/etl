@@ -48,7 +48,7 @@ struct enum_test
 
 namespace 
 {		
-  SUITE(TestEnumType)
+  SUITE(test_enum_type)
   {
     //*************************************************************************
     TEST(Values)
@@ -60,7 +60,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Strings)
+    TEST(test_c_str)
     {
       enum_test value;
 
@@ -83,7 +83,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Assignment)
+    TEST(test_assignment)
     {
       enum_test value1 = enum_test::ZERO;
       enum_test value2 = enum_test::ONE;
@@ -94,7 +94,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(GetValue)
+    TEST(test_get_value)
     {
       enum_test actual = enum_test::THREE;
       enum_test::value_type expected = enum_test::THREE; 
@@ -103,7 +103,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(GetEnum)
+    TEST(test_get_enum)
     {
       enum_test actual = enum_test::THREE;
       enum_test::enum_type expected = enum_test::THREE;

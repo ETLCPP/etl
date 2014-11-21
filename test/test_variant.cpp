@@ -82,9 +82,9 @@ test_variant_max_types variant_max;
 
 namespace
 {		
-  SUITE(test_alignment)
+  SUITE(test_variant)
   {
-    TEST(test_lignment)
+    TEST(test_alignment)
     {
       typedef etl::variant<char, unsigned char> test_variant_a;
       typedef etl::variant<char, short>         test_variant_b;
@@ -104,7 +104,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(text_constructor_value)
+    TEST(test_constructor_value)
     {
       // Char.
       char c = 'a';

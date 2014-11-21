@@ -181,10 +181,10 @@ public:
 
 namespace
 {
-  SUITE(TestVisitor)
+  SUITE(test_visitor)
   {
     //*************************************************************************
-    TEST(TestTwoVisitorsThreeVisitables)
+    TEST(test_two_visitors_three_visitables)
     {
       DrawVisitor draw_visitor;
       LogVisitor  log_visitor;
@@ -231,7 +231,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test1Visitor)
+    TEST(test_1_visitor)
     {
       class AShape;
       class ShapeVisitor1 : public etl::visitor<AShape&>
@@ -251,7 +251,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test2Visitor)
+    TEST(test_2_visitor)
     {
       class AShape;
       class ShapeVisitor1 : public etl::visitor<AShape&>
@@ -277,7 +277,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test3Visitor)
+    TEST(test_3_visitor)
     {
       class AShape;
       class ShapeVisitor1 : public etl::visitor<AShape&>
@@ -309,7 +309,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test4Visitor)
+    TEST(test_4_visitor)
     {
       class AShape;
       class ShapeVisitor1 : public etl::visitor<AShape&>
@@ -347,7 +347,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test1Visitable)
+    TEST(test_1_visitable)
     {
       class ShapeVisitor : public etl::visitor <Shape<1, ShapeVisitor> >
       {
@@ -361,7 +361,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test2Visitables)
+    TEST(test_2_visitable)
     {
       class ShapeVisitor : public etl::visitor <Shape<1, ShapeVisitor>, Shape<2, ShapeVisitor> >
       {
@@ -376,7 +376,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test3Visitables)
+    TEST(test_3_visitable)
     {
       class ShapeVisitor : public etl::visitor <Shape<1, ShapeVisitor>, Shape<2, ShapeVisitor>, Shape<3, ShapeVisitor> >
       {
@@ -392,7 +392,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test4Visitables)
+    TEST(test_4_visitable)
     {
       class ShapeVisitor : public etl::visitor <Shape<1, ShapeVisitor>, Shape<2, ShapeVisitor>, Shape<3, ShapeVisitor>, Shape<4, ShapeVisitor> >
       {
@@ -409,7 +409,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test5Visitables)
+    TEST(test_5_visitable)
     {
       class ShapeVisitor : public etl::visitor <Shape<1, ShapeVisitor>, Shape<2, ShapeVisitor>, Shape<3, ShapeVisitor>, Shape<4, ShapeVisitor>,
                                                 Shape<5, ShapeVisitor> >
@@ -428,7 +428,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test6Visitables)
+    TEST(test_6_visitable)
     {
       class ShapeVisitor : public etl::visitor <Shape<1, ShapeVisitor>, Shape<2, ShapeVisitor>, Shape<3, ShapeVisitor>, Shape<4, ShapeVisitor>,
                                                 Shape<5, ShapeVisitor>, Shape<6, ShapeVisitor> >
@@ -448,7 +448,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test7Visitables)
+    TEST(test_7_visitable)
     {
       class ShapeVisitor : public etl::visitor <Shape<1, ShapeVisitor>, Shape<2, ShapeVisitor>, Shape<3, ShapeVisitor>, Shape<4, ShapeVisitor>,
                                                 Shape<5, ShapeVisitor>, Shape<6, ShapeVisitor>, Shape<7, ShapeVisitor> >
@@ -469,7 +469,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test8Visitables)
+    TEST(test_8_visitable)
     {
       class ShapeVisitor : public etl::visitor <Shape<1, ShapeVisitor>, Shape<2, ShapeVisitor>, Shape<3, ShapeVisitor>, Shape<4, ShapeVisitor>,
                                                 Shape<5, ShapeVisitor>, Shape<6, ShapeVisitor>, Shape<7, ShapeVisitor>, Shape<8, ShapeVisitor> >
@@ -491,7 +491,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test9Visitables)
+    TEST(test_9_visitable)
     {
       class ShapeVisitor : public etl::visitor <Shape<1, ShapeVisitor>, Shape<2, ShapeVisitor>, Shape<3, ShapeVisitor>, Shape<4, ShapeVisitor>,
                                                 Shape<5, ShapeVisitor>, Shape<6, ShapeVisitor>, Shape<7, ShapeVisitor>, Shape<8, ShapeVisitor>,
@@ -515,7 +515,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test10Visitables)
+    TEST(test_10_visitable)
     {
       class ShapeVisitor : public etl::visitor <Shape<1, ShapeVisitor>, Shape<2, ShapeVisitor>, Shape<3, ShapeVisitor>, Shape<4, ShapeVisitor>,
                                                 Shape<5, ShapeVisitor>, Shape<6, ShapeVisitor>, Shape<7, ShapeVisitor>, Shape<8, ShapeVisitor>,
@@ -541,7 +541,7 @@ namespace
 
 
     //*************************************************************************
-    TEST(Test11Visitables)
+    TEST(test_11_visitable)
     {
       class ShapeVisitor : public etl::visitor <Shape<1, ShapeVisitor>, Shape<2, ShapeVisitor>, Shape<3, ShapeVisitor>, Shape<4, ShapeVisitor>,
                                                 Shape<5, ShapeVisitor>, Shape<6, ShapeVisitor>, Shape<7, ShapeVisitor>, Shape<8, ShapeVisitor>,
@@ -567,7 +567,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test12Visitables)
+    TEST(test_12_visitable)
     {
       class ShapeVisitor : public etl::visitor <Shape<1, ShapeVisitor>, Shape<2, ShapeVisitor>, Shape<3, ShapeVisitor>, Shape<4, ShapeVisitor>,
                                                 Shape<5, ShapeVisitor>, Shape<6, ShapeVisitor>, Shape<7, ShapeVisitor>, Shape<8, ShapeVisitor>,
@@ -594,7 +594,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test13Visitables)
+    TEST(test_13_visitable)
     {
       class ShapeVisitor : public etl::visitor <Shape<1, ShapeVisitor>, Shape<2, ShapeVisitor>, Shape<3, ShapeVisitor>, Shape<4, ShapeVisitor>,
                                                 Shape<5, ShapeVisitor>, Shape<6, ShapeVisitor>, Shape<7, ShapeVisitor>, Shape<8, ShapeVisitor>,
@@ -623,7 +623,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test14Visitables)
+    TEST(test_14_visitable)
     {
       class ShapeVisitor : public etl::visitor <Shape<1, ShapeVisitor>, Shape<2, ShapeVisitor>, Shape<3, ShapeVisitor>, Shape<4, ShapeVisitor>,
                                                 Shape<5, ShapeVisitor>, Shape<6, ShapeVisitor>, Shape<7, ShapeVisitor>, Shape<8, ShapeVisitor>,
@@ -653,7 +653,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test15Visitables)
+    TEST(test_15_visitable)
     {
       class ShapeVisitor : public etl::visitor <Shape<1, ShapeVisitor>, Shape<2, ShapeVisitor>, Shape<3, ShapeVisitor>, Shape<4, ShapeVisitor>,
                                                 Shape<5, ShapeVisitor>, Shape<6, ShapeVisitor>, Shape<7, ShapeVisitor>, Shape<8, ShapeVisitor>,
@@ -684,7 +684,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Test16Visitables)
+    TEST(test_16_visitable)
     {
       class ShapeVisitor : public etl::visitor <Shape<1, ShapeVisitor>, Shape<2, ShapeVisitor>, Shape<3, ShapeVisitor>, Shape<4, ShapeVisitor>,
                                                 Shape<5, ShapeVisitor>, Shape<6, ShapeVisitor>, Shape<7, ShapeVisitor>, Shape<8, ShapeVisitor>,

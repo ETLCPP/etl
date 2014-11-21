@@ -146,6 +146,7 @@
     <ClInclude Include="..\..\nullptr.h" />
     <ClInclude Include="..\..\numeric.h" />
     <ClInclude Include="..\..\observer.h" />
+    <ClInclude Include="..\..\parameter_type.h" />
     <ClInclude Include="..\..\pow.h" />
     <ClInclude Include="..\..\queue.h" />
     <ClInclude Include="..\..\queue_base.h" />
@@ -202,7 +203,7 @@
     <ClCompile Include="..\test_integral_limits.cpp" />
     <ClCompile Include="..\test_largest.cpp" />
     <ClCompile Include="..\test_list.cpp" />
-    <ClCompile Include="..\test_math.cpp" />
+    <ClCompile Include="..\test_maths.cpp" />
     <ClCompile Include="..\test_numeric.cpp" />
     <ClCompile Include="..\test_observer.cpp" />
     <ClCompile Include="..\test_queue.cpp" />

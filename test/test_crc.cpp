@@ -41,7 +41,7 @@ SOFTWARE.
 
 namespace
 {		
-  SUITE(TestCRC)
+  SUITE(test_crc)
   {
     //*************************************************************************
     TEST(test_crc8_ccitt_constructor)

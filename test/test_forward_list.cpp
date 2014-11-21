@@ -36,7 +36,7 @@ SOFTWARE.
 
 namespace 
 {		
-  SUITE(TestForwardList)
+  SUITE(test_forward_list)
   {
     const size_t SIZE = 10;
 
@@ -65,7 +65,7 @@ namespace
     };
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, DefaultConstructor)
+    TEST_FIXTURE(SetupFixture, test_default_constructor)
     {
       Data data;
 
@@ -74,7 +74,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, ConstructorSize)
+    TEST_FIXTURE(SetupFixture, test_constructor_size)
     {
       const size_t INITIAL_SIZE = 4;
       Data data(INITIAL_SIZE);
@@ -83,13 +83,13 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, ConstructorSizeExcess)
+    TEST_FIXTURE(SetupFixture, test_constructor_size_excess)
     {
       CHECK_THROW(Data data(SIZE + 1), etl::forward_list_full);
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, ConstructorSizeValue)
+    TEST_FIXTURE(SetupFixture, test_constructor_size_value)
     {
       const size_t INITIAL_SIZE = 4;
       const int INITIAL_VALUE = 1;
@@ -107,7 +107,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, ConstructorRange)
+    TEST_FIXTURE(SetupFixture, test_constructor_range)
     {
       Data data(sorted_data.begin(), sorted_data.end());
 
@@ -115,7 +115,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, CopyConstructor)
+    TEST_FIXTURE(SetupFixture, test_copy_constructor)
     {
       CompareData compare_data(sorted_data.begin(), sorted_data.end());
       Data data(sorted_data.begin(), sorted_data.end());
@@ -125,7 +125,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, Iterator)
+    TEST_FIXTURE(SetupFixture, test_iterator)
     {
       CompareData compare_data(sorted_data.begin(), sorted_data.end());
       Data data(compare_data.begin(), compare_data.end());
@@ -136,7 +136,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, ConstIterator)
+    TEST_FIXTURE(SetupFixture, test_const_iterator)
     {
       CompareData compare_data(sorted_data.begin(), sorted_data.end());
       Data data(compare_data.begin(), compare_data.end());
@@ -147,7 +147,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, ResizeUpValue)
+    TEST_FIXTURE(SetupFixture, test_resize_up_value)
     {
       const size_t INITIAL_SIZE = 4;
       const size_t NEW_SIZE     = 8;
@@ -165,7 +165,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, ResizeExcess)
+    TEST_FIXTURE(SetupFixture, test_resize_excess)
     {
       const size_t INITIAL_SIZE = 4;
       Data data(INITIAL_SIZE);
@@ -174,7 +174,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, Clear)
+    TEST_FIXTURE(SetupFixture, test_clear)
     {
       Data data(sorted_data.begin(), sorted_data.end());
       data.clear();
@@ -183,7 +183,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, AssignRange)
+    TEST_FIXTURE(SetupFixture, test_assign_range)
     {
       CompareData compare_data(sorted_data.begin(), sorted_data.end());
       Data data;
@@ -198,7 +198,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, AssignSizeValue)
+    TEST_FIXTURE(SetupFixture, test_assign_size_value)
     {
       const size_t INITIAL_SIZE = 4;
       const int VALUE = 1;
@@ -216,7 +216,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, AssignSizeValueExcess)
+    TEST_FIXTURE(SetupFixture, test_assign_size_value_excess)
     {
       const int VALUE = 1;
 
@@ -226,7 +226,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, InsertAfterPositionValue)
+    TEST_FIXTURE(SetupFixture, test_insert_after_position_value)
     {
       const size_t INITIAL_SIZE = 4;
       const int VALUE = 1;
@@ -267,7 +267,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, InsertAfterRange)
+    TEST_FIXTURE(SetupFixture, test_insert_after_range)
     {
       std::vector<int> test1 = { 1, 2, 3, 4, 5 };
       std::vector<int> test2 = { 6, 7, 8, 9, 10 };
@@ -300,7 +300,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, PushFront)
+    TEST_FIXTURE(SetupFixture, test_push_front)
     {
       CompareData compare_data;
       Data data;
@@ -325,7 +325,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, PushFrontExcess)
+    TEST_FIXTURE(SetupFixture, test_push_front_excess)
     {  
       Data data;
 
@@ -344,7 +344,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, PushFrontPopFront)
+    TEST_FIXTURE(SetupFixture, test_push_front_pop_front)
     {
       Data data;
 
@@ -358,7 +358,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, EraseAfterSingle)
+    TEST_FIXTURE(SetupFixture, test_erase_after_single)
     {
       CompareData compare_data(sorted_data.begin(), sorted_data.end());
       Data data(sorted_data.begin(), sorted_data.end());
@@ -404,7 +404,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, EraseAfterRange)
+    TEST_FIXTURE(SetupFixture, test_erase_after_range)
     {
       CompareData compare_data(sorted_data.begin(), sorted_data.end());
       Data data(sorted_data.begin(), sorted_data.end());
@@ -431,7 +431,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, EraseAfterAll)
+    TEST_FIXTURE(SetupFixture, test_erase_after_all)
     {
       Data data(sorted_data.begin(), sorted_data.end());
 
@@ -441,7 +441,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, Front)
+    TEST_FIXTURE(SetupFixture, test_front)
     {
       CompareData compare_data(sorted_data.begin(), sorted_data.end());
       Data data(sorted_data.begin(), sorted_data.end());
@@ -450,7 +450,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, Assignment)
+    TEST_FIXTURE(SetupFixture, test_assignment)
     {
       CompareData compare_data(sorted_data.begin(), sorted_data.end());
       Data data(sorted_data.begin(), sorted_data.end());
@@ -466,7 +466,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, Unique)
+    TEST_FIXTURE(SetupFixture, test_unique)
     {
       CompareData compare_data(non_unique_data.begin(), non_unique_data.end());
       Data data(non_unique_data.begin(), non_unique_data.end());
@@ -480,7 +480,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, Remove)
+    TEST_FIXTURE(SetupFixture, test_remove)
     {
       CompareData compare_data(sorted_data.begin(), sorted_data.end());
       Data data(sorted_data.begin(), sorted_data.end());
@@ -494,7 +494,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, RemoveIf)
+    TEST_FIXTURE(SetupFixture, test_remove_if)
     {
       CompareData compare_data(sorted_data.begin(), sorted_data.end());
       Data data(sorted_data.begin(), sorted_data.end());
@@ -508,7 +508,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, Reverse)
+    TEST_FIXTURE(SetupFixture, test_reverse)
     {
       CompareData compare_data(sorted_data.begin(), sorted_data.end());
       Data data(sorted_data.begin(), sorted_data.end());
@@ -522,7 +522,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, Sort)
+    TEST_FIXTURE(SetupFixture, test_sort)
     {
       CompareData compare_data(unsorted_data.begin(), unsorted_data.end());
       Data data(unsorted_data.begin(), unsorted_data.end());
@@ -536,7 +536,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, Swap)
+    TEST_FIXTURE(SetupFixture, test_swap)
     {
       Data first(unsorted_data.begin(), unsorted_data.end());
       Data second(small_data.begin(),   small_data.end());

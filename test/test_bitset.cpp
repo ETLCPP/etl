@@ -39,7 +39,7 @@ SOFTWARE.
 
 namespace
 {
-  SUITE(TestBitset)
+  SUITE(test_bitset)
   {
     //*************************************************************************
     TEST(test_constructor)

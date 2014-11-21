@@ -30,8 +30,8 @@ SOFTWARE.
 
 //*****************************************************************************
 const int VALUE = 1;
-bool functionCalled   = false;
-bool parameterCorrect = false;
+bool function_called   = false;
+bool parameter_correct = false;
 
 //*****************************************************************************
 // Test data structure.
@@ -44,7 +44,7 @@ struct Data
 //*****************************************************************************
 // Call the function taking no parameters.
 //*****************************************************************************
-void Call(etl::ifunction<void>& function)
+void call(etl::ifunction<void>& function)
 {
   function();
 }
@@ -52,7 +52,7 @@ void Call(etl::ifunction<void>& function)
 //*****************************************************************************
 // Call the function taking an int parameter.
 //*****************************************************************************
-void Call(etl::ifunction<int>& function)
+void call(etl::ifunction<int>& function)
 {
   function(VALUE);
 }
@@ -60,7 +60,7 @@ void Call(etl::ifunction<int>& function)
 //*****************************************************************************
 // Call the function taking a Data parameter.
 //*****************************************************************************
-void Call(etl::ifunction<const Data&>& function)
+void call(etl::ifunction<const Data&>& function)
 {
   Data data;
   data.d = VALUE;
@@ -70,27 +70,27 @@ void Call(etl::ifunction<const Data&>& function)
 //*****************************************************************************
 // The free function taking no parameters.
 //*****************************************************************************
-void FreeVoid()
+void free_void()
 {
-  functionCalled = true;
+  function_called = true;
 }
 
 //*****************************************************************************
 // The free function taking an int parameter.
 //*****************************************************************************
-void FreeInt(int i)
+void free_int(int i)
 {
-  functionCalled = true;
-  parameterCorrect = (i == VALUE);
+  function_called   = true;
+  parameter_correct = (i == VALUE);
 }
 
 //*****************************************************************************
 // The free function taking a Data reference parameter.
 //*****************************************************************************
-void FreeReference(const Data& data)
+void free_reference(const Data& data)
 {
-  functionCalled = true;
-  parameterCorrect = (data.d == VALUE);
+  function_called   = true;
+  parameter_correct = (data.d == VALUE);
 }
 
 //*****************************************************************************
@@ -100,21 +100,21 @@ class Test
 {
 public:
 
-  void MemberVoid()
+  void member_void()
   {
-    functionCalled = true;
+    function_called = true;
   }
 
-  void MemberInt(int i)
+  void member_int(int i)
   {
-    functionCalled = true;
-    parameterCorrect = (i == VALUE);
+    function_called = true;
+    parameter_correct = (i == VALUE);
   }
 
-  void MemberReference(const Data& data)
+  void member_reference(const Data& data)
   {
-    functionCalled = true;
-    parameterCorrect = (data.d == VALUE);
+    function_called = true;
+    parameter_correct = (data.d == VALUE);
   }
 };
 
@@ -125,80 +125,80 @@ struct SetupFixture
 {
   SetupFixture()
   {
-    functionCalled   = false;
-    parameterCorrect = false;
+    function_called   = false;
+    parameter_correct = false;
   }
 };
 
 namespace
 {		
-  SUITE(TestFunction)
+  SUITE(test_function)
   {
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, TestFreeVoid)
+    TEST_FIXTURE(SetupFixture, test_free_void)
     {
-      etl::function<void, void> function(FreeVoid);
+      etl::function<void, void> function(free_void);
 
-      Call(function);
+      call(function);
 
-      CHECK(functionCalled);
+      CHECK(function_called);
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, TestFreeInt)
+    TEST_FIXTURE(SetupFixture, test_free_int)
     {
-      etl::function<void, int> function(FreeInt);
+      etl::function<void, int> function(free_int);
 
-      Call(function);
+      call(function);
 
-      CHECK(functionCalled);
-      CHECK(parameterCorrect);
+      CHECK(function_called);
+      CHECK(parameter_correct);
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, TestFreeReference)
+    TEST_FIXTURE(SetupFixture, test_free_reference)
     {
-      etl::function<void, const Data&> function(FreeReference);
+      etl::function<void, const Data&> function(free_reference);
 
-      Call(function);
+      call(function);
 
-      CHECK(functionCalled);
-      CHECK(parameterCorrect);
+      CHECK(function_called);
+      CHECK(parameter_correct);
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, TestMemberVoid)
+    TEST_FIXTURE(SetupFixture, test_member_void)
     {
       Test test;
-      etl::function<Test, void> function(test, &Test::MemberVoid);
+      etl::function<Test, void> function(test, &Test::member_void);
 
-      Call(function);
+      call(function);
 
-      CHECK(functionCalled);
+      CHECK(function_called);
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, TestMemberInt)
+    TEST_FIXTURE(SetupFixture, test_member_int)
     {
       Test test;
-      etl::function<Test, int> function(test, &Test::MemberInt);
+      etl::function<Test, int> function(test, &Test::member_int);
 
-      Call(function);
+      call(function);
 
-      CHECK(functionCalled);
-      CHECK(parameterCorrect);
+      CHECK(function_called);
+      CHECK(parameter_correct);
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, TestMemberReference)
+    TEST_FIXTURE(SetupFixture, test_member_reference)
     {
       Test test;
-      etl::function<Test, const Data&> function(test, &Test::MemberReference);
+      etl::function<Test, const Data&> function(test, &Test::member_reference);
 
-      Call(function);
+      call(function);
 
-      CHECK(functionCalled);
-      CHECK(parameterCorrect);
+      CHECK(function_called);
+      CHECK(parameter_correct);
     }
   };
 }

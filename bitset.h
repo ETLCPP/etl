@@ -213,11 +213,22 @@ namespace etl
     /// Set the bit at the position.
     //*************************************************************************
     bitset<N>& set(size_t position, bool value = true)
-    {
+    {     
       if (position < N)
       {
-        size_t index     = position / BITS_PER_ELEMENT; 
-        element_type bit = element_type(1) << position % BITS_PER_ELEMENT;
+        size_t       index;
+        element_type bit;
+
+        if (ARRAY_SIZE == 1)
+        {
+          index = 0;
+          bit   = element_type(1) << position;
+        }
+        else
+        {
+          index = position / BITS_PER_ELEMENT;
+          bit   = element_type(1) << position % BITS_PER_ELEMENT;
+        }
 
         if (value)
         {
@@ -248,8 +259,19 @@ namespace etl
     {
       if (position < N)
       {
-        size_t index     = position / BITS_PER_ELEMENT;
-        element_type bit = element_type(1) << position % BITS_PER_ELEMENT;
+        size_t       index;
+        element_type bit;
+
+        if (ARRAY_SIZE == 1)
+        {
+          index = 0;
+          bit   = element_type(1) << position;
+        }
+        else
+        {
+          index = position / BITS_PER_ELEMENT;
+          bit = element_type(1) << position % BITS_PER_ELEMENT;
+        }
 
         data[index] &= ~bit;
       }
@@ -279,8 +301,20 @@ namespace etl
     {
       if (position < N)
       {
-        size_t index     = position / BITS_PER_ELEMENT;
-        element_type bit = element_type(1) << position % BITS_PER_ELEMENT;
+        size_t       index;
+        element_type bit;
+
+        if (ARRAY_SIZE == 1)
+        {
+          index = 0;
+          bit   = element_type(1) << position;
+        }
+        else
+        {
+          index = position / BITS_PER_ELEMENT;
+          bit   = element_type(1) << position % BITS_PER_ELEMENT;
+        }
+
         data[index] ^= bit;
       }
 
@@ -311,19 +345,21 @@ namespace etl
     {
       if (position < N)
       {
+        size_t       index;
+        element_type bit;
+
         if (ARRAY_SIZE == 1)
         {
-          element_type bit = element_type(1) << position % BITS_PER_ELEMENT;
-
-          return (data[0] & bit) != 0;
+          index = 0;
+          bit   = element_type(1) << position;
         }
         else
         {
-          size_t index     = position / BITS_PER_ELEMENT;
-          element_type bit = element_type(1) << position % BITS_PER_ELEMENT;
-
-          return (data[index] & bit) != 0;
+          index = position / BITS_PER_ELEMENT;
+          bit = element_type(1) << position % BITS_PER_ELEMENT;
         }
+
+        return (data[index] & bit) != 0;
       }
       else
       {

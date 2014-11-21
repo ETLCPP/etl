@@ -79,9 +79,9 @@ namespace etl
 
   /// is_const
   ///\ingroup type_traits
-  template <typename T> struct is_const : false_type { };
-  template <typename T> struct is_const<const T> : true_type { };
-  template <typename T> struct is_const<const volatile T> : true_type { };
+  template <typename T> struct is_const : false_type {};
+  template <typename T> struct is_const<const T> : true_type {};
+  template <typename T> struct is_const<const volatile T> : true_type {};
 
   /// remove_const
   ///\ingroup type_traits
@@ -95,9 +95,9 @@ namespace etl
 
   /// is_volatile
   ///\ingroup type_traits
-  template <typename T> struct is_volatile : false_type { };
-  template <typename T> struct is_volatile<volatile T> : true_type { };
-  template <typename T> struct is_volatile<const volatile T> : true_type { };
+  template <typename T> struct is_volatile : false_type {};
+  template <typename T> struct is_volatile<volatile T> : true_type {};
+  template <typename T> struct is_volatile<const volatile T> : true_type {};
 
   /// remove_volatile
   ///\ingroup type_traits
@@ -125,78 +125,78 @@ namespace etl
 
   /// is_integral
   ///\ingroup type_traits
-  template <typename T> struct is_integral : false_type { };
-  template <> struct is_integral<bool> : true_type { };
-  template <> struct is_integral<char> : true_type { };
-  template <> struct is_integral<unsigned char> : true_type { };
-  template <> struct is_integral<signed char> : true_type { };
-  template <> struct is_integral<wchar_t> : true_type { };
-  template <> struct is_integral<short> : true_type { };
-  template <> struct is_integral<unsigned short> : true_type { };
-  template <> struct is_integral<int> : true_type { };
-  template <> struct is_integral<unsigned int> : true_type { };
-  template <> struct is_integral<long> : true_type { };
-  template <> struct is_integral<unsigned long> : true_type { };
-  template <> struct is_integral<long long> : true_type { };
-  template <> struct is_integral<unsigned long long> : true_type { };
-  template <typename T> struct is_integral<const T> : is_integral<T> { };
-  template <typename T> struct is_integral<volatile T> : is_integral<T> { };
-  template <typename T> struct is_integral<const volatile T> : is_integral<T> { };
+  template <typename T> struct is_integral : false_type {};
+  template <> struct is_integral<bool> : true_type {};
+  template <> struct is_integral<char> : true_type {};
+  template <> struct is_integral<unsigned char> : true_type {};
+  template <> struct is_integral<signed char> : true_type {};
+  template <> struct is_integral<wchar_t> : true_type {};
+  template <> struct is_integral<short> : true_type {};
+  template <> struct is_integral<unsigned short> : true_type {};
+  template <> struct is_integral<int> : true_type {};
+  template <> struct is_integral<unsigned int> : true_type {};
+  template <> struct is_integral<long> : true_type {};
+  template <> struct is_integral<unsigned long> : true_type {};
+  template <> struct is_integral<long long> : true_type {};
+  template <> struct is_integral<unsigned long long> : true_type {};
+  template <typename T> struct is_integral<const T> : is_integral<T> {};
+  template <typename T> struct is_integral<volatile T> : is_integral<T> {};
+  template <typename T> struct is_integral<const volatile T> : is_integral<T> {};
 
   /// is_signed
   ///\ingroup type_traits
-  template <typename T> struct is_signed : false_type { };
-  template <> struct is_signed<char> : true_type { };
+  template <typename T> struct is_signed : false_type {};
+  template <> struct is_signed<char> : true_type {};
 #ifdef PLATFORM_LINUX
-  template <> struct is_signed<wchar_t> : true_type { };
+  template <> struct is_signed<wchar_t> : true_type {};
 #endif
-  template <> struct is_signed<signed char> : true_type { };
-  template <> struct is_signed<short> : true_type { };
-  template <> struct is_signed<int> : true_type { };
-  template <> struct is_signed<long> : true_type { };
-  template <> struct is_signed<long long> : true_type { };
+  template <> struct is_signed<signed char> : true_type {};
+  template <> struct is_signed<short> : true_type {};
+  template <> struct is_signed<int> : true_type {};
+  template <> struct is_signed<long> : true_type {};
+  template <> struct is_signed<long long> : true_type {};
   template <> struct is_signed<float> : true_type{};
   template <> struct is_signed<double> : true_type{};
   template <> struct is_signed<long double> : true_type{};
-  template <typename T> struct is_signed<const T> : is_signed<T> { };
-  template <typename T> struct is_signed<volatile T> : is_signed<T> { };
-  template <typename T> struct is_signed<const volatile T> : is_signed<T> { };
+  template <typename T> struct is_signed<const T> : is_signed<T> {};
+  template <typename T> struct is_signed<volatile T> : is_signed<T> {};
+  template <typename T> struct is_signed<const volatile T> : is_signed<T> {};
 
   /// is_unsigned
   ///\ingroup type_traits
-  template <typename T> struct is_unsigned : false_type { };
-  template <> struct is_unsigned<bool> : true_type { };
-  template <> struct is_unsigned<unsigned char> : true_type { };
+  template <typename T> struct is_unsigned : false_type {};
+  template <> struct is_unsigned<bool> : true_type {};
+  template <> struct is_unsigned<unsigned char> : true_type {};
 #ifndef PLATFORM_LINUX
-  template <> struct is_unsigned<wchar_t> : true_type { };
+  template <> struct is_unsigned<wchar_t> : true_type {};
 #endif
-  template <> struct is_unsigned<unsigned short> : true_type { };
-  template <> struct is_unsigned<unsigned int> : true_type { };
-  template <> struct is_unsigned<unsigned long> : true_type { };
-  template <> struct is_unsigned<unsigned long long> : true_type { };
-  template <typename T> struct is_unsigned<const T> : is_unsigned<T> { };
-  template <typename T> struct is_unsigned<volatile T> : is_unsigned<T> { };
-  template <typename T> struct is_unsigned<const volatile T> : is_unsigned<T> { };
+  template <> struct is_unsigned<unsigned short> : true_type {};
+  template <> struct is_unsigned<unsigned int> : true_type {};
+  template <> struct is_unsigned<unsigned long> : true_type {};
+  template <> struct is_unsigned<unsigned long long> : true_type {};
+  template <typename T> struct is_unsigned<const T> : is_unsigned<T> {};
+  template <typename T> struct is_unsigned<volatile T> : is_unsigned<T> {};
+  template <typename T> struct is_unsigned<const volatile T> : is_unsigned<T> {};
 
   /// is_floating_point
   ///\ingroup type_traits
-  template <typename T> struct is_floating_point : false_type { };
-  template <> struct is_floating_point<float> : true_type { };
-  template <> struct is_floating_point<double> : true_type { };
-  template <> struct is_floating_point<long double> : true_type { };
-  template <typename T> struct is_floating_point<const T> : is_floating_point<T> { };
-  template <typename T> struct is_floating_point<volatile T> : is_floating_point<T> { };
-  template <typename T> struct is_floating_point<const volatile T> : is_floating_point<T> { };
+  template <typename T> struct is_floating_point : false_type {};
+  template <> struct is_floating_point<float> : true_type {};
+  template <> struct is_floating_point<double> : true_type {};
+  template <> struct is_floating_point<long double> : true_type {};
+  template <typename T> struct is_floating_point<const T> : is_floating_point<T> {};
+  template <typename T> struct is_floating_point<volatile T> : is_floating_point<T> {};
+  template <typename T> struct is_floating_point<const volatile T> : is_floating_point<T> {};
 
   /// is_same
   ///\ingroup type_traits
-  template <typename T1, typename T2> struct is_same : public false_type { };
-  template <typename T> struct is_same<T, T> : public true_type { };
+  template <typename T1, typename T2> struct is_same : public false_type {};
+  template <typename T> struct is_same<T, T> : public true_type {};
 
   /// is_void
   ///\ingroup type_traits
-  template<typename T> struct is_void : false_type { };
-  template<> struct is_void<void> : true_type { };
+  template<typename T> struct is_void : false_type {};
+  template<> struct is_void<void> : true_type {};
 
   /// is_arithmetic
   ///\ingroup type_traits
@@ -209,6 +209,10 @@ namespace etl
                                                                         is_same<std::nullptr_t,
                                                                   typename remove_cv<T>::type>::value> {};
 
+  /// is_compound
+  ///\ingroup type_traits
+  template <typename T> struct is_compound : std::integral_constant<bool, !std::is_fundamental<T>::value> {};
+
   /// is_array
   ///\ingroup type_traits
   template <typename T> struct is_array : false_type {};
@@ -217,8 +221,8 @@ namespace etl
 
   /// is_pointer
   ///\ingroup type_traits
-  template <typename T> struct is_pointer : false_type { };
-  template <typename T> struct is_pointer<T*> : true_type { };
+  template <typename T> struct is_pointer : false_type {};
+  template <typename T> struct is_pointer<T*> : true_type {};
 
   /// is_reference
   ///\ingroup type_traits
@@ -237,9 +241,9 @@ namespace etl
   template <> struct make_signed<unsigned int> { typedef int type; };
   template <> struct make_signed<unsigned long> { typedef  long type; };
   template <> struct make_signed<unsigned long long> { typedef long long type; };
-  template <typename T> struct make_signed<const T> : add_const<typename make_signed<T>::type> { };
-  template <typename T> struct make_signed<volatile T> : add_volatile<typename make_signed<T>::type> { };
-  template <typename T> struct make_signed<const volatile T> : add_const<typename add_volatile<typename make_signed<T>::type>::type> { };
+  template <typename T> struct make_signed<const T> : add_const<typename make_signed<T>::type> {};
+  template <typename T> struct make_signed<volatile T> : add_volatile<typename make_signed<T>::type> {};
+  template <typename T> struct make_signed<const volatile T> : add_const<typename add_volatile<typename make_signed<T>::type>::type> {};
 
   /// make_unsigned
   ///\ingroup type_traits
@@ -253,13 +257,13 @@ namespace etl
   template <> struct make_unsigned<int> { typedef unsigned int type; };
   template <> struct make_unsigned<long> { typedef unsigned long type; };
   template <> struct make_unsigned<long long> { typedef unsigned long long type; };
-  template <typename T> struct make_unsigned<const T> : add_const<typename make_unsigned<T>::type> { };
-  template <typename T> struct make_unsigned<volatile T> : add_volatile<typename make_unsigned<T>::type> { };
-  template <typename T> struct make_unsigned<const volatile T> : add_const<typename add_volatile<typename make_unsigned<T>::type>::type> { };
+  template <typename T> struct make_unsigned<const T> : add_const<typename make_unsigned<T>::type> {};
+  template <typename T> struct make_unsigned<volatile T> : add_volatile<typename make_unsigned<T>::type> {};
+  template <typename T> struct make_unsigned<const volatile T> : add_const<typename add_volatile<typename make_unsigned<T>::type>::type> {};
 
   /// enable_if
   ///\ingroup type_traits
-  template <bool B, typename T = void> struct enable_if { };
+  template <bool B, typename T = void> struct enable_if {};
   template <typename T> struct enable_if<true, T> { typedef T type; };
 
   /// conditional

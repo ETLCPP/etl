@@ -85,7 +85,6 @@
       <File Name="../test_function.cpp"/>
       <File Name="../test_largest.cpp"/>
       <File Name="../test_list.cpp"/>
-      <File Name="../test_math.cpp"/>
       <File Name="../test_numeric.cpp"/>
       <File Name="../test_observer.cpp"/>
       <File Name="../test_queue.cpp"/>
@@ -98,6 +97,7 @@
       <File Name="../test_integral_limits.cpp"/>
       <File Name="../test_variant.cpp"/>
       <File Name="../test_smallest.cpp"/>
+      <File Name="../test_maths.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="ETL">
       <File Name="../../array.h"/>

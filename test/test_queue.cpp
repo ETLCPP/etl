@@ -32,10 +32,10 @@ SOFTWARE.
 
 namespace
 {		
-  SUITE(TestQueue)
+  SUITE(test_queue)
   {
     //*************************************************************************
-    TEST(Size)
+    TEST(test_size)
     {
       etl::queue<int, 4> queue;
 
@@ -47,7 +47,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Capacity)
+    TEST(test_capacity)
     {
       etl::queue<int, 4> queue;
 
@@ -55,7 +55,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Clear)
+    TEST(test_clear)
     {
       etl::queue<int, 4> queue;
 
@@ -66,7 +66,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Empty)
+    TEST(test_empty)
     {
       etl::queue<int, 4> queue;
 
@@ -78,7 +78,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Full)
+    TEST(test_full)
     {
       etl::queue<int, 4> queue;
 
@@ -93,65 +93,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Push)
-    {
-      etl::queue<int, 4> queue;
-
-      queue.push(1);
-      CHECK_EQUAL(1, queue.size());
-
-      queue.push(2);
-      CHECK_EQUAL(2, queue.size());
-
-      CHECK_EQUAL(1, queue.front());
-
-      queue.pop();
-      CHECK_EQUAL(2, queue.front());
-    }
-
-    //*************************************************************************
-    TEST(PushVoid)
-    {
-      etl::queue<int, 4> queue;
-
-      queue.push() = 1;
-      CHECK_EQUAL(1, queue.size());
-
-      queue.push() = 2;
-      CHECK_EQUAL(2, queue.size());
-
-      CHECK_EQUAL(1, queue.front());
-
-      queue.pop();
-      CHECK_EQUAL(2, queue.front());
-    }
-
-    //*************************************************************************
-    TEST(PushExcess)
-    {
-      etl::queue<int, 4> queue;
-
-      for (size_t i = 0; i < queue.capacity(); ++i)
-      {
-        queue.push(1);
-      }
-
-      CHECK_THROW(queue.push(1), etl::queue_full);
-    }
-
-    //*************************************************************************
-    TEST(Pop)
-    {
-      etl::queue<int, 4> queue;
-
-      queue.push(1);
-      queue.push(2);
-      queue.pop();
-      CHECK_EQUAL(1, queue.size());
-    }
-
-    //*************************************************************************
-    TEST(Front)
+    TEST(test_front)
     {
       etl::queue<int, 4> queue;
 
@@ -169,7 +111,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(FrontConst)
+    TEST(test_front_const)
     {
       etl::queue<int, 4> queue;
       const etl::queue<int, 4>& constQueue = queue;
@@ -188,7 +130,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(FrontException)
+    TEST(test_front_exception)
     {
       etl::queue<int, 4> queue;
 
@@ -196,7 +138,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Back)
+    TEST(test_back)
     {
       etl::queue<int, 4> queue;
 
@@ -211,7 +153,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(BackConst)
+    TEST(test_back_const)
     {
       etl::queue<int, 4> queue;
       const etl::queue<int, 4>& constQueue = queue;
@@ -220,14 +162,14 @@ namespace
       CHECK_EQUAL(1, constQueue.back());
 
       queue.push(2);
-      CHECK_EQUAL(2, constQueue.back()); 
-      
+      CHECK_EQUAL(2, constQueue.back());
+
       queue.push(3);
       CHECK_EQUAL(3, constQueue.back());
     }
 
     //*************************************************************************
-    TEST(BackException)
+    TEST(test_back_exception)
     {
       etl::queue<int, 4> queue;
 
@@ -235,7 +177,54 @@ namespace
     }
 
     //*************************************************************************
-    TEST(CheckMultiplePush)
+    TEST(test_push)
+    {
+      etl::queue<int, 4> queue;
+
+      queue.push(1);
+      CHECK_EQUAL(1, queue.size());
+
+      queue.push(2);
+      CHECK_EQUAL(2, queue.size());
+
+      CHECK_EQUAL(1, queue.front());
+
+      queue.pop();
+      CHECK_EQUAL(2, queue.front());
+    }
+
+    //*************************************************************************
+    TEST(test_push_void)
+    {
+      etl::queue<int, 4> queue;
+
+      queue.push() = 1;
+      CHECK_EQUAL(1, queue.size());
+
+      queue.push() = 2;
+      CHECK_EQUAL(2, queue.size());
+
+      CHECK_EQUAL(1, queue.front());
+
+      queue.pop();
+      CHECK_EQUAL(2, queue.front());
+    }
+
+    //*************************************************************************
+    TEST(test_push_excess)
+    {
+      etl::queue<int, 4> queue;
+
+      for (size_t i = 0; i < queue.capacity(); ++i)
+      {
+        queue.push(1);
+      }
+
+      CHECK_THROW(queue.push(1), etl::queue_full);
+    }
+
+    //*************************************************************************
+    TEST(test_multiple_push)
     {
       etl::queue<int, 4> queue;
 
@@ -268,7 +257,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(CheckMultiplePushVoid)
+    TEST(test_multiple_push_void)
     {
       etl::queue<int, 4> queue;
 
@@ -301,7 +290,18 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Swap)
+    TEST(test_pop)
+    {
+      etl::queue<int, 4> queue;
+
+      queue.push(1);
+      queue.push(2);
+      queue.pop();
+      CHECK_EQUAL(1, queue.size());
+    }
+
+    //*************************************************************************
+    TEST(test_swap)
     {
       std::queue<int> compare1;
       std::queue<int> compare2;

@@ -54,67 +54,18 @@ namespace etl
   {
   public:
 
-    typedef queue_base::size_type size_type;       ///< The type used for determining the size of the queue.
     typedef T                     value_type;      ///< The type stored in the queue.
     typedef T&                    reference;       ///< A reference to the type used in the queue.
     typedef const T&              const_reference; ///< A const reference to the type used in the queue.
     typedef T*                    pointer;         ///< A pointer to the type used in the queue.
     typedef const T*              const_pointer;   ///< A const pointer to the type used in the qu
+    typedef queue_base::size_type size_type;       ///< The type used for determining the size of the queue.
 
   private:
 
-    typedef typename parameter_type<T, is_fundamental<T>::value || is_pointer<T>::value>::type parameter_t;
+    typedef typename parameter_type<T>::type parameter_t;
 
   public:
-
-    //*************************************************************************
-    /// Adds an item to the queue.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_full is the queue is already full,
-    /// otherwise does nothing if full.
-    ///\param item The item to push to the queue.
-    //*************************************************************************
-    void push(parameter_t item)
-    {
-      if (!full())
-      {
-        buffer[in] = item;
-        in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
-        ++current_size;
-      }
-#ifdef ETL_USE_EXCEPTIONS
-      else
-      {
-        throw queue_full();
-      }
-#endif
-    }
-
-    //*************************************************************************
-    /// Allows a possibly more efficient 'push' by moving to the next input item
-    /// and returning a reference to it.
-    /// This may eliminate a copy by allowing direct construction in-place.<br>
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_full is the queue is already full,
-    /// otherwise does nothing if full.
-    /// \return A reference to the position to 'push' to.
-    //*************************************************************************
-    reference push()
-    {
-      const size_type next = in;
-
-      if (!full())
-      {
-        in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
-        ++current_size;
-      }
-#ifdef ETL_USE_EXCEPTIONS
-      else
-      {
-        throw queue_full();
-      }
-#endif
-
-      return buffer[next];
-    }
 
     //*************************************************************************
     /// Gets a reference to the item at the front of the queue.<br>
@@ -186,6 +137,55 @@ namespace etl
 #endif
 
       return buffer[in == 0 ? MAX_SIZE - 1 : in - 1];
+    }
+
+    //*************************************************************************
+    /// Adds an item to the queue.
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_full is the queue is already full,
+    /// otherwise does nothing if full.
+    ///\param item The item to push to the queue.
+    //*************************************************************************
+    void push(parameter_t item)
+    {
+      if (!full())
+      {
+        buffer[in] = item;
+        in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
+        ++current_size;
+      }
+#ifdef ETL_USE_EXCEPTIONS
+      else
+      {
+        throw queue_full();
+      }
+#endif
+    }
+
+    //*************************************************************************
+    /// Allows a possibly more efficient 'push' by moving to the next input item
+    /// and returning a reference to it.
+    /// This may eliminate a copy by allowing direct construction in-place.<br>
+    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_full is the queue is already full,
+    /// otherwise does nothing if full.
+    /// \return A reference to the position to 'push' to.
+    //*************************************************************************
+    reference push()
+    {
+      const size_type next = in;
+
+      if (!full())
+      {
+        in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
+        ++current_size;
+      }
+#ifdef ETL_USE_EXCEPTIONS
+      else
+      {
+        throw queue_full();
+      }
+#endif
+
+      return buffer[next];
     }
 
   protected:

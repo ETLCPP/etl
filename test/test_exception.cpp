@@ -31,10 +31,10 @@ SOFTWARE.
 
 namespace 
 {		
-  SUITE(TestException)
+  SUITE(test_exception)
   {
     //*************************************************************************
-    TEST(Constructor)
+    TEST(test_constructor)
     {
       etl::exception e("An exception");
 
@@ -42,7 +42,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Exception)
+    TEST(test_exception)
     {
       etl::exception e("An exception");
 

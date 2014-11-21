@@ -5,7 +5,7 @@
   <TabInfoArray Name="TabInfoArray">
     <TabInfo>
       <wxString Value="U:\Users\John\Documents\Programming\GitHub\etl\array.h" Name="FileName"/>
-      <int Value="61" Name="FirstVisibleLine"/>
+      <int Value="54" Name="FirstVisibleLine"/>
       <int Value="55" Name="CurrentLine"/>
       <wxArrayString Name="Bookmarks"/>
       <IntVector Name="CollapsedFolds"/>
@@ -97,7 +97,7 @@
     <TabInfo>
       <wxString Value="U:\Users\John\Documents\Programming\GitHub\etl\test\test_variant.cpp" Name="FileName"/>
       <int Value="81" Name="FirstVisibleLine"/>
-      <int Value="90" Name="CurrentLine"/>
+      <int Value="96" Name="CurrentLine"/>
       <wxArrayString Name="Bookmarks"/>
       <IntVector Name="CollapsedFolds"/>
     </TabInfo>

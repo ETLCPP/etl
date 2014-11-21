@@ -83,7 +83,7 @@ namespace etl
 	{
   private:
 
-    typedef typename parameter_type<T, is_fundamental<T>::value || is_pointer<T>::value>::type parameter_t;
+    typedef typename parameter_type<T>::type parameter_t;
 
 	public:
 

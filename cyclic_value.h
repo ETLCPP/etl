@@ -42,47 +42,15 @@ SOFTWARE.
 
 namespace etl
 {
-#ifdef ETL_USE_EXCEPTIONS
-  //***************************************************************************
-  ///\ingroup cyclic_value
-  /// The base class for cyclic_value exceptions.
-  //***************************************************************************
-  class cyclic_value_exception : public exception
-  {
-  public:
-
-    cyclic_value_exception(const char* what)
-      : exception(what)
-    {
-    }
-  };
-
-  //***************************************************************************
-  ///\ingroup cyclic_value
-  /// The illegal range exception.
-  //***************************************************************************
-  class cyclic_value_illegal_range : public cyclic_value_exception
-  {
-  public:
-
-    cyclic_value_illegal_range()
-      : cyclic_value_exception("cyclic_value illegal range")
-    {
-    }
-  };
-#endif
-
 	//***************************************************************************
 	/// Provides a value that cycles between two limits.
   /// Supports incrementing and decrementing.
 	///\tparam T     The type of the variable.
 	///\tparam FIRST The first value of the range.
 	///\tparam LAST  The last value of the range.
-  ///\tparam STEP  The amount to increment or decrement. Default = 1.
-  ///\note LAST - FIRST + 1 must be a multiple of STEP.
   ///\ingroup cyclic_value
 	//***************************************************************************
-	template <typename T, const T FIRST = 0, const T LAST = 0, const T STEP = 1>
+	template <typename T, const T FIRST = T(), const T LAST = T()>
 	class cyclic_value
 	{
 	public:
@@ -95,10 +63,8 @@ namespace etl
 		cyclic_value()
 			: value(FIRST),
         first_value(FIRST),
-			  last_value(LAST),
-        step_value(STEP)
+			  last_value(LAST)
 		{
-      STATIC_ASSERT(((LAST - FIRST + 1) % STEP) == 0, "LAST - FIRST + 1 is not a multiple of STEP");
 		}
 
 		//*************************************************************************
@@ -110,45 +76,21 @@ namespace etl
 		cyclic_value(const T& first_, const T& last_)
 			: value(first_),
         first_value(first_),
-			  last_value(last_),
-        step_value(STEP)
+			  last_value(last_)
 		{
 		}
-
-    //*************************************************************************
-    /// Constructor.
-    /// Sets the value to the first of the range.
-    ///\param first The first value in the range.
-    ///\param last  The last value in the range.
-    //*************************************************************************
-    cyclic_value(const T& first_, const T& last_, const T& step_)
-      : value(first_),
-        first_value(first_),
-        last_value(last_),
-        step_value(step_)
-    {
-    }
 
 		//*************************************************************************
 		/// Sets the range.
 		/// Sets the value to the first of the range.
     ///\param first The first value in the range.
 		///\param last  The last value in the range.
-    ///\param step  The step value. Default = 1.
-		//*************************************************************************
-		void set(const T& first_, const T& last_, const T& step_ = 1)
+  	//*************************************************************************
+		void set(const T& first_, const T& last_)
 		{
 			first_value = first_;
 			last_value  = last_;
-      step_value  = step_;
 			value       = first_;
-
-#if ETL_USE_EXCEPTIONS
-      if (((last_value - first_value + 1) % step_value) != 0)
-      {
-        throw cyclic_value_illegal_range();
-      }
-#endif
 		}
 
     //*************************************************************************
@@ -218,7 +160,7 @@ namespace etl
 			}
 			else
 			{
-				value += step_value;
+        ++value;
 			}
 
 			return *this;
@@ -247,7 +189,7 @@ namespace etl
 			}
 			else
 			{
-				value -= step_value;
+				--value;
 			}
 
 			return *this;
@@ -281,28 +223,11 @@ namespace etl
       return last_value;
     }
 
-    //*************************************************************************
-		/// Gets the last value.
-		//*************************************************************************
-    const T& step() const
-    {
-      return step_value;
-    }
-
-    //*************************************************************************
-    /// Gets the number of steps in a cycle.
-    //*************************************************************************
-    size_t number_of_steps() const
-    {
-      return (last_value - first_value + 1) / step_value;
-    }
-
 	private:
 
     T value;       ///< The current value.
     T first_value; ///< The first value in the range.
 		T last_value;  ///< The last value in the range.
-    T step_value;  ///< The value to step.
 	};
 }
 
