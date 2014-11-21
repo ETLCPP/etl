@@ -31,10 +31,10 @@ SOFTWARE.
 
 namespace
 {		
-  SUITE(TestMaths)
+  SUITE(test_maths)
   {
     //*************************************************************************
-    TEST(TestLog0_BASE)
+    TEST(test_log_0_base)
     {
       int actual;
 
@@ -46,7 +46,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(TestLog1_BASE)
+    TEST(test_log_1_base)
     {
       int actual;
 
@@ -58,7 +58,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(TestLog10_BASE)
+    TEST(test_log_10_base)
     {
       int actual;
 
@@ -70,7 +70,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(TestLog100_BASE)
+    TEST(test_log_100_base)
     {
       int actual;
 
@@ -82,7 +82,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(TestLog2)
+    TEST(test_log_2)
     {
       int actual;
 
@@ -100,7 +100,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(TestLog10)
+    TEST(test_log_10)
     {
       int actual;
 
@@ -121,7 +121,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(TestPow)
+    TEST(test_pow)
     {
       int actual;
 
