@@ -6,7 +6,7 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Debug">
+			<Target title="Windows">
 				<Option output="bin/Debug/ETL" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
@@ -14,7 +14,6 @@
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-g" />
-					<Add option="-DETL_USE_EXCEPTIONS" />
 					<Add option="-DUNITTEST_MINGW" />
 				</Compiler>
 				<ExtraCommands>
@@ -22,23 +21,29 @@
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
-			<Target title="Release">
-				<Option output="bin/Release/ETL" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Release/" />
+			<Target title="Linux">
+				<Option output="bin/Debug/ETL" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-O2" />
+					<Add option="-std=c++11" />
+					<Add option="-g" />
+					<Add option="-DUNITTEST_MINGW" />
 				</Compiler>
-				<Linker>
-					<Add option="-s" />
-				</Linker>
+				<ExtraCommands>
+					<Add after="bin\Debug\ETL.exe" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-std=c++11" />
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add option="-DCOMPILER_GCC" />
+			<Add option="-DPLATFORM_WINDOWS" />
+			<Add option="-DETL_THROW_EXCEPTIONS" />
 			<Add directory="../../../unittest-cpp" />
 		</Compiler>
 		<Unit filename="../../../unittest-cpp/UnitTest++/AssertException.cpp" />
@@ -60,6 +65,18 @@
 		<Unit filename="../../../unittest-cpp/UnitTest++/HelperMacros.h" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/MemoryOutStream.cpp" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/MemoryOutStream.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/Posix/SignalTranslator.cpp">
+			<Option target="Linux" />
+		</Unit>
+		<Unit filename="../../../unittest-cpp/UnitTest++/Posix/SignalTranslator.h">
+			<Option target="Linux" />
+		</Unit>
+		<Unit filename="../../../unittest-cpp/UnitTest++/Posix/TimeHelpers.cpp">
+			<Option target="Linux" />
+		</Unit>
+		<Unit filename="../../../unittest-cpp/UnitTest++/Posix/TimeHelpers.h">
+			<Option target="Linux" />
+		</Unit>
 		<Unit filename="../../../unittest-cpp/UnitTest++/ReportAssert.cpp" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/ReportAssert.h" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/ReportAssertImpl.h" />
@@ -84,7 +101,9 @@
 		<Unit filename="../../../unittest-cpp/UnitTest++/TimeHelpers.h" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/UnitTest++.h" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/UnitTestPP.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/Win32/TimeHelpers.cpp" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/Win32/TimeHelpers.cpp">
+			<Option target="Windows" />
+		</Unit>
 		<Unit filename="../../../unittest-cpp/UnitTest++/Win32/TimeHelpers.h" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/XmlTestReporter.cpp" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/XmlTestReporter.h" />
@@ -93,12 +112,15 @@
 		<Unit filename="../../Doxyfile" />
 		<Unit filename="../../LICENSE" />
 		<Unit filename="../../README.md" />
+		<Unit filename="../../alignment.h" />
 		<Unit filename="../../array.h" />
+		<Unit filename="../../bitset.h" />
 		<Unit filename="../../container.h" />
 		<Unit filename="../../crc16.cpp" />
 		<Unit filename="../../crc16.h" />
 		<Unit filename="../../crc16_ccitt.cpp" />
 		<Unit filename="../../crc16_ccitt.h" />
+		<Unit filename="../../crc16_kermit.cpp" />
 		<Unit filename="../../crc16_kermit.h" />
 		<Unit filename="../../crc32.cpp" />
 		<Unit filename="../../crc32.h" />
@@ -110,13 +132,23 @@
 		<Unit filename="../../deque.h" />
 		<Unit filename="../../deque_base.h" />
 		<Unit filename="../../doxygen.h" />
+		<Unit filename="../../endian.h" />
 		<Unit filename="../../enum_type.h" />
+		<Unit filename="../../error_handler.cpp" />
+		<Unit filename="../../error_handler.h" />
 		<Unit filename="../../etl.jpg" />
 		<Unit filename="../../exception.h" />
+		<Unit filename="../../factorial.h" />
+		<Unit filename="../../fibonacci.h" />
+		<Unit filename="../../forward_list.h" />
+		<Unit filename="../../forward_list_base.h" />
 		<Unit filename="../../function.h" />
 		<Unit filename="../../functional.h" />
 		<Unit filename="../../ideque.h" />
+		<Unit filename="../../iforward_list.h" />
 		<Unit filename="../../ilist.h" />
+		<Unit filename="../../instance_count.h" />
+		<Unit filename="../../integral_limits.h" />
 		<Unit filename="../../iqueue.h" />
 		<Unit filename="../../istack.h" />
 		<Unit filename="../../ivector.h" />
@@ -127,34 +159,49 @@
 		<Unit filename="../../nullptr.h" />
 		<Unit filename="../../numeric.h" />
 		<Unit filename="../../observer.h" />
-		<Unit filename="../../pow.h" />
+		<Unit filename="../../parameter_type.h" />
+		<Unit filename="../../pool.h" />
+		<Unit filename="../../power.h" />
 		<Unit filename="../../queue.h" />
 		<Unit filename="../../queue_base.h" />
+		<Unit filename="../../smallest.h" />
 		<Unit filename="../../stack.h" />
 		<Unit filename="../../stack_base.h" />
 		<Unit filename="../../static_assert.h" />
 		<Unit filename="../../type_traits.h" />
+		<Unit filename="../../variant.h" />
 		<Unit filename="../../vector.h" />
 		<Unit filename="../../vector_base.h" />
 		<Unit filename="../../visitor.h" />
 		<Unit filename="../ExtraCheckMacros.h" />
 		<Unit filename="../main.cpp" />
+		<Unit filename="../test_algorithm.cpp" />
+		<Unit filename="../test_alignment.cpp" />
 		<Unit filename="../test_array.cpp" />
+		<Unit filename="../test_bitset.cpp" />
 		<Unit filename="../test_container.cpp" />
 		<Unit filename="../test_crc.cpp" />
 		<Unit filename="../test_cyclic_value.cpp" />
 		<Unit filename="../test_deque.cpp" />
 		<Unit filename="../test_enum_type.cpp" />
+		<Unit filename="../test_error_handler.cpp" />
 		<Unit filename="../test_exception.cpp" />
+		<Unit filename="../test_forward_list.cpp" />
 		<Unit filename="../test_function.cpp" />
+		<Unit filename="../test_functional.cpp" />
+		<Unit filename="../test_instance_count.cpp" />
+		<Unit filename="../test_integral_limits.cpp" />
 		<Unit filename="../test_largest.cpp" />
 		<Unit filename="../test_list.cpp" />
-		<Unit filename="../test_math.cpp" />
+		<Unit filename="../test_maths.cpp" />
 		<Unit filename="../test_numeric.cpp" />
 		<Unit filename="../test_observer.cpp" />
+		<Unit filename="../test_pool.cpp" />
 		<Unit filename="../test_queue.cpp" />
+		<Unit filename="../test_smallest.cpp" />
 		<Unit filename="../test_stack.cpp" />
 		<Unit filename="../test_type_traits.cpp" />
+		<Unit filename="../test_variant.cpp" />
 		<Unit filename="../test_vector.cpp" />
 		<Unit filename="../test_visitor.cpp" />
 		<Extensions>

@@ -1,24 +1,30 @@
 # depslib dependency file v1.0
-1414928322 source:u:\users\john\documents\programming\github\etl\crc16.cpp
-	<cstdint>
+1416921020 source:u:\users\john\documents\programming\github\etl\crc16.cpp
+	<stdint.h>
 
-1414928464 source:u:\users\john\documents\programming\github\etl\crc16_ccitt.cpp
-	<cstdint>
+1415195892 
 
-1414929156 source:u:\users\john\documents\programming\github\etl\crc32.cpp
-	<cstdint>
+1416921020 source:u:\users\john\documents\programming\github\etl\crc16_ccitt.cpp
+	<stdint.h>
 
-1414929243 source:u:\users\john\documents\programming\github\etl\crc64_ecma.cpp
-	<cstdint>
+1416921020 source:u:\users\john\documents\programming\github\etl\crc32.cpp
+	<stdint.h>
 
-1414929413 source:u:\users\john\documents\programming\github\etl\crc8_ccitt.cpp
-	<cstdint>
+1416921020 source:u:\users\john\documents\programming\github\etl\crc64_ecma.cpp
+	<stdint.h>
+
+1416921020 source:u:\users\john\documents\programming\github\etl\crc8_ccitt.cpp
+	<stdint.h>
 
 1414170116 source:u:\users\john\documents\programming\github\etl\test\main.cpp
 	<UnitTest++/UnitTest++.h>
 
+1414170116 +/UnitTest++.h>
+
 1414845610 u:\users\john\documents\programming\github\unittest-cpp\unittest++\unittest++.h
 	"UnitTestPP.h"
+
+1414845610 P.h"
 
 1414845610 u:\users\john\documents\programming\github\unittest-cpp\unittest++\unittestpp.h
 	"Config.h"
@@ -28,9 +34,11 @@
 	"TimeConstraint.h"
 	"ReportAssert.h"
 
+1414845610 ert.h"
+
 1414845610 u:\users\john\documents\programming\github\unittest-cpp\unittest++\config.h
 
-1414845610 u:\users\john\documents\programming\github\unittest-cpp\unittest++\testmacros.h
+1416829904 u:\users\john\documents\programming\github\unittest-cpp\unittest++\testmacros.h
 	"Config.h"
 	"TestSuite.h"
 	"ExceptionMacros.h"
@@ -40,7 +48,9 @@
 	"MemoryOutStream.h"
 	"Posix/SignalTranslator.h"
 
-1414845610 u:\users\john\documents\programming\github\unittest-cpp\unittest++\testsuite.h
+1414845610 nalTranslator.h"
+
+1416829896 u:\users\john\documents\programming\github\unittest-cpp\unittest++\testsuite.h
 
 1414845610 u:\users\john\documents\programming\github\unittest-cpp\unittest++\exceptionmacros.h
 	"Config.h"
@@ -59,6 +69,8 @@
 1414845610 u:\users\john\documents\programming\github\unittest-cpp\unittest++\testdetails.h
 	"HelperMacros.h"
 
+1414845610 ros.h"
+
 1414845610 u:\users\john\documents\programming\github\unittest-cpp\unittest++\helpermacros.h
 	"Config.h"
 
@@ -76,6 +88,8 @@
 	"HelperMacros.h"
 	<exception>
 
+1414845610 >
+
 1414845610 u:\users\john\documents\programming\github\unittest-cpp\unittest++\currenttest.h
 	"HelperMacros.h"
 
@@ -84,7 +98,7 @@
 	"HelperMacros.h"
 	<csetjmp>
 
-1414845610 u:\users\john\documents\programming\github\unittest-cpp\unittest++\posix\signaltranslator.h
+1417871449 u:\users\john\documents\programming\github\unittest-cpp\unittest++\posix\signaltranslator.h
 	<setjmp.h>
 	<signal.h>
 
@@ -98,18 +112,26 @@
 	"CurrentTest.h"
 	"ReportAssertImpl.h"
 
+1414845610 ertImpl.h"
+
 1414845610 u:\users\john\documents\programming\github\unittest-cpp\unittest++\checks.h
 	"Config.h"
 	"TestResults.h"
 	"MemoryOutStream.h"
+
+1414845610 Stream.h"
 
 1414845610 u:\users\john\documents\programming\github\unittest-cpp\unittest++\testrunner.h
 	"Test.h"
 	"TestList.h"
 	"CurrentTest.h"
 
+1414845610 st.h"
+
 1414845610 u:\users\john\documents\programming\github\unittest-cpp\unittest++\test.h
 	"TestDetails.h"
+
+1414845610 ls.h"
 
 1414845610 u:\users\john\documents\programming\github\unittest-cpp\unittest++\testlist.h
 	"HelperMacros.h"
@@ -123,45 +145,60 @@
 	"Posix/TimeHelpers.h"
 	"Win32/TimeHelpers.h"
 
+1414845610 eHelpers.h"
+
 1414845610 u:\users\john\documents\programming\github\unittest-cpp\unittest++\posix\timehelpers.h
 	<sys/time.h>
+
+1414845610 h>
 
 1414845610 u:\users\john\documents\programming\github\unittest-cpp\unittest++\win32\timehelpers.h
 	"../Config.h"
 	"../HelperMacros.h"
 
+1414845610 Macros.h"
+
 1414845610 u:\users\john\documents\programming\github\unittest-cpp\unittest++\reportassert.h
 	"HelperMacros.h"
 
-1415139017 source:u:\users\john\documents\programming\github\etl\test\test_array.cpp
+1416758893 source:u:\users\john\documents\programming\github\etl\test\test_array.cpp
 	<UnitTest++/UnitTest++.h>
 	"../array.h"
 	<array>
-	<vector>
 	<algorithm>
 	<iterator>
+	"../integral_limits.h"
 
-1415195892 u:\users\john\documents\programming\github\etl\array.h
+1417203561 u:\users\john\documents\programming\github\etl\array.h
 	<iterator>
 	<functional>
 	<algorithm>
 	<cstddef>
 	"exception.h"
+	"type_traits.h"
+	"parameter_type.h"
+	"error_handler.h"
+
+1415185403 .h"
 
 1415195892 u:\users\john\documents\programming\github\etl\exception.h
 
-1414586788 source:u:\users\john\documents\programming\github\etl\test\test_container.cpp
+1416585044 source:u:\users\john\documents\programming\github\etl\test\test_container.cpp
 	<UnitTest++/UnitTest++.h>
 	"../container.h"
 	<list>
 
-1415195892 u:\users\john\documents\programming\github\etl\container.h
-	<cstddef>
+1414586788 ner.h"
 
-1414929413 source:u:\users\john\documents\programming\github\etl\test\test_crc.cpp
+1416758196 u:\users\john\documents\programming\github\etl\container.h
+	<cstddef>
+	<iterator>
+
+1416585044 source:u:\users\john\documents\programming\github\etl\test\test_crc.cpp
 	<UnitTest++/UnitTest++.h>
 	<iterator>
 	<string>
+	<vector>
 	<cstdint>
 	"../crc8_ccitt.h"
 	"../crc16.h"
@@ -169,92 +206,130 @@
 	"../crc16_kermit.h"
 	"../crc32.h"
 	"../crc64_ecma.h"
+	"../endian.h"
 
-1415195892 u:\users\john\documents\programming\github\etl\crc8_ccitt.h
+1414929413 ecma.h"
+
+1417108627 u:\users\john\documents\programming\github\etl\crc8_ccitt.h
 	<cstdint>
+	"static_assert.h"
+	"type_traits.h"
+	"endian.h"
 
-1415195892 u:\users\john\documents\programming\github\etl\crc16.h
+1417108627 u:\users\john\documents\programming\github\etl\crc16.h
 	<cstdint>
+	"static_assert.h"
+	"type_traits.h"
+	"endian.h"
 
-1415195892 u:\users\john\documents\programming\github\etl\crc16_ccitt.h
+1417108627 u:\users\john\documents\programming\github\etl\crc16_ccitt.h
 	<cstdint>
+	"static_assert.h"
+	"type_traits.h"
+	"endian.h"
 
-1414884332 u:\users\john\documents\programming\github\etl\crc16_kermit.h
+1417108627 u:\users\john\documents\programming\github\etl\crc16_kermit.h
 	<cstdint>
+	"static_assert.h"
+	"type_traits.h"
+	"endian.h"
 
-1415195892 u:\users\john\documents\programming\github\etl\crc32.h
+1417108958 u:\users\john\documents\programming\github\etl\crc32.h
 	<cstdint>
+	"static_assert.h"
+	"type_traits.h"
+	"endian.h"
 
-1415195892 u:\users\john\documents\programming\github\etl\crc64_ecma.h
+1417108627 u:\users\john\documents\programming\github\etl\crc64_ecma.h
 	<cstdint>
+	"static_assert.h"
+	"type_traits.h"
+	"endian.h"
 
-1415139747 source:u:\users\john\documents\programming\github\etl\test\test_cyclic_value.cpp
+1417113588 source:u:\users\john\documents\programming\github\etl\test\test_cyclic_value.cpp
 	<UnitTest++/UnitTest++.h>
 	"../cyclic_value.h"
 
-1415195892 u:\users\john\documents\programming\github\etl\cyclic_value.h
+1415139747 _value.h"
+
+1417113630 u:\users\john\documents\programming\github\etl\cyclic_value.h
 	<cstddef>
 	<algorithm>
 	"static_assert.h"
 	"exception.h"
 
-1415195891 u:\users\john\documents\programming\github\etl\static_assert.h
+1417019526 u:\users\john\documents\programming\github\etl\static_assert.h
 
-1415139641 source:u:\users\john\documents\programming\github\etl\test\test_deque.cpp
+1416829965 source:u:\users\john\documents\programming\github\etl\test\test_deque.cpp
 	<UnitTest++/UnitTest++.h>
 	"../deque.h"
 	<vector>
 	<algorithm>
 
-1415195892 u:\users\john\documents\programming\github\etl\deque.h
+1416054755 u:\users\john\documents\programming\github\etl\deque.h
 	<cstddef>
 	<iterator>
 	<algorithm>
 	"ideque.h"
 	"container.h"
 
-1415195892 u:\users\john\documents\programming\github\etl\ideque.h
+1417204271 u:\users\john\documents\programming\github\etl\ideque.h
 	<cstddef>
 	<iterator>
 	"type_traits.h"
 	"deque_base.h"
+	"parameter_type.h"
+	"error_handler.h"
 
-1415196262 u:\users\john\documents\programming\github\etl\type_traits.h
-	<cstddef>
+1415195892 e.h"
+
+1416932458 u:\users\john\documents\programming\github\etl\type_traits.h
+	<stddef.h>
 	"nullptr.h"
 
-1415195892 u:\users\john\documents\programming\github\etl\nullptr.h
+1415195892 "
 
-1415195892 u:\users\john\documents\programming\github\etl\deque_base.h
+1416932458 u:\users\john\documents\programming\github\etl\nullptr.h
+
+1417203561 u:\users\john\documents\programming\github\etl\deque_base.h
 	<cstddef>
 	"exception.h"
 
-1414345217 source:u:\users\john\documents\programming\github\etl\test\test_enum_type.cpp
+1416585141 source:u:\users\john\documents\programming\github\etl\test\test_enum_type.cpp
 	<UnitTest++/UnitTest++.h>
 	<string>
 	"../enum_type.h"
 
-1415195892 u:\users\john\documents\programming\github\etl\enum_type.h
+1414345217 ype.h"
 
-1414344663 source:u:\users\john\documents\programming\github\etl\test\test_exception.cpp
+1417187734 u:\users\john\documents\programming\github\etl\enum_type.h
+
+1416585513 source:u:\users\john\documents\programming\github\etl\test\test_exception.cpp
 	<UnitTest++/UnitTest++.h>
 	<string>
 	"../exception.h"
 
-1414347748 source:u:\users\john\documents\programming\github\etl\test\test_function.cpp
+1414344663 ion.h"
+
+1417204823 source:u:\users\john\documents\programming\github\etl\test\test_function.cpp
 	<UnitTest++/UnitTest++.h>
 	"../function.h"
 
-1415195892 u:\users\john\documents\programming\github\etl\function.h
+1414347748 on.h"
 
-1414583364 source:u:\users\john\documents\programming\github\etl\test\test_largest.cpp
+1417205228 u:\users\john\documents\programming\github\etl\function.h
+
+1416586243 source:u:\users\john\documents\programming\github\etl\test\test_largest.cpp
 	<UnitTest++/UnitTest++.h>
 	"../largest.h"
 	<type_traits>
 
-1415195892 u:\users\john\documents\programming\github\etl\largest.h
+1414583364 ts>
 
-1415139572 source:u:\users\john\documents\programming\github\etl\test\test_list.cpp
+1416836999 u:\users\john\documents\programming\github\etl\largest.h
+	"type_traits.h"
+
+1416586243 source:u:\users\john\documents\programming\github\etl\test\test_list.cpp
 	<UnitTest++/UnitTest++.h>
 	"ExtraCheckMacros.h"
 	"../list.h"
@@ -273,19 +348,24 @@
 	<UnitTest++/CurrentTest.h>
 	<UnitTest++/ReportAssertImpl.h>
 
-1415195892 u:\users\john\documents\programming\github\etl\list.h
+1415009648 +/ReportAssertImpl.h>
+
+1417187159 u:\users\john\documents\programming\github\etl\list.h
 	<cstddef>
 	"ilist.h"
+	"container.h"
 
-1415195892 u:\users\john\documents\programming\github\etl\ilist.h
+1417203561 u:\users\john\documents\programming\github\etl\ilist.h
 	<iterator>
 	<algorithm>
 	<functional>
 	<cstddef>
 	"nullptr.h"
 	"list_base.h"
+	"type_traits.h"
+	"parameter_type.h"
 
-1415195892 u:\users\john\documents\programming\github\etl\list_base.h
+1417203561 u:\users\john\documents\programming\github\etl\list_base.h
 	<cstddef>
 	"exception.h"
 
@@ -294,13 +374,13 @@
 	"../log.h"
 	"../pow.h"
 
-1415195892 u:\users\john\documents\programming\github\etl\log.h
+1417106259 u:\users\john\documents\programming\github\etl\log.h
 	<cstddef>
 
 1415195892 u:\users\john\documents\programming\github\etl\pow.h
 	<cstddef>
 
-1414585087 source:u:\users\john\documents\programming\github\etl\test\test_numeric.cpp
+1416586562 source:u:\users\john\documents\programming\github\etl\test\test_numeric.cpp
 	<UnitTest++/UnitTest++.h>
 	"../numeric.h"
 	<algorithm>
@@ -308,83 +388,111 @@
 
 1415195891 u:\users\john\documents\programming\github\etl\numeric.h
 
-1415136649 source:u:\users\john\documents\programming\github\etl\test\test_observer.cpp
+1416586562 source:u:\users\john\documents\programming\github\etl\test\test_observer.cpp
 	<UnitTest++/UnitTest++.h>
 	"../observer.h"
 
-1415195892 u:\users\john\documents\programming\github\etl\observer.h
+1415136649 er.h"
+
+1417201768 u:\users\john\documents\programming\github\etl\observer.h
 	<algorithm>
 	"vector.h"
 	"exception.h"
 
-1415195892 u:\users\john\documents\programming\github\etl\vector.h
+1416055183 u:\users\john\documents\programming\github\etl\vector.h
 	<cstddef>
 	<iterator>
 	"ivector.h"
+	"container.h"
 
-1415195892 u:\users\john\documents\programming\github\etl\ivector.h
+1417203561 u:\users\john\documents\programming\github\etl\ivector.h
 	<iterator>
 	<algorithm>
 	<functional>
 	<cstddef>
 	"vector_base.h"
+	"type_traits.h"
+	"parameter_type.h"
+	"error_handler.h"
 
-1415195892 u:\users\john\documents\programming\github\etl\vector_base.h
+1415195892 se.h"
+
+1417203561 u:\users\john\documents\programming\github\etl\vector_base.h
 	<cstddef>
 	"exception.h"
+	"error_handler.h"
 
-1415139745 source:u:\users\john\documents\programming\github\etl\test\test_queue.cpp
+1416829965 source:u:\users\john\documents\programming\github\etl\test\test_queue.cpp
 	<UnitTest++/UnitTest++.h>
+	<queue>
 	"../queue.h"
 
-1415195892 u:\users\john\documents\programming\github\etl\queue.h
+1415139315 h"
+
+1415278127 u:\users\john\documents\programming\github\etl\queue.h
 	<cstddef>
 	"iqueue.h"
+	"container.h"
 
-1415195892 u:\users\john\documents\programming\github\etl\iqueue.h
+1417203561 u:\users\john\documents\programming\github\etl\iqueue.h
 	<cstddef>
 	"queue_base.h"
+	"type_traits.h"
+	"parameter_type.h"
+	"error_handler.h"
 
-1415195892 u:\users\john\documents\programming\github\etl\queue_base.h
+1417203561 u:\users\john\documents\programming\github\etl\queue_base.h
 	<cstddef>
 	"exception.h"
 
-1415139315 source:u:\users\john\documents\programming\github\etl\test\test_stack.cpp
+1416830063 source:u:\users\john\documents\programming\github\etl\test\test_stack.cpp
 	<UnitTest++/UnitTest++.h>
+	<stack>
 	"../stack.h"
 
-1415195892 u:\users\john\documents\programming\github\etl\stack.h
+1415278134 u:\users\john\documents\programming\github\etl\stack.h
 	<cstddef>
+	<algorithm>
 	"istack.h"
+	"container.h"
 
-1415195892 u:\users\john\documents\programming\github\etl\istack.h
+1417203561 u:\users\john\documents\programming\github\etl\istack.h
 	<cstddef>
 	"stack_base.h"
+	"type_traits.h"
+	"parameter_type.h"
+	"error_handler.h"
 
-1415195892 u:\users\john\documents\programming\github\etl\stack_base.h
+1417203561 u:\users\john\documents\programming\github\etl\stack_base.h
 	<cstddef>
 	"exception.h"
 
-1415196048 source:u:\users\john\documents\programming\github\etl\test\test_type_traits.cpp
+1416920605 source:u:\users\john\documents\programming\github\etl\test\test_type_traits.cpp
 	<UnitTest++/UnitTest++.h>
-	<type_traits>
 	"../type_traits.h"
+	<type_traits>
 
-1415185403 source:u:\users\john\documents\programming\github\etl\test\test_vector.cpp
+1415196048 raits.h"
+
+1416580708 source:u:\users\john\documents\programming\github\etl\test\test_vector.cpp
 	<UnitTest++/UnitTest++.h>
 	<vector>
 	<array>
 	<algorithm>
 	"../vector.h"
 
-1414764632 source:u:\users\john\documents\programming\github\etl\test\test_visitor.cpp
+1416589088 source:u:\users\john\documents\programming\github\etl\test\test_visitor.cpp
 	<UnitTest++/UnitTest++.h>
 	"../visitor.h"
+
+1414764632 r.h"
 
 1415195892 u:\users\john\documents\programming\github\etl\visitor.h
 
 1414845610 source:u:\users\john\documents\programming\github\unittest-cpp\unittest++\assertexception.cpp
 	"AssertException.h"
+
+1414845610 eption.h"
 
 1414845610 source:u:\users\john\documents\programming\github\unittest-cpp\unittest++\checks.cpp
 	"Checks.h"
@@ -396,6 +504,8 @@
 
 1414845610 u:\users\john\documents\programming\github\unittest-cpp\unittest++\compositetestreporter.h
 	"TestReporter.h"
+
+1414845610 ter.h"
 
 1414845610 u:\users\john\documents\programming\github\unittest-cpp\unittest++\testreporter.h
 	"HelperMacros.h"
@@ -504,4 +614,561 @@
 	"Config.h"
 	"DeferredTestReporter.h"
 	<iosfwd>
+
+1414845610 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/AssertException.cpp
+	"AssertException.h"
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/AssertException.h
+	"Config.h"
+	"HelperMacros.h"
+	<exception>
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/Config.h
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/HelperMacros.h
+	"Config.h"
+
+1414845610 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/Checks.cpp
+	"Checks.h"
+	<cstring>
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/Checks.h
+	"Config.h"
+	"TestResults.h"
+	"MemoryOutStream.h"
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/TestResults.h
+	"HelperMacros.h"
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/MemoryOutStream.h
+	"Config.h"
+	"HelperMacros.h"
+	<sstream>
+	<cstddef>
+
+1414845610 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/CompositeTestReporter.cpp
+	"CompositeTestReporter.h"
+	<cstddef>
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/CompositeTestReporter.h
+	"TestReporter.h"
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/TestReporter.h
+	"HelperMacros.h"
+
+1414845610 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/CurrentTest.cpp
+	"CurrentTest.h"
+	<cstddef>
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/CurrentTest.h
+	"HelperMacros.h"
+
+1414845610 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/DeferredTestReporter.cpp
+	"Config.h"
+	"DeferredTestReporter.h"
+	"TestDetails.h"
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/DeferredTestReporter.h
+	"Config.h"
+	"TestReporter.h"
+	"DeferredTestResult.h"
+	<vector>
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/DeferredTestResult.h
+	"Config.h"
+	"HelperMacros.h"
+	<string>
+	<vector>
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/TestDetails.h
+	"HelperMacros.h"
+
+1414845610 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/DeferredTestResult.cpp
+	"Config.h"
+	"DeferredTestResult.h"
+	<cstring>
+
+1414845610 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/MemoryOutStream.cpp
+	"MemoryOutStream.h"
+	<cstring>
+	<cstdio>
+
+1414845610 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/ReportAssert.cpp
+	"ReportAssert.h"
+	"ReportAssertImpl.h"
+	"AssertException.h"
+	"CurrentTest.h"
+	"TestResults.h"
+	"TestDetails.h"
+	"ReportAssertImpl.h"
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/ReportAssert.h
+	"HelperMacros.h"
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/ReportAssertImpl.h
+	"Config.h"
+	"HelperMacros.h"
+	<csetjmp>
+
+1414845610 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/Test.cpp
+	"Config.h"
+	"Test.h"
+	"TestList.h"
+	"TestResults.h"
+	"AssertException.h"
+	"MemoryOutStream.h"
+	"ExecuteTest.h"
+	"Posix/SignalTranslator.h"
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/Test.h
+	"TestDetails.h"
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/TestList.h
+	"HelperMacros.h"
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/ExecuteTest.h
+	"Config.h"
+	"ExceptionMacros.h"
+	"TestDetails.h"
+	"TestResults.h"
+	"MemoryOutStream.h"
+	"AssertException.h"
+	"CurrentTest.h"
+	"ReportAssertImpl.h"
+	"Posix/SignalTranslator.h"
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/ExceptionMacros.h
+	"Config.h"
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/Posix/SignalTranslator.h
+	<setjmp.h>
+	<signal.h>
+
+1414845610 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/TestDetails.cpp
+	"TestDetails.h"
+
+1414845610 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/TestList.cpp
+	"TestList.h"
+	"Test.h"
+	<cassert>
+
+1414845610 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/TestReporter.cpp
+	"TestReporter.h"
+
+1414845610 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/TestReporterStdout.cpp
+	"TestReporterStdout.h"
+	<cstdio>
+	"TestDetails.h"
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/TestReporterStdout.h
+	"TestReporter.h"
+
+1414845610 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/TestResults.cpp
+	"TestResults.h"
+	"TestReporter.h"
+	"TestDetails.h"
+
+1414845610 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/TestRunner.cpp
+	"TestRunner.h"
+	"TestResults.h"
+	"TestReporter.h"
+	"TestReporterStdout.h"
+	"TimeHelpers.h"
+	"MemoryOutStream.h"
+	<cstring>
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/TestRunner.h
+	"Test.h"
+	"TestList.h"
+	"CurrentTest.h"
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/TimeHelpers.h
+	"Config.h"
+	"Posix/TimeHelpers.h"
+	"Win32/TimeHelpers.h"
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/Posix/TimeHelpers.h
+	<sys/time.h>
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/Win32/TimeHelpers.h
+	"../Config.h"
+	"../HelperMacros.h"
+
+1414845610 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/TimeConstraint.cpp
+	"TimeConstraint.h"
+	"TestResults.h"
+	"MemoryOutStream.h"
+	"CurrentTest.h"
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/TimeConstraint.h
+	"TimeHelpers.h"
+	"HelperMacros.h"
+
+1414845610 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/Posix/SignalTranslator.cpp
+	"SignalTranslator.h"
+
+1414845610 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/Posix/TimeHelpers.cpp
+	"TimeHelpers.h"
+	<unistd.h>
+
+1414845610 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/XmlTestReporter.cpp
+	"Config.h"
+	"XmlTestReporter.h"
+	<iostream>
+	<sstream>
+	<string>
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/XmlTestReporter.h
+	"Config.h"
+	"DeferredTestReporter.h"
+	<iosfwd>
+
+1414928322 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/etl/crc16.cpp
+	<cstdint>
+
+1414928464 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/etl/crc16_ccitt.cpp
+	<cstdint>
+
+1414929156 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/etl/crc32.cpp
+	<cstdint>
+
+1414929243 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/etl/crc64_ecma.cpp
+	<cstdint>
+
+1414929413 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/etl/crc8_ccitt.cpp
+	<cstdint>
+
+1414173716 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/etl/test/main.cpp
+	<UnitTest++/UnitTest++.h>
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/UnitTest++.h
+	"UnitTestPP.h"
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/UnitTestPP.h
+	"Config.h"
+	"TestMacros.h"
+	"CheckMacros.h"
+	"TestRunner.h"
+	"TimeConstraint.h"
+	"ReportAssert.h"
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/TestMacros.h
+	"Config.h"
+	"TestSuite.h"
+	"ExceptionMacros.h"
+	"ExecuteTest.h"
+	"AssertException.h"
+	"TestDetails.h"
+	"MemoryOutStream.h"
+	"Posix/SignalTranslator.h"
+
+1414845610 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/TestSuite.h
+
+1414927690 /mnt/hgfs/W7 My Documents/Programming/GitHub/unittest-cpp/UnitTest++/CheckMacros.h
+	"HelperMacros.h"
+	"ExceptionMacros.h"
+	"Checks.h"
+	"AssertException.h"
+	"MemoryOutStream.h"
+	"TestDetails.h"
+	"CurrentTest.h"
+	"ReportAssertImpl.h"
+
+1415139017 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/etl/test/test_array.cpp
+	<UnitTest++/UnitTest++.h>
+	"../array.h"
+	<array>
+	<vector>
+	<algorithm>
+	<iterator>
+
+1415725454 /mnt/hgfs/W7 My Documents/Programming/GitHub/etl/array.h
+	<iterator>
+	<functional>
+	<algorithm>
+	<cstddef>
+	"exception.h"
+
+1415195892 /mnt/hgfs/W7 My Documents/Programming/GitHub/etl/exception.h
+
+1414586788 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/etl/test/test_container.cpp
+	<UnitTest++/UnitTest++.h>
+	"../container.h"
+	<list>
+
+1415195892 /mnt/hgfs/W7 My Documents/Programming/GitHub/etl/container.h
+	<cstddef>
+
+1414929413 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/etl/test/test_crc.cpp
+	<UnitTest++/UnitTest++.h>
+	<iterator>
+	<string>
+	<cstdint>
+	"../crc8_ccitt.h"
+	"../crc16.h"
+	"../crc16_ccitt.h"
+	"../crc16_kermit.h"
+	"../crc32.h"
+	"../crc64_ecma.h"
+
+1415195892 /mnt/hgfs/W7 My Documents/Programming/GitHub/etl/crc8_ccitt.h
+	<cstdint>
+
+1415195892 /mnt/hgfs/W7 My Documents/Programming/GitHub/etl/crc16.h
+	<cstdint>
+
+1415195892 /mnt/hgfs/W7 My Documents/Programming/GitHub/etl/crc16_ccitt.h
+	<cstdint>
+
+1414884332 /mnt/hgfs/W7 My Documents/Programming/GitHub/etl/crc16_kermit.h
+	<cstdint>
+
+1415195892 /mnt/hgfs/W7 My Documents/Programming/GitHub/etl/crc32.h
+	<cstdint>
+
+1415195892 /mnt/hgfs/W7 My Documents/Programming/GitHub/etl/crc64_ecma.h
+	<cstdint>
+
+1415139747 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/etl/test/test_cyclic_value.cpp
+	<UnitTest++/UnitTest++.h>
+	"../cyclic_value.h"
+
+1415195892 /mnt/hgfs/W7 My Documents/Programming/GitHub/etl/cyclic_value.h
+	<cstddef>
+	<algorithm>
+	"static_assert.h"
+	"exception.h"
+
+1415195891 /mnt/hgfs/W7 My Documents/Programming/GitHub/etl/static_assert.h
+
+1415274001 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/etl/test/test_deque.cpp
+	<UnitTest++/UnitTest++.h>
+	"../deque.h"
+	<vector>
+	<algorithm>
+
+1415276665 /mnt/hgfs/W7 My Documents/Programming/GitHub/etl/deque.h
+	<cstddef>
+	<iterator>
+	<algorithm>
+	"ideque.h"
+	"container.h"
+
+1415199768 /mnt/hgfs/W7 My Documents/Programming/GitHub/etl/ideque.h
+	<cstddef>
+	<iterator>
+	"type_traits.h"
+	"deque_base.h"
+
+1415196262 /mnt/hgfs/W7 My Documents/Programming/GitHub/etl/type_traits.h
+	<cstddef>
+	"nullptr.h"
+
+1415195892 /mnt/hgfs/W7 My Documents/Programming/GitHub/etl/nullptr.h
+
+1415195892 /mnt/hgfs/W7 My Documents/Programming/GitHub/etl/deque_base.h
+	<cstddef>
+	"exception.h"
+
+1414345217 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/etl/test/test_enum_type.cpp
+	<UnitTest++/UnitTest++.h>
+	<string>
+	"../enum_type.h"
+
+1415195892 /mnt/hgfs/W7 My Documents/Programming/GitHub/etl/enum_type.h
+
+1414344663 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/etl/test/test_exception.cpp
+	<UnitTest++/UnitTest++.h>
+	<string>
+	"../exception.h"
+
+1414347748 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/etl/test/test_function.cpp
+	<UnitTest++/UnitTest++.h>
+	"../function.h"
+
+1415195892 /mnt/hgfs/W7 My Documents/Programming/GitHub/etl/function.h
+
+1415199647 source:/mnt/hgfs/W7 My Documents/Programming/GitHub/etl/test/test_largest.cpp
+	<UnitTest++/UnitTest++.h>
+	"../largest.h"
+	<type_traits>
+
+1415195892 /mnt/hgfs/W7 My Documents/Programming/GitHub/etl/largest.h
+
+1417112732 source:u:\users\john\documents\programming\github\etl\test\test_bitset.cpp
+	<UnitTest++/UnitTest++.h>
+	<limits>
+	<type_traits>
+	<bitset>
+	"../bitset.h"
+
+1417112914 u:\users\john\documents\programming\github\etl\bitset.h
+	<algorithm>
+	<iterator>
+	<string.h>
+	<stdint.h>
+	<stddef.h>
+	"integral_limits.h"
+	"smallest.h"
+	"array.h"
+	"nullptr.h"
+	"log.h"
+
+1416918533 u:\users\john\documents\programming\github\etl\integral_limits.h
+	<climits>
+	<stddef.h>
+	"type_traits.h"
+
+1416918537 u:\users\john\documents\programming\github\etl\smallest.h
+	<stdint.h>
+	"integral_limits.h"
+
+1416585513 source:u:\users\john\documents\programming\github\etl\test\test_forward_list.cpp
+	<UnitTest++/UnitTest++.h>
+	"ExtraCheckMacros.h"
+	"../forward_list.h"
+	<algorithm>
+	<array>
+	<forward_list>
+	<vector>
+
+1416829820 u:\users\john\documents\programming\github\etl\forward_list.h
+	<cstddef>
+	"iforward_list.h"
+	"container.h"
+
+1417203561 u:\users\john\documents\programming\github\etl\iforward_list.h
+	<iterator>
+	<algorithm>
+	<functional>
+	<cstddef>
+	"nullptr.h"
+	"forward_list_base.h"
+	"type_traits.h"
+	"parameter_type.h"
+
+1417191901 u:\users\john\documents\programming\github\etl\forward_list_base.h
+	<cstddef>
+	"exception.h"
+
+1417108626 source:u:\users\john\documents\programming\github\etl\crc16_kermit.cpp
+	<stdint.h>
+
+1416772386 source:u:\users\john\documents\programming\github\etl\test\test_alignment.cpp
+	<UnitTest++/UnitTest++.h>
+	"../alignment.h"
+	"../type_traits.h"
+	<type_traits>
+
+1417018997 u:\users\john\documents\programming\github\etl\alignment.h
+	"type_traits.h"
+
+1416584302 u:\users\john\documents\programming\github\etl\parameter_type.h
+	"type_traits.h"
+
+1417021726 u:\users\john\documents\programming\github\etl\endian.h
+	"enum_type.h"
+
+1416585755 source:u:\users\john\documents\programming\github\etl\test\test_integral_limits.cpp
+	<UnitTest++/UnitTest++.h>
+	<limits>
+	<type_traits>
+	<bitset>
+	"../integral_limits.h"
+
+1416839384 source:u:\users\john\documents\programming\github\etl\test\test_maths.cpp
+	<UnitTest++/UnitTest++.h>
+	"../log.h"
+	"../power.h"
+	"../fibonacci.h"
+	"../factorial.h"
+
+1416761130 source:u:\users\john\documents\programming\github\etl\test\test_pool.cpp
+	<UnitTest++/UnitTest++.h>
+	"../pool.h"
+
+1417201768 u:\users\john\documents\programming\github\etl\pool.h
+	"bitset.h"
+	"nullptr.h"
+	<iterator>
+
+1416416337 source:u:\users\john\documents\programming\github\etl\test\test_smallest.cpp
+	<UnitTest++/UnitTest++.h>
+	"../smallest.h"
+	<type_traits>
+
+1416668504 source:u:\users\john\documents\programming\github\etl\test\test_variant.cpp
+	<UnitTest++/UnitTest++.h>
+	"../variant.h"
+	<array>
+	<vector>
+	<algorithm>
+
+1417201768 u:\users\john\documents\programming\github\etl\variant.h
+	<cstdint>
+	"array.h"
+	"largest.h"
+	"exception.h"
+	"type_traits.h"
+	"integral_limits.h"
+	"static_assert.h"
+	"alignment.h"
+
+1417106259 u:\users\john\documents\programming\github\etl\power.h
+	<cstddef>
+
+1417106259 u:\users\john\documents\programming\github\etl\fibonacci.h
+	<cstddef>
+
+1417106259 u:\users\john\documents\programming\github\etl\factorial.h
+	<cstddef>
+
+1416924043 source:u:\users\john\documents\programming\github\etl\test\test_algorithm.cpp
+	<UnitTest++/UnitTest++.h>
+	"../algorithm.h"
+	"../container.h"
+	<vector>
+	<algorithm>
+	<functional>
+	<numeric>
+
+1417187971 u:\users\john\documents\programming\github\etl\algorithm.h
+	<algorithm>
+	<iterator>
+	<utility>
+	<functional>
+	"type_traits.h"
+
+1416912728 u:\users\john\documents\programming\github\etl\platform.h
+
+1417520397 u:\users\john\documents\programming\github\etl\error_handler.h
+	"exception.h"
+	"function.h"
+
+1417191110 source:u:\users\john\documents\programming\github\etl\test\test_error_handler.cpp
+	<UnitTest++/UnitTest++.h>
+	"../error_handler.h"
+	"../exception.h"
+
+1417204844 source:u:\users\john\documents\programming\github\etl\error_handler.cpp
+	"error_handler.h"
+	"nullptr.h"
+
+1417517327 source:u:\users\john\documents\programming\github\etl\test\test_functional.cpp
+	<UnitTest++/UnitTest++.h>
+	"../functional.h"
+	<list>
+	<vector>
+	<numeric>
+
+1417516388 u:\users\john\documents\programming\github\etl\functional.h
+
+1417519887 source:u:\users\john\documents\programming\github\etl\test\test_instance_count.cpp
+	<UnitTest++/UnitTest++.h>
+	"../instance_count.h"
+	<list>
+	<vector>
+	<numeric>
+
+1417520183 u:\users\john\documents\programming\github\etl\instance_count.h
 
