@@ -29,7 +29,7 @@ SOFTWARE.
 #ifndef __ETL_VARIANT__
 #define __ETL_VARIANT__
 
-#include <cstdint>
+#include <stdint.h>
 
 #include "array.h"
 #include "largest.h"
@@ -37,7 +37,11 @@ SOFTWARE.
 #include "type_traits.h"
 #include "integral_limits.h"
 #include "static_assert.h"
-#include "aligned_variable.h"
+#include "alignment.h"
+
+#if defined(COMPILER_KEIL)
+  #pragma diag_suppress 940
+#endif
 
 //*****************************************************************************
 ///\defgroup variant variant
@@ -80,7 +84,7 @@ namespace etl
   {
   public:
     variant_incorrect_type_exception()
-      : variant_exception("Unsupported type")
+      : variant_exception("variant: unsupported type")
     {
     }
   };
@@ -94,7 +98,7 @@ namespace etl
   {
   public:
     variant_invalid_type_id_exception()
-      : variant_exception("Invalid type id")
+      : variant_exception("variant: invalid type id")
     {
     }
   };
@@ -110,7 +114,7 @@ namespace etl
             typename T5 = __private_variant__::no_type<5>,
             typename T6 = __private_variant__::no_type<6>,
             typename T7 = __private_variant__::no_type<7>,
-            typename T8 = __private_variant__::no_type<8>>
+            typename T8 = __private_variant__::no_type<8> >
   class variant
   {
   private:
@@ -437,9 +441,10 @@ namespace etl
           case 6: return reinterpret_cast<U7&>(*p_data);
           case 7: return reinterpret_cast<U8&>(*p_data);
           default:
-#ifdef ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
 #endif
+						break;
         }
       }
 
@@ -456,9 +461,10 @@ namespace etl
           case 6: return reinterpret_cast<const U7&>(*p_data);
           case 7: return reinterpret_cast<const U8&>(*p_data);
           default:
-#ifdef ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
 #endif
+				  	break;
         }
       }
     };
@@ -483,9 +489,10 @@ namespace etl
           case 5: return reinterpret_cast<U6&>(*p_data);
           case 6: return reinterpret_cast<U7&>(*p_data);
           default:
-#ifdef ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
-#endif
+#endif      
+				  	break;
         }
       }
 
@@ -501,9 +508,10 @@ namespace etl
           case 5: return reinterpret_cast<const U6&>(*p_data);
           case 6: return reinterpret_cast<const U7&>(*p_data);
           default:
-#ifdef ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
 #endif
+				  	break;
         }
       }
     };
@@ -527,9 +535,10 @@ namespace etl
           case 4: return reinterpret_cast<U5&>(*p_data);
           case 5: return reinterpret_cast<U6&>(*p_data);
           default:
-#ifdef ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
 #endif
+				  	break;
         }
       }
 
@@ -544,9 +553,10 @@ namespace etl
           case 4: return reinterpret_cast<const U5&>(*p_data);
           case 5: return reinterpret_cast<const U6&>(*p_data);
           default:
-#ifdef ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
 #endif
+					  break;
         }
       }
     };
@@ -569,9 +579,10 @@ namespace etl
           case 3: return reinterpret_cast<U4&>(*p_data);
           case 4: return reinterpret_cast<U5&>(*p_data);
           default:
-#ifdef ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
 #endif
+					  break;
         }
       }
 
@@ -585,9 +596,10 @@ namespace etl
           case 3: return reinterpret_cast<const U4&>(*p_data);
           case 4: return reinterpret_cast<const U5&>(*p_data);
           default:
-#ifdef ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
 #endif
+					  break;
         }
       }
     };
@@ -609,9 +621,10 @@ namespace etl
           case 2: return reinterpret_cast<U3&>(*p_data);
           case 3: return reinterpret_cast<U4&>(*p_data);
           default:
-#ifdef ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
 #endif
+				  	break;
         }
       }
 
@@ -624,9 +637,10 @@ namespace etl
           case 2: return reinterpret_cast<const U3&>(*p_data);
           case 3: return reinterpret_cast<const U4&>(*p_data);
           default:
-#ifdef ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
 #endif
+						break;
         }
       }
     };
@@ -647,9 +661,10 @@ namespace etl
           case 1: return reinterpret_cast<U2&>(*p_data);
           case 2: return reinterpret_cast<U3&>(*p_data);
           default:
-#ifdef ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
 #endif
+						break;
         }
       }
 
@@ -661,9 +676,10 @@ namespace etl
           case 1: return reinterpret_cast<const U2&>(*p_data);
           case 2: return reinterpret_cast<const U3&>(*p_data);
           default:
-#ifdef ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
 #endif
+						break;
         }
       }
     };
@@ -683,9 +699,10 @@ namespace etl
           case 0: return reinterpret_cast<U1&>(*p_data);
           case 1: return reinterpret_cast<U2&>(*p_data);
           default:
-#ifdef ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
 #endif
+						break;
         }
       }
 
@@ -696,9 +713,10 @@ namespace etl
           case 0: return reinterpret_cast<const U1&>(*p_data);
           case 1: return reinterpret_cast<const U2&>(*p_data);
           default:
-#ifdef ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
 #endif
+						break;
         }
       }
     };
@@ -717,9 +735,10 @@ namespace etl
         {
           case 0: return reinterpret_cast<U1&>(*p_data);
           default:
-#ifdef ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
 #endif
+						break;
         }
       }
 
@@ -729,9 +748,10 @@ namespace etl
         {
           case 0: return reinterpret_cast<const U1&>(*p_data);
           default:
-#ifdef ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
 #endif
+						break;
         }
       }
     };
@@ -757,7 +777,7 @@ namespace etl
     template <typename T>
     variant(T value)
     {
-      static_assert(Type_Is_Supported<T>::value, "Unsupported type");
+      STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
       new(&data.value[0]) T(value);
       type_id = Type_Id_Lookup<T>::type_id;
@@ -780,7 +800,7 @@ namespace etl
     template <typename T>
     variant& operator =(typename parameter_type<T>::type value)
     {
-      static_assert(Type_Is_Supported<T>::value, "Unsupported type");
+      STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
       new(&data.value[0]) T(value);
       type_id = Type_Id_Lookup<T>::type_id;
@@ -792,7 +812,7 @@ namespace etl
     /// For variants with the same type declarations.
     ///\return <b>true</b> if the types are the same, otherwise <b>false</b>.
     //***************************************************************************
-    inline bool is_same_type(const variant& other) const
+    bool is_same_type(const variant& other) const
     {
       return type_id == other.type_id;
     }
@@ -818,9 +838,10 @@ namespace etl
         case 6: is_same_type = type_id == Type_Id_Lookup<U7>::type_id; break;
         case 7: is_same_type = type_id == Type_Id_Lookup<U8>::type_id; break;
         default: 
-#if ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
           throw variant_invalid_type_id_exception();
 #endif
+					break;
       }
 
       return is_same_type;
@@ -843,9 +864,10 @@ namespace etl
         case 6: reader.read(reinterpret_cast<T7&>(*&data.value[0])); break;
         case 7: reader.read(reinterpret_cast<T8&>(*&data.value[0])); break;
         default: 
-#if ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
           throw variant_invalid_type_id_exception();
 #endif
+					break;
       }
     }
 
@@ -853,7 +875,7 @@ namespace etl
     /// Checks whether a valid value is currently stored.
     ///\return <b>true</b> if the value is valid, otherwise <b>false</b>.
     //***************************************************************************
-    inline bool is_valid() const
+    bool is_valid() const
     {
       return type_id != UNSUPPORTED_TYPE_ID;
     }
@@ -863,7 +885,7 @@ namespace etl
     ///\return <b>true</b> if it is the specified type, otherwise <b>false</b>.
     //***************************************************************************
     template <typename T>
-    inline bool is_type() const
+    bool is_type() const
     {
       return type_id == Type_Id_Lookup<T>::type_id;
     }
@@ -871,7 +893,7 @@ namespace etl
     //***************************************************************************
     /// Clears the value to 'no valid stored value'.
     //***************************************************************************
-    inline void clear()
+    void clear()
     {
       type_id = UNSUPPORTED_TYPE_ID;
     }
@@ -884,9 +906,9 @@ namespace etl
     template <typename T>
     T& get()
     {
-      static_assert(Type_Is_Supported<T>::value, "Unsupported type");
+      STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
-#if ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
       if (!is_type<T>())
       {
         throw variant_incorrect_type_exception();
@@ -904,9 +926,9 @@ namespace etl
     template <typename T>
     const T& get() const
     {
-      static_assert(Type_Is_Supported<T>::value, "Unsupported type");
+      STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
-#if ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
       if (!is_type<T>())
       {
         throw variant_incorrect_type_exception();
@@ -953,7 +975,7 @@ namespace etl
     ///\return <b>true</b> if the type is supported, otherwise <b>false</b>.
     //***************************************************************************
     template <typename T>
-    inline static bool is_supported_type()
+    static bool is_supported_type()
     {
       return Type_Is_Supported<T>::value;
     }
@@ -982,7 +1004,7 @@ namespace etl
     /// The internal storage.
     /// Aligned on a suitable boundary, which should be good for all types.
     //***************************************************************************
-    aligned_variable<array<uint8_t, sizeof(largest_t)>, ALIGNMENT> data;
+    align_at<array<uint8_t, sizeof(largest_t)>, ALIGNMENT> data;
 
     //***************************************************************************
     /// The id of the current stored type.
