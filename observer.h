@@ -55,7 +55,7 @@ SOFTWARE.
 
 namespace etl
 {
-#if ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
   //***************************************************************************
   ///\ingroup observer
   /// The base class for observer exceptions.
@@ -79,7 +79,7 @@ namespace etl
   public:
 
     observer_list_full()
-      : observer_exception("observer list full")
+      : observer_exception("observer: list full")
     {
     }
   };
@@ -102,7 +102,7 @@ namespace etl
 
     //*****************************************************************
     /// Add an observer to the list.
-    /// If ETL_USE_EXCEPTIONS is defined then an etl::observable_observer_list_full
+    /// If ETL_THROW_EXCEPTIONS is defined then an etl::observable_observer_list_full
     /// is thrown if the observer list is already full.
     ///\param observer A reference to the observer.
     //*****************************************************************
@@ -122,7 +122,7 @@ namespace etl
           // Add it.
           observer_list.push_back(&observer);
         }
-#if ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
         else
         {
           throw observer_list_full();
