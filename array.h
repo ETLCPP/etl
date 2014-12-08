@@ -32,11 +32,15 @@ SOFTWARE.
 #include <iterator>
 #include <functional>
 #include <algorithm>
-#include <cstddef>
+#include <stddef.h>
 
 #include "exception.h"
 #include "type_traits.h"
 #include "parameter_type.h"
+
+#ifndef ETL_THROW_EXCEPTIONS
+#include "error_handler.h"
+#endif
 
 ///\defgroup array array
 /// A replacement for std::array if you haven't got C++0x11.
@@ -44,7 +48,6 @@ SOFTWARE.
 
 namespace etl
 {
-#ifdef ETL_USE_EXCEPTIONS
   //***************************************************************************
   ///\ingroup array
   /// The base class for array exceptions.
@@ -68,11 +71,10 @@ namespace etl
   public:
 
     array_out_of_range()
-      : array_exception("array out of range")
+      : array_exception("array: out of range")
     {
     }
   };
-#endif
 
 	//***************************************************************************
   ///\ingroup array
@@ -105,36 +107,41 @@ namespace etl
 
     //*************************************************************************
     /// Returns a reference to the value at index 'i'.
-    /// If ETL_USE_EXCEPTIONS is defined then am array_out_of_range is
+    /// If ETL_THROW_EXCEPTIONS is defined then am array_out_of_range is
     /// thown if the index is out of range.
     ///\param i The index of the element to access.
     //*************************************************************************
-    inline reference at(size_t i)
+    reference at(size_t i)
     {
-#if ETL_USE_EXCEPTIONS
+
       if (i >= SIZE)
       {
+#ifdef ETL_THROW_EXCEPTIONS
         throw array_out_of_range();
-      }
+#else
+        error_handler::error(array_out_of_range());
 #endif
+      }
 
       return _buffer[i];
     }
 
     //*************************************************************************
     /// Returns a const reference to the value at index 'i'.
-    /// If ETL_USE_EXCEPTIONS is defined then am array_out_of_range is
+    /// If ETL_THROW_EXCEPTIONS is defined then am array_out_of_range is
     /// thown if the index is out of range.
     ///\param i The index of the element to access.
     //*************************************************************************
-    inline const_reference at(size_t i) const
+    const_reference at(size_t i) const
     {
-#if ETL_USE_EXCEPTIONS
       if (i >= SIZE)
       {
+#ifdef ETL_THROW_EXCEPTIONS
         throw array_out_of_range();
-      }
+#else
+        error_handler::error(array_out_of_range());
 #endif
+      }
 
       return _buffer[i];
     }
@@ -144,7 +151,7 @@ namespace etl
     /// Returns a reference to the value at index 'i'.
     ///\param i The index of the element to access.
     //*************************************************************************
-    inline reference operator[](size_t i)
+    reference operator[](size_t i)
     {
       return _buffer[i];
     }
@@ -154,7 +161,7 @@ namespace etl
     /// Returns a const reference to the value at index 'i'.
     ///\param i The index of the element to access.
     //*************************************************************************
-    inline const_reference operator[](size_t i) const
+    const_reference operator[](size_t i) const
     {
       return _buffer[i];
     }
@@ -162,7 +169,7 @@ namespace etl
     //*************************************************************************
     /// Returns a reference to the first element.
     //*************************************************************************
-    inline reference front()
+    reference front()
     {
       return _buffer[0];
     }
@@ -170,7 +177,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reference to the first element.
     //*************************************************************************
-    inline const_reference front() const
+    const_reference front() const
     {
       return _buffer[0];
     }
@@ -178,7 +185,7 @@ namespace etl
     //*************************************************************************
     /// Returns a reference to the last element.
     //*************************************************************************
-    inline reference back()
+    reference back()
     {
       return _buffer[SIZE - 1];
     }
@@ -186,7 +193,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reference to the last element.
     //*************************************************************************
-    inline const_reference back() const
+    const_reference back() const
     {
       return _buffer[SIZE - 1];
     }
@@ -194,7 +201,7 @@ namespace etl
     //*************************************************************************
     /// Returns a pointer to the first element of the internal buffer.
     //*************************************************************************
-    inline pointer data()
+    pointer data()
     {
       return &_buffer[0];
     }
@@ -202,7 +209,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const pointer to the first element of the internal buffer.
     //*************************************************************************
-    inline const_pointer data() const
+    const_pointer data() const
     {
       return &_buffer[0];
     }
@@ -214,7 +221,7 @@ namespace etl
 		//*************************************************************************
 		/// Returns an iterator to the beginning of the array.
 		//*************************************************************************
-		inline iterator begin()
+		iterator begin()
 		{
 			return &_buffer[0];
 		}
@@ -222,7 +229,7 @@ namespace etl
 		//*************************************************************************
 		/// Returns a const iterator to the beginning of the array.
 		//*************************************************************************
-		inline const_iterator begin() const
+		const_iterator begin() const
 		{
 			return &_buffer[0];
 		}        
@@ -230,7 +237,7 @@ namespace etl
 		//*************************************************************************
 		/// Returns a const iterator to the beginning of the array.
 		//*************************************************************************
-		inline const_iterator cbegin() const
+		const_iterator cbegin() const
 		{
 			return begin();
 		} 
@@ -238,7 +245,7 @@ namespace etl
     //*************************************************************************
     /// Returns an iterator to the end of the array.
     //*************************************************************************
-    inline iterator end()
+    iterator end()
     {
       return &_buffer[SIZE];
     }
@@ -246,7 +253,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const iterator to the end of the array.
     //*************************************************************************
-    inline const_iterator end() const
+    const_iterator end() const
     {
       return &_buffer[SIZE];
     }
@@ -254,7 +261,7 @@ namespace etl
     //*************************************************************************
     // Returns a const iterator to the end of the array.
     //*************************************************************************
-    inline const_iterator cend() const
+    const_iterator cend() const
     {
       return &_buffer[SIZE];
     }
@@ -262,7 +269,7 @@ namespace etl
 		//*************************************************************************
 		// Returns an reverse iterator to the reverse beginning of the array.
 		//*************************************************************************
-		inline reverse_iterator rbegin()
+		reverse_iterator rbegin()
 		{
 			return reverse_iterator(end());
 		}
@@ -270,7 +277,7 @@ namespace etl
 		//*************************************************************************
 		/// Returns a const reverse iterator to the reverse beginning of the array.
 		//*************************************************************************
-		inline const_reverse_iterator rbegin() const
+		const_reverse_iterator rbegin() const
 		{
 			return const_reverse_iterator(end());
 		}        
@@ -278,7 +285,7 @@ namespace etl
 		//*************************************************************************
 		/// Returns a const reverse iterator to the reverse beginning of the array.
 		//*************************************************************************
-		inline const_reverse_iterator crbegin() const
+		const_reverse_iterator crbegin() const
 		{
 			return const_reverse_iterator(end());
 		} 
@@ -286,7 +293,7 @@ namespace etl
 		//*************************************************************************
 		/// Returns a reverse iterator to the end of the array.
 		//*************************************************************************
-		inline reverse_iterator rend()
+		reverse_iterator rend()
 		{
 			return reverse_iterator(begin());
 		}
@@ -294,7 +301,7 @@ namespace etl
 		//*************************************************************************
 		/// Returns a const reverse iterator to the end of the array.
 		//*************************************************************************
-		inline const_reverse_iterator rend() const
+		const_reverse_iterator rend() const
 		{
 			return const_reverse_iterator(begin());
 		}
@@ -302,7 +309,7 @@ namespace etl
 		//*************************************************************************
 		/// Returns a const reverse iterator to the end of the array.
 		//*************************************************************************
-		inline const_reverse_iterator crend() const
+		const_reverse_iterator crend() const
 		{
 			return const_reverse_iterator(begin());
 		} 
@@ -315,7 +322,7 @@ namespace etl
     /// Returns <b>true</b> if the array size is zero.
     /// </summary>
     //*************************************************************************
-    inline bool empty() const
+    bool empty() const
     {
       return (SIZE == 0);
     }
@@ -323,7 +330,7 @@ namespace etl
 		//*************************************************************************
 		/// Returns the size of the array.
 		//*************************************************************************
-		inline size_t size() const
+		size_t size() const
 		{
 			return SIZE;
 		}
@@ -331,7 +338,7 @@ namespace etl
 		//*************************************************************************
 		/// Returns the maximum possible size of the array.
 		//*************************************************************************
-		inline size_t max_size() const
+		size_t max_size() const
 		{
 			return SIZE;
 		} 
