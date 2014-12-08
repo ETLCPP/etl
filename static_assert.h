@@ -32,13 +32,13 @@ SOFTWARE.
 #elif defined(COMPILER_GCC)
   #define STATIC_ASSERT(Condition, Message) static_assert(Condition, Message)
 #else
-  template <bool Condition, const char* Message>
+	template <bool Condition>
   struct STATIC_ASSERTION_FAILURE;
 
-  template <const char* Message>
-  struct STATIC_ASSERTION_FAILURE<true, Message> {};
+  template <>
+  struct STATIC_ASSERTION_FAILURE<true> {};
 
-  #define STATIC_ASSERT(Condition, Message) enum { assertdummy = sizeof(STATIC_ASSERTION_FAILURE<(bool)(Condition), Message>) }
+  #define STATIC_ASSERT(Condition, Message) enum { assertdummy = sizeof(STATIC_ASSERTION_FAILURE<(bool)(Condition)>) }
 #endif
 
 #endif
