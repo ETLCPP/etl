@@ -29,7 +29,7 @@ SOFTWARE.
 #ifndef __ETL_SMALLEST__
 #define __ETL_SMALLEST__
 
-#include <cstdint>
+#include <stdint.h>
 
 #include "integral_limits.h"
 
