@@ -92,8 +92,7 @@ namespace etl
     ///\param object    Reference to the object
     ///\param p_function Pointer to the member function
     //*************************************************************************
-    function(TObject& object, 
-             void(TObject::* p_function)(TParameter))
+    function(TObject& object, void(TObject::* p_function)(TParameter))
       : p_object(&object),
         p_function(p_function)
     {
@@ -103,7 +102,7 @@ namespace etl
     /// The function operator that calls the destination function.
     ///\param data The data to pass to the function.
     //*************************************************************************
-    void operator ()(TParameter data)
+    virtual void operator ()(TParameter data)
     {
       // Call the object's member function with the data.
       (p_object->*p_function)(data);
@@ -139,7 +138,7 @@ namespace etl
     //*************************************************************************
     /// The function operator that calls the destination function.
     //*************************************************************************
-    void operator ()()
+    virtual void operator ()()
     {
       // Call the object's member function.
       (p_object->*p_function)();
@@ -173,7 +172,7 @@ namespace etl
     /// The function operator that calls the destination function.
     ///\param data The data to pass to the function.
     //*************************************************************************
-    void operator ()(TParameter data)
+    virtual void operator ()(TParameter data)
     {
       // Call the function with the data.
       (*p_function)(data);
@@ -205,7 +204,7 @@ namespace etl
     //*************************************************************************
     /// The function operator that calls the destination function.
     //*************************************************************************
-    void operator ()()
+    virtual void operator ()()
     {
       // Call the function.
       (*p_function)();
