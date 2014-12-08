@@ -26,13 +26,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace etl
 {
   //***************************************************************************
   /// CRC Kermit table
-  /// \ingroup crc
+  /// \ingroup crc16_kermit
   //***************************************************************************
   extern const uint16_t CRC_KERMIT[] =
   {

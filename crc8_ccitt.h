@@ -29,13 +29,13 @@ SOFTWARE.
 #ifndef __ETL_CRC8_CCITT__
 #define __ETL_CRC8_CCITT__
 
-#include <cstdint>
+#include <stdint.h>
 
 #include "static_assert.h"
 #include "type_traits.h"
 #include "endian.h"
 
-///\defgroup crc8_ccitt Eight bit CRC calculation
+///\defgroup crc8_ccitt 8 bit CRC calculation
 ///\ingroup crc
 
 namespace etl
@@ -48,6 +48,7 @@ namespace etl
 
   //***************************************************************************
   /// Calculates CRC8 CCITT using polynomial 0x07.
+  ///\tparam ENDIANNESS The endianness of the calculation for input types larger than uint8_t. Default = endian::little.
   /// \ingroup crc8_ccitt
   //***************************************************************************
   template <const int ENDIANNESS = endian::little>
@@ -69,7 +70,6 @@ namespace etl
     /// Constructor from range.
     /// \param begin Start of the range.
     /// \param end   End of the range.
-    /// \return The CRC result.
     //*************************************************************************
     template<typename TIterator>
     crc8_ccitt(TIterator begin, const TIterator end)
@@ -88,12 +88,11 @@ namespace etl
 
     //*************************************************************************
     /// \param value The value to add to the CRC.
-    /// \return The CRC result.
     //*************************************************************************
     template<typename TValue>
-    value_type add(TValue value)
+    void add(TValue value)
     {
-      static_assert(is_integral<TValue>::value, "Non-integral parameter");
+      STATIC_ASSERT(is_integral<TValue>::value, "Non-integral parameter");
 
       if (ENDIANNESS == endian::little)
       {
@@ -109,35 +108,27 @@ namespace etl
           add(uint8_t((value >> (i * 8)) & 0xFF));
         }
       }
-
-      return crc;
     }
 
     //*************************************************************************
     /// \param value The char to add to the CRC.
-    /// \return The CRC result.
     //*************************************************************************
-    value_type add(uint8_t value)
+    void add(uint8_t value)
     {
       crc = CRC8_CCITT[crc ^ value];
-
-      return crc;
     }
 
     //*************************************************************************
     /// \param begin Start of the range.
     /// \param end   End of the range.
-    /// \return The CRC result.
     //*************************************************************************
     template<typename TIterator>
-    value_type add(TIterator begin, const TIterator end)
+    void add(TIterator begin, const TIterator end)
     {
       while (begin != end)
       {
         add(*begin++);
       }
-
-      return crc;
     }
 
     //*************************************************************************

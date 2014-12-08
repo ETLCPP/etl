@@ -29,13 +29,13 @@ SOFTWARE.
 #ifndef __ETL_CRC64_ECMA__
 #define __ETL_CRC64_ECMA__
 
-#include <cstdint>
+#include <stdint.h>
 
 #include "static_assert.h"
 #include "type_traits.h"
 #include "endian.h"
 
-///\defgroup crc64_ecma Sixty four bit CRC ECMA calculation
+///\defgroup crc64_ecma 64 bit CRC ECMA calculation
 ///\ingroup crc
 
 namespace etl
@@ -48,6 +48,7 @@ namespace etl
 
   //***************************************************************************
   /// Calculates CRC64-ECMA using polynomial 0x42F0E1EBA9EA3693.
+  ///\tparam ENDIANNESS The endianness of the calculation for input types larger than uint8_t. Default = endian::little.
   /// \ingroup crc64_ecma
   //***************************************************************************
   template <const int ENDIANNESS = endian::little>
@@ -69,7 +70,6 @@ namespace etl
     /// Constructor from range.
     /// \param begin Start of the range.
     /// \param end   End of the range.
-    /// \return The CRC result.
     //*************************************************************************
     template<typename TIterator>
     crc64_ecma(TIterator begin, const TIterator end)
@@ -88,12 +88,11 @@ namespace etl
 
     //*************************************************************************
     /// \param value The value to add to the CRC.
-    /// \return The CRC result.
     //*************************************************************************
     template<typename TValue>
-    value_type add(TValue value)
+    void add(TValue value)
     {
-      static_assert(is_integral<TValue>::value, "Non-integral parameter");
+      STATIC_ASSERT(is_integral<TValue>::value, "Non-integral parameter");
 
       if (ENDIANNESS == endian::little)
       {
@@ -109,36 +108,28 @@ namespace etl
           add(uint8_t((value >> (i * 8)) & 0xFF));
         }
       }
-
-      return crc;
     }
 
     //*************************************************************************
     /// \param value The value to add to the CRC.
-    /// \return The CRC result.
     //*************************************************************************
-    value_type add(uint8_t value)
+    void add(uint8_t value)
     {
       crc = (crc << 8) ^ CRC64_ECMA[((crc >> 56) ^ value) & 0xFF];
-
-      return crc;
     }
 
     //*************************************************************************
     /// \param begin Start of the range.
     /// \param end   End of the range.
-    /// \return The CRC result.
     //*************************************************************************
     template<typename TIterator>
-    value_type add(TIterator begin, const TIterator end)
+    void add(TIterator begin, const TIterator end)
     {
       while (begin != end)
       {
         add(*begin);
         ++begin;
       }
-
-      return crc;
     }
 
     //*************************************************************************
