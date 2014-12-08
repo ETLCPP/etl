@@ -29,7 +29,7 @@ SOFTWARE.
 #ifndef __ETL_LIST__
 #define __ETL_LIST__
 
-#include <cstddef>
+#include <stddef.h>
 
 #include "ilist.h"
 #include "container.h"
@@ -66,7 +66,7 @@ namespace etl
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    inline list()
+    list()
       : ilist<T>(&node_pool[0], MAX_SIZE)
     {
     }
@@ -74,7 +74,7 @@ namespace etl
     //*************************************************************************
     /// Construct from size and value.
     //*************************************************************************
-    inline explicit list(size_t initialSize, typename ilist<T>::parameter_t value = T())
+    explicit list(size_t initialSize, typename ilist<T>::parameter_t value = T())
       : ilist<T>(&node_pool[0], MAX_SIZE)
     {
       ilist<T>::assign(initialSize, value);
@@ -175,7 +175,7 @@ namespace etl
       // Swap the data.
       std::swap_ranges(etl::begin(node_pool), etl::end(node_pool), etl::begin(other.node_pool));
       std::swap(this->next_free, other.next_free);
-      std::swap(this->count, other.count);
+      std::swap(this->current_size, other.current_size);
     }
 
   private:

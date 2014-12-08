@@ -29,7 +29,7 @@ SOFTWARE.
 #ifndef __ETL_STACK__
 #define __ETL_STACK__
 
-#include <cstddef>
+#include <stddef.h>
 #include <algorithm>
 
 #include "istack.h"

@@ -30,11 +30,15 @@ SOFTWARE.
 #define __ETL_IQUEUE__
 #define __ETL_IN_IQUEUE_H__
 
-#include <cstddef>
+#include <stddef.h>
 
 #include "queue_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
+
+#ifndef ETL_THROW_EXCEPTIONS
+#include "error_handler.h"
+#endif
 
 namespace etl
 {
@@ -69,79 +73,43 @@ namespace etl
 
     //*************************************************************************
     /// Gets a reference to the item at the front of the queue.<br>
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_empty if the queue is empty.<br>
-    /// If ETL_USE_EXCEPTIONS is not defined and the queue is empty, the return value is undefined.
     /// \return A reference to the item at the front of the queue.
     //*************************************************************************
     reference front()
     {
-#ifdef ETL_USE_EXCEPTIONS
-      if (empty())
-      {
-        throw queue_empty();
-      }
-#endif
-
       return buffer[out];
     }
 
     //*************************************************************************
     /// Gets a const reference to the item at the front of the queue.<br>
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_empty if the queue is empty.<br>
-    /// If ETL_USE_EXCEPTIONS is not defined and the queue is empty, the return value is undefined.
     /// \return A const reference to the item at the front of the queue.
     //*************************************************************************
     const_reference front() const
     {
-#ifdef ETL_USE_EXCEPTIONS
-      if (empty())
-      {
-        throw queue_empty();
-      }
-#endif
-
       return buffer[out];
     }
 
     //*************************************************************************
     /// Gets a reference to the item at the back of the queue.<br>
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_empty if the queue is empty.<br>
-    /// If ETL_USE_EXCEPTIONS is not defined and the queue is empty, the return value is undefined.
     /// \return A reference to the item at the back of the queue.
     //*************************************************************************
     reference back()
     {
-#ifdef ETL_USE_EXCEPTIONS
-      if (empty())
-      {
-        throw queue_empty();
-      }
-#endif
-
       return buffer[in == 0 ? MAX_SIZE - 1 : in - 1];
     }
 
     //*************************************************************************
     /// Gets a const reference to the item at the back of the queue.<br>
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_empty if the queue is empty.<br>
-    /// If ETL_USE_EXCEPTIONS is not defined and the queue is empty, the return value is undefined.
     /// \return A const reference to the item at the back of the queue.
     //*************************************************************************
     const_reference back() const
     {
-#ifdef ETL_USE_EXCEPTIONS
-      if (empty())
-      {
-        throw queue_empty();
-      }
-#endif
-
       return buffer[in == 0 ? MAX_SIZE - 1 : in - 1];
     }
 
     //*************************************************************************
     /// Adds an item to the queue.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_full is the queue is already full,
+    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::queue_full is the queue is already full,
     /// otherwise does nothing if full.
     ///\param item The item to push to the queue.
     //*************************************************************************
@@ -153,10 +121,14 @@ namespace etl
         in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
         ++current_size;
       }
-#ifdef ETL_USE_EXCEPTIONS
       else
+#ifdef ETL_THROW_EXCEPTIONS
       {
         throw queue_full();
+      }
+#else
+      {
+        error_handler::error(forward_list_full());
       }
 #endif
     }
@@ -165,7 +137,7 @@ namespace etl
     /// Allows a possibly more efficient 'push' by moving to the next input item
     /// and returning a reference to it.
     /// This may eliminate a copy by allowing direct construction in-place.<br>
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::queue_full is the queue is already full,
+    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::queue_full is the queue is already full,
     /// otherwise does nothing if full.
     /// \return A reference to the position to 'push' to.
     //*************************************************************************
@@ -178,10 +150,14 @@ namespace etl
         in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
         ++current_size;
       }
-#ifdef ETL_USE_EXCEPTIONS
       else
+#ifdef ETL_THROW_EXCEPTIONS
       {
         throw queue_full();
+      }
+#else
+      {
+        error_handler::error(forward_list_full());
       }
 #endif
 

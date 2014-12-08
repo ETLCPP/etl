@@ -30,12 +30,16 @@ SOFTWARE.
 #define __ETL_IDEQUE__
 #define __ETL_IN_IDEQUE_H__
 
-#include <cstddef>
+#include <stddef.h>
 #include <iterator>
 
 #include "type_traits.h"
 #include "deque_base.h"
 #include "parameter_type.h"
+
+#ifndef ETL_THROW_EXCEPTIONS
+#include "error_handler.h"
+#endif
 
 namespace etl
 {
@@ -482,18 +486,22 @@ namespace etl
 
     //*************************************************************************
     /// Assigns 'n' copies of a value to the deque.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_full is 'n' is too large.
+    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_full is 'n' is too large.
     ///\param n     The number of copies to assign.
     ///\param value The value to add.<
     //*************************************************************************
     void assign(size_type n, const value_type& value)
     {
-#ifdef ETL_USE_EXCEPTIONS
+
       if (n > MAX_SIZE)
       {
+#ifdef ETL_THROW_EXCEPTIONS 
         throw deque_full();
-      }
+#else
+        error_handler::error(deque_full());
 #endif
+      }
+
 
       clear();
 
@@ -506,18 +514,20 @@ namespace etl
 
     //*************************************************************************
     /// Gets a reference to the item at the index.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_out_of_bounds if the index is out of range.
+    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_out_of_bounds if the index is out of range.
     ///\return A reference to the item at the index.
     //*************************************************************************
     reference at(size_t index)
     {
-#ifdef ETL_USE_EXCEPTIONS
       if (index >= current_size)
       {
+#ifdef ETL_THROW_EXCEPTIONS
         throw deque_out_of_bounds();
-      }
+#else
+        error_handler::error((deque_out_of_bounds()));
 #endif
-
+      }
+      
       iterator result(first);
       result += index;
 
@@ -526,17 +536,19 @@ namespace etl
 
     //*************************************************************************
     /// Gets a const reference to the item at the index.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_out_of_bounds if the index is out of range.
+    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_out_of_bounds if the index is out of range.
     ///\return A const reference to the item at the index.
     //*************************************************************************
     const_reference at(size_t index) const
     {
-#ifdef ETL_USE_EXCEPTIONS
       if (index >= current_size)
       {
+#ifdef ETL_THROW_EXCEPTIONS
         throw deque_out_of_bounds();
-      }
+#else
+        error_handler::error((deque_out_of_bounds()));
 #endif
+      }
 
       iterator result(first);
       result += index;
@@ -546,7 +558,6 @@ namespace etl
     
     //*************************************************************************
     /// Gets a reference to the item at the index.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_out_of_bounds if the index is out of range.
     ///\return A reference to the item at the index.
     //*************************************************************************
     reference operator [](size_t index)
@@ -559,7 +570,6 @@ namespace etl
 
     //*************************************************************************
     /// Gets a const reference to the item at the index.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_out_of_bounds if the index is out of range.
     ///\return A const reference to the item at the index.
     //*************************************************************************
     const_reference operator [](size_t index) const
@@ -572,69 +582,37 @@ namespace etl
 
     //*************************************************************************
     /// Gets a reference to the item at the front of the deque.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_empty if the deque is empty.
     ///\return A reference to the item at the front of the deque.
     //*************************************************************************
     reference front()
     {
-#ifdef ETL_USE_EXCEPTIONS
-      if (empty())
-      {
-        throw deque_empty();
-      }
-#endif
-
       return *first;
     }
 
     //*************************************************************************
     /// Gets a const reference to the item at the front of the deque.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_empty if the deque is empty.
     ///\return A const reference to the item at the front of the deque.
     //*************************************************************************
     const_reference front() const
     {
-#ifdef ETL_USE_EXCEPTIONS
-      if (empty())
-      {
-        throw deque_empty();
-      }
-#endif
-
       return *first;
     }
 
     //*************************************************************************
     /// Gets a reference to the item at the back of the deque.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_empty if the deque is empty.
     ///\return A reference to the item at the back of the deque.
     //*************************************************************************
     reference back()
     {
-#ifdef ETL_USE_EXCEPTIONS
-      if (empty())
-      {
-        throw deque_empty();
-      }
-#endif
-
       return *last;
     }
 
     //*************************************************************************
     /// Gets a const reference to the item at the back of the deque.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_empty if the deque is empty.
     ///\return A const reference to the item at the back of the deque.
     //*************************************************************************
     const_reference back() const
     {
-#ifdef ETL_USE_EXCEPTIONS
-      if (empty())
-      {
-        throw deque_empty();
-      }
-#endif
-
       return *last;
     }
 
@@ -746,7 +724,7 @@ namespace etl
 
     //*************************************************************************
     /// Inserts data into the deque.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_full if the deque is full.
+    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_full if the deque is full.
     ///\param insert_position>The insert position.
     ///\param value>The value to insert.
     //*************************************************************************
@@ -796,18 +774,20 @@ namespace etl
         }
       }
       else
-#ifdef ETL_USE_EXCEPTIONS
       {
+#ifdef ETL_THROW_EXCEPTIONS
         throw deque_full();
-      }
+#else
+        error_handler::error(deque_full());
 #endif
+      }
 
       return position;
     }
 
     //*************************************************************************
     /// Inserts 'n' copies of a value into the deque.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_full if the deque is full.
+    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_full if the deque is full.
     ///\param insert_position The insert position.
     ///\param n               The number of values to insert.
     ///\param value           The value to insert.
@@ -868,19 +848,21 @@ namespace etl
 
         current_size += n;
       }
-#ifdef ETL_USE_EXCEPTIONS
       else
       {
+#ifdef ETL_THROW_EXCEPTIONS 
         throw deque_full();
-      }
+#else
+        error_handler::error(deque_full());
 #endif
+      }
 
       return position;
     }
 
     //*************************************************************************
     /// Inserts a range into the deque.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_empty if the deque is full.
+    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_empty if the deque is full.
     ///\param insert_position>The insert position.
     ///\param range_begin The beginning of the range to insert.
     ///\param range_end   The end of the range to insert.
@@ -957,19 +939,21 @@ namespace etl
 
         current_size += n;
       }
-#ifdef ETL_USE_EXCEPTIONS
       else
       {
+#ifdef ETL_THROW_EXCEPTIONS
         throw deque_full();
-      }
+#else
+        error_handler::error(deque_full());
 #endif
+      }
 
       return position;
     }
 
     //*************************************************************************
     /// erase an item.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_out_of_bounds if the position is out of range.
+    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_out_of_bounds if the position is out of range.
     ///\param erase_position The position to erase.
     //*************************************************************************
     iterator erase(const_iterator erase_position)
@@ -1005,19 +989,21 @@ namespace etl
 
         --current_size;
       }
-#ifdef ETL_USE_EXCEPTIONS
       else
       {
+#ifdef ETL_THROW_EXCEPTIONS
         throw deque_out_of_bounds();
-      }
+#else
+        error_handler::error(deque_out_of_bounds());
 #endif
+      }
 
       return position;
     }
 
     //*************************************************************************
     /// erase a range.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_out_of_bounds if the iterators are out of range.
+    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_out_of_bounds if the iterators are out of range.
     ///\param range_begin The beginning of the range to erase.
     ///\param range_end   The end of the range to erase.
     //*************************************************************************
@@ -1064,19 +1050,21 @@ namespace etl
 
         current_size -= length;
       }
-#ifdef ETL_USE_EXCEPTIONS
       else
       {
+#ifdef ETL_THROW_EXCEPTIONS
         throw deque_out_of_bounds();
-      }
+#else
+        error_handler::error(deque_out_of_bounds());
 #endif
+      }
 
       return position;
     }
 
     //*************************************************************************
     /// Adds an item to the back of the deque.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_full is the deque is already full.
+    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_full is the deque is already full.
     ///\param item The item to push to the deque.
     //*************************************************************************
     void push_back(parameter_t item)
@@ -1090,18 +1078,20 @@ namespace etl
 
         *last = item;
         ++current_size;
-      }
-#ifdef ETL_USE_EXCEPTIONS
+      } 
       else
       {
+#ifdef ETL_THROW_EXCEPTIONS
         throw deque_full();
-      }
+#else
+        error_handler::error(deque_full());
 #endif
+      }
     }
 
     //*************************************************************************
     /// Adds one to the front of the deque and returns a reference to the new element.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_full is the deque is already full.
+    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_full is the deque is already full.
     ///\return A reference to the item to assign to.
     //*************************************************************************
     reference push_back()
@@ -1115,12 +1105,14 @@ namespace etl
 
         ++current_size;
       }
-#ifdef ETL_USE_EXCEPTIONS
       else
       {
+#ifdef ETL_THROW_EXCEPTIONS
         throw deque_full();
-      }
+#else
+        error_handler::error(deque_full());
 #endif
+      }
 
       return *last;
     }
@@ -1143,7 +1135,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds an item to the front of the deque.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_full is the deque is already full.
+    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_full is the deque is already full.
     ///\param item The item to push to the deque.
     //*************************************************************************
     void push_front(parameter_t item)
@@ -1158,17 +1150,19 @@ namespace etl
         *first = item;
         ++current_size;
       }
-#ifdef ETL_USE_EXCEPTIONS
       else
       {
+#ifdef ETL_THROW_EXCEPTIONS
         throw deque_full();
-      }
+#else
+        error_handler::error(deque_full());
 #endif
+      }
     }
 
     //*************************************************************************
     /// Adds one to the front of the deque and returns a reference to the new element.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_full is the deque is already full.
+    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_full is the deque is already full.
     ///\return A reference to the item to assign to.
     //*************************************************************************
     reference push_front()
@@ -1182,12 +1176,14 @@ namespace etl
 
         ++current_size;
       }
-#ifdef ETL_USE_EXCEPTIONS
       else
       {
+#ifdef ETL_THROW_EXCEPTIONS
         throw deque_full();
-      }
+#else
+        error_handler::error(deque_full());
 #endif
+      }
 
       return *first;
     }
@@ -1210,7 +1206,7 @@ namespace etl
 
     //*************************************************************************
     /// Resizes the deque.
-    /// If ETL_USE_EXCEPTIONS is defined, throws an etl::deque_full is 'new_size' is too large.
+    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_full is 'new_size' is too large.
     ///\param new_size The new size of the deque.
     ///\param value   The value to assign if the new size is larger. Default = Default constructed value.
     //*************************************************************************
@@ -1236,12 +1232,15 @@ namespace etl
 
         current_size = new_size;
       }
-#ifdef ETL_USE_EXCEPTIONS
+
       else
       {
+#ifdef ETL_THROW_EXCEPTIONS
         throw deque_out_of_bounds();
-      }
+#else
+        error_handler::error(deque_out_of_bounds());
 #endif
+      }
     }
 
     //*************************************************************************

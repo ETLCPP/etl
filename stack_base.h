@@ -33,13 +33,12 @@ SOFTWARE.
 #ifndef __ETL_STACK_BASE__
 #define __ETL_STACK_BASE__
 
-#include <cstddef>
+#include <stddef.h>
 
 #include "exception.h"
 
 namespace etl
 {
-#ifdef ETL_USE_EXCEPTIONS
   //***************************************************************************
   ///\ingroup stack
   /// The base class for stack exceptions.
@@ -63,25 +62,10 @@ namespace etl
   public:
 
     stack_full()
-      : stack_exception("stack full")
+      : stack_exception("stack: full")
     {
     }
   };
-
-  //***************************************************************************
-  ///\ingroup stack
-  /// The exception thrown when the stack is empty.
-  //***************************************************************************
-  class stack_empty : public stack_exception
-  {
-  public:
-
-    stack_empty()
-      : stack_exception("stack empty")
-    {
-    }
-  };
-#endif
 
   //***************************************************************************
   ///\ingroup stack
@@ -134,6 +118,15 @@ namespace etl
     size_type max_size() const
     {
       return MAX_SIZE;
+    }
+
+    //*************************************************************************
+    /// Returns the remaining capacity.
+    ///\return The remaining capacity.
+    //*************************************************************************
+    size_t available() const
+    {
+      return max_size() - size();
     }
 
     //*************************************************************************

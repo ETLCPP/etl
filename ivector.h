@@ -33,11 +33,15 @@ SOFTWARE.
 #include <iterator>
 #include <algorithm>
 #include <functional>
-#include <cstddef>
+#include <stddef.h>
 
 #include "vector_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
+
+#ifndef ETL_THROW_EXCEPTIONS
+#include "error_handler.h"
+#endif
 
 namespace etl
 {
@@ -198,19 +202,22 @@ namespace etl
 
     //*********************************************************************
     /// Resizes the vector.
-    /// If ETL_USE_EXCEPTIONS is defined and the new size is larger than the
+    /// If ETL_THROW_EXCEPTIONS is defined and the new size is larger than the
     /// maximum then a vector_full is thrown.
     ///\param newSize The new size.
     ///\param value   The value to fill new elements with. Default = default contructed value.
     //*********************************************************************
     void resize(size_t newSize, T value = T())
     {
-#ifdef ETL_USE_EXCEPTIONS
+
       if (newSize > MAX_SIZE)
       {
+#ifdef ETL_THROW_EXCEPTIONS
         throw vector_full();
-      }
+#else
+        error_handler::error(vector_full());
 #endif
+      }
 
 	    if (newSize > current_size)
 	    {
@@ -242,36 +249,42 @@ namespace etl
 
     //*********************************************************************
     /// Returns a reference to the value at index 'i'
-    /// If ETL_USE_EXCEPTIONS is defined, throws a std::range_error if the index is out of range.
+    /// If ETL_THROW_EXCEPTIONS is defined, throws a std::range_error if the index is out of range.
     ///\param i The index.
     ///\return A reference to the value at index 'i'
     //*********************************************************************
     reference at(size_t i)
     {
-#ifdef ETL_USE_EXCEPTIONS
+
       if (i >= current_size)
       {
+#ifdef ETL_THROW_EXCEPTIONS
         throw vector_out_of_bounds();
-      }
+#else
+        error_handler::error(vector_out_of_bounds());
 #endif
+      }
 
       return p_buffer[i];
     }
 
     //*********************************************************************
     /// Returns a const reference to the value at index 'i'
-    /// If ETL_USE_EXCEPTIONS is defined, throws a std::range_error if the index is out of range.
+    /// If ETL_THROW_EXCEPTIONS is defined, throws a std::range_error if the index is out of range.
     ///\param i The index.
     ///\return A const reference to the value at index 'i'
     //*********************************************************************
     const_reference at(size_t i) const
     {
-#ifdef ETL_USE_EXCEPTIONS
+
       if (i >= current_size)
       {
+#ifdef ETL_THROW_EXCEPTIONS
         throw vector_out_of_bounds();
-      }
+#else
+        error_handler::error(vector_out_of_bounds());
 #endif
+      }
 
       return p_buffer[i];
     }
@@ -332,8 +345,8 @@ namespace etl
 
     //*********************************************************************
     /// Assigns values to the vector.
-    /// If ETL_USE_EXCEPTIONS is defined, throws vector_full if the vector does not have enough free space.
-    /// If ETL_USE_EXCEPTIONS is defined, throws vector_iterator if the iterators are reversed.
+    /// If ETL_THROW_EXCEPTIONS is defined, throws vector_full if the vector does not have enough free space.
+    /// If ETL_THROW_EXCEPTIONS is defined, throws vector_iterator if the iterators are reversed.
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
@@ -344,14 +357,18 @@ namespace etl
 
       if (count < 0)
       {
-#ifdef ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
         throw vector_iterator();
+#else
+        error_handler::error((vector_iterator));
 #endif
       }
       else if (static_cast<size_t>(count) > MAX_SIZE)
       {
-#ifdef ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
         throw vector_full();
+#else
+        error_handler::error(vector_full());
 #endif
       }
       else
@@ -364,7 +381,7 @@ namespace etl
 
     //*********************************************************************
     /// Assigns values to the vector.
-    /// If ETL_USE_EXCEPTIONS is defined, throws vector_full if the vector does not have enough free space.
+    /// If ETL_THROW_EXCEPTIONS is defined, throws vector_full if the vector does not have enough free space.
     ///\param n     The number of elements to add.
     ///\param value The value to insert for each element.
     //*********************************************************************
@@ -372,8 +389,10 @@ namespace etl
     {
       if (n > MAX_SIZE)
       {
-#ifdef ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
         throw vector_full();
+#else
+        error_handler::error(vector_full());
 #endif
       }
       else
@@ -385,15 +404,17 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value at the end of the vector.
-    /// If ETL_USE_EXCEPTIONS is defined, throws vector_full if the vector is already full.
+    /// If ETL_THROW_EXCEPTIONS is defined, throws vector_full if the vector is already full.
     ///\param value The value to add.
     //*********************************************************************
     void push_back(parameter_t value)
     {
       if (current_size == MAX_SIZE)
       {
-#ifdef ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
         throw vector_full();
+#else
+        error_handler::error(vector_full());
 #endif
       }
       else
@@ -404,7 +425,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the vector.
-    /// If ETL_USE_EXCEPTIONS is defined, throws vector_full if the vector is already full.
+    /// If ETL_THROW_EXCEPTIONS is defined, throws vector_full if the vector is already full.
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -419,8 +440,10 @@ namespace etl
       {
         if ((current_size + 1) > MAX_SIZE)
         {
-#ifdef ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
           throw vector_full();
+#else
+          error_handler::error(vector_full());
 #endif
         }
         else
@@ -436,7 +459,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts 'n' values to the vector.
-    /// If ETL_USE_EXCEPTIONS is defined, throws vector_full if the vector does not have enough free space.
+    /// If ETL_THROW_EXCEPTIONS is defined, throws vector_full if the vector does not have enough free space.
     ///\param position The position to insert at.
     ///\param n        The number of elements to add.
     ///\param value    The value to insert.
@@ -445,8 +468,10 @@ namespace etl
     {
       if ((current_size + n) > MAX_SIZE)
       {
-#ifdef ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
         throw vector_full();
+#else
+        error_handler::error(vector_full());
 #endif
       }
       else
@@ -459,7 +484,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a range of values to the vector.
-    /// If ETL_USE_EXCEPTIONS is defined, throws vector_full if the vector does not have enough free space.
+    /// If ETL_THROW_EXCEPTIONS is defined, throws vector_full if the vector does not have enough free space.
     ///\param position The position to insert at.
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.
@@ -471,8 +496,10 @@ namespace etl
 
       if ((current_size + count) > MAX_SIZE)
       {
-#ifdef ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
         throw vector_full();
+#else
+        error_handler::error(vector_full());
 #endif
       }
       else

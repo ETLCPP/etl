@@ -33,13 +33,12 @@ SOFTWARE.
 #ifndef __ETL_QUEUE_BASE__
 #define __ETL_QUEUE_BASE__
 
-#include <cstddef>
+#include <stddef.h>
 
 #include "exception.h"
 
 namespace etl
 {
-#ifdef ETL_USE_EXCEPTIONS
   //***************************************************************************
   /// The base class for queue exceptions.
   ///\ingroup queue
@@ -63,25 +62,10 @@ namespace etl
   public:
 
     queue_full()
-      : queue_exception("queue full")
+      : queue_exception("queue: full")
     {
     }
   };
-
-  //***************************************************************************
-  /// The exception thrown when the queue is empty.
-  ///\ingroup queue
-  //***************************************************************************
-  class queue_empty : public queue_exception
-  {
-  public:
-
-    queue_empty()
-      : queue_exception("queue empty")
-    {
-    }
-  };
-#endif
 
   //***************************************************************************
   /// The base class for all queues.
@@ -133,6 +117,15 @@ namespace etl
     bool full() const
     {
       return current_size == MAX_SIZE;
+    }
+
+    //*************************************************************************
+    /// Returns the remaining capacity.
+    ///\return The remaining capacity.
+    //*************************************************************************
+    size_t available() const
+    {
+      return max_size() - size();
     }
 
     //*************************************************************************

@@ -29,7 +29,7 @@ SOFTWARE.
 #ifndef __ETL_QUEUE__
 #define __ETL_QUEUE__
 
-#include <cstddef>
+#include <stddef.h>
 
 #include "iqueue.h"
 #include "container.h"

@@ -33,13 +33,12 @@ SOFTWARE.
 #ifndef __ETL_DEQUE_BASE__
 #define __ETL_DEQUE_BASE__
 
-#include <cstddef>
+#include <stddef.h>
 
 #include "exception.h"
 
 namespace etl
 {
-#ifdef ETL_USE_EXCEPTIONS
   //***************************************************************************
   /// Exception base for deques
   ///\ingroup deque
@@ -63,7 +62,7 @@ namespace etl
   public:
 
     deque_full()
-      : deque_exception("deque full")
+      : deque_exception("deque: full")
     {
     }
   };
@@ -77,7 +76,7 @@ namespace etl
   public:
 
     deque_empty()
-      : deque_exception("deque empty")
+      : deque_exception("deque: empty")
     {
     }
   };
@@ -91,12 +90,10 @@ namespace etl
   public:
 
     deque_out_of_bounds()
-      : deque_exception("deque out of bounds")
+      : deque_exception("deque: out of bounds")
     {
     }
   };
-
-#endif
 
   //***************************************************************************
   /// The base class for all templated deque types.
@@ -151,6 +148,15 @@ namespace etl
     size_type max_size() const
     {
       return MAX_SIZE;
+    }
+
+    //*************************************************************************
+    /// Returns the remaining capacity.
+    ///\return The remaining capacity.
+    //*************************************************************************
+    size_t available() const
+    {
+      return max_size() - size();
     }
 
     //*************************************************************************
