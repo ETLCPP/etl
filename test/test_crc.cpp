@@ -29,7 +29,7 @@ SOFTWARE.
 #include <iterator>
 #include <string>
 #include <vector>
-#include <cstdint>
+#include <stdint.h>
 
 #include "../crc8_ccitt.h"
 #include "../crc16.h"
