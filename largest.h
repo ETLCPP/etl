@@ -110,7 +110,7 @@ namespace etl
   //***************************************************************************
   /// Template to determine the largest alignment.
   /// Supports up to 16 types.
-  /// Defines 'value' which is the largest alignment of all the parameters.
+  /// Defines <b>value</b> which is the largest alignment of all the parameters.
   ///\ingroup largest
   //***************************************************************************
   template <typename T1,         typename T2  = void, typename T3  = void, typename T4  = void,
