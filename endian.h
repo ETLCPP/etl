@@ -29,6 +29,8 @@ SOFTWARE.
 #ifndef __ETL_ENDIAN__
 #define __ETL_ENDIAN__
 
+#include <stdint.h>
+
 #include "enum_type.h"
 
 ///\defgroup endian endian
@@ -48,11 +50,32 @@ namespace etl
       little,
       big
     };
-
+	
     DECLARE_ENUM_TYPE(endian, int)
     ENUM_TYPE(little, "little")
     ENUM_TYPE(big,    "big")
     END_ENUM_TYPE
+  };
+
+  //***************************************************************************
+  /// Checks the endianness of the platform.
+  ///\ingroup endian
+  //***************************************************************************
+  struct endianness
+  {
+    endian operator ()() const
+    {
+      return endian(*this);
+    }
+
+    operator endian() const
+    {
+      return (*reinterpret_cast<const uint8_t*>(&TEST) == 0x11) ? endian::little : endian::big;
+    }
+
+  private:
+
+    static const uint16_t TEST = 0x0011;
   };
 }
 
