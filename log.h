@@ -29,21 +29,20 @@ SOFTWARE.
 #ifndef __ETL_LOG__
 #define __ETL_LOG__
 
-#include <cstddef>
+#include <stddef.h>
 
 ///\defgroup log log
-/// A set of templates to generate compile time constants.<br>
 /// log<N, BASE> : Calculates logs to any base, rounded down to the nearest integer.<br>
 /// log2<N>      : Calculates logs to base 2, rounded down to the nearest integer.<br>
 /// log10<N>     : Calculates logs to base 10, rounded down to the nearest integer.<br>
-///\ingroup Maths
+///\ingroup maths
 
 namespace etl 
 {
   //***************************************************************************
   ///\ingroup log
   /// The base generic log template.
-  /// Defines 'value' as the log of the number at the specified base.
+  /// Defines <b>value</b> as the log of the number at the specified base.
   /// The result is rounded down to the next integer.
   ///\tparam N    The number to find the log of.
   ///\tparam BASE The base of the log.
