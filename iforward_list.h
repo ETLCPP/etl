@@ -37,7 +37,7 @@ SOFTWARE.
 #include <iterator>
 #include <algorithm>
 #include <functional>
-#include <cstddef>
+#include <stddef.h>
 
 #include "nullptr.h"
 #include "forward_list_base.h"
@@ -374,8 +374,8 @@ namespace etl
 
     //*************************************************************************
     /// Assigns a range of values to the forward_list.
-		/// If ETL_USE_EXCEPTIONS is defined throws etl::forward_list_full if the forward_list does not have enough free space.
-    /// If ETL_USE_EXCEPTIONS & _DEBUG are defined throws forward_list_iterator if the iterators are reversed.
+		/// If ETL_THROW_EXCEPTIONS is defined throws etl::forward_list_full if the forward_list does not have enough free space.
+    /// If ETL_THROW_EXCEPTIONS & _DEBUG are defined throws forward_list_iterator if the iterators are reversed.
     //*************************************************************************
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
@@ -398,10 +398,14 @@ namespace etl
           join(data_node, end_node);
           p_last_node = &data_node;
         }
-#ifdef ETL_USE_EXCEPTIONS
         else
+#ifdef ETL_THROW_EXCEPTIONS
         {
           throw forward_list_full();
+        }
+#else
+        {
+          error_handler::error(forward_list_full());
         }
 #endif
       }
@@ -440,10 +444,14 @@ namespace etl
           join(data_node, end_node);
           p_last_node = &data_node;
         }
-#ifdef ETL_USE_EXCEPTIONS
         else
+#ifdef ETL_THROW_EXCEPTIONS
         {
           throw forward_list_full();
+        }
+#else
+        {
+          error_handler::error(forward_list_full());
         }
 #endif
       }
@@ -470,10 +478,14 @@ namespace etl
 
         insert_node(get_head(), data_node);
       }
-#ifdef ETL_USE_EXCEPTIONS
       else
+#ifdef ETL_THROW_EXCEPTIONS
       {
         throw forward_list_full();
+      }
+#else
+      {
+        error_handler::error(forward_list_full());
       }
 #endif
     }
@@ -490,10 +502,14 @@ namespace etl
 
         insert_node_after(get_head(), data_node);
       }
-#ifdef ETL_USE_EXCEPTIONS
       else
+#ifdef ETL_THROW_EXCEPTIONS
       {
         throw forward_list_full();
+      }
+#else
+      {
+        error_handler::error(forward_list_full());
       }
 #endif
     }
@@ -519,7 +535,7 @@ namespace etl
 
     //*************************************************************************
     /// Resizes the forward_list.
-    /// If ETL_USE_EXCEPTIONS is defined, will throw an etl::forward_list_full
+    /// If ETL_THROW_EXCEPTIONS is defined, will throw an etl::forward_list_full
     /// if <b>n</b> is larger than the maximum size.
     //*************************************************************************
     void resize(size_t n, T value)
@@ -550,10 +566,14 @@ namespace etl
           }
         }
       }
-#if ETL_USE_EXCEPTIONS
       else
+#ifdef ETL_THROW_EXCEPTIONS
       {
         throw forward_list_full();
+      }
+#else
+      {
+        error_handler::error(forward_list_full());
       }
 #endif
     }
@@ -600,14 +620,15 @@ namespace etl
 
         return iterator(data_node);
       }
-#if ETL_USE_EXCEPTIONS
       else
+#ifdef ETL_THROW_EXCEPTIONS    
       {
         throw forward_list_full();
         return end();
       }
 #else
       {
+        error_handler::error(forward_list_full());
         return end();
       }
 #endif
@@ -629,10 +650,14 @@ namespace etl
           insert_node(*position.p_node, data_node);
         }
       }
-#if ETL_USE_EXCEPTIONS
       else
+#ifdef ETL_THROW_EXCEPTIONS
       {
         throw forward_list_full();
+      }
+#else
+      {
+        error_handler::error(forward_list_full());
       }
 #endif
     }
@@ -655,10 +680,14 @@ namespace etl
           ++first;
           ++position;
         }
-#if ETL_USE_EXCEPTIONS
         else
+#ifdef ETL_THROW_EXCEPTIONS
         {
           throw forward_list_full();
+        }
+#else
+        {
+          error_handler::error(forward_list_full());
         }
 #endif
       }
@@ -944,7 +973,7 @@ namespace etl
     //*************************************************************************
     /// Downcast a Node* to a Data_Node*
     //*************************************************************************
-    inline static Data_Node* data_cast(Node* p_node)
+    static Data_Node* data_cast(Node* p_node)
     {
       return static_cast<Data_Node*>(p_node);
     }
@@ -952,7 +981,7 @@ namespace etl
     //*************************************************************************
     /// Downcast a Node& to a Data_Node&
     //*************************************************************************
-    inline static Data_Node& data_cast(Node& node)
+    static Data_Node& data_cast(Node& node)
     {
       return static_cast<Data_Node&>(node);
     }
@@ -960,7 +989,7 @@ namespace etl
     //*************************************************************************
     /// Downcast a const Node* to a const Data_Node*
     //*************************************************************************
-    inline static const Data_Node* data_cast(const Node* p_node)
+    static const Data_Node* data_cast(const Node* p_node)
     {
       return static_cast<const Data_Node*>(p_node);
     }
@@ -968,7 +997,7 @@ namespace etl
     //*************************************************************************
     /// Downcast a const Node& to a const Data_Node&
     //*************************************************************************
-    inline static const Data_Node& data_cast(const Node& node)
+    static const Data_Node& data_cast(const Node& node)
     {
       return static_cast<const Data_Node&>(node);
     }

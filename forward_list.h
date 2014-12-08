@@ -29,7 +29,7 @@ SOFTWARE.
 #ifndef __ETL_LIST__
 #define __ETL_LIST__
 
-#include <cstddef>
+#include <stddef.h>
 
 #include "iforward_list.h"
 #include "container.h"
@@ -66,7 +66,7 @@ namespace etl
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    inline forward_list()
+    forward_list()
       : iforward_list<T>(&node_pool[0], MAX_SIZE)
     {
     }
@@ -74,7 +74,7 @@ namespace etl
     //*************************************************************************
     /// Construct from size and value.
     //*************************************************************************
-    inline explicit forward_list(size_t initialSize, typename iforward_list<T>::parameter_t value = T())
+    explicit forward_list(size_t initialSize, typename iforward_list<T>::parameter_t value = T())
       : iforward_list<T>(&node_pool[0], MAX_SIZE)
     {
       iforward_list<T>::assign(initialSize, value);

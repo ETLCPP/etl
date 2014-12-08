@@ -33,12 +33,11 @@ SOFTWARE.
 #ifndef __ETL_LIST_BASE__
 #define __ETL_LIST_BASE__
 
-#include <cstddef>
+#include <stddef.h>
 #include "exception.h"
 
 namespace etl
 {
-#ifdef ETL_USE_EXCEPTIONS
   //***************************************************************************
   /// Exception for the forward_list.
   ///\ingroup forward_list
@@ -62,7 +61,7 @@ namespace etl
   public:
 
     forward_list_full()
-      : forward_list_exception("List full")
+      : forward_list_exception("forward list: full")
     {
     }
   };
@@ -76,11 +75,10 @@ namespace etl
   public:
 
     forward_list_iterator()
-      : forward_list_exception("Iterator problem")
+      : forward_list_exception("forward_list: iterator problem")
     {
     }
   };
-#endif
 
   //***************************************************************************
   /// The base class for all forward_lists.
@@ -122,6 +120,15 @@ namespace etl
     bool full() const
     {
       return count == MAX_SIZE;
+    }
+
+    //*************************************************************************
+    /// Returns the remaining capacity.
+    ///\return The remaining capacity.
+    //*************************************************************************
+    size_t available() const
+    {
+      return max_size() - size();
     }
 
   protected:
