@@ -228,14 +228,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_front_empty)
-    {
-      Data data;
-
-      CHECK_THROW(int i = data.front(), etl::deque_empty);
-    }
-
-    //*************************************************************************
     TEST(test_front_const)
     {
       Data data;
@@ -298,14 +290,6 @@ namespace
 
       data.push_back(5);
       CHECK_EQUAL(5, ctestDeque.back());
-    }
-
-    //*************************************************************************
-    TEST(test_back_empty)
-    {
-      Data data;
-
-      CHECK_THROW(int i = data.back(), etl::deque_empty);
     }
 
     //*************************************************************************
