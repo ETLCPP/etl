@@ -29,15 +29,17 @@ SOFTWARE.
 #ifndef __ETL_BITSET__
 #define __ETL_BITSET__
 
-#include <cstring>
-#include <cstddef>
 #include <algorithm>
-#include <cstdint>
+#include <iterator>
+#include <string.h>
+#include <stdint.h>
+#include <stddef.h>
 
 #include "integral_limits.h"
 #include "smallest.h"
 #include "array.h"
 #include "nullptr.h"
+#include "log.h"
 
 #if WIN32
 #undef min
@@ -66,7 +68,7 @@ namespace etl
     //*************************************************************************
     /// The reference type returned.
     //*************************************************************************
-    class reference
+    class bit_reference
     {
     public:
 
@@ -75,7 +77,7 @@ namespace etl
       //*******************************
       /// Conversion operator.
       //*******************************
-      inline operator bool() const
+      operator bool() const
       {
         return p_bitset->test(position);
       }
@@ -83,7 +85,7 @@ namespace etl
       //*******************************
       /// Assignment operator.
       //*******************************
-      inline reference& operator = (bool b)
+      bit_reference& operator = (bool b)
       {
         p_bitset->set(position, b);
         return *this;
@@ -92,7 +94,7 @@ namespace etl
       //*******************************
       /// Assignment operator.
       //*******************************
-      inline reference& operator = (const reference& r)
+      bit_reference& operator = (const bit_reference& r)
       {
         p_bitset->set(position, bool(r));
         return *this;
@@ -101,7 +103,7 @@ namespace etl
       //*******************************
       /// Flip the bit.
       //*******************************
-      inline reference& flip()
+      bit_reference& flip()
       {
         p_bitset->flip(position);
         return *this;
@@ -110,7 +112,7 @@ namespace etl
       //*******************************
       /// Return the logical inverse of the bit.
       //*******************************
-      inline bool operator~() const
+      bool operator~() const
       {
         return !p_bitset->test(position);
       }
@@ -120,7 +122,7 @@ namespace etl
       //*******************************
       /// Default constructor.
       //*******************************
-      inline reference()
+      bit_reference()
         : p_bitset(nullptr),
           position(0)
       {
@@ -129,7 +131,7 @@ namespace etl
       //*******************************
       /// Constructor.
       //*******************************
-      inline reference(bitset<N>& r_bitset, size_t position)
+      bit_reference(bitset<N>& r_bitset, size_t position)
         : p_bitset(&r_bitset),
           position(position)
       {
@@ -137,6 +139,386 @@ namespace etl
 
       bitset<N>* p_bitset; ///< The bitset.
       size_t     position; ///< The position in the bitset.
+    };
+
+    //*************************************************************************
+    /// The iterator type.
+    //*************************************************************************
+    class iterator : public std::iterator<std::random_access_iterator_tag, bool>
+    {
+    public:
+
+      friend class bitset<N>;
+      friend class const_iterator;
+
+      //*******************************
+      /// Constructor
+      //*******************************
+      iterator()
+        : position(0)
+      {
+      }
+
+      //*******************************
+      /// Copy constructor
+      //*******************************
+      iterator(const iterator& other)
+        : position(other.position)
+      {
+      }
+
+      //*******************************
+      /// ++ operator (pre)
+      //*******************************
+      iterator& operator ++()
+      {
+        ++position;
+				return *this;
+      }
+
+      //*******************************
+      /// ++ operator (post)
+      //*******************************
+      iterator operator ++(int)
+      {
+        iterator temp(*this);
+        ++position;
+        return temp;
+      }
+
+      //*******************************
+      /// -- operator (pre)
+      //*******************************
+      iterator& operator --()
+      {
+        --position;
+				return *this;
+      }
+
+      //*******************************
+      /// -- operator (post)
+      //*******************************
+      iterator operator --(int)
+      {
+        iterator temp(*this);
+        --position;
+        return temp;
+      }
+
+      //*******************************
+      /// * operator
+      //*******************************
+      bit_reference operator *()
+      {
+        return bit_reference(*p_bitset, position);
+      }
+
+      //*******************************
+      /// * operator const
+      //*******************************
+      bool operator *() const
+      {
+        return p_bitset->test(position);
+      }
+
+      //*******************************
+      /// += operator
+      //*******************************
+      iterator& operator +=(int i)
+      {
+        position += i;
+        return *this;
+      }
+
+      //*******************************
+      /// -= operator
+      //*******************************
+      iterator& operator -=(int i)
+      {
+        position -= i;
+        return *this;
+      }
+
+      //*******************************
+      /// = operator
+      //*******************************
+      iterator& operator =(const iterator& other)
+      {
+        position = other.position;
+        p_bitset = other.p_bitset;
+        return *this;
+      }
+
+      //*******************************
+      /// + operator
+      //*******************************
+      friend iterator operator +(const iterator& other, int i)
+      {
+        iterator temp(other);
+        temp += i;
+        return temp;
+      }
+
+      //*******************************
+      /// - operator
+      //*******************************
+      friend iterator operator -(const iterator& other, int i)
+      {
+        iterator temp(other);
+        temp -= i;
+        return temp;
+      }
+
+      //*******************************
+      /// == operator
+      //*******************************
+      friend bool operator ==(const iterator& lhs, const iterator& rhs)
+      {
+        return lhs.position == rhs.position;
+      }
+
+      //*******************************
+      /// != operator
+      //*******************************
+      friend bool operator !=(const iterator& lhs, const iterator& rhs)
+      {
+        return lhs.position != rhs.position;
+      }
+
+      //*******************************
+      /// < operator
+      //*******************************
+      friend bool operator <(const iterator& lhs, const iterator& rhs)
+      {
+        return lhs.position < rhs.position;
+      }
+
+      //*******************************
+      /// > operator
+      //*******************************
+      friend bool operator >(const iterator& lhs, const iterator& rhs)
+      {
+        return lhs.position > rhs.position;
+      }
+
+      //*******************************
+      /// <= operator
+      //*******************************
+      friend bool operator <=(const iterator& lhs, const iterator& rhs)
+      {
+        return lhs.position <= rhs.position;
+      }
+
+      //*******************************
+      /// >= operator
+      //*******************************
+      friend bool operator >=(const iterator& lhs, const iterator& rhs)
+      {
+        return lhs.position >-rhs.position;
+      }
+
+    private:
+
+      //*******************************
+      /// Constructor
+      //*******************************
+      iterator(bitset<N>& r_bitset, size_t position)
+        : p_bitset(&r_bitset),
+          position(position)
+      {}
+
+      bitset<N>* p_bitset;
+      size_t     position;
+    };
+
+    //*************************************************************************
+    /// The const_iterator type.
+    //*************************************************************************
+    class const_iterator : public std::iterator<std::random_access_iterator_tag, const bool>
+    {
+    public:
+
+      friend class bitset<N>;
+
+      //*******************************
+      /// Constructor
+      //*******************************
+      const_iterator()
+        : position(0)
+      {
+      }
+
+      //*******************************
+      /// Copy constructor from iterator
+      //*******************************
+      const_iterator(const typename bitset<N>::iterator& other)
+        : position(other.position)
+      {
+      }
+
+      //*******************************
+      /// Copy constructor
+      //*******************************
+      const_iterator(const const_iterator& other)
+        : position(other.position)
+      {
+      }
+
+      //*******************************
+      /// ++ operator (pre)
+      //*******************************
+      const_iterator& operator ++()
+      {
+        ++position;
+				return *this;
+      }
+
+      //*******************************
+      /// ++ operator (post)
+      //*******************************
+      const_iterator operator ++(int)
+      {
+        const_iterator temp(*this);
+        ++position;
+        return temp;
+      }
+
+      //*******************************
+      /// -- operator (pre)
+      //*******************************
+      const_iterator& operator --()
+      {
+        --position;
+				return *this;
+      }
+
+      //*******************************
+      /// -- operator (post)
+      //*******************************
+      const_iterator operator --(int)
+      {
+        const_iterator temp(*this);
+        --position;
+        return temp;
+      }
+
+      //*******************************
+      /// * operator const
+      //*******************************
+      bool operator *() const
+      {
+        return p_bitset->test(position);
+      }
+
+      //*******************************
+      /// += operator
+      //*******************************
+      const_iterator& operator +=(int i)
+      {
+        position += i;
+        return *this;
+      }
+
+      //*******************************
+      /// -= operator
+      //*******************************
+      const_iterator& operator -=(int i)
+      {
+        position -= i;
+        return *this;
+      }
+
+      //*******************************
+      /// = operator
+      //*******************************
+      const_iterator& operator =(const const_iterator& other)
+      {
+        position = other.position;
+        p_bitset = other.p_bitset;
+        return *this;
+      }
+
+      //*******************************
+      /// + operator
+      //*******************************
+      friend const_iterator operator +(const const_iterator& other, int i)
+      {
+        const_iterator temp(other);
+        temp += i;
+        return temp;
+      }
+
+      //*******************************
+      /// - operator
+      //*******************************
+      friend const_iterator operator -(const const_iterator& other, int i)
+      {
+        const_iterator temp(other);
+        temp -= i;
+        return temp;
+      }
+
+      //*******************************
+      /// == operator
+      //*******************************
+      friend bool operator ==(const const_iterator& lhs, const const_iterator& rhs)
+      {
+        return lhs.position == rhs.position;
+      }
+
+      //*******************************
+      /// != operator
+      //*******************************
+      friend bool operator !=(const const_iterator& lhs, const const_iterator& rhs)
+      {
+        return lhs.position != rhs.position;
+      }
+
+      //*******************************
+      /// < operator
+      //*******************************
+      friend bool operator <(const const_iterator& lhs, const const_iterator& rhs)
+      {
+        return lhs.position < rhs.position;
+      }
+
+      //*******************************
+      /// > operator
+      //*******************************
+      friend bool operator >(const const_iterator& lhs, const const_iterator& rhs)
+      {
+        return lhs.position > rhs.position;
+      }
+
+      //*******************************
+      /// <= operator
+      //*******************************
+      friend bool operator <=(const const_iterator& lhs, const const_iterator& rhs)
+      {
+        return lhs.position <= rhs.position;
+      }
+
+      //*******************************
+      /// >= operator
+      //*******************************
+      friend bool operator >=(const const_iterator& lhs, const const_iterator& rhs)
+      {
+        return lhs.position >- rhs.position;
+      }
+
+    private:
+
+      //*******************************
+      /// Constructor
+      //*******************************
+      const_iterator(bitset<N>& r_bitset, size_t position)
+        : p_bitset(&r_bitset),
+          position(position)
+      {
+      }
+
+      bitset<N>* p_bitset;
+      size_t     position;
     };
 
     //*************************************************************************
@@ -190,7 +572,7 @@ namespace etl
     {
       reset();
 
-      size_t i = std::min(N, std::strlen(text));
+      size_t i = std::min(N, strlen(text));
 
       while (i > 0)
       {
@@ -226,8 +608,8 @@ namespace etl
         }
         else
         {
-          index = position / BITS_PER_ELEMENT;
-          bit   = element_type(1) << position % BITS_PER_ELEMENT;
+          index = position >> log2<BITS_PER_ELEMENT>::value;
+          bit   = element_type(1) << (position & (BITS_PER_ELEMENT - 1));
         }
 
         if (value)
@@ -238,6 +620,23 @@ namespace etl
         {
           data[index] &= ~bit;
         }
+      }
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Set from a string.
+    //*************************************************************************
+    bitset<N>&  set(const char* text)
+    {
+      reset();
+
+      size_t i = std::min(N, strlen(text));
+
+      while (i > 0)
+      {
+        set(--i, *text++ == '1');
       }
 
       return *this;
@@ -269,8 +668,8 @@ namespace etl
         }
         else
         {
-          index = position / BITS_PER_ELEMENT;
-          bit = element_type(1) << position % BITS_PER_ELEMENT;
+          index = position >> log2<BITS_PER_ELEMENT>::value;
+          bit   = element_type(1) << (position & (BITS_PER_ELEMENT - 1));
         }
 
         data[index] &= ~bit;
@@ -311,8 +710,8 @@ namespace etl
         }
         else
         {
-          index = position / BITS_PER_ELEMENT;
-          bit   = element_type(1) << position % BITS_PER_ELEMENT;
+          index = position >> log2<BITS_PER_ELEMENT>::value;
+          bit   = element_type(1) << (position & (BITS_PER_ELEMENT - 1));
         }
 
         data[index] ^= bit;
@@ -332,9 +731,9 @@ namespace etl
     //*************************************************************************
     /// Write [] operator.
     //*************************************************************************
-    reference operator [] (size_t position)
+    bit_reference operator [] (size_t position)
     {
-      return reference(*this, position);
+      return bit_reference(*this, position);
     }
 
     //*************************************************************************
@@ -355,8 +754,8 @@ namespace etl
         }
         else
         {
-          index = position / BITS_PER_ELEMENT;
-          bit = element_type(1) << position % BITS_PER_ELEMENT;
+          index = position >> log2<BITS_PER_ELEMENT>::value;
+          bit   = element_type(1) << (position & (BITS_PER_ELEMENT - 1));
         }
 
         return (data[index] & bit) != 0;
@@ -415,6 +814,8 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Count the number of bits set.
+    //*************************************************************************
     size_t count() const
     {
       size_t n = 0;
@@ -435,11 +836,68 @@ namespace etl
     }
 
     //*************************************************************************
+    /// The size of the bitset.
+    //*************************************************************************
     size_t size() const
     {
       return N;
     }
 
+    //*************************************************************************
+    /// Finds the first bit in the specified state.
+    ///\param state The state to search for.
+    ///\returns The position of the bit or SIZE if none were found.
+    //*************************************************************************
+    size_t find_first(bool state) const
+    {
+      return find_next(state, 0);
+    }
+
+    //*************************************************************************
+    /// Finds the next bit in the specified state.
+    ///\param state    The state to search for.
+    ///\param position The position to start from.
+    ///\returns The position of the bit or SIZE if none were found.
+    //*************************************************************************
+    size_t find_next(bool state, size_t position) const
+    {
+      // Where to start.
+      size_t element_index = position >> log2<BITS_PER_ELEMENT>::value;
+      size_t bit_index     = position &  log2<BITS_PER_ELEMENT>::value;;
+      element_type mask    = 1 << bit_index;
+
+      // For each element in the bitset...
+      while (element_index < ARRAY_SIZE)
+      {
+        const element_type& element = data[element_index];
+
+        // For each bit in the element...
+        while ((bit_index < BITS_PER_ELEMENT) && (position != N))
+        {
+          // Equal to the required state?
+          if (((element & mask) != 0) == state)
+          {
+            return position;
+          }
+
+          // Move on to the next bit.
+          mask <<= 1;
+          ++position;
+          ++bit_index;
+        }
+
+        // Start at the beginning for all other elements.
+        bit_index = 0;
+        mask      = 1;
+
+        ++element_index;
+      }
+
+      return N;
+    }
+
+    //*************************************************************************
+    /// operator &=
     //*************************************************************************
     bitset<N>& operator &=(const bitset<N>& other)
     {
@@ -452,6 +910,8 @@ namespace etl
     }
 
     //*************************************************************************
+    /// operator |=
+    //*************************************************************************
     bitset<N>& operator |=(const bitset<N>& other)
     {
       for (size_t i = 0; i < ARRAY_SIZE; ++i)
@@ -463,6 +923,8 @@ namespace etl
     }
 
     //*************************************************************************
+    /// operator ^=
+    //*************************************************************************
     bitset<N>& operator ^=(const bitset<N>& other)
     {
       for (size_t i = 0; i < ARRAY_SIZE; ++i)
@@ -473,6 +935,8 @@ namespace etl
       return *this;
     }
 
+    //*************************************************************************
+    /// operator ~
     //*************************************************************************
     bitset<N> operator ~() const
     {
@@ -487,6 +951,8 @@ namespace etl
     }
 
     //*************************************************************************
+    /// operator <<
+    //*************************************************************************
     bitset<N> operator<<(size_t shift) const
     {
       bitset<N> temp;
@@ -497,7 +963,7 @@ namespace etl
       }
       else
       {
-        size_t source = N - shift - 1;
+        size_t source      = N - shift - 1;
         size_t destination = N - 1;
 
         for (size_t i = 0; i < (N - shift); ++i)
@@ -510,6 +976,8 @@ namespace etl
     }
 
     //*************************************************************************
+    /// operator <<=
+    //*************************************************************************
     bitset<N>& operator<<=(size_t shift)
     {
       if (ARRAY_SIZE == 1)
@@ -518,7 +986,7 @@ namespace etl
       }
       else
       {
-        size_t source = N - shift - 1;
+        size_t source      = N - shift - 1;
         size_t destination = N - 1;
 
         for (size_t i = 0; i < (N - shift); ++i)
@@ -536,6 +1004,8 @@ namespace etl
     }
 
     //*************************************************************************
+    /// operator >>
+    //*************************************************************************
     bitset<N> operator>>(size_t shift) const
     {
       bitset<N> temp;
@@ -546,7 +1016,7 @@ namespace etl
       }
       else
       {
-        size_t source = shift;
+        size_t source      = shift;
         size_t destination = 0;
 
         while (source != N)
@@ -559,6 +1029,8 @@ namespace etl
     }
 
     //*************************************************************************
+    /// operator >>=
+    //*************************************************************************
     bitset<N>& operator>>=(size_t shift)
     {
       if (ARRAY_SIZE == 1)
@@ -567,7 +1039,7 @@ namespace etl
       }
       else
       {
-        size_t source = shift;
+        size_t source      = shift;
         size_t destination = 0;
 
         for (size_t i = 0; i < (N - shift); ++i)
@@ -584,7 +1056,66 @@ namespace etl
       return *this;
     }
 
-    //***************************************************************************
+    //*************************************************************************
+    /// swap
+    //*************************************************************************
+    void swap(bitset<N>& other)
+    {
+      data.swap(other.data);
+    }
+
+    //*************************************************************************
+    /// begin
+    //*************************************************************************
+    iterator begin()
+    {
+      return iterator(*this, 0);
+    }
+
+    //*************************************************************************
+    /// begin
+    //*************************************************************************
+    const_iterator begin() const
+    {
+      return const_iterator(*this, 0);
+    }
+
+    //*************************************************************************
+    /// cbegin
+    //*************************************************************************
+    const_iterator cbegin()
+    {
+      return const_iterator(*this, 0);
+    }
+
+    //*************************************************************************
+    /// end
+    //*************************************************************************
+    iterator end()
+    {
+      return iterator(*this, N - 1);
+    }
+
+    //*************************************************************************
+    /// end
+    //*************************************************************************
+    const_iterator end() const
+    {
+      return const_iterator(*this, N - 1);
+    }
+
+    //*************************************************************************
+    /// cend
+    //*************************************************************************
+    const_iterator cend()
+    {
+      return const_iterator(*this, N - 1);
+    }
+
+
+    //*************************************************************************
+    /// operator ==
+    //*************************************************************************
     friend bool operator == (const bitset<N>& lhs, const bitset<N>& rhs)
     {
       for (size_t i = 0; i < ARRAY_SIZE; ++i)
@@ -615,7 +1146,9 @@ namespace etl
   };
 
   //***************************************************************************
+  /// operator &
   ///\ingroup bitset
+  //***************************************************************************
   template <const size_t N>
   bitset<N> operator & (const bitset<N>& lhs, const bitset<N>& rhs)
   {
@@ -625,7 +1158,9 @@ namespace etl
   }
 
   //***************************************************************************
+  /// operator |
   ///\ingroup bitset
+  //***************************************************************************
   template<const size_t N>
   bitset<N> operator | (const bitset<N>& lhs, const bitset<N>& rhs)
   {
@@ -635,7 +1170,9 @@ namespace etl
   }
 
   //***************************************************************************
+  /// operator ^
   ///\ingroup bitset
+  //***************************************************************************
   template<const size_t N>
   bitset<N> operator ^ (const bitset<N>& lhs, const bitset<N>& rhs)
   {
@@ -645,12 +1182,23 @@ namespace etl
   }
 
   //***************************************************************************
+  /// operator !=
   ///\ingroup bitset
+  //***************************************************************************
   template<const size_t N>
   bool operator != (const bitset<N>& lhs, const bitset<N>& rhs)
   {
     return !(lhs == rhs);
   }
+}
+
+//*************************************************************************
+/// swap
+//*************************************************************************
+template <const size_t N>
+void swap(etl::bitset<N>& lhs, etl::bitset<N>& rhs)
+{
+  lhs.swap(rhs);
 }
 
 #if WIN32
