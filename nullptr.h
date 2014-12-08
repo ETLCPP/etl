@@ -33,7 +33,7 @@ SOFTWARE.
 /// A definition of nullptr for compilers that don't support it as standard.
 ///\ingroup utilities
 
-#if defined(_MSC_VER) && (_MSC_VER < 1600)
+#if (defined(_MSC_VER) && (_MSC_VER < 1600)) || defined(COMPILER_KEIL) || defined(COMPILER_IAR)
 namespace std
 {
   //*****************************************************************************
@@ -46,14 +46,14 @@ namespace std
 
     // Convertible to any type of null non-member pointer.
     template<class T>
-    inline operator T*() const
+    operator T*() const
     {
       return 0;
     }
 
     // Or any type of null member pointer.
     template<class C, class T>
-    inline operator T C::*() const
+    operator T C::*() const
     {
       return 0;
     }
@@ -81,14 +81,14 @@ public:
 
   // Convertible to any type of null non-member pointer.
   template<class T>
-  inline operator T*() const
+  operator T*() const
   {
     return 0;
   }
 
   // Or any type of null member pointer.
   template<class C, class T>
-  inline operator T C::*() const
+  operator T C::*() const
   {
     return 0;
   }
