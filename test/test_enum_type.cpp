@@ -94,6 +94,17 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_equality)
+    {
+      enum_test value1 = enum_test::ZERO;
+      enum_test value2 = enum_test::ONE;
+      enum_test value3 = enum_test::ONE;
+
+      CHECK(value1 != value2);
+      CHECK(value2 == value3);
+    }
+
+    //*************************************************************************
     TEST(test_get_value)
     {
       enum_test actual = enum_test::THREE;
