@@ -26,13 +26,7 @@ SOFTWARE.
 
 #include <UnitTest++/UnitTest++.h>
 
-#if (COMPILER_GCC)
-#define __GXX_EXPERIMENTAL_CXX0X__
-#endif
-
-#include <type_traits>
-
-#if (COMPILER_GCC)
+#if defined(COMPILER_GCC)
 namespace std
 {
   template <typename T>
@@ -43,6 +37,7 @@ namespace std
 #endif
 
 #include "../type_traits.h"
+#include <type_traits>
 
 // A class to test non-fundamental types.
 struct Test
@@ -475,9 +470,9 @@ namespace
     //*************************************************************************
     TEST(test_extent)
     {
-      CHECK((std::is_same<etl::extent<int>::type,     std::extent<int>::type>::value));
-      CHECK((std::is_same<etl::extent<int[]>::type,   std::extent<int[]>::type>::value));
-      CHECK((std::is_same<etl::extent<int[10]>::type, std::extent<int[10]>::type>::value));
+      CHECK(std::extent<int>::value     == etl::extent<int>::value);
+      CHECK(std::extent<int[]>::value   == etl::extent<int[]>::value);
+      CHECK(std::extent<int[10]>::value == etl::extent<int[10]>::value);
     }
 
     //*************************************************************************
