@@ -52,8 +52,10 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;COMPILER_MICROSOFT;PLATFORM_WINDOWS;_SCL_SECURE_NO_WARNINGS;ETL_USE_EXCEPTIONS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;ETL_THROW_EXCEPTIONS;PLATFORM_WINDOWS;COMPILER_MICROSOFT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../../../unittest-cpp</AdditionalIncludeDirectories>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -111,9 +113,11 @@
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\UnitTestPP.h" />
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\Win32\TimeHelpers.h" />
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\XmlTestReporter.h" />
-    <ClInclude Include="..\..\aligned_variable.h" />
+    <ClInclude Include="..\..\algorithm.h" />
+    <ClInclude Include="..\..\alignment.h" />
     <ClInclude Include="..\..\array.h" />
     <ClInclude Include="..\..\bitset.h" />
+    <ClInclude Include="..\..\checksum.h" />
     <ClInclude Include="..\..\crc16.h" />
     <ClInclude Include="..\..\crc16_ccitt.h" />
     <ClInclude Include="..\..\crc16_kermit.h" />
@@ -126,14 +130,20 @@
     <ClInclude Include="..\..\doxygen.h" />
     <ClInclude Include="..\..\endian.h" />
     <ClInclude Include="..\..\enum_type.h" />
+    <ClInclude Include="..\..\error_handler.h" />
     <ClInclude Include="..\..\exception.h" />
+    <ClInclude Include="..\..\factorial.h" />
+    <ClInclude Include="..\..\fibonacci.h" />
+    <ClInclude Include="..\..\fnv_1.h" />
     <ClInclude Include="..\..\forward_list.h" />
     <ClInclude Include="..\..\forward_list_base.h" />
     <ClInclude Include="..\..\function.h" />
     <ClInclude Include="..\..\functional.h" />
+    <ClInclude Include="..\..\hash.h" />
     <ClInclude Include="..\..\ideque.h" />
     <ClInclude Include="..\..\iforward_list.h" />
     <ClInclude Include="..\..\ilist.h" />
+    <ClInclude Include="..\..\instance_count.h" />
     <ClInclude Include="..\..\integral_limits.h" />
     <ClInclude Include="..\..\iqueue.h" />
     <ClInclude Include="..\..\istack.h" />
@@ -147,7 +157,9 @@
     <ClInclude Include="..\..\numeric.h" />
     <ClInclude Include="..\..\observer.h" />
     <ClInclude Include="..\..\parameter_type.h" />
-    <ClInclude Include="..\..\pow.h" />
+    <ClInclude Include="..\..\platform.h" />
+    <ClInclude Include="..\..\pool.h" />
+    <ClInclude Include="..\..\power.h" />
     <ClInclude Include="..\..\queue.h" />
     <ClInclude Include="..\..\queue_base.h" />
     <ClInclude Include="..\..\smallest.h" />
@@ -186,26 +198,37 @@
     <ClCompile Include="..\..\crc32.cpp" />
     <ClCompile Include="..\..\crc64_ecma.cpp" />
     <ClCompile Include="..\..\crc8_ccitt.cpp" />
+    <ClCompile Include="..\..\error_handler.cpp" />
     <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\test_algorithm.cpp" />
+    <ClCompile Include="..\test_alignment.cpp" />
     <ClCompile Include="..\test_array.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="..\test_bitset.cpp" />
+    <ClCompile Include="..\test_checksum.cpp" />
     <ClCompile Include="..\test_container.cpp" />
     <ClCompile Include="..\test_crc.cpp" />
     <ClCompile Include="..\test_cyclic_value.cpp" />
     <ClCompile Include="..\test_deque.cpp" />
+    <ClCompile Include="..\test_endian.cpp" />
     <ClCompile Include="..\test_enum_type.cpp" />
+    <ClCompile Include="..\test_error_handler.cpp" />
     <ClCompile Include="..\test_exception.cpp" />
+    <ClCompile Include="..\test_fnv_1.cpp" />
     <ClCompile Include="..\test_forward_list.cpp" />
     <ClCompile Include="..\test_function.cpp" />
+    <ClCompile Include="..\test_functional.cpp" />
+    <ClCompile Include="..\test_hash.cpp" />
+    <ClCompile Include="..\test_instance_count.cpp" />
     <ClCompile Include="..\test_integral_limits.cpp" />
     <ClCompile Include="..\test_largest.cpp" />
     <ClCompile Include="..\test_list.cpp" />
     <ClCompile Include="..\test_maths.cpp" />
     <ClCompile Include="..\test_numeric.cpp" />
     <ClCompile Include="..\test_observer.cpp" />
+    <ClCompile Include="..\test_pool.cpp" />
     <ClCompile Include="..\test_queue.cpp" />
     <ClCompile Include="..\test_smallest.cpp" />
     <ClCompile Include="..\test_stack.cpp" />
