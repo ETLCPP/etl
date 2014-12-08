@@ -170,5 +170,47 @@ namespace
 
       CHECK_EQUAL(5, value);
     }
+
+    //*************************************************************************
+    TEST(test_assignment)
+    {
+      etl::cyclic_value<int, 2, 7> value1;
+      etl::cyclic_value<int, 3, 8> value2;
+
+      value1 = value2;
+      CHECK((int)value1 == (int)value2);
+
+      value1 = 4;
+      CHECK((int)value1 == 4);
+    }
+
+    //*************************************************************************
+    TEST(test_equality)
+    {
+      etl::cyclic_value<int, 2, 7> value1;
+      etl::cyclic_value<int, 3, 8> value2;
+      etl::cyclic_value<int, 3, 9> value3;
+
+      CHECK(value1 != value2);
+      CHECK(value2 == value3);
+    }
+
+    //*************************************************************************
+    TEST(test_swap)
+    {
+      etl::cyclic_value<int> compare1;
+      etl::cyclic_value<int> compare2;
+
+      compare1.set(2, 7);
+      compare2.set(3, 8);
+
+      etl::cyclic_value<int> data1(compare1);
+      etl::cyclic_value<int> data2(compare2);
+
+      swap(data1, data2);
+
+      CHECK(data1 == compare2);
+      CHECK(data2 == compare1);
+    }
   };
 }
