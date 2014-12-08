@@ -33,16 +33,19 @@ SOFTWARE.
 #ifndef __ETL_VECTOR_BASE__
 #define __ETL_VECTOR_BASE__
 
-#include <cstddef>
+#include <stddef.h>
 
 #include "exception.h"
 
+#ifndef ETL_THROW_EXCEPTIONS
+#include "error_handler.h"
+#endif
+
 namespace etl
 {
-#ifdef ETL_USE_EXCEPTIONS
   //***************************************************************************
   ///\ingroup vector
-  /// exception base  for vectors
+  /// exception base for vectors
   //***************************************************************************
   class vector_exception : public exception
   {
@@ -63,21 +66,7 @@ namespace etl
   public:
 
     vector_full()
-      : vector_exception("vector full")
-    {
-    }
-  };
-
-  //***************************************************************************
-  ///\ingroup vector
-  /// Vector empty exception.
-  //***************************************************************************
-  class vector_empty : public vector_exception
-  {
-  public:
-
-    vector_empty()
-      : vector_exception("vector empty")
+      : vector_exception("vector: full")
     {
     }
   };
@@ -91,7 +80,7 @@ namespace etl
   public:
 
     vector_out_of_bounds()
-      : vector_exception("vector out of bounds")
+      : vector_exception("vector: out of bounds")
     {
     }
   };
@@ -105,11 +94,10 @@ namespace etl
   public:
 
     vector_iterator()
-      : vector_exception("vector iterator error")
+      : vector_exception("vector: iterator error")
     {
     }
   };
-#endif
 
   //***************************************************************************
   ///\ingroup vector
@@ -167,6 +155,15 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Returns the remaining capacity.
+    ///\return The remaining capacity.
+    //*************************************************************************
+    size_t available() const
+    {
+      return max_size() - size();
+    }
+
+    //*************************************************************************
     /// Clears the vector.
     //*************************************************************************
     void clear()
@@ -176,14 +173,18 @@ namespace etl
 
     //*************************************************************************
     /// Increases the size of the vector by one, but does not initialise the new element.
-    /// If ETL_USE_EXCEPTIONS is defined, throws a vector_full if the vector is already full.
+    /// If ETL_THROW_EXCEPTIONS is defined, throws a vector_full if the vector is already full.
     //*************************************************************************
     void push_back()
     {
-#ifdef ETL_USE_EXCEPTIONS
+#ifdef ETL_THROW_EXCEPTIONS
       if (current_size == MAX_SIZE)
       {
         throw vector_full();
+      }
+#else
+      {
+        error_handler::
       }
 #endif
 
