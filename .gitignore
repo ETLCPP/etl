@@ -2,9 +2,15 @@
 #################
 ## Personal
 #################
-docs/
+docs/html
 test/vs2013/Debug
 test/vs2013/Release
+test/vs2010/Debug
+test/vs2010/Release
+test/keil/Debug
+test/keil/Release
+test/keil/Objects
+test/keil/Listings
 
 #################
 ## Eclipse
