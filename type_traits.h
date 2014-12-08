@@ -29,7 +29,8 @@ SOFTWARE.
 #ifndef __ETL_TYPE_TRAITS__
 #define __ETL_TYPE_TRAITS__
 
-#include <cstddef>
+#include <stddef.h>
+
 #include "nullptr.h"
 
 ///\defgroup type_traits type_traits
@@ -46,6 +47,7 @@ namespace etl
 	  static const T value = VALUE;
 
 	  typedef T value_type;
+    typedef integral_constant<T, VALUE> type;
 
 	  operator value_type() const
 	  {
@@ -206,18 +208,18 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_fundamental : integral_constant<bool, is_arithmetic<T>::value ||
                                                                         is_void<T>::value  ||
-                                                                        is_same<std::nullptr_t,
+                                                                        is_same<nullptr_t,
                                                                   typename remove_cv<T>::type>::value> {};
 
   /// is_compound
   ///\ingroup type_traits
-  template <typename T> struct is_compound : std::integral_constant<bool, !std::is_fundamental<T>::value> {};
+  template <typename T> struct is_compound : integral_constant<bool, !is_fundamental<T>::value> {};
 
   /// is_array
   ///\ingroup type_traits
   template <typename T> struct is_array : false_type {};
   template <typename T> struct is_array<T[]> : true_type {};
-  template <typename T, std::size_t N> struct is_array<T[N]> : true_type {};
+  template <typename T, size_t N> struct is_array<T[N]> : true_type {};
 
   /// is_pointer
   ///\ingroup type_traits
@@ -274,55 +276,55 @@ namespace etl
   /// extent
   ///\ingroup type_traits
   template <typename T, size_t N = 0>
-  struct extent : std::integral_constant<std::size_t, 0> {};
+  struct extent : integral_constant<size_t, 0> {};
 
   template <typename T>
-  struct extent<T[], 0> : std::integral_constant<std::size_t, 0> {};
+  struct extent<T[], 0> : integral_constant<size_t, 0> {};
 
   template <typename T, size_t N>
-  struct extent<T[], N> : std::integral_constant<std::size_t, std::extent<T, N - 1>::value> {};
+  struct extent<T[], N> : integral_constant<size_t, extent<T, N - 1>::value> {};
 
-  template <typename T, std::size_t N>
-  struct extent<T[N], 0> : std::integral_constant<std::size_t, N> {};
+  template <typename T, size_t N>
+  struct extent<T[N], 0> : integral_constant<size_t, N> {};
 
-  template <typename T, std::size_t I, size_t N>
-  struct extent<T[I], N> : std::integral_constant<std::size_t, std::extent<T, N - 1>::value> {};
+  template <typename T, size_t I, size_t N>
+  struct extent<T[I], N> : integral_constant<size_t, extent<T, N - 1>::value> {};
 
   /// remove_extent
   ///\ingroup type_traits
   template <typename T> struct remove_extent { typedef T type; };
   template <typename T> struct remove_extent<T[]> { typedef T type; };
-  template <typename T, std::size_t N> struct remove_extent<T[N]> { typedef T type;};
+  template <typename T, size_t N> struct remove_extent<T[N]> { typedef T type;};
 
   /// remove_all_extents
   ///\ingroup type_traits
   template <typename T> struct remove_all_extents { typedef T type;};
   template <typename T> struct remove_all_extents<T[]> { typedef typename remove_all_extents<T>::type type; };
-  template <typename T, std::size_t N> struct remove_all_extents<T[N]> { typedef typename remove_all_extents<T>::type type; };
+  template <typename T, size_t N> struct remove_all_extents<T[N]> { typedef typename remove_all_extents<T>::type type; };
 
   /// rank
   ///\ingroup type_traits
-  template <typename T>struct rank : integral_constant<std::size_t, 0> {};
-  template <typename T> struct rank<T[]> : public integral_constant<std::size_t, rank<T>::value + 1> {};
-  template <typename T, size_t N> struct rank<T[N]> : public integral_constant<std::size_t, rank<T>::value + 1> {};
+  template <typename T>struct rank : integral_constant<size_t, 0> {};
+  template <typename T> struct rank<T[]> : public integral_constant<size_t, rank<T>::value + 1> {};
+  template <typename T, size_t N> struct rank<T[N]> : public integral_constant<size_t, rank<T>::value + 1> {};
 
   /// Alignment templates.
   /// These require compiler specific intrinsics.
   ///\ingroup type_traits
 #ifdef COMPILER_MICROSOFT
-  template <typename T> struct alignment_of : integral_constant <size_t, size_t(__alignof(T))> {};
-#endif
-
-#ifdef COMPILER_KEIL_ARM
-  template <typename T> struct alignment_of : integral_constant <size_t, size_t(__alignof__(T))> {};
-#endif
-
-#ifdef COMPILER_IAR_ARM
-  template <typename T> struct alignment_of : integral_constant <size_t, size_t(__ALIGNOF__(T))> {};
+  template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof(T))> {};
 #endif
 
 #ifdef COMPILER_GCC
-  template <typename T> struct alignment_of : integral_constant <size_t, size_t(__alignof__(T))> {};
+  template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof__(T))> {};
+#endif
+	
+#ifdef COMPILER_KEIL
+  template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof__(T))> {};
+#endif
+
+#ifdef COMPILER_IAR
+  template <typename T> struct alignment_of : integral_constant<size_t, size_t(__ALIGNOF__(T))> {};
 #endif
 
   /// Specialisation of 'alignment_of' for 'void'.
