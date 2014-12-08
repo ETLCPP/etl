@@ -188,14 +188,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_top_exception)
-    {
-      etl::stack<int, 4> stack;
-
-      CHECK_THROW(stack.top(), etl::stack_empty);
-    }
-
-    //*************************************************************************
     TEST(test_multiple_push)
     {
       etl::stack<int, 4> stack;
