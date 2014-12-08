@@ -30,7 +30,7 @@ SOFTWARE.
 #define __ETL_FUNCTIONAL__
 
 ///\defgroup functional functional
-///\ingroup Utilities
+///\ingroup utilities
 
 ///\defgroup reference_wrapper reference_wrapper
 ///\ingroup functional
@@ -58,14 +58,15 @@ namespace etl
       return *t;
     }
 
+    reference_wrapper<T>& operator = (T value)
+    {
+      *t = value;
+      return *this;
+    }
+    
     T& get() const
     {
       return *t;
-    }
-
-    T* get_pointer() const
-    {
-      return t;
     }
 
   private:
