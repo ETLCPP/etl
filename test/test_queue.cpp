@@ -130,14 +130,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_front_exception)
-    {
-      etl::queue<int, 4> queue;
-
-      CHECK_THROW(queue.front(), etl::queue_empty);
-    }
-
-    //*************************************************************************
     TEST(test_back)
     {
       etl::queue<int, 4> queue;
@@ -166,14 +158,6 @@ namespace
 
       queue.push(3);
       CHECK_EQUAL(3, constQueue.back());
-    }
-
-    //*************************************************************************
-    TEST(test_back_exception)
-    {
-      etl::queue<int, 4> queue;
-
-      CHECK_THROW(queue.back(), etl::queue_empty);
     }
 
     //*************************************************************************
