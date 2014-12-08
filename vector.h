@@ -29,7 +29,7 @@ SOFTWARE.
 #ifndef __ETL_VECTOR__
 #define __ETL_VECTOR__
 
-#include <cstddef>
+#include <stddef.h>
 #include <iterator>
 
 #include "ivector.h"
