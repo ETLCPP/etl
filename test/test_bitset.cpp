@@ -141,6 +141,26 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_string_set)
+    {
+      std::bitset<60> compare("110001001000110100010101100111001100010010001101000101011001");
+      etl::bitset<60> data;
+
+      data.set("110001001000110100010101100111001100010010001101000101011001");
+
+      CHECK_EQUAL(compare.size(), data.size());
+      CHECK_EQUAL(compare.count(), data.count());
+      CHECK_EQUAL(compare.none(), data.none());
+      CHECK_EQUAL(compare.any(), data.any());
+      CHECK_EQUAL(compare.all(), data.all());
+
+      for (size_t i = 0; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(compare.test(i), data.test(i));
+      }
+    }
+
+    //*************************************************************************
     TEST(test_position_set)
     {
       std::bitset<60> compare;
@@ -148,10 +168,8 @@ namespace
 
       for (size_t i = 0; i < data.size(); ++i)
       {
-        compare.set(i, true);
-        data.set(i++, true);
-        compare.set(i, false);
-        data.set(i, false);
+        compare.set(i, (i % 2) == 0);
+        data.set(i, (i % 2) == 0);
       }
 
       CHECK_EQUAL(compare.size(),  data.size());
@@ -231,11 +249,8 @@ namespace
 
       for (size_t i = 0; i < data.size(); ++i)
       {
-        compare[i] = true;
-        data[i++]  = true;
-
-        compare[i] = false;
-        data[i]    = false;
+        compare[i] = (i % 2) == 0;
+        data[i]    = (i % 2) == 0;
       }
 
       for (size_t i = 0; i < data.size(); ++i)
@@ -548,8 +563,21 @@ namespace
     //*************************************************************************
     TEST(test_big_bitset)
     {
-      std::bitset<1000000> compare;
-      etl::bitset<1000000> data;
+      std::bitset<10000> compare;
+      etl::bitset<10000> data;
+
+      for (size_t i = 0; i < data.size(); ++i)
+      {
+        compare.set(i, (i % 2) == 0);
+        data.set(i, (i % 2) == 0);
+      }
+
+      CHECK_EQUAL(compare.test(64), data.test(64));
+
+      for (size_t i = 0; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(compare.test(i), data.test(i));
+      }
 
       compare.flip();
       data.flip();
@@ -572,6 +600,137 @@ namespace
       for (size_t i = 0; i < data.size(); ++i)
       {
         CHECK_EQUAL(compare.test(i), data.test(i));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_find_first)
+    {
+      etl::bitset<6> data;
+
+      data.set("000000");
+      CHECK_EQUAL(0, data.find_first(false));
+      CHECK_EQUAL(6, data.find_first(true));
+
+      data.set("111111");
+      CHECK_EQUAL(6, data.find_first(false));
+      CHECK_EQUAL(0, data.find_first(true));
+
+      data.set("000001");
+      CHECK_EQUAL(1, data.find_first(false));
+      CHECK_EQUAL(0, data.find_first(true));
+
+      data.set("100000");
+      CHECK_EQUAL(0, data.find_first(false));
+      CHECK_EQUAL(5, data.find_first(true));
+
+      data.set("100001");
+      CHECK_EQUAL(1, data.find_first(false));
+      CHECK_EQUAL(0, data.find_first(true));
+
+      data.set("001110");
+      CHECK_EQUAL(0, data.find_first(false));
+      CHECK_EQUAL(1, data.find_first(true));
+
+      data.set("110001");
+      CHECK_EQUAL(1, data.find_first(false));
+      CHECK_EQUAL(0, data.find_first(true));
+    }
+
+    //*************************************************************************
+    TEST(test_find_next)
+    {
+      etl::bitset<6> data;
+
+      data.set("000000");
+      CHECK_EQUAL(0, data.find_next(false, 0));
+      CHECK_EQUAL(1, data.find_next(false, 1));
+      CHECK_EQUAL(6, data.find_next(true,  2));
+
+      data.set("111111");
+      CHECK_EQUAL(0, data.find_next(true,  0));
+      CHECK_EQUAL(1, data.find_next(true,  1));
+      CHECK_EQUAL(6, data.find_next(false, 2));
+
+      data.set("001110");
+      CHECK_EQUAL(0, data.find_next(false, 0));
+      CHECK_EQUAL(1, data.find_next(true,  0));
+      CHECK_EQUAL(4, data.find_next(false, 1));
+
+      data.set("110001");
+      CHECK_EQUAL(0, data.find_next(true,  0));
+      CHECK_EQUAL(1, data.find_next(false, 0));
+      CHECK_EQUAL(4, data.find_next(true,  1));
+    }
+
+
+    //*************************************************************************
+    TEST(test_swap)
+    {
+      etl::bitset<6> compare1("101010");
+      etl::bitset<6> compare2("010101");
+
+      etl::bitset<6> data1(compare1);
+      etl::bitset<6> data2(compare2);
+
+      swap(data1, data2);
+
+      CHECK(data1 == compare2);
+      CHECK(data2 == compare1);
+    }
+
+    //*************************************************************************
+    TEST(test_iterator)
+    {
+      typedef etl::bitset<16> Bitset;
+
+      Bitset data("1111000011001010");
+      Bitset data2(data);
+
+      int i;
+
+      // Read
+      Bitset::iterator b1 = data.begin();
+      Bitset::iterator e1 = data.end();
+
+      i = 0;
+      while (b1 != e1)
+      {
+        CHECK_EQUAL(data[i], *b1);
+        ++b1;
+        ++i;
+      }
+
+      Bitset::iterator b2 = data2.begin();
+      Bitset::iterator e2 = data2.end();
+
+      // Write
+      i = 0;
+      while (b2 != e2)
+      {
+        *b2 = !*b2;
+        CHECK_EQUAL(!data[i], *b2);
+        ++b2;
+        ++i;
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_const_iterator)
+    {
+      typedef etl::bitset<16> Bitset;
+      Bitset data("1111000011001010");
+
+      // const_iterator
+      Bitset::const_iterator b1 = data.cbegin();
+      Bitset::const_iterator e1 = data.cend();
+
+      int i = 0;
+      while (b1 != e1)
+      {
+        CHECK_EQUAL(data[i], *b1);
+        ++b1;
+        ++i;
       }
     }
   };
