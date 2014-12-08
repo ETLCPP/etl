@@ -34,12 +34,15 @@ SOFTWARE.
 ///\ingroup etl
 
 ///\defgroup maths Maths
+/// A set of mathematical templates.
 ///\ingroup etl
 
 ///\defgroup patterns Patterns
+/// A set of templated design patterns.
 ///\ingroup etl
 
-///\defgroup crc CRC calculations
+///\defgroup crc CRC
+/// A set of CRC calculations
 ///\ingroup maths
 
 ///\ingroup etl
