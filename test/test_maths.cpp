@@ -27,7 +27,9 @@ SOFTWARE.
 #include <UnitTest++/UnitTest++.h>
 
 #include "../log.h"
-#include "../pow.h"
+#include "../power.h"
+#include "../fibonacci.h"
+#include "../factorial.h"
 
 namespace
 {		
@@ -126,40 +128,110 @@ namespace
       int actual;
 
       // 2^1
-      actual = etl::pow<2, 1>::value;
+      actual = etl::power<2, 1>::value;
       CHECK_EQUAL(2, actual);
 
       // 3^2
-      actual = etl::pow<3, 2>::value;
+      actual = etl::power<3, 2>::value;
       CHECK_EQUAL(9, actual);
 
       // 4^3
-      actual = etl::pow<4, 3>::value;
+      actual = etl::power<4, 3>::value;
       CHECK_EQUAL(64, actual);
 
       // 5^4
-      actual = etl::pow<5, 4>::value;
+      actual = etl::power<5, 4>::value;
       CHECK_EQUAL(625, actual);
 
       // 6^5
-      actual = etl::pow<6, 5>::value;
+      actual = etl::power<6, 5>::value;
       CHECK_EQUAL(7776, actual);
 
       // 7^6
-      actual = etl::pow<7, 6>::value;
+      actual = etl::power<7, 6>::value;
       CHECK_EQUAL(117649, actual);
 
       // 8^7
-      actual = etl::pow<8, 7>::value;
+      actual = etl::power<8, 7>::value;
       CHECK_EQUAL(2097152, actual);
 
       // 9^8
-      actual = etl::pow<9, 8>::value;
+      actual = etl::power<9, 8>::value;
       CHECK_EQUAL(43046721, actual);
 
       // 10^9
-      actual = etl::pow<10, 9>::value;
+      actual = etl::power<10, 9>::value;
       CHECK_EQUAL(1000000000, actual);
+    }
+
+    //*************************************************************************
+    TEST(test_fibbonacci)
+    {
+      CHECK_EQUAL(0,          (size_t)etl::fibonacci<0>::value);
+      CHECK_EQUAL(1,          (size_t)etl::fibonacci<1>::value);
+      CHECK_EQUAL(1,          (size_t)etl::fibonacci<2>::value);
+      CHECK_EQUAL(2,          (size_t)etl::fibonacci<3>::value);
+      CHECK_EQUAL(3,          (size_t)etl::fibonacci<4>::value);
+      CHECK_EQUAL(5,          (size_t)etl::fibonacci<5>::value);
+      CHECK_EQUAL(8,          (size_t)etl::fibonacci<6>::value);
+      CHECK_EQUAL(13,         (size_t)etl::fibonacci<7>::value);
+      CHECK_EQUAL(21,         (size_t)etl::fibonacci<8>::value);
+      CHECK_EQUAL(34,         (size_t)etl::fibonacci<9>::value);
+      CHECK_EQUAL(55,         (size_t)etl::fibonacci<10>::value);
+      CHECK_EQUAL(89,         (size_t)etl::fibonacci<11>::value);
+      CHECK_EQUAL(144,        (size_t)etl::fibonacci<12>::value);
+      CHECK_EQUAL(233,        (size_t)etl::fibonacci<13>::value);
+      CHECK_EQUAL(377,        (size_t)etl::fibonacci<14>::value);
+      CHECK_EQUAL(610,        (size_t)etl::fibonacci<15>::value);
+      CHECK_EQUAL(987,        (size_t)etl::fibonacci<16>::value);
+      CHECK_EQUAL(1597,       (size_t)etl::fibonacci<17>::value);
+      CHECK_EQUAL(2584,       (size_t)etl::fibonacci<18>::value);
+      CHECK_EQUAL(4181,       (size_t)etl::fibonacci<19>::value);
+      CHECK_EQUAL(6765,       (size_t)etl::fibonacci<20>::value);
+      CHECK_EQUAL(10946,      (size_t)etl::fibonacci<21>::value);
+      CHECK_EQUAL(17711,      (size_t)etl::fibonacci<22>::value);
+      CHECK_EQUAL(28657,      (size_t)etl::fibonacci<23>::value);
+      CHECK_EQUAL(46368,      (size_t)etl::fibonacci<24>::value);
+      CHECK_EQUAL(75025,      (size_t)etl::fibonacci<25>::value);
+      CHECK_EQUAL(121393,     (size_t)etl::fibonacci<26>::value);
+      CHECK_EQUAL(196418,     (size_t)etl::fibonacci<27>::value);
+      CHECK_EQUAL(317811,     (size_t)etl::fibonacci<28>::value);
+      CHECK_EQUAL(514229,     (size_t)etl::fibonacci<29>::value);
+      CHECK_EQUAL(832040,     (size_t)etl::fibonacci<30>::value);
+      CHECK_EQUAL(1346269,    (size_t)etl::fibonacci<31>::value);
+      CHECK_EQUAL(2178309,    (size_t)etl::fibonacci<32>::value);
+      CHECK_EQUAL(3524578,    (size_t)etl::fibonacci<33>::value);
+      CHECK_EQUAL(5702887,    (size_t)etl::fibonacci<34>::value);
+      CHECK_EQUAL(9227465,    (size_t)etl::fibonacci<35>::value);
+      CHECK_EQUAL(14930352,   (size_t)etl::fibonacci<36>::value);
+      CHECK_EQUAL(24157817,   (size_t)etl::fibonacci<37>::value);
+      CHECK_EQUAL(39088169,   (size_t)etl::fibonacci<38>::value);
+      CHECK_EQUAL(63245986,   (size_t)etl::fibonacci<39>::value);
+      CHECK_EQUAL(102334155,  (size_t)etl::fibonacci<40>::value);
+      CHECK_EQUAL(165580141,  (size_t)etl::fibonacci<41>::value);
+      CHECK_EQUAL(267914296,  (size_t)etl::fibonacci<42>::value);
+      CHECK_EQUAL(433494437,  (size_t)etl::fibonacci<43>::value);
+      CHECK_EQUAL(701408733,  (size_t)etl::fibonacci<44>::value);
+      CHECK_EQUAL(1134903170, (size_t)etl::fibonacci<45>::value);
+      CHECK_EQUAL(1836311903, (size_t)etl::fibonacci<46>::value);
+      CHECK_EQUAL(2971215073, (size_t)etl::fibonacci<47>::value);
+    }
+
+    TEST(test_factorial)
+    {
+      CHECK_EQUAL(1,         (size_t)etl::factorial<0>::value);
+      CHECK_EQUAL(1,         (size_t)etl::factorial<1>::value);
+      CHECK_EQUAL(2,         (size_t)etl::factorial<2>::value);
+      CHECK_EQUAL(6,         (size_t)etl::factorial<3>::value);
+      CHECK_EQUAL(24,        (size_t)etl::factorial<4>::value);
+      CHECK_EQUAL(120,       (size_t)etl::factorial<5>::value);
+      CHECK_EQUAL(720,       (size_t)etl::factorial<6>::value);
+      CHECK_EQUAL(5040,      (size_t)etl::factorial<7>::value);
+      CHECK_EQUAL(40320,     (size_t)etl::factorial<8>::value);
+      CHECK_EQUAL(362880,    (size_t)etl::factorial<9>::value);
+      CHECK_EQUAL(3628800,   (size_t)etl::factorial<10>::value);
+      CHECK_EQUAL(39916800,  (size_t)etl::factorial<11>::value);
+      CHECK_EQUAL(479001600, (size_t)etl::factorial<12>::value);
     }
   };
 }
