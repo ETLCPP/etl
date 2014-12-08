@@ -29,7 +29,7 @@ SOFTWARE.
 #ifndef __ETL_DEQUE__
 #define __ETL_DEQUE__
 
-#include <cstddef>
+#include <stddef.h>
 #include <iterator>
 #include <algorithm>
 

@@ -29,7 +29,7 @@ SOFTWARE.
 #ifndef __ETL_CYCLIC_VALUE__
 #define __ETL_CYCLIC_VALUE__
 
-#include <cstddef>
+#include <stddef.h>
 
 ///\defgroup cyclic_value cyclic_value
 /// Provides a value that cycles between two limits.
@@ -54,6 +54,8 @@ namespace etl
 	class cyclic_value
 	{
 	public:
+
+    template <typename U, const U OTHER_FIRST, const U OTHER_LAST> friend class cyclic_value;
 
 		//*************************************************************************
 		/// Constructor.
@@ -207,6 +209,27 @@ namespace etl
 			return temp;
 		}
 
+		//*************************************************************************
+		/// = operator.
+		//*************************************************************************
+		cyclic_value& operator =(T t)
+		{
+			value = t;
+			return *this;
+		}	
+	
+    //*************************************************************************
+    /// = operator.
+    //*************************************************************************
+    template <const T OTHER_FIRST, const T OTHER_LAST>
+    cyclic_value& operator =(const cyclic_value<T, OTHER_FIRST, OTHER_LAST>& other)
+    {
+      value       = other.value;
+      first_value = other.first_value;
+      last_value  = other.last_value;
+      return *this;
+    }
+
     //*************************************************************************
 		/// Gets the first value.
 		//*************************************************************************
@@ -223,12 +246,53 @@ namespace etl
       return last_value;
     }
 
+    //*************************************************************************
+    /// Swaps the values.
+    //*************************************************************************
+    template <const T OTHER_FIRST, const T OTHER_LAST>
+    void swap(cyclic_value<T, OTHER_FIRST, OTHER_LAST>& other)
+    {
+      std::swap(first_value, other.first_value);
+      std::swap(last_value,  other.last_value);
+      std::swap(value,       other.value);
+    }
+
 	private:
 
     T value;       ///< The current value.
     T first_value; ///< The first value in the range.
 		T last_value;  ///< The last value in the range.
 	};
+
+  //*************************************************************************
+  /// Swaps the values.
+  //*************************************************************************
+  template <typename T, const T LHS_FIRST, const T LHS_LAST, const T RHS_FIRST, const T RHS_LAST>
+  void swap(cyclic_value<T, LHS_FIRST, LHS_LAST>& lhs,
+            cyclic_value<T, RHS_FIRST, RHS_LAST>& rhs)
+  {
+    lhs.swap(rhs);
+  }
+
+  //*************************************************************************
+  /// Equality operator.
+  //*************************************************************************
+  template <typename T, const T LHS_FIRST, const T LHS_LAST, const T RHS_FIRST, const T RHS_LAST>
+  bool operator == (const cyclic_value<T, LHS_FIRST, LHS_LAST>& lhs,
+                    const cyclic_value<T, RHS_FIRST, RHS_LAST>& rhs)
+  {
+    return static_cast<T>(lhs) == static_cast<T>(rhs);
+  }
+
+  //*************************************************************************
+  /// Inequality operator.
+  //*************************************************************************
+  template <typename T, const T LHS_FIRST, const T LHS_LAST, const T RHS_FIRST, const T RHS_LAST>
+  bool operator != (const cyclic_value<T, LHS_FIRST, RHS_LAST>& lhs,
+                    const cyclic_value<T, RHS_FIRST, RHS_LAST>& rhs)
+  {
+    return !(lhs == rhs);
+  }
 }
 
 #endif
