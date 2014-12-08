@@ -30,6 +30,7 @@ SOFTWARE.
 #define __ETL_INTEGRAL_LIMITS__
 
 #include <climits>
+#include <stddef.h>
 
 #include "type_traits.h"
 
