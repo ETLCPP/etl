@@ -29,7 +29,8 @@ SOFTWARE.
 #ifndef __ETL_CONTAINER__
 #define __ETL_CONTAINER__
 
-#include <cstddef>
+#include <stddef.h>
+#include <iterator>
 
 ///\defgroup container container
 ///\ingroup utilities
@@ -56,6 +57,36 @@ namespace etl
 		return container.begin();
 	}
 
+  //*****************************************************************************
+  /// Get the 'begin' const_iterator for a container.
+  ///\ingroup container
+  //*****************************************************************************
+  template<typename TContainer>
+  typename TContainer::const_iterator cbegin(const TContainer& container)
+  {
+    return container.cbegin();
+  }
+
+  //*****************************************************************************
+  /// Get the 'begin' reverse_iterator for a container.
+  ///\ingroup container
+  //*****************************************************************************
+  template<typename TContainer>
+  typename TContainer::reverse_iterator rbegin(const TContainer& container)
+  {
+    return container.rbegin();
+  }
+
+  //*****************************************************************************
+  /// Get the 'begin' reverse_iterator for a container.
+  ///\ingroup container
+  //*****************************************************************************
+  template<typename TContainer>
+  typename TContainer::reverse_iterator crbegin(const TContainer& container)
+  {
+    return container.crbegin();
+  }
+
 	//*****************************************************************************
 	/// Get the 'end' iterator for a container.
   ///\ingroup container
@@ -76,15 +107,85 @@ namespace etl
 		return container.end();
 	}
 
+  //*****************************************************************************
+  /// Get the 'end' const_iterator for a container.
+  ///\ingroup container
+  //*****************************************************************************
+  template<typename TContainer>
+  typename TContainer::const_iterator cend(const TContainer& container)
+  {
+    return container.cend();
+  }
+
+  //*****************************************************************************
+  /// Get the 'end' reverse_iterator for a container.
+  ///\ingroup container
+  //*****************************************************************************
+  template<typename TContainer>
+  typename TContainer::const_iterator rend(const TContainer& container)
+  {
+    return container.rend();
+  }
+
+  //*****************************************************************************
+  /// Get the 'end' reverse_iterator for a container.
+  ///\ingroup container
+  //*****************************************************************************
+  template<typename TContainer>
+  typename TContainer::reverse_iterator crend(const TContainer& container)
+  {
+    return container.crend();
+  }
+
 	//*****************************************************************************
-	/// Get the 'begin' iterator for an array.
+	/// Get the 'begin' pointer for an array.
   ///\ingroup container
 	//*****************************************************************************
 	template<typename TValue, const size_t ARRAY_SIZE>
 	TValue* begin(TValue(&data)[ARRAY_SIZE])
 	{
-		return (&data[0]);
+		return &data[0];
 	}
+
+  //*****************************************************************************
+  /// Get the 'begin' const iterator for an array.
+  ///\ingroup container
+  //*****************************************************************************
+  template<typename TValue, const size_t ARRAY_SIZE>
+  const TValue* begin(const TValue(&data)[ARRAY_SIZE])
+  {
+    return &data[0];
+  }
+
+  //*****************************************************************************
+  /// Get the 'begin' const iterator for an array.
+  ///\ingroup container
+  //*****************************************************************************
+  template<typename TValue, const size_t ARRAY_SIZE>
+  const TValue* cbegin(const TValue(&data)[ARRAY_SIZE])
+  {
+    return &data[0];
+  }
+
+  //*****************************************************************************
+  /// Get the 'begin' reverse_iterator for an array.
+  ///\ingroup container
+  //*****************************************************************************
+  template<typename TValue, const size_t ARRAY_SIZE>
+  std::reverse_iterator<TValue*> rbegin(const TValue(&data)[ARRAY_SIZE])
+  {
+    return std::reverse_iterator<TValue*>(&data[ARRAY_SIZE]);
+  }
+
+  //*****************************************************************************
+  /// Get the 'begin' const reverse_iterator for an array.
+  ///\ingroup container
+  //*****************************************************************************
+  template<typename TValue, const size_t ARRAY_SIZE>
+  std::reverse_iterator<const TValue*> crbegin(const TValue(&data)[ARRAY_SIZE])
+  {
+    return std::reverse_iterator<const TValue*>(&data[ARRAY_SIZE]);
+  }
 
 	//*****************************************************************************
 	/// Get the 'end' iterator for an array.
@@ -93,9 +194,49 @@ namespace etl
 	template<typename TValue, const size_t ARRAY_SIZE>
 	TValue* end(TValue(&data)[ARRAY_SIZE])
 	{
-		return (&data[ARRAY_SIZE]);
+		return &data[ARRAY_SIZE];
 	}
 
+  //*****************************************************************************
+  /// Get the 'end' const iterator for an array.
+  ///\ingroup container
+  //*****************************************************************************
+  template<typename TValue, const size_t ARRAY_SIZE>
+  const TValue* end(const TValue(&data)[ARRAY_SIZE])
+  {
+    return &data[ARRAY_SIZE];
+  }
+
+  //*****************************************************************************
+  /// Get the 'end' const iterator for an array.
+  ///\ingroup container
+  //*****************************************************************************
+  template<typename TValue, const size_t ARRAY_SIZE>
+  const TValue* cend(const TValue(&data)[ARRAY_SIZE])
+  {
+    return &data[ARRAY_SIZE];
+  }
+
+  //*****************************************************************************
+  /// Get the 'end' reverse_iterator for an array.
+  ///\ingroup container
+  //*****************************************************************************
+  template<typename TValue, const size_t ARRAY_SIZE>
+  std::reverse_iterator<TValue*> rend(const TValue(&data)[ARRAY_SIZE])
+  {
+    return std::reverse_iterator<TValue*>(&data[0]);
+  }
+
+  //*****************************************************************************
+  /// Get the 'end' const reverse_iterator for an array.
+  ///\ingroup container
+  //*****************************************************************************
+  template<typename TValue, const size_t ARRAY_SIZE>
+  std::reverse_iterator<const TValue*> crend(const TValue(&data)[ARRAY_SIZE])
+  {
+    return std::reverse_iterator<const TValue*>(&data[0]);
+  }
+  
   //*****************************************************************************
 	/// Get the next iterator.
   ///\ingroup container
