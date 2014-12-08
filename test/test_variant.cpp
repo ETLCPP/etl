@@ -324,9 +324,9 @@ namespace
           s = s_;
         }
 
-        char c;
-        int i;
+        char c;       
         std::string s;
+        int i;
       };
 
       test_variant_1 variant;
