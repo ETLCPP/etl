@@ -65,6 +65,7 @@ namespace etl
 
   //***************************************************************************
   /// Base exception for the variant class.
+  ///\ingroup variant
   //***************************************************************************
   class variant_exception : public exception
   {
@@ -76,9 +77,8 @@ namespace etl
   };
 
   //***************************************************************************
-  /// <summary>
   /// 'Unsupported type' exception for the variant class.
-  /// </summary>
+  ///\ingroup variant
   //***************************************************************************
   class variant_incorrect_type_exception : public variant_exception
   {
@@ -90,9 +90,8 @@ namespace etl
   };
 
   //***************************************************************************
-  /// <summary>
   /// 'type Id' exception for the variant class.
-  /// </summary>
+  ///\ingroup variant
   //***************************************************************************
   class variant_invalid_type_id_exception : public variant_exception
   {
@@ -106,6 +105,7 @@ namespace etl
   //***************************************************************************
   /// A template class that can store any of the types defined in the template parameter list.
   /// Supports up to 8 types.
+  ///\ingroup variant
   //***************************************************************************
   template <typename T1,
             typename T2 = __private_variant__::no_type<2>,

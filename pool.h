@@ -86,6 +86,7 @@ namespace etl
   //*************************************************************************
   /// A templated pool implementation that uses a fixed size pool.
   /// SIZE_ elements will be always be constructed.
+  ///\ingroup pool
   //*************************************************************************
   template <typename T, const size_t SIZE_>
   class pool
