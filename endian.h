@@ -50,7 +50,7 @@ namespace etl
       little,
       big
     };
-	
+
     DECLARE_ENUM_TYPE(endian, int)
     ENUM_TYPE(little, "little")
     ENUM_TYPE(big,    "big")
@@ -63,6 +63,11 @@ namespace etl
   //***************************************************************************
   struct endianness
   {
+    endianness()
+      : ETL_ENDIAN_TEST(0x0011)
+    {
+    }
+
     endian operator ()() const
     {
       return endian(*this);
@@ -70,12 +75,12 @@ namespace etl
 
     operator endian() const
     {
-      return (*reinterpret_cast<const uint8_t*>(&TEST) == 0x11) ? endian::little : endian::big;
+      return (*reinterpret_cast<const uint8_t*>(&ETL_ENDIAN_TEST) == 0x11) ? endian::little : endian::big;
     }
 
   private:
 
-    static const uint16_t TEST = 0x0011;
+    const uint16_t ETL_ENDIAN_TEST;
   };
 }
 
