@@ -77,7 +77,7 @@
 1414845610 u:\users\john\documents\programming\github\unittest-cpp\unittest++\testresults.h
 	"HelperMacros.h"
 
-1414845610 u:\users\john\documents\programming\github\unittest-cpp\unittest++\memoryoutstream.h
+1417970069 u:\users\john\documents\programming\github\unittest-cpp\unittest++\memoryoutstream.h
 	"Config.h"
 	"HelperMacros.h"
 	<sstream>
@@ -161,7 +161,7 @@
 1414845610 u:\users\john\documents\programming\github\unittest-cpp\unittest++\reportassert.h
 	"HelperMacros.h"
 
-1416758893 source:u:\users\john\documents\programming\github\etl\test\test_array.cpp
+1418137342 source:u:\users\john\documents\programming\github\etl\test\test_array.cpp
 	<UnitTest++/UnitTest++.h>
 	"../array.h"
 	<array>
@@ -169,14 +169,15 @@
 	<iterator>
 	"../integral_limits.h"
 
-1417203561 u:\users\john\documents\programming\github\etl\array.h
+1418136093 u:\users\john\documents\programming\github\etl\array.h
 	<iterator>
 	<functional>
 	<algorithm>
-	<cstddef>
+	<stddef.h>
 	"exception.h"
 	"type_traits.h"
 	"parameter_type.h"
+	"static_assert.h"
 	"error_handler.h"
 
 1415185403 .h"
@@ -190,16 +191,16 @@
 
 1414586788 ner.h"
 
-1416758196 u:\users\john\documents\programming\github\etl\container.h
-	<cstddef>
+1417962212 u:\users\john\documents\programming\github\etl\container.h
+	<stddef.h>
 	<iterator>
 
-1416585044 source:u:\users\john\documents\programming\github\etl\test\test_crc.cpp
+1417962229 source:u:\users\john\documents\programming\github\etl\test\test_crc.cpp
 	<UnitTest++/UnitTest++.h>
 	<iterator>
 	<string>
 	<vector>
-	<cstdint>
+	<stdint.h>
 	"../crc8_ccitt.h"
 	"../crc16.h"
 	"../crc16_ccitt.h"
@@ -210,38 +211,38 @@
 
 1414929413 ecma.h"
 
-1417108627 u:\users\john\documents\programming\github\etl\crc8_ccitt.h
-	<cstdint>
+1418038787 u:\users\john\documents\programming\github\etl\crc8_ccitt.h
+	<stdint.h>
 	"static_assert.h"
 	"type_traits.h"
 	"endian.h"
 
-1417108627 u:\users\john\documents\programming\github\etl\crc16.h
-	<cstdint>
+1418038787 u:\users\john\documents\programming\github\etl\crc16.h
+	<stdint.h>
 	"static_assert.h"
 	"type_traits.h"
 	"endian.h"
 
-1417108627 u:\users\john\documents\programming\github\etl\crc16_ccitt.h
-	<cstdint>
+1418038636 u:\users\john\documents\programming\github\etl\crc16_ccitt.h
+	<stdint.h>
 	"static_assert.h"
 	"type_traits.h"
 	"endian.h"
 
-1417108627 u:\users\john\documents\programming\github\etl\crc16_kermit.h
-	<cstdint>
+1418038816 u:\users\john\documents\programming\github\etl\crc16_kermit.h
+	<stdint.h>
 	"static_assert.h"
 	"type_traits.h"
 	"endian.h"
 
-1417108958 u:\users\john\documents\programming\github\etl\crc32.h
-	<cstdint>
+1418038787 u:\users\john\documents\programming\github\etl\crc32.h
+	<stdint.h>
 	"static_assert.h"
 	"type_traits.h"
 	"endian.h"
 
-1417108627 u:\users\john\documents\programming\github\etl\crc64_ecma.h
-	<cstdint>
+1418038785 u:\users\john\documents\programming\github\etl\crc64_ecma.h
+	<stdint.h>
 	"static_assert.h"
 	"type_traits.h"
 	"endian.h"
@@ -252,8 +253,8 @@
 
 1415139747 _value.h"
 
-1417113630 u:\users\john\documents\programming\github\etl\cyclic_value.h
-	<cstddef>
+1417962213 u:\users\john\documents\programming\github\etl\cyclic_value.h
+	<stddef.h>
 	<algorithm>
 	"static_assert.h"
 	"exception.h"
@@ -266,15 +267,15 @@
 	<vector>
 	<algorithm>
 
-1416054755 u:\users\john\documents\programming\github\etl\deque.h
-	<cstddef>
+1417962212 u:\users\john\documents\programming\github\etl\deque.h
+	<stddef.h>
 	<iterator>
 	<algorithm>
 	"ideque.h"
 	"container.h"
 
-1417204271 u:\users\john\documents\programming\github\etl\ideque.h
-	<cstddef>
+1417962212 u:\users\john\documents\programming\github\etl\ideque.h
+	<stddef.h>
 	<iterator>
 	"type_traits.h"
 	"deque_base.h"
@@ -291,18 +292,18 @@
 
 1416932458 u:\users\john\documents\programming\github\etl\nullptr.h
 
-1417203561 u:\users\john\documents\programming\github\etl\deque_base.h
-	<cstddef>
+1417962212 u:\users\john\documents\programming\github\etl\deque_base.h
+	<stddef.h>
 	"exception.h"
 
-1416585141 source:u:\users\john\documents\programming\github\etl\test\test_enum_type.cpp
+1418044224 source:u:\users\john\documents\programming\github\etl\test\test_enum_type.cpp
 	<UnitTest++/UnitTest++.h>
 	<string>
 	"../enum_type.h"
 
 1414345217 ype.h"
 
-1417187734 u:\users\john\documents\programming\github\etl\enum_type.h
+1418044080 u:\users\john\documents\programming\github\etl\enum_type.h
 
 1416585513 source:u:\users\john\documents\programming\github\etl\test\test_exception.cpp
 	<UnitTest++/UnitTest++.h>
@@ -350,23 +351,23 @@
 
 1415009648 +/ReportAssertImpl.h>
 
-1417187159 u:\users\john\documents\programming\github\etl\list.h
-	<cstddef>
+1417962213 u:\users\john\documents\programming\github\etl\list.h
+	<stddef.h>
 	"ilist.h"
 	"container.h"
 
-1417203561 u:\users\john\documents\programming\github\etl\ilist.h
+1417962245 u:\users\john\documents\programming\github\etl\ilist.h
 	<iterator>
 	<algorithm>
 	<functional>
-	<cstddef>
+	<stddef.h>
 	"nullptr.h"
 	"list_base.h"
 	"type_traits.h"
 	"parameter_type.h"
 
-1417203561 u:\users\john\documents\programming\github\etl\list_base.h
-	<cstddef>
+1417962213 u:\users\john\documents\programming\github\etl\list_base.h
+	<stddef.h>
 	"exception.h"
 
 1414930704 source:u:\users\john\documents\programming\github\etl\test\test_math.cpp
@@ -374,8 +375,8 @@
 	"../log.h"
 	"../pow.h"
 
-1417106259 u:\users\john\documents\programming\github\etl\log.h
-	<cstddef>
+1417962213 u:\users\john\documents\programming\github\etl\log.h
+	<stddef.h>
 
 1415195892 u:\users\john\documents\programming\github\etl\pow.h
 	<cstddef>
@@ -399,17 +400,17 @@
 	"vector.h"
 	"exception.h"
 
-1416055183 u:\users\john\documents\programming\github\etl\vector.h
-	<cstddef>
+1417962213 u:\users\john\documents\programming\github\etl\vector.h
+	<stddef.h>
 	<iterator>
 	"ivector.h"
 	"container.h"
 
-1417203561 u:\users\john\documents\programming\github\etl\ivector.h
+1417962213 u:\users\john\documents\programming\github\etl\ivector.h
 	<iterator>
 	<algorithm>
 	<functional>
-	<cstddef>
+	<stddef.h>
 	"vector_base.h"
 	"type_traits.h"
 	"parameter_type.h"
@@ -417,8 +418,8 @@
 
 1415195892 se.h"
 
-1417203561 u:\users\john\documents\programming\github\etl\vector_base.h
-	<cstddef>
+1417962213 u:\users\john\documents\programming\github\etl\vector_base.h
+	<stddef.h>
 	"exception.h"
 	"error_handler.h"
 
@@ -429,20 +430,20 @@
 
 1415139315 h"
 
-1415278127 u:\users\john\documents\programming\github\etl\queue.h
-	<cstddef>
+1417962213 u:\users\john\documents\programming\github\etl\queue.h
+	<stddef.h>
 	"iqueue.h"
 	"container.h"
 
-1417203561 u:\users\john\documents\programming\github\etl\iqueue.h
-	<cstddef>
+1417962212 u:\users\john\documents\programming\github\etl\iqueue.h
+	<stddef.h>
 	"queue_base.h"
 	"type_traits.h"
 	"parameter_type.h"
 	"error_handler.h"
 
-1417203561 u:\users\john\documents\programming\github\etl\queue_base.h
-	<cstddef>
+1417962213 u:\users\john\documents\programming\github\etl\queue_base.h
+	<stddef.h>
 	"exception.h"
 
 1416830063 source:u:\users\john\documents\programming\github\etl\test\test_stack.cpp
@@ -450,21 +451,21 @@
 	<stack>
 	"../stack.h"
 
-1415278134 u:\users\john\documents\programming\github\etl\stack.h
-	<cstddef>
+1417962213 u:\users\john\documents\programming\github\etl\stack.h
+	<stddef.h>
 	<algorithm>
 	"istack.h"
 	"container.h"
 
-1417203561 u:\users\john\documents\programming\github\etl\istack.h
-	<cstddef>
+1417962213 u:\users\john\documents\programming\github\etl\istack.h
+	<stddef.h>
 	"stack_base.h"
 	"type_traits.h"
 	"parameter_type.h"
 	"error_handler.h"
 
-1417203561 u:\users\john\documents\programming\github\etl\stack_base.h
-	<cstddef>
+1417962213 u:\users\john\documents\programming\github\etl\stack_base.h
+	<stddef.h>
 	"exception.h"
 
 1416920605 source:u:\users\john\documents\programming\github\etl\test\test_type_traits.cpp
@@ -498,7 +499,7 @@
 	"Checks.h"
 	<cstring>
 
-1414845610 source:u:\users\john\documents\programming\github\unittest-cpp\unittest++\compositetestreporter.cpp
+1417970061 source:u:\users\john\documents\programming\github\unittest-cpp\unittest++\compositetestreporter.cpp
 	"CompositeTestReporter.h"
 	<cstddef>
 
@@ -510,7 +511,7 @@
 1414845610 u:\users\john\documents\programming\github\unittest-cpp\unittest++\testreporter.h
 	"HelperMacros.h"
 
-1414845610 source:u:\users\john\documents\programming\github\unittest-cpp\unittest++\currenttest.cpp
+1417970067 source:u:\users\john\documents\programming\github\unittest-cpp\unittest++\currenttest.cpp
 	"CurrentTest.h"
 	<cstddef>
 
@@ -1032,23 +1033,23 @@
 	<forward_list>
 	<vector>
 
-1416829820 u:\users\john\documents\programming\github\etl\forward_list.h
-	<cstddef>
+1417962212 u:\users\john\documents\programming\github\etl\forward_list.h
+	<stddef.h>
 	"iforward_list.h"
 	"container.h"
 
-1417203561 u:\users\john\documents\programming\github\etl\iforward_list.h
+1417962212 u:\users\john\documents\programming\github\etl\iforward_list.h
 	<iterator>
 	<algorithm>
 	<functional>
-	<cstddef>
+	<stddef.h>
 	"nullptr.h"
 	"forward_list_base.h"
 	"type_traits.h"
 	"parameter_type.h"
 
-1417191901 u:\users\john\documents\programming\github\etl\forward_list_base.h
-	<cstddef>
+1417962212 u:\users\john\documents\programming\github\etl\forward_list_base.h
+	<stddef.h>
 	"exception.h"
 
 1417108626 source:u:\users\john\documents\programming\github\etl\crc16_kermit.cpp
@@ -1066,7 +1067,8 @@
 1416584302 u:\users\john\documents\programming\github\etl\parameter_type.h
 	"type_traits.h"
 
-1417021726 u:\users\john\documents\programming\github\etl\endian.h
+1418138175 u:\users\john\documents\programming\github\etl\endian.h
+	<stdint.h>
 	"enum_type.h"
 
 1416585755 source:u:\users\john\documents\programming\github\etl\test\test_integral_limits.cpp
@@ -1104,8 +1106,8 @@
 	<vector>
 	<algorithm>
 
-1417201768 u:\users\john\documents\programming\github\etl\variant.h
-	<cstdint>
+1417962229 u:\users\john\documents\programming\github\etl\variant.h
+	<stdint.h>
 	"array.h"
 	"largest.h"
 	"exception.h"
@@ -1114,14 +1116,14 @@
 	"static_assert.h"
 	"alignment.h"
 
-1417106259 u:\users\john\documents\programming\github\etl\power.h
-	<cstddef>
+1417962213 u:\users\john\documents\programming\github\etl\power.h
+	<stddef.h>
 
-1417106259 u:\users\john\documents\programming\github\etl\fibonacci.h
-	<cstddef>
+1417962213 u:\users\john\documents\programming\github\etl\fibonacci.h
+	<stddef.h>
 
-1417106259 u:\users\john\documents\programming\github\etl\factorial.h
-	<cstddef>
+1417962213 u:\users\john\documents\programming\github\etl\factorial.h
+	<stddef.h>
 
 1416924043 source:u:\users\john\documents\programming\github\etl\test\test_algorithm.cpp
 	<UnitTest++/UnitTest++.h>
@@ -1171,4 +1173,52 @@
 	<numeric>
 
 1417520183 u:\users\john\documents\programming\github\etl\instance_count.h
+
+1417962701 source:u:\users\john\documents\programming\github\etl\test\test_checksum.cpp
+	<UnitTest++/UnitTest++.h>
+	<iterator>
+	<string>
+	<vector>
+	<stdint.h>
+	"../checksum.h"
+	"../endian.h"
+
+1418042812 u:\users\john\documents\programming\github\etl\checksum.h
+	<stdint.h>
+	"static_assert.h"
+	"type_traits.h"
+	"endian.h"
+
+1417965241 source:u:\users\john\documents\programming\github\etl\test\test_fnv_1.cpp
+	<UnitTest++/UnitTest++.h>
+	<iterator>
+	<string>
+	<vector>
+	<stdint.h>
+	"../fnv_1.h"
+	"../endian.h"
+
+1418042699 u:\users\john\documents\programming\github\etl\fnv_1.h
+	<stdint.h>
+	"static_assert.h"
+	"type_traits.h"
+	"endian.h"
+
+1418044168 source:u:\users\john\documents\programming\github\etl\test\test_endian.cpp
+	<UnitTest++/UnitTest++.h>
+	<string>
+	"../endian.h"
+
+1418137973 source:u:\users\john\documents\programming\github\etl\test\test_hash.cpp
+	<UnitTest++/UnitTest++.h>
+	<iterator>
+	<string>
+	<vector>
+	<stdint.h>
+	"../hash.h"
+
+1418043143 u:\users\john\documents\programming\github\etl\hash.h
+	<stdint.h>
+	"fnv_1.h"
+	"type_traits.h"
 
