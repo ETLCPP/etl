@@ -37,6 +37,7 @@ SOFTWARE.
 #include "exception.h"
 #include "type_traits.h"
 #include "parameter_type.h"
+#include "static_assert.h"
 
 #ifndef ETL_THROW_EXCEPTIONS
 #include "error_handler.h"
@@ -467,6 +468,36 @@ namespace etl
                                          lhs.cend(), 
                                          rhs.cbegin(),
                                          rhs.cend());
+  }
+
+  //*************************************************************************
+  /// Gets a reference to an element in the array.
+  ///\tparam I The index.
+  ///\tparam T The type.
+  ///\tparam N The array size.
+  ///\param a The array.
+  ///\return A reference to the element
+  //*************************************************************************
+  template <std::size_t I, typename T, std::size_t N>
+  inline T& get(array<T, N>& a)
+  {
+    STATIC_ASSERT(I < N, "Index out of bounds");
+    return a[I];
+  }
+
+  //*************************************************************************
+  /// Gets a const reference to an element in the array.
+  ///\tparam I The index.
+  ///\tparam T The type.
+  ///\tparam N The array size.
+  ///\param a The array.
+  ///\return A const reference to the element
+  //*************************************************************************
+  template <std::size_t I, typename T, std::size_t N>
+  inline const T& get(const array<T, N>& a)
+  {
+    STATIC_ASSERT(I < N, "Index out of bounds");
+    return a[I];
   }
 }
 

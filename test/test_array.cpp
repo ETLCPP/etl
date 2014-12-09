@@ -334,6 +334,19 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_get)
+    {
+      Data data1       = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      const Data data2 = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      CHECK_EQUAL(data1[3], etl::get<3>(data1));
+      CHECK_EQUAL(data2[3], etl::get<3>(data2));
+
+      // The following line should fail with a compile error.
+      //int i = etl::get<11>(data2);
+    }
+
+    //*************************************************************************
     TEST(test_equal)
     {
       Data data1 = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
