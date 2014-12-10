@@ -30,33 +30,88 @@ SOFTWARE.
 #define __ETL_IPOOL__
 #define __ETL_IN_IPOOL_H__
 
-//*****************************************************************************
-///\defgroup pool pool
-/// A fixed capacity pool.
-///\ingroup containers
-//*****************************************************************************
+#include "pool_base.h"
+#include "nullptr.h"
+
+#ifndef ETL_THROW_EXCEPTIONS
+#include "error_handler.h"
+#endif
 
 namespace etl
 {
   //*************************************************************************
-  /// A templated pool implementation that uses a fixed size pool.
-  /// SIZE_ elements will be always be constructed.
+  ///\ingroup pool
   //*************************************************************************
   template <typename T>
   class ipool : public pool_base
   {
-  private:
-
-    struct element
-    {
-      T* p_item;
-    };
-
   public:
 
+    //*************************************************************************
+    /// Allocate an object from the pool.
+    /// If ETL_THROW_EXCEPTIONS is defined and there are no more free items an
+    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
+    /// \note The state of the object returned is undefined.
+    //*************************************************************************
     T* allocate()
     {
-      if (next_free)
+      if (next_free != MAX_SIZE)
+      {
+        T* result = &p_buffer[next_free];
+        in_use_flags.set(next_free);
+        next_free = in_use_flags.find_first(false);
+        ++items_allocated;
+        return result;
+      }
+      else
+      {
+#ifdef ETL_THROW_EXCEPTIONS
+        throw pool_no_allocation();
+#else
+        error_handler::error(pool_no_allocation());
+#endif
+        return nullptr;
+      }
+    }
+    
+    //*************************************************************************
+    /// Free an object in the pool.
+    /// If ETL_THROW_EXCEPTIONS is defined and the object does not belong to this
+    /// pool then an etl::pool_object_not_in_pool is thrown.
+    /// \param p_object A pointer to the object to be released.
+    //*************************************************************************
+    void release(const T& object)
+    {
+      release(&object);
+    }
+
+    //*************************************************************************
+    /// Free an object in the pool.
+    /// If ETL_THROW_EXCEPTIONS is defined and the object does not belong to this
+    /// pool then an etl::pool_object_not_in_pool is thrown.
+    /// \param p_object A pointer to the object to be released.
+    //*************************************************************************
+    void release(const T* const p_object)
+    {
+      // Does this object belong to this pool?
+      typename std::iterator_traits<T*>::difference_type distance = p_object - p_buffer;
+
+      // Not within the range of the buffer?
+      if ((distance < 0) || (distance >= static_cast<typename std::iterator_traits<T*>::difference_type>(MAX_SIZE)))
+      {
+#ifdef ETL_THROW_EXCEPTIONS
+        throw pool_object_not_in_pool();
+#else
+        error_handler::error(pool_object_not_in_pool());
+#endif
+      }
+      else
+      {
+        // Mark the object as available.
+        next_free = static_cast<size_t>(distance);
+        in_use_flags.reset(next_free);
+        --items_allocated;
+      }
     }
 
   protected:
@@ -64,19 +119,15 @@ namespace etl
     //*************************************************************************
     /// Constructor
     //*************************************************************************
-    ipool(T* p_buffer, size_t size)
-      : next_free(0),
-        p_buffer(p_buffer),
-        SIZE(size)
-        
+    ipool(T* p_buffer, ibitset& in_use_flags, size_t size)
+      : pool_base(size),
+        p_buffer(nullptr),
+        in_use_flags(in_use_flags)
     {
     }
 
-  private:
-
-    size_t       next_free;
-    T*           p_buffer;
-    const size_t SIZE;
+    T* p_buffer;
+    ibitset& in_use_flags;
   };
 }
 #endif

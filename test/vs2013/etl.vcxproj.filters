@@ -300,6 +300,15 @@
     <ClInclude Include="..\..\hash.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\ipool.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\pool_base.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ibitset.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\AssertException.cpp">

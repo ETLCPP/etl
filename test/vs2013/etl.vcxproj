@@ -140,11 +140,13 @@
     <ClInclude Include="..\..\function.h" />
     <ClInclude Include="..\..\functional.h" />
     <ClInclude Include="..\..\hash.h" />
+    <ClInclude Include="..\..\ibitset.h" />
     <ClInclude Include="..\..\ideque.h" />
     <ClInclude Include="..\..\iforward_list.h" />
     <ClInclude Include="..\..\ilist.h" />
     <ClInclude Include="..\..\instance_count.h" />
     <ClInclude Include="..\..\integral_limits.h" />
+    <ClInclude Include="..\..\ipool.h" />
     <ClInclude Include="..\..\iqueue.h" />
     <ClInclude Include="..\..\istack.h" />
     <ClInclude Include="..\..\container.h" />
@@ -159,6 +161,7 @@
     <ClInclude Include="..\..\parameter_type.h" />
     <ClInclude Include="..\..\platform.h" />
     <ClInclude Include="..\..\pool.h" />
+    <ClInclude Include="..\..\pool_base.h" />
     <ClInclude Include="..\..\power.h" />
     <ClInclude Include="..\..\queue.h" />
     <ClInclude Include="..\..\queue_base.h" />
