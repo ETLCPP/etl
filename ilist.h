@@ -810,7 +810,7 @@ namespace etl
     //*************************************************************************
     /// Resizes the list.
     //*************************************************************************
-    void resize(size_t n, T value)
+    void resize(size_t n, parameter_t value)
     {
       if (n > MAX_SIZE)
       {
