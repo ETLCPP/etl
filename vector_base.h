@@ -45,7 +45,7 @@ namespace etl
 {
   //***************************************************************************
   ///\ingroup vector
-  /// exception base for vectors
+  /// Exception base for vectors
   //***************************************************************************
   class vector_exception : public exception
   {
