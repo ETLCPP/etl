@@ -40,6 +40,7 @@ SOFTWARE.
 #include "array.h"
 #include "nullptr.h"
 #include "log.h"
+#include "ibitset.h"
 
 #if WIN32
 #undef min
@@ -61,7 +62,7 @@ namespace etl
   ///\ingroup bitset
   //*************************************************************************
   template <const size_t N>
-  class bitset
+  class bitset : public ibitset
   {
   public:
 
