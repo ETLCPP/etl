@@ -128,7 +128,7 @@ namespace etl
       }
 #else
       {
-        error_handler::error(forward_list_full());
+        error_handler::error(queue_full());
       }
 #endif
     }
@@ -157,7 +157,7 @@ namespace etl
       }
 #else
       {
-        error_handler::error(forward_list_full());
+        error_handler::error(queue_full());
       }
 #endif
 
