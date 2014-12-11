@@ -177,5 +177,17 @@ namespace
       p = pool.allocate();
       CHECK(pool.empty());
     }
+
+    //*************************************************************************
+    TEST(test_is_in_pool)
+    {
+      etl::pool<Test_Data, 4> pool;
+      Test_Data not_in_pool;
+
+      Test_Data* p1 = pool.allocate();
+
+      CHECK(pool.is_in_pool(p1));
+      CHECK(!pool.is_in_pool(not_in_pool));
+    }
   };
 }

@@ -93,11 +93,17 @@ namespace etl
     //*************************************************************************
     void release(const T* const p_object)
     {
-      // Does this object belong to this pool?
-      typename std::iterator_traits<T*>::difference_type distance = p_object - p_buffer;
+      // Does it belong to me?
+      if (is_in_pool(p_object))
+      {
+        typename std::iterator_traits<T*>::difference_type distance = p_object - p_buffer;
 
-      // Not within the range of the buffer?
-      if ((distance < 0) || (distance >= static_cast<typename std::iterator_traits<T*>::difference_type>(MAX_SIZE)))
+        // Mark the object as available.
+        next_free = static_cast<size_t>(distance);
+        in_use_flags.reset(next_free);
+        --items_allocated;
+      }
+      else
       {
 #ifdef ETL_THROW_EXCEPTIONS
         throw pool_object_not_in_pool();
@@ -105,13 +111,30 @@ namespace etl
         error_handler::error(pool_object_not_in_pool());
 #endif
       }
-      else
-      {
-        // Mark the object as available.
-        next_free = static_cast<size_t>(distance);
-        in_use_flags.reset(next_free);
-        --items_allocated;
-      }
+    }
+
+    //*************************************************************************
+    /// Check to see if the object belongs to the pool.
+    /// \param p_object A pointer to the object to be checked.
+    /// \return <b>true<\b> if it does, otherwise <b>false</b>
+    //*************************************************************************
+    bool is_in_pool(const T& object) const
+    {
+      return is_in_pool(&object);
+    }
+
+    //*************************************************************************
+    /// Check to see if the object belongs to the pool.
+    /// \param p_object A pointer to the object to be checked.
+    /// \return <b>true<\b> if it does, otherwise <b>false</b>
+    //*************************************************************************
+    bool is_in_pool(const T* const p_object) const
+    {
+      // Does this object belong to this pool?
+      typename std::iterator_traits<T*>::difference_type distance = p_object - p_buffer;
+
+      // Within the range of the buffer?
+      return ((distance >= 0) && (distance < static_cast<typename std::iterator_traits<T*>::difference_type>(MAX_SIZE)));
     }
 
   protected:
