@@ -118,12 +118,12 @@ namespace
       actual = etl::log10<100>::value;
       CHECK_EQUAL(2, actual);
 
-      actual = etl::log10<100>::value;
+      actual = etl::log10<200>::value;
       CHECK_EQUAL(2, actual);
     }
 
     //*************************************************************************
-    TEST(test_pow)
+    TEST(test_power)
     {
       int actual;
 
