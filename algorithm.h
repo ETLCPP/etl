@@ -163,7 +163,7 @@ namespace etl
   ///\ingroup algorithm
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/is_sorted"></a>
   //***************************************************************************
-  template<class TIterator>
+  template<typename TIterator>
   bool is_sorted(TIterator begin, TIterator end)
   {
     return etl::is_sorted_until(begin, end) == end;
@@ -174,7 +174,7 @@ namespace etl
   ///\ingroup algorithm
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/is_sorted"></a>
   //***************************************************************************
-  template<class TIterator, class TCompare>
+  template<typename TIterator, typename TCompare>
   bool is_sorted(TIterator begin, TIterator end, TCompare compare)
   {
     return etl::is_sorted_until(begin, end, compare) == end;
@@ -422,7 +422,7 @@ namespace etl
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/partition_point"></a>
   ///\ingroup algorithm
   //***************************************************************************
-  template <class TIterator, class TUnaryPredicate>
+  template <typename TIterator, typename TUnaryPredicate>
   TIterator partition_point(TIterator begin, TIterator end, TUnaryPredicate predicate)
   {
     while (begin != end)
