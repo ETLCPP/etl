@@ -234,6 +234,7 @@
     <ClCompile Include="..\test_observer.cpp" />
     <ClCompile Include="..\test_pool.cpp" />
     <ClCompile Include="..\test_queue.cpp" />
+    <ClCompile Include="..\test_singleton.cpp" />
     <ClCompile Include="..\test_smallest.cpp" />
     <ClCompile Include="..\test_stack.cpp" />
     <ClCompile Include="..\test_type_traits.cpp" />
