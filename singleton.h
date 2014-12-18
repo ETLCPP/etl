@@ -30,73 +30,19 @@ SOFTWARE.
 #define __ETL_SINGLETON__
 
 ///\defgroup singleton singleton
-/// Templated version of the sing;eton pattern.
+/// Templated version of the singleton pattern.
 ///\ingroup etl
 
 namespace etl
 {
 	//*************************************************************************
-    /// Singleton pattern base class.
-    /// \ingroup singleton
-    //*************************************************************************
-    template<typename T>
-    class singleton
-    {  
-    public:
-
-        //*********************************************************************
-        /// Constructor.
-        //*********************************************************************
-        singleton()
-        {
-        }
-
-        //*********************************************************************
-        /// Destructor.
-        //*********************************************************************
-        virtual ~singleton()
-        {
-        }
-
-        //*********************************************************************
-        /// Returns a reference to the instance.
-        ///\return A reference to the instance.
-        //*********************************************************************
-        T& operator *()
-        {
-            return instance();
-        }
-
-        //*********************************************************************
-        /// Returns a const reference to the instance.
-        /// \return A const reference to the instance.
-        //*********************************************************************
-        // @short-legal-notice
-        //*********************************************************************
-        const T& operator *() const
-        {
-            return instance();
-        }
-
-        //*********************************************************************
-        /// Returns a pointer to the instance.
-        /// \return A pointer to the instance.
-        //*********************************************************************
-        T* operator ->()
-        {
-            return &instance();
-        }
-
-    //*********************************************************************
-    /// Returns a const pointer to the instance.
-    /// \return A const pointer to the instance.
-    //*********************************************************************
-    const T* operator ->() const
-    {
-      return &instance();
-    }
-
-    private:
+  /// Singleton pattern base class.
+  /// \ingroup singleton
+  //*************************************************************************
+  template<typename T>
+  class singleton
+  {  
+  public:
 
     //*************************************************************************
     /// Returns a reference to the instance.
@@ -105,7 +51,6 @@ namespace etl
     static T &instance()
     {
       static T the_instance;
-
       return the_instance;
     }
   };
