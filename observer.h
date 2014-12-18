@@ -42,20 +42,20 @@ SOFTWARE.
 /// remain 'abstract' and will not compile.
 /// This ensures that no overload can be forgotten.<br>
 ///
-/// \li <b>Subject</b><br>
+/// \li <b>observable</b><br>
 /// The class derived from this will be observed by the above class.
 /// It keeps a list of registered observers and will notify all
-/// of them with the notification when instructed.
+/// of them with the notifications.
 ///\ingroup patterns
 //*****************************************************************************
 
 #include <algorithm>
 #include "vector.h"
 #include "exception.h"
+#include "error_handler.h"
 
 namespace etl
 {
-#ifdef ETL_THROW_EXCEPTIONS
   //***************************************************************************
   ///\ingroup observer
   /// The base class for observer exceptions.
@@ -83,11 +83,10 @@ namespace etl
     {
     }
   };
-#endif
 
   //*********************************************************************
   /// The object that is being observed.
-  ///\tparam TObserver         The observer type.
+  ///\tparam TObserver     The observer type.
   ///\tparam MAX_OBSERVERS The maximum number of observers that can be accomodated.
   ///\ingroup observer
   //*********************************************************************
@@ -103,7 +102,7 @@ namespace etl
     //*****************************************************************
     /// Add an observer to the list.
     /// If ETL_THROW_EXCEPTIONS is defined then an etl::observable_observer_list_full
-    /// is thrown if the observer list is already full.
+    /// is emitted if the observer list is already full.
     ///\param observer A reference to the observer.
     //*****************************************************************
     void add_observer(TObserver& observer)
@@ -126,6 +125,11 @@ namespace etl
         else
         {
           throw observer_list_full();
+        }
+#else
+        else
+        {
+          error_handler::error(observer_list_full());
         }
 #endif
       }
