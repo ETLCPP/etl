@@ -983,24 +983,6 @@ namespace etl
   private:
 
     //***************************************************************************
-    /// Attempts to up cast the parameter to the specified base class.
-    //***************************************************************************
-    template <typename TBase, typename T>
-    TBase& do_upcast(T& t)
-    {
-      return upcast_functor<TBase, T1, T2, T3, T4, T5, T6, T7, T8>()(t);
-    }
-
-    //***************************************************************************
-    /// Attempts to up cast the parameter to the specified base class.
-    //***************************************************************************
-    template <typename TBase, typename T>
-    const TBase& do_upcast(const T& t) const
-    {
-      return upcast_functor<TBase, T1, T2, T3, T4, T5, T6, T7, T8>()(t);
-    }
-
-    //***************************************************************************
     /// The internal storage.
     /// Aligned on a suitable boundary, which should be good for all types.
     //***************************************************************************
