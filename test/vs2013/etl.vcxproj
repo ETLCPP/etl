@@ -159,12 +159,13 @@
     <ClInclude Include="..\..\numeric.h" />
     <ClInclude Include="..\..\observer.h" />
     <ClInclude Include="..\..\parameter_type.h" />
-    <ClInclude Include="..\..\platform.h" />
     <ClInclude Include="..\..\pool.h" />
     <ClInclude Include="..\..\pool_base.h" />
     <ClInclude Include="..\..\power.h" />
     <ClInclude Include="..\..\queue.h" />
     <ClInclude Include="..\..\queue_base.h" />
+    <ClInclude Include="..\..\radix.h" />
+    <ClInclude Include="..\..\singleton.h" />
     <ClInclude Include="..\..\smallest.h" />
     <ClInclude Include="..\..\stack.h" />
     <ClInclude Include="..\..\stack_base.h" />

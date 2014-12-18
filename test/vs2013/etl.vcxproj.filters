@@ -279,9 +279,6 @@
     <ClInclude Include="..\..\factorial.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\platform.h">
-      <Filter>ETL\Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\algorithm.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
@@ -308,6 +305,12 @@
     </ClInclude>
     <ClInclude Include="..\..\ibitset.h">
       <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\singleton.h">
+      <Filter>ETL\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\radix.h">
+      <Filter>ETL\Maths</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
