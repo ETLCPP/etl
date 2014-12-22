@@ -52,7 +52,10 @@ SOFTWARE.
 #include <algorithm>
 #include "vector.h"
 #include "exception.h"
+
+#ifndef ETL_THROW_EXCEPTIONS
 #include "error_handler.h"
+#endif
 
 namespace etl
 {
