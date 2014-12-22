@@ -147,6 +147,7 @@
 		<Unit filename="../../ideque.h" />
 		<Unit filename="../../iforward_list.h" />
 		<Unit filename="../../ilist.h" />
+		<Unit filename="../../ilookup.h" />
 		<Unit filename="../../instance_count.h" />
 		<Unit filename="../../integral_limits.h" />
 		<Unit filename="../../iqueue.h" />
@@ -156,6 +157,8 @@
 		<Unit filename="../../list.h" />
 		<Unit filename="../../list_base.h" />
 		<Unit filename="../../log.h" />
+		<Unit filename="../../lookup.h" />
+		<Unit filename="../../lookup_base.h" />
 		<Unit filename="../../nullptr.h" />
 		<Unit filename="../../numeric.h" />
 		<Unit filename="../../observer.h" />
@@ -164,6 +167,7 @@
 		<Unit filename="../../power.h" />
 		<Unit filename="../../queue.h" />
 		<Unit filename="../../queue_base.h" />
+		<Unit filename="../../singleton.h" />
 		<Unit filename="../../smallest.h" />
 		<Unit filename="../../stack.h" />
 		<Unit filename="../../stack_base.h" />
@@ -197,11 +201,13 @@
 		<Unit filename="../test_integral_limits.cpp" />
 		<Unit filename="../test_largest.cpp" />
 		<Unit filename="../test_list.cpp" />
+		<Unit filename="../test_lookup.cpp" />
 		<Unit filename="../test_maths.cpp" />
 		<Unit filename="../test_numeric.cpp" />
 		<Unit filename="../test_observer.cpp" />
 		<Unit filename="../test_pool.cpp" />
 		<Unit filename="../test_queue.cpp" />
+		<Unit filename="../test_singleton.cpp" />
 		<Unit filename="../test_smallest.cpp" />
 		<Unit filename="../test_stack.cpp" />
 		<Unit filename="../test_type_traits.cpp" />
