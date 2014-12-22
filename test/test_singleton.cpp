@@ -28,11 +28,11 @@ SOFTWARE.
 
 #include "../singleton.h"
 
-class Test_Singleton : public etl::singleton<Test_Singleton>
+class Test_Class
 {
 public:
 
-  Test_Singleton()
+  Test_Class()
     : i(0)
   {}
 
@@ -44,6 +44,7 @@ public:
   int i;
 };
 
+typedef etl::singleton<Test_Class> Test_Singleton;
 
 namespace
 {
@@ -52,7 +53,7 @@ namespace
     //*************************************************************************
     TEST(test1)
     {
-      Test_Singleton& ts = Test_Singleton::instance();
+      Test_Class& ts = Test_Singleton::instance();
 
       CHECK_EQUAL(0, ts.i);
 
@@ -60,7 +61,7 @@ namespace
 
       CHECK_EQUAL(1, ts.i);
 
-      Test_Singleton* pts = &Test_Singleton::instance();
+      Test_Class* pts = &Test_Singleton::instance();
 
       CHECK_EQUAL(1, ts.i);
       CHECK_EQUAL(1, pts->i);
