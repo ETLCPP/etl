@@ -1296,4 +1296,6 @@ bool operator >=(const etl::ilist<T>& lhs, const etl::ilist<T>& rhs)
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 #endif
 
+#undef __ETL_IN_ILIST_H__
+
 #endif

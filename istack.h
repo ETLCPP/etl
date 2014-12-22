@@ -159,5 +159,5 @@ namespace etl
   };
 }
 
-#undef __etl_in_istack_h__
+#undef __ETL_IN_ISTACK_H__
 #endif

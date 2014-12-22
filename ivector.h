@@ -249,7 +249,7 @@ namespace etl
 
     //*********************************************************************
     /// Returns a reference to the value at index 'i'
-    /// If ETL_THROW_EXCEPTIONS is defined, throws a std::range_error if the index is out of range.
+    /// If ETL_THROW_EXCEPTIONS is defined, emits an etl::vector_out_of_bounds if the index is out of range.
     ///\param i The index.
     ///\return A reference to the value at index 'i'
     //*********************************************************************
@@ -270,7 +270,7 @@ namespace etl
 
     //*********************************************************************
     /// Returns a const reference to the value at index 'i'
-    /// If ETL_THROW_EXCEPTIONS is defined, throws a std::range_error if the index is out of range.
+    /// If ETL_THROW_EXCEPTIONS is defined, emits an etl::vector_out_of_bounds if the index is out of range.
     ///\param i The index.
     ///\return A const reference to the value at index 'i'
     //*********************************************************************
@@ -345,8 +345,8 @@ namespace etl
 
     //*********************************************************************
     /// Assigns values to the vector.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws vector_full if the vector does not have enough free space.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws vector_iterator if the iterators are reversed.
+    /// If ETL_THROW_EXCEPTIONS is defined, emits vector_full if the vector does not have enough free space.
+    /// If ETL_THROW_EXCEPTIONS is defined, emits vector_iterator if the iterators are reversed.
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
@@ -381,7 +381,7 @@ namespace etl
 
     //*********************************************************************
     /// Assigns values to the vector.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws vector_full if the vector does not have enough free space.
+    /// If ETL_THROW_EXCEPTIONS is defined, emits vector_full if the vector does not have enough free space.
     ///\param n     The number of elements to add.
     ///\param value The value to insert for each element.
     //*********************************************************************
@@ -404,7 +404,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value at the end of the vector.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws vector_full if the vector is already full.
+    /// If ETL_THROW_EXCEPTIONS is defined, emits vector_full if the vector is already full.
     ///\param value The value to add.
     //*********************************************************************
     void push_back(parameter_t value)
@@ -425,7 +425,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the vector.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws vector_full if the vector is already full.
+    /// If ETL_THROW_EXCEPTIONS is defined, emits vector_full if the vector is already full.
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -459,7 +459,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts 'n' values to the vector.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws vector_full if the vector does not have enough free space.
+    /// If ETL_THROW_EXCEPTIONS is defined, emits vector_full if the vector does not have enough free space.
     ///\param position The position to insert at.
     ///\param n        The number of elements to add.
     ///\param value    The value to insert.
@@ -484,7 +484,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a range of values to the vector.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws vector_full if the vector does not have enough free space.
+    /// If ETL_THROW_EXCEPTIONS is defined, emits vector_full if the vector does not have enough free space.
     ///\param position The position to insert at.
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.
@@ -512,15 +512,15 @@ namespace etl
 
     //*********************************************************************
     /// Erases an element.
-    ///\param iElement Iterator to the element.
+    ///\param i_element Iterator to the element.
     ///\return An iterator pointing to the element that followed the erased element.
     //*********************************************************************
-    iterator erase(iterator iElement)
+    iterator erase(iterator i_element)
     {
-      std::copy(iElement + 1, end(), iElement);
+      std::copy(i_element + 1, end(), i_element);
       --current_size;
 
-      return iElement;
+      return i_element;
     }
 
     //*********************************************************************
@@ -537,15 +537,6 @@ namespace etl
       current_size -= std::distance(first, last);
 
       return first;
-    }
-
-    //*********************************************************************
-    /// Clears the vector.
-    /// Does not call the destructor for any elements.
-    //*********************************************************************
-    void clear()
-    {
-	    current_size = 0;
     }
 
   protected:
@@ -566,8 +557,8 @@ namespace etl
 
   //***************************************************************************
   /// Equal operator.
-  ///\param lhs Reference to the first array.
-  ///\param rhs Reference to the second array.
+  ///\param lhs Reference to the first vector.
+  ///\param rhs Reference to the second vector.
   ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
   ///\ingroup vector
   //***************************************************************************
@@ -579,8 +570,8 @@ namespace etl
 
   //***************************************************************************
   /// Not equal operator.
-  ///\param lhs Reference to the first array.
-  ///\param rhs Reference to the second array.
+  ///\param lhs Reference to the first vector.
+  ///\param rhs Reference to the second vector.
   ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
   ///\ingroup vector
   //***************************************************************************
@@ -592,9 +583,9 @@ namespace etl
 
   //***************************************************************************
   /// Less than operator.
-  ///\param lhs Reference to the first array.
-  ///\param rhs Reference to the second array.
-  ///\return <b>true</b> if the first array is lexigraphically less than the second, otherwise <b>false</b>
+  ///\param lhs Reference to the first vector.
+  ///\param rhs Reference to the second vector.
+  ///\return <b>true</b> if the first vector is lexigraphically less than the second, otherwise <b>false</b>
   ///\ingroup vector
   //***************************************************************************
   template <typename T>
@@ -605,9 +596,9 @@ namespace etl
 
   //***************************************************************************
   /// Greater than operator.
-  ///\param lhs Reference to the first array.
-  ///\param rhs Reference to the second array.
-  ///\return <b>true</b> if the first array is lexigraphically greater than the second, otherwise <b>false</b>
+  ///\param lhs Reference to the first vector.
+  ///\param rhs Reference to the second vector.
+  ///\return <b>true</b> if the first vector is lexigraphically greater than the second, otherwise <b>false</b>
   ///\ingroup vector
   //***************************************************************************
   template <typename T>
@@ -618,9 +609,9 @@ namespace etl
 
   //***************************************************************************
   /// Less than or equal operator.
-  ///\param lhs Reference to the first array.
-  ///\param rhs Reference to the second array.
-  ///\return <b>true</b> if the first array is lexigraphically less than or equal to the second, otherwise <b>false</b>
+  ///\param lhs Reference to the first vector.
+  ///\param rhs Reference to the second vector.
+  ///\return <b>true</b> if the first vector is lexigraphically less than or equal to the second, otherwise <b>false</b>
   ///\ingroup vector
   //***************************************************************************
   template <typename T>
@@ -631,9 +622,9 @@ namespace etl
 
   //***************************************************************************
   /// Greater than or equal operator.
-  ///\param lhs Reference to the first array.
-  ///\param rhs Reference to the second array.
-  ///\return <b>true</b> if the first array is lexigraphically greater than or equal to the second, otherwise <b>false</b>
+  ///\param lhs Reference to the first vector.
+  ///\param rhs Reference to the second vector.
+  ///\return <b>true</b> if the first vector is lexigraphically greater than or equal to the second, otherwise <b>false</b>
   ///\ingroup vector
   //***************************************************************************
   template <typename T>
@@ -643,5 +634,5 @@ namespace etl
   }
 }
 
-#undef __etl_in_ivector_h__
+#undef __ETL_IN_IVECTOR_H__
 #endif

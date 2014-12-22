@@ -1412,4 +1412,6 @@ bool operator >=(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
   return !operator <(lhs, rhs);
 }
 
+#undef __ETL_IN_IDEQUE_H__
+
 #endif

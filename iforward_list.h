@@ -26,9 +26,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_ILIST__
-#define __ETL_ILIST__
-#define __ETL_IN_ILIST_H__
+#ifndef __ETL_IFORWARD_LIST__
+#define __ETL_IFORWARD_LIST__
+#define __ETL_IN_IFORWARD_LIST_H__
 
 #if WIN32
 #undef min
@@ -1202,5 +1202,7 @@ bool operator >=(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& 
 #if WIN32
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 #endif
+
+#undef __ETL_IN_IFORWARD_LIST_H__
 
 #endif

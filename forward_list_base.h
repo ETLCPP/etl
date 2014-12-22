@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_IN_ILIST_H__
+#ifndef __ETL_IN_IFORWARD_LIST_H__
 #error This header is a private element of etl::forward_list & etl::iforward_list
 #endif
 

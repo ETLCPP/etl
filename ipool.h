@@ -153,5 +153,8 @@ namespace etl
     ibitset& in_use_flags;
   };
 }
+
+#undef __ETL_IN_IPOOL_H__
+
 #endif
 
