@@ -144,6 +144,7 @@
     <ClInclude Include="..\..\ideque.h" />
     <ClInclude Include="..\..\iforward_list.h" />
     <ClInclude Include="..\..\ilist.h" />
+    <ClInclude Include="..\..\ilookup.h" />
     <ClInclude Include="..\..\instance_count.h" />
     <ClInclude Include="..\..\integral_limits.h" />
     <ClInclude Include="..\..\ipool.h" />
@@ -155,6 +156,8 @@
     <ClInclude Include="..\..\list.h" />
     <ClInclude Include="..\..\list_base.h" />
     <ClInclude Include="..\..\log.h" />
+    <ClInclude Include="..\..\lookup.h" />
+    <ClInclude Include="..\..\lookup_base.h" />
     <ClInclude Include="..\..\nullptr.h" />
     <ClInclude Include="..\..\numeric.h" />
     <ClInclude Include="..\..\observer.h" />
@@ -229,6 +232,7 @@
     <ClCompile Include="..\test_integral_limits.cpp" />
     <ClCompile Include="..\test_largest.cpp" />
     <ClCompile Include="..\test_list.cpp" />
+    <ClCompile Include="..\test_lookup.cpp" />
     <ClCompile Include="..\test_maths.cpp" />
     <ClCompile Include="..\test_numeric.cpp" />
     <ClCompile Include="..\test_observer.cpp" />
