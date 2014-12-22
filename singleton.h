@@ -53,6 +53,12 @@ namespace etl
       static T the_instance;
       return the_instance;
     }
+
+  private:
+
+    // Disabled.
+    singleton(const singleton&);
+    singleton& operator =(const singleton&);
   };
 }
 
