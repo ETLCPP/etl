@@ -58,7 +58,7 @@ namespace etl
     /// Constructor
     //*************************************************************************
     pool()
-      : ipool(buffer, in_use, SIZE)
+      : ipool<T>(buffer, in_use, SIZE)
     {
     }
 
