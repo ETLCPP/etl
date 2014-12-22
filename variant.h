@@ -39,6 +39,10 @@ SOFTWARE.
 #include "static_assert.h"
 #include "alignment.h"
 
+#ifndef ETL_THROW_EXCEPTIONS
+#include "error_handler.h"
+#endif
+
 #if defined(COMPILER_KEIL)
   #pragma diag_suppress 940
 #endif
@@ -443,6 +447,8 @@ namespace etl
           default:
 #ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
+#else
+            error_handler::error(variant_invalid_type_id_exception());
 #endif
 						break;
         }
@@ -463,6 +469,8 @@ namespace etl
           default:
 #ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
+#else
+            error_handler::error(variant_invalid_type_id_exception());
 #endif
 				  	break;
         }
@@ -491,6 +499,8 @@ namespace etl
           default:
 #ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
+#else
+            error_handler::error(variant_invalid_type_id_exception());
 #endif      
 				  	break;
         }
@@ -510,6 +520,8 @@ namespace etl
           default:
 #ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
+#else
+            error_handler::error(variant_invalid_type_id_exception());
 #endif
 				  	break;
         }
@@ -537,6 +549,8 @@ namespace etl
           default:
 #ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
+#else
+            error_handler::error(variant_invalid_type_id_exception());
 #endif
 				  	break;
         }
@@ -555,6 +569,8 @@ namespace etl
           default:
 #ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
+#else
+            error_handler::error(variant_invalid_type_id_exception());
 #endif
 					  break;
         }
@@ -581,6 +597,8 @@ namespace etl
           default:
 #ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
+#else
+            error_handler::error(variant_invalid_type_id_exception());
 #endif
 					  break;
         }
@@ -598,6 +616,8 @@ namespace etl
           default:
 #ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
+#else
+            error_handler::error(variant_invalid_type_id_exception());
 #endif
 					  break;
         }
@@ -623,6 +643,8 @@ namespace etl
           default:
 #ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
+#else
+            error_handler::error(variant_invalid_type_id_exception());
 #endif
 				  	break;
         }
@@ -639,6 +661,8 @@ namespace etl
           default:
 #ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
+#else
+            error_handler::error(variant_invalid_type_id_exception());
 #endif
 						break;
         }
@@ -663,6 +687,8 @@ namespace etl
           default:
 #ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
+#else
+            error_handler::error(variant_invalid_type_id_exception());
 #endif
 						break;
         }
@@ -678,6 +704,8 @@ namespace etl
           default:
 #ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
+#else
+            error_handler::error(variant_invalid_type_id_exception());
 #endif
 						break;
         }
@@ -701,6 +729,8 @@ namespace etl
           default:
 #ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
+#else
+            error_handler::error(variant_invalid_type_id_exception());
 #endif
 						break;
         }
@@ -715,6 +745,8 @@ namespace etl
           default:
 #ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
+#else
+            error_handler::error(variant_invalid_type_id_exception());
 #endif
 						break;
         }
@@ -737,6 +769,8 @@ namespace etl
           default:
 #ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
+#else
+            error_handler::error(variant_invalid_type_id_exception());
 #endif
 						break;
         }
@@ -750,6 +784,8 @@ namespace etl
           default:
 #ifdef ETL_THROW_EXCEPTIONS
             throw variant_invalid_type_id_exception();
+#else
+            error_handler::error(variant_invalid_type_id_exception());
 #endif
 						break;
         }
@@ -840,6 +876,8 @@ namespace etl
         default: 
 #ifdef ETL_THROW_EXCEPTIONS
           throw variant_invalid_type_id_exception();
+#else
+          error_handler::error(variant_invalid_type_id_exception());
 #endif
 					break;
       }
@@ -866,6 +904,8 @@ namespace etl
         default: 
 #ifdef ETL_THROW_EXCEPTIONS
           throw variant_invalid_type_id_exception();
+#else
+          error_handler::error(variant_invalid_type_id_exception());
 #endif
 					break;
       }
@@ -908,12 +948,14 @@ namespace etl
     {
       STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
-#ifdef ETL_THROW_EXCEPTIONS
       if (!is_type<T>())
       {
+#ifdef ETL_THROW_EXCEPTIONS
         throw variant_incorrect_type_exception();
-      }
+#else
+        error_handler::error(variant_incorrect_type_exception());
 #endif
+      }
 
       return reinterpret_cast<T&>(*&data.value[0]);
     }
@@ -928,12 +970,14 @@ namespace etl
     {
       STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
-#ifdef ETL_THROW_EXCEPTIONS
       if (!is_type<T>())
       {
+#ifdef ETL_THROW_EXCEPTIONS
         throw variant_incorrect_type_exception();
-      }
+#else
+        error_handler::error(variant_incorrect_type_exception());
 #endif
+      }
 
       return reinterpret_cast<const T&>(*&data.value[0]);
     }
