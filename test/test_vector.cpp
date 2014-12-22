@@ -132,8 +132,8 @@ namespace
       otherData = data;
 
       bool isEqual = std::equal(data.begin(),
-        data.end(),
-        otherData.begin());
+                                data.end(),
+                                otherData.begin());
 
       CHECK(isEqual);
     }
@@ -144,8 +144,8 @@ namespace
       Data data(10);
       const Data constData(10);
 
-      CHECK_EQUAL(data.begin(), std::begin(data));
-      CHECK_EQUAL(constData.begin(), std::begin(constData));
+      CHECK_EQUAL(&data[0], data.begin());
+      CHECK_EQUAL(&constData[0], constData.begin());
     }
 
     //*************************************************************************
@@ -154,8 +154,8 @@ namespace
       Data data(10);
       const Data constData(10);
 
-      CHECK_EQUAL(data.end(), std::end(data));
-      CHECK_EQUAL(constData.end(), std::end(constData));
+      CHECK_EQUAL(&data[10], data.end());
+      CHECK_EQUAL(&constData[10], constData.end());
     }
 
     //*************************************************************************
@@ -262,7 +262,12 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data data(initial_data.begin(), initial_data.end());
 
+      for (size_t i = 0; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(data.at(i), compare_data.at(i));
+      }
 
+      CHECK_THROW(data.at(data.size()), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -338,8 +343,8 @@ namespace
       const Data data(compare_data.begin(), compare_data.end());
 
       bool isEqual = std::equal(data.data(),
-        data.data() + data.size(),
-        compare_data.begin());
+                                data.data() + data.size(),
+                                compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -354,8 +359,8 @@ namespace
       data.assign(compare_data.begin(), compare_data.end());
 
       bool isEqual = std::equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                data.end(),
+                                compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -372,8 +377,8 @@ namespace
       data.assign(INITIAL_SIZE, INITIAL_VALUE);
 
       bool isEqual = std::equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                data.end(),
+                                compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -409,8 +414,8 @@ namespace
       }
 
       bool isEqual = std::equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                data.end(),
+                                compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -427,8 +432,8 @@ namespace
       data[0] = 1;
 
       bool isEqual = std::equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                data.end(),
+                                compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -459,8 +464,8 @@ namespace
       data.pop_back();
 
       bool isEqual = std::equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                data.end(),
+                                compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -480,8 +485,8 @@ namespace
       compare_data.insert(compare_data.begin() + offset, INITIAL_VALUE);
 
       bool isEqual = std::equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                data.end(),
+                                compare_data.begin());
 
       CHECK(isEqual);
 
@@ -491,8 +496,8 @@ namespace
       compare_data.insert(compare_data.begin() + offset, INITIAL_VALUE);
 
       isEqual = std::equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                           data.end(),
+                           compare_data.begin());
 
       CHECK(isEqual);
 
@@ -502,8 +507,8 @@ namespace
       compare_data.insert(compare_data.begin() + offset, INITIAL_VALUE);
 
       isEqual = std::equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                           data.end(),
+                           compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -547,8 +552,8 @@ namespace
       compare_data.insert(compare_data.begin() + offset, INSERT_SIZE, INITIAL_VALUE);
 
       bool isEqual = std::equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                data.end(),
+                                compare_data.begin());
 
       CHECK(isEqual);
 
@@ -560,8 +565,8 @@ namespace
       compare_data.insert(compare_data.begin() + offset, INSERT_SIZE, INITIAL_VALUE);
 
       isEqual = std::equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                           data.end(),
+                           compare_data.begin());
 
       CHECK(isEqual);
 
@@ -572,8 +577,8 @@ namespace
       compare_data.insert(compare_data.begin() + offset, INSERT_SIZE, INITIAL_VALUE);
 
       isEqual = std::equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                           data.end(),
+                           compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -617,8 +622,8 @@ namespace
       compare_data.insert(compare_data.begin() + offset, initial_data.begin(), initial_data.begin() + 3);
 
       bool isEqual = std::equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                data.end(),
+                                compare_data.begin());
 
       CHECK(isEqual);
 
@@ -630,8 +635,8 @@ namespace
       compare_data.insert(compare_data.begin() + offset, initial_data.begin(), initial_data.begin() + 3);
 
       isEqual = std::equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                           data.end(),
+                           compare_data.begin());
 
       CHECK(isEqual);
 
@@ -642,8 +647,8 @@ namespace
       compare_data.insert(compare_data.begin() + offset, initial_data.begin(), initial_data.begin() + 3);
 
       isEqual = std::equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                           data.end(),
+                           compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -681,8 +686,8 @@ namespace
       data.erase(data.begin() + 2);
 
       bool isEqual = std::equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                data.end(),
+                                compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -698,8 +703,8 @@ namespace
       data.erase(data.begin() + 2, data.begin() + 4);
 
       bool isEqual = std::equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                data.end(),
+                                compare_data.begin());
 
       CHECK(isEqual);
     }
