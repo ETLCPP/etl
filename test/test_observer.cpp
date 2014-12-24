@@ -222,8 +222,8 @@ namespace
       CHECK_EQUAL(0, observer2.data2_count);
       CHECK_EQUAL(0, observer2.data3_count);
 
-      observable2.send_notifications(); // Updates data3.
-
+      observable2.send_notifications(); // Updates data3. observeable2 has no observers yet.
+      
       CHECK_EQUAL(1, observer1.data1_count);
       CHECK_EQUAL(1, observer1.data2_count);
       CHECK_EQUAL(0, observer1.data3_count);
@@ -232,7 +232,7 @@ namespace
       CHECK_EQUAL(0, observer2.data2_count);
       CHECK_EQUAL(0, observer2.data3_count);
 
-      // Add another observer to both.
+      // Add an observer to both.
       observable1.add_observer(observer2);
       observable2.add_observer(observer2);
 
