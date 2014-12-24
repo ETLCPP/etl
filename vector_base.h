@@ -184,7 +184,7 @@ namespace etl
       }
 #else
       {
-        error_handler::
+        error_handler::error(vector_full());
       }
 #endif
 
