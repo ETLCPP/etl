@@ -306,9 +306,6 @@
     <ClInclude Include="..\..\ibitset.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\singleton.h">
-      <Filter>ETL\Patterns</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\radix.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
@@ -498,9 +495,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_endian.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_singleton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_lookup.cpp">

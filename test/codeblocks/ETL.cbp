@@ -167,7 +167,6 @@
 		<Unit filename="../../power.h" />
 		<Unit filename="../../queue.h" />
 		<Unit filename="../../queue_base.h" />
-		<Unit filename="../../singleton.h" />
 		<Unit filename="../../smallest.h" />
 		<Unit filename="../../stack.h" />
 		<Unit filename="../../stack_base.h" />
@@ -207,7 +206,6 @@
 		<Unit filename="../test_observer.cpp" />
 		<Unit filename="../test_pool.cpp" />
 		<Unit filename="../test_queue.cpp" />
-		<Unit filename="../test_singleton.cpp" />
 		<Unit filename="../test_smallest.cpp" />
 		<Unit filename="../test_stack.cpp" />
 		<Unit filename="../test_type_traits.cpp" />
