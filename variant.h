@@ -808,7 +808,7 @@ namespace etl
 
     //***************************************************************************
     /// Constructor that catches any types that are not supported.
-    /// Forces a static_assert.
+    /// Forces a STATIC_ASSERT.
     //***************************************************************************
     template <typename T>
     variant(T value)
@@ -821,7 +821,7 @@ namespace etl
 
     //***************************************************************************
     /// Copy constructor.
-    ///\param other>The other variant object to copy.
+    ///\param other The other variant object to copy.
     //***************************************************************************
     variant(const variant& other)
       : data(other.data),
@@ -831,7 +831,7 @@ namespace etl
 
     //***************************************************************************
     /// Assignment operator for T1 type.
-    ///\param value>The value to assign.
+    ///\param value The value to assign.
     //***************************************************************************
     template <typename T>
     variant& operator =(typename parameter_type<T>::type value)
