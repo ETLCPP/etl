@@ -57,6 +57,7 @@ namespace etl
   public:
 
     typedef uint8_t value_type;
+    typedef uint8_t argument_type;
 
     //*************************************************************************
     /// Default constructor.

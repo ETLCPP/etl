@@ -57,6 +57,7 @@ namespace etl
   public:
 
     typedef uint64_t value_type;
+    typedef uint64_t argument_type;
 
     //*************************************************************************
     /// Default constructor.
