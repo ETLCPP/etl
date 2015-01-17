@@ -165,6 +165,106 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_power_of_2_round_up)
+    {
+      int actual;
+
+      // 
+      actual = etl::power_of_2_round_up<0>::value;
+      CHECK_EQUAL(2, actual);
+
+      actual = etl::power_of_2_round_up<1>::value;
+      CHECK_EQUAL(2, actual);
+
+      actual = etl::power_of_2_round_up<2>::value;
+      CHECK_EQUAL(2, actual);
+
+      actual = etl::power_of_2_round_up<3>::value;
+      CHECK_EQUAL(4, actual);
+
+      actual = etl::power_of_2_round_up<4>::value;
+      CHECK_EQUAL(4, actual);
+
+      actual = etl::power_of_2_round_up<5>::value;
+      CHECK_EQUAL(8, actual);
+
+      actual = etl::power_of_2_round_up<127>::value;
+      CHECK_EQUAL(128, actual);
+
+      actual = etl::power_of_2_round_up<128>::value;
+      CHECK_EQUAL(128, actual);
+
+      actual = etl::power_of_2_round_up<129>::value;
+      CHECK_EQUAL(256, actual);
+    }
+
+    //*************************************************************************
+    TEST(test_power_of_2_round_down)
+    {
+      int actual;
+
+      actual = etl::power_of_2_round_down<0>::value;
+      CHECK_EQUAL(2, actual);
+
+      actual = etl::power_of_2_round_down<1>::value;
+      CHECK_EQUAL(2, actual);
+
+      actual = etl::power_of_2_round_down<2>::value;
+      CHECK_EQUAL(2, actual);
+
+      actual = etl::power_of_2_round_down<3>::value;
+      CHECK_EQUAL(2, actual);
+
+      actual = etl::power_of_2_round_down<4>::value;
+      CHECK_EQUAL(2, actual);
+
+      actual = etl::power_of_2_round_down<5>::value;
+      CHECK_EQUAL(4, actual);
+
+      actual = etl::power_of_2_round_down<127>::value;
+      CHECK_EQUAL(64, actual);
+
+      actual = etl::power_of_2_round_down<128>::value;
+      CHECK_EQUAL(64, actual);
+
+      actual = etl::power_of_2_round_down<129>::value;
+      CHECK_EQUAL(128, actual);
+    }
+
+    //*************************************************************************
+    TEST(test_is_power_of_2)
+    {
+      bool actual;
+
+      actual = etl::is_power_of_2<0>::value;
+      CHECK_EQUAL(false, actual);
+
+      actual = etl::is_power_of_2<1>::value;
+      CHECK_EQUAL(false, actual);
+
+      actual = etl::is_power_of_2<2>::value;
+      CHECK_EQUAL(true, actual);
+
+      actual = etl::is_power_of_2<3>::value;
+      CHECK_EQUAL(false, actual);
+
+      actual = etl::is_power_of_2<4>::value;
+      CHECK_EQUAL(true, actual);
+
+      actual = etl::is_power_of_2<5>::value;
+      CHECK_EQUAL(false, actual);
+
+      actual = etl::is_power_of_2<127>::value;
+      CHECK_EQUAL(false, actual);
+
+      actual = etl::is_power_of_2<128>::value;
+      CHECK_EQUAL(true, actual);
+
+      actual = etl::is_power_of_2<129>::value;
+      CHECK_EQUAL(false, actual);
+    }
+
+    //*************************************************************************
     TEST(test_fibbonacci)
     {
       CHECK_EQUAL(0,          (size_t)etl::fibonacci<0>::value);

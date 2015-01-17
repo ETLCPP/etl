@@ -30,6 +30,7 @@ SOFTWARE.
 #define __ETL_POW__
 
 #include <stddef.h>
+#include "log.h"
 
 ///\defgroup power power
 /// power<N, POWER> : Calculates N to the power POWER.
@@ -51,7 +52,8 @@ namespace etl
   };
 
   //***************************************************************************
-  // Specialisation for POWER == 0
+  /// Calculates powers.
+  /// Specialisation for POWER == 0.
   //***************************************************************************
   template <const size_t N>
   struct power<N, 0>
@@ -60,6 +62,120 @@ namespace etl
     {
       value = 1
     };
+  };
+
+  //***************************************************************************
+  ///\ingroup power
+  /// Calculates the rounded up power of 2.
+  //***************************************************************************
+  template <const size_t N>
+  struct power_of_2_round_up
+  {
+    enum value_type
+    {
+      value = 1 << (etl::log2<N - 1>::value + 1)
+    };
+  };
+
+  //***************************************************************************
+  ///\ingroup power
+  /// Calculates the rounded up power of 2.
+  /// Specialisation for 0.
+  //***************************************************************************
+  template <>
+  struct power_of_2_round_up<0>
+  {
+    enum value_type
+    {
+      value = 2
+    };
+  };
+
+  //***************************************************************************
+  ///\ingroup power
+  /// Calculates the rounded down power of 2.
+  //***************************************************************************
+  template <const size_t N>
+  struct power_of_2_round_down
+  {
+    enum value_type
+    {
+      value = 1 << (etl::log2<N - 1>::value)
+    };
+  };
+
+  //***************************************************************************
+  ///\ingroup power
+  /// Calculates the rounded down power of 2.
+  /// Specialisation for 0.
+  //***************************************************************************
+  template <>
+  struct power_of_2_round_down<0>
+  {
+    enum value_type
+    {
+      value = 2
+    };
+  };
+
+  //***************************************************************************
+  ///\ingroup power
+  /// Calculates the rounded down power of 2.
+  /// Specialisation for 1.
+  //***************************************************************************
+  template <>
+  struct power_of_2_round_down<1>
+  {
+    enum value_type
+    {
+      value = 2
+    };
+  };
+
+  //***************************************************************************
+  ///\ingroup power
+  /// Calculates the rounded down power of 2.
+  /// Specialisation for 2.
+  //***************************************************************************
+  template <>
+  struct power_of_2_round_down<2>
+  {
+    enum value_type
+    {
+      value = 2
+    };
+  };
+
+  //***************************************************************************
+  ///\ingroup power
+  /// Checks if N is a power of 2.
+  //***************************************************************************
+  template <const size_t N>
+  struct is_power_of_2
+  {
+    static const bool value = (N & (N - 1)) == 0;
+  };
+
+  //***************************************************************************
+  ///\ingroup power
+  /// Checks if N is a power of 2.
+  /// Specialisation for 0.
+  //***************************************************************************
+  template <>
+  struct is_power_of_2<0>
+  {
+    static const bool value = false;
+  };
+
+  //***************************************************************************
+  ///\ingroup power
+  /// Checks if N is a power of 2.
+  /// Specialisation for 1.
+  //***************************************************************************
+  template <>
+  struct is_power_of_2<1>
+  {
+    static const bool value = false;
   };
 }
 
