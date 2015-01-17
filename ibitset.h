@@ -54,6 +54,11 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Check the bit at the position.
+    //*************************************************************************
+    virtual bool test(size_t position) const = 0;
+
+    //*************************************************************************
     /// Set the bit at the position.
     //*************************************************************************
     virtual ibitset& set(size_t position, bool value = true) = 0;
@@ -69,6 +74,14 @@ namespace etl
     ///\returns The position of the bit or SIZE if none were found.
     //*************************************************************************
     virtual size_t find_first(bool state) const = 0;
+
+    //*************************************************************************
+    /// Finds the next bit in the specified state.
+    ///\param state    The state to search for.
+    ///\param position The position to start from.
+    ///\returns The position of the bit or SIZE if none were found.
+    //*************************************************************************
+    virtual size_t find_next(bool state, size_t position) const = 0;
   };
 }
 
