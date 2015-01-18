@@ -78,7 +78,10 @@ namespace etl
 
   public:
 
-    static const size_t WIDTH = WIDTH_;
+    enum
+    {
+      WIDTH = WIDTH_
+    };
 
     //***************************************************************************
     /// Clears the bloom filter of all entries.
@@ -158,7 +161,7 @@ namespace etl
     }
 
   private:
-    
+
     //***************************************************************************
     /// Gets the hash for the key.
     ///\param  key The key.
@@ -168,7 +171,7 @@ namespace etl
     size_t get_hash(parameter_t key) const
     {
       const size_t mask = etl::power_of_2_round_up<WIDTH>::value - 1;
-      
+
       size_t hash = THash()(key);
 
       // Fold the hash down to fit the width.
