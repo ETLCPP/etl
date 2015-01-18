@@ -39,6 +39,7 @@ SOFTWARE.
 #include <functional>
 #include <stddef.h>
 
+#include "pool.h"
 #include "nullptr.h"
 #include "forward_list_base.h"
 #include "type_traits.h"
@@ -78,16 +79,6 @@ namespace etl
       {
       }
 
-      void mark_as_free()
-      {
-        next = nullptr;
-      }
-
-      bool is_free() const
-      {
-        return next == nullptr;
-      }
-
       Node* next;
     };
 
@@ -96,6 +87,10 @@ namespace etl
     //*************************************************************************
     struct Data_Node : public Node
     {
+      explicit Data_Node(parameter_t value)
+        : value(value)
+      {}
+
       T value;
     };
 
@@ -380,23 +375,20 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-      // Reset the links.
-      join(start_node, end_node);
-      join(end_node, start_node);
+      initialise();
 
-      size_t i = 0;
       Node* p_last_node = &start_node;
 
       // Add all of the elements.
       while (first != last)
       {
-        if (i < MAX_SIZE)
+        if (!full())
         {
-          Data_Node& data_node = node_pool[i++];
-          data_node.value = *first++;
+          Data_Node& data_node = allocate_data_node(*first++);
           join(*p_last_node, data_node);
           join(data_node, end_node);
           p_last_node = &data_node;
+          ++current_size;
         }
         else
 #ifdef ETL_THROW_EXCEPTIONS
@@ -408,16 +400,6 @@ namespace etl
           error_handler::error(forward_list_full());
         }
 #endif
-      }
-
-      next_free = i;
-      count     = i;
-
-      // Clear the remaining elements in the node pool.
-      while (i < MAX_SIZE)
-      {
-        node_pool[i].mark_as_free();
-        ++i;
       }
     }
 
@@ -426,23 +408,20 @@ namespace etl
     //*************************************************************************
     void assign(size_t n, parameter_t value)
     {
-      // Reset the links.
-      join(start_node, end_node);
-      join(end_node, start_node);
+      initialise();
 
-      size_t i = 0;
       Node* p_last_node = &start_node;
 
       // Add all of the elements.
-      while (i < n)
+      while (current_size < n)
       {
-        if (i < MAX_SIZE)
+        if (!full())
         {
-          Data_Node& data_node = node_pool[i++];
-          data_node.value = value;
+          Data_Node& data_node = allocate_data_node(value);
           join(*p_last_node, data_node);
           join(data_node, end_node);
           p_last_node = &data_node;
+          ++current_size;
         }
         else
 #ifdef ETL_THROW_EXCEPTIONS
@@ -454,16 +433,6 @@ namespace etl
           error_handler::error(forward_list_full());
         }
 #endif
-      }
-
-      next_free = i;
-      count     = i;
-
-      // Clear the remaining elements in the node pool.
-      while (i < MAX_SIZE)
-      {
-        node_pool[i].mark_as_free();
-        ++i;
       }
     }
 
@@ -474,9 +443,8 @@ namespace etl
     {
       if (!full())
       {
-        Data_Node& data_node = node_pool[next_free];
-
-        insert_node(get_head(), data_node);
+        Data_Node& data_node = allocate_data_node(T());
+        insert_node(start_node, data_node);
       }
       else
 #ifdef ETL_THROW_EXCEPTIONS
@@ -497,10 +465,8 @@ namespace etl
     {
       if (!full())
       {
-        Data_Node& data_node = node_pool[next_free];
-        data_node.value = value;
-
-        insert_node_after(get_head(), data_node);
+        Data_Node& data_node = allocate_data_node(value);
+        insert_node_after(start_node, data_node);
       }
       else
 #ifdef ETL_THROW_EXCEPTIONS
@@ -559,6 +525,7 @@ namespace etl
         }
         else if (i_node == end())
         {
+          // Increase.
           while (i < n)
           {
             i_node = insert_after(i_node, value);
@@ -596,11 +563,11 @@ namespace etl
 
       while (p_next != &end_node)
       {
-        p_last = p_current;
+        p_last    = p_current;
         p_current = p_next;
-        p_next = p_current->next;
+        p_next    = p_current->next;
 
-        p_current->next = static_cast<Data_Node*>(p_last);
+        p_current->next = p_last;
       }
 
       join(start_node, *p_current);
@@ -613,9 +580,7 @@ namespace etl
     {
       if (!full())
       {
-        Data_Node& data_node = node_pool[next_free];
-        data_node.value = value;
-
+        Data_Node& data_node = allocate_data_node(value);
         insert_node_after(*position.p_node, data_node);
 
         return iterator(data_node);
@@ -644,9 +609,7 @@ namespace etl
         for (size_t i = 0; !full() && (i < n); ++i)
         {
           // Set up the next free node.
-          Data_Node& data_node = node_pool[next_free];
-          data_node.value = value;
-
+          Data_Node& data_node = allocate_data_node(value);
           insert_node(*position.p_node, data_node);
         }
       }
@@ -673,11 +636,8 @@ namespace etl
         if (!full())
         {
           // Set up the next free node.
-          Data_Node& data_node = node_pool[next_free];
-          data_node.value = *first;
-
+          Data_Node& data_node = allocate_data_node(*first++);
           insert_node_after(*position.p_node, data_node);
-          ++first;
           ++position;
         }
         else
@@ -724,16 +684,12 @@ namespace etl
       // Erase the ones in between.
       while (p_first != p_last)
       {
-        // Update the position of the earliest free node in the pool.
-        size_t new_free = std::distance(&node_pool[0], static_cast<Data_Node*>(p_first));
-        next_free       = std::min(next_free, new_free);
-
         // One less.
-        --count;
+        --current_size;
 
-        p_next = p_first->next;  // Remember the next node.
-        p_first->mark_as_free(); // Free the current node.
-        p_first = p_next;        // Move to the next node.
+        p_next = p_first->next;                               // Remember the next node.
+        destroy_data_node(static_cast<Data_Node&>(*p_first)); // Destroy the pool object.
+        p_first = p_next;                                     // Move to the next node.
       }
 
       return ++last;
@@ -956,9 +912,9 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    iforward_list(Data_Node* node_pool, size_t max_size_)
+    iforward_list(etl::ipool<Data_Node>& node_pool, size_t max_size_)
       : forward_list_base(max_size_),
-        node_pool(node_pool)
+        p_node_pool(&node_pool)
     {
       initialise();
     }
@@ -968,7 +924,8 @@ namespace etl
 
   private:
 
-    Data_Node* node_pool; ///< The pool of data nodes used in the forward_list.
+    /// The pool of data nodes used in the list.
+    etl::ipool<Data_Node>* p_node_pool;
 
     //*************************************************************************
     /// Downcast a Node* to a Data_Node*
@@ -1027,24 +984,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Finds the next free node.
-    //*************************************************************************
-    void find_next_free()
-    {
-      while (next_free != MAX_SIZE)
-      {
-        if (node_pool[next_free].is_free())
-        {
-          return;
-        }
-        else
-        {
-          ++next_free;
-        }
-      }
-    }
-
-    //*************************************************************************
     /// Insert a node.
     //*************************************************************************
     void insert_node_after(Node& position, Node& node)
@@ -1054,10 +993,7 @@ namespace etl
       join(position, node);
 
       // One more.
-      ++count;
-
-      // Update the position of the next free node in the pool.
-      find_next_free();
+      ++current_size;
     }
 
     //*************************************************************************
@@ -1068,16 +1004,14 @@ namespace etl
       // The node to erase.
       Node* p_node = node.next;
 
-      // One less.
-      --count;
-
       // Disconnect the node from the forward_list.
       join(node, *p_node->next);
-      p_node->mark_as_free();
 
-      // Update the position of the next free node in the pool.
-      size_t new_free = std::distance(&node_pool[0], static_cast<Data_Node*>(p_node));
-      next_free = std::min(next_free, new_free);
+      // Destroy the pool object.
+      destroy_data_node(static_cast<Data_Node&>(*p_node));
+
+      // One less.
+      --current_size;
     }
 
     //*************************************************************************
@@ -1085,7 +1019,7 @@ namespace etl
     //*************************************************************************
     Node& get_head()
     {
-      return static_cast<Data_Node&>(*start_node.next);
+      return *start_node.next;
     }
 
     //*************************************************************************
@@ -1101,16 +1035,30 @@ namespace etl
     //*************************************************************************
     void initialise()
     {
-      // Reset the node pool.
-      for (size_t i = 0; i < max_size(); ++i)
+      if (!empty())
       {
-        node_pool[i].mark_as_free();
+        p_node_pool->release_all();
       }
 
-      next_free = 0;
-      count     = 0;
+      current_size = 0;
       join(start_node, end_node);
       join(end_node,   start_node);
+    }
+
+    //*************************************************************************
+    /// Allocate a Data_Node.
+    //*************************************************************************
+    Data_Node& allocate_data_node(parameter_t value) const
+    {
+      return *(p_node_pool->allocate(Data_Node(value)));
+    }
+
+    //*************************************************************************
+    /// Destroy a Data_Node.
+    //*************************************************************************
+    void destroy_data_node(Data_Node& node) const
+    {
+      p_node_pool->release(node);
     }
   };
 }

@@ -95,7 +95,7 @@ namespace etl
     //*************************************************************************
     size_type size() const
     {
-      return count;
+      return current_size;
     }
 
     //*************************************************************************
@@ -111,7 +111,7 @@ namespace etl
     //*************************************************************************
     bool empty() const
     {
-      return count == 0;
+      return current_size == 0;
     }
 
     //*************************************************************************
@@ -119,7 +119,7 @@ namespace etl
     //*************************************************************************
     bool full() const
     {
-      return count == MAX_SIZE;
+      return current_size == MAX_SIZE;
     }
 
     //*************************************************************************
@@ -138,14 +138,13 @@ namespace etl
     //*************************************************************************
     forward_list_base(size_type max_size)
       : next_free(0),
-        count(0),
+        current_size(0),
         MAX_SIZE(max_size)
-
     {
     }
 
     size_type next_free;      ///< The index of the next free node.
-    size_type count;          ///< The number of the used nodes.
+    size_type current_size;   ///< The number of items in the list.
     const size_type MAX_SIZE; ///< The maximum size of the forward_list.
   };
 }

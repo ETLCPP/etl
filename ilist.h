@@ -30,10 +30,6 @@ SOFTWARE.
 #define __ETL_ILIST__
 #define __ETL_IN_ILIST_H__
 
-#if WIN32
-#undef min
-#endif
-
 #include <iterator>
 #include <algorithm>
 #include <functional>
@@ -43,6 +39,11 @@ SOFTWARE.
 #include "list_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
+#include "pool.h"
+
+#if WIN32
+#undef min
+#endif
 
 namespace etl
 {
@@ -82,23 +83,6 @@ namespace etl
       }
 
       //***********************************************************************
-      /// Marks the node as free.
-      //***********************************************************************
-      void mark_as_free()
-      {
-        previous = nullptr;
-        next     = nullptr;
-      }
-
-      //***********************************************************************
-      /// Checks if the node is free.
-      //***********************************************************************
-      bool is_free() const
-      {
-        return next == nullptr;
-      }
-
-      //***********************************************************************
       /// Reverses the previous & next pointers.
       //***********************************************************************
       void reverse()
@@ -115,6 +99,11 @@ namespace etl
     //*************************************************************************
     struct Data_Node : public Node
     {
+      explicit Data_Node(parameter_t value)
+        : value(value)
+      {
+      }
+
       T value;
     };
 
@@ -124,7 +113,7 @@ namespace etl
   private:
 
     /// The pool of data nodes used in the list.
-    Data_Node* node_pool;
+    etl::ipool<Data_Node>* p_node_pool;
 
     //*************************************************************************
     /// Downcast a Node* to a Data_Node*
@@ -499,20 +488,19 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
-    {
-      // Reset the links.
-      join(terminal_node, terminal_node);
-      current_size = 0;
+    {      
+      initialise();
 
       // Add all of the elements.
       while (first != last)
       {
         if (!full())
         {
-          Data_Node& data_node = node_pool[current_size];
-          data_node.value = *first;
+          Data_Node& data_node = allocate_data_node(*first);
           join(get_tail(), data_node);
           join(data_node, terminal_node);
+          ++first;
+          ++current_size;
         }
         else
         {
@@ -522,17 +510,6 @@ namespace etl
           error_handler::error(list_full());
 #endif
         }
-
-        ++first;
-        ++current_size;
-      }
-
-      next_free = current_size;
-
-      // Clear the remaining elements in the node pool.
-      for (size_t i = current_size; i < MAX_SIZE; ++i)
-      {
-        node_pool[i].mark_as_free();
       }
     }
 
@@ -541,19 +518,17 @@ namespace etl
     //*************************************************************************
     void assign(size_t n, parameter_t value)
     {
-      // Reset the links.
-      join(terminal_node, terminal_node);
-      current_size = 0;
+      initialise();
 
       // Add all of the elements.
       while (current_size < n)
       {
         if (!full())
         {
-          Data_Node& data_node = node_pool[current_size];
-          data_node.value = value;
+          Data_Node& data_node = allocate_data_node(value);
           join(*terminal_node.previous, data_node);
           join(data_node, terminal_node);
+          ++current_size;
         }
         else
         {
@@ -563,16 +538,6 @@ namespace etl
           error_handler::error(list_full());
 #endif
         }
-
-        ++current_size;
-      }
-
-      next_free = current_size;
-
-      // Clear the remaining elements in the node pool.
-      for (size_t i = current_size; i < MAX_SIZE; ++i)
-      {
-        node_pool[i].mark_as_free();
       }
     }
 
@@ -583,7 +548,7 @@ namespace etl
     {
       if (!full())
       {
-        Data_Node& data_node = node_pool[next_free];
+        Data_Node& data_node = allocate_data_node(T());
         insert_node(get_head(), data_node);
       }
       else
@@ -603,8 +568,7 @@ namespace etl
     {
       if (!full())
       {
-        Data_Node& data_node = node_pool[next_free];
-        data_node.value = value;
+        Node& data_node = allocate_data_node(value);
         insert_node(get_head(), data_node);
       }
       else
@@ -624,7 +588,8 @@ namespace etl
     {
       if (!empty())
       {
-        remove_node(get_head());
+    	  Node& node = get_head();
+        remove_node(node);
       }
     }
 
@@ -635,7 +600,7 @@ namespace etl
     {
       if (!full())
       {
-        Data_Node& data_node = node_pool[next_free];
+        Data_Node& data_node = allocate_data_node(T());
         insert_node(terminal_node, data_node);
       }
       else
@@ -655,8 +620,7 @@ namespace etl
     {
       if (!full())
       {
-        Data_Node& data_node = node_pool[next_free];
-        data_node.value = value;
+        Data_Node& data_node = allocate_data_node(value);
         insert_node(terminal_node, data_node);
       }
       else
@@ -676,7 +640,8 @@ namespace etl
     {
       if (!empty())
       {
-        remove_node(get_tail());
+      	Node& node = get_tail();
+        remove_node(node);
       }
     }
 
@@ -687,9 +652,7 @@ namespace etl
     {
       if (!full())
       {
-        Data_Node& data_node = node_pool[next_free];
-        data_node.value = value;
-
+        Data_Node& data_node = allocate_data_node(value);
         insert_node(*position.p_node, data_node);
 
         return iterator(data_node);
@@ -715,8 +678,7 @@ namespace etl
         if (!full())
         {
           // Set up the next free node and insert.
-          Data_Node& data_node = node_pool[next_free];
-          data_node.value = value;
+          Data_Node& data_node = allocate_data_node(value);
           insert_node(*position.p_node, data_node);
         }
         else
@@ -741,8 +703,7 @@ namespace etl
         if (!full())
         {
           // Set up the next free node and insert.
-          Data_Node& data_node = node_pool[next_free];
-          data_node.value = *first++;
+          Data_Node& data_node = allocate_data_node(*first++);
           insert_node(*position.p_node, data_node);
         }
         else
@@ -765,7 +726,7 @@ namespace etl
       ++next;
 
       remove_node(*position.p_node);
-
+      
       return next;
     }
 
@@ -784,16 +745,12 @@ namespace etl
       // Erase the ones in between.
       while (p_first != p_last)
       {
-        // Update the position of the earliest free node in the pool.
-        size_t new_free = std::distance(&node_pool[0], data_cast(p_first));
-        next_free       = std::min(next_free, new_free);
-
         // One less.
         --current_size;
 
-        p_next = p_first->next;  // Remember the next node.
-        p_first->mark_as_free(); // Free the current node.
-        p_first = p_next;        // Move to the next node.
+        p_next  = p_first->next;                              // Remember the next node.
+        destroy_data_node(static_cast<Data_Node&>(*p_first)); // Destroy the current node.
+        p_first = p_next;                                     // Move to the next node.
       }
 
       return last;
@@ -1073,9 +1030,9 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    ilist(Data_Node* node_pool, size_t max_size_)
+    ilist(etl::ipool<Data_Node>& node_pool, size_t max_size_)
       : list_base(max_size_),
-        node_pool(node_pool)
+        p_node_pool(&node_pool)
     {
       initialise();
     }
@@ -1109,25 +1066,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Finds the next free node.
-    //*************************************************************************
-    void find_next_free()
-    {
-      while (next_free != MAX_SIZE)
-      {
-        if (node_pool[next_free].is_free())
-        {
-          return;
-        }
-        else
-        {
-          ++next_free;
-        }
-      }
-    }
-
-    //*************************************************************************
-    /// Insert a node.
+    /// Insert a node before 'position'.
     //*************************************************************************
     void insert_node(Node& position, Node& node)
     {
@@ -1137,9 +1076,6 @@ namespace etl
 
       // One more.
       ++current_size;
-
-      // Update the position of the next free node in the pool.
-      find_next_free();
     }
 
     //*************************************************************************
@@ -1147,16 +1083,14 @@ namespace etl
     //*************************************************************************
     void remove_node(Node& node)
     {
-      // Update the position of the next free node in the pool.
-      size_t new_free = std::distance(&node_pool[0], data_cast(&node));
-      next_free       = std::min(next_free, new_free);
+      // Disconnect the node from the list.
+      join(*node.previous, *node.next);
+
+      // Destroy the pool object.
+      destroy_data_node(static_cast<Data_Node&>(node));
 
       // One less.
       --current_size;
-
-      // Disconnect the node from the list.
-      join(*node.previous, *node.next);
-      node.mark_as_free();
     }
 
     //*************************************************************************
@@ -1192,17 +1126,31 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Allocate a Data_Node.
+    //*************************************************************************
+    Data_Node& allocate_data_node(parameter_t value) const
+    {
+      return *(p_node_pool->allocate(Data_Node(value)));
+    }
+
+    //*************************************************************************
+    /// Destroy a Data_Node.
+    //*************************************************************************
+    void destroy_data_node(Data_Node& node) const
+    {
+      p_node_pool->release(&node);
+    }
+
+    //*************************************************************************
     /// Initialise the list.
     //*************************************************************************
     void initialise()
     {
-      // Reset the node pool.
-      for (size_t i = 0; i < max_size(); ++i)
+      if (!empty())
       {
-        node_pool[i].mark_as_free();
+        p_node_pool->release_all();
       }
 
-      next_free    = 0;
       current_size = 0;
       join(terminal_node, terminal_node);
     }

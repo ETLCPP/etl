@@ -31,6 +31,7 @@ SOFTWARE.
 
 #include <stddef.h>
 
+#include "pool.h"
 #include "iforward_list.h"
 #include "container.h"
 
@@ -67,7 +68,7 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     forward_list()
-      : iforward_list<T>(&node_pool[0], MAX_SIZE)
+      : iforward_list<T>(node_pool, MAX_SIZE)
     {
     }
 
@@ -75,7 +76,7 @@ namespace etl
     /// Construct from size and value.
     //*************************************************************************
     explicit forward_list(size_t initialSize, typename iforward_list<T>::parameter_t value = T())
-      : iforward_list<T>(&node_pool[0], MAX_SIZE)
+      : iforward_list<T>(node_pool, MAX_SIZE)
     {
       iforward_list<T>::assign(initialSize, value);
     }
@@ -84,7 +85,7 @@ namespace etl
     /// Copy constructor.
     //*************************************************************************
     explicit forward_list(const forward_list& other)
-      : iforward_list<T>(&node_pool[0], MAX_SIZE)
+      : iforward_list<T>(node_pool, MAX_SIZE)
     {
 			iforward_list<T>::assign(other.cbegin(), other.cend());
     }
@@ -94,7 +95,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     forward_list(TIterator first, TIterator last)
-      : iforward_list<T>(&node_pool[0], MAX_SIZE)
+      : iforward_list<T>(node_pool, MAX_SIZE)
     {
       iforward_list<T>::assign(first, last);
     }
@@ -109,79 +110,11 @@ namespace etl
       return *this;
     }
 
-    //*************************************************************************
-    /// Swap
-    //*************************************************************************
-    void swap(forward_list& other)
-    {
-      // Re-align the node pointers for this forward_list.
-      if (this->start_node.next != 0)
-      {
-        size_t index = std::distance(&node_pool[0], static_cast<typename iforward_list<T>::Data_Node*>(this->start_node.next));
-        this->start_node.next = &node_pool[index];
-      }
-
-      if (this->end_node.next != 0)
-      {
-        size_t index = std::distance(&node_pool[0], static_cast<typename iforward_list<T>::Data_Node*>(this->end_node.next));
-        this->end_node.next = &node_pool[index];
-      }
-
-      for (size_t i = 0; i < MAX_SIZE; ++i)
-      {
-        typename iforward_list<T>::Node& node = node_pool[i];
-
-        if (!node.is_free())
-        {
-          size_t index = std::distance(&node_pool[0], static_cast<typename iforward_list<T>::Data_Node*>(node.next));
-          node.next = &other.node_pool[index];
-        }
-      }
-
-      // Re-align the node pointers for the other forward_list.
-      if (other.start_node.next != 0)
-      {
-        size_t index = std::distance(&other.node_pool[0], static_cast<typename iforward_list<T>::Data_Node*>(other.start_node.next));
-        other.start_node.next = &other.node_pool[index];
-      }
-
-      if (other.end_node.next != 0)
-      {
-        size_t index = std::distance(&other.node_pool[0], static_cast<typename iforward_list<T>::Data_Node*>(other.end_node.next));
-        other.end_node.next = &other.node_pool[index];
-      }
-
-      for (size_t i = 0; i < MAX_SIZE; ++i)
-      {
-        typename iforward_list<T>::Node& node = other.node_pool[i];
-
-        if (!node.is_free())
-        {
-          size_t index = std::distance(&other.node_pool[0], static_cast<typename iforward_list<T>::Data_Node*>(node.next));
-          node.next = &node_pool[index];
-        }
-      }
-
-      // Swap the data.
-      std::swap_ranges(etl::begin(node_pool), etl::end(node_pool), etl::begin(other.node_pool));
-      std::swap(this->next_free, other.next_free);
-      std::swap(this->count, other.count);
-    }
-
   private:
 
-    /// The pool of nodes used in the forward_list.
-    typename iforward_list<T>::Data_Node node_pool[MAX_SIZE];
+    /// The pool of nodes used in the list.
+    etl::pool<typename iforward_list<T>::Data_Node, MAX_SIZE> node_pool;
   };
-
-  //*************************************************************************
-  /// Swap
-  //*************************************************************************
-  template <typename T, const size_t MAX_SIZE>
-  void swap(etl::forward_list<T, MAX_SIZE>& first, etl::forward_list<T, MAX_SIZE>& second)
-  {
-    first.swap(second);
-  }
 }
 
 #endif

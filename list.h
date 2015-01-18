@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include "ilist.h"
 #include "container.h"
+#include "pool.h"
 
 //*****************************************************************************
 ///\defgroup list list
@@ -44,7 +45,6 @@ namespace etl
 {
   //*************************************************************************
   /// A templated list implementation that uses a fixed size buffer.
-  /// MAX_SIZE_ elements will be always be constructed.
   ///\note 'merge' and 'splice' and are not supported.
   //*************************************************************************
   template <typename T, const size_t MAX_SIZE_>
@@ -67,15 +67,24 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     list()
-      : ilist<T>(&node_pool[0], MAX_SIZE)
+      : ilist<T>(node_pool, MAX_SIZE)
     {
+    }
+
+    //*************************************************************************
+    /// Construct from size.
+    //*************************************************************************
+    explicit list(size_t initialSize)
+      : ilist<T>(node_pool, MAX_SIZE)
+    {
+      ilist<T>::assign(initialSize, T());
     }
 
     //*************************************************************************
     /// Construct from size and value.
     //*************************************************************************
-    explicit list(size_t initialSize, typename ilist<T>::parameter_t value = T())
-      : ilist<T>(&node_pool[0], MAX_SIZE)
+    list(size_t initialSize, typename ilist<T>::parameter_t value)
+      : ilist<T>(node_pool, MAX_SIZE)
     {
       ilist<T>::assign(initialSize, value);
     }
@@ -84,7 +93,7 @@ namespace etl
     /// Copy constructor.
     //*************************************************************************
     explicit list(const list& other)
-      : ilist<T>(&node_pool[0], MAX_SIZE)
+      : ilist<T>(node_pool, MAX_SIZE)
     {
 			ilist<T>::assign(other.cbegin(), other.cend());
     }
@@ -94,7 +103,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     list(TIterator first, TIterator last)
-      : ilist<T>(&node_pool[0], MAX_SIZE)
+      : ilist<T>(node_pool, MAX_SIZE)
     {
       ilist<T>::assign(first, last);
     }
@@ -109,89 +118,11 @@ namespace etl
       return *this;
     }
 
-    //*************************************************************************
-    /// Swap
-    //*************************************************************************
-    void swap(list& other)
-    {
-      // Re-align the node pointers for this list.
-      if (this->terminal_node.previous != 0)
-      {
-        size_t index = std::distance(&node_pool[0], static_cast<typename ilist<T>::Data_Node*>(this->terminal_node.previous));
-        this->terminal_node.previous = &node_pool[index];
-      }
-
-      if (this->terminal_node.next != 0)
-      {
-        size_t index = std::distance(&node_pool[0], static_cast<typename ilist<T>::Data_Node*>(this->terminal_node.next));
-        this->terminal_node.next = &node_pool[index];
-      }
-
-      for (size_t i = 0; i < MAX_SIZE; ++i)
-      {
-        typename ilist<T>::Data_Node& data_node = node_pool[i];
-
-        if (!data_node.is_free())
-        {
-          size_t index;
-
-          index = std::distance(&node_pool[0], static_cast<typename ilist<T>::Data_Node*>(data_node.previous));
-          data_node.previous = &other.node_pool[index];
-
-          index = std::distance(&node_pool[0], static_cast<typename ilist<T>::Data_Node*>(data_node.next));
-          data_node.next = &other.node_pool[index];
-        }
-      }
-
-      // Re-align the node pointers for the other list.
-      if (other.terminal_node.previous != 0)
-      {
-        size_t index = std::distance(&other.node_pool[0], static_cast<typename ilist<T>::Data_Node*>(other.terminal_node.previous));
-        other.terminal_node.previous = &other.node_pool[index];
-      }
-
-      if (other.terminal_node.next != 0)
-      {
-        size_t index = std::distance(&other.node_pool[0], static_cast<typename ilist<T>::Data_Node*>(other.terminal_node.next));
-        other.terminal_node.next = &other.node_pool[index];
-      }
-
-      for (size_t i = 0; i < MAX_SIZE; ++i)
-      {
-        typename ilist<T>::Data_Node& data_node = other.node_pool[i];
-
-        if (!data_node.is_free())
-        {
-          size_t index;
-
-          index = std::distance(&other.node_pool[0], static_cast<typename ilist<T>::Data_Node*>(data_node.previous));
-          data_node.previous = &node_pool[index];
-
-          index = std::distance(&other.node_pool[0], static_cast<typename ilist<T>::Data_Node*>(data_node.next));
-          data_node.next = &node_pool[index];
-        }
-      }
-
-      // Swap the data.
-      std::swap_ranges(etl::begin(node_pool), etl::end(node_pool), etl::begin(other.node_pool));
-      std::swap(this->next_free, other.next_free);
-      std::swap(this->current_size, other.current_size);
-    }
-
   private:
 
     /// The pool of nodes used in the list.
-    typename ilist<T>::Data_Node node_pool[MAX_SIZE];
+    etl::pool<typename ilist<T>::Data_Node, MAX_SIZE> node_pool;
   };
-
-  //*************************************************************************
-  /// Swap
-  //*************************************************************************
-  template <typename T, const size_t MAX_SIZE>
-  void swap(etl::list<T, MAX_SIZE>& first, etl::list<T, MAX_SIZE>& second)
-  {
-    first.swap(second);
-  }
 }
 
 #endif

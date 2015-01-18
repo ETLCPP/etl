@@ -137,14 +137,12 @@ namespace etl
     /// The constructor that is called from derived classes.
     //*************************************************************************
     list_base(size_type max_size)
-      : next_free(0),
-        current_size(0),
+      : current_size(0),
         MAX_SIZE(max_size)
 
     {
     }
 
-    size_type next_free;      ///< The index of the next free node.
     size_type current_size;   ///< The number of the used nodes.
     const size_type MAX_SIZE; ///< The maximum size of the list.
   };
