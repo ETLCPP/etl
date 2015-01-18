@@ -29,6 +29,8 @@ SOFTWARE.
 #ifndef __ETL_POOL__
 #define __ETL_POOL__
 
+#include "alignment.h"
+#include "array.h"
 #include "bitset.h"
 #include "ipool.h"
 
@@ -44,7 +46,6 @@ namespace etl
 {
   //*************************************************************************
   /// A templated pool implementation that uses a fixed size pool.
-  /// SIZE_ elements will be always be constructed.
   ///\ingroup pool
   //*************************************************************************
   template <typename T, const size_t SIZE_>
@@ -58,15 +59,19 @@ namespace etl
     /// Constructor
     //*************************************************************************
     pool()
-      : ipool<T>(buffer, in_use, SIZE)
+      : ipool<T>(reinterpret_cast<T*>(&aligned_buffer.value[0]), in_use, SIZE)
     {
     }
 
   private:
 
-    T            buffer[SIZE]; ///< The pool of objects.
-    bitset<SIZE> in_use;       ///< The set of flags that indicate which items are free in the pool.
+    ///< The memory for the pool of objects.
+    etl::align_as<etl::array<uint8_t, SIZE * sizeof(T)>, T> aligned_buffer;
+
+    ///< The set of flags that indicate which items are free in the pool.
+    bitset<SIZE> in_use;
   };
 }
+
 #endif
 

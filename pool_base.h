@@ -102,7 +102,7 @@ namespace etl
     /// Checks to see if there are no free items in the pool.
     /// \return <b>true</b> if there are none free (or 'empty')
     //*************************************************************************
-    bool empty() const
+    bool none_free() const
     {
       return items_allocated == MAX_SIZE;
     }
@@ -119,7 +119,7 @@ namespace etl
     {
     }
 
-    size_t       next_free;       ///< The position of the next free item in the pool.
+    size_t       next_free;       ///< The next free slot in the block.
     size_t       items_allocated; ///< The number of items allocated.
     const size_t MAX_SIZE;        ///< The maximum number of objects that can be allocated.
   };
