@@ -303,9 +303,6 @@
     <ClInclude Include="..\..\pool_base.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ibitset.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\radix.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
@@ -317,6 +314,15 @@
     </ClInclude>
     <ClInclude Include="..\..\lookup_base.h">
       <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ibitset.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bloom_filter.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\data.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -443,9 +449,6 @@
     <ClCompile Include="..\test_deque.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_forward_list.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_integral_limits.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -498,6 +501,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_lookup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bloom_filter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_forward_list.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

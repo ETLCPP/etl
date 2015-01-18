@@ -117,6 +117,7 @@
     <ClInclude Include="..\..\alignment.h" />
     <ClInclude Include="..\..\array.h" />
     <ClInclude Include="..\..\bitset.h" />
+    <ClInclude Include="..\..\bloom_filter.h" />
     <ClInclude Include="..\..\checksum.h" />
     <ClInclude Include="..\..\crc16.h" />
     <ClInclude Include="..\..\crc16_ccitt.h" />
@@ -177,6 +178,7 @@
     <ClInclude Include="..\..\vector.h" />
     <ClInclude Include="..\..\vector_base.h" />
     <ClInclude Include="..\..\visitor.h" />
+    <ClInclude Include="..\data.h" />
     <ClInclude Include="..\ExtraCheckMacros.h" />
   </ItemGroup>
   <ItemGroup>
@@ -213,6 +215,7 @@
       </AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="..\test_bitset.cpp" />
+    <ClCompile Include="..\test_bloom_filter.cpp" />
     <ClCompile Include="..\test_checksum.cpp" />
     <ClCompile Include="..\test_container.cpp" />
     <ClCompile Include="..\test_crc.cpp" />
