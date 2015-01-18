@@ -90,11 +90,14 @@ void test_algorithm()
 //*****************************************************************************
 // alignment
 //*****************************************************************************
-#if !defined(COMPILER_IAR)
-etl::align_at<char, 16> data5;
+etl::align_at<int, 16> data9;
+etl::align_at<char, 16> data10;
 
 void test_alignment()
 {
+  data9.value = 0;
+  data10.value = 0;
+  
 	etl::align_at<char, 1>  data1;
 	etl::align_at<char, 2>  data2;
 	etl::align_at<char, 4>  data3;
@@ -105,7 +108,6 @@ void test_alignment()
 	etl::align_as<char, int>    data7;
 	etl::align_as<char, double> data8;
 }
-#endif
 
 //*****************************************************************************
 // array
@@ -230,4 +232,5 @@ void test_deque()
 //*****************************************************************************
 int main()
 {
+  test_alignment();
 }

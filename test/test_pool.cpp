@@ -26,13 +26,15 @@ SOFTWARE.
 
 #include <UnitTest++/UnitTest++.h>
 
+#include "data.h"
+
+#include <set>
+#include <vector>
+
 #include "../pool.h"
 
-struct Test_Data
-{
-  int  i;
-  char c;
-};
+typedef TestDataDC<std::string>  Test_Data;
+typedef TestDataNDC<std::string> Test_Data2;
 
 namespace
 {
@@ -133,7 +135,7 @@ namespace
       CHECK(p7 != p4);
       CHECK(p7 != p6);
 
-      CHECK(pool.empty());
+      CHECK(pool.none_free());
     }
 
     //*************************************************************************
@@ -158,7 +160,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_empty)
+    TEST(test_none_free)
     {
       etl::pool<Test_Data, 4> pool;
       CHECK_EQUAL(4, pool.available());
@@ -166,16 +168,16 @@ namespace
       Test_Data* p;
 
       p = pool.allocate();
-      CHECK(!pool.empty());
+      CHECK(!pool.none_free());
 
       p = pool.allocate();
-      CHECK(!pool.empty());
+      CHECK(!pool.none_free());
 
       p = pool.allocate();
-      CHECK(!pool.empty());
+      CHECK(!pool.none_free());
 
       p = pool.allocate();
-      CHECK(pool.empty());
+      CHECK(pool.none_free());
     }
 
     //*************************************************************************
@@ -188,6 +190,55 @@ namespace
 
       CHECK(pool.is_in_pool(p1));
       CHECK(!pool.is_in_pool(not_in_pool));
+    }
+
+    //*************************************************************************
+    TEST(test_const_iterator)
+    {
+      etl::pool<Test_Data2, 10> pool;
+
+      std::set<Test_Data2>     compare = { Test_Data2("0"), Test_Data2("2"), Test_Data2("4"), Test_Data2("6"), Test_Data2("8") };
+      std::set<Test_Data2>     test;
+      std::vector<Test_Data2*> objects;
+
+      // Build the set of objects.
+      objects.push_back(pool.allocate(Test_Data2("9")));
+      objects.push_back(pool.allocate(Test_Data2("7")));
+      objects.push_back(pool.allocate(Test_Data2("8")));
+      objects.push_back(pool.allocate(Test_Data2("6")));
+      objects.push_back(pool.allocate(Test_Data2("5")));
+      objects.push_back(pool.allocate(Test_Data2("3")));
+      objects.push_back(pool.allocate(Test_Data2("4")));
+      objects.push_back(pool.allocate(Test_Data2("2")));
+      objects.push_back(pool.allocate(Test_Data2("0")));
+      objects.push_back(pool.allocate(Test_Data2("1")));
+
+      // Release "1", "3", "5", "7", "9".
+      pool.release(objects[0]);
+      pool.release(objects[1]);
+      pool.release(objects[4]);
+      pool.release(objects[5]);
+      pool.release(objects[9]);
+
+      // Fill the test set with what we get from the iterator.
+      etl::pool<Test_Data2, 10>::const_iterator i_pool = pool.begin();
+
+      while (i_pool != pool.end())
+      {
+        test.insert(*i_pool);
+        ++i_pool;
+      }
+
+      // Compare the results.
+      std::set<Test_Data2>::const_iterator i_compare = compare.begin();
+      std::set<Test_Data2>::const_iterator i_test    = test.begin();
+
+      CHECK_EQUAL(compare.size(), test.size());
+
+      while ((i_compare != compare.end()) && (i_test != test.end()))
+      {
+        CHECK_EQUAL(*i_compare++, *i_test++);
+      }
     }
   };
 }
