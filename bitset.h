@@ -746,20 +746,20 @@ namespace etl
       if (position < N)
       {
         size_t       index;
-        element_type bit;
+        element_type mask;
 
         if (ARRAY_SIZE == 1)
         {
           index = 0;
-          bit   = element_type(1) << position;
+          mask  = element_type(1) << position;
         }
         else
         {
           index = position >> log2<BITS_PER_ELEMENT>::value;
-          bit   = element_type(1) << (position & (BITS_PER_ELEMENT - 1));
+          mask  = element_type(1) << (position & (BITS_PER_ELEMENT - 1));
         }
 
-        return (data[index] & bit) != 0;
+        return (data[index] & mask) != 0;
       }
       else
       {
@@ -828,7 +828,6 @@ namespace etl
         while (value != 0)
         {
           n += (value & 1);
-
           value >>= 1;
         }
       }
@@ -847,7 +846,7 @@ namespace etl
     //*************************************************************************
     /// Finds the first bit in the specified state.
     ///\param state The state to search for.
-    ///\returns The position of the bit or SIZE if none were found.
+    ///\returns The position of the bit or size() if none were found.
     //*************************************************************************
     size_t find_first(bool state) const
     {
@@ -858,25 +857,35 @@ namespace etl
     /// Finds the next bit in the specified state.
     ///\param state    The state to search for.
     ///\param position The position to start from.
-    ///\returns The position of the bit or SIZE if none were found.
+    ///\returns The position of the bit or size() if none were found.
     //*************************************************************************
     size_t find_next(bool state, size_t position) const
     {
       // Where to start.
-      size_t element_index = position >> log2<BITS_PER_ELEMENT>::value;
-      size_t bit_index     = position &  log2<BITS_PER_ELEMENT>::value;;
-      element_type mask    = 1 << bit_index;
+      size_t index;
+      size_t bit;
+
+      if (ARRAY_SIZE == 0)
+      {
+        index = 0;
+        bit   = position;
+      }
+      else
+      {
+        index = position >> log2<BITS_PER_ELEMENT>::value;
+        bit   = position & (BITS_PER_ELEMENT - 1);
+      }
+
+      element_type mask = 1 << bit;
 
       // For each element in the bitset...
-      while (element_index < ARRAY_SIZE)
+      while (index < ARRAY_SIZE)
       {
-        const element_type& element = data[element_index];
-
         // For each bit in the element...
-        while ((bit_index < BITS_PER_ELEMENT) && (position != N))
+        while ((bit < BITS_PER_ELEMENT) && (position != N))
         {
           // Equal to the required state?
-          if (((element & mask) != 0) == state)
+          if (((data[index] & mask) != 0) == state)
           {
             return position;
           }
@@ -884,14 +893,14 @@ namespace etl
           // Move on to the next bit.
           mask <<= 1;
           ++position;
-          ++bit_index;
+          ++bit;
         }
 
         // Start at the beginning for all other elements.
-        bit_index = 0;
-        mask      = 1;
+        bit  = 0;
+        mask = 1;
 
-        ++element_index;
+        ++index;
       }
 
       return N;
