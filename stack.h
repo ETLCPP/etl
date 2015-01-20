@@ -30,10 +30,13 @@ SOFTWARE.
 #define __ETL_STACK__
 
 #include <stddef.h>
+#include <stdint.h>
 #include <algorithm>
 
 #include "istack.h"
 #include "container.h"
+#include "alignment.h"
+#include "array.h"
 
 //*****************************************************************************
 ///\defgroup stack stack
@@ -48,9 +51,8 @@ namespace etl
   ///\ingroup stack
   /// A fixed capacity stack.
   /// This stack does not support concurrent access by different threads.
-  ///\note Uses a predefined array, so MAX_SIZE_ elements will be always be constructed.
-  /// \tparam T    The type this stack should support.
-  /// \tparam SIZE The maximum capacity of the stack.
+  /// \tparam T        The type this stack should support.
+  /// \tparam MAX_SIZE The maximum capacity of the stack.
   //***************************************************************************
   template <typename T, const size_t SIZE>
   class stack : public istack<T>
@@ -61,33 +63,23 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     stack()
-      : istack<T>(buffer, SIZE)
+      : istack<T>(reinterpret_cast<T*>(&buffer.value[0]), SIZE)
     {
     }
 
     //*************************************************************************
-    /// Swap
+    /// Destructor.
     //*************************************************************************
-    void swap(stack& other)
+    ~stack()
     {
-      std::swap_ranges(etl::begin(buffer), etl::end(buffer), etl::begin(other.buffer));
-      std::swap(this->top_index, other.top_index);
-      std::swap(this->current_size, other.current_size);
+      clear();
     }
 
   private:
 
-    T buffer[SIZE]; ///< The internal buffer.
+    /// The unititialised buffer of T used in the stack.
+    etl::align_as<array<uint8_t, SIZE * sizeof(T)>, T> buffer;
   };
-
-  //*************************************************************************
-  /// Swap
-  //*************************************************************************
-  template <typename T, const size_t MAX_SIZE>
-  void swap(etl::stack<T, MAX_SIZE>& first, etl::stack<T, MAX_SIZE>& second)
-  {
-    first.swap(second);
-  }
 }
 
 #endif

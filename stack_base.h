@@ -129,37 +129,16 @@ namespace etl
       return max_size() - size();
     }
 
-    //*************************************************************************
-    /// Clears the stack to the empty state.
-    //*************************************************************************
-    void clear()
-    {
-      top_index    = 0;
-      current_size = 0;
-    }
-
-    //*************************************************************************
-    /// Removes the oldest item from the top of the stack.
-    /// Does nothing if the stack is already empty.
-    //*************************************************************************
-    void pop()
-    {
-      if (!empty())
-      {
-        --top_index;
-        --current_size;
-      }
-    }
-
   protected:
 
     //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
     stack_base(size_type max_size)
-      : MAX_SIZE(max_size)
+      : top_index(0),
+        current_size(0),
+        MAX_SIZE(max_size)
     {
-      clear();
     }
 
     size_type top_index;      ///< The index of the top of the stack.

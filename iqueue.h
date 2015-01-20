@@ -51,7 +51,7 @@ namespace etl
   /// etl::iqueue<int>& iQueue = myQueue;
   ///\endcode
   /// \warning This queue cannot be used for concurrent access from multiple threads.
-  /// \tparam T The type of item that the queue holds.
+  /// \tparam T The type of value that the queue holds.
   //***************************************************************************
   template <typename T>
   class iqueue : public queue_base
@@ -72,52 +72,52 @@ namespace etl
   public:
 
     //*************************************************************************
-    /// Gets a reference to the item at the front of the queue.<br>
-    /// \return A reference to the item at the front of the queue.
+    /// Gets a reference to the value at the front of the queue.<br>
+    /// \return A reference to the value at the front of the queue.
     //*************************************************************************
     reference front()
     {
-      return buffer[out];
+      return p_buffer[out];
     }
 
     //*************************************************************************
-    /// Gets a const reference to the item at the front of the queue.<br>
-    /// \return A const reference to the item at the front of the queue.
+    /// Gets a const reference to the value at the front of the queue.<br>
+    /// \return A const reference to the value at the front of the queue.
     //*************************************************************************
     const_reference front() const
     {
-      return buffer[out];
+      return p_buffer[out];
     }
 
     //*************************************************************************
-    /// Gets a reference to the item at the back of the queue.<br>
-    /// \return A reference to the item at the back of the queue.
+    /// Gets a reference to the value at the back of the queue.<br>
+    /// \return A reference to the value at the back of the queue.
     //*************************************************************************
     reference back()
     {
-      return buffer[in == 0 ? MAX_SIZE - 1 : in - 1];
+      return p_buffer[in == 0 ? MAX_SIZE - 1 : in - 1];
     }
 
     //*************************************************************************
-    /// Gets a const reference to the item at the back of the queue.<br>
-    /// \return A const reference to the item at the back of the queue.
+    /// Gets a const reference to the value at the back of the queue.<br>
+    /// \return A const reference to the value at the back of the queue.
     //*************************************************************************
     const_reference back() const
     {
-      return buffer[in == 0 ? MAX_SIZE - 1 : in - 1];
+      return p_buffer[in == 0 ? MAX_SIZE - 1 : in - 1];
     }
 
     //*************************************************************************
-    /// Adds an item to the queue.
+    /// Adds a value to the queue.
     /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::queue_full is the queue is already full,
     /// otherwise does nothing if full.
-    ///\param item The item to push to the queue.
+    ///\param value The value to push to the queue.
     //*************************************************************************
-    void push(parameter_t item)
+    void push(parameter_t value)
     {
       if (!full())
       {
-        buffer[in] = item;
+        new(&p_buffer[in]) T(value);
         in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
         ++current_size;
       }
@@ -134,7 +134,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Allows a possibly more efficient 'push' by moving to the next input item
+    /// Allows a possibly more efficient 'push' by moving to the next input value
     /// and returning a reference to it.
     /// This may eliminate a copy by allowing direct construction in-place.<br>
     /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::queue_full is the queue is already full,
@@ -147,6 +147,7 @@ namespace etl
 
       if (!full())
       {
+        new(&p_buffer[in]) T();
         in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
         ++current_size;
       }
@@ -161,7 +162,37 @@ namespace etl
       }
 #endif
 
-      return buffer[next];
+      return p_buffer[next];
+    }
+
+    //*************************************************************************
+    /// Clears the queue to the empty state.
+    //*************************************************************************
+    void clear()
+    {
+      while (current_size > 0)
+      {
+        p_buffer[out].~T();
+        out = (out == (MAX_SIZE - 1)) ? 0 : out + 1;
+        --current_size;
+      }
+
+      in = 0;
+      out = 0;
+    }
+
+    //*************************************************************************
+    /// Removes the oldest value from the back of the queue.
+    /// Does nothing if the queue is already empty.
+    //*************************************************************************
+    void pop()
+    {
+      if (!empty())
+      {
+        p_buffer[out].~T();
+        out = (out == (MAX_SIZE - 1)) ? 0 : out + 1;
+        --current_size;
+      }
     }
 
   protected:
@@ -169,15 +200,15 @@ namespace etl
     //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
-    iqueue(T* buffer, size_type max_size)
+    iqueue(T* p_buffer, size_type max_size)
       : queue_base(max_size),
-        buffer(buffer)
+        p_buffer(p_buffer)
     {
     }
 
   private:
 
-    T* buffer; ///< The internal buffer.
+    T* p_buffer; ///< The internal buffer.
   };
 }
 

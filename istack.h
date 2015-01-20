@@ -51,7 +51,7 @@ namespace etl
   /// etl::istack<int>& iQueue = myQueue;
   ///\endcode
   /// \warning This stack cannot be used for concurrent access from multiple threads.
-  /// \tparam T The type of item that the stack holds.
+  /// \tparam T The type of value that the stack holds.
   //***************************************************************************
   template <typename T>
   class istack : public stack_base
@@ -72,26 +72,26 @@ namespace etl
   public:
 
     //*************************************************************************
-    /// Gets a reference to the item at the top of the stack.<br>
-    /// \return A reference to the item at the top of the stack.
+    /// Gets a reference to the value at the top of the stack.<br>
+    /// \return A reference to the value at the top of the stack.
     //*************************************************************************
     reference top()
     {
-      return buffer[top_index];
+      return p_buffer[top_index];
     }
 
     //*************************************************************************
-    /// Adds an item to the stack.
+    /// Adds a value to the stack.
     /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::stack_full is the stack is already full,
     /// otherwise does nothing if full.
-    ///\param item The item to push to the stack.
+    ///\param value The value to push to the stack.
     //*************************************************************************
-    void push(parameter_t item)
+    void push(parameter_t value)
     {
       if (!full())
       {
         top_index = current_size++;
-        buffer[top_index] = item;
+        new(&p_buffer[top_index]) T(value);
       }
       else
 #ifdef ETL_THROW_EXCEPTIONS     
@@ -106,7 +106,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Allows a possibly more efficient 'push' by moving to the next input item
+    /// Allows a possibly more efficient 'push' by moving to the next input value
     /// and returning a reference to it.
     /// This may eliminate a copy by allowing direct construction in-place.<br>
     /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::stack_full is the stack is already full,
@@ -118,6 +118,7 @@ namespace etl
       if (!full())
       {
         top_index = current_size++;
+        new(&p_buffer[top_index]) T();
       }
       else
 #ifdef ETL_THROW_EXCEPTIONS     
@@ -130,16 +131,43 @@ namespace etl
       }
 #endif
 
-      return buffer[top_index];
+      return p_buffer[top_index];
     }
 
     //*************************************************************************
-    /// Gets a const reference to the item at the top of the stack.<br>
-    /// \return A const reference to the item at the top of the stack.
+    /// Gets a const reference to the value at the top of the stack.<br>
+    /// \return A const reference to the value at the top of the stack.
     //*************************************************************************
     const_reference top() const
     {
-      return buffer[top_index];
+      return p_buffer[top_index];
+    }
+
+    //*************************************************************************
+    /// Clears the stack to the empty state.
+    //*************************************************************************
+    void clear()
+    {
+      while (current_size > 0)
+      {
+        p_buffer[top_index].~T();
+        --top_index;
+        --current_size;
+      }
+    }
+
+    //*************************************************************************
+    /// Removes the oldest item from the top of the stack.
+    /// Does nothing if the stack is already empty.
+    //*************************************************************************
+    void pop()
+    {
+      if (!empty())
+      {
+        p_buffer[top_index].~T();
+        --top_index;
+        --current_size;
+      }
     }
 
   protected:
@@ -147,15 +175,15 @@ namespace etl
     //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
-    istack(T* buffer, size_type max_size)
+    istack(T* p_buffer, size_type max_size)
       : stack_base(max_size),
-        buffer(buffer)
+        p_buffer(p_buffer)
     {
     }
 
   private:
 
-    T* buffer; ///< The internal buffer.
+    T* p_buffer; ///< The internal buffer.
   };
 }
 

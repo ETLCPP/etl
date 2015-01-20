@@ -128,38 +128,17 @@ namespace etl
       return max_size() - size();
     }
 
-    //*************************************************************************
-    /// Clears the queue to the empty state.
-    //*************************************************************************
-    void clear()
-    {
-      in  = 0;
-      out = 0;
-      current_size = 0;
-    }
-
-    //*************************************************************************
-    /// Removes the oldest item from the back of the queue.
-    /// Does nothing if the queue is already empty.
-    //*************************************************************************
-    void pop()
-    {
-      if (!empty())
-      {
-        out = (out == (MAX_SIZE - 1)) ? 0 : out + 1;
-        --current_size;
-      }
-    }
-
   protected:
 
     //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
     queue_base(size_type max_size)
-      : MAX_SIZE(max_size)
+      : in(0),
+        out(0),
+        current_size(0),
+        MAX_SIZE(max_size)
     {
-      clear();
     }
 
     size_type in;             ///< Where to input new data.

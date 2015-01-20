@@ -30,9 +30,12 @@ SOFTWARE.
 #define __ETL_QUEUE__
 
 #include <stddef.h>
+#include <stdint.h>
 
 #include "iqueue.h"
 #include "container.h"
+#include "alignment.h"
+#include "array.h"
 
 //*****************************************************************************
 ///\defgroup queue queue
@@ -60,34 +63,23 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     queue()
-      : iqueue<T>(buffer, SIZE)
+      : iqueue<T>(reinterpret_cast<T*>(&buffer.value[0]), SIZE)
     {
     }
 
     //*************************************************************************
-    /// Swap
+    /// Destructor.
     //*************************************************************************
-    void swap(queue& other)
+    ~queue()
     {
-      std::swap_ranges(etl::begin(buffer), etl::end(buffer), etl::begin(other.buffer));
-      std::swap(this->in, other.in);
-      std::swap(this->out, other.out);
-      std::swap(this->current_size, other.current_size);
+      clear();
     }
 
   private:
 
-    T buffer[SIZE]; ///< The internal buffer.
+    /// The unititialised buffer of T used in the stack.
+    etl::align_as<array<uint8_t, SIZE * sizeof(T)>, T> buffer;
   };
-
-  //*************************************************************************
-  /// Swap
-  //*************************************************************************
-  template <typename T, const size_t MAX_SIZE>
-  void swap(etl::queue<T, MAX_SIZE>& first, etl::queue<T, MAX_SIZE>& second)
-  {
-    first.swap(second);
-  }
 }
 
 #endif
