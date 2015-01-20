@@ -44,8 +44,7 @@ SOFTWARE.
 namespace etl
 {
   //*************************************************************************
-  /// A templated forward_list implementation that uses a fixed size buffer.
-  /// MAX_SIZE_ elements will be always be constructed.
+  /// A templated forward_list implementation that uses a fixed size pool.
   ///\note 'merge' and 'splice_after' and are not supported.
   //*************************************************************************
   template <typename T, const size_t MAX_SIZE_>
