@@ -177,13 +177,13 @@ namespace etl
       // Fold the hash down to fit the width.
       size_t folded_hash = 0;
 
-      size_t shift = etl::log2<etl::power_of_2_round_up<WIDTH>::value>::value;
+      const size_t shift = etl::log2<etl::power_of_2_round_up<WIDTH>::value>::value;
 
       // Keep shifting down and XORing the lower bits.
       while (hash >= WIDTH)
       {
         folded_hash ^= hash & mask;
-        hash >>= etl::log2<etl::power_of_2_round_up<WIDTH>::value>::value;
+        hash >>= shift;
       }
 
       // Fold the remaining bits.
