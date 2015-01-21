@@ -865,7 +865,7 @@ namespace etl
       size_t index;
       size_t bit;
 
-      if (ARRAY_SIZE == 0)
+      if (ARRAY_SIZE == 1)
       {
         index = 0;
         bit   = position;
