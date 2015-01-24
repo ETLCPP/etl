@@ -73,25 +73,6 @@ namespace etl
 
   public:
 
-    // Use the base class void push_back().
-    using vector_base::push_back;
-
-    //*********************************************************************
-    /// Assignment operator.
-    /// The source vector can be larger than the destination, but 
-    /// only the elements that will fit in the destination will be copied.
-    ///\param other The other vector.
-    //*********************************************************************
-    ivector& operator = (ivector& other)
-    {
-      const size_t length = std::min(MAX_SIZE, other.size());
-
-      std::copy(other.begin(), other.begin() + length, p_buffer);
-      current_size = length;
-
-      return *this;
-    }
-
     //*********************************************************************
     /// Returns an iterator to the beginning of the vector.
     ///\return An iterator to the beginning of the vector.
@@ -204,13 +185,11 @@ namespace etl
     /// Resizes the vector.
     /// If ETL_THROW_EXCEPTIONS is defined and the new size is larger than the
     /// maximum then a vector_full is thrown.
-    ///\param newSize The new size.
-    ///\param value   The value to fill new elements with. Default = default contructed value.
+    ///\param new_size The new size.
     //*********************************************************************
-    void resize(size_t newSize, T value = T())
+    void resize(size_t new_size)
     {
-
-      if (newSize > MAX_SIZE)
+      if (new_size > MAX_SIZE)
       {
 #ifdef ETL_THROW_EXCEPTIONS
         throw vector_full();
@@ -219,12 +198,60 @@ namespace etl
 #endif
       }
 
-	    if (newSize > current_size)
-	    {
-		    std::fill(&p_buffer[current_size], &p_buffer[newSize], value);
-	    }
+      // Size up or size down?
+      if (new_size > current_size)
+      {
+        for (size_t i = current_size; i < new_size; ++i)
+        {
+          while (current_size < new_size)
+          {
+            create_element();
+          }
+        }
+      }
+      else if (new_size < current_size)
+      {
+        while (current_size > new_size)
+        {
+          destroy_element();
+        }
+      }
+    }
 
-	    current_size = newSize;
+    //*********************************************************************
+    /// Resizes the vector.
+    /// If ETL_THROW_EXCEPTIONS is defined and the new size is larger than the
+    /// maximum then a vector_full is thrown.
+    ///\param new_size The new size.
+    ///\param value   The value to fill new elements with. Default = default contructed value.
+    //*********************************************************************
+    void resize(size_t new_size, T value)
+    {
+      if (new_size > MAX_SIZE)
+      {
+#ifdef ETL_THROW_EXCEPTIONS
+        throw vector_full();
+#else
+        error_handler::error(vector_full());
+#endif
+      }
+
+      // Size up?
+	    if (new_size > current_size)
+	    {
+        while (current_size < new_size)
+        {
+          create_element(value);
+        }
+	    }
+      // Size down?
+      else if (new_size < current_size)
+      {
+        while (current_size > new_size)
+        {
+          destroy_element();
+        }
+      }
     }
 
     //*********************************************************************
@@ -255,7 +282,6 @@ namespace etl
     //*********************************************************************
     reference at(size_t i)
     {
-
       if (i >= current_size)
       {
 #ifdef ETL_THROW_EXCEPTIONS
@@ -276,7 +302,6 @@ namespace etl
     //*********************************************************************
     const_reference at(size_t i) const
     {
-
       if (i >= current_size)
       {
 #ifdef ETL_THROW_EXCEPTIONS
@@ -353,6 +378,8 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
+      initialise();
+
       difference_type count = std::distance(first, last);
 
       if (count < 0)
@@ -374,8 +401,11 @@ namespace etl
       else
       {
         // Safe to copy.
-        std::copy(first, last, begin());
-        current_size = count;
+        while (first != last)
+        {
+          create_element(*first);
+          ++first;
+        }
       }
     }
 
@@ -387,6 +417,8 @@ namespace etl
     //*********************************************************************
     void assign(size_t n, parameter_t value)
     {
+      initialise();
+
       if (n > MAX_SIZE)
       {
 #ifdef ETL_THROW_EXCEPTIONS
@@ -397,9 +429,40 @@ namespace etl
       }
       else
       {
-        std::fill_n(begin(), n, value);
-        current_size = n;
+        while (n > 0)
+        {
+          create_element(value);
+          --n;
+        }
       }
+    }
+
+    //*************************************************************************
+    /// Clears the vector.
+    //*************************************************************************
+    void clear()
+    {
+      initialise();
+    }
+
+    //*************************************************************************
+    /// Increases the size of the vector by one, but does not initialise the new element.
+    /// If ETL_THROW_EXCEPTIONS is defined, throws a vector_full if the vector is already full.
+    //*************************************************************************
+    void push_back()
+    {
+#ifdef ETL_THROW_EXCEPTIONS
+      if (current_size == MAX_SIZE)
+      {
+        throw vector_full();
+      }
+#else
+      {
+        error_handler::error(vector_full());
+      }
+#endif
+
+      create_element();
     }
 
     //*********************************************************************
@@ -419,7 +482,19 @@ namespace etl
       }
       else
       {
-        p_buffer[current_size++] = value;
+        create_element(value);
+      }
+    }
+
+    //*************************************************************************
+    /// Removes an element from the end of the vector.
+    /// Does nothing if the vector is empty.
+    //*************************************************************************
+    void pop_back()
+    {
+      if (current_size > 0)
+      {
+        destroy_element();
       }
     }
 
@@ -448,7 +523,7 @@ namespace etl
         }
         else
         {
-          ++current_size;
+          resize(size() + 1);
           std::copy_backward(position, end() - 1, end());
           *position = value;
         }
@@ -476,7 +551,7 @@ namespace etl
       }
       else
       {
-        current_size += n;
+        resize(size() + n);
         std::copy_backward(position, end() - n, end());
         std::fill_n(position, n, value);
       }
@@ -504,7 +579,7 @@ namespace etl
       }
       else
       {
-        current_size += count;
+        resize(size() + count);
         std::copy_backward(position, end() - count, end());
         std::copy(first, first + count, position);
       }
@@ -518,7 +593,7 @@ namespace etl
     iterator erase(iterator i_element)
     {
       std::copy(i_element + 1, end(), i_element);
-      --current_size;
+      destroy_element();
 
       return i_element;
     }
@@ -534,7 +609,8 @@ namespace etl
     iterator erase(iterator first, iterator last)
     {
       std::copy(last, end(), first);
-      current_size -= std::distance(first, last);
+      size_t new_size = current_size - std::distance(first, last);
+      resize(new_size);
 
       return first;
     }
@@ -548,9 +624,45 @@ namespace etl
       : vector_base(MAX_SIZE),
         p_buffer(p_buffer)
     {
+      initialise();
     }
 
   private:
+
+    //*********************************************************************
+    /// Initialise the vector.
+    //*********************************************************************
+    void initialise()
+    {
+      while (current_size > 0)
+      {
+        destroy_element();
+      }
+    }
+
+    //*********************************************************************
+    /// Create a new element with a default value at the back.
+    //*********************************************************************
+    void create_element()
+    {
+      new(&p_buffer[current_size++]) T();
+    }
+
+    //*********************************************************************
+    /// Create a new element with a value at the back
+    //*********************************************************************
+    void create_element(parameter_t value)
+    {
+      new(&p_buffer[current_size++]) T(value);
+    }
+
+    //*********************************************************************
+    /// Destroy an element at the back.
+    //*********************************************************************
+    void destroy_element()
+    {
+      p_buffer[--current_size].~T();
+    }
 
     T* p_buffer;
   };

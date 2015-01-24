@@ -352,16 +352,6 @@ namespace etl
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
     //*************************************************************************
-    /// Assignment operator.
-    //*************************************************************************
-    ilist& operator = (const ilist& rhs)
-    {
-      assign(rhs.cbegin(), rhs.cend());
-
-      return *this;
-    }
-
-    //*************************************************************************
     /// Gets the beginning of the list.
     //*************************************************************************
     iterator begin()
