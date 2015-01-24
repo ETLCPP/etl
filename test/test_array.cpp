@@ -59,11 +59,11 @@ namespace
     TEST(test_assignment)
     {
       Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      Data otherData;
+      Data other_data;
 
-      otherData = data;
+      other_data = data;
 
-      bool isEqual = std::equal(data.begin(), data.end(), otherData.begin());
+      bool isEqual = std::equal(data.begin(), data.end(), other_data.begin());
 
       CHECK(isEqual);
     }

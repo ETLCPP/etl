@@ -472,6 +472,22 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_self_assignment)
+    {
+      CompareDataNDC compare_data(sorted_data.begin(), sorted_data.end());
+      DataNDC data(sorted_data.begin(), sorted_data.end());
+      DataNDC other_data(data);
+
+      other_data = other_data;
+
+      CHECK_EQUAL(data.size(), other_data.size());
+
+      are_equal = std::equal(data.begin(), data.end(), other_data.begin());
+
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_unique)
     {
       CompareDataNDC compare_data(non_unique_data.begin(), non_unique_data.end());
