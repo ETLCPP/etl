@@ -147,13 +147,28 @@ namespace
     TEST_FIXTURE(SetupFixture, test_assignment)
     {
       Data data(initial_data.begin(), initial_data.end());
-      Data otherData;
+      Data other_data;
 
-      otherData = data;
+      other_data = data;
 
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),
-                                 otherData.begin());
+                                 other_data.begin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_self_assignment)
+    {
+      Data data(initial_data.begin(), initial_data.end());
+      Data other_data(data);
+
+      other_data = other_data;
+
+      bool isEqual = Check_Equal(data.begin(),
+                                 data.end(),
+                                 other_data.begin());
 
       CHECK(isEqual);
     }
@@ -500,27 +515,6 @@ namespace
       const Data different(different_data.begin(), different_data.end());
 
       CHECK(initial1 != different);
-    }
-
-    //*************************************************************************
-    TEST(test_swap)
-    {
-      Compare_Data first(initial_data.begin(), initial_data.end());
-      Compare_Data second(initial_data.rbegin(), initial_data.rend());
-
-      Data data1(first.begin(), first.end());
-      Data data2(second.begin(), second.end());
-
-      swap(data1, data2);
-
-      CHECK_EQUAL(second.size(), data1.size());
-      CHECK_EQUAL(first.size(), data2.size());
-
-      CHECK_EQUAL(std::distance(second.begin(), second.end()), std::distance(data1.begin(), data1.end()));
-      CHECK_EQUAL(std::distance(first.begin(), first.end()), std::distance(data2.begin(), data2.end()));
-
-      CHECK(Check_Equal(data1.begin(), data1.end(), second.begin()));
-      CHECK(Check_Equal(data2.begin(), data2.end(), first.begin()));
     }
   };
 }

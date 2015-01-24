@@ -87,33 +87,19 @@ namespace etl
     //*************************************************************************
     lookup& operator = (const lookup& rhs)
     {
-      ilookup<TKey, TValue, TCompare>::clear();
-      ilookup<TKey, TValue, TCompare>::insert(rhs.cbegin(), rhs.cend());
+      if (&rhs != this)
+      {
+        ilookup<TKey, TValue, TCompare>::clear();
+        ilookup<TKey, TValue, TCompare>::insert(rhs.cbegin(), rhs.cend());
+      }
 
       return *this;
-    }
-
-    //*************************************************************************
-    /// Swap
-    //*************************************************************************
-    void swap(lookup& other)
-    {
-      buffer.swap(other.buffer);
     }
 
   private:
 
     etl::vector<typename ilookup<TKey, TValue, TCompare>::value_type, MAX_SIZE> buffer; ///<The vector that stores the elements.
   };
-
-  //*************************************************************************
-  /// Swap
-  //*************************************************************************
-  template <typename TKey, typename TValue, const size_t MAX_SIZE, typename TCompare>
-  void swap(etl::lookup<TKey, TValue, MAX_SIZE, TCompare>& first, etl::lookup<TKey, TValue, MAX_SIZE, TCompare>& second)
-  {
-    first.swap(second);
-  }
 }
 
 #endif
