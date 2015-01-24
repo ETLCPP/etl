@@ -163,46 +163,6 @@ namespace etl
       return max_size() - size();
     }
 
-    //*************************************************************************
-    /// Clears the vector.
-    //*************************************************************************
-    void clear()
-    {
-      current_size = 0;
-    }
-
-    //*************************************************************************
-    /// Increases the size of the vector by one, but does not initialise the new element.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws a vector_full if the vector is already full.
-    //*************************************************************************
-    void push_back()
-    {
-#ifdef ETL_THROW_EXCEPTIONS
-      if (current_size == MAX_SIZE)
-      {
-        throw vector_full();
-      }
-#else
-      {
-        error_handler::error(vector_full());
-      }
-#endif
-
-      ++current_size;
-    }
-
-    //*************************************************************************
-    /// Removes an element from the end of the vector.
-    /// Does nothing if the vector is empty.
-    //*************************************************************************
-    void pop_back()
-    {
-      if (current_size > 0)
-      {
-        --current_size;
-      }
-    }
-
   protected:
 
     //*************************************************************************

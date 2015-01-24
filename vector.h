@@ -30,10 +30,13 @@ SOFTWARE.
 #define __ETL_VECTOR__
 
 #include <stddef.h>
+#include <stdint.h>
 #include <iterator>
 
 #include "ivector.h"
 #include "container.h"
+#include "alignment.h"
+#include "array.h"
 
 //*****************************************************************************
 ///\defgroup vector vector
@@ -62,7 +65,7 @@ namespace etl
     /// Constructor.
     //*************************************************************************
     vector()
-      : ivector<T>(buffer, MAX_SIZE)
+      : ivector<T>(reinterpret_cast<T*>(&buffer.value[0]), MAX_SIZE)
     {
     }
 
@@ -71,7 +74,7 @@ namespace etl
     ///\param initialSize The initial size of the vector.
     //*************************************************************************
     explicit vector(size_t initialSize)
-      : ivector<T>(buffer, MAX_SIZE)
+      : ivector<T>(reinterpret_cast<T*>(&buffer.value[0]), MAX_SIZE)
     {
       ivector<T>::resize(initialSize);
     }
@@ -82,7 +85,7 @@ namespace etl
     ///\param value        The value to fill the vector with.
     //*************************************************************************
     vector(size_t initialSize, typename ivector<T>::parameter_t value)
-      :  ivector<T>(buffer, MAX_SIZE)
+      : ivector<T>(reinterpret_cast<T*>(&buffer.value[0]), MAX_SIZE)
     {
       ivector<T>::resize(initialSize, value);
     }
@@ -95,7 +98,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     vector(TIterator first, TIterator last)
-      :  ivector<T>(buffer, MAX_SIZE)
+      : ivector<T>(reinterpret_cast<T*>(&buffer.value[0]), MAX_SIZE)
     {
       ivector<T>::assign(first, last);
     }
@@ -105,33 +108,18 @@ namespace etl
     //*************************************************************************
     vector& operator = (const vector& rhs)
     {
-      ivector<T>::assign(rhs.cbegin(), rhs.cend());
+      if (&rhs != this)
+      {
+        ivector<T>::assign(rhs.cbegin(), rhs.cend());
+      }
 
       return *this;
     }
 
-    //*************************************************************************
-    /// Swap
-    //*************************************************************************
-    void swap(vector& other)
-    {
-      std::swap_ranges(etl::begin(buffer), etl::end(buffer), etl::begin(other.buffer));
-      std::swap(this->current_size, other.current_size);
-    }
-
   private:
 
-    T buffer[MAX_SIZE]; ///<The array that stores the elements.
+    etl::align_as<array<uint8_t, MAX_SIZE * sizeof(T)>, T> buffer;
   };
-
-  //*************************************************************************
-  /// Swap
-  //*************************************************************************
-  template <typename T, const size_t MAX_SIZE>
-  void swap(etl::vector<T, MAX_SIZE>& first, etl::vector<T, MAX_SIZE>& second)
-  {
-    first.swap(second);
-  }
 }
 
 #endif
