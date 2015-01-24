@@ -87,7 +87,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    queue& operator =(const queue& rhs)
+    queue& operator = (const queue& rhs)
     {
       if (&rhs != this)
       {
