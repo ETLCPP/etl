@@ -83,7 +83,7 @@ namespace etl
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
-    explicit forward_list(const forward_list& other)
+    forward_list(const forward_list& other)
       : iforward_list<T>(node_pool, MAX_SIZE)
     {
 			iforward_list<T>::assign(other.cbegin(), other.cend());
@@ -104,7 +104,10 @@ namespace etl
     //*************************************************************************
     forward_list& operator = (const forward_list& rhs)
     {
-      iforward_list<T>::assign(rhs.cbegin(), rhs.cend());
+      if (&rhs != this)
+      {
+        iforward_list<T>::assign(rhs.cbegin(), rhs.cend());
+      }
 
       return *this;
     }
