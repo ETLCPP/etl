@@ -171,6 +171,19 @@ namespace etl
   protected:
 
     //*************************************************************************
+    /// Make this a clone of the supplied stack
+    //*************************************************************************
+    void clone(const istack& other)
+    {
+      size_t index = 0;
+
+      for (size_t i = 0; i < other.size(); ++i)
+      {
+        push(other.p_buffer[index++]);
+      }
+    }
+
+    //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
     istack(T* p_buffer, size_type max_size)

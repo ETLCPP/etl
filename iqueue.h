@@ -198,6 +198,20 @@ namespace etl
   protected:
 
     //*************************************************************************
+    /// Make this a clone of the supplied queue
+    //*************************************************************************
+    void clone(const iqueue& other)
+    {
+      size_t index = other.out;
+
+      for (size_t i = 0; i < other.size(); ++i)
+      {
+        push(other.p_buffer[index]);
+        index = (index == (MAX_SIZE - 1)) ? 0 : index + 1;
+      }
+    }
+
+    //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
     iqueue(T* p_buffer, size_type max_size)

@@ -35,6 +35,28 @@ namespace
   SUITE(test_queue)
   {
     //*************************************************************************
+    TEST(test_copy_constructor)
+    {
+      etl::queue<int, 4> queue;
+
+      queue.push(1);
+      queue.push(2);
+      queue.push(3);
+      queue.push(4);
+
+      etl::queue<int, 4> queue2(queue);
+
+      CHECK(queue.size() == queue2.size());
+
+      while (!queue.empty())
+      {
+        CHECK_EQUAL(queue.front(), queue2.front());
+        queue.pop();
+        queue2.pop();
+      }
+    }
+
+    //*************************************************************************
     TEST(test_size)
     {
       etl::queue<int, 4> queue;
@@ -44,14 +66,6 @@ namespace
       queue.push(3);
 
       CHECK_EQUAL(3, queue.size());
-    }
-
-    //*************************************************************************
-    TEST(test_capacity)
-    {
-      etl::queue<int, 4> queue;
-
-      CHECK_EQUAL(4, queue.capacity());
     }
 
     //*************************************************************************
@@ -199,7 +213,7 @@ namespace
     {
       etl::queue<int, 4> queue;
 
-      for (size_t i = 0; i < queue.capacity(); ++i)
+      for (size_t i = 0; i < queue.max_size(); ++i)
       {
         queue.push(1);
       }
@@ -282,6 +296,57 @@ namespace
       queue.push(2);
       queue.pop();
       CHECK_EQUAL(1, queue.size());
+    }
+
+    //*************************************************************************
+    TEST(test_assignment)
+    {
+      etl::queue<int, 4> queue;
+
+      queue.push(1);
+      queue.push(2);
+      queue.push(3);
+      queue.push(4);
+
+      etl::queue<int, 4> queue2;
+
+      queue2 = queue;
+
+      CHECK(queue.size() == queue2.size());
+
+      while (!queue.empty())
+      {
+        CHECK_EQUAL(queue.front(), queue2.front());
+        queue.pop();
+        queue2.pop();
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_self_assignment)
+    {
+      etl::queue<int, 4> queue;
+
+      queue.push(1);
+      queue.push(2);
+      queue.push(3);
+      queue.push(4);
+
+      queue = queue;
+
+      CHECK(queue.max_size() == queue.size());
+
+      CHECK_EQUAL(1, queue.front());
+      queue.pop();
+
+      CHECK_EQUAL(2, queue.front());
+      queue.pop();
+
+      CHECK_EQUAL(3, queue.front());
+      queue.pop();
+
+      CHECK_EQUAL(4, queue.front());
+      queue.pop();
     }
   };
 }

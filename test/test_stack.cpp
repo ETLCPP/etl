@@ -40,6 +40,28 @@ namespace
     typedef TestDataNDC<std::string> ItemNDC;
 
     //*************************************************************************
+    TEST(test_copy_constructor)
+    {
+      etl::stack<int, 4> stack;
+
+      stack.push(1);
+      stack.push(2);
+      stack.push(3);
+      stack.push(4);
+
+      etl::stack<int, 4> stack2(stack);
+
+      CHECK(stack.size() == stack2.size());
+
+      while (!stack.empty())
+      {
+        CHECK_EQUAL(stack.top(), stack2.top());
+        stack.pop();
+        stack2.pop();
+      }
+    }
+
+    //*************************************************************************
     TEST(test_empty)
     {
       etl::stack<ItemNDC, 4> stack;
@@ -79,11 +101,11 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_capacity)
+    TEST(test_max_size)
     {
       etl::stack<int, 4> stack;
 
-      CHECK_EQUAL(4, stack.capacity());
+      CHECK_EQUAL(4, stack.max_size());
     }
 
     //*************************************************************************
@@ -136,7 +158,7 @@ namespace
     {
       etl::stack<int, 4> stack;
 
-      for (size_t i = 0; i < stack.capacity(); ++i)
+      for (size_t i = 0; i < stack.max_size(); ++i)
       {
         stack.push(1);
       }
@@ -256,6 +278,57 @@ namespace
       }
 
       CHECK(pass);
+    }
+
+    //*************************************************************************
+    TEST(test_assignment)
+    {
+      etl::stack<int, 4> stack;
+
+      stack.push(1);
+      stack.push(2);
+      stack.push(3);
+      stack.push(4);
+
+      etl::stack<int, 4> stack2;
+
+      stack2 = stack;
+
+      CHECK(stack.size() == stack2.size());
+
+      while (!stack.empty())
+      {
+        CHECK_EQUAL(stack.top(), stack2.top());
+        stack.pop();
+        stack2.pop();
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_self_assignment)
+    {
+      etl::stack<int, 4> stack;
+
+      stack.push(1);
+      stack.push(2);
+      stack.push(3);
+      stack.push(4);
+
+      stack = stack;
+
+      CHECK(stack.max_size() == stack.size());
+
+      CHECK_EQUAL(4, stack.top());
+      stack.pop();
+
+      CHECK_EQUAL(3, stack.top());
+      stack.pop();
+
+      CHECK_EQUAL(2, stack.top());
+      stack.pop();
+
+      CHECK_EQUAL(1, stack.top());
+      stack.pop();
     }
   };
 }

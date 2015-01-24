@@ -107,14 +107,6 @@ namespace etl
     //*************************************************************************
     /// Returns the maximum number of items that can be stacked.
     //*************************************************************************
-    size_type capacity() const
-    {
-      return MAX_SIZE;
-    }
-
-    //*************************************************************************
-    /// Returns the maximum number of items that can be stacked.
-    //*************************************************************************
     size_type max_size() const
     {
       return MAX_SIZE;
