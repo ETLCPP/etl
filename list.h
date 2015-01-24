@@ -92,10 +92,10 @@ namespace etl
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
-    explicit list(const list& other)
+    list(const list& other)
       : ilist<T>(node_pool, MAX_SIZE)
     {
-			ilist<T>::assign(other.cbegin(), other.cend());
+      ilist<T>::assign(other.cbegin(), other.cend());
     }
 
     //*************************************************************************
@@ -113,7 +113,10 @@ namespace etl
     //*************************************************************************
     list& operator = (const list& rhs)
     {
-      ilist<T>::assign(rhs.cbegin(), rhs.cend());
+      if (&rhs != this)
+      {
+        ilist<T>::assign(rhs.cbegin(), rhs.cend());
+      }
 
       return *this;
     }
