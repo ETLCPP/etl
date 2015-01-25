@@ -501,41 +501,37 @@ namespace etl
     //*********************************************************************
     /// Inserts a value to the vector.
     /// If ETL_THROW_EXCEPTIONS is defined, emits vector_full if the vector is already full.
-    ///\param position The position to insert at.
+    ///\param position The position to insert before.
     ///\param value    The value to insert.
     //*********************************************************************
     iterator insert(iterator position, parameter_t value)
     {
-      if (position == end())
+      if ((current_size + 1) > MAX_SIZE)
       {
-        push_back(value);
-        return iterator(&back());
+#ifdef ETL_THROW_EXCEPTIONS
+        throw vector_full();
+#else
+        error_handler::error(vector_full());
+#endif
       }
       else
       {
-        if ((current_size + 1) > MAX_SIZE)
+        create_element(value);
+
+        if (position != end())
         {
-#ifdef ETL_THROW_EXCEPTIONS
-          throw vector_full();
-#else
-          error_handler::error(vector_full());
-#endif
-        }
-        else
-        {
-          resize(size() + 1);
           std::copy_backward(position, end() - 1, end());
           *position = value;
         }
-
-        return position;
       }
+
+      return position;
     }
 
     //*********************************************************************
     /// Inserts 'n' values to the vector.
     /// If ETL_THROW_EXCEPTIONS is defined, emits vector_full if the vector does not have enough free space.
-    ///\param position The position to insert at.
+    ///\param position The position to insert before.
     ///\param n        The number of elements to add.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -551,16 +547,67 @@ namespace etl
       }
       else
       {
-        resize(size() + n);
-        std::copy_backward(position, end() - n, end());
-        std::fill_n(position, n, value);
-      }
+        if (position == end())
+        {
+          while (n > 0)
+          {
+            create_element(value);
+            --n;
+          }
+        }
+        else
+        {
+          size_t insert_index  = std::distance(begin(), position);
+          size_t n_insert      = n;
+          size_t n_move        = std::distance(position, end());
+          size_t n_create_copy = std::min(n_insert, n_move);
+          size_t n_create_new  = (n_insert > n_create_copy) ? n_insert - n_create_copy : 0;
+          size_t n_copy_new    = (n_insert > n_create_new) ? n_insert - n_create_new : 0;
+          size_t n_copy_old    = (size() > n_insert) ? size() - n_insert : 0;
+
+          // Create copy (backwards).
+          size_t from = size() - 1;
+          size_t to   = from + n_insert;
+
+          for (size_t i = 0; i < n_create_copy; ++i)
+          {
+            create_element_at(to--, p_buffer[from--]);
+          }
+
+          // Copy old.
+          from = insert_index;
+          to   = from + n_insert;
+
+          for (size_t i = 0; i < n_copy_old; ++i)
+          {
+            create_element_at(to++, p_buffer[from++]);
+          }
+
+          // Copy new.
+          to = insert_index;
+
+          for (size_t i = 0; i < n_copy_new; ++i)
+          {
+            p_buffer[to++] = value;
+          }
+
+          // Create new.
+          to = size();
+
+          for (size_t i = 0; i < n_create_new; ++i)
+          {
+            create_element_at(to++, value);
+          }
+          
+          current_size += n_insert;
+        }
+      } 
     }
 
     //*********************************************************************
     /// Inserts a range of values to the vector.
     /// If ETL_THROW_EXCEPTIONS is defined, emits vector_full if the vector does not have enough free space.
-    ///\param position The position to insert at.
+    ///\param position The position to insert before.
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.
     //*********************************************************************
@@ -579,9 +626,62 @@ namespace etl
       }
       else
       {
-        resize(size() + count);
-        std::copy_backward(position, end() - count, end());
-        std::copy(first, first + count, position);
+        if (position == end())
+        {
+          while (first != last)
+          {
+            create_element(*first);
+            ++first;
+          }
+        }
+        else
+        {
+          size_t insert_index  = std::distance(begin(), position);
+          size_t n_insert      = count;
+          size_t n_move        = std::distance(position, end());
+          size_t n_create_copy = std::min(n_insert, n_move);
+          size_t n_create_new  = (n_insert > n_create_copy) ? n_insert - n_create_copy : 0;
+          size_t n_copy_new    = (n_insert > n_create_new) ? n_insert - n_create_new : 0;
+          size_t n_copy_old    = (size() > n_insert) ? size() - n_insert : 0;
+
+          // Create copy (backwards).
+          size_t from = size() - 1;
+          size_t to   = from + n_insert;
+
+          for (size_t i = 0; i < n_create_copy; ++i)
+          {
+            create_element_at(to--, p_buffer[from--]);
+          }
+
+          // Copy old.
+          from = insert_index;
+          to   = from + n_insert;
+
+          for (size_t i = 0; i < n_copy_old; ++i)
+          {
+            create_element_at(to++, p_buffer[from++]);
+          }
+
+          // Copy new.
+          to = insert_index;
+
+          for (size_t i = 0; i < n_copy_new; ++i)
+          {
+            p_buffer[to++] = *first;
+            ++first;
+          }
+
+          // Create new.
+          to = size();
+
+          for (size_t i = 0; i < n_create_new; ++i)
+          {
+            create_element_at(to++, *first);
+            ++first;
+          }
+
+          current_size += n_insert;
+        }
       }
     }
 
@@ -654,6 +754,14 @@ namespace etl
     void create_element(parameter_t value)
     {
       new(&p_buffer[current_size++]) T(value);
+    }
+
+    //*********************************************************************
+    /// Create a new element with a value at the index
+    //*********************************************************************
+    void create_element_at(size_t index, parameter_t value)
+    {
+      new(&p_buffer[index]) T(value);
     }
 
     //*********************************************************************
