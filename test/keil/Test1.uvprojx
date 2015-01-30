@@ -589,6 +589,11 @@
               <FilePath>..\..\ilist.h</FilePath>
             </File>
             <File>
+              <FileName>imap.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\imap.h</FilePath>
+            </File>
+            <File>
               <FileName>integral_limits.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\integral_limits.h</FilePath>
@@ -627,6 +632,16 @@
               <FileName>list_base.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\list_base.h</FilePath>
+            </File>
+            <File>
+              <FileName>map.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\map.h</FilePath>
+            </File>
+            <File>
+              <FileName>map_base.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\map_base.h</FilePath>
             </File>
             <File>
               <FileName>log.h</FileName>

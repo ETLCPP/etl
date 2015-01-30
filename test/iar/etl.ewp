@@ -1995,6 +1995,9 @@
       <name>$PROJ_DIR$\..\..\ilist.h</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\..\imap.h</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\integral_limits.h</name>
     </file>
     <file>
@@ -2017,6 +2020,12 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\list_base.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\map.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\map_base.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\log.h</name>

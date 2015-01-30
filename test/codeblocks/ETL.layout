@@ -31,6 +31,11 @@
 			<Cursor1 position="17660" topLine="539" />
 		</Cursor>
 	</File>
+	<File name="..\..\imap.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="17660" topLine="539" />
+		</Cursor>
+	</File>
 	<File name="..\..\ilookup.h" open="1" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="10573" topLine="244" />
@@ -92,6 +97,11 @@
 		</Cursor>
 	</File>
 	<File name="..\..\list.h" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5955" topLine="137" />
+		</Cursor>
+	</File>
+	<File name="..\..\map.h" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="5955" topLine="137" />
 		</Cursor>
