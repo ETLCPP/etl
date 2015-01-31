@@ -204,6 +204,15 @@
     <ClInclude Include="..\..\list_base.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\map.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\imap.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\map_base.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\crc16.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
@@ -429,6 +438,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_list.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_map.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_crc.cpp">

@@ -42,6 +42,7 @@
       <file>$PROJ_DIR$\..\..\ideque.h</file>
       <file>$PROJ_DIR$\..\..\iforward_list.h</file>
       <file>$PROJ_DIR$\..\..\ilist.h</file>
+      <file>$PROJ_DIR$\..\..\imap.h</file>
       <file>$PROJ_DIR$\..\..\ipool.h</file>
       <file>$PROJ_DIR$\..\..\integral_limits.h</file>
       <file>$PROJ_DIR$\..\..\iqueue.h</file>
@@ -52,6 +53,8 @@
       <file>$PROJ_DIR$\..\..\list.h</file>
       <file>$PROJ_DIR$\..\..\list_base.h</file>
       <file>$PROJ_DIR$\..\..\log.h</file>
+      <file>$PROJ_DIR$\..\..\map.h</file>
+      <file>$PROJ_DIR$\..\..\map_base.h</file>
       <file>$PROJ_DIR$\..\..\nullptr.h</file>
       <file>$PROJ_DIR$\..\..\observer.h</file>
       <file>$PROJ_DIR$\..\..\parameter_type.h</file>
