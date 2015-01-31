@@ -135,6 +135,7 @@
     <ClInclude Include="..\..\exception.h" />
     <ClInclude Include="..\..\factorial.h" />
     <ClInclude Include="..\..\fibonacci.h" />
+    <ClInclude Include="..\..\fixed_iterator.h" />
     <ClInclude Include="..\..\fnv_1.h" />
     <ClInclude Include="..\..\forward_list.h" />
     <ClInclude Include="..\..\forward_list_base.h" />
@@ -225,6 +226,7 @@
     <ClCompile Include="..\test_enum_type.cpp" />
     <ClCompile Include="..\test_error_handler.cpp" />
     <ClCompile Include="..\test_exception.cpp" />
+    <ClCompile Include="..\test_fixed_iterator.cpp" />
     <ClCompile Include="..\test_fnv_1.cpp" />
     <ClCompile Include="..\test_forward_list.cpp" />
     <ClCompile Include="..\test_function.cpp" />
