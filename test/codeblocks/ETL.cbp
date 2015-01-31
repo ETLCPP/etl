@@ -149,6 +149,7 @@
 		<Unit filename="../../iforward_list.h" />
 		<Unit filename="../../ilist.h" />
 		<Unit filename="../../ilookup.h" />
+		<Unit filename="../../imap.h" />
 		<Unit filename="../../instance_count.h" />
 		<Unit filename="../../integral_limits.h" />
 		<Unit filename="../../iqueue.h" />
@@ -160,6 +161,8 @@
 		<Unit filename="../../log.h" />
 		<Unit filename="../../lookup.h" />
 		<Unit filename="../../lookup_base.h" />
+		<Unit filename="../../map.h" />
+		<Unit filename="../../map_base.h" />
 		<Unit filename="../../nullptr.h" />
 		<Unit filename="../../numeric.h" />
 		<Unit filename="../../observer.h" />
@@ -203,6 +206,7 @@
 		<Unit filename="../test_largest.cpp" />
 		<Unit filename="../test_list.cpp" />
 		<Unit filename="../test_lookup.cpp" />
+		<Unit filename="../test_map.cpp" />
 		<Unit filename="../test_maths.cpp" />
 		<Unit filename="../test_numeric.cpp" />
 		<Unit filename="../test_observer.cpp" />

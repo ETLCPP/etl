@@ -340,6 +340,16 @@
 	<list>
 	<vector>
 
+1421601674 source:u:\users\john\documents\programming\github\etl\test\test_map.cpp
+	<UnitTest++/UnitTest++.h>
+	"ExtraCheckMacros.h"
+	"../map.h"
+	"data.h"
+	<algorithm>
+	<array>
+	<map>
+	<vector>
+
 1418906586 u:\users\john\documents\programming\github\etl\test\extracheckmacros.h
 	<UnitTest++/HelperMacros.h>
 	<UnitTest++/ExceptionMacros.h>
@@ -358,6 +368,12 @@
 	"container.h"
 	"pool.h"
 
+1421601517 u:\users\john\documents\programming\github\etl\map.h
+	<stddef.h>
+	"imap.h"
+	"container.h"
+	"pool.h"
+
 1421608839 u:\users\john\documents\programming\github\etl\ilist.h
 	<iterator>
 	<algorithm>
@@ -369,7 +385,22 @@
 	"parameter_type.h"
 	"pool.h"
 
+1421608839 u:\users\john\documents\programming\github\etl\imap.h
+	<iterator>
+	<algorithm>
+	<functional>
+	<stddef.h>
+	"nullptr.h"
+	"map_base.h"
+	"type_traits.h"
+	"parameter_type.h"
+	"pool.h"
+
 1421068120 u:\users\john\documents\programming\github\etl\list_base.h
+	<stddef.h>
+	"exception.h"
+
+1421068120 u:\users\john\documents\programming\github\etl\map_base.h
 	<stddef.h>
 	"exception.h"
 
