@@ -1,0 +1,225 @@
+/******************************************************************************
+The MIT License(MIT)
+
+Embedded Template Library.
+
+Copyright(c) 2014 jwellbelove
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files(the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions :
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+******************************************************************************/
+
+#include <UnitTest++/UnitTest++.h>
+#include <vector>
+#include <ostream>
+
+#include "../fixed_iterator.h"
+
+template <typename TIterator>
+std::ostream& operator << (std::ostream& os, const etl::fixed_iterator<TIterator>& fi)
+{
+  os << fi.get();
+
+  return os;
+}
+
+namespace 
+{		
+  SUITE(test_fixed_iterator)
+  {
+    //*************************************************************************
+    TEST(test_default_constructor)
+    {
+      etl::fixed_iterator<int*> fi;
+
+      CHECK_EQUAL((int*)0, fi.get());
+    }
+
+    //*************************************************************************
+    TEST(test_copy_constructor)
+    {
+      int a;
+
+      etl::fixed_iterator<int*> fi1(&a);
+      etl::fixed_iterator<int*> fi2(fi1);
+
+      CHECK_EQUAL(fi1, fi2);
+    }
+
+    //*************************************************************************
+    TEST(test_constructor)
+    {
+      int a;
+
+      etl::fixed_iterator<int*> fi(&a);
+
+      CHECK_EQUAL(&a, fi.get());
+    }
+
+    //*************************************************************************
+    TEST(test_make)
+    {
+      int a;
+
+      etl::fixed_iterator<int*> fi = etl::make_fixed_iterator(&a);
+
+      CHECK_EQUAL(&a, fi.get());
+    }
+
+    //*************************************************************************
+    TEST(test_increment)
+    {
+      int compare[] = { 1, 2, 3, 4 };
+
+      etl::fixed_iterator<int*> fi = etl::make_fixed_iterator(&compare[1]);
+
+      for (int i = 0; i < 10; ++i)
+      {
+        CHECK_EQUAL(compare[1], *fi);
+        ++fi;
+        fi++;
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_member_dereference_operator)
+    {
+      struct Test
+      {
+        int a;
+        int b;
+      } test = { 1, 2 };
+
+      etl::fixed_iterator<Test*> fi(&test);
+
+      CHECK_EQUAL(test.a, fi->a);
+      CHECK_EQUAL(test.b, fi->b);
+    }
+
+    //*************************************************************************
+    TEST(test_conversion_operator)
+    {
+      int a;
+
+      etl::fixed_iterator<int*> fi(&a);
+
+      CHECK_EQUAL(&a, fi);
+    }
+
+    //*************************************************************************
+    TEST(test_operator_plus_equals)
+    {
+      int compare[] = { 1, 2, 3, 4 };
+
+      etl::fixed_iterator<int*> fi = etl::make_fixed_iterator<int*>(&compare[1]);
+
+      for (int i = 0; i < 10; ++i)
+      {
+        CHECK_EQUAL(compare[1], *fi);
+        fi += 1;
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_operator_plus)
+    {
+      int compare[] = { 1, 2, 3, 4 };
+
+      etl::fixed_iterator<int*> fi = etl::make_fixed_iterator<int*>(&compare[1]);
+
+      for (int i = 0; i < 10; ++i)
+      {
+        CHECK_EQUAL(compare[1], *fi);
+        fi = fi + 1;
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_decrement)
+    {
+      int compare[] = { 1, 2, 3, 4 };
+
+      etl::fixed_iterator<int*> fi = etl::make_fixed_iterator<int*>(&compare[1]);
+
+      for (int i = 0; i < 10; ++i)
+      {
+        CHECK_EQUAL(compare[1], *fi);
+        --fi;
+        fi--;
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_operator_minus_equals)
+    {
+      int compare[] = { 1, 2, 3, 4 };
+
+      etl::fixed_iterator<int*> fi = etl::make_fixed_iterator<int*>(&compare[1]);
+
+      for (int i = 0; i < 10; ++i)
+      {
+        CHECK_EQUAL(compare[1], *fi);
+        fi -= 1;
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_operator_minus)
+    {
+      int compare[] = { 1, 2, 3, 4 };
+
+      etl::fixed_iterator<int*> fi = etl::make_fixed_iterator<int*>(&compare[1]);
+
+      for (int i = 0; i < 10; ++i)
+      {
+        CHECK_EQUAL(compare[1], *fi);
+        fi = fi - 1;
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_assignment)
+    {
+      int a;
+      int b;
+
+      etl::fixed_iterator<int*> fi = etl::make_fixed_iterator<int*>(&a);
+      fi = &b;
+
+      CHECK_EQUAL(&b, fi.get());
+
+      fi.set(&a);
+
+      CHECK_EQUAL(&a, fi.get());
+    }
+
+    //*************************************************************************
+    TEST(test_equality)
+    {
+      int a;
+      int b;
+
+      etl::fixed_iterator<int*> fi1 = etl::make_fixed_iterator<int*>(&a);
+      etl::fixed_iterator<int*> fi2 = etl::make_fixed_iterator<int*>(&a);
+      etl::fixed_iterator<int*> fi3 = etl::make_fixed_iterator<int*>(&b);
+
+      CHECK(fi1 == fi2);
+      CHECK(fi1 != fi3);
+    }
+  };
+}
