@@ -64,6 +64,23 @@ namespace etl
   template <const size_t N>
   class bitset : public ibitset
   {
+    // The type used for each element in the array.
+    typedef typename smallest_uint_for_bits<N>::type element_type;
+
+    static const element_type ALL_SET = etl::integral_limits<element_type>::max;
+    static const element_type ALL_CLEAR = 0;
+    static const size_t       BITS_PER_ELEMENT = etl::integral_limits<element_type>::bits;
+    static const size_t       ARRAY_SIZE = (N % BITS_PER_ELEMENT == 0) ? N / BITS_PER_ELEMENT : N / BITS_PER_ELEMENT + 1;
+
+  public:
+
+    static const size_t       TOTAL_BITS = ARRAY_SIZE * BITS_PER_ELEMENT;
+
+  private:
+
+    static const size_t       TOP_MASK_SHIFT = ((BITS_PER_ELEMENT - (TOTAL_BITS - N)) % BITS_PER_ELEMENT);
+    static const element_type TOP_MASK = element_type(TOP_MASK_SHIFT == 0 ? ALL_SET : ~(ALL_SET << TOP_MASK_SHIFT));
+
   public:
 
     //*************************************************************************
@@ -271,6 +288,14 @@ namespace etl
       }
 
       //*******************************
+      /// - operator
+      //*******************************
+      friend long operator -(const iterator& lhs, const iterator& rhs)
+      {
+        return long(lhs.position) - long(rhs.position);
+      }
+
+      //*******************************
       /// == operator
       //*******************************
       friend bool operator ==(const iterator& lhs, const iterator& rhs)
@@ -457,6 +482,14 @@ namespace etl
         const_iterator temp(other);
         temp -= i;
         return temp;
+      }
+
+      //*******************************
+      /// - operator
+      //*******************************
+      friend long operator -(const const_iterator& lhs, const const_iterator& rhs)
+      {
+        return long(lhs.position) - long(rhs.position);
       }
 
       //*******************************
@@ -1103,7 +1136,7 @@ namespace etl
     //*************************************************************************
     iterator end()
     {
-      return iterator(*this, N - 1);
+      return iterator(*this, N);
     }
 
     //*************************************************************************
@@ -1111,7 +1144,7 @@ namespace etl
     //*************************************************************************
     const_iterator end() const
     {
-      return const_iterator(*this, N - 1);
+      return const_iterator(*this, N);
     }
 
     //*************************************************************************
@@ -1119,7 +1152,7 @@ namespace etl
     //*************************************************************************
     const_iterator cend()
     {
-      return const_iterator(*this, N - 1);
+      return const_iterator(*this, N);
     }
 
 
@@ -1141,17 +1174,6 @@ namespace etl
 
   private:
        
-    // The type used for each element in the array.
-    typedef typename smallest_uint_for_bits<N>::type element_type;
-
-    static const element_type ALL_SET          = etl::integral_limits<element_type>::max;
-    static const element_type ALL_CLEAR        = 0;
-    static const size_t       BITS_PER_ELEMENT = etl::integral_limits<element_type>::bits;
-    static const size_t       ARRAY_SIZE       = (N % BITS_PER_ELEMENT == 0) ? N / BITS_PER_ELEMENT : N / BITS_PER_ELEMENT + 1;
-    static const size_t       TOTAL_BITS       = ARRAY_SIZE * BITS_PER_ELEMENT;
-    static const size_t       TOP_MASK_SHIFT   = ((BITS_PER_ELEMENT - (TOTAL_BITS - N)) % BITS_PER_ELEMENT);
-    static const element_type TOP_MASK         = element_type(TOP_MASK_SHIFT == 0 ? ALL_SET : ~(ALL_SET << TOP_MASK_SHIFT));
-
     etl::array<element_type, ARRAY_SIZE> data;
   };
 
