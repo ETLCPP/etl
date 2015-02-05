@@ -693,6 +693,8 @@ namespace
       Bitset::iterator b1 = data.begin();
       Bitset::iterator e1 = data.end();
 
+      CHECK_EQUAL(16, std::distance(b1, e1));
+
       i = 0;
       while (b1 != e1)
       {
@@ -703,6 +705,8 @@ namespace
 
       Bitset::iterator b2 = data2.begin();
       Bitset::iterator e2 = data2.end();
+
+      CHECK_EQUAL(16, std::distance(b2, e2));
 
       // Write
       i = 0;
@@ -724,6 +728,8 @@ namespace
       // const_iterator
       Bitset::const_iterator b1 = data.cbegin();
       Bitset::const_iterator e1 = data.cend();
+
+      CHECK_EQUAL(16, std::distance(b1, e1));
 
       int i = 0;
       while (b1 != e1)
