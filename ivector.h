@@ -580,7 +580,7 @@ namespace etl
 
           for (size_t i = 0; i < n_copy_old; ++i)
           {
-            create_element_at(to++, p_buffer[from++]);
+            p_buffer[to++] = p_buffer[from++];
           }
 
           // Copy new.
@@ -659,7 +659,7 @@ namespace etl
 
           for (size_t i = 0; i < n_copy_old; ++i)
           {
-            create_element_at(to++, p_buffer[from++]);
+            p_buffer[to++] = p_buffer[from++];
           }
 
           // Copy new.
