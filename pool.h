@@ -68,7 +68,7 @@ namespace etl
     //*************************************************************************
     ~pool()
     {
-      release_all();
+      ipool<T>::release_all();
     }
 
   private:
