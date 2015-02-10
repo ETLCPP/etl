@@ -122,7 +122,7 @@ namespace etl
         right = nullptr;
       }
 
-      
+
       Node* left;
       Node* right;
     };
@@ -434,8 +434,8 @@ namespace etl
 
     typedef std::reverse_iterator<iterator>       reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-    
-    
+
+
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
@@ -960,7 +960,7 @@ namespace etl
       // One more.
       ++current_size;
     }
-    
+
     //*************************************************************************
     /// Detach the node at the position provided
     //*************************************************************************
@@ -1741,7 +1741,7 @@ bool operator >(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::ima
                                       lhs.end(),
                                       rhs.begin(),
                                       rhs.end(),
-                                      std::greater<T>());
+                                      std::greater<TMapped>());
 }
 
 //*************************************************************************
