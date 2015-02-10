@@ -30,11 +30,14 @@ SOFTWARE.
 #define __ETL_DEQUE__
 
 #include <stddef.h>
+#include <stdint.h>
 #include <iterator>
 #include <algorithm>
 
 #include "ideque.h"
 #include "container.h"
+#include "alignment.h"
+#include "array.h"
 
 //*****************************************************************************
 ///\defgroup deque deque
@@ -76,7 +79,7 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     deque()
-      : ideque<T>(&buffer[0], MAX_SIZE, BUFFER_SIZE)
+      : ideque<T>(reinterpret_cast<T*>(&buffer.value[0]), MAX_SIZE, BUFFER_SIZE)
     {
     }
 
@@ -84,7 +87,7 @@ namespace etl
     /// Copy constructor.
     //*************************************************************************
     deque(const deque& other)
-      : ideque<T>(&buffer[0], MAX_SIZE, BUFFER_SIZE)
+      : ideque<T>(reinterpret_cast<T*>(&buffer.value[0]), MAX_SIZE, BUFFER_SIZE)
     {
       ideque<T>::assign(other.begin(), other.end());
     }
@@ -94,7 +97,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     deque(TIterator begin, TIterator end)
-      : ideque<T>(&buffer[0], MAX_SIZE, BUFFER_SIZE)
+      : ideque<T>(reinterpret_cast<T*>(&buffer.value[0]), MAX_SIZE, BUFFER_SIZE)
     {
       ideque<T>::assign(begin, end);
     }
@@ -103,7 +106,7 @@ namespace etl
     /// Assigns data to the deque.
     //*************************************************************************
     explicit deque(size_t n, typename ideque<T>::parameter_t value = value_type())
-      : ideque<T>(&buffer[0], MAX_SIZE, BUFFER_SIZE)
+      : ideque<T>(reinterpret_cast<T*>(&buffer.value[0]), MAX_SIZE, BUFFER_SIZE)
     {
       ideque<T>::assign(n, value);
     }
@@ -111,41 +114,21 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    deque& operator =(const deque& other)
+    deque& operator =(const deque& rhs)
     {
-      ideque<T>::assign(other.begin(), other.end());
+      if (&rhs != this)
+      {
+        ideque<T>::assign(rhs.begin(), rhs.end());
+      }
 
       return *this;
     }
 
-    //*************************************************************************
-    /// Swap
-    //*************************************************************************
-    void swap(deque& other)
-    {
-      // Swap the internal iterators.
-      this->first.swap(other.first);
-      this->last.swap(other.last);
-
-      // Swap the other data.
-      std::swap_ranges(etl::begin(buffer), etl::end(buffer), etl::begin(other.buffer));
-      std::swap(this->current_size, other.current_size);
-    }
-
   private:
 
-    /// The buffer.
-    T buffer[BUFFER_SIZE];
+    /// The unititialised buffer of T used in the deque.
+    etl::align_as<array<uint8_t, BUFFER_SIZE * sizeof(T)>, T> buffer;
   };
-
-  //*************************************************************************
-  /// Swap
-  //*************************************************************************
-  template <typename T, const size_t MAX_SIZE>
-  void swap(etl::deque<T, MAX_SIZE>& first, etl::deque< T, MAX_SIZE>& second)
-  {
-    first.swap(second);
-  }
 }
 
 #endif

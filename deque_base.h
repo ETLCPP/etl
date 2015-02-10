@@ -133,15 +133,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Returns the capacity of the deque.
-    ///\return The capacity of the deque.
-    //*************************************************************************
-    size_type capacity() const
-    {
-      return MAX_SIZE;
-    }
-
-    //*************************************************************************
     /// Returns the maximum possible size of the deque.
     ///\return The maximum size of the deque.
     //*************************************************************************
@@ -159,14 +150,6 @@ namespace etl
       return max_size() - size();
     }
 
-    //*************************************************************************
-    /// Clears the deque.
-    //*************************************************************************
-    void clear()
-    {
-      current_size = 0;
-    }
-
   protected:
 
     //*************************************************************************
@@ -181,7 +164,7 @@ namespace etl
 
     size_type       current_size; ///< The current number of elements in the deque.
     const size_type MAX_SIZE;     ///< The maximum number of elements in the deque.
-    const size_type BUFFER_SIZE;  ///< The of elements in the buffer.
+    const size_type BUFFER_SIZE;  ///< The number of elements in the buffer.
   };
 }
 
