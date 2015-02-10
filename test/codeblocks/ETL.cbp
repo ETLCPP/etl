@@ -196,6 +196,7 @@
 		<Unit filename="../test_enum_type.cpp" />
 		<Unit filename="../test_error_handler.cpp" />
 		<Unit filename="../test_exception.cpp" />
+		<Unit filename="../test_fixed_iterator.cpp" />
 		<Unit filename="../test_fnv_1.cpp" />
 		<Unit filename="../test_forward_list.cpp" />
 		<Unit filename="../test_function.cpp" />
