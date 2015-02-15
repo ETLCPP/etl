@@ -396,7 +396,7 @@
 	"parameter_type.h"
 	"pool.h"
 
-1423601721 u:\users\john\documents\programming\github\etl\imap.h
+1423602443 u:\users\john\documents\programming\github\etl\imap.h
 	<iterator>
 	<algorithm>
 	<functional>
@@ -456,11 +456,12 @@
 	"alignment.h"
 	"array.h"
 
-1423422671 u:\users\john\documents\programming\github\etl\ivector.h
+1423853321 u:\users\john\documents\programming\github\etl\ivector.h
 	<iterator>
 	<algorithm>
 	<functional>
 	<stddef.h>
+	"algorithm.h"
 	"vector_base.h"
 	"type_traits.h"
 	"parameter_type.h"
@@ -480,7 +481,7 @@
 
 1415139315 h"
 
-1423601747 u:\users\john\documents\programming\github\etl\queue.h
+1423602443 u:\users\john\documents\programming\github\etl\queue.h
 	<stddef.h>
 	<stdint.h>
 	"iqueue.h"
@@ -505,7 +506,7 @@
 	"data.h"
 	"../stack.h"
 
-1423601764 u:\users\john\documents\programming\github\etl\stack.h
+1423602443 u:\users\john\documents\programming\github\etl\stack.h
 	<stddef.h>
 	<stdint.h>
 	<algorithm>
@@ -1060,7 +1061,7 @@
 	<bitset>
 	"../bitset.h"
 
-1423387479 u:\users\john\documents\programming\github\etl\bitset.h
+1423602443 u:\users\john\documents\programming\github\etl\bitset.h
 	<algorithm>
 	<iterator>
 	<string.h>
@@ -1154,7 +1155,7 @@
 	<vector>
 	"../pool.h"
 
-1423601678 u:\users\john\documents\programming\github\etl\pool.h
+1423602443 u:\users\john\documents\programming\github\etl\pool.h
 	"alignment.h"
 	"array.h"
 	"bitset.h"
@@ -1359,7 +1360,7 @@
 	"../crc16_ccitt.h"
 	"../crc32.h"
 
-1423387479 u:\users\john\documents\programming\github\etl\bloom_filter.h
+1423602443 u:\users\john\documents\programming\github\etl\bloom_filter.h
 	"parameter_type.h"
 	"bitset.h"
 	"type_traits.h"

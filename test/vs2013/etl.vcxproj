@@ -218,6 +218,7 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </AdditionalIncludeDirectories>
     </ClCompile>
+    <ClCompile Include="..\test_binary.cpp" />
     <ClCompile Include="..\test_bitset.cpp" />
     <ClCompile Include="..\test_bloom_filter.cpp" />
     <ClCompile Include="..\test_checksum.cpp" />

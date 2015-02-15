@@ -114,6 +114,7 @@
 		<Unit filename="../../README.md" />
 		<Unit filename="../../alignment.h" />
 		<Unit filename="../../array.h" />
+		<Unit filename="../../binary.h" />
 		<Unit filename="../../bitset.h" />
 		<Unit filename="../../bloom_filter.h" />
 		<Unit filename="../../container.h" />
@@ -185,6 +186,7 @@
 		<Unit filename="../test_algorithm.cpp" />
 		<Unit filename="../test_alignment.cpp" />
 		<Unit filename="../test_array.cpp" />
+		<Unit filename="../test_binary.cpp" />
 		<Unit filename="../test_bitset.cpp" />
 		<Unit filename="../test_bloom_filter.cpp" />
 		<Unit filename="../test_checksum.cpp" />

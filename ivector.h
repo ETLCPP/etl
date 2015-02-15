@@ -35,6 +35,7 @@ SOFTWARE.
 #include <functional>
 #include <stddef.h>
 
+#include "algorithm.h"
 #include "vector_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
@@ -577,19 +578,11 @@ namespace etl
           // Copy old.
           from = insert_index;
           to   = from + n_insert;
-
-          for (size_t i = 0; i < n_copy_old; ++i)
-          {
-            p_buffer[to++] = p_buffer[from++];
-          }
+          etl::copy_n(&p_buffer[from], n_copy_old, &p_buffer[to]);
 
           // Copy new.
           to = insert_index;
-
-          for (size_t i = 0; i < n_copy_new; ++i)
-          {
-            p_buffer[to++] = value;
-          }
+          std::fill_n(&p_buffer[to], n_copy_new, value);
 
           // Create new.
           to = size();
@@ -656,24 +649,15 @@ namespace etl
           // Copy old.
           from = insert_index;
           to   = from + n_insert;
-
-          for (size_t i = 0; i < n_copy_old; ++i)
-          {
-            p_buffer[to++] = p_buffer[from++];
-          }
+          etl::copy_n(&p_buffer[from], n_copy_old, &p_buffer[to]);
 
           // Copy new.
           to = insert_index;
-
-          for (size_t i = 0; i < n_copy_new; ++i)
-          {
-            p_buffer[to++] = *first;
-            ++first;
-          }
+          etl::copy_n(first, n_copy_new, &p_buffer[to]);
+          first += n_copy_new;
 
           // Create new.
           to = size();
-
           for (size_t i = 0; i < n_create_new; ++i)
           {
             create_element_at(to++, *first);
