@@ -493,7 +493,6 @@ namespace etl
     //*************************************************************************
     void assign(size_type n, const value_type& value)
     {
-
       if (n > MAX_SIZE)
       {
 #ifdef ETL_THROW_EXCEPTIONS 
