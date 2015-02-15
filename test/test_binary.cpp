@@ -323,6 +323,20 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_rotate16)
+    {
+      uint16_t value;
+
+      value = 0xB73C;
+      value = etl::rotate(value, 4);
+      CHECK_EQUAL(0x73CB, int(value));
+
+      value = 0xB73C;
+      value = etl::rotate(value, -4);
+      CHECK_EQUAL(0xCB73, int(value));
+    }
+
+    //*************************************************************************
     TEST(test_reverse_bits8)
     {
       uint8_t value;

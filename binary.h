@@ -96,6 +96,25 @@ namespace etl
   }
 
   //***************************************************************************
+  /// Rotate.
+  /// Positive is left, negative is right.
+  //***************************************************************************
+  template <typename T>
+  T rotate(T value, typename etl::make_signed<size_t>::type distance)
+  {
+    STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
+
+    if (distance > 0)
+    {
+      return rotate_left(value, size_t(distance));
+    }
+    else
+    {
+      return rotate_right(value, size_t(-distance));
+    }
+  }
+
+  //***************************************************************************
   /// Reverse 8 bits.
   //***************************************************************************
   template <typename T>
