@@ -116,6 +116,7 @@
     <ClInclude Include="..\..\algorithm.h" />
     <ClInclude Include="..\..\alignment.h" />
     <ClInclude Include="..\..\array.h" />
+    <ClInclude Include="..\..\binary.h" />
     <ClInclude Include="..\..\bitset.h" />
     <ClInclude Include="..\..\bloom_filter.h" />
     <ClInclude Include="..\..\checksum.h" />
