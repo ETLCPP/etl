@@ -583,7 +583,7 @@ namespace etl
       // Can we do it in one hit?
       if (SHIFT == 0)
       {
-        data[0] = value;
+        data[0] = element_type(value);
       }
       else
       {
