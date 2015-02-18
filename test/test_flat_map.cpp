@@ -34,16 +34,16 @@ SOFTWARE.
 #include <string>
 #include <vector>
 
-#include "../lookup.h"
+#include "../flat_map.h"
 
 namespace
 {
-  SUITE(test_lookup)
+  SUITE(test_flat_map)
   {
     static const size_t SIZE = 10;
 
-    typedef etl::lookup<std::string, int, SIZE>  Data;
-    typedef std::map<std::string, int>           Compare_Data;
+    typedef etl::flat_map<std::string, int, SIZE>  Data;
+    typedef std::map<std::string, int>             Compare_Data;
 
     std::vector<Data::value_type> initial_data;
     std::vector<Data::value_type> excess_data;
@@ -322,7 +322,7 @@ namespace
     {
       Data data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.insert(std::make_pair(std::string("10"), 10)), etl::lookup_full);
+      CHECK_THROW(data.insert(std::make_pair(std::string("10"), 10)), etl::flat_map_full);
     }
 
     //*************************************************************************
@@ -346,7 +346,7 @@ namespace
     {
       Data data;
 
-      CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::lookup_full);
+      CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::flat_map_full);
     }
 
 
