@@ -41,7 +41,6 @@ SOFTWARE.
 ///\defgroup queue queue
 /// A First-in / first-out queue with the capacity defined at compile time,
 /// written in the STL style.
-///\note Uses a predefined array, so MAX_SIZE_ elements will be always be constructed.
 ///\ingroup containers
 //*****************************************************************************
 
