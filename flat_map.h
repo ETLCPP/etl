@@ -38,10 +38,9 @@ SOFTWARE.
 
 //*****************************************************************************
 ///\defgroup flat_map flat_map
-/// A flat_map table with the capacity defined at compile time.
+/// A flat_map with the capacity defined at compile time.
 /// Has insertion of O(N) and flat_map of O(logN)
 /// Duplicate entries and not allowed.
-///\note Uses a predefined array, so MAX_SIZE_ elements will be always be constructed.
 ///\ingroup containers
 //*****************************************************************************
 
@@ -50,7 +49,6 @@ namespace etl
   template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename TCompare = std::less<TKey>>
   //***************************************************************************
   /// A flat_map implementation that uses a fixed size buffer.
-  ///\note Uses a predefined array, so MAX_SIZE_ elements will be always be constructed.
   ///\tparam T The element type.
   ///\tparam MAX_SIZE_ The maximum number of elements that can be stored.
   ///\ingroup flat_map
