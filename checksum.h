@@ -34,6 +34,7 @@ SOFTWARE.
 #include "static_assert.h"
 #include "type_traits.h"
 #include "endian.h"
+#include "ihash.h"
 
 ///\defgroup checksum Checksum calculation
 ///\ingroup maths
@@ -47,11 +48,11 @@ namespace etl
   ///\ingroup checksum
   //***************************************************************************
   template <typename TSum, const int ENDIANNESS = endian::little>
-  class checksum
+  class checksum : public etl::ihash
   {
   public:
 
-    STATIC_ASSERT(is_unsigned<TSum>::value, "Signed TSum template parameter");
+    STATIC_ASSERT(is_unsigned<TSum>::value, "Signed TSum template parameter not supported");
 
     typedef TSum value_type;
 
@@ -59,6 +60,7 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     checksum()
+      : ihash(etl::endian(ENDIANNESS))
     {
       reset();
     }
@@ -70,6 +72,7 @@ namespace etl
     //*************************************************************************
     template<typename TIterator>
     checksum(TIterator begin, const TIterator end)
+      : ihash(etl::endian(ENDIANNESS))
     {
       reset();
       add(begin, end);
@@ -84,49 +87,32 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Adds a range.
+    /// \param begin
+    /// \param end
+    //*************************************************************************
+    template<typename TIterator>
+    void add(TIterator begin, const TIterator end)
+    {
+      ihash::add(begin, end);
+    }
+
+    //*************************************************************************
+    /// Adds a value.
     /// \param value The value to add to the checksum.
     //*************************************************************************
     template<typename TValue>
     void add(TValue value)
     {
-      STATIC_ASSERT(is_integral<TValue>::value, "Non-integral parameter");
-
-      if (ENDIANNESS == endian::little)
-      {
-        for (int i = 0; i < sizeof(TValue); ++i)
-        {
-          add(uint8_t((value >> (i * 8)) & 0xFF));
-        }
-      }
-      else
-      {
-        for (int i = sizeof(TValue) - 1; i >= 0; --i)
-        {
-          add(uint8_t((value >> (i * 8)) & 0xFF));
-        }
-      }
+      ihash::add(value);
     }
 
     //*************************************************************************
-    /// \param value The char to add to the checksum.
+    /// \param value The uint8_t to add to the checksum.
     //*************************************************************************
     void add(uint8_t value)
     {
       sum += value;
-    }
-
-    //*************************************************************************
-    /// \param begin Start of the range.
-    /// \param end   End of the range.
-    /// \return The checksum result.
-    //*************************************************************************
-    template<typename TIterator>
-    void add(TIterator begin, const TIterator end)
-    {
-      while (begin != end)
-      {
-        add(*begin++);
-      }
     }
 
     //*************************************************************************
@@ -138,22 +124,19 @@ namespace etl
     }
 
     //*************************************************************************
-    /// \param value The value to add to the checksum.
-    //*************************************************************************
-    template<typename TValue>
-    checksum<TSum, ENDIANNESS>& operator +=(TValue value)
-    {
-      add(value);
-
-      return *this;
-    }
-
-    //*************************************************************************
     /// Conversion operator to value_type.
     //*************************************************************************
     operator value_type () const
     {
       return sum;
+    }
+
+    //*************************************************************************
+    /// Gets the generic digest value.
+    //*************************************************************************
+    generic_digest_type digest() const
+    {
+      return ihash::get_digest(sum);
     }
 
   private:

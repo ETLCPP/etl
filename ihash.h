@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2015 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -26,127 +26,174 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_crc16_kermit__
-#define __etl_crc16_kermit__
+#ifndef __ETL_IHASH__
+#define __ETL_IHASH__
 
 #include <stdint.h>
+#include <utility>
 
-#include "static_assert.h"
-#include "type_traits.h"
+#include "exception.h"
 #include "endian.h"
-#include "ihash.h"
 
-///\defgroup crc16_kermit 16 bit CRC Kermit calculation
+///\defgroup ihash Base class for all hash type classes.
 ///\ingroup crc
 
 namespace etl
 {
   //***************************************************************************
-  /// CRC Kermit table
-  /// \ingroup crc
+  ///\ingroup hash
+  /// Exception base for hashes.
   //***************************************************************************
-  extern const uint16_t CRC_KERMIT[];
-  
-  //***************************************************************************
-  /// Calculates CRC-Kermit using polynomial 0x1021
-  ///\tparam ENDIANNESS The endianness of the calculation for input types larger than uint8_t. Default = endian::little.
-  /// \ingroup crc16_kermit
-  //***************************************************************************
-  template <const int ENDIANNESS = endian::little>
-  class crc16_kermit : public etl::ihash
+  class hash_exception : public exception
   {
   public:
 
-    typedef uint16_t value_type;
-    typedef uint16_t argument_type;
+    hash_exception(const char* what)
+      : exception(what)
+    {}
+  };
+
+  //***************************************************************************
+  ///\ingroup vector
+  /// Hash finalised exception.
+  //***************************************************************************
+  class hash_finalised : public hash_exception
+  {
+  public:
+
+    hash_finalised()
+      : hash_exception("ihash: finalised")
+    {}
+  };
+
+  /// For the Americans
+  typedef hash_finalised hash_finalized;
+
+  //***************************************************************************
+  /// Hash algorithm base class.
+  /// \ingroup ihash
+  //***************************************************************************
+  class ihash
+  {
+  public:
+
+    /// Generic return type.
+    typedef std::pair<const uint8_t*, size_t> generic_digest_type;
 
     //*************************************************************************
     /// Default constructor.
+    /// \param endianness The endianness to use for integral types larger than uint8_t.
     //*************************************************************************
-    crc16_kermit()
-      : ihash(etl::endian(ENDIANNESS))
+    ihash(etl::endian endianness)
+      : endianness(endianness)
     {
-      reset();
     }
 
     //*************************************************************************
-    /// Constructor from range.
-    /// \param begin Start of the range.
-    /// \param end   End of the range.
-    //*************************************************************************
-    template<typename TIterator>
-    crc16_kermit(TIterator begin, const TIterator end)
-      : ihash(etl::endian(ENDIANNESS))
-    {
-      reset();
-      add(begin, end);
-    }
-
-    //*************************************************************************
-    /// Resets the CRC to the initial state.
-    //*************************************************************************
-    void reset()
-    {
-      crc = 0;
-    }
-
-    //*************************************************************************
-    /// Adds a range.
-    /// \param begin
-    /// \param end
-    //*************************************************************************
-    template<typename TIterator>
-    void add(TIterator begin, const TIterator end)
-    {
-      ihash::add(begin, end);
-    }
-
-    //*************************************************************************
-    /// Adds a value.
-    /// \param value The value to add to the checksum.
+    /// \param value The value to add to the hash.
     //*************************************************************************
     template<typename TValue>
     void add(TValue value)
     {
-      ihash::add(value);
+      uint8_t* p_data = reinterpret_cast<uint8_t*>(&value);
+
+      if (endianness == endian::little)
+      {
+        for (int i = 0; i < sizeof(TValue); ++i)
+        {
+          add(p_data[i]);
+        }
+      }
+      else
+      {
+        for (int i = sizeof(TValue) - 1; i >= 0; --i)
+        {
+          add(p_data[i]);
+        }
+      }
+    }
+    
+    //*************************************************************************
+    /// \param begin Start of the range.
+    /// \param end   End of the range.
+    //*************************************************************************
+    template<typename TIterator>
+    void add(TIterator begin, const TIterator end)
+    {
+      while (begin != end)
+      {
+        add(*begin);
+        ++begin;
+      }
     }
 
     //*************************************************************************
-    /// \param value The uint8_t to add to the CRC.
+    /// \param value The value to add to the checksum.
     //*************************************************************************
-    void add(uint8_t value)
+    template<typename TValue>
+    ihash& operator +=(TValue value)
     {
-      crc = (crc >> 8) ^ CRC_KERMIT[(crc ^ value) & 0xFF];
+      add(value);
+      return *this;
     }
 
     //*************************************************************************
-    /// Gets the CRC value.
+    /// Get the endianness.
     //*************************************************************************
-    value_type value() const
+    etl::endian endian() const
     {
-      return crc;
+      return endianness;
     }
 
     //*************************************************************************
-    /// Conversion operator to value_type
+    /// Set the endianness.
     //*************************************************************************
-    operator value_type () const
+    void endian(etl::endian e)
     {
-      return crc;
+      endianness = e;
     }
 
     //*************************************************************************
-    /// Gets the generic digest value.
+    /// \param value The uint8_t to add to the hash.
     //*************************************************************************
-    generic_digest_type digest() const
+    virtual void add(uint8_t value) = 0;
+
+    //*************************************************************************
+    /// Resets the hash to the initial state.
+    //*************************************************************************
+    virtual void reset() = 0;
+
+    //*************************************************************************
+    /// Gets the result as a generic digest.
+    //*************************************************************************
+    virtual generic_digest_type digest() const = 0;
+
+  protected:
+
+    //*************************************************************************
+    /// Gets the result as a generic digest.
+    /// Templated for derived class usage.
+    //*************************************************************************
+    template <typename T>
+    generic_digest_type get_digest(const T& hash) const
     {
-      return ihash::get_digest(crc);
+      return generic_digest_type(reinterpret_cast<const uint8_t*>(&hash), sizeof(hash));
     }
 
   private:
 
-    value_type crc;
+    etl::endian endianness;
   };
+}
+
+//*************************************************************************
+/// Default streaming operator.
+//*************************************************************************
+template <typename T>
+etl::ihash& operator << (etl::ihash& hash, T value)
+{
+  hash.add(value);
+  return hash;
 }
 
 #endif

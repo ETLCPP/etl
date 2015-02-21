@@ -49,7 +49,24 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_checksum_add_values)
+    TEST(test_checksum_add_values8_add)
+    {
+      std::string data("123456789");
+
+      etl::checksum<uint8_t> checksum_calculator;
+
+      for (size_t i = 0; i < data.size(); ++i)
+      {
+        checksum_calculator.add(data[i]);
+      }
+      
+      uint8_t sum = checksum_calculator;
+
+      CHECK_EQUAL(221, int(sum));
+    }
+
+    //*************************************************************************
+    TEST(test_checksum_add_values8_operator_plus_equals)
     {
       std::string data("123456789");
 
@@ -59,10 +76,78 @@ namespace
       {
         checksum_calculator += data[i];
       }
-      
+
       uint8_t sum = checksum_calculator;
 
       CHECK_EQUAL(221, int(sum));
+    }
+
+    //*************************************************************************
+    TEST(test_checksum_add_values8_operator_stream)
+    {
+      std::string data("123456789");
+
+      etl::checksum<uint8_t> checksum_calculator;
+
+      for (size_t i = 0; i < data.size(); ++i)
+      {
+        checksum_calculator << data[i];
+      }
+
+      uint8_t sum = checksum_calculator;
+
+      CHECK_EQUAL(221, int(sum));
+    }
+
+    //*************************************************************************
+    TEST(test_checksum_add_values32_add)
+    {
+      std::vector<uint32_t> data = { 0x04030201, 0x08070605 };
+
+      etl::checksum<uint32_t> checksum_calculator;
+
+      for (size_t i = 0; i < data.size(); ++i)
+      {
+        checksum_calculator += data[i];
+      }
+
+      uint32_t sum = checksum_calculator;
+
+      CHECK_EQUAL(36, int(sum));
+    }
+
+    //*************************************************************************
+    TEST(test_checksum_add_values32_plus_equals)
+    {
+      std::vector<uint32_t> data = { 0x04030201, 0x08070605 };
+
+      etl::checksum<uint32_t> checksum_calculator;
+
+      for (size_t i = 0; i < data.size(); ++i)
+      {
+        checksum_calculator.add(data[i]);
+      }
+
+      uint32_t sum = checksum_calculator;
+
+      CHECK_EQUAL(36, int(sum));
+    }
+
+    //*************************************************************************
+    TEST(test_checksum_add_values32_operator_stream)
+    {
+      std::vector<uint32_t> data = { 0x04030201, 0x08070605 };
+
+      etl::checksum<uint32_t> checksum_calculator;
+
+      for (size_t i = 0; i < data.size(); ++i)
+      {
+        checksum_calculator << data[i];
+      }
+
+      uint32_t sum = checksum_calculator;
+
+      CHECK_EQUAL(36, int(sum));
     }
 
     //*************************************************************************
@@ -106,6 +191,50 @@ namespace
 
       uint8_t sum3 = etl::checksum<uint8_t, etl::endian::big>(data3.begin(), data3.end());
       CHECK_EQUAL(int(sum1), int(sum3));
+    }
+
+    //*************************************************************************
+    TEST(test_checksum_add_double)
+    {
+      double d = 3.1415927;
+
+      etl::checksum<uint8_t> checksum_calculator;
+
+      checksum_calculator << d;
+
+      uint8_t sum = checksum_calculator.value();
+
+      CHECK_EQUAL(165, int(sum));
+    }
+
+    //*************************************************************************
+    TEST(test_digest)
+    {
+      std::string data("123456789");
+
+      etl::checksum<uint8_t>  checksum_calculator8(data.begin(), data.end());
+      etl::checksum<uint16_t> checksum_calculator16(data.begin(), data.end());
+      etl::checksum<uint32_t> checksum_calculator32(data.begin(), data.end());
+      etl::checksum<uint64_t> checksum_calculator64(data.begin(), data.end());
+
+      etl::ihash::generic_digest_type digest;
+
+      digest = checksum_calculator8.digest();
+      CHECK_EQUAL(221, *digest.first);
+      CHECK_EQUAL(sizeof(uint8_t), digest.second);
+
+      digest = checksum_calculator16.digest();
+      CHECK_EQUAL(477, *reinterpret_cast<const uint16_t*>(digest.first));
+      CHECK_EQUAL(sizeof(uint16_t), digest.second);
+      
+
+      digest = checksum_calculator32.digest();
+      CHECK_EQUAL(477, *reinterpret_cast<const uint32_t*>(digest.first));
+      CHECK_EQUAL(sizeof(uint32_t), digest.second);
+      
+      digest = checksum_calculator64.digest();
+      CHECK_EQUAL(477, *reinterpret_cast<const uint64_t*>(digest.first));
+      CHECK_EQUAL(sizeof(uint64_t), digest.second);
     }
   };
 }

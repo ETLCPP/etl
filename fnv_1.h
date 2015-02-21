@@ -34,6 +34,7 @@ SOFTWARE.
 #include "static_assert.h"
 #include "type_traits.h"
 #include "endian.h"
+#include "ihash.h"
 
 ///\defgroup fnv_1 FNV-1 & FNV-1a 32 & 64 bit hash calculations
 ///\ingroup maths
@@ -46,7 +47,7 @@ namespace etl
   ///\ingroup fnv_1_64
   //***************************************************************************
   template <const int ENDIANNESS = endian::little>
-  class fnv_1_64
+  class fnv_1_64 : public etl::ihash
   {
   public:
 
@@ -56,6 +57,7 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     fnv_1_64()
+      : ihash(etl::endian(ENDIANNESS))
     {
       reset();
     }
@@ -67,6 +69,7 @@ namespace etl
     //*************************************************************************
     template<typename TIterator>
     fnv_1_64(TIterator begin, const TIterator end)
+      : ihash(etl::endian(ENDIANNESS))
     {
       reset();
       add(begin, end);
@@ -81,27 +84,24 @@ namespace etl
     }
 
     //*************************************************************************
-    /// \param value The value to add to the fnv_1_64.
+    /// Adds a range.
+    /// \param begin
+    /// \param end
+    //*************************************************************************
+    template<typename TIterator>
+    void add(TIterator begin, const TIterator end)
+    {
+      ihash::add(begin, end);
+    }
+
+    //*************************************************************************
+    /// Adds a value.
+    /// \param value The value to add to the checksum.
     //*************************************************************************
     template<typename TValue>
     void add(TValue value)
     {
-      STATIC_ASSERT(is_integral<TValue>::value, "Non-integral parameter");
-
-      if (ENDIANNESS == endian::little)
-      {
-        for (int i = 0; i < sizeof(TValue); ++i)
-        {
-          add(uint8_t((value >> (i * 8)) & 0xFF));
-        }
-      }
-      else
-      {
-        for (int i = sizeof(TValue) - 1; i >= 0; --i)
-        {
-          add(uint8_t((value >> (i * 8)) & 0xFF));
-        }
-      }
+      ihash::add(value);
     }
 
     //*************************************************************************
@@ -114,20 +114,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// \param begin Start of the range.
-    /// \param end   End of the range.
-    /// \return The fnv_1_64 result.
-    //*************************************************************************
-    template<typename TIterator>
-    void add(TIterator begin, const TIterator end)
-    {
-      while (begin != end)
-      {
-        add(*begin++);
-      }
-    }
-
-    //*************************************************************************
     /// Gets the fnv_1_64 value.
     //*************************************************************************
     value_type value() const
@@ -136,22 +122,19 @@ namespace etl
     }
 
     //*************************************************************************
-    /// \param value The value to add to the fnv_1_64.
-    //*************************************************************************
-    template<typename TValue>
-    fnv_1_64<ENDIANNESS>& operator +=(TValue value)
-    {
-      add(value);
-
-      return *this;
-    }
-
-    //*************************************************************************
     /// Conversion operator to value_type.
     //*************************************************************************
     operator value_type () const
     {
       return hash;
+    }
+
+    //*************************************************************************
+    /// Gets the generic digest value.
+    //*************************************************************************
+    generic_digest_type digest() const
+    {
+      return ihash::get_digest(hash);
     }
 
   private:
@@ -168,7 +151,7 @@ namespace etl
   ///\ingroup fnv_1a_64
   //***************************************************************************
   template <const int ENDIANNESS = endian::little>
-  class fnv_1a_64
+  class fnv_1a_64 : public etl::ihash
   {
   public:
 
@@ -178,6 +161,7 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     fnv_1a_64()
+      : ihash(etl::endian(ENDIANNESS))
     {
       reset();
     }
@@ -189,6 +173,7 @@ namespace etl
     //*************************************************************************
     template<typename TIterator>
     fnv_1a_64(TIterator begin, const TIterator end)
+      : ihash(etl::endian(ENDIANNESS))
     {
       reset();
       add(begin, end);
@@ -203,27 +188,24 @@ namespace etl
     }
 
     //*************************************************************************
-    /// \param value The value to add to the fnv_1a_64.
+    /// Adds a range.
+    /// \param begin
+    /// \param end
+    //*************************************************************************
+    template<typename TIterator>
+    void add(TIterator begin, const TIterator end)
+    {
+      ihash::add(begin, end);
+    }
+
+    //*************************************************************************
+    /// Adds a value.
+    /// \param value The value to add to the checksum.
     //*************************************************************************
     template<typename TValue>
     void add(TValue value)
     {
-      STATIC_ASSERT(is_integral<TValue>::value, "Non-integral parameter");
-
-      if (ENDIANNESS == endian::little)
-      {
-        for (int i = 0; i < sizeof(TValue); ++i)
-        {
-          add(uint8_t((value >> (i * 8)) & 0xFF));
-        }
-      }
-      else
-      {
-        for (int i = sizeof(TValue) - 1; i >= 0; --i)
-        {
-          add(uint8_t((value >> (i * 8)) & 0xFF));
-        }
-      }
+      ihash::add(value);
     }
 
     //*************************************************************************
@@ -236,19 +218,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// \param begin Start of the range.
-    /// \param end   End of the range.
-    //*************************************************************************
-    template<typename TIterator>
-    void add(TIterator begin, const TIterator end)
-    {
-      while (begin != end)
-      {
-        add(*begin++);
-      }
-    }
-
-    //*************************************************************************
     /// Gets the fnv_1a_64 value.
     //*************************************************************************
     value_type value() const
@@ -257,22 +226,19 @@ namespace etl
     }
 
     //*************************************************************************
-    /// \param value The value to add to the fnv_1a_64.
-    //*************************************************************************
-    template<typename TValue>
-    fnv_1a_64<ENDIANNESS>& operator +=(TValue value)
-    {
-      add(value);
-
-      return *this;
-    }
-
-    //*************************************************************************
     /// Conversion operator to value_type.
     //*************************************************************************
     operator value_type () const
     {
       return hash;
+    }
+
+    //*************************************************************************
+    /// Gets the generic digest value.
+    //*************************************************************************
+    generic_digest_type digest() const
+    {
+      return ihash::get_digest(hash);
     }
 
   private:
@@ -289,7 +255,7 @@ namespace etl
   ///\ingroup fnv_1_32
   //***************************************************************************
   template <const int ENDIANNESS = endian::little>
-  class fnv_1_32
+  class fnv_1_32 : public etl::ihash
   {
   public:
 
@@ -299,6 +265,7 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     fnv_1_32()
+      : ihash(etl::endian(ENDIANNESS))
     {
       reset();
     }
@@ -310,6 +277,7 @@ namespace etl
     //*************************************************************************
     template<typename TIterator>
     fnv_1_32(TIterator begin, const TIterator end)
+      : ihash(etl::endian(ENDIANNESS))
     {
       reset();
       add(begin, end);
@@ -324,27 +292,24 @@ namespace etl
     }
 
     //*************************************************************************
-    /// \param value The value to add to the fnv_1_32.
+    /// Adds a range.
+    /// \param begin
+    /// \param end
+    //*************************************************************************
+    template<typename TIterator>
+    void add(TIterator begin, const TIterator end)
+    {
+      ihash::add(begin, end);
+    }
+
+    //*************************************************************************
+    /// Adds a value.
+    /// \param value The value to add to the checksum.
     //*************************************************************************
     template<typename TValue>
     void add(TValue value)
     {
-      STATIC_ASSERT(is_integral<TValue>::value, "Non-integral parameter");
-
-      if (ENDIANNESS == endian::little)
-      {
-        for (int i = 0; i < sizeof(TValue); ++i)
-        {
-          add(uint8_t((value >> (i * 8)) & 0xFF));
-        }
-      }
-      else
-      {
-        for (int i = sizeof(TValue) - 1; i >= 0; --i)
-        {
-          add(uint8_t((value >> (i * 8)) & 0xFF));
-        }
-      }
+      ihash::add(value);
     }
 
     //*************************************************************************
@@ -357,19 +322,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// \param begin Start of the range.
-    /// \param end   End of the range.
-    //*************************************************************************
-    template<typename TIterator>
-    void add(TIterator begin, const TIterator end)
-    {
-      while (begin != end)
-      {
-        add(*begin++);
-      }
-    }
-
-    //*************************************************************************
     /// Gets the fnv_1_32 value.
     //*************************************************************************
     value_type value() const
@@ -378,22 +330,19 @@ namespace etl
     }
 
     //*************************************************************************
-    /// \param value The value to add to the fnv_1_32.
-    //*************************************************************************
-    template<typename TValue>
-    fnv_1_32<ENDIANNESS>& operator +=(TValue value)
-    {
-      add(value);
-
-      return *this;
-    }
-
-    //*************************************************************************
     /// Conversion operator to value_type.
     //*************************************************************************
     operator value_type () const
     {
       return hash;
+    }
+
+    //*************************************************************************
+    /// Gets the generic digest value.
+    //*************************************************************************
+    generic_digest_type digest() const
+    {
+      return ihash::get_digest(hash);
     }
 
   private:
@@ -410,7 +359,7 @@ namespace etl
   ///\ingroup fnv_1a_32
   //***************************************************************************
   template <const int ENDIANNESS = endian::little>
-  class fnv_1a_32
+  class fnv_1a_32 : public etl::ihash
   {
   public:
 
@@ -420,6 +369,7 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     fnv_1a_32()
+      : ihash(etl::endian(ENDIANNESS))
     {
       reset();
     }
@@ -431,6 +381,7 @@ namespace etl
     //*************************************************************************
     template<typename TIterator>
     fnv_1a_32(TIterator begin, const TIterator end)
+      : ihash(etl::endian(ENDIANNESS))
     {
       reset();
       add(begin, end);
@@ -445,27 +396,24 @@ namespace etl
     }
 
     //*************************************************************************
-    /// \param value The value to add to the fnv_1a_32.
+    /// Adds a range.
+    /// \param begin
+    /// \param end
+    //*************************************************************************
+    template<typename TIterator>
+    void add(TIterator begin, const TIterator end)
+    {
+      ihash::add(begin, end);
+    }
+
+    //*************************************************************************
+    /// Adds a value.
+    /// \param value The value to add to the checksum.
     //*************************************************************************
     template<typename TValue>
     void add(TValue value)
     {
-      STATIC_ASSERT(is_integral<TValue>::value, "Non-integral parameter");
-
-      if (ENDIANNESS == endian::little)
-      {
-        for (int i = 0; i < sizeof(TValue); ++i)
-        {
-          add(uint8_t((value >> (i * 8)) & 0xFF));
-        }
-      }
-      else
-      {
-        for (int i = sizeof(TValue) - 1; i >= 0; --i)
-        {
-          add(uint8_t((value >> (i * 8)) & 0xFF));
-        }
-      }
+      ihash::add(value);
     }
 
     //*************************************************************************
@@ -478,19 +426,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// \param begin Start of the range.
-    /// \param end   End of the range.
-    //*************************************************************************
-    template<typename TIterator>
-    void add(TIterator begin, const TIterator end)
-    {
-      while (begin != end)
-      {
-        add(*begin++);
-      }
-    }
-
-    //*************************************************************************
     /// Gets the fnv_1a_32 value.
     //*************************************************************************
     value_type value() const
@@ -499,22 +434,19 @@ namespace etl
     }
 
     //*************************************************************************
-    /// \param value The value to add to the fnv_1a_32.
-    //*************************************************************************
-    template<typename TValue>
-    fnv_1a_32<ENDIANNESS>& operator +=(TValue value)
-    {
-      add(value);
-
-      return *this;
-    }
-
-    //*************************************************************************
     /// Conversion operator to value_type.
     //*************************************************************************
     operator value_type () const
     {
       return hash;
+    }
+
+    //*************************************************************************
+    /// Gets the generic digest value.
+    //*************************************************************************
+    generic_digest_type digest() const
+    {
+      return ihash::get_digest(hash);
     }
 
   private:
