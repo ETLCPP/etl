@@ -216,6 +216,79 @@ namespace etl
   }
 
   //***************************************************************************
+  /// Converts binary to Gray code.
+  //***************************************************************************
+  template <typename T>
+  T binary_to_gray(T value)
+  {
+    STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
+
+    return (value >> 1) ^ value;
+  }
+
+  //***************************************************************************
+  /// Converts Gray code to binary.
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint8_t>::value, T>::type
+  gray_to_binary(T value)
+  {
+    value ^= (value >> 4);
+    value ^= (value >> 2);
+    value ^= (value >> 1);
+
+    return value;
+  }
+
+  //***************************************************************************
+  /// Converts Gray code to binary.
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint16_t>::value, T>::type
+  gray_to_binary(T value)
+  {
+    value ^= (value >> 8);
+    value ^= (value >> 4);
+    value ^= (value >> 2);
+    value ^= (value >> 1);
+
+    return value;
+  }
+
+  //***************************************************************************
+  /// Converts Gray code to binary.
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint32_t>::value, T>::type
+  gray_to_binary(T value)
+  {
+    value ^= (value >> 16);
+    value ^= (value >> 8);
+    value ^= (value >> 4);
+    value ^= (value >> 2);
+    value ^= (value >> 1);
+
+    return value;
+  }
+
+  //***************************************************************************
+  /// Converts Gray code to binary.
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint64_t>::value, T>::type
+  gray_to_binary(T value)
+  {
+    value ^= (value >> 32);
+    value ^= (value >> 16);
+    value ^= (value >> 8);
+    value ^= (value >> 4);
+    value ^= (value >> 2);
+    value ^= (value >> 1);
+
+    return value;
+  }
+
+  //***************************************************************************
   /// 8 bit binary constants.
   //***************************************************************************
   enum binary_constant

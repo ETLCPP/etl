@@ -29,6 +29,10 @@ SOFTWARE.
 #include <cstdint>
 
 #include "../binary.h"
+#include "../bitset.h"
+#include "../fnv_1.h"
+
+#undef max
 
 namespace
 {
@@ -39,7 +43,7 @@ namespace
     {
       uint8_t value;
 
-      value  = 0x00;
+      value = 0x00;
       value = etl::rotate_left(value);
       CHECK_EQUAL(0, int(value));
 
@@ -144,7 +148,7 @@ namespace
       value = 0xB73C;
       value = etl::rotate_left(value, 9);
       CHECK_EQUAL(0x796E, int(value));
-      
+
       value = 0xB73C;
       value = etl::rotate_left(value, 10);
       CHECK_EQUAL(0xF2DC, int(value));
@@ -454,6 +458,90 @@ namespace
       value = 0x5A5AA5A5;
       value = etl::reverse_bytes(value);
       CHECK_EQUAL(0xA5A55A5A, value);
+    }
+
+    //*************************************************************************
+    TEST(test_binary_to_gray8)
+    {
+      uint8_t last_gray = 0;
+
+      for (size_t i = 1; i <= std::numeric_limits<uint8_t>::max(); ++i)
+      {
+        uint8_t gray = etl::binary_to_gray(uint8_t(i));
+        uint8_t result = gray ^ last_gray;
+        last_gray = gray;
+
+        bool pass = ((result != 0) && !(result & (result - 1)));
+
+        // Only one bit should be set.
+        CHECK(pass);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_binary_to_gray16)
+    {
+      uint16_t last_gray = 0;
+
+      for (size_t i = 1; i <= std::numeric_limits<uint16_t>::max(); ++i)
+      {
+        uint16_t gray   = etl::binary_to_gray(uint16_t(i));
+        uint16_t result = gray ^ last_gray;
+        last_gray       = gray;
+
+        bool pass = ((result != 0) && !(result & (result - 1)));
+
+        // Only one bit should be set.
+        CHECK(pass);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_binary_to_gray32)
+    {
+      etl::fnv_1a_32<> hash;
+
+      hash.add(1);
+
+      for (size_t i = 1; i < 1000000; ++i)
+      {
+        uint32_t value = hash.value();
+
+        uint32_t last_gray = etl::binary_to_gray(uint32_t(value));
+        uint32_t gray      = etl::binary_to_gray(uint32_t(value + 1));
+        uint32_t result    = gray ^ last_gray;
+
+        bool pass = ((result != 0) && !(result & (result - 1)));
+
+        hash.add(1);
+
+        // Only one bit should be set.
+        CHECK(pass);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_binary_to_gray64)
+    {
+      etl::fnv_1a_64<> hash;
+
+      hash.add(1);
+
+      for (size_t i = 1; i < 1000000; ++i)
+      {
+        uint64_t value = hash.value();
+
+        uint64_t last_gray = etl::binary_to_gray(uint64_t(value));
+        uint64_t gray = etl::binary_to_gray(uint64_t(value + 1));
+        uint64_t result = gray ^ last_gray;
+
+        bool pass = ((result != 0) && !(result & (result - 1)));
+
+        hash.add(1);
+
+        // Only one bit should be set.
+        CHECK(pass);
+      }
     }
   };
 }
