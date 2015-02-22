@@ -36,6 +36,10 @@ SOFTWARE.
 #include "endian.h"
 #include "ihash.h"
 
+#if defined(COMPILER_KEIL)
+#pragma diag_suppress 1300 
+#endif
+
 ///\defgroup fnv_1 FNV-1 & FNV-1a 32 & 64 bit hash calculations
 ///\ingroup maths
 
@@ -132,7 +136,7 @@ namespace etl
     //*************************************************************************
     /// Gets the generic digest value.
     //*************************************************************************
-    generic_digest_type digest() const
+    generic_digest digest() const
     {
       return ihash::get_digest(hash);
     }
@@ -236,7 +240,7 @@ namespace etl
     //*************************************************************************
     /// Gets the generic digest value.
     //*************************************************************************
-    generic_digest_type digest() const
+    generic_digest digest() const
     {
       return ihash::get_digest(hash);
     }
@@ -340,7 +344,7 @@ namespace etl
     //*************************************************************************
     /// Gets the generic digest value.
     //*************************************************************************
-    generic_digest_type digest() const
+    generic_digest digest() const
     {
       return ihash::get_digest(hash);
     }
@@ -444,7 +448,7 @@ namespace etl
     //*************************************************************************
     /// Gets the generic digest value.
     //*************************************************************************
-    generic_digest_type digest() const
+    generic_digest digest() const
     {
       return ihash::get_digest(hash);
     }
