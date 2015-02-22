@@ -853,7 +853,7 @@ namespace etl
 
             // Copy new.
             to = position - n_create_copy;
-            std::fill_n(to, n_create_copy, value);
+            std::fill_n(to, n_copy_new, value);
 
             position = first + n_move;
           }
@@ -967,7 +967,7 @@ namespace etl
             // Copy new.
             to = position - n_create_copy;
             range_begin += n_create_new;
-            etl::copy_n(range_begin, n_create_copy, to);
+            etl::copy_n(range_begin, n_copy_new, to);
 
             position = first + n_move;
           }
