@@ -217,24 +217,24 @@ namespace
       etl::checksum<uint32_t> checksum_calculator32(data.begin(), data.end());
       etl::checksum<uint64_t> checksum_calculator64(data.begin(), data.end());
 
-      etl::ihash::generic_digest_type digest;
+      etl::ihash::generic_digest digest;
 
       digest = checksum_calculator8.digest();
       CHECK_EQUAL(221, *digest.first);
-      CHECK_EQUAL(sizeof(uint8_t), digest.second);
+      CHECK_EQUAL(sizeof(uint8_t), std::distance(digest.first, digest.second));
 
       digest = checksum_calculator16.digest();
       CHECK_EQUAL(477, *reinterpret_cast<const uint16_t*>(digest.first));
-      CHECK_EQUAL(sizeof(uint16_t), digest.second);
+      CHECK_EQUAL(sizeof(uint16_t), std::distance(digest.first, digest.second));
       
 
       digest = checksum_calculator32.digest();
       CHECK_EQUAL(477, *reinterpret_cast<const uint32_t*>(digest.first));
-      CHECK_EQUAL(sizeof(uint32_t), digest.second);
+      CHECK_EQUAL(sizeof(uint32_t), std::distance(digest.first, digest.second));
       
       digest = checksum_calculator64.digest();
       CHECK_EQUAL(477, *reinterpret_cast<const uint64_t*>(digest.first));
-      CHECK_EQUAL(sizeof(uint64_t), digest.second);
+      CHECK_EQUAL(sizeof(uint64_t), std::distance(digest.first, digest.second));
     }
   };
 }

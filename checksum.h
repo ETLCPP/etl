@@ -134,7 +134,7 @@ namespace etl
     //*************************************************************************
     /// Gets the generic digest value.
     //*************************************************************************
-    generic_digest_type digest() const
+    generic_digest digest() const
     {
       return ihash::get_digest(sum);
     }

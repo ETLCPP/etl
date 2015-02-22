@@ -36,6 +36,10 @@ SOFTWARE.
 #include "endian.h"
 #include "ihash.h"
 
+#if defined(COMPILER_KEIL)
+#pragma diag_suppress 1300 
+#endif
+
 ///\defgroup crc8_ccitt 8 bit CRC calculation
 ///\ingroup crc
 
@@ -138,7 +142,7 @@ namespace etl
     //*************************************************************************
     /// Gets the generic digest value.
     //*************************************************************************
-    generic_digest_type digest() const
+    generic_digest digest() const
     {
       return ihash::get_digest(crc);
     }

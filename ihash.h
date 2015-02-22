@@ -36,7 +36,7 @@ SOFTWARE.
 #include "endian.h"
 
 ///\defgroup ihash Base class for all hash type classes.
-///\ingroup crc
+///\ingroup hash
 
 namespace etl
 {
@@ -78,7 +78,7 @@ namespace etl
   public:
 
     /// Generic return type.
-    typedef std::pair<const uint8_t*, size_t> generic_digest_type;
+    typedef std::pair<const uint8_t*, const uint8_t*> generic_digest;
 
     //*************************************************************************
     /// Default constructor.
@@ -166,7 +166,7 @@ namespace etl
     //*************************************************************************
     /// Gets the result as a generic digest.
     //*************************************************************************
-    virtual generic_digest_type digest() const = 0;
+    virtual generic_digest digest() const = 0;
 
   protected:
 
@@ -175,9 +175,11 @@ namespace etl
     /// Templated for derived class usage.
     //*************************************************************************
     template <typename T>
-    generic_digest_type get_digest(const T& hash) const
+    generic_digest get_digest(const T& hash) const
     {
-      return generic_digest_type(reinterpret_cast<const uint8_t*>(&hash), sizeof(hash));
+      const uint8_t* begin = reinterpret_cast<const uint8_t*>(&hash);
+
+      return generic_digest(begin, begin + sizeof(hash));
     }
 
   private:
