@@ -2,6 +2,7 @@
 The MIT License(MIT)
 
 Embedded Template Library.
+https://github.com/ETLCPP/etl
 
 Copyright(c) 2014 jwellbelove
 
@@ -24,7 +25,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-///\defgroup etl Embedded Template Library
+///\defgroup etl Embedded Template Library.
+https://github.com/ETLCPP/etl
 
 ///\defgroup containers Containers
 ///\ingroup etl

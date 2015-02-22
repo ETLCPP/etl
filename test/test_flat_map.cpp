@@ -2,6 +2,7 @@
 The MIT License(MIT)
 
 Embedded Template Library.
+https://github.com/ETLCPP/etl
 
 Copyright(c) 2014 jwellbelove
 
@@ -349,6 +350,26 @@ namespace
       CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::flat_map_full);
     }
 
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_key)
+    {
+      Compare_Data compare_data(initial_data.begin(), initial_data.end());
+      Data data(initial_data.begin(), initial_data.end());
+
+      Compare_Data::iterator i_compare = compare_data.begin();
+      Data::iterator i_data = data.begin();
+
+      size_t count_compare = compare_data.erase("5");
+      size_t count         = data.erase("5");
+
+      CHECK_EQUAL(count_compare, count);
+
+      bool isEqual = Check_Equal(data.begin(),
+                                 data.end(),
+                                 compare_data.begin());
+
+      CHECK(isEqual);
+    }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_single)
@@ -489,6 +510,43 @@ namespace
 
       it = data.find("A");
       CHECK_EQUAL(data.end(), it);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_lower_bound)
+    {
+      Compare_Data compare_data(initial_data.begin(), initial_data.end());
+      Data data(initial_data.begin(), initial_data.end());
+
+      Compare_Data::iterator i_compare = compare_data.lower_bound("5");
+      Data::iterator         i_data    = data.lower_bound("5");
+
+      CHECK_EQUAL(std::distance(compare_data.begin(), i_compare), std::distance(data.begin(), i_data));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_upper_bound)
+    {
+      Compare_Data compare_data(initial_data.begin(), initial_data.end());
+      Data data(initial_data.begin(), initial_data.end());
+
+      Compare_Data::iterator i_compare = compare_data.upper_bound("5");
+      Data::iterator         i_data    = data.upper_bound("5");
+
+      CHECK_EQUAL(std::distance(compare_data.begin(), i_compare), std::distance(data.begin(), i_data));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_equal_range)
+    {
+      Compare_Data compare_data(initial_data.begin(), initial_data.end());
+      Data data(initial_data.begin(), initial_data.end());
+
+      std::pair<Compare_Data::iterator, Compare_Data::iterator> i_compare = compare_data.equal_range("5");
+      std::pair<Data::iterator, Data::iterator> i_data = data.equal_range("5");
+
+      CHECK_EQUAL(std::distance(compare_data.begin(), i_compare.first),  std::distance(data.begin(), i_data.first));
+      CHECK_EQUAL(std::distance(compare_data.begin(), i_compare.second), std::distance(data.begin(), i_data.second));
     }
 
     //*************************************************************************

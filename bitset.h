@@ -4,6 +4,7 @@
 The MIT License(MIT)
 
 Embedded Template Library.
+https://github.com/ETLCPP/etl
 
 Copyright(c) 2014 jwellbelove
 
@@ -44,6 +45,10 @@ SOFTWARE.
 
 #if WIN32
 #undef min
+#endif
+
+#if defined(COMPILER_KEIL)
+#pragma diag_suppress 1300 
 #endif
 
 //*****************************************************************************
