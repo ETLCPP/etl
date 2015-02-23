@@ -763,6 +763,16 @@
               <FileType>8</FileType>
               <FilePath>..\..\crc64_ecma.cpp</FilePath>
             </File>
+            <File>
+              <FileName>ibitset.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\ibitset.h</FilePath>
+            </File>
+            <File>
+              <FileName>ihash.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\ihash.h</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

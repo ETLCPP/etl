@@ -2,7 +2,7 @@
 
 <project>
   <fileVersion>2</fileVersion>
-  <fileChecksum>3263002611</fileChecksum>
+  <fileChecksum>4054523468</fileChecksum>
   <configuration>
     <name>Debug</name>
     <outputs>
@@ -16,75 +16,6 @@
       <file>$PROJ_DIR$\..\..\crc16.h</file>
       <file>$PROJ_DIR$\..\..\crc16_ccitt.cpp</file>
       <file>$PROJ_DIR$\..\..\crc16_kermit.cpp</file>
-      <file>$PROJ_DIR$\..\..\crc32.cpp</file>
-      <file>$PROJ_DIR$\..\..\crc16_kermit.h</file>
-      <file>$PROJ_DIR$\..\..\crc64_ecma.h</file>
-      <file>$PROJ_DIR$\..\..\crc32.h</file>
-      <file>$PROJ_DIR$\..\..\crc64_ecma.cpp</file>
-      <file>$PROJ_DIR$\..\..\crc8_ccitt.cpp</file>
-      <file>$PROJ_DIR$\..\..\crc8_ccitt.h</file>
-      <file>$PROJ_DIR$\..\..\cyclic_value.h</file>
-      <file>$PROJ_DIR$\..\..\doxygen.h</file>
-      <file>$PROJ_DIR$\..\..\deque.h</file>
-      <file>$PROJ_DIR$\..\..\deque_base.h</file>
-      <file>$PROJ_DIR$\..\..\exception.h</file>
-      <file>$PROJ_DIR$\..\..\endian.h</file>
-      <file>$PROJ_DIR$\..\..\enum_type.h</file>
-      <file>$PROJ_DIR$\..\..\error_handler.cpp</file>
-      <file>$PROJ_DIR$\..\..\error_handler.h</file>
-      <file>$PROJ_DIR$\..\..\factorial.h</file>
-      <file>$PROJ_DIR$\..\..\fibonacci.h</file>
-      <file>$PROJ_DIR$\..\..\forward_list.h</file>
-      <file>$PROJ_DIR$\..\..\functional.h</file>
-      <file>$PROJ_DIR$\..\..\forward_list_base.h</file>
-      <file>$PROJ_DIR$\..\..\function.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\ymath.h</file>
-      <file>$PROJ_DIR$\..\..\ideque.h</file>
-      <file>$PROJ_DIR$\..\..\iforward_list.h</file>
-      <file>$PROJ_DIR$\..\..\ilist.h</file>
-      <file>$PROJ_DIR$\..\..\imap.h</file>
-      <file>$PROJ_DIR$\..\..\ipool.h</file>
-      <file>$PROJ_DIR$\..\..\integral_limits.h</file>
-      <file>$PROJ_DIR$\..\..\iqueue.h</file>
-      <file>$PROJ_DIR$\..\..\istack.h</file>
-      <file>$PROJ_DIR$\..\..\largest.h</file>
-      <file>$PROJ_DIR$\..\..\ivector.h</file>
-      <file>$PROJ_DIR$\..\..\numeric.h</file>
-      <file>$PROJ_DIR$\..\..\list.h</file>
-      <file>$PROJ_DIR$\..\..\list_base.h</file>
-      <file>$PROJ_DIR$\..\..\log.h</file>
-      <file>$PROJ_DIR$\..\..\map.h</file>
-      <file>$PROJ_DIR$\..\..\map_base.h</file>
-      <file>$PROJ_DIR$\..\..\nullptr.h</file>
-      <file>$PROJ_DIR$\..\..\observer.h</file>
-      <file>$PROJ_DIR$\..\..\parameter_type.h</file>
-      <file>$PROJ_DIR$\..\..\power.h</file>
-      <file>$PROJ_DIR$\..\..\pool.h</file>
-      <file>$PROJ_DIR$\..\..\queue.h</file>
-      <file>$PROJ_DIR$\..\..\smallest.h</file>
-      <file>$PROJ_DIR$\..\..\queue_base.h</file>
-      <file>$PROJ_DIR$\..\..\static_assert.h</file>
-      <file>$PROJ_DIR$\..\..\stack.h</file>
-      <file>$PROJ_DIR$\..\..\stack_base.h</file>
-      <file>$PROJ_DIR$\..\..\type_traits.h</file>
-      <file>$PROJ_DIR$\..\..\variant.h</file>
-      <file>$PROJ_DIR$\..\..\visitor.h</file>
-      <file>$PROJ_DIR$\..\..\vector.h</file>
-      <file>$PROJ_DIR$\..\..\vector_base.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\xtgmath.h</file>
-      <file>$PROJ_DIR$\..\test_compile.cpp</file>
-      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
-      <file>$PROJ_DIR$\main.cpp</file>
-      <file>$PROJ_DIR$\Debug\Obj\etl.pbd</file>
-      <file>$PROJ_DIR$\Debug\Obj\crc64_ecma.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\crc16.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\crc32.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\crc16_ccitt.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\crc16_ccitt.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\crc16_kermit.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\crc8_ccitt.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\main.o</file>
       <file>$PROJ_DIR$\Debug\Exe\cpp.out</file>
       <file>$PROJ_DIR$\Debug\Obj\crc16.pbi</file>
       <file>$PROJ_DIR$\Debug\Obj\crc16_kermit.pbi</file>
@@ -162,27 +93,94 @@
       <file>$PROJ_DIR$\Debug\Obj\error_handler.o</file>
       <file>$PROJ_DIR$\..\..\ibitset.h</file>
       <file>$PROJ_DIR$\Debug\List\cpp.map</file>
+      <file>$PROJ_DIR$\..\..\crc32.cpp</file>
+      <file>$PROJ_DIR$\..\..\crc16_kermit.h</file>
+      <file>$PROJ_DIR$\..\..\crc64_ecma.h</file>
+      <file>$PROJ_DIR$\..\..\crc32.h</file>
+      <file>$PROJ_DIR$\..\..\crc64_ecma.cpp</file>
+      <file>$PROJ_DIR$\..\..\crc8_ccitt.h</file>
+      <file>$PROJ_DIR$\..\..\crc8_ccitt.cpp</file>
+      <file>$PROJ_DIR$\..\..\cyclic_value.h</file>
+      <file>$PROJ_DIR$\..\..\doxygen.h</file>
+      <file>$PROJ_DIR$\..\..\deque.h</file>
+      <file>$PROJ_DIR$\..\..\deque_base.h</file>
+      <file>$PROJ_DIR$\..\..\exception.h</file>
+      <file>$PROJ_DIR$\..\..\endian.h</file>
+      <file>$PROJ_DIR$\..\..\enum_type.h</file>
+      <file>$PROJ_DIR$\..\..\error_handler.cpp</file>
+      <file>$PROJ_DIR$\..\..\error_handler.h</file>
+      <file>$PROJ_DIR$\..\..\factorial.h</file>
+      <file>$PROJ_DIR$\..\..\forward_list.h</file>
+      <file>$PROJ_DIR$\..\..\fibonacci.h</file>
+      <file>$PROJ_DIR$\..\..\functional.h</file>
+      <file>$PROJ_DIR$\..\..\forward_list_base.h</file>
+      <file>$PROJ_DIR$\..\..\function.h</file>
+      <file>$PROJ_DIR$\..\..\imap.h</file>
+      <file>$PROJ_DIR$\..\..\ideque.h</file>
+      <file>$PROJ_DIR$\..\..\iforward_list.h</file>
+      <file>$PROJ_DIR$\..\..\ilist.h</file>
+      <file>$PROJ_DIR$\..\..\integral_limits.h</file>
+      <file>$PROJ_DIR$\..\..\ipool.h</file>
+      <file>$PROJ_DIR$\..\..\iqueue.h</file>
+      <file>$PROJ_DIR$\..\..\istack.h</file>
+      <file>$PROJ_DIR$\..\..\largest.h</file>
+      <file>$PROJ_DIR$\..\..\ivector.h</file>
+      <file>$PROJ_DIR$\..\..\list.h</file>
+      <file>$PROJ_DIR$\..\..\list_base.h</file>
+      <file>$PROJ_DIR$\..\..\map.h</file>
+      <file>$PROJ_DIR$\..\..\map_base.h</file>
+      <file>$PROJ_DIR$\..\..\log.h</file>
+      <file>$PROJ_DIR$\..\..\nullptr.h</file>
+      <file>$PROJ_DIR$\..\..\observer.h</file>
+      <file>$PROJ_DIR$\..\..\numeric.h</file>
+      <file>$PROJ_DIR$\..\..\parameter_type.h</file>
+      <file>$PROJ_DIR$\..\..\power.h</file>
+      <file>$PROJ_DIR$\..\..\pool.h</file>
+      <file>$PROJ_DIR$\..\..\queue.h</file>
+      <file>$PROJ_DIR$\..\..\smallest.h</file>
+      <file>$PROJ_DIR$\..\..\queue_base.h</file>
+      <file>$PROJ_DIR$\..\..\static_assert.h</file>
+      <file>$PROJ_DIR$\..\..\stack.h</file>
+      <file>$PROJ_DIR$\..\..\stack_base.h</file>
+      <file>$PROJ_DIR$\..\..\type_traits.h</file>
+      <file>$PROJ_DIR$\..\..\variant.h</file>
+      <file>$PROJ_DIR$\..\..\vector.h</file>
+      <file>$PROJ_DIR$\..\..\vector_base.h</file>
+      <file>$PROJ_DIR$\..\..\visitor.h</file>
+      <file>$PROJ_DIR$\..\test_compile.cpp</file>
+      <file>$TOOLKIT_DIR$\inc\c\ymath.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\xtgmath.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\crc64_ecma.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\crc32.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\crc16.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\crc16_ccitt.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\etl.pbd</file>
+      <file>$PROJ_DIR$\Debug\Obj\crc16_ccitt.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\crc16_kermit.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\crc8_ccitt.o</file>
+      <file>$PROJ_DIR$\..\..\ihash.h</file>
     </outputs>
     <file>
       <name>$PROJ_DIR$\..\..\crc16.cpp</name>
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 68</file>
+          <file> 147</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 77</file>
+          <file> 11</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 87 83 82 84 85 86 64 149</file>
+          <file> 21 17 16 18 19 20 144 83</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 83 82 87 64 84 149 85 86</file>
+          <file> 17 16 21 144 18 83 19 20</file>
         </tool>
       </inputs>
     </file>
@@ -191,21 +189,21 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 71</file>
+          <file> 148</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 72</file>
+          <file> 150</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 87 83 82 84 85 86 64 149</file>
+          <file> 21 17 16 18 19 20 144 83</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 83 82 87 64 84 149 85 86</file>
+          <file> 17 16 21 144 18 83 19 20</file>
         </tool>
       </inputs>
     </file>
@@ -214,21 +212,21 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 73</file>
+          <file> 151</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 78</file>
+          <file> 12</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 87 83 82 84 85 86 64 149</file>
+          <file> 21 17 16 18 19 20 144 83</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 83 82 87 64 84 149 85 86</file>
+          <file> 17 16 21 144 18 83 19 20</file>
         </tool>
       </inputs>
     </file>
@@ -237,135 +235,7 @@
       <outputs>
         <tool>
           <name>ILINK</name>
-          <file> 76 152</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\crc32.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 69</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 79</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 87 83 82 84 85 86 64 149</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 83 82 87 64 84 149 85 86</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\crc64_ecma.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 67</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 80</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 87 83 82 84 85 86 64 149</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 83 82 87 64 84 149 85 86</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\crc8_ccitt.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 74</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 81</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 87 83 82 84 85 86 64 149</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 83 82 87 64 84 149 85 86</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\error_handler.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 150</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 148</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 25 21 31 46</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 31 46 21 25</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\test_compile.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 92</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 93</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 1 129 128 124 90 83 82 84 85 86 64 149 88 95 131 100 130 132 109 108 99 133 111 134 135 101 112 89 136 98 97 106 96 137 102 113 138 94 120 32 62 139 140 141 114 107 103 115 91 142 104 125 126 127 105 144 123 145 146 143 147 110 57 46 0 3 21 48 54 25 31 2 87 37 52 45 151 5 16 22 23 7 6 11 13 12 17 19 33 20</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 146 82 64 83 107 57 112 106 141 21 11 113 32 109 5 19 96 108 149 85 99 140 144 88 54 48 3 7 12 111 128 90 86 95 89 97 120 145 46 22 87 0 2 16 6 13 17 129 110 124 131 84 100 130 132 133 134 135 101 102 94 142 143 147 136 37 45 33 1 98 137 138 139 62 114 103 115 91 123 104 125 126 105 127 25 31 52 151 23 20</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\main.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 75</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 70</file>
+          <file> 10 86</file>
         </tool>
       </outputs>
     </file>
@@ -374,13 +244,128 @@
       <outputs>
         <tool>
           <name>ILINK</name>
-          <file> 152</file>
+          <file> 86</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ILINK</name>
-          <file> 116 68 71 73 69 67 74 150 92 119 121 122 118 117</file>
+          <file> 50 147 148 151 146 145 152 84 26 53 55 56 52 51</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\crc32.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 146</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 13</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 21 17 16 18 19 20 144 83</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 17 16 21 144 18 83 19 20</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\crc64_ecma.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 145</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 14</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 21 17 16 18 19 20 144 83</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 17 16 21 144 18 83 19 20</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\crc8_ccitt.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 152</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 15</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 21 17 16 18 19 20 144 83</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 17 16 21 144 18 83 19 20</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\error_handler.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 84</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 82</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 102 98 108 124</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 108 124 98 102</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\test_compile.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 26</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 27</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 1 63 62 58 24 17 16 18 19 20 144 83 22 29 65 34 64 66 43 42 33 67 45 68 69 35 46 23 70 32 31 40 30 71 36 47 72 28 54 142 143 73 74 75 48 41 37 49 25 76 38 59 60 61 39 78 57 79 80 77 81 44 136 124 0 3 98 127 133 102 108 2 21 113 131 123 85 5 92 99 100 153 7 6 88 90 89 94 96 110 97</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 41 153 98 65 66 17 36 23 88 63 35 76 44 43 133 136 5 96 58 18 29 34 45 16 81 21 3 7 89 64 67 68 69 28 77 99 127 0 2 92 6 90 94 30 62 24 42 22 144 83 19 20 33 31 46 40 47 54 142 74 75 78 79 80 124 70 123 85 113 1 32 71 72 73 143 48 37 49 25 57 38 59 60 39 61 102 108 131 100 110 97</file>
         </tool>
       </inputs>
     </file>
@@ -391,6 +376,9 @@
     <forcedrebuild>
       <name>[MULTI_TOOL]</name>
       <tool>ILINK</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>[REBUILD_ALL]</name>
     </forcedrebuild>
   </configuration>
 </project>

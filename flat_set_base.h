@@ -27,12 +27,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_IN_IFLAT_MAP_H__
-#error This header is a private element of etl::flat_map & etl::iflat_map
+#ifndef __ETL_IN_IFLAT_SET_H__
+#error This header is a private element of etl::flat_set & etl::iflat_set
 #endif
 
-#ifndef __ETL_FLAT_MAP_BASE__
-#define __ETL_FLAT_MAP_BASE__
+#ifndef __ETL_FLAT_SET_BASE__
+#define __ETL_FLAT_SET_BASE__
 
 #include <stddef.h>
 
@@ -46,74 +46,74 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  ///\ingroup flat_map
-  /// Exception base for flat_maps
+  ///\ingroup flat_set
+  /// Exception base for flat_sets
   //***************************************************************************
-  class flat_map_exception : public exception
+  class flat_set_exception : public exception
   {
   public:
 
-    flat_map_exception(const char* what)
+    flat_set_exception(const char* what)
       : exception(what)
     {
     }
   };
 
   //***************************************************************************
-  ///\ingroup flat_map
+  ///\ingroup flat_set
   /// Vector full exception.
   //***************************************************************************
-  class flat_map_full : public flat_map_exception
+  class flat_set_full : public flat_set_exception
   {
   public:
 
-    flat_map_full()
-      : flat_map_exception("flat_map: full")
+    flat_set_full()
+      : flat_set_exception("flat_set: full")
     {
     }
   };
 
   //***************************************************************************
-  ///\ingroup flat_map
+  ///\ingroup flat_set
   /// Vector out of bounds exception.
   //***************************************************************************
-  class flat_map_out_of_bounds : public flat_map_exception
+  class flat_set_out_of_bounds : public flat_set_exception
   {
   public:
 
-    flat_map_out_of_bounds()
-      : flat_map_exception("flat_map: out of bounds")
+    flat_set_out_of_bounds()
+      : flat_set_exception("flat_set: out of bounds")
     {
     }
   };
 
   //***************************************************************************
-  ///\ingroup flat_map
+  ///\ingroup flat_set
   /// Vector iterator exception.
   //***************************************************************************
-  class flat_map_iterator : public flat_map_exception
+  class flat_set_iterator : public flat_set_exception
   {
   public:
 
-    flat_map_iterator()
-      : flat_map_exception("flat_map: iterator error")
+    flat_set_iterator()
+      : flat_set_exception("flat_set: iterator error")
     {
     }
   };
 
   //***************************************************************************
-  ///\ingroup flat_map
-  /// The base class for all templated flat_map types.
+  ///\ingroup flat_set
+  /// The base class for all templated flat_set types.
   //***************************************************************************
-  class flat_map_base
+  class flat_set_base
   {
   public:
 
     typedef size_t size_type;
 
     //*************************************************************************
-    /// Gets the current size of the flat_map.
-    ///\return The current size of the flat_map.
+    /// Gets the current size of the flat_set.
+    ///\return The current size of the flat_set.
     //*************************************************************************
     size_type size() const
     {
@@ -121,7 +121,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Checks the 'empty' state of the flat_map.
+    /// Checks the 'empty' state of the flat_set.
     ///\return <b>true</b> if empty.
     //*************************************************************************
     bool empty() const
@@ -130,7 +130,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Checks the 'full' state of the flat_map.
+    /// Checks the 'full' state of the flat_set.
     ///\return <b>true</b> if full.
     //*************************************************************************
     bool full() const
@@ -139,8 +139,8 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Returns the capacity of the flat_map.
-    ///\return The capacity of the flat_map.
+    /// Returns the capacity of the flat_set.
+    ///\return The capacity of the flat_set.
     //*************************************************************************
     size_type capacity() const
     {
@@ -148,8 +148,8 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Returns the maximum possible size of the flat_map.
-    ///\return The maximum size of the flat_map.
+    /// Returns the maximum possible size of the flat_set.
+    ///\return The maximum size of the flat_set.
     //*************************************************************************
     size_type max_size() const
     {
@@ -170,7 +170,7 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    flat_map_base(vector_base& vbase)
+    flat_set_base(vector_base& vbase)
       : vbase(vbase)
     {
     }

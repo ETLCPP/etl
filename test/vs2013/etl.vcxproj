@@ -137,6 +137,8 @@
     <ClInclude Include="..\..\factorial.h" />
     <ClInclude Include="..\..\fibonacci.h" />
     <ClInclude Include="..\..\fixed_iterator.h" />
+    <ClInclude Include="..\..\flat_set.h" />
+    <ClInclude Include="..\..\flat_set_base.h" />
     <ClInclude Include="..\..\fnv_1.h" />
     <ClInclude Include="..\..\forward_list.h" />
     <ClInclude Include="..\..\forward_list_base.h" />
@@ -145,9 +147,11 @@
     <ClInclude Include="..\..\hash.h" />
     <ClInclude Include="..\..\ibitset.h" />
     <ClInclude Include="..\..\ideque.h" />
+    <ClInclude Include="..\..\iflat_set.h" />
     <ClInclude Include="..\..\iforward_list.h" />
+    <ClInclude Include="..\..\ihash.h" />
     <ClInclude Include="..\..\ilist.h" />
-    <ClInclude Include="..\..\ilookup.h" />
+    <ClInclude Include="..\..\iflat_map.h" />
     <ClInclude Include="..\..\imap.h" />
     <ClInclude Include="..\..\instance_count.h" />
     <ClInclude Include="..\..\integral_limits.h" />
@@ -160,8 +164,8 @@
     <ClInclude Include="..\..\list.h" />
     <ClInclude Include="..\..\list_base.h" />
     <ClInclude Include="..\..\log.h" />
-    <ClInclude Include="..\..\lookup.h" />
-    <ClInclude Include="..\..\lookup_base.h" />
+    <ClInclude Include="..\..\flat_map.h" />
+    <ClInclude Include="..\..\flat_map_base.h" />
     <ClInclude Include="..\..\map.h" />
     <ClInclude Include="..\..\map_base.h" />
     <ClInclude Include="..\..\nullptr.h" />
@@ -232,6 +236,7 @@
     <ClCompile Include="..\test_error_handler.cpp" />
     <ClCompile Include="..\test_exception.cpp" />
     <ClCompile Include="..\test_fixed_iterator.cpp" />
+    <ClCompile Include="..\test_flat_set.cpp" />
     <ClCompile Include="..\test_fnv_1.cpp" />
     <ClCompile Include="..\test_forward_list.cpp" />
     <ClCompile Include="..\test_function.cpp" />
@@ -241,7 +246,7 @@
     <ClCompile Include="..\test_integral_limits.cpp" />
     <ClCompile Include="..\test_largest.cpp" />
     <ClCompile Include="..\test_list.cpp" />
-    <ClCompile Include="..\test_lookup.cpp" />
+    <ClCompile Include="..\test_flat_map.cpp" />
     <ClCompile Include="..\test_map.cpp" />
     <ClCompile Include="..\test_maths.cpp" />
     <ClCompile Include="..\test_numeric.cpp" />

@@ -27,36 +27,35 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_FLAT_MAP__
-#define __ETL_FLAT_MAP__
+#ifndef __ETL_FLAT_SET__
+#define __ETL_FLAT_SET__
 
 #include <stddef.h>
 #include <iterator>
 #include <functional>
 
-#include "iflat_map.h"
+#include "iflat_set.h"
 #include "vector.h"
 
 //*****************************************************************************
-///\defgroup flat_map flat_map
-/// A flat_map with the capacity defined at compile time.
-/// Has insertion of O(N) and flat_map of O(logN)
+///\defgroup flat_set flat_set
+/// A flat_set with the capacity defined at compile time.
+/// Has insertion of O(N) and flat_set of O(logN)
 /// Duplicate entries and not allowed.
 ///\ingroup containers
 //*****************************************************************************
 
 namespace etl
 {
-  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename TCompare = std::less<TKey>>
+  template <typename T, const size_t MAX_SIZE_, typename TCompare = std::less<T>>
   //***************************************************************************
-  /// A flat_map implementation that uses a fixed size buffer.
-  ///\tparam TKey     The key type.
-  ///\tparam TValue   The value type.
-  ///\tparam TCompare The type to compare keys. Default = std::less<TKey>
+  /// A flat_set implementation that uses a fixed size buffer.
+  ///\tparam T        The value type.
+  ///\tparam TCompare The type to compare keys. Default = std::less<T>
   ///\tparam MAX_SIZE_ The maximum number of elements that can be stored.
-  ///\ingroup flat_map
+  ///\ingroup flat_set
   //***************************************************************************
-  class flat_map : public iflat_map<TKey, TValue, TCompare>
+  class flat_set : public iflat_set<T, TCompare>
   {
   public:
 
@@ -65,8 +64,8 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    flat_map()
-      : iflat_map<TKey, TValue, TCompare>(buffer)
+    flat_set()
+      : iflat_set<T, TCompare>(buffer)
     {
     }
 
@@ -77,21 +76,21 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    flat_map(TIterator first, TIterator last)
-      : iflat_map<TKey, TValue, TCompare>(buffer)
+    flat_set(TIterator first, TIterator last)
+      : iflat_set<T, TCompare>(buffer)
     {
-      iflat_map<TKey, TValue, TCompare>::insert(first, last);
+      iflat_set<T, TCompare>::insert(first, last);
     }
 
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    flat_map& operator = (const flat_map& rhs)
+    flat_set& operator = (const flat_set& rhs)
     {
       if (&rhs != this)
       {
-        iflat_map<TKey, TValue, TCompare>::clear();
-        iflat_map<TKey, TValue, TCompare>::insert(rhs.cbegin(), rhs.cend());
+        iflat_set<T, TCompare>::clear();
+        iflat_set<T, TCompare>::insert(rhs.cbegin(), rhs.cend());
       }
 
       return *this;
@@ -99,7 +98,7 @@ namespace etl
 
   private:
 
-    etl::vector<typename iflat_map<TKey, TValue, TCompare>::value_type, MAX_SIZE> buffer; ///<The vector that stores the elements.
+    etl::vector<T, MAX_SIZE> buffer; ///<The vector that stores the elements.
   };
 }
 

@@ -62,6 +62,12 @@ bool operator == (const TestDataDC<T>& lhs, const TestDataDC<T>& rhs)
 }
 
 template <typename T>
+bool operator != (const TestDataDC<T>& lhs, const TestDataDC<T>& rhs)
+{
+  return lhs.value != rhs.value;
+}
+
+template <typename T>
 std::ostream& operator << (std::ostream& s, const TestDataDC<T>& rhs)
 {
   s << rhs.value;
@@ -92,6 +98,12 @@ template <typename T>
 bool operator == (const TestDataNDC<T>& lhs, const TestDataNDC<T>& rhs)
 {
   return lhs.value == rhs.value;
+}
+
+template <typename T>
+bool operator != (const TestDataNDC<T>& lhs, const TestDataNDC<T>& rhs)
+{
+  return lhs.value != rhs.value;
 }
 
 template <typename T>
