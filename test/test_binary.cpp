@@ -32,8 +32,35 @@ SOFTWARE.
 #include "../binary.h"
 #include "../bitset.h"
 #include "../fnv_1.h"
+#include "../integral_limits.h"
 
 #undef max
+
+// Count bits the easy way.
+template <typename T>
+size_t test_count(T value)
+{
+  size_t count = 0;
+
+  for (size_t i = 0; i < etl::integral_limits<T>::bits; ++i)
+  {
+    if ((value & (T(1) << i)) != 0)
+    {
+      ++count;
+    }
+  }
+
+  return count;
+}
+
+// Check parity the easy way.
+template <typename T>
+size_t test_parity(T value)
+{
+  size_t count = test_count(value);
+
+  return count & 1;
+}
 
 namespace
 {
@@ -542,6 +569,102 @@ namespace
 
         // Only one bit should be set.
         CHECK(pass);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_count_bits_8)
+    {
+      for (size_t i = 1; i <= std::numeric_limits<uint16_t>::max(); ++i)
+      {
+        CHECK_EQUAL(test_count(i), etl::count_bits(i));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_count_bits_16)
+    {
+      for (size_t i = 1; i <= std::numeric_limits<uint16_t>::max(); ++i)
+      {
+        CHECK_EQUAL(test_count(i), etl::count_bits(i));
+      }
+    } 
+    
+    //*************************************************************************
+    TEST(test_count_bits_32)
+    {
+      etl::fnv_1a_32<> hash;
+
+      for (size_t i = 0; i < 1000000; ++i)
+      {
+        hash.add(1);
+
+        uint32_t value = hash.value();
+
+        CHECK_EQUAL(test_count(value), etl::count_bits(value));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_count_bits_64)
+    {
+      etl::fnv_1a_64<> hash;
+
+      for (size_t i = 0; i < 1000000; ++i)
+      {
+        hash.add(1);
+
+        uint64_t value = hash.value();
+
+        CHECK_EQUAL(test_count(value), etl::count_bits(value));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_parity_8)
+    {
+      for (size_t i = 1; i <= std::numeric_limits<uint8_t>::max(); ++i)
+      {
+        CHECK_EQUAL(test_parity(i), etl::parity(i));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_parity_16)
+    {
+      for (size_t i = 1; i <= std::numeric_limits<uint16_t>::max(); ++i)
+      {
+        CHECK_EQUAL(test_parity(i), etl::parity(i));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_parity_32)
+    {
+      etl::fnv_1a_32<> hash;
+
+      for (size_t i = 0; i < 1000000; ++i)
+      {
+        hash.add(1);
+
+        uint32_t value = hash.value();
+
+        CHECK_EQUAL(test_parity(value), etl::parity(value));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_parity_64)
+    {
+      etl::fnv_1a_64<> hash;
+
+      for (size_t i = 0; i < 1000000; ++i)
+      {
+        hash.add(1);
+
+        uint64_t value = hash.value();
+
+        CHECK_EQUAL(test_parity(value), etl::parity(value));
       }
     }
   };

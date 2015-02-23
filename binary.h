@@ -4,6 +4,7 @@
 The MIT License(MIT)
 
 Embedded Template Library.
+https://github.com/ETLCPP/etl
 
 Copyright(c) 2015 jwellbelove
 
@@ -286,6 +287,138 @@ namespace etl
     value ^= (value >> 1);
 
     return value;
+  }
+
+  //***************************************************************************
+  /// Count set bits. 8 bits.
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint8_t>::value, size_t>::type
+  count_bits(T value)
+  {
+    uint32_t count;
+    static const int S[] = { 1, 2, 4 };
+    static const int B[] = { 0x55, 0x33, 0x0F };
+
+    count = v - ((v >> 1) & B[0]);
+    count = ((count >> S[1]) & B[1]) + (count & B[1]);
+    count = ((count >> S[2]) + count) & B[2];
+
+    return count;
+  }
+
+  //***************************************************************************
+  /// Count set bits. 16 bits.
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint16_t>::value, size_t>::type
+  count_bits(T value)
+  {
+    uint32_t count;
+    static const int S[] = { 1, 2, 4, 8 };
+    static const int B[] = { 0x5555, 0x3333, 0x0F0F, 0x00FF };
+
+    count = v - ((v >> 1) & B[0]);
+    count = ((count >> S[1]) & B[1]) + (count & B[1]);
+    count = ((count >> S[2]) + count) & B[2];
+    count = ((count >> S[3]) + count) & B[3];
+
+    return count;
+  }
+
+  //***************************************************************************
+  /// Count set bits. 32 bits.
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint32_t>::value, size_t>::type
+  count_bits(T value)
+  {
+    uint32_t count;
+    static const int S[] = { 1, 2, 4, 8, 16 };
+    static const int B[] = { 0x55555555, 0x33333333, 0x0F0F0F0F, 0x00FF00FF, 0x0000FFFF };
+
+    count = value - ((value >> 1) & B[0]);
+    count = ((count >> S[1]) & B[1]) + (count & B[1]);
+    count = ((count >> S[2]) + count) & B[2];
+    count = ((count >> S[3]) + count) & B[3];
+    count = ((count >> S[4]) + count) & B[4];
+
+    return count;
+  }
+
+  //***************************************************************************
+  /// Count set bits. 64 bits.
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint64_t>::value, size_t>::type
+  count_bits(T value)
+  {
+    uint64_t count;
+    static const int S[] = { 1, 2, 4, 8, 16, 32 };
+    static const uint64_t B[] = { 0x5555555555555555, 0x3333333333333333, 0x0F0F0F0F0F0F0F0F, 0x00FF00FF00FF00FF, 0x0000FFFF0000FFFF, 0x00000000FFFFFFFF };
+
+    count = value - ((value >> 1) & B[0]);
+    count = ((count >> S[1]) & B[1]) + (count & B[1]);
+    count = ((count >> S[2]) + count) & B[2];
+    count = ((count >> S[3]) + count) & B[3];
+    count = ((count >> S[4]) + count) & B[4];
+    count = ((count >> S[5]) + count) & B[5];
+
+    return size_t(count);
+  }
+
+  //***************************************************************************
+  /// Parity. 8bits. 0 = even, 1 = odd
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint8_t>::value, size_t>::type
+  parity(T value)
+  {
+    value ^= value >> 4;
+    value &= 0x0F;
+    return (0x6996 >> value) & 1;
+  }
+
+  //***************************************************************************
+  /// Parity. 16bits. 0 = even, 1 = odd
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint16_t>::value, size_t>::type
+  parity(T value)
+  {
+    value ^= value >> 8;
+    value ^= value >> 4;
+    value &= 0x0F;
+    return (0x96 >> value) & 1;
+  }
+
+  //***************************************************************************
+  /// Parity. 32bits. 0 = even, 1 = odd
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint32_t>::value, size_t>::type
+  parity(T value)
+  {
+    value ^= value >> 16;
+    value ^= value >> 8;
+    value ^= value >> 4;
+    value &= 0x0F;
+    return (0x6996 >> value) & 1;
+  }
+
+  //***************************************************************************
+  /// Parity. 64bits. 0 = even, 1 = odd
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint64_t>::value, size_t>::type
+  parity(T value)
+  {
+    value ^= value >> 32;
+    value ^= value >> 16;
+    value ^= value >> 8;
+    value ^= value >> 4;
+    value &= 0x0F;
+    return (0x69966996 >> value) & 1;
   }
 
   //***************************************************************************
