@@ -694,8 +694,13 @@ namespace etl
     iterator erase(iterator first, iterator last)
     {
       std::copy(last, end(), first);
-      size_t new_size = current_size - std::distance(first, last);
-      resize(new_size);
+      size_t n_delete = std::distance(first, last);
+      
+      // Destroy the elements left over at the end.
+      while (n_delete-- > 0)
+      {
+        destroy_element();
+      }
 
       return first;
     }
