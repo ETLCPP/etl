@@ -58,6 +58,99 @@ namespace etl
     typedef size_t   size_type;
 
     //*************************************************************************
+    /// iterator
+    //*************************************************************************
+    class iterator : public std::iterator<std::forward_iterator_tag, const T>
+    {
+    public:
+
+      friend class ipool;
+      friend class const_iterator;
+
+      //*******************************
+      iterator()
+        : index(0),
+          p_buffer(nullptr),
+          p_in_use_flags(nullptr)
+      {
+      }
+
+      //*******************************
+      iterator(const iterator& other)
+        : index(other.index),
+          p_buffer(other.p_buffer),
+          p_in_use_flags(other.p_in_use_flags)
+      {
+      }
+
+      //*******************************
+      iterator& operator ++()
+      {
+        index = p_in_use_flags->find_next(true, index + 1);
+        return *this;
+      }
+
+      //*******************************
+      iterator operator ++(int)
+      {
+        iterator temp(*this);
+        index = p_in_use_flags->find_next(true, index + 1);
+        return temp;
+      }
+
+      //*******************************
+      iterator operator =(const iterator& other)
+      {
+        index          = other.index;
+        p_buffer       = other.p_buffer;
+        p_in_use_flags = other.p_in_use_flags;
+        return *this;
+      }
+
+      //*******************************
+      const_reference operator *() const
+      {
+        return p_buffer[index];
+      }
+
+      //*******************************
+      const_pointer operator ->() const
+      {
+        return &p_buffer[index];
+      }
+
+      //*******************************
+      friend bool operator == (const iterator& lhs, const iterator& rhs)
+      {
+        return (lhs.p_buffer == rhs.p_buffer) && (lhs.index == rhs.index);
+      }
+
+      //*******************************
+      friend bool operator != (const iterator& lhs, const iterator& rhs)
+      {
+        return !(lhs == rhs);
+      }
+
+    private:
+
+      //*******************************
+      //*******************************
+      iterator(size_t         index,
+        pointer        p_buffer,
+        const ibitset* p_in_use_flags)
+        : index(index),
+          p_buffer(p_buffer),
+          p_in_use_flags(p_in_use_flags)
+      {
+      }
+
+      size_t         index;
+      pointer        p_buffer;
+      const ibitset* p_in_use_flags;
+    };
+
+
+    //*************************************************************************
     /// const_iterator
     //*************************************************************************
     class const_iterator : public std::iterator<std::forward_iterator_tag, const T>
@@ -77,8 +170,16 @@ namespace etl
       //*******************************
       const_iterator(const const_iterator& other)
         : index(other.index),
-          p_buffer(p_buffer),
-          p_in_use_flags(p_in_use_flags)
+          p_buffer(other.p_buffer),
+          p_in_use_flags(other.p_in_use_flags)
+      {
+      }
+
+      //*******************************
+      const_iterator(const typename ipool::iterator& other)
+        : index(other.index),
+          p_buffer(other.p_buffer),
+          p_in_use_flags(other.p_in_use_flags)
       {
       }
 
@@ -149,6 +250,23 @@ namespace etl
     };
 
     //*************************************************************************
+    /// Get an iterator to the first allocated item in the pool.
+    //*************************************************************************
+    iterator begin()
+    {
+      size_t index = in_use_flags.find_first(true);
+
+      if (index != ibitset::npos)
+      {
+        return iterator(index, p_buffer, &in_use_flags);
+      }
+      else
+      {
+        return end();
+      }
+    }
+
+    //*************************************************************************
     /// Get a const iterator to the first allocated item in the pool.
     //*************************************************************************
     const_iterator begin() const
@@ -171,6 +289,14 @@ namespace etl
     const_iterator cbegin() const
     {
       return begin();
+    }
+
+    //*************************************************************************
+    /// Get an iterator to the end of the pool.
+    //*************************************************************************
+    iterator end()
+    {
+      return iterator(ibitset::npos, p_buffer, &in_use_flags);
     }
 
     //*************************************************************************
