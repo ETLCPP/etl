@@ -740,7 +740,7 @@ namespace etl
     {
       if (position < N)
       {
-        size_t       index;
+        size_t    index;
         element_t bit;
 
         if (ARRAY_SIZE == 1)
@@ -838,7 +838,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Are none of th bits set?
+    /// Are none of the bits set?
     //*************************************************************************
     bool none() const
     {
