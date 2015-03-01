@@ -611,10 +611,10 @@ namespace
 
       data.set("000000");
       CHECK_EQUAL(0, data.find_first(false));
-      CHECK_EQUAL(6, data.find_first(true));
+      CHECK_EQUAL(etl::ibitset::npos, data.find_first(true));
 
       data.set("111111");
-      CHECK_EQUAL(6, data.find_first(false));
+      CHECK_EQUAL(etl::ibitset::npos, data.find_first(false));
       CHECK_EQUAL(0, data.find_first(true));
 
       data.set("000001");
@@ -646,12 +646,12 @@ namespace
       data.set("000000");
       CHECK_EQUAL(0, data.find_next(false, 0));
       CHECK_EQUAL(1, data.find_next(false, 1));
-      CHECK_EQUAL(6, data.find_next(true,  2));
+      CHECK_EQUAL(etl::ibitset::npos, data.find_next(true, 2));
 
       data.set("111111");
       CHECK_EQUAL(0, data.find_next(true,  0));
       CHECK_EQUAL(1, data.find_next(true,  1));
-      CHECK_EQUAL(6, data.find_next(false, 2));
+      CHECK_EQUAL(etl::ibitset::npos, data.find_next(false, 2));
 
       data.set("001110");
       CHECK_EQUAL(0, data.find_next(false, 0));

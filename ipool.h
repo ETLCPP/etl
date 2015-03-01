@@ -69,8 +69,8 @@ namespace etl
       //*******************************
       const_iterator()
         : index(0),
-          p_buffer(p_buffer),
-          p_in_use_flags(p_in_use_flags)
+          p_buffer(nullptr),
+          p_in_use_flags(nullptr)
       {
       }
 
@@ -133,15 +133,6 @@ namespace etl
     private:
 
       //*******************************
-      const_iterator(const_pointer  p_buffer, 
-                     const ibitset* p_in_use_flags)
-        : index(0),
-          p_buffer(p_buffer),
-          p_in_use_flags(p_in_use_flags)
-      {
-        index = p_in_use_flags->find_first(true);
-      }
-
       //*******************************
       const_iterator(size_t         index,
                      const_pointer  p_buffer,
@@ -162,7 +153,16 @@ namespace etl
     //*************************************************************************
     const_iterator begin() const
     {
-      return const_iterator(in_use_flags.find_first(true), p_buffer, &in_use_flags);
+      size_t index = in_use_flags.find_first(true);
+
+      if (index != ibitset::npos)
+      {
+        return const_iterator(index, p_buffer, &in_use_flags);
+      }
+      else
+      {
+        return end();
+      }
     }
 
     //*************************************************************************
@@ -178,7 +178,7 @@ namespace etl
     //*************************************************************************
     const_iterator end() const
     {
-      return const_iterator(in_use_flags.size(), p_buffer, &in_use_flags);
+      return const_iterator(ibitset::npos, p_buffer, &in_use_flags);
     }
 
     //*************************************************************************

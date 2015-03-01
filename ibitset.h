@@ -30,6 +30,8 @@ SOFTWARE.
 #ifndef __ETL_IBITSET__
 #define __ETL_IBITSET__
 
+#include "integral_limits.h"
+
 namespace etl
 {
   //*************************************************************************
@@ -39,6 +41,8 @@ namespace etl
   class ibitset
   {
   public:
+
+    static const size_t npos = etl::integral_limits<size_t>::max;
 
     //*************************************************************************
     /// Default constructor.

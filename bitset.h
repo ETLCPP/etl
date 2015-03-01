@@ -42,6 +42,7 @@ SOFTWARE.
 #include "nullptr.h"
 #include "log.h"
 #include "ibitset.h"
+#include "binary.h"
 
 #if WIN32
 #undef min
@@ -70,21 +71,21 @@ namespace etl
   class bitset : public ibitset
   {
     // The type used for each element in the array.
-    typedef typename smallest_uint_for_bits<N>::type element_type;
+    typedef typename smallest_uint_for_bits<N>::type element_t;
 
-    static const element_type ALL_SET = etl::integral_limits<element_type>::max;
-    static const element_type ALL_CLEAR = 0;
-    static const size_t       BITS_PER_ELEMENT = etl::integral_limits<element_type>::bits;
-    static const size_t       ARRAY_SIZE = (N % BITS_PER_ELEMENT == 0) ? N / BITS_PER_ELEMENT : N / BITS_PER_ELEMENT + 1;
+    static const element_t ALL_SET          = etl::integral_limits<element_t>::max;
+    static const element_t ALL_CLEAR        = 0;
+    static const size_t    BITS_PER_ELEMENT = etl::integral_limits<element_t>::bits;
+    static const size_t    ARRAY_SIZE       = (N % BITS_PER_ELEMENT == 0) ? N / BITS_PER_ELEMENT : N / BITS_PER_ELEMENT + 1;
 
   public:
 
-    static const size_t       TOTAL_BITS = ARRAY_SIZE * BITS_PER_ELEMENT;
+    static const size_t    TOTAL_BITS       = ARRAY_SIZE * BITS_PER_ELEMENT;
 
   private:
 
-    static const size_t       TOP_MASK_SHIFT = ((BITS_PER_ELEMENT - (TOTAL_BITS - N)) % BITS_PER_ELEMENT);
-    static const element_type TOP_MASK = element_type(TOP_MASK_SHIFT == 0 ? ALL_SET : ~(ALL_SET << TOP_MASK_SHIFT));
+    static const size_t    TOP_MASK_SHIFT   = ((BITS_PER_ELEMENT - (TOTAL_BITS - N)) % BITS_PER_ELEMENT);
+    static const element_t TOP_MASK         = element_t(TOP_MASK_SHIFT == 0 ? ALL_SET : ~(ALL_SET << TOP_MASK_SHIFT));
 
   public:
 
@@ -588,7 +589,7 @@ namespace etl
       // Can we do it in one hit?
       if (SHIFT == 0)
       {
-        data[0] = element_type(value);
+        data[0] = element_t(value);
       }
       else
       {
@@ -637,18 +638,18 @@ namespace etl
     {     
       if (position < N)
       {
-        size_t       index;
-        element_type bit;
+        size_t    index;
+        element_t bit;
 
         if (ARRAY_SIZE == 1)
         {
           index = 0;
-          bit   = element_type(1) << position;
+          bit   = element_t(1) << position;
         }
         else
         {
           index = position >> log2<BITS_PER_ELEMENT>::value;
-          bit   = element_type(1) << (position & (BITS_PER_ELEMENT - 1));
+          bit   = element_t(1) << (position & (BITS_PER_ELEMENT - 1));
         }
 
         if (value)
@@ -698,17 +699,17 @@ namespace etl
       if (position < N)
       {
         size_t       index;
-        element_type bit;
+        element_t bit;
 
         if (ARRAY_SIZE == 1)
         {
           index = 0;
-          bit   = element_type(1) << position;
+          bit   = element_t(1) << position;
         }
         else
         {
           index = position >> log2<BITS_PER_ELEMENT>::value;
-          bit   = element_type(1) << (position & (BITS_PER_ELEMENT - 1));
+          bit   = element_t(1) << (position & (BITS_PER_ELEMENT - 1));
         }
 
         data[index] &= ~bit;
@@ -740,17 +741,17 @@ namespace etl
       if (position < N)
       {
         size_t       index;
-        element_type bit;
+        element_t bit;
 
         if (ARRAY_SIZE == 1)
         {
           index = 0;
-          bit   = element_type(1) << position;
+          bit   = element_t(1) << position;
         }
         else
         {
           index = position >> log2<BITS_PER_ELEMENT>::value;
-          bit   = element_type(1) << (position & (BITS_PER_ELEMENT - 1));
+          bit   = element_t(1) << (position & (BITS_PER_ELEMENT - 1));
         }
 
         data[index] ^= bit;
@@ -784,17 +785,17 @@ namespace etl
       if (position < N)
       {
         size_t       index;
-        element_type mask;
+        element_t mask;
 
         if (ARRAY_SIZE == 1)
         {
           index = 0;
-          mask  = element_type(1) << position;
+          mask  = element_t(1) << position;
         }
         else
         {
           index = position >> log2<BITS_PER_ELEMENT>::value;
-          mask  = element_type(1) << (position & (BITS_PER_ELEMENT - 1));
+          mask  = element_t(1) << (position & (BITS_PER_ELEMENT - 1));
         }
 
         return (data[index] & mask) != 0;
@@ -861,13 +862,7 @@ namespace etl
 
       for (size_t i = 0; i < ARRAY_SIZE; ++i)
       {
-        element_type value = data[i];
-
-        while (value != 0)
-        {
-          n += (value & 1);
-          value >>= 1;
-        }
+        n += etl::count_bits(data[i]);
       }
 
       return n;
@@ -914,24 +909,35 @@ namespace etl
         bit   = position & (BITS_PER_ELEMENT - 1);
       }
 
-      element_type mask = 1 << bit;
+      element_t mask = 1 << bit;
 
       // For each element in the bitset...
       while (index < ARRAY_SIZE)
       {
-        // For each bit in the element...
-        while ((bit < BITS_PER_ELEMENT) && (position != N))
-        {
-          // Equal to the required state?
-          if (((data[index] & mask) != 0) == state)
-          {
-            return position;
-          }
+        element_t value = data[index];
 
-          // Move on to the next bit.
-          mask <<= 1;
-          ++position;
-          ++bit;
+        // Needs checking?
+        if (( state && (value != ALL_CLEAR)) ||
+            (!state && (value != ALL_SET)))
+        {
+          // For each bit in the element...
+          while ((bit < BITS_PER_ELEMENT) && (position < N))
+          {
+            // Equal to the required state?
+            if (((value & mask) != 0) == state)
+            {
+              return position;
+            }
+
+            // Move on to the next bit.
+            mask <<= 1;
+            ++position;
+            ++bit;
+          }
+        }
+        else
+        {
+          position += BITS_PER_ELEMENT;
         }
 
         // Start at the beginning for all other elements.
@@ -941,7 +947,7 @@ namespace etl
         ++index;
       }
 
-      return N;
+      return ibitset::npos;
     }
 
     //*************************************************************************
@@ -1179,7 +1185,7 @@ namespace etl
 
   private:
        
-    etl::array<element_type, ARRAY_SIZE> data;
+    etl::array<element_t, ARRAY_SIZE> data;
   };
 
   //***************************************************************************
