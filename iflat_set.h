@@ -83,19 +83,6 @@ namespace etl
   public:
 
     //*********************************************************************
-    /// Assignment operator.
-    /// The source flat_set can be larger than the destination, but
-    /// only the elements that will fit in the destination will be copied.
-    ///\param other The other flat_set.
-    //*********************************************************************
-    iflat_set& operator = (iflat_set& other)
-    {
-      buffer.operator=(other.buffer);
-
-      return *this;
-    }
-
-    //*********************************************************************
     /// Returns an iterator to the beginning of the flat_set.
     ///\return An iterator to the beginning of the flat_set.
     //*********************************************************************
@@ -213,6 +200,19 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
+#ifdef _DEBUG
+      difference_type count = std::distance(first, last);
+
+      if (count < 0)
+      {
+#ifdef ETL_THROW_EXCEPTIONS
+        throw flat_set_iterator();
+#else
+        error_handler::error(flat_set_iterator());
+#endif
+      }
+#endif
+
       clear();
 
       while (first != last)

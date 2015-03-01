@@ -70,6 +70,15 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Copy constructor.
+    //*************************************************************************
+    flat_set(const flat_set& other)
+      : iflat_set<T, TCompare>(buffer)
+    {
+      iflat_set<T, TCompare>::assign(other.cbegin(), other.cend());
+    }
+
+    //*************************************************************************
     /// Constructor, from an iterator range.
     ///\tparam TIterator The iterator type.
     ///\param first The iterator to the first element.
