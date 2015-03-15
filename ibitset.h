@@ -42,7 +42,10 @@ namespace etl
   {
   public:
 
-    static const size_t npos = etl::integral_limits<size_t>::max;
+    enum
+    {
+      npos = etl::integral_limits<size_t>::max
+    };
 
     //*************************************************************************
     /// Default constructor.

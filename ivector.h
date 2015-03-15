@@ -83,7 +83,7 @@ namespace etl
     {
       return &p_buffer[0];
     }
-    
+
     //*********************************************************************
     /// Returns a const_iterator to the beginning of the vector.
     ///\return A const iterator to the beginning of the vector.
@@ -91,7 +91,7 @@ namespace etl
     const_iterator begin() const
     {
       return &p_buffer[0];
-    }        
+    }
 
     //*********************************************************************
     /// Returns an iterator to the end of the vector.
@@ -118,7 +118,7 @@ namespace etl
     const_iterator cbegin() const
     {
       return &p_buffer[0];
-    } 
+    }
 
     //*********************************************************************
     /// Returns a const_iterator to the end of the vector.
@@ -137,7 +137,7 @@ namespace etl
     {
 	    return reverse_iterator(end());
     }
-    
+
     //*********************************************************************
     /// Returns a const reverse iterator to the reverse beginning of the vector.
     ///\return Const iterator to the reverse beginning of the vector.
@@ -145,7 +145,7 @@ namespace etl
     const_reverse_iterator rbegin() const
     {
 	    return const_reverse_iterator(end());
-    }        
+    }
 
     //*********************************************************************
     /// Returns a reverse iterator to the end + 1 of the vector.
@@ -172,7 +172,7 @@ namespace etl
     const_reverse_iterator crbegin() const
     {
 	    return const_reverse_iterator(cend());
-    } 
+    }
 
     //*********************************************************************
     /// Returns a const reverse iterator to the end + 1 of the vector.
@@ -380,8 +380,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-      initialise();
-
+#ifdef _DEBUG
       difference_type count = std::distance(first, last);
 
       if (count < 0)
@@ -389,10 +388,11 @@ namespace etl
 #ifdef ETL_THROW_EXCEPTIONS
         throw vector_iterator();
 #else
-        error_handler::error((vector_iterator));
+        error_handler::error(vector_iterator());
 #endif
       }
-      else if (static_cast<size_t>(count) > MAX_SIZE)
+
+      if (static_cast<size_t>(count) > MAX_SIZE)
       {
 #ifdef ETL_THROW_EXCEPTIONS
         throw vector_full();
@@ -400,14 +400,15 @@ namespace etl
         error_handler::error(vector_full());
 #endif
       }
-      else
+#endif
+
+      initialise();
+
+      // Safe to copy.
+      while (first != last)
       {
-        // Safe to copy.
-        while (first != last)
-        {
-          create_element(*first);
-          ++first;
-        }
+        create_element(*first);
+        ++first;
       }
     }
 
@@ -592,10 +593,10 @@ namespace etl
           {
             create_element_at(to++, value);
           }
-          
+
           current_size += n_insert;
         }
-      } 
+      }
     }
 
     //*********************************************************************
@@ -685,7 +686,7 @@ namespace etl
 
     //*********************************************************************
     /// Erases a range of elements.
-    /// The range includes all the elements between first and last, including the 
+    /// The range includes all the elements between first and last, including the
     /// element pointed by first, but not the one pointed by last.
     ///\param first Iterator to the first element.
     ///\param last  Iterator to the last element.
@@ -695,7 +696,7 @@ namespace etl
     {
       std::copy(last, end(), first);
       size_t n_delete = std::distance(first, last);
-      
+
       // Destroy the elements left over at the end.
       while (n_delete-- > 0)
       {

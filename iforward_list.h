@@ -376,6 +376,19 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
+#ifdef _DEBUG
+      difference_type count = std::distance(first, last);
+
+      if (count < 0)
+      {
+#ifdef ETL_THROW_EXCEPTIONS
+        throw forward_list_iterator();
+#else
+        error_handler::error(forward_list_iterator());
+#endif
+      }
+#endif
+
       initialise();
 
       Node* p_last_node = &start_node;

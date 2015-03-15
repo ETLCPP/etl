@@ -816,7 +816,7 @@ namespace etl
     {
       STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
-      new(&data.value[0]) T(value);
+      new(static_cast<T*>(data)) T(value);
       type_id = Type_Id_Lookup<T>::type_id;
     }
 
@@ -839,7 +839,7 @@ namespace etl
     {
       STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
-      new(&data.value[0]) T(value);
+      new(data) T(value);
       type_id = Type_Id_Lookup<T>::type_id;
       return *this;
     }
@@ -894,14 +894,14 @@ namespace etl
     {
       switch (type_id)
       {
-        case 0: reader.read(reinterpret_cast<T1&>(*&data.value[0])); break;
-        case 1: reader.read(reinterpret_cast<T2&>(*&data.value[0])); break;
-        case 2: reader.read(reinterpret_cast<T3&>(*&data.value[0])); break;
-        case 3: reader.read(reinterpret_cast<T4&>(*&data.value[0])); break;
-        case 4: reader.read(reinterpret_cast<T5&>(*&data.value[0])); break;
-        case 5: reader.read(reinterpret_cast<T6&>(*&data.value[0])); break;
-        case 6: reader.read(reinterpret_cast<T7&>(*&data.value[0])); break;
-        case 7: reader.read(reinterpret_cast<T8&>(*&data.value[0])); break;
+        case 0: reader.read(static_cast<T1&>(data)); break;
+        case 1: reader.read(static_cast<T2&>(data)); break;
+        case 2: reader.read(static_cast<T3&>(data)); break;
+        case 3: reader.read(static_cast<T4&>(data)); break;
+        case 4: reader.read(static_cast<T5&>(data)); break;
+        case 5: reader.read(static_cast<T6&>(data)); break;
+        case 6: reader.read(static_cast<T7&>(data)); break;
+        case 7: reader.read(static_cast<T8&>(data)); break;
         default: 
 #ifdef ETL_THROW_EXCEPTIONS
           throw variant_invalid_type_id_exception();
@@ -958,7 +958,7 @@ namespace etl
 #endif
       }
 
-      return reinterpret_cast<T&>(*&data.value[0]);
+      return static_cast<T&>(data);
     }
 
     //***************************************************************************
@@ -980,7 +980,7 @@ namespace etl
 #endif
       }
 
-      return reinterpret_cast<const T&>(*&data.value[0]);
+      return static_cast<const T&>(data);
     }
 
     //***************************************************************************
@@ -990,7 +990,7 @@ namespace etl
     template <typename TBase>
     TBase& upcast()
     {
-      return upcast_functor<TBase, T1, T2, T3, T4, T5, T6, T7, T8>()(&data.value[0], type_id);
+      return upcast_functor<TBase, T1, T2, T3, T4, T5, T6, T7, T8>()(data, type_id);
     }
 
     //***************************************************************************
@@ -1000,7 +1000,7 @@ namespace etl
     template <typename TBase>
     const TBase& upcast() const
     {
-      return upcast_functor<TBase, T1, T2, T3, T4, T5, T6, T7, T8>()(&data.value[0], type_id);
+      return upcast_functor<TBase, T1, T2, T3, T4, T5, T6, T7, T8>()(data, type_id);
     }
 
     //***************************************************************************
@@ -1031,7 +1031,7 @@ namespace etl
     /// The internal storage.
     /// Aligned on a suitable boundary, which should be good for all types.
     //***************************************************************************
-    align_at<array<uint8_t, sizeof(largest_t)>, ALIGNMENT> data;
+    typename etl::aligned_storage<sizeof(largest_t), etl::alignment_of<largest_t>::value>::type data;
 
     //***************************************************************************
     /// The id of the current stored type.

@@ -81,7 +81,7 @@ namespace etl
     typedef typename std::iterator_traits<iterator>::difference_type difference_type;
 
   protected:
-    
+
     typedef typename parameter_type<TKey>::type key_value_parameter_t;
 
   private:
@@ -499,7 +499,7 @@ namespace etl
     {
       return std::lower_bound(cbegin(), cend(), key, compare());
     }
-    
+
     //*********************************************************************
     /// Finds the upper bound of a key
     ///\param key The key to search for.

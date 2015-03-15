@@ -480,6 +480,19 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {      
+#ifdef _DEBUG
+      difference_type count = std::distance(first, last);
+
+      if (count < 0)
+      {
+#ifdef ETL_THROW_EXCEPTIONS
+        throw list_iterator();
+#else
+        error_handler::error(list_iterator());
+#endif
+      }
+#endif
+
       initialise();
 
       // Add all of the elements.

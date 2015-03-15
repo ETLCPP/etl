@@ -4,6 +4,7 @@
 The MIT License(MIT)
 
 Embedded Template Library.
+https://github.com/ETLCPP/etl
 
 Copyright(c) 2014 jwellbelove
 
@@ -29,79 +30,163 @@ SOFTWARE.
 #ifndef __ETL_ALIGNEMENT__
 #define __ETL_ALIGNEMENT__
 
-#include "type_traits.h"
+#include <stdint.h>
 
-///\defgroup align_at align_at
+#include "type_traits.h"
+#include "static_assert.h"
+
+///\defgroup alignment alignment
 /// Creates a variable of the specified type at the specified alignment.
 /// \ingroup utilities
 
-#if !defined(COMPILER_IAR)
-
-#if defined(COMPILER_MICROSOFT)
-#define ETL_ALIGNMENT_PRE(n) __declspec(align(n))
-#define ETL_ALIGNMENT_POST(n)
-#endif
-
-#if defined(COMPILER_GCC)
-#define ETL_ALIGNMENT_PRE(n)
-#define ETL_ALIGNMENT_POST(n) __attribute__((aligned(n)))
-#endif
-
-#if defined (COMPILER_KEIL)
-#define ETL_ALIGNMENT_PRE(n)
-#define ETL_ALIGNMENT_POST(n) __attribute__((aligned(n)))
-#endif
-
 namespace etl
-{ 
-  /// Template declaration.
-  template <typename T, const size_t ALIGNMENT>
-  struct align_at;
-	
-  /// Align 1
-  template <typename T>
-  struct align_at<T, 1>
+{
+  namespace __private_alignment__
   {
-    ETL_ALIGNMENT_PRE(1) T value ETL_ALIGNMENT_POST(1);
+    //***************************************************************************
+    // Matcher.
+    //***************************************************************************
+    template <const bool IS_MATCH, const size_t ALIGNMENT, typename T1 = void, typename T2 = void, typename T3 = void, typename T4 = void, typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void>
+    class type_with_alignment_matcher;
+
+    // Matching alignment.
+    template <const size_t ALIGNMENT, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8>
+    class type_with_alignment_matcher <true, ALIGNMENT, T1, T2, T3, T4, T5, T6, T7, T8>
+    {
+    public:
+
+      typedef T1 type;
+    };
+
+    // Non-matching alignment.
+    template <const size_t ALIGNMENT, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8>
+    class type_with_alignment_matcher <false, ALIGNMENT, T1, T2, T3, T4, T5, T6, T7, T8>
+    {
+    public:
+
+      typedef typename type_with_alignment_matcher<ALIGNMENT == etl::alignment_of<T2>::value, ALIGNMENT, T2, T3, T4, T5, T6, T7, T8, void>::type type;
+    };
+
+    // Non-matching alignment, non left.
+    template <const size_t ALIGNMENT>
+    class type_with_alignment_matcher <false, ALIGNMENT, void, void, void, void, void, void, void, void>
+    {
+    public:
+    };
+
+    //***************************************************************************
+    // Helper.
+    //***************************************************************************
+    template <const size_t ALIGNMENT, typename T1, typename T2 = void, typename T3 = void, typename T4 = void, typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void>
+    class type_with_alignment_helper
+    {
+    public:
+
+      typedef typename type_with_alignment_matcher<ALIGNMENT == etl::alignment_of<T1>::value, ALIGNMENT, T1, T2, T3, T4, T5, T6, T7, T8>::type type;
+    };
+  }
+
+  //***************************************************************************
+  /// Gets a type that has the same as the specified alignment.
+  ///\ingroup alignment
+  //***************************************************************************
+  template <const size_t ALIGNMENT>
+  class type_with_alignment
+  {
+  public:
+
+    typedef typename __private_alignment__::type_with_alignment_helper<ALIGNMENT, int8_t, int16_t, int32_t, int64_t, float, double, void*>::type type;
   };
 
-  /// Align 2
-  template <typename T>
-  struct align_at<T, 2>
+  //***************************************************************************
+  /// Aligned storage
+  ///\ingroup alignment
+  //***************************************************************************
+  template <const size_t LENGTH, const size_t ALIGNMENT>
+  struct aligned_storage
   {
-    ETL_ALIGNMENT_PRE(2) T value ETL_ALIGNMENT_POST(2);
+    struct type
+    {
+      /// Convert to T reference.
+      template <typename T>
+      operator T& ()
+      {
+        STATIC_ASSERT(ALIGNMENT % etl::alignment_of<T>::value == 0, "Incompatible alignment");
+        return reinterpret_cast<T&>(*data);
+      }
+
+      /// Convert to const T reference.
+      template <typename T>
+      operator const T& () const
+      {
+        STATIC_ASSERT(ALIGNMENT % etl::alignment_of<T>::value == 0, "Incompatible alignment");
+        return reinterpret_cast<const T&>(*data);
+      }
+
+      /// Convert to T pointer.
+      template <typename T>
+      operator T* ()
+      {
+        STATIC_ASSERT(ALIGNMENT % etl::alignment_of<T>::value == 0, "Incompatible alignment");
+        return reinterpret_cast<T*>(data);
+      }
+
+      /// Convert to const T pointer.
+      template <typename T>
+      operator const T* () const
+      {
+        STATIC_ASSERT(ALIGNMENT % etl::alignment_of<T>::value == 0, "Incompatible alignment");
+        return reinterpret_cast<const T*>(data);
+      }
+
+      /// Get address as T reference.
+      template <typename T>
+      T* get_reference()
+      {
+        STATIC_ASSERT(ALIGNMENT % etl::alignment_of<T>::value == 0, "Incompatible alignment");
+        return reinterpret_cast<T&>(*data);
+      }
+
+      /// Get address as const T reference.
+      template <typename T>
+      const T* get_reference() const
+      {
+        STATIC_ASSERT(ALIGNMENT % etl::alignment_of<T>::value == 0, "Incompatible alignment");
+        return reinterpret_cast<const T&>(*data);
+      }
+
+      /// Get address as T pointer.
+      template <typename T>
+      T* get_address()
+      {
+        STATIC_ASSERT(ALIGNMENT % etl::alignment_of<T>::value == 0, "Incompatible alignment");
+        return reinterpret_cast<T*>(data);
+      }
+
+      /// Get address as const T pointer.
+      template <typename T>
+      const T* get_address() const
+      {
+        STATIC_ASSERT(ALIGNMENT % etl::alignment_of<T>::value == 0, "Incompatible alignment");
+        return reinterpret_cast<const T*>(data);
+      }
+
+      union
+      {
+        uint8_t data[LENGTH];
+        typename etl::type_with_alignment<ALIGNMENT>::type __etl_alignment_type__; // A POD type has has the same alignment as ALIGNMENT.
+      };
+    };
   };
 
-  /// Align 4
-  template <typename T>
-  struct align_at<T, 4>
-  {
-    ETL_ALIGNMENT_PRE(4) T value ETL_ALIGNMENT_POST(4);
-  };
-
-  /// Align 8
-  template <typename T>
-  struct align_at<T, 8>
-  {
-    ETL_ALIGNMENT_PRE(8) T value ETL_ALIGNMENT_POST(8);
-  };
-
-  /// Align 16
-  template <typename T>
-  struct align_at<T, 16>
-  {
-    ETL_ALIGNMENT_PRE(16) T value ETL_ALIGNMENT_POST(16);
-  };
-  
-  /// Align As
-  template <typename TValue, typename TAlign>
-  struct align_as : public align_at<TValue, etl::alignment_of<TAlign>::value>
+  //***************************************************************************
+  /// Aligned storage as
+  ///\ingroup alignment
+  //***************************************************************************
+  template <const size_t LENGTH, typename T>
+  struct aligned_storage_as : public etl::aligned_storage<LENGTH, etl::alignment_of<T>::value>
   {
   };
 }
-#endif
-
-#undef ETL_ALIGNMENT_PRE
-#undef ETL_ALIGNMENT_POST
 
 #endif

@@ -63,7 +63,7 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     queue()
-      : iqueue<T>(reinterpret_cast<T*>(&buffer.value[0]), SIZE)
+      : iqueue<T>(reinterpret_cast<T*>(&buffer[0]), SIZE)
     {
     }
 
@@ -71,7 +71,7 @@ namespace etl
     /// Copy constructor
     //*************************************************************************
     queue(const queue& rhs)
-      : iqueue<T>(reinterpret_cast<T*>(&buffer.value[0]), SIZE)
+      : iqueue<T>(reinterpret_cast<T*>(&buffer[0]), SIZE)
     {
       iqueue<T>::clone(rhs);
     }
@@ -100,7 +100,7 @@ namespace etl
   private:
 
     /// The unititialised buffer of T used in the stack.
-    etl::align_as<array<uint8_t, SIZE * sizeof(T)>, T> buffer;
+    typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[SIZE];
   };
 }
 
