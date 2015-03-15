@@ -300,7 +300,7 @@ namespace etl
     static const int S[] = { 1, 2, 4 };
     static const int B[] = { 0x55, 0x33, 0x0F };
 
-    count = v - ((v >> 1) & B[0]);
+    count = value - ((value >> 1) & B[0]);
     count = ((count >> S[1]) & B[1]) + (count & B[1]);
     count = ((count >> S[2]) + count) & B[2];
 
@@ -318,7 +318,7 @@ namespace etl
     static const int S[] = { 1, 2, 4, 8 };
     static const int B[] = { 0x5555, 0x3333, 0x0F0F, 0x00FF };
 
-    count = v - ((v >> 1) & B[0]);
+    count = value - ((value >> 1) & B[0]);
     count = ((count >> S[1]) & B[1]) + (count & B[1]);
     count = ((count >> S[2]) + count) & B[2];
     count = ((count >> S[3]) + count) & B[3];
