@@ -159,6 +159,7 @@
 		<Unit filename="../../imap.h" />
 		<Unit filename="../../instance_count.h" />
 		<Unit filename="../../integral_limits.h" />
+		<Unit filename="../../io_port.h" />
 		<Unit filename="../../iqueue.h" />
 		<Unit filename="../../istack.h" />
 		<Unit filename="../../ivector.h" />
@@ -214,6 +215,7 @@
 		<Unit filename="../test_hash.cpp" />
 		<Unit filename="../test_instance_count.cpp" />
 		<Unit filename="../test_integral_limits.cpp" />
+		<Unit filename="../test_io_port.cpp" />
 		<Unit filename="../test_largest.cpp" />
 		<Unit filename="../test_list.cpp" />
 		<Unit filename="../test_map.cpp" />
