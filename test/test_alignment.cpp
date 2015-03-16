@@ -35,6 +35,10 @@ SOFTWARE.
 #include <string>
 #include <ostream>
 
+void f(int a)
+{
+}
+
 namespace
 {
   SUITE(test_alignment)
@@ -57,6 +61,32 @@ namespace
       {
         CHECK_EQUAL(0, size_t(&data32[1]) % expected);
       }
+
+      etl::aligned_storage<100, 8>::type data9;
+      f(static_cast<int>(data9));
+    }
+
+    //*************************************************************************
+    TEST(test_aligned_storage_as)
+    {
+      size_t alignment;
+      size_t expected;
+
+      typedef etl::aligned_storage_as<sizeof(uint16_t), uint32_t>::type storage32_t;
+      static storage32_t data32[10];
+
+      alignment = etl::alignment_of<storage32_t>::value;
+      expected = std::alignment_of<uint32_t>::value;
+
+      CHECK_EQUAL(expected, alignment);
+
+      for (int i = 0; i < 10; ++i)
+      {
+        CHECK_EQUAL(0, size_t(&data32[1]) % expected);
+      }
+
+      etl::aligned_storage<100, 8>::type data9;
+      f(static_cast<int>(data9));
     }
   };
 }

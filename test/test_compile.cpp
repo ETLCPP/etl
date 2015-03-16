@@ -90,23 +90,22 @@ void test_algorithm()
 //*****************************************************************************
 // alignment
 //*****************************************************************************
-etl::align_at<int, 16> data9;
-etl::align_at<char, 16> data10;
+etl::aligned_storage<100, 8>::type data9;
+etl::aligned_storage_as<100, double>::type data10;
 
 void test_alignment()
 {
-  data9.value = 0;
-  data10.value = 0;
+  int a = static_cast<int&>(data9);
   
-	etl::align_at<char, 1>  data1;
-	etl::align_at<char, 2>  data2;
-	etl::align_at<char, 4>  data3;
-	etl::align_at<char, 8>  data4;
+	etl::aligned_storage<1, 1>::type  data1;
+	etl::aligned_storage<1, 2>::type  data2;
+	etl::aligned_storage<1, 4>::type  data3;
+	etl::aligned_storage<1, 8>::type  data4;
 	
-	etl::align_as<char, char>   data5;
-	etl::align_as<char, short>  data6;
-	etl::align_as<char, int>    data7;
-	etl::align_as<char, double> data8;
+	etl::aligned_storage_as<1, char>::type   data5;
+	etl::aligned_storage_as<1, short>::type  data6;
+	etl::aligned_storage_as<1, int>::type    data7;
+	etl::aligned_storage_as<1, double>::type data8;
 }
 
 //*****************************************************************************
