@@ -12,15 +12,30 @@
 #include "crc64_ecma.h"
 #include "cyclic_value.h"
 #include "deque.h"
-
-#if !defined(COMPILER_IAR)
+#include "io_port.h"
+#include "vector.h"
 #include "variant.h"
-#endif
 
 #if defined(COMPILER_KEIL)
   #pragma diag_suppress 550
   #pragma diag_suppress 177
 #endif
+
+#if defined(COMPILER_IAR)
+#pragma diag_suppress = pe177
+#endif
+
+struct Test
+{
+	Test(int i, double d)
+		: i(i),
+		  d(d)
+	{
+	}
+	
+	int i;
+	double d;
+};
 
 //*****************************************************************************
 // algorithm
@@ -218,12 +233,108 @@ void test_cyclic_value()
 	b = cv1 != cv2;
 }
 
+template <uintptr_t ADDRESS>
+struct serial_port
+{
+  etl::io_port_ro<uint8_t,  ADDRESS>      rxdata;
+  etl::io_port_wo<uint8_t,  ADDRESS + 1>  txdata;
+  etl::io_port_rw<uint16_t, ADDRESS + 2>  control;
+  etl::io_port_ro<uint16_t, ADDRESS + 4>  status;
+  etl::io_port_wos<uint8_t, ADDRESS + 6> control2;
+};
+
+struct dynamic_serial_port
+{
+  dynamic_serial_port(uint8_t* base)
+    : rxdata(base),
+      txdata(base + 1),
+      control(base + 2),
+      status(base + 4),
+      control2(base + 6)
+  {
+  }
+
+  etl::io_port_ro<uint8_t>  rxdata;
+  etl::io_port_wo<uint8_t>  txdata;
+  etl::io_port_rw<uint16_t> control;
+  etl::io_port_ro<uint16_t> status;
+  etl::io_port_wos<uint8_t> control2;
+};	
+
 //*****************************************************************************
-// cyclic_value
+// io_port
+//*****************************************************************************
+void test_io_port()
+{
+	serial_port<0x1234> port1;
+	
+  uint8_t rxdata  = port1.rxdata;
+	port1.txdata    = 0x34;
+	port1.control   = 0x5678; // Little endian.
+	uint16_t status = port1.status;
+	port1.control2  = 0xDE;
+  int control2    = port1.control2;
+	
+	uint8_t memory[7];
+	dynamic_serial_port port2(memory);
+	
+  uint8_t rxdata2  = port2.rxdata;
+	port2.txdata     = 0x34;
+	port2.control    = 0x5678; // Little endian.
+	uint16_t status2 = port2.status;
+	port2.control2   = 0xDE;
+  int control22    = port2.control2;
+}
+
+//*****************************************************************************
+// variant
+//*****************************************************************************
+void test_variant()
+{
+	typedef etl::variant<int, double, Test> Data;
+	
+	Data data;
+
+	data = int(1);
+	int i = data;
+	
+	data = double(2.2);
+	double d = data;
+	
+	data = Test(3, 3.3);
+	Test test(data);
+}
+
+//*****************************************************************************
+// deque
 //*****************************************************************************
 void test_deque()
 {
+	typedef etl::deque<Test, 10> Data;
 	
+	Data data;
+	
+	data.push_back(Test(1, 1.1));
+	data.push_back(Test(2, 2.2));
+	
+	Data::iterator it = data.begin();
+	data.erase(it);	
+}
+
+//*****************************************************************************
+// vector
+//*****************************************************************************
+void test_vector()
+{
+	typedef etl::vector<Test, 10> Data;
+	
+	Data data;
+	
+	data.push_back(Test(1, 1.1));
+	data.push_back(Test(2, 2.2));
+	
+	Data::iterator it = data.begin();
+	data.erase(it);
 }
 
 //*****************************************************************************
@@ -231,5 +342,13 @@ void test_deque()
 //*****************************************************************************
 int main()
 {
+	test_algorithm();
   test_alignment();
+	test_array();
+	test_bitset();
+	test_crc();
+	test_cyclic_value();
+	test_deque();
+  test_vector();
+	test_io_port();
 }
