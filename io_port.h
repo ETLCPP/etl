@@ -123,7 +123,6 @@ namespace etl
     void operator =(parameter_t value)
     {
       *reinterpret_cast<pointer_t>(ADDRESS) = value;
-      return *this;
     }
   };
 
