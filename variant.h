@@ -46,6 +46,7 @@ SOFTWARE.
 
 #if defined(COMPILER_KEIL)
   #pragma diag_suppress 940
+	#pragma diag_suppress 111
 #endif
 
 //*****************************************************************************
@@ -451,6 +452,7 @@ namespace etl
 #else
             error_handler::error(variant_invalid_type_id_exception());
 #endif
+            return reinterpret_cast<TBase&>(*p_data);
 						break;
         }
       }
@@ -473,6 +475,7 @@ namespace etl
 #else
             error_handler::error(variant_invalid_type_id_exception());
 #endif
+            return reinterpret_cast<TBase&>(*p_data);
 				  	break;
         }
       }
@@ -503,6 +506,7 @@ namespace etl
 #else
             error_handler::error(variant_invalid_type_id_exception());
 #endif      
+            return reinterpret_cast<TBase&>(*p_data);
 				  	break;
         }
       }
@@ -524,6 +528,7 @@ namespace etl
 #else
             error_handler::error(variant_invalid_type_id_exception());
 #endif
+            return reinterpret_cast<TBase&>(*p_data);
 				  	break;
         }
       }
@@ -553,6 +558,7 @@ namespace etl
 #else
             error_handler::error(variant_invalid_type_id_exception());
 #endif
+            return reinterpret_cast<TBase&>(*p_data);
 				  	break;
         }
       }
@@ -573,6 +579,7 @@ namespace etl
 #else
             error_handler::error(variant_invalid_type_id_exception());
 #endif
+            return reinterpret_cast<TBase&>(*p_data);
 					  break;
         }
       }
@@ -601,6 +608,7 @@ namespace etl
 #else
             error_handler::error(variant_invalid_type_id_exception());
 #endif
+            return reinterpret_cast<TBase&>(*p_data);
 					  break;
         }
       }
@@ -620,6 +628,7 @@ namespace etl
 #else
             error_handler::error(variant_invalid_type_id_exception());
 #endif
+            return reinterpret_cast<TBase&>(*p_data);
 					  break;
         }
       }
@@ -647,6 +656,7 @@ namespace etl
 #else
             error_handler::error(variant_invalid_type_id_exception());
 #endif
+            return reinterpret_cast<TBase&>(*p_data);
 				  	break;
         }
       }
@@ -665,6 +675,7 @@ namespace etl
 #else
             error_handler::error(variant_invalid_type_id_exception());
 #endif
+            return reinterpret_cast<TBase&>(*p_data);
 						break;
         }
       }
@@ -691,6 +702,7 @@ namespace etl
 #else
             error_handler::error(variant_invalid_type_id_exception());
 #endif
+            return reinterpret_cast<TBase&>(*p_data);
 						break;
         }
       }
@@ -708,6 +720,7 @@ namespace etl
 #else
             error_handler::error(variant_invalid_type_id_exception());
 #endif
+            return reinterpret_cast<TBase&>(*p_data);
 						break;
         }
       }
@@ -733,6 +746,7 @@ namespace etl
 #else
             error_handler::error(variant_invalid_type_id_exception());
 #endif
+            return reinterpret_cast<TBase&>(*p_data);
 						break;
         }
       }
@@ -749,6 +763,7 @@ namespace etl
 #else
             error_handler::error(variant_invalid_type_id_exception());
 #endif
+            return reinterpret_cast<TBase&>(*p_data);
 						break;
         }
       }
@@ -773,6 +788,7 @@ namespace etl
 #else
             error_handler::error(variant_invalid_type_id_exception());
 #endif
+            return reinterpret_cast<TBase&>(*p_data);
 						break;
         }
       }
@@ -788,6 +804,7 @@ namespace etl
 #else
             error_handler::error(variant_invalid_type_id_exception());
 #endif
+            return reinterpret_cast<TBase&>(*p_data);
 						break;
         }
       }
