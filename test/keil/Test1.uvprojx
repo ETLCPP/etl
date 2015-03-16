@@ -362,8 +362,8 @@
             <uC99>0</uC99>
             <useXO>0</useXO>
             <VariousControls>
-              <MiscControls></MiscControls>
-              <Define>PLATFORM_ARM,COMPILER_KEIL</Define>
+              <MiscControls>--exceptions</MiscControls>
+              <Define>PLATFORM_ARM,COMPILER_KEIL, ETL_THROW_EXCEPTIONS</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\etl;..\Keil</IncludePath>
             </VariousControls>
@@ -772,6 +772,11 @@
               <FileName>ihash.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\ihash.h</FilePath>
+            </File>
+            <File>
+              <FileName>io_port.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\io_port.h</FilePath>
             </File>
           </Files>
         </Group>
