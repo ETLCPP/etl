@@ -58,7 +58,7 @@ namespace etl
   {
   public:
 
-    typedef std::pair<TKey, TMapped>                  value_type;
+    typedef std::pair<const TKey, TMapped>            value_type;
     typedef TKey                                      key_type;
     typedef TMapped                                   mapped_type;
     typedef TKeyCompare                               key_compare;
@@ -91,6 +91,9 @@ namespace etl
     };
 
   protected:
+    static const int8_t kLeft = 0;
+    static const int8_t kRight = 1;
+
     //*************************************************************************
     /// The node element in the map.
     //*************************************************************************
@@ -100,17 +103,7 @@ namespace etl
       /// Constructor
       //***********************************************************************
       Node()
-        : left(nullptr)
-        , right(nullptr)
       {
-      }
-
-      //***********************************************************************
-      /// Determines if the node is a leaf.
-      //***********************************************************************
-      bool is_leaf() const
-      {
-        return left == nullptr && right == nullptr;
       }
 
       //***********************************************************************
@@ -118,13 +111,11 @@ namespace etl
       //***********************************************************************
       void mark_as_leaf()
       {
-        left = nullptr;
-        right = nullptr;
+        children[0] = nullptr;
+        children[1] = nullptr;
       }
 
-
-      Node* left;
-      Node* right;
+      Node* children[2];
     };
 
     //*************************************************************************
@@ -451,7 +442,7 @@ namespace etl
     //*************************************************************************
     iterator begin()
     {
-      return iterator(*this, lower_node(root_node));
+      return iterator(*this, find_limit_node(root_node, kLeft));
     }
 
     //*************************************************************************
@@ -459,7 +450,7 @@ namespace etl
     //*************************************************************************
     const_iterator begin() const
     {
-      return const_iterator(*this, lower_node(root_node));
+      return const_iterator(*this, find_limit_node(root_node, kLeft));
     }
 
     //*************************************************************************
@@ -483,7 +474,7 @@ namespace etl
     //*************************************************************************
     const_iterator cbegin() const
     {
-      return const_iterator(*this, lower_node(root_node));
+      return const_iterator(*this, find_limit_node(root_node, kLeft));
     }
 
     //*************************************************************************
@@ -515,7 +506,7 @@ namespace etl
     //*************************************************************************
     reverse_iterator rend()
     {
-      return reverse_iterator(iterator(*this, lower_node(root_node)));
+      return reverse_iterator(iterator(*this, find_limit_node(root_node, kLeft)));
     }
 
     //*************************************************************************
@@ -523,7 +514,7 @@ namespace etl
     //*************************************************************************
     const_reverse_iterator rend() const
     {
-      return const_reverse_iterator(iterator(*this, lower_node(root_node)));
+      return const_reverse_iterator(iterator(*this, find_limit_node(root_node, kLeft)));
     }
 
     //*************************************************************************
@@ -539,7 +530,7 @@ namespace etl
     //*************************************************************************
     const_reverse_iterator crend() const
     {
-      return const_reverse_iterator(const_iterator(*this, lower_node(root_node)));
+      return const_reverse_iterator(const_iterator(*this, find_limit_node(root_node, kLeft)));
     }
 
     //*********************************************************************
@@ -647,8 +638,8 @@ namespace etl
     std::pair<iterator, iterator> equal_range(const key_type& key)
     {
       return std::make_pair<iterator, iterator>(
-        iterator(*this, lower_node(root_node, key)),
-        iterator(*this, upper_node(root_node, key)));
+        iterator(*this, find_lower_node(root_node, key)),
+        iterator(*this, find_upper_node(root_node, key)));
     }
 
     //*************************************************************************
@@ -658,8 +649,8 @@ namespace etl
     std::pair<const_iterator, const_iterator> equal_range(const key_type& key) const
     {
       return std::make_pair<const_iterator, const_iterator>(
-        const_iterator(*this, lower_node(root_node, key)),
-        const_iterator(*this, upper_node(root_node, key)));
+        const_iterator(*this, find_lower_node(root_node, key)),
+        const_iterator(*this, find_upper_node(root_node, key)));
     }
 
     //*************************************************************************
@@ -677,13 +668,11 @@ namespace etl
     iterator erase(const_iterator position)
     {
       // Find the parent node to be removed
-      Node* found_parent = find_parent_node(root_node, position.p_node);
-      iterator next(*this, found_parent->left == position.p_node ?
-        found_parent->left : found_parent->right);
+      Node*& reference_node = find_node(root_node, position.p_node);
+      iterator next(*this, reference_node);
       ++next;
 
-      remove_node(found_parent->left == position.p_node ?
-        found_parent->left : found_parent->right, position->first);
+      remove_node(reference_node, position->first);
 
       return next;
     }
@@ -702,12 +691,13 @@ namespace etl
     //*************************************************************************
     iterator erase(iterator first, iterator last)
     {
+      iterator next;
       while (first != last)
       {
-        erase(first++);
+        next = erase(const_iterator(first++));
       }
 
-      return last;
+      return next;
     }
 
     //*************************************************************************
@@ -865,7 +855,7 @@ namespace etl
     //*********************************************************************
     iterator lower_bound(const key_value_parameter_t key)
     {
-      return iterator(*this, lower_node(root_node, key));
+      return iterator(*this, find_lower_node(root_node, key));
     }
 
     //*********************************************************************
@@ -876,7 +866,7 @@ namespace etl
     //*********************************************************************
     const_iterator lower_bound(const key_value_parameter_t key) const
     {
-      return const_iterator(*this, lower_node(root_node, key));
+      return const_iterator(*this, find_lower_node(root_node, key));
     }
 
     //*********************************************************************
@@ -887,7 +877,7 @@ namespace etl
     //*********************************************************************
     iterator upper_bound(const key_value_parameter_t key)
     {
-      return iterator(*this, upper_node(root_node, key));
+      return iterator(*this, find_upper_node(root_node, key));
     }
 
     //*********************************************************************
@@ -898,7 +888,7 @@ namespace etl
     //*********************************************************************
     const_iterator upper_bound(const key_value_parameter_t key) const
     {
-      return const_iterator(*this, upper_node(root_node, key));
+      return const_iterator(*this, find_upper_node(root_node, key));
     }
 
   protected:
@@ -973,46 +963,46 @@ namespace etl
       Node* swap_node = nullptr;
 
       // Found the node to be removed, does it have other nodes on the left?
-      if (position->left)
+      if (position->children[kLeft])
       {
         // Find the upper node and its parent from the left of the current position
         Node* upper_parent_node = position;
-        Node* upper_node = position->left;
-        while (upper_node && upper_node->right)
+        Node* upper_node = position->children[kLeft];
+        while (upper_node && upper_node->children[kRight])
         {
           upper_parent_node = upper_node;
-          upper_node = upper_node->right;
+          upper_node = upper_node->children[kRight];
         }
 
         // Recursively call detach_node for the upper node found above
-        swap_node = detach_node(upper_parent_node->left == upper_node ?
-          upper_parent_node->left : upper_parent_node->right);
+        swap_node = detach_node(upper_parent_node->children[kLeft] == upper_node ?
+          upper_parent_node->children[kLeft] : upper_parent_node->children[kRight]);
       }
       // Found the node to be removed, does it have other nodes on the right?
-      else if (position->right)
+      else if (position->children[kRight])
       {
         // Find the lower node and its parent from the right of the current position
         Node* lower_parent_node = position;
-        Node* lower_node = position->right;
-        while (lower_node && lower_node->left)
+        Node* lower_node = position->children[kRight];
+        while (lower_node && lower_node->children[kLeft])
         {
           lower_parent_node = lower_node;
-          lower_node = lower_node->left;
+          lower_node = lower_node->children[kLeft];
         }
         // Cast lower node into a data node to retrieve the key value
         Data_Node* lower_data_node = imap::data_cast(lower_node);
 
         // Recursively call detach_node for the lower node found
-        swap_node = detach_node(lower_parent_node->left == lower_node ?
-          lower_parent_node->left : lower_parent_node->right);
+        swap_node = detach_node(lower_parent_node->children[kLeft] == lower_node ?
+          lower_parent_node->children[kLeft] : lower_parent_node->children[kRight]);
       }
 
       // If a swap node was provided above, update its child trees
       if (swap_node)
       {
         // Move children of position as new children of swap node
-        swap_node->left = position->left;
-        swap_node->right = position->right;
+        swap_node->children[kLeft] = position->children[kLeft];
+        swap_node->children[kRight] = position->children[kRight];
       }
 
       // Update current position to point to swap node
@@ -1037,12 +1027,12 @@ namespace etl
         if (node_comp(key, found_data_node))
         {
           // Keep searching for the node on the left
-          found = found->left;
+          found = found->children[kLeft];
         }
         else if (node_comp(found_data_node, key))
         {
           // Keep searching for the node on the right
-          found = found->right;
+          found = found->children[kRight];
         }
         else
         {
@@ -1070,12 +1060,12 @@ namespace etl
         if (node_comp(key, found_data_node))
         {
           // Keep searching for the node on the left
-          found = found->left;
+          found = found->children[kLeft];
         }
         else if (node_comp(found_data_node, key))
         {
           // Keep searching for the node on the right
-          found = found->right;
+          found = found->children[kRight];
         }
         else
         {
@@ -1096,13 +1086,13 @@ namespace etl
       Node* found = position;
       while (found)
       {
-        if (found->left == node)
+        if (found->children[kLeft] == node)
         {
-          return found->left;
+          return found->children[kLeft];
         }
-        else if (found->right == node)
+        else if (found->children[kRight] == node)
         {
-          return found->right;
+          return found->children[kRight];
         }
         else
         {
@@ -1114,23 +1104,57 @@ namespace etl
           if (node_comp(data_node, found_data_node))
           {
             // Keep searching for the node on the left
-            found = found->left;
+            found = found->children[kLeft];
           }
           else if (node_comp(found_data_node, data_node))
           {
             // Keep searching for the node on the right
-            found = found->right;
+            found = found->children[kRight];
           }
           else
           {
-            // Exit loop if duplicate was found
-            break;
+            // Return position provided (it matches the node)
+            return position;
           }
         }
       }
 
-      // Return the initial position provided if node not found
-      return position;
+      // Return root node if nothing or duplicate was found
+      return root_node;
+    }
+
+    //*************************************************************************
+    /// Find the node whose key would go before all the other keys from the
+    /// position provided
+    //*************************************************************************
+    Node* find_limit_node(Node* position, const int8_t dir) const
+    {
+      // Something at this position and in the direction specified? keep going
+      Node* limit_node = position;
+      while (limit_node && limit_node->children[dir])
+      {
+        limit_node = limit_node->children[dir];
+      }
+
+      // Return the limit node position found
+      return limit_node;
+    }
+
+    //*************************************************************************
+    /// Find the node whose key would go before all the other keys from the
+    /// position provided
+    //*************************************************************************
+    const Node* find_limit_node(const Node* position, const int8_t dir) const
+    {
+      // Something at this position and in the direction specified? keep going
+      Node* limit_node = position;
+      while (limit_node && limit_node->children[dir])
+      {
+        limit_node = limit_node->children[dir];
+      }
+
+      // Return the limit node position found
+      return limit_node;
     }
 
     //*************************************************************************
@@ -1148,7 +1172,8 @@ namespace etl
         while (position)
         {
           // Is this position not the parent of the node we are looking for?
-          if (position->left != node && position->right != node)
+          if (position->children[kLeft] != node &&
+              position->children[kRight] != node)
           {
             // Downcast node and position to Data_Node references for key comparisons
             const Data_Node& node_data_node = imap::data_cast(*node);
@@ -1157,12 +1182,12 @@ namespace etl
             if (node_comp(node_data_node, position_data_node))
             {
               // Keep looking for parent on the left
-              position = position->left;
+              position = position->children[kLeft];
             }
             else if (node_comp(position_data_node, node_data_node))
             {
               // Keep looking for parent on the right
-              position = position->right;
+              position = position->children[kRight];
             }
           }
           else
@@ -1195,7 +1220,8 @@ namespace etl
         while (position)
         {
           // Is this position not the parent of the node we are looking for?
-          if (position->left != node && position->right != node)
+          if (position->children[kLeft] != node &&
+              position->children[kRight] != node)
           {
             // Downcast node and position to Data_Node references for key comparisons
             const Data_Node& node_data_node = imap::data_cast(*node);
@@ -1204,12 +1230,12 @@ namespace etl
             if (node_comp(node_data_node, position_data_node))
             {
               // Keep looking for parent on the left
-              position = position->left;
+              position = position->children[kLeft];
             }
             else if (node_comp(position_data_node, node_data_node))
             {
               // Keep looking for parent on the right
-              position = position->right;
+              position = position->children[kRight];
             }
           }
           else
@@ -1225,6 +1251,142 @@ namespace etl
 
       // Return the parent node found (might be nullptr)
       return found;
+    }
+
+    //*************************************************************************
+    /// Find the node whose key is not considered to go before the key provided
+    //*************************************************************************
+    Node* find_lower_node(Node* position, const key_value_parameter_t key) const
+    {
+      // Something at this position? keep going
+      Node* lower_node = position;
+      while (lower_node)
+      {
+        // Downcast lower node to Data_Node reference for key comparisons
+        Data_Node& data_node = imap::data_cast(*lower_node);
+        // Compare the key value to the current lower node key value
+        if (node_comp(key, data_node))
+        {
+          lower_node = lower_node->children[kLeft];
+        }
+        else if (node_comp(data_node, key))
+        {
+          lower_node = lower_node->children[kRight];
+        }
+        else
+        {
+          break;
+        }
+      }
+
+      // Return the lower_node position found
+      return lower_node;
+    }
+
+    //*************************************************************************
+    /// Find the node whose key is not considered to go before the key provided
+    //*************************************************************************
+    const Node& find_lower_node(const Node* position, const key_value_parameter_t key) const
+    {
+      // Something at this position? keep going
+      const Node* lower_node = position;
+      while (lower_node)
+      {
+        // Downcast lower node to Data_Node reference for key comparisons
+        const Data_Node& data_node = imap::data_cast(*lower_node);
+        // Compare the key value to the current lower node key value
+        if (node_comp(key, data_node))
+        {
+          lower_node = lower_node->children[kLeft];
+        }
+        else if (node_comp(data_node, key))
+        {
+          lower_node = lower_node->children[kRight];
+        }
+        else
+        {
+          break;
+        }
+      }
+
+      // Return the lower_node position found
+      return lower_node;
+    }
+
+    //*************************************************************************
+    /// Find the node whose key is considered to go after the key provided
+    //*************************************************************************
+    Node* find_upper_node(Node* position, const key_value_parameter_t key) const
+    {
+      // Keep track of parent of last upper node
+      Node* upper_node = nullptr;
+      // Start with position provided
+      Node* node = position;
+      while (node)
+      {
+        // Downcast position to Data_Node reference for key comparisons
+        Data_Node& data_node = imap::data_cast(*node);
+        // Compare the key value to the current upper node key value
+        if (node_comp(key, data_node))
+        {
+          upper_node = node;
+          node = node->children[kLeft];
+        }
+        else if (node_comp(data_node, key))
+        {
+          node = node->children[kRight];
+        }
+        else if (node->children[kRight])
+        {
+          upper_node = find_limit_node(node->children[kRight], kLeft);
+          break;
+        }
+        else
+        {
+          break;
+        }
+      }
+
+      // Return the upper node position found (might be nullptr)
+      return upper_node;
+    }
+
+    //*************************************************************************
+    /// Find the node whose key is considered to go after the key provided
+    //*************************************************************************
+    const Node* find_upper_node(const Node* position, const key_value_parameter_t key) const
+    {
+      // Keep track of parent of last upper node
+      const Node* upper_node = nullptr;
+      // Start with position provided
+      const Node* node = position;
+      while (node)
+      {
+        // Downcast position to Data_Node reference for key comparisons
+        const Data_Node& data_node = imap::data_cast(*node);
+        // Compare the key value to the current upper node key value
+        if (node_comp(key, data_node))
+        {
+          upper_node = node;
+          node = node->children[kLeft];
+        }
+        else if (node_comp(data_node, key))
+        {
+          node = node->children[kRight];
+        }
+        else if (node->children[kRight])
+        {
+          upper_node = find_limit_node(node->children[kRight], kLeft);
+          break;
+        }
+        else
+        {
+          break;
+        }
+      }
+
+      // Return the upper node position found (might be nullptr)
+      return upper_node;
     }
 
     //*************************************************************************
@@ -1246,18 +1408,18 @@ namespace etl
           // Is the node provided to the left of the current position?
           if (node_comp(node, found_data_node))
           {
-            if (found->left)
+            if (found->children[kLeft])
             {
               // Node should be put on the left
-              found = found->left;
+              found = found->children[kLeft];
             }
             else
             {
               // Attatch node to left
-              attach_node(found->left, node);
+              attach_node(found->children[kLeft], node);
 
               // Return newly added node
-              found = found->left;
+              found = found->children[kLeft];
 
               // Exit loop
               break;
@@ -1266,18 +1428,18 @@ namespace etl
           // Is the node provided to the right of the current position?
           else if (node_comp(found_data_node, node))
           {
-            if (found->right)
+            if (found->children[kRight])
             {
               // Node should be put on the right
-              found = found->right;
+              found = found->children[kRight];
             }
             else
             {
               // Attatch node to right
-              attach_node(found->right, node);
+              attach_node(found->children[kRight], node);
 
               // Return newly added node
-              found = found->right;
+              found = found->children[kRight];
 
               // Exit loop
               break;
@@ -1307,92 +1469,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Find the node whose key would go before all the other keys from the
-    /// position provided
-    //*************************************************************************
-    Node* lower_node(Node* position) const
-    {
-      // Something at this position and on the left? keep going
-      Node* lower_node = position;
-      while (lower_node && lower_node->left)
-      {
-        lower_node = lower_node->left;
-      }
-
-      // Return the lower node position found
-      return lower_node;
-    }
-
-    //*************************************************************************
-    /// Find the node whose key is not considered to go before the key provided
-    //*************************************************************************
-    Node* lower_node(Node* position, const key_value_parameter_t key) const
-    {
-      // Something at this position? keep going
-      Node* lower_node = position;
-      while (lower_node)
-      {
-        // Downcast lower node to Data_Node reference for key comparisons
-        Data_Node& lower_data_node = imap::data_cast(*lower_node);
-        // Compare the key value to the current lower node key value
-        if (!node_comp(lower_data_node, key))
-        {
-          break;
-        }
-        else
-        {
-          lower_node = lower_node->right;
-        }
-      }
-
-      // Return the lower node position found
-      return lower_node;
-    }
-
-    //*************************************************************************
-    /// Find the node whose key would go before all the other keys from the
-    /// position provided
-    //*************************************************************************
-    const Node* lower_node(const Node* position) const
-    {
-      // Something at this position and on the left? keep going
-      const Node* lower_node = position;
-      while (lower_node && lower_node->left)
-      {
-        lower_node = lower_node->left;
-      }
-
-      // Return the lower node position found
-      return lower_node;
-    }
-
-    //*************************************************************************
-    /// Find the node whose key is not considered to go before the key provided
-    //*************************************************************************
-    const Node& lower_node(const Node* position, const key_value_parameter_t key) const
-    {
-      // Something at this position? keep going
-      const Node* lower_node = position;
-      while (lower_node)
-      {
-        // Downcast lower node to Data_Node reference for key comparisons
-        const Data_Node& lower_data_node = imap::data_cast(*lower_node);
-        // Compare the key value to the current lower node key value
-        if (!node_comp(lower_data_node, key))
-        {
-          break;
-        }
-        else
-        {
-          lower_node = lower_node->right;
-        }
-      }
-
-      // Return the lower node position found
-      return lower_node;
-    }
-
-    //*************************************************************************
     /// Find the next node in sequence from the node provided
     //*************************************************************************
     void next_node(Node*&position)
@@ -1400,10 +1476,10 @@ namespace etl
       if (position)
       {
         // Is there a tree on the right? then find the minimum of that tree
-        if (position->right)
+        if (position->children[kRight])
         {
           // Return minimum node found
-          position = lower_node(position->right);
+          position = find_limit_node(position->children[kRight], kLeft);
         }
         // Otherwise find the parent of this node
         else
@@ -1416,7 +1492,7 @@ namespace etl
             // Find parent of current position
             parent = find_parent_node(root_node, position);
             // Repeat while previous position was on right side of parent tree
-          } while (parent && parent->right == position);
+          } while (parent && parent->children[kRight] == position);
 
           // Set parent node as the next position
           position = parent;
@@ -1432,10 +1508,10 @@ namespace etl
       if (position)
       {
         // Is there a tree on the right? then find the minimum of that tree
-        if (position->right)
+        if (position->children[kRight])
         {
           // Return minimum node found
-          position = lower_node(position->right);
+          position = find_limit_node(position->children[kRight], kLeft);
         }
         // Otherwise find the parent of this node
         else
@@ -1448,7 +1524,7 @@ namespace etl
             // Find parent of current position
             parent = find_parent_node(root_node, position);
             // Repeat while previous position was on right side of parent tree
-          } while (parent && parent->right == position);
+          } while (parent && parent->children[kRight] == position);
 
           // Set parent node as the next position
           position = parent;
@@ -1465,15 +1541,15 @@ namespace etl
       // from the root
       if (!position)
       {
-        position = upper_node(root_node);
+        position = find_limit_node(root_node, kRight);
       }
       else
       {
         // Is there a tree on the left? then find the maximum of that tree
-        if (position->left)
+        if (position->children[kLeft])
         {
           // Return maximum node found
-          position = upper_node(position->left);
+          position = find_limit_node(position->children[kLeft], kRight);
         }
         // Otherwise find the parent of this node
         else
@@ -1486,7 +1562,7 @@ namespace etl
             // Find parent of current position
             parent = find_parent_node(root_node, position);
             // Repeat while previous position was on left side of parent tree
-          } while (parent && parent->left == position);
+          } while (parent && parent->children[kLeft] == position);
 
           // Set parent node as the next position
           position = parent;
@@ -1503,15 +1579,15 @@ namespace etl
       // from the root
       if (!position)
       {
-        position = upper_node(root_node);
+        position = find_limit_node(root_node, kRight);
       }
       else
       {
         // Is there a tree on the left? then find the maximum of that tree
-        if (position->left)
+        if (position->children[kLeft])
         {
           // Return maximum node found
-          position = upper_node(position->left);
+          position = find_limit_node(position->children[kLeft], kRight);
         }
         // Otherwise find the parent of this node
         else
@@ -1524,7 +1600,7 @@ namespace etl
             // Find parent of current position
             parent = find_parent_node(root_node, position);
             // Repeat while previous position was on left side of parent tree
-          } while (parent && parent->left == position);
+          } while (parent && parent->children[kLeft] == position);
 
           // Set parent node as the next position
           position = parent;
@@ -1550,13 +1626,13 @@ namespace etl
         {
           // Keep searching for the node to remove on the left
           found_parent = found;
-          found = found->left;
+          found = found->children[kLeft];
         }
         else if (node_comp(found_data_node, key))
         {
           // Keep searching for the node to remove on the right
           found_parent = found;
-          found = found->right;
+          found = found->children[kRight];
         }
         else
         {
@@ -1578,8 +1654,8 @@ namespace etl
         {
           // Detach the node using a reference provided by the parent of the node
           // found
-          detach_node(found_parent->left == found ?
-            found_parent->left : found_parent->right);
+          detach_node(found_parent->children[kLeft] == found ?
+            found_parent->children[kLeft] : found_parent->children[kRight]);
         }
 
         // Downcast found into data node
@@ -1594,92 +1670,6 @@ namespace etl
 
       // If this is reached, the key value was not found and removed
       return nullptr;
-    }
-
-    //*************************************************************************
-    /// Find the node whose key would go before all the other keys from the
-    /// position provided
-    //*************************************************************************
-    Node* upper_node(Node* position) const
-    {
-      // Something at this position and on the right? keep going
-      Node* upper_node = position;
-      while (upper_node && upper_node->right)
-      {
-        upper_node = upper_node->right;
-      }
-
-      // Return the upper node position found
-      return upper_node;
-    }
-
-    //*************************************************************************
-    /// Find the node whose key is considered to go before the key provided
-    //*************************************************************************
-    Node* upper_node(Node* position, const key_value_parameter_t key) const
-    {
-      // Something at this position and on the right? keep going
-      Node* upper_node = position;
-      while (upper_node)
-      {
-        // Downcast position to Data_Node reference for key comparisons
-        Data_Node& upper_data_node = imap::data_cast(*upper_node);
-        // Compare the key value to the current upper node key value
-        if (!node_comp(key, upper_data_node))
-        {
-          upper_node = upper_node->right;
-        }
-        else
-        {
-          break;
-        }
-      }
-
-      // Return the upper node position found
-      return upper_node;
-    }
-
-    //*************************************************************************
-    /// Find the node whose key would go before all the other keys from the
-    /// position provided
-    //*************************************************************************
-    const Node* upper_node(const Node* position) const
-    {
-      // Something at this position and on the right? keep going
-      Node* upper_node = position;
-      while (upper_node && upper_node->right)
-      {
-        upper_node = upper_node->right;
-      }
-
-      // Return the upper node position found
-      return upper_node;
-    }
-
-    //*************************************************************************
-    /// Find the node whose key is considered to go before the key provided
-    //*************************************************************************
-    const Node* upper_node(const Node* position, const key_value_parameter_t key) const
-    {
-      // Something at this position and on the right? keep going
-      const Node* upper_node = position;
-      while (upper_node)
-      {
-        // Downcast position to Data_Node reference for key comparisons
-        const Data_Node& upper_data_node = imap::data_cast(*upper_node);
-        // Compare the key value to the current upper node key value
-        if (!node_comp(key, upper_data_node))
-        {
-          upper_node = upper_node->right;
-        }
-        else
-        {
-          break;
-        }
-      }
-
-      // Return the upper node position found
-      return upper_node;
     }
 
   };

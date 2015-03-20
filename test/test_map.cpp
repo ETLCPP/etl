@@ -46,6 +46,8 @@ typedef etl::map<std::string, int, SIZE, std::less<std::string> >  Data;
 typedef std::map<std::string, int, std::less<std::string> >        Compare_Data;
 typedef Data::iterator Data_iterator;
 typedef Data::const_iterator Data_const_iterator;
+typedef Compare_Data::iterator Compare_Data_iterator;
+typedef Compare_Data::const_iterator Compare_Data_const_iterator;
 
 //*************************************************************************
 std::ostream& operator << (std::ostream& os, const Data_iterator& it)
@@ -57,6 +59,22 @@ std::ostream& operator << (std::ostream& os, const Data_iterator& it)
 
 //*************************************************************************
 std::ostream& operator << (std::ostream& os, const Data_const_iterator& it)
+{
+  os << (*it).first << " " << (*it).second;
+
+  return os;
+}
+
+//*************************************************************************
+std::ostream& operator << (std::ostream& os, const Compare_Data_iterator& it)
+{
+  os << (*it).first << " " << (*it).second;
+
+  return os;
+}
+
+//*************************************************************************
+std::ostream& operator << (std::ostream& os, const Compare_Data_const_iterator& it)
 {
   os << (*it).first << " " << (*it).second;
 
@@ -79,6 +97,7 @@ namespace
       {
         if ((begin1->first != begin2->first) || (begin1->second != begin2->second))
         {
+          printf("%d != %d || %d != %d\n", begin1->first, begin2->first, begin1->second, begin2->second);
           return false;
         }
 
@@ -443,10 +462,14 @@ namespace
 
       std::pair<Data::iterator, Data::iterator> data_result =
         data.equal_range("2");
+      Data::iterator data_lb = data.lower_bound("2");
       std::pair<Compare_Data::iterator, Compare_Data::iterator> compare_result =
         compare_data.equal_range("2");
+      Compare_Data::iterator compare_data_lb = compare_data.lower_bound("2");
 
       // Check that both return the same return results
+      CHECK_EQUAL(data_lb->first, compare_data_lb->first);
+      CHECK_EQUAL(data_lb->second, compare_data_lb->second);
       CHECK_EQUAL(data_result.first->first, compare_result.first->first);
       CHECK_EQUAL(data_result.first->second, compare_result.first->second);
       CHECK_EQUAL(data_result.second->first, compare_result.second->first);
@@ -542,7 +565,7 @@ namespace
       Compare_Data::const_iterator i_compare1 = compare_data.erase(i_compare);
       Data::const_iterator i_data1 = data.erase(i_data);
 
-      CHECK_EQUAL(i_compare1->second, i_data1->second);
+    //  CHECK_EQUAL(i_compare1->second, i_data1->second);
     }
 
     //*************************************************************************
@@ -732,9 +755,15 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data data(initial_data.begin(), initial_data.end());
 
-      Compare_Data::iterator i_compare = compare_data.lower_bound("3");
-      Data::iterator i_data = data.lower_bound("3");
+      Compare_Data::iterator i_compare = compare_data.lower_bound("8");
+      Data::iterator i_data = data.lower_bound("8");
       CHECK_EQUAL(i_compare->second, i_data->second);
+
+      i_data = data.lower_bound(".");
+      CHECK_EQUAL(data.end(), i_data);
+
+      i_compare = compare_data.lower_bound("A");
+      CHECK_EQUAL(compare_data.end(), i_compare);
 
       i_data = data.lower_bound("A");
       CHECK_EQUAL(data.end(), i_data);
@@ -746,9 +775,15 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       const Data data(initial_data.begin(), initial_data.end());
 
-      Compare_Data::const_iterator i_compare = compare_data.lower_bound("3");
-      Data::const_iterator i_data = data.lower_bound("3");
+      Compare_Data::const_iterator i_compare = compare_data.lower_bound("4");
+      Data::const_iterator i_data = data.lower_bound("4");
       CHECK_EQUAL(i_compare->second, i_data->second);
+
+      i_data = data.lower_bound(".");
+      CHECK_EQUAL(data.end(), i_data);
+
+      i_compare = compare_data.lower_bound("A");
+      CHECK_EQUAL(compare_data.end(), i_compare);
 
       i_data = data.lower_bound("A");
       CHECK_EQUAL(data.end(), i_data);
@@ -760,8 +795,12 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data data(initial_data.begin(), initial_data.end());
 
-      Compare_Data::iterator i_compare = compare_data.upper_bound("7");
-      Data::iterator i_data = data.upper_bound("7");
+      Compare_Data::iterator i_compare = compare_data.upper_bound("2");
+      Data::iterator i_data = data.upper_bound("2");
+      CHECK_EQUAL(i_compare->second, i_data->second);
+
+      i_compare = compare_data.upper_bound(".");
+      i_data = data.upper_bound(".");
       CHECK_EQUAL(i_compare->second, i_data->second);
 
       i_data = data.upper_bound("A");
@@ -776,6 +815,10 @@ namespace
 
       Compare_Data::const_iterator i_compare = compare_data.upper_bound("7");
       Data::const_iterator i_data = data.upper_bound("7");
+      CHECK_EQUAL(i_compare->second, i_data->second);
+
+      i_compare = compare_data.upper_bound(".");
+      i_data = data.upper_bound(".");
       CHECK_EQUAL(i_compare->second, i_data->second);
 
       i_data = data.upper_bound("A");
