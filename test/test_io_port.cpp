@@ -103,6 +103,10 @@ namespace
       int control2 = port.control2;
       CHECK_EQUAL(0xDE, control2);
       CHECK_EQUAL(0xDE, port.control2);
+
+      port.control2.set_address(0x1000);
+      uint8_t* address = port.control2.get_address();
+      CHECK_EQUAL(reinterpret_cast<uint8_t* const>(0x1000), address);
     }
   };
 }

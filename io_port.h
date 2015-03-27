@@ -72,6 +72,12 @@ namespace etl
       *reinterpret_cast<pointer_t>(ADDRESS) = value;
       return *this;
     }
+
+    /// Get the IO port address.
+    pointer_t get_address()
+    {
+      return reinterpret_cast<pointer_t>(ADDRESS);
+    }
   };
 
   //***************************************************************************
@@ -101,6 +107,12 @@ namespace etl
     {
       return *reinterpret_cast<pointer_t>(ADDRESS);
     }
+
+    /// Get the IO port address.
+    pointer_t get_address()
+    {
+      return reinterpret_cast<pointer_t>(ADDRESS);
+    }
   };
 
   //***************************************************************************
@@ -123,6 +135,12 @@ namespace etl
     void operator =(parameter_t value)
     {
       *reinterpret_cast<pointer_t>(ADDRESS) = value;
+    }
+
+    /// Get the IO port address.
+    pointer_t get_address()
+    {
+      return reinterpret_cast<pointer_t>(ADDRESS);
     }
   };
 
@@ -159,6 +177,12 @@ namespace etl
       return *this;
     }
 
+    /// Get the IO port address.
+    pointer_t get_address()
+    {
+      return reinterpret_cast<pointer_t>(ADDRESS);
+    }
+
   private:
 
     T shadow_value;
@@ -171,9 +195,12 @@ namespace etl
   template <typename T>
   class io_port_rw<T, 0>
   {
-  public:
+  private:
 
+    typedef volatile T* pointer_t;
     typedef typename etl::parameter_type<T>::type parameter_t;
+
+  public:
 
     // Default constructor.
     io_port_rw()
@@ -183,14 +210,20 @@ namespace etl
 
     // Constructor.
     io_port_rw(uint8_t* address_)
-      : address(reinterpret_cast<volatile T*>(address_))
+      : address(reinterpret_cast<pointer_t>(address_))
     {
     }
 
     /// Set the IO port address.
-    void set_address(void* address_)
+    void set_address(uintptr_t address_)
     {
-      address = reinterpret_cast<volatile T*>(address_);
+      address = reinterpret_cast<pointer_t>(address_);
+    }
+
+    /// Get the IO port address.
+    pointer_t get_address()
+    {
+      return address;
     }
 
     /// Read.
@@ -214,7 +247,7 @@ namespace etl
 
   private:
 
-    volatile T* address;
+    pointer_t address;
   };
 
   //***************************************************************************
@@ -224,6 +257,10 @@ namespace etl
   template <typename T>
   class io_port_ro<T, 0>
   {
+  private:
+
+    typedef volatile const T* pointer_t;
+
   public:
 
     // Default constructor.
@@ -234,13 +271,19 @@ namespace etl
 
     // Constructor.
     io_port_ro(void* address_)
-      : address(reinterpret_cast<volatile const T*>(address_))
+      : address(reinterpret_cast<pointer_t>(address_))
     {
     }
 
-    void set_address(void* address_)
+    void set_address(uintptr_t address_)
     {
-        address = reinterpret_cast<volatile const T*>(address_);
+      address = reinterpret_cast<pointer_t>(address_);
+    }
+
+    /// Get the IO port address.
+    pointer_t get_address()
+    {
+      return address;
     }
 
     /// Read.
@@ -262,7 +305,7 @@ namespace etl
     /// Write disabled.
     void operator =(parameter_t value);
 
-    volatile const T* address;
+    pointer_t address;
   };
 
   //***************************************************************************
@@ -272,6 +315,10 @@ namespace etl
   template <typename T>
   class io_port_wo<T, 0>
   {
+  private:
+
+    typedef T* pointer_t;
+
   public:
 
     typedef typename etl::parameter_type<T>::type parameter_t;
@@ -284,14 +331,20 @@ namespace etl
 
     // Constructor.
     io_port_wo(void* address_)
-      : address(reinterpret_cast<T*>(address_))
+      : address(reinterpret_cast<pointer_t>(address_))
     {
     }
 
     /// Set the IO port address.
-    void set_address(void* address_)
+    void set_address(uintptr_t address_)
     {
-      address = reinterpret_cast<T*>(address_);
+      address = reinterpret_cast<pointer_t>(address_);
+    }
+
+    /// Get the IO port address.
+    pointer_t get_address()
+    {
+      return address;
     }
 
     /// Write.
@@ -305,7 +358,7 @@ namespace etl
     /// Read disabled.
     operator T() volatile const;
 
-    T* address;
+    pointer_t address;
   };
 
   //***************************************************************************
@@ -317,6 +370,7 @@ namespace etl
   {
   private:
 
+    typedef T* pointer_t;
     typedef typename etl::parameter_type<T>::type parameter_t;
 
   public:
@@ -329,14 +383,20 @@ namespace etl
 
     // Constructor.
     io_port_wos(void* address_)
-      : address(reinterpret_cast<T*>(address_))
+      : address(reinterpret_cast<pointer_t>(address_))
     {
     }
 
     /// Set the IO port address.
-    void set_address(void* address_)
+    void set_address(uintptr_t address_)
     {
-      address = reinterpret_cast<T*>(address_);
+      address = reinterpret_cast<pointer_t>(address_);
+    }
+
+    /// Get the IO port address.
+    pointer_t get_address()
+    {
+      return address;
     }
 
     /// Read.
@@ -361,8 +421,8 @@ namespace etl
 
   private:
 
-    T  shadow_value;
-    T* address;
+    T         shadow_value;
+    pointer_t address;
   };
 }
 
