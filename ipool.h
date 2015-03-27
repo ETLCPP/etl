@@ -136,8 +136,8 @@ namespace etl
       //*******************************
       //*******************************
       iterator(size_t         index,
-        pointer        p_buffer,
-        const ibitset* p_in_use_flags)
+               pointer        p_buffer,
+               const ibitset* p_in_use_flags)
         : index(index),
           p_buffer(p_buffer),
           p_in_use_flags(p_in_use_flags)
