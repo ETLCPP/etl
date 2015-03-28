@@ -26,9 +26,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_IMAP__
-#define __ETL_IMAP__
-#define __ETL_IN_IMAP_H__
+#ifndef __ETL_ISET__
+#define __ETL_ISET__
+#define __ETL_IN_ISET_H__
 
 #include <iterator>
 #include <algorithm>
@@ -36,7 +36,7 @@ SOFTWARE.
 #include <stddef.h>
 
 #include "nullptr.h"
-#include "map_base.h"
+#include "set_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "pool.h"
@@ -48,23 +48,21 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  /// A templated base for all etl::map types.
-  ///\ingroup map
+  /// A templated base for all etl::set types.
+  ///\ingroup set
   //***************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare>
-  class imap : public map_base
+  template <typename T, typename TCompare>
+  class iset : public set_base
   {
   public:
 
-    typedef std::pair<const TKey, TMapped> value_type;
-    typedef const TKey                     key_type;
-    typedef TMapped                        mapped_type;
-    typedef TKeyCompare                    key_compare;
-    typedef value_type&                    reference;
-    typedef const value_type&              const_reference;
-    typedef value_type*                    pointer;
-    typedef const value_type*              const_pointer;
-    typedef size_t                         size_type;
+    typedef const T     key_type;
+    typedef const T     value_type;
+    typedef TCompare    key_compare;
+    typedef TCompare    value_compare;
+    typedef value_type& const_reference;
+    typedef value_type* const_pointer;
+    typedef size_t      size_type;
 
     //*************************************************************************
     /// How to compare two key elements.
@@ -82,9 +80,9 @@ namespace etl
     //*************************************************************************
     struct value_comp
     {
-      bool operator ()(const value_type& value1, const value_type& value2) const
+      bool operator ()(value_type& value1, value_type& value2) const
       {
-        return key_compare()(value1.first, value2.first);
+        return value_compare()(value1, value2);
       }
     };
 
@@ -94,7 +92,7 @@ namespace etl
     static const uint8_t kNeither = 2;
 
     //*************************************************************************
-    /// The node element in the map.
+    /// The node element in the set.
     //*************************************************************************
     struct Node
     {
@@ -124,7 +122,7 @@ namespace etl
     };
 
     //*************************************************************************
-    /// The data node element in the map.
+    /// The data node element in the set.
     //*************************************************************************
     struct Data_Node : public Node
     {
@@ -136,31 +134,31 @@ namespace etl
       value_type value;
     };
 
-    /// Defines the key value parameter type
-    typedef typename parameter_type<TKey>::type key_value_parameter_t;
+    /// Defines the key parameter type
+    typedef typename parameter_type<T>::type key_value_parameter_t;
 
     //*************************************************************************
     /// How to compare node elements.
     //*************************************************************************
     bool node_comp(const Data_Node& node1, const Data_Node& node2) const
     {
-      return key_compare()(node1.value.first, node2.value.first);
+      return key_compare()(node1.value, node2.value);
     }
     bool node_comp(const Data_Node& node, const key_value_parameter_t& key) const
     {
-      return key_compare()(node.value.first, key);
+      return key_compare()(node.value, key);
     }
     bool node_comp(const key_value_parameter_t& key, const Data_Node& node) const
     {
-      return key_compare()(key, node.value.first);
+      return key_compare()(key, node.value);
     }
 
   private:
 
-    /// The pool of data nodes used in the map.
+    /// The pool of data nodes used in the set.
     ipool<Data_Node>* p_node_pool;
 
-    /// The node that acts as the map root.
+    /// The node that acts as the set root.
     Node* root_node;
 
     //*************************************************************************
@@ -203,28 +201,28 @@ namespace etl
     {
     public:
 
-      friend class imap;
+      friend class iset;
 
       iterator()
-        : p_map(nullptr)
+        : p_set(nullptr)
         , p_node(nullptr)
       {
       }
 
-      iterator(imap& map)
-        : p_map(&map)
+      iterator(iset& set)
+        : p_set(&set)
         , p_node(nullptr)
       {
       }
 
-      iterator(imap& map, Node* node)
-        : p_map(&map)
+      iterator(iset& set, Node* node)
+        : p_set(&set)
         , p_node(node)
       {
       }
 
       iterator(const iterator& other)
-        : p_map(other.p_map)
+        : p_set(other.p_set)
         , p_node(other.p_node)
       {
       }
@@ -235,70 +233,55 @@ namespace etl
 
       iterator& operator ++()
       {
-        p_map->next_node(p_node);
+        p_set->next_node(p_node);
         return *this;
       }
 
       iterator operator ++(int)
       {
         iterator temp(*this);
-        p_map->next_node(p_node);
+        p_set->next_node(p_node);
         return temp;
       }
 
       iterator& operator --()
       {
-        p_map->prev_node(p_node);
+        p_set->prev_node(p_node);
         return *this;
       }
 
       iterator operator --(int)
       {
         iterator temp(*this);
-        p_map->prev_node(p_node);
+        p_set->prev_node(p_node);
         return temp;
       }
 
       iterator operator =(const iterator& other)
       {
-        p_map = other.p_map;
+        p_set = other.p_set;
         p_node = other.p_node;
         return *this;
       }
 
-      reference operator *()
-      {
-        return imap::data_cast(p_node)->value;
-      }
-
       const_reference operator *() const
       {
-        return imap::data_cast(p_node)->value;
-      }
-
-      pointer operator &()
-      {
-        return &(imap::data_cast(p_node)->value);
+        return iset::data_cast(p_node)->value;
       }
 
       const_pointer operator &() const
       {
-        return &(imap::data_cast(p_node)->value);
-      }
-
-      pointer operator ->()
-      {
-        return &(imap::data_cast(p_node)->value);
+        return &(iset::data_cast(p_node)->value);
       }
 
       const_pointer operator ->() const
       {
-        return &(imap::data_cast(p_node)->value);
+        return &(iset::data_cast(p_node)->value);
       }
 
       friend bool operator == (const iterator& lhs, const iterator& rhs)
       {
-        return lhs.p_map == rhs.p_map && lhs.p_node == rhs.p_node;
+        return lhs.p_set == rhs.p_set && lhs.p_node == rhs.p_node;
       }
 
       friend bool operator != (const iterator& lhs, const iterator& rhs)
@@ -308,49 +291,49 @@ namespace etl
 
     private:
 
-      // Pointer to map associated with this iterator
-      imap* p_map;
+      // Pointer to set associated with this iterator
+      iset* p_set;
 
       // Pointer to the current node for this iterator
       Node* p_node;
     };
     friend iterator;
 
-    //*************************************************************************
-    /// const_iterator
-    //*************************************************************************
+    ////*************************************************************************
+    ///// const_iterator
+    ////*************************************************************************
     class const_iterator : public std::iterator<std::bidirectional_iterator_tag, const value_type>
     {
     public:
 
-      friend class imap;
+      friend class iset;
 
       const_iterator()
-        : p_map(nullptr)
+        : p_set(nullptr)
         , p_node(nullptr)
       {
       }
 
-      const_iterator(const imap& map)
-        : p_map(&map)
+      const_iterator(const iset& set)
+        : p_set(&set)
         , p_node(nullptr)
       {
       }
 
-      const_iterator(const imap& map, const Node* node)
-        : p_map(&map)
+      const_iterator(const iset& set, const Node* node)
+        : p_set(&set)
         , p_node(node)
       {
       }
 
-      const_iterator(const typename imap::iterator& other)
-        : p_map(other.p_map)
+      const_iterator(const typename iset::iterator& other)
+        : p_set(other.p_set)
         , p_node(other.p_node)
       {
       }
 
       const_iterator(const const_iterator& other)
-        : p_map(other.p_map)
+        : p_set(other.p_set)
         , p_node(other.p_node)
       {
       }
@@ -361,55 +344,55 @@ namespace etl
 
       const_iterator& operator ++()
       {
-        p_map->next_node(p_node);
+        p_set->next_node(p_node);
         return *this;
       }
 
       const_iterator operator ++(int)
       {
         const_iterator temp(*this);
-        p_map->next_node(p_node);
+        p_set->next_node(p_node);
         return temp;
       }
 
       const_iterator& operator --()
       {
-        p_map->prev_node(p_node);
+        p_set->prev_node(p_node);
         return *this;
       }
 
       const_iterator operator --(int)
       {
         const_iterator temp(*this);
-        p_map->prev_node(p_node);
+        p_set->prev_node(p_node);
         return temp;
       }
 
       const_iterator operator =(const const_iterator& other)
       {
-        p_map = other.p_map;
+        p_set = other.p_set;
         p_node = other.p_node;
         return *this;
       }
 
       const_reference operator *() const
       {
-        return imap::data_cast(p_node)->value;
+        return iset::data_cast(p_node)->value;
       }
 
       const_pointer operator &() const
       {
-        return imap::data_cast(p_node)->value;
+        return iset::data_cast(p_node)->value;
       }
 
       const_pointer operator ->() const
       {
-        return &(imap::data_cast(p_node)->value);
+        return &(iset::data_cast(p_node)->value);
       }
 
       friend bool operator == (const const_iterator& lhs, const const_iterator& rhs)
       {
-        return lhs.p_map == rhs.p_map && lhs.p_node == rhs.p_node;
+        return lhs.p_set == rhs.p_set && lhs.p_node == rhs.p_node;
       }
 
       friend bool operator != (const const_iterator& lhs, const const_iterator& rhs)
@@ -418,8 +401,8 @@ namespace etl
       }
 
     private:
-      // Pointer to map associated with this iterator
-      const imap* p_map;
+      // Pointer to set associated with this iterator
+      const iset* p_set;
 
       // Pointer to the current node for this iterator
       const Node* p_node;
@@ -435,7 +418,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    imap& operator = (const imap& rhs)
+    iset& operator = (const iset& rhs)
     {
       assign(rhs.cbegin(), rhs.cend());
 
@@ -443,7 +426,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the beginning of the map.
+    /// Gets the beginning of the set.
     //*************************************************************************
     iterator begin()
     {
@@ -451,7 +434,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the beginning of the map.
+    /// Gets the beginning of the set.
     //*************************************************************************
     const_iterator begin() const
     {
@@ -459,7 +442,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the end of the map.
+    /// Gets the end of the set.
     //*************************************************************************
     iterator end()
     {
@@ -467,7 +450,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the end of the map.
+    /// Gets the end of the set.
     //*************************************************************************
     const_iterator end() const
     {
@@ -475,7 +458,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the beginning of the map.
+    /// Gets the beginning of the set.
     //*************************************************************************
     const_iterator cbegin() const
     {
@@ -483,7 +466,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the end of the map.
+    /// Gets the end of the set.
     //*************************************************************************
     const_iterator cend() const
     {
@@ -539,75 +522,9 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a reference to the value at index 'key'
-    ///\param i The index.
-    ///\return A reference to the value at index 'key'
-    //*********************************************************************
-    mapped_type& operator [](const key_value_parameter_t& key)
-    {
-      iterator i_element = find(key);
-
-      if (!i_element.p_node)
-      {
-        // Doesn't exist, so create a new one.
-        i_element = insert(std::make_pair(key, mapped_type())).first;
-      }
-
-      return i_element->second;
-    }
-
-    //*********************************************************************
-    /// Returns a reference to the value at index 'key'
-    /// If ETL_THROW_EXCEPTIONS is defined, emits an etl::lookup_out_of_bounds if the key is not in the range.
-    ///\param i The index.
-    ///\return A reference to the value at index 'key'
-    //*********************************************************************
-    mapped_type& at(const key_value_parameter_t& key)
-    {
-      iterator i_element = find(key);
-
-      if (!i_element.p_node)
-      {
-        // Doesn't exist.
-#if ETL_THROW_EXCEPTIONS
-        throw map_out_of_bounds();
-#else
-        error_handler::error(map_out_of_bounds());
-
-#endif
-      }
-
-      return i_element->second;
-    }
-
-    //*********************************************************************
-    /// Returns a const reference to the value at index 'key'
-    /// If ETL_THROW_EXCEPTIONS is defined, emits an etl::lookup_out_of_bounds if the key is not in the range.
-    ///\param i The index.
-    ///\return A const reference to the value at index 'key'
-    //*********************************************************************
-    const mapped_type& at(const key_value_parameter_t& key) const
-    {
-      const_iterator i_element = find(key);
-
-      if (!i_element.p_node)
-      {
-        // Doesn't exist.
-#if ETL_THROW_EXCEPTIONS
-        throw map_out_of_bounds();
-#else
-        error_handler::error(map_out_of_bounds());
-
-#endif
-      }
-
-      return i_element->second;
-    }
-
-    //*********************************************************************
-    /// Assigns values to the map.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits map_full if the map does not have enough free space.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits map_iterator if the iterators are reversed.
+    /// Assigns values to the set.
+    /// If ETL_THROW_EXCEPTIONS is defined, emits set_full if the set does not have enough free space.
+    /// If ETL_THROW_EXCEPTIONS is defined, emits set_iterator if the iterators are reversed.
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
@@ -619,7 +536,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Clears the map.
+    /// Clears the set.
     //*************************************************************************
     void clear()
     {
@@ -637,25 +554,25 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Returns two iterators with bounding (lower bound, upper bound) the key
-    /// provided
+    /// Returns two iterators with bounding (lower bound, upper bound) the
+    /// value provided
     //*************************************************************************
-    std::pair<iterator, iterator> equal_range(const key_value_parameter_t& key)
+    std::pair<iterator, iterator> equal_range(const value_type& value)
     {
       return std::make_pair<iterator, iterator>(
-        iterator(*this, find_lower_node(root_node, key)),
-        iterator(*this, find_upper_node(root_node, key)));
+        iterator(*this, find_lower_node(root_node, value)),
+        iterator(*this, find_upper_node(root_node, value)));
     }
 
     //*************************************************************************
     /// Returns two const iterators with bounding (lower bound, upper bound)
-    /// the key provided.
+    /// the value provided.
     //*************************************************************************
-    std::pair<const_iterator, const_iterator> equal_range(const key_value_parameter_t& key) const
+    std::pair<const_iterator, const_iterator> equal_range(const value_type& value) const
     {
       return std::make_pair<const_iterator, const_iterator>(
-        const_iterator(*this, find_lower_node(root_node, key)),
-        const_iterator(*this, find_upper_node(root_node, key)));
+        const_iterator(*this, find_lower_node(root_node, value)),
+        const_iterator(*this, find_upper_node(root_node, value)));
     }
 
     //*************************************************************************
@@ -664,7 +581,7 @@ namespace etl
     void erase(iterator position)
     {
       // Remove the node by its key
-      erase((*position).first);
+      erase((*position));
     }
 
     //*************************************************************************
@@ -677,7 +594,7 @@ namespace etl
       iterator next(*this, reference_node);
       ++next;
 
-      remove_node(root_node, (*position).first);
+      remove_node(root_node, (*position));
 
       return next;
     }
@@ -685,10 +602,10 @@ namespace etl
     //*************************************************************************
     // Erase the key specified.
     //*************************************************************************
-    size_type erase(const key_value_parameter_t& key)
+    size_type erase(const key_value_parameter_t& key_value)
     {
       // Return 1 if key value was found and removed
-      return remove_node(root_node, key) ? 1 : 0;
+      return remove_node(root_node, key_value) ? 1 : 0;
     }
 
     //*************************************************************************
@@ -724,9 +641,9 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pointing to the element or end() if not found.
     //*********************************************************************
-    iterator find(const key_value_parameter_t& key)
+    iterator find(const key_value_parameter_t& key_value)
     {
-      return iterator(*this, find_node(root_node, key));
+      return iterator(*this, find_node(root_node, key_value));
     }
 
     //*********************************************************************
@@ -734,17 +651,17 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pointing to the element or end() if not found.
     //*********************************************************************
-    const_iterator find(const key_value_parameter_t& key) const
+    const_iterator find(const key_value_parameter_t& key_value) const
     {
-      return const_iterator(*this, find_node(root_node, key));
+      return const_iterator(*this, find_node(root_node, key_value));
     }
 
     //*********************************************************************
-    /// Inserts a value to the map.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits map_full if the map is already full.
+    /// Inserts a value to the set.
+    /// If ETL_THROW_EXCEPTIONS is defined, emits set_full if the set is already full.
     ///\param value    The value to insert.
     //*********************************************************************
-    std::pair<iterator, bool> insert(const value_type& value)
+    std::pair<iterator, bool> insert(value_type& value)
     {
       // Default to no inserted node
       Node* inserted_node = nullptr;
@@ -762,9 +679,9 @@ namespace etl
       else
       {
 #ifdef ETL_THROW_EXCEPTIONS
-        throw map_full();
+        throw set_full();
 #else
-        error_handler::error(map_full());
+        error_handler::error(set_full());
 #endif
       }
 
@@ -773,12 +690,12 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Inserts a value to the map starting at the position recommended.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits map_full if the map is already full.
+    /// Inserts a value to the set starting at the position recommended.
+    /// If ETL_THROW_EXCEPTIONS is defined, emits set_full if the set is already full.
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, const value_type& value)
+    iterator insert(iterator position, value_type& value)
     {
       // Default to no inserted node
       Node* inserted_node = nullptr;
@@ -794,9 +711,9 @@ namespace etl
       else
       {
 #ifdef ETL_THROW_EXCEPTIONS
-        throw map_full();
+        throw set_full();
 #else
-        error_handler::error(map_full());
+        error_handler::error(set_full());
 #endif
       }
 
@@ -805,12 +722,12 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Inserts a value to the map starting at the position recommended.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits map_full if the map is already full.
+    /// Inserts a value to the set starting at the position recommended.
+    /// If ETL_THROW_EXCEPTIONS is defined, emits set_full if the set is already full.
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(const_iterator position, const value_type& value)
+    iterator insert(const_iterator position, value_type& value)
     {
       // Default to no inserted node
       Node* inserted_node = nullptr;
@@ -826,9 +743,9 @@ namespace etl
       else
       {
 #ifdef ETL_THROW_EXCEPTIONS
-        throw map_full();
+        throw set_full();
 #else
-        error_handler::error(map_full());
+        error_handler::error(set_full());
 #endif
       }
 
@@ -837,8 +754,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Inserts a range of values to the map.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits map_full if the map does not have enough free space.
+    /// Inserts a range of values to the set.
+    /// If ETL_THROW_EXCEPTIONS is defined, emits set_full if the set does not have enough free space.
     ///\param position The position to insert at.
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.
@@ -901,8 +818,8 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    imap(ipool<Data_Node>& node_pool, size_t max_size_)
-      : map_base(max_size_)
+    iset(ipool<Data_Node>& node_pool, size_t max_size_)
+      : set_base(max_size_)
       , p_node_pool(&node_pool)
       , root_node(nullptr)
     {
@@ -928,7 +845,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Initialise the map.
+    /// Initialise the set.
     //*************************************************************************
     void initialise()
     {
@@ -1052,7 +969,7 @@ namespace etl
       while (found)
       {
         // Downcast found to Data_Node class for comparison and other operations
-        Data_Node& found_data_node = imap::data_cast(*found);
+        Data_Node& found_data_node = iset::data_cast(*found);
 
         // Compare the node value to the current position value
         if (node_comp(key, found_data_node))
@@ -1085,7 +1002,7 @@ namespace etl
       while (found)
       {
         // Downcast found to Data_Node class for comparison and other operations
-        const Data_Node& found_data_node = imap::data_cast(*found);
+        const Data_Node& found_data_node = iset::data_cast(*found);
 
         // Compare the node value to the current position value
         if (node_comp(key, found_data_node))
@@ -1128,8 +1045,8 @@ namespace etl
         else
         {
           // Downcast found to Data_Node class for comparison and other operations
-          Data_Node& found_data_node = imap::data_cast(*found);
-          const Data_Node& data_node = imap::data_cast(*node);
+          Data_Node& found_data_node = iset::data_cast(*found);
+          const Data_Node& data_node = iset::data_cast(*node);
 
           // Compare the node value to the current position value
           if (node_comp(data_node, found_data_node))
@@ -1207,8 +1124,8 @@ namespace etl
               position->children[kRight] != node)
           {
             // Downcast node and position to Data_Node references for key comparisons
-            const Data_Node& node_data_node = imap::data_cast(*node);
-            Data_Node& position_data_node = imap::data_cast(*position);
+            const Data_Node& node_data_node = iset::data_cast(*node);
+            Data_Node& position_data_node = iset::data_cast(*position);
             // Compare the node value to the current position value
             if (node_comp(node_data_node, position_data_node))
             {
@@ -1255,8 +1172,8 @@ namespace etl
               position->children[kRight] != node)
           {
             // Downcast node and position to Data_Node references for key comparisons
-            const Data_Node& node_data_node = imap::data_cast(*node);
-            const Data_Node& position_data_node = imap::data_cast(*position);
+            const Data_Node& node_data_node = iset::data_cast(*node);
+            const Data_Node& position_data_node = iset::data_cast(*position);
             // Compare the node value to the current position value
             if (node_comp(node_data_node, position_data_node))
             {
@@ -1294,7 +1211,7 @@ namespace etl
       while (lower_node)
       {
         // Downcast lower node to Data_Node reference for key comparisons
-        Data_Node& data_node = imap::data_cast(*lower_node);
+        Data_Node& data_node = iset::data_cast(*lower_node);
         // Compare the key value to the current lower node key value
         if (node_comp(key, data_node))
         {
@@ -1333,7 +1250,7 @@ namespace etl
       while (lower_node)
       {
         // Downcast lower node to Data_Node reference for key comparisons
-        const Data_Node& data_node = imap::data_cast(*lower_node);
+        const Data_Node& data_node = iset::data_cast(*lower_node);
         // Compare the key value to the current lower node key value
         if (node_comp(key, data_node))
         {
@@ -1365,7 +1282,7 @@ namespace etl
       while (node)
       {
         // Downcast position to Data_Node reference for key comparisons
-        Data_Node& data_node = imap::data_cast(*node);
+        Data_Node& data_node = iset::data_cast(*node);
         // Compare the key value to the current upper node key value
         if (node_comp(key, data_node))
         {
@@ -1403,7 +1320,7 @@ namespace etl
       while (node)
       {
         // Downcast position to Data_Node reference for key comparisons
-        const Data_Node& data_node = imap::data_cast(*node);
+        const Data_Node& data_node = iset::data_cast(*node);
         // Compare the key value to the current upper node key value
         if (node_comp(key, data_node))
         {
@@ -1454,7 +1371,7 @@ namespace etl
           }
 
           // Downcast found to Data_Node class for comparison and other operations
-          Data_Node& found_data_node = imap::data_cast(*found);
+          Data_Node& found_data_node = iset::data_cast(*found);
 
           // Is the node provided to the left of the current position?
           if (node_comp(node, found_data_node))
@@ -1697,7 +1614,7 @@ namespace etl
       while (replace)
       {
         // Downcast found to Data_Node class for comparison and other operations
-        Data_Node& replace_data_node = imap::data_cast(*replace);
+        Data_Node& replace_data_node = iset::data_cast(*replace);
 
         // Compare the key provided to the replace data node key
         if (node_comp(key, replace_data_node))
@@ -1860,7 +1777,7 @@ namespace etl
         }
 
         // Downcast found into data node
-        Data_Node& found_data_node = imap::data_cast(*found);
+        Data_Node& found_data_node = iset::data_cast(*found);
 
         // One less.
         --current_size;
@@ -1952,8 +1869,8 @@ namespace etl
 ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
 ///\ingroup lookup
 //***************************************************************************
-template <typename TKey, typename TMapped, typename TKeyCompare>
-bool operator ==(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
+template <typename T, typename TCompare>
+bool operator ==(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>& rhs)
 {
   return (lhs.size() == rhs.size()) && std::equal(lhs.begin(), lhs.end(), rhs.begin());
 }
@@ -1965,8 +1882,8 @@ bool operator ==(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::im
 ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
 ///\ingroup lookup
 //***************************************************************************
-template <typename TKey, typename TMapped, typename TKeyCompare>
-bool operator !=(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
+template <typename T, typename TCompare>
+bool operator !=(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>& rhs)
 {
   return !(lhs == rhs);
 }
@@ -1978,8 +1895,8 @@ bool operator !=(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::im
 ///\return <b>true</b> if the first list is lexicographically less than the
 /// second, otherwise <b>false</b>.
 //*************************************************************************
-template <typename TKey, typename TMapped, typename TKeyCompare>
-bool operator <(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
+template <typename T, typename TCompare>
+bool operator <(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>& rhs)
 {
   return std::lexicographical_compare(lhs.begin(),
                                       lhs.end(),
@@ -1994,8 +1911,8 @@ bool operator <(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::ima
 ///\return <b>true</b> if the first list is lexicographically greater than the
 /// second, otherwise <b>false</b>.
 //*************************************************************************
-template <typename TKey, typename TMapped, typename TKeyCompare>
-bool operator >(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
+template <typename T, typename TCompare>
+bool operator >(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>& rhs)
 {
   return std::lexicographical_compare(lhs.begin(),
                                       lhs.end(),
@@ -2011,8 +1928,8 @@ bool operator >(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::ima
 ///\return <b>true</b> if the first list is lexicographically less than or equal
 /// to the second, otherwise <b>false</b>.
 //*************************************************************************
-template <typename TKey, typename TMapped, typename TKeyCompare>
-bool operator <=(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
+template <typename T, typename TCompare>
+bool operator <=(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>& rhs)
 {
   return !operator >(lhs, rhs);
 }
@@ -2024,8 +1941,8 @@ bool operator <=(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::im
 ///\return <b>true</b> if the first list is lexicographically greater than or
 /// equal to the second, otherwise <b>false</b>.
 //*************************************************************************
-template <typename TKey, typename TMapped, typename TKeyCompare>
-bool operator >=(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
+template <typename T, typename TCompare>
+bool operator >=(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>& rhs)
 {
   return !operator <(lhs, rhs);
 }
@@ -2034,6 +1951,6 @@ bool operator >=(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::im
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 #endif
 
-#undef __ETL_IN_IMAP_H__
+#undef __ETL_IN_ISET_H__
 
 #endif
