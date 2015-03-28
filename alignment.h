@@ -141,7 +141,7 @@ namespace etl
 
       /// Get address as T reference.
       template <typename T>
-      T* get_reference()
+      T& get_reference()
       {
         STATIC_ASSERT(ALIGNMENT % etl::alignment_of<T>::value == 0, "Incompatible alignment");
         return reinterpret_cast<T&>(*data);
@@ -149,7 +149,7 @@ namespace etl
 
       /// Get address as const T reference.
       template <typename T>
-      const T* get_reference() const
+      const T& get_reference() const
       {
         STATIC_ASSERT(ALIGNMENT % etl::alignment_of<T>::value == 0, "Incompatible alignment");
         return reinterpret_cast<const T&>(*data);
@@ -174,7 +174,7 @@ namespace etl
       union
       {
         uint8_t data[LENGTH];
-        typename etl::type_with_alignment<ALIGNMENT>::type __etl_alignment_type__; // A POD type has has the same alignment as ALIGNMENT.
+        typename etl::type_with_alignment<ALIGNMENT>::type __etl_alignment_type__; // A POD type that has the same alignment as ALIGNMENT.
       };
     };
   };
