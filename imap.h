@@ -41,8 +41,6 @@ SOFTWARE.
 #include "parameter_type.h"
 #include "pool.h"
 
-#include <iostream> // FIXME: Remove with std::cout
-
 #if WIN32
 #undef min
 #endif
@@ -91,8 +89,9 @@ namespace etl
     };
 
   protected:
-    static const int8_t kLeft = 0;
-    static const int8_t kRight = 1;
+    static const uint8_t kLeft = 0;
+    static const uint8_t kRight = 1;
+    static const uint8_t kNeither = 2;
 
     //*************************************************************************
     /// The node element in the map.
@@ -102,7 +101,9 @@ namespace etl
       //***********************************************************************
       /// Constructor
       //***********************************************************************
-      Node()
+      Node() :
+        weight(kNeither),
+        dir(kNeither)
       {
       }
 
@@ -111,11 +112,15 @@ namespace etl
       //***********************************************************************
       void mark_as_leaf()
       {
+        weight = kNeither;
+        dir = kNeither;
         children[0] = nullptr;
         children[1] = nullptr;
       }
 
       Node* children[2];
+      uint8_t weight;
+      uint8_t dir;
     };
 
     //*************************************************************************
@@ -672,7 +677,7 @@ namespace etl
       iterator next(*this, reference_node);
       ++next;
 
-      remove_node(reference_node, position->first);
+      remove_node(root_node, (*position).first);
 
       return next;
     }
@@ -952,64 +957,90 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Balance the critical node at the position provided as needed
+    //*************************************************************************
+    void balance_node(Node*& critical_node)
+    {
+      // Step 1: Update weights for all children of the critical node up to the
+      // newly inserted node. This step is costly (in terms of traversing nodes
+      // multiple times during insertion) but doesn't require as much recursion
+      Node* weight_node = critical_node->children[critical_node->dir];
+      while (weight_node)
+      {
+        // Keep going until we reach a terminal node (dir == kNeither)
+        if (kNeither != weight_node->dir)
+        {
+          // Does this insert balance the previous weight factor value?
+          if (weight_node->weight == 1 - weight_node->dir)
+          {
+            weight_node->weight = kNeither;
+          }
+          else
+          {
+            weight_node->weight = weight_node->dir;
+          }
+
+          // Update weight factor node to point to next node
+          weight_node = weight_node->children[weight_node->dir];
+        }
+        else
+        {
+          // Stop loop, terminal node found
+          break;
+        }
+      } // while(weight_node)
+
+      // Step 2: Update weight for critical_node or rotate tree to balance node
+      if (kNeither == critical_node->weight)
+      {
+        critical_node->weight = critical_node->dir;
+      }
+      // If direction is different than weight, then it will now be balanced
+      else if (critical_node->dir != critical_node->weight)
+      {
+        critical_node->weight = kNeither;
+      }
+      // Rotate is required to balance the tree at the critical node
+      else
+      {
+        // If critical node matches child node direction then perform a two
+        // node rotate in the direction of the critical node
+        if (critical_node->weight == critical_node->children[critical_node->dir]->dir)
+        {
+          rotate_2node(critical_node, critical_node->dir);
+        }
+        // Otherwise perform a three node rotation in the direction of the
+        // critical node
+        else
+        {
+          rotate_3node(critical_node, critical_node->dir,
+            critical_node->children[critical_node->dir]->children[1 - critical_node->dir]->dir);
+        }
+      }
+    }
+
+    //*************************************************************************
     /// Detach the node at the position provided
     //*************************************************************************
-    Node* detach_node(Node*& position)
+    void detach_node(Node*& position, Node*& replacement)
     {
-      // The node being detached
+      // Make temporary copy of actual nodes involved because we might lose
+      // their references in the process (e.g. position is the same as
+      // replacement or replacement is a child of position)
       Node* detached = position;
+      Node* swap = replacement;
 
-      // The node to be swapped with current position (might be nullptr)
-      Node* swap_node = nullptr;
+      // Update current position to point to swap (replacement) node first
+      position = swap;
 
-      // Found the node to be removed, does it have other nodes on the left?
-      if (position->children[kLeft])
-      {
-        // Find the upper node and its parent from the left of the current position
-        Node* upper_parent_node = position;
-        Node* upper_node = position->children[kLeft];
-        while (upper_node && upper_node->children[kRight])
-        {
-          upper_parent_node = upper_node;
-          upper_node = upper_node->children[kRight];
-        }
+      // Update replacement node to point to child in opposite direction
+      // otherwise we might lose the other child of the swap node
+      replacement = swap->children[1 - swap->dir];
 
-        // Recursively call detach_node for the upper node found above
-        swap_node = detach_node(upper_parent_node->children[kLeft] == upper_node ?
-          upper_parent_node->children[kLeft] : upper_parent_node->children[kRight]);
-      }
-      // Found the node to be removed, does it have other nodes on the right?
-      else if (position->children[kRight])
-      {
-        // Find the lower node and its parent from the right of the current position
-        Node* lower_parent_node = position;
-        Node* lower_node = position->children[kRight];
-        while (lower_node && lower_node->children[kLeft])
-        {
-          lower_parent_node = lower_node;
-          lower_node = lower_node->children[kLeft];
-        }
-        // Cast lower node into a data node to retrieve the key value
-        Data_Node* lower_data_node = imap::data_cast(lower_node);
-
-        // Recursively call detach_node for the lower node found
-        swap_node = detach_node(lower_parent_node->children[kLeft] == lower_node ?
-          lower_parent_node->children[kLeft] : lower_parent_node->children[kRight]);
-      }
-
-      // If a swap node was provided above, update its child trees
-      if (swap_node)
-      {
-        // Move children of position as new children of swap node
-        swap_node->children[kLeft] = position->children[kLeft];
-        swap_node->children[kRight] = position->children[kRight];
-      }
-
-      // Update current position to point to swap node
-      position = swap_node;
-
-      // Return the detached node
-      return detached;
+      // Point swap node to detached node's children and weight
+      swap->children[kLeft] = detached->children[kLeft];
+      swap->children[kRight] = detached->children[kRight];
+      swap->weight = detached->weight;
     }
 
     //*************************************************************************
@@ -1267,7 +1298,15 @@ namespace etl
         // Compare the key value to the current lower node key value
         if (node_comp(key, data_node))
         {
-          lower_node = lower_node->children[kLeft];
+          if (lower_node->children[kLeft])
+          {
+            lower_node = lower_node->children[kLeft];
+          }
+          else
+          {
+            // Found lowest node
+            break;
+          }
         }
         else if (node_comp(data_node, key))
         {
@@ -1275,6 +1314,7 @@ namespace etl
         }
         else
         {
+          // Found equal node
           break;
         }
       }
@@ -1400,58 +1440,89 @@ namespace etl
       // Was position provided not empty? then find where the node belongs
       if (position)
       {
+        // Find the critical parent node (default to nullptr)
+        Node* critical_parent_node = nullptr;
+        Node* critical_node = root_node;
+
         while (found)
         {
+          // Search for critical weight node (all nodes whose weight factor
+          // is set to kNeither (balanced)
+          if (kNeither != found->weight)
+          {
+            critical_node = found;
+          }
+
           // Downcast found to Data_Node class for comparison and other operations
           Data_Node& found_data_node = imap::data_cast(*found);
 
           // Is the node provided to the left of the current position?
           if (node_comp(node, found_data_node))
           {
-            if (found->children[kLeft])
-            {
-              // Node should be put on the left
-              found = found->children[kLeft];
-            }
-            else
-            {
-              // Attatch node to left
-              attach_node(found->children[kLeft], node);
-
-              // Return newly added node
-              found = found->children[kLeft];
-
-              // Exit loop
-              break;
-            }
+            // Update direction taken to insert new node in parent node
+            found->dir = kLeft;
           }
           // Is the node provided to the right of the current position?
           else if (node_comp(found_data_node, node))
           {
-            if (found->children[kRight])
-            {
-              // Node should be put on the right
-              found = found->children[kRight];
-            }
-            else
-            {
-              // Attatch node to right
-              attach_node(found->children[kRight], node);
-
-              // Return newly added node
-              found = found->children[kRight];
-
-              // Exit loop
-              break;
-            }
+            // Update direction taken to insert new node in parent node
+            found->dir = kRight;
           }
           else
           {
+            // Update direction taken to insert new node in parent node
+            found->dir = kNeither;
+
+            // Clear critical node value to skip weight step below
+            critical_node = nullptr;
+
             // Destroy the node provided (its a duplicate)
             destroy_data_node(node);
 
             // Exit loop, duplicate node found
             break;
+          }
+
+          // Is there a child of this parent node?
+          if (found->children[found->dir])
+          {
+            // Will this node be the parent of the next critical node whose
+            // weight factor is set to kNeither (balanced)?
+            if (kNeither != found->children[found->dir]->weight)
+            {
+              critical_parent_node = found;
+            }
+
+            // Keep looking for empty spot to insert new node
+            found = found->children[found->dir];
+          }
+          else
+          {
+            // Attatch node to right
+            attach_node(found->children[found->dir], node);
+
+            // Return newly added node
+            found = found->children[found->dir];
+
+            // Exit loop
+            break;
+          }
+        }
+
+        // Was a critical node found that should be checked for balance?
+        if (critical_node)
+        {
+          if (critical_parent_node == nullptr && critical_node == root_node)
+          {
+            balance_node(root_node);
+          }
+          else if (critical_parent_node == nullptr && critical_node == position)
+          {
+            balance_node(position);
+          }
+          else
+          {
+            balance_node(critical_parent_node->children[critical_parent_node->dir]);
           }
         }
       }
@@ -1609,53 +1680,183 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Remove the node specified from somewhere starting at the position provided
+    /// Remove the node specified from somewhere starting at the position
+    /// provided
     //*************************************************************************
     Node* remove_node(Node*& position, const key_value_parameter_t key)
     {
-      // Step 1: Find the Node to be removed that matches the key provided
+      // Step 1: Find the target node that matches the key provided, the
+      // replacement node (might be the same as target node), and the critical
+      // node to start rebalancing the tree from (up to the replacement node)
       Node* found_parent = nullptr;
-      Node* found = position;
-      while (found)
+      Node* found = nullptr;
+      Node* replace_parent = nullptr;
+      Node* replace = position;
+      Node* balance_parent = nullptr;
+      Node* balance = root_node;
+      while (replace)
       {
         // Downcast found to Data_Node class for comparison and other operations
-        Data_Node& found_data_node = imap::data_cast(*found);
+        Data_Node& replace_data_node = imap::data_cast(*replace);
 
-        // Compare the node value to the current position value
-        if (node_comp(key, found_data_node))
+        // Compare the key provided to the replace data node key
+        if (node_comp(key, replace_data_node))
         {
-          // Keep searching for the node to remove on the left
-          found_parent = found;
-          found = found->children[kLeft];
+          // Update the direction to the target/replace node
+          replace->dir = kLeft;
         }
-        else if (node_comp(found_data_node, key))
+        else if (node_comp(replace_data_node, key))
         {
-          // Keep searching for the node to remove on the right
-          found_parent = found;
-          found = found->children[kRight];
+          // Update the direction to the target/replace node
+          replace->dir = kRight;
         }
         else
         {
-          // Node that matches the key provided was found, exit loop
+          // Update the direction to the replace node (target node found here)
+          replace->dir = replace->children[kLeft] ? kLeft : kRight;
+
+          // Note the target node was found (and its parent)
+          found_parent = replace_parent;
+          found = replace;
+        }
+        // Replacement node found if its missing a child in the replace->dir
+        // value set above
+        if (replace->children[replace->dir] == nullptr)
+        {
+          // Exit loop once replace node is found (target might not have been)
           break;
         }
+
+        // If replacement node weight is kNeither or we are taking the shorter
+        // path of replacement node and our sibling (on longer path) is
+        // balanced then we need to update the balance node to match this
+        // replacement node but all our ancestors will not require rebalancing
+        if ((replace->weight == kNeither) ||
+          (replace->weight == (1 - replace->dir) &&
+          replace->children[1 - replace->dir]->weight == kNeither))
+        {
+          // Update balance node (and its parent) to replacement node
+          balance_parent = replace_parent;
+          balance = replace;
+        }
+        
+        // Keep searching for the replacement node
+        replace_parent = replace;
+        replace = replace->children[replace->dir];
       }
 
-      // Step 2: If the node was found, begin the remove process
+      // If target node was found, proceed with rebalancing and replacement
       if (found)
       {
-        // Does found and position point to the same memory address? then proceed with remove
-        if (found == position)
+        // Step 2: Update weights from critical node to replacement parent node
+        while (balance)
         {
-          // Detach the node at the current position
-          detach_node(position);
+          if (balance->children[balance->dir] == nullptr)
+          {
+            break;
+          }
+
+          if (balance->weight == kNeither)
+          {
+            balance->weight = 1 - balance->dir;
+          }
+          else if (balance->weight == balance->dir)
+          {
+            balance->weight = kNeither;
+          }
+          else
+          {
+            int weight = balance->children[1 - balance->dir]->weight;
+            // Perform a 3 node rotation if weight is same as balance->dir
+            if (weight == balance->dir)
+            {
+              // Is the root node being rebalanced (no parent)
+              if (balance_parent == nullptr)
+              {
+                rotate_3node(root_node, 1 - balance->dir,
+                  balance->children[1 - balance->dir]->children[balance->dir]->weight);
+              }
+              else
+              {
+                rotate_3node(balance_parent->children[balance_parent->dir], 1 - balance->dir,
+                  balance->children[1 - balance->dir]->children[balance->dir]->weight);
+              }
+            }
+            // Already balanced, rebalance and make it heavy in opposite
+            // direction of the node being removed
+            else if (weight == kNeither)
+            {
+              // Is the root node being rebalanced (no parent)
+              if (balance_parent == nullptr)
+              {
+                rotate_2node(root_node, 1 - balance->dir);
+                root_node->weight = balance->dir;
+              }
+              else
+              {
+                rotate_2node(balance_parent->children[balance_parent->dir], 1 - balance->dir);
+                balance_parent->children[balance_parent->dir]->weight = balance->dir;
+              }
+              // Update balance node weight in opposite direction of node removed
+              balance->weight = 1 - balance->dir;
+            }
+            // Rebalance and leave it balanced
+            else
+            {
+              // Is the root node being rebalanced (no parent)
+              if (balance_parent == nullptr)
+              {
+                rotate_2node(root_node, 1 - balance->dir);
+              }
+              else
+              {
+                rotate_2node(balance_parent->children[balance_parent->dir], 1 - balance->dir);
+              }
+            }
+
+            // Is balance node the same as the target node found? then update
+            // its parent after the rotation performed above
+            if (balance == found)
+            {
+              if (balance_parent)
+              {
+                found_parent = balance_parent->children[balance_parent->dir];
+                // Update dir since it is likely stale
+                found_parent->dir = found_parent->children[kLeft] == found ? kLeft : kRight;
+              }
+              else
+              {
+                found_parent = root_node;
+                root_node->dir = root_node->children[kLeft] == found ? kLeft : kRight;
+              }
+            }
+          }
+
+          // Next balance node to consider
+          balance_parent = balance;
+          balance = balance->children[balance->dir];
+        } // while(balance)
+
+        // Step 3: Swap found node with replacement node
+        if (found_parent)
+        {
+          // Handle traditional case
+          detach_node(found_parent->children[found_parent->dir],
+            replace_parent->children[replace_parent->dir]);
         }
+        // Handle root node removal
         else
         {
-          // Detach the node using a reference provided by the parent of the node
-          // found
-          detach_node(found_parent->children[kLeft] == found ?
-            found_parent->children[kLeft] : found_parent->children[kRight]);
+          // Valid replacement node for root node being removed?
+          if (replace_parent)
+          {
+            detach_node(root_node, replace_parent->children[replace_parent->dir]);
+          }
+          else
+          {
+            // Target node and replacement node are both root node
+            detach_node(root_node, root_node);
+          }
         }
 
         // Downcast found into data node
@@ -1666,12 +1867,81 @@ namespace etl
 
         // Destroy the node removed
         destroy_data_node(found_data_node);
-      }
+      } // if(found)
 
-      // If this is reached, the key value was not found and removed
-      return nullptr;
+      // Return node found (might be nullptr)
+      return found;
     }
 
+    //*************************************************************************
+    /// Rotate two nodes at the position provided the to balance the tree
+    //*************************************************************************
+    void rotate_2node(Node*& position, uint8_t dir)
+    {
+      //     A            C             A          B
+      //   B   C   ->   A   E   OR    B   C  ->  D   A
+      //      D E      B D           D E            E C
+      // C (new position) becomes the root
+      // A (position) takes ownership of D as its children[kRight] child
+      // C (new position) takes ownership of A as its left child
+      //                 OR
+      // B (new position) becomes the root
+      // A (position) takes ownership of E as its left child
+      // B (new position) takes ownership of A as its right child
+
+      // Capture new root
+      Node* new_root = position->children[dir];
+      // Replace position's previous child with new root's other child
+      position->children[dir] = new_root->children[1 - dir];
+      // New root now becomes parent of current position
+      new_root->children[1 - dir] = position;
+      // Clear weight factor from current position
+      position->weight = kNeither;
+      // Newly detached right now becomes current position
+      position = new_root;
+      // Clear weight factor from new root
+      position->weight = kNeither;
+    }
+
+    //*************************************************************************
+    /// Rotate three nodes at the position provided the to balance the tree
+    //*************************************************************************
+    void rotate_3node(Node*& position, uint8_t dir, uint8_t third)
+    {
+      //        __A__             __E__            __A__             __D__
+      //      _B_    C    ->     B     A    OR    B    _C_   ->     A     C   
+      //     D   E              D F   G C             D   E        B F   G E
+      //        F G                                  F G
+      // E (new position) becomes the root
+      // B (position) takes ownership of F as its left child
+      // A takes ownership of G as its right child
+      //                  OR
+      // D (new position) becomes the root
+      // A (position) takes ownership of F as its right child
+      // C takes ownership of G as its left child
+
+      // Capture new root (either E or D depending on dir)
+      Node* new_root = position->children[dir]->children[1 - dir];
+      // Set weight factor for B or C based on F or G existing and being a different than dir
+      position->children[dir]->weight = third != kNeither && third != dir ? dir : kNeither;
+
+      // Detach new root from its tree (replace with new roots child)
+      position->children[dir]->children[1 - dir] =
+        new_root->children[dir];
+      // Attach current left tree to new root
+      new_root->children[dir] = position->children[dir];
+      // Set weight factor for A based on F or G
+      position->weight = third != kNeither && third == dir ? 1 - dir : kNeither;
+
+      // Move new root's right tree to current roots left tree
+      position->children[dir] = new_root->children[1 - dir];
+      // Attach current root to new roots right tree
+      new_root->children[1 - dir] = position;
+      // Replace current position with new root
+      position = new_root;
+      // Clear weight factor for new current position
+      position->weight = kNeither;
+    }
   };
 }
 
