@@ -309,6 +309,17 @@ namespace etl
   template <typename T> struct rank<T[]> : public integral_constant<size_t, rank<T>::value + 1> {};
   template <typename T, size_t N> struct rank<T[N]> : public integral_constant<size_t, rank<T>::value + 1> {};
 
+  /// decay
+  ///\ingroup type_traits
+  template <typename T>
+  struct decay
+  {
+    typedef typename etl::remove_reference<T>::type U;
+    typedef typename etl::conditional<etl::is_array<U>::value,
+                                      typename etl::remove_extent<U>::type*,
+                                      typename etl::remove_cv<U>::type>::type type;
+  };
+
   /// Alignment templates.
   /// These require compiler specific intrinsics.
   ///\ingroup type_traits
