@@ -363,6 +363,9 @@
     <ClInclude Include="..\..\io_port.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\optional.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\AssertException.cpp">
@@ -561,6 +564,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_io_port.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_unordered_map.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_optional.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

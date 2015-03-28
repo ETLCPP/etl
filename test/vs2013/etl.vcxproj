@@ -173,6 +173,7 @@
     <ClInclude Include="..\..\nullptr.h" />
     <ClInclude Include="..\..\numeric.h" />
     <ClInclude Include="..\..\observer.h" />
+    <ClInclude Include="..\..\optional.h" />
     <ClInclude Include="..\..\parameter_type.h" />
     <ClInclude Include="..\..\pool.h" />
     <ClInclude Include="..\..\pool_base.h" />
@@ -266,11 +267,15 @@
     <ClCompile Include="..\test_observer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\test_optional.cpp" />
     <ClCompile Include="..\test_pool.cpp" />
     <ClCompile Include="..\test_queue.cpp" />
     <ClCompile Include="..\test_smallest.cpp" />
     <ClCompile Include="..\test_stack.cpp" />
     <ClCompile Include="..\test_type_traits.cpp" />
+    <ClCompile Include="..\test_unordered_map.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\test_variant.cpp" />
     <ClCompile Include="..\test_vector.cpp" />
     <ClCompile Include="..\test_visitor.cpp" />
