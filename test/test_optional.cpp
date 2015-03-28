@@ -31,6 +31,7 @@ SOFTWARE.
 #include <ostream>
 
 #include "../optional.h"
+#include "../vector.h"
 #include "data.h"
 
 typedef TestDataNDC<std::string> Data;
@@ -154,6 +155,38 @@ namespace
 
       CHECK(data1 < Data("Data2"));
       CHECK(!(data1 < Data("Data1")));
+    }
+
+    //*************************************************************************
+    TEST(test_container_of_optional)
+    {
+      etl::vector<etl::optional<Data>, 10> container;
+
+      container.resize(5, Data("1"));
+
+      CHECK(bool(container[0]));
+      CHECK(bool(container[1]));
+      CHECK(bool(container[2]));
+      CHECK(bool(container[3]));
+      CHECK(bool(container[4]));
+    }
+
+    //*************************************************************************
+    TEST(test_optional_container)
+    {
+      etl::optional<etl::vector<Data, 10>> container;
+      CHECK(!bool(container));
+
+      container = etl::vector<Data, 10>();
+      CHECK(bool(container));
+
+      container.value().resize(5, Data("1"));
+
+      CHECK_EQUAL(Data("1"), container.value()[0]);
+      CHECK_EQUAL(Data("1"), container.value()[1]);
+      CHECK_EQUAL(Data("1"), container.value()[2]);
+      CHECK_EQUAL(Data("1"), container.value()[3]);
+      CHECK_EQUAL(Data("1"), container.value()[4]);
     }
   };
 }
