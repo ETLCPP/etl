@@ -153,6 +153,7 @@
     <ClInclude Include="..\..\integral_limits.h" />
     <ClInclude Include="..\..\ipool.h" />
     <ClInclude Include="..\..\iqueue.h" />
+    <ClInclude Include="..\..\iset.h" />
     <ClInclude Include="..\..\istack.h" />
     <ClInclude Include="..\..\container.h" />
     <ClInclude Include="..\..\ivector.h" />
@@ -174,6 +175,8 @@
     <ClInclude Include="..\..\queue.h" />
     <ClInclude Include="..\..\queue_base.h" />
     <ClInclude Include="..\..\radix.h" />
+    <ClInclude Include="..\..\set.h" />
+    <ClInclude Include="..\..\set_base.h" />
     <ClInclude Include="..\..\smallest.h" />
     <ClInclude Include="..\..\stack.h" />
     <ClInclude Include="..\..\stack_base.h" />
@@ -248,6 +251,7 @@
     <ClCompile Include="..\test_observer.cpp" />
     <ClCompile Include="..\test_pool.cpp" />
     <ClCompile Include="..\test_queue.cpp" />
+    <ClCompile Include="..\test_set.cpp" />
     <ClCompile Include="..\test_smallest.cpp" />
     <ClCompile Include="..\test_stack.cpp" />
     <ClCompile Include="..\test_type_traits.cpp" />
