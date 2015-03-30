@@ -67,7 +67,7 @@ namespace etl
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
-    explicit map(const map& other)
+    map(const map& other)
       : imap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
     {
 			imap<TKey, TValue, TCompare>::assign(other.cbegin(), other.cend());

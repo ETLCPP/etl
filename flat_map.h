@@ -71,6 +71,15 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Copy constructor.
+    //*************************************************************************
+    flat_map(const flat_map& other)
+      : iflat_map<TKey, TValue, TCompare>(buffer)
+    {
+      iflat_map<TKey, TValue, TCompare>::assign(other.cbegin(), other.cend());
+    }
+
+    //*************************************************************************
     /// Constructor, from an iterator range.
     ///\tparam TIterator The iterator type.
     ///\param first The iterator to the first element.

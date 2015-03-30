@@ -159,6 +159,7 @@
 		<Unit filename="../../imap.h" />
 		<Unit filename="../../instance_count.h" />
 		<Unit filename="../../integral_limits.h" />
+		<Unit filename="../../io_port.h" />
 		<Unit filename="../../iqueue.h" />
 		<Unit filename="../../istack.h" />
 		<Unit filename="../../ivector.h" />
@@ -173,6 +174,7 @@
 		<Unit filename="../../nullptr.h" />
 		<Unit filename="../../numeric.h" />
 		<Unit filename="../../observer.h" />
+		<Unit filename="../../optional.h" />
 		<Unit filename="../../parameter_type.h" />
 		<Unit filename="../../pool.h" />
 		<Unit filename="../../power.h" />
@@ -214,12 +216,14 @@
 		<Unit filename="../test_hash.cpp" />
 		<Unit filename="../test_instance_count.cpp" />
 		<Unit filename="../test_integral_limits.cpp" />
+		<Unit filename="../test_io_port.cpp" />
 		<Unit filename="../test_largest.cpp" />
 		<Unit filename="../test_list.cpp" />
 		<Unit filename="../test_map.cpp" />
 		<Unit filename="../test_maths.cpp" />
 		<Unit filename="../test_numeric.cpp" />
 		<Unit filename="../test_observer.cpp" />
+		<Unit filename="../test_optional.cpp" />
 		<Unit filename="../test_pool.cpp" />
 		<Unit filename="../test_queue.cpp" />
 		<Unit filename="../test_smallest.cpp" />

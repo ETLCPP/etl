@@ -51,7 +51,7 @@ namespace etl
   //***************************************************************************
   ///\ingroup stack
   /// A fixed capacity stack.
-  /// This stack does not support concurrent access by different threads.
+  /// This stack does not suppo7rt concurrent access by different threads.
   /// \tparam T        The type this stack should support.
   /// \tparam MAX_SIZE The maximum capacity of the stack.
   //***************************************************************************
@@ -64,7 +64,7 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     stack()
-      : istack<T>(reinterpret_cast<T*>(&buffer.value[0]), SIZE)
+      : istack<T>(reinterpret_cast<T*>(&buffer[0]), SIZE)
     {
     }
 
@@ -72,7 +72,7 @@ namespace etl
     /// Copy constructor
     //*************************************************************************
     stack(const stack& rhs)
-      : istack<T>(reinterpret_cast<T*>(&buffer.value[0]), SIZE)
+      : istack<T>(reinterpret_cast<T*>(&buffer[0]), SIZE)
     {
       istack<T>::clone(rhs);
     }
@@ -101,7 +101,7 @@ namespace etl
   private:
 
     /// The unititialised buffer of T used in the stack.
-    etl::align_as<array<uint8_t, SIZE * sizeof(T)>, T> buffer;
+    typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[SIZE];
   };
 }
 

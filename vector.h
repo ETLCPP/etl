@@ -64,7 +64,7 @@ namespace etl
     /// Constructor.
     //*************************************************************************
     vector()
-      : ivector<T>(reinterpret_cast<T*>(&buffer.value[0]), MAX_SIZE)
+      : ivector<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE)
     {
     }
 
@@ -73,7 +73,7 @@ namespace etl
     ///\param initialSize The initial size of the vector.
     //*************************************************************************
     explicit vector(size_t initialSize)
-      : ivector<T>(reinterpret_cast<T*>(&buffer.value[0]), MAX_SIZE)
+      : ivector<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE)
     {
       ivector<T>::resize(initialSize);
     }
@@ -84,7 +84,7 @@ namespace etl
     ///\param value        The value to fill the vector with.
     //*************************************************************************
     vector(size_t initialSize, typename ivector<T>::parameter_t value)
-      : ivector<T>(reinterpret_cast<T*>(&buffer.value[0]), MAX_SIZE)
+      : ivector<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE)
     {
       ivector<T>::resize(initialSize, value);
     }
@@ -97,7 +97,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     vector(TIterator first, TIterator last)
-      : ivector<T>(reinterpret_cast<T*>(&buffer.value[0]), MAX_SIZE)
+      : ivector<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE)
     {
       ivector<T>::assign(first, last);
     }
@@ -117,7 +117,7 @@ namespace etl
 
   private:
 
-    etl::align_as<array<uint8_t, MAX_SIZE * sizeof(T)>, T> buffer;
+    typename etl::aligned_storage<sizeof(T) * MAX_SIZE, etl::alignment_of<T>::value>::type buffer[MAX_SIZE];
   };
 }
 

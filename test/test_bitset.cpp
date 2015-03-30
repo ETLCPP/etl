@@ -89,7 +89,7 @@ namespace
 
     //*************************************************************************
     TEST(test_construct_from_string)
-    {                               
+    {
       std::bitset<60> compare("110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<60> data("110001001000110100010101100111001100010010001101000101011001");
 
@@ -441,7 +441,7 @@ namespace
       etl::bitset<60> shift2(0x48D159E0);
       etl::bitset<60> shift11(0x91A2B3C000);
 
-      data2 = data1 << 1;  
+      data2 = data1 << 1;
       CHECK(data2 == shift1);
 
       data2 = data1 << 2;
@@ -560,7 +560,7 @@ namespace
       data2 ^= data1;
       CHECK(data2 == data3);
     }
-  
+
     //*************************************************************************
     TEST(test_big_bitset)
     {
@@ -587,7 +587,7 @@ namespace
       {
         CHECK_EQUAL(compare.test(i), data.test(i));
       }
-    } 
+    }
 
     //*************************************************************************
     TEST(test_small_bitset)
@@ -611,10 +611,10 @@ namespace
 
       data.set("000000");
       CHECK_EQUAL(0, data.find_first(false));
-      CHECK_EQUAL(6, data.find_first(true));
+      CHECK_EQUAL(etl::ibitset::npos, data.find_first(true));
 
       data.set("111111");
-      CHECK_EQUAL(6, data.find_first(false));
+      CHECK_EQUAL(etl::ibitset::npos, data.find_first(false));
       CHECK_EQUAL(0, data.find_first(true));
 
       data.set("000001");
@@ -646,12 +646,12 @@ namespace
       data.set("000000");
       CHECK_EQUAL(0, data.find_next(false, 0));
       CHECK_EQUAL(1, data.find_next(false, 1));
-      CHECK_EQUAL(6, data.find_next(true,  2));
+      CHECK_EQUAL(etl::ibitset::npos, data.find_next(true, 2));
 
       data.set("111111");
       CHECK_EQUAL(0, data.find_next(true,  0));
       CHECK_EQUAL(1, data.find_next(true,  1));
-      CHECK_EQUAL(6, data.find_next(false, 2));
+      CHECK_EQUAL(etl::ibitset::npos, data.find_next(false, 2));
 
       data.set("001110");
       CHECK_EQUAL(0, data.find_next(false, 0));

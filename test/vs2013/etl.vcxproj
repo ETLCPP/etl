@@ -155,11 +155,13 @@
     <ClInclude Include="..\..\imap.h" />
     <ClInclude Include="..\..\instance_count.h" />
     <ClInclude Include="..\..\integral_limits.h" />
+    <ClInclude Include="..\..\io_port.h" />
     <ClInclude Include="..\..\ipool.h" />
     <ClInclude Include="..\..\iqueue.h" />
     <ClInclude Include="..\..\iset.h" />
     <ClInclude Include="..\..\istack.h" />
     <ClInclude Include="..\..\container.h" />
+    <ClInclude Include="..\..\iunordered_map.h" />
     <ClInclude Include="..\..\ivector.h" />
     <ClInclude Include="..\..\largest.h" />
     <ClInclude Include="..\..\list.h" />
@@ -172,6 +174,7 @@
     <ClInclude Include="..\..\nullptr.h" />
     <ClInclude Include="..\..\numeric.h" />
     <ClInclude Include="..\..\observer.h" />
+    <ClInclude Include="..\..\optional.h" />
     <ClInclude Include="..\..\parameter_type.h" />
     <ClInclude Include="..\..\pool.h" />
     <ClInclude Include="..\..\pool_base.h" />
@@ -186,6 +189,8 @@
     <ClInclude Include="..\..\stack_base.h" />
     <ClInclude Include="..\..\static_assert.h" />
     <ClInclude Include="..\..\type_traits.h" />
+    <ClInclude Include="..\..\unordered_map.h" />
+    <ClInclude Include="..\..\unordered_map_base.h" />
     <ClInclude Include="..\..\variant.h" />
     <ClInclude Include="..\..\vector.h" />
     <ClInclude Include="..\..\vector_base.h" />
@@ -225,6 +230,7 @@
     <ClCompile Include="..\test_array.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </AdditionalIncludeDirectories>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\test_binary.cpp" />
     <ClCompile Include="..\test_bitset.cpp" />
@@ -233,13 +239,18 @@
     <ClCompile Include="..\test_container.cpp" />
     <ClCompile Include="..\test_crc.cpp" />
     <ClCompile Include="..\test_cyclic_value.cpp" />
-    <ClCompile Include="..\test_deque.cpp" />
+    <ClCompile Include="..\test_deque.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\test_endian.cpp" />
     <ClCompile Include="..\test_enum_type.cpp" />
     <ClCompile Include="..\test_error_handler.cpp" />
     <ClCompile Include="..\test_exception.cpp" />
     <ClCompile Include="..\test_fixed_iterator.cpp" />
-    <ClCompile Include="..\test_flat_set.cpp" />
+    <ClCompile Include="..\test_flat_set.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\test_fnv_1.cpp" />
     <ClCompile Include="..\test_forward_list.cpp" />
     <ClCompile Include="..\test_function.cpp" />
@@ -247,19 +258,28 @@
     <ClCompile Include="..\test_hash.cpp" />
     <ClCompile Include="..\test_instance_count.cpp" />
     <ClCompile Include="..\test_integral_limits.cpp" />
+    <ClCompile Include="..\test_io_port.cpp" />
     <ClCompile Include="..\test_largest.cpp" />
     <ClCompile Include="..\test_list.cpp" />
-    <ClCompile Include="..\test_flat_map.cpp" />
+    <ClCompile Include="..\test_flat_map.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\test_map.cpp" />
     <ClCompile Include="..\test_maths.cpp" />
     <ClCompile Include="..\test_numeric.cpp" />
-    <ClCompile Include="..\test_observer.cpp" />
+    <ClCompile Include="..\test_observer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\test_optional.cpp" />
     <ClCompile Include="..\test_pool.cpp" />
     <ClCompile Include="..\test_queue.cpp" />
     <ClCompile Include="..\test_set.cpp" />
     <ClCompile Include="..\test_smallest.cpp" />
     <ClCompile Include="..\test_stack.cpp" />
     <ClCompile Include="..\test_type_traits.cpp" />
+    <ClCompile Include="..\test_unordered_map.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\test_variant.cpp" />
     <ClCompile Include="..\test_vector.cpp" />
     <ClCompile Include="..\test_visitor.cpp" />

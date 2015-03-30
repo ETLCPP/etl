@@ -81,7 +81,7 @@ namespace etl
     typedef typename std::iterator_traits<iterator>::difference_type difference_type;
 
   protected:
-    
+
     typedef typename parameter_type<TKey>::type key_value_parameter_t;
 
   private:
@@ -105,19 +105,6 @@ namespace etl
     };
 
   public:
-
-    //*********************************************************************
-    /// Assignment operator.
-    /// The source flat_map can be larger than the destination, but
-    /// only the elements that will fit in the destination will be copied.
-    ///\param other The other flat_map.
-    //*********************************************************************
-    iflat_map& operator = (iflat_map& other)
-    {
-      buffer.operator=(other.buffer);
-
-      return *this;
-    }
 
     //*********************************************************************
     /// Returns an iterator to the beginning of the flat_map.
@@ -303,6 +290,19 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
+#ifdef _DEBUG
+      difference_type count = std::distance(first, last);
+
+      if (count < 0)
+      {
+#ifdef ETL_THROW_EXCEPTIONS
+        throw flat_map_iterator();
+#else
+        error_handler::error(flat_map_iterator());
+#endif
+      }
+#endif
+
       clear();
 
       while (first != last)
@@ -499,7 +499,7 @@ namespace etl
     {
       return std::lower_bound(cbegin(), cend(), key, compare());
     }
-    
+
     //*********************************************************************
     /// Finds the upper bound of a key
     ///\param key The key to search for.

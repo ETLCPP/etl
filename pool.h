@@ -60,7 +60,7 @@ namespace etl
     /// Constructor
     //*************************************************************************
     pool()
-      : ipool<T>(reinterpret_cast<T*>(&aligned_buffer.value[0]), in_use, SIZE)
+      : ipool<T>(reinterpret_cast<T*>(&buffer[0]), in_use, SIZE)
     {
     }
 
@@ -75,7 +75,7 @@ namespace etl
   private:
 
     ///< The memory for the pool of objects.
-    etl::align_as<etl::array<uint8_t, SIZE * sizeof(T)>, T> aligned_buffer;
+    typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[SIZE];
 
     ///< The set of flags that indicate which items are free in the pool.
     bitset<SIZE> in_use;
