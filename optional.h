@@ -32,6 +32,7 @@ SOFTWARE.
 
 #include "alignment.h"
 #include "type_traits.h"
+#include "exception.h"
 
 namespace etl
 {
@@ -62,6 +63,33 @@ namespace etl
   //*****************************************************************************
   const nullopt_t nullopt = {};
 
+  //***************************************************************************
+  /// Exception for optional.
+  ///\ingroup list
+  //***************************************************************************
+  class optional_exception : public exception
+  {
+  public:
+
+    optional_exception(const char* what)
+      : exception(what)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// Invalid exception for optional.
+  ///\ingroup list
+  //***************************************************************************
+  class optional_invalid : public optional_exception
+  {
+  public:
+
+    optional_invalid()
+      : optional_exception("optional: invalid")
+    {
+    }
+  };
   //*****************************************************************************
   /// An optional type.
   /// If the optional type is not initialised then a type is not constructed.
@@ -117,7 +145,7 @@ namespace etl
     {
       if (valid)
       {
-        storage. template get_reference<T>().~T();
+        storage.template get_reference<T>().~T();
       }
     }
 
@@ -128,7 +156,7 @@ namespace etl
     {
       if (valid)
       {
-        storage. template get_reference<T>().~T();
+        storage.template get_reference<T>().~T();
         valid = false;
       }
 
@@ -142,18 +170,18 @@ namespace etl
     {
       if (valid && !bool(other))
       {
-        storage. template get_reference<T>().~T();
+        storage.template get_reference<T>().~T();
         valid = false;
       }
       else if (bool(other))
       {
         if (valid)
         {
-          storage. template get_reference<T>() = other.value();
+          storage.template get_reference<T>() = other.value();
         }
         else
-          new (storage.template get_address<T>()) T(other.value());
         {
+          new (storage.template get_address<T>()) T(other.value());
           valid = true;
         }
       }
@@ -168,7 +196,7 @@ namespace etl
     {
       if (valid)
       {
-        storage. template get_reference<T>() = value;
+        storage.template get_reference<T>() = value;
       }
       else
       {
@@ -184,6 +212,17 @@ namespace etl
     //***************************************************************************
     T* operator ->()
     {
+#ifdef _DEBUG
+      if (!valid)
+      {
+#ifdef ETL_THROW_EXCEPTIONS
+        throw optional_invalid();
+#else
+        error_handler::error(optional_invalid());
+#endif
+      }
+#endif
+
       return storage.template get_address<T>();
     }
 
@@ -192,6 +231,17 @@ namespace etl
     //***************************************************************************
     const T* operator ->() const
     {
+#ifdef _DEBUG
+      if (!valid)
+      {
+#ifdef ETL_THROW_EXCEPTIONS
+        throw optional_invalid();
+#else
+        error_handler::error(optional_invalid());
+#endif
+      }
+#endif
+
       return storage.template get_address<T>();
     }
 
@@ -200,7 +250,18 @@ namespace etl
     //***************************************************************************
     T& operator *()
     {
-      return storage. template get_reference<T>();
+#ifdef _DEBUG
+      if (!valid)
+      {
+#ifdef ETL_THROW_EXCEPTIONS
+        throw optional_invalid();
+#else
+        error_handler::error(optional_invalid());
+#endif
+      }
+#endif
+
+      return storage.template get_reference<T>();
     }
 
     //***************************************************************************
@@ -208,7 +269,18 @@ namespace etl
     //***************************************************************************
     const T& operator *() const
     {
-      return storage. template get_reference<T>();
+#ifdef _DEBUG
+      if (!valid)
+      {
+#ifdef ETL_THROW_EXCEPTIONS
+        throw optional_invalid();
+#else
+        error_handler::error(optional_invalid());
+#endif
+      }
+#endif
+
+      return storage.template get_reference<T>();
     }
 
     //***************************************************************************
@@ -224,7 +296,18 @@ namespace etl
     //***************************************************************************
     T& value()
     {
-      return storage. template get_reference<T>();
+#ifdef _DEBUG
+      if (!valid)
+      {
+#ifdef ETL_THROW_EXCEPTIONS
+        throw optional_invalid();
+#else
+        error_handler::error(optional_invalid());
+#endif
+      }
+#endif
+
+      return storage.template get_reference<T>();
     }
 
     //***************************************************************************
@@ -232,7 +315,18 @@ namespace etl
     //***************************************************************************
     const T& value() const
     {
-      return storage. template get_reference<T>();
+#ifdef _DEBUG
+      if (!valid)
+      {
+#ifdef ETL_THROW_EXCEPTIONS
+        throw optional_invalid();
+#else
+        error_handler::error(optional_invalid());
+#endif
+      }
+#endif
+
+      return storage.template get_reference<T>();
     }
 
     //***************************************************************************
