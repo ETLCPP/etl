@@ -188,5 +188,13 @@ namespace
       CHECK_EQUAL(Data("1"), container.value()[3]);
       CHECK_EQUAL(Data("1"), container.value()[4]);
     }
+
+    //*************************************************************************
+    TEST(test_exception)
+    {
+      etl::optional<Data> data1;
+
+      CHECK_THROW(Data d(data1.value()), etl::optional_invalid);
+    }
   };
 }
