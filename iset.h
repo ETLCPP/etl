@@ -1656,7 +1656,7 @@ namespace etl
           balance_parent = replace_parent;
           balance = replace;
         }
-        
+
         // Keep searching for the replacement node
         replace_parent = replace;
         replace = replace->children[replace->dir];
@@ -1826,7 +1826,7 @@ namespace etl
     void rotate_3node(Node*& position, uint8_t dir, uint8_t third)
     {
       //        __A__             __E__            __A__             __D__
-      //      _B_    C    ->     B     A    OR    B    _C_   ->     A     C   
+      //      _B_    C    ->     B     A    OR    B    _C_   ->     A     C
       //     D   E              D F   G C             D   E        B F   G E
       //        F G                                  F G
       // E (new position) becomes the root
@@ -1918,7 +1918,7 @@ bool operator >(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>&
                                       lhs.end(),
                                       rhs.begin(),
                                       rhs.end(),
-                                      std::greater<TMapped>());
+                                      std::greater<T>());
 }
 
 //*************************************************************************
