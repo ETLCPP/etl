@@ -80,11 +80,6 @@ namespace
 {
   SUITE(test_set)
   {
-    std::vector<Data::value_type> initial_data;
-    std::vector<Data::value_type> excess_data;
-    std::vector<Data::value_type> different_data;
-    std::vector<Data::value_type> random_data;
-
     //*************************************************************************
     template <typename T1, typename T2>
     bool Check_Equal(T1 begin1, T1 end1, T2 begin2)
@@ -106,9 +101,14 @@ namespace
     //*************************************************************************
     struct SetupFixture
     {
+      std::vector<int> initial_data;
+      std::vector<int> excess_data;
+      std::vector<int> different_data;
+      std::vector<int> random_data;
+  
       SetupFixture()
       {
-        Data::value_type n[] =
+        int n[] =
         {
           { 0 },
           { 1 },
@@ -137,7 +137,7 @@ namespace
           { 10 },
         };
 
-        Data::value_type n3[] =
+        int n3[] =
         {
           { 10 },
           { 11 },
@@ -151,7 +151,7 @@ namespace
           { 19 },
         };
 
-        Data::value_type n4[] =
+        int n4[] =
         {
           { 6 },
           { 5 },

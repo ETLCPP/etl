@@ -57,8 +57,8 @@ namespace etl
   {
   public:
 
+    typedef TKey                           key_type;
     typedef std::pair<const TKey, TMapped> value_type;
-    typedef const TKey                     key_type;
     typedef TMapped                        mapped_type;
     typedef TKeyCompare                    key_compare;
     typedef value_type&                    reference;
@@ -72,7 +72,7 @@ namespace etl
     //*************************************************************************
     struct key_comp
     {
-      bool operator ()(key_type& key1, key_type& key2) const
+      bool operator ()(const key_type& key1, const key_type& key2) const
       {
         return key_compare()(key1, key2);
       }
@@ -1740,7 +1740,7 @@ namespace etl
           balance_parent = replace_parent;
           balance = replace;
         }
-        
+
         // Keep searching for the replacement node
         replace_parent = replace;
         replace = replace->children[replace->dir];
@@ -1910,7 +1910,7 @@ namespace etl
     void rotate_3node(Node*& position, uint8_t dir, uint8_t third)
     {
       //        __A__             __E__            __A__             __D__
-      //      _B_    C    ->     B     A    OR    B    _C_   ->     A     C   
+      //      _B_    C    ->     B     A    OR    B    _C_   ->     A     C
       //     D   E              D F   G C             D   E        B F   G E
       //        F G                                  F G
       // E (new position) becomes the root
