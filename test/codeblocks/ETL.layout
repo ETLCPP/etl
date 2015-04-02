@@ -66,6 +66,11 @@
 			<Cursor1 position="2984" topLine="48" />
 		</Cursor>
 	</File>
+	<File name="..\..\set.h" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5955" topLine="137" />
+		</Cursor>
+	</File>
 	<File name="..\..\Doxyfile" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="56760" topLine="1251" />
@@ -187,6 +192,11 @@
 		</Cursor>
 	</File>
 	<File name="..\..\imap.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="60526" topLine="1708" />
+		</Cursor>
+	</File>
+	<File name="..\..\iset.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="60526" topLine="1708" />
 		</Cursor>

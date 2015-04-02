@@ -2,6 +2,7 @@
 The MIT License(MIT)
 
 Embedded Template Library.
+https://github.com/ETLCPP/etl
 
 Copyright(c) 2014 jwellbelove, rlindeman
 
@@ -34,6 +35,8 @@ SOFTWARE.
 #include <string>
 #include <vector>
 
+#include <iostream>
+
 #include "../map.h"
 
 static const size_t SIZE = 10;
@@ -53,7 +56,7 @@ typedef Compare_Data::iterator Compare_Data_iterator;
 typedef Compare_Data::const_iterator Compare_Data_const_iterator;
 
 //*************************************************************************
-std::ostream& operator << (std::ostream& os, const Data_iterator& it)
+static std::ostream& operator << (std::ostream& os, const Data_iterator& it)
 {
   os << (*it).first << " " << (*it).second;
 
@@ -61,7 +64,7 @@ std::ostream& operator << (std::ostream& os, const Data_iterator& it)
 }
 
 //*************************************************************************
-std::ostream& operator << (std::ostream& os, const Data_const_iterator& it)
+static std::ostream& operator << (std::ostream& os, const Data_const_iterator& it)
 {
   os << (*it).first << " " << (*it).second;
 
@@ -69,7 +72,7 @@ std::ostream& operator << (std::ostream& os, const Data_const_iterator& it)
 }
 
 //*************************************************************************
-std::ostream& operator << (std::ostream& os, const Compare_Data_iterator& it)
+static std::ostream& operator << (std::ostream& os, const Compare_Data_iterator& it)
 {
   os << (*it).first << " " << (*it).second;
 
@@ -77,7 +80,7 @@ std::ostream& operator << (std::ostream& os, const Compare_Data_iterator& it)
 }
 
 //*************************************************************************
-std::ostream& operator << (std::ostream& os, const Compare_Data_const_iterator& it)
+static std::ostream& operator << (std::ostream& os, const Compare_Data_const_iterator& it)
 {
   os << (*it).first << " " << (*it).second;
 
@@ -88,11 +91,6 @@ namespace
 {
   SUITE(test_map)
   {
-    std::vector<Data::value_type> initial_data;
-    std::vector<Data::value_type> excess_data;
-    std::vector<Data::value_type> different_data;
-    std::vector<Data::value_type> random_data;
-
     //*************************************************************************
     template <typename T1, typename T2>
     bool Check_Equal(T1 begin1, T1 end1, T2 begin2)
@@ -114,69 +112,62 @@ namespace
     //*************************************************************************
     struct SetupFixture
     {
+      // Maps of predefined data from which to constuct maps used in each test
+      std::map<std::string, int> initial_data;
+      std::map<std::string, int> excess_data;
+      std::map<std::string, int> different_data;
+      std::map<std::string, int> random_data;
+
       SetupFixture()
       {
-        Data::value_type n[] =
-        {
-          { std::string("0"), 0 },
-          { std::string("1"), 1 },
-          { std::string("2"), 2 },
-          { std::string("3"), 3 },
-          { std::string("4"), 4 },
-          { std::string("5"), 5 },
-          { std::string("6"), 6 },
-          { std::string("7"), 7 },
-          { std::string("8"), 8 },
-          { std::string("9"), 9 },
-        };
+        // Create a map of initial data
+        initial_data["0"] = 0;
+        initial_data["1"] = 1;
+        initial_data["2"] = 2;
+        initial_data["3"] = 3;
+        initial_data["4"] = 4;
+        initial_data["5"] = 5;
+        initial_data["6"] = 6;
+        initial_data["7"] = 7;
+        initial_data["8"] = 8;
+        initial_data["9"] = 9;
 
-        Data::value_type n2[] =
-        {
-          { std::string("0"),   0 },
-          { std::string("1"),   1 },
-          { std::string("2"),   2 },
-          { std::string("3"),   3 },
-          { std::string("4"),   4 },
-          { std::string("5"),   5 },
-          { std::string("6"),   6 },
-          { std::string("7"),   7 },
-          { std::string("8"),   8 },
-          { std::string("9"),   9 },
-          { std::string("10"), 10 },
-        };
+        // Create a map of excess data
+        excess_data["0"] = 0;
+        excess_data["1"] = 1;
+        excess_data["2"] = 2;
+        excess_data["3"] = 3;
+        excess_data["4"] = 4;
+        excess_data["5"] = 5;
+        excess_data["6"] = 6;
+        excess_data["7"] = 7;
+        excess_data["8"] = 8;
+        excess_data["9"] = 9;
+        excess_data["10"] = 10;
 
-        Data::value_type n3[] =
-        {
-          { std::string("10"), 10 },
-          { std::string("11"), 11 },
-          { std::string("12"), 12 },
-          { std::string("13"), 13 },
-          { std::string("14"), 14 },
-          { std::string("15"), 15 },
-          { std::string("16"), 16 },
-          { std::string("17"), 17 },
-          { std::string("18"), 18 },
-          { std::string("19"), 19 },
-        };
+        // Create a map of different data
+        different_data["10"] = 10;
+        different_data["11"] = 11;
+        different_data["12"] = 12;
+        different_data["13"] = 13;
+        different_data["14"] = 14;
+        different_data["15"] = 15;
+        different_data["16"] = 16;
+        different_data["17"] = 17;
+        different_data["18"] = 18;
+        different_data["19"] = 19;
 
-        Data::value_type n4[] =
-        {
-          { std::string("6"), 6 },
-          { std::string("5"), 5 },
-          { std::string("0"), 0 },
-          { std::string("8"), 8 },
-          { std::string("9"), 9 },
-          { std::string("2"), 2 },
-          { std::string("1"), 1 },
-          { std::string("3"), 3 },
-          { std::string("7"), 7 },
-          { std::string("4"), 4 },
-        };
-
-        initial_data.assign(std::begin(n), std::end(n));
-        excess_data.assign(std::begin(n2), std::end(n2));
-        different_data.assign(std::begin(n3), std::end(n3));
-        random_data.assign(std::begin(n4), std::end(n4));
+        // Create a map of random data
+        random_data["6"] = 6;
+        random_data["5"] = 5;
+        random_data["0"] = 0;
+        random_data["8"] = 8;
+        random_data["9"] = 9;
+        random_data["2"] = 2;
+        random_data["1"] = 1;
+        random_data["3"] = 3;
+        random_data["7"] = 7;
+        random_data["4"] = 4;
       }
     };
 
