@@ -15,6 +15,7 @@
 					<Add option="-std=c++11" />
 					<Add option="-g" />
 					<Add option="-DUNITTEST_MINGW" />
+					<Add option="-DPLATFORM_WINDOWS" />
 				</Compiler>
 				<ExtraCommands>
 					<Add after="bin\Debug\ETL.exe" />
@@ -29,10 +30,11 @@
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-g" />
-					<Add option="-DUNITTEST_MINGW" />
+					<Add option="-D_DEBUG" />
+					<Add option="-DPLATFORM_LINUX" />
 				</Compiler>
 				<ExtraCommands>
-					<Add after="bin\Debug\ETL.exe" />
+					<Add after="bin/Debug/ETL" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -42,7 +44,6 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 			<Add option="-DCOMPILER_GCC" />
-			<Add option="-DPLATFORM_WINDOWS" />
 			<Add option="-DETL_THROW_EXCEPTIONS" />
 			<Add option="-D_DEBUG" />
 			<Add directory="../../../unittest-cpp" />
