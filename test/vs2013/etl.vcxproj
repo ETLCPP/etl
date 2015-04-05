@@ -82,6 +82,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <PostBuildEvent>
+      <Command>$(OutDir)\etl.exe</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\AssertException.h" />
@@ -228,8 +231,7 @@
     <ClCompile Include="..\test_algorithm.cpp" />
     <ClCompile Include="..\test_alignment.cpp" />
     <ClCompile Include="..\test_array.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../unittest-cpp</AdditionalIncludeDirectories>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\test_binary.cpp" />
@@ -279,6 +281,7 @@
     <ClCompile Include="..\test_type_traits.cpp" />
     <ClCompile Include="..\test_unordered_map.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\test_variant.cpp" />
     <ClCompile Include="..\test_vector.cpp" />
