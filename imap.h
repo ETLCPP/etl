@@ -434,16 +434,6 @@ namespace etl
 
 
     //*************************************************************************
-    /// Assignment operator.
-    //*************************************************************************
-    imap& operator = (const imap& rhs)
-    {
-      assign(rhs.cbegin(), rhs.cend());
-
-      return *this;
-    }
-
-    //*************************************************************************
     /// Gets the beginning of the map.
     //*************************************************************************
     iterator begin()
@@ -779,7 +769,7 @@ namespace etl
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, const value_type& value)
+    iterator insert(iterator, const value_type& value)
     {
       // Default to no inserted node
       Node* inserted_node = nullptr;
@@ -790,7 +780,7 @@ namespace etl
         Data_Node& node = allocate_data_node(value);
 
         // Obtain the inserted node (might be nullptr if node was a duplicate)
-        inserted_node = insert_node(find_node(root_node, position.p_node), node);
+        inserted_node = insert_node(root_node, node);
       }
       else
       {
@@ -811,7 +801,7 @@ namespace etl
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(const_iterator position, const value_type& value)
+    iterator insert(const_iterator, const value_type& value)
     {
       // Default to no inserted node
       Node* inserted_node = nullptr;
@@ -822,7 +812,7 @@ namespace etl
         Data_Node& node = allocate_data_node(value);
 
         // Obtain the inserted node (might be nullptr if node was a duplicate)
-        inserted_node = insert_node(find_node(root_node, position.p_node), node);
+        inserted_node = insert_node(root_node, node);
       }
       else
       {
@@ -1151,7 +1141,7 @@ namespace etl
         }
       }
 
-      // Return root node if nothing or duplicate was found
+      // Return root node if nothing was found
       return root_node;
     }
 
@@ -1325,36 +1315,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Find the node whose key is not considered to go before the key provided
-    //*************************************************************************
-    const Node& find_lower_node(const Node* position, const key_value_parameter_t& key) const
-    {
-      // Something at this position? keep going
-      const Node* lower_node = position;
-      while (lower_node)
-      {
-        // Downcast lower node to Data_Node reference for key comparisons
-        const Data_Node& data_node = imap::data_cast(*lower_node);
-        // Compare the key value to the current lower node key value
-        if (node_comp(key, data_node))
-        {
-          lower_node = lower_node->children[kLeft];
-        }
-        else if (node_comp(data_node, key))
-        {
-          lower_node = lower_node->children[kRight];
-        }
-        else
-        {
-          break;
-        }
-      }
-
-      // Return the lower_node position found
-      return lower_node;
-    }
-
-    //*************************************************************************
     /// Find the node whose key is considered to go after the key provided
     //*************************************************************************
     Node* find_upper_node(Node* position, const key_value_parameter_t& key) const
@@ -1367,44 +1327,6 @@ namespace etl
       {
         // Downcast position to Data_Node reference for key comparisons
         Data_Node& data_node = imap::data_cast(*node);
-        // Compare the key value to the current upper node key value
-        if (node_comp(key, data_node))
-        {
-          upper_node = node;
-          node = node->children[kLeft];
-        }
-        else if (node_comp(data_node, key))
-        {
-          node = node->children[kRight];
-        }
-        else if (node->children[kRight])
-        {
-          upper_node = find_limit_node(node->children[kRight], kLeft);
-          break;
-        }
-        else
-        {
-          break;
-        }
-      }
-
-      // Return the upper node position found (might be nullptr)
-      return upper_node;
-    }
-
-    //*************************************************************************
-    /// Find the node whose key is considered to go after the key provided
-    //*************************************************************************
-    const Node* find_upper_node(const Node* position, const key_value_parameter_t& key) const
-    {
-      // Keep track of parent of last upper node
-      const Node* upper_node = nullptr;
-      // Start with position provided
-      const Node* node = position;
-      while (node)
-      {
-        // Downcast position to Data_Node reference for key comparisons
-        const Data_Node& data_node = imap::data_cast(*node);
         // Compare the key value to the current upper node key value
         if (node_comp(key, data_node))
         {

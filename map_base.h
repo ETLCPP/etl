@@ -27,8 +27,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_IN_IMAP_H__
-#error This header is a private element of etl::map & etl::imap
+#if !defined(__ETL_IN_IMAP_H__) && !defined(__ETL_IN_IMULTIMAP_H__)
+#error This header is a private element of etl::map, etl::multimap & etl::imap, etl::imultimap
 #endif
 
 #ifndef __ETL_MAP_BASE__

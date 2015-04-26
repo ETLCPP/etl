@@ -27,25 +27,24 @@ SOFTWARE.
 
 #include <UnitTest++/UnitTest++.h>
 
-#include <set>
+#include <map>
 #include <array>
 #include <algorithm>
 #include <utility>
 #include <iterator>
 #include <string>
-#include <vector>
 
-#include "../set.h"
+#include "../multimap.h"
 
 static const size_t SIZE = 10;
 
 #define TEST_GREATER_THAN
 #ifdef TEST_GREATER_THAN
-typedef etl::set<int, SIZE, std::greater<int> >  Data;
-typedef std::set<int, std::greater<int> >        Compare_Data;
+typedef etl::multimap<std::string, int, SIZE, std::greater<std::string> >  Data;
+typedef std::multimap<std::string, int, std::greater<std::string> >        Compare_Data;
 #else
-typedef etl::set<int, SIZE, std::less<int> >  Data;
-typedef std::set<int, std::less<int> >        Compare_Data;
+typedef etl::multimap<std::string, int, SIZE, std::less<std::string> >  Data;
+typedef std::multimap<std::string, int, std::less<std::string> >        Compare_Data;
 #endif
 
 typedef Data::iterator Data_iterator;
@@ -56,7 +55,7 @@ typedef Compare_Data::const_iterator Compare_Data_const_iterator;
 //*************************************************************************
 static std::ostream& operator << (std::ostream& os, const Data_iterator& it)
 {
-  os << (*it);
+  os << (*it).first << " " << (*it).second;
 
   return os;
 }
@@ -64,7 +63,7 @@ static std::ostream& operator << (std::ostream& os, const Data_iterator& it)
 //*************************************************************************
 static std::ostream& operator << (std::ostream& os, const Data_const_iterator& it)
 {
-  os << (*it);
+  os << (*it).first << " " << (*it).second;
 
   return os;
 }
@@ -72,14 +71,22 @@ static std::ostream& operator << (std::ostream& os, const Data_const_iterator& i
 //*************************************************************************
 static std::ostream& operator << (std::ostream& os, const Compare_Data_iterator& it)
 {
-  os << (*it);
+  os << (*it).first << " " << (*it).second;
+
+  return os;
+}
+
+//*************************************************************************
+static std::ostream& operator << (std::ostream& os, const Compare_Data_const_iterator& it)
+{
+  os << (*it).first << " " << (*it).second;
 
   return os;
 }
 
 namespace
 {
-  SUITE(test_set)
+  SUITE(test_multimap)
   {
     //*************************************************************************
     template <typename T1, typename T2>
@@ -87,7 +94,7 @@ namespace
     {
       while (begin1 != end1)
       {
-        if (*begin1 != *begin2)
+        if ((begin1->first != begin2->first) || (begin1->second != begin2->second))
         {
           return false;
         }
@@ -102,74 +109,63 @@ namespace
     //*************************************************************************
     struct SetupFixture
     {
-      std::vector<int> initial_data;
-      std::vector<int> excess_data;
-      std::vector<int> different_data;
-      std::vector<int> random_data;
-  
+      // Multimaps of predefined data from which to constuct multimaps used in
+      // each test
+      std::multimap<std::string, int> initial_data;
+      std::multimap<std::string, int> excess_data;
+      std::multimap<std::string, int> different_data;
+      std::multimap<std::string, int> random_data;
+
       SetupFixture()
       {
-        int n[] =
-        {
-          { 0 },
-          { 1 },
-          { 2 },
-          { 3 },
-          { 4 },
-          { 5 },
-          { 6 },
-          { 7 },
-          { 8 },
-          { 9 },
-        };
+        // Create a map of initial data
+        initial_data.insert(std::pair<std::string, int>("0", 0));
+        initial_data.insert(std::pair<std::string, int>("0", 1));
+        initial_data.insert(std::pair<std::string, int>("1", 2));
+        initial_data.insert(std::pair<std::string, int>("1", 3));
+        initial_data.insert(std::pair<std::string, int>("1", 4));
+        initial_data.insert(std::pair<std::string, int>("2", 5));
+        initial_data.insert(std::pair<std::string, int>("2", 8));
+        initial_data.insert(std::pair<std::string, int>("2", 7));
+        initial_data.insert(std::pair<std::string, int>("3", 6));
+        initial_data.insert(std::pair<std::string, int>("4", 9));
 
-        Data::value_type n2[] =
-        {
-          { 0 },
-          { 1 },
-          { 2 },
-          { 3 },
-          { 4 },
-          { 5 },
-          { 6 },
-          { 7 },
-          { 8 },
-          { 9 },
-          { 10 },
-        };
+        // Create a multimap of excess data
+        excess_data.insert(std::pair<std::string, int>("0", 0));
+        excess_data.insert(std::pair<std::string, int>("1", 1));
+        excess_data.insert(std::pair<std::string, int>("2", 2));
+        excess_data.insert(std::pair<std::string, int>("2", 3));
+        excess_data.insert(std::pair<std::string, int>("3", 6));
+        excess_data.insert(std::pair<std::string, int>("3", 5));
+        excess_data.insert(std::pair<std::string, int>("3", 4));
+        excess_data.insert(std::pair<std::string, int>("4", 7));
+        excess_data.insert(std::pair<std::string, int>("5", 8));
+        excess_data.insert(std::pair<std::string, int>("6", 9));
+        excess_data.insert(std::pair<std::string, int>("10", 10));
 
-        int n3[] =
-        {
-          { 10 },
-          { 11 },
-          { 12 },
-          { 13 },
-          { 14 },
-          { 15 },
-          { 16 },
-          { 17 },
-          { 18 },
-          { 19 },
-        };
+        // Create a multimap of different data
+        different_data.insert(std::pair<std::string, int>("10", 10));
+        different_data.insert(std::pair<std::string, int>("11", 11));
+        different_data.insert(std::pair<std::string, int>("12", 12));
+        different_data.insert(std::pair<std::string, int>("13", 13));
+        different_data.insert(std::pair<std::string, int>("14", 14));
+        different_data.insert(std::pair<std::string, int>("15", 15));
+        different_data.insert(std::pair<std::string, int>("16", 16));
+        different_data.insert(std::pair<std::string, int>("17", 17));
+        different_data.insert(std::pair<std::string, int>("18", 18));
+        different_data.insert(std::pair<std::string, int>("19", 19));
 
-        int n4[] =
-        {
-          { 6 },
-          { 5 },
-          { 0 },
-          { 8 },
-          { 9 },
-          { 2 },
-          { 1 },
-          { 3 },
-          { 7 },
-          { 4 },
-        };
-
-        initial_data.assign(std::begin(n), std::end(n));
-        excess_data.assign(std::begin(n2), std::end(n2));
-        different_data.assign(std::begin(n3), std::end(n3));
-        random_data.assign(std::begin(n4), std::end(n4));
+        // Create a multimap of random data
+        random_data.insert(std::pair<std::string, int>("3", 6));
+        random_data.insert(std::pair<std::string, int>("3", 5));
+        random_data.insert(std::pair<std::string, int>("0", 0));
+        random_data.insert(std::pair<std::string, int>("5", 8));
+        random_data.insert(std::pair<std::string, int>("6", 9));
+        random_data.insert(std::pair<std::string, int>("2", 2));
+        random_data.insert(std::pair<std::string, int>("0", 1));
+        random_data.insert(std::pair<std::string, int>("2", 3));
+        random_data.insert(std::pair<std::string, int>("4", 7));
+        random_data.insert(std::pair<std::string, int>("3", 4));
       }
     };
 
@@ -271,43 +267,63 @@ namespace
       Compare_Data compare_data;
       Data data;
 
-      std::pair<Data::iterator, bool> data_result =
-        data.insert(0);
-      std::pair<Compare_Data::iterator, bool> compare_result =
-        compare_data.insert(0);
+      Data::iterator data_result =
+        data.insert(Data::value_type(std::string("2"), 1));
+      Compare_Data::iterator compare_result =
+        compare_data.insert(std::make_pair(std::string("2"), 1));
 
       // Check that both return successful return results
-      CHECK_EQUAL(*data_result.first, *compare_result.first);
+      CHECK_EQUAL(compare_result->first, data_result->first);
+      CHECK_EQUAL(compare_result->second, data_result->second);
 
-      // Try adding a duplicate (should return iterator pointing to duplicate)
-      data_result = data.insert(0);
-      compare_result = compare_data.insert(0);
+      data_result = data.insert(Data::value_type(std::string("1"), 1));
+      compare_result = compare_data.insert(std::make_pair(std::string("1"), 1));
 
       // Check that both return successful return results
-      CHECK_EQUAL(*data_result.first, *compare_result.first);
+      CHECK_EQUAL(compare_result->first, data_result->first);
+      CHECK_EQUAL(compare_result->second, data_result->second);
 
-      // Check that elements in set are the same
+      data_result = data.insert(Data::value_type(std::string("2"), 2));
+      compare_result = compare_data.insert(std::make_pair(std::string("2"), 2));
+
+      // Check that both return successful return results
+      CHECK_EQUAL(compare_result->first, data_result->first);
+      CHECK_EQUAL(compare_result->second, data_result->second);
+
+      data_result = data.insert(Data::value_type(std::string("3"), 3));
+      compare_result = compare_data.insert(std::make_pair(std::string("3"), 3));
+
+      // Check that both return successful return results
+      CHECK_EQUAL(compare_result->first, data_result->first);
+      CHECK_EQUAL(compare_result->second, data_result->second);
+
+      // Adding this next 2 will trigger a 3 node rotate RL on insert
+      data_result = data.insert(Data::value_type(std::string("2"), 3));
+      compare_result = compare_data.insert(std::make_pair(std::string("2"), 3));
+
+      // Check that both return successful return results
+      CHECK_EQUAL(compare_result->first, data_result->first);
+      CHECK_EQUAL(compare_result->second, data_result->second);
+
+      // Adding this next 4 will trigger a 2 node rotate left on insert
+      data_result = data.insert(Data::value_type(std::string("4"), 4));
+      compare_result = compare_data.insert(std::make_pair(std::string("4"), 4));
+
+      // Check that both return successful return results
+      CHECK_EQUAL(compare_result->first, data_result->first);
+      CHECK_EQUAL(compare_result->second, data_result->second);
+
+      data_result = data.insert(Data::value_type(std::string("0"), 0));
+      compare_result = compare_data.insert(std::make_pair(std::string("0"), 0));
+
+      // Check that both return successful return results
+      CHECK_EQUAL(compare_result->first, data_result->first);
+      CHECK_EQUAL(compare_result->second, data_result->second);
+
+      // Check that elements in map are the same
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),
                                  compare_data.begin());
-      CHECK(isEqual);
-
-      data.insert(2);
-      compare_data.insert(2);
-
-      isEqual = Check_Equal(data.begin(),
-                            data.end(),
-                            compare_data.begin());
-
-      CHECK(isEqual);
-
-      data.insert(1);
-      compare_data.insert(1);
-
-      isEqual = Check_Equal(data.begin(),
-                            data.end(),
-                            compare_data.begin());
-
       CHECK(isEqual);
     }
 
@@ -317,20 +333,23 @@ namespace
       Compare_Data compare_data;
       Data data;
 
-      std::pair<Data::iterator, bool> data_result = data.insert(2);
-      std::pair<Compare_Data::iterator, bool> compare_result = compare_data.insert(2);
+      Data::iterator data_result =
+        data.insert(Data::value_type(std::string("0"), 0));
+      Compare_Data::iterator compare_result =
+        compare_data.insert(std::make_pair(std::string("0"), 0));
 
       // Check that both return successful return results
-      CHECK_EQUAL(*data_result.first, *compare_result.first);
+      CHECK_EQUAL(compare_result->first, data_result->first);
+      CHECK_EQUAL(compare_result->second, data_result->second);
 
-      // Check that elements in set are the same
+      // Check that elements in map are the same
       bool isEqual = Check_Equal(data.begin(),
         data.end(),
         compare_data.begin());
       CHECK(isEqual);
 
-      data.insert(data_result.first, 1);
-      compare_data.insert(compare_result.first, 1);
+      data.insert(data_result, std::make_pair(std::string("1"), 1));
+      compare_data.insert(compare_result, std::make_pair(std::string("1"), 1));
 
       isEqual = Check_Equal(data.begin(),
         data.end(),
@@ -345,22 +364,25 @@ namespace
       Compare_Data compare_data;
       Data data;
 
-      std::pair<Data::iterator, bool> data_result =
-        data.insert(2);
-      std::pair<Compare_Data::iterator, bool> compare_result =
-        compare_data.insert(2);
+      Data::iterator data_result =
+        data.insert(Data::value_type(std::string("2"), 0));
+      Compare_Data::iterator compare_result =
+        compare_data.insert(std::make_pair(std::string("2"), 0));
 
       // Check that both return successful return results
-      CHECK_EQUAL(*data_result.first, *compare_result.first);
+      CHECK_EQUAL(compare_result->first, data_result->first);
+      CHECK_EQUAL(compare_result->second, data_result->second);
 
-      // Check that elements in set are the same
+      // Check that elements in map are the same
       bool isEqual = Check_Equal(data.begin(),
         data.end(),
         compare_data.begin());
       CHECK(isEqual);
 
-      data.insert(Data::const_iterator(data_result.first), 1);
-      compare_data.insert(Compare_Data::const_iterator(compare_result.first), 1);
+      data.insert(Data::const_iterator(data_result),
+        std::make_pair(std::string("1"), 1));
+      compare_data.insert(Compare_Data::const_iterator(compare_result),
+        std::make_pair(std::string("1"), 1));
 
       isEqual = Check_Equal(data.begin(),
         data.end(),
@@ -374,7 +396,7 @@ namespace
     {
       Data data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.insert(10), etl::set_full);
+      CHECK_THROW(data.insert(std::make_pair(std::string("10"), 10)), etl::map_full);
     }
 
     //*************************************************************************
@@ -414,9 +436,8 @@ namespace
     {
       Data data;
 
-      CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::set_full);
+      CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::map_full);
     }
-
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_equal_range)
@@ -424,17 +445,17 @@ namespace
       Compare_Data compare_data(random_data.begin(), random_data.end());
       Data data(random_data.begin(), random_data.end());
 
+      // Test a number not available
       std::pair<Data::iterator, Data::iterator> data_result =
-        data.equal_range(2);
-      Data::iterator data_lb = data.lower_bound(2);
+        data.equal_range("1");
       std::pair<Compare_Data::iterator, Compare_Data::iterator> compare_result =
-        compare_data.equal_range(2);
-      Compare_Data::iterator compare_data_lb = compare_data.lower_bound(2);
+        compare_data.equal_range("1");
 
       // Check that both return the same return results
-      CHECK_EQUAL(*data_lb, *compare_data_lb);
-      CHECK_EQUAL(*data_result.first, *compare_result.first);
-      CHECK_EQUAL(*data_result.second, *compare_result.second);
+      CHECK_EQUAL(compare_result.first->first, data_result.first->first);
+      CHECK_EQUAL(compare_result.first->second, data_result.first->second);
+      CHECK_EQUAL(compare_result.second->first, data_result.second->first);
+      CHECK_EQUAL(compare_result.second->second, data_result.second->second);
 
       bool isEqual = Check_Equal(data.begin(),
         data.end(),
@@ -449,14 +470,17 @@ namespace
       const Compare_Data compare_data(initial_data.begin(), initial_data.end());
       const Data data(initial_data.begin(), initial_data.end());
 
+      // Test a number with several of the same key
       std::pair<Data::const_iterator, Data::const_iterator> data_result =
-        data.equal_range(2);
+        data.equal_range("2");
       std::pair<Compare_Data::const_iterator, Compare_Data::const_iterator> compare_result =
-        compare_data.equal_range(2);
+        compare_data.equal_range("2");
 
       // Check that both return the same return results
-      CHECK_EQUAL(*data_result.first, *compare_result.first);
-      CHECK_EQUAL(*data_result.second, *compare_result.second);
+      CHECK_EQUAL(compare_result.first->first, data_result.first->first);
+      CHECK_EQUAL(compare_result.first->second, data_result.first->second);
+      CHECK_EQUAL(compare_result.second->first, data_result.second->first);
+      CHECK_EQUAL(compare_result.second->second, data_result.second->second);
 
       bool isEqual = Check_Equal(data.begin(),
         data.end(),
@@ -471,8 +495,25 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data data(initial_data.begin(), initial_data.end());
 
-      compare_data.erase(5);
-      data.erase(5);
+      size_t compare_count = compare_data.erase("2");
+      size_t data_count = data.erase("2");
+
+      // Check that both return the same return results
+      CHECK_EQUAL(compare_count, data_count);
+
+      // Erase another value
+      compare_count = compare_data.erase("1");
+      data_count = data.erase("1");
+
+      // Check that both return the same return results
+      CHECK_EQUAL(compare_count, data_count);
+
+      // Erase another value
+      compare_count = compare_data.erase("3");
+      data_count = data.erase("3");
+
+      // Check that both return the same return results
+      CHECK_EQUAL(compare_count, data_count);
 
       bool isEqual = Check_Equal(data.begin(),
         data.end(),
@@ -489,9 +530,6 @@ namespace
 
       Compare_Data::iterator i_compare = compare_data.begin();
       Data::iterator i_data            = data.begin();
-
-      std::advance(i_compare, 2);
-      std::advance(i_data,    2);
 
       compare_data.erase(i_compare);
       data.erase(i_data);
@@ -512,13 +550,13 @@ namespace
       Compare_Data::const_iterator i_compare = compare_data.cbegin();
       Data::const_iterator i_data = data.cbegin();
 
-      std::advance(i_compare, 2);
-      std::advance(i_data, 2);
+      std::advance(i_compare, 8);
+      std::advance(i_data, 8);
 
       Compare_Data::const_iterator i_compare1 = compare_data.erase(i_compare);
       Data::const_iterator i_data1 = data.erase(i_data);
 
-      CHECK_EQUAL(*i_compare1, *i_data1);
+      CHECK_EQUAL(i_compare1->second, i_data1->second);
 
       bool isEqual = Check_Equal(data.begin(),
         data.end(),
@@ -539,8 +577,8 @@ namespace
       Compare_Data::iterator i_compare_end = compare_data.begin();
       Data::iterator i_data_end            = data.begin();
 
-      std::advance(i_compare, 2);
-      std::advance(i_data,    2);
+      std::advance(i_compare, 1);
+      std::advance(i_data,    1);
 
       std::advance(i_compare_end, 4);
       std::advance(i_data_end,    4);
@@ -560,20 +598,8 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data data(initial_data.begin(), initial_data.end());
 
-      Compare_Data::const_iterator i_compare = compare_data.cbegin();
-      Data::const_iterator i_data = data.cbegin();
-
-      Compare_Data::const_iterator i_compare_end = compare_data.cbegin();
-      Data::const_iterator i_data_end = data.cbegin();
-
-      std::advance(i_compare, 2);
-      std::advance(i_data, 2);
-
-      std::advance(i_compare_end, 6);
-      std::advance(i_data_end, 6);
-
-      compare_data.erase(i_compare, i_compare_end);
-      data.erase(i_data, i_data_end);
+      compare_data.erase(compare_data.cbegin(), compare_data.cend());
+      data.erase(data.cbegin(), data.cend());
 
       bool isEqual = Check_Equal(data.begin(),
         data.end(),
@@ -596,10 +622,15 @@ namespace
     TEST_FIXTURE(SetupFixture, test_count)
     {
       const Data data(initial_data.begin(), initial_data.end());
+      const Compare_Data compare_data(initial_data.begin(), initial_data.end());
 
-      CHECK_EQUAL(data.count(3), size_t(1));
-
-      CHECK_EQUAL(data.count(11), size_t(0));
+      CHECK_EQUAL(compare_data.count("."), data.count("."));
+      CHECK_EQUAL(compare_data.count("0"), data.count("0"));
+      CHECK_EQUAL(compare_data.count("1"), data.count("1"));
+      CHECK_EQUAL(compare_data.count("2"), data.count("2"));
+      CHECK_EQUAL(compare_data.count("3"), data.count("3"));
+      CHECK_EQUAL(compare_data.count("4"), data.count("4"));
+      CHECK_EQUAL(compare_data.count("A"), data.count("A"));
     }
 
     //*************************************************************************
@@ -661,25 +692,99 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find)
     {
+      Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data data(initial_data.begin(), initial_data.end());
 
-      Data::iterator it = data.find(3);
-      CHECK_EQUAL(3, *it);
+      Data::iterator i_data = data.find("0");
+      Compare_Data::iterator i_compare = compare_data.find("0");
 
-      it = data.find(11);
-      CHECK_EQUAL(data.end(), it);
+      // Check that both return successful return results
+      CHECK_EQUAL(i_compare->first, i_data->first);
+      CHECK_EQUAL(i_compare->second, i_data->second);
+
+      i_data = data.find("1");
+      i_compare = compare_data.find("1");
+
+      // Check that both return successful return results
+      CHECK_EQUAL(i_compare->first, i_data->first);
+      CHECK_EQUAL(i_compare->second, i_data->second);
+
+      i_data = data.find("2");
+      i_compare = compare_data.find("2");
+
+      // Check that both return successful return results
+      CHECK_EQUAL(i_compare->first, i_data->first);
+      CHECK_EQUAL(i_compare->second, i_data->second);
+
+      i_data = data.find("3");
+      i_compare = compare_data.find("3");
+
+      // Check that both return successful return results
+      CHECK_EQUAL(i_compare->first, i_data->first);
+      CHECK_EQUAL(i_compare->second, i_data->second);
+
+      i_data = data.find(".");
+      i_compare = compare_data.find(".");
+
+      // Check that both return successful return results
+      CHECK_EQUAL(data.end(), i_data);
+      CHECK_EQUAL(compare_data.end(), i_compare);
+
+      i_data = data.find("A");
+      i_compare = compare_data.find("A");
+
+      // Check that both return successful return results
+      CHECK_EQUAL(data.end(), i_data);
+      CHECK_EQUAL(compare_data.end(), i_compare);
     }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_const)
     {
+      const Compare_Data compare_data(initial_data.begin(), initial_data.end());
       const Data data(initial_data.begin(), initial_data.end());
 
-      Data::const_iterator it = data.find(3);
-      CHECK_EQUAL(3, *it);
+      Data::const_iterator i_data = data.find("0");
+      Compare_Data::const_iterator i_compare = compare_data.find("0");
 
-      it = data.find(11);
-      CHECK_EQUAL(data.end(), it);
+      // Check that both return successful return results
+      CHECK_EQUAL(i_compare->first, i_data->first);
+      CHECK_EQUAL(i_compare->second, i_data->second);
+
+      i_data = data.find("1");
+      i_compare = compare_data.find("1");
+
+      // Check that both return successful return results
+      CHECK_EQUAL(i_compare->first, i_data->first);
+      CHECK_EQUAL(i_compare->second, i_data->second);
+
+      i_data = data.find("2");
+      i_compare = compare_data.find("2");
+
+      // Check that both return successful return results
+      CHECK_EQUAL(i_compare->first, i_data->first);
+      CHECK_EQUAL(i_compare->second, i_data->second);
+
+      i_data = data.find("3");
+      i_compare = compare_data.find("3");
+
+      // Check that both return successful return results
+      CHECK_EQUAL(i_compare->first, i_data->first);
+      CHECK_EQUAL(i_compare->second, i_data->second);
+
+      i_data = data.find(".");
+      i_compare = compare_data.find(".");
+
+      // Check that both return successful return results
+      CHECK_EQUAL(data.end(), i_data);
+      CHECK_EQUAL(compare_data.end(), i_compare);
+
+      i_data = data.find("A");
+      i_compare = compare_data.find("A");
+
+      // Check that both return successful return results
+      CHECK_EQUAL(data.end(), i_data);
+      CHECK_EQUAL(compare_data.end(), i_compare);
     }
 
     //*************************************************************************
@@ -714,29 +819,29 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data data(initial_data.begin(), initial_data.end());
 
-      Compare_Data::iterator i_compare = compare_data.lower_bound(8);
-      Data::iterator i_data = data.lower_bound(8);
-      CHECK_EQUAL(*i_compare, *i_data);
+      Compare_Data::iterator i_compare = compare_data.lower_bound("2");
+      Data::iterator i_data = data.lower_bound("2");
+      CHECK_EQUAL(i_compare->second, i_data->second);
 
 #ifdef TEST_GREATER_THAN
-      i_compare = compare_data.lower_bound(-1);
+      i_compare = compare_data.lower_bound(".");
       CHECK_EQUAL(compare_data.end(), i_compare);
 
-      i_data = data.lower_bound(-1);
+      i_data = data.lower_bound(".");
       CHECK_EQUAL(data.end(), i_data);
 
-      i_compare = compare_data.lower_bound(11);
-      i_data = data.lower_bound(11);
-      CHECK_EQUAL(*i_compare, *i_data);
+      i_compare = compare_data.lower_bound("A");
+      i_data = data.lower_bound("A");
+      CHECK_EQUAL(i_compare->second, i_data->second);
 #else
-      i_compare = compare_data.lower_bound(-1);
-      i_data = data.lower_bound(-1);
-      CHECK_EQUAL(*i_compare, *i_data);
+      i_compare = compare_data.lower_bound(".");
+      i_data = data.lower_bound(".");
+      CHECK_EQUAL(i_compare->second, i_data->second);
 
-      i_compare = compare_data.lower_bound(11);
+      i_compare = compare_data.lower_bound("A");
       CHECK_EQUAL(compare_data.end(), i_compare);
 
-      i_data = data.lower_bound(11);
+      i_data = data.lower_bound("A");
       CHECK_EQUAL(data.end(), i_data);
 #endif
     }
@@ -747,29 +852,29 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       const Data data(initial_data.begin(), initial_data.end());
 
-      Compare_Data::const_iterator i_compare = compare_data.lower_bound(4);
-      Data::const_iterator i_data = data.lower_bound(4);
-      CHECK_EQUAL(*i_compare, *i_data);
+      Compare_Data::const_iterator i_compare = compare_data.lower_bound("4");
+      Data::const_iterator i_data = data.lower_bound("4");
+      CHECK_EQUAL(i_compare->second, i_data->second);
 
 #ifdef TEST_GREATER_THAN
-      i_compare = compare_data.lower_bound(-1);
+      i_compare = compare_data.lower_bound(".");
       CHECK_EQUAL(compare_data.end(), i_compare);
 
-      i_data = data.lower_bound(-1);
+      i_data = data.lower_bound(".");
       CHECK_EQUAL(data.end(), i_data);
 
-      i_compare = compare_data.lower_bound(11);
-      i_data = data.lower_bound(11);
-      CHECK_EQUAL(*i_compare, *i_data);
+      i_compare = compare_data.lower_bound("A");
+      i_data = data.lower_bound("A");
+      CHECK_EQUAL(i_compare->second, i_data->second);
 #else
-      i_compare = compare_data.lower_bound(-1);
-      i_data = data.lower_bound(-1);
-      CHECK_EQUAL(*i_compare, *i_data);
+      i_compare = compare_data.lower_bound(".");
+      i_data = data.lower_bound(".");
+      CHECK_EQUAL(i_compare->second, i_data->second);
 
-      i_compare = compare_data.lower_bound(11);
+      i_compare = compare_data.lower_bound("A");
       CHECK_EQUAL(compare_data.end(), i_compare);
 
-      i_data = data.lower_bound(11);
+      i_data = data.lower_bound("A");
       CHECK_EQUAL(data.end(), i_data);
 #endif
     }
@@ -780,29 +885,29 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data data(initial_data.begin(), initial_data.end());
 
-      Compare_Data::iterator i_compare = compare_data.upper_bound(2);
-      Data::iterator i_data = data.upper_bound(2);
-      CHECK_EQUAL(*i_compare, *i_data);
+      Compare_Data::iterator i_compare = compare_data.upper_bound("1");
+      Data::iterator i_data = data.upper_bound("1");
+      CHECK_EQUAL(i_compare->second, i_data->second);
 
 #ifdef TEST_GREATER_THAN
-      i_compare = compare_data.upper_bound(-1);
+      i_compare = compare_data.upper_bound(".");
       CHECK_EQUAL(compare_data.end(), i_compare);
 
-      i_data = data.upper_bound(-1);
+      i_data = data.upper_bound(".");
       CHECK_EQUAL(data.end(), i_data);
 
-      i_compare = compare_data.upper_bound(11);
-      i_data = data.upper_bound(11);
-      CHECK_EQUAL(*i_compare, *i_data);
+      i_compare = compare_data.upper_bound("A");
+      i_data = data.upper_bound("A");
+      CHECK_EQUAL(i_compare->second, i_data->second);
 #else
-      i_compare = compare_data.upper_bound(-1);
-      i_data = data.upper_bound(-1);
-      CHECK_EQUAL(*i_compare, *i_data);
+      i_compare = compare_data.upper_bound(".");
+      i_data = data.upper_bound(".");
+      CHECK_EQUAL(i_compare->second, i_data->second);
 
-      i_compare = compare_data.upper_bound(11);
+      i_compare = compare_data.upper_bound("A");
       CHECK_EQUAL(compare_data.end(), i_compare);
 
-      i_data = data.upper_bound(11);
+      i_data = data.upper_bound("A");
       CHECK_EQUAL(data.end(), i_data);
 #endif
     }
@@ -813,29 +918,29 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       const Data data(initial_data.begin(), initial_data.end());
 
-      Compare_Data::const_iterator i_compare = compare_data.upper_bound(7);
-      Data::const_iterator i_data = data.upper_bound(7);
-      CHECK_EQUAL(*i_compare, *i_data);
+      Compare_Data::const_iterator i_compare = compare_data.upper_bound("3");
+      Data::const_iterator i_data = data.upper_bound("3");
+      CHECK_EQUAL(i_compare->second, i_data->second);
 
 #ifdef TEST_GREATER_THAN
-      i_compare = compare_data.upper_bound(-1);
+      i_compare = compare_data.upper_bound(".");
       CHECK_EQUAL(compare_data.end(), i_compare);
 
-      i_data = data.upper_bound(-1);
+      i_data = data.upper_bound(".");
       CHECK_EQUAL(data.end(), i_data);
 
-      i_compare = compare_data.upper_bound(11);
-      i_data = data.upper_bound(11);
-      CHECK_EQUAL(*i_compare, *i_data);
+      i_compare = compare_data.upper_bound("A");
+      i_data = data.upper_bound("A");
+      CHECK_EQUAL(i_compare->second, i_data->second);
 #else
-      i_compare = compare_data.upper_bound(-1);
-      i_data = data.upper_bound(-1);
-      CHECK_EQUAL(*i_compare, *i_data);
+      i_compare = compare_data.upper_bound(".");
+      i_data = data.upper_bound(".");
+      CHECK_EQUAL(i_compare->second, i_data->second);
 
-      i_compare = compare_data.upper_bound(11);
+      i_compare = compare_data.upper_bound("A");
       CHECK_EQUAL(compare_data.end(), i_compare);
 
-      i_data = data.upper_bound(11);
+      i_data = data.upper_bound("A");
       CHECK_EQUAL(data.end(), i_data);
 #endif
     }

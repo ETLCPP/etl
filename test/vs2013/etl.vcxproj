@@ -153,6 +153,8 @@
     <ClInclude Include="..\..\ilist.h" />
     <ClInclude Include="..\..\iflat_map.h" />
     <ClInclude Include="..\..\imap.h" />
+    <ClInclude Include="..\..\imultimap.h" />
+    <ClInclude Include="..\..\imultiset.h" />
     <ClInclude Include="..\..\instance_count.h" />
     <ClInclude Include="..\..\integral_limits.h" />
     <ClInclude Include="..\..\io_port.h" />
@@ -171,6 +173,8 @@
     <ClInclude Include="..\..\flat_map_base.h" />
     <ClInclude Include="..\..\map.h" />
     <ClInclude Include="..\..\map_base.h" />
+    <ClInclude Include="..\..\multimap.h" />
+    <ClInclude Include="..\..\multiset.h" />
     <ClInclude Include="..\..\nullptr.h" />
     <ClInclude Include="..\..\numeric.h" />
     <ClInclude Include="..\..\observer.h" />
@@ -266,6 +270,8 @@
     </ClCompile>
     <ClCompile Include="..\test_map.cpp" />
     <ClCompile Include="..\test_maths.cpp" />
+    <ClCompile Include="..\test_multimap.cpp" />
+    <ClCompile Include="..\test_multiset.cpp" />
     <ClCompile Include="..\test_numeric.cpp" />
     <ClCompile Include="..\test_observer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>

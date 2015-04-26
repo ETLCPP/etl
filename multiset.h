@@ -27,30 +27,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_SET__
-#define __ETL_SET__
+#ifndef __ETL_MULTISET__
+#define __ETL_MULTISET__
 
 #include <stddef.h>
 #include <iterator>
 #include <functional>
 
-#include "iset.h"
+#include "imultiset.h"
 #include "container.h"
 #include "pool.h"
 
 //*****************************************************************************
-///\defgroup set set
-/// A set with the capacity defined at compile time.
+/// A multiset with the capacity defined at compile time.
 ///\ingroup containers
 //*****************************************************************************
 
 namespace etl
 {
   //*************************************************************************
-  /// A templated set implementation that uses a fixed size buffer.
+  /// A templated multiset implementation that uses a fixed size buffer.
   //*************************************************************************
-  template <typename T, const size_t MAX_SIZE_, typename TCompare = std::less<T>>
-  class set : public iset<T, TCompare>
+  template <typename T, const size_t MAX_SIZE_, typename TCompare = std::less<TKey>>
+  class multiset : public imultiset<T, TCompare>
   {
   public:
 
@@ -59,18 +58,18 @@ namespace etl
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    set()
-      : iset<T, TCompare>(node_pool, MAX_SIZE)
+    multiset()
+      : imultiset<T, TCompare>(node_pool, MAX_SIZE)
     {
     }
 
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
-    explicit set(const set& other)
-      : iset<T, TCompare>(node_pool, MAX_SIZE)
+    explicit multiset(const multiset& other)
+      : imultiset<T, TCompare>(node_pool, MAX_SIZE)
     {
-			iset<T, TCompare>::assign(other.cbegin(), other.cend());
+			imultiset<T, TCompare>::assign(other.cbegin(), other.cend());
     }
 
     //*************************************************************************
@@ -80,21 +79,21 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    set(TIterator first, TIterator last)
-      : iset<T, TCompare>(node_pool, MAX_SIZE)
+    multiset(TIterator first, TIterator last)
+      : imultiset<T, TCompare>(node_pool, MAX_SIZE)
     {
-      iset<T, TCompare>::insert(first, last);
+      imultiset<T, TCompare>::insert(first, last);
     }
 
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    set& operator = (const set& rhs)
+    multiset& operator = (const multiset& rhs)
     {
       // Skip if doing self assignment
       if (this != &rhs)
       {
-        iset<T, TCompare>::assign(rhs.cbegin(), rhs.cend());
+        imultiset<T, TCompare>::assign(rhs.cbegin(), rhs.cend());
       }
 
       return *this;
@@ -102,8 +101,8 @@ namespace etl
 
   private:
 
-    /// The pool of data nodes used for the set.
-    pool<typename iset<T, TCompare>::Data_Node, MAX_SIZE> node_pool;
+    /// The pool of data nodes used for the multiset.
+    pool<typename imultiset<T, TCompare>::Data_Node, MAX_SIZE> node_pool;
   };
 
 }

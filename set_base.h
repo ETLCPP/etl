@@ -4,6 +4,7 @@
 The MIT License(MIT)
 
 Embedded Template Library.
+https://github.com/ETLCPP/etl
 
 Copyright(c) 2014 jwellbelove, rlindeman
 
@@ -26,8 +27,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_IN_ISET_H__
-#error This header is a private element of etl::set & etl::iset
+#if !defined(__ETL_IN_ISET_H__) && !defined(__ETL_IN_IMULTISET_H__)
+#error This header is a private element of etl::set, etl::multiset & etl::iset, etl::imultiset
 #endif
 
 #ifndef __ETL_SET_BASE__
