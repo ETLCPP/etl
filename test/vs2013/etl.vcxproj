@@ -159,6 +159,7 @@
     <ClInclude Include="..\..\integral_limits.h" />
     <ClInclude Include="..\..\io_port.h" />
     <ClInclude Include="..\..\ipool.h" />
+    <ClInclude Include="..\..\ipriority_queue.h" />
     <ClInclude Include="..\..\iqueue.h" />
     <ClInclude Include="..\..\iset.h" />
     <ClInclude Include="..\..\istack.h" />
@@ -183,6 +184,8 @@
     <ClInclude Include="..\..\pool.h" />
     <ClInclude Include="..\..\pool_base.h" />
     <ClInclude Include="..\..\power.h" />
+    <ClInclude Include="..\..\priority_queue.h" />
+    <ClInclude Include="..\..\priority_queue_base.h" />
     <ClInclude Include="..\..\queue.h" />
     <ClInclude Include="..\..\queue_base.h" />
     <ClInclude Include="..\..\radix.h" />
@@ -278,6 +281,7 @@
     </ClCompile>
     <ClCompile Include="..\test_optional.cpp" />
     <ClCompile Include="..\test_pool.cpp" />
+    <ClCompile Include="..\test_priority_queue.cpp" />
     <ClCompile Include="..\test_queue.cpp" />
     <ClCompile Include="..\test_set.cpp" />
     <ClCompile Include="..\test_smallest.cpp" />
