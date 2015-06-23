@@ -6,7 +6,7 @@ The MIT License(MIT)
 Embedded Template Library.
 https://github.com/ETLCPP/etl
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 jwellbelove, rlindeman
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -27,71 +27,73 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_QUEUE__
-#define __ETL_QUEUE__
+#ifndef __ETL_MULTISET__
+#define __ETL_MULTISET__
 
 #include <stddef.h>
-#include <stdint.h>
+#include <iterator>
+#include <functional>
 
-#include "iqueue.h"
+#include "imultiset.h"
 #include "container.h"
-#include "alignment.h"
-#include "array.h"
+#include "pool.h"
 
 //*****************************************************************************
-///\defgroup queue queue
-/// A First-in / first-out queue with the capacity defined at compile time,
-/// written in the STL style.
+/// A multiset with the capacity defined at compile time.
 ///\ingroup containers
 //*****************************************************************************
 
 namespace etl
 {
-  //***************************************************************************
-  ///\ingroup queue
-  /// A fixed capacity queue.
-  /// This queue does not support concurrent access by different threads.
-  /// \tparam T    The type this queue should support.
-  /// \tparam SIZE The maximum capacity of the queue.
-  //***************************************************************************
-  template <typename T, const size_t SIZE>
-  class queue : public iqueue<T>
+  //*************************************************************************
+  /// A templated multiset implementation that uses a fixed size buffer.
+  //*************************************************************************
+  template <typename T, const size_t MAX_SIZE_, typename TCompare = std::less<TKey>>
+  class multiset : public imultiset<T, TCompare>
   {
   public:
+
+    static const size_t MAX_SIZE = MAX_SIZE_;
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    queue()
-      : iqueue<T>(reinterpret_cast<T*>(&buffer[0]), SIZE)
+    multiset()
+      : imultiset<T, TCompare>(node_pool, MAX_SIZE)
     {
     }
 
     //*************************************************************************
-    /// Copy constructor
+    /// Copy constructor.
     //*************************************************************************
-    queue(const queue& rhs)
-      : iqueue<T>(reinterpret_cast<T*>(&buffer[0]), SIZE)
+    explicit multiset(const multiset& other)
+      : imultiset<T, TCompare>(node_pool, MAX_SIZE)
     {
-      iqueue<T>::clone(rhs);
+			imultiset<T, TCompare>::assign(other.cbegin(), other.cend());
     }
 
     //*************************************************************************
-    /// Destructor.
+    /// Constructor, from an iterator range.
+    ///\tparam TIterator The iterator type.
+    ///\param first The iterator to the first element.
+    ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    ~queue()
+    template <typename TIterator>
+    multiset(TIterator first, TIterator last)
+      : imultiset<T, TCompare>(node_pool, MAX_SIZE)
     {
-      iqueue<T>::clear();
+      imultiset<T, TCompare>::insert(first, last);
     }
 
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    queue& operator = (const queue& rhs)
+    multiset& operator = (const multiset& rhs)
     {
-      if (&rhs != this)
+      // Skip if doing self assignment
+      if (this != &rhs)
       {
-        iqueue<T>::clone(rhs);
+        imultiset<T, TCompare>::assign(rhs.cbegin(), rhs.cend());
       }
 
       return *this;
@@ -99,9 +101,10 @@ namespace etl
 
   private:
 
-    /// The uninitialised buffer of T used in the stack.
-    typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[SIZE];
+    /// The pool of data nodes used for the multiset.
+    pool<typename imultiset<T, TCompare>::Data_Node, MAX_SIZE> node_pool;
   };
+
 }
 
 #endif

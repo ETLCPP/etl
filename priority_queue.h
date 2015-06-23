@@ -6,7 +6,7 @@ The MIT License(MIT)
 Embedded Template Library.
 https://github.com/ETLCPP/etl
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2015 jwellbelove, rlindeman
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -27,20 +27,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_QUEUE__
-#define __ETL_QUEUE__
+#ifndef __ETL_PRIORITY_QUEUE__
+#define __ETL_PRIORITY_QUEUE__
 
 #include <stddef.h>
-#include <stdint.h>
+#include <functional>
 
-#include "iqueue.h"
+#include "ipriority_queue.h"
 #include "container.h"
-#include "alignment.h"
-#include "array.h"
+#include "vector.h"
 
 //*****************************************************************************
 ///\defgroup queue queue
-/// A First-in / first-out queue with the capacity defined at compile time,
+/// A priority queue with the capacity defined at compile time,
 /// written in the STL style.
 ///\ingroup containers
 //*****************************************************************************
@@ -54,53 +53,61 @@ namespace etl
   /// \tparam T    The type this queue should support.
   /// \tparam SIZE The maximum capacity of the queue.
   //***************************************************************************
-  template <typename T, const size_t SIZE>
-  class queue : public iqueue<T>
+  template <typename T, const size_t SIZE, typename TContainer = etl::vector<T, SIZE>, typename TCompare = std::less<typename TContainer::value_type> >
+  class priority_queue : public ipriority_queue<T, TContainer, TCompare>
   {
   public:
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    queue()
-      : iqueue<T>(reinterpret_cast<T*>(&buffer[0]), SIZE)
+    priority_queue()
+      : ipriority_queue<T, TContainer, TCompare>(SIZE)
     {
     }
 
     //*************************************************************************
     /// Copy constructor
     //*************************************************************************
-    queue(const queue& rhs)
-      : iqueue<T>(reinterpret_cast<T*>(&buffer[0]), SIZE)
+    priority_queue(const priority_queue& rhs)
+      : ipriority_queue<T, TContainer, TCompare>(SIZE)
     {
-      iqueue<T>::clone(rhs);
+      ipriority_queue<T, TContainer, TCompare>::clone(rhs);
+    }
+
+    //*************************************************************************
+    /// Constructor, from an iterator range.
+    ///\tparam TIterator The iterator type.
+    ///\param first The iterator to the first element.
+    ///\param last  The iterator to the last element + 1.
+    //*************************************************************************
+    template <typename TIterator>
+    priority_queue(TIterator first, TIterator last)
+      : ipriority_queue<T, TContainer, TCompare>(SIZE)
+    {
+      ipriority_queue<T, TContainer, TCompare>::assign(first, last);
     }
 
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
-    ~queue()
+    ~priority_queue()
     {
-      iqueue<T>::clear();
+      ipriority_queue<T, TContainer, TCompare>::clear();
     }
 
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    queue& operator = (const queue& rhs)
+    priority_queue& operator = (const priority_queue& rhs)
     {
       if (&rhs != this)
       {
-        iqueue<T>::clone(rhs);
+        ipriority_queue<T, TContainer, TCompare>::clone(rhs);
       }
 
       return *this;
     }
-
-  private:
-
-    /// The uninitialised buffer of T used in the stack.
-    typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[SIZE];
   };
 }
 

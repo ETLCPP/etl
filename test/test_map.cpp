@@ -35,8 +35,6 @@ SOFTWARE.
 #include <string>
 #include <vector>
 
-#include <iostream>
-
 #include "../map.h"
 
 static const size_t SIZE = 10;
@@ -477,7 +475,6 @@ namespace
 
       CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::map_full);
     }
-
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_equal_range)
