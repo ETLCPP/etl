@@ -156,10 +156,13 @@
     <ClInclude Include="..\..\ilist.h" />
     <ClInclude Include="..\..\iflat_map.h" />
     <ClInclude Include="..\..\imap.h" />
+    <ClInclude Include="..\..\imultimap.h" />
+    <ClInclude Include="..\..\imultiset.h" />
     <ClInclude Include="..\..\instance_count.h" />
     <ClInclude Include="..\..\integral_limits.h" />
     <ClInclude Include="..\..\io_port.h" />
     <ClInclude Include="..\..\ipool.h" />
+    <ClInclude Include="..\..\ipriority_queue.h" />
     <ClInclude Include="..\..\iqueue.h" />
     <ClInclude Include="..\..\iset.h" />
     <ClInclude Include="..\..\istack.h" />
@@ -174,6 +177,8 @@
     <ClInclude Include="..\..\flat_map_base.h" />
     <ClInclude Include="..\..\map.h" />
     <ClInclude Include="..\..\map_base.h" />
+    <ClInclude Include="..\..\multimap.h" />
+    <ClInclude Include="..\..\multiset.h" />
     <ClInclude Include="..\..\nullptr.h" />
     <ClInclude Include="..\..\numeric.h" />
     <ClInclude Include="..\..\observer.h" />
@@ -182,6 +187,8 @@
     <ClInclude Include="..\..\pool.h" />
     <ClInclude Include="..\..\pool_base.h" />
     <ClInclude Include="..\..\power.h" />
+    <ClInclude Include="..\..\priority_queue.h" />
+    <ClInclude Include="..\..\priority_queue_base.h" />
     <ClInclude Include="..\..\queue.h" />
     <ClInclude Include="..\..\queue_base.h" />
     <ClInclude Include="..\..\radix.h" />
@@ -268,12 +275,15 @@
     </ClCompile>
     <ClCompile Include="..\test_map.cpp" />
     <ClCompile Include="..\test_maths.cpp" />
+    <ClCompile Include="..\test_multimap.cpp" />
+    <ClCompile Include="..\test_multiset.cpp" />
     <ClCompile Include="..\test_numeric.cpp" />
     <ClCompile Include="..\test_observer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\test_optional.cpp" />
     <ClCompile Include="..\test_pool.cpp" />
+    <ClCompile Include="..\test_priority_queue.cpp" />
     <ClCompile Include="..\test_queue.cpp" />
     <ClCompile Include="..\test_set.cpp" />
     <ClCompile Include="..\test_smallest.cpp" />

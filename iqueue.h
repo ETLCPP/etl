@@ -63,7 +63,7 @@ namespace etl
     typedef T&                    reference;       ///< A reference to the type used in the queue.
     typedef const T&              const_reference; ///< A const reference to the type used in the queue.
     typedef T*                    pointer;         ///< A pointer to the type used in the queue.
-    typedef const T*              const_pointer;   ///< A const pointer to the type used in the qu
+    typedef const T*              const_pointer;   ///< A const pointer to the type used in the queue.
     typedef queue_base::size_type size_type;       ///< The type used for determining the size of the queue.
 
   private:

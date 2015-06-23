@@ -6,7 +6,7 @@ The MIT License(MIT)
 Embedded Template Library.
 https://github.com/ETLCPP/etl
 
-Copyright(c) 2014 jwellbelove, rlindeman
+Copyright(c) 2015 jwellbelove, rlindeman
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -27,86 +27,73 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#if !defined(__ETL_IN_IMAP_H__) && !defined(__ETL_IN_IMULTIMAP_H__)
-#error This header is a private element of etl::map, etl::multimap & etl::imap, etl::imultimap
+#ifndef __ETL_IN_IPRIORITY_QUEUE_H__
+#error This header is a private element of etl::priority_queue & etl::ipriority_queue
 #endif
 
-#ifndef __ETL_MAP_BASE__
-#define __ETL_MAP_BASE__
+#ifndef __ETL_PRIORITY_QUEUE_BASE__
+#define __ETL_PRIORITY_QUEUE_BASE__
 
 #include <stddef.h>
+
 #include "exception.h"
 
 namespace etl
 {
   //***************************************************************************
-  /// Exception for the map.
-  ///\ingroup map
+  /// The base class for priority_queue exceptions.
+  ///\ingroup queue
   //***************************************************************************
-  class map_exception : public exception
+  class priority_queue_exception : public exception
   {
   public:
 
-    map_exception(const char* what)
+    priority_queue_exception(const char* what)
       : exception(what)
     {
     }
   };
 
   //***************************************************************************
-  /// Full exception for the map.
-  ///\ingroup map
+  /// The exception thrown when the queue is full.
+  ///\ingroup queue
   //***************************************************************************
-  class map_full : public map_exception
+  class priority_queue_full : public priority_queue_exception
   {
   public:
 
-    map_full()
-      : map_exception("map: full")
+    priority_queue_full()
+      : priority_queue_exception("priority_queue: full")
     {
     }
   };
 
   //***************************************************************************
-  /// Map out of bounds exception.
-  ///\ingroup map
+  /// The priority queue iterator exception on reversed iterators
+  ///\ingroup queue
   //***************************************************************************
-  class map_out_of_bounds : public map_exception
+  class priority_queue_iterator : public priority_queue_exception
   {
   public:
 
-    map_out_of_bounds()
-      : map_exception("map: out of bounds")
+    priority_queue_iterator()
+      : priority_queue_exception("priority_queue: iterator error")
     {
     }
   };
 
   //***************************************************************************
-  /// Iterator exception for the map.
-  ///\ingroup map
+  /// The base class for all priority queues.
+  ///\ingroup queue
   //***************************************************************************
-  class map_iterator : public map_exception
+  class priority_queue_base
   {
   public:
 
-    map_iterator()
-      : map_exception("map: iterator problem")
-    {
-    }
-  };
-
-  //***************************************************************************
-  /// The base class for all maps.
-  ///\ingroup map
-  //***************************************************************************
-  class map_base
-  {
-  public:
-
-    typedef size_t size_type; ///< The type used for determining the size of map.
+    typedef size_t size_type; ///< The type used for determining the size of queue.
 
     //*************************************************************************
-    /// Gets the size of the map.
+    /// Returns the current number of items in the priority queue.
     //*************************************************************************
     size_type size() const
     {
@@ -114,7 +101,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the maximum possible size of the map.
+    /// Returns the maximum number of items that can be queued.
     //*************************************************************************
     size_type max_size() const
     {
@@ -122,7 +109,8 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Checks to see if the map is empty.
+    /// Checks to see if the priority queue is empty.
+    /// \return <b>true</b> if the queue is empty, otherwise <b>false</b>
     //*************************************************************************
     bool empty() const
     {
@@ -130,20 +118,12 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Checks to see if the map is full.
+    /// Checks to see if the priority queue is full.
+    /// \return <b>true</b> if the priority queue is full, otherwise <b>false</b>
     //*************************************************************************
     bool full() const
     {
       return current_size == MAX_SIZE;
-    }
-
-    //*************************************************************************
-    /// Returns the capacity of the vector.
-    ///\return The capacity of the vector.
-    //*************************************************************************
-    size_type capacity() const
-    {
-      return MAX_SIZE;
     }
 
     //*************************************************************************
@@ -160,15 +140,14 @@ namespace etl
     //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
-    map_base(size_type max_size)
-      : current_size(0)
-      , MAX_SIZE(max_size)
-
+    priority_queue_base(size_type max_size)
+      : current_size(0),
+        MAX_SIZE(max_size)
     {
     }
 
-    size_type current_size;   ///< The number of the used nodes.
-    const size_type MAX_SIZE; ///< The maximum size of the map.
+    size_type current_size;   ///< The number of items in the priority queue.
+    const size_type MAX_SIZE; ///< The maximum number of items in the priority queue.
   };
 }
 

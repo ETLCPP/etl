@@ -2,6 +2,7 @@
 The MIT License(MIT)
 
 Embedded Template Library.
+https://github.com/ETLCPP/etl
 
 Copyright(c) 2014 jwellbelove, rlindeman
 
@@ -53,25 +54,25 @@ typedef Compare_Data::iterator Compare_Data_iterator;
 typedef Compare_Data::const_iterator Compare_Data_const_iterator;
 
 //*************************************************************************
-std::ostream& operator << (std::ostream& os, const Data_iterator& it)
+static std::ostream& operator << (std::ostream& os, const Data_iterator& it)
 {
-  os << (*it) << " " << (*it);
+  os << (*it);
 
   return os;
 }
 
 //*************************************************************************
-std::ostream& operator << (std::ostream& os, const Data_const_iterator& it)
+static std::ostream& operator << (std::ostream& os, const Data_const_iterator& it)
 {
-  os << (*it) << " " << (*it);
+  os << (*it);
 
   return os;
 }
 
 //*************************************************************************
-std::ostream& operator << (std::ostream& os, const Compare_Data_iterator& it)
+static std::ostream& operator << (std::ostream& os, const Compare_Data_iterator& it)
 {
-  os << (*it) << " " << (*it);
+  os << (*it);
 
   return os;
 }
