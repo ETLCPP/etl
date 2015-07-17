@@ -26,8 +26,8 @@ The library is intended for any compiler that supports C++ 03.
 **Main features:**
 
  - Cross platform. This library is not specific to any processor type.
- - No dynamic memory allocation.
- - Very little use of virtual functions.
+ - No dynamic memory allocation. (No heap required)
+ - Very little use of virtual functions. (Keeps the vtable count low)
  - A set of fixed capacity containers. (array, bitset, deque, forward_list, list, queue,  stack, vector)
  - As the storage for all of the container types is allocated as a contiguous block, they are extremely cache friendly
  - Templated compile time constants.
