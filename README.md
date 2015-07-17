@@ -29,7 +29,7 @@ The library is intended for any compiler that supports C++ 03.
  - No dynamic memory allocation. (No heap required)
  - Very little use of virtual functions. (Keeps the vtable sizes low)
  - A set of fixed capacity containers. (array, bitset, deque, forward_list, list, queue,  stack, vector)
- - As the storage for all of the container types is allocated as a contiguous block, they are extremely cache friendly
+ - Cache friendlly containers, as the storage for each of the container types is allocated as a contiguous block
  - Templated compile time constants.
  - Templated design pattern base classes (Visitor, Observer)
  - Reverse engineered C++ 0x11 features (type traits, algorithms, containers etc.)
