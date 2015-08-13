@@ -132,7 +132,7 @@ namespace etl
       // Do we have a third hash?
       if (!etl::is_same<THash3, null_hash>::value)
       {
-        exists2 = flags[get_hash<THash3>(key)];
+        exists3 = flags[get_hash<THash3>(key)];
       }
 
       return exists1 && exists2 && exists3;
