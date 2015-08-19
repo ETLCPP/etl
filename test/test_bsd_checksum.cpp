@@ -35,15 +35,32 @@ SOFTWARE.
 #include "../bsd_checksum.h"
 #include "../endian.h"
 
-template <typename TSum, typename TIterator>
+template <typename TSum, const int ENDIAN, typename TIterator>
 TSum reference_checksum(TIterator begin, TIterator end)
 {
+  typedef typename std::iterator_traits<TIterator>::value_type value_type;
     TSum checksum = 0;
 
     while (begin != end)
     {
-        checksum = etl::rotate_right(checksum);
-        checksum += *begin;
+      value_type value = *begin++;
+
+      if (ENDIAN == etl::endian::little)
+      {
+        for (int i = 0; i < sizeof(value_type); ++i)
+        {
+          uint8_t byte = (value >> (i * 8)) & 0xFF;
+          checksum = etl::rotate_right(checksum) + byte;
+        }
+      }
+      else
+      {
+        for (int i = 0; i < sizeof(value_type); ++i)
+        {
+          uint8_t byte = (value >> ((sizeof(value_type) - 1 - i) * 8)) & 0xFF;
+          checksum = etl::rotate_right(checksum) + byte;
+        }
+      }
     }
 
     return checksum;
@@ -59,9 +76,9 @@ namespace
       std::string data("123456789");
 
       uint8_t sum     = etl::bsd_checksum<uint8_t>(data.begin(), data.end());
-      uint8_t compare = reference_checksum<uint8_t>(data.begin(), data.end());
+      uint8_t compare = reference_checksum<uint8_t, etl::endian::little>(data.begin(), data.end());
 
-      CHECK_EQUAL(compare, sum);
+      CHECK_EQUAL(int(compare), int(sum));
     }
 
     //*************************************************************************
@@ -77,9 +94,9 @@ namespace
       }
       
       uint8_t sum     = checksum_calculator;
-      uint8_t compare = reference_checksum<uint8_t>(data.begin(), data.end());
+      uint8_t compare = reference_checksum<uint8_t, etl::endian::little>(data.begin(), data.end());
 
-      CHECK_EQUAL(compare, sum);
+      CHECK_EQUAL(int(compare), int(sum));
     }
 
     //*************************************************************************
@@ -95,9 +112,9 @@ namespace
       }
 
       uint8_t sum     = checksum_calculator;
-      uint8_t compare = reference_checksum<uint8_t>(data.begin(), data.end());
+      uint8_t compare = reference_checksum<uint8_t, etl::endian::little>(data.begin(), data.end());
 
-      CHECK_EQUAL(compare, sum);
+      CHECK_EQUAL(int(compare), int(sum));
     }
 
     //*************************************************************************
@@ -113,9 +130,9 @@ namespace
       }
 
       uint8_t sum     = checksum_calculator;
-      uint8_t compare = reference_checksum<uint8_t>(data.begin(), data.end());
+      uint8_t compare = reference_checksum<uint8_t, etl::endian::little>(data.begin(), data.end());
 
-      CHECK_EQUAL(compare, sum);
+      CHECK_EQUAL(int(compare), int(sum));
     }
 
     //*************************************************************************
@@ -131,7 +148,7 @@ namespace
       }
 
       uint32_t sum     = checksum_calculator;
-      uint32_t compare = reference_checksum<uint32_t>(data.begin(), data.end());
+      uint32_t compare = reference_checksum<uint32_t, etl::endian::little>(data.begin(), data.end());
 
       CHECK_EQUAL(compare, sum);
     }
@@ -149,7 +166,7 @@ namespace
       }
 
       uint32_t sum     = checksum_calculator;
-      uint32_t compare = reference_checksum<uint32_t>(data.begin(), data.end());
+      uint32_t compare = reference_checksum<uint32_t, etl::endian::little>(data.begin(), data.end());
 
       CHECK_EQUAL(compare, sum);
     }
@@ -167,7 +184,7 @@ namespace
       }
 
       uint32_t sum     = checksum_calculator;
-      uint32_t compare = reference_checksum<uint32_t>(data.begin(), data.end());
+      uint32_t compare = reference_checksum<uint32_t, etl::endian::little>(data.begin(), data.end());
 
       CHECK_EQUAL(compare, sum);
     }
@@ -182,22 +199,22 @@ namespace
       checksum_calculator.add(data.begin(), data.end());
 
       uint8_t sum     = checksum_calculator.value();
-      uint8_t compare = reference_checksum<uint8_t>(data.begin(), data.end());
+      uint8_t compare = reference_checksum<uint8_t, etl::endian::little>(data.begin(), data.end());
 
-      CHECK_EQUAL(compare, sum);
+      CHECK_EQUAL(int(compare), int(sum));
     }
 
     //*************************************************************************
     TEST(test_checksum_add_range_sum32)
     {
-      std::string data("123456789");
+      std::string data("1");
 
       etl::bsd_checksum<uint32_t> checksum_calculator;
 
       checksum_calculator.add(data.begin(), data.end());
 
       uint32_t sum     = checksum_calculator.value();
-      uint32_t compare = reference_checksum<uint8_t>(data.begin(), data.end());
+      uint32_t compare = reference_checksum<uint32_t, etl::endian::little>(data.begin(), data.end());
 
       CHECK_EQUAL(compare, sum);
     }
@@ -228,7 +245,7 @@ namespace
 
       uint8_t sum = checksum_calculator.value();
 
-      CHECK_EQUAL(165, int(sum));
+      CHECK_EQUAL(120, int(sum));
     }
 
     //*************************************************************************
@@ -244,19 +261,23 @@ namespace
       etl::ihash::generic_digest digest;
 
       digest = checksum_calculator8.digest();
-      CHECK_EQUAL(221, *digest.first);
+      uint8_t compare8 = reference_checksum<uint8_t, etl::endian::little>(data.begin(), data.end());
+      CHECK_EQUAL(compare8, int(*digest.first));
       CHECK_EQUAL(sizeof(uint8_t), std::distance(digest.first, digest.second));
 
       digest = checksum_calculator16.digest();
-      CHECK_EQUAL(477, *reinterpret_cast<const uint16_t*>(digest.first));
+      uint16_t compare16 = reference_checksum<uint16_t, etl::endian::little>(data.begin(), data.end());
+      CHECK_EQUAL(compare16, *reinterpret_cast<const uint16_t*>(digest.first));
       CHECK_EQUAL(sizeof(uint16_t), std::distance(digest.first, digest.second));
       
       digest = checksum_calculator32.digest();
-      CHECK_EQUAL(477, *reinterpret_cast<const uint32_t*>(digest.first));
+      uint32_t compare32 = reference_checksum<uint32_t, etl::endian::little>(data.begin(), data.end());
+      CHECK_EQUAL(compare32, *reinterpret_cast<const uint32_t*>(digest.first));
       CHECK_EQUAL(sizeof(uint32_t), std::distance(digest.first, digest.second));
       
       digest = checksum_calculator64.digest();
-      CHECK_EQUAL(477, *reinterpret_cast<const uint64_t*>(digest.first));
+      uint64_t compare64 = reference_checksum<uint64_t, etl::endian::little>(data.begin(), data.end());
+      CHECK_EQUAL(compare64, *reinterpret_cast<const uint64_t*>(digest.first));
       CHECK_EQUAL(sizeof(uint64_t), std::distance(digest.first, digest.second));
     }
   };
