@@ -78,6 +78,21 @@ namespace etl
 
     static ifunction<const exception&>* p_ifunction;
   };
+
+  //***************************************************************************
+  /// Raise an error.
+  /// If ETL_THROW_EXCEPTIONS is defined then the error is thrown, otherwise
+  /// the error handler is called.
+  ///\ingroup error_handler
+  //***************************************************************************
+  inline void raise_error(const exception& e)
+  {
+#ifdef ETL_THROW_EXCEPTIONS
+    throw e;
+#else
+    error_handler::error(e);
+#endif
+  }
 }
 
 #endif
