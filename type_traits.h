@@ -237,9 +237,9 @@ namespace etl
   template <typename T> struct make_signed { typedef  T type; };
   template <> struct make_signed<char> { typedef  signed char type; };
   template <> struct make_signed<unsigned char> { typedef  signed char type; };
-#ifdef COMPILER_MICROSOFT
+//#ifdef COMPILER_MICROSOFT
   template <> struct make_signed<wchar_t> { typedef  short type; };
-#endif
+//#endif
   template <> struct make_signed<unsigned short> { typedef  short type; };
   template <> struct make_signed<unsigned int> { typedef int type; };
   template <> struct make_signed<unsigned long> { typedef  long type; };
@@ -254,9 +254,9 @@ namespace etl
   template <> struct make_unsigned<char> { typedef unsigned char type; };
   template <> struct make_unsigned<signed char> { typedef unsigned char type; };
   template <> struct make_unsigned<short> { typedef unsigned short type; };
-#ifdef COMPILER_MICROSOFT
-  template <> struct make_unsigned<wchar_t> { typedef unsigned short type; };
-#endif
+//#ifdef COMPILER_GCC
+  template <> struct make_unsigned<wchar_t> { typedef unsigned int type; };
+//#endif
   template <> struct make_unsigned<int> { typedef unsigned int type; };
   template <> struct make_unsigned<long> { typedef unsigned long type; };
   template <> struct make_unsigned<long long> { typedef unsigned long long type; };
@@ -330,7 +330,7 @@ namespace etl
 #ifdef COMPILER_GCC
   template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof__(T))> {};
 #endif
-	
+
 #ifdef COMPILER_KEIL
   template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof__(T))> {};
 #endif
