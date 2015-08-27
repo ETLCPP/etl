@@ -239,10 +239,10 @@ namespace
     TEST(test_add_reference)
     {
       CHECK((std::is_same<etl::add_reference<int>::type,                 std::add_lvalue_reference<int>::type>::value));
-      CHECK((std::is_same<etl::add_reference<int&>::type,                std::add_reference<int&>::type>::value));
-      CHECK((std::is_same<etl::add_reference<const int&>::type,          std::add_reference<const int&>::type>::value));
-      CHECK((std::is_same<etl::add_reference<volatile int&>::type,       std::add_reference<volatile int&>::type>::value));
-      CHECK((std::is_same<etl::add_reference<const volatile int&>::type, std::add_reference<const volatile int&>::type>::value));
+      CHECK((std::is_same<etl::add_reference<int&>::type,                std::add_lvalue_reference<int&>::type>::value));
+      CHECK((std::is_same<etl::add_reference<const int&>::type,          std::add_lvalue_reference<const int&>::type>::value));
+      CHECK((std::is_same<etl::add_reference<volatile int&>::type,       std::add_lvalue_reference<volatile int&>::type>::value));
+      CHECK((std::is_same<etl::add_reference<const volatile int&>::type, std::add_lvalue_reference<const volatile int&>::type>::value));
 
     }
 
