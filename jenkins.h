@@ -119,7 +119,7 @@ namespace etl
     {
       if (is_finalised)
       {
-        etl::raise_error(hash_finalised());
+        ETL_ERROR(hash_finalised());
       }
       else
       {
@@ -243,7 +243,7 @@ namespace etl
     {
       if (is_finalised)
       {
-        etl::raise_error(hash_finalised());
+        ETL_ERROR(hash_finalised());
       }
       else
       {
