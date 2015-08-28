@@ -536,38 +536,52 @@ namespace
       CHECK(initial1 != different);
     }
 
-	//*************************************************************************
-	TEST_FIXTURE(SetupFixture, test_multi)
-	{
-	  Compare_DataNDC compare_data(multi_data.begin(), multi_data.end());
-	  DataNDC data(multi_data.begin(), multi_data.end());
+	  //*************************************************************************
+	  TEST_FIXTURE(SetupFixture, test_multi)
+	  {
+	    Compare_DataNDC compare_data(multi_data.begin(), multi_data.end());
+	    DataNDC data(multi_data.begin(), multi_data.end());
 
-	  std::pair<Compare_DataNDC::iterator, Compare_DataNDC::iterator> compare_range;
-	  std::pair<DataNDC::iterator, DataNDC::iterator> test_range;
+	    std::pair<Compare_DataNDC::iterator, Compare_DataNDC::iterator> compare_range;
+	    std::pair<DataNDC::iterator, DataNDC::iterator> test_range;
 		
-	  compare_range = compare_data.equal_range(0);
-	  test_range    = data.equal_range(0);
-	  CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
+	    compare_range = compare_data.equal_range(0);
+	    test_range    = data.equal_range(0);
+	    CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
 
-	  compare_range = compare_data.equal_range(1);
-	  test_range    = data.equal_range(1);
-	  CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
+	    compare_range = compare_data.equal_range(1);
+	    test_range    = data.equal_range(1);
+	    CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
 
-	  compare_range = compare_data.equal_range(2);
-	  test_range    = data.equal_range(2);
-	  CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
+	    compare_range = compare_data.equal_range(2);
+	    test_range    = data.equal_range(2);
+	    CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
 
-	  compare_range = compare_data.equal_range(3);
-	  test_range    = data.equal_range(3);
-	  CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
+	    compare_range = compare_data.equal_range(3);
+	    test_range    = data.equal_range(3);
+	    CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
 
-	  compare_range = compare_data.equal_range(4);
-	  test_range    = data.equal_range(4);
-	  CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
+	    compare_range = compare_data.equal_range(4);
+	    test_range    = data.equal_range(4);
+	    CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
 
-	  compare_range = compare_data.equal_range(5);
-	  test_range    = data.equal_range(5);
-	  CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
-	}
+	    compare_range = compare_data.equal_range(5);
+	    test_range    = data.equal_range(5);
+	    CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
+	  }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_count)
+    {
+      Compare_DataNDC compare_data(multi_data.begin(), multi_data.end());
+      DataNDC data(multi_data.begin(), multi_data.end());
+
+      CHECK_EQUAL(compare_data.count(0), data.count(0));
+      CHECK_EQUAL(compare_data.count(1), data.count(1));
+      CHECK_EQUAL(compare_data.count(2), data.count(2));
+      CHECK_EQUAL(compare_data.count(3), data.count(3));
+      CHECK_EQUAL(compare_data.count(4), data.count(4));
+      CHECK_EQUAL(compare_data.count(5), data.count(5));
+    }
   };
 }
