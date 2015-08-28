@@ -354,8 +354,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Inserts a value to the flat_set.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_set_full if the flat_set is already full.
+    /// Inserts a value to the flat_map.
+    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_map_full if the flat_map is already full.
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
