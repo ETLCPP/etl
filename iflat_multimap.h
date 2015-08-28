@@ -275,8 +275,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Inserts a value to the flat_set.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_set_full if the flat_set is already full.
+    /// Inserts a value to the flast_multi.
+    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_map_full if the flat_map is already full.
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -378,7 +378,7 @@ namespace etl
     //*********************************************************************
     size_t count(key_value_parameter_t key) const
     {
-	  std::pair<iterator, iterator> range = equal_range(key);
+	    std::pair<const_iterator, const_iterator> range = equal_range(key);
 
 	  return std::distance(range.first, range.second);
     }
@@ -490,5 +490,5 @@ namespace etl
   }
 }
 
-#undef __ETL_IN_Iflat_multimap_H__
+#undef __ETL_IN_IFLAT_MULTIMAP_H__
 #endif
