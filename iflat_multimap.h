@@ -316,8 +316,9 @@ namespace etl
       }
       else
       {
+		size_t count = std::distance(range.first, range.second);
 		erase(range.first, range.second);
-        return 1;
+        return count;
       }
     }
 
@@ -377,7 +378,9 @@ namespace etl
     //*********************************************************************
     size_t count(key_value_parameter_t key) const
     {
-      return (find(key == end()) ? 0 : 1);
+	  std::pair<iterator, iterator> range = equal_range(key);
+
+	  return std::distance(range.first, range.second);
     }
 
     //*********************************************************************
