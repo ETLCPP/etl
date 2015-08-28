@@ -137,7 +137,7 @@ namespace etl
     //*************************************************************************
     /// Gets the generic digest value.
     //*************************************************************************
-    generic_digest digest() const
+    generic_digest digest()
     {
       return ihash::get_digest(hash);
     }
@@ -241,7 +241,7 @@ namespace etl
     //*************************************************************************
     /// Gets the generic digest value.
     //*************************************************************************
-    generic_digest digest() const
+    generic_digest digest()
     {
       return ihash::get_digest(hash);
     }
@@ -345,7 +345,7 @@ namespace etl
     //*************************************************************************
     /// Gets the generic digest value.
     //*************************************************************************
-    generic_digest digest() const
+    generic_digest digest()
     {
       return ihash::get_digest(hash);
     }
@@ -449,7 +449,7 @@ namespace etl
     //*************************************************************************
     /// Gets the generic digest value.
     //*************************************************************************
-    generic_digest digest() const
+    generic_digest digest()
     {
       return ihash::get_digest(hash);
     }

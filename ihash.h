@@ -167,7 +167,7 @@ namespace etl
     //*************************************************************************
     /// Gets the result as a generic digest.
     //*************************************************************************
-    virtual generic_digest digest() const = 0;
+    virtual generic_digest digest() = 0;
 
   protected:
 
