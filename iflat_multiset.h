@@ -353,7 +353,7 @@ namespace etl
     //*********************************************************************
     size_t count(parameter_t key) const
     {
-      std::pair<iterator, iterator> range = equal_range(key);
+      std::pair<const_iterator, const_iterator> range = equal_range(key);
 
   	  return std::distance(range.first, range.second);
     }
@@ -461,5 +461,5 @@ namespace etl
   }
 }
 
-#undef __ETL_IN_IFLAT_SET_H__
+#undef __ETL_IN_IFLAT_MULTISET_H__
 #endif
