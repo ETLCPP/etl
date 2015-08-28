@@ -228,16 +228,16 @@ namespace
 
       DataNDC data(compare_data.begin(), compare_data.end());
 
-      //CHECK_EQUAL(data[0], compare_data[0]);
-      //CHECK_EQUAL(data[1], compare_data[1]);
-      //CHECK_EQUAL(data[2], compare_data[2]);
-      //CHECK_EQUAL(data[3], compare_data[3]);
-      //CHECK_EQUAL(data[4], compare_data[4]);
-      //CHECK_EQUAL(data[5], compare_data[5]);
-      //CHECK_EQUAL(data[6], compare_data[6]);
-      //CHECK_EQUAL(data[7], compare_data[7]);
-      //CHECK_EQUAL(data[8], compare_data[8]);
-      //CHECK_EQUAL(data[9], compare_data[9]);
+      CHECK_EQUAL(compare_data[0], data[0]);
+      CHECK_EQUAL(compare_data[1], data[1]);
+      CHECK_EQUAL(compare_data[2], data[2]);
+      CHECK_EQUAL(compare_data[3], data[3]);
+      CHECK_EQUAL(compare_data[4], data[4]);
+      CHECK_EQUAL(compare_data[5], data[5]);
+      CHECK_EQUAL(compare_data[6], data[6]);
+      CHECK_EQUAL(compare_data[7], data[7]);
+      CHECK_EQUAL(compare_data[8], data[8]);
+      CHECK_EQUAL(compare_data[9], data[9]);
     }
 
     //*************************************************************************

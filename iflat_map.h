@@ -223,10 +223,11 @@ namespace etl
     {
       iterator i_element = lower_bound(key);
 
-      if (i_element->first != key)
+      if (i_element == end())
       {
         // Doesn't exist, so create a new one.
-        i_element = insert(std::make_pair(key, mapped_type())).first;
+	    value_type value(key, mapped_type());
+        i_element = insert(value).first;
       }
 
       return i_element->second;
@@ -245,12 +246,7 @@ namespace etl
       if (i_element == end())
       {
         // Doesn't exist.
-#if ETL_THROW_EXCEPTIONS
-        throw flat_map_out_of_bounds();
-#else
-        error_handler::error(flat_map_out_of_bounds());
-
-#endif
+		ETL_ERROR(flat_map_out_of_bounds());
       }
 
       return i_element->second;
@@ -269,12 +265,7 @@ namespace etl
       if (i_element == end())
       {
         // Doesn't exist.
-#if ETL_THROW_EXCEPTIONS
-        throw flat_map_out_of_bounds();
-#else
-        error_handler::error(flat_map_out_of_bounds());
-
-#endif
+		ETL_ERROR(flat_map_out_of_bounds());
       }
 
       return i_element->second;
@@ -295,11 +286,7 @@ namespace etl
 
       if (count < 0)
       {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw flat_map_iterator();
-#else
-        error_handler::error(flat_map_iterator());
-#endif
+		ETL_ERROR(flat_map_iterator());
       }
 #endif
 
@@ -327,11 +314,7 @@ namespace etl
         // At the end.
         if (buffer.full())
         {
-#ifdef ETL_THROW_EXCEPTIONS
-          throw flat_map_full();
-#else
-          error_handler::error(flat_map_full());
-#endif
+		  ETL_ERROR(flat_map_full());
         }
         else
         {
@@ -356,11 +339,7 @@ namespace etl
           // A new one.
           if (buffer.full())
           {
-#ifdef ETL_THROW_EXCEPTIONS
-            throw flat_map_full();
-#else
-            error_handler::error(flat_map_full());
-#endif
+			ETL_ERROR(flat_map_full());
           }
           else
           {

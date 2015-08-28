@@ -423,6 +423,21 @@
     <ClInclude Include="..\murmurhash3.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\bsd_checksum.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jenkins.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\flat_multimap.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\flat_multimap_base.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\iflat_multimap.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\AssertException.cpp">
@@ -645,6 +660,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\murmurhash3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_flat_multimap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
