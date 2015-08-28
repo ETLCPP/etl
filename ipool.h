@@ -457,7 +457,7 @@ namespace etl
     /// \param p_object A pointer to the object to be checked.
     /// \return <b>true<\b> if it does, otherwise <b>false</b>
     //*************************************************************************
-    bool is_in_pool(const T* const p_object) const
+    bool is_in_pool(const T* p_object) const
     {
       // Does this object belong to this pool?
       typename std::iterator_traits<T*>::difference_type distance = p_object - p_buffer;
@@ -465,6 +465,61 @@ namespace etl
       // Within the range of the buffer?
       return ((distance >= 0) && (distance < static_cast<typename std::iterator_traits<T*>::difference_type>(MAX_SIZE)));
     }
+
+    //*************************************************************************
+    /// Gets the iterator to the object.
+    /// If the object is not in the pool then end() is returned.
+    /// \param object A const reference to the object to be checked.
+    /// \return An iterator to the object or end().
+    //*************************************************************************
+    iterator get_iterator(T& object)
+    {
+      if (is_in_pool(object))
+      {
+        iterator i_object = begin();
+
+        while (i_object != end())
+        {
+          // Same one?
+          if (&object == &*i_object)
+          {
+            return i_object;
+          }
+
+          ++i_object;
+        }
+      }
+
+      return end();
+    }
+
+    //*************************************************************************
+    /// Gets the const_iterator to the object.
+    /// If the object is not in the pool then end() is returned.
+    /// \param object A const reference to the object to be checked.
+    /// \return An const_iterator to the object or end().
+    //*************************************************************************
+    const_iterator get_iterator(const T& object) const
+    {
+      if (is_in_pool(object))
+      {
+        const_iterator i_object = begin();
+
+        while (i_object != end())
+        {
+          // Same one?
+          if (&object == &*i_object)
+          {
+            return i_object;
+          }
+
+          ++i_object;
+        }
+      }
+
+      return end();
+    }
+
 
   protected:
 

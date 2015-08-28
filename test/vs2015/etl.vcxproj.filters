@@ -405,38 +405,26 @@
     <ClInclude Include="..\..\irr_cache.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\jenkins.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\lru_cache.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\..\mru_cache.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\rr_cache.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\etlhash.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\murmur3.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\pearson.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rr_cache.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\murmurhash3.h">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\bsd_checksum.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\jenkins.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\flat_multimap.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\flat_multimap_base.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\iflat_multimap.h">
-      <Filter>ETL\Containers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -656,13 +644,22 @@
     <ClCompile Include="..\test_priority_queue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\pearson.cpp">
+      <Filter>ETL\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_flat_multimap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_jenkins.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\test_murmur3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\murmurhash3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_flat_multimap.cpp">
+    <ClCompile Include="..\test_flat_multiset.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -672,6 +669,5 @@
     </None>
     <None Include="ClassDiagram.cd" />
     <None Include="ClassDiagram1.cd" />
-    <None Include="ClassDiagram2.cd" />
   </ItemGroup>
 </Project>

@@ -259,6 +259,7 @@
     <ClCompile Include="..\test_binary.cpp" />
     <ClCompile Include="..\test_bitset.cpp" />
     <ClCompile Include="..\test_bloom_filter.cpp" />
+    <ClCompile Include="..\test_bsd_checksum.cpp" />
     <ClCompile Include="..\test_checksum.cpp" />
     <ClCompile Include="..\test_container.cpp" />
     <ClCompile Include="..\test_crc.cpp" />
@@ -284,6 +285,7 @@
     <ClCompile Include="..\test_instance_count.cpp" />
     <ClCompile Include="..\test_integral_limits.cpp" />
     <ClCompile Include="..\test_io_port.cpp" />
+    <ClCompile Include="..\test_jenkins.cpp" />
     <ClCompile Include="..\test_largest.cpp" />
     <ClCompile Include="..\test_list.cpp" />
     <ClCompile Include="..\test_flat_map.cpp">

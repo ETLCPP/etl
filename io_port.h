@@ -54,6 +54,62 @@ namespace etl
 
   public:
 
+    class iterator
+    {
+      typedef io_port_rw<T, ADDRESS> iop_t;
+
+    public:
+
+      iterator(iop_t& iop)
+        : p_iop(&iop)
+      {
+      }
+
+      iterator(const iterator& other)
+        : p_iop(other)
+      {
+      }
+
+      iterator& operator =(const iterator& other)
+      {
+        p_iop = other.p_iop;
+      }
+
+      iop_t& operator *()
+      {
+        return *p_iop;
+      }
+
+      const iop_t& operator *() const
+      {
+        return *p_iop;
+      }
+
+      iterator& operator ++()
+      {
+        return *this;
+      }
+
+      iterator operator ++(int)
+      {
+        return *this;
+      }
+
+      iterator& operator --()
+      {
+        return *this;
+      }
+
+      iterator operator --(int)
+      {
+        return *this;
+      }
+
+    private:
+
+      iop_t* p_iop;
+    };
+
     /// Read.
     operator T() volatile const
     {
@@ -77,6 +133,12 @@ namespace etl
     pointer_t get_address()
     {
       return reinterpret_cast<pointer_t>(ADDRESS);
+    }
+
+    /// Get the iterator.
+    iterator get_iterator()
+    {
+      return iterator(*this);
     }
   };
 
