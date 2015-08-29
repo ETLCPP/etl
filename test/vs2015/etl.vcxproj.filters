@@ -417,14 +417,38 @@
     <ClInclude Include="..\..\murmur3.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\pearson.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\rr_cache.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\murmurhash3.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bsd_checksum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\etlhash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\flat_multimap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\flat_multimap_base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\flat_multiset.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\flat_multiset_base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\iflat_multimap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\iflat_multiset.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\pearson.h">
+      <Filter>ETL\Maths</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -644,9 +668,6 @@
     <ClCompile Include="..\test_priority_queue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\pearson.cpp">
-      <Filter>ETL\Maths</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_flat_multimap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -660,6 +681,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_flat_multiset.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\pearson.cpp">
+      <Filter>ETL\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_pearson.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

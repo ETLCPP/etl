@@ -144,6 +144,8 @@
     <ClInclude Include="..\..\fixed_iterator.h" />
     <ClInclude Include="..\..\flat_multimap.h" />
     <ClInclude Include="..\..\flat_multimap_base.h" />
+    <ClInclude Include="..\..\flat_multiset.h" />
+    <ClInclude Include="..\..\flat_multiset_base.h" />
     <ClInclude Include="..\..\flat_set.h" />
     <ClInclude Include="..\..\flat_set_base.h" />
     <ClInclude Include="..\..\fnv_1.h" />
@@ -155,6 +157,7 @@
     <ClInclude Include="..\..\ibitset.h" />
     <ClInclude Include="..\..\ideque.h" />
     <ClInclude Include="..\..\iflat_multimap.h" />
+    <ClInclude Include="..\..\iflat_multiset.h" />
     <ClInclude Include="..\..\iflat_set.h" />
     <ClInclude Include="..\..\iforward_list.h" />
     <ClInclude Include="..\..\ihash.h" />
@@ -196,6 +199,7 @@
     <ClInclude Include="..\..\observer.h" />
     <ClInclude Include="..\..\optional.h" />
     <ClInclude Include="..\..\parameter_type.h" />
+    <ClInclude Include="..\..\pearson.h" />
     <ClInclude Include="..\..\pool.h" />
     <ClInclude Include="..\..\pool_base.h" />
     <ClInclude Include="..\..\power.h" />
@@ -248,6 +252,7 @@
     <ClCompile Include="..\..\crc64_ecma.cpp" />
     <ClCompile Include="..\..\crc8_ccitt.cpp" />
     <ClCompile Include="..\..\error_handler.cpp" />
+    <ClCompile Include="..\..\pearson.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\murmurhash3.cpp" />
     <ClCompile Include="..\test_algorithm.cpp" />
@@ -259,7 +264,6 @@
     <ClCompile Include="..\test_binary.cpp" />
     <ClCompile Include="..\test_bitset.cpp" />
     <ClCompile Include="..\test_bloom_filter.cpp" />
-    <ClCompile Include="..\test_bsd_checksum.cpp" />
     <ClCompile Include="..\test_checksum.cpp" />
     <ClCompile Include="..\test_container.cpp" />
     <ClCompile Include="..\test_crc.cpp" />
@@ -274,6 +278,7 @@
     <ClCompile Include="..\test_exception.cpp" />
     <ClCompile Include="..\test_fixed_iterator.cpp" />
     <ClCompile Include="..\test_flat_multimap.cpp" />
+    <ClCompile Include="..\test_flat_multiset.cpp" />
     <ClCompile Include="..\test_flat_set.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
@@ -301,6 +306,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\test_optional.cpp" />
+    <ClCompile Include="..\test_pearson.cpp" />
     <ClCompile Include="..\test_pool.cpp" />
     <ClCompile Include="..\test_priority_queue.cpp" />
     <ClCompile Include="..\test_queue.cpp" />
@@ -320,7 +326,6 @@
     <None Include="..\..\Doxyfile" />
     <None Include="ClassDiagram.cd" />
     <None Include="ClassDiagram1.cd" />
-    <None Include="ClassDiagram2.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
