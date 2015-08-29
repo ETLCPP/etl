@@ -415,7 +415,7 @@ namespace etl
     //*********************************************************************
     std::pair<const_iterator, const_iterator> equal_range(parameter_t key) const
     {
-      return std::upper_bound(cbegin(), cend(), key, TKeyCompare());
+      return std::equal_range(cbegin(), cend(), key, TKeyCompare());
     }
 
   protected:
