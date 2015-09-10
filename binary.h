@@ -37,6 +37,8 @@ SOFTWARE.
 #include "type_traits.h"
 #include "integral_limits.h"
 #include "static_assert.h"
+#include "log.h"
+#include "power.h"
 
 namespace etl
 {
@@ -419,6 +421,33 @@ namespace etl
     value ^= value >> 4;
     value &= 0x0F;
     return (0x69966996 >> value) & 1;
+  }
+
+  //***************************************************************************
+  /// Fold a binary number down to a set number of bits using XOR.
+  //***************************************************************************
+  template <typename TReturn, const size_t NBITS, typename TValue>
+  TReturn fold_bits(TValue value)
+  {
+    STATIC_ASSERT(integral_limits<TReturn>::bits >= NBITS, "Return type too small to hold result");
+
+    const size_t mask  = etl::power<2, NBITS>::value - 1;
+    const size_t shift = NBITS;
+
+    // Fold the value down to fit the width.
+    TReturn folded_value = 0;
+
+    // Keep shifting down and XORing the lower bits.
+    while (value >= NBITS)
+    {
+      folded_value ^= value & mask;
+      value >>= shift;
+    }
+
+    // Fold the remaining bits.
+    folded_value ^= value;
+
+    return folded_value;
   }
 
   //***************************************************************************
