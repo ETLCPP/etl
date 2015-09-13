@@ -137,7 +137,6 @@
     <ClInclude Include="..\..\endian.h" />
     <ClInclude Include="..\..\enum_type.h" />
     <ClInclude Include="..\..\error_handler.h" />
-    <ClInclude Include="..\..\etlhash.h" />
     <ClInclude Include="..\..\exception.h" />
     <ClInclude Include="..\..\factorial.h" />
     <ClInclude Include="..\..\fibonacci.h" />
@@ -170,6 +169,7 @@
     <ClInclude Include="..\..\imultiset.h" />
     <ClInclude Include="..\..\instance_count.h" />
     <ClInclude Include="..\..\integral_limits.h" />
+    <ClInclude Include="..\..\intrusive_forward_list.h" />
     <ClInclude Include="..\..\io_port.h" />
     <ClInclude Include="..\..\ipool.h" />
     <ClInclude Include="..\..\ipriority_queue.h" />
@@ -314,10 +314,6 @@
     <ClCompile Include="..\test_smallest.cpp" />
     <ClCompile Include="..\test_stack.cpp" />
     <ClCompile Include="..\test_type_traits.cpp" />
-    <ClCompile Include="..\test_unordered_map.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\test_variant.cpp" />
     <ClCompile Include="..\test_vector.cpp" />
     <ClCompile Include="..\test_visitor.cpp" />
