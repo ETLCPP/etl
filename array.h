@@ -39,10 +39,7 @@ SOFTWARE.
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "static_assert.h"
-
-#ifndef ETL_THROW_EXCEPTIONS
 #include "error_handler.h"
-#endif
 
 ///\defgroup array array
 /// A replacement for std::array if you haven't got C++0x11.
@@ -82,7 +79,7 @@ namespace etl
   ///\ingroup array
   /// A replacement for std::array if you haven't got C++0x11.
 	//***************************************************************************
-  template <typename T, const size_t SIZE>
+  template <typename T, const size_t SIZE_>
   class array
 	{
   private:
@@ -90,6 +87,11 @@ namespace etl
     typedef typename parameter_type<T>::type parameter_t;
 
 	public:
+
+    enum
+    {
+      SIZE = SIZE_
+    };
 
     typedef T                                     value_type;
     typedef std::size_t                           size_type;
@@ -138,11 +140,7 @@ namespace etl
     {
       if (i >= SIZE)
       {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw array_out_of_range();
-#else
-        error_handler::error(array_out_of_range());
-#endif
+        ETL_ERROR(array_out_of_range());
       }
 
       return _buffer[i];
