@@ -126,7 +126,7 @@ namespace
     //*************************************************************************
     TEST(test_power)
     {
-      int actual;
+      uint64_t actual;
 
       // 2^1
       actual = etl::power<2, 1>::value;
@@ -163,6 +163,18 @@ namespace
       // 10^9
       actual = etl::power<10, 9>::value;
       CHECK_EQUAL(1000000000, actual);
+
+      // 2^16
+      actual = etl::power<2, 15>::value;
+      CHECK_EQUAL(0x8000, actual);
+
+      // 2^31
+      actual = etl::power<2, 31>::value;
+      CHECK_EQUAL(0x80000000, actual);
+
+      // 2^63
+      actual = etl::power<2, 63>::value;
+      CHECK_EQUAL(0x8000000000000000, actual);
     }
 
     //*************************************************************************
