@@ -37,6 +37,7 @@ SOFTWARE.
 #include "endian.h"
 #include "ihash.h"
 #include "array.h"
+#include "container.h"
 
 #if defined(COMPILER_KEIL)
 #pragma diag_suppress 1300 
@@ -163,7 +164,7 @@ namespace etl
     //*************************************************************************
     generic_digest digest()
     {
-      return generic_digest(&hash[0], &hash[HASH_LENGTH]);
+      return generic_digest(etl::begin(hash), etl::end(hash));
     }
 
   private:
