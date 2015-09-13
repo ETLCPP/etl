@@ -35,10 +35,7 @@ SOFTWARE.
 #include "endian.h"
 #include "ihash.h"
 #include "binary.h"
-
-#ifndef ETL_THROW_EXCEPTIONS
-  #include "error_handler.h"
-#endif
+#include "error_handler.h"
 
 #if defined(COMPILER_KEIL)
 #pragma diag_suppress 1300
@@ -131,11 +128,7 @@ namespace etl
       // We can't add to a finalised hash!
       if (is_finalised)
       {
-#if ETL_THROW_EXCEPTIONS
-        throw hash_finalised();
-#else
-        error_handler::error(hash_finalised());
-#endif
+        ETL_ERROR(hash_finalised());
       }
       else
       {
@@ -199,19 +192,22 @@ namespace etl
     //*************************************************************************
     void finalise()
     {
-      block *= CONSTANT1;
-      block = rotate_left(block, SHIFT1);
-      block *= CONSTANT2;
+      if (!is_finalised)
+      {
+        block *= CONSTANT1;
+        block = rotate_left(block, SHIFT1);
+        block *= CONSTANT2;
 
-      hash ^= block;
-      hash ^= char_count;
-      hash ^= (hash >> 16);
-      hash *= 0x85EBCA6B;
-      hash ^= (hash >> 13);
-      hash *= 0xC2B2AE35;
-      hash ^= (hash >> 16);
+        hash ^= block;
+        hash ^= char_count;
+        hash ^= (hash >> 16);
+        hash *= 0x85EBCA6B;
+        hash ^= (hash >> 13);
+        hash *= 0xC2B2AE35;
+        hash ^= (hash >> 16);
 
-      is_finalised = true;
+        is_finalised = true;
+      }
     }
 
     bool       is_finalised;
@@ -221,7 +217,7 @@ namespace etl
     value_type hash;
     value_type seed;
 
-    static const uint8_t  FULL_BLOCK   = 4;
+    static const uint8_t    FULL_BLOCK = 4;
     static const value_type CONSTANT1  = 0xCC9E2D51;
     static const value_type CONSTANT2  = 0x1B873593;
     static const value_type SHIFT1     = 15;
