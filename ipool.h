@@ -35,6 +35,7 @@ SOFTWARE.
 
 #include "pool_base.h"
 #include "nullptr.h"
+#include "ibitset.h"
 
 #ifndef ETL_THROW_EXCEPTIONS
 #include "error_handler.h"
