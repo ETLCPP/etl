@@ -218,7 +218,7 @@ namespace etl
     /// If ETL_THROW_EXCEPTIONS is defined and the new size is larger than the
     /// maximum then a vector_full is thrown.
     ///\param new_size The new size.
-    ///\param value   The value to fill new elements with. Default = default contructed value.
+    ///\param value   The value to fill new elements with. Default = default constructed value.
     //*********************************************************************
     void resize(size_t new_size, T value)
     {
