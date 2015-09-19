@@ -431,7 +431,7 @@ namespace etl
   {
     STATIC_ASSERT(integral_limits<TReturn>::bits >= NBITS, "Return type too small to hold result");
 
-    const size_t mask  = etl::power<2, NBITS>::value - 1;
+    const TValue mask  = etl::power<2, NBITS>::value - 1;
     const size_t shift = NBITS;
 
     // Fold the value down to fit the width.
