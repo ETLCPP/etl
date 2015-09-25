@@ -50,7 +50,7 @@ namespace etl
 {
   //***************************************************************************
   /// A fixed capacity double ended queue.
-  ///\node The deque allocates one more element than the specified maximum size.
+  ///\note The deque allocates one more element than the specified maximum size.
   ///\tparam T         The type of items this deque holds.
   ///\tparam MAX_SIZE_ The capacity of the deque
   ///\ingroup deque
