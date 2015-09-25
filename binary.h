@@ -39,9 +39,54 @@ SOFTWARE.
 #include "static_assert.h"
 #include "log.h"
 #include "power.h"
+#include "smallest.h"
 
 namespace etl
 {
+  //***************************************************************************
+  /// Maximum value that can be contained in N bits.
+  //***************************************************************************
+  namespace __private_binary__
+  {
+    /// Helper definition for non-zero NBITS.
+    template <const size_t NBITS>
+    struct max_value_for_nbits_helper
+    {
+      typedef typename etl::smallest_uint_for_bits<NBITS>::type value_type;
+      static const value_type value = (uint64_t(1) << (NBITS - 1)) | max_value_for_nbits_helper<NBITS - 1>::value;
+    };
+
+    /// Specialisation for when NBITS == 0.
+    template <>
+    struct max_value_for_nbits_helper<0>
+    {
+      typedef etl::smallest_uint_for_bits<0>::type value_type;
+      static const value_type value = 1;
+    };
+
+    template <const size_t NBITS>
+    const typename max_value_for_nbits_helper<NBITS>::value_type max_value_for_nbits_helper<NBITS>::value;
+  }
+    
+  /// Definition for non-zero NBITS.
+  template <const size_t NBITS>
+  struct max_value_for_nbits
+  {
+    typedef typename etl::smallest_uint_for_bits<NBITS>::type value_type;
+    static const value_type value = __private_binary__::max_value_for_nbits_helper<NBITS>::value;
+  };
+
+  /// Specialisation for when NBITS == 0.
+  template <>
+  struct max_value_for_nbits<0>
+  {
+      typedef etl::smallest_uint_for_bits<1>::type value_type;
+      static const value_type value = 0;
+  };
+
+  template <const size_t NBITS>
+  const typename max_value_for_nbits<NBITS>::value_type max_value_for_nbits<NBITS>::value;
+
   //***************************************************************************
   /// Rotate left.
   //***************************************************************************
@@ -438,7 +483,7 @@ namespace etl
     TReturn folded_value = 0;
 
     // Keep shifting down and XORing the lower bits.
-    while (value >= NBITS)
+    while (value >= etl::max_value_for_nbits<NBITS>::value)
     {
       folded_value ^= value & mask;
       value >>= shift;
