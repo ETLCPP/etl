@@ -32,7 +32,6 @@ SOFTWARE.
 
 #include <stdint.h>
 
-#include "endian.h"
 #include "ihash.h"
 #include "binary.h"
 #include "error_handler.h"
@@ -47,25 +46,26 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  /// Calculates the murmur3_32 hash.
+  /// Calculates the murmur3 hash.
   /// See https://en.wikipedia.org/wiki/MurmurHash for more details.
   ///\tparam ENDIANNESS The endianness of the calculation for input types larger than uint8_t. Default = endian::little.
-  ///\ingroup murmur3_32
+  ///\ingroup murmur3
   //***************************************************************************
-  template <const int ENDIANNESS = endian::little>
-  class murmur3_32 : public etl::ihash
+  template <typename THash>
+  class murmur3
   {
   public:
 
-    typedef uint32_t value_type;
+    STATIC_ASSERT((etl::is_same<THash, uint32_t>::value || etl::is_same<THash, uint64_t>::value), "Only 32 & 64 bit types supported");
+
+    typedef THash value_type;
 
     //*************************************************************************
     /// Default constructor.
     /// \param seed The seed value. Default = 0.
     //*************************************************************************
-    murmur3_32(value_type seed = 0)
-      : seed(seed),
-        ihash(etl::endian(ENDIANNESS))
+    murmur3(value_type seed = 0)
+      : seed(seed)
     {
       reset();
     }
@@ -77,12 +77,25 @@ namespace etl
     /// \param seed  The seed value. Default = 0.
     //*************************************************************************
     template<typename TIterator>
-    murmur3_32(TIterator begin, const TIterator end, value_type seed = 0)
-      : seed(seed), 
-        ihash(etl::endian(ENDIANNESS))
+    murmur3(TIterator begin, const TIterator end, value_type seed = 0)
+      : seed(seed)
     {
+      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
+
       reset();
-      add(begin, end);
+      while (begin != end)
+      {
+        block |= (*begin++) << (block_fill_count * 8);
+
+        if (++block_fill_count == FULL_BLOCK)
+        {
+          add_block();
+          block_fill_count = 0;
+          block = 0;
+        }
+
+        ++char_count;
+      }
     }
 
     //*************************************************************************
@@ -105,17 +118,28 @@ namespace etl
     template<typename TIterator>
     void add(TIterator begin, const TIterator end)
     {
-      ihash::add(begin, end);
-    }
+      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
 
-    //*************************************************************************
-    /// Adds a value.
-    /// \param value The value to add to the hash.
-    //*************************************************************************
-    template<typename TValue>
-    void add(TValue value)
-    {
-      ihash::add(value);
+      if (is_finalised)
+      {
+        ETL_ERROR(hash_finalised());
+      }
+      else
+      {
+        while (begin != end)
+        {
+          block |= (*begin++) << (block_fill_count * 8);
+
+          if (++block_fill_count == FULL_BLOCK)
+          {
+            add_block();
+            block_fill_count = 0;
+            block = 0;
+          }
+
+          ++char_count;
+        }
+      }
     }
 
     //*************************************************************************
@@ -160,15 +184,6 @@ namespace etl
     operator value_type ()
     {
       return value();
-    }
-
-    //*************************************************************************
-    /// Gets the generic digest value.
-    //*************************************************************************
-    generic_digest digest()
-    {
-      finalise();
-      return ihash::get_digest(hash);
     }
 
   private:
@@ -227,4 +242,4 @@ namespace etl
   };
 }
 
-#endif // MURMUR3_H
+#endif
