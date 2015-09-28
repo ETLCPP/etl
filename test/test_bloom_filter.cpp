@@ -43,7 +43,7 @@ struct hash1_t
 
   size_t operator ()(argument_type text) const
   {
-    return etl::fnv_1a_32<>(text, text + strlen(text));
+    return etl::fnv_1a_32(text, text + strlen(text));
   }
 };
 
@@ -53,7 +53,7 @@ struct hash2_t
 
   size_t operator ()(argument_type text) const
   {
-    return etl::crc32<>(text, text + strlen(text));
+    return etl::crc32(text, text + strlen(text));
   }
 };
 
@@ -63,7 +63,7 @@ struct hash3_t
 
   size_t operator ()(argument_type text) const
   {
-    return etl::crc16<>(text, text + strlen(text)) | (etl::crc16_ccitt<>(text, text + strlen(text)) << 16);
+    return etl::crc16(text, text + strlen(text)) | (etl::crc16_ccitt(text, text + strlen(text)) << 16);
   }
 };
 
