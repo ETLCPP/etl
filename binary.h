@@ -80,7 +80,7 @@ namespace etl
   template <>
   struct max_value_for_nbits<0>
   {
-      typedef etl::smallest_uint_for_bits<1>::type value_type;
+      typedef etl::smallest_uint_for_bits<0>::type value_type;
       static const value_type value = 0;
   };
 
