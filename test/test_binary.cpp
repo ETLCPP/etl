@@ -561,7 +561,7 @@ namespace
     //*************************************************************************
     TEST(test_binary_to_gray32)
     {
-      etl::fnv_1a_32<> hash;
+      etl::fnv_1a_32 hash;
 
       hash.add(1);
 
@@ -585,7 +585,7 @@ namespace
     //*************************************************************************
     TEST(test_binary_to_gray64)
     {
-      etl::fnv_1a_64<> hash;
+      etl::fnv_1a_64 hash;
 
       hash.add(1);
 
@@ -627,7 +627,7 @@ namespace
     //*************************************************************************
     TEST(test_count_bits_32)
     {
-      etl::fnv_1a_32<> hash;
+      etl::fnv_1a_32 hash;
 
       for (size_t i = 0; i < 1000000; ++i)
       {
@@ -642,7 +642,7 @@ namespace
     //*************************************************************************
     TEST(test_count_bits_64)
     {
-      etl::fnv_1a_64<> hash;
+      etl::fnv_1a_64 hash;
 
       for (size_t i = 0; i < 1000000; ++i)
       {
@@ -675,7 +675,7 @@ namespace
     //*************************************************************************
     TEST(test_parity_32)
     {
-      etl::fnv_1a_32<> hash;
+      etl::fnv_1a_32 hash;
 
       for (size_t i = 0; i < 1000000; ++i)
       {
@@ -690,7 +690,7 @@ namespace
     //*************************************************************************
     TEST(test_parity_64)
     {
-      etl::fnv_1a_64<> hash;
+      etl::fnv_1a_64 hash;
 
       for (size_t i = 0; i < 1000000; ++i)
       {
