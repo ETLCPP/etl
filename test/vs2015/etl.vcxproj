@@ -264,6 +264,7 @@
     <ClCompile Include="..\test_binary.cpp" />
     <ClCompile Include="..\test_bitset.cpp" />
     <ClCompile Include="..\test_bloom_filter.cpp" />
+    <ClCompile Include="..\test_bsd_checksum.cpp" />
     <ClCompile Include="..\test_checksum.cpp" />
     <ClCompile Include="..\test_container.cpp" />
     <ClCompile Include="..\test_crc.cpp" />

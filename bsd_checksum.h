@@ -34,7 +34,6 @@ SOFTWARE.
 
 #include "static_assert.h"
 #include "type_traits.h"
-#include "endian.h"
 #include "binary.h"
 #include "ihash.h"
 
@@ -45,12 +44,11 @@ namespace etl
 {
   //***************************************************************************
   /// Calculates the checksum.
-  ///\tparam TSum       The type used for the sum.
-  ///\tparam ENDIANNESS The endianness of the calculation for input types larger than uint8_t. Default = endian::little.
+  ///\tparam TSum The type used for the sum.
   ///\ingroup checksum
   //***************************************************************************
-  template <typename TSum, const int ENDIANNESS = endian::little>
-  class bsd_checksum : public etl::ihash
+  template <typename TSum>
+  class bsd_checksum
   {
   public:
 
@@ -62,7 +60,6 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     bsd_checksum()
-      : ihash(etl::endian(ENDIANNESS))
     {
       reset();
     }
@@ -74,10 +71,15 @@ namespace etl
     //*************************************************************************
     template<typename TIterator>
     bsd_checksum(TIterator begin, const TIterator end)
-      : ihash(etl::endian(ENDIANNESS))
     {
+      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
+
       reset();
-      add(begin, end);
+      
+      while (begin != end)
+      {
+        sum = rotate_right(sum) + *begin++;
+      }
     }
 
     //*************************************************************************
@@ -96,17 +98,12 @@ namespace etl
     template<typename TIterator>
     void add(TIterator begin, const TIterator end)
     {
-      ihash::add(begin, end);
-    }
+      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
 
-    //*************************************************************************
-    /// Adds a value.
-    /// \param value The value to add to the checksum.
-    //*************************************************************************
-    template<typename TValue>
-    void add(TValue value)
-    {
-      ihash::add(value);
+      while (begin != end)
+      {
+        sum = rotate_right(sum) + *begin++;
+      }
     }
 
     //*************************************************************************
@@ -131,14 +128,6 @@ namespace etl
     operator value_type ()
     {
       return sum;
-    }
-
-    //*************************************************************************
-    /// Gets the generic digest value.
-    //*************************************************************************
-    generic_digest digest()
-    {
-      return ihash::get_digest(sum);
     }
 
   private:
