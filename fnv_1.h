@@ -34,7 +34,6 @@ SOFTWARE.
 
 #include "static_assert.h"
 #include "type_traits.h"
-#include "endian.h"
 #include "ihash.h"
 
 #if defined(COMPILER_KEIL)
@@ -48,11 +47,9 @@ namespace etl
 {
   //***************************************************************************
   /// Calculates the fnv_1_64 hash.
-  ///\tparam ENDIANNESS The endianness of the calculation for input types larger than uint8_t. Default = endian::little.
   ///\ingroup fnv_1_64
   //***************************************************************************
-  template <const int ENDIANNESS = endian::little>
-  class fnv_1_64 : public etl::ihash
+  class fnv_1_64
   {
   public:
 
@@ -62,7 +59,6 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     fnv_1_64()
-      : ihash(etl::endian(ENDIANNESS))
     {
       reset();
     }
@@ -74,10 +70,15 @@ namespace etl
     //*************************************************************************
     template<typename TIterator>
     fnv_1_64(TIterator begin, const TIterator end)
-      : ihash(etl::endian(ENDIANNESS))
     {
+      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
+
       reset();
-      add(begin, end);
+      while (begin != end)
+      {
+        hash *= PRIME;
+        hash ^= *begin++;
+      }
     }
 
     //*************************************************************************
@@ -96,17 +97,13 @@ namespace etl
     template<typename TIterator>
     void add(TIterator begin, const TIterator end)
     {
-      ihash::add(begin, end);
-    }
+      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
 
-    //*************************************************************************
-    /// Adds a value.
-    /// \param value The value to add to the checksum.
-    //*************************************************************************
-    template<typename TValue>
-    void add(TValue value)
-    {
-      ihash::add(value);
+      while (begin != end)
+      {
+        hash *= PRIME;
+        hash ^= *begin++;
+      }
     }
 
     //*************************************************************************
@@ -134,14 +131,6 @@ namespace etl
       return hash;
     }
 
-    //*************************************************************************
-    /// Gets the generic digest value.
-    //*************************************************************************
-    generic_digest digest()
-    {
-      return ihash::get_digest(hash);
-    }
-
   private:
 
     value_type hash;
@@ -152,11 +141,9 @@ namespace etl
 
   //***************************************************************************
   /// Calculates the fnv_1a_64 hash.
-  ///\tparam ENDIANNESS The endianness of the calculation for input types larger than uint8_t. Default = endian::little.
   ///\ingroup fnv_1a_64
   //***************************************************************************
-  template <const int ENDIANNESS = endian::little>
-  class fnv_1a_64 : public etl::ihash
+  class fnv_1a_64
   {
   public:
 
@@ -166,7 +153,6 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     fnv_1a_64()
-      : ihash(etl::endian(ENDIANNESS))
     {
       reset();
     }
@@ -178,10 +164,15 @@ namespace etl
     //*************************************************************************
     template<typename TIterator>
     fnv_1a_64(TIterator begin, const TIterator end)
-      : ihash(etl::endian(ENDIANNESS))
     {
+      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
+
       reset();
-      add(begin, end);
+      while (begin != end)
+      {
+        hash ^= *begin++;
+        hash *= PRIME;
+      }
     }
 
     //*************************************************************************
@@ -200,17 +191,13 @@ namespace etl
     template<typename TIterator>
     void add(TIterator begin, const TIterator end)
     {
-      ihash::add(begin, end);
-    }
-
-    //*************************************************************************
-    /// Adds a value.
-    /// \param value The value to add to the checksum.
-    //*************************************************************************
-    template<typename TValue>
-    void add(TValue value)
-    {
-      ihash::add(value);
+      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
+      
+      while (begin != end)
+      {
+        hash ^= *begin++;
+        hash *= PRIME;
+      }
     }
 
     //*************************************************************************
@@ -238,14 +225,6 @@ namespace etl
       return hash;
     }
 
-    //*************************************************************************
-    /// Gets the generic digest value.
-    //*************************************************************************
-    generic_digest digest()
-    {
-      return ihash::get_digest(hash);
-    }
-
   private:
 
     value_type hash;
@@ -256,11 +235,9 @@ namespace etl
 
   //***************************************************************************
   /// Calculates the fnv_1_32 hash.
-  ///\tparam ENDIANNESS The endianness of the calculation for input types larger than uint8_t. Default = endian::little.
   ///\ingroup fnv_1_32
   //***************************************************************************
-  template <const int ENDIANNESS = endian::little>
-  class fnv_1_32 : public etl::ihash
+  class fnv_1_32
   {
   public:
 
@@ -270,7 +247,6 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     fnv_1_32()
-      : ihash(etl::endian(ENDIANNESS))
     {
       reset();
     }
@@ -282,10 +258,15 @@ namespace etl
     //*************************************************************************
     template<typename TIterator>
     fnv_1_32(TIterator begin, const TIterator end)
-      : ihash(etl::endian(ENDIANNESS))
     {
+      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
+
       reset();
-      add(begin, end);
+      while (begin != end)
+      {
+        hash *= PRIME;
+        hash ^= *begin++;
+      }
     }
 
     //*************************************************************************
@@ -304,17 +285,13 @@ namespace etl
     template<typename TIterator>
     void add(TIterator begin, const TIterator end)
     {
-      ihash::add(begin, end);
-    }
+      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
 
-    //*************************************************************************
-    /// Adds a value.
-    /// \param value The value to add to the checksum.
-    //*************************************************************************
-    template<typename TValue>
-    void add(TValue value)
-    {
-      ihash::add(value);
+      while (begin != end)
+      {
+        hash *= PRIME;
+        hash ^= *begin++;
+      }
     }
 
     //*************************************************************************
@@ -342,14 +319,6 @@ namespace etl
       return hash;
     }
 
-    //*************************************************************************
-    /// Gets the generic digest value.
-    //*************************************************************************
-    generic_digest digest()
-    {
-      return ihash::get_digest(hash);
-    }
-
   private:
 
     value_type hash;
@@ -360,11 +329,9 @@ namespace etl
 
   //***************************************************************************
   /// Calculates the fnv_1a_32 hash.
-  ///\tparam ENDIANNESS The endianness of the calculation for input types larger than uint8_t. Default = endian::little.
   ///\ingroup fnv_1a_32
   //***************************************************************************
-  template <const int ENDIANNESS = endian::little>
-  class fnv_1a_32 : public etl::ihash
+  class fnv_1a_32
   {
   public:
 
@@ -374,7 +341,6 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     fnv_1a_32()
-      : ihash(etl::endian(ENDIANNESS))
     {
       reset();
     }
@@ -386,10 +352,15 @@ namespace etl
     //*************************************************************************
     template<typename TIterator>
     fnv_1a_32(TIterator begin, const TIterator end)
-      : ihash(etl::endian(ENDIANNESS))
     {
+      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
+
       reset();
-      add(begin, end);
+      while (begin != end)
+      {
+        hash ^= *begin++;
+        hash *= PRIME;
+      }
     }
 
     //*************************************************************************
@@ -408,17 +379,13 @@ namespace etl
     template<typename TIterator>
     void add(TIterator begin, const TIterator end)
     {
-      ihash::add(begin, end);
-    }
+      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
 
-    //*************************************************************************
-    /// Adds a value.
-    /// \param value The value to add to the checksum.
-    //*************************************************************************
-    template<typename TValue>
-    void add(TValue value)
-    {
-      ihash::add(value);
+      while (begin != end)
+      {
+        hash ^= *begin++;
+        hash *= PRIME;
+      }
     }
 
     //*************************************************************************
@@ -444,14 +411,6 @@ namespace etl
     operator value_type () const
     {
       return hash;
-    }
-
-    //*************************************************************************
-    /// Gets the generic digest value.
-    //*************************************************************************
-    generic_digest digest()
-    {
-      return ihash::get_digest(hash);
     }
 
   private:
