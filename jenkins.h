@@ -27,44 +27,43 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_CRC16__
-#define __ETL_CRC16__
+#ifndef __ETL_JENKINS__
+#define __ETL_JENKINS__
 
 #include <stdint.h>
+#include <iterator>
 
 #include "static_assert.h"
 #include "type_traits.h"
+#include "error_handler.h"
+#include "ihash.h"
 
 #if defined(COMPILER_KEIL)
 #pragma diag_suppress 1300 
 #endif
 
-///\defgroup crc16 16 bit CRC calculation
-///\ingroup crc
+///\defgroup jenkins Jenkins 32 & 64 bit hash calculations
+///\ingroup maths
 
 namespace etl
 {
   //***************************************************************************
-  /// CRC16 table
-  /// \ingroup crc16
+  /// Calculates the jenkins hash.
+  ///\ingroup jenkins
   //***************************************************************************
-  extern const uint16_t CRC16[];
-
-  //***************************************************************************
-  /// Calculates CRC16 using polynomial 0x8005.
-  /// \ingroup crc16
-  //***************************************************************************
-  class crc16
+  template <typename THash>
+  class jenkins
   {
   public:
 
-    typedef uint16_t value_type;
-    typedef uint16_t argument_type;
+    STATIC_ASSERT((etl::is_same<THash, uint32_t>::value || etl::is_same<THash, uint64_t>::value), "Only 32 & 64 bit types supported");
+
+    typedef THash value_type;
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    crc16()
+    jenkins()
     {
       reset();
     }
@@ -75,14 +74,17 @@ namespace etl
     /// \param end   End of the range.
     //*************************************************************************
     template<typename TIterator>
-    crc16(TIterator begin, const TIterator end)
+    jenkins(TIterator begin, const TIterator end)
     {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
+      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
 
       reset();
+
       while (begin != end)
       {
-        crc = (crc >> 8) ^ CRC16[(crc ^ *begin++) & 0xFF];
+        hash += *begin++;
+        hash += (hash << 10);
+        hash ^= (hash >> 6);
       }
     }
 
@@ -91,7 +93,8 @@ namespace etl
     //*************************************************************************
     void reset()
     {
-      crc = 0;
+      hash = 0;
+      is_finalised = false;
     }
 
     //*************************************************************************
@@ -102,42 +105,72 @@ namespace etl
     template<typename TIterator>
     void add(TIterator begin, const TIterator end)
     {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
+      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
 
-      while (begin != end)
+      if (is_finalised)
       {
-        crc = (crc >> 8) ^ CRC16[(crc ^ *begin++) & 0xFF];
+        ETL_ERROR(hash_finalised());
+      }
+      else
+      {
+        while (begin != end)
+        {
+          hash += *begin++;
+          hash += (hash << 10);
+          hash ^= (hash >> 6);
+        }
       }
     }
 
     //*************************************************************************
-    /// \param value The uint8_t to add to the CRC.
-    /// \return The CRC result.
+    /// \param value The char to add to the jenkins.
     //*************************************************************************
     void add(uint8_t value)
     {
-      crc = (crc >> 8) ^ CRC16[(crc ^ value) & 0xFF];
+      if (is_finalised)
+      {
+        ETL_ERROR(hash_finalised());
+      }
+      else
+      {
+        hash += value;
+        hash += (hash << 10);
+        hash ^= (hash >> 6);
+      }
     }
 
     //*************************************************************************
-    /// Gets the CRC value.
+    /// Gets the jenkins value.
     //*************************************************************************
-    value_type value() const
+    value_type value()
     {
-      return crc;
+      finalise();
+      return hash;
     }
 
     //*************************************************************************
     /// Conversion operator to value_type.
     //*************************************************************************
-    operator value_type () const
+    operator value_type ()
     {
-      return crc;
+      return value();
     }
 
   private:
 
-    value_type crc;
+    void finalise()
+    {
+      if (!is_finalised)
+      {
+        hash += (hash << 3);
+        hash ^= (hash >> 11);
+        hash += (hash << 15);
+        is_finalised = true;
+      }
+    }
+
+    value_type hash;
+    bool is_finalised;
   };
 }
 

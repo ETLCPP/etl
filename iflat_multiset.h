@@ -27,9 +27,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_IFLAT_MAP__
-#define __ETL_IFLAT_MAP__
-#define __ETL_IN_IFLAT_MAP_H__
+#ifndef __ETL_IFLAT_MULTISET__
+#define __ETL_IFLAT_MULTISET__
+#define __ETL_IN_IFLAT_MULTISET_H__
 
 #include <iterator>
 #include <algorithm>
@@ -37,37 +37,30 @@ SOFTWARE.
 #include <utility>
 #include <stddef.h>
 
-#include "flat_map_base.h"
+#include "flat_multiset_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "ivector.h"
-
-#ifndef ETL_THROW_EXCEPTIONS
 #include "error_handler.h"
-#endif
 
 namespace etl
 {
   //***************************************************************************
-  /// The base class for specifically sized flat_maps.
-  /// Can be used as a reference type for all flat_maps containing a specific type.
-  ///\ingroup flat_map
+  /// The base class for specifically sized flat_multisets.
+  /// Can be used as a reference type for all flat_multisets containing a specific type.
+  ///\ingroup flat_multiset
   //***************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare = std::less<TKey>>
-  class iflat_map : public flat_map_base
+  template <typename T, typename TKeyCompare = std::less<T>>
+  class iflat_multiset : public flat_multiset_base
   {
-  public:
-
-    typedef std::pair<TKey, TMapped> value_type;
-
   private:
 
-    typedef etl::ivector<value_type> buffer_t;
+    typedef etl::ivector<T> buffer_t;
 
   public:
 
-    typedef TKey                                      key_type;
-    typedef TMapped                                   mapped_type;
+    typedef T                                         key_type;
+    typedef T                                         value_type;
     typedef TKeyCompare                               key_compare;
     typedef value_type&                               reference;
     typedef const value_type&                         const_reference;
@@ -82,33 +75,13 @@ namespace etl
 
   protected:
 
-    typedef typename parameter_type<TKey>::type key_value_parameter_t;
-
-  private:
-
-    //*********************************************************************
-    /// How to compare elements and keys.
-    //*********************************************************************
-    class compare
-    {
-    public:
-
-      bool operator ()(const value_type& element, key_type key) const
-      {
-        return key_compare()(element.first, key);
-      }
-
-      bool operator ()(key_type key, const value_type& element) const
-      {
-        return key_compare()(key, element.first);
-      }
-    };
+    typedef typename parameter_type<T>::type parameter_t;
 
   public:
 
     //*********************************************************************
-    /// Returns an iterator to the beginning of the flat_map.
-    ///\return An iterator to the beginning of the flat_map.
+    /// Returns an iterator to the beginning of the flat_multiset.
+    ///\return An iterator to the beginning of the flat_multiset.
     //*********************************************************************
     iterator begin()
     {
@@ -116,8 +89,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const_iterator to the beginning of the flat_map.
-    ///\return A const iterator to the beginning of the flat_map.
+    /// Returns a const_iterator to the beginning of the flat_multiset.
+    ///\return A const iterator to the beginning of the flat_multiset.
     //*********************************************************************
     const_iterator begin() const
     {
@@ -125,8 +98,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns an iterator to the end of the flat_map.
-    ///\return An iterator to the end of the flat_map.
+    /// Returns an iterator to the end of the flat_multiset.
+    ///\return An iterator to the end of the flat_multiset.
     //*********************************************************************
     iterator end()
     {
@@ -134,8 +107,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const_iterator to the end of the flat_map.
-    ///\return A const iterator to the end of the flat_map.
+    /// Returns a const_iterator to the end of the flat_multiset.
+    ///\return A const iterator to the end of the flat_multiset.
     //*********************************************************************
     const_iterator end() const
     {
@@ -143,8 +116,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const_iterator to the beginning of the flat_map.
-    ///\return A const iterator to the beginning of the flat_map.
+    /// Returns a const_iterator to the beginning of the flat_multiset.
+    ///\return A const iterator to the beginning of the flat_multiset.
     //*********************************************************************
     const_iterator cbegin() const
     {
@@ -152,8 +125,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const_iterator to the end of the flat_map.
-    ///\return A const iterator to the end of the flat_map.
+    /// Returns a const_iterator to the end of the flat_multiset.
+    ///\return A const iterator to the end of the flat_multiset.
     //*********************************************************************
     const_iterator cend() const
     {
@@ -161,17 +134,17 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns an reverse iterator to the reverse beginning of the flat_map.
-    ///\return Iterator to the reverse beginning of the flat_map.
+    /// Returns an reverse iterator to the reverse beginning of the flat_multiset.
+    ///\return Iterator to the reverse beginning of the flat_multiset.
     //*********************************************************************
     reverse_iterator rbegin()
     {
-	    return buffer.rbegin();
+        return buffer.rbegin();
     }
 
     //*********************************************************************
-    /// Returns a const reverse iterator to the reverse beginning of the flat_map.
-    ///\return Const iterator to the reverse beginning of the flat_map.
+    /// Returns a const reverse iterator to the reverse beginning of the flat_multiset.
+    ///\return Const iterator to the reverse beginning of the flat_multiset.
     //*********************************************************************
     const_reverse_iterator rbegin() const
     {
@@ -179,8 +152,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a reverse iterator to the end + 1 of the flat_map.
-    ///\return Reverse iterator to the end + 1 of the flat_map.
+    /// Returns a reverse iterator to the end + 1 of the flat_multiset.
+    ///\return Reverse iterator to the end + 1 of the flat_multiset.
     //*********************************************************************
     reverse_iterator rend()
     {
@@ -188,8 +161,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const reverse iterator to the end + 1 of the flat_map.
-    ///\return Const reverse iterator to the end + 1 of the flat_map.
+    /// Returns a const reverse iterator to the end + 1 of the flat_multiset.
+    ///\return Const reverse iterator to the end + 1 of the flat_multiset.
     //*********************************************************************
     const_reverse_iterator rend() const
     {
@@ -197,8 +170,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const reverse iterator to the reverse beginning of the flat_map.
-    ///\return Const reverse iterator to the reverse beginning of the flat_map.
+    /// Returns a const reverse iterator to the reverse beginning of the flat_multiset.
+    ///\return Const reverse iterator to the reverse beginning of the flat_multiset.
     //*********************************************************************
     const_reverse_iterator crbegin() const
     {
@@ -206,8 +179,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const reverse iterator to the end + 1 of the flat_map.
-    ///\return Const reverse iterator to the end + 1 of the flat_map.
+    /// Returns a const reverse iterator to the end + 1 of the flat_multiset.
+    ///\return Const reverse iterator to the end + 1 of the flat_multiset.
     //*********************************************************************
     const_reverse_iterator crend() const
     {
@@ -215,66 +188,9 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a reference to the value at index 'key'
-    ///\param i The index.
-    ///\return A reference to the value at index 'key'
-    //*********************************************************************
-    mapped_type& operator [](key_value_parameter_t key)
-    {
-      iterator i_element = lower_bound(key);
-
-      if (i_element == end())
-      {
-        // Doesn't exist, so create a new one.
-	    value_type value(key, mapped_type());
-        i_element = insert(value).first;
-      }
-
-      return i_element->second;
-    }
-
-    //*********************************************************************
-    /// Returns a reference to the value at index 'key'
-    /// If ETL_THROW_EXCEPTIONS is defined, emits an etl::flat_map_out_of_bounds if the key is not in the range.
-    ///\param i The index.
-    ///\return A reference to the value at index 'key'
-    //*********************************************************************
-    mapped_type& at(key_value_parameter_t key)
-    {
-      iterator i_element = lower_bound(key);
-
-      if (i_element == end())
-      {
-        // Doesn't exist.
-		ETL_ERROR(flat_map_out_of_bounds());
-      }
-
-      return i_element->second;
-    }
-
-    //*********************************************************************
-    /// Returns a const reference to the value at index 'key'
-    /// If ETL_THROW_EXCEPTIONS is defined, emits an etl::flat_map_out_of_bounds if the key is not in the range.
-    ///\param i The index.
-    ///\return A const reference to the value at index 'key'
-    //*********************************************************************
-    const mapped_type& at(key_value_parameter_t key) const
-    {
-      typename buffer_t::const_iterator i_element = lower_bound(key);
-
-      if (i_element == end())
-      {
-        // Doesn't exist.
-		ETL_ERROR(flat_map_out_of_bounds());
-      }
-
-      return i_element->second;
-    }
-
-    //*********************************************************************
-    /// Assigns values to the flat_map.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_map_full if the flat_map does not have enough free space.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_map_iterator if the iterators are reversed.
+    /// Assigns values to the flat_multiset.
+    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_multiset_full if the flat_multiset does not have enough free space.
+    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_multiset_iterator if the iterators are reversed.
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
@@ -286,7 +202,7 @@ namespace etl
 
       if (count < 0)
       {
-		ETL_ERROR(flat_map_iterator());
+        ETL_ERROR(flat_multiset_iterator());
       }
 #endif
 
@@ -299,74 +215,54 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Inserts a value to the flat_map.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_map_full if the flat_map is already full.
+    /// Inserts a value to the flat_multiset.
+    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_multiset_full if the flat_multiset is already full.
     ///\param value    The value to insert.
     //*********************************************************************
-    std::pair<iterator, bool> insert(const value_type& value)
+    std::pair<iterator, bool> insert(parameter_t value)
     {
       std::pair<iterator, bool> result(end(), false);
 
-      iterator i_element = lower_bound(value.first);
+      if (buffer.full())
+      {
+        ETL_ERROR(flat_multiset_full());
+        return result;
+	  }
+	  
+	  iterator i_element = std::lower_bound(begin(), end(), value, TKeyCompare());
 
-      if (i_element == end())
+	  if (i_element == end())
       {
         // At the end.
-        if (buffer.full())
-        {
-		  ETL_ERROR(flat_map_full());
-        }
-        else
-        {
-          buffer.push_back(value);
-          result.first  = end() - 1;
-          result.second = true;
-        }
+        buffer.push_back(value);
+        result.first  = end() - 1;
+        result.second = true;
       }
       else
       {
         // Not at the end.
-        // Existing element?
-        if (value.first == i_element->first)
-        {
-          // Yes.
-          i_element->second = value.second;
-          result.first  = i_element;
-          result.second = false;
-        }
-        else
-        {
-          // A new one.
-          if (buffer.full())
-          {
-			ETL_ERROR(flat_map_full());
-          }
-          else
-          {
-            buffer.insert(i_element, value);
-            result.first  = i_element;
-            result.second = true;
-          }
-        }
+        buffer.insert(i_element, value);
+        result.first  = i_element;
+        result.second = true;
       }
 
       return result;
     }
 
     //*********************************************************************
-    /// Inserts a value to the flat_map.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_map_full if the flat_map is already full.
+    /// Inserts a value to the flat_multiset.
+    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_multiset_full if the flat_multiset is already full.
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, const value_type& value)
+    iterator insert(iterator position, parameter_t value)
     {
       return insert(value).first;
     }
 
     //*********************************************************************
-    /// Inserts a range of values to the flat_map.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_map_full if the flat_map does not have enough free space.
+    /// Inserts a range of values to the flat_multiset.
+    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_multiset_full if the flat_multiset does not have enough free space.
     ///\param position The position to insert at.
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.
@@ -385,18 +281,19 @@ namespace etl
     ///\param key The key to erase.
     ///\return The number of elements erased. 0 or 1.
     //*********************************************************************
-    size_t erase(key_value_parameter_t key)
+    size_t erase(parameter_t key)
     {
-      iterator i_element = find(key);
+	  std::pair<iterator, iterator> range = equal_range(key);
 
-      if (i_element == end())
+      if (range.first == end())
       {
         return 0;
       }
       else
       {
-        buffer.erase(i_element);
-        return 1;
+		size_t count = std::distance(range.first, range.second);
+		erase(range.first, range.second);
+		return count;
       }
     }
 
@@ -422,7 +319,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Clears the flat_map.
+    /// Clears the flat_multiset.
     //*************************************************************************
     void clear()
     {
@@ -434,9 +331,9 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pointing to the element or end() if not found.
     //*********************************************************************
-    iterator find(key_value_parameter_t key)
+    iterator find(parameter_t key)
     {
-      return lower_bound(key);
+      return std::lower_bound(begin(), end(), key, TKeyCompare());
     }
 
     //*********************************************************************
@@ -444,9 +341,9 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pointing to the element or end() if not found.
     //*********************************************************************
-    const_iterator find(key_value_parameter_t key) const
+    const_iterator find(parameter_t key) const
     {
-      return lower_bound(key);
+      return std::lower_bound(begin(), end(), key, TKeyCompare());
     }
 
     //*********************************************************************
@@ -454,9 +351,11 @@ namespace etl
     ///\param key The key to search for.
     ///\return 1 if the key exists, otherwise 0.
     //*********************************************************************
-    size_t count(key_value_parameter_t key) const
+    size_t count(parameter_t key) const
     {
-      return (find(key == end()) ? 0 : 1);
+      std::pair<const_iterator, const_iterator> range = equal_range(key);
+
+  	  return std::distance(range.first, range.second);
     }
 
     //*********************************************************************
@@ -464,9 +363,9 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    iterator lower_bound(key_value_parameter_t key)
+    iterator lower_bound(parameter_t key)
     {
-      return std::lower_bound(begin(), end(), key, compare());
+      return std::lower_bound(begin(), end(), key, TKeyCompare());
     }
 
     //*********************************************************************
@@ -474,9 +373,19 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    const_iterator lower_bound(key_value_parameter_t key) const
+    const_iterator lower_bound(parameter_t key) const
     {
-      return std::lower_bound(cbegin(), cend(), key, compare());
+      return std::lower_bound(cbegin(), cend(), key, TKeyCompare());
+    }
+    
+    //*********************************************************************
+    /// Finds the upper bound of a key
+    ///\param key The key to search for.
+    ///\return An iterator.
+    //*********************************************************************
+    iterator upper_bound(parameter_t key)
+    {
+      return std::upper_bound(begin(), end(), key, TKeyCompare());
     }
 
     //*********************************************************************
@@ -484,19 +393,9 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    iterator upper_bound(key_value_parameter_t key)
+    const_iterator upper_bound(parameter_t key) const
     {
-      return std::upper_bound(begin(), end(), key, compare());
-    }
-
-    //*********************************************************************
-    /// Finds the upper bound of a key
-    ///\param key The key to search for.
-    ///\return An iterator.
-    //*********************************************************************
-    const_iterator upper_bound(key_value_parameter_t key) const
-    {
-      return std::upper_bound(begin(), end(), key, compare());
+      return std::upper_bound(cbegin(), cend(), key, TKeyCompare());
     }
 
     //*********************************************************************
@@ -504,11 +403,9 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    std::pair<iterator, iterator> equal_range(key_value_parameter_t key)
+    std::pair<iterator, iterator> equal_range(parameter_t key)
     {
-      iterator i_lower = std::lower_bound(begin(), end(), key, compare());
-
-      return std::make_pair(i_lower, std::upper_bound(i_lower, end(), key, compare()));
+      return std::equal_range(begin(), end(), key, TKeyCompare());
     }
 
     //*********************************************************************
@@ -516,11 +413,9 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    std::pair<const_iterator, const_iterator> equal_range(key_value_parameter_t key) const
+    std::pair<const_iterator, const_iterator> equal_range(parameter_t key) const
     {
-      const_iterator i_lower = std::lower_bound(cbegin(), cend(), key, compare());
-
-      return std::make_pair(i_lower, std::upper_bound(i_lower, cend(), key, compare()));
+      return std::equal_range(cbegin(), cend(), key, TKeyCompare());
     }
 
   protected:
@@ -528,8 +423,8 @@ namespace etl
     //*********************************************************************
     /// Constructor.
     //*********************************************************************
-    iflat_map(buffer_t& buffer)
-      : flat_map_base(buffer),
+    iflat_multiset(buffer_t& buffer)
+      : flat_multiset_base(buffer),
         buffer(buffer)
     {
     }
@@ -541,30 +436,30 @@ namespace etl
 
   //***************************************************************************
   /// Equal operator.
-  ///\param lhs Reference to the first flat_map.
-  ///\param rhs Reference to the second flat_map.
+  ///\param lhs Reference to the first flat_multiset.
+  ///\param rhs Reference to the second flat_multiset.
   ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
-  ///\ingroup flat_map
+  ///\ingroup flat_multiset
   //***************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare>
-  bool operator ==(const etl::iflat_map<TKey, TMapped, TKeyCompare>& lhs, const etl::iflat_map<TKey, TMapped, TKeyCompare>& rhs)
+  template <typename T, typename TKeyCompare>
+  bool operator ==(const etl::iflat_multiset<T, TKeyCompare>& lhs, const etl::iflat_multiset<T, TKeyCompare>& rhs)
   {
     return (lhs.size() == rhs.size()) && std::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //***************************************************************************
   /// Not equal operator.
-  ///\param lhs Reference to the first flat_map.
-  ///\param rhs Reference to the second flat_map.
+  ///\param lhs Reference to the first flat_multiset.
+  ///\param rhs Reference to the second flat_multiset.
   ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
-  ///\ingroup flat_map
+  ///\ingroup flat_multiset
   //***************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare>
-  bool operator !=(const etl::iflat_map<TKey, TMapped, TKeyCompare>& lhs, const etl::iflat_map<TKey, TMapped, TKeyCompare>& rhs)
+  template <typename T, typename TKeyCompare>
+  bool operator !=(const etl::iflat_multiset<T, TKeyCompare>& lhs, const etl::iflat_multiset<T, TKeyCompare>& rhs)
   {
     return !(lhs == rhs);
   }
 }
 
-#undef __ETL_IN_IFLAT_MAP_H__
+#undef __ETL_IN_IFLAT_MULTISET_H__
 #endif

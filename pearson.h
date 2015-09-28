@@ -27,44 +27,50 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_CRC16__
-#define __ETL_CRC16__
+#ifndef __ETL_PEARSON__
+#define __ETL_PEARSON__
 
 #include <stdint.h>
 
 #include "static_assert.h"
 #include "type_traits.h"
+#include "endian.h"
+#include "ihash.h"
+#include "array.h"
+#include "container.h"
 
 #if defined(COMPILER_KEIL)
 #pragma diag_suppress 1300 
 #endif
 
-///\defgroup crc16 16 bit CRC calculation
-///\ingroup crc
+///\defgroup pearson Pearson hash calculation
+///\ingroup pearson
 
 namespace etl
 {
   //***************************************************************************
-  /// CRC16 table
-  /// \ingroup crc16
+  /// Pearson lookup table
+  /// \ingroup pearson
   //***************************************************************************
-  extern const uint16_t CRC16[];
+  extern const uint8_t PEARSON_LOOKUP[];
 
   //***************************************************************************
-  /// Calculates CRC16 using polynomial 0x8005.
-  /// \ingroup crc16
+  /// Calculates a Pearson hash
+  ///\tparam HASH_LENGTH The number of elements in the hash.
+  /// \ingroup pearson
   //***************************************************************************
-  class crc16
+  template <const size_t HASH_LENGTH>
+  class pearson
   {
   public:
 
-    typedef uint16_t value_type;
-    typedef uint16_t argument_type;
+    typedef etl::array<uint8_t, HASH_LENGTH> value_type;
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    crc16()
+    pearson()
+      : first(true)
     {
       reset();
     }
@@ -75,23 +81,21 @@ namespace etl
     /// \param end   End of the range.
     //*************************************************************************
     template<typename TIterator>
-    crc16(TIterator begin, const TIterator end)
+    pearson(TIterator begin, const TIterator end)
+      : first(true)
     {
       STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
 
       reset();
-      while (begin != end)
-      {
-        crc = (crc >> 8) ^ CRC16[(crc ^ *begin++) & 0xFF];
-      }
+      add(begin, end);
     }
 
     //*************************************************************************
-    /// Resets the CRC to the initial state.
+    /// Resets the hash to the initial state.
     //*************************************************************************
     void reset()
     {
-      crc = 0;
+      hash.fill(0);
     }
 
     //*************************************************************************
@@ -106,25 +110,39 @@ namespace etl
 
       while (begin != end)
       {
-        crc = (crc >> 8) ^ CRC16[(crc ^ *begin++) & 0xFF];
+        add(*begin++);
       }
     }
 
     //*************************************************************************
-    /// \param value The uint8_t to add to the CRC.
-    /// \return The CRC result.
+    /// \param value The char to add to the hash.
     //*************************************************************************
     void add(uint8_t value)
     {
-      crc = (crc >> 8) ^ CRC16[(crc ^ value) & 0xFF];
+      if (first)
+      {
+        for (size_t i = 0; i < HASH_SIZE; ++i)
+        {
+          hash[i] = PEARSON_LOOKUP[(uint32_t(value) + i) % 256];
+        }
+
+        first = false;
+      }
+      else
+      {
+        for (size_t i = 0; i < HASH_SIZE; ++i)
+        {
+          hash[i] = PEARSON_LOOKUP[hash[i] ^ value];
+        }
+      }
     }
 
     //*************************************************************************
-    /// Gets the CRC value.
+    /// Gets the hash value.
     //*************************************************************************
     value_type value() const
     {
-      return crc;
+      return hash;
     }
 
     //*************************************************************************
@@ -132,12 +150,13 @@ namespace etl
     //*************************************************************************
     operator value_type () const
     {
-      return crc;
+      return value();
     }
 
   private:
 
-    value_type crc;
+    bool first;
+    value_type hash;
   };
 }
 

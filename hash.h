@@ -51,7 +51,7 @@ namespace etl
     typename enable_if<sizeof(T) == sizeof(uint32_t), size_t>::type
     generic_hash(uint8_t* begin, uint8_t* end)
     {
-      return fnv_1a_32<>(begin, end);
+      return fnv_1a_32(begin, end);
     }
 
     //*************************************************************************
@@ -61,7 +61,7 @@ namespace etl
     typename enable_if<sizeof(T) == sizeof(uint64_t), size_t>::type
     generic_hash(uint8_t* begin, uint8_t* end)
     {
-      return fnv_1a_64<>(begin, end);
+      return fnv_1a_64(begin, end);
     }
   }
 

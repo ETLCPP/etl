@@ -41,10 +41,7 @@ SOFTWARE.
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "ivector.h"
-
-#ifndef ETL_THROW_EXCEPTIONS
 #include "error_handler.h"
-#endif
 
 namespace etl
 {
@@ -205,11 +202,7 @@ namespace etl
 
       if (count < 0)
       {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw flat_set_iterator();
-#else
-        error_handler::error(flat_set_iterator());
-#endif
+		ETL_ERROR(flat_set_iterator());
       }
 #endif
 
@@ -230,54 +223,27 @@ namespace etl
     {
       std::pair<iterator, bool> result(end(), false);
 
-      iterator i_element = std::lower_bound(begin(), end(), value, TKeyCompare());
+	  if (buffer.full())
+	  {
+		  ETL_ERROR(flat_set_full());
+		  return result;
+	  }
+	  
+	  iterator i_element = std::lower_bound(begin(), end(), value, TKeyCompare());
 
-      if (i_element == end())
+	  if (i_element == end())
       {
         // At the end.
-        if (buffer.full())
-        {
-#ifdef ETL_THROW_EXCEPTIONS
-          throw flat_set_full();
-#else
-          error_handler::error(flat_set_full());
-#endif
-        }
-        else
-        {
-          buffer.push_back(value);
-          result.first  = end() - 1;
-          result.second = true;
-        }
+        buffer.push_back(value);
+        result.first  = end() - 1;
+        result.second = true;
       }
       else
       {
         // Not at the end.
-        // Existing element?
-        if (value == *i_element)
-        {
-          // Yes.
-          result.first  = i_element;
-          result.second = false;
-        }
-        else
-        {
-          // A new one.
-          if (buffer.full())
-          {
-#ifdef ETL_THROW_EXCEPTIONS
-            throw flat_set_full();
-#else
-            error_handler::error(flat_set_full());
-#endif
-          }
-          else
-          {
-            buffer.insert(i_element, value);
-            result.first  = i_element;
-            result.second = true;
-          }
-        }
+        buffer.insert(i_element, value);
+        result.first  = i_element;
+        result.second = true;
       }
 
       return result;

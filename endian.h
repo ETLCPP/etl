@@ -49,12 +49,14 @@ namespace etl
     enum enum_type
     {
       little,
-      big
+      big,
+      native
     };
 
     DECLARE_ENUM_TYPE(endian, int)
     ENUM_TYPE(little, "little")
     ENUM_TYPE(big,    "big")
+    ENUM_TYPE(native, "native")
     END_ENUM_TYPE
   };
 

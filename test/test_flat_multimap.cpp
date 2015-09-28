@@ -4,7 +4,7 @@ The MIT License(MIT)
 Embedded Template Library.
 https://github.com/ETLCPP/etl
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2015 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -37,11 +37,11 @@ SOFTWARE.
 
 #include "data.h"
 
-#include "../flat_map.h"
+#include "../flat_multimap.h"
 
 namespace
 {
-  SUITE(test_flat_map)
+  SUITE(test_flat_multimap)
   {
     static const size_t SIZE = 10;
 
@@ -51,11 +51,11 @@ namespace
     typedef std::pair<int, DC>  ElementDC;
     typedef std::pair<int, NDC> ElementNDC;
 
-    typedef etl::flat_map<int, DC, SIZE>  DataDC;
-    typedef etl::flat_map<int, NDC, SIZE> DataNDC;
+    typedef etl::flat_multimap<int, DC, SIZE>  DataDC;
+    typedef etl::flat_multimap<int, NDC, SIZE> DataNDC;
 
-    typedef std::map<int, DC>  Compare_DataDC;
-    typedef std::map<int, NDC> Compare_DataNDC;
+    typedef std::multimap<int, DC>  Compare_DataDC;
+    typedef std::multimap<int, NDC> Compare_DataNDC;
 
     NDC N0 = NDC("A");
     NDC N1 = NDC("B");
@@ -81,6 +81,7 @@ namespace
     std::vector<ElementNDC> initial_data;
     std::vector<ElementNDC> excess_data;
     std::vector<ElementNDC> different_data;
+	std::vector<ElementNDC> multi_data;
 
     //*************************************************************************
     template <typename T1, typename T2>
@@ -124,9 +125,16 @@ namespace
           ElementNDC(15, N15), ElementNDC(16, N16), ElementNDC(17, N17), ElementNDC(18, N18), ElementNDC(19, N19)
         };
 
+		ElementNDC n4[] =
+		{
+			ElementNDC(0, N0), ElementNDC(1, N1), ElementNDC(2, N2), ElementNDC(1, N3), ElementNDC(3, N4),
+			ElementNDC(4, N5), ElementNDC(4, N6), ElementNDC(5, N7), ElementNDC(4, N8), ElementNDC(0, N9)
+		};
+
         initial_data.assign(std::begin(n), std::end(n));
         excess_data.assign(std::begin(n2), std::end(n2));
         different_data.assign(std::begin(n3), std::end(n3));
+		multi_data.assign(std::begin(n4), std::end(n4));
       }
     };
 
@@ -222,61 +230,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_index)
-    {
-      Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
-
-      DataNDC data(compare_data.begin(), compare_data.end());
-
-      CHECK_EQUAL(compare_data[0], data[0]);
-      CHECK_EQUAL(compare_data[1], data[1]);
-      CHECK_EQUAL(compare_data[2], data[2]);
-      CHECK_EQUAL(compare_data[3], data[3]);
-      CHECK_EQUAL(compare_data[4], data[4]);
-      CHECK_EQUAL(compare_data[5], data[5]);
-      CHECK_EQUAL(compare_data[6], data[6]);
-      CHECK_EQUAL(compare_data[7], data[7]);
-      CHECK_EQUAL(compare_data[8], data[8]);
-      CHECK_EQUAL(compare_data[9], data[9]);
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_at)
-    {
-      Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
-      DataNDC data(initial_data.begin(), initial_data.end());
-
-      CHECK_EQUAL(data.at(0), compare_data.at(0));
-      CHECK_EQUAL(data.at(1), compare_data.at(1));
-      CHECK_EQUAL(data.at(2), compare_data.at(2));
-      CHECK_EQUAL(data.at(3), compare_data.at(3));
-      CHECK_EQUAL(data.at(4), compare_data.at(4));
-      CHECK_EQUAL(data.at(5), compare_data.at(5));
-      CHECK_EQUAL(data.at(6), compare_data.at(6));
-      CHECK_EQUAL(data.at(7), compare_data.at(7));
-      CHECK_EQUAL(data.at(8), compare_data.at(8));
-      CHECK_EQUAL(data.at(9), compare_data.at(9));
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_at_const)
-    {
-      const Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
-      const DataNDC data(initial_data.begin(), initial_data.end());
-
-      CHECK_EQUAL(data.at(0), compare_data.at(0));
-      CHECK_EQUAL(data.at(1), compare_data.at(1));
-      CHECK_EQUAL(data.at(2), compare_data.at(2));
-      CHECK_EQUAL(data.at(3), compare_data.at(3));
-      CHECK_EQUAL(data.at(4), compare_data.at(4));
-      CHECK_EQUAL(data.at(5), compare_data.at(5));
-      CHECK_EQUAL(data.at(6), compare_data.at(6));
-      CHECK_EQUAL(data.at(7), compare_data.at(7));
-      CHECK_EQUAL(data.at(8), compare_data.at(8));
-      CHECK_EQUAL(data.at(9), compare_data.at(9));
-    }
-
-    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_range)
     {
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
@@ -331,7 +284,7 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.insert(std::make_pair(10, N10)), etl::flat_map_full);
+      CHECK_THROW(data.insert(std::make_pair(10, N10)), etl::flat_multimap_full);
     }
 
     //*************************************************************************
@@ -355,7 +308,7 @@ namespace
     {
       DataNDC data;
 
-      CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::flat_map_full);
+      CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::flat_multimap_full);
     }
 
     //*************************************************************************
@@ -581,6 +534,54 @@ namespace
       const DataNDC different(different_data.begin(), different_data.end());
 
       CHECK(initial1 != different);
+    }
+
+	  //*************************************************************************
+	  TEST_FIXTURE(SetupFixture, test_multi)
+	  {
+	    Compare_DataNDC compare_data(multi_data.begin(), multi_data.end());
+	    DataNDC data(multi_data.begin(), multi_data.end());
+
+	    std::pair<Compare_DataNDC::iterator, Compare_DataNDC::iterator> compare_range;
+	    std::pair<DataNDC::iterator, DataNDC::iterator> test_range;
+		
+	    compare_range = compare_data.equal_range(0);
+	    test_range    = data.equal_range(0);
+	    CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
+
+	    compare_range = compare_data.equal_range(1);
+	    test_range    = data.equal_range(1);
+	    CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
+
+	    compare_range = compare_data.equal_range(2);
+	    test_range    = data.equal_range(2);
+	    CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
+
+	    compare_range = compare_data.equal_range(3);
+	    test_range    = data.equal_range(3);
+	    CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
+
+	    compare_range = compare_data.equal_range(4);
+	    test_range    = data.equal_range(4);
+	    CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
+
+	    compare_range = compare_data.equal_range(5);
+	    test_range    = data.equal_range(5);
+	    CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
+	  }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_count)
+    {
+      Compare_DataNDC compare_data(multi_data.begin(), multi_data.end());
+      DataNDC data(multi_data.begin(), multi_data.end());
+
+      CHECK_EQUAL(compare_data.count(0), data.count(0));
+      CHECK_EQUAL(compare_data.count(1), data.count(1));
+      CHECK_EQUAL(compare_data.count(2), data.count(2));
+      CHECK_EQUAL(compare_data.count(3), data.count(3));
+      CHECK_EQUAL(compare_data.count(4), data.count(4));
+      CHECK_EQUAL(compare_data.count(5), data.count(5));
     }
   };
 }

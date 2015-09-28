@@ -33,6 +33,7 @@ SOFTWARE.
 #include "parameter_type.h"
 #include "bitset.h"
 #include "type_traits.h"
+#include "binary.h"
 #include "log.h"
 #include "power.h"
 
@@ -172,26 +173,10 @@ namespace etl
     template <typename THash>
     size_t get_hash(parameter_t key) const
     {
-      const size_t mask = etl::power_of_2_round_up<WIDTH>::value - 1;
-
       size_t hash = THash()(key);
 
       // Fold the hash down to fit the width.
-      size_t folded_hash = 0;
-
-      const size_t shift = etl::log2<etl::power_of_2_round_up<WIDTH>::value>::value;
-
-      // Keep shifting down and XORing the lower bits.
-      while (hash >= WIDTH)
-      {
-        folded_hash ^= hash & mask;
-        hash >>= shift;
-      }
-
-      // Fold the remaining bits.
-      folded_hash ^= hash;
-
-      return folded_hash;
+      return fold_bits<size_t, etl::log2<WIDTH>::value>(hash);
     }
 
     /// The Bloom filter flags.

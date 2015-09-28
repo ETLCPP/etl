@@ -27,44 +27,39 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_CRC16__
-#define __ETL_CRC16__
+#ifndef __ETL_BSDCHECKSUM__
+#define __ETL_BSDCHECKSUM__
 
 #include <stdint.h>
 
 #include "static_assert.h"
 #include "type_traits.h"
+#include "binary.h"
+#include "ihash.h"
 
-#if defined(COMPILER_KEIL)
-#pragma diag_suppress 1300 
-#endif
-
-///\defgroup crc16 16 bit CRC calculation
-///\ingroup crc
+///\defgroup bsdchecksum BSD Checksum calculation
+///\ingroup maths
 
 namespace etl
 {
   //***************************************************************************
-  /// CRC16 table
-  /// \ingroup crc16
+  /// Calculates the checksum.
+  ///\tparam TSum The type used for the sum.
+  ///\ingroup checksum
   //***************************************************************************
-  extern const uint16_t CRC16[];
-
-  //***************************************************************************
-  /// Calculates CRC16 using polynomial 0x8005.
-  /// \ingroup crc16
-  //***************************************************************************
-  class crc16
+  template <typename TSum>
+  class bsd_checksum
   {
   public:
 
-    typedef uint16_t value_type;
-    typedef uint16_t argument_type;
+    STATIC_ASSERT(is_unsigned<TSum>::value, "Signed TSum template parameter not supported");
+
+    typedef TSum value_type;
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    crc16()
+    bsd_checksum()
     {
       reset();
     }
@@ -75,14 +70,14 @@ namespace etl
     /// \param end   End of the range.
     //*************************************************************************
     template<typename TIterator>
-    crc16(TIterator begin, const TIterator end)
+    bsd_checksum(TIterator begin, const TIterator end)
     {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
-
+      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Only 8 bit types supported");
       reset();
+      
       while (begin != end)
       {
-        crc = (crc >> 8) ^ CRC16[(crc ^ *begin++) & 0xFF];
+        sum = rotate_right(sum) + *begin++;
       }
     }
 
@@ -91,7 +86,7 @@ namespace etl
     //*************************************************************************
     void reset()
     {
-      crc = 0;
+      sum = 0;
     }
 
     //*************************************************************************
@@ -102,42 +97,41 @@ namespace etl
     template<typename TIterator>
     void add(TIterator begin, const TIterator end)
     {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
+      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Only 8 bit types supported");
 
       while (begin != end)
       {
-        crc = (crc >> 8) ^ CRC16[(crc ^ *begin++) & 0xFF];
+        sum = rotate_right(sum) + *begin++;
       }
     }
 
     //*************************************************************************
-    /// \param value The uint8_t to add to the CRC.
-    /// \return The CRC result.
+    /// \param value The uint8_t to add to the checksum.
     //*************************************************************************
     void add(uint8_t value)
     {
-      crc = (crc >> 8) ^ CRC16[(crc ^ value) & 0xFF];
+      sum = rotate_right(sum) + value;
     }
 
     //*************************************************************************
-    /// Gets the CRC value.
+    /// Gets the checksum value.
     //*************************************************************************
-    value_type value() const
+    value_type value()
     {
-      return crc;
+      return sum;
     }
 
     //*************************************************************************
     /// Conversion operator to value_type.
     //*************************************************************************
-    operator value_type () const
+    operator value_type ()
     {
-      return crc;
+      return sum;
     }
 
   private:
 
-    value_type crc;
+    value_type sum;
   };
 }
 

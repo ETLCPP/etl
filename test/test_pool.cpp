@@ -242,5 +242,43 @@ namespace
         CHECK_EQUAL(*i_compare++, *i_test++);
       }
     }
+
+    ////*************************************************************************
+    //TEST(test_get_iterator)
+    //{
+    //  typedef etl::pool<Test_Data, 4> Pool;
+
+    //  Pool pool;
+    //  Test_Data not_in_pool;
+
+    //  Test_Data* p1 = pool.allocate();
+    //  Test_Data* p2 = pool.allocate();
+
+    //  Pool::iterator i_data  = pool.get_iterator(*p1);
+    //  Pool::iterator i_ndata = pool.get_iterator(not_in_pool);
+
+    //  CHECK(p1 == &*i_data);
+    //  CHECK(p2 != &*i_data);
+    //  CHECK(pool.end() == i_ndata);
+    //}
+
+    ////*************************************************************************
+    //TEST(test_get_iterator_const)
+    //{
+    //  typedef etl::pool<Test_Data, 4> Pool;
+
+    //  Pool pool;
+    //  const Test_Data not_in_pool;
+
+    //  const Test_Data* p1 = pool.allocate();
+    //  const Test_Data* p2 = pool.allocate();
+
+    //  Pool::const_iterator i_data = pool.get_iterator(*p1);
+    //  Pool::const_iterator i_ndata = pool.get_iterator(not_in_pool);
+
+    //  CHECK(p1 == &*i_data);
+    //  CHECK(p2 != &*i_data);
+    //  CHECK(pool.end() == i_ndata);
+    //}
   };
 }

@@ -90,6 +90,7 @@ namespace etl
     {
     }
   };
+
   //*****************************************************************************
   /// An optional type.
   /// If the optional type is not initialised then a type is not constructed.
@@ -121,11 +122,11 @@ namespace etl
     /// Copy constructor.
     //***************************************************************************
     optional(const optional& other)
+      : valid(bool(other))
     {
-      if (other)
+      if (valid)
       {
         new (storage.template get_address<T>()) T(other.value());
-        valid = true;
       }
     }
 
@@ -192,7 +193,7 @@ namespace etl
     //***************************************************************************
     /// Assignment operator from value type.
     //***************************************************************************
-    optional& operator =(T& value)
+    optional& operator =(const T& value)
     {
       if (valid)
       {
@@ -337,11 +338,30 @@ namespace etl
       return valid ? value() : default_value;
     }
 
+    //***************************************************************************
+    /// Swaps this value with another.
+    //***************************************************************************
+    void swap(optional& other)
+    {
+      optional temp(*this);
+      *this = other;
+      other = temp;
+    }
+
   private:
 
     typename etl::aligned_storage_as<sizeof(T), T>::type storage;
     bool valid;
   };
+}
+
+//*************************************************************************
+/// Swaps the values.
+//*************************************************************************
+template <typename T>
+void swap(etl::optional<T>& lhs, etl::optional<T>& rhs)
+{
+  lhs.swap(rhs);
 }
 
 //***************************************************************************

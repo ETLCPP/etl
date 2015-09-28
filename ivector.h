@@ -40,10 +40,7 @@ SOFTWARE.
 #include "vector_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
-
-#ifndef ETL_THROW_EXCEPTIONS
 #include "error_handler.h"
-#endif
 
 namespace etl
 {
@@ -193,11 +190,7 @@ namespace etl
     {
       if (new_size > MAX_SIZE)
       {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw vector_full();
-#else
-        error_handler::error(vector_full());
-#endif
+        ETL_ERROR(vector_full());
       }
 
       // Size up or size down?
@@ -225,17 +218,13 @@ namespace etl
     /// If ETL_THROW_EXCEPTIONS is defined and the new size is larger than the
     /// maximum then a vector_full is thrown.
     ///\param new_size The new size.
-    ///\param value   The value to fill new elements with. Default = default contructed value.
+    ///\param value   The value to fill new elements with. Default = default constructed value.
     //*********************************************************************
     void resize(size_t new_size, T value)
     {
       if (new_size > MAX_SIZE)
       {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw vector_full();
-#else
-        error_handler::error(vector_full());
-#endif
+        ETL_ERROR(vector_full());
       }
 
       // Size up?
@@ -286,11 +275,7 @@ namespace etl
     {
       if (i >= current_size)
       {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw vector_out_of_bounds();
-#else
-        error_handler::error(vector_out_of_bounds());
-#endif
+        ETL_ERROR(vector_out_of_bounds());
       }
 
       return p_buffer[i];
@@ -306,11 +291,7 @@ namespace etl
     {
       if (i >= current_size)
       {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw vector_out_of_bounds();
-#else
-        error_handler::error(vector_out_of_bounds());
-#endif
+        ETL_ERROR(vector_out_of_bounds());
       }
 
       return p_buffer[i];
@@ -385,20 +366,12 @@ namespace etl
 
       if (count < 0)
       {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw vector_iterator();
-#else
-        error_handler::error(vector_iterator());
-#endif
+        ETL_ERROR(vector_iterator());
       }
 
       if (static_cast<size_t>(count) > MAX_SIZE)
       {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw vector_full();
-#else
-        error_handler::error(vector_full());
-#endif
+         ETL_ERROR( vector_full());
       }
 #endif
 
@@ -424,11 +397,7 @@ namespace etl
 
       if (n > MAX_SIZE)
       {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw vector_full();
-#else
-        error_handler::error(vector_full());
-#endif
+         ETL_ERROR(vector_full());
       }
       else
       {
@@ -454,16 +423,10 @@ namespace etl
     //*************************************************************************
     void push_back()
     {
-#ifdef ETL_THROW_EXCEPTIONS
       if (current_size == MAX_SIZE)
       {
-        throw vector_full();
+         ETL_ERROR(vector_full());
       }
-#else
-      {
-        error_handler::error(vector_full());
-      }
-#endif
 
       create_element();
     }
@@ -477,11 +440,7 @@ namespace etl
     {
       if (current_size == MAX_SIZE)
       {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw vector_full();
-#else
-        error_handler::error(vector_full());
-#endif
+        ETL_ERROR(vector_full());
       }
       else
       {
@@ -511,11 +470,7 @@ namespace etl
     {
       if ((current_size + 1) > MAX_SIZE)
       {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw vector_full();
-#else
-        error_handler::error(vector_full());
-#endif
+        ETL_ERROR(vector_full());
       }
       else
       {
@@ -542,11 +497,7 @@ namespace etl
     {
       if ((current_size + n) > MAX_SIZE)
       {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw vector_full();
-#else
-        error_handler::error(vector_full());
-#endif
+        ETL_ERROR(vector_full());
       }
       else
       {
@@ -613,11 +564,7 @@ namespace etl
 
       if ((current_size + count) > MAX_SIZE)
       {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw vector_full();
-#else
-        error_handler::error(vector_full());
-#endif
+        ETL_ERROR(vector_full());
       }
       else
       {

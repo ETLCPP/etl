@@ -209,7 +209,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_fundamental : integral_constant<bool, is_arithmetic<T>::value ||
                                                                         is_void<T>::value  ||
-                                                                        is_same<nullptr_t,
+                                                                        is_same<std::nullptr_t,
                                                                   typename remove_cv<T>::type>::value> {};
 
   /// is_compound
@@ -232,14 +232,22 @@ namespace etl
   template <typename T> struct is_reference : false_type {};
   template <typename T> struct is_reference<T&> : true_type {};
 
+  /// conditional
+  ///\ingroup type_traits
+  template <bool B, typename T, typename F>  struct conditional { typedef T type; };
+  template <typename T, typename F> struct conditional<false, T, F> { typedef F type; };
+
   /// make_signed
   ///\ingroup type_traits
   template <typename T> struct make_signed { typedef  T type; };
   template <> struct make_signed<char> { typedef  signed char type; };
   template <> struct make_signed<unsigned char> { typedef  signed char type; };
-#ifdef COMPILER_MICROSOFT
-  template <> struct make_signed<wchar_t> { typedef  short type; };
-#endif
+  template <> struct make_signed<wchar_t> 
+  {
+	  typedef etl::conditional<sizeof(wchar_t) == sizeof(short), short,
+		      etl::conditional<sizeof(wchar_t) == sizeof(int),   int, 
+		      etl::conditional<sizeof(wchar_t) == sizeof(long),  long, void>::type>::type>::type type;
+  };
   template <> struct make_signed<unsigned short> { typedef  short type; };
   template <> struct make_signed<unsigned int> { typedef int type; };
   template <> struct make_signed<unsigned long> { typedef  long type; };
@@ -254,9 +262,12 @@ namespace etl
   template <> struct make_unsigned<char> { typedef unsigned char type; };
   template <> struct make_unsigned<signed char> { typedef unsigned char type; };
   template <> struct make_unsigned<short> { typedef unsigned short type; };
-#ifdef COMPILER_MICROSOFT
-  template <> struct make_unsigned<wchar_t> { typedef unsigned short type; };
-#endif
+  template <> struct make_unsigned<wchar_t>
+  {
+	  typedef etl::conditional<sizeof(wchar_t) == sizeof(unsigned short), unsigned short,
+		      etl::conditional<sizeof(wchar_t) == sizeof(unsigned int),   unsigned int,
+		      etl::conditional<sizeof(wchar_t) == sizeof(unsigned long),  unsigned long, void>::type>::type>::type type;
+  };
   template <> struct make_unsigned<int> { typedef unsigned int type; };
   template <> struct make_unsigned<long> { typedef unsigned long type; };
   template <> struct make_unsigned<long long> { typedef unsigned long long type; };
@@ -268,11 +279,6 @@ namespace etl
   ///\ingroup type_traits
   template <bool B, typename T = void> struct enable_if {};
   template <typename T> struct enable_if<true, T> { typedef T type; };
-
-  /// conditional
-  ///\ingroup type_traits
-  template <bool B, typename T, typename F>  struct conditional { typedef T type; };
-  template <typename T, typename F> struct conditional<false, T, F> { typedef F type; };
 
   /// extent
   ///\ingroup type_traits
@@ -330,7 +336,7 @@ namespace etl
 #ifdef COMPILER_GCC
   template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof__(T))> {};
 #endif
-	
+
 #ifdef COMPILER_KEIL
   template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof__(T))> {};
 #endif

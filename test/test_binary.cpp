@@ -28,6 +28,7 @@ SOFTWARE.
 #include <UnitTest++/UnitTest++.h>
 
 #include <cstdint>
+#include <type_traits>
 
 #include "../binary.h"
 #include "../bitset.h"
@@ -60,6 +61,39 @@ size_t test_parity(T value)
   size_t count = test_count(value);
 
   return count & 1;
+}
+
+// Power of 2.
+uint64_t test_power_of_2(int power)
+{
+  uint64_t result = 1;
+
+  for (int i = 0; i < power; ++i)
+  {
+    result *= 2;
+  }
+
+  return result;
+}
+
+// Fold bits.
+template <typename TReturn>
+TReturn test_fold_bits(uint64_t value, int size)
+{
+  int bits_remaining = 64;
+  uint64_t mask = test_power_of_2(size) - 1;
+  TReturn  result = 0;
+
+  while (bits_remaining > size)
+  {
+    result = result ^ (value & mask);
+    value  = value >> size;
+    bits_remaining -= size;
+  }
+
+  result = result ^ (value & mask);
+
+  return result;
 }
 
 namespace
@@ -527,7 +561,7 @@ namespace
     //*************************************************************************
     TEST(test_binary_to_gray32)
     {
-      etl::fnv_1a_32<> hash;
+      etl::fnv_1a_32 hash;
 
       hash.add(1);
 
@@ -551,7 +585,7 @@ namespace
     //*************************************************************************
     TEST(test_binary_to_gray64)
     {
-      etl::fnv_1a_64<> hash;
+      etl::fnv_1a_64 hash;
 
       hash.add(1);
 
@@ -593,7 +627,7 @@ namespace
     //*************************************************************************
     TEST(test_count_bits_32)
     {
-      etl::fnv_1a_32<> hash;
+      etl::fnv_1a_32 hash;
 
       for (size_t i = 0; i < 1000000; ++i)
       {
@@ -608,7 +642,7 @@ namespace
     //*************************************************************************
     TEST(test_count_bits_64)
     {
-      etl::fnv_1a_64<> hash;
+      etl::fnv_1a_64 hash;
 
       for (size_t i = 0; i < 1000000; ++i)
       {
@@ -641,7 +675,7 @@ namespace
     //*************************************************************************
     TEST(test_parity_32)
     {
-      etl::fnv_1a_32<> hash;
+      etl::fnv_1a_32 hash;
 
       for (size_t i = 0; i < 1000000; ++i)
       {
@@ -656,7 +690,7 @@ namespace
     //*************************************************************************
     TEST(test_parity_64)
     {
-      etl::fnv_1a_64<> hash;
+      etl::fnv_1a_64 hash;
 
       for (size_t i = 0; i < 1000000; ++i)
       {
@@ -667,5 +701,216 @@ namespace
         CHECK_EQUAL(test_parity(value), etl::parity(value));
       }
     }
+
+    //*************************************************************************
+    TEST(test_fold_bits)
+    {
+      const uint64_t data = 0xE8C9AACCBC3D9A8F;
+
+      uint8_t result = etl::fold_bits<uint8_t, 8>(data);
+
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data,  1), (etl::fold_bits<uint64_t,  1>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data,  2), (etl::fold_bits<uint64_t,  2>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data,  3), (etl::fold_bits<uint64_t,  3>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data,  4), (etl::fold_bits<uint64_t,  4>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data,  5), (etl::fold_bits<uint64_t,  5>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data,  6), (etl::fold_bits<uint64_t,  6>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data,  7), (etl::fold_bits<uint64_t,  7>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data,  8), (etl::fold_bits<uint64_t,  8>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data,  9), (etl::fold_bits<uint64_t,  9>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 10), (etl::fold_bits<uint64_t, 10>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 11), (etl::fold_bits<uint64_t, 11>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 12), (etl::fold_bits<uint64_t, 12>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 13), (etl::fold_bits<uint64_t, 13>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 14), (etl::fold_bits<uint64_t, 14>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 15), (etl::fold_bits<uint64_t, 15>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 16), (etl::fold_bits<uint64_t, 16>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 17), (etl::fold_bits<uint64_t, 17>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 18), (etl::fold_bits<uint64_t, 18>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 19), (etl::fold_bits<uint64_t, 19>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 20), (etl::fold_bits<uint64_t, 20>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 21), (etl::fold_bits<uint64_t, 21>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 22), (etl::fold_bits<uint64_t, 22>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 23), (etl::fold_bits<uint64_t, 23>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 24), (etl::fold_bits<uint64_t, 24>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 25), (etl::fold_bits<uint64_t, 25>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 26), (etl::fold_bits<uint64_t, 26>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 27), (etl::fold_bits<uint64_t, 27>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 28), (etl::fold_bits<uint64_t, 28>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 29), (etl::fold_bits<uint64_t, 29>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 30), (etl::fold_bits<uint64_t, 30>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 31), (etl::fold_bits<uint64_t, 31>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 32), (etl::fold_bits<uint64_t, 32>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 33), (etl::fold_bits<uint64_t, 33>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 34), (etl::fold_bits<uint64_t, 34>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 35), (etl::fold_bits<uint64_t, 35>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 36), (etl::fold_bits<uint64_t, 36>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 37), (etl::fold_bits<uint64_t, 37>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 38), (etl::fold_bits<uint64_t, 38>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 39), (etl::fold_bits<uint64_t, 39>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 40), (etl::fold_bits<uint64_t, 40>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 41), (etl::fold_bits<uint64_t, 41>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 42), (etl::fold_bits<uint64_t, 42>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 43), (etl::fold_bits<uint64_t, 43>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 44), (etl::fold_bits<uint64_t, 44>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 45), (etl::fold_bits<uint64_t, 45>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 46), (etl::fold_bits<uint64_t, 46>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 47), (etl::fold_bits<uint64_t, 47>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 48), (etl::fold_bits<uint64_t, 48>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 49), (etl::fold_bits<uint64_t, 49>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 50), (etl::fold_bits<uint64_t, 50>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 51), (etl::fold_bits<uint64_t, 51>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 52), (etl::fold_bits<uint64_t, 52>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 53), (etl::fold_bits<uint64_t, 53>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 54), (etl::fold_bits<uint64_t, 54>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 55), (etl::fold_bits<uint64_t, 55>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 56), (etl::fold_bits<uint64_t, 56>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 57), (etl::fold_bits<uint64_t, 57>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 58), (etl::fold_bits<uint64_t, 58>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 59), (etl::fold_bits<uint64_t, 59>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 60), (etl::fold_bits<uint64_t, 60>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 61), (etl::fold_bits<uint64_t, 61>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 62), (etl::fold_bits<uint64_t, 62>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 63), (etl::fold_bits<uint64_t, 63>(data)));
+    }
+
+    //*************************************************************************
+    TEST(test_max_value_for_bits)
+    {
+        // Check that the values are correct.
+        CHECK_EQUAL(0, etl::max_value_for_nbits<0>::value);
+        CHECK_EQUAL(1, etl::max_value_for_nbits<1>::value);
+        CHECK_EQUAL(3, etl::max_value_for_nbits<2>::value);
+        CHECK_EQUAL(7, etl::max_value_for_nbits<3>::value);
+        CHECK_EQUAL(15, etl::max_value_for_nbits<4>::value);
+        CHECK_EQUAL(31, etl::max_value_for_nbits<5>::value);
+        CHECK_EQUAL(63, etl::max_value_for_nbits<6>::value);
+        CHECK_EQUAL(127, etl::max_value_for_nbits<7>::value);
+        CHECK_EQUAL(255, etl::max_value_for_nbits<8>::value);
+        CHECK_EQUAL(511, etl::max_value_for_nbits<9>::value);
+        CHECK_EQUAL(1023, etl::max_value_for_nbits<10>::value);
+        CHECK_EQUAL(2047, etl::max_value_for_nbits<11>::value);
+        CHECK_EQUAL(4095, etl::max_value_for_nbits<12>::value);
+        CHECK_EQUAL(8191, etl::max_value_for_nbits<13>::value);
+        CHECK_EQUAL(16383, etl::max_value_for_nbits<14>::value);
+        CHECK_EQUAL(32767, etl::max_value_for_nbits<15>::value);
+        CHECK_EQUAL(65535, etl::max_value_for_nbits<16>::value);
+        CHECK_EQUAL(131071, etl::max_value_for_nbits<17>::value);
+        CHECK_EQUAL(262143, etl::max_value_for_nbits<18>::value);
+        CHECK_EQUAL(524287, etl::max_value_for_nbits<19>::value);
+        CHECK_EQUAL(1048575, etl::max_value_for_nbits<20>::value);
+        CHECK_EQUAL(2097151, etl::max_value_for_nbits<21>::value);
+        CHECK_EQUAL(4194303, etl::max_value_for_nbits<22>::value);
+        CHECK_EQUAL(8388607, etl::max_value_for_nbits<23>::value);
+        CHECK_EQUAL(16777215, etl::max_value_for_nbits<24>::value);
+        CHECK_EQUAL(33554431, etl::max_value_for_nbits<25>::value);
+        CHECK_EQUAL(67108863, etl::max_value_for_nbits<26>::value);
+        CHECK_EQUAL(134217727, etl::max_value_for_nbits<27>::value);
+        CHECK_EQUAL(268435455, etl::max_value_for_nbits<28>::value);
+        CHECK_EQUAL(536870911, etl::max_value_for_nbits<29>::value);
+        CHECK_EQUAL(1073741823, etl::max_value_for_nbits<30>::value);
+        CHECK_EQUAL(2147483647, etl::max_value_for_nbits<31>::value);
+        CHECK_EQUAL(4294967295, etl::max_value_for_nbits<32>::value);
+        CHECK_EQUAL(8589934591, etl::max_value_for_nbits<33>::value);
+        CHECK_EQUAL(17179869183, etl::max_value_for_nbits<34>::value);
+        CHECK_EQUAL(34359738367, etl::max_value_for_nbits<35>::value);
+        CHECK_EQUAL(68719476735, etl::max_value_for_nbits<36>::value);
+        CHECK_EQUAL(137438953471, etl::max_value_for_nbits<37>::value);
+        CHECK_EQUAL(274877906943, etl::max_value_for_nbits<38>::value);
+        CHECK_EQUAL(549755813887, etl::max_value_for_nbits<39>::value);
+        CHECK_EQUAL(1099511627775, etl::max_value_for_nbits<40>::value);
+        CHECK_EQUAL(2199023255551, etl::max_value_for_nbits<41>::value);
+        CHECK_EQUAL(4398046511103, etl::max_value_for_nbits<42>::value);
+        CHECK_EQUAL(8796093022207, etl::max_value_for_nbits<43>::value);
+        CHECK_EQUAL(17592186044415, etl::max_value_for_nbits<44>::value);
+        CHECK_EQUAL(35184372088831, etl::max_value_for_nbits<45>::value);
+        CHECK_EQUAL(70368744177663, etl::max_value_for_nbits<46>::value);
+        CHECK_EQUAL(140737488355327, etl::max_value_for_nbits<47>::value);
+        CHECK_EQUAL(281474976710655, etl::max_value_for_nbits<48>::value);
+        CHECK_EQUAL(562949953421311, etl::max_value_for_nbits<49>::value);
+        CHECK_EQUAL(1125899906842623, etl::max_value_for_nbits<50>::value);
+        CHECK_EQUAL(2251799813685247, etl::max_value_for_nbits<51>::value);
+        CHECK_EQUAL(4503599627370495, etl::max_value_for_nbits<52>::value);
+        CHECK_EQUAL(9007199254740991, etl::max_value_for_nbits<53>::value);
+        CHECK_EQUAL(18014398509481983, etl::max_value_for_nbits<54>::value);
+        CHECK_EQUAL(36028797018963967, etl::max_value_for_nbits<55>::value);
+        CHECK_EQUAL(72057594037927935, etl::max_value_for_nbits<56>::value);
+        CHECK_EQUAL(144115188075855871, etl::max_value_for_nbits<57>::value);
+        CHECK_EQUAL(288230376151711743, etl::max_value_for_nbits<58>::value);
+        CHECK_EQUAL(576460752303423487, etl::max_value_for_nbits<59>::value);
+        CHECK_EQUAL(1152921504606846975, etl::max_value_for_nbits<60>::value);
+        CHECK_EQUAL(2305843009213693951, etl::max_value_for_nbits<61>::value);
+        CHECK_EQUAL(4611686018427387903, etl::max_value_for_nbits<62>::value);
+        CHECK_EQUAL(9223372036854775807, etl::max_value_for_nbits<63>::value);
+        CHECK_EQUAL(18446744073709551615, etl::max_value_for_nbits<64>::value);
+
+        // Check that the value types are correct. 
+        CHECK((std::is_same<uint8_t,  etl::max_value_for_nbits<0>::value_type>::value));
+        CHECK((std::is_same<uint8_t,  etl::max_value_for_nbits<1>::value_type>::value));
+        CHECK((std::is_same<uint8_t,  etl::max_value_for_nbits<2>::value_type>::value));
+        CHECK((std::is_same<uint8_t,  etl::max_value_for_nbits<3>::value_type>::value));
+        CHECK((std::is_same<uint8_t,  etl::max_value_for_nbits<4>::value_type>::value));
+        CHECK((std::is_same<uint8_t,  etl::max_value_for_nbits<5>::value_type>::value));
+        CHECK((std::is_same<uint8_t,  etl::max_value_for_nbits<6>::value_type>::value));
+        CHECK((std::is_same<uint8_t,  etl::max_value_for_nbits<7>::value_type>::value));
+        CHECK((std::is_same<uint8_t,  etl::max_value_for_nbits<8>::value_type>::value));
+        CHECK((std::is_same<uint16_t, etl::max_value_for_nbits<9>::value_type>::value));
+        CHECK((std::is_same<uint16_t, etl::max_value_for_nbits<10>::value_type>::value));
+        CHECK((std::is_same<uint16_t, etl::max_value_for_nbits<11>::value_type>::value));
+        CHECK((std::is_same<uint16_t, etl::max_value_for_nbits<12>::value_type>::value));
+        CHECK((std::is_same<uint16_t, etl::max_value_for_nbits<13>::value_type>::value));
+        CHECK((std::is_same<uint16_t, etl::max_value_for_nbits<14>::value_type>::value));
+        CHECK((std::is_same<uint16_t, etl::max_value_for_nbits<15>::value_type>::value));
+        CHECK((std::is_same<uint16_t, etl::max_value_for_nbits<16>::value_type>::value));
+        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<17>::value_type>::value));
+        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<18>::value_type>::value));
+        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<19>::value_type>::value));
+        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<20>::value_type>::value));
+        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<21>::value_type>::value));
+        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<22>::value_type>::value));
+        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<23>::value_type>::value));
+        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<24>::value_type>::value));
+        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<25>::value_type>::value));
+        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<26>::value_type>::value));
+        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<27>::value_type>::value));
+        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<28>::value_type>::value));
+        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<29>::value_type>::value));
+        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<30>::value_type>::value));
+        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<31>::value_type>::value));
+        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<32>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<33>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<34>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<35>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<36>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<37>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<38>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<39>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<40>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<41>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<42>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<43>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<44>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<45>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<46>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<47>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<48>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<49>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<50>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<51>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<52>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<53>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<54>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<55>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<56>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<57>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<58>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<59>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<60>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<61>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<62>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<63>::value_type>::value));
+        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<64>::value_type>::value));
+    }
   };
 }
+

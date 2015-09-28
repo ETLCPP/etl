@@ -42,28 +42,29 @@ namespace etl
   //***************************************************************************
   ///\ingroup power
   /// Calculates powers.
+  ///\note Only supports positive N.
   //***************************************************************************
   template <const size_t N, const size_t POWER>
   struct power
   {
-    enum value_type
-    {
-      value = N * power<N, POWER - 1>::value
-    };
+    static const uint64_t value = N * power<N, POWER - 1>::value;
   };
 
   //***************************************************************************
   /// Calculates powers.
+  ///\note Only supports positive N.
   /// Specialisation for POWER == 0.
   //***************************************************************************
   template <const size_t N>
   struct power<N, 0>
   {
-    enum value_type
-    {
-      value = 1
-    };
+    static const uint64_t value = 1;
   };
+
+  //***************************************************************************
+  /// Declaration of static 'value' for power.
+  //***************************************************************************
+  template <const size_t N, const size_t POWER> const uint64_t power<N, POWER>::value;
 
   //***************************************************************************
   ///\ingroup power

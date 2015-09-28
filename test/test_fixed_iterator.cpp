@@ -34,7 +34,7 @@ SOFTWARE.
 template <typename TIterator>
 std::ostream& operator << (std::ostream& os, const etl::fixed_iterator<TIterator>& fi)
 {
-  os << fi.get();
+  os << TIterator(fi);
 
   return os;
 }
@@ -48,7 +48,7 @@ namespace
     {
       etl::fixed_iterator<int*> fi;
 
-      CHECK_EQUAL((int*)0, fi.get());
+      CHECK_EQUAL((int*)0, fi);
     }
 
     //*************************************************************************
@@ -69,7 +69,7 @@ namespace
 
       etl::fixed_iterator<int*> fi(&a);
 
-      CHECK_EQUAL(&a, fi.get());
+      CHECK_EQUAL(&a, fi);
     }
 
     //*************************************************************************
@@ -79,7 +79,7 @@ namespace
 
       etl::fixed_iterator<int*> fi = etl::make_fixed_iterator(&a);
 
-      CHECK_EQUAL(&a, fi.get());
+      CHECK_EQUAL(&a, fi);
     }
 
     //*************************************************************************
@@ -202,11 +202,11 @@ namespace
       etl::fixed_iterator<int*> fi = etl::make_fixed_iterator<int*>(&a);
       fi = &b;
 
-      CHECK_EQUAL(&b, fi.get());
+      CHECK_EQUAL(&b, fi);
 
-      fi.set(&a);
+      fi = &a;
 
-      CHECK_EQUAL(&a, fi.get());
+      CHECK_EQUAL(&a, fi);
     }
 
     //*************************************************************************

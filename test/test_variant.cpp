@@ -49,7 +49,7 @@ struct base
 struct not_base
 {
   not_base()
-    : value(0) 
+    : value(0)
   {
   }
 
@@ -83,7 +83,7 @@ typedef etl::variant<char, unsigned char, short, unsigned short, int, unsigned i
 test_variant_max_types variant_max;
 
 namespace
-{		
+{
   SUITE(test_variant)
   {
     TEST(test_alignment)
@@ -93,10 +93,15 @@ namespace
       typedef etl::variant<char, int>           test_variant_c;
       typedef etl::variant<char, double>        test_variant_d;
 
-      CHECK_EQUAL(int(etl::alignment_of<char>::value),   int(etl::alignment_of<test_variant_a>::value));
-      CHECK_EQUAL(int(etl::alignment_of<short>::value),  int(etl::alignment_of<test_variant_b>::value));
-      CHECK_EQUAL(int(etl::alignment_of<int>::value),    int(etl::alignment_of<test_variant_c>::value));
-      CHECK_EQUAL(int(etl::alignment_of<double>::value), int(etl::alignment_of<test_variant_d>::value));
+      static test_variant_a a(char('1'));
+      static test_variant_b b(short(2));
+      static test_variant_c c(3);
+      static test_variant_d d(4.5);
+
+      CHECK((uintptr_t(&a.get<char>()) % uintptr_t(etl::alignment_of<char>::value)) == 0);
+      CHECK((uintptr_t(&b.get<short>()) % uintptr_t(etl::alignment_of<short>::value)) == 0);
+      CHECK((uintptr_t(&c.get<int>()) % uintptr_t(etl::alignment_of<int>::value)) == 0);
+      CHECK((uintptr_t(&d.get<double>()) % uintptr_t(etl::alignment_of<double>::value)) == 0);
     }
 
     //*************************************************************************
@@ -178,7 +183,7 @@ namespace
       std::string text("Some Text");
       test_variant_1 variant;
       variant = text;
-        
+
       CHECK_THROW(int i = variant, etl::variant_incorrect_type_exception);
     }
 
@@ -198,7 +203,7 @@ namespace
       variant_2 = text;
 
       CHECK(!variant_1.is_same_type(variant_2));
-    } 
+    }
 
     //*************************************************************************
     TEST(test_is_same_type_different_variants)
@@ -215,8 +220,8 @@ namespace
       variant_2 = 3.3;
 
       CHECK(!variant_1.is_same_type(variant_2));
-    } 
-    
+    }
+
     //*************************************************************************
     TEST(Testis_supported_type)
     {
@@ -271,7 +276,7 @@ namespace
     {
       test_variant_1 variant;
       variant = 1;
-        
+
       CHECK_THROW(char c =variant.get<char>(), etl::variant_exception);
     }
 
@@ -326,7 +331,7 @@ namespace
           s = s_;
         }
 
-        char c;       
+        char c;
         std::string s;
         int i;
       };

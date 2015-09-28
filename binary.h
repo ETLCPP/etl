@@ -37,9 +37,56 @@ SOFTWARE.
 #include "type_traits.h"
 #include "integral_limits.h"
 #include "static_assert.h"
+#include "log.h"
+#include "power.h"
+#include "smallest.h"
 
 namespace etl
 {
+  //***************************************************************************
+  /// Maximum value that can be contained in N bits.
+  //***************************************************************************
+  namespace __private_binary__
+  {
+    /// Helper definition for non-zero NBITS.
+    template <const size_t NBITS>
+    struct max_value_for_nbits_helper
+    {
+      typedef typename etl::smallest_uint_for_bits<NBITS>::type value_type;
+      static const value_type value = (uint64_t(1) << (NBITS - 1)) | max_value_for_nbits_helper<NBITS - 1>::value;
+    };
+
+    /// Specialisation for when NBITS == 0.
+    template <>
+    struct max_value_for_nbits_helper<0>
+    {
+      typedef etl::smallest_uint_for_bits<0>::type value_type;
+      static const value_type value = 1;
+    };
+
+    template <const size_t NBITS>
+    const typename max_value_for_nbits_helper<NBITS>::value_type max_value_for_nbits_helper<NBITS>::value;
+  }
+    
+  /// Definition for non-zero NBITS.
+  template <const size_t NBITS>
+  struct max_value_for_nbits
+  {
+    typedef typename etl::smallest_uint_for_bits<NBITS>::type value_type;
+    static const value_type value = __private_binary__::max_value_for_nbits_helper<NBITS>::value;
+  };
+
+  /// Specialisation for when NBITS == 0.
+  template <>
+  struct max_value_for_nbits<0>
+  {
+      typedef etl::smallest_uint_for_bits<0>::type value_type;
+      static const value_type value = 0;
+  };
+
+  template <const size_t NBITS>
+  const typename max_value_for_nbits<NBITS>::value_type max_value_for_nbits<NBITS>::value;
+
   //***************************************************************************
   /// Rotate left.
   //***************************************************************************
@@ -419,6 +466,33 @@ namespace etl
     value ^= value >> 4;
     value &= 0x0F;
     return (0x69966996 >> value) & 1;
+  }
+
+  //***************************************************************************
+  /// Fold a binary number down to a set number of bits using XOR.
+  //***************************************************************************
+  template <typename TReturn, const size_t NBITS, typename TValue>
+  TReturn fold_bits(TValue value)
+  {
+    STATIC_ASSERT(integral_limits<TReturn>::bits >= NBITS, "Return type too small to hold result");
+
+    const TValue mask  = etl::power<2, NBITS>::value - 1;
+    const size_t shift = NBITS;
+
+    // Fold the value down to fit the width.
+    TReturn folded_value = 0;
+
+    // Keep shifting down and XORing the lower bits.
+    while (value >= etl::max_value_for_nbits<NBITS>::value)
+    {
+      folded_value ^= value & mask;
+      value >>= shift;
+    }
+
+    // Fold the remaining bits.
+    folded_value ^= value;
+
+    return folded_value;
   }
 
   //***************************************************************************

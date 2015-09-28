@@ -85,14 +85,11 @@ namespace etl
   /// the error handler is called.
   ///\ingroup error_handler
   //***************************************************************************
-  inline void raise_error(const exception& e)
-  {
 #ifdef ETL_THROW_EXCEPTIONS
-    throw e;
+  #define ETL_ERROR(e) throw e
 #else
-    error_handler::error(e);
+  #define ETL_ERROR(e) etl::error_handler::error(e);
 #endif
-  }
 }
 
 #endif

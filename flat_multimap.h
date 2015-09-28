@@ -6,7 +6,7 @@ The MIT License(MIT)
 Embedded Template Library.
 https://github.com/ETLCPP/etl
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2015 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -27,99 +27,80 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_DEQUE__
-#define __ETL_DEQUE__
+#ifndef __ETL_FLAT_MULTMAP__
+#define __ETL_FLAT_MULTMAP__
 
 #include <stddef.h>
-#include <stdint.h>
 #include <iterator>
-#include <algorithm>
+#include <functional>
 
-#include "ideque.h"
-#include "container.h"
-#include "alignment.h"
-#include "array.h"
+#include "iflat_multimap.h"
+#include "vector.h"
 
 //*****************************************************************************
-///\defgroup deque deque
-/// A double ended queue with the capacity defined at compile time.
+///\defgroup flat_multimap flat_multimap
+/// A flat_multimapmap with the capacity defined at compile time.
+/// Has insertion of O(N) and find of O(logN)
+/// Duplicate entries and not allowed.
 ///\ingroup containers
 //*****************************************************************************
 
 namespace etl
 {
+  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename TCompare = std::less<TKey>>
   //***************************************************************************
-  /// A fixed capacity double ended queue.
-  ///\note The deque allocates one more element than the specified maximum size.
-  ///\tparam T         The type of items this deque holds.
-  ///\tparam MAX_SIZE_ The capacity of the deque
-  ///\ingroup deque
+  /// A flat_multimap implementation that uses a fixed size buffer.
+  ///\tparam TKey     The key type.
+  ///\tparam TValue   The value type.
+  ///\tparam TCompare The type to compare keys. Default = std::less<TKey>
+  ///\tparam MAX_SIZE_ The maximum number of elements that can be stored.
+  ///\ingroup flat_multimap
   //***************************************************************************
-  template <typename T, const size_t MAX_SIZE_>
-  class deque : public ideque<T>
+  class flat_multimap : public iflat_multimap<TKey, TValue, TCompare>
   {
   public:
 
     static const size_t MAX_SIZE = MAX_SIZE_;
 
-  private:
-
-    static const size_t BUFFER_SIZE = MAX_SIZE + 1;
-
-  public:
-
-    typedef T        value_type;
-    typedef T*       pointer;
-    typedef const T* const_pointer;
-    typedef T&       reference;
-    typedef const T& const_reference;
-    typedef size_t   size_type;
-    typedef typename std::iterator_traits<pointer>::difference_type difference_type;
-
     //*************************************************************************
-    /// Default constructor.
+    /// Constructor.
     //*************************************************************************
-    deque()
-      : ideque<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, BUFFER_SIZE)
+    flat_multimap()
+      : iflat_multimap<TKey, TValue, TCompare>(buffer)
     {
     }
 
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
-    deque(const deque& other)
-      : ideque<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, BUFFER_SIZE)
+    flat_multimap(const flat_multimap& other)
+      : iflat_multimap<TKey, TValue, TCompare>(buffer)
     {
-      ideque<T>::assign(other.begin(), other.end());
+      iflat_multimap<TKey, TValue, TCompare>::assign(other.cbegin(), other.cend());
     }
 
     //*************************************************************************
-    /// Assigns data to the deque.
+    /// Constructor, from an iterator range.
+    ///\tparam TIterator The iterator type.
+    ///\param first The iterator to the first element.
+    ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    deque(TIterator begin, TIterator end)
-      : ideque<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, BUFFER_SIZE)
+    flat_multimap(TIterator first, TIterator last)
+      : iflat_multimap<TKey, TValue, TCompare>(buffer)
     {
-      ideque<T>::assign(begin, end);
-    }
-
-    //*************************************************************************
-    /// Assigns data to the deque.
-    //*************************************************************************
-    explicit deque(size_t n, typename ideque<T>::parameter_t value = value_type())
-      : ideque<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, BUFFER_SIZE)
-    {
-      ideque<T>::assign(n, value);
+      iflat_multimap<TKey, TValue, TCompare>::insert(first, last);
     }
 
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    deque& operator =(const deque& rhs)
+    flat_multimap& operator = (const flat_multimap& rhs)
     {
       if (&rhs != this)
       {
-        ideque<T>::assign(rhs.begin(), rhs.end());
+        iflat_multimap<TKey, TValue, TCompare>::clear();
+        iflat_multimap<TKey, TValue, TCompare>::insert(rhs.cbegin(), rhs.cend());
       }
 
       return *this;
@@ -127,8 +108,7 @@ namespace etl
 
   private:
 
-    /// The unititialised buffer of T used in the deque.
-    typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[BUFFER_SIZE];
+    etl::vector<typename iflat_multimap<TKey, TValue, TCompare>::value_type, MAX_SIZE> buffer; ///<The vector that stores the elements.
   };
 }
 

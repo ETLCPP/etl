@@ -15,6 +15,7 @@
 					<Add option="-std=c++11" />
 					<Add option="-g" />
 					<Add option="-DUNITTEST_MINGW" />
+					<Add option="-DPLATFORM_WINDOWS" />
 				</Compiler>
 				<ExtraCommands>
 					<Add after="bin\Debug\ETL.exe" />
@@ -29,10 +30,11 @@
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-g" />
-					<Add option="-DUNITTEST_MINGW" />
+					<Add option="-D_DEBUG" />
+					<Add option="-DPLATFORM_LINUX" />
 				</Compiler>
 				<ExtraCommands>
-					<Add after="bin\Debug\ETL.exe" />
+					<Add after="bin/Debug/ETL" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -42,8 +44,8 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 			<Add option="-DCOMPILER_GCC" />
-			<Add option="-DPLATFORM_WINDOWS" />
 			<Add option="-DETL_THROW_EXCEPTIONS" />
+			<Add option="-D_DEBUG" />
 			<Add directory="../../../unittest-cpp" />
 		</Compiler>
 		<Unit filename="../../../unittest-cpp/UnitTest++/AssertException.cpp" />
@@ -161,6 +163,7 @@
 		<Unit filename="../../integral_limits.h" />
 		<Unit filename="../../io_port.h" />
 		<Unit filename="../../iqueue.h" />
+		<Unit filename="../../iset.h" />
 		<Unit filename="../../istack.h" />
 		<Unit filename="../../ivector.h" />
 		<Unit filename="../../largest.h" />
@@ -180,6 +183,8 @@
 		<Unit filename="../../power.h" />
 		<Unit filename="../../queue.h" />
 		<Unit filename="../../queue_base.h" />
+		<Unit filename="../../set.h" />
+		<Unit filename="../../set_base.h" />
 		<Unit filename="../../smallest.h" />
 		<Unit filename="../../stack.h" />
 		<Unit filename="../../stack_base.h" />
@@ -226,6 +231,7 @@
 		<Unit filename="../test_optional.cpp" />
 		<Unit filename="../test_pool.cpp" />
 		<Unit filename="../test_queue.cpp" />
+		<Unit filename="../test_set.cpp" />
 		<Unit filename="../test_smallest.cpp" />
 		<Unit filename="../test_stack.cpp" />
 		<Unit filename="../test_type_traits.cpp" />
