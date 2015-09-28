@@ -38,7 +38,6 @@ SOFTWARE.
 #include "../crc16_kermit.h"
 #include "../crc32.h"
 #include "../crc64_ecma.h"
-#include "../endian.h"
 
 namespace
 {		
