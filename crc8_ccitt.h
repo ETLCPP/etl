@@ -34,8 +34,6 @@ SOFTWARE.
 
 #include "static_assert.h"
 #include "type_traits.h"
-#include "endian.h"
-#include "ihash.h"
 
 #if defined(COMPILER_KEIL)
 #pragma diag_suppress 1300 
@@ -54,11 +52,9 @@ namespace etl
 
   //***************************************************************************
   /// Calculates CRC8 CCITT using polynomial 0x07.
-  ///\tparam ENDIANNESS The endianness of the calculation for input types larger than uint8_t. Default = endian::little.
   /// \ingroup crc8_ccitt
   //***************************************************************************
-  template <const int ENDIANNESS = endian::little>
-  class crc8_ccitt : public etl::ihash
+  class crc8_ccitt
   {
   public:
 
@@ -69,7 +65,6 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     crc8_ccitt()
-      : ihash(etl::endian(ENDIANNESS))
     {
       reset();
     }
@@ -81,10 +76,13 @@ namespace etl
     //*************************************************************************
     template<typename TIterator>
     crc8_ccitt(TIterator begin, const TIterator end)
-      : ihash(etl::endian(ENDIANNESS))
     {
+      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
       reset();
-      add(begin, end);
+      while (begin != end)
+      {
+        crc = CRC8_CCITT[crc ^ *begin++];
+      }
     }
 
     //*************************************************************************
@@ -103,17 +101,11 @@ namespace etl
     template<typename TIterator>
     void add(TIterator begin, const TIterator end)
     {
-      ihash::add(begin, end);
-    }
-
-    //*************************************************************************
-    /// Adds a value.
-    /// \param value The value to add to the checksum.
-    //*************************************************************************
-    template<typename TValue>
-    void add(TValue value)
-    {
-      ihash::add(value);
+      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
+      while (begin != end)
+      {
+        crc = CRC8_CCITT[crc ^ *begin++];
+      }
     }
 
     //*************************************************************************
@@ -138,14 +130,6 @@ namespace etl
     operator value_type () const
     {
       return crc;
-    }
-
-    //*************************************************************************
-    /// Gets the generic digest value.
-    //*************************************************************************
-    generic_digest digest()
-    {
-      return ihash::get_digest(crc);
     }
 
   private:
