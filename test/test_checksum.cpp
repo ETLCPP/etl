@@ -75,80 +75,12 @@ namespace
 
       for (size_t i = 0; i < data.size(); ++i)
       {
-        checksum_calculator += data[i];
-      }
-
-      uint8_t sum = checksum_calculator;
-
-      CHECK_EQUAL(221, int(sum));
-    }
-
-    //*************************************************************************
-    TEST(test_checksum_add_values8_operator_stream)
-    {
-      std::string data("123456789");
-
-      etl::checksum<uint8_t> checksum_calculator;
-
-      for (size_t i = 0; i < data.size(); ++i)
-      {
-        checksum_calculator << data[i];
-      }
-
-      uint8_t sum = checksum_calculator;
-
-      CHECK_EQUAL(221, int(sum));
-    }
-
-    //*************************************************************************
-    TEST(test_checksum_add_values32_add)
-    {
-      std::vector<uint32_t> data = { 0x04030201, 0x08070605 };
-
-      etl::checksum<uint32_t> checksum_calculator;
-
-      for (size_t i = 0; i < data.size(); ++i)
-      {
-        checksum_calculator += data[i];
-      }
-
-      uint32_t sum = checksum_calculator;
-
-      CHECK_EQUAL(36, int(sum));
-    }
-
-    //*************************************************************************
-    TEST(test_checksum_add_values32_plus_equals)
-    {
-      std::vector<uint32_t> data = { 0x04030201, 0x08070605 };
-
-      etl::checksum<uint32_t> checksum_calculator;
-
-      for (size_t i = 0; i < data.size(); ++i)
-      {
         checksum_calculator.add(data[i]);
       }
 
-      uint32_t sum = checksum_calculator;
+      uint8_t sum = checksum_calculator;
 
-      CHECK_EQUAL(36, int(sum));
-    }
-
-    //*************************************************************************
-    TEST(test_checksum_add_values32_operator_stream)
-    {
-      std::vector<uint32_t> data = { 0x04030201, 0x08070605 };
-
-      etl::checksum<uint32_t> checksum_calculator;
-
-      for (size_t i = 0; i < data.size(); ++i)
-      {
-        checksum_calculator << data[i];
-      }
-
-      uint32_t sum = checksum_calculator;
-
-      CHECK_EQUAL(36, int(sum));
+      CHECK_EQUAL(221, int(sum));
     }
 
     //*************************************************************************
@@ -163,6 +95,20 @@ namespace
       uint8_t sum = checksum_calculator.value();
 
       CHECK_EQUAL(221, int(sum));
+    }
+
+    //*************************************************************************
+    TEST(test_checksum_add_range_sum16)
+    {
+      std::string data("123456789");
+
+      etl::checksum<uint16_t> checksum_calculator;
+
+      checksum_calculator.add(data.begin(), data.end());
+
+      uint16_t sum = checksum_calculator.value();
+
+      CHECK_EQUAL(477, int(sum));
     }
 
     //*************************************************************************
@@ -184,58 +130,14 @@ namespace
     {
       std::vector<uint8_t>  data1 = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
       std::vector<uint32_t> data2 = { 0x04030201, 0x08070605 };
-      std::vector<uint32_t> data3 = { 0x01020304, 0x05060708 };
+      std::vector<uint8_t>  data3 = { 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
 
-      uint8_t sum1 = etl::checksum<uint8_t, etl::endian::little>(data1.begin(), data1.end());
-      uint8_t sum2 = etl::checksum<uint8_t, etl::endian::little>(data2.begin(), data2.end());
-      CHECK_EQUAL(int(sum1), int(sum2));
+      uint32_t hash1 = etl::checksum<uint32_t>(data1.begin(), data1.end());
+      uint32_t hash2 = etl::checksum<uint32_t>((uint8_t*)&data2[0], (uint8_t*)(&data2[0] + data2.size()));
+      CHECK_EQUAL(int(hash1), int(hash2));
 
-      uint8_t sum3 = etl::checksum<uint8_t, etl::endian::big>(data3.begin(), data3.end());
-      CHECK_EQUAL(int(sum1), int(sum3));
-    }
-
-    //*************************************************************************
-    TEST(test_checksum_add_double)
-    {
-      double d = 3.1415927;
-
-      etl::checksum<uint8_t> checksum_calculator;
-
-      checksum_calculator << d;
-
-      uint8_t sum = checksum_calculator.value();
-
-      CHECK_EQUAL(165, int(sum));
-    }
-
-    //*************************************************************************
-    TEST(test_digest)
-    {
-      std::string data("123456789");
-
-      etl::checksum<uint8_t>  checksum_calculator8(data.begin(), data.end());
-      etl::checksum<uint16_t> checksum_calculator16(data.begin(), data.end());
-      etl::checksum<uint32_t> checksum_calculator32(data.begin(), data.end());
-      etl::checksum<uint64_t> checksum_calculator64(data.begin(), data.end());
-
-      etl::ihash::generic_digest digest;
-
-      digest = checksum_calculator8.digest();
-      CHECK_EQUAL(221, *digest.first);
-      CHECK_EQUAL(sizeof(uint8_t), std::distance(digest.first, digest.second));
-
-      digest = checksum_calculator16.digest();
-      CHECK_EQUAL(477, *reinterpret_cast<const uint16_t*>(digest.first));
-      CHECK_EQUAL(sizeof(uint16_t), std::distance(digest.first, digest.second));
-      
-
-      digest = checksum_calculator32.digest();
-      CHECK_EQUAL(477, *reinterpret_cast<const uint32_t*>(digest.first));
-      CHECK_EQUAL(sizeof(uint32_t), std::distance(digest.first, digest.second));
-      
-      digest = checksum_calculator64.digest();
-      CHECK_EQUAL(477, *reinterpret_cast<const uint64_t*>(digest.first));
-      CHECK_EQUAL(sizeof(uint64_t), std::distance(digest.first, digest.second));
+      uint32_t hash3 = etl::checksum<uint32_t>(data3.rbegin(), data3.rend());
+      CHECK_EQUAL(int(hash1), int(hash3));
     }
   };
 }

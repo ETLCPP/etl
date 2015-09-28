@@ -57,11 +57,10 @@ namespace etl
   //***************************************************************************
   /// Calculates a Pearson hash
   ///\tparam HASH_LENGTH The number of elements in the hash.
-  ///\tparam ENDIANNESS  The endianness of the calculation for input types larger than uint8_t. Default = endian::little.
   /// \ingroup pearson
   //***************************************************************************
-  template <const size_t HASH_LENGTH, const int ENDIANNESS = endian::little>
-  class pearson : public etl::ihash
+  template <const size_t HASH_LENGTH>
+  class pearson
   {
   public:
 
@@ -71,8 +70,7 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     pearson()
-      : first(true),
-        ihash(etl::endian(ENDIANNESS))
+      : first(true)
     {
       reset();
     }
@@ -84,9 +82,10 @@ namespace etl
     //*************************************************************************
     template<typename TIterator>
     pearson(TIterator begin, const TIterator end)
-      : first(true),
-        ihash(etl::endian(ENDIANNESS))
+      : first(true)
     {
+      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
+
       reset();
       add(begin, end);
     }
@@ -107,17 +106,12 @@ namespace etl
     template<typename TIterator>
     void add(TIterator begin, const TIterator end)
     {
-      ihash::add(begin, end);
-    }
+      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
 
-    //*************************************************************************
-    /// Adds a value.
-    /// \param value The value to add to the hash.
-    //*************************************************************************
-    template<typename TValue>
-    void add(TValue value)
-    {
-      ihash::add(value);
+      while (begin != end)
+      {
+        add(*begin++);
+      }
     }
 
     //*************************************************************************
@@ -157,14 +151,6 @@ namespace etl
     operator value_type () const
     {
       return value();
-    }
-
-    //*************************************************************************
-    /// Gets the generic digest value.
-    //*************************************************************************
-    generic_digest digest()
-    {
-      return generic_digest(etl::begin(hash), etl::end(hash));
     }
 
   private:

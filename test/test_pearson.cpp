@@ -109,7 +109,7 @@ namespace
 
       for (size_t i = 0; i < data.size(); ++i)
       {
-        pearson_calculator += data[i];
+        pearson_calculator.add(data[i]);
       }
 
       hash_t compare = Pearson_Compare(data);
@@ -138,13 +138,13 @@ namespace
     {
       std::vector<uint8_t>  data1 = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
       std::vector<uint32_t> data2 = { 0x04030201, 0x08070605 };
-      std::vector<uint32_t> data3 = { 0x01020304, 0x05060708 };
+      std::vector<uint8_t>  data3 = { 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
 
-      hash_t hash1 = etl::pearson<HASH_SIZE, etl::endian::little>(data1.begin(), data1.end());
-      hash_t hash2 = etl::pearson<HASH_SIZE, etl::endian::little>(data2.begin(), data2.end());
+      hash_t hash1 = etl::pearson<HASH_SIZE>(data1.begin(), data1.end());
+      hash_t hash2 = etl::pearson<HASH_SIZE>((uint8_t*)&data2[0], (uint8_t*)(&data2[0] + data2.size()));
       CHECK_EQUAL(hash1, hash2);
 
-      hash_t hash3 = etl::pearson<HASH_SIZE, etl::endian::big>(data3.begin(), data3.end());
+      hash_t hash3 = etl::pearson<HASH_SIZE>(data3.rbegin(), data3.rend());
       CHECK_EQUAL(hash1, hash3);
     }
   };
