@@ -27,17 +27,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_FNV_1__
-#define __ETL_FNV_1__
+#ifndef __ETL_JENKINS__
+#define __ETL_JENKINS__
 
 #include <stdint.h>
+#include <iterator>
 
 #include "static_assert.h"
 #include "type_traits.h"
-#include "endian.h"
-#include "ihash.h"
-
 #include "error_handler.h"
+#include "ihash.h"
 
 #if defined(COMPILER_KEIL)
 #pragma diag_suppress 1300 
@@ -49,22 +48,22 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  /// Calculates the jenkins_64 hash.
-  ///\tparam ENDIANNESS The endianness of the calculation for input types larger than uint8_t. Default = endian::little.
-  ///\ingroup jenkins_64
+  /// Calculates the jenkins hash.
+  ///\ingroup jenkins
   //***************************************************************************
-  template <const int ENDIANNESS = endian::little>
-  class jenkins_64 : public etl::ihash
+  template <typename THash>
+  class jenkins
   {
   public:
 
-    typedef uint64_t value_type;
+    STATIC_ASSERT((etl::is_same<THash, uint32_t>::value || etl::is_same<THash, uint64_t>::value), "Only 32 & 64 bit types supported");
+
+    typedef THash value_type;
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    jenkins_64()
-      : ihash(etl::endian(ENDIANNESS))
+    jenkins()
     {
       reset();
     }
@@ -75,11 +74,18 @@ namespace etl
     /// \param end   End of the range.
     //*************************************************************************
     template<typename TIterator>
-    jenkins_64(TIterator begin, const TIterator end)
-      : ihash(etl::endian(ENDIANNESS))
+    jenkins(TIterator begin, const TIterator end)
     {
+      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
+
       reset();
-      add(begin, end);
+
+      while (begin != end)
+      {
+        hash += *begin++;
+        hash += (hash << 10);
+        hash ^= (hash >> 6);
+      }
     }
 
     //*************************************************************************
@@ -99,21 +105,25 @@ namespace etl
     template<typename TIterator>
     void add(TIterator begin, const TIterator end)
     {
-      ihash::add(begin, end);
+      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
+
+      if (is_finalised)
+      {
+        ETL_ERROR(hash_finalised());
+      }
+      else
+      {
+        while (begin != end)
+        {
+          hash += *begin++;
+          hash += (hash << 10);
+          hash ^= (hash >> 6);
+        }
+      }
     }
 
     //*************************************************************************
-    /// Adds a value.
-    /// \param value The value to add to the checksum.
-    //*************************************************************************
-    template<typename TValue>
-    void add(TValue value)
-    {
-      ihash::add(value);
-    }
-
-    //*************************************************************************
-    /// \param value The char to add to the jenkins_64.
+    /// \param value The char to add to the jenkins.
     //*************************************************************************
     void add(uint8_t value)
     {
@@ -130,7 +140,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the jenkins_64 value.
+    /// Gets the jenkins value.
     //*************************************************************************
     value_type value()
     {
@@ -144,15 +154,6 @@ namespace etl
     operator value_type ()
     {
       return value();
-    }
-
-    //*************************************************************************
-    /// Gets the generic digest value.
-    //*************************************************************************
-    generic_digest digest()
-    {
-      finalise();
-      return ihash::get_digest(hash);
     }
 
   private:
@@ -170,133 +171,6 @@ namespace etl
 
     value_type hash;
     bool is_finalised;
-  };
-
-  //***************************************************************************
-  /// Calculates the jenkins_32 hash.
-  ///\tparam ENDIANNESS The endianness of the calculation for input types larger than uint8_t. Default = endian::little.
-  ///\ingroup jenkins_32
-  //***************************************************************************
-  template <const int ENDIANNESS = endian::little>
-  class jenkins_32 : public etl::ihash
-  {
-  public:
-
-    typedef uint32_t value_type;
-
-    //*************************************************************************
-    /// Default constructor.
-    //*************************************************************************
-    jenkins_32()
-      : ihash(etl::endian(ENDIANNESS))
-    {
-      reset();
-    }
-
-    //*************************************************************************
-    /// Constructor from range.
-    /// \param begin Start of the range.
-    /// \param end   End of the range.
-    //*************************************************************************
-    template<typename TIterator>
-    jenkins_32(TIterator begin, const TIterator end)
-      : ihash(etl::endian(ENDIANNESS))
-    {
-      reset();
-      add(begin, end);
-    }
-
-    //*************************************************************************
-    /// Resets the CRC to the initial state.
-    //*************************************************************************
-    void reset()
-    {
-      hash = 0;
-      is_finalised = false;
-    }
-
-    //*************************************************************************
-    /// Adds a range.
-    /// \param begin
-    /// \param end
-    //*************************************************************************
-    template<typename TIterator>
-    void add(TIterator begin, const TIterator end)
-    {
-      ihash::add(begin, end);
-    }
-
-    //*************************************************************************
-    /// Adds a value.
-    /// \param value The value to add to the checksum.
-    //*************************************************************************
-    template<typename TValue>
-    void add(TValue value)
-    {
-      ihash::add(value);
-    }
-
-    //*************************************************************************
-    /// \param value The char to add to the jenkins_32.
-    //*************************************************************************
-    void add(uint8_t value)
-    {
-      if (is_finalised)
-      {
-        ETL_ERROR(hash_finalised());
-      }
-      else
-      {
-        hash += value;
-        hash += (hash << 10);
-        hash ^= (hash >> 6);
-      }
-    }
-
-    //*************************************************************************
-    /// Gets the jenkins_32 value.
-    //*************************************************************************
-    value_type value()
-    {
-      finalise();
-      return hash;
-    }
-
-    //*************************************************************************
-    /// Conversion operator to value_type.
-    //*************************************************************************
-    operator value_type ()
-    {
-      return value();
-    }
-
-    //*************************************************************************
-    /// Gets the generic digest value.
-    //*************************************************************************
-    generic_digest digest()
-    {
-      finalise();
-      return ihash::get_digest(hash);
-    }
-
-  private:
-
-    //*************************************************************************
-    /// Finalise the hash.
-    //*************************************************************************
-    void finalise()
-    {
-      if (!is_finalised)
-      {
-        hash += (hash << 3);
-        hash ^= (hash >> 11);
-        hash += (hash << 15);
-        is_finalised = true;
-      }
-    }
-
-    bool is_finalised;
-    value_type hash;
   };
 }
 
