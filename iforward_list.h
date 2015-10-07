@@ -315,7 +315,7 @@ namespace etl
     //*************************************************************************
     iterator end()
     {
-      return iterator(end_node);
+      return iterator();
     }
 
     //*************************************************************************
@@ -323,7 +323,7 @@ namespace etl
     //*************************************************************************
     const_iterator end() const
     {
-      return const_iterator(static_cast<const Data_Node&>(end_node));
+      return const_iterator();
     }
 
     //*************************************************************************
@@ -331,7 +331,7 @@ namespace etl
     //*************************************************************************
     const_iterator cend() const
     {
-      return const_iterator(static_cast<const Data_Node&>(end_node));
+      return const_iterator();
     }
 
     //*************************************************************************
@@ -400,7 +400,7 @@ namespace etl
         {
           Data_Node& data_node = allocate_data_node(*first++);
           join(*p_last_node, data_node);
-          join(data_node, end_node);
+          data_node.next = nullptr;
           p_last_node = &data_node;
           ++current_size;
         }
@@ -433,7 +433,7 @@ namespace etl
         {
           Data_Node& data_node = allocate_data_node(value);
           join(*p_last_node, data_node);
-          join(data_node, end_node);
+          data_node.next = nullptr;
           p_last_node = &data_node;
           ++current_size;
         }
@@ -524,11 +524,13 @@ namespace etl
       {
         size_t i = 0;
         iterator i_node = begin();
+        iterator i_last_node;
 
         // Find where we're currently at.
         while ((i < n) && (i_node != end()))
         {
           ++i;
+          i_last_node = i_node;
           ++i_node;
         }
 
@@ -542,7 +544,7 @@ namespace etl
           // Increase.
           while (i < n)
           {
-            i_node = insert_after(i_node, value);
+            i_last_node = insert_after(i_last_node, value);
             ++i;
           }
         }
@@ -573,9 +575,9 @@ namespace etl
       Node* p_current = p_last->next;
       Node* p_next    = p_current->next;
 
-      join(*p_current, end_node);
+      p_current->next = nullptr;
 
-      while (p_next != &end_node)
+      while (p_next != nullptr)
       {
         p_last    = p_current;
         p_current = p_next;
@@ -706,7 +708,14 @@ namespace etl
         p_first = p_next;                                     // Move to the next node.
       }
 
-      return ++last;
+      if (p_next == nullptr)
+      {
+        return end();
+      }
+      else
+      {
+        return iterator(*p_last);
+      }
     }
 
     //*************************************************************************
@@ -733,7 +742,7 @@ namespace etl
       Node* last    = &get_head();
       Node* current = last->next;
 
-      while (current != &end_node)
+      while (current != nullptr)
       {
         // Is this value the same as the last?
         if (isEqual(data_cast(current)->value, data_cast(last)->value))
@@ -858,7 +867,7 @@ namespace etl
                 p_tail = p_node;
             }
 
-            join(*p_tail.p_node, end_node);
+            p_tail.p_node->next = nullptr;
           }
 
           // Now left has stepped `list_size' places along, and right has too.
@@ -934,7 +943,6 @@ namespace etl
     }
 
     Node start_node; ///< The node that acts as the forward_list start.
-    Node end_node;   ///< The node that acts as the forward_list end.
 
   private:
 
@@ -1003,7 +1011,6 @@ namespace etl
     void insert_node_after(Node& position, Node& node)
     {
       // Connect to the forward_list.
-      join(node, *position.next);
       join(position, node);
 
       // One more.
@@ -1055,8 +1062,7 @@ namespace etl
       }
 
       current_size = 0;
-      join(start_node, end_node);
-      join(end_node,   start_node);
+      start_node.next = nullptr;
     }
 
     //*************************************************************************
