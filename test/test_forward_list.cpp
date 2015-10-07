@@ -428,12 +428,35 @@ namespace
       CompareDataNDC::iterator i_compare_data_2 = compare_data.begin();
       std::advance(i_compare_data_2, 4);
 
-      compare_data.erase_after(i_compare_data_1, i_compare_data_2);
+      CompareDataNDC::iterator i_compare_result = compare_data.erase_after(i_compare_data_1, i_compare_data_2);
 
-      data.erase_after(i_data_1, i_data_2);
+      DataNDC::iterator i_result = data.erase_after(i_data_1, i_data_2);
+
+      CHECK_EQUAL(*i_compare_result, *i_result);
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+      CHECK(are_equal);
+    }
 
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_after_range_end)
+    {
+      CompareDataNDC compare_data(sorted_data.begin(), sorted_data.end());
+      DataNDC data(sorted_data.begin(), sorted_data.end());
+
+      DataNDC::iterator i_data = data.begin();
+      std::advance(i_data, 4);
+
+      CompareDataNDC::iterator i_compare_data = compare_data.begin();
+      std::advance(i_compare_data, 4);
+
+      CompareDataNDC::iterator i_compare_result = compare_data.erase_after(i_compare_data, compare_data.end());
+
+      DataNDC::iterator i_result = data.erase_after(i_data, data.end());
+
+      CHECK(i_result == data.end());
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
     }
 
