@@ -69,15 +69,15 @@ SOFTWARE.
 /// 
 /// direction = value;                   // **** Compilation error ****
 /// 
-/// std::cout << "Direction = " << direction.to_string(); // Prints "Direction = North"
+/// std::cout << "Direction = " << direction.c_str(); // Prints "Direction = North"
 ///\endcode
 /// If a conversion to a string is not required then the 'ENUM_TYPE' declaration may be omitted.
-/// In that case the to_string() function will return a "?". This will also be the case for any 
+/// In that case the c_str() function will return a "?". This will also be the case for any
 /// enumeration value that does not have an ENUM_TYPE entry.
 ///\ingroup utilities
 
 //*****************************************************************************
-// The declaration of the member functions and the first section of the 'to_string' function.
+// The declaration of the member functions and the first section of the 'c_str' function.
 //*****************************************************************************
 #define DECLARE_ENUM_TYPE(TypeName, ValueType) \
   typedef ValueType value_type; \
@@ -95,14 +95,14 @@ SOFTWARE.
     {
 
 //*****************************************************************************
-// A case in the 'to_string' function's switch statement.
+// A case in the 'c_str' function's switch statement.
 //*****************************************************************************
 #define ENUM_TYPE(value, name) \
       case value: \
         return name; \
 
 //*****************************************************************************
-// The final section of the 'to_string' function and the value declaration.
+// The final section of the 'c_str' function and the value declaration.
 //*****************************************************************************
 #define END_ENUM_TYPE \
       default: \
