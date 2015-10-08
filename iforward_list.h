@@ -1025,14 +1025,17 @@ namespace etl
       // The node to erase.
       Node* p_node = node.next;
 
-      // Disconnect the node from the forward_list.
-      join(node, *p_node->next);
+      if (p_node != nullptr)
+      {
+        // Disconnect the node from the forward_list.
+        join(node, *p_node->next);
 
-      // Destroy the pool object.
-      destroy_data_node(static_cast<Data_Node&>(*p_node));
+        // Destroy the pool object.
+        destroy_data_node(static_cast<Data_Node&>(*p_node));
 
-      // One less.
-      --current_size;
+        // One less.
+        --current_size;
+      }
     }
 
     //*************************************************************************
