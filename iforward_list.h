@@ -399,7 +399,7 @@ namespace etl
         if (!full())
         {
           Data_Node& data_node = allocate_data_node(*first++);
-          join(*p_last_node, data_node);
+          join(p_last_node, &data_node);
           data_node.next = nullptr;
           p_last_node = &data_node;
           ++current_size;
@@ -432,7 +432,7 @@ namespace etl
         if (!full())
         {
           Data_Node& data_node = allocate_data_node(value);
-          join(*p_last_node, data_node);
+          join(p_last_node, &data_node);
           data_node.next = nullptr;
           p_last_node = &data_node;
           ++current_size;
@@ -458,7 +458,7 @@ namespace etl
       if (!full())
       {
         Data_Node& data_node = allocate_data_node(T());
-        insert_node(start_node, data_node);
+        insert_node_after(start_node, data_node);
       }
       else
 #ifdef ETL_THROW_EXCEPTIONS
@@ -586,7 +586,7 @@ namespace etl
         p_current->next = p_last;
       }
 
-      join(start_node, *p_current);
+      join(&start_node, p_current);
     }
 
     //*************************************************************************
@@ -693,7 +693,7 @@ namespace etl
       Node* p_next  = p_first->next;
 
       // Join the ends.
-      join(*p_first, *p_last);
+      join(p_first, p_last);
 
       p_first = p_next;
 
@@ -857,13 +857,13 @@ namespace etl
             // Add the next node to the merged head.
             if (p_head == before_begin())
             {
-                join(*p_head.p_node, *p_node.p_node);
+                join(p_head.p_node, p_node.p_node);
                 p_head = p_node;
                 p_tail = p_node;
             }
             else
             {
-                join(*p_tail.p_node, *p_node.p_node);
+                join(p_tail.p_node, p_node.p_node);
                 p_tail = p_node;
             }
 
@@ -984,17 +984,17 @@ namespace etl
     //*************************************************************************
     /// Join two nodes.
     //*************************************************************************
-    void join(Node& left, Node& right)
+    void join(Node* left, Node* right)
     {
-      left.next = &static_cast<Data_Node&>(right);
+      left->next = static_cast<Data_Node*>(right);
     }
 
     //*************************************************************************
     /// Join two nodes.
     //*************************************************************************
-    void join(Data_Node& left, Data_Node& right)
+    void join(Data_Node* left, Data_Node* right)
     {
-      left.next = &right;
+      left->next = right;
     }
 
     //*************************************************************************
@@ -1011,7 +1011,9 @@ namespace etl
     void insert_node_after(Node& position, Node& node)
     {
       // Connect to the forward_list.
-      join(position, node);
+      node.next = position.next;
+
+      join(&position, &node);
 
       // One more.
       ++current_size;
@@ -1025,14 +1027,17 @@ namespace etl
       // The node to erase.
       Node* p_node = node.next;
 
-      // Disconnect the node from the forward_list.
-      join(node, *p_node->next);
+      if (p_node != nullptr)
+      {
+        // Disconnect the node from the forward_list.
+        join(&node, p_node->next);
 
-      // Destroy the pool object.
-      destroy_data_node(static_cast<Data_Node&>(*p_node));
+        // Destroy the pool object.
+        destroy_data_node(static_cast<Data_Node&>(*p_node));
 
-      // One less.
-      --current_size;
+        // One less.
+        --current_size;
+      }
     }
 
     //*************************************************************************
