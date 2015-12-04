@@ -73,6 +73,7 @@ namespace etl
       iterator& operator =(const iterator& other)
       {
         p_iop = other.p_iop;
+		return *this;
       }
 
       iop_t& operator *()
