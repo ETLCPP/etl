@@ -38,6 +38,7 @@ SOFTWARE.
 #include <iterator>
 #include <utility>
 #include <functional>
+#include <stdint.h>
 
 #include "type_traits.h"
 
@@ -293,7 +294,7 @@ namespace etl
       {
         if (i == std::find(begin1, i, *i))
         {
-          size_t n = std::count(begin2, end2, *i);
+          int32_t n = std::count(begin2, end2, *i);
 
           if (n == 0 || std::count(i, end1, *i) != n)
           {
@@ -320,7 +321,7 @@ namespace etl
       {
         if (i == std::find(begin1, i, *i))
         {
-          size_t n = std::count(begin2, end2, *i);
+          int32_t n = std::count(begin2, end2, *i);
 
           if (n == 0 || std::count(i, end1, *i) != n)
           {
@@ -351,7 +352,7 @@ namespace etl
       {
         if (i == std::find_if(begin1, i, std::bind1st(predicate, *i)))
         {
-          size_t n = std::count(begin2, end2, *i);
+          int32_t n = std::count(begin2, end2, *i);
 
           if (n == 0 || std::count(i, end1, *i) != n)
           {
@@ -378,7 +379,7 @@ namespace etl
       {
         if (i == std::find_if(begin1, i, std::bind1st(predicate, *i)))
         {
-          size_t n = std::count(begin2, end2, *i);
+          int32_t n = std::count(begin2, end2, *i);
 
           if (n == 0 || std::count(i, end1, *i) != n)
           {
