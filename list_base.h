@@ -92,6 +92,54 @@ namespace etl
     typedef size_t size_type; ///< The type used for determining the size of list.
 
     //*************************************************************************
+    /// The node element in the list.
+    //*************************************************************************
+    struct Node
+    {
+      //***********************************************************************
+      /// Constructor
+      //***********************************************************************
+      Node()
+        : previous(nullptr),
+          next(nullptr)
+      {
+      }
+
+      //***********************************************************************
+      /// Reverses the previous & next pointers.
+      //***********************************************************************
+      void reverse()
+      {
+        std::swap(previous, next);
+      }
+
+      Node* previous;
+      Node* next;
+    };
+
+    //*************************************************************************
+    /// Reverses the list.
+    //*************************************************************************
+    void reverse()
+    {
+      if (is_trivial_list())
+      {
+        return;
+      }
+
+      Node* p_node = terminal_node.next;
+
+      while (p_node != &terminal_node)
+      {
+        p_node->reverse();
+        p_node = p_node->previous; // Now we've reversed it, we must go to the previous node.
+      }
+
+      // Terminal node.
+      p_node->reverse();
+    }
+
+    //*************************************************************************
     /// Gets the size of the list.
     //*************************************************************************
     size_type size() const
@@ -135,6 +183,68 @@ namespace etl
   protected:
 
     //*************************************************************************
+    /// Get the head node.
+    //*************************************************************************
+    Node& get_head()
+    {
+      return *terminal_node.next;
+    }
+
+    //*************************************************************************
+    /// Get the head node.
+    //*************************************************************************
+    const Node& get_head() const
+    {
+      return *terminal_node.next;
+    }
+
+    //*************************************************************************
+    /// Get the tail node.
+    //*************************************************************************
+    Node& get_tail()
+    {
+      return *terminal_node.previous;
+    }
+
+    //*************************************************************************
+    /// Get the tail node.
+    //*************************************************************************
+    const Node& get_tail() const
+    {
+      return *terminal_node.previous;
+    }
+
+    //*************************************************************************
+    /// Insert a node before 'position'.
+    //*************************************************************************
+    void insert_node(Node& position, Node& node)
+    {
+      // Connect to the list.
+      join(*position.previous, node);
+      join(node, position);
+
+      // One more.
+      ++current_size;
+    }
+
+    //*************************************************************************
+    /// Is the list a trivial length?
+    //*************************************************************************
+    bool is_trivial_list() const
+    {
+      return (size() < 2);
+    }
+
+    //*************************************************************************
+    /// Join two nodes.
+    //*************************************************************************
+    void join(Node& left, Node& right)
+    {
+      left.next = &right;
+      right.previous = &left;
+    }
+
+    //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
     list_base(size_type max_size)
@@ -144,8 +254,10 @@ namespace etl
     {
     }
 
-    size_type current_size;   ///< The number of the used nodes.
-    const size_type MAX_SIZE; ///< The maximum size of the list.
+    
+    Node            terminal_node; ///< The node that acts as the list start and end.
+    size_type       current_size;  ///< The number of the used nodes.
+    const size_type MAX_SIZE;      ///< The maximum size of the list.
   };
 }
 

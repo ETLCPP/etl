@@ -1,4 +1,5 @@
 
+
 #include "algorithm.h"
 #include "alignment.h"
 #include "array.h"
@@ -15,6 +16,7 @@
 #include "io_port.h"
 #include "vector.h"
 #include "variant.h"
+#include "list.h"
 
 #if defined(COMPILER_KEIL)
   #pragma diag_suppress 550
@@ -184,25 +186,25 @@ void test_bitset()
 //*****************************************************************************
 void test_crc()
 {
-	int data[]  = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	char data[]  = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 	
-	uint8_t crc1 = etl::crc8_ccitt<>(etl::begin(data), etl::end(data));
-	uint8_t crc2 = etl::crc8_ccitt<etl::endian::big>(etl::begin(data), etl::end(data));
+	uint8_t crc1 = etl::crc8_ccitt(etl::begin(data), etl::end(data));
+	uint8_t crc2 = etl::crc8_ccitt(etl::begin(data), etl::end(data));
 
-	uint16_t crc3 = etl::crc16<>(etl::begin(data), etl::end(data));
-	uint16_t crc4 = etl::crc16<etl::endian::big>(etl::begin(data), etl::end(data));
+	uint16_t crc3 = etl::crc16(etl::begin(data), etl::end(data));
+	uint16_t crc4 = etl::crc16(etl::begin(data), etl::end(data));
 	
-	uint16_t crc5 = etl::crc16_ccitt<>(etl::begin(data), etl::end(data));
-	uint16_t crc6 = etl::crc16_ccitt<etl::endian::big>(etl::begin(data), etl::end(data));
+	uint16_t crc5 = etl::crc16_ccitt(etl::begin(data), etl::end(data));
+	uint16_t crc6 = etl::crc16_ccitt(etl::begin(data), etl::end(data));
 
-	uint16_t crc7 = etl::crc16_kermit<>(etl::begin(data), etl::end(data));
-	uint16_t crc8 = etl::crc16_kermit<etl::endian::big>(etl::begin(data), etl::end(data));
+	uint16_t crc7 = etl::crc16_kermit(etl::begin(data), etl::end(data));
+	uint16_t crc8 = etl::crc16_kermit(etl::begin(data), etl::end(data));
 	
-	uint32_t crc9  = etl::crc32<>(etl::begin(data), etl::end(data));
-	uint32_t crc10 = etl::crc32<etl::endian::big>(etl::begin(data), etl::end(data));
+	uint32_t crc9  = etl::crc32(etl::begin(data), etl::end(data));
+	uint32_t crc10 = etl::crc32(etl::begin(data), etl::end(data));
 	
-	uint64_t crc11 = etl::crc64_ecma<>(etl::begin(data), etl::end(data));
-	uint64_t crc12 = etl::crc64_ecma<etl::endian::big>(etl::begin(data), etl::end(data));	
+	uint64_t crc11 = etl::crc64_ecma(etl::begin(data), etl::end(data));
+	uint64_t crc12 = etl::crc64_ecma(etl::begin(data), etl::end(data));	
 }
 
 //*****************************************************************************
@@ -236,10 +238,10 @@ void test_cyclic_value()
 template <uintptr_t ADDRESS>
 struct serial_port
 {
-  etl::io_port_ro<uint8_t,  ADDRESS>      rxdata;
-  etl::io_port_wo<uint8_t,  ADDRESS + 1>  txdata;
-  etl::io_port_rw<uint16_t, ADDRESS + 2>  control;
-  etl::io_port_ro<uint16_t, ADDRESS + 4>  status;
+  etl::io_port_ro<uint8_t,  ADDRESS>     rxdata;
+  etl::io_port_wo<uint8_t,  ADDRESS + 1> txdata;
+  etl::io_port_rw<uint16_t, ADDRESS + 2> control;
+  etl::io_port_ro<uint16_t, ADDRESS + 4> status;
   etl::io_port_wos<uint8_t, ADDRESS + 6> control2;
 };
 
@@ -338,6 +340,32 @@ void test_vector()
 }
 
 //*****************************************************************************
+// list
+//*****************************************************************************
+void test_list()
+{
+	typedef etl::list<Test, 10> Data;
+	typedef etl::list<int, 10>  Data2;
+	
+	Data  data;
+	Data2 data2;
+	
+	data.push_back(Test(1, 1.1));
+  data.push_front(Test(3, 3.3));
+	data.reverse();
+	
+	Data::iterator it = data.begin();
+	data.erase(it);
+	
+	data2.push_back(1);
+  data2.push_front(3);
+	data2.reverse();
+	
+	Data2::iterator it2 = data2.begin();
+	data2.erase(it2);
+}
+
+//*****************************************************************************
 // main
 //*****************************************************************************
 int main()
@@ -350,5 +378,6 @@ int main()
 	test_cyclic_value();
 	test_deque();
   test_vector();
+	test_list();
 	test_io_port();
 }

@@ -125,7 +125,7 @@ namespace etl
   private:
 
     /// The pool of nodes used in the list.
-    etl::pool<typename ilist<T>::Data_Node, MAX_SIZE> node_pool;
+    etl::pool<typename list::Data_Node, MAX_SIZE> node_pool;
   };
 }
 
