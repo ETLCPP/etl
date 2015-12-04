@@ -68,33 +68,6 @@ namespace etl
     
     typedef typename parameter_type<T, is_fundamental<T>::value || is_pointer<T>::value>::type parameter_t;
 
-
-    //*************************************************************************
-    /// The node element in the list.
-    //*************************************************************************
-    struct Node
-    {
-      //***********************************************************************
-      /// Constructor
-      //***********************************************************************
-      Node()
-        : previous(nullptr),
-          next(nullptr)
-      {
-      }
-
-      //***********************************************************************
-      /// Reverses the previous & next pointers.
-      //***********************************************************************
-      void reverse()
-      {
-        std::swap(previous, next);
-      }
-
-      Node* previous;
-      Node* next;
-    };
-
     //*************************************************************************
     /// The data node element in the list.
     //*************************************************************************
@@ -107,9 +80,6 @@ namespace etl
 
       T value;
     };
-
-    /// The node that acts as the list start and end.
-    Node terminal_node;  
 
   private:
 
@@ -213,7 +183,7 @@ namespace etl
 
       const_reference operator *() const
       {
-        return p_node->value;
+        return ilist::data_cast(p_node)->value;
       }
 
       pointer operator &()
@@ -1007,28 +977,6 @@ namespace etl
       }
     }
 
-    //*************************************************************************
-    /// Reverses the list.
-    //*************************************************************************
-    void reverse()
-    {
-      if (is_trivial_list())
-      {
-        return;
-      }
-
-      iterator i_item = begin();
-
-      while (i_item != end())
-      {
-        i_item.p_node->reverse();
-        --i_item; // Now we've reversed it, we must decrement it.
-      }
-
-      // Terminal node.
-      i_item.p_node->reverse();
-    }
-
   protected:
 
     //*************************************************************************
@@ -1044,45 +992,6 @@ namespace etl
   private:
 
     //*************************************************************************
-    /// Join two nodes.
-    //*************************************************************************
-    void join(Node& left, Node& right)
-    {
-      left.next      = &right;
-      right.previous = &left;
-    }
-
-    //*************************************************************************
-    /// Join two nodes.
-    //*************************************************************************
-    void join(Data_Node& left, Data_Node& right)
-    {
-      left.next      = &right;
-      right.previous = &left;
-    }
-
-    //*************************************************************************
-    /// Is the list a trivial length?
-    //*************************************************************************
-    bool is_trivial_list() const
-    {
-      return (size() < 2);
-    }
-
-    //*************************************************************************
-    /// Insert a node before 'position'.
-    //*************************************************************************
-    void insert_node(Node& position, Node& node)
-    {
-      // Connect to the list.
-      join(*position.previous, node);
-      join(node,               position);
-
-      // One more.
-      ++current_size;
-    }
-
-    //*************************************************************************
     /// Remove a node.
     //*************************************************************************
     void remove_node(Node& node)
@@ -1095,38 +1004,6 @@ namespace etl
 
       // One less.
       --current_size;
-    }
-
-    //*************************************************************************
-    /// Get the head node.
-    //*************************************************************************
-    Node& get_head()
-    {
-      return *terminal_node.next;
-    }
-
-    //*************************************************************************
-    /// Get the head node.
-    //*************************************************************************
-    const Node& get_head() const
-    {
-      return *terminal_node.next;
-    }
-
-    //*************************************************************************
-    /// Get the tail node.
-    //*************************************************************************
-    Node& get_tail()
-    {
-      return *terminal_node.previous;
-    }
-
-    //*************************************************************************
-    /// Get the tail node.
-    //*************************************************************************
-    const Node& get_tail() const
-    {
-      return *terminal_node.previous;
     }
 
     //*************************************************************************
