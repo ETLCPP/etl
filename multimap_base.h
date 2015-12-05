@@ -43,11 +43,11 @@ namespace etl
   /// Exception for the map.
   ///\ingroup map
   //***************************************************************************
-  class map_exception : public exception
+  class multimap_exception : public exception
   {
   public:
 
-    map_exception(const char* what)
+    multimap_exception(const char* what)
       : exception(what)
     {
     }
@@ -57,12 +57,12 @@ namespace etl
   /// Full exception for the map.
   ///\ingroup map
   //***************************************************************************
-  class map_full : public map_exception
+  class multimap_full : public multimap_exception
   {
   public:
 
-    map_full()
-      : map_exception("map: full")
+    multimap_full()
+      : multimap_exception("multimap: full")
     {
     }
   };
@@ -71,12 +71,12 @@ namespace etl
   /// Map out of bounds exception.
   ///\ingroup map
   //***************************************************************************
-  class map_out_of_bounds : public map_exception
+  class multimap_out_of_bounds : public multimap_exception
   {
   public:
 
-    map_out_of_bounds()
-      : map_exception("map: out of bounds")
+    multimap_out_of_bounds()
+      : multimap_exception("multimap: out of bounds")
     {
     }
   };
@@ -85,12 +85,12 @@ namespace etl
   /// Iterator exception for the map.
   ///\ingroup map
   //***************************************************************************
-  class map_iterator : public map_exception
+  class multimap_iterator : public multimap_exception
   {
   public:
 
-    map_iterator()
-      : map_exception("map: iterator problem")
+    multimap_iterator()
+      : multimap_exception("multimap: iterator problem")
     {
     }
   };

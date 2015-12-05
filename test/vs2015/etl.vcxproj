@@ -198,6 +198,7 @@
     <ClInclude Include="..\..\multimap.h" />
     <ClInclude Include="..\..\multimap_base.h" />
     <ClInclude Include="..\..\multiset.h" />
+    <ClInclude Include="..\..\multiset_base.h" />
     <ClInclude Include="..\..\murmur3.h" />
     <ClInclude Include="..\..\nullptr.h" />
     <ClInclude Include="..\..\numeric.h" />

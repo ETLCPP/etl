@@ -371,7 +371,7 @@ namespace
     {
       Data data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.insert(10), etl::set_full);
+      CHECK_THROW(data.insert(10), etl::multiset_full);
     }
 
     //*************************************************************************
@@ -411,7 +411,7 @@ namespace
     {
       Data data;
 
-      CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::set_full);
+      CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::multiset_full);
     }
 
     //*************************************************************************

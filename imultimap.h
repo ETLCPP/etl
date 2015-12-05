@@ -666,9 +666,9 @@ namespace etl
       else
       {
 #ifdef ETL_THROW_EXCEPTIONS
-        throw map_full();
+        throw multimap_full();
 #else
-        error_handler::error(map_full());
+        error_handler::error(multimap_full());
 #endif
       }
 
