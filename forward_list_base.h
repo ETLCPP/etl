@@ -87,6 +87,21 @@ namespace etl
   //***************************************************************************
   class forward_list_base
   {
+  protected:
+
+    //*************************************************************************
+    /// The node element in the forward_list.
+    //*************************************************************************
+    struct Node
+    {
+      Node()
+        : next(nullptr)
+      {
+      }
+
+      Node* next;
+    };
+
   public:
 
     typedef size_t size_type; ///< The type used for determining the size of forward_list.
@@ -132,6 +147,34 @@ namespace etl
       return max_size() - size();
     }
 
+    //*************************************************************************
+    /// Reverses the forward_list.
+    //*************************************************************************
+    void reverse()
+    {
+      if (is_trivial_list())
+      {
+        return;
+      }
+
+      Node* p_last    = &start_node;
+      Node* p_current = p_last->next;
+      Node* p_next    = p_current->next;
+
+      p_current->next = nullptr;
+
+      while (p_next != nullptr)
+      {
+        p_last    = p_current;
+        p_current = p_next;
+        p_next    = p_current->next;
+
+        p_current->next = p_last;
+      }
+
+      join(&start_node, p_current);
+    }
+
   protected:
 
     //*************************************************************************
@@ -144,6 +187,53 @@ namespace etl
     {
     }
 
+    //*************************************************************************
+    /// Get the head node.
+    //*************************************************************************
+    Node& get_head()
+    {
+      return *start_node.next;
+    }
+
+    //*************************************************************************
+    /// Get the head node.
+    //*************************************************************************
+    const Node& get_head() const
+    {
+      return *start_node.next;
+    }
+
+    //*************************************************************************
+    /// Insert a node.
+    //*************************************************************************
+    void insert_node_after(Node& position, Node& node)
+    {
+      // Connect to the forward_list.
+      node.next = position.next;
+
+      join(&position, &node);
+
+      // One more.
+      ++current_size;
+    }
+    
+    //*************************************************************************
+    /// Is the forward_list a trivial length?
+    //*************************************************************************
+    bool is_trivial_list() const
+    {
+      return (size() < 2);
+    }
+
+    //*************************************************************************
+    /// Join two nodes.
+    //*************************************************************************
+    void join(Node* left, Node* right)
+    {
+      left->next = right;
+    }
+
+    Node start_node;          ///< The node that acts as the forward_list start.
     size_type next_free;      ///< The index of the next free node.
     size_type current_size;   ///< The number of items in the list.
     const size_type MAX_SIZE; ///< The maximum size of the forward_list.
