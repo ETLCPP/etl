@@ -459,6 +459,9 @@
     <ClInclude Include="..\..\basic_intrusive_forward_list_node.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\multimap_base.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\AssertException.cpp">
