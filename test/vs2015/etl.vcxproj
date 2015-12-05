@@ -120,6 +120,8 @@
     <ClInclude Include="..\..\algorithm.h" />
     <ClInclude Include="..\..\alignment.h" />
     <ClInclude Include="..\..\array.h" />
+    <ClInclude Include="..\..\basic_intrusive_forward_list.h" />
+    <ClInclude Include="..\..\basic_intrusive_forward_list_node.h" />
     <ClInclude Include="..\..\binary.h" />
     <ClInclude Include="..\..\bitset.h" />
     <ClInclude Include="..\..\bloom_filter.h" />
@@ -171,6 +173,7 @@
     <ClInclude Include="..\..\instance_count.h" />
     <ClInclude Include="..\..\integral_limits.h" />
     <ClInclude Include="..\..\intrusive_forward_list.h" />
+    <ClInclude Include="..\..\intrusive_forward_list_node.h" />
     <ClInclude Include="..\..\io_port.h" />
     <ClInclude Include="..\..\ipool.h" />
     <ClInclude Include="..\..\ipriority_queue.h" />
@@ -262,6 +265,7 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../unittest-cpp</AdditionalIncludeDirectories>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\test_basic_intrusive_forward_list.cpp" />
     <ClCompile Include="..\test_binary.cpp" />
     <ClCompile Include="..\test_bitset.cpp" />
     <ClCompile Include="..\test_bloom_filter.cpp" />
@@ -323,8 +327,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Doxyfile" />
-    <None Include="ClassDiagram.cd" />
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
