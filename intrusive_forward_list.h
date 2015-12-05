@@ -41,7 +41,7 @@ SOFTWARE.
 
 #include "nullptr.h"
 #include "type_traits.h"
-#include "array.h"
+#include "intrusive_forward_list_node.h"
 
 namespace etl
 {
@@ -85,66 +85,6 @@ namespace etl
       : intrusive_forward_list_exception("intrusive_forward_list: index out of bounds")
     {
     }
-  };
-
-  namespace __private_intrusive_forward_list__
-  {
-    //***************************************************************************
-    /// The node element in the intrusive_forward_list.
-    //***************************************************************************
-    class intrusive_forward_list_node_base
-    {
-    public:
-
-      virtual intrusive_forward_list_node_base* get_next(size_t index) const
-      {
-        return base_next;
-      }
-
-      virtual void set_next(size_t index, intrusive_forward_list_node_base* pnext)
-      {
-        base_next = pnext;
-      }
-
-    private:
-
-      intrusive_forward_list_node_base* base_next;
-    };
-  }
-
-  //***************************************************************************
-  /// The node element in the intrusive_forward_list.
-  //***************************************************************************
-  template <const size_t SIZE>
-  struct intrusive_forward_list_node : public __private_intrusive_forward_list__::intrusive_forward_list_node_base
-  {
-  public:
-
-    __private_intrusive_forward_list__::intrusive_forward_list_node_base* get_next(size_t index) const
-    {
-#ifdef _DEBUG
-      if (index >= SIZE)
-      {
-        ETL_ERROR(intrusive_forward_list_index_exception());
-      }
-#endif
-      return next[index];
-    }
-
-    void set_next(size_t index, __private_intrusive_forward_list__::intrusive_forward_list_node_base* pnext)
-    {
-#ifdef _DEBUG
-      if (index >= SIZE)
-      {
-        ETL_ERROR(intrusive_forward_list_index_exception());
-      }
-#endif
-      next[index] = pnext;
-    }
-
-  private:
-
-    etl::array<__private_intrusive_forward_list__::intrusive_forward_list_node_base*, SIZE> next;
   };
 
   //***************************************************************************
@@ -518,23 +458,20 @@ namespace etl
       {
         return;
       }
-      
-      node_t* p_last    = &start_node;
-      node_t* p_current = p_last->get_next(index);
-      node_t* p_next    = p_current->get_next(index);
 
-      p_current->set_next(index, nullptr);
+      node_t* first  = nullptr;                    // To keep first node
+      node_t* second = start_node.get_next(index); // To keep second node
+      node_t* track  = start_node.get_next(index); // Track the list
 
-      while (p_next != nullptr)
+      while (track != NULL)
       {
-        p_last    = p_current;
-        p_current = p_next;
-        p_next    = p_current->get_next(index);
-
-        p_current->set_next(index, p_last);
+        track = track->get_next(index); // Track point to next node;
+        second->set_next(index, first); // Second node point to first
+        first  = second;                // Move first node to next
+        second = track;                 // Move second node to next
       }
 
-      join(&start_node, p_current);
+      join(&start_node, first);
     }
 
     //*************************************************************************
