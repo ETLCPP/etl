@@ -1460,5 +1460,16 @@ namespace
 
       CHECK(deque1 != deque2);
     }
+
+    //*************************************************************************
+    TEST(test_iterator_comparison_empty)
+     {
+       DataNDC data;
+      
+       CHECK(data.begin()   == data.end());
+       CHECK(data.cbegin()  == data.cend());
+       CHECK(data.rbegin()  == data.rend());
+       CHECK(data.crbegin() == data.crend());
+     }
 	};
 }
