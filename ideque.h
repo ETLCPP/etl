@@ -535,11 +535,7 @@ namespace etl
     {
       if (index >= current_size)
       {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw deque_out_of_bounds();
-#else
-        error_handler::error((deque_out_of_bounds()));
-#endif
+        ETL_ERROR(deque_out_of_bounds());
       }
 
       iterator result(_begin);
@@ -763,11 +759,7 @@ namespace etl
       }
       else
       {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw deque_full();
-#else
-        error_handler::error(deque_full());
-#endif
+        ETL_ERROR(deque_full());
       }
 
       return position;
@@ -881,11 +873,7 @@ namespace etl
       }
       else
       {
-#ifdef ETL_THROW_EXCEPTIONS 
-        throw deque_full();
-#else
-        error_handler::error(deque_full());
-#endif
+        ETL_ERROR(deque_full());
       }
 
       return position;
@@ -997,11 +985,7 @@ namespace etl
       }
       else
       {
-#ifdef ETL_THROW_EXCEPTIONS 
-        throw deque_full();
-#else
-        error_handler::error(deque_full());
-#endif
+        ETL_ERROR(deque_full());
       }
 
       return position;
@@ -1046,11 +1030,7 @@ namespace etl
       }
       else
       {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw deque_out_of_bounds();
-#else
-        error_handler::error(deque_out_of_bounds());
-#endif
+        ETL_ERROR(deque_out_of_bounds());
       }
 
       return position;
@@ -1123,11 +1103,7 @@ namespace etl
       }
       else
       {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw deque_out_of_bounds();
-#else
-        error_handler::error(deque_out_of_bounds());
-#endif
+        ETL_ERROR(deque_out_of_bounds());
       }
 
       return position;
@@ -1146,11 +1122,7 @@ namespace etl
       } 
       else
       {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw deque_full();
-#else
-        error_handler::error(deque_full());
-#endif
+        ETL_ERROR(deque_full());
       }
     }
 
@@ -1169,11 +1141,7 @@ namespace etl
       }
       else
       {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw deque_full();
-#else
-        error_handler::error(deque_full());
-#endif
+        ETL_ERROR(deque_full());
       }
 
       return r;
@@ -1203,11 +1171,7 @@ namespace etl
       }
       else
       {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw deque_full();
-#else
-        error_handler::error(deque_full());
-#endif
+        ETL_ERROR(deque_full());
       }
     }
 
@@ -1224,11 +1188,7 @@ namespace etl
       }
       else
       {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw deque_full();
-#else
-        error_handler::error(deque_full());
-#endif
+        ETL_ERROR(deque_full());
       }
 
       return *_begin;
@@ -1274,14 +1234,9 @@ namespace etl
           }
         }
       }
-
       else
       {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw deque_out_of_bounds();
-#else
-        error_handler::error(deque_out_of_bounds());
-#endif
+        ETL_ERROR(deque_out_of_bounds());
       }
     }
 
