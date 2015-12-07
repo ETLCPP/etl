@@ -80,6 +80,17 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_iterator_comparison_empty)
+    {
+      Data data;
+
+      CHECK(data.begin()   == data.end());
+      CHECK(data.cbegin()  == data.cend());
+      CHECK(data.rbegin()  == data.rend());
+      CHECK(data.crbegin() == data.crend());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_size)
     {
       const size_t INITIAL_SIZE = 5;
