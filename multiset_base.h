@@ -27,12 +27,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#if !defined(__ETL_IN_ISET_H__)
-#error This header is a private element of etl::set & etl::iset
+#if !defined(__ETL_IN_IMULTISET_H__)
+#error This header is a private element of etl::multiset & etl::imultiset
 #endif
 
-#ifndef __ETL_SET_BASE__
-#define __ETL_SET_BASE__
+#ifndef __ETL_MULTISET_BASE__
+#define __ETL_MULTISET_BASE__
 
 #include <stddef.h>
 #include "exception.h"
@@ -43,11 +43,11 @@ namespace etl
   /// Exception for the set.
   ///\ingroup set
   //***************************************************************************
-  class set_exception : public exception
+  class multiset_exception : public exception
   {
   public:
 
-    set_exception(const char* what)
+    multiset_exception(const char* what)
       : exception(what)
     {
     }
@@ -57,12 +57,12 @@ namespace etl
   /// Full exception for the set.
   ///\ingroup set
   //***************************************************************************
-  class set_full : public set_exception
+  class multiset_full : public multiset_exception
   {
   public:
 
-    set_full()
-      : set_exception("set: full")
+    multiset_full()
+      : multiset_exception("multiset: full")
     {
     }
   };
@@ -71,12 +71,12 @@ namespace etl
   /// Map out of bounds exception.
   ///\ingroup set
   //***************************************************************************
-  class set_out_of_bounds : public set_exception
+  class multiset_out_of_bounds : public multiset_exception
   {
   public:
 
-    set_out_of_bounds()
-      : set_exception("set: out of bounds")
+    multiset_out_of_bounds()
+      : multiset_exception("multiset: out of bounds")
     {
     }
   };
@@ -85,12 +85,12 @@ namespace etl
   /// Iterator exception for the set.
   ///\ingroup set
   //***************************************************************************
-  class set_iterator : public set_exception
+  class multiset_iterator : public multiset_exception
   {
   public:
 
-    set_iterator()
-      : set_exception("set: iterator problem")
+    multiset_iterator()
+      : multiset_exception("multiset: iterator problem")
     {
     }
   };
@@ -99,7 +99,7 @@ namespace etl
   /// The base class for all sets.
   ///\ingroup set
   //***************************************************************************
-  class set_base
+  class multiset_base
   {
   public:
 
@@ -162,7 +162,7 @@ namespace etl
     static const uint8_t kNeither = 2;
 
     //*************************************************************************
-    /// The node element in the set.
+    /// The node element in the multiset.
     //*************************************************************************
     struct Node
     {
@@ -182,10 +182,12 @@ namespace etl
       {
         weight = kNeither;
         dir = kNeither;
+        parent = nullptr;
         children[0] = nullptr;
         children[1] = nullptr;
       }
 
+      Node* parent;
       Node* children[2];
       uint8_t weight;
       uint8_t dir;
@@ -194,21 +196,23 @@ namespace etl
     //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
-    set_base(size_type max_size)
+    multiset_base(size_type max_size)
       : current_size(0)
       , MAX_SIZE(max_size)
       , root_node(nullptr)
-
     {
     }
 
     //*************************************************************************
     /// Attach the provided node to the position provided
     //*************************************************************************
-    void attach_node(Node*& position, Node& node)
+    void attach_node(Node* parent, Node*& position, Node& node)
     {
       // Mark new node as leaf on attach to tree at position provided
       node.mark_as_leaf();
+
+      // Keep track of this node's parent
+      node.parent = parent;
 
       // Add the node here
       position = &node;
@@ -235,9 +239,18 @@ namespace etl
       // otherwise we might lose the other child of the swap node
       replacement = swap->children[1 - swap->dir];
 
-      // Point swap node to detached node's children and weight
+      // Point swap node to detached node's parent, children and weight
+      swap->parent = detached->parent;
       swap->children[kLeft] = detached->children[kLeft];
       swap->children[kRight] = detached->children[kRight];
+      if (swap->children[kLeft])
+      {
+        swap->children[kLeft]->parent = swap;
+      }
+      if (swap->children[kRight])
+      {
+        swap->children[kRight]->parent = swap;
+      }
       swap->weight = detached->weight;
     }
 
@@ -322,20 +335,143 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Find the node whose key would go before all the other keys from the
-    /// position provided
+    /// Find the next node in sequence from the node provided
     //*************************************************************************
-    const Node* find_limit_node(const Node* position, const int8_t dir) const
+    void next_node(Node*& position) const
     {
-      // Something at this position and in the direction specified? keep going
-      const Node* limit_node = position;
-      while (limit_node && limit_node->children[dir])
+      if (position)
       {
-        limit_node = limit_node->children[dir];
-      }
+        // Is there a tree on the right? then find the minimum of that tree
+        if (position->children[kRight])
+        {
+          // Return minimum node found
+          position = find_limit_node(position->children[kRight], kLeft);
+        }
+        // Otherwise find the parent of this node
+        else
+        {
+          // Start with current position as parent
+          Node* parent = position;
+          do {
+            // Update current position as previous parent
+            position = parent;
+            // Find parent of current position
+            parent = position->parent; // find_parent_node(root_node, position);
+                                       // Repeat while previous position was on right side of parent tree
+          } while (parent && parent->children[kRight] == position);
 
-      // Return the limit node position found
-      return limit_node;
+          // Set parent node as the next position
+          position = parent;
+        }
+      }
+    }
+
+    //*************************************************************************
+    /// Find the next node in sequence from the node provided
+    //*************************************************************************
+    void next_node(const Node*& position) const
+    {
+      if (position)
+      {
+        // Is there a tree on the right? then find the minimum of that tree
+        if (position->children[kRight])
+        {
+          // Return minimum node found
+          position = find_limit_node(position->children[kRight], kLeft);
+        }
+        // Otherwise find the parent of this node
+        else
+        {
+          // Start with current position as parent
+          const Node* parent = position;
+          do {
+            // Update current position as previous parent
+            position = parent;
+            // Find parent of current position
+            parent = position->parent;
+            // Repeat while previous position was on right side of parent tree
+          } while (parent && parent->children[kRight] == position);
+
+          // Set parent node as the next position
+          position = parent;
+        }
+      }
+    }
+
+    //*************************************************************************
+    /// Find the previous node in sequence from the node provided
+    //*************************************************************************
+    void prev_node(Node*& position) const
+    {
+      // If starting at the terminal end, the previous node is the maximum node
+      // from the root
+      if (!position)
+      {
+        position = find_limit_node(root_node, kRight);
+      }
+      else
+      {
+        // Is there a tree on the left? then find the maximum of that tree
+        if (position->children[kLeft])
+        {
+          // Return maximum node found
+          position = find_limit_node(position->children[kLeft], kRight);
+        }
+        // Otherwise find the parent of this node
+        else
+        {
+          // Start with current position as parent
+          Node* parent = position;
+          do {
+            // Update current position as previous parent
+            position = parent;
+            // Find parent of current position
+            parent = position->parent;
+            // Repeat while previous position was on left side of parent tree
+          } while (parent && parent->children[kLeft] == position);
+
+          // Set parent node as the next position
+          position = parent;
+        }
+      }
+    }
+
+    //*************************************************************************
+    /// Find the previous node in sequence from the node provided
+    //*************************************************************************
+    void prev_node(const Node*& position) const
+    {
+      // If starting at the terminal end, the previous node is the maximum node
+      // from the root
+      if (!position)
+      {
+        position = find_limit_node(root_node, kRight);
+      }
+      else
+      {
+        // Is there a tree on the left? then find the maximum of that tree
+        if (position->children[kLeft])
+        {
+          // Return maximum node found
+          position = find_limit_node(position->children[kLeft], kRight);
+        }
+        // Otherwise find the parent of this node
+        else
+        {
+          // Start with current position as parent
+          const Node* parent = position;
+          do {
+            // Update current position as previous parent
+            position = parent;
+            // Find parent of current position
+            parent = position->parent;
+            // Repeat while previous position was on left side of parent tree
+          } while (parent && parent->children[kLeft] == position);
+
+          // Set parent node as the next position
+          position = parent;
+        }
+      }
     }
 
     //*************************************************************************
@@ -354,15 +490,26 @@ namespace etl
       // A (position) takes ownership of E as its left child
       // B (new position) takes ownership of A as its right child
 
-      // Capture new root
+      // Capture new root (either B or C depending on dir) and its parent
       Node* new_root = position->children[dir];
+
       // Replace position's previous child with new root's other child
       position->children[dir] = new_root->children[1 - dir];
-      // New root now becomes parent of current position
+      // Update new root's other child parent pointer
+      if (position->children[dir])
+      {
+        position->children[dir]->parent = position;
+      }
+
+      // New root's parent becomes current position's parent
+      new_root->parent = position->parent;
       new_root->children[1 - dir] = position;
+      new_root->dir = 1 - dir;
+
       // Clear weight factor from current position
       position->weight = kNeither;
-      // Newly detached right now becomes current position
+      // Position's parent becomes new_root
+      position->parent = new_root;
       position = new_root;
       // Clear weight factor from new root
       position->weight = kNeither;
@@ -391,27 +538,42 @@ namespace etl
       position->children[dir]->weight = third != kNeither && third != dir ? dir : kNeither;
 
       // Detach new root from its tree (replace with new roots child)
-      position->children[dir]->children[1 - dir] =
-        new_root->children[dir];
-      // Attach current left tree to new root
+      position->children[dir]->children[1 - dir] = new_root->children[dir];
+      // Update new roots child parent pointer
+      if (new_root->children[dir])
+      {
+        new_root->children[dir]->parent = position->children[dir];
+      }
+
+      // Attach current left tree to new root and update its parent
       new_root->children[dir] = position->children[dir];
+      position->children[dir]->parent = new_root;
+
       // Set weight factor for A based on F or G
       position->weight = third != kNeither && third == dir ? 1 - dir : kNeither;
 
       // Move new root's right tree to current roots left tree
       position->children[dir] = new_root->children[1 - dir];
-      // Attach current root to new roots right tree
+      if (new_root->children[1 - dir])
+      {
+        new_root->children[1 - dir]->parent = position;
+      }
+
+      // Attach current root to new roots right tree and assume its parent
+      new_root->parent = position->parent;
       new_root->children[1 - dir] = position;
-      // Replace current position with new root
+      new_root->dir = 1 - dir;
+
+      // Update current position's parent and replace with new root
+      position->parent = new_root;
       position = new_root;
       // Clear weight factor for new current position
       position->weight = kNeither;
     }
 
-
     size_type current_size;   ///< The number of the used nodes.
-    const size_type MAX_SIZE; ///< The maximum size of the set.
-    Node* root_node;          ///< The node that acts as the set root.
+    const size_type MAX_SIZE; ///< The maximum size of the set.                    
+    Node* root_node;          ///< The node that acts as the multiset root.
   };
 }
 

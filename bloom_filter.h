@@ -83,7 +83,7 @@ namespace etl
     enum
     {
       // Make the most efficient use of the bitset.
-      WIDTH = etl::bitset<DESIRED_WIDTH>::TOTAL_BITS
+      WIDTH = etl::bitset<DESIRED_WIDTH>::ALLOCATED_BITS
     };
 
     //***************************************************************************

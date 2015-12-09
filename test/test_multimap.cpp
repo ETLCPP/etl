@@ -396,7 +396,7 @@ namespace
     {
       Data data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.insert(std::make_pair(std::string("10"), 10)), etl::map_full);
+      CHECK_THROW(data.insert(std::make_pair(std::string("10"), 10)), etl::multimap_full);
     }
 
     //*************************************************************************
@@ -436,7 +436,7 @@ namespace
     {
       Data data;
 
-      CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::map_full);
+      CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::multimap_full);
     }
 
     //*************************************************************************

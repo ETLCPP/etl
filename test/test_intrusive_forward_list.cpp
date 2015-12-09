@@ -41,69 +41,71 @@ SOFTWARE.
 
 typedef TestDataDC<std::string>  ItemDC;
 typedef TestDataNDC<std::string> ItemNDC;
-
-class ItemDCNode : public etl::intrusive_forward_list_node<2>
+namespace
 {
-public:
-
-  ItemDCNode(const std::string& text)
-    : data(text)
+  class ItemDCNode : public etl::intrusive_forward_list_node<2>
   {
-  }
+  public:
 
-  ItemDC data;
-};
+    ItemDCNode(const std::string& text)
+      : data(text)
+    {
+    }
 
-const size_t INDEXES = 2;
+    ItemDC data;
+  };
 
-class ItemNDCNode : public etl::intrusive_forward_list_node<INDEXES>
-{
-public:
+  const size_t INDEXES = 2;
 
-  ItemNDCNode(const std::string& text)
-    : data(text)
+  class ItemNDCNode : public etl::intrusive_forward_list_node<INDEXES>
   {
-  }
+  public:
 
-  bool operator <(const ItemNDCNode& other) const
-  {
-    return data < other.data;
-  }
+    ItemNDCNode(const std::string& text)
+      : data(text)
+    {
+    }
 
-  ItemNDC data;
-};
+    bool operator <(const ItemNDCNode& other) const
+    {
+      return data < other.data;
+    }
 
-bool operator ==(const ItemDCNode& lhs, const ItemDCNode& rhs)
-{
-  return lhs.data == rhs.data;
-}
+    ItemNDC data;
+  };
 
-bool operator ==(const ItemNDCNode& lhs, const ItemNDCNode& rhs)
-{
-  return lhs.data == rhs.data;
-}
-
-std::ostream& operator << (std::ostream& os, const ItemNDCNode& node)
-{
-  os << node.data;
-  return os;
-}
-
-struct CompareItemNDCNode
-{
-  bool operator ()(const ItemNDCNode& lhs, const ItemNDCNode& rhs) const
-  {
-    return lhs.data < rhs.data;
-  }
-};
-
-struct EqualItemNDCNode
-{
-  bool operator ()(const ItemNDCNode& lhs, const ItemNDCNode& rhs) const
+  bool operator ==(const ItemDCNode& lhs, const ItemDCNode& rhs)
   {
     return lhs.data == rhs.data;
   }
-};
+
+  bool operator ==(const ItemNDCNode& lhs, const ItemNDCNode& rhs)
+  {
+    return lhs.data == rhs.data;
+  }
+
+  std::ostream& operator << (std::ostream& os, const ItemNDCNode& node)
+  {
+    os << node.data;
+    return os;
+  }
+
+  struct CompareItemNDCNode
+  {
+    bool operator ()(const ItemNDCNode& lhs, const ItemNDCNode& rhs) const
+    {
+      return lhs.data < rhs.data;
+    }
+  };
+
+  struct EqualItemNDCNode
+  {
+    bool operator ()(const ItemNDCNode& lhs, const ItemNDCNode& rhs) const
+    {
+      return lhs.data == rhs.data;
+    }
+  };
+}
 
 namespace 
 {		

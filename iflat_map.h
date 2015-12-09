@@ -273,8 +273,8 @@ namespace etl
 
     //*********************************************************************
     /// Assigns values to the flat_map.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_map_full if the flat_map does not have enough free space.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_map_iterator if the iterators are reversed.
+    /// If ETL_THROW_EXCEPTIONS & _DEBUG are defined, emits flat_map_full if the flat_map does not have enough free space.
+    /// If ETL_THROW_EXCEPTIONS & _DEBUG are defined, emits flat_map_iterator if the iterators are reversed.
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
@@ -286,7 +286,12 @@ namespace etl
 
       if (count < 0)
       {
-		ETL_ERROR(flat_map_iterator());
+		    ETL_ERROR(flat_map_iterator());
+      }
+
+      if (count > difference_type(capacity()))
+      {
+        ETL_ERROR(flat_map_full());
       }
 #endif
 
@@ -314,7 +319,7 @@ namespace etl
         // At the end.
         if (buffer.full())
         {
-		  ETL_ERROR(flat_map_full());
+		      ETL_ERROR(flat_map_full());
         }
         else
         {
@@ -339,7 +344,7 @@ namespace etl
           // A new one.
           if (buffer.full())
           {
-			ETL_ERROR(flat_map_full());
+			      ETL_ERROR(flat_map_full());
           }
           else
           {

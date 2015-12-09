@@ -69,21 +69,6 @@ namespace etl
     typedef typename parameter_type<T, is_fundamental<T>::value || is_pointer<T>::value>::type parameter_t;
 
     //*************************************************************************
-    /// The node element in the forward_list.
-    //*************************************************************************
-    struct Data_Node;
-
-    struct Node
-    {
-      Node()
-        : next(nullptr)
-      {
-      }
-
-      Node* next;
-    };
-
-    //*************************************************************************
     /// The data node element in the forward_list.
     //*************************************************************************
     struct Data_Node : public Node
@@ -562,34 +547,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Reverses the forward_list.
-    //*************************************************************************
-    void reverse()
-    {
-      if (is_trivial_list())
-      {
-        return;
-      }
-      
-      Node* p_last    = &start_node;
-      Node* p_current = p_last->next;
-      Node* p_next    = p_current->next;
-
-      p_current->next = nullptr;
-
-      while (p_next != nullptr)
-      {
-        p_last    = p_current;
-        p_current = p_next;
-        p_next    = p_current->next;
-
-        p_current->next = p_last;
-      }
-
-      join(&start_node, p_current);
-    }
-
-    //*************************************************************************
     /// Inserts a value to the forward_list after the specified position.
     //*************************************************************************
     iterator insert_after(iterator position, parameter_t value)
@@ -942,8 +899,6 @@ namespace etl
       initialise();
     }
 
-    Node start_node; ///< The node that acts as the forward_list start.
-
   private:
 
     /// The pool of data nodes used in the list.
@@ -982,44 +937,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Join two nodes.
-    //*************************************************************************
-    void join(Node* left, Node* right)
-    {
-      left->next = static_cast<Data_Node*>(right);
-    }
-
-    //*************************************************************************
-    /// Join two nodes.
-    //*************************************************************************
-    void join(Data_Node* left, Data_Node* right)
-    {
-      left->next = right;
-    }
-
-    //*************************************************************************
-    /// Is the forward_list a trivial length?
-    //*************************************************************************
-    bool is_trivial_list() const
-    {
-      return (size() < 2);
-    }
-
-    //*************************************************************************
-    /// Insert a node.
-    //*************************************************************************
-    void insert_node_after(Node& position, Node& node)
-    {
-      // Connect to the forward_list.
-      node.next = position.next;
-
-      join(&position, &node);
-
-      // One more.
-      ++current_size;
-    }
-
-    //*************************************************************************
     /// Remove a node.
     //*************************************************************************
     void remove_node_after(Node& node)
@@ -1038,22 +955,6 @@ namespace etl
         // One less.
         --current_size;
       }
-    }
-
-    //*************************************************************************
-    /// Get the head node.
-    //*************************************************************************
-    Node& get_head()
-    {
-      return *start_node.next;
-    }
-
-    //*************************************************************************
-    /// Get the head node.
-    //*************************************************************************
-    const Node& get_head() const
-    {
-      return *start_node.next;
     }
 
     //*************************************************************************
