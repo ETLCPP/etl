@@ -142,18 +142,18 @@ void test_array()
 //*****************************************************************************
 void test_bitset()
 {
-	etl::bitset<7>  b7;  // uint8_t
-	etl::bitset<8>  b8;  // uint8_t
-	etl::bitset<9>  b9;  // uint16_t
-	etl::bitset<15> b15; // uint16_t
-	etl::bitset<16> b16; // uint16_t
-	etl::bitset<17> b17; // uint32_t
-	etl::bitset<31> b31; // uint32_t
-	etl::bitset<32> b32; // uint32_t
-	etl::bitset<33> b33; // uint64_t
-	etl::bitset<63> b63; // uint64_t
-	etl::bitset<64> b64; // uint64_t
-	etl::bitset<65> b65; // 2 * uint64_t
+	etl::bitset<7>  b7;
+	etl::bitset<8>  b8;
+	etl::bitset<9>  b9;
+	etl::bitset<15> b15;
+	etl::bitset<16> b16;
+	etl::bitset<17> b17;
+	etl::bitset<31> b31;
+	etl::bitset<32> b32;
+	etl::bitset<33> b33;
+	etl::bitset<63> b63;
+	etl::bitset<64> b64;
+	etl::bitset<65> b65;
 	
 	b65.set();
 	b65.set(4, true);
@@ -165,20 +165,16 @@ void test_bitset()
 	b65.flip();
 	b65.flip(5);
 	
-	etl::bitset<7>::iterator b1 = b7.begin();
-	etl::bitset<7>::iterator e1 = b7.end();
-	etl::bitset<7>::const_iterator b2 = b7.cbegin();
-	etl::bitset<7>::const_iterator e2 = b7.cend();
+	etl::ibitset& ib = b65;
 	
-	++b1;
-	--e1;
-	b2 += 2;
-	e2 -= 2;
-	
-	*b1 = true;
-
-	const etl::bitset<7>::iterator b3 = b7.begin();
-	bool t = *b3;
+	ib.set();
+	ib.set(4, true);
+	ib.reset();
+	ib.reset(37);
+	b = ib[4];
+	b = ib[64];
+	ib.flip();
+	ib.flip(5);
 }
 
 //*****************************************************************************
