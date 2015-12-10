@@ -575,7 +575,7 @@ namespace
       etl::bitset<60> data2(0x23456789);
       etl::bitset<60> data3(0x12345678 & 0x23456789);
 
-      data2 &= data1;
+      etl::bitset<60>& rdata = data2 &= data1;
       CHECK(data2 == data3);
     }
 
@@ -598,7 +598,7 @@ namespace
       etl::bitset<60> data2(0x23456789);
       etl::bitset<60> data3(0x12345678 | 0x23456789);
 
-      data2 |= data1;
+      etl::bitset<60>& rdata = data2 |= data1;
       CHECK(data2 == data3);
     }
 
@@ -621,7 +621,7 @@ namespace
       etl::bitset<60> data2(0x23456789);
       etl::bitset<60> data3(0x12345678 ^ 0x23456789);
 
-      data2 ^= data1;
+      etl::bitset<60>& rdata = data2 ^= data1;
       CHECK(data2 == data3);
     }
 

@@ -42,7 +42,7 @@ SOFTWARE.
 
 #include "pool.h"
 #include "nullptr.h"
-#include "forward_list_base.h"
+#include "private/forward_list_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
 

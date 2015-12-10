@@ -34,6 +34,9 @@
     <Filter Include="ETL\Maths">
       <UniqueIdentifier>{1c55dd7d-c04b-428c-810b-dd3a08fc4c65}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ETL\Containers\Private">
+      <UniqueIdentifier>{7028012c-30c4-4993-b2d9-3b1521a610ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\AssertException.h">
@@ -153,19 +156,10 @@
     <ClInclude Include="..\..\queue.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\queue_base.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\stack.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\stack_base.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\vector.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\vector_base.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\largest.h">
@@ -201,16 +195,10 @@
     <ClInclude Include="..\..\ilist.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\list_base.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\map.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\imap.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\map_base.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\crc16.h">
@@ -234,9 +222,6 @@
     <ClInclude Include="..\..\deque.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\deque_base.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\ideque.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
@@ -244,9 +229,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\forward_list.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\forward_list_base.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\iforward_list.h">
@@ -309,9 +291,6 @@
     <ClInclude Include="..\..\ipool.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\pool_base.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\radix.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
@@ -336,16 +315,10 @@
     <ClInclude Include="..\..\iflat_map.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\flat_map_base.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\ihash.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\..\flat_set.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\flat_set_base.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\iflat_set.h">
@@ -355,9 +328,6 @@
       <Filter>ETL\Containers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\iunordered_map.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\unordered_map_base.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\io_port.h">
@@ -370,9 +340,6 @@
       <Filter>ETL\Containers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\set.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\set_base.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\imultimap.h">
@@ -391,9 +358,6 @@
       <Filter>ETL\Containers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\priority_queue.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\priority_queue_base.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ilru_cache.h">
@@ -432,13 +396,7 @@
     <ClInclude Include="..\..\flat_multimap.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\flat_multimap_base.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\flat_multiset.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\flat_multiset_base.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\iflat_multiset.h">
@@ -459,11 +417,56 @@
     <ClInclude Include="..\..\basic_intrusive_forward_list_node.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\deque_base.h">
+      <Filter>ETL\Containers\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\flat_map_base.h">
+      <Filter>ETL\Containers\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\flat_multimap_base.h">
+      <Filter>ETL\Containers\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\flat_multiset_base.h">
+      <Filter>ETL\Containers\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\forward_list_base.h">
+      <Filter>ETL\Containers\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\flat_set_base.h">
+      <Filter>ETL\Containers\Private</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\multimap_base.h">
-      <Filter>ETL\Containers</Filter>
+      <Filter>ETL\Containers\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\priority_queue_base.h">
+      <Filter>ETL\Containers\Private</Filter>
     </ClInclude>
     <ClInclude Include="..\..\multiset_base.h">
-      <Filter>ETL\Containers</Filter>
+      <Filter>ETL\Containers\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\map_base.h">
+      <Filter>ETL\Containers\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\list_base.h">
+      <Filter>ETL\Containers\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\stack_base.h">
+      <Filter>ETL\Containers\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\set_base.h">
+      <Filter>ETL\Containers\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\queue_base.h">
+      <Filter>ETL\Containers\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\unordered_map_base.h">
+      <Filter>ETL\Containers\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\vector_base.h">
+      <Filter>ETL\Containers\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\pool_base.h">
+      <Filter>ETL\Containers\Private</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

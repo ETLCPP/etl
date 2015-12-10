@@ -33,7 +33,7 @@ SOFTWARE.
 
 #include <stddef.h>
 
-#include "stack_base.h"
+#include "private/stack_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
 

@@ -37,7 +37,7 @@ SOFTWARE.
 #include <utility>
 #include <stddef.h>
 
-#include "flat_multimap_base.h"
+#include "private/flat_multimap_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "ivector.h"
@@ -223,12 +223,7 @@ namespace etl
     {
 #ifdef _DEBUG
       difference_type count = std::distance(first, last);
-
-      if (count < 0)
-      {
-        ETL_ERROR(flat_multimap_iterator());
-		return;
-      }
+      ETL_ASSERT(count >= 0, flat_multimap_iterator());
 #endif
 
       clear();
@@ -250,25 +245,22 @@ namespace etl
 
       iterator i_element = lower_bound(value.first);
 
-	  if (buffer.full())
-	  {
-		ETL_ERROR(flat_multimap_full());
-		return result;
-	  }
-
-      if (i_element == end())
+      if (ETL_ASSERT(!buffer.full(), flat_multimap_full()))
       {
-        // At the end.
-        buffer.push_back(value);
-        result.first  = end() - 1;
-        result.second = true;
-      }
-      else
-      {
-        // Not at the end.
-        buffer.insert(i_element, value);
-        result.first  = i_element;
-        result.second = true;
+        if (i_element == end())
+        {
+          // At the end.
+          buffer.push_back(value);
+          result.first = end() - 1;
+          result.second = true;
+        }
+        else
+        {
+          // Not at the end.
+          buffer.insert(i_element, value);
+          result.first = i_element;
+          result.second = true;
+        }
       }
 
       return result;

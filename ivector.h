@@ -37,7 +37,7 @@ SOFTWARE.
 #include <stddef.h>
 
 #include "algorithm.h"
-#include "vector_base.h"
+#include "private/vector_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "error_handler.h"
@@ -188,27 +188,25 @@ namespace etl
     //*********************************************************************
     void resize(size_t new_size)
     {
-      if (new_size > MAX_SIZE)
+      if (ETL_ASSERT(new_size <= MAX_SIZE, vector_full()))
       {
-        ETL_ERROR(vector_full());
-      }
-
-      // Size up or size down?
-      if (new_size > current_size)
-      {
-        for (size_t i = current_size; i < new_size; ++i)
+        // Size up or size down?
+        if (new_size > current_size)
         {
-          while (current_size < new_size)
+          for (size_t i = current_size; i < new_size; ++i)
           {
-            create_element();
+            while (current_size < new_size)
+            {
+              create_element();
+            }
           }
         }
-      }
-      else if (new_size < current_size)
-      {
-        while (current_size > new_size)
+        else if (new_size < current_size)
         {
-          destroy_element();
+          while (current_size > new_size)
+          {
+            destroy_element();
+          }
         }
       }
     }
@@ -222,25 +220,23 @@ namespace etl
     //*********************************************************************
     void resize(size_t new_size, T value)
     {
-      if (new_size > MAX_SIZE)
+      if (ETL_ASSERT(new_size <= MAX_SIZE, vector_full()))
       {
-        ETL_ERROR(vector_full());
-      }
-
-      // Size up?
-	    if (new_size > current_size)
-	    {
-        while (current_size < new_size)
+        // Size up?
+        if (new_size > current_size)
         {
-          create_element(value);
+          while (current_size < new_size)
+          {
+            create_element(value);
+          }
         }
-	    }
-      // Size down?
-      else if (new_size < current_size)
-      {
-        while (current_size > new_size)
+        // Size down?
+        else if (new_size < current_size)
         {
-          destroy_element();
+          while (current_size > new_size)
+          {
+            destroy_element();
+          }
         }
       }
     }
@@ -273,11 +269,7 @@ namespace etl
     //*********************************************************************
     reference at(size_t i)
     {
-      if (i >= current_size)
-      {
-        ETL_ERROR(vector_out_of_bounds());
-      }
-
+      ETL_ASSERT(i < current_size, vector_out_of_bounds());
       return p_buffer[i];
     }
 
@@ -289,11 +281,7 @@ namespace etl
     //*********************************************************************
     const_reference at(size_t i) const
     {
-      if (i >= current_size)
-      {
-        ETL_ERROR(vector_out_of_bounds());
-      }
-
+      ETL_ASSERT(i < current_size, vector_out_of_bounds());
       return p_buffer[i];
     }
 
@@ -363,16 +351,8 @@ namespace etl
     {
 #ifdef _DEBUG
       difference_type count = std::distance(first, last);
-
-      if (count < 0)
-      {
-        ETL_ERROR(vector_iterator());
-      }
-
-      if (static_cast<size_t>(count) > MAX_SIZE)
-      {
-         ETL_ERROR( vector_full());
-      }
+      ETL_ASSERT(count >= 0, vector_iterator());
+      ETL_ASSERT(static_cast<size_t>(count) <= MAX_SIZE, vector_full());
 #endif
 
       initialise();
@@ -395,11 +375,7 @@ namespace etl
     {
       initialise();
 
-      if (n > MAX_SIZE)
-      {
-         ETL_ERROR(vector_full());
-      }
-      else
+      if (ETL_ASSERT(n <= MAX_SIZE, vector_full()))
       {
         while (n > 0)
         {
@@ -423,12 +399,10 @@ namespace etl
     //*************************************************************************
     void push_back()
     {
-      if (current_size == MAX_SIZE)
+      if (ETL_ASSERT(current_size != MAX_SIZE, vector_full()))
       {
-         ETL_ERROR(vector_full());
+        create_element();
       }
-
-      create_element();
     }
 
     //*********************************************************************
@@ -438,11 +412,7 @@ namespace etl
     //*********************************************************************
     void push_back(parameter_t value)
     {
-      if (current_size == MAX_SIZE)
-      {
-        ETL_ERROR(vector_full());
-      }
-      else
+      if (ETL_ASSERT(current_size != MAX_SIZE, vector_full()))
       {
         create_element(value);
       }
@@ -468,11 +438,7 @@ namespace etl
     //*********************************************************************
     iterator insert(iterator position, parameter_t value)
     {
-      if ((current_size + 1) > MAX_SIZE)
-      {
-        ETL_ERROR(vector_full());
-      }
-      else
+      if (ETL_ASSERT((current_size) + 1 <= MAX_SIZE, vector_full()))
       {
         create_element(value);
 
@@ -495,11 +461,7 @@ namespace etl
     //*********************************************************************
     void insert(iterator position, size_t n, parameter_t value)
     {
-      if ((current_size + n) > MAX_SIZE)
-      {
-        ETL_ERROR(vector_full());
-      }
-      else
+      if (ETL_ASSERT((current_size) + 1 <= MAX_SIZE, vector_full()))
       {
         if (position == end())
         {
@@ -562,11 +524,7 @@ namespace etl
     {
       size_t count = std::distance(first, last);
 
-      if ((current_size + count) > MAX_SIZE)
-      {
-        ETL_ERROR(vector_full());
-      }
-      else
+      if (ETL_ASSERT((current_size) + count <= MAX_SIZE, vector_full()))
       {
         if (position == end())
         {

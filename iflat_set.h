@@ -37,7 +37,7 @@ SOFTWARE.
 #include <utility>
 #include <stddef.h>
 
-#include "flat_set_base.h"
+#include "private/flat_set_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "ivector.h"
@@ -199,11 +199,7 @@ namespace etl
     {
 #ifdef _DEBUG
       difference_type count = std::distance(first, last);
-
-      if (count < 0)
-      {
-		ETL_ERROR(flat_set_iterator());
-      }
+      ETL_ASSERT(count >= 0, flat_set_iterator());
 #endif
 
       clear();
@@ -223,27 +219,24 @@ namespace etl
     {
       std::pair<iterator, bool> result(end(), false);
 
-	  if (buffer.full())
-	  {
-		  ETL_ERROR(flat_set_full());
-		  return result;
-	  }
-	  
-	  iterator i_element = std::lower_bound(begin(), end(), value, TKeyCompare());
+	    if (ETL_ASSERT(!buffer.full(), flat_set_full()))
+      {
+        iterator i_element = std::lower_bound(begin(), end(), value, TKeyCompare());
 
-	  if (i_element == end())
-      {
-        // At the end.
-        buffer.push_back(value);
-        result.first  = end() - 1;
-        result.second = true;
-      }
-      else
-      {
-        // Not at the end.
-        buffer.insert(i_element, value);
-        result.first  = i_element;
-        result.second = true;
+        if (i_element == end())
+        {
+          // At the end.
+          buffer.push_back(value);
+          result.first = end() - 1;
+          result.second = true;
+        }
+        else
+        {
+          // Not at the end.
+          buffer.insert(i_element, value);
+          result.first = i_element;
+          result.second = true;
+        }
       }
 
       return result;

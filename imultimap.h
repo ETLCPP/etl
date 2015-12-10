@@ -37,7 +37,7 @@ SOFTWARE.
 #include <stddef.h>
 
 #include "nullptr.h"
-#include "multimap_base.h"
+#include "private/multimap_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "pool.h"

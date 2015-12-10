@@ -33,7 +33,7 @@ SOFTWARE.
 
 #include <iterator>
 
-#include "pool_base.h"
+#include "private/pool_base.h"
 #include "nullptr.h"
 #include "ibitset.h"
 

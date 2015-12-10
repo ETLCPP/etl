@@ -37,7 +37,7 @@ SOFTWARE.
 #include <stddef.h>
 
 #include "nullptr.h"
-#include "set_base.h"
+#include "private/set_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "pool.h"
