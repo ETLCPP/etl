@@ -33,6 +33,7 @@ SOFTWARE.
 #include <algorithm>
 #include <stdint.h>
 
+#include "exception.h"
 #include "integral_limits.h"
 #include "binary.h"
 
@@ -42,6 +43,34 @@ SOFTWARE.
 
 namespace etl
 {
+  //***************************************************************************
+  /// Exception base for bitset
+  ///\ingroup bitset
+  //***************************************************************************
+  class bitset_exception : public etl::exception
+  {
+  public:
+
+    bitset_exception(const char* what)
+      : exception(what)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// Bitset nullptr exception.
+  ///\ingroup bitset
+  //***************************************************************************
+  class bitset_nullptr : public bitset_exception
+  {
+  public:
+
+    bitset_nullptr()
+      : bitset_exception("bitset: nullptr")
+    {
+    }
+  };
+  
   //*************************************************************************
   /// The base class for etl::bitset
   ///\ingroup bitset
@@ -466,7 +495,151 @@ namespace etl
       return bit_reference(*this, position);
     }
 
+    //*************************************************************************
+    /// operator &=
+    //*************************************************************************
+    ibitset& operator &=(const ibitset& other)
+    {
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        pdata[i] &= other.pdata[i];
+      }
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// operator |=
+    //*************************************************************************
+    ibitset& operator |=(const ibitset& other)
+    {
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        pdata[i] |= other.pdata[i];
+      }
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// operator ^=
+    //*************************************************************************
+    ibitset& operator ^=(const ibitset& other)
+    {
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        pdata[i] ^= other.pdata[i];
+      }
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// operator <<=
+    //*************************************************************************
+    ibitset& operator<<=(size_t shift)
+    {
+      if (SIZE == 1)
+      {
+        pdata[0] <<= shift;
+      }
+      else
+      {
+        size_t source      = NBITS - shift - 1;
+        size_t destination = NBITS - 1;
+
+        for (size_t i = 0; i < (NBITS - shift); ++i)
+        {
+          set(destination--, test(source--));
+        }
+
+        for (size_t i = 0; i < shift; ++i)
+        {
+          reset(destination--);
+        }
+      }
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// operator >>=
+    //*************************************************************************
+    ibitset& operator>>=(size_t shift)
+    {
+      if (SIZE == 1)
+      {
+        pdata[0] >>= shift;
+      }
+      else
+      {
+        size_t source      = shift;
+        size_t destination = 0;
+
+        for (size_t i = 0; i < (NBITS - shift); ++i)
+        {
+          set(destination++, test(source++));
+        }
+
+        for (size_t i = 0; i < shift; ++i)
+        {
+          reset(destination++);
+        }
+      }
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// swap
+    //*************************************************************************
+    void swap(ibitset& other)
+    {
+      std::swap_ranges(pdata, pdata + SIZE, other.pdata);
+    }
+
   protected:
+
+    //*************************************************************************
+    /// Initialise from an unsigned long long.
+    //*************************************************************************
+    ibitset& initialise(unsigned long long value)
+    {
+      reset();
+
+      const size_t SHIFT = (integral_limits<unsigned long long>::bits <= BITS_PER_ELEMENT) ? 0 : BITS_PER_ELEMENT;
+
+      // Can we do it in one hit?
+      if (SHIFT == 0)
+      {
+        pdata[0] = element_t(value);
+      }
+      else
+      {
+        size_t i = 0;
+
+        while ((value != 0) && (i < SIZE))
+        {
+          pdata[i++] = value & ALL_SET;
+          value = value >> SHIFT;
+        }
+      }
+
+      pdata[SIZE - 1] &= TOP_MASK;
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Invert
+    //*************************************************************************
+    void invert()
+    {
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        pdata[i] = ~pdata[i];
+      }
+    }
 
     //*************************************************************************
     /// Gets a reference to the specified bit.
@@ -487,6 +660,14 @@ namespace etl
       size_t allocated_bits = SIZE * BITS_PER_ELEMENT;
       size_t top_mask_shift = ((BITS_PER_ELEMENT - (allocated_bits - NBITS)) % BITS_PER_ELEMENT);
       TOP_MASK = element_t(top_mask_shift == 0 ? ALL_SET : ~(ALL_SET << top_mask_shift));
+    }
+
+    //*************************************************************************
+    /// Compare bitsets.
+    //*************************************************************************
+    static bool is_equal(const ibitset& lhs, const ibitset&rhs)
+    {
+      return std::equal(lhs.pdata, lhs.pdata + lhs.SIZE, rhs.pdata);
     }
 
     element_t TOP_MASK;

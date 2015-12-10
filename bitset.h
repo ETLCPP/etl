@@ -36,9 +36,13 @@ SOFTWARE.
 #include <stddef.h>
 
 #include "integral_limits.h"
+#include "algorithm.h"
 #include "nullptr.h"
 #include "log.h"
 #include "ibitset.h"
+
+#define ETL_NO_CHECKS
+#include "error_handler.h"
 
 #if defined(COMPILER_KEIL)
 #pragma diag_suppress 1300 
@@ -70,9 +74,7 @@ namespace etl
     static const size_t    ALLOCATED_BITS = ARRAY_SIZE * BITS_PER_ELEMENT;
 
   public:
-
-
-
+    
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
@@ -88,7 +90,7 @@ namespace etl
     bitset(const bitset<N>& other)
       : ibitset(N, ARRAY_SIZE, data)
     {
-      std::copy(other.data, other.data + ARRAY_SIZE, data);
+      etl::copy_n(other.data, ARRAY_SIZE, data);
     }
 
     //*************************************************************************
@@ -97,27 +99,7 @@ namespace etl
     bitset(unsigned long long value)
       : ibitset(N, ARRAY_SIZE, data)
     {
-      reset();
-
-      const size_t SHIFT = (integral_limits<unsigned long long>::bits <= BITS_PER_ELEMENT) ? 0 : BITS_PER_ELEMENT;
-
-      // Can we do it in one hit?
-      if (SHIFT == 0)
-      {
-        data[0] = element_t(value);
-      }
-      else
-      {
-        size_t i = 0;
-
-        while ((value != 0) && (i < ARRAY_SIZE))
-        {
-          data[i++] = value & ALL_SET;
-          value = value >> SHIFT;
-        }
-      }
-
-      data[ARRAY_SIZE - 1] &= TOP_MASK;
+      initialise(value);
     }
 
     //*************************************************************************
@@ -147,12 +129,19 @@ namespace etl
       return *this;
     }
 
+//#define NDEBUG
+
+
     //*************************************************************************
     /// Set from a string.
     //*************************************************************************
-    bitset<N>&  set(const char* text)
+    bitset<N>& set(const char* text)
     {
-      ibitset::set(text);
+      if (ETL_ASSERT(text != 0, etl::bitset_nullptr()))
+      {
+        ibitset::set(text);
+      }
+
       return *this;
     }
 
@@ -197,11 +186,7 @@ namespace etl
     //*************************************************************************
     bitset<N>& operator =(const bitset<N>& other)
     {
-      for (size_t i = 0; i < ARRAY_SIZE; ++i)
-      {
-        data[i] = other.data[i];
-      }
-
+      etl::copy_n(other.data, ARRAY_SIZE, data);
       return *this;
     }
 
@@ -210,11 +195,7 @@ namespace etl
     //*************************************************************************
     bitset<N>& operator &=(const bitset<N>& other)
     {
-      for (size_t i = 0; i < ARRAY_SIZE; ++i)
-      {
-        data[i] &= other.data[i];
-      }
-
+      ibitset::operator &=(other);
       return *this;
     }
 
@@ -223,11 +204,7 @@ namespace etl
     //*************************************************************************
     bitset<N>& operator |=(const bitset<N>& other)
     {
-      for (size_t i = 0; i < ARRAY_SIZE; ++i)
-      {
-        data[i] |= other.data[i];
-      }
-
+      ibitset::operator |=(other);
       return *this;
     }
 
@@ -236,11 +213,7 @@ namespace etl
     //*************************************************************************
     bitset<N>& operator ^=(const bitset<N>& other)
     {
-      for (size_t i = 0; i < ARRAY_SIZE; ++i)
-      {
-        data[i] ^= other.data[i];
-      }
-
+      ibitset::operator ^=(other);
       return *this;
     }
 
@@ -249,13 +222,10 @@ namespace etl
     //*************************************************************************
     bitset<N> operator ~() const
     {
-      bitset<N> temp;
+      bitset<N> temp(*this);
 
-      for (size_t i = 0; i < ARRAY_SIZE; ++i)
-      {
-        temp[i] = ~data[i];
-      }
-
+      temp.invert();
+      
       return temp;
     }
 
@@ -264,22 +234,9 @@ namespace etl
     //*************************************************************************
     bitset<N> operator<<(size_t shift) const
     {
-      bitset<N> temp;
+      bitset<N> temp(*this);
 
-      if (ARRAY_SIZE == 1)
-      {
-        temp.data[0] = data[0] << shift;
-      }
-      else
-      {
-        size_t source      = N - shift - 1;
-        size_t destination = N - 1;
-
-        for (size_t i = 0; i < (N - shift); ++i)
-        {
-          temp.set(destination--, test(source--));
-        }
-      }
+      temp <<= shift;
 
       return temp;
     }
@@ -289,26 +246,7 @@ namespace etl
     //*************************************************************************
     bitset<N>& operator<<=(size_t shift)
     {
-      if (ARRAY_SIZE == 1)
-      {
-        data[0] <<= shift;
-      }
-      else
-      {
-        size_t source      = N - shift - 1;
-        size_t destination = N - 1;
-
-        for (size_t i = 0; i < (N - shift); ++i)
-        {
-          set(destination--, test(source--));
-        }
-
-        for (size_t i = 0; i < shift; ++i)
-        {
-          reset(destination--);
-        }
-      }
-
+      ibitset::operator <<=(shift);
       return *this;
     }
 
@@ -317,22 +255,9 @@ namespace etl
     //*************************************************************************
     bitset<N> operator>>(size_t shift) const
     {
-      bitset<N> temp;
+      bitset<N> temp(*this);
 
-      if (ARRAY_SIZE == 1)
-      {
-        temp.data[0] = data[0] >> shift;
-      }
-      else
-      {
-        size_t source      = shift;
-        size_t destination = 0;
-
-        while (source != N)
-        {
-          temp.set(destination++, test(source++));
-        }
-      }
+      temp >>= shift;
 
       return temp;
     }
@@ -342,38 +267,8 @@ namespace etl
     //*************************************************************************
     bitset<N>& operator>>=(size_t shift)
     {
-      if (ARRAY_SIZE == 1)
-      {
-        data[0] >>= shift;
-      }
-      else
-      {
-        size_t source      = shift;
-        size_t destination = 0;
-
-        for (size_t i = 0; i < (N - shift); ++i)
-        {
-          set(destination++, test(source++));
-        }
-
-        for (size_t i = 0; i < shift; ++i)
-        {
-          reset(destination++);
-        }
-      }
-
+      ibitset::operator >>=(shift);
       return *this;
-    }
-
-    //*************************************************************************
-    /// swap
-    //*************************************************************************
-    void swap(bitset<N>& other)
-    {
-      for (size_t i = 0; i < ARRAY_SIZE; ++i)
-      {
-        std::swap(data, other.data);
-      }
     }
 
     //*************************************************************************
@@ -381,15 +276,7 @@ namespace etl
     //*************************************************************************
     friend bool operator == (const bitset<N>& lhs, const bitset<N>& rhs)
     {
-      for (size_t i = 0; i < ARRAY_SIZE; ++i)
-      {
-        if (lhs.data[i] != rhs.data[i])
-        {
-          return false;
-        }
-      }
-
-      return true;
+      return ibitset::is_equal(lhs, rhs);
     }
 
   private:
