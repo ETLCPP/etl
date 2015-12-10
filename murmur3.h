@@ -120,11 +120,7 @@ namespace etl
     {
       STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
 
-      if (is_finalised)
-      {
-        ETL_ERROR(hash_finalised());
-      }
-      else
+      if (ETL_ASSERT(!is_finalised, hash_finalised()))
       {
         while (begin != end)
         {
@@ -150,11 +146,7 @@ namespace etl
     void add(uint8_t value)
     {
       // We can't add to a finalised hash!
-      if (is_finalised)
-      {
-        ETL_ERROR(hash_finalised());
-      }
-      else
+      if (ETL_ASSERT(!is_finalised, hash_finalised()))
       {
         block |= value << (block_fill_count * 8);
 

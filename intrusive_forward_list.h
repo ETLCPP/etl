@@ -408,11 +408,7 @@ namespace etl
     {
 #ifdef _DEBUG
       difference_type count = std::distance(first, last);
-
-      if (count < 0)
-      {
-        ETL_ERROR(intrusive_forward_list_iterator_exception());
-      }
+      ETL_ASSERT(count >= 0, intrusive_forward_list_iterator_exception());
 #endif
 
       initialise();

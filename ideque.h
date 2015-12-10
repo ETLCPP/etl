@@ -491,20 +491,18 @@ namespace etl
     //*************************************************************************
     void assign(size_type n, const value_type& value)
     {
-      if (n > MAX_SIZE)
+      if (ETL_ASSERT(n <= MAX_SIZE, deque_full()))
       {
-        ETL_ERROR(deque_full());
-      }
+        initialise();
 
-      initialise();
+        _begin.index = 0;
+        _end.index = 0;
 
-      _begin.index = 0;
-      _end.index  = 0;
-
-      while (n > 0)
-      {
-        create_element_back(value);
-        --n;
+        while (n > 0)
+        {
+          create_element_back(value);
+          --n;
+        }
       }
     }
 
@@ -515,14 +513,11 @@ namespace etl
     //*************************************************************************
     reference at(size_t index)
     {
-      if (index >= current_size)
-      {
-        ETL_ERROR(deque_out_of_bounds());
-      }
+      ETL_ASSERT(index < current_size, deque_out_of_bounds());
       
       iterator result(_begin);
       result += index;
-
+      
       return *result;
     }
 
@@ -533,10 +528,7 @@ namespace etl
     //*************************************************************************
     const_reference at(size_t index) const
     {
-      if (index >= current_size)
-      {
-        ETL_ERROR(deque_out_of_bounds());
-      }
+      ETL_ASSERT(index < current_size, deque_out_of_bounds());
 
       iterator result(_begin);
       result += index;
@@ -718,7 +710,7 @@ namespace etl
     {
       iterator position(insert_position.index, *this, p_buffer);
 
-      if (!full())
+      if (ETL_ASSERT(!full(), deque_full()))
       {
         if (insert_position == begin())
         {
@@ -757,10 +749,6 @@ namespace etl
           }
         }
       }
-      else
-      {
-        ETL_ERROR(deque_full());
-      }
 
       return position;
     }
@@ -776,7 +764,7 @@ namespace etl
     {
       iterator position;
 
-      if ((current_size + n) <= MAX_SIZE)
+      if (ETL_ASSERT((current_size + n) <= MAX_SIZE, deque_full()))
       {
         if (insert_position == begin())
         {
@@ -871,10 +859,6 @@ namespace etl
           }
         }
       }
-      else
-      {
-        ETL_ERROR(deque_full());
-      }
 
       return position;
     }
@@ -894,7 +878,7 @@ namespace etl
 
       difference_type n = std::distance(range_begin, range_end);
 
-      if ((current_size + n) <= MAX_SIZE)
+      if (ETL_ASSERT((current_size + n) <= MAX_SIZE, deque_full()))
       {
         if (insert_position == begin())
         {
@@ -983,10 +967,6 @@ namespace etl
           }
         }
       }
-      else
-      {
-        ETL_ERROR(deque_full());
-      }
 
       return position;
     }
@@ -1000,7 +980,7 @@ namespace etl
     {
       iterator position(erase_position.index, *this, p_buffer);
 
-      if (distance(position) <= difference_type(current_size))
+      if (ETL_ASSERT(distance(position) <= difference_type(current_size), deque_out_of_bounds()))
       {
         if (position == _begin)
         {
@@ -1028,10 +1008,6 @@ namespace etl
           }
         }
       }
-      else
-      {
-        ETL_ERROR(deque_out_of_bounds());
-      }
 
       return position;
     }
@@ -1046,8 +1022,7 @@ namespace etl
     {
       iterator position(range_begin.index, *this, p_buffer);
 
-      if ((distance(range_begin) <= difference_type(current_size)) &&
-          (distance(range_end) <= difference_type(current_size)))
+      if (ETL_ASSERT((distance(range_begin) <= difference_type(current_size)) && (distance(range_end) <= difference_type(current_size)), deque_out_of_bounds()))
       {
         // How many to erase?
         size_t length = std::distance(range_begin, range_end);
@@ -1101,10 +1076,6 @@ namespace etl
           }
         }
       }
-      else
-      {
-        ETL_ERROR(deque_out_of_bounds());
-      }
 
       return position;
     }
@@ -1116,14 +1087,10 @@ namespace etl
     //*************************************************************************
     void push_back(parameter_t item)
     {
-      if (!full())
+      if (ETL_ASSERT(!full(), deque_full()))
       {
         create_element_back(item);
       } 
-      else
-      {
-        ETL_ERROR(deque_full());
-      }
     }
 
     //*************************************************************************
@@ -1135,13 +1102,9 @@ namespace etl
     {
       reference r = *_end;
 
-      if (!full())
+      if (ETL_ASSERT(!full(), deque_full()))
       {
         create_element_back();
-      }
-      else
-      {
-        ETL_ERROR(deque_full());
       }
 
       return r;
@@ -1165,13 +1128,9 @@ namespace etl
     //*************************************************************************
     void push_front(parameter_t item)
     {
-      if (!full())
+      if (ETL_ASSERT(!full(), deque_full()))
       {
         create_element_front(item);
-      }
-      else
-      {
-        ETL_ERROR(deque_full());
       }
     }
 
@@ -1182,13 +1141,9 @@ namespace etl
     //*************************************************************************
     reference push_front()
     {
-      if (!full())
+      if (ETL_ASSERT(!full(), deque_full()))
       {
         create_element_front();
-      }
-      else
-      {
-        ETL_ERROR(deque_full());
       }
 
       return *_begin;
@@ -1213,7 +1168,7 @@ namespace etl
     //*************************************************************************
     void resize(size_t new_size, const value_type& value = value_type())
     {
-      if (new_size <= MAX_SIZE)
+      if (ETL_ASSERT(new_size <= MAX_SIZE, deque_out_of_bounds()))
       {
         // Make it smaller?
         if (new_size < current_size)
@@ -1233,10 +1188,6 @@ namespace etl
             create_element_back(value);
           }
         }
-      }
-      else
-      {
-        ETL_ERROR(deque_out_of_bounds());
       }
     }
 

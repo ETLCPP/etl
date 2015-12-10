@@ -111,37 +111,22 @@ namespace etl
 
     //*************************************************************************
     /// Returns a reference to the value at index 'i'.
-    /// If ETL_THROW_EXCEPTIONS is defined then am array_out_of_range is
-    /// thown if the index is out of range.
     ///\param i The index of the element to access.
     //*************************************************************************
     reference at(size_t i)
     {
-
-      if (i >= SIZE)
-      {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw array_out_of_range();
-#else
-        error_handler::error(array_out_of_range());
-#endif
-      }
+      ETL_ASSERT(i < SIZE, array_out_of_range());
 
       return _buffer[i];
     }
 
     //*************************************************************************
     /// Returns a const reference to the value at index 'i'.
-    /// If ETL_THROW_EXCEPTIONS is defined then am array_out_of_range is
-    /// thown if the index is out of range.
     ///\param i The index of the element to access.
     //*************************************************************************
     const_reference at(size_t i) const
     {
-      if (i >= SIZE)
-      {
-        ETL_ERROR(array_out_of_range());
-      }
+      ETL_ASSERT(i < SIZE, array_out_of_range());
 
       return _buffer[i];
     }

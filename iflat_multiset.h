@@ -200,10 +200,7 @@ namespace etl
 #ifdef _DEBUG
       difference_type count = std::distance(first, last);
 
-      if (count < 0)
-      {
-        ETL_ERROR(flat_multiset_iterator());
-      }
+      ETL_ASSERT(count >= 0, flat_multiset_iterator());
 #endif
 
       clear();
@@ -223,27 +220,24 @@ namespace etl
     {
       std::pair<iterator, bool> result(end(), false);
 
-      if (buffer.full())
+      if (ETL_ASSERT(!buffer.full(), flat_multiset_full()))
       {
-        ETL_ERROR(flat_multiset_full());
-        return result;
-	  }
-	  
-	  iterator i_element = std::lower_bound(begin(), end(), value, TKeyCompare());
+        iterator i_element = std::lower_bound(begin(), end(), value, TKeyCompare());
 
-	  if (i_element == end())
-      {
-        // At the end.
-        buffer.push_back(value);
-        result.first  = end() - 1;
-        result.second = true;
-      }
-      else
-      {
-        // Not at the end.
-        buffer.insert(i_element, value);
-        result.first  = i_element;
-        result.second = true;
+        if (i_element == end())
+        {
+          // At the end.
+          buffer.push_back(value);
+          result.first = end() - 1;
+          result.second = true;
+        }
+        else
+        {
+          // Not at the end.
+          buffer.insert(i_element, value);
+          result.first = i_element;
+          result.second = true;
+        }
       }
 
       return result;
