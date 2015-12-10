@@ -37,7 +37,7 @@ SOFTWARE.
 #include <stddef.h>
 
 #include "algorithm.h"
-#include "vector_base.h"
+#include "private/vector_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "error_handler.h"

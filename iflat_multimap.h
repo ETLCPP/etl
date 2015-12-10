@@ -37,7 +37,7 @@ SOFTWARE.
 #include <utility>
 #include <stddef.h>
 
-#include "flat_multimap_base.h"
+#include "private/flat_multimap_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "ivector.h"

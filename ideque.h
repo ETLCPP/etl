@@ -36,7 +36,7 @@ SOFTWARE.
 
 #include "algorithm.h"
 #include "type_traits.h"
-#include "deque_base.h"
+#include "private/deque_base.h"
 #include "parameter_type.h"
 #include "error_handler.h"
 

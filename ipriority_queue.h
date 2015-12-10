@@ -34,7 +34,7 @@ SOFTWARE.
 #include <stddef.h>
 #include <algorithm>
 
-#include "priority_queue_base.h"
+#include "private/priority_queue_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
 
