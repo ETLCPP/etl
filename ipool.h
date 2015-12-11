@@ -325,7 +325,7 @@ namespace etl
 #if defined(_DEBUG) || defined(DEBUG)
       if (ETL_ASSERT(items_allocated < MAX_SIZE && !in_use_flags.test(next_free), pool_no_allocation()))
 #else
-      if (ETL_ASSERT(items_allocated < MAX_SIZE, pool_no_allocation())
+      if (ETL_ASSERT(items_allocated < MAX_SIZE, pool_no_allocation()))
 #endif
 	    {
 		    T* result = new(&p_buffer[next_free]) T();
@@ -351,7 +351,7 @@ namespace etl
 #if defined(_DEBUG) || defined(DEBUG)
       if (ETL_ASSERT(items_allocated < MAX_SIZE && !in_use_flags.test(next_free), pool_no_allocation()))
 #else
-      if (ETL_ASSERT(items_allocated < MAX_SIZE, pool_no_allocation())
+      if (ETL_ASSERT(items_allocated < MAX_SIZE, pool_no_allocation()))
 #endif
       {
         T* result = new(&p_buffer[next_free]) T(initial);
