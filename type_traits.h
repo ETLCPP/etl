@@ -146,13 +146,12 @@ namespace etl
   template <typename T> struct is_integral<volatile T> : is_integral<T> {};
   template <typename T> struct is_integral<const volatile T> : is_integral<T> {};
 
+
   /// is_signed
   ///\ingroup type_traits
   template <typename T> struct is_signed : false_type {};
   template <> struct is_signed<char> : true_type {};
-#ifdef PLATFORM_LINUX
-  template <> struct is_signed<wchar_t> : true_type {};
-#endif
+  template <> struct is_signed<wchar_t> : public etl::integral_constant<bool, static_cast<bool>(wchar_t(-1) < wchar_t(0))> {};
   template <> struct is_signed<signed char> : true_type {};
   template <> struct is_signed<short> : true_type {};
   template <> struct is_signed<int> : true_type {};
@@ -170,9 +169,7 @@ namespace etl
   template <typename T> struct is_unsigned : false_type {};
   template <> struct is_unsigned<bool> : true_type {};
   template <> struct is_unsigned<unsigned char> : true_type {};
-#ifndef PLATFORM_LINUX
-  template <> struct is_unsigned<wchar_t> : true_type {};
-#endif
+  template <> struct is_unsigned<wchar_t> : public etl::integral_constant<bool, (wchar_t(-1) > wchar_t(0))> {};
   template <> struct is_unsigned<unsigned short> : true_type {};
   template <> struct is_unsigned<unsigned int> : true_type {};
   template <> struct is_unsigned<unsigned long> : true_type {};
@@ -242,12 +239,19 @@ namespace etl
   template <typename T> struct make_signed { typedef  T type; };
   template <> struct make_signed<char> { typedef  signed char type; };
   template <> struct make_signed<unsigned char> { typedef  signed char type; };
-  template <> struct make_signed<wchar_t> 
+#if defined(COMPILER_GCC)
+  template <> struct make_signed<wchar_t>
+  {
+    typedef wchar_t type;
+  };
+#else
+  template <> struct make_signed<wchar_t>
   {
 	  typedef etl::conditional<sizeof(wchar_t) == sizeof(short), short,
-		      etl::conditional<sizeof(wchar_t) == sizeof(int),   int, 
-		      etl::conditional<sizeof(wchar_t) == sizeof(long),  long, void>::type>::type>::type type;
+		        etl::conditional<sizeof(wchar_t) == sizeof(int),   int,
+		        etl::conditional<sizeof(wchar_t) == sizeof(long),  long, void>::type>::type>::type type;
   };
+#endif
   template <> struct make_signed<unsigned short> { typedef  short type; };
   template <> struct make_signed<unsigned int> { typedef int type; };
   template <> struct make_signed<unsigned long> { typedef  long type; };
@@ -262,12 +266,19 @@ namespace etl
   template <> struct make_unsigned<char> { typedef unsigned char type; };
   template <> struct make_unsigned<signed char> { typedef unsigned char type; };
   template <> struct make_unsigned<short> { typedef unsigned short type; };
+#if defined(COMPILER_GCC)
+  template <> struct make_unsigned<wchar_t>
+  {
+    typedef wchar_t type;
+  };
+#else
   template <> struct make_unsigned<wchar_t>
   {
 	  typedef etl::conditional<sizeof(wchar_t) == sizeof(unsigned short), unsigned short,
-		      etl::conditional<sizeof(wchar_t) == sizeof(unsigned int),   unsigned int,
-		      etl::conditional<sizeof(wchar_t) == sizeof(unsigned long),  unsigned long, void>::type>::type>::type type;
+		        etl::conditional<sizeof(wchar_t) == sizeof(unsigned int),   unsigned int,
+		        etl::conditional<sizeof(wchar_t) == sizeof(unsigned long),  unsigned long, void>::type>::type>::type type;
   };
+#endif
   template <> struct make_unsigned<int> { typedef unsigned int type; };
   template <> struct make_unsigned<long> { typedef unsigned long type; };
   template <> struct make_unsigned<long long> { typedef unsigned long long type; };
