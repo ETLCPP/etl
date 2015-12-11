@@ -25,19 +25,21 @@ The library is intended for any compiler that supports C++ 03.
 
 **Main features:**
 
- - Cross platform. This library is not specific to any processor type.
- - No dynamic memory allocation. (No heap required)
- - Very little use of virtual functions. (Keeps the vtable sizes low)
- - A set of fixed capacity containers. (array, bitset, deque, forward_list, list, queue,  stack, vector)
- - Cache friendlly containers, as the storage for each of the container types is allocated as a contiguous block
- - Templated compile time constants.
- - Templated design pattern base classes (Visitor, Observer)
- - Reverse engineered C++ 0x11 features (type traits, algorithms, containers etc.)
- - Smart enumerations
- - 8, 16, 32 & 64 bit CRC calculations
- - Checksums & hash functions
- - Many utilities for template support.
- - Variants (a type that can store many types in a type-safe interface)
- - Choice of exceptions or error handler.
+- Cross platform. This library is not specific to any processor type.
+- No dynamic memory allocation
+- No RTTI required
+- Very little use of virtual functions. They are used only when they are absolutely necessary for the required functionality
+- A set of fixed capacity containers. (array, bitset, deque, forward_list, list, queue,  stack, vector, map, set, etc.)
+- As the storage for all of the container types is allocated as a contiguous block, they are extremely cache friendly
+- Templated compile time constants
+- Templated design pattern base classes (Visitor, Observer)
+- Reverse engineered C++ 0x11 features (type traits, algorithms, containers etc.)
+- Smart enumerations
+- 8, 16, 32 & 64 bit CRC calculations
+- Checksums & hash functions
+- Variants (a type that can store many types in a type-safe interface)
+- Choice of asserts, exceptions, error handler or no checks on errors
+- Many utilities for template support.
+
 
 See (http://www.etlcpp.com) for up-to-date information.
