@@ -31,6 +31,8 @@ SOFTWARE.
 
 #include <stdint.h>
 
+#pragma warning(disable:4101) // Unused variable.
+
 template <uintptr_t ADDRESS>
 struct serial_port
 {
