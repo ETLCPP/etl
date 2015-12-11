@@ -36,7 +36,7 @@ SOFTWARE.
 
 #include <stddef.h>
 
-#include "exception.h"
+#include "../exception.h"
 
 namespace etl
 {
@@ -64,6 +64,20 @@ namespace etl
 
     queue_full()
       : queue_exception("queue: full")
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// The exception thrown when the queue is empty.
+  ///\ingroup queue
+  //***************************************************************************
+  class queue_empty : public queue_exception
+  {
+  public:
+
+    queue_empty()
+      : queue_exception("queue: empty")
     {
     }
   };

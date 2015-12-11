@@ -35,7 +35,7 @@ SOFTWARE.
 #define __ETL_SET_BASE__
 
 #include <stddef.h>
-#include "exception.h"
+#include "../exception.h"
 
 namespace etl
 {
@@ -157,9 +157,12 @@ namespace etl
 
   protected:
 
-    static const uint8_t kLeft    = 0;
-    static const uint8_t kRight   = 1;
-    static const uint8_t kNeither = 2;
+    enum
+    {
+      kLeft    = 0,
+      kRight   = 1,
+      kNeither = 2
+    };
 
     //*************************************************************************
     /// The node element in the set.

@@ -35,7 +35,7 @@ SOFTWARE.
 #define __ETL_UNORDERED_MAP_BASE__
 
 #include <stddef.h>
-#include "exception.h"
+#include "../exception.h"
 
 namespace etl
 {

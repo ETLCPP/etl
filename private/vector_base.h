@@ -36,11 +36,8 @@ SOFTWARE.
 
 #include <stddef.h>
 
-#include "exception.h"
-
-#ifndef ETL_THROW_EXCEPTIONS
-#include "error_handler.h"
-#endif
+#include "../exception.h"
+#include "../error_handler.h"
 
 namespace etl
 {
