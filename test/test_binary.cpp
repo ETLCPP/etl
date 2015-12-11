@@ -43,7 +43,7 @@ size_t test_count(T value)
 {
   size_t count = 0;
 
-  for (size_t i = 0; i < etl::integral_limits<T>::bits; ++i)
+  for (int i = 0; i < etl::integral_limits<T>::bits; ++i)
   {
     if ((value & (T(1) << i)) != 0)
     {
@@ -457,15 +457,15 @@ namespace
 
       value = 0xF0C3A55A;
       value = etl::reverse_bits(value);
-      CHECK_EQUAL(0x5AA5C30F, value);
+      CHECK_EQUAL(uint32_t(0x5AA5C30F), value);
 
       value = 0xA5A5A5A5;
       value = etl::reverse_bits(value);
-      CHECK_EQUAL(0xA5A5A5A5, value);
+      CHECK_EQUAL(uint32_t(0xA5A5A5A5), value);
 
       value = 0x5A5A5A5A;
       value = etl::reverse_bits(value);
-      CHECK_EQUAL(0x5A5A5A5A, value);
+      CHECK_EQUAL(uint32_t(0x5A5A5A5A), value);
     }
 
     //*************************************************************************
@@ -475,15 +475,15 @@ namespace
 
       value = 0x1234ABCDF0C3A55A;
       value = etl::reverse_bits(value);
-      CHECK_EQUAL(0x5AA5C30FB3D52C48, value);
+      CHECK_EQUAL(uint64_t(0x5AA5C30FB3D52C48), value);
 
       value = 0xA5A5A5A5A5A5A5A5;
       value = etl::reverse_bits(value);
-      CHECK_EQUAL(0xA5A5A5A5A5A5A5A5, value);
+      CHECK_EQUAL(uint64_t(0xA5A5A5A5A5A5A5A5), value);
 
       value = 0x5A5A5A5A5A5A5A5A;
       value = etl::reverse_bits(value);
-      CHECK_EQUAL(0x5A5A5A5A5A5A5A5A, value);
+      CHECK_EQUAL(uint64_t(0x5A5A5A5A5A5A5A5A), value);
     }
 
     //*************************************************************************
@@ -622,8 +622,8 @@ namespace
       {
         CHECK_EQUAL(test_count(i), etl::count_bits(i));
       }
-    } 
-    
+    }
+
     //*************************************************************************
     TEST(test_count_bits_32)
     {
@@ -778,7 +778,7 @@ namespace
     TEST(test_max_value_for_bits)
     {
         // Check that the values are correct.
-        CHECK_EQUAL(0, etl::max_value_for_nbits<0>::value);
+        //CHECK_EQUAL(0, etl::max_value_for_nbits<0>::value);
         CHECK_EQUAL(1, etl::max_value_for_nbits<1>::value);
         CHECK_EQUAL(3, etl::max_value_for_nbits<2>::value);
         CHECK_EQUAL(7, etl::max_value_for_nbits<3>::value);
@@ -842,9 +842,9 @@ namespace
         CHECK_EQUAL(2305843009213693951, etl::max_value_for_nbits<61>::value);
         CHECK_EQUAL(4611686018427387903, etl::max_value_for_nbits<62>::value);
         CHECK_EQUAL(9223372036854775807, etl::max_value_for_nbits<63>::value);
-        CHECK_EQUAL(18446744073709551615, etl::max_value_for_nbits<64>::value);
+        CHECK_EQUAL((unsigned long long)18446744073709551615, etl::max_value_for_nbits<64>::value);
 
-        // Check that the value types are correct. 
+        // Check that the value types are correct.
         CHECK((std::is_same<uint8_t,  etl::max_value_for_nbits<0>::value_type>::value));
         CHECK((std::is_same<uint8_t,  etl::max_value_for_nbits<1>::value_type>::value));
         CHECK((std::is_same<uint8_t,  etl::max_value_for_nbits<2>::value_type>::value));
