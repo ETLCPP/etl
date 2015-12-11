@@ -655,21 +655,13 @@ namespace etl
       // Default to no inserted node
       Node* inserted_node = nullptr;
 
-      if (!full())
+      if (ETL_ASSERT(!full(), multimap_full()))
       {
         // Get next available free node
         Data_Node& node = allocate_data_node(value);
 
         // Obtain the inserted node (might be nullptr if node was a duplicate)
         inserted_node = insert_node(root_node, node);
-      }
-      else
-      {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw multimap_full();
-#else
-        error_handler::error(multimap_full());
-#endif
       }
 
       // Insert node into tree and return iterator to new node location in tree

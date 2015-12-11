@@ -42,6 +42,10 @@ SOFTWARE.
 #include "parameter_type.h"
 #include "error_handler.h"
 
+#ifdef COMPILER_GCC
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#endif
+
 namespace etl
 {
   //***************************************************************************

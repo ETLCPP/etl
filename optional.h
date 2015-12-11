@@ -33,6 +33,7 @@ SOFTWARE.
 #include "alignment.h"
 #include "type_traits.h"
 #include "exception.h"
+#include "error_handler.h"
 
 namespace etl
 {
@@ -214,14 +215,7 @@ namespace etl
     T* operator ->()
     {
 #ifdef _DEBUG
-      if (!valid)
-      {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw optional_invalid();
-#else
-        error_handler::error(optional_invalid());
-#endif
-      }
+      ETL_ASSERT(valid, optional_invalid());
 #endif
 
       return storage.template get_address<T>();
@@ -233,14 +227,7 @@ namespace etl
     const T* operator ->() const
     {
 #ifdef _DEBUG
-      if (!valid)
-      {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw optional_invalid();
-#else
-        error_handler::error(optional_invalid());
-#endif
-      }
+      ETL_ASSERT(valid, optional_invalid());
 #endif
 
       return storage.template get_address<T>();
@@ -252,14 +239,7 @@ namespace etl
     T& operator *()
     {
 #ifdef _DEBUG
-      if (!valid)
-      {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw optional_invalid();
-#else
-        error_handler::error(optional_invalid());
-#endif
-      }
+      ETL_ASSERT(valid, optional_invalid());
 #endif
 
       return storage.template get_reference<T>();
@@ -271,14 +251,7 @@ namespace etl
     const T& operator *() const
     {
 #ifdef _DEBUG
-      if (!valid)
-      {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw optional_invalid();
-#else
-        error_handler::error(optional_invalid());
-#endif
-      }
+      ETL_ASSERT(valid, optional_invalid());
 #endif
 
       return storage.template get_reference<T>();
@@ -298,14 +271,7 @@ namespace etl
     T& value()
     {
 #ifdef _DEBUG
-      if (!valid)
-      {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw optional_invalid();
-#else
-        error_handler::error(optional_invalid());
-#endif
-      }
+      ETL_ASSERT(valid, optional_invalid());
 #endif
 
       return storage.template get_reference<T>();
@@ -317,14 +283,7 @@ namespace etl
     const T& value() const
     {
 #ifdef _DEBUG
-      if (!valid)
-      {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw optional_invalid();
-#else
-        error_handler::error(optional_invalid());
-#endif
-      }
+      ETL_ASSERT(valid, optional_invalid());
 #endif
 
       return storage.template get_reference<T>();

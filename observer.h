@@ -53,10 +53,7 @@ SOFTWARE.
 #include <algorithm>
 #include "vector.h"
 #include "exception.h"
-
-#ifndef ETL_THROW_EXCEPTIONS
 #include "error_handler.h"
-#endif
 
 namespace etl
 {
@@ -120,22 +117,11 @@ namespace etl
       if (i_observer == observer_list.end())
       {
         // Is there enough room?
-        if (!observer_list.full())
+        if (ETL_ASSERT(!observer_list.full(), etl::observer_list_full()))
         {
           // Add it.
           observer_list.push_back(&observer);
         }
-#ifdef ETL_THROW_EXCEPTIONS
-        else
-        {
-          throw observer_list_full();
-        }
-#else
-        else
-        {
-          error_handler::error(observer_list_full());
-        }
-#endif
       }
     }
 

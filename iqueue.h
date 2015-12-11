@@ -36,10 +36,7 @@ SOFTWARE.
 #include "private/queue_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
-
-#ifndef ETL_THROW_EXCEPTIONS
 #include "error_handler.h"
-#endif
 
 namespace etl
 {
@@ -116,22 +113,12 @@ namespace etl
     //*************************************************************************
     void push(parameter_t value)
     {
-      if (!full())
+      if (ETL_ASSERT(!full(), queue_full()))
       {
         new(&p_buffer[in]) T(value);
         in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
         ++current_size;
       }
-      else
-#ifdef ETL_THROW_EXCEPTIONS
-      {
-        throw queue_full();
-      }
-#else
-      {
-        error_handler::error(queue_full());
-      }
-#endif
     }
 
     //*************************************************************************
@@ -146,22 +133,12 @@ namespace etl
     {
       const size_type next = in;
 
-      if (!full())
+      if (ETL_ASSERT(!full(), queue_full()))
       {
         new(&p_buffer[in]) T();
         in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
         ++current_size;
       }
-      else
-#ifdef ETL_THROW_EXCEPTIONS
-      {
-        throw queue_full();
-      }
-#else
-      {
-        error_handler::error(queue_full());
-      }
-#endif
 
       return p_buffer[next];
     }
@@ -188,7 +165,7 @@ namespace etl
     //*************************************************************************
     void pop()
     {
-      if (!empty())
+      if ETL_ASSERT(!empty(), etl::queue_empty())
       {
         p_buffer[out].~T();
         out = (out == (MAX_SIZE - 1)) ? 0 : out + 1;

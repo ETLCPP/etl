@@ -36,10 +36,7 @@ SOFTWARE.
 #include "private/stack_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
-
-#ifndef ETL_THROW_EXCEPTIONS
 #include "error_handler.h"
-#endif
 
 namespace etl
 {
@@ -88,21 +85,11 @@ namespace etl
     //*************************************************************************
     void push(parameter_t value)
     {
-      if (!full())
+      if (ETL_ASSERT(!full(), stack_full()))
       {
         top_index = current_size++;
         new(&p_buffer[top_index]) T(value);
       }
-      else
-#ifdef ETL_THROW_EXCEPTIONS     
-      {
-        throw stack_full();
-      }
-#else
-      {
-        error_handler::error(stack_full());
-      }
-#endif
     }
 
     //*************************************************************************
@@ -114,21 +101,11 @@ namespace etl
     //*************************************************************************
     reference push()
     {
-      if (!full())
+      if (ETL_ASSERT(!full(), stack_full()))
       {
         top_index = current_size++;
         new(&p_buffer[top_index]) T();
       }
-      else
-#ifdef ETL_THROW_EXCEPTIONS     
-      {
-        throw stack_full();
-      }
-#else
-      {
-        error_handler::error(stack_full());
-      }
-#endif
 
       return p_buffer[top_index];
     }
