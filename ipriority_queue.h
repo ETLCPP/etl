@@ -37,10 +37,7 @@ SOFTWARE.
 #include "private/priority_queue_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
-
-#ifndef ETL_THROW_EXCEPTIONS
 #include "error_handler.h"
-#endif
 
 namespace etl
 {
@@ -104,7 +101,7 @@ namespace etl
     //*************************************************************************
     void push(parameter_t value)
     {
-      if (!full())
+      if (ETL_ASSERT(!full(), priority_queue_full()))
       {
         // Put element at end
         container.push_back(value);
@@ -113,16 +110,6 @@ namespace etl
         // Make elements in container into heap
         std::push_heap(container.begin(), container.end(), TCompare());
       }
-      else
-#ifdef ETL_THROW_EXCEPTIONS
-      {
-        throw priority_queue_full();
-      }
-#else
-      {
-        error_handler::error(priority_queue_full());
-      }
-#endif
     }
 
     //*************************************************************************
@@ -148,24 +135,8 @@ namespace etl
     {
 #ifdef _DEBUG
       difference_type count = std::distance(first, last);
-
-      if (count < 0)
-      {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw priority_queue_iterator();
-#else
-        error_handler::error(priority_queue_iterator());
-#endif
-      }
-
-      if (static_cast<size_t>(count) > MAX_SIZE)
-      {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw priority_queue_full();
-#else
-        error_handler::error(priority_queue_full());
-#endif
-      }
+      ETL_ASSERT(count >= 0, priority_queue_iterator());
+      ETL_ASSERT(static_cast<size_t>(count) <= MAX_SIZE, priority_queue_full());
 #endif
 
       clear();

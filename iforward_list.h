@@ -363,15 +363,7 @@ namespace etl
     {
 #ifdef _DEBUG
       difference_type count = std::distance(first, last);
-
-      if (count < 0)
-      {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw forward_list_iterator();
-#else
-        error_handler::error(forward_list_iterator());
-#endif
-      }
+      ETL_ASSERT(count >= 0, forward_list_iterator());
 #endif
 
       initialise();
@@ -381,7 +373,7 @@ namespace etl
       // Add all of the elements.
       while (first != last)
       {
-        if (!full())
+        if (ETL_ASSERT(!full(), forward_list_iterator()))
         {
           Data_Node& data_node = allocate_data_node(*first++);
           join(p_last_node, &data_node);
@@ -389,16 +381,6 @@ namespace etl
           p_last_node = &data_node;
           ++current_size;
         }
-        else
-#ifdef ETL_THROW_EXCEPTIONS
-        {
-          throw forward_list_full();
-        }
-#else
-        {
-          error_handler::error(forward_list_full());
-        }
-#endif
       }
     }
 
@@ -407,14 +389,14 @@ namespace etl
     //*************************************************************************
     void assign(size_t n, parameter_t value)
     {
-      initialise();
-
-      Node* p_last_node = &start_node;
-
-      // Add all of the elements.
-      while (current_size < n)
+      if (ETL_ASSERT(n <= MAX_SIZE, forward_list_full()))
       {
-        if (!full())
+        initialise();
+
+        Node* p_last_node = &start_node;
+
+        // Add all of the elements.
+        while (current_size < n)
         {
           Data_Node& data_node = allocate_data_node(value);
           join(p_last_node, &data_node);
@@ -422,16 +404,6 @@ namespace etl
           p_last_node = &data_node;
           ++current_size;
         }
-        else
-#ifdef ETL_THROW_EXCEPTIONS
-        {
-          throw forward_list_full();
-        }
-#else
-        {
-          error_handler::error(forward_list_full());
-        }
-#endif
       }
     }
 
@@ -440,21 +412,11 @@ namespace etl
     //*************************************************************************
     void push_front()
     {
-      if (!full())
+      if (ETL_ASSERT(!full(), forward_list_full()))
       {
         Data_Node& data_node = allocate_data_node(T());
         insert_node_after(start_node, data_node);
       }
-      else
-#ifdef ETL_THROW_EXCEPTIONS
-      {
-        throw forward_list_full();
-      }
-#else
-      {
-        error_handler::error(forward_list_full());
-      }
-#endif
     }
 
     //*************************************************************************
@@ -462,21 +424,11 @@ namespace etl
     //*************************************************************************
     void push_front(parameter_t value)
     {
-      if (!full())
+      if (ETL_ASSERT(!full(), forward_list_full()))
       {
         Data_Node& data_node = allocate_data_node(value);
         insert_node_after(start_node, data_node);
       }
-      else
-#ifdef ETL_THROW_EXCEPTIONS
-      {
-        throw forward_list_full();
-      }
-#else
-      {
-        error_handler::error(forward_list_full());
-      }
-#endif
     }
 
     //*************************************************************************
@@ -505,7 +457,7 @@ namespace etl
     //*************************************************************************
     void resize(size_t n, T value)
     {
-      if (n <= MAX_SIZE)
+      if (ETL_ASSERT(n <= MAX_SIZE, forward_list_full()))
       {
         size_t i = 0;
         iterator i_node = begin();
@@ -534,16 +486,6 @@ namespace etl
           }
         }
       }
-      else
-#ifdef ETL_THROW_EXCEPTIONS
-      {
-        throw forward_list_full();
-      }
-#else
-      {
-        error_handler::error(forward_list_full());
-      }
-#endif
     }
 
     //*************************************************************************
@@ -551,25 +493,13 @@ namespace etl
     //*************************************************************************
     iterator insert_after(iterator position, parameter_t value)
     {
-      if (!full())
+      if (ETL_ASSERT(!full(), forward_list_full()))
       {
         Data_Node& data_node = allocate_data_node(value);
         insert_node_after(*position.p_node, data_node);
 
         return iterator(data_node);
       }
-      else
-#ifdef ETL_THROW_EXCEPTIONS    
-      {
-        throw forward_list_full();
-        return end();
-      }
-#else
-      {
-        error_handler::error(forward_list_full());
-        return end();
-      }
-#endif
     }
 
     //*************************************************************************
@@ -577,7 +507,7 @@ namespace etl
     //*************************************************************************
     void insert_after(iterator position, size_t n, parameter_t value)
     {
-      if (!full())
+      if (ETL_ASSERT(!full(), forward_list_full()))
       {
         for (size_t i = 0; !full() && (i < n); ++i)
         {
@@ -586,16 +516,6 @@ namespace etl
           insert_node(*position.p_node, data_node);
         }
       }
-      else
-#ifdef ETL_THROW_EXCEPTIONS
-      {
-        throw forward_list_full();
-      }
-#else
-      {
-        error_handler::error(forward_list_full());
-      }
-#endif
     }
 
     //*************************************************************************
@@ -604,25 +524,17 @@ namespace etl
     template <typename TIterator>
     void insert_after(iterator position, TIterator first, TIterator last)
     {
+#ifdef _DEBUG
+      difference_type count = std::distance(first, last);
+      ETL_ASSERT((count + current_size) <= MAX_SIZE, forward_list_full());
+#endif
+
       while (first != last)
       {
-        if (!full())
-        {
-          // Set up the next free node.
-          Data_Node& data_node = allocate_data_node(*first++);
-          insert_node_after(*position.p_node, data_node);
-          ++position;
-        }
-        else
-#ifdef ETL_THROW_EXCEPTIONS
-        {
-          throw forward_list_full();
-        }
-#else
-        {
-          error_handler::error(forward_list_full());
-        }
-#endif
+        // Set up the next free node.
+        Data_Node& data_node = allocate_data_node(*first++);
+        insert_node_after(*position.p_node, data_node);
+        ++position;
       }
     }
 

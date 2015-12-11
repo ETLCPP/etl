@@ -70,7 +70,7 @@ namespace etl
     {
     }
   };
-  
+
   //*************************************************************************
   /// The base class for etl::bitset
   ///\ingroup bitset
@@ -168,7 +168,7 @@ namespace etl
 
       ibitset* p_bitset; ///< The bitset.
       size_t   position; ///< The position in the bitset.
-    };   
+    };
 
     //*************************************************************************
     /// The size of the bitset.
@@ -607,7 +607,7 @@ namespace etl
     {
       reset();
 
-      const size_t SHIFT = (integral_limits<unsigned long long>::bits <= BITS_PER_ELEMENT) ? 0 : BITS_PER_ELEMENT;
+      const size_t SHIFT = (integral_limits<unsigned long long>::bits <= (int)BITS_PER_ELEMENT) ? 0 : BITS_PER_ELEMENT;
 
       // Can we do it in one hit?
       if (SHIFT == 0)

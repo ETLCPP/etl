@@ -171,15 +171,6 @@ namespace etl
 
     TIterator it; ///< The underlying iterator.
   };
-
-  //***************************************************************************
-  /// Makes a fixed_iterator from an iterator.
-  //***************************************************************************
-  template <typename TIterator>
-  fixed_iterator<TIterator> make_fixed_iterator(TIterator it)
-  {
-    return fixed_iterator<TIterator>(it);
-  }  
 }
 
 //*****************************************************************************

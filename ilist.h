@@ -452,38 +452,19 @@ namespace etl
     {      
 #ifdef _DEBUG
       difference_type count = std::distance(first, last);
-
-      if (count < 0)
-      {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw list_iterator();
-#else
-        error_handler::error(list_iterator());
+      ETL_ASSERT(count >= 0, list_iterator());
+      ETL_ASSERT(size_t(count) <= MAX_SIZE, list_full());
 #endif
-      }
-#endif
-
       initialise();
 
       // Add all of the elements.
       while (first != last)
       {
-        if (!full())
-        {
-          Data_Node& data_node = allocate_data_node(*first);
-          join(get_tail(), data_node);
-          join(data_node, terminal_node);
-          ++first;
-          ++current_size;
-        }
-        else
-        {
-#ifdef ETL_THROW_EXCEPTIONS
-          throw list_full();
-#else
-          error_handler::error(list_full());
-#endif
-        }
+        Data_Node& data_node = allocate_data_node(*first);
+        join(get_tail(), data_node);
+        join(data_node, terminal_node);
+        ++first;
+        ++current_size;
       }
     }
 
@@ -492,26 +473,19 @@ namespace etl
     //*************************************************************************
     void assign(size_t n, parameter_t value)
     {
+#ifdef _DEBUG
+      ETL_ASSERT(n <= MAX_SIZE, list_full());
+#endif
+
       initialise();
 
       // Add all of the elements.
       while (current_size < n)
       {
-        if (!full())
-        {
-          Data_Node& data_node = allocate_data_node(value);
-          join(*terminal_node.previous, data_node);
-          join(data_node, terminal_node);
-          ++current_size;
-        }
-        else
-        {
-#ifdef ETL_THROW_EXCEPTIONS        
-          throw list_full();
-#else
-          error_handler::error(list_full());
-#endif
-        }
+        Data_Node& data_node = allocate_data_node(value);
+        join(*terminal_node.previous, data_node);
+        join(data_node, terminal_node);
+        ++current_size;
       }
     }
 
@@ -520,18 +494,10 @@ namespace etl
     //*************************************************************************
     void push_front()
     {
-      if (!full())
+      if (ETL_ASSERT(!full(), list_full()))
       {
         Data_Node& data_node = allocate_data_node(T());
         insert_node(get_head(), data_node);
-      }
-      else
-      {
-#ifdef ETL_THROW_EXCEPTIONS        
-        throw list_full();
-#else
-        error_handler::error(list_full());
-#endif
       }
     }
 
@@ -540,18 +506,10 @@ namespace etl
     //*************************************************************************
     void push_front(parameter_t value)
     {
-      if (!full())
+      if (ETL_ASSERT(!full(), list_full()))
       {
         Node& data_node = allocate_data_node(value);
         insert_node(get_head(), data_node);
-      }
-      else
-      {
-#ifdef ETL_THROW_EXCEPTIONS        
-        throw list_full();
-#else
-        error_handler::error(list_full());
-#endif
       }
     }
 
@@ -572,18 +530,10 @@ namespace etl
     //*************************************************************************
     void push_back()
     {
-      if (!full())
+      if (ETL_ASSERT(!full(), list_full()))
       {
         Data_Node& data_node = allocate_data_node(T());
         insert_node(terminal_node, data_node);
-      }
-      else
-      {
-#ifdef ETL_THROW_EXCEPTIONS        
-        throw list_full();
-#else
-        error_handler::error(list_full());
-#endif
       }
     }
 
@@ -592,18 +542,10 @@ namespace etl
     //*************************************************************************
     void push_back(parameter_t value)
     {
-      if (!full())
+      if (ETL_ASSERT(!full(), list_full()))
       {
         Data_Node& data_node = allocate_data_node(value);
         insert_node(terminal_node, data_node);
-      }
-      else
-      {
-#ifdef ETL_THROW_EXCEPTIONS        
-        throw list_full();
-#else
-        error_handler::error(list_full());
-#endif
       }
     }
 
@@ -624,21 +566,12 @@ namespace etl
     //*************************************************************************
     iterator insert(iterator position, const value_type& value)
     {
-      if (!full())
+      if (ETL_ASSERT(!full(), list_full()))
       {
         Data_Node& data_node = allocate_data_node(value);
         insert_node(*position.p_node, data_node);
 
         return iterator(data_node);
-      }
-      else
-      {
-#ifdef ETL_THROW_EXCEPTIONS        
-        throw list_full();
-#else
-        error_handler::error(list_full());
-        return end();
-#endif
       }
     }
 
@@ -649,19 +582,11 @@ namespace etl
     {
       for (size_t i = 0; i < n; ++i)
       {
-        if (!full())
+        if (ETL_ASSERT(!full(), list_full()))
         {
           // Set up the next free node and insert.
           Data_Node& data_node = allocate_data_node(value);
           insert_node(*position.p_node, data_node);
-        }
-        else
-        {
-#ifdef ETL_THROW_EXCEPTIONS        
-          throw list_full();
-#else
-          error_handler::error(list_full());
-#endif
         }
       }
     }
@@ -674,19 +599,11 @@ namespace etl
     {
       while (first != last)
       {
-        if (!full())
+        if (ETL_ASSERT(!full(), list_full()))
         {
           // Set up the next free node and insert.
           Data_Node& data_node = allocate_data_node(*first++);
           insert_node(*position.p_node, data_node);
-        }
-        else
-        {
-#ifdef ETL_THROW_EXCEPTIONS        
-          throw list_full();
-#else
-          error_handler::error(list_full());
-#endif
         }
       }
     }
@@ -743,27 +660,20 @@ namespace etl
     //*************************************************************************
     void resize(size_t n, parameter_t value)
     {
-      if (n > MAX_SIZE)
+      if (ETL_ASSERT(n <= MAX_SIZE, list_full()))
       {
-#ifdef ETL_THROW_EXCEPTIONS        
-        throw list_full();
-#else
-        error_handler::error(list_full());
-        n = MAX_SIZE;
-#endif
-      }
-
-      // Smaller?
-      if (n < size())
-      {
-        iterator i_start = end();
-        std::advance(i_start, -difference_type(size() - n));
-        erase(i_start, end());
-      }
-      // Larger?
-      else if (n > size())
-      {
-        insert(end(), n - size(), value);
+        // Smaller?
+        if (n < size())
+        {
+          iterator i_start = end();
+          std::advance(i_start, -difference_type(size() - n));
+          erase(i_start, end());
+        }
+        // Larger?
+        else if (n > size())
+        {
+          insert(end(), n - size(), value);
+        }
       }
     }
 

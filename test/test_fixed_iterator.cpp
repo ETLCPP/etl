@@ -46,9 +46,9 @@ namespace
     //*************************************************************************
     TEST(test_default_constructor)
     {
-      etl::fixed_iterator<int*> fi;
+      etl::fixed_iterator<const int*> fi;
 
-      CHECK_EQUAL((int*)0, fi);
+      CHECK_EQUAL((const int*)0, fi);
     }
 
     //*************************************************************************
@@ -56,8 +56,8 @@ namespace
     {
       int a;
 
-      etl::fixed_iterator<int*> fi1(&a);
-      etl::fixed_iterator<int*> fi2(fi1);
+      etl::fixed_iterator<const int*> fi1(&a);
+      etl::fixed_iterator<const int*> fi2(fi1);
 
       CHECK_EQUAL(fi1, fi2);
     }
@@ -67,7 +67,7 @@ namespace
     {
       int a;
 
-      etl::fixed_iterator<int*> fi(&a);
+      etl::fixed_iterator<const int*> fi(&a);
 
       CHECK_EQUAL(&a, fi);
     }
@@ -77,7 +77,7 @@ namespace
     {
       int a;
 
-      etl::fixed_iterator<int*> fi = etl::make_fixed_iterator(&a);
+      etl::fixed_iterator<const int*> fi = &a;
 
       CHECK_EQUAL(&a, fi);
     }
@@ -87,7 +87,7 @@ namespace
     {
       int compare[] = { 1, 2, 3, 4 };
 
-      etl::fixed_iterator<int*> fi = etl::make_fixed_iterator(&compare[1]);
+      etl::fixed_iterator<const int*> fi = &compare[1];
 
       for (int i = 0; i < 10; ++i)
       {
@@ -110,6 +110,11 @@ namespace
 
       CHECK_EQUAL(test.a, fi->a);
       CHECK_EQUAL(test.b, fi->b);
+
+      *fi = { 3, 4 };
+
+      CHECK_EQUAL(test.a, fi->a);
+      CHECK_EQUAL(test.b, fi->b);
     }
 
     //*************************************************************************
@@ -117,7 +122,7 @@ namespace
     {
       int a;
 
-      etl::fixed_iterator<int*> fi(&a);
+      etl::fixed_iterator<const int*> fi(&a);
 
       CHECK_EQUAL(&a, fi);
     }
@@ -127,7 +132,7 @@ namespace
     {
       int compare[] = { 1, 2, 3, 4 };
 
-      etl::fixed_iterator<int*> fi = etl::make_fixed_iterator<int*>(&compare[1]);
+      etl::fixed_iterator<const int*> fi = &compare[1];
 
       for (int i = 0; i < 10; ++i)
       {
@@ -141,7 +146,7 @@ namespace
     {
       int compare[] = { 1, 2, 3, 4 };
 
-      etl::fixed_iterator<int*> fi = etl::make_fixed_iterator<int*>(&compare[1]);
+      etl::fixed_iterator<const int*> fi = &compare[1];
 
       for (int i = 0; i < 10; ++i)
       {
@@ -155,7 +160,7 @@ namespace
     {
       int compare[] = { 1, 2, 3, 4 };
 
-      etl::fixed_iterator<int*> fi = etl::make_fixed_iterator<int*>(&compare[1]);
+      etl::fixed_iterator<const int*> fi = &compare[1];
 
       for (int i = 0; i < 10; ++i)
       {
@@ -170,7 +175,7 @@ namespace
     {
       int compare[] = { 1, 2, 3, 4 };
 
-      etl::fixed_iterator<int*> fi = etl::make_fixed_iterator<int*>(&compare[1]);
+      etl::fixed_iterator<const int*> fi = &compare[1];
 
       for (int i = 0; i < 10; ++i)
       {
@@ -184,7 +189,7 @@ namespace
     {
       int compare[] = { 1, 2, 3, 4 };
 
-      etl::fixed_iterator<int*> fi = etl::make_fixed_iterator<int*>(&compare[1]);
+      etl::fixed_iterator<const int*> fi = &compare[1];
 
       for (int i = 0; i < 10; ++i)
       {
@@ -199,7 +204,7 @@ namespace
       int a;
       int b;
 
-      etl::fixed_iterator<int*> fi = etl::make_fixed_iterator<int*>(&a);
+      etl::fixed_iterator<int*> fi = &a;
       fi = &b;
 
       CHECK_EQUAL(&b, fi);
@@ -215,9 +220,9 @@ namespace
       int a;
       int b;
 
-      etl::fixed_iterator<int*> fi1 = etl::make_fixed_iterator<int*>(&a);
-      etl::fixed_iterator<int*> fi2 = etl::make_fixed_iterator<int*>(&a);
-      etl::fixed_iterator<int*> fi3 = etl::make_fixed_iterator<int*>(&b);
+      etl::fixed_iterator<int*> fi1 = &a;
+      etl::fixed_iterator<int*> fi2 = &a;
+      etl::fixed_iterator<int*> fi3 = &b;
 
       CHECK(fi1 == fi2);
       CHECK(fi1 != fi3);

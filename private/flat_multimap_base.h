@@ -36,12 +36,9 @@ SOFTWARE.
 
 #include <stddef.h>
 
-#include "exception.h"
-#include "ivector.h"
-
-#ifndef ETL_THROW_EXCEPTIONS
-#include "error_handler.h"
-#endif
+#include "../exception.h"
+#include "../ivector.h"
+#include "../error_handler.h"
 
 namespace etl
 {

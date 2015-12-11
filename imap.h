@@ -708,7 +708,7 @@ namespace etl
       Node* inserted_node = nullptr;
       bool inserted = false;
 
-      if (!full())
+      if (ETL_ASSERT(!full(), map_full()))
       {
         // Get next available free node
         Data_Node& node = allocate_data_node(value);
@@ -716,14 +716,6 @@ namespace etl
         // Obtain the inserted node (might be nullptr if node was a duplicate)
         inserted_node = insert_node(root_node, node);
         inserted = inserted_node == &node;
-      }
-      else
-      {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw map_full();
-#else
-        error_handler::error(map_full());
-#endif
       }
 
       // Insert node into tree and return iterator to new node location in tree
@@ -741,21 +733,13 @@ namespace etl
       // Default to no inserted node
       Node* inserted_node = nullptr;
 
-      if (!full())
+      if (ETL_ASSERT(!full(), map_full()))
       {
         // Get next available free node
         Data_Node& node = allocate_data_node(value);
 
         // Obtain the inserted node (might be nullptr if node was a duplicate)
         inserted_node = insert_node(root_node, node);
-      }
-      else
-      {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw map_full();
-#else
-        error_handler::error(map_full());
-#endif
       }
 
       // Insert node into tree and return iterator to new node location in tree
@@ -773,21 +757,13 @@ namespace etl
       // Default to no inserted node
       Node* inserted_node = nullptr;
 
-      if (!full())
+      if (ETL_ASSERT(!full(), map_full()))
       {
         // Get next available free node
         Data_Node& node = allocate_data_node(value);
 
         // Obtain the inserted node (might be nullptr if node was a duplicate)
         inserted_node = insert_node(root_node, node);
-      }
-      else
-      {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw map_full();
-#else
-        error_handler::error(map_full());
-#endif
       }
 
       // Insert node into tree and return iterator to new node location in tree

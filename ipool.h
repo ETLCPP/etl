@@ -36,10 +36,7 @@ SOFTWARE.
 #include "private/pool_base.h"
 #include "nullptr.h"
 #include "ibitset.h"
-
-#ifndef ETL_THROW_EXCEPTIONS
 #include "error_handler.h"
-#endif
 
 namespace etl
 {
@@ -326,9 +323,9 @@ namespace etl
 	  T* allocate()
 	  {
 #if defined(_DEBUG) || defined(DEBUG)
-      if (items_allocated < MAX_SIZE && !in_use_flags.test(next_free))
+      if (ETL_ASSERT(items_allocated < MAX_SIZE && !in_use_flags.test(next_free), pool_no_allocation()))
 #else
-      if (items_allocated < MAX_SIZE)
+      if (ETL_ASSERT(items_allocated < MAX_SIZE, pool_no_allocation())
 #endif
 	    {
 		    T* result = new(&p_buffer[next_free]) T();
@@ -337,15 +334,10 @@ namespace etl
 		    ++items_allocated;
 		    return result;
 	    }
-	    else
-	    {
-#ifdef ETL_THROW_EXCEPTIONS
-		    throw pool_no_allocation();
-#else
-		    error_handler::error(pool_no_allocation());
-#endif
-		    return nullptr;
-	    }
+      else
+      {
+        return nullptr;
+      }
 	  }
 
     //*************************************************************************
@@ -357,9 +349,9 @@ namespace etl
     T* allocate(const T& initial)
     {
 #if defined(_DEBUG) || defined(DEBUG)
-      if (items_allocated < MAX_SIZE && !in_use_flags.test(next_free))
+      if (ETL_ASSERT(items_allocated < MAX_SIZE && !in_use_flags.test(next_free), pool_no_allocation()))
 #else
-      if (items_allocated < MAX_SIZE)
+      if (ETL_ASSERT(items_allocated < MAX_SIZE, pool_no_allocation())
 #endif
       {
         T* result = new(&p_buffer[next_free]) T(initial);
@@ -370,11 +362,6 @@ namespace etl
       }
       else
       {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw pool_no_allocation();
-#else
-        error_handler::error(pool_no_allocation());
-#endif
         return nullptr;
       }
     }
@@ -399,7 +386,7 @@ namespace etl
     void release(const T* const p_object)
     {
       // Does it belong to me?
-      if (is_in_pool(p_object))
+      if (ETL_ASSERT(is_in_pool(p_object), pool_object_not_in_pool()))
       {
     	// Where is it in the buffer?
         typename std::iterator_traits<T*>::difference_type distance = p_object - p_buffer;
@@ -414,14 +401,6 @@ namespace etl
           --items_allocated;
           next_free = index;
         }
-      }
-      else
-      {
-#ifdef ETL_THROW_EXCEPTIONS
-        throw pool_object_not_in_pool();
-#else
-        error_handler::error(pool_object_not_in_pool());
-#endif
       }
     }
 
