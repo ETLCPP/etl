@@ -184,7 +184,9 @@ namespace
       test_variant_1 variant;
       variant = text;
 
-      CHECK_THROW(int i = variant, etl::variant_incorrect_type_exception);
+      int i;
+      CHECK_THROW(i = variant, etl::variant_incorrect_type_exception);
+      (void)i;
     }
 
     //*************************************************************************
@@ -277,7 +279,9 @@ namespace
       test_variant_1 variant;
       variant = 1;
 
-      CHECK_THROW(char c =variant.get<char>(), etl::variant_exception);
+      char c;
+      CHECK_THROW(c = variant.get<char>(), etl::variant_exception);
+      (void)c;
     }
 
     //*************************************************************************
