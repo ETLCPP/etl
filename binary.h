@@ -67,7 +67,7 @@ namespace etl
     template <const size_t NBITS>
     const typename max_value_for_nbits_helper<NBITS>::value_type max_value_for_nbits_helper<NBITS>::value;
   }
-    
+
   /// Definition for non-zero NBITS.
   template <const size_t NBITS>
   struct max_value_for_nbits
@@ -490,7 +490,7 @@ namespace etl
     }
 
     // Fold the remaining bits.
-    folded_value ^= value;
+    folded_value ^= value & mask;
 
     return folded_value;
   }
