@@ -34,7 +34,7 @@
     <Filter Include="ETL\Maths">
       <UniqueIdentifier>{1c55dd7d-c04b-428c-810b-dd3a08fc4c65}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ETL\Containers\Private">
+    <Filter Include="ETL\Private">
       <UniqueIdentifier>{7028012c-30c4-4993-b2d9-3b1521a610ae}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -417,56 +417,56 @@
     <ClInclude Include="..\..\basic_intrusive_forward_list_node.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\deque_base.h">
-      <Filter>ETL\Containers\Private</Filter>
+    <ClInclude Include="..\..\private\deque_base.h">
+      <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\flat_map_base.h">
-      <Filter>ETL\Containers\Private</Filter>
+    <ClInclude Include="..\..\private\flat_map_base.h">
+      <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\flat_multimap_base.h">
-      <Filter>ETL\Containers\Private</Filter>
+    <ClInclude Include="..\..\private\flat_multimap_base.h">
+      <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\flat_multiset_base.h">
-      <Filter>ETL\Containers\Private</Filter>
+    <ClInclude Include="..\..\private\flat_multiset_base.h">
+      <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\forward_list_base.h">
-      <Filter>ETL\Containers\Private</Filter>
+    <ClInclude Include="..\..\private\flat_set_base.h">
+      <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\flat_set_base.h">
-      <Filter>ETL\Containers\Private</Filter>
+    <ClInclude Include="..\..\private\forward_list_base.h">
+      <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\multimap_base.h">
-      <Filter>ETL\Containers\Private</Filter>
+    <ClInclude Include="..\..\private\list_base.h">
+      <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\priority_queue_base.h">
-      <Filter>ETL\Containers\Private</Filter>
+    <ClInclude Include="..\..\private\map_base.h">
+      <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\multiset_base.h">
-      <Filter>ETL\Containers\Private</Filter>
+    <ClInclude Include="..\..\private\multimap_base.h">
+      <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\map_base.h">
-      <Filter>ETL\Containers\Private</Filter>
+    <ClInclude Include="..\..\private\multiset_base.h">
+      <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\list_base.h">
-      <Filter>ETL\Containers\Private</Filter>
+    <ClInclude Include="..\..\private\pool_base.h">
+      <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\stack_base.h">
-      <Filter>ETL\Containers\Private</Filter>
+    <ClInclude Include="..\..\private\priority_queue_base.h">
+      <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\set_base.h">
-      <Filter>ETL\Containers\Private</Filter>
+    <ClInclude Include="..\..\private\queue_base.h">
+      <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\queue_base.h">
-      <Filter>ETL\Containers\Private</Filter>
+    <ClInclude Include="..\..\private\set_base.h">
+      <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\unordered_map_base.h">
-      <Filter>ETL\Containers\Private</Filter>
+    <ClInclude Include="..\..\private\stack_base.h">
+      <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\vector_base.h">
-      <Filter>ETL\Containers\Private</Filter>
+    <ClInclude Include="..\..\private\unordered_map_base.h">
+      <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\pool_base.h">
-      <Filter>ETL\Containers\Private</Filter>
+    <ClInclude Include="..\..\private\vector_base.h">
+      <Filter>ETL\Private</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -718,5 +718,7 @@
     <None Include="..\..\Doxyfile">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
 </Project>
