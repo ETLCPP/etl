@@ -53,10 +53,10 @@ namespace etl
     //*************************************************************************
     /// Callback class for free handler functions.
     //*************************************************************************
-    struct free_function : public function<void, const exception&>
+    struct free_function : public function<void, const etl::exception&>
     {
-      free_function(void (*p_function)(const exception&))
-        : function<void, const exception&>(p_function)
+      free_function(void (*p_function)(const etl::exception&))
+        : etl::function<void, const etl::exception&>(p_function)
       {
       }
     };
@@ -65,46 +65,58 @@ namespace etl
     /// Callback class for member handler functions.
     //*************************************************************************
     template <typename TObject>
-    struct member_function : public function<TObject, const exception&>
+    struct member_function : public etl::function<TObject, const etl::exception&>
     {
-      member_function(TObject& object, void(TObject::*p_function)(const exception&))
-        : function<TObject, const exception&>(object, p_function)
+      member_function(TObject& object, void(TObject::*p_function)(const etl::exception&))
+        : etl::function<TObject, const etl::exception&>(object, p_function)
       {
       }
     };
 
-    static void set_callback(ifunction<const exception&>& f);
-    static void error(const exception& e);
+    static void set_callback(ifunction<const etl::exception&>& f);
+    static void error(const etl::exception& e);
 
   private:
 
-    static ifunction<const exception&>* p_ifunction;
+    static ifunction<const etl::exception&>* p_ifunction;
   };
-
-  //***************************************************************************
-  /// Asserts a coondition.
-  /// Versions of the macro that return a constant value of 'true' will allow the compiler to optimise away
-  /// any 'if' statements that it is contained within.
-  /// If ETL_NO_CHECKS is defined then no runtime checks are executed at all. 
-  /// If ETL_THROW_EXCEPTIONS is defined then the error is thrown if the assert fails. The return value is always 'true'.
-  /// If ETL_LOG_ERRORS is defined then the error is logged if the assert fails. The return value is the value of the boolean test.
-  /// Otherwise 'assert' is called. The return value is always 'true'.
-  ///\ingroup error_handler
-  //***************************************************************************
-#if defined(ETL_NO_CHECKS)
-  #define ETL_ASSERT(b, e) (true)                                                // Does nothing. Evaluates to 'true'.
-#elif defined(ETL_THROW_EXCEPTIONS)
-  #define ETL_ASSERT(b, e) (((b) ?  true : throw((e))), true)                    // Throws an exception if the condition fails. Evaluates to 'true'.
-#elif defined (ETL_LOG_ERRORS)
-  #define ETL_ASSERT(b, e) (((b) ?  true : etl::error_handler::error((e))), (b)) // Logs the error if the condition fails. Evaluates to the result of the condition.
-#else
-  #if defined(NDEBUG)
-    #define ETL_ASSERT(b, e) (true)                                              // Does nothing. Evaluates to 'true'.
-  #elif
-    #define ETL_ASSERT(b, e) ((assert((b))), true)                               // Asserts if the condition fails. Evaluates to 'true'.
-  #endif
-#endif
 }
+
+//***************************************************************************
+/// Asserts a coondition.
+/// Versions of the macro that return a constant value of 'true' will allow the compiler to optimise away
+/// any 'if' statements that it is contained within.
+/// If ETL_NO_CHECKS is defined then no runtime checks are executed at all. 
+/// If ETL_THROW_EXCEPTIONS is defined then the error is thrown if the assert fails. The return value is always 'true'.
+/// If ETL_LOG_ERRORS is defined then the error is logged if the assert fails. The return value is the value of the boolean test.
+/// Otherwise 'assert' is called. The return value is always 'true'.
+///\ingroup error_handler
+//***************************************************************************
+#if defined(ETL_NO_CHECKS)
+#define ETL_ASSERT(b, e) (true)                                                // Does nothing. Evaluates to 'true'.
+#elif defined(ETL_THROW_EXCEPTIONS)
+#define ETL_ASSERT(b, e) (((b) ?  true : throw((e))), true)                    // Throws an exception if the condition fails. Evaluates to 'true'.
+#elif defined(ETL_LOG_ERRORS)
+#define ETL_ASSERT(b, e) (((b) ?  true : etl::error_handler::error((e))), (b)) // Logs the error if the condition fails. Evaluates to the result of the condition.
+#else
+#if defined(NDEBUG)
+#define ETL_ASSERT(b, e) (true)                                                // Does nothing. Evaluates to 'true'.
+#elif
+#define ETL_ASSERT(b, e) ((assert((b))), true)                                 // Asserts if the condition fails. Evaluates to 'true'.
+#endif
+#endif
+
+#if defined(ETL_VERBOSE_ERRORS)
+#define ETL_ERROR(e) (e(__FILE__, __LINE__)) // Make an exception with the file name and line number.
+#else
+#define ETL_ERROR(e) (e("", __LINE__))       // Make an exception with the line number.
+#endif
+
+#if defined(ETL_VERBOSE_ERRORS)
+#define ETL_ERROR_TEXT(verbose_text, terse_text) (verbose_text) // Use the verbose text. 
+#else
+#define ETL_ERROR_TEXT(verbose_text, terse_text) (terse_text)   // Use the terse text.
+#endif
 
 #endif
 

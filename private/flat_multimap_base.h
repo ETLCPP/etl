@@ -40,6 +40,9 @@ SOFTWARE.
 #include "../ivector.h"
 #include "../error_handler.h"
 
+#undef ETL_FILE
+#define ETL_FILE "3"
+
 namespace etl
 {
   //***************************************************************************
@@ -50,8 +53,8 @@ namespace etl
   {
   public:
 
-    flat_multimap_exception(const char* what)
-      : exception(what)
+    flat_multimap_exception(string_type what, string_type file_name, numeric_type line_number)
+      : exception(what, file_name, line_number)
     {
     }
   };
@@ -64,8 +67,8 @@ namespace etl
   {
   public:
 
-    flat_multimap_full()
-      : flat_multimap_exception("flat_multimap: full")
+    flat_multimap_full(string_type file_name, numeric_type line_number)
+      : flat_multimap_exception(ETL_ERROR_TEXT("flat_multimap:full", ETL_FILE"A"), file_name, line_number)
     {
     }
   };
@@ -78,8 +81,8 @@ namespace etl
   {
   public:
 
-    flat_multimap_out_of_bounds()
-      : flat_multimap_exception("flat_multimap: out of bounds")
+    flat_multimap_out_of_bounds(string_type file_name, numeric_type line_number)
+      : flat_multimap_exception(ETL_ERROR_TEXT("flat_multimap:bounds", ETL_FILE"B"), file_name, line_number)
     {
     }
   };
@@ -92,8 +95,8 @@ namespace etl
   {
   public:
 
-    flat_multimap_iterator()
-      : flat_multimap_exception("flat_multimap: iterator error")
+    flat_multimap_iterator(string_type file_name, numeric_type line_number)
+      : flat_multimap_exception(ETL_ERROR_TEXT("flat_multimap:iterator", ETL_FILE"C"), file_name, line_number)
     {
     }
   };

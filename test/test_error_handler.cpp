@@ -26,6 +26,9 @@ SOFTWARE.
 ******************************************************************************/
 
 #include <UnitTest++/UnitTest++.h>
+#include <Windows.h>
+#include <sstream>
+#include <string>
 
 #include "../error_handler.h"
 #include "../exception.h"
@@ -39,8 +42,8 @@ class test_exception : public etl::exception
 {
 public:
 
-  test_exception()
-    : exception("test_exception")
+  test_exception(string_type file_name, numeric_type line_number)
+    : exception(ETL_ERROR_TEXT("test_exception", "123"), file_name, line_number)
   {
     error_received = false;
   }
@@ -49,9 +52,19 @@ public:
 //*****************************************************************************
 // A free error handler function.
 //*****************************************************************************
-void receive_error(const etl::exception&)
+void receive_error(const etl::exception& e)
 {
   error_received = true;
+  std::ostringstream oss;
+  oss << "Error '" << e.what() << "' in " << e.file_name() << " at line " << e.line_number() << "\n";
+
+  std::string stext = oss.str();
+
+  WCHAR text[200];
+  MultiByteToWideChar(0, 0, stext.c_str(), stext.size() + 1, text, 200);
+  LPCWSTR ltext = text;
+
+  OutputDebugString(ltext);
 }
 
 //*****************************************************************************
@@ -62,9 +75,19 @@ public:
   //***************************************************************************
   // A member error handler function.
   //***************************************************************************
-  void receive_error(const etl::exception&)
+  void receive_error(const etl::exception& e)
   {
     error_received = true;
+    std::ostringstream oss;
+    oss << "Error '" << e.what() << "' in " << e.file_name() << " at line " << e.line_number() << "\n";
+
+    std::string stext = oss.str();
+
+    WCHAR text[200];
+    MultiByteToWideChar(0, 0, stext.c_str(), stext.size() + 1, text, 200);
+    LPCWSTR ltext = text;
+
+    OutputDebugString(ltext);
   }
 };
 
@@ -82,7 +105,7 @@ namespace
       etl::error_handler::set_callback(error_callback);
 
       // Log an error.
-      etl::error_handler::error(test_exception());
+      etl::error_handler::error(ETL_ERROR(test_exception));
 
       CHECK(error_received);
     }
@@ -100,7 +123,7 @@ namespace
       etl::error_handler::set_callback(error_callback);
 
       // Log an error.
-      etl::error_handler::error(test_exception());
+      etl::error_handler::error(ETL_ERROR(test_exception));
 
       CHECK(error_received);
     }

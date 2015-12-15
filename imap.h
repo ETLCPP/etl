@@ -524,16 +524,7 @@ namespace etl
     {
       iterator i_element = find(key);
 
-      if (!i_element.p_node)
-      {
-        // Doesn't exist.
-#if ETL_THROW_EXCEPTIONS
-        throw map_out_of_bounds();
-#else
-        error_handler::error(map_out_of_bounds());
-
-#endif
-      }
+      ETL_ASSERT(i_element.p_node != nullptr, ETL_ERROR(map_out_of_bounds));
 
       return i_element->second;
     }
@@ -548,16 +539,7 @@ namespace etl
     {
       const_iterator i_element = find(key);
 
-      if (!i_element.p_node)
-      {
-        // Doesn't exist.
-#if ETL_THROW_EXCEPTIONS
-        throw map_out_of_bounds();
-#else
-        error_handler::error(map_out_of_bounds());
-
-#endif
-      }
+      ETL_ASSERT(i_element.p_node != nullptr, ETL_ERROR(map_out_of_bounds));
 
       return i_element->second;
     }
@@ -708,7 +690,7 @@ namespace etl
       Node* inserted_node = nullptr;
       bool inserted = false;
 
-      if (ETL_ASSERT(!full(), map_full()))
+      if (ETL_ASSERT(!full(), ETL_ERROR(map_full)))
       {
         // Get next available free node
         Data_Node& node = allocate_data_node(value);
@@ -733,7 +715,7 @@ namespace etl
       // Default to no inserted node
       Node* inserted_node = nullptr;
 
-      if (ETL_ASSERT(!full(), map_full()))
+      if (ETL_ASSERT(!full(), ETL_ERROR(map_full)))
       {
         // Get next available free node
         Data_Node& node = allocate_data_node(value);
@@ -757,7 +739,7 @@ namespace etl
       // Default to no inserted node
       Node* inserted_node = nullptr;
 
-      if (ETL_ASSERT(!full(), map_full()))
+      if (ETL_ASSERT(!full(), ETL_ERROR(map_full)))
       {
         // Get next available free node
         Data_Node& node = allocate_data_node(value);

@@ -37,15 +37,21 @@ namespace
     //*************************************************************************
     TEST(test_constructor)
     {
-      etl::exception e("An exception");
+      etl::exception e("An exception", "Some file", 123);
+
+      std::string what(e.what());
+      std::string file(e.file_name());
+      int line(e.line_number());
 
       CHECK_EQUAL(std::string("An exception"), std::string(e.what()));
+      CHECK_EQUAL(std::string("Some file"), std::string(e.file_name()));
+      CHECK_EQUAL(123, e.line_number());
     }
 
     //*************************************************************************
     TEST(test_exception)
     {
-      etl::exception e("An exception");
+      etl::exception e("An exception", "Some file", 123);
 
       try
       {
@@ -53,7 +59,13 @@ namespace
       }
       catch (etl::exception& c)
       {
+        std::string what(c.what());
+        std::string file(c.file_name());
+        int line(c.line_number());
+
         CHECK_EQUAL(std::string("An exception"), std::string(c.what()));
+        CHECK_EQUAL(std::string("Some file"), std::string(c.file_name()));
+        CHECK_EQUAL(123, c.line_number());
       }     
     }
   };

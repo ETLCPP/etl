@@ -34,9 +34,13 @@ SOFTWARE.
 #include <utility>
 
 #include "exception.h"
+#include "error_handler.h"
 
 ///\defgroup ihash Common data for all hash type classes.
 ///\ingroup hash
+
+#undef ETL_FILE
+#define ETL_FILE "19"
 
 namespace etl
 {
@@ -48,8 +52,8 @@ namespace etl
   {
   public:
 
-    hash_exception(const char* what)
-      : exception(what)
+    hash_exception(string_type what, string_type file_name, numeric_type line_number)
+      : exception(what, file_name, line_number)
     {}
   };
 
@@ -61,13 +65,15 @@ namespace etl
   {
   public:
 
-    hash_finalised()
-      : hash_exception("ihash: finalised")
+    hash_finalised(string_type file_name, numeric_type line_number)
+      : hash_exception(ETL_ERROR_TEXT("ihash:finalised", ETL_FILE"A"), file_name, line_number)
     {}
   };
 
   /// For the Americans
   typedef hash_finalised hash_finalized;
 }
+
+#undef ETL_FILE
 
 #endif

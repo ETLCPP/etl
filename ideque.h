@@ -491,7 +491,7 @@ namespace etl
     //*************************************************************************
     void assign(size_type n, const value_type& value)
     {
-      if (ETL_ASSERT(n <= MAX_SIZE, deque_full()))
+      if (ETL_ASSERT(n <= MAX_SIZE, ETL_ERROR(deque_full)))
       {
         initialise();
 
@@ -513,7 +513,7 @@ namespace etl
     //*************************************************************************
     reference at(size_t index)
     {
-      ETL_ASSERT(index < current_size, deque_out_of_bounds());
+      ETL_ASSERT(index < current_size, ETL_ERROR(deque_out_of_bounds));
       
       iterator result(_begin);
       result += index;
@@ -528,7 +528,7 @@ namespace etl
     //*************************************************************************
     const_reference at(size_t index) const
     {
-      ETL_ASSERT(index < current_size, deque_out_of_bounds());
+      ETL_ASSERT(index < current_size, ETL_ERROR(deque_out_of_bounds));
 
       iterator result(_begin);
       result += index;
@@ -710,7 +710,7 @@ namespace etl
     {
       iterator position(insert_position.index, *this, p_buffer);
 
-      if (ETL_ASSERT(!full(), deque_full()))
+      if (ETL_ASSERT(!full(), ETL_ERROR(deque_full)))
       {
         if (insert_position == begin())
         {
@@ -764,7 +764,7 @@ namespace etl
     {
       iterator position;
 
-      if (ETL_ASSERT((current_size + n) <= MAX_SIZE, deque_full()))
+      if (ETL_ASSERT((current_size + n) <= MAX_SIZE, ETL_ERROR(deque_full)))
       {
         if (insert_position == begin())
         {
@@ -878,7 +878,7 @@ namespace etl
 
       difference_type n = std::distance(range_begin, range_end);
 
-      if (ETL_ASSERT((current_size + n) <= MAX_SIZE, deque_full()))
+      if (ETL_ASSERT((current_size + n) <= MAX_SIZE, ETL_ERROR(deque_full)))
       {
         if (insert_position == begin())
         {
@@ -980,7 +980,7 @@ namespace etl
     {
       iterator position(erase_position.index, *this, p_buffer);
 
-      if (ETL_ASSERT(distance(position) <= difference_type(current_size), deque_out_of_bounds()))
+      if (ETL_ASSERT(distance(position) <= difference_type(current_size), ETL_ERROR(deque_out_of_bounds)))
       {
         if (position == _begin)
         {
@@ -1022,7 +1022,7 @@ namespace etl
     {
       iterator position(range_begin.index, *this, p_buffer);
 
-      if (ETL_ASSERT((distance(range_begin) <= difference_type(current_size)) && (distance(range_end) <= difference_type(current_size)), deque_out_of_bounds()))
+      if (ETL_ASSERT((distance(range_begin) <= difference_type(current_size)) && (distance(range_end) <= difference_type(current_size)), ETL_ERROR(deque_out_of_bounds)))
       {
         // How many to erase?
         size_t length = std::distance(range_begin, range_end);
@@ -1087,7 +1087,7 @@ namespace etl
     //*************************************************************************
     void push_back(parameter_t item)
     {
-      if (ETL_ASSERT(!full(), deque_full()))
+      if (ETL_ASSERT(!full(), ETL_ERROR(deque_full)))
       {
         create_element_back(item);
       } 
@@ -1102,7 +1102,7 @@ namespace etl
     {
       reference r = *_end;
 
-      if (ETL_ASSERT(!full(), deque_full()))
+      if (ETL_ASSERT(!full(), ETL_ERROR(deque_full)))
       {
         create_element_back();
       }
@@ -1128,7 +1128,7 @@ namespace etl
     //*************************************************************************
     void push_front(parameter_t item)
     {
-      if (ETL_ASSERT(!full(), deque_full()))
+      if (ETL_ASSERT(!full(), ETL_ERROR(deque_full)))
       {
         create_element_front(item);
       }
@@ -1141,7 +1141,7 @@ namespace etl
     //*************************************************************************
     reference push_front()
     {
-      if (ETL_ASSERT(!full(), deque_full()))
+      if (ETL_ASSERT(!full(), ETL_ERROR(deque_full)))
       {
         create_element_front();
       }
@@ -1168,7 +1168,7 @@ namespace etl
     //*************************************************************************
     void resize(size_t new_size, const value_type& value = value_type())
     {
-      if (ETL_ASSERT(new_size <= MAX_SIZE, deque_out_of_bounds()))
+      if (ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(deque_out_of_bounds)))
       {
         // Make it smaller?
         if (new_size < current_size)

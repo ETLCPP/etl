@@ -363,7 +363,7 @@ namespace etl
     {
 #ifdef _DEBUG
       difference_type count = std::distance(first, last);
-      ETL_ASSERT(count >= 0, forward_list_iterator());
+      ETL_ASSERT(count >= 0, ETL_ERROR(forward_list_iterator));
 #endif
 
       initialise();
@@ -373,7 +373,7 @@ namespace etl
       // Add all of the elements.
       while (first != last)
       {
-        if (ETL_ASSERT(!full(), forward_list_iterator()))
+        if (ETL_ASSERT(!full(), ETL_ERROR(forward_list_iterator)))
         {
           Data_Node& data_node = allocate_data_node(*first++);
           join(p_last_node, &data_node);
@@ -389,7 +389,7 @@ namespace etl
     //*************************************************************************
     void assign(size_t n, parameter_t value)
     {
-      if (ETL_ASSERT(n <= MAX_SIZE, forward_list_full()))
+      if (ETL_ASSERT(n <= MAX_SIZE, ETL_ERROR(forward_list_full)))
       {
         initialise();
 
@@ -412,7 +412,7 @@ namespace etl
     //*************************************************************************
     void push_front()
     {
-      if (ETL_ASSERT(!full(), forward_list_full()))
+      if (ETL_ASSERT(!full(), ETL_ERROR(forward_list_full)))
       {
         Data_Node& data_node = allocate_data_node(T());
         insert_node_after(start_node, data_node);
@@ -424,7 +424,7 @@ namespace etl
     //*************************************************************************
     void push_front(parameter_t value)
     {
-      if (ETL_ASSERT(!full(), forward_list_full()))
+      if (ETL_ASSERT(!full(), ETL_ERROR(forward_list_full)))
       {
         Data_Node& data_node = allocate_data_node(value);
         insert_node_after(start_node, data_node);
@@ -457,7 +457,7 @@ namespace etl
     //*************************************************************************
     void resize(size_t n, T value)
     {
-      if (ETL_ASSERT(n <= MAX_SIZE, forward_list_full()))
+      if (ETL_ASSERT(n <= MAX_SIZE, ETL_ERROR(forward_list_full)))
       {
         size_t i = 0;
         iterator i_node = begin();
@@ -493,7 +493,7 @@ namespace etl
     //*************************************************************************
     iterator insert_after(iterator position, parameter_t value)
     {
-      if (ETL_ASSERT(!full(), forward_list_full()))
+      if (ETL_ASSERT(!full(), ETL_ERROR(forward_list_full)))
       {
         Data_Node& data_node = allocate_data_node(value);
         insert_node_after(*position.p_node, data_node);
@@ -507,7 +507,7 @@ namespace etl
     //*************************************************************************
     void insert_after(iterator position, size_t n, parameter_t value)
     {
-      if (ETL_ASSERT(!full(), forward_list_full()))
+      if (ETL_ASSERT(!full(), ETL_ERROR(forward_list_full)))
       {
         for (size_t i = 0; !full() && (i < n); ++i)
         {
@@ -526,7 +526,7 @@ namespace etl
     {
 #ifdef _DEBUG
       difference_type count = std::distance(first, last);
-      ETL_ASSERT((count + current_size) <= MAX_SIZE, forward_list_full());
+      ETL_ASSERT((count + current_size) <= MAX_SIZE, ETL_ERROR(forward_list_full));
 #endif
 
       while (first != last)

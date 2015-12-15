@@ -36,6 +36,10 @@ SOFTWARE.
 
 #include <stddef.h>
 #include "../exception.h"
+#include "../error_handler.h"
+
+#undef ETL_FILE
+#define ETL_FILE "7"
 
 namespace etl
 {
@@ -47,8 +51,8 @@ namespace etl
   {
   public:
 
-    list_exception(const char* what)
-      : exception(what)
+    list_exception(string_type what, string_type file_name, numeric_type line_number)
+      : exception(what, file_name, line_number)
     {
     }
   };
@@ -61,8 +65,8 @@ namespace etl
   {
   public:
 
-    list_full()
-      : list_exception("list: full")
+    list_full(string_type file_name, numeric_type line_number)
+      : list_exception(ETL_ERROR_TEXT("list:full", ETL_FILE"A"), file_name, line_number)
     {
     }
   };
@@ -75,8 +79,8 @@ namespace etl
   {
   public:
 
-    list_iterator()
-      : list_exception("list: iterator problem")
+    list_iterator(string_type file_name, numeric_type line_number)
+      : list_exception(ETL_ERROR_TEXT("list:iterator", ETL_FILE"B"), file_name, line_number)
     {
     }
   };
@@ -260,5 +264,7 @@ namespace etl
     const size_type MAX_SIZE;      ///< The maximum size of the list.
   };
 }
+
+#undef ETL_FILE
 
 #endif

@@ -85,7 +85,7 @@ namespace etl
     //*************************************************************************
     void push(parameter_t value)
     {
-      if (ETL_ASSERT(!full(), stack_full()))
+      if (ETL_ASSERT(!full(), ETL_ERROR(stack_full)))
       {
         top_index = current_size++;
         new(&p_buffer[top_index]) T(value);
@@ -101,7 +101,7 @@ namespace etl
     //*************************************************************************
     reference push()
     {
-      if (ETL_ASSERT(!full(), stack_full()))
+      if (ETL_ASSERT(!full(), ETL_ERROR(stack_full)))
       {
         top_index = current_size++;
         new(&p_buffer[top_index]) T();

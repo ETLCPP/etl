@@ -655,7 +655,7 @@ namespace etl
       // Default to no inserted node
       Node* inserted_node = nullptr;
 
-      if (ETL_ASSERT(!full(), multimap_full()))
+      if (ETL_ASSERT(!full(), ETL_ERROR(multimap_full)))
       {
         // Get next available free node
         Data_Node& node = allocate_data_node(value);

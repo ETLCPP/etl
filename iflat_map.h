@@ -240,7 +240,7 @@ namespace etl
     {
       iterator i_element = lower_bound(key);
 
-      ETL_ASSERT(i_element != end(), flat_map_out_of_bounds());
+      ETL_ASSERT(i_element != end(), ETL_ERROR(flat_map_out_of_bounds));
 
       return i_element->second;
     }
@@ -255,7 +255,7 @@ namespace etl
     {
       typename buffer_t::const_iterator i_element = lower_bound(key);
 
-      ETL_ASSERT(i_element != end(), flat_map_out_of_bounds());
+      ETL_ASSERT(i_element != end(), ETL_ERROR(flat_map_out_of_bounds));
 
       return i_element->second;
     }
@@ -273,8 +273,8 @@ namespace etl
 #ifdef _DEBUG
       difference_type count = std::distance(first, last);
 
-      ETL_ASSERT(count >= 0, flat_map_iterator());
-      ETL_ASSERT(count <= difference_type(capacity()), flat_map_full());
+      ETL_ASSERT(count >= 0, ETL_ERROR(flat_map_iterator));
+      ETL_ASSERT(count <= difference_type(capacity()), ETL_ERROR(flat_map_full));
 #endif
 
       clear();
@@ -299,7 +299,7 @@ namespace etl
       if (i_element == end())
       {
         // At the end.
-        if (ETL_ASSERT(!buffer.full(), flat_map_full()))
+        if (ETL_ASSERT(!buffer.full(), ETL_ERROR(flat_map_full)))
         {
           buffer.push_back(value);
           result.first  = end() - 1;
@@ -320,7 +320,7 @@ namespace etl
         else
         {
           // A new one.
-          if (ETL_ASSERT(!buffer.full(), flat_map_full()))
+          if (ETL_ASSERT(!buffer.full(), ETL_ERROR(flat_map_full)))
           {
             buffer.insert(i_element, value);
             result.first  = i_element;

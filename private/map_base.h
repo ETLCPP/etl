@@ -36,6 +36,10 @@ SOFTWARE.
 
 #include <stddef.h>
 #include "../exception.h"
+#include "../error_handler.h"
+
+#undef ETL_FILE
+#define ETL_FILE "8"
 
 namespace etl
 {
@@ -47,8 +51,8 @@ namespace etl
   {
   public:
 
-    map_exception(const char* what)
-      : exception(what)
+    map_exception(string_type what, string_type file_name, numeric_type line_number)
+      : exception(what, file_name, line_number)
     {
     }
   };
@@ -61,8 +65,8 @@ namespace etl
   {
   public:
 
-    map_full()
-      : map_exception("map: full")
+    map_full(string_type file_name, numeric_type line_number)
+      : map_exception("map:full", file_name, line_number)
     {
     }
   };
@@ -75,8 +79,8 @@ namespace etl
   {
   public:
 
-    map_out_of_bounds()
-      : map_exception("map: out of bounds")
+    map_out_of_bounds(string_type file_name, numeric_type line_number)
+      : map_exception("map:bounds", file_name, line_number)
     {
     }
   };
@@ -89,8 +93,8 @@ namespace etl
   {
   public:
 
-    map_iterator()
-      : map_exception("map: iterator problem")
+    map_iterator(string_type file_name, numeric_type line_number)
+      : map_exception("map:iterator", file_name, line_number)
     {
     }
   };
@@ -416,5 +420,7 @@ namespace etl
     Node* root_node;          ///< The node that acts as the map root.
   };
 }
+
+#undef ETL_FILE
 
 #endif
