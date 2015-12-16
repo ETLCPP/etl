@@ -1,5 +1,3 @@
-
-
 #include "algorithm.h"
 #include "alignment.h"
 #include "array.h"
