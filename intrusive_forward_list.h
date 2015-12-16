@@ -5,6 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
+http://www.etlcpp.com
 
 Copyright(c) 2015 jwellbelove
 
@@ -53,8 +54,8 @@ namespace etl
   {
   public:
 
-    intrusive_forward_list_exception(const char* what)
-      : exception(what)
+    intrusive_forward_list_exception(string_type what, string_type file_name, numeric_type line_number)
+      : exception(what, file_name, line_number)
     {
     }
   };
@@ -67,8 +68,8 @@ namespace etl
   {
   public:
 
-    intrusive_forward_list_iterator_exception()
-      : intrusive_forward_list_exception("intrusive_forward_list: iterator problem")
+    intrusive_forward_list_iterator_exception(string_type file_name, numeric_type line_number)
+      : intrusive_forward_list_exception("intrusive_forward_list: iterator", file_name, line_number)
     {
     }
   };
@@ -81,8 +82,8 @@ namespace etl
   {
   public:
 
-    intrusive_forward_list_index_exception()
-      : intrusive_forward_list_exception("intrusive_forward_list: index out of bounds")
+    intrusive_forward_list_index_exception(string_type file_name, numeric_type line_number)
+      : intrusive_forward_list_exception("intrusive_forward_list:bounds", file_name, line_number)
     {
     }
   };
@@ -408,7 +409,7 @@ namespace etl
     {
 #ifdef _DEBUG
       difference_type count = std::distance(first, last);
-      ETL_ASSERT(count >= 0, intrusive_forward_list_iterator_exception());
+      ETL_ASSERT(count >= 0, ETL_ERROR(intrusive_forward_list_iterator_exception));
 #endif
 
       initialise();

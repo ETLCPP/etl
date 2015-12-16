@@ -5,6 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
+http://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -452,8 +453,8 @@ namespace etl
     {      
 #ifdef _DEBUG
       difference_type count = std::distance(first, last);
-      ETL_ASSERT(count >= 0, list_iterator());
-      ETL_ASSERT(size_t(count) <= MAX_SIZE, list_full());
+      ETL_ASSERT(count >= 0, ETL_ERROR(list_iterator));
+      ETL_ASSERT(size_t(count) <= MAX_SIZE, ETL_ERROR(list_full));
 #endif
       initialise();
 
@@ -474,7 +475,7 @@ namespace etl
     void assign(size_t n, parameter_t value)
     {
 #ifdef _DEBUG
-      ETL_ASSERT(n <= MAX_SIZE, list_full());
+      ETL_ASSERT(n <= MAX_SIZE, ETL_ERROR(list_full));
 #endif
 
       initialise();
@@ -494,7 +495,7 @@ namespace etl
     //*************************************************************************
     void push_front()
     {
-      if (ETL_ASSERT(!full(), list_full()))
+      if (ETL_ASSERT(!full(), ETL_ERROR(list_full)))
       {
         Data_Node& data_node = allocate_data_node(T());
         insert_node(get_head(), data_node);
@@ -506,7 +507,7 @@ namespace etl
     //*************************************************************************
     void push_front(parameter_t value)
     {
-      if (ETL_ASSERT(!full(), list_full()))
+      if (ETL_ASSERT(!full(), ETL_ERROR(list_full)))
       {
         Node& data_node = allocate_data_node(value);
         insert_node(get_head(), data_node);
@@ -530,7 +531,7 @@ namespace etl
     //*************************************************************************
     void push_back()
     {
-      if (ETL_ASSERT(!full(), list_full()))
+      if (ETL_ASSERT(!full(), ETL_ERROR(list_full)))
       {
         Data_Node& data_node = allocate_data_node(T());
         insert_node(terminal_node, data_node);
@@ -542,7 +543,7 @@ namespace etl
     //*************************************************************************
     void push_back(parameter_t value)
     {
-      if (ETL_ASSERT(!full(), list_full()))
+      if (ETL_ASSERT(!full(), ETL_ERROR(list_full)))
       {
         Data_Node& data_node = allocate_data_node(value);
         insert_node(terminal_node, data_node);
@@ -566,7 +567,7 @@ namespace etl
     //*************************************************************************
     iterator insert(iterator position, const value_type& value)
     {
-      if (ETL_ASSERT(!full(), list_full()))
+      if (ETL_ASSERT(!full(), ETL_ERROR(list_full)))
       {
         Data_Node& data_node = allocate_data_node(value);
         insert_node(*position.p_node, data_node);
@@ -582,7 +583,7 @@ namespace etl
     {
       for (size_t i = 0; i < n; ++i)
       {
-        if (ETL_ASSERT(!full(), list_full()))
+        if (ETL_ASSERT(!full(), ETL_ERROR(list_full)))
         {
           // Set up the next free node and insert.
           Data_Node& data_node = allocate_data_node(value);
@@ -599,7 +600,7 @@ namespace etl
     {
       while (first != last)
       {
-        if (ETL_ASSERT(!full(), list_full()))
+        if (ETL_ASSERT(!full(), ETL_ERROR(list_full)))
         {
           // Set up the next free node and insert.
           Data_Node& data_node = allocate_data_node(*first++);
@@ -660,7 +661,7 @@ namespace etl
     //*************************************************************************
     void resize(size_t n, parameter_t value)
     {
-      if (ETL_ASSERT(n <= MAX_SIZE, list_full()))
+      if (ETL_ASSERT(n <= MAX_SIZE, ETL_ERROR(list_full)))
       {
         // Smaller?
         if (n < size())

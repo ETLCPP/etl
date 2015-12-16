@@ -5,6 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
+http://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -36,6 +37,10 @@ SOFTWARE.
 
 #include <stddef.h>
 #include "../exception.h"
+#include "../error_handler.h"
+
+#undef ETL_FILE
+#define ETL_FILE "6"
 
 namespace etl
 {
@@ -47,8 +52,8 @@ namespace etl
   {
   public:
 
-    forward_list_exception(const char* what)
-      : exception(what)
+    forward_list_exception(string_type what, string_type file_name, numeric_type line_number)
+      : exception(what, file_name, line_number)
     {
     }
   };
@@ -61,8 +66,8 @@ namespace etl
   {
   public:
 
-    forward_list_full()
-      : forward_list_exception("forward list: full")
+    forward_list_full(string_type file_name, numeric_type line_number)
+      : forward_list_exception(ETL_ERROR_TEXT("forward_list:full", ETL_FILE"A"), file_name, line_number)
     {
     }
   };
@@ -75,8 +80,8 @@ namespace etl
   {
   public:
 
-    forward_list_iterator()
-      : forward_list_exception("forward_list: iterator problem")
+    forward_list_iterator(string_type file_name, numeric_type line_number)
+      : forward_list_exception(ETL_ERROR_TEXT("forward_list:iterator", ETL_FILE"B"), file_name, line_number)
     {
     }
   };
@@ -239,5 +244,7 @@ namespace etl
     const size_type MAX_SIZE; ///< The maximum size of the forward_list.
   };
 }
+
+#undef ETL_FILE
 
 #endif

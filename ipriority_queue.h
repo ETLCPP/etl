@@ -5,6 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
+http://www.etlcpp.com
 
 Copyright(c) 2015 jwellbelove, rlindeman
 
@@ -101,7 +102,7 @@ namespace etl
     //*************************************************************************
     void push(parameter_t value)
     {
-      if (ETL_ASSERT(!full(), priority_queue_full()))
+      if (ETL_ASSERT(!full(), ETL_ERROR(priority_queue_full)))
       {
         // Put element at end
         container.push_back(value);
@@ -135,8 +136,8 @@ namespace etl
     {
 #ifdef _DEBUG
       difference_type count = std::distance(first, last);
-      ETL_ASSERT(count >= 0, priority_queue_iterator());
-      ETL_ASSERT(static_cast<size_t>(count) <= MAX_SIZE, priority_queue_full());
+      ETL_ASSERT(count >= 0, ETL_ERROR(priority_queue_iterator));
+      ETL_ASSERT(static_cast<size_t>(count) <= MAX_SIZE, ETL_ERROR(priority_queue_full));
 #endif
 
       clear();

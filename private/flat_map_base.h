@@ -5,6 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
+http://www.etlcpp.com
 
 Copyright(c) 2015 jwellbelove
 
@@ -40,6 +41,9 @@ SOFTWARE.
 #include "../ivector.h"
 #include "../error_handler.h"
 
+#undef ETL_FILE
+#define ETL_FILE "2"
+
 namespace etl
 {
   //***************************************************************************
@@ -50,8 +54,8 @@ namespace etl
   {
   public:
 
-    flat_map_exception(const char* what)
-      : exception(what)
+    flat_map_exception(string_type what, string_type file_name, numeric_type line_number)
+      : exception(what, file_name, line_number)
     {
     }
   };
@@ -64,8 +68,8 @@ namespace etl
   {
   public:
 
-    flat_map_full()
-      : flat_map_exception("flat_map: full")
+    flat_map_full(string_type file_name, numeric_type line_number)
+      : flat_map_exception(ETL_ERROR_TEXT("flat_map: full", ETL_FILE"A"), file_name, line_number)
     {
     }
   };
@@ -78,8 +82,8 @@ namespace etl
   {
   public:
 
-    flat_map_out_of_bounds()
-      : flat_map_exception("flat_map: out of bounds")
+    flat_map_out_of_bounds(string_type file_name, numeric_type line_number)
+      : flat_map_exception(ETL_ERROR_TEXT("flat_map:bounds", ETL_FILE"B"), file_name, line_number)
     {
     }
   };
@@ -92,8 +96,8 @@ namespace etl
   {
   public:
 
-    flat_map_iterator()
-      : flat_map_exception("flat_map: iterator error")
+    flat_map_iterator(string_type file_name, numeric_type line_number)
+      : flat_map_exception(ETL_ERROR_TEXT("flat_map:iterator", ETL_FILE"C"), file_name, line_number)
     {
     }
   };
@@ -175,5 +179,7 @@ namespace etl
     vector_base& vbase;
   };
 }
+
+#undef ETL_FILE
 
 #endif

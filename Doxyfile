@@ -34,6 +34,7 @@ DOXYFILE_ENCODING      = UTF-8
 
 PROJECT_NAME           = "Embedded Template Library.
 https://github.com/ETLCPP/etl
+http://www.etlcpp.com
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. This
 # could be handy for archiving the generated documentation or if some version

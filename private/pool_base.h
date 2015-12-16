@@ -5,6 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
+http://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -38,6 +39,10 @@ SOFTWARE.
 
 #include "../exception.h"
 #include "../error_handler.h"
+#include "../error_handler.h"
+
+#undef ETL_FILE
+#define ETL_FILE "11"
 
 namespace etl
 {
@@ -49,8 +54,8 @@ namespace etl
   {
   public:
 
-    pool_exception(const char* what)
-      : exception(what)
+    pool_exception(string_type what, string_type file_name, numeric_type line_number)
+      : exception(what, file_name, line_number)
     {}
   };
 
@@ -62,8 +67,8 @@ namespace etl
   {
   public:
 
-    pool_no_allocation()
-      : pool_exception("pool: no allocation")
+    explicit pool_no_allocation(string_type file_name, numeric_type line_number)
+      : pool_exception(ETL_ERROR_TEXT("pool:allocation", ETL_FILE"A"), file_name, line_number)
     {}
   };
 
@@ -75,8 +80,8 @@ namespace etl
   {
   public:
 
-    pool_object_not_in_pool()
-      : pool_exception("pool: not in pool")
+    pool_object_not_in_pool(string_type file_name, numeric_type line_number)
+      : pool_exception(ETL_ERROR_TEXT("pool:notinpool", ETL_FILE"B"), file_name, line_number)
     {}
   };
   
@@ -122,5 +127,8 @@ namespace etl
     const size_t MAX_SIZE;        ///< The maximum number of objects that can be allocated.
   };
 }
+
+#undef ETL_FILE
+
 #endif
 

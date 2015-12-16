@@ -5,6 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
+http://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -192,7 +193,7 @@ namespace etl
     //*********************************************************************
     void resize(size_t new_size)
     {
-      if (ETL_ASSERT(new_size <= MAX_SIZE, vector_full()))
+      if (ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(vector_full)))
       {
         // Size up or size down?
         if (new_size > current_size)
@@ -224,7 +225,7 @@ namespace etl
     //*********************************************************************
     void resize(size_t new_size, T value)
     {
-      if (ETL_ASSERT(new_size <= MAX_SIZE, vector_full()))
+      if (ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(vector_full)))
       {
         // Size up?
         if (new_size > current_size)
@@ -273,7 +274,7 @@ namespace etl
     //*********************************************************************
     reference at(size_t i)
     {
-      ETL_ASSERT(i < current_size, vector_out_of_bounds());
+      ETL_ASSERT(i < current_size, ETL_ERROR(vector_out_of_bounds));
       return p_buffer[i];
     }
 
@@ -285,7 +286,7 @@ namespace etl
     //*********************************************************************
     const_reference at(size_t i) const
     {
-      ETL_ASSERT(i < current_size, vector_out_of_bounds());
+      ETL_ASSERT(i < current_size, ETL_ERROR(vector_out_of_bounds));
       return p_buffer[i];
     }
 
@@ -355,8 +356,8 @@ namespace etl
     {
 #ifdef _DEBUG
       difference_type count = std::distance(first, last);
-      ETL_ASSERT(count >= 0, vector_iterator());
-      ETL_ASSERT(static_cast<size_t>(count) <= MAX_SIZE, vector_full());
+      ETL_ASSERT(count >= 0, ETL_ERROR(vector_iterator));
+      ETL_ASSERT(static_cast<size_t>(count) <= MAX_SIZE, ETL_ERROR(vector_full));
 #endif
 
       initialise();
@@ -379,7 +380,7 @@ namespace etl
     {
       initialise();
 
-      if (ETL_ASSERT(n <= MAX_SIZE, vector_full()))
+      if (ETL_ASSERT(n <= MAX_SIZE, ETL_ERROR(vector_full)))
       {
         while (n > 0)
         {
@@ -403,7 +404,7 @@ namespace etl
     //*************************************************************************
     void push_back()
     {
-      if (ETL_ASSERT(current_size != MAX_SIZE, vector_full()))
+      if (ETL_ASSERT(current_size != MAX_SIZE, ETL_ERROR(vector_full)))
       {
         create_element();
       }
@@ -416,7 +417,7 @@ namespace etl
     //*********************************************************************
     void push_back(parameter_t value)
     {
-      if (ETL_ASSERT(current_size != MAX_SIZE, vector_full()))
+      if (ETL_ASSERT(current_size != MAX_SIZE, ETL_ERROR(vector_full)))
       {
         create_element(value);
       }
@@ -442,7 +443,7 @@ namespace etl
     //*********************************************************************
     iterator insert(iterator position, parameter_t value)
     {
-      if (ETL_ASSERT((current_size) + 1 <= MAX_SIZE, vector_full()))
+      if (ETL_ASSERT((current_size) + 1 <= MAX_SIZE, ETL_ERROR(vector_full)))
       {
         create_element(value);
 
@@ -465,7 +466,7 @@ namespace etl
     //*********************************************************************
     void insert(iterator position, size_t n, parameter_t value)
     {
-      if (ETL_ASSERT((current_size) + 1 <= MAX_SIZE, vector_full()))
+      if (ETL_ASSERT((current_size) + 1 <= MAX_SIZE, ETL_ERROR(vector_full)))
       {
         if (position == end())
         {
@@ -528,7 +529,7 @@ namespace etl
     {
       size_t count = std::distance(first, last);
 
-      if (ETL_ASSERT((current_size) + count <= MAX_SIZE, vector_full()))
+      if (ETL_ASSERT((current_size) + count <= MAX_SIZE, ETL_ERROR(vector_full)))
       {
         if (position == end())
         {

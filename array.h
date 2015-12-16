@@ -5,6 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
+http://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -55,8 +56,8 @@ namespace etl
   {
   public:
 
-    array_exception(const char* what)
-      : exception(what)
+    array_exception(string_type what, string_type file_name, numeric_type line_number)
+      : exception(what, file_name, line_number)
     {
     }
   };
@@ -69,8 +70,8 @@ namespace etl
   {
   public:
 
-    array_out_of_range()
-      : array_exception("array: out of range")
+    array_out_of_range(string_type file_name, numeric_type line_number)
+      : array_exception("array:range", file_name, line_number)
     {
     }
   };
@@ -115,7 +116,7 @@ namespace etl
     //*************************************************************************
     reference at(size_t i)
     {
-      ETL_ASSERT(i < SIZE, array_out_of_range());
+      ETL_ASSERT(i < SIZE, ETL_ERROR(array_out_of_range));
 
       return _buffer[i];
     }
@@ -126,7 +127,7 @@ namespace etl
     //*************************************************************************
     const_reference at(size_t i) const
     {
-      ETL_ASSERT(i < SIZE, array_out_of_range());
+      ETL_ASSERT(i < SIZE, ETL_ERROR(array_out_of_range));
 
       return _buffer[i];
     }

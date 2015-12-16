@@ -5,6 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
+http://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -55,6 +56,9 @@ SOFTWARE.
 #include "exception.h"
 #include "error_handler.h"
 
+#undef ETL_FILE
+#define ETL_FILE "18"
+
 namespace etl
 {
   //***************************************************************************
@@ -65,8 +69,8 @@ namespace etl
   {
   public:
 
-    observer_exception(const char* what)
-      : exception(what)
+    observer_exception(string_type what, string_type file_name, numeric_type line_number)
+      : exception(what, file_name, line_number)
     {
     }
   };
@@ -79,8 +83,8 @@ namespace etl
   {
   public:
 
-    observer_list_full()
-      : observer_exception("observer: list full")
+    observer_list_full(string_type file_name, numeric_type line_number)
+      : observer_exception(ETL_ERROR_TEXT("observer:full", ETL_FILE"A"), file_name, line_number)
     {
     }
   };
@@ -117,7 +121,7 @@ namespace etl
       if (i_observer == observer_list.end())
       {
         // Is there enough room?
-        if (ETL_ASSERT(!observer_list.full(), etl::observer_list_full()))
+        if (ETL_ASSERT(!observer_list.full(), ETL_ERROR(etl::observer_list_full)))
         {
           // Add it.
           observer_list.push_back(&observer);
@@ -339,5 +343,7 @@ namespace etl
     virtual void notification(T1) = 0;
   };
 }
+
+#undef ETL_FILE
 
 #endif

@@ -5,6 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
+http://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove, rlindeman
 
@@ -632,7 +633,7 @@ namespace etl
       Node* inserted_node = nullptr;
       bool inserted = false;
 
-      if (ETL_ASSERT(!full(), set_full()))
+      if (ETL_ASSERT(!full(), ETL_ERROR(set_full)))
       {
         // Get next available free node
         Data_Node& node = allocate_data_node(value);
@@ -657,7 +658,7 @@ namespace etl
       // Default to no inserted node
       Node* inserted_node = nullptr;
 
-      if (ETL_ASSERT(!full(), set_full()))
+      if (ETL_ASSERT(!full(), ETL_ERROR(set_full)))
       {
         // Get next available free node
         Data_Node& node = allocate_data_node(value);
@@ -681,7 +682,7 @@ namespace etl
       // Default to no inserted node
       Node* inserted_node = nullptr;
 
-      if (ETL_ASSERT(!full(), set_full()))
+      if (ETL_ASSERT(!full(), ETL_ERROR(set_full)))
       {
         // Get next available free node
         Data_Node& node = allocate_data_node(value);

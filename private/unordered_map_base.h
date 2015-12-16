@@ -5,6 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
+http://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -36,6 +37,9 @@ SOFTWARE.
 
 #include <stddef.h>
 #include "../exception.h"
+#include "../error_handler.h"
+
+#define ETL_FILE "16"
 
 namespace etl
 {
@@ -47,8 +51,8 @@ namespace etl
   {
   public:
 
-    unordered_map_exception(const char* what)
-      : exception(what)
+    unordered_map_exception(string_type what, string_type file_name, numeric_type line_number)
+      : exception(what, file_name, line_number)
     {
     }
   };
@@ -61,8 +65,8 @@ namespace etl
   {
   public:
 
-    unordered_map_full()
-      : unordered_map_exception("unordered_map: full")
+    unordered_map_full(string_type file_name, numeric_type line_number)
+      : unordered_map_exception(ETL_ERROR_TEXT("unordered_map:full", ETL_FILE"A"), file_name, line_number)
     {
     }
   };
@@ -75,8 +79,8 @@ namespace etl
   {
   public:
 
-    unordered_map_out_of_range()
-      : unordered_map_exception("unordered_map: out of range")
+    unordered_map_out_of_range(string_type file_name, numeric_type line_number)
+      : unordered_map_exception(ETL_ERROR_TEXT("unordered_map:range", ETL_FILE"B"), file_name, line_number)
     {}
   };
 
@@ -88,8 +92,8 @@ namespace etl
   {
   public:
 
-    unordered_map_iterator()
-      : unordered_map_exception("unordered_map: iterator problem")
+    unordered_map_iterator(string_type file_name, numeric_type line_number)
+      : unordered_map_exception("unordered_map:iterator", file_name, line_number)
     {
     }
   };
@@ -160,5 +164,7 @@ namespace etl
     const size_type MAX_SIZE; ///< The maximum size of the unordered_map.
   };
 }
+
+#undef ETL_FILE
 
 #endif

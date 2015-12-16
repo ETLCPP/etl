@@ -5,6 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
+http://www.etlcpp.com
 
 Copyright(c) 2015 jwellbelove, rlindeman
 
@@ -36,6 +37,10 @@ SOFTWARE.
 
 #include <stddef.h>
 #include "../exception.h"
+#include "../error_handler.h"
+
+#undef ETL_FILE
+#define ETL_FILE "10"
 
 namespace etl
 {
@@ -47,8 +52,8 @@ namespace etl
   {
   public:
 
-    multiset_exception(const char* what)
-      : exception(what)
+    multiset_exception(string_type what, string_type file_name, numeric_type line_number)
+      : exception(what, file_name, line_number)
     {
     }
   };
@@ -61,8 +66,8 @@ namespace etl
   {
   public:
 
-    multiset_full()
-      : multiset_exception("multiset: full")
+    multiset_full(string_type file_name, numeric_type line_number)
+      : multiset_exception(ETL_ERROR_TEXT("multiset:full", ETL_FILE"A"), file_name, line_number)
     {
     }
   };
@@ -75,8 +80,8 @@ namespace etl
   {
   public:
 
-    multiset_out_of_bounds()
-      : multiset_exception("multiset: out of bounds")
+    multiset_out_of_bounds(string_type file_name, numeric_type line_number)
+      : multiset_exception(ETL_ERROR_TEXT("multiset:bounds", ETL_FILE"B"), file_name, line_number)
     {
     }
   };
@@ -89,8 +94,8 @@ namespace etl
   {
   public:
 
-    multiset_iterator()
-      : multiset_exception("multiset: iterator problem")
+    multiset_iterator(string_type file_name, numeric_type line_number)
+      : multiset_exception(ETL_ERROR_TEXT("multiset:iterator", ETL_FILE"C"), file_name, line_number)
     {
     }
   };
@@ -576,5 +581,7 @@ namespace etl
     Node* root_node;          ///< The node that acts as the multiset root.
   };
 }
+
+#undef ETL_FILE
 
 #endif

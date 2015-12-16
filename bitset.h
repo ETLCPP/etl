@@ -5,6 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
+http://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -137,7 +138,7 @@ namespace etl
     //*************************************************************************
     bitset<N>& set(const char* text)
     {
-      if (ETL_ASSERT(text != 0, etl::bitset_nullptr()))
+      if (ETL_ASSERT(text != 0, ETL_ERROR(bitset_nullptr)))
       {
         ibitset::set(text);
       }

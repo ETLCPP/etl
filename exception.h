@@ -5,6 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
+http://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -44,28 +45,69 @@ namespace etl
   {
   public:
 
-    typedef const char* value_type;
+    typedef const char* string_type;
+    typedef int         numeric_type;
 
+#if defined(ETL_VERBOSE_ERRORS)
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    exception(value_type reason)
-      : reason(reason)
+    exception(string_type reason, string_type file, numeric_type line)
+      : reason(reason),
+        file(file),
+        line(line)
     {
     }
+#else
+    //*************************************************************************
+    /// Constructor.
+    //*************************************************************************
+    exception(string_type reason, string_type file, numeric_type line)
+      : reason(reason),
+        line(line)
+    {
+    }
+#endif
 
     //***************************************************************************
     /// Gets the reason for the exception.
     /// \return const char* to the reason.
     //***************************************************************************
-    value_type what() const
+    string_type what() const
     {
       return reason;
     }
 
+
+    //***************************************************************************
+    /// Gets the file for the exception.
+    /// \return const char* to the file.
+    //***************************************************************************
+    string_type file_name() const
+    {
+#if defined(ETL_VERBOSE_ERRORS)
+      return file;
+#else
+      return "";
+#endif
+    }
+
+    //***************************************************************************
+    /// Gets the line for the exception.
+    /// \return const char* to the line.
+    //***************************************************************************
+    numeric_type line_number() const
+    {
+      return line;
+    }
+
   private:
 
-    value_type reason; ///< The reason for the exception.
+    string_type  reason; ///< The reason for the exception.
+#if defined(ETL_VERBOSE_ERRORS)
+    string_type  file;   ///< The file for the exception.
+#endif
+    numeric_type line;   ///< The line for the exception.
   };
 }
 

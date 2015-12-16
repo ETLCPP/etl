@@ -5,6 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
+http://www.etlcpp.com
 
 Copyright(c) 2015 jwellbelove
 
@@ -223,7 +224,7 @@ namespace etl
     {
 #ifdef _DEBUG
       difference_type count = std::distance(first, last);
-      ETL_ASSERT(count >= 0, flat_multimap_iterator());
+      ETL_ASSERT(count >= 0, ETL_ERROR(flat_multimap_iterator));
 #endif
 
       clear();
@@ -245,7 +246,7 @@ namespace etl
 
       iterator i_element = lower_bound(value.first);
 
-      if (ETL_ASSERT(!buffer.full(), flat_multimap_full()))
+      if (ETL_ASSERT(!buffer.full(), ETL_ERROR(flat_multimap_full)))
       {
         if (i_element == end())
         {

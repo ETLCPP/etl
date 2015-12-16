@@ -5,6 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
+http://www.etlcpp.com
 
 Copyright(c) 2015 jwellbelove
 
@@ -71,7 +72,7 @@ namespace etl
     __private_intrusive_forward_list__::intrusive_forward_list_node_base* get_next(size_t index) const
     {
 #ifdef _DEBUG
-      ETL_ASSERT(index < SIZE, intrusive_forward_list_index_exception());
+      ETL_ASSERT(index < SIZE, ETL_ERROR(intrusive_forward_list_index_exception));
 #endif
       return next[index];
     }
@@ -79,7 +80,7 @@ namespace etl
     void set_next(size_t index, __private_intrusive_forward_list__::intrusive_forward_list_node_base* pnext)
     {
 #ifdef _DEBUG
-      ETL_ASSERT(index < SIZE, intrusive_forward_list_index_exception());
+      ETL_ASSERT(index < SIZE, ETL_ERROR(intrusive_forward_list_index_exception));
 #endif
       next[index] = pnext;
     }

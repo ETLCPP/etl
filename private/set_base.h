@@ -5,6 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
+http://www.etlcpp.com
 
 Copyright(c) 2015 jwellbelove, rlindeman
 
@@ -36,6 +37,9 @@ SOFTWARE.
 
 #include <stddef.h>
 #include "../exception.h"
+#include "../error_handler.h"
+
+#define ETL_FILE "14"
 
 namespace etl
 {
@@ -47,8 +51,8 @@ namespace etl
   {
   public:
 
-    set_exception(const char* what)
-      : exception(what)
+    set_exception(string_type what, string_type file_name, numeric_type line_number)
+      : exception(what, file_name, line_number)
     {
     }
   };
@@ -61,8 +65,8 @@ namespace etl
   {
   public:
 
-    set_full()
-      : set_exception("set: full")
+    set_full(string_type file_name, numeric_type line_number)
+      : set_exception(ETL_ERROR_TEXT("set:full", ETL_FILE"A"), file_name, line_number)
     {
     }
   };
@@ -75,8 +79,8 @@ namespace etl
   {
   public:
 
-    set_out_of_bounds()
-      : set_exception("set: out of bounds")
+    set_out_of_bounds(string_type file_name, numeric_type line_number)
+      : set_exception(ETL_ERROR_TEXT("set:bounds", ETL_FILE"B"), file_name, line_number)
     {
     }
   };
@@ -89,8 +93,8 @@ namespace etl
   {
   public:
 
-    set_iterator()
-      : set_exception("set: iterator problem")
+    set_iterator(string_type file_name, numeric_type line_number)
+      : set_exception(ETL_ERROR_TEXT("set:iterator problem", ETL_FILE"C"), file_name, line_number)
     {
     }
   };
@@ -417,5 +421,7 @@ namespace etl
     Node* root_node;          ///< The node that acts as the set root.
   };
 }
+
+#undef ETL_FILE
 
 #endif

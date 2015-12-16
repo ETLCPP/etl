@@ -5,6 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
+http://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove, rlindeman
 
@@ -36,6 +37,10 @@ SOFTWARE.
 
 #include <stddef.h>
 #include "../exception.h"
+#include "../error_handler.h"
+
+#undef ETL_FILE
+#define ETL_FILE "9"
 
 namespace etl
 {
@@ -47,8 +52,8 @@ namespace etl
   {
   public:
 
-    multimap_exception(const char* what)
-      : exception(what)
+    multimap_exception(string_type what, string_type file_name, numeric_type line_number)
+      : exception(what, file_name, line_number)
     {
     }
   };
@@ -61,8 +66,8 @@ namespace etl
   {
   public:
 
-    multimap_full()
-      : multimap_exception("multimap: full")
+    multimap_full(string_type file_name, numeric_type line_number)
+      : multimap_exception("multimap:full", file_name, line_number)
     {
     }
   };
@@ -75,8 +80,8 @@ namespace etl
   {
   public:
 
-    multimap_out_of_bounds()
-      : multimap_exception("multimap: out of bounds")
+    multimap_out_of_bounds(string_type file_name, numeric_type line_number)
+      : multimap_exception("multimap:bounds", file_name, line_number)
     {
     }
   };
@@ -89,8 +94,8 @@ namespace etl
   {
   public:
 
-    multimap_iterator()
-      : multimap_exception("multimap: iterator problem")
+    multimap_iterator(string_type file_name, numeric_type line_number)
+      : multimap_exception("multimap:iterator", file_name, line_number)
     {
     }
   };

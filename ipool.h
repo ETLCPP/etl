@@ -5,6 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
+http://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -323,9 +324,9 @@ namespace etl
 	  T* allocate()
 	  {
 #if defined(_DEBUG) || defined(DEBUG)
-      if (ETL_ASSERT(items_allocated < MAX_SIZE && !in_use_flags.test(next_free), pool_no_allocation()))
+      if (ETL_ASSERT(items_allocated < MAX_SIZE && !in_use_flags.test(next_free), ETL_ERROR(pool_no_allocation)))
 #else
-      if (ETL_ASSERT(items_allocated < MAX_SIZE, pool_no_allocation()))
+      if (ETL_ASSERT(items_allocated < MAX_SIZE, ETL_ERROR(pool_no_allocation)))
 #endif
 	    {
 		    T* result = new(&p_buffer[next_free]) T();
@@ -349,9 +350,9 @@ namespace etl
     T* allocate(const T& initial)
     {
 #if defined(_DEBUG) || defined(DEBUG)
-      if (ETL_ASSERT(items_allocated < MAX_SIZE && !in_use_flags.test(next_free), pool_no_allocation()))
+      if (ETL_ASSERT(items_allocated < MAX_SIZE && !in_use_flags.test(next_free), ETL_ERROR(pool_no_allocation)))
 #else
-      if (ETL_ASSERT(items_allocated < MAX_SIZE, pool_no_allocation()))
+      if (ETL_ASSERT(items_allocated < MAX_SIZE, ETL_ERROR(pool_no_allocation)))
 #endif
       {
         T* result = new(&p_buffer[next_free]) T(initial);
@@ -386,7 +387,7 @@ namespace etl
     void release(const T* const p_object)
     {
       // Does it belong to me?
-      if (ETL_ASSERT(is_in_pool(p_object), pool_object_not_in_pool()))
+      if (ETL_ASSERT(is_in_pool(p_object), ETL_ERROR(pool_object_not_in_pool)))
       {
     	// Where is it in the buffer?
         typename std::iterator_traits<T*>::difference_type distance = p_object - p_buffer;

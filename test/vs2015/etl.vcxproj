@@ -53,7 +53,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;ETL_THROW_EXCEPTIONS;PLATFORM_WINDOWS;COMPILER_MICROSOFT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;ETL_THROW_EXCEPTIONS;PLATFORM_WINDOWS;COMPILER_MICROSOFT;ETL_VERBOSE_ERRORS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../../../unittest-cpp</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
@@ -329,8 +329,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Doxyfile" />
-    <None Include="ClassDiagram.cd" />
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

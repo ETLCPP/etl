@@ -5,6 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
+http://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -73,8 +74,8 @@ namespace etl
   class variant_exception : public exception
   {
   public:
-    variant_exception(const char* what)
-      : exception(what)
+    variant_exception(string_type what, string_type file_name, numeric_type line_number)
+      : exception(what, file_name, line_number)
     {
     }
   };
@@ -86,8 +87,8 @@ namespace etl
   class variant_incorrect_type_exception : public variant_exception
   {
   public:
-    variant_incorrect_type_exception()
-      : variant_exception("variant: unsupported type")
+    variant_incorrect_type_exception(string_type file_name, numeric_type line_number)
+      : variant_exception("variant: unsupported type", file_name, line_number)
     {
     }
   };
@@ -99,8 +100,8 @@ namespace etl
   class variant_invalid_type_id_exception : public variant_exception
   {
   public:
-    variant_invalid_type_id_exception()
-      : variant_exception("variant: invalid type id")
+    variant_invalid_type_id_exception(string_type file_name, numeric_type line_number)
+      : variant_exception("variant: invalid type id", file_name, line_number)
     {
     }
   };
@@ -444,7 +445,7 @@ namespace etl
           case 6: return reinterpret_cast<U7&>(*p_data);
           case 7: return reinterpret_cast<U8&>(*p_data);
           default:
-            ETL_ASSERT(false, variant_invalid_type_id_exception());
+            ETL_ASSERT(false, ETL_ERROR(variant_invalid_type_id_exception));
             return reinterpret_cast<TBase&>(*p_data);
 						break;
         }
@@ -463,7 +464,7 @@ namespace etl
           case 6: return reinterpret_cast<const U7&>(*p_data);
           case 7: return reinterpret_cast<const U8&>(*p_data);
           default:
-            ETL_ASSERT(false, variant_invalid_type_id_exception());
+            ETL_ASSERT(false, ETL_ERROR(variant_invalid_type_id_exception));
             return reinterpret_cast<TBase&>(*p_data);
 				  	break;
         }
@@ -490,7 +491,7 @@ namespace etl
           case 5: return reinterpret_cast<U6&>(*p_data);
           case 6: return reinterpret_cast<U7&>(*p_data);
           default:
-            ETL_ASSERT(false, variant_invalid_type_id_exception());
+            ETL_ASSERT(false, ETL_ERROR(variant_invalid_type_id_exception));
             return reinterpret_cast<TBase&>(*p_data);
 				  	break;
         }
@@ -508,7 +509,7 @@ namespace etl
           case 5: return reinterpret_cast<const U6&>(*p_data);
           case 6: return reinterpret_cast<const U7&>(*p_data);
           default:
-            ETL_ASSERT(false, variant_invalid_type_id_exception());
+            ETL_ASSERT(false, ETL_ERROR(variant_invalid_type_id_exception));
             return reinterpret_cast<TBase&>(*p_data);
 				  	break;
         }
@@ -534,7 +535,7 @@ namespace etl
           case 4: return reinterpret_cast<U5&>(*p_data);
           case 5: return reinterpret_cast<U6&>(*p_data);
           default:
-            ETL_ASSERT(false, variant_invalid_type_id_exception());
+            ETL_ASSERT(false, ETL_ERROR(variant_invalid_type_id_exception));
             return reinterpret_cast<TBase&>(*p_data);
 				  	break;
         }
@@ -551,7 +552,7 @@ namespace etl
           case 4: return reinterpret_cast<const U5&>(*p_data);
           case 5: return reinterpret_cast<const U6&>(*p_data);
           default:
-            ETL_ASSERT(false, variant_invalid_type_id_exception());
+            ETL_ASSERT(false, ETL_ERROR(variant_invalid_type_id_exception));
             return reinterpret_cast<TBase&>(*p_data);
 					  break;
         }
@@ -576,7 +577,7 @@ namespace etl
           case 3: return reinterpret_cast<U4&>(*p_data);
           case 4: return reinterpret_cast<U5&>(*p_data);
           default:
-            ETL_ASSERT(false, variant_invalid_type_id_exception());
+            ETL_ASSERT(false, ETL_ERROR(variant_invalid_type_id_exception));
             return reinterpret_cast<TBase&>(*p_data);
 					  break;
         }
@@ -592,7 +593,7 @@ namespace etl
           case 3: return reinterpret_cast<const U4&>(*p_data);
           case 4: return reinterpret_cast<const U5&>(*p_data);
           default:
-            ETL_ASSERT(false, variant_invalid_type_id_exception());
+            ETL_ASSERT(false, ETL_ERROR(variant_invalid_type_id_exception));
             return reinterpret_cast<TBase&>(*p_data);
 					  break;
         }
@@ -616,7 +617,7 @@ namespace etl
           case 2: return reinterpret_cast<U3&>(*p_data);
           case 3: return reinterpret_cast<U4&>(*p_data);
           default:
-            ETL_ASSERT(false, variant_invalid_type_id_exception());
+            ETL_ASSERT(false, ETL_ERROR(variant_invalid_type_id_exception));
             return reinterpret_cast<TBase&>(*p_data);
 				  	break;
         }
@@ -631,7 +632,7 @@ namespace etl
           case 2: return reinterpret_cast<const U3&>(*p_data);
           case 3: return reinterpret_cast<const U4&>(*p_data);
           default:
-            ETL_ASSERT(false, variant_invalid_type_id_exception());
+            ETL_ASSERT(false, ETL_ERROR(variant_invalid_type_id_exception));
             return reinterpret_cast<TBase&>(*p_data);
 						break;
         }
@@ -654,7 +655,7 @@ namespace etl
           case 1: return reinterpret_cast<U2&>(*p_data);
           case 2: return reinterpret_cast<U3&>(*p_data);
           default:
-            ETL_ASSERT(false, variant_invalid_type_id_exception());
+            ETL_ASSERT(false, ETL_ERROR(variant_invalid_type_id_exception));
             return reinterpret_cast<TBase&>(*p_data);
 						break;
         }
@@ -668,7 +669,7 @@ namespace etl
           case 1: return reinterpret_cast<const U2&>(*p_data);
           case 2: return reinterpret_cast<const U3&>(*p_data);
           default:
-            ETL_ASSERT(false, variant_invalid_type_id_exception());
+            ETL_ASSERT(false, ETL_ERROR(variant_invalid_type_id_exception));
             return reinterpret_cast<TBase&>(*p_data);
 						break;
         }
@@ -690,7 +691,7 @@ namespace etl
           case 0: return reinterpret_cast<U1&>(*p_data);
           case 1: return reinterpret_cast<U2&>(*p_data);
           default:
-            ETL_ASSERT(false, variant_invalid_type_id_exception());
+            ETL_ASSERT(false, ETL_ERROR(variant_invalid_type_id_exception));
             return reinterpret_cast<TBase&>(*p_data);
 						break;
         }
@@ -703,7 +704,7 @@ namespace etl
           case 0: return reinterpret_cast<const U1&>(*p_data);
           case 1: return reinterpret_cast<const U2&>(*p_data);
           default:
-            ETL_ASSERT(false, variant_invalid_type_id_exception());
+            ETL_ASSERT(false, ETL_ERROR(variant_invalid_type_id_exception));
             return reinterpret_cast<TBase&>(*p_data);
 						break;
         }
@@ -724,7 +725,7 @@ namespace etl
         {
           case 0: return reinterpret_cast<U1&>(*p_data);
           default:
-            ETL_ASSERT(false, variant_invalid_type_id_exception());
+            ETL_ASSERT(false, ETL_ERROR(variant_invalid_type_id_exception));
             return reinterpret_cast<TBase&>(*p_data);
 						break;
         }
@@ -736,7 +737,7 @@ namespace etl
         {
           case 0: return reinterpret_cast<const U1&>(*p_data);
           default:
-            ETL_ASSERT(false, variant_invalid_type_id_exception());
+            ETL_ASSERT(false, ETL_ERROR(variant_invalid_type_id_exception));
             return reinterpret_cast<TBase&>(*p_data);
 						break;
         }
@@ -825,7 +826,7 @@ namespace etl
         case 6: is_same_type = type_id == Type_Id_Lookup<U7>::type_id; break;
         case 7: is_same_type = type_id == Type_Id_Lookup<U8>::type_id; break;
         default:
-          ETL_ASSERT(false, variant_invalid_type_id_exception());
+          ETL_ASSERT(false, ETL_ERROR(variant_invalid_type_id_exception));
 					break;
       }
 
@@ -849,7 +850,7 @@ namespace etl
         case 6: reader.read(static_cast<T7&>(data)); break;
         case 7: reader.read(static_cast<T8&>(data)); break;
         default:
-          ETL_ASSERT(false, variant_invalid_type_id_exception());
+          ETL_ASSERT(false, ETL_ERROR(variant_invalid_type_id_exception));
 					break;
       }
     }
@@ -890,7 +891,7 @@ namespace etl
     T& get()
     {
       STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
-      ETL_ASSERT(is_type<T>(), variant_incorrect_type_exception());
+      ETL_ASSERT(is_type<T>(), ETL_ERROR(variant_incorrect_type_exception));
 
       return static_cast<T&>(data);
     }
@@ -904,7 +905,7 @@ namespace etl
     const T& get() const
     {
       STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
-      ETL_ASSERT(is_type<T>(), variant_incorrect_type_exception());
+      ETL_ASSERT(is_type<T>(), ETL_ERROR(variant_incorrect_type_exception));
 
       return static_cast<const T&>(data);
     }

@@ -5,6 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
+http://www.etlcpp.com
 
 Copyright(c) 2015 jwellbelove
 
@@ -72,8 +73,8 @@ namespace etl
   {
   public:
 
-    optional_exception(const char* what)
-      : exception(what)
+    optional_exception(string_type what, string_type file_name, numeric_type line_number)
+      : exception(what, file_name, line_number)
     {
     }
   };
@@ -86,8 +87,8 @@ namespace etl
   {
   public:
 
-    optional_invalid()
-      : optional_exception("optional: invalid")
+    optional_invalid(string_type file_name, numeric_type line_number)
+      : optional_exception("optional: invalid", file_name, line_number)
     {
     }
   };
@@ -215,7 +216,7 @@ namespace etl
     T* operator ->()
     {
 #ifdef _DEBUG
-      ETL_ASSERT(valid, optional_invalid());
+      ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
       return storage.template get_address<T>();
@@ -227,7 +228,7 @@ namespace etl
     const T* operator ->() const
     {
 #ifdef _DEBUG
-      ETL_ASSERT(valid, optional_invalid());
+      ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
       return storage.template get_address<T>();
@@ -239,7 +240,7 @@ namespace etl
     T& operator *()
     {
 #ifdef _DEBUG
-      ETL_ASSERT(valid, optional_invalid());
+      ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
       return storage.template get_reference<T>();
@@ -251,7 +252,7 @@ namespace etl
     const T& operator *() const
     {
 #ifdef _DEBUG
-      ETL_ASSERT(valid, optional_invalid());
+      ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
       return storage.template get_reference<T>();
@@ -271,7 +272,7 @@ namespace etl
     T& value()
     {
 #ifdef _DEBUG
-      ETL_ASSERT(valid, optional_invalid());
+      ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
       return storage.template get_reference<T>();
@@ -283,7 +284,7 @@ namespace etl
     const T& value() const
     {
 #ifdef _DEBUG
-      ETL_ASSERT(valid, optional_invalid());
+      ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
       return storage.template get_reference<T>();
