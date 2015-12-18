@@ -48,7 +48,7 @@ SOFTWARE.
 
 namespace etl
 {
-  template <typename T, const size_t MAX_SIZE_, typename TCompare = std::less<T>>
+  template <typename T, const size_t MAX_SIZE_, typename TCompare = std::less<T> >
   //***************************************************************************
   /// A flat_multiset implementation that uses a fixed size buffer.
   ///\tparam T        The value type.

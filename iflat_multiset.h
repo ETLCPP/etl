@@ -51,7 +51,7 @@ namespace etl
   /// Can be used as a reference type for all flat_multisets containing a specific type.
   ///\ingroup flat_multiset
   //***************************************************************************
-  template <typename T, typename TKeyCompare = std::less<T>>
+  template <typename T, typename TKeyCompare = std::less<T> >
   class iflat_multiset : public flat_multiset_base
   {
   private:

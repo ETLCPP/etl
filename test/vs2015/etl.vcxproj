@@ -189,6 +189,7 @@
     <ClInclude Include="..\..\mru_cache.h" />
     <ClInclude Include="..\..\multimap.h" />
     <ClInclude Include="..\..\multiset.h" />
+    <ClInclude Include="..\..\multi_array.h" />
     <ClInclude Include="..\..\murmur3.h" />
     <ClInclude Include="..\..\nullptr.h" />
     <ClInclude Include="..\..\numeric.h" />

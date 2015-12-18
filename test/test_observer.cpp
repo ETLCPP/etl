@@ -286,7 +286,7 @@ namespace
     //*************************************************************************
     TEST(test_8_notifications)
     {
-      typedef etl::observer<Notification<1>, Notification<2>, Notification<3>, Notification<4>, Notification<5>, Notification<6>, Notification<7>, Notification<8>> Observer;
+      typedef etl::observer<Notification<1>, Notification<2>, Notification<3>, Notification<4>, Notification<5>, Notification<6>, Notification<7>, Notification<8> > Observer;
 
       class Observable : public etl::observable<Observer, 1>
       {
@@ -299,7 +299,7 @@ namespace
     //*************************************************************************
     TEST(test_7_notifications)
     {
-      typedef etl::observer<Notification<1>, Notification<2>, Notification<3>, Notification<4>, Notification<5>, Notification<6>, Notification<7>> Observer;
+      typedef etl::observer<Notification<1>, Notification<2>, Notification<3>, Notification<4>, Notification<5>, Notification<6>, Notification<7> > Observer;
 
       class Observable : public etl::observable<Observer, 1>
       {
@@ -312,7 +312,7 @@ namespace
     //*************************************************************************
     TEST(test_6_notifications)
     {
-      typedef etl::observer<Notification<1>, Notification<2>, Notification<3>, Notification<4>, Notification<5>, Notification<6>> Observer;
+      typedef etl::observer<Notification<1>, Notification<2>, Notification<3>, Notification<4>, Notification<5>, Notification<6> > Observer;
 
       class Observable : public etl::observable<Observer, 1>
       {
@@ -325,7 +325,7 @@ namespace
     //*************************************************************************
     TEST(test_5_notifications)
     {
-      typedef etl::observer<Notification<1>, Notification<2>, Notification<3>, Notification<4>, Notification<5>> Observer;
+      typedef etl::observer<Notification<1>, Notification<2>, Notification<3>, Notification<4>, Notification<5> > Observer;
 
       class Observable : public etl::observable<Observer, 1>
       {
@@ -338,7 +338,7 @@ namespace
     //*************************************************************************
     TEST(test_4_notifications)
     {
-      typedef etl::observer<Notification<1>, Notification<2>, Notification<3>, Notification<4>> Observer;
+      typedef etl::observer<Notification<1>, Notification<2>, Notification<3>, Notification<4> > Observer;
 
       class Observable : public etl::observable<Observer, 1>
       {
@@ -351,7 +351,7 @@ namespace
     //*************************************************************************
     TEST(test_3_notifications)
     {
-      typedef etl::observer<Notification<1>, Notification<2>, Notification<3>> Observer;
+      typedef etl::observer<Notification<1>, Notification<2>, Notification<3> > Observer;
 
       class Observable : public etl::observable<Observer, 1>
       {
@@ -364,7 +364,7 @@ namespace
     //*************************************************************************
     TEST(test_2_notifications)
     {
-      typedef etl::observer<Notification<1>, Notification<2>> Observer;
+      typedef etl::observer<Notification<1>, Notification<2> > Observer;
 
       class Observable : public etl::observable<Observer, 1>
       {
@@ -377,7 +377,7 @@ namespace
     //*************************************************************************
     TEST(test_1_notification)
     {
-      typedef etl::observer<Notification<1>> Observer;
+      typedef etl::observer<Notification<1> > Observer;
 
       class Observable : public etl::observable<Observer, 1>
       {

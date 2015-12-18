@@ -50,7 +50,7 @@ namespace etl
   //*************************************************************************
   /// A templated set implementation that uses a fixed size buffer.
   //*************************************************************************
-  template <typename T, const size_t MAX_SIZE_, typename TCompare = std::less<T>>
+  template <typename T, const size_t MAX_SIZE_, typename TCompare = std::less<T> >
   class set : public iset<T, TCompare>
   {
   public:

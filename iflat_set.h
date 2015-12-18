@@ -51,7 +51,7 @@ namespace etl
   /// Can be used as a reference type for all flat_sets containing a specific type.
   ///\ingroup flat_set
   //***************************************************************************
-  template <typename T, typename TKeyCompare = std::less<T>>
+  template <typename T, typename TKeyCompare = std::less<T> >
   class iflat_set : public flat_set_base
   {
   private:
@@ -226,7 +226,7 @@ namespace etl
 
         if (i_element == end())
         {
-          // At the end.
+          // At the end. Doesn't exist.
           buffer.push_back(value);
           result.first = end() - 1;
           result.second = true;
@@ -234,9 +234,18 @@ namespace etl
         else
         {
           // Not at the end.
-          buffer.insert(i_element, value);
-          result.first = i_element;
-          result.second = true;
+          // Does not exist already?
+          if (*i_element != value)
+          {
+            buffer.insert(i_element, value);
+            result.first = i_element;
+            result.second = true;
+          }
+          else
+          {
+            result.first = i_element;
+            result.second = false;
+          }
         }
       }
 

@@ -48,7 +48,7 @@ SOFTWARE.
 
 namespace etl
 {
-  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename TCompare = std::less<TKey>>
+  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename TCompare = std::less<TKey> >
   //***************************************************************************
   /// A flat_map implementation that uses a fixed size buffer.
   ///\tparam TKey     The key type.

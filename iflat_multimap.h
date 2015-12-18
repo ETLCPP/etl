@@ -51,7 +51,7 @@ namespace etl
   /// Can be used as a reference type for all flat_multimaps containing a specific type.
   ///\ingroup flat_multimap
   //***************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare = std::less<TKey>>
+  template <typename TKey, typename TMapped, typename TKeyCompare = std::less<TKey> >
   class iflat_multimap : public flat_multimap_base
   {
   public:

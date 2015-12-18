@@ -42,6 +42,24 @@ SOFTWARE.
 
 namespace
 {
+  //*************************************************************************
+  template <typename T1, typename T2>
+  bool Check_Equal(T1 begin1, T1 end1, T2 begin2)
+  {
+    while (begin1 != end1)
+    {
+      if ((begin1->first != begin2->first) || (begin1->second != begin2->second))
+      {
+        return false;
+      }
+
+      ++begin1;
+      ++begin2;
+    }
+
+    return true;
+  }
+
   SUITE(test_flat_map)
   {
     static const size_t SIZE = 10;
@@ -325,6 +343,38 @@ namespace
                             compare_data.begin());
 
       CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_value_multiple)
+    {
+      Compare_DataNDC compare_data;
+      DataNDC data;
+
+      data.insert(std::make_pair(0, N0));
+      compare_data.insert(std::make_pair(0, N0));
+
+      data.insert(std::make_pair(1, N1));
+      compare_data.insert(std::make_pair(1, N1));
+
+      data.insert(std::make_pair(2, N2));
+      compare_data.insert(std::make_pair(2, N2));
+
+      // Do it again.
+      data.insert(std::make_pair(0, N0));
+      compare_data.insert(std::make_pair(0, N0));
+
+      data.insert(std::make_pair(1, N1));
+      compare_data.insert(std::make_pair(1, N1));
+
+      data.insert(std::make_pair(2, N2));
+      compare_data.insert(std::make_pair(2, N2));
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+
+      bool isEqual = Check_Equal(data.begin(),
+                                 data.end(),
+                                 compare_data.begin());
     }
 
     //*************************************************************************

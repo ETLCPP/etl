@@ -248,6 +248,34 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_value_multiple)
+    {
+      Compare_DataNDC compare_data;
+      DataNDC data;
+
+      data.insert(N0);
+      compare_data.insert(N0);
+
+      data.insert(N1);
+      compare_data.insert(N1);
+
+      data.insert(N2);
+      compare_data.insert(N2);
+
+      // Do it again.
+      data.insert(N0);
+      compare_data.insert(N0);
+
+      data.insert(N1);
+      compare_data.insert(N1);
+
+      data.insert(N2);
+      compare_data.insert(N2);
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_value_excess)
     {
       DataNDC data(initial_data.begin(), initial_data.end());

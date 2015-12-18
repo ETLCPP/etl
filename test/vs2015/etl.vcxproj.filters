@@ -468,6 +468,9 @@
     <ClInclude Include="..\..\private\vector_base.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\multi_array.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\AssertException.cpp">
