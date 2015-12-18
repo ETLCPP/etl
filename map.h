@@ -50,7 +50,7 @@ namespace etl
   //*************************************************************************
   /// A templated map implementation that uses a fixed size buffer.
   //*************************************************************************
-  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename TCompare = std::less<TKey>>
+  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename TCompare = std::less<TKey> >
   class map : public imap<TKey, TValue, TCompare>
   {
   public:
