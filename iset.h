@@ -633,15 +633,14 @@ namespace etl
       Node* inserted_node = nullptr;
       bool inserted = false;
 
-      if (ETL_ASSERT(!full(), ETL_ERROR(set_full)))
-      {
-        // Get next available free node
-        Data_Node& node = allocate_data_node(value);
+      ETL_ASSERT(!full(), ETL_ERROR(set_full));
 
-        // Obtain the inserted node (might be nullptr if node was a duplicate)
-        inserted_node = insert_node(root_node, node);
-        inserted = inserted_node == &node;
-      }
+      // Get next available free node
+      Data_Node& node = allocate_data_node(value);
+
+      // Obtain the inserted node (might be nullptr if node was a duplicate)
+      inserted_node = insert_node(root_node, node);
+      inserted = inserted_node == &node;
 
       // Insert node into tree and return iterator to new node location in tree
       return std::make_pair(iterator(*this, inserted_node), inserted);
@@ -658,14 +657,13 @@ namespace etl
       // Default to no inserted node
       Node* inserted_node = nullptr;
 
-      if (ETL_ASSERT(!full(), ETL_ERROR(set_full)))
-      {
-        // Get next available free node
-        Data_Node& node = allocate_data_node(value);
+      ETL_ASSERT(!full(), ETL_ERROR(set_full));
 
-        // Obtain the inserted node (might be nullptr if node was a duplicate)
-        inserted_node = insert_node(root_node, node);
-      }
+      // Get next available free node
+      Data_Node& node = allocate_data_node(value);
+
+      // Obtain the inserted node (might be nullptr if node was a duplicate)
+      inserted_node = insert_node(root_node, node);
 
       // Insert node into tree and return iterator to new node location in tree
       return iterator(*this, inserted_node);
@@ -682,14 +680,13 @@ namespace etl
       // Default to no inserted node
       Node* inserted_node = nullptr;
 
-      if (ETL_ASSERT(!full(), ETL_ERROR(set_full)))
-      {
-        // Get next available free node
-        Data_Node& node = allocate_data_node(value);
+      ETL_ASSERT(!full(), ETL_ERROR(set_full));
 
-        // Obtain the inserted node (might be nullptr if node was a duplicate)
-        inserted_node = insert_node(root_node, node);
-      }
+      // Get next available free node
+      Data_Node& node = allocate_data_node(value);
+
+      // Obtain the inserted node (might be nullptr if node was a duplicate)
+      inserted_node = insert_node(root_node, node);
 
       // Insert node into tree and return iterator to new node location in tree
       return iterator(*this, inserted_node);

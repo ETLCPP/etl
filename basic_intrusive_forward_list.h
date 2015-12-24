@@ -45,9 +45,38 @@ SOFTWARE.
 #include "nullptr.h"
 #include "type_traits.h"
 #include "basic_intrusive_forward_list_node.h"
+#include "error_handler.h"
 
 namespace etl
 {
+  //***************************************************************************
+  /// Exception for the intrusive_forward_list.
+  ///\ingroup intrusive_forward_list
+  //***************************************************************************
+  class basic_intrusive_forward_list_exception : public exception
+  {
+  public:
+
+    basic_intrusive_forward_list_exception(string_type what, string_type file_name, numeric_type line_number)
+      : exception(what, file_name, line_number)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// Empty exception for the intrusive_forward_list.
+  ///\ingroup intrusive_forward_list
+  //***************************************************************************
+  class basic_intrusive_forward_list_empty : public basic_intrusive_forward_list_exception
+  {
+  public:
+
+    basic_intrusive_forward_list_empty(string_type file_name, numeric_type line_number)
+      : basic_intrusive_forward_list_exception(ETL_ERROR_TEXT("basic_intrusive_forward_list:empty", ETL_FILE"A"), file_name, line_number)
+    {
+    }
+  };
+
   //***************************************************************************
   /// An intrusive forward list.
   ///\ingroup basic_intrusive_forward_list
@@ -400,10 +429,8 @@ namespace etl
     //*************************************************************************
     void pop_front()
     {
-      if (!empty())
-      {
-        remove_node_after(start_node);
-      }
+      ETL_ASSERT(!empty(), ETL_ERROR(basic_intrusive_forward_list_empty));
+      remove_node_after(start_node);
     }
 
     //*************************************************************************

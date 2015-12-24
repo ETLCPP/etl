@@ -324,21 +324,16 @@ namespace etl
 	  T* allocate()
 	  {
 #if defined(_DEBUG) || defined(DEBUG)
-      if (ETL_ASSERT(items_allocated < MAX_SIZE && !in_use_flags.test(next_free), ETL_ERROR(pool_no_allocation)))
+      ETL_ASSERT(items_allocated < MAX_SIZE && !in_use_flags.test(next_free), ETL_ERROR(pool_no_allocation));
 #else
-      if (ETL_ASSERT(items_allocated < MAX_SIZE, ETL_ERROR(pool_no_allocation)))
+      ETL_ASSERT(items_allocated < MAX_SIZE, ETL_ERROR(pool_no_allocation));
 #endif
-	    {
-		    T* result = new(&p_buffer[next_free]) T();
-		    in_use_flags.set(next_free);
-		    next_free = in_use_flags.find_first(false);
-		    ++items_allocated;
-		    return result;
-	    }
-      else
-      {
-        return nullptr;
-      }
+
+      T* result = new(&p_buffer[next_free]) T();
+		  in_use_flags.set(next_free);
+		  next_free = in_use_flags.find_first(false);
+		  ++items_allocated;
+		  return result;
 	  }
 
     //*************************************************************************
@@ -350,21 +345,16 @@ namespace etl
     T* allocate(const T& initial)
     {
 #if defined(_DEBUG) || defined(DEBUG)
-      if (ETL_ASSERT(items_allocated < MAX_SIZE && !in_use_flags.test(next_free), ETL_ERROR(pool_no_allocation)))
+      ETL_ASSERT(items_allocated < MAX_SIZE && !in_use_flags.test(next_free), ETL_ERROR(pool_no_allocation));
 #else
-      if (ETL_ASSERT(items_allocated < MAX_SIZE, ETL_ERROR(pool_no_allocation)))
+      ETL_ASSERT(items_allocated < MAX_SIZE, ETL_ERROR(pool_no_allocation));
 #endif
-      {
-        T* result = new(&p_buffer[next_free]) T(initial);
-        in_use_flags.set(next_free);
-        next_free = in_use_flags.find_first(false);
-        ++items_allocated;
-        return result;
-      }
-      else
-      {
-        return nullptr;
-      }
+
+      T* result = new(&p_buffer[next_free]) T(initial);
+      in_use_flags.set(next_free);
+      next_free = in_use_flags.find_first(false);
+      ++items_allocated;
+      return result;
     }
     
     //*************************************************************************
@@ -387,21 +377,20 @@ namespace etl
     void release(const T* const p_object)
     {
       // Does it belong to me?
-      if (ETL_ASSERT(is_in_pool(p_object), ETL_ERROR(pool_object_not_in_pool)))
-      {
-    	// Where is it in the buffer?
-        typename std::iterator_traits<T*>::difference_type distance = p_object - p_buffer;
-        size_t index = static_cast<size_t>(distance);
+      ETL_ASSERT(is_in_pool(p_object), ETL_ERROR(pool_object_not_in_pool));
 
-        // Check that it hasn't already been released.
-        if (in_use_flags.test(index))
-        {
-          // Destroy the object and mark as available.
-          p_object->~T();
-          in_use_flags.reset(index);
-          --items_allocated;
-          next_free = index;
-        }
+    	// Where is it in the buffer?
+      typename std::iterator_traits<T*>::difference_type distance = p_object - p_buffer;
+      size_t index = static_cast<size_t>(distance);
+
+      // Check that it hasn't already been released.
+      if (in_use_flags.test(index))
+      {
+        // Destroy the object and mark as available.
+        p_object->~T();
+        in_use_flags.reset(index);
+        --items_allocated;
+        next_free = index;
       }
     }
 

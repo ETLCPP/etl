@@ -67,7 +67,21 @@ namespace etl
   public:
 
     vector_full(string_type file_name, numeric_type line_number)
-      : vector_exception(ETL_ERROR_TEXT("vector:full", ETL_FILE"0"), file_name, line_number)
+      : vector_exception(ETL_ERROR_TEXT("vector:full", ETL_FILE"A"), file_name, line_number)
+    {
+    }
+  };
+
+  //***************************************************************************
+  ///\ingroup vector
+  /// Vector empty exception.
+  //***************************************************************************
+  class vector_empty : public vector_exception
+  {
+  public:
+
+    vector_empty(string_type file_name, numeric_type line_number)
+      : vector_exception(ETL_ERROR_TEXT("vector:empty", ETL_FILE"B"), file_name, line_number)
     {
     }
   };
@@ -81,7 +95,7 @@ namespace etl
   public:
 
     vector_out_of_bounds(string_type file_name, numeric_type line_number)
-      : vector_exception(ETL_ERROR_TEXT("vector:bounds", ETL_FILE"1"), file_name, line_number)
+      : vector_exception(ETL_ERROR_TEXT("vector:bounds", ETL_FILE"C"), file_name, line_number)
     {
     }
   };
@@ -95,7 +109,7 @@ namespace etl
   public:
 
     vector_iterator(string_type file_name, numeric_type line_number)
-      : vector_exception(ETL_ERROR_TEXT("vector:iterator", ETL_FILE"2"), file_name, line_number)
+      : vector_exception(ETL_ERROR_TEXT("vector:iterator", ETL_FILE"D"), file_name, line_number)
     {
     }
   };

@@ -67,7 +67,21 @@ namespace etl
   public:
 
     stack_full(string_type file_name, numeric_type line_number)
-      : stack_exception(ETL_ERROR_TEXT("stack: full", ETL_FILE"A"), file_name, line_number)
+      : stack_exception(ETL_ERROR_TEXT("stack:full", ETL_FILE"A"), file_name, line_number)
+    {
+    }
+  };
+
+  //***************************************************************************
+  ///\ingroup stack
+  /// The exception thrown when the stack is empty.
+  //***************************************************************************
+  class stack_empty : public stack_exception
+  {
+  public:
+
+    stack_empty(string_type file_name, numeric_type line_number)
+      : stack_exception(ETL_ERROR_TEXT("stack:empty", ETL_FILE"B"), file_name, line_number)
     {
     }
   };

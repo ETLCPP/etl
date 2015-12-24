@@ -86,11 +86,10 @@ namespace etl
     //*************************************************************************
     void push(parameter_t value)
     {
-      if (ETL_ASSERT(!full(), ETL_ERROR(stack_full)))
-      {
-        top_index = current_size++;
-        new(&p_buffer[top_index]) T(value);
-      }
+      ETL_ASSERT(!full(), ETL_ERROR(stack_full));
+
+      top_index = current_size++;
+      new(&p_buffer[top_index]) T(value);
     }
 
     //*************************************************************************
@@ -102,11 +101,10 @@ namespace etl
     //*************************************************************************
     reference push()
     {
-      if (ETL_ASSERT(!full(), ETL_ERROR(stack_full)))
-      {
-        top_index = current_size++;
-        new(&p_buffer[top_index]) T();
-      }
+      ETL_ASSERT(!full(), ETL_ERROR(stack_full));
+
+      top_index = current_size++;
+      new(&p_buffer[top_index]) T();
 
       return p_buffer[top_index];
     }
@@ -139,12 +137,11 @@ namespace etl
     //*************************************************************************
     void pop()
     {
-      if (!empty())
-      {
-        p_buffer[top_index].~T();
-        --top_index;
-        --current_size;
-      }
+      ETL_ASSERT(!empty(), ETL_ERROR(stack_empty));
+
+      p_buffer[top_index].~T();
+      --top_index;
+      --current_size;
     }
 
   protected:

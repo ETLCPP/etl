@@ -220,32 +220,31 @@ namespace etl
     {
       std::pair<iterator, bool> result(end(), false);
 
-	    if (ETL_ASSERT(!buffer.full(), ETL_ERROR(flat_set_full)))
-      {
-        iterator i_element = std::lower_bound(begin(), end(), value, TKeyCompare());
+      ETL_ASSERT(!buffer.full(), ETL_ERROR(flat_set_full));
 
-        if (i_element == end())
+      iterator i_element = std::lower_bound(begin(), end(), value, TKeyCompare());
+
+      if (i_element == end())
+      {
+        // At the end. Doesn't exist.
+        buffer.push_back(value);
+        result.first = end() - 1;
+        result.second = true;
+      }
+      else
+      {
+        // Not at the end.
+        // Does not exist already?
+        if (*i_element != value)
         {
-          // At the end. Doesn't exist.
-          buffer.push_back(value);
-          result.first = end() - 1;
+          buffer.insert(i_element, value);
+          result.first = i_element;
           result.second = true;
         }
         else
         {
-          // Not at the end.
-          // Does not exist already?
-          if (*i_element != value)
-          {
-            buffer.insert(i_element, value);
-            result.first = i_element;
-            result.second = true;
-          }
-          else
-          {
-            result.first = i_element;
-            result.second = false;
-          }
+          result.first = i_element;
+          result.second = false;
         }
       }
 

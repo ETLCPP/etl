@@ -120,22 +120,20 @@ namespace etl
     void add(TIterator begin, const TIterator end)
     {
       STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
+      ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised));
 
-      if (ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised)))
+      while (begin != end)
       {
-        while (begin != end)
+        block |= (*begin++) << (block_fill_count * 8);
+
+        if (++block_fill_count == FULL_BLOCK)
         {
-          block |= (*begin++) << (block_fill_count * 8);
-
-          if (++block_fill_count == FULL_BLOCK)
-          {
-            add_block();
-            block_fill_count = 0;
-            block = 0;
-          }
-
-          ++char_count;
+          add_block();
+          block_fill_count = 0;
+          block = 0;
         }
+
+        ++char_count;
       }
     }
 
@@ -147,19 +145,18 @@ namespace etl
     void add(uint8_t value)
     {
       // We can't add to a finalised hash!
-      if (ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised)))
+      ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised));
+
+      block |= value << (block_fill_count * 8);
+
+      if (++block_fill_count == FULL_BLOCK)
       {
-        block |= value << (block_fill_count * 8);
-
-        if (++block_fill_count == FULL_BLOCK)
-        {
-          add_block();
-          block_fill_count = 0;
-          block = 0;
-        }
-
-        ++char_count;
+        add_block();
+        block_fill_count = 0;
+        block = 0;
       }
+
+      ++char_count;
     }
 
     //*************************************************************************

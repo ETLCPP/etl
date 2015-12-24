@@ -61,6 +61,20 @@ namespace etl
   };
 
   //***************************************************************************
+  /// Empty exception for the intrusive_forward_list.
+  ///\ingroup intrusive_forward_list
+  //***************************************************************************
+  class intrusive_forward_list_empty : public intrusive_forward_list_exception
+  {
+  public:
+
+    intrusive_forward_list_empty(string_type file_name, numeric_type line_number)
+      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:empty", ETL_FILE"A"), file_name, line_number)
+    { 
+    }
+  };
+
+  //***************************************************************************
   /// Iterator exception for the intrusive_forward_list.
   ///\ingroup intrusive_forward_list
   //***************************************************************************
@@ -69,7 +83,7 @@ namespace etl
   public:
 
     intrusive_forward_list_iterator_exception(string_type file_name, numeric_type line_number)
-      : intrusive_forward_list_exception("intrusive_forward_list: iterator", file_name, line_number)
+      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:iterator", ETL_FILE"B"), file_name, line_number)
     {
     }
   };
@@ -83,7 +97,7 @@ namespace etl
   public:
 
     intrusive_forward_list_index_exception(string_type file_name, numeric_type line_number)
-      : intrusive_forward_list_exception("intrusive_forward_list:bounds", file_name, line_number)
+      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:bounds", ETL_FILE"C"), file_name, line_number)
     {
     }
   };
@@ -440,10 +454,8 @@ namespace etl
     //*************************************************************************
     void pop_front()
     {
-      if (!empty())
-      {
-        remove_node_after(start_node);
-      }
+      ETL_ASSERT(!empty(), ETL_ERROR(intrusive_forward_list_empty));
+      remove_node_after(start_node);
     }
 
     //*************************************************************************

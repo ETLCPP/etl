@@ -102,15 +102,14 @@ namespace etl
     //*************************************************************************
     void push(parameter_t value)
     {
-      if (ETL_ASSERT(!full(), ETL_ERROR(priority_queue_full)))
-      {
-        // Put element at end
-        container.push_back(value);
-        // Pre-increment size
-        ++current_size;
-        // Make elements in container into heap
-        std::push_heap(container.begin(), container.end(), TCompare());
-      }
+      ETL_ASSERT(!full(), ETL_ERROR(priority_queue_full));
+
+      // Put element at end
+      container.push_back(value);
+      // Pre-increment size
+      ++current_size;
+      // Make elements in container into heap
+      std::push_heap(container.begin(), container.end(), TCompare());
     }
 
     //*************************************************************************
@@ -122,7 +121,7 @@ namespace etl
       current_size = 0;
     }
 
-    //*********************************************************************
+    //*************************************************************************
     /// Assigns values to the priority queue.
     /// If ETL_THROW_EXCEPTIONS is defined, emits priority_queue_full if
     /// priority queue does not have enough free space.
@@ -130,7 +129,7 @@ namespace etl
     /// iterators are reversed.
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
-    //*********************************************************************
+    //*************************************************************************
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {

@@ -73,6 +73,20 @@ namespace etl
   };
 
   //***************************************************************************
+  /// Empty exception for the list.
+  ///\ingroup list
+  //***************************************************************************
+  class list_empty : public list_exception
+  {
+  public:
+
+    list_empty(string_type file_name, numeric_type line_number)
+      : list_exception(ETL_ERROR_TEXT("list:empty", ETL_FILE"B"), file_name, line_number)
+    {
+    }
+  };
+
+  //***************************************************************************
   /// Iterator exception for the list.
   ///\ingroup list
   //***************************************************************************
@@ -81,7 +95,7 @@ namespace etl
   public:
 
     list_iterator(string_type file_name, numeric_type line_number)
-      : list_exception(ETL_ERROR_TEXT("list:iterator", ETL_FILE"B"), file_name, line_number)
+      : list_exception(ETL_ERROR_TEXT("list:iterator", ETL_FILE"C"), file_name, line_number)
     {
     }
   };

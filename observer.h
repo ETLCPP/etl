@@ -121,11 +121,10 @@ namespace etl
       if (i_observer == observer_list.end())
       {
         // Is there enough room?
-        if (ETL_ASSERT(!observer_list.full(), ETL_ERROR(etl::observer_list_full)))
-        {
-          // Add it.
-          observer_list.push_back(&observer);
-        }
+        ETL_ASSERT(!observer_list.full(), ETL_ERROR(etl::observer_list_full));
+
+        // Add it.
+        observer_list.push_back(&observer);
       }
     }
 
