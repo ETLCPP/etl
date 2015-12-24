@@ -73,6 +73,20 @@ namespace etl
   };
 
   //***************************************************************************
+  /// Empty exception for the forward_list.
+  ///\ingroup forward_list
+  //***************************************************************************
+  class forward_list_empty : public forward_list_exception
+  {
+  public:
+
+    forward_list_empty(string_type file_name, numeric_type line_number)
+      : forward_list_exception(ETL_ERROR_TEXT("forward_list:empty", ETL_FILE"B"), file_name, line_number)
+    {
+    }
+  };
+
+  //***************************************************************************
   /// Iterator exception for the forward_list.
   ///\ingroup forward_list
   //***************************************************************************
@@ -81,7 +95,7 @@ namespace etl
   public:
 
     forward_list_iterator(string_type file_name, numeric_type line_number)
-      : forward_list_exception(ETL_ERROR_TEXT("forward_list:iterator", ETL_FILE"B"), file_name, line_number)
+      : forward_list_exception(ETL_ERROR_TEXT("forward_list:iterator", ETL_FILE"C"), file_name, line_number)
     {
     }
   };

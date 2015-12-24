@@ -94,16 +94,22 @@ namespace etl
 ///\ingroup error_handler
 //***************************************************************************
 #if defined(ETL_NO_CHECKS)
-  #define ETL_ASSERT(b, e) (true)                                                // Does nothing. Evaluates to 'true'.
+  #define ETL_ASSERT(b, e)                                                          // Does nothing.
 #elif defined(ETL_THROW_EXCEPTIONS)
-  #define ETL_ASSERT(b, e) (((b) ?  true : throw((e))), true)                    // Throws an exception if the condition fails. Evaluates to 'true'.
-#elif defined(ETL_LOG_ERRORS)
-  #define ETL_ASSERT(b, e) (((b) ?  true : etl::error_handler::error((e))), (b)) // Logs the error if the condition fails. Evaluates to the result of the condition.
+  #if defined(ETL_LOG_ERRORS)
+    #define ETL_ASSERT(b, e) {if (b) {etl::error_handler::error((e)); throw((e);)}} // If the condition fails, calls the error handler then throws an exception.
+  #else
+    #define ETL_ASSERT(b, e) {if (b) {throw((e));}}                                 // If the condition fails, throws an exception.
+  #endif
 #else
   #if defined(NDEBUG)
-    #define ETL_ASSERT(b, e) (true)                                                // Does nothing. Evaluates to 'true'.
+    #define ETL_ASSERT(b, e)                                                        // Does nothing.
   #else
-    #define ETL_ASSERT(b, e) ((assert((b))), true)                                 // Asserts if the condition fails. Evaluates to 'true'.
+    #if defined(ETL_LOG_ERRORS)
+      #define ETL_ASSERT(b, e) {etl::error_handler::error((e)); assert((b));}       // If the condition fails, calls the error handler then asserts.
+    #else
+      #define ETL_ASSERT(b, e) assert((b))                                          // If the condition fails, asserts.
+    #endif
   #endif
 #endif
 

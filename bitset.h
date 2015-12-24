@@ -138,10 +138,8 @@ namespace etl
     //*************************************************************************
     bitset<N>& set(const char* text)
     {
-      if (ETL_ASSERT(text != 0, ETL_ERROR(bitset_nullptr)))
-      {
-        ibitset::set(text);
-      }
+      ETL_ASSERT(text != 0, ETL_ERROR(bitset_nullptr));
+      ibitset::set(text);
 
       return *this;
     }

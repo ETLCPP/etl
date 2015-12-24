@@ -221,26 +221,25 @@ namespace etl
     {
       std::pair<iterator, bool> result(end(), false);
 
-      if (ETL_ASSERT(!buffer.full(), ETL_ERROR(flat_multiset_full)))
+      ETL_ASSERT(!buffer.full(), ETL_ERROR(flat_multiset_full));
+
+      iterator i_element = std::lower_bound(begin(), end(), value, TKeyCompare());
+
+      if (i_element == end())
       {
-        iterator i_element = std::lower_bound(begin(), end(), value, TKeyCompare());
-
-        if (i_element == end())
-        {
-          // At the end.
-          buffer.push_back(value);
-          result.first = end() - 1;
-          result.second = true;
-        }
-        else
-        {
-          // Not at the end.
-          buffer.insert(i_element, value);
-          result.first = i_element;
-          result.second = true;
-        }
+        // At the end.
+        buffer.push_back(value);
+        result.first = end() - 1;
+        result.second = true;
       }
-
+      else
+      {
+        // Not at the end.
+        buffer.insert(i_element, value);
+        result.first = i_element;
+        result.second = true;
+      }
+      
       return result;
     }
 

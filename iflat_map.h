@@ -300,12 +300,10 @@ namespace etl
       if (i_element == end())
       {
         // At the end.
-        if (ETL_ASSERT(!buffer.full(), ETL_ERROR(flat_map_full)))
-        {
-          buffer.push_back(value);
-          result.first  = end() - 1;
-          result.second = true;
-        }
+        ETL_ASSERT(!buffer.full(), ETL_ERROR(flat_map_full));
+        buffer.push_back(value);
+        result.first  = end() - 1;
+        result.second = true;
       }
       else
       {
@@ -321,12 +319,10 @@ namespace etl
         else
         {
           // A new one.
-          if (ETL_ASSERT(!buffer.full(), ETL_ERROR(flat_map_full)))
-          {
-            buffer.insert(i_element, value);
-            result.first  = i_element;
-            result.second = true;
-          }
+          ETL_ASSERT(!buffer.full(), ETL_ERROR(flat_map_full));
+          buffer.insert(i_element, value);
+          result.first  = i_element;
+          result.second = true;
         }
       }
 

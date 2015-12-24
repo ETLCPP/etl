@@ -374,14 +374,13 @@ namespace etl
       // Add all of the elements.
       while (first != last)
       {
-        if (ETL_ASSERT(!full(), ETL_ERROR(forward_list_iterator)))
-        {
-          Data_Node& data_node = allocate_data_node(*first++);
-          join(p_last_node, &data_node);
-          data_node.next = nullptr;
-          p_last_node = &data_node;
-          ++current_size;
-        }
+        ETL_ASSERT(!full(), ETL_ERROR(forward_list_iterator));
+
+        Data_Node& data_node = allocate_data_node(*first++);
+        join(p_last_node, &data_node);
+        data_node.next = nullptr;
+        p_last_node = &data_node;
+        ++current_size;
       }
     }
 
@@ -390,21 +389,20 @@ namespace etl
     //*************************************************************************
     void assign(size_t n, parameter_t value)
     {
-      if (ETL_ASSERT(n <= MAX_SIZE, ETL_ERROR(forward_list_full)))
+      ETL_ASSERT(n <= MAX_SIZE, ETL_ERROR(forward_list_full));
+
+      initialise();
+
+      Node* p_last_node = &start_node;
+        
+      // Add all of the elements.
+      while (current_size < n)
       {
-        initialise();
-
-        Node* p_last_node = &start_node;
-
-        // Add all of the elements.
-        while (current_size < n)
-        {
-          Data_Node& data_node = allocate_data_node(value);
-          join(p_last_node, &data_node);
-          data_node.next = nullptr;
-          p_last_node = &data_node;
-          ++current_size;
-        }
+        Data_Node& data_node = allocate_data_node(value);
+        join(p_last_node, &data_node);
+        data_node.next = nullptr;
+        p_last_node = &data_node;
+        ++current_size;
       }
     }
 
@@ -413,11 +411,10 @@ namespace etl
     //*************************************************************************
     void push_front()
     {
-      if (ETL_ASSERT(!full(), ETL_ERROR(forward_list_full)))
-      {
-        Data_Node& data_node = allocate_data_node(T());
-        insert_node_after(start_node, data_node);
-      }
+      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
+
+      Data_Node& data_node = allocate_data_node(T());
+      insert_node_after(start_node, data_node);
     }
 
     //*************************************************************************
@@ -425,11 +422,10 @@ namespace etl
     //*************************************************************************
     void push_front(parameter_t value)
     {
-      if (ETL_ASSERT(!full(), ETL_ERROR(forward_list_full)))
-      {
-        Data_Node& data_node = allocate_data_node(value);
-        insert_node_after(start_node, data_node);
-      }
+      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
+
+      Data_Node& data_node = allocate_data_node(value);
+      insert_node_after(start_node, data_node);
     }
 
     //*************************************************************************
@@ -437,10 +433,8 @@ namespace etl
     //*************************************************************************
     void pop_front()
     {
-      if (!empty())
-      {
-        remove_node_after(start_node);
-      }
+      ETL_ASSERT(!full(), ETL_ERROR(forward_list_empty));
+      remove_node_after(start_node);
     }
 
     //*************************************************************************
@@ -458,33 +452,32 @@ namespace etl
     //*************************************************************************
     void resize(size_t n, T value)
     {
-      if (ETL_ASSERT(n <= MAX_SIZE, ETL_ERROR(forward_list_full)))
+      ETL_ASSERT(n <= MAX_SIZE, ETL_ERROR(forward_list_full));
+
+      size_t i = 0;
+      iterator i_node = begin();
+      iterator i_last_node;
+
+      // Find where we're currently at.
+      while ((i < n) && (i_node != end()))
       {
-        size_t i = 0;
-        iterator i_node = begin();
-        iterator i_last_node;
+        ++i;
+        i_last_node = i_node;
+        ++i_node;
+      }
 
-        // Find where we're currently at.
-        while ((i < n) && (i_node != end()))
+      if (i_node != end())
+      {
+        // Reduce.
+        erase_after(i_node, end());
+      }
+      else if (i_node == end())
+      {
+        // Increase.
+        while (i < n)
         {
+          i_last_node = insert_after(i_last_node, value);
           ++i;
-          i_last_node = i_node;
-          ++i_node;
-        }
-
-        if (i_node != end())
-        {
-          // Reduce.
-          erase_after(i_node, end());
-        }
-        else if (i_node == end())
-        {
-          // Increase.
-          while (i < n)
-          {
-            i_last_node = insert_after(i_last_node, value);
-            ++i;
-          }
         }
       }
     }
@@ -494,13 +487,12 @@ namespace etl
     //*************************************************************************
     iterator insert_after(iterator position, parameter_t value)
     {
-      if (ETL_ASSERT(!full(), ETL_ERROR(forward_list_full)))
-      {
-        Data_Node& data_node = allocate_data_node(value);
-        insert_node_after(*position.p_node, data_node);
+      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 
-        return iterator(data_node);
-      }
+      Data_Node& data_node = allocate_data_node(value);
+      insert_node_after(*position.p_node, data_node);
+
+      return iterator(data_node);
     }
 
     //*************************************************************************
@@ -508,14 +500,13 @@ namespace etl
     //*************************************************************************
     void insert_after(iterator position, size_t n, parameter_t value)
     {
-      if (ETL_ASSERT(!full(), ETL_ERROR(forward_list_full)))
+      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
+
+      for (size_t i = 0; !full() && (i < n); ++i)
       {
-        for (size_t i = 0; !full() && (i < n); ++i)
-        {
-          // Set up the next free node.
-          Data_Node& data_node = allocate_data_node(value);
-          insert_node(*position.p_node, data_node);
-        }
+        // Set up the next free node.
+        Data_Node& data_node = allocate_data_node(value);
+        insert_node(*position.p_node, data_node);
       }
     }
 

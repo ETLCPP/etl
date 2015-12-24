@@ -107,15 +107,13 @@ namespace etl
     void add(TIterator begin, const TIterator end)
     {
       STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
+      ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised));
 
-      if (ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised)))
+      while (begin != end)
       {
-        while (begin != end)
-        {
-          hash += *begin++;
-          hash += (hash << 10);
-          hash ^= (hash >> 6);
-        }
+        hash += *begin++;
+        hash += (hash << 10);
+        hash ^= (hash >> 6);
       }
     }
 
@@ -124,12 +122,11 @@ namespace etl
     //*************************************************************************
     void add(uint8_t value)
     {
-      if (ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised)))
-      {
-        hash += value;
-        hash += (hash << 10);
-        hash ^= (hash >> 6);
-      }
+      ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised));
+
+      hash += value;
+      hash += (hash << 10);
+      hash ^= (hash >> 6);
     }
 
     //*************************************************************************

@@ -114,12 +114,11 @@ namespace etl
     //*************************************************************************
     void push(parameter_t value)
     {
-      if (ETL_ASSERT(!full(), ETL_ERROR(queue_full)))
-      {
-        new(&p_buffer[in]) T(value);
-        in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
-        ++current_size;
-      }
+      ETL_ASSERT(!full(), ETL_ERROR(queue_full));
+
+      new(&p_buffer[in]) T(value);
+      in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
+      ++current_size;
     }
 
     //*************************************************************************
@@ -134,12 +133,11 @@ namespace etl
     {
       const size_type next = in;
 
-      if (ETL_ASSERT(!full(), ETL_ERROR(queue_full)))
-      {
-        new(&p_buffer[in]) T();
-        in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
-        ++current_size;
-      }
+      ETL_ASSERT(!full(), ETL_ERROR(queue_full));
+
+      new(&p_buffer[in]) T();
+      in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
+      ++current_size;
 
       return p_buffer[next];
     }
@@ -166,12 +164,11 @@ namespace etl
     //*************************************************************************
     void pop()
     {
-      if ETL_ASSERT(!empty(), ETL_ERROR(queue_empty))
-      {
-        p_buffer[out].~T();
-        out = (out == (MAX_SIZE - 1)) ? 0 : out + 1;
-        --current_size;
-      }
+      ETL_ASSERT(!empty(), ETL_ERROR(queue_empty));
+
+      p_buffer[out].~T();
+      out = (out == (MAX_SIZE - 1)) ? 0 : out + 1;
+      --current_size;
     }
 
   protected:

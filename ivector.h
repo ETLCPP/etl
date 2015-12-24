@@ -193,25 +193,24 @@ namespace etl
     //*********************************************************************
     void resize(size_t new_size)
     {
-      if (ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(vector_full)))
+      ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(vector_full));
+
+      // Size up or size down?
+      if (new_size > current_size)
       {
-        // Size up or size down?
-        if (new_size > current_size)
+        for (size_t i = current_size; i < new_size; ++i)
         {
-          for (size_t i = current_size; i < new_size; ++i)
+          while (current_size < new_size)
           {
-            while (current_size < new_size)
-            {
-              create_element();
-            }
+            create_element();
           }
         }
-        else if (new_size < current_size)
+      }
+      else if (new_size < current_size)
+      {
+        while (current_size > new_size)
         {
-          while (current_size > new_size)
-          {
-            destroy_element();
-          }
+          destroy_element();
         }
       }
     }
@@ -225,23 +224,22 @@ namespace etl
     //*********************************************************************
     void resize(size_t new_size, T value)
     {
-      if (ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(vector_full)))
+      ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(vector_full));
+
+      // Size up?
+      if (new_size > current_size)
       {
-        // Size up?
-        if (new_size > current_size)
+        while (current_size < new_size)
         {
-          while (current_size < new_size)
-          {
-            create_element(value);
-          }
+          create_element(value);
         }
-        // Size down?
-        else if (new_size < current_size)
+      }
+      // Size down?
+      else if (new_size < current_size)
+      {
+        while (current_size > new_size)
         {
-          while (current_size > new_size)
-          {
-            destroy_element();
-          }
+          destroy_element();
         }
       }
     }
@@ -380,13 +378,12 @@ namespace etl
     {
       initialise();
 
-      if (ETL_ASSERT(n <= MAX_SIZE, ETL_ERROR(vector_full)))
+      ETL_ASSERT(n <= MAX_SIZE, ETL_ERROR(vector_full));
+
+      while (n > 0)
       {
-        while (n > 0)
-        {
-          create_element(value);
-          --n;
-        }
+        create_element(value);
+        --n;
       }
     }
 
@@ -404,10 +401,8 @@ namespace etl
     //*************************************************************************
     void push_back()
     {
-      if (ETL_ASSERT(current_size != MAX_SIZE, ETL_ERROR(vector_full)))
-      {
-        create_element();
-      }
+      ETL_ASSERT(current_size != MAX_SIZE, ETL_ERROR(vector_full));
+      create_element();
     }
 
     //*********************************************************************
@@ -417,10 +412,8 @@ namespace etl
     //*********************************************************************
     void push_back(parameter_t value)
     {
-      if (ETL_ASSERT(current_size != MAX_SIZE, ETL_ERROR(vector_full)))
-      {
-        create_element(value);
-      }
+      ETL_ASSERT(current_size != MAX_SIZE, ETL_ERROR(vector_full));
+      create_element(value);
     }
 
     //*************************************************************************
@@ -429,10 +422,8 @@ namespace etl
     //*************************************************************************
     void pop_back()
     {
-      if (current_size > 0)
-      {
-        destroy_element();
-      }
+      ETL_ASSERT(current_size > 0, ETL_ERROR(vector_empty));
+      destroy_element();
     }
 
     //*********************************************************************
@@ -443,15 +434,14 @@ namespace etl
     //*********************************************************************
     iterator insert(iterator position, parameter_t value)
     {
-      if (ETL_ASSERT((current_size) + 1 <= MAX_SIZE, ETL_ERROR(vector_full)))
-      {
-        create_element(value);
+      ETL_ASSERT((current_size)+1 <= MAX_SIZE, ETL_ERROR(vector_full));
 
-        if (position != end())
-        {
-          std::copy_backward(position, end() - 1, end());
-          *position = value;
-        }
+      create_element(value);
+
+      if (position != end())
+      {
+        std::copy_backward(position, end() - 1, end());
+        *position = value;
       }
 
       return position;
@@ -466,54 +456,53 @@ namespace etl
     //*********************************************************************
     void insert(iterator position, size_t n, parameter_t value)
     {
-      if (ETL_ASSERT((current_size) + 1 <= MAX_SIZE, ETL_ERROR(vector_full)))
+      ETL_ASSERT((current_size)+1 <= MAX_SIZE, ETL_ERROR(vector_full));
+
+      if (position == end())
       {
-        if (position == end())
+        while (n > 0)
         {
-          while (n > 0)
-          {
-            create_element(value);
-            --n;
-          }
+          create_element(value);
+          --n;
         }
-        else
+      }
+      else
+      {
+        size_t insert_index  = std::distance(begin(), position);
+        size_t n_insert      = n;
+        size_t n_move        = std::distance(position, end());
+        size_t n_create_copy = std::min(n_insert, n_move);
+        size_t n_create_new  = (n_insert > n_create_copy) ? n_insert - n_create_copy : 0;
+        size_t n_copy_new    = (n_insert > n_create_new) ? n_insert - n_create_new : 0;
+        size_t n_copy_old    = (size() > n_insert) ? size() - n_insert : 0;
+
+        // Create copy (backwards).
+        size_t from = size() - 1;
+        size_t to   = from + n_insert;
+
+        for (size_t i = 0; i < n_create_copy; ++i)
         {
-          size_t insert_index  = std::distance(begin(), position);
-          size_t n_insert      = n;
-          size_t n_move        = std::distance(position, end());
-          size_t n_create_copy = std::min(n_insert, n_move);
-          size_t n_create_new  = (n_insert > n_create_copy) ? n_insert - n_create_copy : 0;
-          size_t n_copy_new    = (n_insert > n_create_new) ? n_insert - n_create_new : 0;
-          size_t n_copy_old    = (size() > n_insert) ? size() - n_insert : 0;
-
-          // Create copy (backwards).
-          size_t from = size() - 1;
-          size_t to   = from + n_insert;
-
-          for (size_t i = 0; i < n_create_copy; ++i)
-          {
-            create_element_at(to--, p_buffer[from--]);
-          }
-
-          // Copy old.
-          from = insert_index;
-          to   = from + n_insert;
-          etl::copy_n(&p_buffer[from], n_copy_old, &p_buffer[to]);
-
-          // Copy new.
-          to = insert_index;
-          std::fill_n(&p_buffer[to], n_copy_new, value);
-
-          // Create new.
-          to = size();
-
-          for (size_t i = 0; i < n_create_new; ++i)
-          {
-            create_element_at(to++, value);
-          }
-
-          current_size += n_insert;
+          create_element_at(to--, p_buffer[from--]);
         }
+
+        // Copy old.
+        from = insert_index;
+        to   = from + n_insert;
+        etl::copy_n(&p_buffer[from], n_copy_old, &p_buffer[to]);
+
+        // Copy new.
+        to = insert_index;
+        std::fill_n(&p_buffer[to], n_copy_new, value);
+
+        // Create new.
+        to = size();
+
+        for (size_t i = 0; i < n_create_new; ++i)
+        {
+          create_element_at(to++, value);
+        }
+
+        current_size += n_insert;
       }
     }
 
@@ -529,55 +518,54 @@ namespace etl
     {
       size_t count = std::distance(first, last);
 
-      if (ETL_ASSERT((current_size) + count <= MAX_SIZE, ETL_ERROR(vector_full)))
+      ETL_ASSERT((current_size)+count <= MAX_SIZE, ETL_ERROR(vector_full));
+
+      if (position == end())
       {
-        if (position == end())
+        while (first != last)
         {
-          while (first != last)
-          {
-            create_element(*first);
-            ++first;
-          }
+          create_element(*first);
+          ++first;
         }
-        else
+      }
+      else
+      {
+        size_t insert_index  = std::distance(begin(), position);
+        size_t n_insert      = count;
+        size_t n_move        = std::distance(position, end());
+        size_t n_create_copy = std::min(n_insert, n_move);
+        size_t n_create_new  = (n_insert > n_create_copy) ? n_insert - n_create_copy : 0;
+        size_t n_copy_new    = (n_insert > n_create_new) ? n_insert - n_create_new : 0;
+        size_t n_copy_old    = (size() > n_insert) ? size() - n_insert : 0;
+
+        // Create copy (backwards).
+        size_t from = size() - 1;
+        size_t to   = from + n_insert;
+
+        for (size_t i = 0; i < n_create_copy; ++i)
         {
-          size_t insert_index  = std::distance(begin(), position);
-          size_t n_insert      = count;
-          size_t n_move        = std::distance(position, end());
-          size_t n_create_copy = std::min(n_insert, n_move);
-          size_t n_create_new  = (n_insert > n_create_copy) ? n_insert - n_create_copy : 0;
-          size_t n_copy_new    = (n_insert > n_create_new) ? n_insert - n_create_new : 0;
-          size_t n_copy_old    = (size() > n_insert) ? size() - n_insert : 0;
-
-          // Create copy (backwards).
-          size_t from = size() - 1;
-          size_t to   = from + n_insert;
-
-          for (size_t i = 0; i < n_create_copy; ++i)
-          {
-            create_element_at(to--, p_buffer[from--]);
-          }
-
-          // Copy old.
-          from = insert_index;
-          to   = from + n_insert;
-          etl::copy_n(&p_buffer[from], n_copy_old, &p_buffer[to]);
-
-          // Copy new.
-          to = insert_index;
-          etl::copy_n(first, n_copy_new, &p_buffer[to]);
-          first += n_copy_new;
-
-          // Create new.
-          to = size();
-          for (size_t i = 0; i < n_create_new; ++i)
-          {
-            create_element_at(to++, *first);
-            ++first;
-          }
-
-          current_size += n_insert;
+          create_element_at(to--, p_buffer[from--]);
         }
+
+        // Copy old.
+        from = insert_index;
+        to   = from + n_insert;
+        etl::copy_n(&p_buffer[from], n_copy_old, &p_buffer[to]);
+
+        // Copy new.
+        to = insert_index;
+        etl::copy_n(first, n_copy_new, &p_buffer[to]);
+        first += n_copy_new;
+
+        // Create new.
+        to = size();
+        for (size_t i = 0; i < n_create_new; ++i)
+        {
+          create_element_at(to++, *first);
+          ++first;
+        }
+
+        current_size += n_insert;
       }
     }
 

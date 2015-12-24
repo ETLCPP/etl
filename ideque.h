@@ -492,18 +492,17 @@ namespace etl
     //*************************************************************************
     void assign(size_type n, const value_type& value)
     {
-      if (ETL_ASSERT(n <= MAX_SIZE, ETL_ERROR(deque_full)))
+      ETL_ASSERT(n <= MAX_SIZE, ETL_ERROR(deque_full));
+
+      initialise();
+
+      _begin.index = 0;
+      _end.index = 0;
+
+      while (n > 0)
       {
-        initialise();
-
-        _begin.index = 0;
-        _end.index = 0;
-
-        while (n > 0)
-        {
-          create_element_back(value);
-          --n;
-        }
+        create_element_back(value);
+        --n;
       }
     }
 
@@ -711,43 +710,42 @@ namespace etl
     {
       iterator position(insert_position.index, *this, p_buffer);
 
-      if (ETL_ASSERT(!full(), ETL_ERROR(deque_full)))
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+
+      if (insert_position == begin())
       {
-        if (insert_position == begin())
+        create_element_front(value);
+        position = _begin;
+      }
+      else if (insert_position == end())
+      {
+        create_element_back(value);
+        position = _end - 1;
+      }
+      else
+      {
+        // Are we closer to the front?
+        if (std::distance(_begin, position) < std::distance(position, _end - 1))
         {
-          create_element_front(value);
-          position = _begin;
-        }
-        else if (insert_position == end())
-        {
-          create_element_back(value);
-          position = _end - 1;
+          // Construct the _begin.
+          create_element_front(*_begin);
+
+          // Move the values.
+          std::copy(_begin + 1, position, _begin);
+
+          // Write the new value.
+          *--position = value;
         }
         else
         {
-          // Are we closer to the front?
-          if (std::distance(_begin, position) < std::distance(position, _end - 1))
-          {
-            // Construct the _begin.
-            create_element_front(*_begin);
-
-            // Move the values.
-            std::copy(_begin + 1, position, _begin);
-
-            // Write the new value.
-            *--position = value;
-          }
-          else
-          {
-            // Construct the _end.
-            create_element_back(*(_end - 1));
+          // Construct the _end.
+          create_element_back(*(_end - 1));
             
-            // Move the values.
-            std::copy_backward(position, _end - 2, _end - 1);
+          // Move the values.
+          std::copy_backward(position, _end - 2, _end - 1);
 
-            // Write the new value.
-            *position = value;
-          }
+          // Write the new value.
+          *position = value;
         }
       }
 
@@ -765,99 +763,98 @@ namespace etl
     {
       iterator position;
 
-      if (ETL_ASSERT((current_size + n) <= MAX_SIZE, ETL_ERROR(deque_full)))
+      ETL_ASSERT((current_size + n) <= MAX_SIZE, ETL_ERROR(deque_full));
+
+      if (insert_position == begin())
       {
-        if (insert_position == begin())
+        for (size_t i = 0; i < n; ++i)
         {
-          for (size_t i = 0; i < n; ++i)
+          create_element_front(value);
+        }
+          
+        position = _begin;
+      }
+      else if (insert_position == end())
+      {
+        for (size_t i = 0; i < n; ++i)
+        {
+          create_element_back(value);
+        }
+
+        position = _end - n;
+      }
+      else
+      {
+        // Non-const insert iterator.
+        position = iterator(insert_position.index, *this, p_buffer);
+
+        // Are we closer to the front?
+        if (distance(_begin, insert_position) <= difference_type(current_size / 2))
+        {
+          size_t insert_index  = std::distance(begin(), position);
+          size_t n_insert      = n;
+          size_t n_move        = std::distance(begin(), position);
+          size_t n_create_copy = std::min(n_insert, n_move);
+          size_t n_create_new  = (n_insert > n_create_copy) ? n_insert - n_create_copy : 0;
+          size_t n_copy_new    = (n_insert > n_create_new) ? n_insert - n_create_new : 0;
+          size_t n_copy_old    = n_move - n_create_copy;
+
+          // Remember the original start.
+          iterator from = _begin + n_create_copy - 1;
+          iterator to;
+
+          // Create new.
+          for (size_t i = 0; i < n_create_new; ++i)
           {
             create_element_front(value);
           }
-          
-          position = _begin;
+
+          // Create copy.
+          for (size_t i = 0; i < n_create_copy; ++i)
+          {
+            create_element_front(*from--);
+          }
+
+          // Copy old.
+          from = position - n_copy_old;
+          to   = _begin + n_create_copy;
+          etl::copy_n(from, n_copy_old, to);
+
+          // Copy new.
+          to = position - n_create_copy;
+          std::fill_n(to, n_copy_new, value);
+
+          position = _begin + n_move;
         }
-        else if (insert_position == end())
+        else
         {
-          for (size_t i = 0; i < n; ++i)
+          size_t insert_index  = std::distance(begin(), position);
+          size_t n_insert      = n;
+          size_t n_move        = std::distance(position, end());
+          size_t n_create_copy = std::min(n_insert, n_move);
+          size_t n_create_new  = (n_insert > n_create_copy) ? n_insert - n_create_copy : 0;
+          size_t n_copy_new    = (n_insert > n_create_new) ? n_insert - n_create_new : 0;
+          size_t n_copy_old    = n_move - n_create_copy;
+
+          // Create new.
+          for (size_t i = 0; i < n_create_new; ++i)
           {
             create_element_back(value);
           }
 
-          position = _end - n;
-        }
-        else
-        {
-          // Non-const insert iterator.
-          position = iterator(insert_position.index, *this, p_buffer);
+          // Create copy.
+          const_iterator from = position + n_copy_old;
 
-          // Are we closer to the front?
-          if (distance(_begin, insert_position) <= difference_type(current_size / 2))
+          for (size_t i = 0; i < n_create_copy; ++i)
           {
-            size_t insert_index  = std::distance(begin(), position);
-            size_t n_insert      = n;
-            size_t n_move        = std::distance(begin(), position);
-            size_t n_create_copy = std::min(n_insert, n_move);
-            size_t n_create_new  = (n_insert > n_create_copy) ? n_insert - n_create_copy : 0;
-            size_t n_copy_new    = (n_insert > n_create_new) ? n_insert - n_create_new : 0;
-            size_t n_copy_old    = n_move - n_create_copy;
-
-            // Remember the original start.
-            iterator from = _begin + n_create_copy - 1;
-            iterator to;
-
-            // Create new.
-            for (size_t i = 0; i < n_create_new; ++i)
-            {
-              create_element_front(value);
-            }
-
-            // Create copy.
-            for (size_t i = 0; i < n_create_copy; ++i)
-            {
-              create_element_front(*from--);
-            }
-
-            // Copy old.
-            from = position - n_copy_old;
-            to   = _begin + n_create_copy;
-            etl::copy_n(from, n_copy_old, to);
-
-            // Copy new.
-            to = position - n_create_copy;
-            std::fill_n(to, n_copy_new, value);
-
-            position = _begin + n_move;
+            create_element_back(*from++);
           }
-          else
-          {
-            size_t insert_index  = std::distance(begin(), position);
-            size_t n_insert      = n;
-            size_t n_move        = std::distance(position, end());
-            size_t n_create_copy = std::min(n_insert, n_move);
-            size_t n_create_new  = (n_insert > n_create_copy) ? n_insert - n_create_copy : 0;
-            size_t n_copy_new    = (n_insert > n_create_new) ? n_insert - n_create_new : 0;
-            size_t n_copy_old    = n_move - n_create_copy;
 
-            // Create new.
-            for (size_t i = 0; i < n_create_new; ++i)
-            {
-              create_element_back(value);
-            }
+          // Copy old.
+          std::copy_backward(position, position + n_copy_old, position + n_insert + n_copy_old);
 
-            // Create copy.
-            const_iterator from = position + n_copy_old;
-
-            for (size_t i = 0; i < n_create_copy; ++i)
-            {
-              create_element_back(*from++);
-            }
-
-            // Copy old.
-            std::copy_backward(position, position + n_copy_old, position + n_insert + n_copy_old);
-
-            // Copy new.
-            std::fill_n(position, n_copy_new, value);
-          }
+          // Copy new.
+          std::fill_n(position, n_copy_new, value);
         }
       }
 
@@ -879,93 +876,92 @@ namespace etl
 
       difference_type n = std::distance(range_begin, range_end);
 
-      if (ETL_ASSERT((current_size + n) <= MAX_SIZE, ETL_ERROR(deque_full)))
+      ETL_ASSERT((current_size + n) <= MAX_SIZE, ETL_ERROR(deque_full));
+
+      if (insert_position == begin())
       {
-        if (insert_position == begin())
-        {
-          create_element_front(n, range_begin);
+        create_element_front(n, range_begin);
 
-          position = _begin;
+        position = _begin;
+      }
+      else if (insert_position == end())
+      {
+        for (difference_type i = 0; i < n; ++i)
+        {
+          create_element_back(*range_begin++);
         }
-        else if (insert_position == end())
-        {
-          for (difference_type i = 0; i < n; ++i)
-          {
-            create_element_back(*range_begin++);
-          }
 
-          position = _end - n;
+        position = _end - n;
+      }
+      else
+      {
+        // Non-const insert iterator.
+        position = iterator(insert_position.index, *this, p_buffer);
+
+        // Are we closer to the front?
+        if (distance(_begin, insert_position) < difference_type(current_size / 2))
+        {
+          size_t insert_index  = std::distance(begin(), position);
+          size_t n_insert      = n;
+          size_t n_move        = std::distance(begin(), position);
+          size_t n_create_copy = std::min(n_insert, n_move);
+          size_t n_create_new  = (n_insert > n_create_copy) ? n_insert - n_create_copy : 0;
+          size_t n_copy_new    = (n_insert > n_create_new) ? n_insert - n_create_new : 0;
+          size_t n_copy_old    = n_move - n_create_copy;
+
+          // Remember the original start.
+          iterator from;
+          iterator to;
+
+          // Create new.
+          create_element_front(n_create_new, range_begin);
+
+          // Create copy.
+          create_element_front(n_create_copy, _begin + n_create_new);
+
+          // Copy old.
+          from = position - n_copy_old;
+          to   = _begin + n_create_copy;
+          etl::copy_n(from, n_copy_old, to);
+
+          // Copy new.
+          to = position - n_create_copy;
+          range_begin += n_create_new;
+          etl::copy_n(range_begin, n_copy_new, to);
+
+          position = _begin + n_move;
         }
         else
         {
-          // Non-const insert iterator.
-          position = iterator(insert_position.index, *this, p_buffer);
+          size_t insert_index  = std::distance(begin(), position);
+          size_t n_insert      = n;
+          size_t n_move        = std::distance(position, end());
+          size_t n_create_copy = std::min(n_insert, n_move);
+          size_t n_create_new  = (n_insert > n_create_copy) ? n_insert - n_create_copy : 0;
+          size_t n_copy_new    = (n_insert > n_create_new) ? n_insert - n_create_new : 0;
+          size_t n_copy_old    = n_move - n_create_copy;
 
-          // Are we closer to the front?
-          if (distance(_begin, insert_position) < difference_type(current_size / 2))
+          // Create new.
+          TIterator item = range_begin + (n - n_create_new);
+          for (size_t i = 0; i < n_create_new; ++i)
           {
-            size_t insert_index  = std::distance(begin(), position);
-            size_t n_insert      = n;
-            size_t n_move        = std::distance(begin(), position);
-            size_t n_create_copy = std::min(n_insert, n_move);
-            size_t n_create_new  = (n_insert > n_create_copy) ? n_insert - n_create_copy : 0;
-            size_t n_copy_new    = (n_insert > n_create_new) ? n_insert - n_create_new : 0;
-            size_t n_copy_old    = n_move - n_create_copy;
-
-            // Remember the original start.
-            iterator from;
-            iterator to;
-
-            // Create new.
-            create_element_front(n_create_new, range_begin);
-
-            // Create copy.
-            create_element_front(n_create_copy, _begin + n_create_new);
-
-            // Copy old.
-            from = position - n_copy_old;
-            to   = _begin + n_create_copy;
-            etl::copy_n(from, n_copy_old, to);
-
-            // Copy new.
-            to = position - n_create_copy;
-            range_begin += n_create_new;
-            etl::copy_n(range_begin, n_copy_new, to);
-
-            position = _begin + n_move;
+            create_element_back(*item++);
           }
-          else
+
+          // Create copy.
+          const_iterator from = position + n_copy_old;
+
+          for (size_t i = 0; i < n_create_copy; ++i)
           {
-            size_t insert_index  = std::distance(begin(), position);
-            size_t n_insert      = n;
-            size_t n_move        = std::distance(position, end());
-            size_t n_create_copy = std::min(n_insert, n_move);
-            size_t n_create_new  = (n_insert > n_create_copy) ? n_insert - n_create_copy : 0;
-            size_t n_copy_new    = (n_insert > n_create_new) ? n_insert - n_create_new : 0;
-            size_t n_copy_old    = n_move - n_create_copy;
-
-            // Create new.
-            TIterator item = range_begin + (n - n_create_new);
-            for (size_t i = 0; i < n_create_new; ++i)
-            {
-              create_element_back(*item++);
-            }
-
-            // Create copy.
-            const_iterator from = position + n_copy_old;
-
-            for (size_t i = 0; i < n_create_copy; ++i)
-            {
-              create_element_back(*from++);
-            }
-
-            // Copy old.
-            std::copy_backward(position, position + n_copy_old, position + n_insert + n_copy_old);
-
-            // Copy new.
-            item = range_begin;
-            etl::copy_n(item, n_copy_new, position);
+            create_element_back(*from++);
           }
+
+          // Copy old.
+          std::copy_backward(position, position + n_copy_old, position + n_insert + n_copy_old);
+
+          // Copy new.
+          item = range_begin;
+          etl::copy_n(item, n_copy_new, position);
         }
       }
 
@@ -981,32 +977,31 @@ namespace etl
     {
       iterator position(erase_position.index, *this, p_buffer);
 
-      if (ETL_ASSERT(distance(position) <= difference_type(current_size), ETL_ERROR(deque_out_of_bounds)))
+      ETL_ASSERT(distance(position) <= difference_type(current_size), ETL_ERROR(deque_out_of_bounds));
+
+      if (position == _begin)
       {
-        if (position == _begin)
+        destroy_element_front();
+        position = begin();
+      }
+      else if (position == _end - 1)
+      {
+        destroy_element_back();
+        position = end();
+      }
+      else
+      {
+        // Are we closer to the front?
+        if (distance(_begin, position) < difference_type(current_size / 2))
         {
+          std::copy_backward(_begin, position, position + 1);
           destroy_element_front();
-          position = begin();
-        }
-        else if (position == _end - 1)
-        {
-          destroy_element_back();
-          position = end();
+          ++position;
         }
         else
         {
-          // Are we closer to the front?
-          if (distance(_begin, position) < difference_type(current_size / 2))
-          {
-            std::copy_backward(_begin, position, position + 1);
-            destroy_element_front();
-            ++position;
-          }
-          else
-          {
-            std::copy(position + 1, _end, position);
-            destroy_element_back();
-          }
+          std::copy(position + 1, _end, position);
+          destroy_element_back();
         }
       }
 
@@ -1023,57 +1018,56 @@ namespace etl
     {
       iterator position(range_begin.index, *this, p_buffer);
 
-      if (ETL_ASSERT((distance(range_begin) <= difference_type(current_size)) && (distance(range_end) <= difference_type(current_size)), ETL_ERROR(deque_out_of_bounds)))
-      {
-        // How many to erase?
-        size_t length = std::distance(range_begin, range_end);
+      ETL_ASSERT((distance(range_begin) <= difference_type(current_size)) && (distance(range_end) <= difference_type(current_size)), ETL_ERROR(deque_out_of_bounds));
 
-        // At the beginning?
-        if (position == _begin)
+      // How many to erase?
+      size_t length = std::distance(range_begin, range_end);
+
+      // At the beginning?
+      if (position == _begin)
+      {
+        for (size_t i = 0; i < length; ++i)
         {
+          destroy_element_front();
+        }
+
+        position = begin();
+      }
+      // At the end?
+      else if (position == _end - length)
+      {
+        for (size_t i = 0; i < length; ++i)
+        {
+          destroy_element_back();
+        }
+
+        position = end();
+      }
+      else
+      {         
+        // Copy the smallest number of items.
+        // Are we closer to the front?
+        if (distance(_begin, position) < difference_type(current_size / 2))
+        {
+          // Move the items.
+          std::copy_backward(_begin, position, position + length);
+            
           for (size_t i = 0; i < length; ++i)
           {
             destroy_element_front();
           }
 
-          position = begin();
+          position += length;
         }
-        // At the end?
-        else if (position == _end - length)
+        else
+        // Must be closer to the back.
         {
+          // Move the items.
+          std::copy(position + length, _end, position);
+            
           for (size_t i = 0; i < length; ++i)
           {
             destroy_element_back();
-          }
-
-          position = end();
-        }
-        else
-        {         
-          // Copy the smallest number of items.
-          // Are we closer to the front?
-          if (distance(_begin, position) < difference_type(current_size / 2))
-          {
-            // Move the items.
-            std::copy_backward(_begin, position, position + length);
-            
-            for (size_t i = 0; i < length; ++i)
-            {
-              destroy_element_front();
-            }
-
-            position += length;
-          }
-          else
-          // Must be closer to the back.
-          {
-            // Move the items.
-            std::copy(position + length, _end, position);
-            
-            for (size_t i = 0; i < length; ++i)
-            {
-              destroy_element_back();
-            }
           }
         }
       }
@@ -1088,10 +1082,8 @@ namespace etl
     //*************************************************************************
     void push_back(parameter_t item)
     {
-      if (ETL_ASSERT(!full(), ETL_ERROR(deque_full)))
-      {
-        create_element_back(item);
-      } 
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+      create_element_back(item);
     }
 
     //*************************************************************************
@@ -1103,10 +1095,8 @@ namespace etl
     {
       reference r = *_end;
 
-      if (ETL_ASSERT(!full(), ETL_ERROR(deque_full)))
-      {
-        create_element_back();
-      }
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+      create_element_back();
 
       return r;
     }
@@ -1116,10 +1106,8 @@ namespace etl
     //*************************************************************************
     void pop_back()
     {
-      if (!empty())
-      {
-        destroy_element_back();
-      }
+      ETL_ASSERT(!empty(), ETL_ERROR(deque_empty));
+      destroy_element_back();
     }
 
     //*************************************************************************
@@ -1129,10 +1117,8 @@ namespace etl
     //*************************************************************************
     void push_front(parameter_t item)
     {
-      if (ETL_ASSERT(!full(), ETL_ERROR(deque_full)))
-      {
-        create_element_front(item);
-      }
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+      create_element_front(item);
     }
 
     //*************************************************************************
@@ -1142,10 +1128,8 @@ namespace etl
     //*************************************************************************
     reference push_front()
     {
-      if (ETL_ASSERT(!full(), ETL_ERROR(deque_full)))
-      {
-        create_element_front();
-      }
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+      create_element_front();
 
       return *_begin;
     }
@@ -1155,10 +1139,8 @@ namespace etl
     //*************************************************************************
     void pop_front()
     {
-      if (!empty())
-      {
-        destroy_element_front();
-      }
+      ETL_ASSERT(!empty(), ETL_ERROR(deque_empty));
+      destroy_element_front();
     }
 
     //*************************************************************************
@@ -1169,25 +1151,24 @@ namespace etl
     //*************************************************************************
     void resize(size_t new_size, const value_type& value = value_type())
     {
-      if (ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(deque_out_of_bounds)))
-      {
-        // Make it smaller?
-        if (new_size < current_size)
-        {
-          while (current_size > new_size)
-          {
-            destroy_element_back();
-          }
-        }
-        // Make it larger?
-        else if (new_size > current_size)
-        {
-          size_t count = new_size - current_size;
+      ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(deque_out_of_bounds));
 
-          for (size_t i = 0; i < count; ++i)
-          {
-            create_element_back(value);
-          }
+      // Make it smaller?
+      if (new_size < current_size)
+      {
+        while (current_size > new_size)
+        {
+          destroy_element_back();
+        }
+      }
+      // Make it larger?
+      else if (new_size > current_size)
+      {
+        size_t count = new_size - current_size;
+
+        for (size_t i = 0; i < count; ++i)
+        {
+          create_element_back(value);
         }
       }
     }
