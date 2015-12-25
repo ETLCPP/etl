@@ -54,7 +54,7 @@ namespace etl
     //*************************************************************************
     /// Callback class for free handler functions.
     //*************************************************************************
-    struct free_function : public function<void, const etl::exception&>
+    struct free_function : public etl::function<void, const etl::exception&>
     {
       free_function(void (*p_function)(const etl::exception&))
         : etl::function<void, const etl::exception&>(p_function)
@@ -84,7 +84,7 @@ namespace etl
 }
 
 //***************************************************************************
-/// Asserts a coondition.
+/// Asserts a condition.
 /// Versions of the macro that return a constant value of 'true' will allow the compiler to optimise away
 /// any 'if' statements that it is contained within.
 /// If ETL_NO_CHECKS is defined then no runtime checks are executed at all. 
@@ -94,35 +94,35 @@ namespace etl
 ///\ingroup error_handler
 //***************************************************************************
 #if defined(ETL_NO_CHECKS)
-  #define ETL_ASSERT(b, e)                                                          // Does nothing.
+  #define ETL_ASSERT(b, e)                                                             // Does nothing.
 #elif defined(ETL_THROW_EXCEPTIONS)
   #if defined(ETL_LOG_ERRORS)
-    #define ETL_ASSERT(b, e) {if (b) {etl::error_handler::error((e)); throw((e);)}} // If the condition fails, calls the error handler then throws an exception.
+    #define ETL_ASSERT(b, e) {if (!(b)) {etl::error_handler::error((e)); throw((e);)}} // If the condition fails, calls the error handler then throws an exception.
   #else
-    #define ETL_ASSERT(b, e) {if (b) {throw((e));}}                                 // If the condition fails, throws an exception.
+    #define ETL_ASSERT(b, e) {if (!(b)) {throw((e));}}                                 // If the condition fails, throws an exception.
   #endif
 #else
   #if defined(NDEBUG)
-    #define ETL_ASSERT(b, e)                                                        // Does nothing.
+    #define ETL_ASSERT(b, e)                                                           // Does nothing.
   #else
     #if defined(ETL_LOG_ERRORS)
-      #define ETL_ASSERT(b, e) {etl::error_handler::error((e)); assert((b));}       // If the condition fails, calls the error handler then asserts.
+      #define ETL_ASSERT(b, e) {etl::error_handler::error((e)); assert((b));}          // If the condition fails, calls the error handler then asserts.
     #else
-      #define ETL_ASSERT(b, e) assert((b))                                          // If the condition fails, asserts.
+      #define ETL_ASSERT(b, e) assert((b))                                             // If the condition fails, asserts.
     #endif
   #endif
 #endif
 
 #if defined(ETL_VERBOSE_ERRORS)
-#define ETL_ERROR(e) (e(__FILE__, __LINE__)) // Make an exception with the file name and line number.
+  #define ETL_ERROR(e) (e(__FILE__, __LINE__)) // Make an exception with the file name and line number.
 #else
-#define ETL_ERROR(e) (e("", __LINE__))       // Make an exception with the line number.
+  #define ETL_ERROR(e) (e("", __LINE__))       // Make an exception with the line number.
 #endif
 
 #if defined(ETL_VERBOSE_ERRORS)
-#define ETL_ERROR_TEXT(verbose_text, terse_text) (verbose_text) // Use the verbose text. 
+  #define ETL_ERROR_TEXT(verbose_text, terse_text) (verbose_text) // Use the verbose text. 
 #else
-#define ETL_ERROR_TEXT(verbose_text, terse_text) (terse_text)   // Use the terse text.
+  #define ETL_ERROR_TEXT(verbose_text, terse_text) (terse_text)   // Use the terse text.
 #endif
 
 #endif
