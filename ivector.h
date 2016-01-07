@@ -401,7 +401,9 @@ namespace etl
     //*************************************************************************
     void push_back()
     {
+#if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(current_size != MAX_SIZE, ETL_ERROR(vector_full));
+#endif
       create_element();
     }
 
@@ -412,7 +414,9 @@ namespace etl
     //*********************************************************************
     void push_back(parameter_t value)
     {
+#if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(current_size != MAX_SIZE, ETL_ERROR(vector_full));
+#endif
       create_element(value);
     }
 
@@ -422,7 +426,9 @@ namespace etl
     //*************************************************************************
     void pop_back()
     {
+#if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(current_size > 0, ETL_ERROR(vector_empty));
+#endif
       destroy_element();
     }
 

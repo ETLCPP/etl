@@ -495,8 +495,9 @@ namespace etl
     //*************************************************************************
     void push_front()
     {
+#if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(list_full));
-
+#endif
       Data_Node& data_node = allocate_data_node(T());
       insert_node(get_head(), data_node);
     }
@@ -506,8 +507,9 @@ namespace etl
     //*************************************************************************
     void push_front(parameter_t value)
     {
+#if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(list_full));
-
+#endif
       Node& data_node = allocate_data_node(value);
       insert_node(get_head(), data_node);
     }
@@ -517,8 +519,9 @@ namespace etl
     //*************************************************************************
     void pop_front()
     {
+#if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!empty(), ETL_ERROR(list_empty));
-
+#endif
       Node& node = get_head();
       remove_node(node);
     }
@@ -528,8 +531,9 @@ namespace etl
     //*************************************************************************
     void push_back()
     {
+#if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(list_full));
-
+#endif
       Data_Node& data_node = allocate_data_node(T());
       insert_node(terminal_node, data_node);
     }
@@ -539,8 +543,9 @@ namespace etl
     //*************************************************************************
     void push_back(parameter_t value)
     {
+#if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(list_full));
-
+#endif
       Data_Node& data_node = allocate_data_node(value);
       insert_node(terminal_node, data_node);
     }
@@ -550,8 +555,9 @@ namespace etl
     //*************************************************************************
     void pop_back()
     {
+#if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!empty(), ETL_ERROR(list_empty));
-
+#endif
     	Node& node = get_tail();
       remove_node(node);
     }

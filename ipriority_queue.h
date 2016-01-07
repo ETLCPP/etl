@@ -65,6 +65,7 @@ namespace etl
 
     typedef T                     value_type;         ///< The type stored in the queue.
     typedef TContainer            container_type;     ///< The container type used for priority queue.
+    typedef TCompare              compare_type;       ///< The comparison type.
     typedef T&                    reference;          ///< A reference to the type used in the queue.
     typedef const T&              const_reference;    ///< A const reference to the type used in the queue.
     typedef priority_queue_base::size_type size_type; ///< The type used for determining the size of the queue.

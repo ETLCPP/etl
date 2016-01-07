@@ -86,8 +86,9 @@ namespace etl
     //*************************************************************************
     void push(parameter_t value)
     {
+#if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(stack_full));
-
+#endif
       top_index = current_size++;
       new(&p_buffer[top_index]) T(value);
     }
@@ -101,8 +102,9 @@ namespace etl
     //*************************************************************************
     reference push()
     {
+#if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(stack_full));
-
+#endif
       top_index = current_size++;
       new(&p_buffer[top_index]) T();
 
@@ -137,8 +139,9 @@ namespace etl
     //*************************************************************************
     void pop()
     {
+#if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!empty(), ETL_ERROR(stack_empty));
-
+#endif
       p_buffer[top_index].~T();
       --top_index;
       --current_size;

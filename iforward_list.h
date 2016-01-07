@@ -411,8 +411,9 @@ namespace etl
     //*************************************************************************
     void push_front()
     {
+#if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
-
+#endif
       Data_Node& data_node = allocate_data_node(T());
       insert_node_after(start_node, data_node);
     }
@@ -422,8 +423,9 @@ namespace etl
     //*************************************************************************
     void push_front(parameter_t value)
     {
+#if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
-
+#endif
       Data_Node& data_node = allocate_data_node(value);
       insert_node_after(start_node, data_node);
     }
@@ -433,7 +435,9 @@ namespace etl
     //*************************************************************************
     void pop_front()
     {
+#if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_empty));
+#endif
       remove_node_after(start_node);
     }
 
