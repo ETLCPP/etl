@@ -325,6 +325,30 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_interface)
+    {
+      typedef etl::priority_queue<int, SIZE> priority_queue_t;
+      priority_queue_t priority_queue;
+      etl::ipriority_queue<int, priority_queue_t::container_type, priority_queue_t::compare_type>& ipriority_queue = priority_queue;
+
+      std::priority_queue<int> compare_priority_queue;
+
+      ipriority_queue.push(1);
+      compare_priority_queue.push(1);
+
+      ipriority_queue.push(2);
+      compare_priority_queue.push(2);
+
+      ipriority_queue.push(3);
+      compare_priority_queue.push(3);
+
+      ipriority_queue.push(4);
+      compare_priority_queue.push(4);
+      CHECK_EQUAL(compare_priority_queue.size(), ipriority_queue.size());
+      CHECK_EQUAL(compare_priority_queue.top(), ipriority_queue.top());
+    }
+
+    //*************************************************************************
     TEST(test_self_assignment)
     {
       etl::priority_queue<int, SIZE> priority_queue;

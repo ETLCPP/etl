@@ -69,6 +69,8 @@ namespace etl
   {
   public:
 
+    typedef void parameter_type; ///< The type of parameter sent to the function.
+
     //*************************************************************************
     /// The function operator that will be overridden.
     //*************************************************************************
@@ -154,7 +156,7 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup function
-  /// Specialisation for static or global functions that take a parameter.
+  /// Specialisation for static or global functions that takes a parameter.
   //***************************************************************************
   template <typename TParameter>
   class function<void, TParameter> : public ifunction<TParameter>

@@ -48,8 +48,8 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  ///\ingroup queue
-  /// A fixed capacity queue.
+  ///\ingroup priority_queue
+  /// A fixed capacity priority queue.
   /// This queue does not support concurrent access by different threads.
   /// \tparam T    The type this queue should support.
   /// \tparam SIZE The maximum capacity of the queue.

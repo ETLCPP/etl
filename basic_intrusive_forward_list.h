@@ -429,7 +429,9 @@ namespace etl
     //*************************************************************************
     void pop_front()
     {
+#if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!empty(), ETL_ERROR(basic_intrusive_forward_list_empty));
+#endif
       remove_node_after(start_node);
     }
 

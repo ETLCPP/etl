@@ -1082,7 +1082,9 @@ namespace etl
     //*************************************************************************
     void push_back(parameter_t item)
     {
+#if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+#endif
       create_element_back(item);
     }
 
@@ -1094,8 +1096,9 @@ namespace etl
     reference push_back()
     {
       reference r = *_end;
-
+#if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+#endif
       create_element_back();
 
       return r;
@@ -1106,7 +1109,9 @@ namespace etl
     //*************************************************************************
     void pop_back()
     {
+#if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!empty(), ETL_ERROR(deque_empty));
+#endif
       destroy_element_back();
     }
 
@@ -1117,7 +1122,9 @@ namespace etl
     //*************************************************************************
     void push_front(parameter_t item)
     {
+#if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+#endif
       create_element_front(item);
     }
 
@@ -1128,7 +1135,9 @@ namespace etl
     //*************************************************************************
     reference push_front()
     {
+#if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+#endif
       create_element_front();
 
       return *_begin;
@@ -1139,7 +1148,9 @@ namespace etl
     //*************************************************************************
     void pop_front()
     {
+#if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!empty(), ETL_ERROR(deque_empty));
+#endif
       destroy_element_front();
     }
 
