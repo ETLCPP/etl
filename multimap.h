@@ -62,7 +62,7 @@ namespace etl
     multimap()
       : imultimap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
     {
-      initialise();
+      imultimap<TKey, TValue, TCompare>::initialise();
     }
 
     //*************************************************************************
@@ -71,7 +71,6 @@ namespace etl
     explicit multimap(const multimap& other)
       : imultimap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
     {
-      initialise();
 			imultimap<TKey, TValue, TCompare>::assign(other.cbegin(), other.cend());
     }
 
@@ -85,8 +84,7 @@ namespace etl
     multimap(TIterator first, TIterator last)
       : imultimap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
     {
-      initialise();
-      imultimap<TKey, TValue, TCompare>::insert(first, last);
+      imultimap<TKey, TValue, TCompare>::assign(first, last);
     }
 
     //*************************************************************************

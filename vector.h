@@ -67,7 +67,7 @@ namespace etl
     vector()
       : ivector<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
-      initialise();
+      ivector<T>::initialise();
     }
 
     //*************************************************************************
@@ -77,7 +77,7 @@ namespace etl
     explicit vector(size_t initialSize)
       : ivector<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
-      initialise();
+      ivector<T>::initialise();
       ivector<T>::resize(initialSize);
     }
 
@@ -89,7 +89,7 @@ namespace etl
     vector(size_t initialSize, typename ivector<T>::parameter_t value)
       : ivector<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
-      initialise();
+      ivector<T>::initialise();
       ivector<T>::resize(initialSize, value);
     }
 
@@ -103,7 +103,6 @@ namespace etl
     vector(TIterator first, TIterator last)
       : ivector<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
-      initialise();
       ivector<T>::assign(first, last);
     }
 

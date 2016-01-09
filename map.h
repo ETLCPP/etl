@@ -63,7 +63,7 @@ namespace etl
     map()
       : imap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
     {
-      initialise();
+      imap<TKey, TValue, TCompare>::initialise();
     }
 
     //*************************************************************************
@@ -72,7 +72,6 @@ namespace etl
     map(const map& other)
       : imap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
     {
-      initialise();
 			imap<TKey, TValue, TCompare>::assign(other.cbegin(), other.cend());
     }
 
@@ -86,8 +85,7 @@ namespace etl
     map(TIterator first, TIterator last)
       : imap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
     {
-      initialise();
-      imap<TKey, TValue, TCompare>::insert(first, last);
+      imap<TKey, TValue, TCompare>::assign(first, last);
     }
 
     //*************************************************************************
