@@ -59,7 +59,7 @@ namespace etl
 {
   //*************************************************************************
   /// The class emulates an array of bool elements, but optimized for space allocation.
-  /// Will accomodate any number of bits.
+  /// Will accommodate any number of bits.
   /// Does not use std::string.
   ///\tparam N The number of bits.
   ///\ingroup bitset
