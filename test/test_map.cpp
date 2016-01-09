@@ -266,6 +266,21 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_index_value_changed)
+    {
+      Compare_Data compare_data;
+      Data data;
+
+      data["0"]         = 0;
+      compare_data["0"] = 0;
+
+      data["0"]         = 1;
+      compare_data["0"] = 1;
+
+      CHECK_EQUAL(data["0"], compare_data["0"]);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_at)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
@@ -357,6 +372,31 @@ namespace
 
       data.insert(std::make_pair(std::string("1"), 1));
       compare_data.insert(std::make_pair(std::string("1"), 1));
+
+      isEqual = Check_Equal(data.begin(),
+                            data.end(),
+                            compare_data.begin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_value_changed)
+    {
+      Compare_Data compare_data;
+      Data data;
+
+      data.insert(Data::value_type(std::string("0"), 0));
+      compare_data.insert(std::make_pair(std::string("0"), 0));
+
+      bool isEqual = Check_Equal(data.begin(),
+                                 data.end(),
+                                 compare_data.begin());
+
+      CHECK(isEqual);
+
+      data.insert(std::make_pair(std::string("0"), 1));
+      compare_data.insert(std::make_pair(std::string("0"), 1));
 
       isEqual = Check_Equal(data.begin(),
                             data.end(),
