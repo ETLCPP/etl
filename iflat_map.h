@@ -224,7 +224,7 @@ namespace etl
       if (i_element == end())
       {
         // Doesn't exist, so create a new one.
-	    value_type value(key, mapped_type());
+	      value_type value(key, mapped_type());
         i_element = insert(value).first;
       }
 
@@ -309,14 +309,7 @@ namespace etl
       {
         // Not at the end.
         // Existing element?
-        if (value.first == i_element->first)
-        {
-          // Yes.
-          i_element->second = value.second;
-          result.first  = i_element;
-          result.second = false;
-        }
-        else
+        if (value.first != i_element->first)
         {
           // A new one.
           ETL_ASSERT(!buffer.full(), ETL_ERROR(flat_map_full));
