@@ -156,6 +156,14 @@ namespace
     }
 
     ////*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_begin_end_empty)
+    {
+      DataNDC data;
+
+      CHECK(data.begin() == data.end());
+    }
+
+    ////*************************************************************************
     TEST_FIXTURE(SetupFixture, test_iterator)
     {
       DataNDC data(sorted_data.begin(), sorted_data.end());
