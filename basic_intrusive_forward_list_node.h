@@ -39,7 +39,12 @@ namespace etl
   //***************************************************************************
   struct basic_intrusive_forward_list_node
   {
-    basic_intrusive_forward_list_node* next;
+    basic_intrusive_forward_list_node()
+      : bifln_next(nullptr)
+    {
+    }
+
+    basic_intrusive_forward_list_node* bifln_next;
   };
 }
 
