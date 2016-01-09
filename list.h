@@ -71,6 +71,7 @@ namespace etl
     list()
       : ilist<T>(node_pool, MAX_SIZE)
     {
+      initialise();
     }
 
     //*************************************************************************
@@ -79,6 +80,7 @@ namespace etl
     explicit list(size_t initialSize)
       : ilist<T>(node_pool, MAX_SIZE)
     {
+      initialise();
       ilist<T>::assign(initialSize, T());
     }
 
@@ -88,6 +90,7 @@ namespace etl
     list(size_t initialSize, typename ilist<T>::parameter_t value)
       : ilist<T>(node_pool, MAX_SIZE)
     {
+      initialise();
       ilist<T>::assign(initialSize, value);
     }
 
@@ -97,6 +100,7 @@ namespace etl
     list(const list& other)
       : ilist<T>(node_pool, MAX_SIZE)
     {
+      initialise();
       ilist<T>::assign(other.cbegin(), other.cend());
     }
 
@@ -107,6 +111,7 @@ namespace etl
     list(TIterator first, TIterator last)
       : ilist<T>(node_pool, MAX_SIZE)
     {
+      initialise();
       ilist<T>::assign(first, last);
     }
 

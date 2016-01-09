@@ -804,7 +804,20 @@ namespace etl
       : forward_list_base(max_size_),
         p_node_pool(&node_pool)
     {
-      initialise();
+    }
+
+    //*************************************************************************
+    /// Initialise the forward_list.
+    //*************************************************************************
+    void initialise()
+    {
+      if (!empty())
+      {
+        p_node_pool->release_all();
+      }
+
+      current_size = 0;
+      start_node.next = nullptr;
     }
 
   private:
@@ -863,20 +876,6 @@ namespace etl
         // One less.
         --current_size;
       }
-    }
-
-    //*************************************************************************
-    /// Initialise the forward_list.
-    //*************************************************************************
-    void initialise()
-    {
-      if (!empty())
-      {
-        p_node_pool->release_all();
-      }
-
-      current_size = 0;
-      start_node.next = nullptr;
     }
 
     //*************************************************************************

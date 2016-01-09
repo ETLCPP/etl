@@ -619,10 +619,7 @@ namespace etl
       : vector_base(MAX_SIZE),
         p_buffer(p_buffer)
     {
-      initialise();
     }
-
-  private:
 
     //*********************************************************************
     /// Initialise the vector.
@@ -634,6 +631,8 @@ namespace etl
         destroy_element();
       }
     }
+
+  private:
 
     //*********************************************************************
     /// Create a new element with a default value at the back.

@@ -71,6 +71,7 @@ namespace etl
     forward_list()
       : iforward_list<T>(node_pool, MAX_SIZE)
     {
+      initialise();
     }
 
     //*************************************************************************
@@ -79,6 +80,7 @@ namespace etl
     explicit forward_list(size_t initialSize, typename iforward_list<T>::parameter_t value = T())
       : iforward_list<T>(node_pool, MAX_SIZE)
     {
+      initialise();
       iforward_list<T>::assign(initialSize, value);
     }
 
@@ -88,6 +90,7 @@ namespace etl
     forward_list(const forward_list& other)
       : iforward_list<T>(node_pool, MAX_SIZE)
     {
+      initialise();
 			iforward_list<T>::assign(other.cbegin(), other.cend());
     }
 
@@ -98,6 +101,7 @@ namespace etl
     forward_list(TIterator first, TIterator last)
       : iforward_list<T>(node_pool, MAX_SIZE)
     {
+      initialise();
       iforward_list<T>::assign(first, last);
     }
 

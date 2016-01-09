@@ -83,6 +83,7 @@ namespace etl
     deque()
       : ideque<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, BUFFER_SIZE)
     {
+      initialise();
     }
 
     //*************************************************************************
@@ -91,6 +92,7 @@ namespace etl
     deque(const deque& other)
       : ideque<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, BUFFER_SIZE)
     {
+      initialise();
       ideque<T>::assign(other.begin(), other.end());
     }
 
@@ -101,6 +103,7 @@ namespace etl
     deque(TIterator begin, TIterator end)
       : ideque<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, BUFFER_SIZE)
     {
+      initialise();
       ideque<T>::assign(begin, end);
     }
 
@@ -110,6 +113,7 @@ namespace etl
     explicit deque(size_t n, typename ideque<T>::parameter_t value = value_type())
       : ideque<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, BUFFER_SIZE)
     {
+      initialise();
       ideque<T>::assign(n, value);
     }
 
@@ -128,7 +132,7 @@ namespace etl
 
   private:
 
-    /// The unititialised buffer of T used in the deque.
+    /// The uninitialised buffer of T used in the deque.
     typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[BUFFER_SIZE];
   };
 }

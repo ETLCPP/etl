@@ -761,7 +761,20 @@ namespace etl
       : set_base(max_size_)
       , p_node_pool(&node_pool)
     {
-      initialise();
+    }
+
+    //*************************************************************************
+    /// Initialise the set.
+    //*************************************************************************
+    void initialise()
+    {
+      if (!empty())
+      {
+        p_node_pool->release_all();
+      }
+
+      current_size = 0;
+      root_node = nullptr;
     }
 
   private:
@@ -780,20 +793,6 @@ namespace etl
     void destroy_data_node(Data_Node& node) const
     {
       p_node_pool->release(&node);
-    }
-
-    //*************************************************************************
-    /// Initialise the set.
-    //*************************************************************************
-    void initialise()
-    {
-      if (!empty())
-      {
-        p_node_pool->release_all();
-      }
-
-      current_size = 0;
-      root_node = nullptr;
     }
 
     //*************************************************************************

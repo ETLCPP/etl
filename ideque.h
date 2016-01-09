@@ -1225,7 +1225,20 @@ namespace etl
       : deque_base(max_size, buffer_size),
         p_buffer(p_buffer)
     {
-      clear();
+    }
+
+    //*********************************************************************
+    /// Initialise the deque.
+    //*********************************************************************
+    void initialise()
+    {
+      while (current_size > 0)
+      {
+        destroy_element_back();
+      }
+
+      _begin = iterator(0, *this, p_buffer);
+      _end = iterator(0, *this, p_buffer);
     }
 
     iterator _begin;    ///Iterator to the _begin item in the deque.
@@ -1328,20 +1341,6 @@ namespace etl
       --_end;
       (*_end).~T();
       --current_size;
-    }
-
-    //*********************************************************************
-    /// Initialise the deque.
-    //*********************************************************************
-    void initialise()
-    {
-      while (current_size > 0)
-      {
-        destroy_element_back();
-      }
-
-      _begin = iterator(0, *this, p_buffer);
-      _end  = iterator(0, *this, p_buffer);
     }
 
     //*************************************************************************
