@@ -15,6 +15,9 @@
 #include "vector.h"
 #include "variant.h"
 #include "list.h"
+#include "map.h"
+
+#include <algorithm>
 
 #if defined(COMPILER_KEIL)
   #pragma diag_suppress 550
@@ -51,7 +54,7 @@ void test_algorithm()
 	int  y = 1;
 	int* p;
 	bool b;
-	
+  
 	// minmax_element
 	result1 = etl::minmax_element(etl::begin(data), etl::end(data));
 	result1 = etl::minmax_element(etl::begin(data), etl::end(data), std::greater<int>());
@@ -357,6 +360,22 @@ void test_list()
 	
 	Data2::iterator it2 = data2.begin();
 	data2.erase(it2);
+}
+
+//*****************************************************************************
+// map
+//*****************************************************************************
+void test_map()
+{
+	typedef etl::map<int, int, 10> Data;
+	
+	Data data;
+	
+	data.insert(std::pair<int, int>(1, 2));
+	data.insert(std::pair<int, int>(3, 4));
+	
+	Data::iterator it = data.begin();
+	data.erase(it);	
 }
 
 //*****************************************************************************
