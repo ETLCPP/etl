@@ -486,7 +486,7 @@ namespace etl
 
     //*************************************************************************
     /// Assigns 'n' copies of a value to the deque.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_full is 'n' is too large.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full is 'n' is too large.
     ///\param n     The number of copies to assign.
     ///\param value The value to add.<
     //*************************************************************************
@@ -508,7 +508,7 @@ namespace etl
 
     //*************************************************************************
     /// Gets a reference to the item at the index.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_out_of_bounds if the index is out of range.
+    /// If asserts or exceptions are enabled, throws an etl::deque_out_of_bounds if the index is out of range.
     ///\return A reference to the item at the index.
     //*************************************************************************
     reference at(size_t index)
@@ -523,7 +523,7 @@ namespace etl
 
     //*************************************************************************
     /// Gets a const reference to the item at the index.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_out_of_bounds if the index is out of range.
+    /// If asserts or exceptions are enabled, throws an etl::deque_out_of_bounds if the index is out of range.
     ///\return A const reference to the item at the index.
     //*************************************************************************
     const_reference at(size_t index) const
@@ -702,7 +702,7 @@ namespace etl
 
     //*************************************************************************
     /// Inserts data into the deque.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_full if the deque is full.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is full.
     ///\param insert_position>The insert position.
     ///\param value>The value to insert.
     //*************************************************************************
@@ -754,7 +754,7 @@ namespace etl
 
     //*************************************************************************
     /// Inserts 'n' copies of a value into the deque.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_full if the deque is full.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is full.
     ///\param insert_position The insert position.
     ///\param n               The number of values to insert.
     ///\param value           The value to insert.
@@ -863,7 +863,7 @@ namespace etl
 
     //*************************************************************************
     /// Inserts a range into the deque.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_empty if the deque is full.
+    /// If asserts or exceptions are enabled, throws an etl::deque_empty if the deque is full.
     ///\param insert_position>The insert position.
     ///\param range_begin The beginning of the range to insert.
     ///\param range_end   The end of the range to insert.
@@ -970,7 +970,7 @@ namespace etl
 
     //*************************************************************************
     /// Erase an item.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_out_of_bounds if the position is out of range.
+    /// If asserts or exceptions are enabled, throws an etl::deque_out_of_bounds if the position is out of range.
     ///\param erase_position The position to erase.
     //*************************************************************************
     iterator erase(const_iterator erase_position)
@@ -1010,7 +1010,7 @@ namespace etl
 
     //*************************************************************************
     /// erase a range.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_out_of_bounds if the iterators are out of range.
+    /// If asserts or exceptions are enabled, throws an etl::deque_out_of_bounds if the iterators are out of range.
     ///\param range_begin The beginning of the range to erase.
     ///\param range_end   The end of the range to erase.
     //*************************************************************************
@@ -1077,7 +1077,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds an item to the back of the deque.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_full is the deque is already full.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full is the deque is already full.
     ///\param item The item to push to the deque.
     //*************************************************************************
     void push_back(parameter_t item)
@@ -1090,7 +1090,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds one to the front of the deque and returns a reference to the new element.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_full is the deque is already full.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full is the deque is already full.
     ///\return A reference to the item to assign to.
     //*************************************************************************
     reference push_back()
@@ -1117,7 +1117,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds an item to the front of the deque.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_full is the deque is already full.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full is the deque is already full.
     ///\param item The item to push to the deque.
     //*************************************************************************
     void push_front(parameter_t item)
@@ -1130,7 +1130,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds one to the front of the deque and returns a reference to the new element.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_full is the deque is already full.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full is the deque is already full.
     ///\return A reference to the item to assign to.
     //*************************************************************************
     reference push_front()
@@ -1156,7 +1156,7 @@ namespace etl
 
     //*************************************************************************
     /// Resizes the deque.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_full is 'new_size' is too large.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full is 'new_size' is too large.
     ///\param new_size The new size of the deque.
     ///\param value   The value to assign if the new size is larger. Default = Default constructed value.
     //*************************************************************************

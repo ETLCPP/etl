@@ -133,7 +133,6 @@ namespace etl
     private:
 
       //*******************************
-      //*******************************
       iterator(size_t         index,
                pointer        p_buffer,
                const ibitset* p_in_use_flags)
@@ -233,7 +232,6 @@ namespace etl
     private:
 
       //*******************************
-      //*******************************
       const_iterator(size_t         index,
                      const_pointer  p_buffer,
                      const ibitset* p_in_use_flags)
@@ -317,7 +315,7 @@ namespace etl
 	  //*************************************************************************
 	  /// Allocate an object from the pool.
 	  /// Uses the default constructor.
-	  /// If ETL_THROW_EXCEPTIONS is defined and there are no more free items an
+	  /// If asserts or exceptions are enabled and there are no more free items an
 	  /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
 	  /// \note The state of the object returned is undefined.
 	  //*************************************************************************
@@ -338,7 +336,7 @@ namespace etl
 
     //*************************************************************************
     /// Allocate an object from the pool from an ititial value.
-    /// If ETL_THROW_EXCEPTIONS is defined and there are no more free items an
+    /// If asserts or exceptions are enabled and there are no more free items an
     /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
     /// \note The state of the object returned is undefined.
     //*************************************************************************
@@ -359,7 +357,7 @@ namespace etl
     
     //*************************************************************************
     /// Release an object in the pool.
-    /// If ETL_THROW_EXCEPTIONS is defined and the object does not belong to this
+    /// If asserts or exceptions are enabled and the object does not belong to this
     /// pool then an etl::pool_object_not_in_pool is thrown.
     /// \param p_object A pointer to the object to be released.
     //*************************************************************************
@@ -370,7 +368,7 @@ namespace etl
 
     //*************************************************************************
     /// Release an object in the pool.
-    /// If ETL_THROW_EXCEPTIONS is defined and the object does not belong to this
+    /// If asserts or exceptions are enabled and the object does not belong to this
     /// pool then an etl::pool_object_not_in_pool is thrown.
     /// \param p_object A pointer to the object to be released.
     //*************************************************************************

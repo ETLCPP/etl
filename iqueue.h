@@ -108,7 +108,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds a value to the queue.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::queue_full is the queue is already full,
+    /// If asserts or exceptions are enabled, throws an etl::queue_full is the queue is already full,
     /// otherwise does nothing if full.
     ///\param value The value to push to the queue.
     //*************************************************************************
@@ -126,7 +126,7 @@ namespace etl
     /// Allows a possibly more efficient 'push' by moving to the next input value
     /// and returning a reference to it.
     /// This may eliminate a copy by allowing direct construction in-place.<br>
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::queue_full is the queue is already full,
+    /// If asserts or exceptions are enabled, throws an etl::queue_full is the queue is already full,
     /// otherwise does nothing if full.
     /// \return A reference to the position to 'push' to.
     //*************************************************************************

@@ -143,7 +143,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds a value to the queue.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::priority_queue_full
+    /// If asserts or exceptions are enabled, throws an etl::priority_queue_full
     /// is the priority queue is already full, otherwise does nothing if full.
     ///\param value The value to push to the queue.
     //*************************************************************************
@@ -159,9 +159,9 @@ namespace etl
 
     //*************************************************************************
     /// Assigns values to the priority queue.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits priority_queue_full if
+    /// If asserts or exceptions are enabled, emits priority_queue_full if
     /// priority queue does not have enough free space.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits priority_iterator if the
+    /// If asserts or exceptions are enabled, emits priority_iterator if the
     /// iterators are reversed.
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.

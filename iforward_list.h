@@ -356,7 +356,7 @@ namespace etl
 
     //*************************************************************************
     /// Assigns a range of values to the forward_list.
-		/// If ETL_THROW_EXCEPTIONS is defined throws etl::forward_list_full if the forward_list does not have enough free space.
+		/// If asserts or exceptions are enabled throws etl::forward_list_full if the forward_list does not have enough free space.
     /// If ETL_THROW_EXCEPTIONS & _DEBUG are defined throws forward_list_iterator if the iterators are reversed.
     //*************************************************************************
     template <typename TIterator>
@@ -451,7 +451,7 @@ namespace etl
 
     //*************************************************************************
     /// Resizes the forward_list.
-    /// If ETL_THROW_EXCEPTIONS is defined, will throw an etl::forward_list_full
+    /// If asserts or exceptions are enabled, will throw an etl::forward_list_full
     /// if <b>n</b> is larger than the maximum size.
     //*************************************************************************
     void resize(size_t n, T value)

@@ -445,7 +445,7 @@ namespace etl
 
     //*************************************************************************
     /// Assigns a range of values to the list.
-		/// If ETL_THROW_EXCEPTIONS is defined throws etl::list_full if the list does not have enough free space.
+		/// If asserts or exceptions are enabled throws etl::list_full if the list does not have enough free space.
     /// If ETL_THROW_EXCEPTIONS & _DEBUG are defined throws list_iterator if the iterators are reversed.
     //*************************************************************************
     template <typename TIterator>

@@ -190,8 +190,8 @@ namespace etl
 
     //*********************************************************************
     /// Assigns values to the flat_multiset.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_multiset_full if the flat_multiset does not have enough free space.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_multiset_iterator if the iterators are reversed.
+    /// If asserts or exceptions are enabled, emits flat_multiset_full if the flat_multiset does not have enough free space.
+    /// If asserts or exceptions are enabled, emits flat_multiset_iterator if the iterators are reversed.
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
@@ -214,7 +214,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the flat_multiset.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_multiset_full if the flat_multiset is already full.
+    /// If asserts or exceptions are enabled, emits flat_multiset_full if the flat_multiset is already full.
     ///\param value    The value to insert.
     //*********************************************************************
     std::pair<iterator, bool> insert(parameter_t value)
@@ -245,7 +245,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the flat_multiset.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_multiset_full if the flat_multiset is already full.
+    /// If asserts or exceptions are enabled, emits flat_multiset_full if the flat_multiset is already full.
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -256,7 +256,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a range of values to the flat_multiset.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_multiset_full if the flat_multiset does not have enough free space.
+    /// If asserts or exceptions are enabled, emits flat_multiset_full if the flat_multiset does not have enough free space.
     ///\param position The position to insert at.
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.

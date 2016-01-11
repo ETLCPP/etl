@@ -233,7 +233,7 @@ namespace etl
 
     //*********************************************************************
     /// Returns a reference to the value at index 'key'
-    /// If ETL_THROW_EXCEPTIONS is defined, emits an etl::flat_map_out_of_bounds if the key is not in the range.
+    /// If asserts or exceptions are enabled, emits an etl::flat_map_out_of_bounds if the key is not in the range.
     ///\param i The index.
     ///\return A reference to the value at index 'key'
     //*********************************************************************
@@ -248,7 +248,7 @@ namespace etl
 
     //*********************************************************************
     /// Returns a const reference to the value at index 'key'
-    /// If ETL_THROW_EXCEPTIONS is defined, emits an etl::flat_map_out_of_bounds if the key is not in the range.
+    /// If asserts or exceptions are enabled, emits an etl::flat_map_out_of_bounds if the key is not in the range.
     ///\param i The index.
     ///\return A const reference to the value at index 'key'
     //*********************************************************************
@@ -288,7 +288,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the flat_map.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_map_full if the flat_map is already full.
+    /// If asserts or exceptions are enabled, emits flat_map_full if the flat_map is already full.
     ///\param value    The value to insert.
     //*********************************************************************
     std::pair<iterator, bool> insert(const value_type& value)
@@ -324,7 +324,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the flat_map.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_map_full if the flat_map is already full.
+    /// If asserts or exceptions are enabled, emits flat_map_full if the flat_map is already full.
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -335,7 +335,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a range of values to the flat_map.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_map_full if the flat_map does not have enough free space.
+    /// If asserts or exceptions are enabled, emits flat_map_full if the flat_map does not have enough free space.
     ///\param position The position to insert at.
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.

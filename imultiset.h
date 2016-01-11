@@ -479,8 +479,8 @@ namespace etl
 
     //*********************************************************************
     /// Assigns values to the multiset.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits set_full if the multiset does not have enough free space.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits set_iterator if the iterators are reversed.
+    /// If asserts or exceptions are enabled, emits set_full if the multiset does not have enough free space.
+    /// If asserts or exceptions are enabled, emits set_iterator if the iterators are reversed.
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
@@ -629,7 +629,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the multiset.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits set_full if the multiset is already full.
+    /// If asserts or exceptions are enabled, emits set_full if the multiset is already full.
     ///\param value    The value to insert.
     //*********************************************************************
     iterator insert(const value_type& value)
@@ -651,7 +651,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the multiset starting at the position recommended.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits set_full if the multiset is already full.
+    /// If asserts or exceptions are enabled, emits set_full if the multiset is already full.
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -663,7 +663,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the multiset starting at the position recommended.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits set_full if the multiset is already full.
+    /// If asserts or exceptions are enabled, emits set_full if the multiset is already full.
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -675,7 +675,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a range of values to the multiset.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits set_full if the multiset does not have enough free space.
+    /// If asserts or exceptions are enabled, emits set_full if the multiset does not have enough free space.
     ///\param position The position to insert at.
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.

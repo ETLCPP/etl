@@ -517,7 +517,7 @@ namespace etl
 
     //*********************************************************************
     /// Returns a reference to the value at index 'key'
-    /// If ETL_THROW_EXCEPTIONS is defined, emits an etl::lookup_out_of_bounds if the key is not in the range.
+    /// If asserts or exceptions are enabled, emits an etl::lookup_out_of_bounds if the key is not in the range.
     ///\param i The index.
     ///\return A reference to the value at index 'key'
     //*********************************************************************
@@ -532,7 +532,7 @@ namespace etl
 
     //*********************************************************************
     /// Returns a const reference to the value at index 'key'
-    /// If ETL_THROW_EXCEPTIONS is defined, emits an etl::lookup_out_of_bounds if the key is not in the range.
+    /// If asserts or exceptions are enabled, emits an etl::lookup_out_of_bounds if the key is not in the range.
     ///\param i The index.
     ///\return A const reference to the value at index 'key'
     //*********************************************************************
@@ -547,8 +547,8 @@ namespace etl
 
     //*********************************************************************
     /// Assigns values to the map.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits map_full if the map does not have enough free space.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits map_iterator if the iterators are reversed.
+    /// If asserts or exceptions are enabled, emits map_full if the map does not have enough free space.
+    /// If asserts or exceptions are enabled, emits map_iterator if the iterators are reversed.
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
@@ -682,7 +682,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the map.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits map_full if the map is already full.
+    /// If asserts or exceptions are enabled, emits map_full if the map is already full.
     ///\param value    The value to insert.
     //*********************************************************************
     std::pair<iterator, bool> insert(const value_type& value)
@@ -706,7 +706,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the map starting at the position recommended.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits map_full if the map is already full.
+    /// If asserts or exceptions are enabled, emits map_full if the map is already full.
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -729,7 +729,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the map starting at the position recommended.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits map_full if the map is already full.
+    /// If asserts or exceptions are enabled, emits map_full if the map is already full.
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -752,7 +752,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a range of values to the map.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits map_full if the map does not have enough free space.
+    /// If asserts or exceptions are enabled, emits map_full if the map does not have enough free space.
     ///\param position The position to insert at.
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.
