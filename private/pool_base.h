@@ -94,6 +94,14 @@ namespace etl
   public:
 
     //*************************************************************************
+    /// Returns the maximum number of items in the pool.
+    //*************************************************************************
+    size_t max_size() const
+    {
+      return MAX_SIZE;
+    }
+
+    //*************************************************************************
     /// Returns the number of free items in the pool.
     //*************************************************************************
     size_t available() const
@@ -102,10 +110,27 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Checks to see if there are no free items in the pool.
-    /// \return <b>true</b> if there are none free (or 'empty')
+    /// Returns the number of allocated items in the pool.
     //*************************************************************************
-    bool none_free() const
+    size_t size() const
+    {
+      return items_allocated;
+    }
+
+    //*************************************************************************
+    /// Checks to see if there are no allocated items in the pool.
+    /// \return <b>true</b> if there are none allocated.
+    //*************************************************************************
+    bool empty() const
+    {
+      return items_allocated == 0;
+    }
+
+    //*************************************************************************
+    /// Checks to see if there are no free items in the pool.
+    /// \return <b>true</b> if there are none free.
+    //*************************************************************************
+    bool full() const
     {
       return items_allocated == MAX_SIZE;
     }

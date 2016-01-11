@@ -138,7 +138,7 @@ namespace
       CHECK(p7 != p4);
       CHECK(p7 != p6);
 
-      CHECK(pool.none_free());
+      CHECK(pool.full());
     }
 
     //*************************************************************************
@@ -163,24 +163,58 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_none_free)
+    TEST(test_max_size)
     {
       etl::pool<Test_Data, 4> pool;
-      CHECK_EQUAL(4, pool.available());
+
+      CHECK(pool.max_size() == 4);
+    }
+
+    //*************************************************************************
+    TEST(test_size)
+    {
+      etl::pool<Test_Data, 4> pool;
+      CHECK_EQUAL(0, pool.size());
 
       Test_Data* p;
 
       p = pool.allocate();
-      CHECK(!pool.none_free());
+      CHECK_EQUAL(1, pool.size());
 
       p = pool.allocate();
-      CHECK(!pool.none_free());
+      CHECK_EQUAL(2, pool.size());
 
       p = pool.allocate();
-      CHECK(!pool.none_free());
+      CHECK_EQUAL(3, pool.size());
 
       p = pool.allocate();
-      CHECK(pool.none_free());
+      CHECK_EQUAL(4, pool.size());
+    }
+
+    //*************************************************************************
+    TEST(test_empty_full)
+    {
+      etl::pool<Test_Data, 4> pool;
+      CHECK(pool.empty());
+      CHECK(!pool.full());
+
+      Test_Data* p;
+
+      p = pool.allocate();
+      CHECK(!pool.empty());
+      CHECK(!pool.full());
+
+      p = pool.allocate();
+      CHECK(!pool.empty());
+      CHECK(!pool.full());
+
+      p = pool.allocate();
+      CHECK(!pool.empty());
+      CHECK(!pool.full());
+
+      p = pool.allocate();
+      CHECK(!pool.empty());
+      CHECK(pool.full());
     }
 
     //*************************************************************************
@@ -244,42 +278,42 @@ namespace
       }
     }
 
-    ////*************************************************************************
-    //TEST(test_get_iterator)
-    //{
-    //  typedef etl::pool<Test_Data, 4> Pool;
+    //*************************************************************************
+    TEST(test_get_iterator)
+    {
+      typedef etl::pool<Test_Data, 4> Pool;
 
-    //  Pool pool;
-    //  Test_Data not_in_pool;
+      Pool pool;
+      Test_Data not_in_pool;
 
-    //  Test_Data* p1 = pool.allocate();
-    //  Test_Data* p2 = pool.allocate();
+      Test_Data* p1 = pool.allocate();
+      Test_Data* p2 = pool.allocate();
 
-    //  Pool::iterator i_data  = pool.get_iterator(*p1);
-    //  Pool::iterator i_ndata = pool.get_iterator(not_in_pool);
+      Pool::iterator i_data  = pool.get_iterator(*p1);
+      Pool::iterator i_ndata = pool.get_iterator(not_in_pool);
 
-    //  CHECK(p1 == &*i_data);
-    //  CHECK(p2 != &*i_data);
-    //  CHECK(pool.end() == i_ndata);
-    //}
+      CHECK(p1 == &*i_data);
+      CHECK(p2 != &*i_data);
+      CHECK(pool.end() == i_ndata);
+    }
 
-    ////*************************************************************************
-    //TEST(test_get_iterator_const)
-    //{
-    //  typedef etl::pool<Test_Data, 4> Pool;
+    //*************************************************************************
+    TEST(test_get_iterator_const)
+    {
+      typedef etl::pool<Test_Data, 4> Pool;
 
-    //  Pool pool;
-    //  const Test_Data not_in_pool;
+      Pool pool;
+      const Test_Data not_in_pool;
 
-    //  const Test_Data* p1 = pool.allocate();
-    //  const Test_Data* p2 = pool.allocate();
+      const Test_Data* p1 = pool.allocate();
+      const Test_Data* p2 = pool.allocate();
 
-    //  Pool::const_iterator i_data = pool.get_iterator(*p1);
-    //  Pool::const_iterator i_ndata = pool.get_iterator(not_in_pool);
+      Pool::const_iterator i_data = pool.get_iterator(*p1);
+      Pool::const_iterator i_ndata = pool.get_iterator(not_in_pool);
 
-    //  CHECK(p1 == &*i_data);
-    //  CHECK(p2 != &*i_data);
-    //  CHECK(pool.end() == i_ndata);
-    //}
+      CHECK(p1 == &*i_data);
+      CHECK(p2 != &*i_data);
+      CHECK(pool.end() == i_ndata);
+    }
   };
 }
