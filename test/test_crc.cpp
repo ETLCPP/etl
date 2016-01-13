@@ -41,7 +41,7 @@ SOFTWARE.
 #include "../crc64_ecma.h"
 
 namespace
-{		
+{
   SUITE(test_crc)
   {
     //*************************************************************************
@@ -65,7 +65,7 @@ namespace
       {
         crc_calculator.add(data[i]);
       }
-      
+
       uint8_t crc = crc_calculator;
 
       CHECK_EQUAL(0xF4, crc);
@@ -332,7 +332,7 @@ namespace
 
       uint64_t crc = etl::crc64_ecma(data.begin(), data.end());
 
-      CHECK_EQUAL(0x6C40DF5F0B497347, crc);
+      CHECK_EQUAL(0x6C40DF5F0B497347U, crc);
     }
 
     //*************************************************************************
@@ -349,7 +349,7 @@ namespace
 
       uint64_t crc = crc_calculator;
 
-      CHECK_EQUAL(0x6C40DF5F0B497347, crc);
+      CHECK_EQUAL(0x6C40DF5F0B497347U, crc);
     }
 
     //*************************************************************************
@@ -363,7 +363,7 @@ namespace
 
       uint64_t crc = crc_calculator.value();
 
-      CHECK_EQUAL(0x6C40DF5F0B497347, crc);
+      CHECK_EQUAL(0x6C40DF5F0B497347U, crc);
     }
 
     //*************************************************************************

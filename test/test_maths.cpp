@@ -34,7 +34,7 @@ SOFTWARE.
 #include "../factorial.h"
 
 namespace
-{		
+{
   SUITE(test_maths)
   {
     //*************************************************************************
@@ -131,51 +131,51 @@ namespace
 
       // 2^1
       actual = etl::power<2, 1>::value;
-      CHECK_EQUAL(2, actual);
+      CHECK_EQUAL(2U, actual);
 
       // 3^2
       actual = etl::power<3, 2>::value;
-      CHECK_EQUAL(9, actual);
+      CHECK_EQUAL(9U, actual);
 
       // 4^3
       actual = etl::power<4, 3>::value;
-      CHECK_EQUAL(64, actual);
+      CHECK_EQUAL(64U, actual);
 
       // 5^4
       actual = etl::power<5, 4>::value;
-      CHECK_EQUAL(625, actual);
+      CHECK_EQUAL(625U, actual);
 
       // 6^5
       actual = etl::power<6, 5>::value;
-      CHECK_EQUAL(7776, actual);
+      CHECK_EQUAL(7776U, actual);
 
       // 7^6
       actual = etl::power<7, 6>::value;
-      CHECK_EQUAL(117649, actual);
+      CHECK_EQUAL(117649U, actual);
 
       // 8^7
       actual = etl::power<8, 7>::value;
-      CHECK_EQUAL(2097152, actual);
+      CHECK_EQUAL(2097152U, actual);
 
       // 9^8
       actual = etl::power<9, 8>::value;
-      CHECK_EQUAL(43046721, actual);
+      CHECK_EQUAL(43046721U, actual);
 
       // 10^9
       actual = etl::power<10, 9>::value;
-      CHECK_EQUAL(1000000000, actual);
+      CHECK_EQUAL(1000000000U, actual);
 
       // 2^16
       actual = etl::power<2, 15>::value;
-      CHECK_EQUAL(0x8000, actual);
+      CHECK_EQUAL(0x8000U, actual);
 
       // 2^31
       actual = etl::power<2, 31>::value;
-      CHECK_EQUAL(0x80000000, actual);
+      CHECK_EQUAL(0x80000000U, actual);
 
       // 2^63
       actual = etl::power<2, 63>::value;
-      CHECK_EQUAL(0x8000000000000000, actual);
+      CHECK_EQUAL(0x8000000000000000U, actual);
     }
 
     //*************************************************************************
@@ -183,7 +183,7 @@ namespace
     {
       int actual;
 
-      // 
+      //
       actual = etl::power_of_2_round_up<0>::value;
       CHECK_EQUAL(2, actual);
 
@@ -328,7 +328,7 @@ namespace
       CHECK_EQUAL(701408733,  (size_t)etl::fibonacci<44>::value);
       CHECK_EQUAL(1134903170, (size_t)etl::fibonacci<45>::value);
       CHECK_EQUAL(1836311903, (size_t)etl::fibonacci<46>::value);
-      CHECK_EQUAL(2971215073, (size_t)etl::fibonacci<47>::value);
+      CHECK_EQUAL(2971215073U, (size_t)etl::fibonacci<47>::value);
     }
 
     TEST(test_factorial)

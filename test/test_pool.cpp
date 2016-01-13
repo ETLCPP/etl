@@ -47,7 +47,7 @@ namespace
     TEST(test_allocate)
     {
       etl::pool<Test_Data, 4> pool;
-      
+
       Test_Data* p1;
       Test_Data* p2;
       Test_Data* p3;
@@ -83,7 +83,7 @@ namespace
       CHECK_NO_THROW(pool.release(p1));
       CHECK_NO_THROW(pool.release(*p4));
 
-      CHECK_EQUAL(4, pool.available());
+      CHECK_EQUAL(4U, pool.available());
 
       Test_Data not_in_pool;
 
@@ -102,7 +102,7 @@ namespace
 
       // Allocated p1, p2, p3, p4
 
-      CHECK_EQUAL(0, pool.available());
+      CHECK_EQUAL(0U, pool.available());
 
       CHECK_NO_THROW(pool.release(p2));
       CHECK_NO_THROW(pool.release(p3));
