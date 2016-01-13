@@ -107,6 +107,16 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Copy constructor.
+    //*************************************************************************
+    vector(const vector& other)
+      : ivector<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
+    {
+      ivector<T>::initialise();
+      ivector<T>::assign(other.begin(), other.end());
+    }
+
+    //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
     vector& operator = (const vector& rhs)
