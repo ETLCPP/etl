@@ -36,6 +36,7 @@ SOFTWARE.
 #include <iterator>
 
 #include "ibasic_string.h"
+#include "char_traits.h"
 #include "container.h"
 #include "alignment.h"
 #include "array.h"
@@ -74,7 +75,7 @@ namespace etl
     /// Constructor, with size.
     ///\param initialSize The initial size of the basic_string.
     //*************************************************************************
-    explicit basic_string(size_t initialSize)
+    explicit basic_string(size_t count, T c)
       : ibasic_string<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
       ibasic_string<T>::initialise();
@@ -89,7 +90,19 @@ namespace etl
       : ibasic_string<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
       ibasic_string<T>::initialise();
-      ibasic_string<T>::assign(text, text + strlen)
+      ibasic_string<T>::assign(text, text + etl::char_traits<T>::length(text))
+    }
+
+    //*************************************************************************
+    /// Constructor, from null terminated text and count.
+    ///\param text  The initial text of the basic_string.
+    ///\param count The number of characters to copy.
+    //*************************************************************************
+    basic_string(const T* text, size_t count)
+      : ibasic_string<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
+    {
+      ibasic_string<T>::initialise();
+      ibasic_string<T>::assign(text, text + count)
     }
     
     //*************************************************************************
@@ -97,11 +110,11 @@ namespace etl
     ///\param initialSize  The initial size of the basic_string.
     ///\param value        The value to fill the basic_string with.
     //*************************************************************************
-    basic_string(size_t initialSize, typename ibasic_string<T>::parameter_t value)
+    basic_string(size_t count, T c)
       : ibasic_string<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
       ibasic_string<T>::initialise();
-      ibasic_string<T>::resize(initialSize, value);
+      ibasic_string<T>::resize(count, c);
     }
 
     //*************************************************************************
@@ -132,7 +145,7 @@ namespace etl
 
   private:
 
-    typename etl::aligned_storage<sizeof(T) * MAX_SIZE, etl::alignment_of<T>::value>::type buffer;
+    T buffer[MAX_SIZE + 1];
   };
 }
 
