@@ -271,7 +271,7 @@ namespace etl
       //***************************************************
       const_iterator()
         : index(0),
-          p_deque(0),        
+          p_deque(0),
           p_buffer(0)
       {
       }
@@ -514,10 +514,10 @@ namespace etl
     reference at(size_t index)
     {
       ETL_ASSERT(index < current_size, ETL_ERROR(deque_out_of_bounds));
-      
+
       iterator result(_begin);
       result += index;
-      
+
       return *result;
     }
 
@@ -535,7 +535,7 @@ namespace etl
 
       return *result;
     }
-    
+
     //*************************************************************************
     /// Gets a reference to the item at the index.
     ///\return A reference to the item at the index.
@@ -611,7 +611,7 @@ namespace etl
     {
       return _begin;
     }
-    
+
     //*************************************************************************
     /// Gets a const iterator to the beginning of the deque.
     //*************************************************************************
@@ -691,7 +691,7 @@ namespace etl
     {
       return const_reverse_iterator(cbegin());
     }
-   
+
     //*************************************************************************
     /// Clears the deque.
     //*************************************************************************
@@ -740,7 +740,7 @@ namespace etl
         {
           // Construct the _end.
           create_element_back(*(_end - 1));
-            
+
           // Move the values.
           std::copy_backward(position, _end - 2, _end - 1);
 
@@ -771,7 +771,7 @@ namespace etl
         {
           create_element_front(value);
         }
-          
+
         position = _begin;
       }
       else if (insert_position == end())
@@ -828,7 +828,6 @@ namespace etl
         }
         else
         {
-          size_t insert_index  = std::distance(begin(), position);
           size_t n_insert      = n;
           size_t n_move        = std::distance(position, end());
           size_t n_create_copy = std::min(n_insert, n_move);
@@ -1044,14 +1043,14 @@ namespace etl
         position = end();
       }
       else
-      {         
+      {
         // Copy the smallest number of items.
         // Are we closer to the front?
         if (distance(_begin, position) < difference_type(current_size / 2))
         {
           // Move the items.
           std::copy_backward(_begin, position, position + length);
-            
+
           for (size_t i = 0; i < length; ++i)
           {
             destroy_element_front();
@@ -1064,7 +1063,7 @@ namespace etl
         {
           // Move the items.
           std::copy(position + length, _end, position);
-            
+
           for (size_t i = 0; i < length; ++i)
           {
             destroy_element_back();
