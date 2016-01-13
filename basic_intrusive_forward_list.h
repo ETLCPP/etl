@@ -519,14 +519,7 @@ namespace etl
         p_first = p_next;              // Move to the next node.
       }
 
-      if (p_next == nullptr)
-      {
-        return end();
-      }
-      else
-      {
-        return iterator(*p_last);
-      }
+      return last;
     }
     
     //*************************************************************************
