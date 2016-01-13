@@ -49,7 +49,6 @@ namespace etl
   //***************************************************************************
   /// Calculates the murmur3 hash.
   /// See https://en.wikipedia.org/wiki/MurmurHash for more details.
-  ///\tparam ENDIANNESS The endianness of the calculation for input types larger than uint8_t. Default = endian::little.
   ///\ingroup murmur3
   //***************************************************************************
   template <typename THash>
