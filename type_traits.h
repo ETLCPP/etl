@@ -267,7 +267,7 @@ namespace etl
   template <> struct make_unsigned<char> { typedef unsigned char type; };
   template <> struct make_unsigned<signed char> { typedef unsigned char type; };
   template <> struct make_unsigned<short> { typedef unsigned short type; };
-#if defined(COMPILER_GCC)
+#if defined(COMPILER_GCC) && !defined(PLATFORM_LINUX)
   template <> struct make_unsigned<wchar_t>
   {
     typedef wchar_t type;
