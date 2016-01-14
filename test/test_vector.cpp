@@ -140,6 +140,17 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_copy_constructor)
+    {
+      Data data(initial_data.begin(), initial_data.end());
+      Data data2(data);
+      CHECK(data2 == data);
+      
+      data2[2] = -1;
+      CHECK(data2 != data);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assignment)
     {
       Data data(initial_data.begin(), initial_data.end());
