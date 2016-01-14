@@ -89,7 +89,7 @@ namespace etl
     flat_set(TIterator first, TIterator last)
       : iflat_set<T, TCompare>(buffer)
     {
-      iflat_set<T, TCompare>::insert(first, last);
+      iflat_set<T, TCompare>::assign(first, last);
     }
 
     //*************************************************************************
@@ -99,8 +99,7 @@ namespace etl
     {
       if (&rhs != this)
       {
-        iflat_set<T, TCompare>::clear();
-        iflat_set<T, TCompare>::insert(rhs.cbegin(), rhs.cend());
+        iflat_set<T, TCompare>::assign(rhs.cbegin(), rhs.cend());
       }
 
       return *this;
