@@ -98,7 +98,10 @@ namespace etl
     list(const list& other)
       : ilist<T>(node_pool, MAX_SIZE)
     {
-      ilist<T>::assign(other.cbegin(), other.cend());
+      if (this != &other)
+      {
+        ilist<T>::assign(other.cbegin(), other.cend());
+      }
     }
 
     //*************************************************************************
