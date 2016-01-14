@@ -454,6 +454,23 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_assignment_operator_iterface)
+    {
+      etl::bitset<60> data1(0xFFFFFFFFFFFFFFF);
+      etl::bitset<60> data2;
+
+      etl::ibitset& idata1 = data1;
+      etl::ibitset& idata2 = data2;
+
+      idata2 = idata1;
+
+      for (size_t i = 0; i < data2.size(); ++i)
+      {
+        CHECK_EQUAL(data1.test(i), data2.test(i));
+      }
+    }
+
+    //*************************************************************************
     TEST(test_equality_operator)
     {
       etl::bitset<60> data1(0x123456781234567);

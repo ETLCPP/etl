@@ -460,16 +460,6 @@ namespace etl
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
     //*************************************************************************
-    /// Assignment operator.
-    //*************************************************************************
-    ideque& operator =(const ideque& other)
-    {
-      assign(other.begin(), other.end());
-
-      return *this;
-    }
-
-    //*************************************************************************
     /// Assigns a range to the deque.
     //*************************************************************************
     template<typename TIterator>
@@ -1215,6 +1205,19 @@ namespace etl
       return distance(lhs.base(), rhs.base());
     }
 
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    ideque& operator =(const ideque& rhs)
+    {
+      if (&rhs != this)
+      {
+        assign(rhs.begin(), rhs.end());
+      }
+
+      return *this;
+    }
+
   protected:
 
     //*************************************************************************
@@ -1373,6 +1376,9 @@ namespace etl
         return index - reference_index;
       }
     }
+
+    // Disable copy construction.
+    ideque(const ideque&);
   };
 }
 

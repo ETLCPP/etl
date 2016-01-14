@@ -321,16 +321,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Assignment operator.
-    //*************************************************************************
-    iforward_list& operator = (const iforward_list& rhs)
-    {
-      assign(rhs.cbegin(), rhs.cend());
-
-      return *this;
-    }
-
-    //*************************************************************************
     /// Clears the forward_list.
     //*************************************************************************
     void clear()
@@ -795,6 +785,19 @@ namespace etl
       }
     }
 
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    iforward_list& operator = (const iforward_list& rhs)
+    {
+      if (&rhs != this)
+      {
+        assign(rhs.cbegin(), rhs.cend());
+      }
+
+      return *this;
+    }
+
   protected:
 
     //*************************************************************************
@@ -893,6 +896,9 @@ namespace etl
     {
       p_node_pool->release(node);
     }
+
+    // Disable copy construction.
+    iforward_list(const iforward_list&);
   };
 }
 

@@ -417,6 +417,19 @@ namespace etl
       return std::upper_bound(cbegin(), cend(), key, TKeyCompare());
     }
 
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    iflat_set& operator = (const iflat_set& rhs)
+    {
+      if (&rhs != this)
+      {
+        assign(rhs.cbegin(), rhs.cend());
+      }
+
+      return *this;
+    }
+
   protected:
 
     //*********************************************************************
@@ -429,6 +442,9 @@ namespace etl
     }
 
   private:
+
+    // Disable copy construction.
+    iflat_set(const iflat_set&);
 
     buffer_t& buffer;
   };

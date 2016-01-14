@@ -265,6 +265,9 @@ namespace etl
 
   private:
 
+    // Disable copy construction.
+    ipriority_queue(const ipriority_queue&);
+
     /// The container specified at instantiation of the priority_queue
     TContainer container;
   };

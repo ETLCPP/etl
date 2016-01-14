@@ -307,6 +307,34 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_assignment_interface)
+    {
+      etl::stack<int, 4> stack1;
+
+      stack1.push(1);
+      stack1.push(2);
+      stack1.push(3);
+      stack1.push(4);
+
+      etl::stack<int, 4> stack2;
+
+      etl::istack<int>& istack1 = stack1;
+      etl::istack<int>& istack2 = stack2;
+
+      istack2 = istack1;
+
+      CHECK(istack1.size() == stack2.size());
+
+      while (!stack1.empty())
+      {
+        CHECK_EQUAL(stack1.top(), stack2.top());
+        stack1.pop();
+        stack2.pop();
+      }
+    }
+
+
+    //*************************************************************************
     TEST(test_self_assignment)
     {
       etl::stack<int, 4> stack;

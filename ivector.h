@@ -610,6 +610,19 @@ namespace etl
       return first;
     }
 
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    ivector& operator = (const ivector& rhs)
+    {
+      if (&rhs != this)
+      {
+        assign(rhs.cbegin(), rhs.cend());
+      }
+
+      return *this;
+    }
+
   protected:
 
     //*********************************************************************
@@ -665,6 +678,9 @@ namespace etl
     {
       p_buffer[--current_size].~T();
     }
+
+    // Disable copy construction.
+    ivector(const ivector&);
 
     T* p_buffer;
   };

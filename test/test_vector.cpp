@@ -40,8 +40,9 @@ namespace
   {
     static const size_t SIZE = 10;
 
-    typedef etl::vector<int, SIZE>  Data;
-    typedef std::vector<int>        Compare_Data;
+    typedef etl::vector<int, SIZE> Data;
+    typedef etl::ivector<int>      IData;
+    typedef std::vector<int>       Compare_Data;
 
     Compare_Data initial_data;
     Compare_Data less_data;
@@ -161,6 +162,24 @@ namespace
       bool is_equal = std::equal(data.begin(),
                                 data.end(),
                                 other_data.begin());
+
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assignment_iterface)
+    {
+      Data data1(initial_data.begin(), initial_data.end());
+      Data data2;
+
+      IData& idata1 = data1;
+      IData& idata2 = data2;
+
+      idata2 = idata1;
+
+      bool is_equal = std::equal(data1.begin(),
+                                 data1.end(),
+                                 data2.begin());
 
       CHECK(is_equal);
     }

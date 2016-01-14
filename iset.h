@@ -386,7 +386,10 @@ namespace etl
     //*************************************************************************
     iset& operator = (const iset& rhs)
     {
-      assign(rhs.cbegin(), rhs.cend());
+      if (this != &rhs)
+      {
+        assign(rhs.cbegin(), rhs.cend());
+      }
 
       return *this;
     }
@@ -1522,6 +1525,9 @@ namespace etl
       // Return node found (might be nullptr)
       return found;
     }
+
+    // Disable copy construction.
+    iset(const iset&);
   };
 }
 

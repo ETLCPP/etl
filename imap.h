@@ -810,6 +810,20 @@ namespace etl
       return const_iterator(*this, find_upper_node(root_node, key));
     }
 
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    imap& operator = (const imap& rhs)
+    {
+      // Skip if doing self assignment
+      if (this != &rhs)
+      {
+        assign(rhs.cbegin(), rhs.cend());
+      }
+
+      return *this;
+    }
+
   protected:
 
     //*************************************************************************
@@ -1580,6 +1594,9 @@ namespace etl
       // Return node found (might be nullptr)
       return found;
     }
+
+    // Disable copy construction.
+    imap(const imap&);
   };
 }
 

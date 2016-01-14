@@ -325,6 +325,57 @@ namespace
     }
 
     //*************************************************************************
+    //TEST(test_assignment_interface)
+    //{
+    //  etl::priority_queue<int, SIZE> priority_queue1;
+    //  
+    //  priority_queue1.push(1);
+    //  priority_queue1.push(4);
+    //  priority_queue1.push(3);
+    //  priority_queue1.push(2);
+
+    //  etl::priority_queue<int, SIZE> priority_queue2;
+
+    //  etl::ipriority_queue<int> ipriority_queue1 = priority_queue1;
+    //  etl::ipriority_queue<int> ipriority_queue2 = priority_queue2;
+
+    //  ipriority_queue2 = ipriority_queue1;
+
+    //  CHECK(priority_queue1.size() == priority_queue2.size());
+
+    //  while (!priority_queue1.empty())
+    //  {
+    //    CHECK_EQUAL(priority_queue1.top(), priority_queue2.top());
+    //    priority_queue1.pop();
+    //    priority_queue2.pop();
+    //  }
+    //}
+
+    //*************************************************************************
+    TEST(test_self_assignment)
+    {
+      etl::priority_queue<int, SIZE> priority_queue1;
+
+      priority_queue1.push(1);
+      priority_queue1.push(4);
+      priority_queue1.push(3);
+      priority_queue1.push(2);
+
+      etl::priority_queue<int, SIZE> priority_queue2 = priority_queue1;
+
+      priority_queue1 = priority_queue1;
+
+      CHECK(priority_queue1.size() == priority_queue2.size());
+
+      while (!priority_queue1.empty())
+      {
+        CHECK_EQUAL(priority_queue1.top(), priority_queue2.top());
+        priority_queue1.pop();
+        priority_queue2.pop();
+      }
+    }
+
+    //*************************************************************************
     TEST(test_interface)
     {
       typedef etl::priority_queue<int, SIZE> priority_queue_t;
@@ -346,33 +397,6 @@ namespace
       compare_priority_queue.push(4);
       CHECK_EQUAL(compare_priority_queue.size(), ipriority_queue.size());
       CHECK_EQUAL(compare_priority_queue.top(), ipriority_queue.top());
-    }
-
-    //*************************************************************************
-    TEST(test_self_assignment)
-    {
-      etl::priority_queue<int, SIZE> priority_queue;
-
-      priority_queue.push(2);
-      priority_queue.push(1);
-      priority_queue.push(4);
-      priority_queue.push(3);
-
-      priority_queue = priority_queue;
-
-      CHECK(priority_queue.max_size() == priority_queue.size());
-
-      CHECK_EQUAL(4, priority_queue.top());
-      priority_queue.pop();
-
-      CHECK_EQUAL(3, priority_queue.top());
-      priority_queue.pop();
-
-      CHECK_EQUAL(2, priority_queue.top());
-      priority_queue.pop();
-
-      CHECK_EQUAL(1, priority_queue.top());
-      priority_queue.pop();
     }
   };
 }

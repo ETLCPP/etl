@@ -147,6 +147,19 @@ namespace etl
       --current_size;
     }
 
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    istack& operator = (const istack& rhs)
+    {
+      if (&rhs != this)
+      {
+        clone(rhs);
+      }
+
+      return *this;
+    }
+
   protected:
 
     //*************************************************************************
@@ -172,6 +185,9 @@ namespace etl
     }
 
   private:
+
+    // Disable copy construction.
+    istack(const istack&);
 
     T* p_buffer; ///< The internal buffer.
   };

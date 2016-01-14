@@ -174,6 +174,19 @@ namespace etl
       --current_size;
     }
 
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    iqueue& operator = (const iqueue& rhs)
+    {
+      if (&rhs != this)
+      {
+        clone(rhs);
+      }
+
+      return *this;
+    }
+
   protected:
 
     //*************************************************************************
@@ -200,6 +213,9 @@ namespace etl
     }
 
   private:
+
+    // Disable copy construction.
+    iqueue(const iqueue&);
 
     T* p_buffer; ///< The internal buffer.
   };

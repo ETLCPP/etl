@@ -325,6 +325,33 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_assignment_interface)
+    {
+      etl::queue<int, 4> queue1;
+
+      queue1.push(1);
+      queue1.push(2);
+      queue1.push(3);
+      queue1.push(4);
+
+      etl::queue<int, 4> queue2;
+
+      etl::iqueue<int>& iqueue1 = queue1;
+      etl::iqueue<int>& iqueue2 = queue2;
+
+      iqueue2 = iqueue1;
+
+      CHECK(queue1.size() == queue2.size());
+
+      while (!queue1.empty())
+      {
+        CHECK_EQUAL(queue1.front(), queue2.front());
+        queue1.pop();
+        queue2.pop();
+      }
+    }
+
+    //*************************************************************************
     TEST(test_self_assignment)
     {
       etl::queue<int, 4> queue;

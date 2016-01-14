@@ -884,6 +884,19 @@ namespace etl
       }
     }
 
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    ilist& operator = (const ilist& rhs)
+    {
+      if (&rhs != this)
+      {
+        assign(rhs.cbegin(), rhs.cend());
+      }
+
+      return *this;
+    }
+
   protected:
 
     //*************************************************************************
@@ -941,6 +954,9 @@ namespace etl
     {
       p_node_pool->release(&node);
     }
+
+    // Disable copy construction.
+    ilist(const ilist&);
   };
 }
 

@@ -49,6 +49,7 @@ namespace
 
     typedef etl::list<ItemDC, SIZE>  DataDC;
     typedef etl::list<ItemNDC, SIZE> DataNDC;
+    typedef etl::ilist<ItemNDC>      IDataNDC;
 
     typedef std::list<ItemNDC>   CompareData;
     typedef std::vector<ItemNDC> InitialData;
@@ -696,6 +697,25 @@ namespace
       CHECK_EQUAL(data.size(), other_data.size());
 
       are_equal = std::equal(data.begin(), data.end(), other_data.begin());
+
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assignment_interface)
+    {
+      CompareData compare_data(sorted_data.begin(), sorted_data.end());
+      DataNDC data1(sorted_data.begin(), sorted_data.end());
+      DataNDC data2;
+
+      IDataNDC& idata1 = data1;
+      IDataNDC& idata2 = data2;
+
+      idata2 = idata1;
+
+      CHECK_EQUAL(data1.size(), data2.size());
+
+      are_equal = std::equal(data1.begin(), data1.end(), data2.begin());
 
       CHECK(are_equal);
     }

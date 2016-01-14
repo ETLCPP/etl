@@ -72,6 +72,7 @@ namespace
 
     typedef etl::flat_map<int, DC, SIZE>  DataDC;
     typedef etl::flat_map<int, NDC, SIZE> DataNDC;
+    typedef etl::iflat_map<int, NDC>      IDataNDC;
 
     typedef std::map<int, DC>  Compare_DataDC;
     typedef std::map<int, NDC> Compare_DataNDC;
@@ -182,6 +183,24 @@ namespace
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),
                                  other_data.begin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assignment_interface)
+    {
+      DataNDC data1(initial_data.begin(), initial_data.end());
+      DataNDC data2;
+
+      IDataNDC& idata1 = data1;
+      IDataNDC& idata2 = data2;
+
+      idata2 = idata1;
+
+      bool isEqual = Check_Equal(data1.begin(),
+                                 data1.end(),
+                                 data2.begin());
 
       CHECK(isEqual);
     }

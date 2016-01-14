@@ -492,6 +492,19 @@ namespace etl
       return std::make_pair(i_lower, std::upper_bound(i_lower, cend(), key, compare()));
     }
 
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    iflat_map& operator = (const iflat_map& rhs)
+    {
+      if (&rhs != this)
+      {
+        assign(rhs.cbegin(), rhs.cend());
+      }
+
+      return *this;
+    }
+
   protected:
 
     //*********************************************************************
@@ -504,6 +517,9 @@ namespace etl
     }
 
   private:
+
+    // Disable copy construction.
+    iflat_map(const iflat_map&);
 
     buffer_t& buffer;
   };

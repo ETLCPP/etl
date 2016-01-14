@@ -757,6 +757,20 @@ namespace etl
       return const_iterator(*this, find_upper_node(root_node, key));
     }
 
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    imultimap& operator = (const imultimap& rhs)
+    {
+      // Skip if doing self assignment
+      if (this != &rhs)
+      {
+        assign(rhs.cbegin(), rhs.cend());
+      }
+
+      return *this;
+    }
+
   protected:
 
     //*************************************************************************
@@ -1318,6 +1332,9 @@ namespace etl
         destroy_data_node(data_node);
       } // if(found)
     }
+
+    // Disable copy construction.
+    imultimap(const imultimap&);
   };
 }
 

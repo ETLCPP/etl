@@ -37,6 +37,7 @@ SOFTWARE.
 #include "exception.h"
 #include "integral_limits.h"
 #include "binary.h"
+#include "algorithm.h"
 
 #if WIN32
 #undef min
@@ -596,6 +597,19 @@ namespace etl
     }
 
     //*************************************************************************
+    /// operator =
+    //*************************************************************************
+    ibitset& operator =(const ibitset& other)
+    {
+      if (this != &other)
+      {
+        etl::copy_n(other.pdata, SIZE, pdata);
+      }
+
+      return *this;
+    }
+
+    //*************************************************************************
     /// swap
     //*************************************************************************
     void swap(ibitset& other)
@@ -678,6 +692,9 @@ namespace etl
     element_t TOP_MASK;
 
   private:
+
+    // Disable copy construction.
+    ibitset(const ibitset&);
 
     const size_t NBITS;
     const size_t SIZE;

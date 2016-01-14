@@ -501,6 +501,12 @@ namespace etl
     {
     }
 
+  private:
+
+    // Disable copy construction and assignment.
+    ipool(const ipool&);
+    ipool& operator =(const ipool&);
+
     T*       p_buffer;
     ibitset& in_use_flags;
   };

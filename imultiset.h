@@ -738,6 +738,20 @@ namespace etl
       return const_iterator(*this, find_upper_node(root_node, key));
     }
 
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    imultiset& operator = (const imultiset& rhs)
+    {
+      // Skip if doing self assignment
+      if (this != &rhs)
+      {
+        assign(rhs.cbegin(), rhs.cend());
+      }
+
+      return *this;
+    }
+
   protected:
 
     //*************************************************************************
@@ -1299,6 +1313,9 @@ namespace etl
         destroy_data_node(data_node);
       } // if(found)
     }
+
+    // Disable copy construction.
+    imultiset(const imultiset&);
   };
 }
 
