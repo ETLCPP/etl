@@ -386,7 +386,10 @@ namespace etl
     //*************************************************************************
     iset& operator = (const iset& rhs)
     {
-      assign(rhs.cbegin(), rhs.cend());
+      if (this != &rhs)
+      {
+        assign(rhs.cbegin(), rhs.cend());
+      }
 
       return *this;
     }
@@ -489,8 +492,8 @@ namespace etl
 
     //*********************************************************************
     /// Assigns values to the set.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits set_full if the set does not have enough free space.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits set_iterator if the iterators are reversed.
+    /// If asserts or exceptions are enabled, emits set_full if the set does not have enough free space.
+    /// If asserts or exceptions are enabled, emits set_iterator if the iterators are reversed.
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
@@ -624,7 +627,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the set.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits set_full if the set is already full.
+    /// If asserts or exceptions are enabled, emits set_full if the set is already full.
     ///\param value    The value to insert.
     //*********************************************************************
     std::pair<iterator, bool> insert(value_type& value)
@@ -648,7 +651,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the set starting at the position recommended.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits set_full if the set is already full.
+    /// If asserts or exceptions are enabled, emits set_full if the set is already full.
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -671,7 +674,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the set starting at the position recommended.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits set_full if the set is already full.
+    /// If asserts or exceptions are enabled, emits set_full if the set is already full.
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -694,7 +697,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a range of values to the set.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits set_full if the set does not have enough free space.
+    /// If asserts or exceptions are enabled, emits set_full if the set does not have enough free space.
     ///\param position The position to insert at.
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.
@@ -761,7 +764,20 @@ namespace etl
       : set_base(max_size_)
       , p_node_pool(&node_pool)
     {
-      initialise();
+    }
+
+    //*************************************************************************
+    /// Initialise the set.
+    //*************************************************************************
+    void initialise()
+    {
+      if (!empty())
+      {
+        p_node_pool->release_all();
+      }
+
+      current_size = 0;
+      root_node = nullptr;
     }
 
   private:
@@ -780,20 +796,6 @@ namespace etl
     void destroy_data_node(Data_Node& node) const
     {
       p_node_pool->release(&node);
-    }
-
-    //*************************************************************************
-    /// Initialise the set.
-    //*************************************************************************
-    void initialise()
-    {
-      if (!empty())
-      {
-        p_node_pool->release_all();
-      }
-
-      current_size = 0;
-      root_node = nullptr;
     }
 
     //*************************************************************************
@@ -1523,6 +1525,9 @@ namespace etl
       // Return node found (might be nullptr)
       return found;
     }
+
+    // Disable copy construction.
+    iset(const iset&);
   };
 }
 

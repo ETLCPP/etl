@@ -90,7 +90,7 @@ namespace etl
     flat_map(TIterator first, TIterator last)
       : iflat_map<TKey, TValue, TCompare>(buffer)
     {
-      iflat_map<TKey, TValue, TCompare>::insert(first, last);
+      iflat_map<TKey, TValue, TCompare>::assign(first, last);
     }
 
     //*************************************************************************
@@ -100,8 +100,7 @@ namespace etl
     {
       if (&rhs != this)
       {
-        iflat_map<TKey, TValue, TCompare>::clear();
-        iflat_map<TKey, TValue, TCompare>::insert(rhs.cbegin(), rhs.cend());
+        iflat_map<TKey, TValue, TCompare>::assign(rhs.cbegin(), rhs.cend());
       }
 
       return *this;

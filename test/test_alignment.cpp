@@ -60,7 +60,7 @@ namespace
 
       for (int i = 0; i < 10; ++i)
       {
-        CHECK_EQUAL(0, size_t(&data32[1]) % expected);
+        CHECK_EQUAL(0U, size_t(&data32[1]) % expected);
       }
 
       etl::aligned_storage<100, 8>::type data9;
@@ -83,7 +83,7 @@ namespace
 
       for (int i = 0; i < 10; ++i)
       {
-        CHECK_EQUAL(0, size_t(&data32[1]) % expected);
+        CHECK_EQUAL(0U, size_t(&data32[1]) % expected);
       }
 
       etl::aligned_storage<100, 8>::type data9;

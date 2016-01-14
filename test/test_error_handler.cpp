@@ -27,7 +27,9 @@ SOFTWARE.
 ******************************************************************************/
 
 #include <UnitTest++/UnitTest++.h>
+#if defined(PLATFORM_WINDOWS)
 #include <Windows.h>
+#endif
 #include <sstream>
 #include <string>
 
@@ -59,6 +61,7 @@ void receive_error(const etl::exception& e)
   std::ostringstream oss;
   oss << "Error '" << e.what() << "' in " << e.file_name() << " at line " << e.line_number() << "\n";
 
+#if defined(PLATFORM_WINDOWS)
   std::string stext = oss.str();
 
   WCHAR text[200];
@@ -66,6 +69,7 @@ void receive_error(const etl::exception& e)
   LPCWSTR ltext = text;
 
   OutputDebugString(ltext);
+#endif
 }
 
 //*****************************************************************************
@@ -82,6 +86,7 @@ public:
     std::ostringstream oss;
     oss << "Error '" << e.what() << "' in " << e.file_name() << " at line " << e.line_number() << "\n";
 
+#if defined(PLATFORM_WINDOWS)
     std::string stext = oss.str();
 
     WCHAR text[200];
@@ -89,11 +94,12 @@ public:
     LPCWSTR ltext = text;
 
     OutputDebugString(ltext);
+#endif
   }
 };
 
 namespace
-{		
+{
   SUITE(test_error_handler)
   {
     //*************************************************************************

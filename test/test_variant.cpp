@@ -275,6 +275,29 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_assignment)
+    {
+      test_variant_1 variant1;
+      test_variant_1 variant2;
+
+      variant1 = 1;
+      variant2 = variant1;
+
+      CHECK_EQUAL(variant1.get<int>(), variant2.get<int>());
+    }
+
+    //*************************************************************************
+    TEST(test_self_assignment)
+    {
+      test_variant_1 variant;
+
+      variant = 1;
+      variant = variant;
+
+      CHECK_EQUAL(1, variant.get<int>());
+    }
+
+    //*************************************************************************
     TEST(TestGetException)
     {
       test_variant_1 variant;

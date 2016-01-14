@@ -49,8 +49,9 @@ namespace
     typedef TestDataDC<std::string>  DC;
     typedef TestDataNDC<std::string> NDC;
 
-    typedef etl::flat_multiset<DC, SIZE>     DataDC;
-    typedef etl::flat_multiset<NDC, SIZE>    DataNDC;
+    typedef etl::flat_multiset<DC, SIZE>  DataDC;
+    typedef etl::flat_multiset<NDC, SIZE> DataNDC;
+    typedef etl::iflat_multiset<NDC>      IDataNDC;
 
     typedef std::multiset<DC>  Compare_DataDC;
     typedef std::multiset<NDC> Compare_DataNDC;
@@ -146,6 +147,24 @@ namespace
       bool isEqual = std::equal(data.begin(),
                                  data.end(),
                                  other_data.begin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assignment_interface)
+    {
+      DataNDC data1(initial_data.begin(), initial_data.end());
+      DataNDC data2;
+
+      IDataNDC& idata1 = data1;
+      IDataNDC& idata2 = data2;
+
+      idata2 = idata1;
+
+      bool isEqual = std::equal(data1.begin(),
+                                data1.end(),
+                                data2.begin());
 
       CHECK(isEqual);
     }

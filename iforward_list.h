@@ -321,16 +321,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Assignment operator.
-    //*************************************************************************
-    iforward_list& operator = (const iforward_list& rhs)
-    {
-      assign(rhs.cbegin(), rhs.cend());
-
-      return *this;
-    }
-
-    //*************************************************************************
     /// Clears the forward_list.
     //*************************************************************************
     void clear()
@@ -356,7 +346,7 @@ namespace etl
 
     //*************************************************************************
     /// Assigns a range of values to the forward_list.
-		/// If ETL_THROW_EXCEPTIONS is defined throws etl::forward_list_full if the forward_list does not have enough free space.
+		/// If asserts or exceptions are enabled throws etl::forward_list_full if the forward_list does not have enough free space.
     /// If ETL_THROW_EXCEPTIONS & _DEBUG are defined throws forward_list_iterator if the iterators are reversed.
     //*************************************************************************
     template <typename TIterator>
@@ -451,7 +441,7 @@ namespace etl
 
     //*************************************************************************
     /// Resizes the forward_list.
-    /// If ETL_THROW_EXCEPTIONS is defined, will throw an etl::forward_list_full
+    /// If asserts or exceptions are enabled, will throw an etl::forward_list_full
     /// if <b>n</b> is larger than the maximum size.
     //*************************************************************************
     void resize(size_t n, T value)
@@ -795,6 +785,19 @@ namespace etl
       }
     }
 
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    iforward_list& operator = (const iforward_list& rhs)
+    {
+      if (&rhs != this)
+      {
+        assign(rhs.cbegin(), rhs.cend());
+      }
+
+      return *this;
+    }
+
   protected:
 
     //*************************************************************************
@@ -804,7 +807,20 @@ namespace etl
       : forward_list_base(max_size_),
         p_node_pool(&node_pool)
     {
-      initialise();
+    }
+
+    //*************************************************************************
+    /// Initialise the forward_list.
+    //*************************************************************************
+    void initialise()
+    {
+      if (!empty())
+      {
+        p_node_pool->release_all();
+      }
+
+      current_size = 0;
+      start_node.next = nullptr;
     }
 
   private:
@@ -866,20 +882,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Initialise the forward_list.
-    //*************************************************************************
-    void initialise()
-    {
-      if (!empty())
-      {
-        p_node_pool->release_all();
-      }
-
-      current_size = 0;
-      start_node.next = nullptr;
-    }
-
-    //*************************************************************************
     /// Allocate a Data_Node.
     //*************************************************************************
     Data_Node& allocate_data_node(parameter_t value) const
@@ -894,6 +896,9 @@ namespace etl
     {
       p_node_pool->release(node);
     }
+
+    // Disable copy construction.
+    iforward_list(const iforward_list&);
   };
 }
 

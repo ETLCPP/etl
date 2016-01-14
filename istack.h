@@ -81,7 +81,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds a value to the stack.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::stack_full is the stack is already full.
+    /// If asserts or exceptions are enabled, throws an etl::stack_full is the stack is already full.
     ///\param value The value to push to the stack.
     //*************************************************************************
     void push(parameter_t value)
@@ -97,7 +97,7 @@ namespace etl
     /// Allows a possibly more efficient 'push' by moving to the next input value
     /// and returning a reference to it.
     /// This may eliminate a copy by allowing direct construction in-place.<br>
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::stack_full is the stack is already full.
+    /// If asserts or exceptions are enabled, throws an etl::stack_full is the stack is already full.
     /// \return A reference to the position to 'push' to.
     //*************************************************************************
     reference push()
@@ -147,6 +147,19 @@ namespace etl
       --current_size;
     }
 
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    istack& operator = (const istack& rhs)
+    {
+      if (&rhs != this)
+      {
+        clone(rhs);
+      }
+
+      return *this;
+    }
+
   protected:
 
     //*************************************************************************
@@ -172,6 +185,9 @@ namespace etl
     }
 
   private:
+
+    // Disable copy construction.
+    istack(const istack&);
 
     T* p_buffer; ///< The internal buffer.
   };

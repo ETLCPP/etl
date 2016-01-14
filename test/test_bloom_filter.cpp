@@ -198,8 +198,8 @@ namespace
       typedef etl::bloom_filter<256, hash1_t> Bloom;
       Bloom bloom;
 
-      CHECK_EQUAL(256, bloom.width());
-      CHECK_EQUAL(256, Bloom::WIDTH);
+      CHECK_EQUAL(256U, bloom.width());
+      CHECK_EQUAL(256U, Bloom::WIDTH);
     }
 
     //*************************************************************************
@@ -247,8 +247,8 @@ namespace
       size_t usage = bloom.usage();
       size_t count = bloom.count();
 
-      CHECK_EQUAL(0, usage);
-      CHECK_EQUAL(0, count);
+      CHECK_EQUAL(0U, usage);
+      CHECK_EQUAL(0U, count);
 
       // Check that we get no matches.
       bool any_exist = false;

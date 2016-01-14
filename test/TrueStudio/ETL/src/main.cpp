@@ -1,13 +1,10 @@
-///\file
-
 /******************************************************************************
 The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
 
-Copyright(c) 2015 jwellbelove
+Copyright(c) 2014 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,24 +25,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_BASIC_INTRUSIVE_FORWARD_LIST_NODE__
-#define __ETL_BASIC_INTRUSIVE_FORWARD_LIST_NODE__
+#include <UnitTest++/UnitTest++.h>
 
-namespace etl
+int main()
 {
-  //***************************************************************************
-  /// The node element in the basic_intrusive_forward_list.
-  /// Derive intrusive node data elements from this.
-  //***************************************************************************
-  struct basic_intrusive_forward_list_node
-  {
-    basic_intrusive_forward_list_node()
-      : bifln_next(nullptr)
-    {
-    }
-
-    basic_intrusive_forward_list_node* bifln_next;
-  };
+  return UnitTest::RunAllTests();
 }
-
-#endif

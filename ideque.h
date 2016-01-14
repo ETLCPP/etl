@@ -271,7 +271,7 @@ namespace etl
       //***************************************************
       const_iterator()
         : index(0),
-          p_deque(0),        
+          p_deque(0),
           p_buffer(0)
       {
       }
@@ -460,16 +460,6 @@ namespace etl
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
     //*************************************************************************
-    /// Assignment operator.
-    //*************************************************************************
-    ideque& operator =(const ideque& other)
-    {
-      assign(other.begin(), other.end());
-
-      return *this;
-    }
-
-    //*************************************************************************
     /// Assigns a range to the deque.
     //*************************************************************************
     template<typename TIterator>
@@ -486,7 +476,7 @@ namespace etl
 
     //*************************************************************************
     /// Assigns 'n' copies of a value to the deque.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_full is 'n' is too large.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full is 'n' is too large.
     ///\param n     The number of copies to assign.
     ///\param value The value to add.<
     //*************************************************************************
@@ -508,22 +498,22 @@ namespace etl
 
     //*************************************************************************
     /// Gets a reference to the item at the index.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_out_of_bounds if the index is out of range.
+    /// If asserts or exceptions are enabled, throws an etl::deque_out_of_bounds if the index is out of range.
     ///\return A reference to the item at the index.
     //*************************************************************************
     reference at(size_t index)
     {
       ETL_ASSERT(index < current_size, ETL_ERROR(deque_out_of_bounds));
-      
+
       iterator result(_begin);
       result += index;
-      
+
       return *result;
     }
 
     //*************************************************************************
     /// Gets a const reference to the item at the index.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_out_of_bounds if the index is out of range.
+    /// If asserts or exceptions are enabled, throws an etl::deque_out_of_bounds if the index is out of range.
     ///\return A const reference to the item at the index.
     //*************************************************************************
     const_reference at(size_t index) const
@@ -535,7 +525,7 @@ namespace etl
 
       return *result;
     }
-    
+
     //*************************************************************************
     /// Gets a reference to the item at the index.
     ///\return A reference to the item at the index.
@@ -611,7 +601,7 @@ namespace etl
     {
       return _begin;
     }
-    
+
     //*************************************************************************
     /// Gets a const iterator to the beginning of the deque.
     //*************************************************************************
@@ -691,7 +681,7 @@ namespace etl
     {
       return const_reverse_iterator(cbegin());
     }
-   
+
     //*************************************************************************
     /// Clears the deque.
     //*************************************************************************
@@ -702,7 +692,7 @@ namespace etl
 
     //*************************************************************************
     /// Inserts data into the deque.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_full if the deque is full.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is full.
     ///\param insert_position>The insert position.
     ///\param value>The value to insert.
     //*************************************************************************
@@ -740,7 +730,7 @@ namespace etl
         {
           // Construct the _end.
           create_element_back(*(_end - 1));
-            
+
           // Move the values.
           std::copy_backward(position, _end - 2, _end - 1);
 
@@ -754,7 +744,7 @@ namespace etl
 
     //*************************************************************************
     /// Inserts 'n' copies of a value into the deque.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_full if the deque is full.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is full.
     ///\param insert_position The insert position.
     ///\param n               The number of values to insert.
     ///\param value           The value to insert.
@@ -771,7 +761,7 @@ namespace etl
         {
           create_element_front(value);
         }
-          
+
         position = _begin;
       }
       else if (insert_position == end())
@@ -828,7 +818,6 @@ namespace etl
         }
         else
         {
-          size_t insert_index  = std::distance(begin(), position);
           size_t n_insert      = n;
           size_t n_move        = std::distance(position, end());
           size_t n_create_copy = std::min(n_insert, n_move);
@@ -863,7 +852,7 @@ namespace etl
 
     //*************************************************************************
     /// Inserts a range into the deque.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_empty if the deque is full.
+    /// If asserts or exceptions are enabled, throws an etl::deque_empty if the deque is full.
     ///\param insert_position>The insert position.
     ///\param range_begin The beginning of the range to insert.
     ///\param range_end   The end of the range to insert.
@@ -970,7 +959,7 @@ namespace etl
 
     //*************************************************************************
     /// Erase an item.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_out_of_bounds if the position is out of range.
+    /// If asserts or exceptions are enabled, throws an etl::deque_out_of_bounds if the position is out of range.
     ///\param erase_position The position to erase.
     //*************************************************************************
     iterator erase(const_iterator erase_position)
@@ -1010,7 +999,7 @@ namespace etl
 
     //*************************************************************************
     /// erase a range.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_out_of_bounds if the iterators are out of range.
+    /// If asserts or exceptions are enabled, throws an etl::deque_out_of_bounds if the iterators are out of range.
     ///\param range_begin The beginning of the range to erase.
     ///\param range_end   The end of the range to erase.
     //*************************************************************************
@@ -1044,14 +1033,14 @@ namespace etl
         position = end();
       }
       else
-      {         
+      {
         // Copy the smallest number of items.
         // Are we closer to the front?
         if (distance(_begin, position) < difference_type(current_size / 2))
         {
           // Move the items.
           std::copy_backward(_begin, position, position + length);
-            
+
           for (size_t i = 0; i < length; ++i)
           {
             destroy_element_front();
@@ -1064,7 +1053,7 @@ namespace etl
         {
           // Move the items.
           std::copy(position + length, _end, position);
-            
+
           for (size_t i = 0; i < length; ++i)
           {
             destroy_element_back();
@@ -1077,7 +1066,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds an item to the back of the deque.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_full is the deque is already full.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full is the deque is already full.
     ///\param item The item to push to the deque.
     //*************************************************************************
     void push_back(parameter_t item)
@@ -1090,7 +1079,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds one to the front of the deque and returns a reference to the new element.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_full is the deque is already full.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full is the deque is already full.
     ///\return A reference to the item to assign to.
     //*************************************************************************
     reference push_back()
@@ -1117,7 +1106,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds an item to the front of the deque.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_full is the deque is already full.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full is the deque is already full.
     ///\param item The item to push to the deque.
     //*************************************************************************
     void push_front(parameter_t item)
@@ -1130,7 +1119,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds one to the front of the deque and returns a reference to the new element.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_full is the deque is already full.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full is the deque is already full.
     ///\return A reference to the item to assign to.
     //*************************************************************************
     reference push_front()
@@ -1156,7 +1145,7 @@ namespace etl
 
     //*************************************************************************
     /// Resizes the deque.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::deque_full is 'new_size' is too large.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full is 'new_size' is too large.
     ///\param new_size The new size of the deque.
     ///\param value   The value to assign if the new size is larger. Default = Default constructed value.
     //*************************************************************************
@@ -1216,6 +1205,19 @@ namespace etl
       return distance(lhs.base(), rhs.base());
     }
 
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    ideque& operator =(const ideque& rhs)
+    {
+      if (&rhs != this)
+      {
+        assign(rhs.begin(), rhs.end());
+      }
+
+      return *this;
+    }
+
   protected:
 
     //*************************************************************************
@@ -1225,7 +1227,20 @@ namespace etl
       : deque_base(max_size, buffer_size),
         p_buffer(p_buffer)
     {
-      clear();
+    }
+
+    //*********************************************************************
+    /// Initialise the deque.
+    //*********************************************************************
+    void initialise()
+    {
+      while (current_size > 0)
+      {
+        destroy_element_back();
+      }
+
+      _begin = iterator(0, *this, p_buffer);
+      _end = iterator(0, *this, p_buffer);
     }
 
     iterator _begin;    ///Iterator to the _begin item in the deque.
@@ -1330,20 +1345,6 @@ namespace etl
       --current_size;
     }
 
-    //*********************************************************************
-    /// Initialise the deque.
-    //*********************************************************************
-    void initialise()
-    {
-      while (current_size > 0)
-      {
-        destroy_element_back();
-      }
-
-      _begin = iterator(0, *this, p_buffer);
-      _end  = iterator(0, *this, p_buffer);
-    }
-
     //*************************************************************************
     /// Measures the distance between two iterators.
     //*************************************************************************
@@ -1375,6 +1376,9 @@ namespace etl
         return index - reference_index;
       }
     }
+
+    // Disable copy construction.
+    ideque(const ideque&);
   };
 }
 

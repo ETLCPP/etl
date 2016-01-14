@@ -450,9 +450,6 @@
     <ClInclude Include="..\..\private\pool_base.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\private\priority_queue_base.h">
-      <Filter>ETL\Private</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\private\queue_base.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
@@ -462,14 +459,14 @@
     <ClInclude Include="..\..\private\stack_base.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\private\unordered_map_base.h">
-      <Filter>ETL\Private</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\private\vector_base.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
     <ClInclude Include="..\..\multi_array.h">
       <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\char_traits.h">
+      <Filter>ETL\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -714,6 +711,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_basic_intrusive_forward_list.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_unordered_map.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

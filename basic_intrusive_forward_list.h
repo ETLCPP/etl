@@ -124,14 +124,14 @@ namespace etl
 
       iterator& operator ++()
       {
-        p_node = p_node->next;
+        p_node = p_node->bifln_next;
         return *this;
       }
 
       iterator operator ++(int)
       {
         iterator temp(*this);
-        p_node = p_node->next;
+        p_node = p_node->bifln_next;
         return temp;
       }
 
@@ -234,14 +234,14 @@ namespace etl
 
       const_iterator& operator ++()
       {
-        p_node = p_node->next;
+        p_node = p_node->bifln_next;
         return *this;
       }
 
       const_iterator operator ++(int)
       {
         const_iterator temp(*this);
-        p_node = p_node->next;
+        p_node = p_node->bifln_next;
         return temp;
       }
 
@@ -440,21 +440,21 @@ namespace etl
     //*************************************************************************
     void reverse()
     {
-      if ((start_node.next == nullptr) || (start_node.next->next == nullptr))
+      if ((start_node.bifln_next == nullptr) || (start_node.bifln_next->bifln_next == nullptr))
       {
         return;
       }
       
       node_t* first  = nullptr;         // To keep first node
-      node_t* second = start_node.next; // To keep second node
-      node_t* track  = start_node.next; // Track the list
+      node_t* second = start_node.bifln_next; // To keep second node
+      node_t* track  = start_node.bifln_next; // Track the list
 
       while (track != NULL)
       {
-        track = track->next;  // Track point to next node;
-        second->next = first; // Second node point to first
-        first  = second;      // Move first node to next
-        second = track;       // Move second node to next
+        track = track->bifln_next;  // Track point to next node;
+        second->bifln_next = first; // Second node point to first
+        first  = second;            // Move first node to next
+        second = track;             // Move second node to next
       }
 
       join(&start_node, first);
@@ -505,7 +505,7 @@ namespace etl
     {
       node_t* p_first = first.p_node;
       node_t* p_last  = last.p_node;
-      node_t* p_next  = p_first->next;
+      node_t* p_next  = p_first->bifln_next;
 
       // Join the ends.
       join(p_first, p_last);
@@ -515,18 +515,11 @@ namespace etl
       // Erase the ones in between.
       while (p_first != p_last)
       {
-        p_next  = p_first->next; // Remember the next node.
-        p_first = p_next;        // Move to the next node.
+        p_next  = p_first->bifln_next; // Remember the next node.
+        p_first = p_next;              // Move to the next node.
       }
 
-      if (p_next == nullptr)
-      {
-        return end();
-      }
-      else
-      {
-        return iterator(*p_last);
-      }
+      return last;
     }
     
     //*************************************************************************
@@ -534,7 +527,7 @@ namespace etl
     //*************************************************************************
     bool empty() const
     {
-      return start_node.next == nullptr;
+      return start_node.bifln_next == nullptr;
     }
 
   private:
@@ -546,7 +539,7 @@ namespace etl
     //*************************************************************************
     void join(node_t* left, node_t* right)
     {
-      left->next = right;
+      left->bifln_next = right;
     }
 
     //*************************************************************************
@@ -555,7 +548,7 @@ namespace etl
     void insert_node_after(node_t& position, node_t& node)
     {
       // Connect to the basic_intrusive_forward_list.
-      join(&node,     position.next);
+      join(&node,     position.bifln_next);
       join(&position, &node);
     }
 
@@ -565,12 +558,12 @@ namespace etl
     void remove_node_after(node_t& node)
     {
       // The node to erase.
-      node_t* p_node = node.next;
+      node_t* p_node = node.bifln_next;
 
       if (p_node != nullptr)
       {
         // Disconnect the node from the basic_intrusive_forward_list.
-        join(&node, p_node->next);
+        join(&node, p_node->bifln_next);
       }
     }
 
@@ -579,7 +572,7 @@ namespace etl
     //*************************************************************************
     node_t& get_head()
     {
-      return *start_node.next;
+      return *start_node.bifln_next;
     }
 
     //*************************************************************************
@@ -587,7 +580,7 @@ namespace etl
     //*************************************************************************
     const node_t& get_head() const
     {
-      return *start_node.next;
+      return *start_node.bifln_next;
     }
 
     //*************************************************************************
@@ -595,7 +588,7 @@ namespace etl
     //*************************************************************************
     void initialise()
     {
-      start_node.next = nullptr;
+      start_node.bifln_next = nullptr;
     }
 
     // Disabled.

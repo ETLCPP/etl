@@ -35,7 +35,7 @@ SOFTWARE.
 #include "../stack.h"
 
 namespace
-{		
+{
   SUITE(test_stack)
   {
     typedef TestDataDC<std::string>  ItemDC;
@@ -99,7 +99,7 @@ namespace
       stack.push(2);
       stack.push(3);
 
-      CHECK_EQUAL(3, stack.size());
+      CHECK_EQUAL(3U, stack.size());
     }
 
     //*************************************************************************
@@ -107,7 +107,7 @@ namespace
     {
       etl::stack<int, 4> stack;
 
-      CHECK_EQUAL(4, stack.max_size());
+      CHECK_EQUAL(4U, stack.max_size());
     }
 
     //*************************************************************************
@@ -118,7 +118,7 @@ namespace
       stack.push(1);
       stack.push(2);
       stack.clear();
-      CHECK_EQUAL(0, stack.size());
+      CHECK_EQUAL(0U, stack.size());
     }
 
     //*************************************************************************
@@ -127,10 +127,10 @@ namespace
       etl::stack<int, 4> stack;
 
       stack.push(1);
-      CHECK_EQUAL(1, stack.size());
+      CHECK_EQUAL(1U, stack.size());
 
       stack.push(2);
-      CHECK_EQUAL(2, stack.size());
+      CHECK_EQUAL(2U, stack.size());
 
       CHECK_EQUAL(2, stack.top());
 
@@ -144,10 +144,10 @@ namespace
       etl::stack<int, 4> stack;
 
       stack.push() = 1;
-      CHECK_EQUAL(1, stack.size());
+      CHECK_EQUAL(1U, stack.size());
 
       stack.push() = 2;
-      CHECK_EQUAL(2, stack.size());
+      CHECK_EQUAL(2U, stack.size());
 
       CHECK_EQUAL(2, stack.top());
 
@@ -176,7 +176,7 @@ namespace
       stack.push(1);
       stack.push(2);
       stack.pop();
-      CHECK_EQUAL(1, stack.size());
+      CHECK_EQUAL(1U, stack.size());
     }
 
     //*************************************************************************
@@ -305,6 +305,34 @@ namespace
         stack2.pop();
       }
     }
+
+    //*************************************************************************
+    TEST(test_assignment_interface)
+    {
+      etl::stack<int, 4> stack1;
+
+      stack1.push(1);
+      stack1.push(2);
+      stack1.push(3);
+      stack1.push(4);
+
+      etl::stack<int, 4> stack2;
+
+      etl::istack<int>& istack1 = stack1;
+      etl::istack<int>& istack2 = stack2;
+
+      istack2 = istack1;
+
+      CHECK(istack1.size() == stack2.size());
+
+      while (!stack1.empty())
+      {
+        CHECK_EQUAL(stack1.top(), stack2.top());
+        stack1.pop();
+        stack2.pop();
+      }
+    }
+
 
     //*************************************************************************
     TEST(test_self_assignment)

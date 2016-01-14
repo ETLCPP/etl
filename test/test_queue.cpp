@@ -33,7 +33,7 @@ SOFTWARE.
 #include "../queue.h"
 
 namespace
-{		
+{
   SUITE(test_queue)
   {
     //*************************************************************************
@@ -67,7 +67,7 @@ namespace
       queue.push(2);
       queue.push(3);
 
-      CHECK_EQUAL(3, queue.size());
+      CHECK_EQUAL(3U, queue.size());
     }
 
     //*************************************************************************
@@ -78,7 +78,7 @@ namespace
       queue.push(1);
       queue.push(2);
       queue.clear();
-      CHECK_EQUAL(0, queue.size());
+      CHECK_EQUAL(0U, queue.size());
     }
 
     //*************************************************************************
@@ -182,10 +182,10 @@ namespace
       etl::queue<int, 4> queue;
 
       queue.push(1);
-      CHECK_EQUAL(1, queue.size());
+      CHECK_EQUAL(1U, queue.size());
 
       queue.push(2);
-      CHECK_EQUAL(2, queue.size());
+      CHECK_EQUAL(2U, queue.size());
 
       CHECK_EQUAL(1, queue.front());
 
@@ -320,6 +320,33 @@ namespace
       {
         CHECK_EQUAL(queue.front(), queue2.front());
         queue.pop();
+        queue2.pop();
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_assignment_interface)
+    {
+      etl::queue<int, 4> queue1;
+
+      queue1.push(1);
+      queue1.push(2);
+      queue1.push(3);
+      queue1.push(4);
+
+      etl::queue<int, 4> queue2;
+
+      etl::iqueue<int>& iqueue1 = queue1;
+      etl::iqueue<int>& iqueue2 = queue2;
+
+      iqueue2 = iqueue1;
+
+      CHECK(queue1.size() == queue2.size());
+
+      while (!queue1.empty())
+      {
+        CHECK_EQUAL(queue1.front(), queue2.front());
+        queue1.pop();
         queue2.pop();
       }
     }

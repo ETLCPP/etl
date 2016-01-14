@@ -90,7 +90,7 @@ namespace etl
     flat_multimap(TIterator first, TIterator last)
       : iflat_multimap<TKey, TValue, TCompare>(buffer)
     {
-      iflat_multimap<TKey, TValue, TCompare>::insert(first, last);
+      iflat_multimap<TKey, TValue, TCompare>::assign(first, last);
     }
 
     //*************************************************************************
@@ -100,8 +100,7 @@ namespace etl
     {
       if (&rhs != this)
       {
-        iflat_multimap<TKey, TValue, TCompare>::clear();
-        iflat_multimap<TKey, TValue, TCompare>::insert(rhs.cbegin(), rhs.cend());
+        iflat_multimap<TKey, TValue, TCompare>::assign(rhs.cbegin(), rhs.cend());
       }
 
       return *this;

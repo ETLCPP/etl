@@ -30,18 +30,64 @@ SOFTWARE.
 
 #ifndef __ETL_IPRIORITY_QUEUE__
 #define __ETL_IPRIORITY_QUEUE__
-#define __ETL_IN_IPRIORITY_QUEUE_H__
 
 #include <stddef.h>
 #include <algorithm>
 
-#include "private/priority_queue_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "error_handler.h"
 
 namespace etl
 {
+#include "../exception.h"
+#include "../error_handler.h"
+
+#undef ETL_FILE
+#define ETL_FILE "12"
+
+  //***************************************************************************
+  /// The base class for priority_queue exceptions.
+  ///\ingroup queue
+  //***************************************************************************
+  class priority_queue_exception : public exception
+  {
+  public:
+
+    priority_queue_exception(string_type what, string_type file_name, numeric_type line_number)
+      : exception(what, file_name, line_number)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// The exception thrown when the queue is full.
+  ///\ingroup queue
+  //***************************************************************************
+  class priority_queue_full : public priority_queue_exception
+  {
+  public:
+
+    priority_queue_full(string_type file_name, numeric_type line_number)
+      : priority_queue_exception(ETL_ERROR_TEXT("priority_queue:full", ETL_FILE"A"), file_name, line_number)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// The priority queue iterator exception on reversed iterators
+  ///\ingroup queue
+  //***************************************************************************
+  class priority_queue_iterator : public priority_queue_exception
+  {
+  public:
+
+    priority_queue_iterator(string_type file_name, numeric_type line_number)
+      : priority_queue_exception(ETL_ERROR_TEXT("priority_queue:iterator", ETL_FILE"B"), file_name, line_number)
+    {
+    }
+  };
+  
   //***************************************************************************
   ///\ingroup queue
   ///\brief This is the base for all priority queues that contain a particular type.
@@ -59,7 +105,7 @@ namespace etl
   /// \tparam TCompare to use in comparing T values
   //***************************************************************************
   template <typename T, typename TContainer, typename TCompare>
-  class ipriority_queue : public priority_queue_base
+  class ipriority_queue
   {
   public:
 
@@ -68,7 +114,7 @@ namespace etl
     typedef TCompare              compare_type;       ///< The comparison type.
     typedef T&                    reference;          ///< A reference to the type used in the queue.
     typedef const T&              const_reference;    ///< A const reference to the type used in the queue.
-    typedef priority_queue_base::size_type size_type; ///< The type used for determining the size of the queue.
+    typedef typename TContainer::size_type size_type; ///< The type used for determining the size of the queue.
     typedef typename std::iterator_traits<typename TContainer::iterator>::difference_type difference_type;
 
   private:
@@ -97,7 +143,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds a value to the queue.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws an etl::priority_queue_full
+    /// If asserts or exceptions are enabled, throws an etl::priority_queue_full
     /// is the priority queue is already full, otherwise does nothing if full.
     ///\param value The value to push to the queue.
     //*************************************************************************
@@ -107,26 +153,15 @@ namespace etl
 
       // Put element at end
       container.push_back(value);
-      // Pre-increment size
-      ++current_size;
       // Make elements in container into heap
       std::push_heap(container.begin(), container.end(), TCompare());
     }
 
     //*************************************************************************
-    /// Clears the queue to the empty state.
-    //*************************************************************************
-    void clear()
-    {
-      container.clear();
-      current_size = 0;
-    }
-
-    //*************************************************************************
     /// Assigns values to the priority queue.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits priority_queue_full if
+    /// If asserts or exceptions are enabled, emits priority_queue_full if
     /// priority queue does not have enough free space.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits priority_iterator if the
+    /// If asserts or exceptions are enabled, emits priority_iterator if the
     /// iterators are reversed.
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
@@ -137,13 +172,12 @@ namespace etl
 #ifdef _DEBUG
       difference_type count = std::distance(first, last);
       ETL_ASSERT(count >= 0, ETL_ERROR(priority_queue_iterator));
-      ETL_ASSERT(static_cast<size_t>(count) <= MAX_SIZE, ETL_ERROR(priority_queue_full));
+      ETL_ASSERT(static_cast<size_t>(count) <= max_size(), ETL_ERROR(priority_queue_full));
 #endif
 
       clear();
       container.assign(first, last);
       std::make_heap(container.begin(), container.end(), TCompare());
-      current_size = container.size();
     }
 
     //*************************************************************************
@@ -158,9 +192,58 @@ namespace etl
 	      std::pop_heap(container.begin(), container.end(), TCompare());
         // Actually remove largest element at end
         container.pop_back();
-        // Decrement size
-        --current_size;
       }
+    }
+
+    //*************************************************************************
+    /// Returns the current number of items in the priority queue.
+    //*************************************************************************
+    size_type size() const
+    {
+      return container.size();
+    }
+
+    //*************************************************************************
+    /// Returns the maximum number of items that can be queued.
+    //*************************************************************************
+    size_type max_size() const
+    {
+      return container.max_size();
+    }
+
+    //*************************************************************************
+    /// Checks to see if the priority queue is empty.
+    /// \return <b>true</b> if the queue is empty, otherwise <b>false</b>
+    //*************************************************************************
+    bool empty() const
+    {
+      return container.empty();
+    }
+
+    //*************************************************************************
+    /// Checks to see if the priority queue is full.
+    /// \return <b>true</b> if the priority queue is full, otherwise <b>false</b>
+    //*************************************************************************
+    bool full() const
+    {
+      return container.size() == container.max_size();
+    }
+
+    //*************************************************************************
+    /// Returns the remaining capacity.
+    ///\return The remaining capacity.
+    //*************************************************************************
+    size_t available() const
+    {
+      return container.max_size() - container.size();
+    }
+
+    //*************************************************************************
+    /// Clears the queue to the empty state.
+    //*************************************************************************
+    void clear()
+    {
+      container.clear();
     }
 
   protected:
@@ -176,17 +259,19 @@ namespace etl
     //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
-    ipriority_queue(size_type max_size)
-      : priority_queue_base(max_size)
+    ipriority_queue()
     {
     }
 
   private:
+
+    // Disable copy construction.
+    ipriority_queue(const ipriority_queue&);
 
     /// The container specified at instantiation of the priority_queue
     TContainer container;
   };
 }
 
-#undef __ETL_IN_IPRIORITY_QUEUE_H__
+#undef ETL_FILE
 #endif

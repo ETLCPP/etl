@@ -43,9 +43,11 @@ static const size_t SIZE = 10;
 #define TEST_GREATER_THAN
 #ifdef TEST_GREATER_THAN
 typedef etl::map<std::string, int, SIZE, std::greater<std::string> >  Data;
+typedef etl::imap<std::string, int, std::greater<std::string> >        IData;
 typedef std::map<std::string, int, std::greater<std::string> >        Compare_Data;
 #else
 typedef etl::map<std::string, int, SIZE, std::less<std::string> >  Data;
+typedef etl::imap<std::string, int, std::less<std::string> >       IData;
 typedef std::map<std::string, int, std::less<std::string> >        Compare_Data;
 #endif
 
@@ -111,7 +113,7 @@ namespace
     //*************************************************************************
     struct SetupFixture
     {
-      // Maps of predefined data from which to constuct maps used in each test
+      // Maps of predefined data from which to construct maps used in each test
       std::map<std::string, int> initial_data;
       std::map<std::string, int> excess_data;
       std::map<std::string, int> different_data;
@@ -208,6 +210,39 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assignment_interface)
+    {
+      Data data1(initial_data.begin(), initial_data.end());
+      Data data2;
+
+      IData& idata1 = data1;
+      IData& idata2 = data2;
+
+      idata2 = idata1;
+
+      bool isEqual = std::equal(data1.begin(),
+                                data1.end(),
+                                data2.begin());
+
+      CHECK(isEqual);
+    }
+    
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_self_assignment)
+    {
+      Data data(initial_data.begin(), initial_data.end());
+      Data other_data(data);
+
+      other_data = other_data;
+
+      bool isEqual = std::equal(data.begin(),
+                                data.end(),
+                                other_data.begin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_begin)
     {
       Data data(initial_data.begin(), initial_data.end());
@@ -263,6 +298,21 @@ namespace
       CHECK_EQUAL(data["7"], compare_data["7"]);
       CHECK_EQUAL(data["8"], compare_data["8"]);
       CHECK_EQUAL(data["9"], compare_data["9"]);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_index_value_changed)
+    {
+      Compare_Data compare_data;
+      Data data;
+
+      data["0"]         = 0;
+      compare_data["0"] = 0;
+
+      data["0"]         = 1;
+      compare_data["0"] = 1;
+
+      CHECK_EQUAL(data["0"], compare_data["0"]);
     }
 
     //*************************************************************************
@@ -357,6 +407,31 @@ namespace
 
       data.insert(std::make_pair(std::string("1"), 1));
       compare_data.insert(std::make_pair(std::string("1"), 1));
+
+      isEqual = Check_Equal(data.begin(),
+                            data.end(),
+                            compare_data.begin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_value_changed)
+    {
+      Compare_Data compare_data;
+      Data data;
+
+      data.insert(Data::value_type(std::string("0"), 0));
+      compare_data.insert(std::make_pair(std::string("0"), 0));
+
+      bool isEqual = Check_Equal(data.begin(),
+                                 data.end(),
+                                 compare_data.begin());
+
+      CHECK(isEqual);
+
+      data.insert(std::make_pair(std::string("0"), 1));
+      compare_data.insert(std::make_pair(std::string("0"), 1));
 
       isEqual = Check_Equal(data.begin(),
                             data.end(),

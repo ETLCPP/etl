@@ -224,7 +224,7 @@ namespace etl
       if (i_element == end())
       {
         // Doesn't exist, so create a new one.
-	    value_type value(key, mapped_type());
+	      value_type value(key, mapped_type());
         i_element = insert(value).first;
       }
 
@@ -233,7 +233,7 @@ namespace etl
 
     //*********************************************************************
     /// Returns a reference to the value at index 'key'
-    /// If ETL_THROW_EXCEPTIONS is defined, emits an etl::flat_map_out_of_bounds if the key is not in the range.
+    /// If asserts or exceptions are enabled, emits an etl::flat_map_out_of_bounds if the key is not in the range.
     ///\param i The index.
     ///\return A reference to the value at index 'key'
     //*********************************************************************
@@ -248,7 +248,7 @@ namespace etl
 
     //*********************************************************************
     /// Returns a const reference to the value at index 'key'
-    /// If ETL_THROW_EXCEPTIONS is defined, emits an etl::flat_map_out_of_bounds if the key is not in the range.
+    /// If asserts or exceptions are enabled, emits an etl::flat_map_out_of_bounds if the key is not in the range.
     ///\param i The index.
     ///\return A const reference to the value at index 'key'
     //*********************************************************************
@@ -288,7 +288,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the flat_map.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_map_full if the flat_map is already full.
+    /// If asserts or exceptions are enabled, emits flat_map_full if the flat_map is already full.
     ///\param value    The value to insert.
     //*********************************************************************
     std::pair<iterator, bool> insert(const value_type& value)
@@ -309,14 +309,7 @@ namespace etl
       {
         // Not at the end.
         // Existing element?
-        if (value.first == i_element->first)
-        {
-          // Yes.
-          i_element->second = value.second;
-          result.first  = i_element;
-          result.second = false;
-        }
-        else
+        if (value.first != i_element->first)
         {
           // A new one.
           ETL_ASSERT(!buffer.full(), ETL_ERROR(flat_map_full));
@@ -331,7 +324,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the flat_map.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_map_full if the flat_map is already full.
+    /// If asserts or exceptions are enabled, emits flat_map_full if the flat_map is already full.
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -342,7 +335,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a range of values to the flat_map.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits flat_map_full if the flat_map does not have enough free space.
+    /// If asserts or exceptions are enabled, emits flat_map_full if the flat_map does not have enough free space.
     ///\param position The position to insert at.
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.
@@ -499,6 +492,19 @@ namespace etl
       return std::make_pair(i_lower, std::upper_bound(i_lower, cend(), key, compare()));
     }
 
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    iflat_map& operator = (const iflat_map& rhs)
+    {
+      if (&rhs != this)
+      {
+        assign(rhs.cbegin(), rhs.cend());
+      }
+
+      return *this;
+    }
+
   protected:
 
     //*********************************************************************
@@ -511,6 +517,9 @@ namespace etl
     }
 
   private:
+
+    // Disable copy construction.
+    iflat_map(const iflat_map&);
 
     buffer_t& buffer;
   };

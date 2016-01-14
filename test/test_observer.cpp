@@ -121,7 +121,7 @@ public:
       data3_count(0)
   {
   }
-  
+
   //*******************************************
   // Notification1 is passed by value.
   //*******************************************
@@ -225,7 +225,7 @@ namespace
       CHECK_EQUAL(0, observer2.data3_count);
 
       observable2.send_notifications(); // Updates data3. observeable2 has no observers yet.
-      
+
       CHECK_EQUAL(1, observer1.data1_count);
       CHECK_EQUAL(1, observer1.data2_count);
       CHECK_EQUAL(0, observer1.data3_count);
@@ -408,27 +408,27 @@ namespace
       Observer observer5;
 
       observable.add_observer(observer1);
-      CHECK_EQUAL(1, observable.number_of_observers());
+      CHECK_EQUAL(size_t(1), observable.number_of_observers());
 
       observable.add_observer(observer2);
-      CHECK_EQUAL(2, observable.number_of_observers());
+      CHECK_EQUAL(size_t(2), observable.number_of_observers());
 
       observable.add_observer(observer3);
-      CHECK_EQUAL(3, observable.number_of_observers());
+      CHECK_EQUAL(size_t(3), observable.number_of_observers());
 
       observable.add_observer(observer2);
-      CHECK_EQUAL(3, observable.number_of_observers());
+      CHECK_EQUAL(size_t(3), observable.number_of_observers());
 
       observable.add_observer(observer4);
-      CHECK_EQUAL(4, observable.number_of_observers());
+      CHECK_EQUAL(size_t(4), observable.number_of_observers());
 
       CHECK_THROW(observable.add_observer(observer5), etl::observer_list_full);
 
       observable.remove_observer(observer3);
-      CHECK_EQUAL(3, observable.number_of_observers());
+      CHECK_EQUAL(size_t(3), observable.number_of_observers());
 
       observable.clear_observers();
-      CHECK_EQUAL(0, observable.number_of_observers());
+      CHECK_EQUAL(size_t(0), observable.number_of_observers());
     }
   }
 }

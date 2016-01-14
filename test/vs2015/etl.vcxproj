@@ -1,6 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug No Unit Tests|Win32">
+      <Configuration>Debug No Unit Tests</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
@@ -23,6 +27,12 @@
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug No Unit Tests|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -36,11 +46,18 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug No Unit Tests|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug No Unit Tests|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
@@ -64,6 +81,26 @@
     </Link>
     <PostBuildEvent>
       <Command>$(OutDir)\etl.exe</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug No Unit Tests|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;ETL_THROW_EXCEPTIONS;PLATFORM_WINDOWS;COMPILER_MICROSOFT;ETL_VERBOSE_ERRORS;ETL_CHECK_PUSH_POP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../../../unittest-cpp</AdditionalIncludeDirectories>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -126,6 +163,7 @@
     <ClInclude Include="..\..\bitset.h" />
     <ClInclude Include="..\..\bloom_filter.h" />
     <ClInclude Include="..\..\bsd_checksum.h" />
+    <ClInclude Include="..\..\char_traits.h" />
     <ClInclude Include="..\..\checksum.h" />
     <ClInclude Include="..\..\crc16.h" />
     <ClInclude Include="..\..\crc16_ccitt.h" />
@@ -211,11 +249,9 @@
     <ClInclude Include="..\..\private\multimap_base.h" />
     <ClInclude Include="..\..\private\multiset_base.h" />
     <ClInclude Include="..\..\private\pool_base.h" />
-    <ClInclude Include="..\..\private\priority_queue_base.h" />
     <ClInclude Include="..\..\private\queue_base.h" />
     <ClInclude Include="..\..\private\set_base.h" />
     <ClInclude Include="..\..\private\stack_base.h" />
-    <ClInclude Include="..\..\private\unordered_map_base.h" />
     <ClInclude Include="..\..\private\vector_base.h" />
     <ClInclude Include="..\..\queue.h" />
     <ClInclude Include="..\..\radix.h" />
@@ -280,6 +316,7 @@
     <ClCompile Include="..\test_deque.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug No Unit Tests|Win32'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\test_endian.cpp" />
     <ClCompile Include="..\test_enum_type.cpp" />
@@ -290,6 +327,7 @@
     <ClCompile Include="..\test_flat_multiset.cpp" />
     <ClCompile Include="..\test_flat_set.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug No Unit Tests|Win32'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\test_fnv_1.cpp" />
     <ClCompile Include="..\test_forward_list.cpp" />
@@ -305,6 +343,7 @@
     <ClCompile Include="..\test_list.cpp" />
     <ClCompile Include="..\test_flat_map.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug No Unit Tests|Win32'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\test_map.cpp" />
     <ClCompile Include="..\test_maths.cpp" />
@@ -314,6 +353,7 @@
     <ClCompile Include="..\test_numeric.cpp" />
     <ClCompile Include="..\test_observer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug No Unit Tests|Win32'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\test_optional.cpp" />
     <ClCompile Include="..\test_pearson.cpp" />
@@ -324,6 +364,7 @@
     <ClCompile Include="..\test_smallest.cpp" />
     <ClCompile Include="..\test_stack.cpp" />
     <ClCompile Include="..\test_type_traits.cpp" />
+    <ClCompile Include="..\test_unordered_map.cpp" />
     <ClCompile Include="..\test_variant.cpp" />
     <ClCompile Include="..\test_vector.cpp" />
     <ClCompile Include="..\test_visitor.cpp" />

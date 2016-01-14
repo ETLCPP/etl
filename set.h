@@ -63,6 +63,7 @@ namespace etl
     set()
       : iset<T, TCompare>(node_pool, MAX_SIZE)
     {
+      iset<T, TCompare>::initialise();
     }
 
     //*************************************************************************
@@ -84,7 +85,7 @@ namespace etl
     set(TIterator first, TIterator last)
       : iset<T, TCompare>(node_pool, MAX_SIZE)
     {
-      iset<T, TCompare>::insert(first, last);
+      iset<T, TCompare>::assign(first, last);
     }
 
     //*************************************************************************

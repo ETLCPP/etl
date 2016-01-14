@@ -62,6 +62,7 @@ namespace etl
     multiset()
       : imultiset<T, TCompare>(node_pool, MAX_SIZE)
     {
+      imultiset<T, TCompare>::initialise();
     }
 
     //*************************************************************************
@@ -83,7 +84,7 @@ namespace etl
     multiset(TIterator first, TIterator last)
       : imultiset<T, TCompare>(node_pool, MAX_SIZE)
     {
-      imultiset<T, TCompare>::insert(first, last);
+      imultiset<T, TCompare>::assign(first, last);
     }
 
     //*************************************************************************

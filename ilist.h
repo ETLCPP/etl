@@ -445,7 +445,7 @@ namespace etl
 
     //*************************************************************************
     /// Assigns a range of values to the list.
-		/// If ETL_THROW_EXCEPTIONS is defined throws etl::list_full if the list does not have enough free space.
+		/// If asserts or exceptions are enabled throws etl::list_full if the list does not have enough free space.
     /// If ETL_THROW_EXCEPTIONS & _DEBUG are defined throws list_iterator if the iterators are reversed.
     //*************************************************************************
     template <typename TIterator>
@@ -884,6 +884,19 @@ namespace etl
       }
     }
 
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    ilist& operator = (const ilist& rhs)
+    {
+      if (&rhs != this)
+      {
+        assign(rhs.cbegin(), rhs.cend());
+      }
+
+      return *this;
+    }
+
   protected:
 
     //*************************************************************************
@@ -893,7 +906,20 @@ namespace etl
       : list_base(max_size_),
         p_node_pool(&node_pool)
     {
-      initialise();
+    }
+
+    //*************************************************************************
+    /// Initialise the list.
+    //*************************************************************************
+    void initialise()
+    {
+      if (!empty())
+      {
+        p_node_pool->release_all();
+      }
+
+      current_size = 0;
+      join(terminal_node, terminal_node);
     }
 
   private:
@@ -929,19 +955,8 @@ namespace etl
       p_node_pool->release(&node);
     }
 
-    //*************************************************************************
-    /// Initialise the list.
-    //*************************************************************************
-    void initialise()
-    {
-      if (!empty())
-      {
-        p_node_pool->release_all();
-      }
-
-      current_size = 0;
-      join(terminal_node, terminal_node);
-    }
+    // Disable copy construction.
+    ilist(const ilist&);
   };
 }
 

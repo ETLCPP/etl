@@ -88,7 +88,7 @@ namespace etl
 /// Versions of the macro that return a constant value of 'true' will allow the compiler to optimise away
 /// any 'if' statements that it is contained within.
 /// If ETL_NO_CHECKS is defined then no runtime checks are executed at all. 
-/// If ETL_THROW_EXCEPTIONS is defined then the error is thrown if the assert fails. The return value is always 'true'.
+/// If asserts or exceptions are enabled then the error is thrown if the assert fails. The return value is always 'true'.
 /// If ETL_LOG_ERRORS is defined then the error is logged if the assert fails. The return value is the value of the boolean test.
 /// Otherwise 'assert' is called. The return value is always 'true'.
 ///\ingroup error_handler

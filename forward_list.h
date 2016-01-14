@@ -71,6 +71,7 @@ namespace etl
     forward_list()
       : iforward_list<T>(node_pool, MAX_SIZE)
     {
+      iforward_list<T>::initialise();
     }
 
     //*************************************************************************

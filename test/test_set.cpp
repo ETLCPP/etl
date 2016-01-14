@@ -43,6 +43,7 @@ static const size_t SIZE = 10;
 #define TEST_GREATER_THAN
 #ifdef TEST_GREATER_THAN
 typedef etl::set<int, SIZE, std::greater<int> >  Data;
+typedef etl::iset<int, std::greater<int> >       IData;
 typedef std::set<int, std::greater<int> >        Compare_Data;
 #else
 typedef etl::set<int, SIZE, std::less<int> >  Data;
@@ -203,6 +204,39 @@ namespace
       Data otherData;
 
       otherData = data;
+
+      bool isEqual = Check_Equal(data.begin(),
+                                 data.end(),
+                                 otherData.begin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assignment_interface)
+    {
+      Data data1(initial_data.begin(), initial_data.end());
+      Data data2;
+
+      IData& idata1 = data1;
+      IData& idata2 = data2;
+
+      idata2 = idata1;
+
+      bool isEqual = Check_Equal(data1.begin(),
+                                 data1.end(),
+                                 data2.begin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_self_assignment)
+    {
+      Data data(initial_data.begin(), initial_data.end());
+      Data otherData(data);
+
+      data = data;
 
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),

@@ -57,6 +57,17 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_copy_constructor)
+    {
+      etl::cyclic_value<int> value(2, 7);
+      etl::cyclic_value<int> value2(value);
+      CHECK(value == value2);
+
+      value2.set(3, 6);
+      CHECK(value != value2);
+    }
+
+    //*************************************************************************
     TEST(test_set)
     {
       etl::cyclic_value<int> value;

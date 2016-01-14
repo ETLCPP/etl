@@ -106,7 +106,7 @@ namespace etl
 
     //*****************************************************************
     /// Add an observer to the list.
-    /// If ETL_THROW_EXCEPTIONS is defined then an etl::observable_observer_list_full
+    /// If asserts or exceptions are enabled then an etl::observable_observer_list_full
     /// is emitted if the observer list is already full.
     ///\param observer A reference to the observer.
     //*****************************************************************

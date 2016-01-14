@@ -171,21 +171,24 @@ namespace etl
     //***************************************************************************
     optional& operator =(const optional& other)
     {
-      if (valid && !bool(other))
+      if (this != &other)
       {
-        storage.template get_reference<T>().~T();
-        valid = false;
-      }
-      else if (bool(other))
-      {
-        if (valid)
+        if (valid && !bool(other))
         {
-          storage.template get_reference<T>() = other.value();
+          storage.template get_reference<T>().~T();
+          valid = false;
         }
-        else
+        else if (bool(other))
         {
-          new (storage.template get_address<T>()) T(other.value());
-          valid = true;
+          if (valid)
+          {
+            storage.template get_reference<T>() = other.value();
+          }
+          else
+          {
+            new (storage.template get_address<T>()) T(other.value());
+            valid = true;
+          }
         }
       }
 

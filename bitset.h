@@ -59,7 +59,7 @@ namespace etl
 {
   //*************************************************************************
   /// The class emulates an array of bool elements, but optimized for space allocation.
-  /// Will accomodate any number of bits.
+  /// Will accommodate any number of bits.
   /// Does not use std::string.
   ///\tparam N The number of bits.
   ///\ingroup bitset
@@ -130,9 +130,6 @@ namespace etl
       return *this;
     }
 
-//#define NDEBUG
-
-
     //*************************************************************************
     /// Set from a string.
     //*************************************************************************
@@ -185,7 +182,11 @@ namespace etl
     //*************************************************************************
     bitset<N>& operator =(const bitset<N>& other)
     {
-      etl::copy_n(other.data, ARRAY_SIZE, data);
+      if (this != &other)
+      {
+        etl::copy_n(other.data, ARRAY_SIZE, data);
+      }
+
       return *this;
     }
 

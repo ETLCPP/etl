@@ -80,6 +80,10 @@ namespace etl
 
     ///< The set of flags that indicate which items are free in the pool.
     bitset<SIZE> in_use;
+
+    // Should not be copied.
+    pool(const pool&);
+    pool& operator =(const pool&);
   };
 }
 

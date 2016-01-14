@@ -512,15 +512,15 @@ namespace
 
       value = 0xF0C3A55A;
       value = etl::reverse_bytes(value);
-      CHECK_EQUAL(0x5AA5C3F0, value);
+      CHECK_EQUAL(0x5AA5C3F0U, value);
 
       value = 0xA5A55A5A;
       value = etl::reverse_bytes(value);
-      CHECK_EQUAL(0x5A5AA5A5, value);
+      CHECK_EQUAL(0x5A5AA5A5U, value);
 
       value = 0x5A5AA5A5;
       value = etl::reverse_bytes(value);
-      CHECK_EQUAL(0xA5A55A5A, value);
+      CHECK_EQUAL(0xA5A55A5AU, value);
     }
 
     //*************************************************************************
@@ -708,8 +708,6 @@ namespace
     {
       const uint64_t data = 0xE8C9AACCBC3D9A8F;
 
-      uint8_t result = etl::fold_bits<uint8_t, 8>(data);
-
       CHECK_EQUAL(test_fold_bits<uint64_t>(data,  1), (etl::fold_bits<uint64_t,  1>(data)));
       CHECK_EQUAL(test_fold_bits<uint64_t>(data,  2), (etl::fold_bits<uint64_t,  2>(data)));
       CHECK_EQUAL(test_fold_bits<uint64_t>(data,  3), (etl::fold_bits<uint64_t,  3>(data)));
@@ -780,70 +778,70 @@ namespace
     {
         // Check that the values are correct.
         //CHECK_EQUAL(0, etl::max_value_for_nbits<0>::value);
-        CHECK_EQUAL(1, etl::max_value_for_nbits<1>::value);
-        CHECK_EQUAL(3, etl::max_value_for_nbits<2>::value);
-        CHECK_EQUAL(7, etl::max_value_for_nbits<3>::value);
-        CHECK_EQUAL(15, etl::max_value_for_nbits<4>::value);
-        CHECK_EQUAL(31, etl::max_value_for_nbits<5>::value);
-        CHECK_EQUAL(63, etl::max_value_for_nbits<6>::value);
-        CHECK_EQUAL(127, etl::max_value_for_nbits<7>::value);
-        CHECK_EQUAL(255, etl::max_value_for_nbits<8>::value);
-        CHECK_EQUAL(511, etl::max_value_for_nbits<9>::value);
-        CHECK_EQUAL(1023, etl::max_value_for_nbits<10>::value);
-        CHECK_EQUAL(2047, etl::max_value_for_nbits<11>::value);
-        CHECK_EQUAL(4095, etl::max_value_for_nbits<12>::value);
-        CHECK_EQUAL(8191, etl::max_value_for_nbits<13>::value);
-        CHECK_EQUAL(16383, etl::max_value_for_nbits<14>::value);
-        CHECK_EQUAL(32767, etl::max_value_for_nbits<15>::value);
-        CHECK_EQUAL(65535, etl::max_value_for_nbits<16>::value);
-        CHECK_EQUAL(131071, etl::max_value_for_nbits<17>::value);
-        CHECK_EQUAL(262143, etl::max_value_for_nbits<18>::value);
-        CHECK_EQUAL(524287, etl::max_value_for_nbits<19>::value);
-        CHECK_EQUAL(1048575, etl::max_value_for_nbits<20>::value);
-        CHECK_EQUAL(2097151, etl::max_value_for_nbits<21>::value);
-        CHECK_EQUAL(4194303, etl::max_value_for_nbits<22>::value);
-        CHECK_EQUAL(8388607, etl::max_value_for_nbits<23>::value);
-        CHECK_EQUAL(16777215, etl::max_value_for_nbits<24>::value);
-        CHECK_EQUAL(33554431, etl::max_value_for_nbits<25>::value);
-        CHECK_EQUAL(67108863, etl::max_value_for_nbits<26>::value);
-        CHECK_EQUAL(134217727, etl::max_value_for_nbits<27>::value);
-        CHECK_EQUAL(268435455, etl::max_value_for_nbits<28>::value);
-        CHECK_EQUAL(536870911, etl::max_value_for_nbits<29>::value);
-        CHECK_EQUAL(1073741823, etl::max_value_for_nbits<30>::value);
-        CHECK_EQUAL(2147483647, etl::max_value_for_nbits<31>::value);
-        CHECK_EQUAL(4294967295, etl::max_value_for_nbits<32>::value);
-        CHECK_EQUAL(8589934591, etl::max_value_for_nbits<33>::value);
-        CHECK_EQUAL(17179869183, etl::max_value_for_nbits<34>::value);
-        CHECK_EQUAL(34359738367, etl::max_value_for_nbits<35>::value);
-        CHECK_EQUAL(68719476735, etl::max_value_for_nbits<36>::value);
-        CHECK_EQUAL(137438953471, etl::max_value_for_nbits<37>::value);
-        CHECK_EQUAL(274877906943, etl::max_value_for_nbits<38>::value);
-        CHECK_EQUAL(549755813887, etl::max_value_for_nbits<39>::value);
-        CHECK_EQUAL(1099511627775, etl::max_value_for_nbits<40>::value);
-        CHECK_EQUAL(2199023255551, etl::max_value_for_nbits<41>::value);
-        CHECK_EQUAL(4398046511103, etl::max_value_for_nbits<42>::value);
-        CHECK_EQUAL(8796093022207, etl::max_value_for_nbits<43>::value);
-        CHECK_EQUAL(17592186044415, etl::max_value_for_nbits<44>::value);
-        CHECK_EQUAL(35184372088831, etl::max_value_for_nbits<45>::value);
-        CHECK_EQUAL(70368744177663, etl::max_value_for_nbits<46>::value);
-        CHECK_EQUAL(140737488355327, etl::max_value_for_nbits<47>::value);
-        CHECK_EQUAL(281474976710655, etl::max_value_for_nbits<48>::value);
-        CHECK_EQUAL(562949953421311, etl::max_value_for_nbits<49>::value);
-        CHECK_EQUAL(1125899906842623, etl::max_value_for_nbits<50>::value);
-        CHECK_EQUAL(2251799813685247, etl::max_value_for_nbits<51>::value);
-        CHECK_EQUAL(4503599627370495, etl::max_value_for_nbits<52>::value);
-        CHECK_EQUAL(9007199254740991, etl::max_value_for_nbits<53>::value);
-        CHECK_EQUAL(18014398509481983, etl::max_value_for_nbits<54>::value);
-        CHECK_EQUAL(36028797018963967, etl::max_value_for_nbits<55>::value);
-        CHECK_EQUAL(72057594037927935, etl::max_value_for_nbits<56>::value);
-        CHECK_EQUAL(144115188075855871, etl::max_value_for_nbits<57>::value);
-        CHECK_EQUAL(288230376151711743, etl::max_value_for_nbits<58>::value);
-        CHECK_EQUAL(576460752303423487, etl::max_value_for_nbits<59>::value);
-        CHECK_EQUAL(1152921504606846975, etl::max_value_for_nbits<60>::value);
-        CHECK_EQUAL(2305843009213693951, etl::max_value_for_nbits<61>::value);
-        CHECK_EQUAL(4611686018427387903, etl::max_value_for_nbits<62>::value);
-        CHECK_EQUAL(9223372036854775807, etl::max_value_for_nbits<63>::value);
-        CHECK_EQUAL((unsigned long long)18446744073709551615, etl::max_value_for_nbits<64>::value);
+        CHECK_EQUAL(1U, etl::max_value_for_nbits<1>::value);
+        CHECK_EQUAL(3U, etl::max_value_for_nbits<2>::value);
+        CHECK_EQUAL(7U, etl::max_value_for_nbits<3>::value);
+        CHECK_EQUAL(15U, etl::max_value_for_nbits<4>::value);
+        CHECK_EQUAL(31U, etl::max_value_for_nbits<5>::value);
+        CHECK_EQUAL(63U, etl::max_value_for_nbits<6>::value);
+        CHECK_EQUAL(127U, etl::max_value_for_nbits<7>::value);
+        CHECK_EQUAL(255U, etl::max_value_for_nbits<8>::value);
+        CHECK_EQUAL(511U, etl::max_value_for_nbits<9>::value);
+        CHECK_EQUAL(1023U, etl::max_value_for_nbits<10>::value);
+        CHECK_EQUAL(2047U, etl::max_value_for_nbits<11>::value);
+        CHECK_EQUAL(4095U, etl::max_value_for_nbits<12>::value);
+        CHECK_EQUAL(8191U, etl::max_value_for_nbits<13>::value);
+        CHECK_EQUAL(16383U, etl::max_value_for_nbits<14>::value);
+        CHECK_EQUAL(32767U, etl::max_value_for_nbits<15>::value);
+        CHECK_EQUAL(65535U, etl::max_value_for_nbits<16>::value);
+        CHECK_EQUAL(131071U, etl::max_value_for_nbits<17>::value);
+        CHECK_EQUAL(262143U, etl::max_value_for_nbits<18>::value);
+        CHECK_EQUAL(524287U, etl::max_value_for_nbits<19>::value);
+        CHECK_EQUAL(1048575U, etl::max_value_for_nbits<20>::value);
+        CHECK_EQUAL(2097151U, etl::max_value_for_nbits<21>::value);
+        CHECK_EQUAL(4194303U, etl::max_value_for_nbits<22>::value);
+        CHECK_EQUAL(8388607U, etl::max_value_for_nbits<23>::value);
+        CHECK_EQUAL(16777215U, etl::max_value_for_nbits<24>::value);
+        CHECK_EQUAL(33554431U, etl::max_value_for_nbits<25>::value);
+        CHECK_EQUAL(67108863U, etl::max_value_for_nbits<26>::value);
+        CHECK_EQUAL(134217727U, etl::max_value_for_nbits<27>::value);
+        CHECK_EQUAL(268435455U, etl::max_value_for_nbits<28>::value);
+        CHECK_EQUAL(536870911U, etl::max_value_for_nbits<29>::value);
+        CHECK_EQUAL(1073741823U, etl::max_value_for_nbits<30>::value);
+        CHECK_EQUAL(2147483647U, etl::max_value_for_nbits<31>::value);
+        CHECK_EQUAL(4294967295U, etl::max_value_for_nbits<32>::value);
+        CHECK_EQUAL(8589934591U, etl::max_value_for_nbits<33>::value);
+        CHECK_EQUAL(17179869183U, etl::max_value_for_nbits<34>::value);
+        CHECK_EQUAL(34359738367U, etl::max_value_for_nbits<35>::value);
+        CHECK_EQUAL(68719476735U, etl::max_value_for_nbits<36>::value);
+        CHECK_EQUAL(137438953471U, etl::max_value_for_nbits<37>::value);
+        CHECK_EQUAL(274877906943U, etl::max_value_for_nbits<38>::value);
+        CHECK_EQUAL(549755813887U, etl::max_value_for_nbits<39>::value);
+        CHECK_EQUAL(1099511627775U, etl::max_value_for_nbits<40>::value);
+        CHECK_EQUAL(2199023255551U, etl::max_value_for_nbits<41>::value);
+        CHECK_EQUAL(4398046511103U, etl::max_value_for_nbits<42>::value);
+        CHECK_EQUAL(8796093022207U, etl::max_value_for_nbits<43>::value);
+        CHECK_EQUAL(17592186044415U, etl::max_value_for_nbits<44>::value);
+        CHECK_EQUAL(35184372088831U, etl::max_value_for_nbits<45>::value);
+        CHECK_EQUAL(70368744177663U, etl::max_value_for_nbits<46>::value);
+        CHECK_EQUAL(140737488355327U, etl::max_value_for_nbits<47>::value);
+        CHECK_EQUAL(281474976710655U, etl::max_value_for_nbits<48>::value);
+        CHECK_EQUAL(562949953421311U, etl::max_value_for_nbits<49>::value);
+        CHECK_EQUAL(1125899906842623U, etl::max_value_for_nbits<50>::value);
+        CHECK_EQUAL(2251799813685247U, etl::max_value_for_nbits<51>::value);
+        CHECK_EQUAL(4503599627370495U, etl::max_value_for_nbits<52>::value);
+        CHECK_EQUAL(9007199254740991U, etl::max_value_for_nbits<53>::value);
+        CHECK_EQUAL(18014398509481983U, etl::max_value_for_nbits<54>::value);
+        CHECK_EQUAL(36028797018963967U, etl::max_value_for_nbits<55>::value);
+        CHECK_EQUAL(72057594037927935U, etl::max_value_for_nbits<56>::value);
+        CHECK_EQUAL(144115188075855871U, etl::max_value_for_nbits<57>::value);
+        CHECK_EQUAL(288230376151711743U, etl::max_value_for_nbits<58>::value);
+        CHECK_EQUAL(576460752303423487U, etl::max_value_for_nbits<59>::value);
+        CHECK_EQUAL(1152921504606846975U, etl::max_value_for_nbits<60>::value);
+        CHECK_EQUAL(2305843009213693951U, etl::max_value_for_nbits<61>::value);
+        CHECK_EQUAL(4611686018427387903U, etl::max_value_for_nbits<62>::value);
+        CHECK_EQUAL(9223372036854775807U, etl::max_value_for_nbits<63>::value);
+        CHECK_EQUAL(18446744073709551615U, etl::max_value_for_nbits<64>::value);
 
         // Check that the value types are correct.
         CHECK((std::is_same<uint8_t,  etl::max_value_for_nbits<0>::value_type>::value));

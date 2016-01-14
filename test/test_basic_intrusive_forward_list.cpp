@@ -156,6 +156,14 @@ namespace
     }
 
     ////*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_begin_end_empty)
+    {
+      DataNDC data;
+
+      CHECK(data.begin() == data.end());
+    }
+
+    ////*************************************************************************
     TEST_FIXTURE(SetupFixture, test_iterator)
     {
       DataNDC data(sorted_data.begin(), sorted_data.end());
@@ -467,13 +475,13 @@ namespace
       std::advance(i_data_1, 2);
 
       DataNDC::iterator i_data_2 = data.begin();
-      std::advance(i_data_2, 4);
+      std::advance(i_data_2, 5);
 
       std::vector<ItemNDCNode>::iterator i_compare_data_1 = compare_data.begin();
       std::advance(i_compare_data_1, 3);
 
       std::vector<ItemNDCNode>::iterator i_compare_data_2 = compare_data.begin();
-      std::advance(i_compare_data_2, 4);
+      std::advance(i_compare_data_2, 5);
 
       std::vector<ItemNDCNode>::iterator i_compare_result = compare_data.erase(i_compare_data_1, i_compare_data_2);
 

@@ -527,11 +527,6 @@
               <FilePath>..\..\deque.h</FilePath>
             </File>
             <File>
-              <FileName>deque_base.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\deque_base.h</FilePath>
-            </File>
-            <File>
               <FileName>doxygen.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\doxygen.h</FilePath>
@@ -565,11 +560,6 @@
               <FileName>forward_list.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\forward_list.h</FilePath>
-            </File>
-            <File>
-              <FileName>forward_list_base.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\forward_list_base.h</FilePath>
             </File>
             <File>
               <FileName>function.h</FileName>
@@ -637,19 +627,9 @@
               <FilePath>..\..\list.h</FilePath>
             </File>
             <File>
-              <FileName>list_base.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\list_base.h</FilePath>
-            </File>
-            <File>
               <FileName>map.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\map.h</FilePath>
-            </File>
-            <File>
-              <FileName>map_base.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\map_base.h</FilePath>
             </File>
             <File>
               <FileName>log.h</FileName>
@@ -692,11 +672,6 @@
               <FilePath>..\..\queue.h</FilePath>
             </File>
             <File>
-              <FileName>queue_base.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\queue_base.h</FilePath>
-            </File>
-            <File>
               <FileName>smallest.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\smallest.h</FilePath>
@@ -705,11 +680,6 @@
               <FileName>stack.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\stack.h</FilePath>
-            </File>
-            <File>
-              <FileName>stack_base.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\stack_base.h</FilePath>
             </File>
             <File>
               <FileName>static_assert.h</FileName>
@@ -730,11 +700,6 @@
               <FileName>vector.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\vector.h</FilePath>
-            </File>
-            <File>
-              <FileName>vector_base.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\vector_base.h</FilePath>
             </File>
             <File>
               <FileName>visitor.h</FileName>
@@ -785,6 +750,101 @@
               <FileName>io_port.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\io_port.h</FilePath>
+            </File>
+            <File>
+              <FileName>error_handler.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\error_handler.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Private</GroupName>
+          <Files>
+            <File>
+              <FileName>deque_base.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\private\deque_base.h</FilePath>
+            </File>
+            <File>
+              <FileName>flat_map_base.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\private\flat_map_base.h</FilePath>
+            </File>
+            <File>
+              <FileName>flat_multimap_base.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\private\flat_multimap_base.h</FilePath>
+            </File>
+            <File>
+              <FileName>flat_multiset_base.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\private\flat_multiset_base.h</FilePath>
+            </File>
+            <File>
+              <FileName>flat_set_base.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\private\flat_set_base.h</FilePath>
+            </File>
+            <File>
+              <FileName>forward_list_base.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\private\forward_list_base.h</FilePath>
+            </File>
+            <File>
+              <FileName>list_base.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\private\list_base.h</FilePath>
+            </File>
+            <File>
+              <FileName>map_base.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\private\map_base.h</FilePath>
+            </File>
+            <File>
+              <FileName>multimap_base.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\private\multimap_base.h</FilePath>
+            </File>
+            <File>
+              <FileName>multiset_base.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\private\multiset_base.h</FilePath>
+            </File>
+            <File>
+              <FileName>pool_base.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\private\pool_base.h</FilePath>
+            </File>
+            <File>
+              <FileName>priority_queue_base.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\private\priority_queue_base.h</FilePath>
+            </File>
+            <File>
+              <FileName>queue_base.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\private\queue_base.h</FilePath>
+            </File>
+            <File>
+              <FileName>set_base.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\private\set_base.h</FilePath>
+            </File>
+            <File>
+              <FileName>stack_base.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\private\stack_base.h</FilePath>
+            </File>
+            <File>
+              <FileName>unordered_map_base.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\private\unordered_map_base.h</FilePath>
+            </File>
+            <File>
+              <FileName>vector_base.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\private\vector_base.h</FilePath>
             </File>
           </Files>
         </Group>

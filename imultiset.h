@@ -479,8 +479,8 @@ namespace etl
 
     //*********************************************************************
     /// Assigns values to the multiset.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits set_full if the multiset does not have enough free space.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits set_iterator if the iterators are reversed.
+    /// If asserts or exceptions are enabled, emits set_full if the multiset does not have enough free space.
+    /// If asserts or exceptions are enabled, emits set_iterator if the iterators are reversed.
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
@@ -629,7 +629,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the multiset.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits set_full if the multiset is already full.
+    /// If asserts or exceptions are enabled, emits set_full if the multiset is already full.
     ///\param value    The value to insert.
     //*********************************************************************
     iterator insert(const value_type& value)
@@ -651,7 +651,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the multiset starting at the position recommended.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits set_full if the multiset is already full.
+    /// If asserts or exceptions are enabled, emits set_full if the multiset is already full.
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -663,7 +663,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the multiset starting at the position recommended.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits set_full if the multiset is already full.
+    /// If asserts or exceptions are enabled, emits set_full if the multiset is already full.
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -675,7 +675,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a range of values to the multiset.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits set_full if the multiset does not have enough free space.
+    /// If asserts or exceptions are enabled, emits set_full if the multiset does not have enough free space.
     ///\param position The position to insert at.
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.
@@ -738,6 +738,20 @@ namespace etl
       return const_iterator(*this, find_upper_node(root_node, key));
     }
 
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    imultiset& operator = (const imultiset& rhs)
+    {
+      // Skip if doing self assignment
+      if (this != &rhs)
+      {
+        assign(rhs.cbegin(), rhs.cend());
+      }
+
+      return *this;
+    }
+
   protected:
 
     //*************************************************************************
@@ -747,7 +761,20 @@ namespace etl
       : multiset_base(max_size_)
       , p_node_pool(&node_pool)
     {
-      initialise();
+    }
+
+    //*************************************************************************
+    /// Initialise the multiset.
+    //*************************************************************************
+    void initialise()
+    {
+      if (!empty())
+      {
+        p_node_pool->release_all();
+      }
+
+      current_size = 0;
+      root_node = nullptr;
     }
 
   private:
@@ -766,20 +793,6 @@ namespace etl
     void destroy_data_node(Data_Node& node) const
     {
       p_node_pool->release(&node);
-    }
-
-    //*************************************************************************
-    /// Initialise the multiset.
-    //*************************************************************************
-    void initialise()
-    {
-      if (!empty())
-      {
-        p_node_pool->release_all();
-      }
-
-      current_size = 0;
-      root_node = nullptr;
     }
 
     //*************************************************************************
@@ -1300,6 +1313,9 @@ namespace etl
         destroy_data_node(data_node);
       } // if(found)
     }
+
+    // Disable copy construction.
+    imultiset(const imultiset&);
   };
 }
 

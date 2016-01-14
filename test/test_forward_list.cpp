@@ -50,6 +50,7 @@ namespace
 
     typedef etl::forward_list<ItemDC, SIZE>  DataDC;
     typedef etl::forward_list<ItemNDC, SIZE> DataNDC;
+    typedef etl::iforward_list<ItemNDC>      IDataNDC;
 
     typedef std::forward_list<ItemNDC> CompareDataNDC;
     typedef std::vector<ItemNDC> InitialDataNDC;
@@ -497,6 +498,22 @@ namespace
       are_equal = std::equal(data.begin(), data.end(), other_data.begin());
 
       CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assignment_interface)
+    {
+      DataNDC data1(sorted_data.begin(), sorted_data.end());
+      DataNDC data2;
+
+      IDataNDC& idata1 = data1;
+      IDataNDC& idata2 = data2;
+
+      idata2 = idata1;
+
+      bool isEqual = std::equal(data1.begin(), data1.end(), data2.begin());
+
+      CHECK(isEqual);
     }
 
     //*************************************************************************

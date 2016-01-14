@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 http://www.etlcpp.com
 
-Copyright(c) 2015 jwellbelove
+Copyright(c) 2016 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,35 +28,35 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_FLAT_SET__
-#define __ETL_FLAT_SET__
+#ifndef __ETL_BASIC_STRING__
+#define __ETL_BASIC_STRING__
 
 #include <stddef.h>
+#include <stdint.h>
 #include <iterator>
-#include <functional>
 
-#include "iflat_set.h"
-#include "vector.h"
+#include "ibasic_string.h"
+#include "char_traits.h"
+#include "container.h"
+#include "alignment.h"
+#include "array.h"
 
 //*****************************************************************************
-///\defgroup flat_set flat_set
-/// A flat_set with the capacity defined at compile time.
-/// Has insertion of O(N) and flat_set of O(logN)
-/// Duplicate entries and not allowed.
+///\defgroup basic_string basic_string
+/// A basic_string with the capacity defined at compile time.
 ///\ingroup containers
 //*****************************************************************************
 
 namespace etl
 {
-  template <typename T, const size_t MAX_SIZE_, typename TCompare = std::less<T> >
+  template <typename T, const size_t MAX_SIZE_>
   //***************************************************************************
-  /// A flat_set implementation that uses a fixed size buffer.
-  ///\tparam T        The value type.
-  ///\tparam TCompare The type to compare keys. Default = std::less<T>
+  /// A basic_string implementation that uses a fixed size buffer.
+  ///\tparam T The element type.
   ///\tparam MAX_SIZE_ The maximum number of elements that can be stored.
-  ///\ingroup flat_set
+  ///\ingroup basic_string
   //***************************************************************************
-  class flat_set : public iflat_set<T, TCompare>
+  class basic_string : public ibasic_string<T>
   {
   public:
 
@@ -65,18 +65,56 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    flat_set()
-      : iflat_set<T, TCompare>(buffer)
+    basic_string()
+      : ibasic_string<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
+      ibasic_string<T>::initialise();
     }
 
     //*************************************************************************
-    /// Copy constructor.
+    /// Constructor, with size.
+    ///\param initialSize The initial size of the basic_string.
     //*************************************************************************
-    flat_set(const flat_set& other)
-      : iflat_set<T, TCompare>(buffer)
+    explicit basic_string(size_t count, T c)
+      : ibasic_string<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
-      iflat_set<T, TCompare>::assign(other.cbegin(), other.cend());
+      ibasic_string<T>::initialise();
+      ibasic_string<T>::resize(initialSize);
+    }
+
+    //*************************************************************************
+    /// Constructor, from null terminated text.
+    ///\param text The initial text of the basic_string.
+    //*************************************************************************
+    basic_string(const T* text)
+      : ibasic_string<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
+    {
+      ibasic_string<T>::initialise();
+      ibasic_string<T>::assign(text, text + etl::char_traits<T>::length(text))
+    }
+
+    //*************************************************************************
+    /// Constructor, from null terminated text and count.
+    ///\param text  The initial text of the basic_string.
+    ///\param count The number of characters to copy.
+    //*************************************************************************
+    basic_string(const T* text, size_t count)
+      : ibasic_string<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
+    {
+      ibasic_string<T>::initialise();
+      ibasic_string<T>::assign(text, text + count)
+    }
+    
+    //*************************************************************************
+    /// Constructor, from initial size and value.
+    ///\param initialSize  The initial size of the basic_string.
+    ///\param value        The value to fill the basic_string with.
+    //*************************************************************************
+    basic_string(size_t count, T c)
+      : ibasic_string<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
+    {
+      ibasic_string<T>::initialise();
+      ibasic_string<T>::resize(count, c);
     }
 
     //*************************************************************************
@@ -86,20 +124,20 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    flat_set(TIterator first, TIterator last)
-      : iflat_set<T, TCompare>(buffer)
+    basic_string(TIterator first, TIterator last)
+      : ibasic_string<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
-      iflat_set<T, TCompare>::assign(first, last);
+      ibasic_string<T>::assign(first, last);
     }
 
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    flat_set& operator = (const flat_set& rhs)
+    basic_string& operator = (const basic_string& rhs)
     {
       if (&rhs != this)
       {
-        iflat_set<T, TCompare>::assign(rhs.cbegin(), rhs.cend());
+        ibasic_string<T>::assign(rhs.cbegin(), rhs.cend());
       }
 
       return *this;
@@ -107,7 +145,7 @@ namespace etl
 
   private:
 
-    etl::vector<T, MAX_SIZE> buffer; ///<The vector that stores the elements.
+    T buffer[MAX_SIZE + 1];
   };
 }
 

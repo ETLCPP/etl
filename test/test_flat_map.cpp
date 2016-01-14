@@ -72,6 +72,7 @@ namespace
 
     typedef etl::flat_map<int, DC, SIZE>  DataDC;
     typedef etl::flat_map<int, NDC, SIZE> DataNDC;
+    typedef etl::iflat_map<int, NDC>      IDataNDC;
 
     typedef std::map<int, DC>  Compare_DataDC;
     typedef std::map<int, NDC> Compare_DataNDC;
@@ -187,6 +188,24 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assignment_interface)
+    {
+      DataNDC data1(initial_data.begin(), initial_data.end());
+      DataNDC data2;
+
+      IDataNDC& idata1 = data1;
+      IDataNDC& idata2 = data2;
+
+      idata2 = idata1;
+
+      bool isEqual = Check_Equal(data1.begin(),
+                                 data1.end(),
+                                 data2.begin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_self_assignment)
     {
       DataNDC data(initial_data.begin(), initial_data.end());
@@ -257,6 +276,31 @@ namespace
       CHECK_EQUAL(compare_data[7], data[7]);
       CHECK_EQUAL(compare_data[8], data[8]);
       CHECK_EQUAL(compare_data[9], data[9]);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_index_value_changed)
+    {
+      Compare_DataNDC compare_data;
+      DataNDC data;
+
+      data[0] = N0;
+      compare_data[0] = N0;
+
+      bool isEqual = Check_Equal(data.begin(),
+                                 data.end(),
+                                 compare_data.begin());
+
+      CHECK(isEqual);
+
+      data[0] = N2;
+      compare_data[0] = N2;
+
+      isEqual = Check_Equal(data.begin(),
+                            data.end(),
+                            compare_data.begin());
+
+      CHECK(isEqual);
     }
 
     //*************************************************************************
@@ -337,6 +381,31 @@ namespace
 
       data.insert(std::make_pair(1, N1));
       compare_data.insert(std::make_pair(1, N1));
+
+      isEqual = Check_Equal(data.begin(),
+                            data.end(),
+                            compare_data.begin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_value_changed)
+    {
+      Compare_DataNDC compare_data;
+      DataNDC data;
+
+      data.insert(DataNDC::value_type(0, N0));
+      compare_data.insert(std::make_pair(0, N0));
+
+      bool isEqual = Check_Equal(data.begin(),
+                                 data.end(),
+                                 compare_data.begin());
+
+      CHECK(isEqual);
+
+      data.insert(std::make_pair(0, N2));
+      compare_data.insert(std::make_pair(0, N2));
 
       isEqual = Check_Equal(data.begin(),
                             data.end(),

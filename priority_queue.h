@@ -63,7 +63,7 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     priority_queue()
-      : ipriority_queue<T, TContainer, TCompare>(SIZE)
+      : ipriority_queue<T, TContainer, TCompare>()
     {
     }
 
@@ -71,7 +71,7 @@ namespace etl
     /// Copy constructor
     //*************************************************************************
     priority_queue(const priority_queue& rhs)
-      : ipriority_queue<T, TContainer, TCompare>(SIZE)
+      : ipriority_queue<T, TContainer, TCompare>()
     {
       ipriority_queue<T, TContainer, TCompare>::clone(rhs);
     }
@@ -84,7 +84,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     priority_queue(TIterator first, TIterator last)
-      : ipriority_queue<T, TContainer, TCompare>(SIZE)
+      : ipriority_queue<T, TContainer, TCompare>()
     {
       ipriority_queue<T, TContainer, TCompare>::assign(first, last);
     }

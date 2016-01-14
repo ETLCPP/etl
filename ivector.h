@@ -187,7 +187,7 @@ namespace etl
 
     //*********************************************************************
     /// Resizes the vector.
-    /// If ETL_THROW_EXCEPTIONS is defined and the new size is larger than the
+    /// If asserts or exceptions are enabled and the new size is larger than the
     /// maximum then a vector_full is thrown.
     ///\param new_size The new size.
     //*********************************************************************
@@ -217,7 +217,7 @@ namespace etl
 
     //*********************************************************************
     /// Resizes the vector.
-    /// If ETL_THROW_EXCEPTIONS is defined and the new size is larger than the
+    /// If asserts or exceptions are enabled and the new size is larger than the
     /// maximum then a vector_full is thrown.
     ///\param new_size The new size.
     ///\param value   The value to fill new elements with. Default = default constructed value.
@@ -266,7 +266,7 @@ namespace etl
 
     //*********************************************************************
     /// Returns a reference to the value at index 'i'
-    /// If ETL_THROW_EXCEPTIONS is defined, emits an etl::vector_out_of_bounds if the index is out of range.
+    /// If asserts or exceptions are enabled, emits an etl::vector_out_of_bounds if the index is out of range.
     ///\param i The index.
     ///\return A reference to the value at index 'i'
     //*********************************************************************
@@ -278,7 +278,7 @@ namespace etl
 
     //*********************************************************************
     /// Returns a const reference to the value at index 'i'
-    /// If ETL_THROW_EXCEPTIONS is defined, emits an etl::vector_out_of_bounds if the index is out of range.
+    /// If asserts or exceptions are enabled, emits an etl::vector_out_of_bounds if the index is out of range.
     ///\param i The index.
     ///\return A const reference to the value at index 'i'
     //*********************************************************************
@@ -344,8 +344,8 @@ namespace etl
 
     //*********************************************************************
     /// Assigns values to the vector.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits vector_full if the vector does not have enough free space.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits vector_iterator if the iterators are reversed.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector does not have enough free space.
+    /// If asserts or exceptions are enabled, emits vector_iterator if the iterators are reversed.
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
@@ -370,7 +370,7 @@ namespace etl
 
     //*********************************************************************
     /// Assigns values to the vector.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits vector_full if the vector does not have enough free space.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector does not have enough free space.
     ///\param n     The number of elements to add.
     ///\param value The value to insert for each element.
     //*********************************************************************
@@ -397,7 +397,7 @@ namespace etl
 
     //*************************************************************************
     /// Increases the size of the vector by one, but does not initialise the new element.
-    /// If ETL_THROW_EXCEPTIONS is defined, throws a vector_full if the vector is already full.
+    /// If asserts or exceptions are enabled, throws a vector_full if the vector is already full.
     //*************************************************************************
     void push_back()
     {
@@ -409,7 +409,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value at the end of the vector.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits vector_full if the vector is already full.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
     ///\param value The value to add.
     //*********************************************************************
     void push_back(parameter_t value)
@@ -434,7 +434,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the vector.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits vector_full if the vector is already full.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
     ///\param position The position to insert before.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -455,7 +455,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts 'n' values to the vector.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits vector_full if the vector does not have enough free space.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector does not have enough free space.
     ///\param position The position to insert before.
     ///\param n        The number of elements to add.
     ///\param value    The value to insert.
@@ -514,7 +514,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a range of values to the vector.
-    /// If ETL_THROW_EXCEPTIONS is defined, emits vector_full if the vector does not have enough free space.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector does not have enough free space.
     ///\param position The position to insert before.
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.
@@ -610,6 +610,19 @@ namespace etl
       return first;
     }
 
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    ivector& operator = (const ivector& rhs)
+    {
+      if (&rhs != this)
+      {
+        assign(rhs.cbegin(), rhs.cend());
+      }
+
+      return *this;
+    }
+
   protected:
 
     //*********************************************************************
@@ -619,10 +632,7 @@ namespace etl
       : vector_base(MAX_SIZE),
         p_buffer(p_buffer)
     {
-      initialise();
     }
-
-  private:
 
     //*********************************************************************
     /// Initialise the vector.
@@ -634,6 +644,8 @@ namespace etl
         destroy_element();
       }
     }
+
+  private:
 
     //*********************************************************************
     /// Create a new element with a default value at the back.
@@ -666,6 +678,9 @@ namespace etl
     {
       p_buffer[--current_size].~T();
     }
+
+    // Disable copy construction.
+    ivector(const ivector&);
 
     T* p_buffer;
   };

@@ -39,49 +39,50 @@ SOFTWARE.
 #include <iostream>
 #include <numeric>
 
-const size_t SIZE = 14;
-
-typedef TestDataDC<std::string>  DC;
-typedef TestDataNDC<std::string> NDC;
-
-typedef etl::deque<DC, SIZE>     DataDC;
-typedef etl::deque<NDC, SIZE>    DataNDC;
-
-typedef std::deque<NDC>          Compare_Data;
-typedef std::deque<DC>           Compare_DataDC;
-
-NDC N0   = NDC("0");
-NDC N1   = NDC("1");
-NDC N2   = NDC("2");
-NDC N3   = NDC("3");
-NDC N4   = NDC("4");
-NDC N5   = NDC("5");
-NDC N6   = NDC("6");
-NDC N7   = NDC("7");
-NDC N8   = NDC("8");
-NDC N9   = NDC("9");
-NDC N10  = NDC("10");
-NDC N11  = NDC("11");
-NDC N12  = NDC("12");
-NDC N13  = NDC("13");
-NDC N14  = NDC("14");
-NDC N15  = NDC("15");
-NDC N16  = NDC("16");
-NDC N17  = NDC("17");
-NDC N999 = NDC("999");
-
-std::vector<NDC> blank_data          = { N999, N999, N999, N999, N999, N999, N999, N999, N999, N999, N999, N999, N999, N999 };
-std::vector<NDC> initial_data        = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13 };
-std::vector<NDC> initial_data_excess = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13, N14 };
-std::vector<NDC> initial_data_under  = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11 };
-std::vector<NDC> initial_data_small  = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
-std::vector<NDC> insert_data         = { N10, N11, N12, N13, N14 };
-std::vector<DC>  initial_data_dc     = { DC("0"), DC("1"), DC("2"), DC("3"), DC("4"), DC("5"), DC("6"), DC("7"), DC("8"), DC("9"), DC("10"), DC("11"), DC("12"), DC("13") };
-
 namespace
 {
 	SUITE(test_deque)
 	{
+    const size_t SIZE = 14;
+
+    typedef TestDataDC<std::string>  DC;
+    typedef TestDataNDC<std::string> NDC;
+
+    typedef etl::deque<DC, SIZE>     DataDC;
+    typedef etl::deque<NDC, SIZE>    DataNDC;
+    typedef etl::ideque<NDC>         IDataNDC;
+
+    typedef std::deque<NDC>          Compare_Data;
+    typedef std::deque<DC>           Compare_DataDC;
+
+    NDC N0 = NDC("0");
+    NDC N1 = NDC("1");
+    NDC N2 = NDC("2");
+    NDC N3 = NDC("3");
+    NDC N4 = NDC("4");
+    NDC N5 = NDC("5");
+    NDC N6 = NDC("6");
+    NDC N7 = NDC("7");
+    NDC N8 = NDC("8");
+    NDC N9 = NDC("9");
+    NDC N10 = NDC("10");
+    NDC N11 = NDC("11");
+    NDC N12 = NDC("12");
+    NDC N13 = NDC("13");
+    NDC N14 = NDC("14");
+    NDC N15 = NDC("15");
+    NDC N16 = NDC("16");
+    NDC N17 = NDC("17");
+    NDC N999 = NDC("999");
+
+    std::vector<NDC> blank_data = { N999, N999, N999, N999, N999, N999, N999, N999, N999, N999, N999, N999, N999, N999 };
+    std::vector<NDC> initial_data = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13 };
+    std::vector<NDC> initial_data_excess = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13, N14 };
+    std::vector<NDC> initial_data_under = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11 };
+    std::vector<NDC> initial_data_small = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
+    std::vector<NDC> insert_data = { N10, N11, N12, N13, N14 };
+    std::vector<DC>  initial_data_dc = { DC("0"), DC("1"), DC("2"), DC("3"), DC("4"), DC("5"), DC("6"), DC("7"), DC("8"), DC("9"), DC("10"), DC("11"), DC("12"), DC("13") };
+
     //*************************************************************************
 		TEST(test_constructor)
 		{
@@ -143,6 +144,21 @@ namespace
       CHECK_EQUAL(deque1.size(), deque2.size());
       CHECK(std::equal(deque1.begin(), deque1.end(), deque2.begin()));
 		}
+
+    //*************************************************************************
+    TEST(test_assignment_interface)
+    {
+      DataNDC deque1(initial_data.begin(), initial_data.end());
+      DataNDC deque2;
+
+      IDataNDC& ideque1 = deque1;
+      IDataNDC& ideque2 = deque2;
+
+      ideque2 = ideque1;
+
+      CHECK_EQUAL(deque1.size(), deque2.size());
+      CHECK(std::equal(deque1.begin(), deque1.end(), deque2.begin()));
+    }
 
     //*************************************************************************
     TEST(test_self_assignment)

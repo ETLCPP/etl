@@ -42,9 +42,11 @@ static const size_t SIZE = 10;
 #define TEST_GREATER_THAN
 #ifdef TEST_GREATER_THAN
 typedef etl::multimap<std::string, int, SIZE, std::greater<std::string> >  Data;
+typedef etl::imultimap<std::string, int, std::greater<std::string> >       IData;
 typedef std::multimap<std::string, int, std::greater<std::string> >        Compare_Data;
 #else
 typedef etl::multimap<std::string, int, SIZE, std::less<std::string> >  Data;
+typedef etl::imultimap<std::string, int, std::less<std::string> >       IData;
 typedef std::multimap<std::string, int, std::less<std::string> >        Compare_Data;
 #endif
 
@@ -203,6 +205,39 @@ namespace
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),
                                  otherData.begin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assignment_interface)
+    {
+      Data data1(initial_data.begin(), initial_data.end());
+      Data data2;
+
+      IData& idata1 = data1;
+      IData& idata2 = data2;
+
+      idata2 = idata1;
+
+      bool isEqual = std::equal(data1.begin(),
+                                data1.end(),
+                                data2.begin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_self_assignment)
+    {
+      Data data(initial_data.begin(), initial_data.end());
+      Data other_data(data);
+
+      other_data = other_data;
+
+      bool isEqual = std::equal(data.begin(),
+                                data.end(),
+                                other_data.begin());
 
       CHECK(isEqual);
     }

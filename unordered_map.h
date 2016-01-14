@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 http://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove, rlindeman
+Copyright(c) 2016 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,29 +28,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_MULTIMAP__
-#define __ETL_MULTIMAP__
+#ifndef __ETL_UNORDERED_MAP__
+#define __ETL_UNORDERED_MAP__
 
 #include <stddef.h>
 #include <iterator>
 #include <functional>
 
-#include "imultimap.h"
+#include "iunordered_map.h"
 #include "container.h"
 #include "pool.h"
+#include "vector.h"
+#include "basic_intrusive_forward_list.h"
+#include "hash.h"
 
 //*****************************************************************************
-/// A multimap with the capacity defined at compile time.
+///\defgroup unordered_map unordered_map
+/// A unordered_map with the capacity defined at compile time.
 ///\ingroup containers
 //*****************************************************************************
 
 namespace etl
 {
   //*************************************************************************
-  /// A templated multimap implementation that uses a fixed size buffer.
+  /// A templated unordered_map implementation that uses a fixed size buffer.
   //*************************************************************************
-  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename TCompare = std::less<TKey> >
-  class multimap : public imultimap<TKey, TValue, TCompare>
+  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename THash = etl::hash<TKey>, typename TKeyEqual = std::equal_to<TKey> >
+  class unordered_map : public iunordered_map<TKey, TValue, THash, TKeyEqual>
   {
   public:
 
@@ -59,19 +63,19 @@ namespace etl
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    multimap()
-      : imultimap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
+    unordered_map()
+      : iunordered_map<TKey, TValue, THash, TKeyEqual>(node_pool, buckets)
     {
-      imultimap<TKey, TValue, TCompare>::initialise();
+      iunordered_map<TKey, TValue, THash, TKeyEqual>::initialise();
     }
 
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
-    explicit multimap(const multimap& other)
-      : imultimap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
+    unordered_map(const unordered_map& other)
+      : iunordered_map<TKey, TValue, THash, TKeyEqual>(node_pool, buckets)
     {
-			imultimap<TKey, TValue, TCompare>::assign(other.cbegin(), other.cend());
+			iunordered_map<TKey, TValue, THash, TKeyEqual>::assign(other.cbegin(), other.cend());
     }
 
     //*************************************************************************
@@ -81,21 +85,21 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    multimap(TIterator first, TIterator last)
-      : imultimap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
+    unordered_map(TIterator first, TIterator last)
+      : iunordered_map<TKey, TValue, THash, TKeyEqual>(node_pool, buckets)
     {
-      imultimap<TKey, TValue, TCompare>::assign(first, last);
+      iunordered_map<TKey, TValue, THash, TKeyEqual>::assign(first, last);
     }
 
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    multimap& operator = (const multimap& rhs)
+    unordered_map& operator = (const unordered_map& rhs)
     {
       // Skip if doing self assignment
       if (this != &rhs)
       {
-        imultimap<TKey, TValue, TCompare>::assign(rhs.cbegin(), rhs.cend());
+        iunordered_map<TKey, TValue, THash, TKeyEqual>::assign(rhs.cbegin(), rhs.cend());
       }
 
       return *this;
@@ -103,8 +107,11 @@ namespace etl
 
   private:
 
-    /// The pool of data nodes used for the multimap.
-    pool<typename imultimap<TKey, TValue, TCompare>::Data_Node, MAX_SIZE> node_pool;
+    /// The pool of nodes used for the unordered_map.
+    etl::pool<typename iunordered_map<TKey, TValue, THash, TKeyEqual>::node_t, MAX_SIZE> node_pool;
+
+    /// The buckets of node lists.
+    etl::vector<etl::basic_intrusive_forward_list, MAX_SIZE> buckets;
   };
 
 }
