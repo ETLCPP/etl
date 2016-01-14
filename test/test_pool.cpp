@@ -109,14 +109,14 @@ namespace
 
       // Allocated p1, p4
 
-      CHECK_EQUAL(2, pool.available());
+      CHECK_EQUAL(2U, pool.available());
 
       Test_Data* p5 = pool.allocate();
       Test_Data* p6 = pool.allocate();
 
       // Allocated p1, p4, p5, p6
 
-      CHECK_EQUAL(0, pool.available());
+      CHECK_EQUAL(0U, pool.available());
 
       CHECK(p5 != p1);
       CHECK(p5 != p4);
@@ -128,7 +128,7 @@ namespace
 
       // Allocated p1, p4, p6
 
-      CHECK_EQUAL(1, pool.available());
+      CHECK_EQUAL(1U, pool.available());
 
       Test_Data* p7 = pool.allocate();
 
@@ -150,16 +150,16 @@ namespace
       Test_Data* p;
 
       p = pool.allocate();
-      CHECK_EQUAL(3, pool.available());
+      CHECK_EQUAL(3U, pool.available());
 
       p = pool.allocate();
-      CHECK_EQUAL(2, pool.available());
+      CHECK_EQUAL(2U, pool.available());
 
       p = pool.allocate();
-      CHECK_EQUAL(1, pool.available());
+      CHECK_EQUAL(1U, pool.available());
 
       p = pool.allocate();
-      CHECK_EQUAL(0, pool.available());
+      CHECK_EQUAL(0U, pool.available());
     }
 
     //*************************************************************************
@@ -167,28 +167,28 @@ namespace
     {
       etl::pool<Test_Data, 4> pool;
 
-      CHECK(pool.max_size() == 4);
+      CHECK(pool.max_size() == 4U);
     }
 
     //*************************************************************************
     TEST(test_size)
     {
       etl::pool<Test_Data, 4> pool;
-      CHECK_EQUAL(0, pool.size());
+      CHECK_EQUAL(0U, pool.size());
 
       Test_Data* p;
 
       p = pool.allocate();
-      CHECK_EQUAL(1, pool.size());
+      CHECK_EQUAL(1U, pool.size());
 
       p = pool.allocate();
-      CHECK_EQUAL(2, pool.size());
+      CHECK_EQUAL(2U, pool.size());
 
       p = pool.allocate();
-      CHECK_EQUAL(3, pool.size());
+      CHECK_EQUAL(3U, pool.size());
 
       p = pool.allocate();
-      CHECK_EQUAL(4, pool.size());
+      CHECK_EQUAL(4U, pool.size());
     }
 
     //*************************************************************************
