@@ -92,7 +92,10 @@ namespace etl
     deque(const deque& other)
       : ideque<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, BUFFER_SIZE)
     {
-      ideque<T>::assign(other.begin(), other.end());
+      if (this != &other)
+      {
+        ideque<T>::assign(other.begin(), other.end());
+      }
     }
 
     //*************************************************************************
