@@ -130,9 +130,6 @@ namespace etl
       return *this;
     }
 
-//#define NDEBUG
-
-
     //*************************************************************************
     /// Set from a string.
     //*************************************************************************
@@ -185,7 +182,11 @@ namespace etl
     //*************************************************************************
     bitset<N>& operator =(const bitset<N>& other)
     {
-      etl::copy_n(other.data, ARRAY_SIZE, data);
+      if (this != &other)
+      {
+        etl::copy_n(other.data, ARRAY_SIZE, data);
+      }
+
       return *this;
     }
 
