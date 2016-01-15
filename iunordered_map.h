@@ -113,7 +113,7 @@ namespace etl
   /// Can be used as a reference type for all unordered_map containing a specific type.
   ///\ingroup unordered_map
   //***************************************************************************
-  template <typename TKey, typename T, typename THash = etl::hash<Key>, typename TKeyEqual = std::equal_to<TKey> >
+  template <typename TKey, typename T, typename THash = etl::hash<TKey>, typename TKeyEqual = std::equal_to<TKey> >
   class iunordered_map
   {
   public:
@@ -647,7 +647,9 @@ namespace etl
       }
 
       // Doesn't exist, so add a new one.
-      ibucket->insert_after(ibucket->before_begin(), node_t(value_type(key, T())));
+      // Get a new node.
+      node_t& node = *pnodepool->allocate(node_t(value_type(key, T())));
+      ibucket->insert_after(ibucket->before_begin(), node);
 
       return ibucket->begin().ref_cast<node_t>().key_value_pair.second;
     }
