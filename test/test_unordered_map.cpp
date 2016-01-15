@@ -125,7 +125,7 @@ namespace
     const char* K17 = "FW"; // 7
     const char* K18 = "FX"; // 8
     const char* K19 = "FY"; // 9
-  
+
     std::string K[] = { K0, K1, K2, K3, K4, K5, K6, K7, K8, K9, K10, K11, K12, K13, K14, K15, K16, K17, K18, K19 };
 
     std::vector<ElementNDC> initial_data;
@@ -361,14 +361,14 @@ namespace
     TEST_FIXTURE(SetupFixture, test_insert_value)
     {
       DataNDC data;
-      
+
       data.insert(DataNDC::value_type(K0,  N0)); // Inserted
       data.insert(DataNDC::value_type(K2,  N2)); // Inserted
       data.insert(DataNDC::value_type(K1,  N1)); // Inserted
       data.insert(DataNDC::value_type(K11, N1)); // Duplicate hash. Inserted
       data.insert(DataNDC::value_type(K1,  N3)); // Duplicate key.  Not inserted
 
-      CHECK_EQUAL(4, data.size());
+      CHECK_EQUAL(4U, data.size());
 
       DataNDC::iterator idata;
 
@@ -376,7 +376,7 @@ namespace
       CHECK(idata != data.end());
       CHECK(idata->first  == K0);
       CHECK(idata->second == N0);
-      
+
       idata = data.find(K1);
       CHECK(idata != data.end());
       CHECK(idata->first  == K1);
@@ -540,6 +540,42 @@ namespace
       const DataNDC different(different_data.begin(), different_data.end());
 
       CHECK(initial1 != different);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_hash_function)
+    {
+      DataNDC data;
+      DataNDC::hasher hash_function =  data.hash_function();
+
+      CHECK_EQUAL(simple_hash()(std::string("ABCDEF")), hash_function(std::string("ABCDEF")));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_key_eq_function)
+    {
+      DataNDC data;
+      DataNDC::key_equal key_eq = data.key_eq();
+
+      CHECK(key_eq(std::string("ABCDEF"), std::string("ABCDEF")));
+      CHECK(!key_eq(std::string("ABCDEF"), std::string("ABCDEG")));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_load_factor)
+    {
+      // Empty.
+      DataNDC data;
+      CHECK_CLOSE(0.0, data.load_factor(), 0.01);
+
+      // Half the buckets used.
+      data.assign(initial_data.begin(), initial_data.begin() + (initial_data.size() / 2));
+      CHECK_CLOSE(0.5, data.load_factor(), 0.01);
+
+      // All of the buckets used.
+      data.clear();
+      data.assign(initial_data.begin(), initial_data.end());
+      CHECK_CLOSE(1.0, data.load_factor(), 0.01);
     }
   };
 }
