@@ -127,6 +127,8 @@
 		<Unit filename="../../README.md" />
 		<Unit filename="../../alignment.h" />
 		<Unit filename="../../array.h" />
+		<Unit filename="../../basic_intrusive_forward_list.h" />
+		<Unit filename="../../basic_intrusive_forward_list_node.h" />
 		<Unit filename="../../binary.h" />
 		<Unit filename="../../bitset.h" />
 		<Unit filename="../../bloom_filter.h" />
@@ -265,6 +267,7 @@
 		<Unit filename="../test_smallest.cpp" />
 		<Unit filename="../test_stack.cpp" />
 		<Unit filename="../test_type_traits.cpp" />
+		<Unit filename="../test_unordered_map.cpp" />
 		<Unit filename="../test_variant.cpp" />
 		<Unit filename="../test_vector.cpp" />
 		<Unit filename="../test_visitor.cpp" />
