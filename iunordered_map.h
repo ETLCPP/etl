@@ -130,7 +130,7 @@ namespace etl
     typedef const value_type* const_pointer;
     typedef size_t            size_type;
 
-   
+
     typedef typename parameter_type<TKey>::type key_value_parameter_t;
 
     // The nodes that store the elements.
@@ -151,7 +151,7 @@ namespace etl
     typedef etl::ivector<bucket_t>            bucket_list_t;
 
     typedef typename bucket_list_t::iterator  bucket_list_iterator;
-   
+
   public:
 
     // Local iterators iterate over one bucket.
@@ -586,7 +586,7 @@ namespace etl
     //*********************************************************************
     size_type bucket(key_value_parameter_t key) const
     {
-      return hash_function(key) % pbuckets->size();
+      return key_hash_function(key) % pbuckets->size();
     }
 
     //*********************************************************************
@@ -747,9 +747,9 @@ namespace etl
     }
 
     //*********************************************************************
-    // Inserts a value to the unordered_map.
-    // If asserts or exceptions are enabled, emits unordered_map_full if the unordered_map is already full.
-    //\param value The value to insert.
+    /// Inserts a value to the unordered_map.
+    /// If asserts or exceptions are enabled, emits unordered_map_full if the unordered_map is already full.
+    ///\param value The value to insert.
     //*********************************************************************
     std::pair<iterator, bool> insert(const value_type& key_value_pair)
     {
@@ -1085,6 +1085,33 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Returns the load factor = size / bucket_count.
+    ///\return The load factor = size / bucket_count.
+    //*************************************************************************
+    float load_factor() const
+    {
+      return static_cast<float>(size()) / static_cast<float>(bucket_count());
+    }
+
+    //*************************************************************************
+    /// Returns the function that hashes the keys.
+    ///\return The function that hashes the keys..
+    //*************************************************************************
+    hasher hash_function() const
+    {
+      return key_hash_function;
+    }
+
+    //*************************************************************************
+    /// Returns the function that compares the keys.
+    ///\return The function that compares the keys..
+    //*************************************************************************
+    key_equal key_eq() const
+    {
+      return key_equal_function;
+    }
+
+    //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
     iunordered_map& operator = (const iunordered_map& rhs)
@@ -1146,7 +1173,7 @@ namespace etl
         last = ibucket;
       }
     }
-    
+
     // Disable copy construction.
     iunordered_map(const iunordered_map&);
 
@@ -1161,7 +1188,7 @@ namespace etl
     bucket_list_iterator last;
 
     /// The function that creates the hashes.
-    hasher hash_function;
+    hasher key_hash_function;
 
     /// The function that compares the keys for equality.
     key_equal key_equal_function;
