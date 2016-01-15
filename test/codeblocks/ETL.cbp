@@ -162,6 +162,7 @@
 		<Unit filename="../../forward_list_base.h" />
 		<Unit filename="../../function.h" />
 		<Unit filename="../../functional.h" />
+		<Unit filename="../../ibitset.h" />
 		<Unit filename="../../ideque.h" />
 		<Unit filename="../../iflat_map.h" />
 		<Unit filename="../../iflat_set.h" />
@@ -175,6 +176,7 @@
 		<Unit filename="../../iqueue.h" />
 		<Unit filename="../../iset.h" />
 		<Unit filename="../../istack.h" />
+		<Unit filename="../../iunordered_map.h" />
 		<Unit filename="../../ivector.h" />
 		<Unit filename="../../largest.h" />
 		<Unit filename="../../list.h" />
@@ -217,6 +219,7 @@
 		<Unit filename="../../stack_base.h" />
 		<Unit filename="../../static_assert.h" />
 		<Unit filename="../../type_traits.h" />
+		<Unit filename="../../unordered_map.h" />
 		<Unit filename="../../variant.h" />
 		<Unit filename="../../vector.h" />
 		<Unit filename="../../vector_base.h" />
