@@ -190,6 +190,7 @@
     <ClInclude Include="..\..\functional.h" />
     <ClInclude Include="..\..\hash.h" />
     <ClInclude Include="..\..\ibitset.h" />
+    <ClInclude Include="..\..\icache.h" />
     <ClInclude Include="..\..\ideque.h" />
     <ClInclude Include="..\..\iflat_multimap.h" />
     <ClInclude Include="..\..\iflat_multiset.h" />
