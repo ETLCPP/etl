@@ -786,7 +786,7 @@ namespace etl
 
     //*************************************************************************
     /// Moves a range from one position to another within the list.
-    /// Moves a range at position 'from' to the position before 'to'.
+    /// Moves a range at position 'first'/'last' to the position before 'to'.
     //*************************************************************************
     void move(const_iterator first, const_iterator last, const_iterator to)
     {
