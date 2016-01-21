@@ -38,8 +38,8 @@ SOFTWARE.
 #include <list>
 #include <vector>
 
-namespace 
-{		
+namespace
+{
   SUITE(test_list)
   {
     typedef TestDataDC<std::string>  ItemDC;
@@ -136,6 +136,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_copy_constructor)
     {
       CompareData compare_data(sorted_data.begin(), sorted_data.end());
+
       DataNDC data(sorted_data.begin(), sorted_data.end());
       DataNDC other_data(data);
 
@@ -427,7 +428,7 @@ namespace
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_front_excess)
-    {  
+    {
       DataNDC data;
 
       CHECK_NO_THROW(data.push_front(ItemNDC("1")));
@@ -454,7 +455,7 @@ namespace
         CHECK_NO_THROW(data.push_front(ItemNDC("1")));
         data.pop_front();
       }
-      
+
       CHECK(data.empty());
     }
 
@@ -482,7 +483,7 @@ namespace
         CHECK_NO_THROW(data.push_front(ItemNDC("1")));
         data.pop_front();
       }
-      
+
       CHECK(data.empty());
     }
 
@@ -496,7 +497,7 @@ namespace
         CHECK_NO_THROW(data.push_front(ItemNDC("1")));
         data.pop_back();
       }
-      
+
       CHECK(data.empty());
     }
 
@@ -524,7 +525,7 @@ namespace
 
       CHECK(are_equal);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_back_excess)
     {
@@ -812,8 +813,8 @@ namespace
       CompareData compare_data(unsorted_data.begin(), unsorted_data.end());
       DataNDC data(unsorted_data.begin(), unsorted_data.end());
 
-      CompareData::const_iterator compare_from;
-      CompareData::const_iterator compare_to;
+      CompareData::iterator compare_from;
+      CompareData::iterator compare_to;
 
       DataNDC::const_iterator from;
       DataNDC::const_iterator to;
@@ -828,7 +829,7 @@ namespace
       std::advance(from, 4);
       to = data.begin();
       data.move(from, to);
-      
+
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
 
@@ -885,9 +886,9 @@ namespace
       CompareData compare_data(unsorted_data.begin(), unsorted_data.end());
       DataNDC data(unsorted_data.begin(), unsorted_data.end());
 
-      CompareData::const_iterator compare_begin;
-      CompareData::const_iterator compare_end;
-      CompareData::const_iterator compare_to;
+      CompareData::iterator compare_begin;
+      CompareData::iterator compare_end;
+      CompareData::iterator compare_to;
 
       DataNDC::const_iterator begin;
       DataNDC::const_iterator end;
