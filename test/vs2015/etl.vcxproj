@@ -223,7 +223,9 @@
     <ClInclude Include="..\..\list.h" />
     <ClInclude Include="..\..\log.h" />
     <ClInclude Include="..\..\flat_map.h" />
-    <ClInclude Include="..\..\lru_cache.h" />
+    <ClInclude Include="..\..\lru_cache.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug No Unit Tests|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\..\map.h" />
     <ClInclude Include="..\..\mru_cache.h" />
     <ClInclude Include="..\..\multimap.h" />

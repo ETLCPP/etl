@@ -42,9 +42,14 @@ SOFTWARE.
 
 typedef TestDataDC<std::string>  ItemDC;
 typedef TestDataNDC<std::string> ItemNDC;
+
 namespace
 {
-  class ItemDCNode : public etl::intrusive_forward_list_node<2>
+  typedef etl::intrusive_forward_list_link<0> FirstLink;
+  typedef etl::intrusive_forward_list_link<1> SecondLink;
+
+  //***************************************************************************
+  class ItemDCNode : public FirstLink, public SecondLink
   {
   public:
 
@@ -56,9 +61,8 @@ namespace
     ItemDC data;
   };
 
-  const size_t INDEXES = 2;
-
-  class ItemNDCNode : public etl::intrusive_forward_list_node<INDEXES>
+  //***************************************************************************
+  class ItemNDCNode : public FirstLink, public SecondLink
   {
   public:
 
@@ -75,6 +79,7 @@ namespace
     ItemNDC data;
   };
 
+  //***************************************************************************
   bool operator ==(const ItemDCNode& lhs, const ItemDCNode& rhs)
   {
     return lhs.data == rhs.data;
@@ -85,12 +90,23 @@ namespace
     return lhs.data == rhs.data;
   }
 
+  bool operator !=(const ItemDCNode& lhs, const ItemDCNode& rhs)
+  {
+    return lhs.data != rhs.data;
+  }
+
+  bool operator !=(const ItemNDCNode& lhs, const ItemNDCNode& rhs)
+  {
+    return lhs.data != rhs.data;
+  }
+
   std::ostream& operator << (std::ostream& os, const ItemNDCNode& node)
   {
     os << node.data;
     return os;
   }
 
+  //***************************************************************************
   struct CompareItemNDCNode
   {
     bool operator ()(const ItemNDCNode& lhs, const ItemNDCNode& rhs) const
@@ -106,17 +122,39 @@ namespace
       return lhs.data == rhs.data;
     }
   };
+
+  //***************************************************************************
+  typedef etl::intrusive_forward_list<ItemDCNode,  FirstLink>  DataDC0;
+  typedef etl::intrusive_forward_list<ItemDCNode,  SecondLink> DataDC1;
+  typedef etl::intrusive_forward_list<ItemNDCNode, FirstLink>  DataNDC0;
+  typedef etl::intrusive_forward_list<ItemNDCNode, SecondLink> DataNDC1;
+
+  typedef std::vector<ItemNDCNode> InitialDataNDC;
+
+  template <typename TIterator1, typename TIterator2> 
+  bool Equal(TIterator1 begin1,
+             TIterator1 end1,
+             TIterator2 begin2)
+  {
+    while (begin1 != end1)
+    {
+      if (*begin1 != *begin2)
+      {
+        return false;
+      }
+
+      ++begin1;
+      ++begin2;
+    }
+
+    return true;
+  }
 }
 
 namespace 
 {		
   SUITE(test_forward_list)
   {   
-    typedef etl::intrusive_forward_list<ItemDCNode>  DataDC;
-    typedef etl::intrusive_forward_list<ItemNDCNode> DataNDC;
-
-    typedef std::vector<ItemNDCNode> InitialDataNDC;
-
     InitialDataNDC unsorted_data;
     InitialDataNDC sorted_data;
     InitialDataNDC non_unique_data;
@@ -141,8 +179,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_default_constructor)
     {
-      DataNDC data0(0);
-      DataNDC data1(1);
+      DataNDC0 data0;
+      DataNDC1 data1;
 
       CHECK(data0.empty());
       CHECK(data1.empty());
@@ -151,7 +189,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_range)
     {
-      DataNDC data0(0, sorted_data.begin(), sorted_data.end());
+      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
 
       CHECK(!data0.empty());
       CHECK_EQUAL(sorted_data.size(), data0.size());
@@ -160,7 +198,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_iterator)
     {
-      DataNDC data0(0, sorted_data.begin(), sorted_data.end());
+      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
 
       are_equal = std::equal(data0.begin(), data0.end(), sorted_data.begin());
 
@@ -170,7 +208,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_iterator)
     {
-      DataNDC data0(0, sorted_data.begin(), sorted_data.end());
+      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
 
       are_equal = std::equal(data0.cbegin(), data0.cend(), sorted_data.begin());
 
@@ -180,7 +218,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_clear)
     {
-      DataNDC data0(0, sorted_data.begin(), sorted_data.end());
+      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
       data0.clear();
 
       CHECK(data0.empty());
@@ -189,7 +227,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_range)
     {
-      DataNDC data0(0);
+      DataNDC0 data0;
 
       // Do it twice. We should only get one copy.
       data0.assign(sorted_data.begin(), sorted_data.end());
@@ -203,8 +241,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_range_two_lists_same)
     {
-      DataNDC data0(0);
-      DataNDC data1(1);
+      DataNDC0 data0;
+      DataNDC0 data1;
 
       data0.assign(sorted_data.begin(), sorted_data.end());
       data1.assign(sorted_data.begin(), sorted_data.end());
@@ -216,14 +254,14 @@ namespace
       CHECK(are_equal);
     }
 
-    //*************************************************************************
+    ////*************************************************************************
     TEST_FIXTURE(SetupFixture, test_two_lists_different)
     {
       std::list<ItemNDCNode> compare0;
       std::list<ItemNDCNode> compare1;
       
-      DataNDC data0(0);
-      DataNDC data1(1);
+      DataNDC0 data0;
+      DataNDC1 data1;
 
       ItemNDCNode node0("0");
       ItemNDCNode node1("1");
@@ -280,12 +318,12 @@ namespace
       ItemNDCNode INSERT_VALUE2 = ItemNDCNode("2");
 
       std::vector<ItemNDCNode> compare_data(sorted_data.begin(), sorted_data.end());
-      DataNDC data0(0, sorted_data.begin(), sorted_data.end());
-      DataNDC data1(1, sorted_data.begin(), sorted_data.end());
+      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
+      DataNDC1 data1(sorted_data.begin(), sorted_data.end());
 
       size_t offset = 2;
 
-      DataNDC::iterator i_data = data0.begin();
+      DataNDC0::iterator i_data = data0.begin();
       std::advance(i_data, offset);
 
       std::vector<ItemNDCNode>::iterator i_compare_data = compare_data.begin();
@@ -338,8 +376,8 @@ namespace
       std::vector<ItemNDCNode> compare(test2);
       compare.insert(compare.end(), test1.begin(), test1.end());
 
-      DataNDC data0(0, test1.begin(), test1.end());
-      DataNDC data1(1, test1.begin(), test1.end());
+      DataNDC0 data0(test1.begin(), test1.end());
+      DataNDC1 data1(test1.begin(), test1.end());
 
       data0.insert_after(data0.before_begin(), test2.begin(), test2.end());
 
@@ -355,7 +393,7 @@ namespace
       data0.assign(test1.begin(), test1.end());
 
       std::vector<ItemNDCNode>::iterator icd = compare.begin();
-      DataNDC::iterator id = data0.begin();
+      DataNDC0::iterator id = data0.begin();
 
       std::advance(icd, 4);
       std::advance(id, 3);
@@ -378,7 +416,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_push_front)
     {
       std::list<ItemNDCNode> compare_data;
-      DataNDC data0(0);
+      DataNDC0 data0;
 
       ItemNDCNode node1("1");
       ItemNDCNode node2("2");
@@ -410,8 +448,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_front_pop_front)
     {
-      DataNDC data0(0);
-      DataNDC data1(1);
+      DataNDC0 data0;
+      DataNDC1 data1;
 
       ItemNDCNode node1("1");
       ItemNDCNode node2("2");
@@ -463,10 +501,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_erase_after_single)
     {
       std::vector<ItemNDCNode> compare_data(sorted_data.begin(), sorted_data.end());
-      DataNDC data0(0, sorted_data.begin(), sorted_data.end());
-      DataNDC data1(1, sorted_data.begin(), sorted_data.end());
+      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
+      DataNDC1 data1(sorted_data.begin(), sorted_data.end());
 
-      DataNDC::iterator i_data = data0.begin();
+      DataNDC0::iterator i_data = data0.begin();
       std::advance(i_data, 2);
 
       std::vector<ItemNDCNode>::iterator i_compare_data = compare_data.begin();
@@ -523,13 +561,13 @@ namespace
     TEST_FIXTURE(SetupFixture, test_erase_after_range)
     {
       std::vector<ItemNDCNode> compare_data(sorted_data.begin(), sorted_data.end());
-      DataNDC data0(0, sorted_data.begin(), sorted_data.end());
-      DataNDC data1(1, sorted_data.begin(), sorted_data.end());
+      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
+      DataNDC1 data1(sorted_data.begin(), sorted_data.end());
 
-      DataNDC::iterator i_data_1 = data0.begin();
+      DataNDC0::iterator i_data_1 = data0.begin();
       std::advance(i_data_1, 2);
 
-      DataNDC::iterator i_data_2 = data0.begin();
+      DataNDC0::iterator i_data_2 = data0.begin();
       std::advance(i_data_2, 4);
 
       std::vector<ItemNDCNode>::iterator i_compare_data_1 = compare_data.begin();
@@ -540,7 +578,7 @@ namespace
 
       std::vector<ItemNDCNode>::iterator i_compare_result = compare_data.erase(i_compare_data_1, i_compare_data_2);
 
-      DataNDC::iterator i_result = data0.erase_after(i_data_1, i_data_2);
+      DataNDC0::iterator i_result = data0.erase_after(i_data_1, i_data_2);
 
       CHECK_EQUAL(*i_compare_result, *i_result);
 
@@ -559,10 +597,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_erase_after_range_end)
     {
       std::vector<ItemNDCNode> compare_data(sorted_data.begin(), sorted_data.end());
-      DataNDC data0(0, sorted_data.begin(), sorted_data.end());
-      DataNDC data1(1, sorted_data.begin(), sorted_data.end());
+      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
+      DataNDC1 data1(sorted_data.begin(), sorted_data.end());
 
-      DataNDC::iterator i_data = data0.begin();
+      DataNDC0::iterator i_data = data0.begin();
       std::advance(i_data, 4);
 
       std::vector<ItemNDCNode>::iterator i_compare_data = compare_data.begin();
@@ -570,7 +608,7 @@ namespace
 
       std::vector<ItemNDCNode>::iterator i_compare_result = compare_data.erase(i_compare_data, compare_data.end());
 
-      DataNDC::iterator i_result = data0.erase_after(i_data, data0.end());
+      DataNDC0::iterator i_result = data0.erase_after(i_data, data0.end());
 
       CHECK(i_result == data0.end());
 
@@ -588,7 +626,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_after_all)
     {
-      DataNDC data0(0, sorted_data.begin(), sorted_data.end());
+      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
 
       data0.erase_after(data0.before_begin(), data0.end());
 
@@ -598,7 +636,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_front)
     {
-      DataNDC data0(0, sorted_data.begin(), sorted_data.end());
+      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
 
       CHECK_EQUAL(sorted_data.front(), data0.front());
     }
@@ -606,8 +644,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_unique)
     {
-      DataNDC data0(0, non_unique_data.begin(), non_unique_data.end());
-      DataNDC data1(1, non_unique_data.begin(), non_unique_data.end());
+      DataNDC0 data0(non_unique_data.begin(), non_unique_data.end());
+      DataNDC1 data1(non_unique_data.begin(), non_unique_data.end());
 
       data0.unique(EqualItemNDCNode());
 
@@ -628,8 +666,8 @@ namespace
     TEST_FIXTURE(SetupFixture, test_remove)
     {
       std::vector<ItemNDCNode> compare_data(sorted_data.begin(), sorted_data.end());
-      DataNDC data0(0, sorted_data.begin(), sorted_data.end());
-      DataNDC data1(1, sorted_data.begin(), sorted_data.end());
+      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
+      DataNDC1 data1(sorted_data.begin(), sorted_data.end());
 
       std::vector<ItemNDCNode>::iterator i_item = std::find(compare_data.begin(), compare_data.end(), ItemNDCNode("7"));
       compare_data.erase(i_item);
@@ -651,8 +689,8 @@ namespace
     TEST_FIXTURE(SetupFixture, test_remove_if)
     {
       std::vector<ItemNDCNode> compare_data(sorted_data.begin(), sorted_data.end());
-      DataNDC data0(0, sorted_data.begin(), sorted_data.end());
-      DataNDC data1(1, sorted_data.begin(), sorted_data.end());
+      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
+      DataNDC1 data1(sorted_data.begin(), sorted_data.end());
 
       std::vector<ItemNDCNode>::iterator i_item = std::find(compare_data.begin(), compare_data.end(), ItemNDCNode("7"));
       compare_data.erase(i_item);
@@ -673,8 +711,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_reverse)
     {
-      DataNDC data0(0, sorted_data.begin(), sorted_data.end());
-      DataNDC data1(1, sorted_data.begin(), sorted_data.end());
+      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
+      DataNDC1 data1(sorted_data.begin(), sorted_data.end());
 
       data0.reverse(); // Just reverse one of them.
 
@@ -688,8 +726,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_sort)
     {
-      DataNDC data0(0, unsorted_data.begin(), unsorted_data.end());
-      DataNDC data1(1, unsorted_data.begin(), unsorted_data.end());
+      DataNDC0 data0(unsorted_data.begin(), unsorted_data.end());
+      DataNDC1 data1(unsorted_data.begin(), unsorted_data.end());
 
       data0.sort(); // Just sort one of them.
 
@@ -703,8 +741,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_sort_compare)
     {
-      DataNDC data0(0, unsorted_data.begin(), unsorted_data.end());
-      DataNDC data1(1, unsorted_data.begin(), unsorted_data.end());
+      DataNDC0 data0(unsorted_data.begin(), unsorted_data.end());
+      DataNDC1 data1(unsorted_data.begin(), unsorted_data.end());
 
       data0.sort(CompareItemNDCNode()); // Just sort one of them.
 
