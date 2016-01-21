@@ -36,58 +36,13 @@ SOFTWARE.
 
 namespace etl
 {
-  namespace __private_intrusive_forward_list__
-  {
-    //***************************************************************************
-    /// The node element in the intrusive_forward_list.
-    //***************************************************************************
-    class intrusive_forward_list_node_base
-    {
-    public:
-
-      virtual intrusive_forward_list_node_base* get_next(size_t index) const
-      {
-        return base_next;
-      }
-
-      virtual void set_next(size_t index, intrusive_forward_list_node_base* pnext)
-      {
-        base_next = pnext;
-      }
-
-    private:
-
-      intrusive_forward_list_node_base* base_next;
-    };
-  }
-
   //***************************************************************************
   /// The node element in the intrusive_forward_list.
   //***************************************************************************
-  template <const size_t SIZE>
-  struct intrusive_forward_list_node : public __private_intrusive_forward_list__::intrusive_forward_list_node_base
+  template <const size_t ID>
+  struct intrusive_forward_list_node
   {
-  public:
-
-    __private_intrusive_forward_list__::intrusive_forward_list_node_base* get_next(size_t index) const
-    {
-#ifdef _DEBUG
-      ETL_ASSERT(index < SIZE, ETL_ERROR(intrusive_forward_list_index_exception));
-#endif
-      return next[index];
-    }
-
-    void set_next(size_t index, __private_intrusive_forward_list__::intrusive_forward_list_node_base* pnext)
-    {
-#ifdef _DEBUG
-      ETL_ASSERT(index < SIZE, ETL_ERROR(intrusive_forward_list_index_exception));
-#endif
-      next[index] = pnext;
-    }
-
-  private:
-
-    etl::array<__private_intrusive_forward_list__::intrusive_forward_list_node_base*, SIZE> next;
+    intrusive_list_tag<ID>* ifln_next;
   };
 }
 
