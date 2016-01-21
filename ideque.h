@@ -890,7 +890,6 @@ namespace etl
         // Are we closer to the front?
         if (distance(_begin, insert_position) < difference_type(current_size / 2))
         {
-          size_t insert_index  = std::distance(begin(), position);
           size_t n_insert      = n;
           size_t n_move        = std::distance(begin(), position);
           size_t n_create_copy = std::min(n_insert, n_move);
@@ -922,7 +921,6 @@ namespace etl
         }
         else
         {
-          size_t insert_index  = std::distance(begin(), position);
           size_t n_insert      = n;
           size_t n_move        = std::distance(position, end());
           size_t n_create_copy = std::min(n_insert, n_move);
