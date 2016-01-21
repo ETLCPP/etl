@@ -763,6 +763,60 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Moves an element from one position to another within the list.
+    /// Moves the element at position 'from' to the position before 'to'.
+    //*************************************************************************
+    void move(const_iterator from, const_iterator to)
+    {
+      if (from == to)
+      {
+        return; // Can't more to before yourself!
+      }
+
+      Node& from_node = const_cast<Node&>(*from.p_node); // We're not changing the value, just it's position.
+      Node& to_node   = const_cast<Node&>(*to.p_node);   // We're not changing the value, just it's position.
+
+      // Disconnect the node from the list.
+      join(*from_node.previous, *from_node.next);
+
+      // Attach it to the new position.
+      join(*to_node.previous, from_node);
+      join(from_node, to_node);
+    }
+
+    //*************************************************************************
+    /// Moves a range from one position to another within the list.
+    /// Moves a range at position 'first'/'last' to the position before 'to'.
+    //*************************************************************************
+    void move(const_iterator first, const_iterator last, const_iterator to)
+    {
+      if ((first == to) || (last == to))
+      {
+        return; // Can't more to before yourself!
+      }
+
+#ifdef _DEBUG
+      // Check that we are not doing an illegal move!
+      for (const_iterator item = first; item != last; ++item)
+      {
+        ETL_ASSERT(item != to, ETL_ERROR(list_iterator));
+      }
+#endif
+
+      Node& first_node = const_cast<Node&>(*first.p_node); // We're not changing the value, just it's position.
+      Node& last_node  = const_cast<Node&>(*last.p_node);  // We're not changing the value, just it's position.
+      Node& to_node    = const_cast<Node&>(*to.p_node);    // We're not changing the value, just it's position.
+      Node& final_node = *last_node.previous;
+
+      // Disconnect the range from the list.
+      join(*first_node.previous, last_node);
+
+      // Attach it to the new position.
+      join(*to_node.previous, first_node);
+      join(final_node, to_node);
+    }
+
+    //*************************************************************************
     /// Sort using in-place merge sort algorithm.
     /// Uses 'less-than operator as the predicate.
     //*************************************************************************

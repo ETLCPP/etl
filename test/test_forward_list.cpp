@@ -601,5 +601,183 @@ namespace
 
       CHECK(are_equal);
     }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_move)
+    {
+      CompareDataNDC compare_data(sorted_data.begin(), sorted_data.end());
+      DataNDC data(sorted_data.begin(), sorted_data.end());
+
+      DataNDC::const_iterator i_from_before;
+      DataNDC::const_iterator i_to_before;
+      CompareDataNDC::const_iterator i_compare_from_before;
+      CompareDataNDC::const_iterator i_compare_to_before;
+
+      // Move to the beginning.
+      i_from_before = data.begin();
+      std::advance(i_from_before, 5);
+
+      i_to_before = data.before_begin();
+
+      i_compare_from_before = compare_data.begin();
+      std::advance(i_compare_from_before, 5);
+
+      i_compare_to_before = compare_data.before_begin();
+
+      compare_data.splice_after(i_compare_to_before, compare_data, i_compare_from_before);
+      data.move_after(i_from_before, i_to_before);
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(are_equal);
+
+      // Move to the end.
+      i_from_before = data.begin();
+      std::advance(i_from_before, 5);
+
+      i_to_before = data.begin();
+      std::advance(i_to_before, 9);
+
+      i_compare_from_before = compare_data.begin();
+      std::advance(i_compare_from_before, 5);
+
+      i_compare_to_before = compare_data.begin();
+      std::advance(i_compare_to_before, 9);
+
+      compare_data.splice_after(i_compare_to_before, compare_data, i_compare_from_before);
+      data.move_after(i_from_before, i_to_before);
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(are_equal);
+
+      // Move to nearby.
+      i_from_before = data.begin();
+      std::advance(i_from_before, 3);
+
+      i_to_before = data.begin();
+      std::advance(i_to_before, 7);
+
+      i_compare_from_before = compare_data.begin();
+      std::advance(i_compare_from_before, 3);
+
+      i_compare_to_before = compare_data.begin();
+      std::advance(i_compare_to_before, 7);
+
+      compare_data.splice_after(i_compare_to_before, compare_data, i_compare_from_before);
+      data.move_after(i_from_before, i_to_before);
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_move_range)
+    {
+      CompareDataNDC compare_data(sorted_data.begin(), sorted_data.end());
+      DataNDC data(sorted_data.begin(), sorted_data.end());
+
+      DataNDC::const_iterator i_first_before;
+      DataNDC::const_iterator i_last;
+      DataNDC::const_iterator i_to_before;
+      CompareDataNDC::const_iterator i_compare_first_before;
+      CompareDataNDC::const_iterator i_compare_last;
+      CompareDataNDC::const_iterator i_compare_to_before;
+
+      // Move to the beginning.
+      i_first_before = data.begin();
+      std::advance(i_first_before, 4);
+
+      i_last = i_first_before;
+      std::advance(i_last, 4);
+
+      i_to_before = data.before_begin();
+
+      i_compare_first_before = compare_data.begin();
+      std::advance(i_compare_first_before, 4);
+
+      i_compare_last = i_compare_first_before;
+      std::advance(i_compare_last, 4);
+
+      i_compare_to_before = compare_data.before_begin();
+
+      compare_data.splice_after(i_compare_to_before, compare_data, i_compare_first_before, i_compare_last);
+      data.move_after(i_first_before, i_last, i_to_before);
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(are_equal);
+
+      // Move to the end.
+      i_first_before = data.begin();
+      std::advance(i_first_before, 4);
+
+      i_last = i_first_before;
+      std::advance(i_last, 4);
+
+      i_to_before = data.begin();
+      std::advance(i_to_before, 9);
+
+      i_compare_first_before = compare_data.begin();
+      std::advance(i_compare_first_before, 4);
+
+      i_compare_last = i_compare_first_before;
+      std::advance(i_compare_last, 4);
+
+      i_compare_to_before = compare_data.begin();
+      std::advance(i_compare_to_before, 9);
+
+      compare_data.splice_after(i_compare_to_before, compare_data, i_compare_first_before, i_compare_last);
+      data.move_after(i_first_before, i_last, i_to_before);
+
+      //DataNDC::const_iterator id = data.begin();
+      //CompareDataNDC::const_iterator ic = compare_data.begin();
+
+      //ItemNDC d;
+      //ItemNDC c;
+
+      //while (ic != compare_data.end())
+      //{
+      //  d = *id++;
+      //  c = *ic++;
+      //}
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      // Move to nearby.
+      i_first_before = data.begin();
+      std::advance(i_first_before, 4);
+
+      i_last = i_first_before;
+      std::advance(i_last, 4);
+
+      i_to_before = data.begin();
+      std::advance(i_to_before, 2);
+
+      i_compare_first_before = compare_data.begin();
+      std::advance(i_compare_first_before, 4);
+
+      i_compare_last = i_compare_first_before;
+      std::advance(i_compare_last, 4);
+
+      i_compare_to_before = compare_data.begin();
+      std::advance(i_compare_to_before, 2);
+
+      compare_data.splice_after(i_compare_to_before, compare_data, i_compare_first_before, i_compare_last);
+      data.move_after(i_first_before, i_last, i_to_before);
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      // Move to illegal place.
+      i_first_before = data.begin();
+      std::advance(i_first_before, 2);
+      i_last = i_first_before;
+      std::advance(i_last, 3);
+      i_to_before = i_first_before;
+      std::advance(i_to_before, 2);
+
+      CHECK_THROW(data.move_after(i_first_before, i_last, i_to_before), etl::forward_list_iterator);
+    }
   };
 }

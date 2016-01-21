@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_INTRUSIVE_FORWARD_LIST_NODE__
-#define __ETL_INTRUSIVE_FORWARD_LIST_NODE__
+#ifndef __ETL_INTRUSIVE_FORWARD_LIST_LINK__
+#define __ETL_INTRUSIVE_FORWARD_LIST_LINK__
 
 #include "error_handler.h"
 #include "array.h"
@@ -37,12 +37,12 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  /// The node element in the intrusive_forward_list.
+  /// The link element in the intrusive_forward_list.
   //***************************************************************************
   template <const size_t ID>
-  struct intrusive_forward_list_node
+  struct intrusive_forward_list_link
   {
-    intrusive_list_tag<ID>* ifln_next;
+    intrusive_forward_list_link<ID>* ifll_next;
   };
 }
 

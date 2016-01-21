@@ -42,7 +42,7 @@ SOFTWARE.
 
 #include "nullptr.h"
 #include "type_traits.h"
-#include "intrusive_forward_list_node.h"
+#include "intrusive_forward_list_link.h"
 
 namespace etl
 {
@@ -105,22 +105,23 @@ namespace etl
   //***************************************************************************
   /// An intrusive forward list.
   ///\ingroup intrusive_forward_list
+  ///\note TLink must be a base of TValue.
   //***************************************************************************
-  template <typename TValue>
+  template <typename TValue, typename TLink = etl::intrusive_forward_list_link<0> >
   class intrusive_forward_list
   {
   public:
 
     // Node typedef.
-    typedef __private_intrusive_forward_list__::intrusive_forward_list_node_base node_t;
+    typedef TLink             link_type;
 
     // STL style typedefs.
-    typedef TValue        value_type;
-    typedef TValue*       pointer;
-    typedef const TValue* const_pointer;
-    typedef TValue&       reference;
-    typedef const TValue& const_reference;
-    typedef size_t        size_type;
+    typedef TValue            value_type;
+    typedef value_type*       pointer;
+    typedef const value_type* const_pointer;
+    typedef value_type&       reference;
+    typedef const value_type& const_reference;
+    typedef size_t            size_type;
 
   public:
 
@@ -134,75 +135,74 @@ namespace etl
       friend class intrusive_forward_list;
 
       iterator()
-        : p_node(nullptr),
-          index(0)
+        : p_value(nullptr)
       {
       }
 
-      iterator(node_t& node, size_t index)
-        : p_node(&node),
-          index(index)
+      iterator(value_type& value)
+        : p_value(&value)
       {
       }
 
       iterator(const iterator& other)
-        : p_node(other.p_node),
-          index(other.index)
+        : p_value(other.p_value)
       {
       }
 
       iterator& operator ++()
       {
-        p_node = p_node->get_next(index);
+        // Read the appropriate 'ifll_next'.
+        p_value = static_cast<value_type*>(p_value->link_type::ifll_next);
         return *this;
       }
 
       iterator operator ++(int)
       {
         iterator temp(*this);
-        p_node = p_node->get_next(index);
+        // Read the appropriate 'ifll_next'.
+        p_value = static_cast<value_type*>(p_value->link_type::ifll_next);
         return temp;
       }
 
       iterator operator =(const iterator& other)
       {
-        p_node = other.p_node;
+        p_value = other.p_value;
         return *this;
       }
 
       reference operator *()
       {
-        return static_cast<reference>(*p_node);
+        return *p_value;
       }
 
       const_reference operator *() const
       {
-        return static_cast<const_reference>(*p_node);
+        return *p_value;
       }
 
       pointer operator &()
       {
-        return static_cast<pointer>(p_node);
+        return p_value;
       }
 
       const_pointer operator &() const
       {
-        return static_cast<const_pointer>(p_node);
+        return p_value;
       }
 
       pointer operator ->()
       {
-        return static_cast<pointer>(p_node);
+        return p_value;
       }
 
       const_pointer operator ->() const
       {
-        return static_cast<const_pointer>(p_node);
+        return p_value;
       }
 
       friend bool operator == (const iterator& lhs, const iterator& rhs)
       {
-        return lhs.p_node == rhs.p_node;
+        return lhs.p_value == rhs.p_value;
       }
 
       friend bool operator != (const iterator& lhs, const iterator& rhs)
@@ -212,8 +212,7 @@ namespace etl
 
     private:
 
-      node_t* p_node;
-      size_t  index;
+      value_type* p_value;
     };
 
     //*************************************************************************
@@ -226,72 +225,64 @@ namespace etl
       friend class intrusive_forward_list;
 
       const_iterator()
-        : p_node(nullptr),
-          index(0)
+        : p_value(nullptr)
       {
       }
 
-      const_iterator(node_t& node, size_t index)
-        : p_node(&node),
-          index(index)
+      const_iterator(const value_type& value)
+        : p_value(&value)
       {
       }
 
-      const_iterator(const node_t& node, size_t index)
-        : p_node(&node),
-          index(index)
-      {
-      }
-
-      const_iterator(const typename intrusive_forward_list<TValue>::iterator& other)
-        : p_node(other.p_node),
-          index(other.index)
+      const_iterator(const typename intrusive_forward_list<value_type, link_type>::iterator& other)
+        : p_value(other.p_value)
       {
       }
 
       const_iterator(const const_iterator& other)
-        : p_node(other.p_node),
-          index(other.index)
+        : p_value(other.p_value)
       {
       }
 
       const_iterator& operator ++()
       {
-        p_node = p_node->get_next(index);
+        // Read the appropriate 'ifll_next'.
+        p_value = static_cast<value_type*>(p_value->link_type::ifll_next);
         return *this;
       }
 
       const_iterator operator ++(int)
       {
         const_iterator temp(*this);
-        p_node = p_node->get_next(index);
+        // Read the appropriate 'ifll_next'.
+        p_value = static_cast<value_type*>(p_value->link_type::ifll_next);
         return temp;
       }
 
       const_iterator operator =(const const_iterator& other)
       {
-        p_node = other.p_node;
+        p_value = other.p_value;
         return *this;
       }
 
       const_reference operator *() const
       {
-        return static_cast<const_reference>(*p_node);
+        return *p_value;
       }
 
       const_pointer operator &() const
       {
-        return static_cast<const_pointer>(p_node);
+        return p_value;
       }
 
       const_pointer operator ->() const
       {
-        return static_cast<const_pointer>(p_node);
+        return p_value;
       }
 
       friend bool operator == (const const_iterator& lhs, const const_iterator& rhs)
       {
-        return lhs.p_node == rhs.p_node;
+        return lhs.p_value == rhs.p_value;
       }
 
       friend bool operator != (const const_iterator& lhs, const const_iterator& rhs)
@@ -301,8 +292,7 @@ namespace etl
 
     private:
 
-      const node_t* p_node;
-      size_t        index;
+      const value_type* p_value;
     };
 
 		typedef typename std::iterator_traits<iterator>::difference_type difference_type;
@@ -310,8 +300,7 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    intrusive_forward_list(size_t index)
-      : index(index)
+    intrusive_forward_list()
     {
       initialise();
     }
@@ -320,8 +309,7 @@ namespace etl
     /// Constructor from range
     //*************************************************************************
     template <typename TIterator>
-    intrusive_forward_list(size_t index, TIterator first, TIterator last)
-      : index(index)
+    intrusive_forward_list(TIterator first, TIterator last)
     {
       assign(first, last);
     }
@@ -331,7 +319,7 @@ namespace etl
     //*************************************************************************
     iterator begin()
     {
-      return iterator(get_head(), index);
+      return iterator(static_cast<value_type&>(get_head()));
     }
 
     //*************************************************************************
@@ -339,7 +327,7 @@ namespace etl
     //*************************************************************************
     const_iterator begin() const
     {
-      return const_iterator(get_head(), index);
+      return const_iterator(static_cast<const value_type&>(get_head()));
     }
 
     //*************************************************************************
@@ -347,7 +335,7 @@ namespace etl
     //*************************************************************************
     iterator before_begin()
     {
-      return iterator(start_node, index);
+      return iterator(static_cast<value_type&>(start_link));
     }
 
     //*************************************************************************
@@ -355,7 +343,7 @@ namespace etl
     //*************************************************************************
     const_iterator before_begin() const
     {
-      return const_iterator(start_node, index);
+      return const_iterator(static_cast<const value_type&>(start_link));
     }
 
     //*************************************************************************
@@ -363,7 +351,7 @@ namespace etl
     //*************************************************************************
     const_iterator cbegin() const
     {
-      return const_iterator(get_head(), index);
+      return const_iterator(static_cast<const value_type&>(get_head()));
     }
 
     //*************************************************************************
@@ -403,7 +391,7 @@ namespace etl
     //*************************************************************************
     reference front()
     {
-      return static_cast<reference>(get_head());
+      return static_cast<value_type&>(get_head());
     }
 
     //*************************************************************************
@@ -411,7 +399,7 @@ namespace etl
     //*************************************************************************
     const_reference front() const
     {
-      return get_head();
+      return static_cast<const value_type&>(get_head());;
     }
 
     //*************************************************************************
@@ -428,15 +416,15 @@ namespace etl
 
       initialise();
 
-      node_t* p_last_node = &start_node;
+      link_type* p_last_link = &start_link;
 
       // Add all of the elements.
       while (first != last)
       {
-        node_t& node = *first++;
-        join(p_last_node, &node);
-        join(&node, nullptr);
-        p_last_node = &node;
+        link_type& link = *first++;
+        join(p_last_link, &link);
+        join(&link, nullptr);
+        p_last_link = &link;
         ++current_size;
       }
     }
@@ -444,9 +432,9 @@ namespace etl
     //*************************************************************************
     /// Pushes a value to the front of the intrusive_forward_list.
     //*************************************************************************
-    void push_front(node_t& value)
+    void push_front(link_type& value)
     {
-      insert_node_after(start_node, value);
+      insert_link_after(start_link, value);
     }
 
     //*************************************************************************
@@ -457,7 +445,7 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!empty(), ETL_ERROR(intrusive_forward_list_empty));
 #endif
-      remove_node_after(start_node);
+      remove_link_after(start_link);
     }
 
     //*************************************************************************
@@ -470,29 +458,29 @@ namespace etl
         return;
       }
 
-      node_t* first  = nullptr;                    // To keep first node
-      node_t* second = start_node.get_next(index); // To keep second node
-      node_t* track  = start_node.get_next(index); // Track the list
+      link_type* first  = nullptr;              // To keep first link
+      link_type* second = start_link.ifll_next; // To keep second link
+      link_type* track  = start_link.ifll_next; // Track the list
 
       while (track != NULL)
       {
-        track = track->get_next(index); // Track point to next node;
-        second->set_next(index, first); // Second node point to first
-        first  = second;                // Move first node to next
-        second = track;                 // Move second node to next
+        track = track->ifll_next;  // Track point to next link;
+        second->ifll_next = first; // Second link point to first
+        first  = second;           // Move first link to next
+        second = track;            // Move second link to next
       }
 
-      join(&start_node, first);
+      join(&start_link, first);
     }
 
     //*************************************************************************
     /// Inserts a value to the intrusive_forward_list after the specified position.
     //*************************************************************************
-    iterator insert_after(iterator position, node_t& value)
+    iterator insert_after(iterator position, value_type& value)
     {
-      insert_node_after(*position.p_node, value);
+      insert_link_after(*position.p_value, value);
 
-      return iterator(value, index);
+      return iterator(value);
     }
 
     //*************************************************************************
@@ -503,8 +491,8 @@ namespace etl
     {
       while (first != last)
       {
-        // Set up the next free node.
-        insert_node_after(*position.p_node, *first++);
+        // Set up the next free link.
+        insert_link_after(*position.p_value, *first++);
         ++position;
       }
     }
@@ -518,7 +506,7 @@ namespace etl
       ++next;
       ++next;
 
-      remove_node_after(*position.p_node);
+      remove_link_after(*position.p_value);
 
       return next;
     }
@@ -528,9 +516,9 @@ namespace etl
     //*************************************************************************
     iterator erase_after(iterator first, iterator last)
     {
-      node_t* p_first = first.p_node;
-      node_t* p_last  = last.p_node;
-      node_t* p_next  = p_first->get_next(index);
+      link_type* p_first = first.p_value;
+      link_type* p_last  = last.p_value;
+      link_type* p_next  = p_first->ifll_next;
 
       // Join the ends.
       join(p_first, p_last);
@@ -543,8 +531,8 @@ namespace etl
         // One less.
         --current_size;
 
-        p_next  = p_first->get_next(index); // Remember the next node.
-        p_first = p_next;                   // Move to the next node.
+        p_next  = p_first->ifll_next; // Remember the next link.
+        p_first = p_next;             // Move to the next link.
       }
 
       if (p_next == nullptr)
@@ -553,7 +541,7 @@ namespace etl
       }
       else
       {
-        return iterator(*p_last, index);
+        return iterator(*static_cast<value_type*>(p_last));
       }
     }
 
@@ -569,15 +557,15 @@ namespace etl
         return;
       }
 
-      node_t* last    = &get_head();
-      node_t* current = last->get_next(index);
+      link_type* last    = &get_head();
+      link_type* current = last->ifll_next;
 
       while (current != nullptr)
       {
         // Is this value the same as the last?
-        if (isEqual(static_cast<reference>(*current), static_cast<reference>(*last)))
+        if (isEqual(*static_cast<value_type*>(current), *static_cast<value_type*>(last)))
         {
-          remove_node_after(*last);
+          remove_link_after(*last);
         }
         else
         {
@@ -585,7 +573,7 @@ namespace etl
           last = current;
         }
 
-        current = last->get_next(index);
+        current = last->ifll_next;
       }
     }
 
@@ -594,7 +582,7 @@ namespace etl
     //*************************************************************************
     void sort()
     {
-      sort(std::less<TValue>());
+      sort(std::less<value_type>());
     }
 
     //*************************************************************************
@@ -607,7 +595,7 @@ namespace etl
     {
       iterator i_left;
       iterator i_right;
-      iterator i_node;
+      iterator i_link;
       iterator i_head;
       iterator i_tail;
       int      list_size = 1;
@@ -653,50 +641,50 @@ namespace etl
           // Now we have two lists. Merge them.
           while (left_size > 0 || (right_size > 0 && i_right != end()))
           {
-            // Decide whether the next node of merge comes from left or right.
+            // Decide whether the next link of merge comes from left or right.
             if (left_size == 0)
             {
-		          // Left is empty. The node must come from right.
-		          i_node = i_right;
+		          // Left is empty. The link must come from right.
+		          i_link = i_right;
               ++i_right;
               --right_size;
 		        }
             else if (right_size == 0 || i_right == end())
             {
-		          // Right is empty. The node must come from left.
-		          i_node = i_left;
+		          // Right is empty. The link must come from left.
+		          i_link = i_left;
               ++i_left;
               --left_size;
 		        }
             else if (compare(*i_left, *i_right))
             {
-		          // First node of left is lower or same. The node must come from left.
-		          i_node = i_left;
+		          // First link of left is lower or same. The link must come from left.
+		          i_link = i_left;
               ++i_left;
               --left_size;
 		        }
             else
             {
-		          // First node of right is lower. The node must come from right.
-		          i_node  = i_right;
+		          // First link of right is lower. The link must come from right.
+		          i_link  = i_right;
               ++i_right;
               --right_size;
 		        }
 
-            // Add the next node to the merged head.
+            // Add the next link to the merged head.
             if (i_head == before_begin())
             {
-                join(i_head.p_node, i_node.p_node);
-                i_head = i_node;
-                i_tail = i_node;
+                join(i_head.p_value, i_link.p_value);
+                i_head = i_link;
+                i_tail = i_link;
             }
             else
             {
-                join(i_tail.p_node, i_node.p_node);
-                i_tail = i_node;
+                join(i_tail.p_value, i_link.p_value);
+                i_tail = i_link;
             }
 
-            i_tail.p_node->set_next(index, nullptr);
+            i_tail.p_value->link_type::ifll_next = nullptr;
           }
 
           // Now left has stepped `list_size' places along, and right has too.
@@ -717,14 +705,14 @@ namespace etl
     //*************************************************************************
     // Removes the values specified.
     //*************************************************************************
-    void remove(node_t& value)
+    void remove(const_reference value)
     {
       iterator i_item = begin();
       iterator i_last_item = before_begin();
 
       while (i_item != end())
       {
-        if (static_cast<reference>(*i_item) == static_cast<reference>(value))
+        if (*i_item == value)
         {
           i_item = erase_after(i_last_item);
         }
@@ -777,16 +765,16 @@ namespace etl
 
   private:
 
-    node_t start_node;   ///< The node that acts as the intrusive_forward_list start.
-    size_t current_size; ///< The number of elements in the list.
-    size_t index;        ///< The index level of the node that this list operates on.
+    link_type start_link; ///< The link that acts as the intrusive_forward_list start.
+    size_t current_size;  ///< The number of elements in the list.
+    size_t index;         ///< The index level of the link that this list operates on.
 
     //*************************************************************************
-    /// Join two nodes.
+    /// Join two links.
     //*************************************************************************
-    void join(node_t* left, node_t* right)
+    void join(link_type* left, link_type* right)
     {
-      left->set_next(index, right);
+      left->ifll_next = right;
     }
 
     //*************************************************************************
@@ -798,46 +786,46 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Insert a node.
+    /// Insert a link.
     //*************************************************************************
-    void insert_node_after(node_t& position, node_t& node)
+    void insert_link_after(link_type& position, link_type& link)
     {
       // Connect to the intrusive_forward_list.
-      join(&node,     position.get_next(index));
-      join(&position, &node);
+      join(&link,     position.ifll_next);
+      join(&position, &link);
       ++current_size;
     }
 
     //*************************************************************************
-    /// Remove a node.
+    /// Remove a link.
     //*************************************************************************
-    void remove_node_after(node_t& node)
+    void remove_link_after(link_type& link)
     {
-      // The node to erase.
-      node_t* p_node = node.get_next(index);
+      // The link to erase.
+      link_type* p_link = link.ifll_next;
 
-      if (p_node != nullptr)
+      if (p_link != nullptr)
       {
-        // Disconnect the node from the intrusive_forward_list.
-        join(&node, p_node->get_next(index));
+        // Disconnect the link from the intrusive_forward_list.
+        join(&link, p_link->ifll_next);
         --current_size;
       }
     }
 
     //*************************************************************************
-    /// Get the head node.
+    /// Get the head link.
     //*************************************************************************
-    node_t& get_head()
+    link_type& get_head()
     {
-      return *start_node.get_next(index);
+      return *start_link.ifll_next;
     }
 
     //*************************************************************************
-    /// Get the head node.
+    /// Get the head link.
     //*************************************************************************
-    const node_t& get_head() const
+    const link_type& get_head() const
     {
-      return *start_node.get_next(index);
+      return *start_link.ifll_next;
     }
 
     //*************************************************************************
@@ -845,7 +833,7 @@ namespace etl
     //*************************************************************************
     void initialise()
     {
-      start_node.set_next(index, nullptr);
+      start_link.ifll_next = nullptr;
       current_size = 0;
     }
 

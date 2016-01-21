@@ -61,7 +61,7 @@ void receive_error(const etl::exception& e)
   std::ostringstream oss;
   oss << "Error '" << e.what() << "' in " << e.file_name() << " at line " << e.line_number() << "\n";
 
-#if defined(PLATFORM_WINDOWS)
+#if defined(PLATFORM_WINDOWS) && defined(COMPILER_MICROSOFT)
   std::string stext = oss.str();
 
   WCHAR text[200];
@@ -86,7 +86,7 @@ public:
     std::ostringstream oss;
     oss << "Error '" << e.what() << "' in " << e.file_name() << " at line " << e.line_number() << "\n";
 
-#if defined(PLATFORM_WINDOWS)
+#if defined(PLATFORM_WINDOWS) && defined(COMPILER_MICROSOFT)
     std::string stext = oss.str();
 
     WCHAR text[200];

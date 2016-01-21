@@ -199,10 +199,10 @@ namespace
       etl::queue<int, 4> queue;
 
       queue.push() = 1;
-      CHECK_EQUAL(1, queue.size());
+      CHECK_EQUAL(1U, queue.size());
 
       queue.push() = 2;
-      CHECK_EQUAL(2, queue.size());
+      CHECK_EQUAL(2U, queue.size());
 
       CHECK_EQUAL(1, queue.front());
 
@@ -297,7 +297,7 @@ namespace
       queue.push(1);
       queue.push(2);
       queue.pop();
-      CHECK_EQUAL(1, queue.size());
+      CHECK_EQUAL(1U, queue.size());
     }
 
     //*************************************************************************

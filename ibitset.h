@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include <algorithm>
 #include <stdint.h>
+#include <string.h>
 
 #include "exception.h"
 #include "integral_limits.h"

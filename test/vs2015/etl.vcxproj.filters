@@ -360,28 +360,10 @@
     <ClInclude Include="..\..\priority_queue.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ilru_cache.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\imru_cache.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\irr_cache.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\jenkins.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lru_cache.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\mru_cache.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\murmur3.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\rr_cache.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\murmurhash3.h">
@@ -467,6 +449,27 @@
     </ClInclude>
     <ClInclude Include="..\..\char_traits.h">
       <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\icache.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lru_cache.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mru_cache.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\imru_cache.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ilru_cache.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rr_cache.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\irr_cache.h">
+      <Filter>ETL\Containers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

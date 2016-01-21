@@ -574,6 +574,68 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Erases the value at the specified position.
+    //*************************************************************************
+    void move_after(const_iterator from_before, const_iterator to_before)
+    {
+      if (from_before == to_before) // Can't more to after yourself!
+      {
+        return;
+      }
+
+      Node* p_from_before = const_cast<Node*>(from_before.p_node); // We're not changing the value, just it's position.
+      Node* p_to_before   = const_cast<Node*>(to_before.p_node);   // We're not changing the value, just it's position.
+
+      Node* p_from = p_from_before->next;
+
+      // Disconnect from the list.
+      join(p_from_before, p_from->next);
+
+      // Attach it to the new position.
+      join(p_from,        p_to_before->next);
+      join(p_to_before,   p_from);
+    }
+
+    //*************************************************************************
+    /// Moves a range from one position to another within the list.
+    /// Moves a range at position 'first_before'/'last' to the position before 'to_before'.
+    //*************************************************************************
+    void move_after(const_iterator first_before, const_iterator last, const_iterator to_before)
+    {
+      if ((first_before == to_before) || (last == to_before))
+      {
+        return; // Can't more to before yourself!
+      }
+
+#ifdef _DEBUG
+      // Check that we are not doing an illegal move!
+      for (const_iterator item = first_before; item != last; ++item)
+      {
+        ETL_ASSERT(item != to_before, ETL_ERROR(forward_list_iterator));
+      }
+#endif
+
+      Node* p_first_before = const_cast<Node*>(first_before.p_node); // We're not changing the value, just it's position.
+      Node* p_last         = const_cast<Node*>(last.p_node);         // We're not changing the value, just it's position.
+      Node* p_to_before    = const_cast<Node*>(to_before.p_node);    // We're not changing the value, just it's position.
+      Node* p_first        = p_first_before->next;
+      Node* p_final        = p_first_before;
+
+      // Find the last node that will be moved.
+      while (p_final->next != p_last)
+      {
+        p_final = p_final->next;
+      }
+
+      // Disconnect from the list.
+      join(p_first_before, p_final->next);
+
+      // Attach it to the new position.
+      join(p_final, p_to_before->next);
+      join(p_to_before, p_first);
+    }
+
+    //*************************************************************************
     /// Removes all but the first element from every consecutive group of equal
     /// elements in the container.
     //*************************************************************************
