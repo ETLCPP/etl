@@ -44,7 +44,7 @@ SOFTWARE.
 #include "ipool.h"
 #include "ivector.h"
 #include "error_handler.h"
-#include "basic_intrusive_forward_list.h"
+#include "intrusive_forward_list.h"
 #include "exception.h"
 #include "error_handler.h"
 
@@ -103,7 +103,7 @@ namespace etl
   public:
 
     unordered_map_iterator(string_type file_name, numeric_type line_number)
-      : unordered_map_exception("unordered_map:iterator", file_name, line_number)
+      : unordered_map_exception(ETL_ERROR_TEXT("unordered_map:iterator", ETL_FILE"C"), file_name, line_number)
     {
     }
   };
@@ -133,8 +133,10 @@ namespace etl
 
     typedef typename parameter_type<TKey>::type key_value_parameter_t;
 
+    typedef etl::intrusive_forward_list_link<> link_t; // Default link.
+
     // The nodes that store the elements.
-    struct node_t : public etl::basic_intrusive_forward_list_node
+    struct node_t : public link_t
     {
       node_t(const value_type& key_value_pair)
         : key_value_pair(key_value_pair)
@@ -146,9 +148,9 @@ namespace etl
 
   private:
 
-    typedef etl::basic_intrusive_forward_list bucket_t;
-    typedef etl::ipool<node_t>                pool_t;
-    typedef etl::ivector<bucket_t>            bucket_list_t;
+    typedef etl::intrusive_forward_list<node_t, link_t> bucket_t;
+    typedef etl::ipool<node_t>                          pool_t;
+    typedef etl::ivector<bucket_t>                      bucket_list_t;
 
     typedef typename bucket_list_t::iterator  bucket_list_iterator;
 
@@ -234,37 +236,37 @@ namespace etl
       //*********************************
       std::pair<const TKey, T> operator *()
       {
-        return inode.ref_cast<node_t>().key_value_pair;
+        return inode->key_value_pair;
       }
 
       //*********************************
       const_reference operator *() const
       {
-        return inode.ref_cast<node_t>().key_value_pair;
+        return inode->key_value_pair;
       }
 
       //*********************************
       pointer operator &()
       {
-        return &(inode.ref_cast<node_t>().key_value_pair);
+        return &(inode->key_value_pair);
       }
 
       //*********************************
       const_pointer operator &() const
       {
-        return &(inode.ref_cast<node_t>().key_value_pair);
+        return &(inode->key_value_pair);
       }
 
       //*********************************
       pointer operator ->()
       {
-        return &(inode.ref_cast<node_t>().key_value_pair);
+        return &(inode->key_value_pair);
       }
 
       //*********************************
       const_pointer operator ->() const
       {
-        return &(inode.ref_cast<node_t>().key_value_pair);
+        return &(inode->key_value_pair);
       }
 
       //*********************************
@@ -404,19 +406,19 @@ namespace etl
       //*********************************
       const_reference operator *() const
       {
-        return inode.ref_cast<node_t>().key_value_pair;
+        return inode->key_value_pair;
       }
 
       //*********************************
       const_pointer operator &() const
       {
-        return &(inode.ref_cast<node_t>().key_value_pair);
+        return &(inode->key_value_pair);
       }
 
       //*********************************
       const_pointer operator ->() const
       {
-        return &(inode.ref_cast<node_t>().key_value_pair);
+        return &(inode->key_value_pair);
       }
 
       //*********************************
@@ -635,10 +637,10 @@ namespace etl
       while (inode != ibucket->end())
       {
         // Equal keys?
-        if (key_equal_function(key, inode.ref_cast<node_t>().key_value_pair.first))
+        if (key_equal_function(key, inode->key_value_pair.first))
         {
           // Found a match.
-          return inode.ref_cast<node_t>().key_value_pair.second;
+          return inode->key_value_pair.second;
         }
         else
         {
@@ -651,7 +653,7 @@ namespace etl
       node_t& node = *pnodepool->allocate(node_t(value_type(key, T())));
       ibucket->insert_after(ibucket->before_begin(), node);
 
-      return ibucket->begin().ref_cast<node_t>().key_value_pair.second;
+      return ibucket->begin()->key_value_pair.second;
     }
 
     //*********************************************************************
@@ -672,10 +674,10 @@ namespace etl
       while (inode != ibucket->end())
       {
         // Equal keys?
-        if (key_equal_function(key, inode.ref_cast<node_t>().key_value_pair.first))
+        if (key_equal_function(key, inode->key_value_pair.first))
         {
           // Found a match.
-          return inode.ref_cast<node_t>().key_value_pair.second;
+          return inode->key_value_pair.second;
         }
         else
         {
@@ -707,10 +709,10 @@ namespace etl
       while (inode != ibucket->end())
       {
         // Equal keys?
-        if (key_equal_function(key, inode.ref_cast<node_t>().key_value_pair.first))
+        if (key_equal_function(key, inode->key_value_pair.first))
         {
           // Found a match.
-          return inode.ref_cast<node_t>().key_value_pair.second;
+          return inode->key_value_pair.second;
         }
         else
         {
@@ -792,7 +794,7 @@ namespace etl
         while (inode != bucket.end())
         {
           // Do we already have this key?
-          if (inode.ref_cast<node_t>().key_value_pair.first == key)
+          if (inode->key_value_pair.first == key)
           {
             break;
           }
@@ -861,7 +863,7 @@ namespace etl
       local_iterator iprevious = bucket.before_begin();
       local_iterator icurrent  = bucket.begin();
 
-      while ((icurrent != bucket.end()) && (icurrent.ref_cast<node_t>().key_value_pair.first != key))
+      while ((icurrent != bucket.end()) && (icurrent->key_value_pair.first != key))
       {
         ++iprevious;
         ++icurrent;
@@ -891,7 +893,7 @@ namespace etl
       local_iterator iprevious = bucket.before_begin();
 
       // Find the node we're interested in.
-      while (iprevious->bifln_next != &*icurrent)
+      while (iprevious->ifll_next != &*icurrent)
       {
         ++iprevious;
       }
@@ -920,7 +922,7 @@ namespace etl
       local_iterator       iend;
 
       // Find the first node we're interested in.
-      while (iprevious->bifln_next != &*ifirst)
+      while (iprevious->ifll_next != &*ifirst)
       {
         ++iprevious;
       }
@@ -999,7 +1001,7 @@ namespace etl
         while (inode != iend)
         {
           // Do we have this one?
-          if (key_equal_function(key, inode.ref_cast<node_t>().key_value_pair.first))
+          if (key_equal_function(key, inode->key_value_pair.first))
           {
             return iterator(pbuckets->end(), ibucket, inode);
           }
@@ -1033,7 +1035,7 @@ namespace etl
         while (inode != iend)
         {
           // Do we have this one?
-          if (key_equal_function(key, inode.ref_cast<node_t>().key_value_pair.first))
+          if (key_equal_function(key, inode->key_value_pair.first))
           {
             return iterator(pbuckets->end(), ibucket, inode);
           }

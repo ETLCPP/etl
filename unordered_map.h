@@ -39,7 +39,7 @@ SOFTWARE.
 #include "container.h"
 #include "pool.h"
 #include "vector.h"
-#include "basic_intrusive_forward_list.h"
+#include "intrusive_forward_list.h"
 #include "hash.h"
 
 //*****************************************************************************
@@ -56,6 +56,10 @@ namespace etl
   template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename THash = etl::hash<TKey>, typename TKeyEqual = std::equal_to<TKey> >
   class unordered_map : public iunordered_map<TKey, TValue, THash, TKeyEqual>
   {
+  private:
+
+    typedef iunordered_map<TKey, TValue, THash, TKeyEqual> base;
+
   public:
 
     static const size_t MAX_SIZE = MAX_SIZE_;
@@ -64,18 +68,18 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     unordered_map()
-      : iunordered_map<TKey, TValue, THash, TKeyEqual>(node_pool, buckets)
+      : base(node_pool, buckets)
     {
-      iunordered_map<TKey, TValue, THash, TKeyEqual>::initialise();
+      base::initialise();
     }
 
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
     unordered_map(const unordered_map& other)
-      : iunordered_map<TKey, TValue, THash, TKeyEqual>(node_pool, buckets)
+      : base(node_pool, buckets)
     {
-			iunordered_map<TKey, TValue, THash, TKeyEqual>::assign(other.cbegin(), other.cend());
+			base::assign(other.cbegin(), other.cend());
     }
 
     //*************************************************************************
@@ -86,9 +90,9 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     unordered_map(TIterator first, TIterator last)
-      : iunordered_map<TKey, TValue, THash, TKeyEqual>(node_pool, buckets)
+      : base(node_pool, buckets)
     {
-      iunordered_map<TKey, TValue, THash, TKeyEqual>::assign(first, last);
+      base::assign(first, last);
     }
 
     //*************************************************************************
@@ -99,7 +103,7 @@ namespace etl
       // Skip if doing self assignment
       if (this != &rhs)
       {
-        iunordered_map<TKey, TValue, THash, TKeyEqual>::assign(rhs.cbegin(), rhs.cend());
+        base::assign(rhs.cbegin(), rhs.cend());
       }
 
       return *this;
@@ -108,10 +112,10 @@ namespace etl
   private:
 
     /// The pool of nodes used for the unordered_map.
-    etl::pool<typename iunordered_map<TKey, TValue, THash, TKeyEqual>::node_t, MAX_SIZE> node_pool;
+    etl::pool<typename base::node_t, MAX_SIZE> node_pool;
 
     /// The buckets of node lists.
-    etl::vector<etl::basic_intrusive_forward_list, MAX_SIZE> buckets;
+    etl::vector<etl::intrusive_forward_list<typename base::node_t>, MAX_SIZE> buckets;
   };
 
 }
