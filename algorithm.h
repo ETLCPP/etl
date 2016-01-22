@@ -85,14 +85,14 @@ namespace etl
       typedef typename std::iterator_traits<TIterator>::value_type value_t;
 
       return etl::minmax_element(begin, end, std::less<value_t>());
-  }
-
+  }	
+	
   //***************************************************************************
   /// minmax
   ///\ingroup algorithm
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/minmax"></a>
   //***************************************************************************
-  template <typename T>
+  template <typename T> 
   std::pair<const T&, const T&> minmax(const T& a, const T& b)
   {
 	  return (b < a) ? std::pair<const T&, const T&>(b, a) : std::pair<const T&, const T&>(a, b);
@@ -103,7 +103,7 @@ namespace etl
   ///\ingroup algorithm
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/minmax"></a>
   //***************************************************************************
-  template <typename T, typename TCompare>
+  template <typename T, typename TCompare> 
   std::pair<const T&, const T&> minmax(const T& a, const T& b, TCompare compare)
   {
     return compare(b, a) ? std::pair<const T&, const T&>(b, a) : std::pair<const T&, const T&>(a, b);
@@ -117,17 +117,17 @@ namespace etl
   template <typename TIterator>
   TIterator is_sorted_until(TIterator begin, TIterator end)
   {
-    if (begin != end)
+    if (begin != end) 
     {
       TIterator next = begin;
 
-      while (++next != end)
+      while (++next != end) 
       {
         if (*next < *begin)
         {
           return next;
         }
-
+            
         ++begin;
       }
     }
@@ -141,19 +141,19 @@ namespace etl
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/is_sorted_until"></a>
   //***************************************************************************
   template <typename TIterator, typename TCompare>
-  TIterator is_sorted_until(TIterator begin, TIterator end, TCompare compare)
+  TIterator is_sorted_until(TIterator begin, TIterator end, TCompare compare) 
   {
-    if (begin != end)
+    if (begin != end) 
     {
       TIterator next = begin;
 
-      while (++next != end)
+      while (++next != end) 
       {
         if (compare(*next, *begin))
         {
           return next;
         }
-
+            
         ++begin;
       }
     }
@@ -216,7 +216,7 @@ namespace etl
       {
         *out++ = *begin;
       }
-
+         
       ++begin;
     }
 
@@ -276,7 +276,7 @@ namespace etl
   {
     return std::find_if(begin, end, predicate) == end;
   }
-
+  
   //***************************************************************************
   /// is_permutation
   ///\ingroup algorithm
@@ -291,7 +291,7 @@ namespace etl
 
       std::advance(end2, std::distance(begin1, end1));
 
-      for (TIterator1 i = begin1; i != end1; ++i)
+      for (TIterator1 i = begin1; i != end1; ++i) 
       {
         if (i == std::find(begin1, i, *i))
         {
@@ -307,7 +307,7 @@ namespace etl
 
     return true;
   }
-
+  
   //***************************************************************************
   /// is_permutation
   ///\ingroup algorithm
@@ -318,7 +318,7 @@ namespace etl
   {
     if (begin1 != end1)
     {
-      for (TIterator1 i = begin1; i != end1; ++i)
+      for (TIterator1 i = begin1; i != end1; ++i) 
       {
         if (i == std::find(begin1, i, *i))
         {
@@ -333,7 +333,7 @@ namespace etl
     }
 
     return true;
-  }
+  } 
 
   //***************************************************************************
   /// is_permutation
@@ -349,7 +349,7 @@ namespace etl
 
       std::advance(end2, std::distance(begin1, end1));
 
-      for (TIterator1 i = begin1; i != end1; ++i)
+      for (TIterator1 i = begin1; i != end1; ++i) 
       {
         if (i == std::find_if(begin1, i, std::bind1st(predicate, *i)))
         {
@@ -376,7 +376,7 @@ namespace etl
   {
     if (begin1 != end1)
     {
-      for (TIterator1 i = begin1; i != end1; ++i)
+      for (TIterator1 i = begin1; i != end1; ++i) 
       {
         if (i == std::find_if(begin1, i, std::bind1st(predicate, *i)))
         {
@@ -416,7 +416,7 @@ namespace etl
         return false;
       }
     }
-
+     
     return true;
   }
 
@@ -449,9 +449,9 @@ namespace etl
   //***************************************************************************
   template <typename TSource, typename TDestinationTrue, typename TDestinationFalse, typename TUnaryPredicate>
   std::pair<TDestinationTrue, TDestinationFalse> partition_copy(TSource           begin,
-	                                                              TSource           end,
+	                                                              TSource           end, 
 	                                                              TDestinationTrue  destination_true,
-															                                	TDestinationFalse destination_false,
+															                                	TDestinationFalse destination_false, 
 															                                	TUnaryPredicate   predicate)
   {
     while (begin != end)
