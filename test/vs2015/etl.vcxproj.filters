@@ -393,12 +393,6 @@
     <ClInclude Include="..\..\intrusive_forward_list_node.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\basic_intrusive_forward_list.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\basic_intrusive_forward_list_node.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\private\deque_base.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
@@ -711,9 +705,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_intrusive_forward_list.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_basic_intrusive_forward_list.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_unordered_map.cpp">
