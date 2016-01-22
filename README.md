@@ -3,7 +3,7 @@ Embedded Template Library (ETL)
 
 **Motivation**
 
-C++ is a great language to use for embedded applications and templates are a powerful aspect. The standard library can offer a great deal of well tested functionality,  but there are some parts of the standard library that do not fit well with deterministic behaviour and limited resource requirements. These limitations usually preclude the use of dynamically allocated memory and open ended sized containers.  
+C++ is a great language to use for embedded applications and templates are a powerful aspect. The standard library can offer a great deal of well tested functionality,  but there are some parts of the standard library that do not fit well with deterministic behaviour and limited resource requirements. These limitations usually preclude the use of dynamically allocated memory and containers with open ended sizes.  
 
 What is needed is a template library where the user can declare the size, or maximum size of any object upfront. Most embedded compilers do not currently support the standard beyond C++ 03, therefore excluding the programmer from using the enhanced features of the later library.
 
@@ -25,14 +25,21 @@ The library is intended for any compiler that supports C++ 03.
 
 **Main features:**
 
- - No dynamic memory allocation.
- - A set of fixed capacity containers. (stack, queue, list, forward_list, vector, deque)
- - Templated compile time constants.
- - Templated design pattern base classes (Visitor, Observer)
- - Reverse engineered C++ 0x11 features (type traits, algorithms, containers etc.)
- - Smart enumerations
- - 8, 16, 32 & 64 bit CRC calculations
- - Many utilities for template support.
- - Variants (a type that can store many types in a type-safe interface)
- - Optional exceptions on errors.
+- Cross platform. This library is not specific to any processor type.
+- No dynamic memory allocation
+- No RTTI required
+- Very little use of virtual functions. They are used only when they are absolutely necessary for the required functionality
+- A set of fixed capacity containers. (array, bitset, deque, forward_list, list, queue,  stack, vector, map, set, etc.)
+- As the storage for all of the container types is allocated as a contiguous block, they are extremely cache friendly
+- Templated compile time constants
+- Templated design pattern base classes (Visitor, Observer)
+- Reverse engineered C++ 0x11 features (type traits, algorithms, containers etc.)
+- Smart enumerations
+- 8, 16, 32 & 64 bit CRC calculations
+- Checksums & hash functions
+- Variants (a type that can store many types in a type-safe interface)
+- Choice of asserts, exceptions, error handler or no checks on errors
+- Many utilities for template support.
 
+
+See (http://www.etlcpp.com) for up-to-date information.
