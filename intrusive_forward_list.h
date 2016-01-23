@@ -42,7 +42,12 @@ SOFTWARE.
 
 #include "nullptr.h"
 #include "type_traits.h"
-#include "intrusive_forward_list_link.h"
+#include "exception.h"
+#include "error_handler.h"
+#include "intrusive_links.h"
+
+#undef ETL_FILE
+#define ETL_FILE "20"
 
 namespace etl
 {
@@ -107,7 +112,7 @@ namespace etl
   ///\ingroup intrusive_forward_list
   ///\note TLink must be a base of TValue.
   //***************************************************************************
-  template <typename TValue, typename TLink = etl::intrusive_forward_list_link<0> >
+  template <typename TValue, typename TLink = etl::forward_link<0> >
   class intrusive_forward_list
   {
   public:
@@ -151,16 +156,16 @@ namespace etl
 
       iterator& operator ++()
       {
-        // Read the appropriate 'ifll_next'.
-        p_value = static_cast<value_type*>(p_value->link_type::ifll_next);
+        // Read the appropriate 'etl_next'.
+        p_value = static_cast<value_type*>(p_value->link_type::etl_next);
         return *this;
       }
 
       iterator operator ++(int)
       {
         iterator temp(*this);
-        // Read the appropriate 'ifll_next'.
-        p_value = static_cast<value_type*>(p_value->link_type::ifll_next);
+        // Read the appropriate 'etl_next'.
+        p_value = static_cast<value_type*>(p_value->link_type::etl_next);
         return temp;
       }
 
@@ -246,16 +251,16 @@ namespace etl
 
       const_iterator& operator ++()
       {
-        // Read the appropriate 'ifll_next'.
-        p_value = static_cast<value_type*>(p_value->link_type::ifll_next);
+        // Read the appropriate 'etl_next'.
+        p_value = static_cast<value_type*>(p_value->link_type::etl_next);
         return *this;
       }
 
       const_iterator operator ++(int)
       {
         const_iterator temp(*this);
-        // Read the appropriate 'ifll_next'.
-        p_value = static_cast<value_type*>(p_value->link_type::ifll_next);
+        // Read the appropriate 'etl_next'.
+        p_value = static_cast<value_type*>(p_value->link_type::etl_next);
         return temp;
       }
 
@@ -458,16 +463,16 @@ namespace etl
         return;
       }
 
-      link_type* first  = nullptr;              // To keep first link
-      link_type* second = start_link.ifll_next; // To keep second link
-      link_type* track  = start_link.ifll_next; // Track the list
+      link_type* first  = nullptr;             // To keep first link
+      link_type* second = start_link.etl_next; // To keep second link
+      link_type* track  = start_link.etl_next; // Track the list
 
       while (track != NULL)
       {
-        track = track->ifll_next;  // Track point to next link;
-        second->ifll_next = first; // Second link point to first
-        first  = second;           // Move first link to next
-        second = track;            // Move second link to next
+        track = track->etl_next;  // Track point to next link;
+        second->etl_next = first; // Second link point to first
+        first  = second;          // Move first link to next
+        second = track;           // Move second link to next
       }
 
       join(&start_link, first);
@@ -518,7 +523,7 @@ namespace etl
     {
       link_type* p_first = first.p_value;
       link_type* p_last  = last.p_value;
-      link_type* p_next  = p_first->ifll_next;
+      link_type* p_next  = p_first->etl_next;
 
       // Join the ends.
       join(p_first, p_last);
@@ -531,8 +536,8 @@ namespace etl
         // One less.
         --current_size;
 
-        p_next  = p_first->ifll_next; // Remember the next link.
-        p_first = p_next;             // Move to the next link.
+        p_next  = p_first->etl_next; // Remember the next link.
+        p_first = p_next;            // Move to the next link.
       }
 
       if (p_next == nullptr)
@@ -558,7 +563,7 @@ namespace etl
       }
 
       link_type* last    = &get_head();
-      link_type* current = last->ifll_next;
+      link_type* current = last->etl_next;
 
       while (current != nullptr)
       {
@@ -573,7 +578,7 @@ namespace etl
           last = current;
         }
 
-        current = last->ifll_next;
+        current = last->etl_next;
       }
     }
 
@@ -684,7 +689,7 @@ namespace etl
                 i_tail = i_link;
             }
 
-            i_tail.p_value->link_type::ifll_next = nullptr;
+            i_tail.p_value->link_type::etl_next = nullptr;
           }
 
           // Now left has stepped `list_size' places along, and right has too.
@@ -774,7 +779,7 @@ namespace etl
     //*************************************************************************
     void join(link_type* left, link_type* right)
     {
-      left->ifll_next = right;
+      left->etl_next = right;
     }
 
     //*************************************************************************
@@ -791,7 +796,7 @@ namespace etl
     void insert_link_after(link_type& position, link_type& link)
     {
       // Connect to the intrusive_forward_list.
-      join(&link,     position.ifll_next);
+      join(&link,     position.etl_next);
       join(&position, &link);
       ++current_size;
     }
@@ -802,12 +807,12 @@ namespace etl
     void remove_link_after(link_type& link)
     {
       // The link to erase.
-      link_type* p_link = link.ifll_next;
+      link_type* p_link = link.etl_next;
 
       if (p_link != nullptr)
       {
         // Disconnect the link from the intrusive_forward_list.
-        join(&link, p_link->ifll_next);
+        join(&link, p_link->etl_next);
         --current_size;
       }
     }
@@ -817,7 +822,7 @@ namespace etl
     //*************************************************************************
     link_type& get_head()
     {
-      return *start_link.ifll_next;
+      return *start_link.etl_next;
     }
 
     //*************************************************************************
@@ -825,7 +830,7 @@ namespace etl
     //*************************************************************************
     const link_type& get_head() const
     {
-      return *start_link.ifll_next;
+      return *start_link.etl_next;
     }
 
     //*************************************************************************
@@ -833,7 +838,7 @@ namespace etl
     //*************************************************************************
     void initialise()
     {
-      start_link.ifll_next = nullptr;
+      start_link.etl_next = nullptr;
       current_size = 0;
     }
 
@@ -846,5 +851,7 @@ namespace etl
 #if WIN32
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 #endif
+
+#undef ETL_FILE
 
 #endif

@@ -45,8 +45,8 @@ typedef TestDataNDC<std::string> ItemNDC;
 
 namespace
 {
-  typedef etl::intrusive_forward_list_link<0> FirstLink;
-  typedef etl::intrusive_forward_list_link<1> SecondLink;
+  typedef etl::forward_link<0> FirstLink;
+  typedef etl::forward_link<1> SecondLink;
 
   //***************************************************************************
   class ItemDCNode : public FirstLink, public SecondLink
