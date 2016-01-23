@@ -39,7 +39,7 @@ namespace etl
   //***************************************************************************
   /// The link element in the intrusive_forward_list.
   //***************************************************************************
-  template <const size_t ID>
+  template <const size_t ID = 0>
   struct intrusive_forward_list_link
   {
     intrusive_forward_list_link<ID>* ifll_next;
