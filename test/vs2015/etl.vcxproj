@@ -205,7 +205,7 @@
     <ClInclude Include="..\..\instance_count.h" />
     <ClInclude Include="..\..\integral_limits.h" />
     <ClInclude Include="..\..\intrusive_forward_list.h" />
-    <ClInclude Include="..\..\intrusive_forward_list_node.h" />
+    <ClInclude Include="..\..\intrusive_links.h" />
     <ClInclude Include="..\..\io_port.h" />
     <ClInclude Include="..\..\ipool.h" />
     <ClInclude Include="..\..\ipriority_queue.h" />
@@ -337,6 +337,7 @@
     <ClCompile Include="..\test_instance_count.cpp" />
     <ClCompile Include="..\test_integral_limits.cpp" />
     <ClCompile Include="..\test_intrusive_forward_list.cpp" />
+    <ClCompile Include="..\test_intrusive_links.cpp" />
     <ClCompile Include="..\test_io_port.cpp" />
     <ClCompile Include="..\test_jenkins.cpp" />
     <ClCompile Include="..\test_largest.cpp" />
