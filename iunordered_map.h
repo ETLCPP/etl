@@ -133,7 +133,7 @@ namespace etl
 
     typedef typename parameter_type<TKey>::type key_value_parameter_t;
 
-    typedef etl::intrusive_forward_list_link<> link_t; // Default link.
+    typedef etl::forward_link<> link_t; // Default link.
 
     // The nodes that store the elements.
     struct node_t : public link_t
@@ -893,7 +893,7 @@ namespace etl
       local_iterator iprevious = bucket.before_begin();
 
       // Find the node we're interested in.
-      while (iprevious->ifll_next != &*icurrent)
+      while (iprevious->etl_next != &*icurrent)
       {
         ++iprevious;
       }
@@ -922,7 +922,7 @@ namespace etl
       local_iterator       iend;
 
       // Find the first node we're interested in.
-      while (iprevious->ifll_next != &*ifirst)
+      while (iprevious->etl_next != &*ifirst)
       {
         ++iprevious;
       }
