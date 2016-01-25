@@ -33,6 +33,11 @@ SOFTWARE.
 
 #include "nullptr.h"
 #include "type_traits.h"
+#include "exception.h"
+#include "error_handler.h"
+
+#undef ETL_FILE
+#define ETL_FILE "23"
 
 namespace etl
 {
@@ -40,9 +45,24 @@ namespace etl
   {
     enum
     {
-      NO_AUTO_UNLINK = false,
-      AUTO_UNLINK    = true
+      DEFAULT = 0,
+      AUTO    = 1,
+      SAFE    = 2
     };
+  };
+
+  //***************************************************************************
+  /// Deque full exception.
+  ///\ingroup deque
+  //***************************************************************************
+  class link_exception : public etl::exception
+  {
+  public:
+
+    link_exception(string_type file_name, numeric_type line_number)
+      : exception(ETL_ERROR_TEXT("link:still linked", ETL_FILE"A"), file_name, line_number)
+    {
+    }
   };
 
   //***************************************************************************
@@ -72,6 +92,15 @@ namespace etl
     lhs.etl_next = &rhs;
   }
 
+  // Reference, Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
+  link_insert(TLink& lhs, TLink& rhs)
+  {
+    rhs.etl_next = lhs.etl_next;
+    lhs.etl_next = &rhs;
+  }
+
   // Pointer, Pointer
   template <typename TLink>
   typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
@@ -79,6 +108,22 @@ namespace etl
   {
     if (lhs != nullptr)
     {
+      lhs->etl_next = rhs;
+    }
+  }
+
+  // Pointer, Pointer
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
+  link_insert(TLink* lhs, TLink* rhs)
+  {
+    if (lhs != nullptr)
+    {
+      if (rhs != nullptr)
+      {
+          rhs->etl_next = lhs->etl_next;
+      }
+
       lhs->etl_next = rhs;
     }
   }
@@ -91,6 +136,19 @@ namespace etl
     lhs.etl_next = rhs;
   }
 
+  // Reference, Pointer
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
+  link_insert(TLink& lhs, TLink* rhs)
+  {
+    if (rhs != nullptr)
+    {
+      rhs->etl_next = lhs.etl_next;
+    }
+
+    lhs.etl_next = rhs;
+  }
+
   // Pointer, Reference
   template <typename TLink>
   typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
@@ -98,6 +156,18 @@ namespace etl
   {
     if (lhs != nullptr)
     {
+      lhs->etl_next = &rhs;
+    }
+  }
+
+  // Pointer, Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
+  link_insert(TLink* lhs, TLink& rhs)
+  {
+    if (lhs != nullptr)
+    {
+      rhs.etl_next  = lhs->etl_next;
       lhs->etl_next = &rhs;
     }
   }
@@ -130,7 +200,7 @@ namespace etl
   //***************************************************************************
   /// A bidirectional link.
   //***************************************************************************
-  template <const size_t ID_ = 0, const bool OPTION_ = etl::link_option::NO_AUTO_UNLINK>
+  template <const size_t ID_ = 0, const int OPTION_ = etl::link_option::DEFAULT>
   struct bidirectional_link
   {
     enum
@@ -149,10 +219,12 @@ namespace etl
     bidirectional_link* etl_next;
   };
 
+  //******************************************************************
   // Specialisation for auto unlinked option.
   // When this link is destroyed it will automatically unlink itself.
+  //******************************************************************
   template <const size_t ID_>
-  struct bidirectional_link<ID_, etl::link_option::AUTO_UNLINK>
+  struct bidirectional_link<ID_, etl::link_option::AUTO>
   {
     enum
     {
@@ -173,6 +245,36 @@ namespace etl
       {
         etl_next->etl_previous = etl_previous;
       }
+    }
+
+    void clear()
+    {
+      etl_previous = nullptr;
+      etl_next     = nullptr;
+    }
+
+    bidirectional_link* etl_previous;
+    bidirectional_link* etl_next;
+  };
+
+  //******************************************************************
+  // Specialisation for safe unlinked option.
+  // An error will be generated if the links are valid when the object
+  // is destroyed.
+  //******************************************************************
+  template <const size_t ID_>
+  struct bidirectional_link<ID_, etl::link_option::SAFE>
+  {
+    enum
+    {
+      ID     = ID_,
+      OPTION = etl::link_option::AUTO_UNLINK
+    };
+
+    ~bidirectional_link()
+    {
+      ETL_ASSERT(etl_previous == nullptr, ETL_ERROR(link_exception));
+      ETL_ASSERT(etl_next     == nullptr, ETL_ERROR(link_exception));
     }
 
     void clear()
@@ -393,4 +495,5 @@ namespace etl
   }
 }
 
+#undef ETL_FILE
 #endif
