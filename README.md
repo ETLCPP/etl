@@ -40,6 +40,8 @@ The library is intended for any compiler that supports C++ 03.
 - Variants (a type that can store many types in a type-safe interface)
 - Choice of asserts, exceptions, error handler or no checks on errors
 - Many utilities for template support.
+- Easy to read and documented source.
 
+Any help porting the library to work under different platforms and compilers would be gratefully received.
 
 See (http://www.etlcpp.com) for up-to-date information.
