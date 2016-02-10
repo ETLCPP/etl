@@ -372,9 +372,6 @@
     <ClInclude Include="..\..\pearson.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\bsd_checksum.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\flat_multimap.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
@@ -463,6 +460,9 @@
       <Filter>ETL\Containers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\intrusive_links.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\intrusive_list.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -711,6 +711,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_intrusive_links.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_intrusive_list.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_xor_checksum.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
