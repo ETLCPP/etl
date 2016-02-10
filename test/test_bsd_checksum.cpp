@@ -33,31 +33,30 @@ SOFTWARE.
 #include <vector>
 #include <stdint.h>
 
-#include "../bsd_checksum.h"
-#include "../endian.h"
-
-template <typename TSum, typename TIterator>
-TSum reference_checksum(TIterator begin, TIterator end)
-{
-  typedef typename std::iterator_traits<TIterator>::value_type value_type;
-  TSum checksum = 0;
-
-  while (begin != end)
-  {
-    value_type value = *begin++;
-
-    for (int i = 0; i < sizeof(value_type); ++i)
-    {
-      uint8_t byte = (value >> (i * 8)) & 0xFF;
-      checksum = etl::rotate_right(checksum) + byte;
-    }
-  }
-
-  return checksum;
-}
+#include "../checksum.h"
 
 namespace
-{		
+{
+  template <typename TSum, typename TIterator>
+  TSum reference_checksum(TIterator begin, TIterator end)
+  {
+    typedef typename std::iterator_traits<TIterator>::value_type value_type;
+    TSum checksum = 0;
+
+    while (begin != end)
+    {
+      value_type value = *begin++;
+
+      for (int i = 0; i < sizeof(value_type); ++i)
+      {
+        uint8_t byte = (value >> (i * 8)) & 0xFF;
+        checksum = etl::rotate_right(checksum) + byte;
+      }
+    }
+
+    return checksum;
+  }
+
   SUITE(test_checksum)
   {
     //*************************************************************************
