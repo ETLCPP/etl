@@ -31,7 +31,26 @@ SOFTWARE.
 #ifndef __ETL_INTRUSIVE_LINKS__
 #define __ETL_INTRUSIVE_LINKS__
 
+#include <assert.h>
+
 #include "nullptr.h"
+#include "type_traits.h"
+#include "exception.h"
+#include "error_handler.h"
+
+#undef ETL_FILE
+#define ETL_FILE "21"
+
+//*****************************************************************************
+// Note:
+// The link functions work slightly differently to the STL 'insert' convention
+// in that the second link parameter will be inserted after the first.
+// i.e.
+// If the list contains '1', '2', '3', '4' and "link_splice '2','5'" is invoked the
+// resulting list will contain '1', '2', '5', '3', '4'
+// This is to maintain consistency between forward and bidirectional links
+// and also is intuitive.
+//*****************************************************************************
 
 namespace etl
 {
@@ -39,84 +58,768 @@ namespace etl
   {
     enum
     {
-      NO_AUTO_UNLINK = false,
-      AUTO_UNLINK    = true
+      DEFAULT,
+      AUTO,
+      CHECKED
     };
   };
+
+  namespace count_option
+  {
+    enum
+    {
+      SLOW_COUNT,
+      FAST_COUNT
+    };
+  }
+
+  //***************************************************************************
+  /// Link exception.  
+  //***************************************************************************
+  class link_exception : public etl::exception
+  {
+  public:
+
+    link_exception(string_type what, string_type file_name, numeric_type line_number)
+      : exception(what, file_name, line_number)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// not unlinked exception.  
+  //***************************************************************************
+  class not_unlinked_exception : public etl::link_exception
+  {
+  public:
+
+    not_unlinked_exception(string_type file_name, numeric_type line_number)
+      : link_exception(ETL_ERROR_TEXT("link:still linked", ETL_FILE"A"), file_name, line_number)
+    {
+    }
+  };
+
+  namespace __private_intrusive_links__
+  {
+    //***************************************************************************
+    /// A forward link base.
+    //***************************************************************************
+    template <typename TLink, const size_t ID_, const size_t OPTION_>
+    struct forward_link_base
+    {
+      enum
+      {
+        ID = ID_,
+        OPTION = OPTION_
+      };
+
+      void clear()
+      {
+        etl_next = nullptr;
+      }
+
+      bool is_linked() const
+      {
+        return etl_next != nullptr;
+      }
+
+      TLink* etl_next;
+    };
+  }
 
   //***************************************************************************
   /// A forward link.
   //***************************************************************************
-  template <const size_t ID_ = 0>
-  struct forward_link
+  template <const size_t ID_ = 0, const size_t OPTION_ = etl::link_option::DEFAULT>
+  struct forward_link 
+    : public __private_intrusive_links__::forward_link_base<forward_link<ID_, OPTION_>, ID_, OPTION_>
   {
-    enum
-    {
-      ID = ID_
-    };
-
-    forward_link* etl_next;
   };
+
+  //******************************************************************
+  // There is no valid specialisation for auto link
+  //******************************************************************
+  template <const size_t ID_>
+  struct forward_link<ID_, etl::link_option::AUTO>
+    : public __private_intrusive_links__::forward_link_base<forward_link<ID_, etl::link_option::AUTO>, ID_, etl::link_option::AUTO>
+  {
+    forward_link()
+    {
+      clear();
+    }
+  };
+
+  //******************************************************************
+  // Specialisation for checked unlink option.
+  // An error will be generated if the links are valid when the object
+  // is destroyed.
+  //******************************************************************
+  template <const size_t ID_>
+  struct forward_link<ID_, etl::link_option::CHECKED>
+    : public __private_intrusive_links__::forward_link_base<forward_link<ID_, etl::link_option::CHECKED>, ID_, etl::link_option::CHECKED>
+  {
+    forward_link()
+    {
+      clear();
+    }
+
+    ~forward_link()
+    {
+      assert(etl_next != nullptr);
+    }
+  };
+
+  // Reference, Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link(TLink& lhs, TLink& rhs)
+  {
+    lhs.etl_next = &rhs;
+  }
+
+  // Reference, Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link_splice(TLink& lhs, TLink& rhs)
+  {
+    rhs.etl_next = lhs.etl_next;
+    lhs.etl_next = &rhs;
+  }
+
+  // Pointer, Pointer
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link(TLink* lhs, TLink* rhs)
+  {
+    if (lhs != nullptr)
+    {
+      lhs->etl_next = rhs;
+    }
+  }
+
+  // Pointer, Pointer
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link_splice(TLink* lhs, TLink* rhs)
+  {
+    if (lhs != nullptr)
+    {
+      if (rhs != nullptr)
+      {
+          rhs->etl_next = lhs->etl_next;
+      }
+
+      lhs->etl_next = rhs;
+    }
+  }
+
+  // Reference, Pointer
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link(TLink& lhs, TLink* rhs)
+  {
+    lhs.etl_next = rhs;
+  }
+
+  // Reference, Pointer
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link_splice(TLink& lhs, TLink* rhs)
+  {
+    if (rhs != nullptr)
+    {
+      rhs->etl_next = lhs.etl_next;
+    }
+
+    lhs.etl_next = rhs;
+  }
+
+  // Pointer, Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link(TLink* lhs, TLink& rhs)
+  {
+    if (lhs != nullptr)
+    {
+      lhs->etl_next = &rhs;
+    }
+  }
+
+  // Pointer, Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link_splice(TLink* lhs, TLink& rhs)
+  {
+    if (lhs != nullptr)
+    {
+      rhs.etl_next  = lhs->etl_next;
+      lhs->etl_next = &rhs;
+    }
+  }
+
+  // Reference, Reference, Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link_splice(TLink& lhs, TLink& first, TLink& last)
+  {
+    last.etl_next = lhs.etl_next;
+    lhs.etl_next  = &first;
+  }
+
+  // Pointer, Reference, Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link_splice(TLink* lhs, TLink& first, TLink& last)
+  {
+    if (lhs != nullptr)
+    {
+      last.etl_next = lhs->etl_next;
+      lhs->etl_next  = &first;
+    }
+    else
+    {
+      last.etl_next = nullptr;
+    }   
+  }
+
+  // Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  unlink_after(TLink& node)
+  {
+    if (node.etl_next != nullptr)
+    {
+      node.etl_next = node.etl_next->etl_next;
+
+      if ((TLink::OPTION == etl::link_option::AUTO) ||
+          (TLink::OPTION == etl::link_option::CHECKED))
+      {
+        node.clear();
+      }
+    }
+  }
+
+  // Reference, Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  unlink_after(TLink& before, TLink& last)
+  {
+    before.etl_next = last.etl_next;
+
+    if ((TLink::OPTION == etl::link_option::AUTO) ||
+        (TLink::OPTION == etl::link_option::CHECKED))
+    {
+      last.clear();
+    }
+  }
+
+  namespace __private_intrusive_links__
+  {
+    //***************************************************************************
+    /// A bidirectional link base.
+    //***************************************************************************
+    template <typename TLink, const size_t ID_, const size_t OPTION_>
+    struct bidirectional_link_base
+    {
+      enum
+      {
+        ID     = ID_,
+        OPTION = OPTION_
+      };
+
+      void clear()
+      {
+        etl_previous = nullptr;
+        etl_next     = nullptr;
+      }
+
+      bool is_linked() const
+      {
+        return (etl_previous != nullptr) || (etl_next != nullptr);
+      }
+
+      void reverse()
+      {
+        std::swap(etl_previous, etl_next);
+      }
+
+      TLink* etl_previous;
+      TLink* etl_next;
+
+    protected:
+
+      void base_unlink()
+      {
+        // Connect the previous link with the next.
+        if (etl_previous != nullptr)
+        {
+          etl_previous->etl_next = etl_next;
+        }
+
+        // Connect the next link with the previous.
+        if (etl_next != nullptr)
+        {
+          etl_next->etl_previous = etl_previous;
+        }
+      }
+    };
+  }
 
   //***************************************************************************
   /// A bidirectional link.
   //***************************************************************************
-  template <const size_t ID_ = 0, const bool AUTO_UNLINK = etl::link_option::NO_AUTO_UNLINK>
-  struct bidirectional_link
+  template <const size_t ID_ = 0, const size_t OPTION_ = etl::link_option::DEFAULT>
+  struct bidirectional_link 
+    : public __private_intrusive_links__::bidirectional_link_base<bidirectional_link<ID_, OPTION_>, ID_, OPTION_>
   {
-    enum
+    void unlink()
     {
-      ID = ID_,
-    };
-
-    bidirectional_link* etl_previous;
-    bidirectional_link* etl_next;
+      base_unlink();
+    }
   };
 
+  //******************************************************************
   // Specialisation for auto unlinked option.
   // When this link is destroyed it will automatically unlink itself.
+  //******************************************************************
   template <const size_t ID_>
-  struct bidirectional_link<ID_, etl::link_option::AUTO_UNLINK>
+  struct bidirectional_link<ID_, etl::link_option::AUTO> 
+    : public __private_intrusive_links__::bidirectional_link_base<bidirectional_link<ID_, etl::link_option::AUTO>, ID_, etl::link_option::AUTO>
   {
-    enum
+    bidirectional_link()
     {
-      ID = ID_
-    };
+      clear();
+    }
 
     ~bidirectional_link()
     {
-      // Connect the previous link with the next.
-      if (etl_previous != nullptr)
-      {
-        etl_previous->etl_next = etl_next;
-      }
-
-      // Connect the next link with the previous.
-      if (etl_next != nullptr)
-      {
-        etl_next->etl_previous = etl_previous;
-      }
+      base_unlink();
     }
 
-    bidirectional_link* etl_previous;
-    bidirectional_link* etl_next;
+    void unlink()
+    {
+      base_unlink();
+      clear();
+    }
   };
+
+  //******************************************************************
+  // Specialisation for checked unlink option.
+  // An error will be generated if the links are valid when the object
+  // is destroyed.
+  //******************************************************************
+  template <const size_t ID_>
+  struct bidirectional_link<ID_, etl::link_option::CHECKED> 
+    : public __private_intrusive_links__::bidirectional_link_base<bidirectional_link<ID_, etl::link_option::CHECKED>, ID_, etl::link_option::CHECKED>
+  {
+    bidirectional_link()
+    {
+      clear();
+    }
+
+    ~bidirectional_link()
+    {
+      assert(etl_previous == nullptr);
+      assert(etl_next     == nullptr);
+    }
+
+    void unlink()
+    {
+      base_unlink();
+      clear();
+    }
+  };
+
+  // Reference, Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link(TLink& lhs, TLink& rhs)
+  {
+    lhs.etl_next     = &rhs;
+    rhs.etl_previous = &lhs;
+  }
+
+  // Reference, Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link_splice(TLink& lhs, TLink& rhs)
+  {
+    rhs.etl_next     = lhs.etl_next;
+    rhs.etl_previous = &lhs;
+
+    if (lhs.etl_next != nullptr)
+    {
+      lhs.etl_next->etl_previous = &rhs;
+    }
+
+    lhs.etl_next = &rhs;
+  }
+
+  // Pointer, Pointer
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link(TLink* lhs, TLink* rhs)
+  {
+    if (lhs != nullptr)
+    {
+      lhs->etl_next = rhs;
+    }
+
+    if (rhs != nullptr)
+    {
+      rhs->etl_previous = lhs;
+    }
+  }
+
+  // Pointer, Pointer
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link_splice(TLink* lhs, TLink* rhs)
+  {
+    if (rhs != nullptr)
+    {
+      if (lhs != nullptr)
+      {
+        rhs->etl_next = lhs->etl_next;
+      }
+
+      rhs->etl_previous = lhs;
+    }
+
+    if (lhs != nullptr)
+    {
+      if (lhs->etl_next != nullptr)
+      {
+        lhs->etl_next->etl_previous = rhs;
+      }
+
+      lhs->etl_next = rhs;
+    }
+  }
+
+  // Reference, Pointer
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link(TLink& lhs, TLink* rhs)
+  {
+    lhs.etl_next = rhs;
+
+    if (rhs != nullptr)
+    {
+      rhs->etl_previous = &lhs;
+    }
+  }
+
+  // Reference, Pointer
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link_splice(TLink& lhs, TLink* rhs)
+  {
+    if (rhs != nullptr)
+    {
+      rhs->etl_next     = lhs.etl_next;
+      rhs->etl_previous = &lhs;
+    }
+
+    if (lhs.etl_next != nullptr)
+    {
+      lhs.etl_next->etl_previous = rhs;
+    }
+
+    lhs.etl_next = rhs;
+  }
+
+  // Pointer, Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link(TLink* lhs, TLink& rhs)
+  {
+    if (lhs != nullptr)
+    {
+      lhs->etl_next = &rhs;
+    }
+
+    rhs.etl_previous = lhs;
+  }
+
+  // Pointer, Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link_splice(TLink* lhs, TLink& rhs)
+  {
+    if (lhs != nullptr)
+    {
+      rhs.etl_next = lhs->etl_next;
+    }
+
+    rhs.etl_previous = lhs;
+
+    if (lhs != nullptr)
+    {
+      if (lhs->etl_next != nullptr)
+      {
+        lhs->etl_next->etl_previous = &rhs;
+      }
+
+      lhs->etl_next = &rhs;
+    }
+  }
+
+  // Reference, Reference, Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link_splice(TLink& lhs, TLink& first, TLink& last)
+  {
+    last.etl_next = lhs.etl_next;
+    first.etl_previous = &lhs;
+
+    if (last.etl_next != nullptr)
+    {
+      last.etl_next->etl_previous = &last;
+    }
+
+    lhs.etl_next = &first;
+  }
+
+  // Pointer, Reference, Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link_splice(TLink* lhs, TLink& first, TLink& last)
+  {
+    if (lhs != nullptr)
+    {
+      last.etl_next = lhs->etl_next;
+    }
+    else
+    {
+      last.etl_next = nullptr;
+    }
+
+    first.etl_previous = lhs;
+
+    if (last.etl_next != nullptr)
+    {
+      last.etl_next->etl_previous = &last;
+    }
+
+    if (lhs != nullptr)
+    {
+      lhs->etl_next = &first;
+    }
+  }
+
+  // Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  unlink(TLink& node)
+  {
+    node.unlink();
+  }
+
+  // Reference Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  unlink(TLink& first, TLink& last)
+  {
+    if (&first == &last)
+    {
+      first.unlink();
+    }
+    else
+    {
+      if (last.etl_next != nullptr)
+      {
+        last.etl_next->etl_previous = first.etl_previous;
+      }
+
+      if (first.etl_previous != nullptr)
+      {
+        first.etl_previous->etl_next = last.etl_next;
+      }
+
+      if ((TLink::OPTION == etl::link_option::AUTO) ||
+          (TLink::OPTION == etl::link_option::CHECKED))
+      {
+        first.etl_previous = nullptr;
+        last.etl_next = nullptr;
+      }
+    }
+  }
+
+  namespace __private_intrusive_links__
+  {
+    //***************************************************************************
+    /// A tree link base.
+    //***************************************************************************
+    template <typename TLink, const size_t ID_, const size_t OPTION_>
+    struct tree_link_base
+    {
+      enum
+      {
+        ID     = ID_,
+        OPTION = OPTION_
+      };
+
+      void clear()
+      {
+        etl_parent = nullptr;
+        etl_left   = nullptr;
+        etl_right  = nullptr;
+      }
+
+      bool is_linked() const
+      {
+        return (etl_parent != nullptr) || (etl_left != nullptr) || (etl_right != nullptr);
+      }
+
+      TLink* etl_parent;
+      TLink* etl_left;
+      TLink* etl_right;
+    };
+  }
 
   //***************************************************************************
   /// A tree link.
   //***************************************************************************
-  template <const size_t ID_ = 0>
+  template <const size_t ID_ = 0, const size_t OPTION_ = etl::link_option::DEFAULT>
   struct tree_link
+    : public __private_intrusive_links__::tree_link_base<tree_link<ID_, OPTION_>, ID_, OPTION_>
   {
-    enum
-    {
-      ID = ID_
-    };
-
-    tree_link* etl_parent;
-    tree_link* etl_left;
-    tree_link* etl_right;
   };
+
+  //******************************************************************
+  // There is no valid specialisation for auto link
+  //******************************************************************
+  template <const size_t ID_>
+  struct tree_link<ID_, etl::link_option::AUTO>
+    : public __private_intrusive_links__::tree_link_base<tree_link<ID_, etl::link_option::AUTO>, ID_, etl::link_option::AUTO>
+  {
+    tree_link()
+    {
+      clear();
+    }
+  };
+
+  //******************************************************************
+  // Specialisation for checked unlink option.
+  // An error will be generated if the links are valid when the object
+  // is destroyed.
+  //******************************************************************
+  template <const size_t ID_>
+  struct tree_link<ID_, etl::link_option::CHECKED>
+    : public __private_intrusive_links__::tree_link_base<tree_link<ID_, etl::link_option::CHECKED>, ID_, etl::link_option::CHECKED>
+  {
+    tree_link()
+    {
+      clear();
+    }
+
+    ~tree_link()
+    {
+      assert(etl_parent != nullptr);
+      assert(etl_left   != nullptr);
+      assert(etl_right  != nullptr);
+    }
+  };
+
+  // Reference, Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link_left(TLink& parent, TLink& leaf)
+  {
+    parent.etl_left = &leaf;
+    leaf.etl_parent = &parent;
+  }
+
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link_right(TLink& parent, TLink& leaf)
+  {
+    parent.etl_right = &leaf;
+    leaf.etl_parent  = &parent;
+  }
+
+  // Pointer, Pointer
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link_left(TLink* parent, TLink* leaf)
+  {
+    if (parent != nullptr)
+    {
+      parent->etl_left = leaf;
+    }
+
+    if (leaf != nullptr)
+    {
+      leaf->etl_parent = parent;
+    }
+  }
+
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link_right(TLink* parent, TLink* leaf)
+  {
+    if (parent != nullptr)
+    {
+      parent->etl_right = leaf;
+    }
+
+    if (leaf != nullptr)
+    {
+      leaf->etl_parent = parent;
+    }
+  }
+
+  // Reference, Pointer
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link_left(TLink& parent, TLink* leaf)
+  {
+    parent.etl_left = leaf;
+
+    if (leaf != nullptr)
+    {
+      leaf->etl_parent = &parent;
+    }
+  }
+
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link_right(TLink& parent, TLink* leaf)
+  {
+    parent.etl_right = leaf;
+
+    if (leaf != nullptr)
+    {
+      leaf->etl_parent = &parent;
+    }
+  }
+
+  // Pointer, Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link_left(TLink* parent, TLink& leaf)
+  {
+    if (parent != nullptr)
+    {
+      parent->etl_left = &leaf;
+    }
+
+    leaf.etl_parent = parent;
+  }
+
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID, TLink::OPTION> >::value, void>::type
+  link_right(TLink* parent, TLink& leaf)
+  {
+    if (parent != nullptr)
+    {
+      parent->etl_right = &leaf;
+    }
+
+    leaf.etl_parent = parent;
+  }
 }
 
+#undef ETL_FILE
 #endif

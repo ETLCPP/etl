@@ -46,12 +46,7 @@ namespace
     while (begin != end)
     {
       value_type value = *begin++;
-
-      for (int i = 0; i < sizeof(value_type); ++i)
-      {
-        uint8_t byte = (value >> (i * 8)) & 0xFF;
-        checksum = etl::rotate_right(checksum) + byte;
-      }
+      checksum ^= value;
     }
 
     return checksum;
@@ -64,7 +59,7 @@ namespace
     {
       std::string data("123456789");
 
-      uint8_t sum     = etl::bsd_checksum<uint8_t>(data.begin(), data.end());
+      uint8_t sum     = etl::xor_checksum<uint8_t>(data.begin(), data.end());
       uint8_t compare = reference_checksum<uint8_t>(data.begin(), data.end());
 
       CHECK_EQUAL(int(compare), int(sum));
@@ -75,7 +70,7 @@ namespace
     {
       std::string data("123456789");
 
-      etl::bsd_checksum<uint8_t> checksum_calculator;
+      etl::xor_checksum<uint8_t> checksum_calculator;
 
       for (size_t i = 0; i < data.size(); ++i)
       {
@@ -93,7 +88,7 @@ namespace
     {
       std::string data("123456789");
 
-      etl::bsd_checksum<uint8_t> checksum_calculator;
+      etl::xor_checksum<uint8_t> checksum_calculator;
 
       for (size_t i = 0; i < data.size(); ++i)
       {
@@ -111,7 +106,7 @@ namespace
     {
       std::string data("123456789");
 
-      etl::bsd_checksum<uint8_t> checksum_calculator;
+      etl::xor_checksum<uint8_t> checksum_calculator;
 
       checksum_calculator.add(data.begin(), data.end());
 
@@ -126,7 +121,7 @@ namespace
     {
       std::string data("1");
 
-      etl::bsd_checksum<uint32_t> checksum_calculator;
+      etl::xor_checksum<uint32_t> checksum_calculator;
 
       checksum_calculator.add(data.begin(), data.end());
 
@@ -143,9 +138,9 @@ namespace
       std::vector<uint32_t> data2 = { 0x04030201, 0x08070605 };
       std::vector<uint8_t>  data3 = { 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
 
-      uint64_t hash1 = etl::bsd_checksum<uint8_t>(data1.begin(), data1.end());
-      uint64_t hash2 = etl::bsd_checksum<uint8_t>((uint8_t*)&data2[0], (uint8_t*)&data2[0] + (data2.size() * sizeof(uint32_t)));
-      uint64_t hash3 = etl::bsd_checksum<uint8_t>(data3.rbegin(), data3.rend());
+      uint64_t hash1 = etl::xor_checksum<uint8_t>(data1.begin(), data1.end());
+      uint64_t hash2 = etl::xor_checksum<uint8_t>((uint8_t*)&data2[0], (uint8_t*)&data2[0] + (data2.size() * sizeof(uint32_t)));
+      uint64_t hash3 = etl::xor_checksum<uint8_t>(data3.rbegin(), data3.rend());
       CHECK_EQUAL(hash1, hash2);
       CHECK_EQUAL(hash1, hash3);
     }

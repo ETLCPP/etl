@@ -160,7 +160,6 @@
     <ClInclude Include="..\..\binary.h" />
     <ClInclude Include="..\..\bitset.h" />
     <ClInclude Include="..\..\bloom_filter.h" />
-    <ClInclude Include="..\..\bsd_checksum.h" />
     <ClInclude Include="..\..\char_traits.h" />
     <ClInclude Include="..\..\checksum.h" />
     <ClInclude Include="..\..\crc16.h" />
@@ -206,6 +205,7 @@
     <ClInclude Include="..\..\integral_limits.h" />
     <ClInclude Include="..\..\intrusive_forward_list.h" />
     <ClInclude Include="..\..\intrusive_links.h" />
+    <ClInclude Include="..\..\intrusive_list.h" />
     <ClInclude Include="..\..\io_port.h" />
     <ClInclude Include="..\..\ipool.h" />
     <ClInclude Include="..\..\ipriority_queue.h" />
@@ -338,6 +338,7 @@
     <ClCompile Include="..\test_integral_limits.cpp" />
     <ClCompile Include="..\test_intrusive_forward_list.cpp" />
     <ClCompile Include="..\test_intrusive_links.cpp" />
+    <ClCompile Include="..\test_intrusive_list.cpp" />
     <ClCompile Include="..\test_io_port.cpp" />
     <ClCompile Include="..\test_jenkins.cpp" />
     <ClCompile Include="..\test_largest.cpp" />
@@ -369,6 +370,7 @@
     <ClCompile Include="..\test_variant.cpp" />
     <ClCompile Include="..\test_vector.cpp" />
     <ClCompile Include="..\test_visitor.cpp" />
+    <ClCompile Include="..\test_xor_checksum.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Doxyfile" />

@@ -116,7 +116,7 @@ namespace etl
       }
 
       //***************************************************
-      iterator operator +=(difference_type offset)
+      iterator& operator +=(difference_type offset)
       {
         if (offset > 0)
         {
@@ -132,7 +132,7 @@ namespace etl
       }
 
       //***************************************************
-      iterator operator -=(difference_type offset)
+      iterator& operator -=(difference_type offset)
       {
         if (offset > 0)
         {
@@ -310,7 +310,7 @@ namespace etl
       }
 
       //***************************************************
-      const_iterator operator +=(difference_type offset)
+      const_iterator& operator +=(difference_type offset)
       {
         if (offset > 0)
         {
@@ -326,7 +326,7 @@ namespace etl
       }
 
       //***************************************************
-      const_iterator operator -=(difference_type offset)
+      const_iterator& operator -=(difference_type offset)
       {
         if (offset > 0)
         {

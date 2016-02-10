@@ -1,24 +1,20 @@
+
 ///\file
 
 /******************************************************************************
 The MIT License(MIT)
-
 Embedded Template Library.
 https://github.com/ETLCPP/etl
 http://www.etlcpp.com
-
 Copyright(c) 2014 jwellbelove
-
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions :
-
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
@@ -35,7 +31,7 @@ SOFTWARE.
 
 #include "static_assert.h"
 #include "type_traits.h"
-#include "ihash.h"
+#include "binary.h"
 
 ///\defgroup checksum Checksum calculation
 ///\ingroup maths
@@ -43,18 +39,86 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  /// Calculates the checksum.
-  ///\tparam TSum       The type used for the sum.
+  /// Standard addition checksum policy.
+  //***************************************************************************
+  template <typename T>
+  struct checksum_policy_sum
+  {
+    inline T initial() const
+    {
+      return 0;
+    }
+
+    inline T add(T sum, uint8_t value) const
+    {
+      return sum + value;
+    }
+
+    inline T final(T sum) const
+    {
+      return sum;
+    }
+  };
+
+  //***************************************************************************
+  /// BSD checksum policy.
+  //***************************************************************************
+  template <typename T>
+  struct checksum_policy_bsd
+  {
+    inline T initial() const
+    {
+      return 0;
+    }
+
+    inline T add(T sum, uint8_t value) const
+    {
+      return etl::rotate_right(sum) + value;
+    }
+
+    inline T final(T sum) const
+    {
+      return sum;
+    }
+  };
+
+  //***************************************************************************
+  /// Standard XOR checksum policy.
+  //***************************************************************************
+  template <typename T>
+  struct checksum_policy_xor
+  {
+    inline T initial() const
+    {
+      return 0;
+    }
+
+    inline T add(T sum, uint8_t value) const
+    {
+      return sum ^ value;
+    }
+
+    inline T final(T sum) const
+    {
+      return sum;
+    }
+  };
+
+  //***************************************************************************
+  /// Calculates a checksum according to the specified policy.
+  ///\tparam TSum      The type used for the sum.
+  ///\tparam TPolicy   The type used to enact the policy. Default = checksum_policy_sum
   ///\ingroup checksum
   //***************************************************************************
-  template <typename TSum>
+  template <typename TSum, typename TPolicy = checksum_policy_sum<TSum> >
   class checksum
   {
   public:
 
-    STATIC_ASSERT(is_unsigned<TSum>::value, "Signed TSum template parameter not supported");
+    STATIC_ASSERT(etl::is_unsigned<TSum>::value, "Signed TSum template parameter not supported");
 
-    typedef TSum value_type;
+    typedef TSum    value_type;
+    typedef TPolicy policy_type;
 
     //*************************************************************************
     /// Default constructor.
@@ -75,10 +139,7 @@ namespace etl
       STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
 
       reset();
-      while (begin != end)
-      {
-        sum += *begin++;
-      }
+      add(begin, end);
     }
 
     //*************************************************************************
@@ -86,7 +147,7 @@ namespace etl
     //*************************************************************************
     void reset()
     {
-      sum = 0;
+      sum = policy.initial();
     }
 
     //*************************************************************************
@@ -101,7 +162,7 @@ namespace etl
 
       while (begin != end)
       {
-        sum += *begin++;
+        sum = policy.add(sum, *begin++);
       }
     }
 
@@ -110,7 +171,7 @@ namespace etl
     //*************************************************************************
     void add(uint8_t value)
     {
-      sum += value;
+      sum = policy.add(sum, value);
     }
 
     //*************************************************************************
@@ -118,7 +179,7 @@ namespace etl
     //*************************************************************************
     value_type value() const
     {
-      return sum;
+      return policy.final(sum);
     }
 
     //*************************************************************************
@@ -126,13 +187,77 @@ namespace etl
     //*************************************************************************
     operator value_type () const
     {
-      return sum;
+      return policy.final(sum);
     }
 
   private:
 
-    value_type sum;
+    value_type  sum;
+    policy_type policy;
   };
+
+  //*************************************************************************
+  /// BSD Checksum.
+  //*************************************************************************
+  template <typename T>
+  class bsd_checksum : public etl::checksum<T, etl::checksum_policy_bsd<T> >
+  {
+  public:
+
+    //*************************************************************************
+    /// Default constructor.
+    //*************************************************************************
+    bsd_checksum()
+    {
+      reset();
+    }
+
+    //*************************************************************************
+    /// Constructor from range.
+    /// \param begin Start of the range.
+    /// \param end   End of the range.
+    //*************************************************************************
+    template<typename TIterator>
+    bsd_checksum(TIterator begin, const TIterator end)
+    {
+      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
+
+      reset();
+      add(begin, end);
+    }
+  };
+
+  //*************************************************************************
+  /// XOR Checksum.
+  //*************************************************************************
+  template <typename T>
+  class xor_checksum : public etl::checksum<T, etl::checksum_policy_xor<T> >
+  {
+  public:
+
+    //*************************************************************************
+    /// Default constructor.
+    //*************************************************************************
+    xor_checksum()
+    {
+      reset();
+    }
+
+    //*************************************************************************
+    /// Constructor from range.
+    /// \param begin Start of the range.
+    /// \param end   End of the range.
+    //*************************************************************************
+    template<typename TIterator>
+    xor_checksum(TIterator begin, const TIterator end)
+    {
+      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
+
+      reset();
+      add(begin, end);
+    }
+  };
+
 }
 
 #endif
