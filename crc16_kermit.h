@@ -28,13 +28,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __etl_crc16_kermit__
-#define __etl_crc16_kermit__
+#ifndef __ETL_CRC16_KERMIT__
+#define __ETL_CRC16_KERMIT__
 
 #include <stdint.h>
+#include <iterator>
 
 #include "static_assert.h"
-#include "type_traits.h"
+#include "frame_check_sequence.h"
 
 #if defined(COMPILER_KEIL)
 #pragma diag_suppress 1300 
@@ -50,17 +51,37 @@ namespace etl
   /// \ingroup crc
   //***************************************************************************
   extern const uint16_t CRC_KERMIT[];
-  
+ 
   //***************************************************************************
-  /// Calculates CRC-Kermit using polynomial 0x1021
-  /// \ingroup crc16_kermit
+  /// CRC16 Kermit policy.
+  /// Calculates CRC16 Kermit using polynomial 0x1021
   //***************************************************************************
-  class crc16_kermit
+  struct crc_policy_16_kermit
+  {
+    typedef uint16_t value_type;
+
+    inline uint16_t initial() const
+    {
+      return 0;
+    }
+
+    inline uint16_t add(uint16_t crc, uint8_t value) const
+    {
+      return (crc >> 8) ^ CRC_KERMIT[(crc ^ value) & 0xFF];
+    }
+
+    inline uint16_t final(uint16_t crc) const
+    {
+      return crc;
+    }
+  };
+
+  //*************************************************************************
+  /// CRC16 Kermit
+  //*************************************************************************
+  class crc16_kermit : public etl::frame_check_sequence<etl::crc_policy_16_kermit>
   {
   public:
-
-    typedef uint16_t value_type;
-    typedef uint16_t argument_type;
 
     //*************************************************************************
     /// Default constructor.
@@ -81,63 +102,8 @@ namespace etl
       STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
 
       reset();
-      while (begin != end)
-      {
-        crc = (crc >> 8) ^ CRC_KERMIT[(crc ^ *begin++) & 0xFF];
-      }
+      add(begin, end);
     }
-
-    //*************************************************************************
-    /// Resets the CRC to the initial state.
-    //*************************************************************************
-    void reset()
-    {
-      crc = 0;
-    }
-
-    //*************************************************************************
-    /// Adds a range.
-    /// \param begin
-    /// \param end
-    //*************************************************************************
-    template<typename TIterator>
-    void add(TIterator begin, const TIterator end)
-    {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
-
-      while (begin != end)
-      {
-        crc = (crc >> 8) ^ CRC_KERMIT[(crc ^ *begin++) & 0xFF];
-      }
-    }
-
-    //*************************************************************************
-    /// \param value The uint8_t to add to the CRC.
-    //*************************************************************************
-    void add(uint8_t value)
-    {
-      crc = (crc >> 8) ^ CRC_KERMIT[(crc ^ value) & 0xFF];
-    }
-
-    //*************************************************************************
-    /// Gets the CRC value.
-    //*************************************************************************
-    value_type value() const
-    {
-      return crc;
-    }
-
-    //*************************************************************************
-    /// Conversion operator to value_type
-    //*************************************************************************
-    operator value_type () const
-    {
-      return crc;
-    }
-
-  private:
-
-    value_type crc;
   };
 }
 

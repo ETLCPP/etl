@@ -32,9 +32,10 @@ SOFTWARE.
 #define __ETL_CRC64_ECMA__
 
 #include <stdint.h>
+#include <iterator>
 
 #include "static_assert.h"
-#include "type_traits.h"
+#include "frame_check_sequence.h"
 
 #if defined(COMPILER_KEIL)
 #pragma diag_suppress 1300 
@@ -52,15 +53,35 @@ namespace etl
   extern const uint64_t CRC64_ECMA[];
 
   //***************************************************************************
-  /// Calculates CRC64-ECMA using polynomial 0x42F0E1EBA9EA3693.
-  /// \ingroup crc64_ecma
+  /// CRC64 policy.
+  /// Calculates CRC64 ECMA using polynomial 0x42F0E1EBA9EA3693.
   //***************************************************************************
-  class crc64_ecma
+  struct crc_policy_64_ecma
+  {
+    typedef uint64_t value_type;
+
+    inline uint64_t initial() const
+    {
+      return 0;
+    }
+
+    inline uint64_t add(uint64_t crc, uint8_t value) const
+    {
+      return  (crc << 8) ^ CRC64_ECMA[((crc >> 56) ^ value) & 0xFF];
+    }
+
+    inline uint64_t final(uint64_t crc) const
+    {
+      return crc;
+    }
+  };
+
+  //*************************************************************************
+  /// CRC64 ECMA
+  //*************************************************************************
+  class crc64_ecma : public etl::frame_check_sequence<etl::crc_policy_64_ecma>
   {
   public:
-
-    typedef uint64_t value_type;
-    typedef uint64_t argument_type;
 
     //*************************************************************************
     /// Default constructor.
@@ -81,63 +102,8 @@ namespace etl
       STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
 
       reset();
-      while (begin != end)
-      {
-        crc = (crc << 8) ^ CRC64_ECMA[((crc >> 56) ^ *begin++) & 0xFF];
-      }
+      add(begin, end);
     }
-
-    //*************************************************************************
-    /// Resets the CRC to the initial state.
-    //*************************************************************************
-    void reset()
-    {
-      crc = 0;
-    }
-
-    //*************************************************************************
-    /// Adds a range.
-    /// \param begin
-    /// \param end
-    //*************************************************************************
-    template<typename TIterator>
-    void add(TIterator begin, const TIterator end)
-    {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
-
-      while (begin != end)
-      {
-        crc = (crc << 8) ^ CRC64_ECMA[((crc >> 56) ^ *begin++) & 0xFF];
-      }
-    }
-
-    //*************************************************************************
-    /// \param value The value to add to the CRC.
-    //*************************************************************************
-    void add(uint8_t value)
-    {
-      crc = (crc << 8) ^ CRC64_ECMA[((crc >> 56) ^ value) & 0xFF];
-    }
-
-    //*************************************************************************
-    /// Gets the CRC value.
-    //*************************************************************************
-    value_type value() const
-    {
-      return crc;
-    }
-
-    //*************************************************************************
-    /// Conversion operator to value_type.
-    //*************************************************************************
-    operator value_type () const
-    {
-      return crc;
-    }
-
-  private:
-
-    value_type crc;
   };
 }
 
