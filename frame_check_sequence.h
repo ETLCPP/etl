@@ -24,105 +24,39 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_CHECKSUM__
-#define __ETL_CHECKSUM__
+#ifndef __ETL_FRAME_CHECK_SEQUENCE__
+#define __ETL_FRAME_CHECK_SEQUENCE__
 
 #include <stdint.h>
 
 #include "static_assert.h"
 #include "type_traits.h"
 #include "binary.h"
-#include "frame_check_sequence.h"
 
-///\defgroup checksum Checksum calculation
+///\defgroup frame_check_sequence Frame check sequence calculation
 ///\ingroup maths
 
 namespace etl
 {
   //***************************************************************************
-  /// Standard addition checksum policy.
+  /// Calculates a frame check sequence according to the specified policy.
+  ///\tparam TPolicy The type used to enact the policy.
+  ///\ingroup frame_check_sequence
   //***************************************************************************
-  template <typename T>
-  struct checksum_policy_sum
-  {
-    typedef T value_type;
-
-    inline T initial() const
-    {
-      return 0;
-    }
-
-    inline T add(T sum, uint8_t value) const
-    {
-      return sum + value;
-    }
-
-    inline T final(T sum) const
-    {
-      return sum;
-    }
-  };
-
-  //***************************************************************************
-  /// BSD checksum policy.
-  //***************************************************************************
-  template <typename T>
-  struct checksum_policy_bsd
-  {
-    typedef T value_type;
-
-    inline T initial() const
-    {
-      return 0;
-    }
-
-    inline T add(T sum, uint8_t value) const
-    {
-      return etl::rotate_right(sum) + value;
-    }
-
-    inline T final(T sum) const
-    {
-      return sum;
-    }
-  };
-
-  //***************************************************************************
-  /// Standard XOR checksum policy.
-  //***************************************************************************
-  template <typename T>
-  struct checksum_policy_xor
-  {
-    typedef T value_type;
-
-    inline T initial() const
-    {
-      return 0;
-    }
-
-    inline T add(T sum, uint8_t value) const
-    {
-      return sum ^ value;
-    }
-
-    inline T final(T sum) const
-    {
-      return sum;
-    }
-  };
-
-  //*************************************************************************
-  /// Standard Checksum.
-  //*************************************************************************
-  template <typename T>
-  class checksum : public etl::frame_check_sequence<etl::checksum_policy_sum<T> >
+  template <typename TPolicy>
+  class frame_check_sequence
   {
   public:
 
+    typedef TPolicy policy_type;
+    typedef typename policy_type::value_type value_type;
+    
+    STATIC_ASSERT(etl::is_unsigned<value_type>::value, "Signed frame check type not supported");
+    
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    checksum()
+    frame_check_sequence()
     {
       reset();
     }
@@ -133,77 +67,67 @@ namespace etl
     /// \param end   End of the range.
     //*************************************************************************
     template<typename TIterator>
-    checksum(TIterator begin, const TIterator end)
+    frame_check_sequence(TIterator begin, const TIterator end)
     {
       STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
 
       reset();
       add(begin, end);
     }
-  };
-
-  //*************************************************************************
-  /// BSD Checksum.
-  //*************************************************************************
-  template <typename T>
-  class bsd_checksum : public etl::frame_check_sequence<etl::checksum_policy_bsd<T> >
-  {
-  public:
 
     //*************************************************************************
-    /// Default constructor.
+    /// Resets the FCS to the initial state.
     //*************************************************************************
-    bsd_checksum()
+    void reset()
     {
-      reset();
+      frame_check = policy.initial();
     }
 
     //*************************************************************************
-    /// Constructor from range.
-    /// \param begin Start of the range.
-    /// \param end   End of the range.
+    /// Adds a range.
+    /// \param begin
+    /// \param end
     //*************************************************************************
     template<typename TIterator>
-    bsd_checksum(TIterator begin, const TIterator end)
+    void add(TIterator begin, const TIterator end)
     {
       STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
 
-      reset();
-      add(begin, end);
+      while (begin != end)
+      {
+        frame_check = policy.add(frame_check, *begin++);
+      }
     }
-  };
-
-  //*************************************************************************
-  /// XOR Checksum.
-  //*************************************************************************
-  template <typename T>
-  class xor_checksum : public etl::frame_check_sequence<etl::checksum_policy_xor<T> >
-  {
-  public:
 
     //*************************************************************************
-    /// Default constructor.
+    /// \param value The uint8_t to add to the FCS.
     //*************************************************************************
-    xor_checksum()
+    void add(uint8_t value)
     {
-      reset();
+      frame_check = policy.add(frame_check, value);
     }
 
     //*************************************************************************
-    /// Constructor from range.
-    /// \param begin Start of the range.
-    /// \param end   End of the range.
+    /// Gets the FCS value.
     //*************************************************************************
-    template<typename TIterator>
-    xor_checksum(TIterator begin, const TIterator end)
+    value_type value() const
     {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
-
-      reset();
-      add(begin, end);
+      return policy.final(frame_check);
     }
-  };
 
+    //*************************************************************************
+    /// Conversion operator to value_type.
+    //*************************************************************************
+    operator value_type () const
+    {
+      return policy.final(frame_check);
+    }
+
+  private:
+
+    value_type  frame_check;
+    policy_type policy;
+  };
 }
 
 #endif

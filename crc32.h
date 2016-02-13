@@ -35,6 +35,7 @@ SOFTWARE.
 #include <iterator>
 
 #include "static_assert.h"
+#include "frame_check_sequence.h"
 
 #if defined(COMPILER_KEIL)
 #pragma diag_suppress 1300 
@@ -52,15 +53,35 @@ namespace etl
   extern const uint32_t CRC32[];
 
   //***************************************************************************
+  /// CRC32 policy.
   /// Calculates CRC32 using polynomial 0x04C11DB7.
-  /// \ingroup crc32
   //***************************************************************************
-  class crc32
+  struct crc_policy_32
+  {
+    typedef uint32_t value_type;
+
+    inline uint32_t initial() const
+    {
+      return 0xFFFFFFFF;
+    }
+
+    inline uint32_t add(uint32_t crc, uint8_t value) const
+    {
+      return  (crc >> 8) ^ CRC32[(crc ^ value) & 0xFF];
+    }
+
+    inline uint32_t final(uint32_t crc) const
+    {
+      return crc ^ 0xFFFFFFFF;
+    }
+  };
+
+  //*************************************************************************
+  /// CRC32
+  //*************************************************************************
+  class crc32 : public etl::frame_check_sequence<etl::crc_policy_32>
   {
   public:
-
-    typedef uint32_t value_type;
-    typedef uint32_t argument_type;
 
     //*************************************************************************
     /// Default constructor.
@@ -79,64 +100,10 @@ namespace etl
     crc32(TIterator begin, const TIterator end)
     {
       STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
+
       reset();
-      while (begin != end)
-      {
-        crc = (crc >> 8) ^ CRC32[(crc ^ *begin++) & 0xFF];
-      }
+      add(begin, end);
     }
-
-    //*************************************************************************
-    /// Resets the CRC to the initial state.
-    //*************************************************************************
-    void reset()
-    {
-      crc = 0xFFFFFFFF;
-    }
-
-    //*************************************************************************
-    /// Adds a range.
-    /// \param begin
-    /// \param end
-    //*************************************************************************
-    template<typename TIterator>
-    void add(TIterator begin, const TIterator end)
-    {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
-
-      while (begin != end)
-      {
-        crc = (crc >> 8) ^ CRC32[(crc ^ *begin++) & 0xFF];
-      }
-    }
-
-    //*************************************************************************
-    /// \param value The uint8_t to add to the CRC.
-    //*************************************************************************
-    void add(uint8_t value)
-    {
-      crc = (crc >> 8) ^ CRC32[(crc ^ value) & 0xFF];
-    }
-
-    //*************************************************************************
-    /// Gets the CRC value.
-    //*************************************************************************
-    value_type value() const
-    {
-      return crc ^ 0xFFFFFFFF;
-    }
-
-    //*************************************************************************
-    /// Conversion operator to value_type.
-    //*************************************************************************
-    operator value_type () const
-    {
-      return crc ^ 0xFFFFFFFF;
-    }
-
-  private:
-
-    value_type crc;
   };
 }
 
