@@ -34,7 +34,6 @@ SOFTWARE.
 #include <stdint.h>
 #include <iterator>
 
-#include "static_assert.h"
 #include "frame_check_sequence.h"
 
 #if defined(COMPILER_KEIL)
@@ -99,8 +98,6 @@ namespace etl
     template<typename TIterator>
     crc32(TIterator begin, const TIterator end)
     {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
-
       reset();
       add(begin, end);
     }

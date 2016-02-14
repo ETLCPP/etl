@@ -350,7 +350,21 @@ namespace etl
     //*********************************************************************
     iterator find(key_value_parameter_t key)
     {
-      return lower_bound(key);
+      iterator itr = lower_bound(key);
+
+      if (itr != end())
+      {
+        if (itr->first == key)
+        {
+          return itr;
+        }
+        else
+        {
+          return end();
+        }
+      }
+
+      return end();
     }
 
     //*********************************************************************
@@ -360,7 +374,21 @@ namespace etl
     //*********************************************************************
     const_iterator find(key_value_parameter_t key) const
     {
-      return lower_bound(key);
+      const_iterator itr = lower_bound(key);
+
+      if (itr != end())
+      {
+        if (itr->first == key)
+        {
+          return itr;
+        }
+        else
+        {
+          return end();
+        }
+      }
+
+      return end();
     }
 
     //*********************************************************************

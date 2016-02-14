@@ -334,7 +334,21 @@ namespace etl
     //*********************************************************************
     iterator find(parameter_t key)
     {
-      return std::lower_bound(begin(), end(), key, TKeyCompare());
+      iterator itr = std::lower_bound(begin(), end(), key, TKeyCompare());
+
+      if (itr != end())
+      {
+        if (*itr == key)
+        {
+          return itr;
+        }
+        else
+        {
+          return end();
+        }
+      }
+
+      return end();
     }
 
     //*********************************************************************
@@ -344,7 +358,21 @@ namespace etl
     //*********************************************************************
     const_iterator find(parameter_t key) const
     {
-      return std::lower_bound(begin(), end(), key, TKeyCompare());
+      const_iterator itr = std::lower_bound(begin(), end(), key, TKeyCompare());
+
+      if (itr != end())
+      {
+        if (*itr == key)
+        {
+          return itr;
+        }
+        else
+        {
+          return end();
+        }
+      }
+
+      return end();
     }
 
     //*********************************************************************
@@ -354,7 +382,7 @@ namespace etl
     //*********************************************************************
     size_t count(parameter_t key) const
     {
-      return (find(key == end()) ? 0 : 1);
+      return (find(key) == end()) ? 0 : 1;
     }
 
     //*********************************************************************

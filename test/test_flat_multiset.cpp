@@ -56,6 +56,9 @@ namespace
     typedef std::multiset<DC>  Compare_DataDC;
     typedef std::multiset<NDC> Compare_DataNDC;
 
+    NDC NX = NDC("@");
+    NDC NY = NDC("[");
+
     NDC N0 = NDC("A");
     NDC N1 = NDC("B");
     NDC N2 = NDC("C");
@@ -490,6 +493,18 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_find_not_present)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      DataNDC::iterator it = data.find(NX);
+      CHECK_EQUAL(data.end(), it);
+
+      it = data.find(NY);
+      CHECK_EQUAL(data.end(), it);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_const)
     {
       const DataNDC data(initial_data.begin(), initial_data.end());
@@ -498,6 +513,18 @@ namespace
       CHECK_EQUAL(N3, *it);
 
       it = data.find(N19);
+      CHECK_EQUAL(data.end(), it);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_find_const_not_present)
+    {
+      const DataNDC data(initial_data.begin(), initial_data.end());
+
+      DataNDC::const_iterator it = data.find(NX);
+      CHECK_EQUAL(data.end(), it);
+
+      it = data.find(NY);
       CHECK_EQUAL(data.end(), it);
     }
 
@@ -536,6 +563,22 @@ namespace
 
       CHECK_EQUAL(std::distance(compare_data.begin(), i_compare.first),  std::distance(data.begin(), i_data.first));
       CHECK_EQUAL(std::distance(compare_data.begin(), i_compare.second), std::distance(data.begin(), i_data.second));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_equal_range_not_present)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      std::pair<DataNDC::iterator, DataNDC::iterator> i_data;
+
+      i_data = data.equal_range(NX);
+      CHECK_EQUAL(data.begin(), i_data.first);
+      CHECK_EQUAL(data.begin(), i_data.second);
+
+      i_data = data.equal_range(NY);
+      CHECK_EQUAL(data.end(), i_data.first);
+      CHECK_EQUAL(data.end(), i_data.second);
     }
 
     //*************************************************************************
