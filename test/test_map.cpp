@@ -807,6 +807,9 @@ namespace
 
       it = data.find("A");
       CHECK_EQUAL(data.end(), it);
+
+      it = data.find("!");
+      CHECK_EQUAL(data.end(), it);
     }
 
     //*************************************************************************
@@ -818,6 +821,9 @@ namespace
       CHECK_EQUAL(3, it->second);
 
       it = data.find("A");
+      CHECK_EQUAL(data.end(), it);
+
+      it = data.find("!");
       CHECK_EQUAL(data.end(), it);
     }
 
