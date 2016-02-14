@@ -409,7 +409,7 @@ namespace etl
 
       if (itr != end())
       {
-        if (itr->first == key)
+        if (!key_compare()(itr->first, key) && !key_compare()(key, itr->first))
         {
           return itr;
         }
@@ -433,7 +433,7 @@ namespace etl
 
       if (itr != end())
       {
-        if (itr->first == key)
+        if (!key_compare()(itr->first, key) && !key_compare()(key, itr->first))
         {
           return itr;
         }
