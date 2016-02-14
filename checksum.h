@@ -29,8 +29,6 @@ SOFTWARE.
 
 #include <stdint.h>
 
-#include "static_assert.h"
-#include "type_traits.h"
 #include "binary.h"
 #include "frame_check_sequence.h"
 
@@ -135,8 +133,6 @@ namespace etl
     template<typename TIterator>
     checksum(TIterator begin, const TIterator end)
     {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
-
       reset();
       add(begin, end);
     }
@@ -166,8 +162,6 @@ namespace etl
     template<typename TIterator>
     bsd_checksum(TIterator begin, const TIterator end)
     {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
-
       reset();
       add(begin, end);
     }
@@ -197,8 +191,6 @@ namespace etl
     template<typename TIterator>
     xor_checksum(TIterator begin, const TIterator end)
     {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
-
       reset();
       add(begin, end);
     }
