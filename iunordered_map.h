@@ -480,7 +480,7 @@ namespace etl
     //*********************************************************************
     iterator begin()
     {
-      return iterator(pbuckets->end(), first, last->begin());
+      return iterator(pbuckets->end(), first, first->begin());
     }
 
     //*********************************************************************
@@ -489,7 +489,7 @@ namespace etl
     //*********************************************************************
     const_iterator begin() const
     {
-      return const_iterator(pbuckets->end(), first, last->begin());
+      return const_iterator(pbuckets->end(), first, first->begin());
     }
 
     //*********************************************************************
@@ -498,7 +498,7 @@ namespace etl
     //*********************************************************************
     const_iterator cbegin() const
     {
-      return const_iterator(pbuckets->end(), first, last->begin());
+      return const_iterator(pbuckets->end(), first, first->begin());
     }
 
     //*********************************************************************
