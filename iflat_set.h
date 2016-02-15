@@ -338,7 +338,7 @@ namespace etl
 
       if (itr != end())
       {
-        if (*itr == key)
+        if (!key_compare()(*itr, key) && !key_compare()(key, *itr))
         {
           return itr;
         }
@@ -362,7 +362,7 @@ namespace etl
 
       if (itr != end())
       {
-        if (*itr == key)
+        if (!key_compare()(*itr, key) && !key_compare()(key, *itr))
         {
           return itr;
         }

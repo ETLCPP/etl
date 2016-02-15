@@ -331,13 +331,13 @@ namespace etl
 
       if (itr != end())
       {
-        if (*itr != key)
+        if (!key_compare()(*itr, key) && !key_compare()(key, *itr))
         {
-          return end();
+          return itr;
         }
         else
         {
-          return itr;
+          return end();
         }
       }
 
@@ -355,13 +355,13 @@ namespace etl
 
       if (itr != end())
       {
-        if (*itr != key)
+        if (!key_compare()(*itr, key) && !key_compare()(key, *itr))
         {
-          return end();
+          return itr;
         }
         else
         {
-          return itr;
+          return end();
         }
       }
 
