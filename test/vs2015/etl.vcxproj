@@ -263,6 +263,7 @@
     <ClInclude Include="..\..\static_assert.h" />
     <ClInclude Include="..\..\type_traits.h" />
     <ClInclude Include="..\..\unordered_map.h" />
+    <ClInclude Include="..\..\unordered_set.h" />
     <ClInclude Include="..\..\variant.h" />
     <ClInclude Include="..\..\vector.h" />
     <ClInclude Include="..\..\visitor.h" />
@@ -367,6 +368,7 @@
     <ClCompile Include="..\test_stack.cpp" />
     <ClCompile Include="..\test_type_traits.cpp" />
     <ClCompile Include="..\test_unordered_map.cpp" />
+    <ClCompile Include="..\test_unordered_set.cpp" />
     <ClCompile Include="..\test_variant.cpp" />
     <ClCompile Include="..\test_vector.cpp" />
     <ClCompile Include="..\test_visitor.cpp" />
