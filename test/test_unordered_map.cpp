@@ -188,6 +188,7 @@ namespace
       CHECK_EQUAL(data.size(), size_t(0));
       CHECK(data.empty());
       CHECK_EQUAL(data.max_size(), SIZE);
+      CHECK(data.begin() == data.end());
     }
 
     //*************************************************************************
