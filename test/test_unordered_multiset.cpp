@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include <UnitTest++/UnitTest++.h>
 
-#include <map>
+#include <set>
 #include <array>
 #include <algorithm>
 #include <utility>
@@ -39,144 +39,85 @@ SOFTWARE.
 
 #include "data.h"
 
-#include "../unordered_map.h"
+#include "../unordered_multiset.h"
+#include "../checksum.h"
 
 namespace
 {
-  //*************************************************************************
-  struct simple_hash
-  {
-    size_t operator ()(const std::string& text) const
-    {
-      return std::accumulate(text.begin(), text.end(), 0);
-    }
-  };
-
-  //*************************************************************************
-  template <typename T1, typename T2>
-  bool Check_Equal(T1 begin1, T1 end1, T2 begin2)
-  {
-    while (begin1 != end1)
-    {
-      if ((begin1->first != begin2->first) || (begin1->second != begin2->second))
-      {
-        return false;
-      }
-
-      ++begin1;
-      ++begin2;
-    }
-
-    return true;
-  }
-
-  SUITE(test_unordered_map)
+  SUITE(test_unordered_multiset)
   {
     static const size_t SIZE = 10;
 
     typedef TestDataDC<std::string>  DC;
     typedef TestDataNDC<std::string> NDC;
 
-    typedef std::pair<std::string, DC>  ElementDC;
-    typedef std::pair<std::string, NDC> ElementNDC;
-
-    typedef etl::unordered_map<std::string, DC,  SIZE, simple_hash> DataDC;
-    typedef etl::unordered_map<std::string, NDC, SIZE, simple_hash> DataNDC;
-    typedef etl::iunordered_map<std::string, NDC, simple_hash>      IDataNDC;
-
-    NDC N0 = NDC("A");
-    NDC N1 = NDC("B");
-    NDC N2 = NDC("C");
-    NDC N3 = NDC("D");
-    NDC N4 = NDC("E");
-    NDC N5 = NDC("F");
-    NDC N6 = NDC("G");
-    NDC N7 = NDC("H");
-    NDC N8 = NDC("I");
-    NDC N9 = NDC("J");
-    NDC N10 = NDC("K");
-    NDC N11 = NDC("L");
-    NDC N12 = NDC("M");
-    NDC N13 = NDC("N");
-    NDC N14 = NDC("O");
-    NDC N15 = NDC("P");
-    NDC N16 = NDC("Q");
-    NDC N17 = NDC("R");
-    NDC N18 = NDC("S");
-    NDC N19 = NDC("T");
-
-    const char* K0  = "FF"; // 0
-    const char* K1  = "FG"; // 1
-    const char* K2  = "FH"; // 2
-    const char* K3  = "FI"; // 3
-    const char* K4  = "FJ"; // 4
-    const char* K5  = "FK"; // 5
-    const char* K6  = "FL"; // 6
-    const char* K7  = "FM"; // 7
-    const char* K8  = "FN"; // 8
-    const char* K9  = "FO"; // 9
-    const char* K10 = "FP"; // 0
-    const char* K11 = "FQ"; // 1
-    const char* K12 = "FR"; // 2
-    const char* K13 = "FS"; // 3
-    const char* K14 = "FT"; // 4
-    const char* K15 = "FU"; // 5
-    const char* K16 = "FV"; // 6
-    const char* K17 = "FW"; // 7
-    const char* K18 = "FX"; // 8
-    const char* K19 = "FY"; // 9
-
-    std::string K[] = { K0, K1, K2, K3, K4, K5, K6, K7, K8, K9, K10, K11, K12, K13, K14, K15, K16, K17, K18, K19 };
-
-    std::vector<ElementNDC> initial_data;
-    std::vector<ElementNDC> excess_data;
-    std::vector<ElementNDC> different_data;
-
-    //*************************************************************************
-    template <typename T1, typename T2>
-    bool Check_Equal(T1 begin1, T1 end1, T2 begin2)
+    struct simple_hash
     {
-      while (begin1 != end1)
+      size_t operator ()(const NDC& value) const
       {
-        if ((begin1->first != begin2->first) || (begin1->second != begin2->second))
-        {
-          return false;
-        }
-
-        ++begin1;
-        ++begin2;
+        return etl::checksum<size_t>(value.value.begin(), value.value.end());
       }
+    };
 
-      return true;
-    }
+    typedef etl::unordered_multiset<DC,  SIZE, simple_hash> DataDC;
+    typedef etl::unordered_multiset<NDC, SIZE, simple_hash> DataNDC;
+    typedef etl::iunordered_multiset<NDC, simple_hash>      IDataNDC;
+
+    NDC N0  = NDC("FF");
+    NDC N1  = NDC("FG");
+    NDC N2  = NDC("FH");
+    NDC N3  = NDC("FI");
+    NDC N4  = NDC("FJ");
+    NDC N5  = NDC("FK");
+    NDC N6  = NDC("FL");
+    NDC N7  = NDC("FM");
+    NDC N8  = NDC("FN");
+    NDC N9  = NDC("FO");
+    NDC N10 = NDC("FP");
+    NDC N11 = NDC("FQ");
+    NDC N12 = NDC("FR");
+    NDC N13 = NDC("FS");
+    NDC N14 = NDC("FT");
+    NDC N15 = NDC("FU");
+    NDC N16 = NDC("FV");
+    NDC N17 = NDC("FW");
+    NDC N18 = NDC("FX");
+    NDC N19 = NDC("FY");
+
+    std::vector<NDC> initial_data;
+    std::vector<NDC> excess_data;
+    std::vector<NDC> different_data;
+    std::vector<NDC> equal_data;
 
     //*************************************************************************
     struct SetupFixture
     {
       SetupFixture()
       {
-        ElementNDC n[] =
+        NDC n[] =
         {
-          ElementNDC(K0, N0), ElementNDC(K1, N1), ElementNDC(K2, N2), ElementNDC(K3, N3), ElementNDC(K4, N4),
-          ElementNDC(K5, N5), ElementNDC(K6, N6), ElementNDC(K7, N7), ElementNDC(K8, N8), ElementNDC(K9, N9)
+          N0, N1, N2, N3, N4, N5, N6, N7, N8, N9
         };
 
-        ElementNDC n2[] =
+        NDC n2[] =
         {
-          ElementNDC(K0, N0), ElementNDC(K1, N1), ElementNDC(K2, N2), ElementNDC(K3, N3), ElementNDC(K4, N4),
-          ElementNDC(K5, N5), ElementNDC(K6, N6), ElementNDC(K7, N7), ElementNDC(K8, N8), ElementNDC(K9, N9),
-          ElementNDC(K10, N10)
+          N0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10
         };
 
-        ElementNDC n3[] =
+        NDC n3[] =
         {
-          ElementNDC(K10, N10), ElementNDC(K11, N11), ElementNDC(K12, N12), ElementNDC(K13, N13), ElementNDC(K14, N14),
-          ElementNDC(K15, N15), ElementNDC(K16, N16), ElementNDC(K17, N17), ElementNDC(K18, N18), ElementNDC(K19, N19)
+          N10, N11, N12, N13, N14, N15, N16, N17, N18, N19
+        };
+
+        NDC n4[] =
+        {
+          N0, N1, N1, N1, N2
         };
 
         initial_data.assign(std::begin(n), std::end(n));
         excess_data.assign(std::begin(n2), std::end(n2));
         different_data.assign(std::begin(n3), std::end(n3));
+        equal_data.assign(std::begin(n4), std::end(n4));
       }
     };
 
@@ -264,85 +205,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_index_read)
-    {
-      DataNDC data(initial_data.begin(), initial_data.end());
-
-      CHECK_EQUAL(N0, data[K0]);
-      CHECK_EQUAL(N1, data[K1]);
-      CHECK_EQUAL(N2, data[K2]);
-      CHECK_EQUAL(N3, data[K3]);
-      CHECK_EQUAL(N4, data[K4]);
-      CHECK_EQUAL(N5, data[K5]);
-      CHECK_EQUAL(N6, data[K6]);
-      CHECK_EQUAL(N7, data[K7]);
-      CHECK_EQUAL(N8, data[K8]);
-      CHECK_EQUAL(N9, data[K9]);
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_index_write)
-    {
-      DataNDC data(initial_data.begin(), initial_data.end());
-
-      data[K0] = N9;
-      data[K1] = N8;
-      data[K2] = N7;
-      data[K3] = N6;
-      data[K4] = N5;
-      data[K5] = N4;
-      data[K6] = N3;
-      data[K7] = N2;
-      data[K8] = N1;
-      data[K9] = N0;
-
-      CHECK_EQUAL(N9, data[K0]);
-      CHECK_EQUAL(N8, data[K1]);
-      CHECK_EQUAL(N7, data[K2]);
-      CHECK_EQUAL(N6, data[K3]);
-      CHECK_EQUAL(N5, data[K4]);
-      CHECK_EQUAL(N4, data[K5]);
-      CHECK_EQUAL(N3, data[K6]);
-      CHECK_EQUAL(N2, data[K7]);
-      CHECK_EQUAL(N1, data[K8]);
-      CHECK_EQUAL(N0, data[K9]);
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_at)
-    {
-      DataNDC data(initial_data.begin(), initial_data.end());
-
-      CHECK_EQUAL(data.at(K0), N0);
-      CHECK_EQUAL(data.at(K1), N1);
-      CHECK_EQUAL(data.at(K2), N2);
-      CHECK_EQUAL(data.at(K3), N3);
-      CHECK_EQUAL(data.at(K4), N4);
-      CHECK_EQUAL(data.at(K5), N5);
-      CHECK_EQUAL(data.at(K6), N6);
-      CHECK_EQUAL(data.at(K7), N7);
-      CHECK_EQUAL(data.at(K8), N8);
-      CHECK_EQUAL(data.at(K9), N9);
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_at_const)
-    {
-      const DataNDC data(initial_data.begin(), initial_data.end());
-
-      CHECK_EQUAL(data.at(K0), N0);
-      CHECK_EQUAL(data.at(K1), N1);
-      CHECK_EQUAL(data.at(K2), N2);
-      CHECK_EQUAL(data.at(K3), N3);
-      CHECK_EQUAL(data.at(K4), N4);
-      CHECK_EQUAL(data.at(K5), N5);
-      CHECK_EQUAL(data.at(K6), N6);
-      CHECK_EQUAL(data.at(K7), N7);
-      CHECK_EQUAL(data.at(K8), N8);
-      CHECK_EQUAL(data.at(K9), N9);
-    }
-
-    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_range)
     {
       DataNDC data;
@@ -353,7 +215,7 @@ namespace
 
       for (size_t i = 0; i < 10; ++i)
       {
-        idata = data.find(K[i]);
+        idata = data.find(initial_data[i]);
         CHECK(idata != data.end());
       }
     }
@@ -363,35 +225,36 @@ namespace
     {
       DataNDC data;
 
-      data.insert(DataNDC::value_type(K0,  N0)); // Inserted
-      data.insert(DataNDC::value_type(K2,  N2)); // Inserted
-      data.insert(DataNDC::value_type(K1,  N1)); // Inserted
-      data.insert(DataNDC::value_type(K11, N1)); // Duplicate hash. Inserted
-      data.insert(DataNDC::value_type(K1,  N3)); // Duplicate key.  Not inserted
+      data.insert(N0);  // Inserted
+      data.insert(N2);  // Inserted
+      data.insert(N1);  // Inserted
+      data.insert(N11); // Duplicate hash. Inserted
+      data.insert(N1);  // Duplicate. Inserted
 
-      CHECK_EQUAL(4U, data.size());
+      CHECK_EQUAL(5U, data.size());
 
       DataNDC::iterator idata;
 
-      idata = data.find(K0);
+      idata = data.find(N0);
       CHECK(idata != data.end());
-      CHECK(idata->first  == K0);
-      CHECK(idata->second == N0);
+      CHECK(*idata == N0);
 
-      idata = data.find(K1);
+      idata = data.find(N1);
       CHECK(idata != data.end());
-      CHECK(idata->first  == K1);
-      CHECK(idata->second == N1);
+      CHECK(*idata == N1);
 
-      idata = data.find(K2);
+      // The other value with key == N1
+      ++idata;
       CHECK(idata != data.end());
-      CHECK(idata->first  == K2);
-      CHECK(idata->second == N2);
+      CHECK(*idata == N1);
 
-      idata = data.find(K11);
+      idata = data.find(N2);
       CHECK(idata != data.end());
-      CHECK(idata->first  == K11);
-      CHECK(idata->second == N1);
+      CHECK(*idata == N2);
+
+      idata = data.find(N11);
+      CHECK(idata != data.end());
+      CHECK(*idata == N11);
     }
 
     //*************************************************************************
@@ -399,7 +262,7 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.insert(std::make_pair(K10, N10)), etl::unordered_map_full);
+      CHECK_THROW(data.insert(N10), etl::unordered_multiset_full);
     }
 
     //*************************************************************************
@@ -411,7 +274,7 @@ namespace
 
       for (size_t i = 0; i < data.size(); ++i)
       {
-        DataNDC::iterator idata = data.find(initial_data[i].first);
+        DataNDC::iterator idata = data.find(initial_data[i]);
         CHECK(idata != data.end());
       }
     }
@@ -421,19 +284,26 @@ namespace
     {
       DataNDC data;
 
-      CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::unordered_map_full);
+      CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::unordered_multiset_full);
     }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_key)
     {
-      DataNDC data(initial_data.begin(), initial_data.end());
+      DataNDC data(equal_data.begin(), equal_data.end());
 
-      size_t count = data.erase(K5);
+      size_t count = data.erase(N0);
 
       CHECK_EQUAL(1, count);
 
-      DataNDC::iterator idata = data.find(K5);
+      DataNDC::iterator idata = data.find(N0);
+      CHECK(idata == data.end());
+
+      count = data.erase(N1);
+
+      CHECK_EQUAL(3, count);
+
+      idata = data.find(N1);
       CHECK(idata == data.end());
     }
 
@@ -442,12 +312,12 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      DataNDC::const_iterator idata = data.find(K5);
+      DataNDC::const_iterator idata = data.find(N5);
       DataNDC::const_iterator inext = idata;
       ++inext;
 
       DataNDC::const_iterator iafter = data.erase(idata);
-      idata = data.find(K5);
+      idata = data.find(N5);
 
       CHECK(idata == data.end());
       CHECK(inext == iafter);
@@ -458,40 +328,46 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      DataNDC::iterator idata     = data.find(K5);
-      DataNDC::iterator idata_end = data.find(K8);
+      DataNDC::iterator idata     = data.find(N5);
+      DataNDC::iterator idata_end = data.find(N8);
 
-      idata = data.erase(idata, idata_end); // Erase K5, K6, K7
-      CHECK(idata == data.find(K8));
+      std::vector<NDC> test;
 
-      idata = data.find(K0);
+      test.assign(data.begin(), data.end());
+
+      idata = data.erase(idata, idata_end); // Erase N5, N6, N7
+      CHECK(idata == data.find(N8));
+
+      test.assign(data.begin(), data.end());
+
+      idata = data.find(N0);
       CHECK(idata != data.end());
 
-      idata = data.find(K1);
+      idata = data.find(N1);
       CHECK(idata != data.end());
 
-      idata = data.find(K2);
+      idata = data.find(N2);
       CHECK(idata != data.end());
 
-      idata = data.find(K3);
+      idata = data.find(N3);
       CHECK(idata != data.end());
 
-      idata = data.find(K4);
+      idata = data.find(N4);
       CHECK(idata != data.end());
 
-      idata = data.find(K5);
+      idata = data.find(N5);
       CHECK(idata == data.end());
 
-      idata = data.find(K6);
+      idata = data.find(N6);
       CHECK(idata == data.end());
 
-      idata = data.find(K7);
+      idata = data.find(N7);
       CHECK(idata == data.end());
 
-      idata = data.find(K8);
+      idata = data.find(N8);
       CHECK(idata != data.end());
 
-      idata = data.find(K9);
+      idata = data.find(N9);
       CHECK(idata != data.end());
     }
 
@@ -503,72 +379,84 @@ namespace
 
       CHECK_EQUAL(data.size(), size_t(0));
     }
-
-
+    
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_count_key)
     {
-      DataNDC data(initial_data.begin(), initial_data.end());
+      DataNDC data(equal_data.begin(), equal_data.end());
 
-      size_t count = data.count(K5);
+      size_t count = data.count(N0);
       CHECK_EQUAL(1, count);
 
-      count = data.count(K12);
+      count = data.count(N1);
+      CHECK_EQUAL(3, count);
+
+      count = data.count(N10);
       CHECK_EQUAL(0, count);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_find_const)
+    {
+      const DataNDC data(initial_data.begin(), initial_data.end());
+
+      DataNDC::const_iterator idata = data.find(N3);
+
+      CHECK(idata != data.end());
     }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_equal_range)
     {
-      DataNDC data(initial_data.begin(), initial_data.end());
+      DataNDC data(equal_data.begin(), equal_data.end());
 
       std::pair<DataNDC::iterator, DataNDC::iterator> result;
 
-      result = data.equal_range(K0);
-      CHECK(result.first  == data.begin());
+      result = data.equal_range(N0);
+      CHECK(result.first == data.begin());
       CHECK(result.second != data.end());
       CHECK_EQUAL(std::distance(result.first, result.second), 1);
-      CHECK_EQUAL(result.first->first, K0);
+      CHECK_EQUAL(*result.first, N0);
 
-      result = data.equal_range(K3);
-      CHECK(result.first  != data.begin());
+      result = data.equal_range(N1);
+      CHECK(result.first != data.begin());
       CHECK(result.second != data.end());
-      CHECK_EQUAL(std::distance(result.first, result.second), 1);
-      CHECK_EQUAL(result.first->first, K3);
+      CHECK_EQUAL(std::distance(result.first, result.second), 3);
+      CHECK_EQUAL(*result.first, N1);
 
-      result = data.equal_range(K9);
-      CHECK(result.first  != data.begin());
+      result = data.equal_range(N2);
+      CHECK(result.first != data.begin());
       CHECK(result.second == data.end());
       CHECK_EQUAL(std::distance(result.first, result.second), 1);
-      CHECK_EQUAL(result.first->first, K9);
+      CHECK_EQUAL(*result.first, N2);
     }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_equal_range_const)
     {
-      const DataNDC data(initial_data.begin(), initial_data.end());
+      const DataNDC data(equal_data.begin(), equal_data.end());
 
       std::pair<DataNDC::const_iterator, DataNDC::const_iterator> result;
 
-      result = data.equal_range(K0);
+      result = data.equal_range(N0);
       CHECK(result.first == data.begin());
       CHECK(result.second != data.end());
       CHECK_EQUAL(std::distance(result.first, result.second), 1);
-      CHECK_EQUAL(result.first->first, K0);
+      CHECK_EQUAL(*result.first, N0);
 
-      result = data.equal_range(K3);
+      result = data.equal_range(N1);
       CHECK(result.first != data.begin());
       CHECK(result.second != data.end());
-      CHECK_EQUAL(std::distance(result.first, result.second), 1);
-      CHECK_EQUAL(result.first->first, K3);
+      CHECK_EQUAL(std::distance(result.first, result.second), 3);
+      CHECK_EQUAL(*result.first, N1);
 
-      result = data.equal_range(K9);
+      result = data.equal_range(N2);
       CHECK(result.first != data.begin());
       CHECK(result.second == data.end());
       CHECK_EQUAL(std::distance(result.first, result.second), 1);
-      CHECK_EQUAL(result.first->first, K9);
+      CHECK_EQUAL(*result.first, N2);
     }
-
+    
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_equal)
     {

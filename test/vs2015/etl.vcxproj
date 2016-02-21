@@ -215,6 +215,8 @@
     <ClInclude Include="..\..\istack.h" />
     <ClInclude Include="..\..\container.h" />
     <ClInclude Include="..\..\iunordered_map.h" />
+    <ClInclude Include="..\..\iunordered_multimap.h" />
+    <ClInclude Include="..\..\iunordered_set.h" />
     <ClInclude Include="..\..\ivector.h" />
     <ClInclude Include="..\..\jenkins.h" />
     <ClInclude Include="..\..\largest.h" />
@@ -263,6 +265,7 @@
     <ClInclude Include="..\..\static_assert.h" />
     <ClInclude Include="..\..\type_traits.h" />
     <ClInclude Include="..\..\unordered_map.h" />
+    <ClInclude Include="..\..\unordered_multiset.h" />
     <ClInclude Include="..\..\unordered_set.h" />
     <ClInclude Include="..\..\variant.h" />
     <ClInclude Include="..\..\vector.h" />
@@ -368,6 +371,8 @@
     <ClCompile Include="..\test_stack.cpp" />
     <ClCompile Include="..\test_type_traits.cpp" />
     <ClCompile Include="..\test_unordered_map.cpp" />
+    <ClCompile Include="..\test_unordered_multimap.cpp" />
+    <ClCompile Include="..\test_unordered_multiset.cpp" />
     <ClCompile Include="..\test_unordered_set.cpp" />
     <ClCompile Include="..\test_variant.cpp" />
     <ClCompile Include="..\test_vector.cpp" />
