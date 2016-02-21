@@ -101,6 +101,20 @@ namespace etl
   };
 
   //***************************************************************************
+  /// Unsorted exception for the list.
+  ///\ingroup list
+  //***************************************************************************
+  class list_unsorted : public list_exception
+  {
+  public:
+
+    list_unsorted(string_type file_name, numeric_type line_number)
+      : list_exception(ETL_ERROR_TEXT("list:unsorted", ETL_FILE"D"), file_name, line_number)
+    {
+    }
+  };
+
+  //***************************************************************************
   /// The base class for all lists.
   ///\ingroup list
   //***************************************************************************

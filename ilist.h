@@ -763,57 +763,113 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Moves an element from one position to another within the list.
-    /// Moves the element at position 'from' to the position before 'to'.
+    /// Splices from another list to this.
     //*************************************************************************
-    void move(const_iterator from, const_iterator to)
+    void splice(iterator to, ilist& other)
     {
-      if (from == to)
+      if (&other != this)
       {
-        return; // Can't more to before yourself!
+        insert(to, other.begin(), other.end());
+        other.erase(other.begin(), other.end());
       }
-
-      node_t& from_node = const_cast<node_t&>(*from.p_node); // We're not changing the value, just it's position.
-      node_t& to_node   = const_cast<node_t&>(*to.p_node);   // We're not changing the value, just it's position.
-
-      // Disconnect the node from the list.
-      join(*from_node.previous, *from_node.next);
-
-      // Attach it to the new position.
-      join(*to_node.previous, from_node);
-      join(from_node, to_node);
     }
 
     //*************************************************************************
-    /// Moves a range from one position to another within the list.
-    /// Moves a range at position 'first'/'last' to the position before 'to'.
+    /// Splices an element from another list to this.
     //*************************************************************************
-    void move(const_iterator first, const_iterator last, const_iterator to)
+    void splice(iterator to, ilist& other, iterator from)
     {
-      if ((first == to) || (last == to))
+      if (&other == this)
       {
-        return; // Can't more to before yourself!
+        if (from != to)
+        {
+          // Internal move.
+          move(to, from);
+        }
       }
+      else
+      {
+        // From another list.
+        insert(to, *from);
+        other.erase(from);
+      }
+    }
 
-#ifdef _DEBUG
-      // Check that we are not doing an illegal move!
-      for (const_iterator item = first; item != last; ++item)
+    //*************************************************************************
+    /// Splices a range of elements from another list to this.
+    //*************************************************************************
+    void splice(iterator to, ilist& other, iterator first, iterator last)
+    {
+      if (&other == this)
       {
-        ETL_ASSERT(item != to, ETL_ERROR(list_iterator));
+        if (first != to)
+        {
+          // Internal move.
+          move(to, first, last);
+        }
       }
+      else
+      {
+        // From another list.
+        insert(to, first, last);
+        other.erase(first, last);
+      }
+    }
+
+    //*************************************************************************
+    /// Merge another list into this one. Both lists should be sorted.
+    //*************************************************************************
+    void merge(ilist& other)
+    {
+      merge(other, std::less<value_type>());
+    }
+
+    //*************************************************************************
+    /// Merge another list into this one. Both lists should be sorted.
+    //*************************************************************************
+    template <typename TCompare>
+    void merge(ilist& other, TCompare compare)
+    {
+      if (!other.empty())
+      {
+#if _DEBUG
+        ETL_ASSERT(etl::is_sorted(other.begin(), other.end(), compare), ETL_ERROR(list_unsorted));
+        ETL_ASSERT(etl::is_sorted(begin(), end(), compare), ETL_ERROR(list_unsorted));
 #endif
 
-      node_t& first_node = const_cast<node_t&>(*first.p_node); // We're not changing the value, just it's position.
-      node_t& last_node  = const_cast<node_t&>(*last.p_node);  // We're not changing the value, just it's position.
-      node_t& to_node    = const_cast<node_t&>(*to.p_node);    // We're not changing the value, just it's position.
-      node_t& final_node = *last_node.previous;
+        ilist::iterator other_begin = other.begin();
+        ilist::iterator other_end   = other.end();
 
-      // Disconnect the range from the list.
-      join(*first_node.previous, last_node);
+        ilist::iterator this_begin = begin();
+        ilist::iterator this_end   = end();
 
-      // Attach it to the new position.
-      join(*to_node.previous, first_node);
-      join(final_node, to_node);
+        while ((this_begin != this_end) && (other_begin != other_end))
+        {
+          // Find the place to insert.
+          while ((this_begin != this_end) && !(compare(*other_begin, *this_begin)))
+          {
+            ++this_begin;
+          }
+
+          // Insert.
+          if (this_begin != this_end)
+          {
+            while ((other_begin != other_end) && (compare(*other_begin, *this_begin)))
+            {
+              insert(this_begin, *other_begin);
+              ++other_begin;
+            }
+          }
+        }
+
+        // Any left over?
+        if ((this_begin == this_end) && (other_begin != other_end))
+        {
+          insert(this_end, other_begin, other_end);
+        }
+
+        other.clear();
+      }
     }
 
     //*************************************************************************
@@ -977,6 +1033,60 @@ namespace etl
     }
 
   private:
+
+    //*************************************************************************
+    /// Moves an element from one position to another within the list.
+    /// Moves the element at position 'from' to the position before 'to'.
+    //*************************************************************************
+    void move(iterator to, iterator from)
+    {
+      if (from == to)
+      {
+        return; // Can't more to before yourself!
+      }
+
+      node_t& from_node = *from.p_node;
+      node_t& to_node   = *to.p_node;
+
+                                                           // Disconnect the node from the list.
+      join(*from_node.previous, *from_node.next);
+
+      // Attach it to the new position.
+      join(*to_node.previous, from_node);
+      join(from_node, to_node);
+    }
+
+    //*************************************************************************
+    /// Moves a range from one position to another within the list.
+    /// Moves a range at position 'first'/'last' to the position before 'to'.
+    //*************************************************************************
+    void move(iterator to, iterator first, iterator last)
+    {
+      if ((first == to) || (last == to))
+      {
+        return; // Can't more to before yourself!
+      }
+
+#ifdef _DEBUG
+      // Check that we are not doing an illegal move!
+      for (const_iterator item = first; item != last; ++item)
+      {
+        ETL_ASSERT(item != to, ETL_ERROR(list_iterator));
+      }
+#endif
+
+      node_t& first_node = *first.p_node;
+      node_t& last_node  = *last.p_node;
+      node_t& to_node    = *to.p_node;
+      node_t& final_node = *last_node.previous;
+
+      // Disconnect the range from the list.
+      join(*first_node.previous, last_node);
+
+      // Attach it to the new position.
+      join(*to_node.previous, first_node);
+      join(final_node, to_node);
+    }
 
     //*************************************************************************
     /// Remove a node.
