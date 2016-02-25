@@ -47,9 +47,10 @@ namespace
 
     const size_t SIZE = 10;
 
-    typedef etl::list<ItemDC, SIZE>  DataDC;
-    typedef etl::list<ItemNDC, SIZE> DataNDC;
-    typedef etl::ilist<ItemNDC>      IDataNDC;
+    typedef etl::list<ItemDC, SIZE>      DataDC;
+    typedef etl::list<ItemNDC, SIZE>     DataNDC;
+    typedef etl::list<ItemNDC, 2 * SIZE> DataNDC2;
+    typedef etl::ilist<ItemNDC>          IDataNDC;
 
     typedef std::list<ItemNDC>   CompareData;
     typedef std::vector<ItemNDC> InitialData;
@@ -58,6 +59,12 @@ namespace
     InitialData sorted_data;
     InitialData non_unique_data;
     InitialData small_data;
+
+    InitialData merge_data0;
+    InitialData merge_data1;
+    InitialData merge_data2;
+    InitialData merge_data3;
+    InitialData merge_data4;
 
     bool are_equal;
 
@@ -70,6 +77,12 @@ namespace
         sorted_data     = { ItemNDC("0"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3"), ItemNDC("4"), ItemNDC("5"), ItemNDC("6"), ItemNDC("7"), ItemNDC("8"), ItemNDC("9") };
         non_unique_data = { ItemNDC("0"), ItemNDC("0"), ItemNDC("1"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3"), ItemNDC("3"), ItemNDC("3"), ItemNDC("4"), ItemNDC("5") };
         small_data      = { ItemNDC("0"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3"), ItemNDC("4"), ItemNDC("5") };
+
+        merge_data0 = { ItemNDC("1"), ItemNDC("1"), ItemNDC("3"), ItemNDC("3"), ItemNDC("5"), ItemNDC("7"), ItemNDC("8") };
+        merge_data1 = { ItemNDC("1"), ItemNDC("2"), ItemNDC("3"), ItemNDC("3"), ItemNDC("6"), ItemNDC("9"), ItemNDC("9") };
+        merge_data2 = { ItemNDC("0"), ItemNDC("2"), ItemNDC("3"), ItemNDC("3"), ItemNDC("6"), ItemNDC("7"), ItemNDC("7") };
+        merge_data3 = { ItemNDC("0"), ItemNDC("2"), ItemNDC("3"), ItemNDC("3"), ItemNDC("6"), ItemNDC("7") };
+        merge_data4 = { ItemNDC("0"), ItemNDC("2"), ItemNDC("3"), ItemNDC("3"), ItemNDC("6"), ItemNDC("7"), ItemNDC("8"), ItemNDC("9") };
       }
     };
 
@@ -808,7 +821,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_move)
+    TEST_FIXTURE(SetupFixture, test_splice_same)
     {
       CompareData compare_data(unsorted_data.begin(), unsorted_data.end());
       DataNDC data(unsorted_data.begin(), unsorted_data.end());
@@ -816,8 +829,8 @@ namespace
       CompareData::iterator compare_from;
       CompareData::iterator compare_to;
 
-      DataNDC::const_iterator from;
-      DataNDC::const_iterator to;
+      DataNDC::iterator from;
+      DataNDC::iterator to;
 
       // Move to the beginning.
       compare_from = compare_data.begin();
@@ -828,7 +841,7 @@ namespace
       from = data.begin();
       std::advance(from, 4);
       to = data.begin();
-      data.move(from, to);
+      data.splice(to, data, from);
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -842,7 +855,7 @@ namespace
       from = data.begin();
       std::advance(from, 4);
       to = data.end();
-      data.move(from, to);
+      data.splice(to, data, from);
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -858,7 +871,7 @@ namespace
       std::advance(from, 4);
       to = data.begin();
       std::advance(to, 6);
-      data.move(from, to);
+      data.splice(to, data, from);
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -874,14 +887,120 @@ namespace
       std::advance(from, 4);
       to = data.begin();
       std::advance(to, 4);
-      data.move(from, to);
+      data.splice(to, data, from);
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_move_range)
+    TEST_FIXTURE(SetupFixture, test_splice_different)
+    {
+      CompareData compare_data(unsorted_data.begin(), unsorted_data.end());
+      CompareData compare_data2(unsorted_data.begin(), unsorted_data.end());
+
+      DataNDC2 data(unsorted_data.begin(), unsorted_data.end());
+      DataNDC2 data2(unsorted_data.begin(), unsorted_data.end());
+
+      CompareData::iterator compare_from;
+      CompareData::iterator compare_to;
+
+      DataNDC2::iterator from;
+      DataNDC2::iterator to;
+
+      // Move to the beginning.
+      compare_from = compare_data2.begin();
+      std::advance(compare_from, 4);
+      compare_to = compare_data.begin();
+      compare_data.splice(compare_to, compare_data2, compare_from);
+
+      from = data2.begin();
+      std::advance(from, 4);
+      to = data.begin();
+      data.splice(to, data2, from);
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+      CHECK(are_equal);
+
+      are_equal = std::equal(data2.begin(), data2.end(), compare_data2.begin());
+      CHECK(are_equal);
+      
+      // Move to the end.
+      compare_data.assign(unsorted_data.begin(), unsorted_data.end());
+      compare_data2.assign(unsorted_data.begin(), unsorted_data.end());
+
+      data.assign(unsorted_data.begin(), unsorted_data.end());
+      data2.assign(unsorted_data.begin(), unsorted_data.end());
+
+      compare_from = compare_data2.begin();
+      std::advance(compare_from, 4);
+      compare_to = compare_data.end();
+      compare_data.splice(compare_to, compare_data2, compare_from);
+
+      from = data2.begin();
+      std::advance(from, 4);
+      to = data.end();
+      data.splice(to, data2, from);
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+      CHECK(are_equal);
+
+      are_equal = std::equal(data2.begin(), data2.end(), compare_data2.begin());
+      CHECK(are_equal);
+
+      // Move nearby.
+      compare_data.assign(unsorted_data.begin(), unsorted_data.end());
+      compare_data2.assign(unsorted_data.begin(), unsorted_data.end());
+
+      data.assign(unsorted_data.begin(), unsorted_data.end());
+      data2.assign(unsorted_data.begin(), unsorted_data.end());
+
+      compare_from = compare_data2.begin();
+      std::advance(compare_from, 4);
+      compare_to = compare_data.begin();
+      std::advance(compare_to, 6);
+      compare_data.splice(compare_to, compare_data2, compare_from);
+
+      from = data2.begin();
+      std::advance(from, 4);
+      to = data.begin();
+      std::advance(to, 6);
+      data.splice(to, data2, from);
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+      CHECK(are_equal);
+
+      are_equal = std::equal(data2.begin(), data2.end(), compare_data2.begin());
+      CHECK(are_equal);
+
+      // Move to same place.
+      compare_data.assign(unsorted_data.begin(), unsorted_data.end());
+      compare_data2.assign(unsorted_data.begin(), unsorted_data.end());
+
+      data.assign(unsorted_data.begin(), unsorted_data.end());
+      data2.assign(unsorted_data.begin(), unsorted_data.end());
+
+      compare_from = compare_data2.begin();
+      std::advance(compare_from, 4);
+      compare_to = compare_data.begin();
+      std::advance(compare_to, 4);
+      compare_data.splice(compare_to, compare_data2, compare_from);
+
+      from = data2.begin();
+      std::advance(from, 4);
+      to = data.begin();
+      std::advance(to, 4);
+      data.splice(to, data2, from);
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+      CHECK(are_equal);
+
+      are_equal = std::equal(data2.begin(), data2.end(), compare_data2.begin());
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_splice_range_same)
     {
       CompareData compare_data(unsorted_data.begin(), unsorted_data.end());
       DataNDC data(unsorted_data.begin(), unsorted_data.end());
@@ -890,9 +1009,9 @@ namespace
       CompareData::iterator compare_end;
       CompareData::iterator compare_to;
 
-      DataNDC::const_iterator begin;
-      DataNDC::const_iterator end;
-      DataNDC::const_iterator to;
+      DataNDC::iterator begin;
+      DataNDC::iterator end;
+      DataNDC::iterator to;
 
       // Move to the beginning.
       compare_begin = compare_data.begin();
@@ -907,7 +1026,7 @@ namespace
       end = begin;
       std::advance(end, 3);
       to = data.begin();
-      data.move(begin, end, to);
+      data.splice(to, data, begin, end);
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -925,7 +1044,7 @@ namespace
       end = begin;
       std::advance(end, 3);
       to = data.end();
-      data.move(begin, end, to);
+      data.splice(to, data, begin, end);
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -945,7 +1064,7 @@ namespace
       std::advance(end, 3);
       to = data.begin();
       std::advance(to, 7);
-      data.move(begin, end, to);
+      data.splice(to, data, begin, end);
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -958,7 +1077,320 @@ namespace
       to = data.begin();
       std::advance(to, 4);
 
-      CHECK_THROW(data.move(begin, end, to), etl::list_iterator);
+      CHECK_THROW(data.splice(to, data, begin, end), etl::list_iterator);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_splice_range_different)
+    {
+      CompareData compare_data(unsorted_data.begin(), unsorted_data.end());
+      CompareData compare_data2(unsorted_data.begin(), unsorted_data.end());
+      DataNDC2 data(unsorted_data.begin(), unsorted_data.end());
+      DataNDC2 data2(unsorted_data.begin(), unsorted_data.end());
+
+      CompareData::iterator compare_begin;
+      CompareData::iterator compare_end;
+      CompareData::iterator compare_to;
+
+      DataNDC2::iterator begin;
+      DataNDC2::iterator end;
+      DataNDC2::iterator to;
+
+      // Move to the beginning.
+      compare_begin = compare_data2.begin();
+      std::advance(compare_begin, 3);
+      compare_end = compare_begin;
+      std::advance(compare_end, 3);
+      compare_to = compare_data.begin();
+      compare_data.splice(compare_to, compare_data2, compare_begin, compare_end);
+
+      begin = data2.begin();
+      std::advance(begin, 3);
+      end = begin;
+      std::advance(end, 3);
+      to = data.begin();
+      data.splice(to, data2, begin, end);
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+      CHECK(are_equal);
+
+      are_equal = std::equal(data2.begin(), data2.end(), compare_data2.begin());
+      CHECK(are_equal);
+
+      // Move to the end.
+      compare_data.assign(unsorted_data.begin(), unsorted_data.end());
+      compare_data2.assign(unsorted_data.begin(), unsorted_data.end());
+
+      data.assign(unsorted_data.begin(), unsorted_data.end());
+      data2.assign(unsorted_data.begin(), unsorted_data.end());
+
+      compare_begin = compare_data2.begin();
+      std::advance(compare_begin, 3);
+      compare_end = compare_begin;
+      std::advance(compare_end, 3);
+      compare_to = compare_data.end();
+      compare_data.splice(compare_to, compare_data2, compare_begin, compare_end);
+
+      begin = data2.begin();
+      std::advance(begin, 3);
+      end = begin;
+      std::advance(end, 3);
+      to = data.end();
+      data.splice(to, data2, begin, end);
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+      CHECK(are_equal);
+
+      are_equal = std::equal(data2.begin(), data2.end(), compare_data2.begin());
+      CHECK(are_equal);
+
+      // Move nearby.
+      compare_data.assign(unsorted_data.begin(), unsorted_data.end());
+      compare_data2.assign(unsorted_data.begin(), unsorted_data.end());
+
+      data.assign(unsorted_data.begin(), unsorted_data.end());
+      data2.assign(unsorted_data.begin(), unsorted_data.end());
+
+      compare_begin = compare_data2.begin();
+      std::advance(compare_begin, 2);
+      compare_end = compare_begin;
+      std::advance(compare_end, 3);
+      compare_to = compare_data.begin();
+      std::advance(compare_to, 7);
+      compare_data.splice(compare_to, compare_data2, compare_begin, compare_end);
+
+      begin = data2.begin();
+      std::advance(begin, 2);
+      end = begin;
+      std::advance(end, 3);
+      to = data.begin();
+      std::advance(to, 7);
+      data.splice(to, data2, begin, end);
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+      CHECK(are_equal);
+
+      are_equal = std::equal(data2.begin(), data2.end(), compare_data2.begin());
+      CHECK(are_equal);
+    }
+    
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_splice_list_same)
+    {
+      CompareData compare_data(unsorted_data.begin(), unsorted_data.end());
+      DataNDC data(unsorted_data.begin(), unsorted_data.end());
+
+      CompareData::iterator compare_to;
+      DataNDC::iterator to;
+
+      // Move to the beginning.
+      compare_to = compare_data.begin();
+      compare_data.splice(compare_to, compare_data);
+
+      to = data.begin();
+      data.splice(to, data);
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+      CHECK(are_equal);
+
+      // Move to the end.
+      compare_to = compare_data.end();
+      compare_data.splice(compare_to, compare_data);
+
+      to = data.end();
+      data.splice(to, data);
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+      CHECK(are_equal);
+
+      // Move nearby.
+      compare_to = compare_data.begin();
+      std::advance(compare_to, 7);
+      compare_data.splice(compare_to, compare_data);
+
+      to = data.begin();
+      std::advance(to, 7);
+      data.splice(to, data);
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_splice_list_different)
+    {
+      CompareData compare_data(unsorted_data.begin(), unsorted_data.end());
+      CompareData compare_data2(unsorted_data.begin(), unsorted_data.end());
+
+      DataNDC2 data(unsorted_data.begin(), unsorted_data.end());
+      DataNDC2 data2(unsorted_data.begin(), unsorted_data.end());
+
+      CompareData::iterator compare_to;
+      DataNDC2::iterator to;
+
+      // Move to the beginning.
+      compare_to = compare_data.begin();
+      compare_data.splice(compare_to, compare_data2);
+
+      to = data.begin();
+      data.splice(to, data2);
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+      CHECK(are_equal);
+
+      are_equal = std::equal(data2.begin(), data2.end(), compare_data2.begin());
+      CHECK(are_equal);
+      
+      // Move to the end.
+      compare_data.assign(unsorted_data.begin(), unsorted_data.end());
+      compare_data2.assign(unsorted_data.begin(), unsorted_data.end());
+
+      data.assign(unsorted_data.begin(), unsorted_data.end());
+      data2.assign(unsorted_data.begin(), unsorted_data.end());
+
+      compare_to = compare_data.end();
+      compare_data.splice(compare_to, compare_data2);
+
+      to = data.end();
+      data.splice(to, data2);
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+      CHECK(are_equal);
+
+      are_equal = std::equal(data2.begin(), data2.end(), compare_data2.begin());
+      CHECK(are_equal);
+
+      // Move nearby.
+      compare_data.assign(unsorted_data.begin(), unsorted_data.end());
+      compare_data2.assign(unsorted_data.begin(), unsorted_data.end());
+
+      data.assign(unsorted_data.begin(), unsorted_data.end());
+      data2.assign(unsorted_data.begin(), unsorted_data.end());
+
+      compare_to = compare_data.begin();
+      std::advance(compare_to, 7);
+      compare_data.splice(compare_to, compare_data2);
+
+      to = data.begin();
+      std::advance(to, 7);
+      data.splice(to, data2);
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+      CHECK(are_equal);
+
+      are_equal = std::equal(data2.begin(), data2.end(), compare_data2.begin());
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_merge_0_1)
+    {
+      bool are_equal;
+
+      DataNDC2 data0(merge_data0.begin(), merge_data0.end());
+      DataNDC2 data1(merge_data1.begin(), merge_data1.end());
+
+      CompareData compare0(merge_data0.begin(), merge_data0.end());
+      CompareData compare1(merge_data1.begin(), merge_data1.end());
+
+      data0.merge(data1);
+      compare0.merge(compare1);
+
+      are_equal = std::equal(data0.begin(), data0.end(), compare0.begin());
+      CHECK(are_equal);
+
+      CHECK_EQUAL(data0.size(), compare0.size());
+      CHECK_EQUAL(data1.size(), compare1.size());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_merge_0_2)
+    {
+      bool are_equal;
+
+      DataNDC2 data0(merge_data0.begin(), merge_data0.end());
+      DataNDC2 data2(merge_data2.begin(), merge_data2.end());
+
+      CompareData compare0(merge_data0.begin(), merge_data0.end());
+      CompareData compare2(merge_data2.begin(), merge_data2.end());
+
+      data0.merge(data2);
+      compare0.merge(compare2);
+
+      are_equal = std::equal(data0.begin(), data0.end(), compare0.begin());
+      CHECK(are_equal);
+
+      CHECK_EQUAL(data0.size(), compare0.size());
+      CHECK_EQUAL(data2.size(), compare2.size());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_merge_0_3)
+    {
+      bool are_equal;
+
+      DataNDC2 data0(merge_data0.begin(), merge_data0.end());
+      DataNDC2 data3(merge_data3.begin(), merge_data3.end());
+
+      CompareData compare0(merge_data0.begin(), merge_data0.end());
+      CompareData compare3(merge_data3.begin(), merge_data3.end());
+
+      data0.merge(data3);
+      compare0.merge(compare3);
+
+      are_equal = std::equal(data0.begin(), data0.end(), compare0.begin());
+      CHECK(are_equal);
+
+      CHECK_EQUAL(data0.size(), compare0.size());
+      CHECK_EQUAL(data3.size(), compare3.size());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_merge_0_4)
+    {
+      bool are_equal;
+
+      DataNDC2 data0(merge_data0.begin(), merge_data0.end());
+      DataNDC2 data4(merge_data4.begin(), merge_data4.end());
+
+      CompareData compare0(merge_data0.begin(), merge_data0.end());
+      CompareData compare4(merge_data4.begin(), merge_data4.end());
+
+      data0.merge(data4);
+      compare0.merge(compare4);
+
+      are_equal = std::equal(data0.begin(), data0.end(), compare0.begin());
+      CHECK(are_equal);
+
+      CHECK_EQUAL(data0.size(), compare0.size());
+      CHECK_EQUAL(data4.size(), compare4.size());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_merge_0_1_reverse_order)
+    {
+      bool are_equal;
+
+      DataNDC2 data0(merge_data0.begin(), merge_data0.end());
+      DataNDC2 data1(merge_data1.begin(), merge_data1.end());
+
+      data0.reverse();
+      data1.reverse();
+
+      CompareData compare0(merge_data0.begin(), merge_data0.end());
+      CompareData compare1(merge_data1.begin(), merge_data1.end());
+
+      compare0.reverse();
+      compare1.reverse();
+
+      data0.merge(data1, std::greater<ItemNDC>());
+      compare0.merge(compare1, std::greater<ItemNDC>());
+
+      are_equal = std::equal(data0.begin(), data0.end(), compare0.begin());
+      CHECK(are_equal);
+
+      CHECK_EQUAL(data0.size(), compare0.size());
+      CHECK_EQUAL(data1.size(), compare1.size());
     }
   };
 }

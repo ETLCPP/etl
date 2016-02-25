@@ -183,6 +183,9 @@ namespace
 
       CHECK(data0.empty());
       CHECK(data1.empty());
+
+      CHECK(data0.begin() == data0.end());
+      CHECK(data1.begin() == data1.end());
     }
 
     //*************************************************************************

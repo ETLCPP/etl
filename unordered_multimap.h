@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 http://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2016 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,100 +28,82 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_LIST__
-#define __ETL_LIST__
+#ifndef __ETL_UNORDERED_MULTIMAP__
+#define __ETL_UNORDERED_MULTIMAP__
 
 #include <stddef.h>
+#include <iterator>
+#include <functional>
 
-#include "ilist.h"
+#include "iunordered_multimap.h"
 #include "container.h"
 #include "pool.h"
+#include "vector.h"
+#include "intrusive_forward_list.h"
+#include "hash.h"
 
 //*****************************************************************************
-///\defgroup list list
-/// A linked list with the capacity defined at compile time.
+///\defgroup unordered_multimap unordered_multimap
+/// A unordered_multimap with the capacity defined at compile time.
 ///\ingroup containers
 //*****************************************************************************
 
 namespace etl
 {
   //*************************************************************************
-  /// A templated list implementation that uses a fixed size buffer.
-  ///\note 'merge' and 'splice' and are not supported.
+  /// A templated unordered_multimap implementation that uses a fixed size buffer.
   //*************************************************************************
-  template <typename T, const size_t MAX_SIZE_>
-  class list : public ilist<T>
+  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename THash = etl::hash<TKey>, typename TKeyEqual = std::equal_to<TKey> >
+  class unordered_multimap : public iunordered_multimap<TKey, TValue, THash, TKeyEqual>
   {
+  private:
+
+    typedef iunordered_multimap<TKey, TValue, THash, TKeyEqual> base;
+
   public:
 
     static const size_t MAX_SIZE = MAX_SIZE_;
 
-  public:
-
-    typedef T        value_type;
-    typedef T*       pointer;
-    typedef const T* const_pointer;
-    typedef T&       reference;
-    typedef const T& const_reference;
-    typedef size_t   size_type;
-
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    list()
-      : ilist<T>(node_pool, MAX_SIZE)
+    unordered_multimap()
+      : base(node_pool, buckets)
     {
-      ilist<T>::initialise();
-    }
-
-    //*************************************************************************
-    /// Construct from size.
-    //*************************************************************************
-    explicit list(size_t initialSize)
-      : ilist<T>(node_pool, MAX_SIZE)
-    {
-      ilist<T>::assign(initialSize, T());
-    }
-
-    //*************************************************************************
-    /// Construct from size and value.
-    //*************************************************************************
-    list(size_t initialSize, typename ilist<T>::parameter_t value)
-      : ilist<T>(node_pool, MAX_SIZE)
-    {
-      ilist<T>::assign(initialSize, value);
+      base::initialise();
     }
 
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
-    list(const list& other)
-      : ilist<T>(node_pool, MAX_SIZE)
+    unordered_multimap(const unordered_multimap& other)
+      : base(node_pool, buckets)
     {
-      if (this != &other)
-      {
-        ilist<T>::assign(other.cbegin(), other.cend());
-      }
+			base::assign(other.cbegin(), other.cend());
     }
 
     //*************************************************************************
-    /// Construct from range.
+    /// Constructor, from an iterator range.
+    ///\tparam TIterator The iterator type.
+    ///\param first The iterator to the first element.
+    ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    list(TIterator first, TIterator last)
-      : ilist<T>(node_pool, MAX_SIZE)
+    unordered_multimap(TIterator first, TIterator last)
+      : base(node_pool, buckets)
     {
-      ilist<T>::assign(first, last);
+      base::assign(first, last);
     }
 
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    list& operator = (const list& rhs)
+    unordered_multimap& operator = (const unordered_multimap& rhs)
     {
-      if (&rhs != this)
+      // Skip if doing self assignment
+      if (this != &rhs)
       {
-        ilist<T>::assign(rhs.cbegin(), rhs.cend());
+        base::assign(rhs.cbegin(), rhs.cend());
       }
 
       return *this;
@@ -129,9 +111,13 @@ namespace etl
 
   private:
 
-    /// The pool of nodes used in the list.
-    etl::pool<typename list::data_node_t, MAX_SIZE> node_pool;
+    /// The pool of nodes used for the unordered_multimap.
+    etl::pool<typename base::node_t, MAX_SIZE> node_pool;
+
+    /// The buckets of node lists.
+    etl::vector<etl::intrusive_forward_list<typename base::node_t>, MAX_SIZE> buckets;
   };
+
 }
 
 #endif

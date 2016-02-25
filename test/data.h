@@ -54,6 +54,11 @@ public:
     return value < other.value;
   }
 
+  bool operator > (const TestDataDC& other) const
+  {
+    return value > other.value;
+  }
+
   T value;
 };
 
@@ -95,6 +100,11 @@ public:
   bool operator < (const TestDataNDC& other) const
   {
     return value < other.value;
+  }
+
+  bool operator > (const TestDataNDC& other) const
+  {
+    return value > other.value;
   }
 
   T value;

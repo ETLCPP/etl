@@ -101,6 +101,20 @@ namespace etl
   };
 
   //***************************************************************************
+  /// Unsorted exception for the list.
+  ///\ingroup list
+  //***************************************************************************
+  class list_unsorted : public list_exception
+  {
+  public:
+
+    list_unsorted(string_type file_name, numeric_type line_number)
+      : list_exception(ETL_ERROR_TEXT("list:unsorted", ETL_FILE"D"), file_name, line_number)
+    {
+    }
+  };
+
+  //***************************************************************************
   /// The base class for all lists.
   ///\ingroup list
   //***************************************************************************
@@ -113,12 +127,12 @@ namespace etl
     //*************************************************************************
     /// The node element in the list.
     //*************************************************************************
-    struct Node
+    struct node_t
     {
       //***********************************************************************
       /// Constructor
       //***********************************************************************
-      Node()
+      node_t()
         : previous(nullptr),
           next(nullptr)
       {
@@ -132,8 +146,8 @@ namespace etl
         std::swap(previous, next);
       }
 
-      Node* previous;
-      Node* next;
+      node_t* previous;
+      node_t* next;
     };
 
     //*************************************************************************
@@ -146,7 +160,7 @@ namespace etl
         return;
       }
 
-      Node* p_node = terminal_node.next;
+      node_t* p_node = terminal_node.next;
 
       while (p_node != &terminal_node)
       {
@@ -204,7 +218,7 @@ namespace etl
     //*************************************************************************
     /// Get the head node.
     //*************************************************************************
-    Node& get_head()
+    node_t& get_head()
     {
       return *terminal_node.next;
     }
@@ -212,7 +226,7 @@ namespace etl
     //*************************************************************************
     /// Get the head node.
     //*************************************************************************
-    const Node& get_head() const
+    const node_t& get_head() const
     {
       return *terminal_node.next;
     }
@@ -220,7 +234,7 @@ namespace etl
     //*************************************************************************
     /// Get the tail node.
     //*************************************************************************
-    Node& get_tail()
+    node_t& get_tail()
     {
       return *terminal_node.previous;
     }
@@ -228,7 +242,7 @@ namespace etl
     //*************************************************************************
     /// Get the tail node.
     //*************************************************************************
-    const Node& get_tail() const
+    const node_t& get_tail() const
     {
       return *terminal_node.previous;
     }
@@ -236,7 +250,7 @@ namespace etl
     //*************************************************************************
     /// Insert a node before 'position'.
     //*************************************************************************
-    void insert_node(Node& position, Node& node)
+    void insert_node(node_t& position, node_t& node)
     {
       // Connect to the list.
       join(*position.previous, node);
@@ -257,7 +271,7 @@ namespace etl
     //*************************************************************************
     /// Join two nodes.
     //*************************************************************************
-    void join(Node& left, Node& right)
+    void join(node_t& left, node_t& right)
     {
       left.next = &right;
       right.previous = &left;
@@ -274,7 +288,7 @@ namespace etl
     }
 
     
-    Node            terminal_node; ///< The node that acts as the list start and end.
+    node_t            terminal_node; ///< The node that acts as the list start and end.
     size_type       current_size;  ///< The number of the used nodes.
     const size_type MAX_SIZE;      ///< The maximum size of the list.
   };

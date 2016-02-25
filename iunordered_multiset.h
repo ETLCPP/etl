@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_IUNORDERED_MAP__
-#define __ETL_IUNORDERED_MAP__
+#ifndef __ETL_IUNORDERED_MULTISET__
+#define __ETL_IUNORDERED_MULTISET__
 
 #include <iterator>
 #include <algorithm>
@@ -49,79 +49,77 @@ SOFTWARE.
 #include "error_handler.h"
 
 #undef ETL_FILE
-#define ETL_FILE "16"
+#define ETL_FILE "23"
 
 namespace etl
 {
   //***************************************************************************
-  /// Exception for the unordered_map.
-  ///\ingroup unordered_map
+  /// Exception for the unordered_multiset.
+  ///\ingroup unordered_multiset
   //***************************************************************************
-  class unordered_map_exception : public exception
+  class unordered_multiset_exception : public exception
   {
   public:
 
-    unordered_map_exception(string_type what, string_type file_name, numeric_type line_number)
+    unordered_multiset_exception(string_type what, string_type file_name, numeric_type line_number)
       : exception(what, file_name, line_number)
     {
     }
   };
 
   //***************************************************************************
-  /// Full exception for the unordered_map.
-  ///\ingroup unordered_map
+  /// Full exception for the unordered_multiset.
+  ///\ingroup unordered_multiset
   //***************************************************************************
-  class unordered_map_full : public unordered_map_exception
+  class unordered_multiset_full : public unordered_multiset_exception
   {
   public:
 
-    unordered_map_full(string_type file_name, numeric_type line_number)
-      : unordered_map_exception(ETL_ERROR_TEXT("unordered_map:full", ETL_FILE"A"), file_name, line_number)
+    unordered_multiset_full(string_type file_name, numeric_type line_number)
+      : unordered_multiset_exception(ETL_ERROR_TEXT("unordered_multiset:full", ETL_FILE"A"), file_name, line_number)
     {
     }
   };
 
   //***************************************************************************
-  /// Out of range exception for the unordered_map.
-  ///\ingroup unordered_map
+  /// Out of range exception for the unordered_multiset.
+  ///\ingroup unordered_multiset
   //***************************************************************************
-  class unordered_map_out_of_range : public unordered_map_exception
+  class unordered_multiset_out_of_range : public unordered_multiset_exception
   {
   public:
 
-    unordered_map_out_of_range(string_type file_name, numeric_type line_number)
-      : unordered_map_exception(ETL_ERROR_TEXT("unordered_map:range", ETL_FILE"B"), file_name, line_number)
+    unordered_multiset_out_of_range(string_type file_name, numeric_type line_number)
+      : unordered_multiset_exception(ETL_ERROR_TEXT("unordered_multiset:range", ETL_FILE"B"), file_name, line_number)
     {}
   };
 
   //***************************************************************************
-  /// Iterator exception for the unordered_map.
-  ///\ingroup unordered_map
+  /// Iterator exception for the unordered_multiset.
+  ///\ingroup unordered_multiset
   //***************************************************************************
-  class unordered_map_iterator : public unordered_map_exception
+  class unordered_multiset_iterator : public unordered_multiset_exception
   {
   public:
 
-    unordered_map_iterator(string_type file_name, numeric_type line_number)
-      : unordered_map_exception(ETL_ERROR_TEXT("unordered_map:iterator", ETL_FILE"C"), file_name, line_number)
+    unordered_multiset_iterator(string_type file_name, numeric_type line_number)
+      : unordered_multiset_exception(ETL_ERROR_TEXT("unordered_multiset:iterator", ETL_FILE"C"), file_name, line_number)
     {
     }
   };
 
   //***************************************************************************
-  /// The base class for specifically sized unordered_map.
-  /// Can be used as a reference type for all unordered_map containing a specific type.
-  ///\ingroup unordered_map
+  /// The base class for specifically sized unordered_multiset.
+  /// Can be used as a reference type for all unordered_multiset containing a specific type.
+  ///\ingroup unordered_multiset
   //***************************************************************************
-  template <typename TKey, typename T, typename THash = etl::hash<TKey>, typename TKeyEqual = std::equal_to<TKey> >
-  class iunordered_map
+  template <typename TKey, typename THash = etl::hash<TKey>, typename TKeyEqual = std::equal_to<TKey> >
+  class iunordered_multiset
   {
   public:
 
-    typedef std::pair<const TKey, T> value_type;
-
+    typedef TKey              value_type;
     typedef TKey              key_type;
-    typedef T                 mapped_type;
     typedef THash             hasher;
     typedef TKeyEqual         key_equal;
     typedef value_type&       reference;
@@ -130,20 +128,19 @@ namespace etl
     typedef const value_type* const_pointer;
     typedef size_t            size_type;
 
-
     typedef typename parameter_type<TKey>::type key_value_parameter_t;
 
-    typedef etl::forward_link<> link_t; // Default link.
+    typedef etl::forward_link<> link_t;
 
     // The nodes that store the elements.
     struct node_t : public link_t
     {
-      node_t(const value_type& key_value_pair)
-        : key_value_pair(key_value_pair)
+      node_t(const value_type& key)
+        : key(key)
       {
       }
 
-      value_type key_value_pair;
+      value_type key;
     };
 
   private:
@@ -161,22 +158,21 @@ namespace etl
     typedef typename bucket_t::const_iterator local_const_iterator;
 
     //*********************************************************************
-    class iterator : public std::iterator<std::forward_iterator_tag, T>
+    class iterator : public std::iterator<std::forward_iterator_tag, TKey>
     {
     public:
 
-      typedef typename iunordered_map::value_type      value_type;
-      typedef typename iunordered_map::key_type        key_type;
-      typedef typename iunordered_map::mapped_type     mapped_type;
-      typedef typename iunordered_map::hasher          hasher;
-      typedef typename iunordered_map::key_equal       key_equal;
-      typedef typename iunordered_map::reference       reference;
-      typedef typename iunordered_map::const_reference const_reference;
-      typedef typename iunordered_map::pointer         pointer;
-      typedef typename iunordered_map::const_pointer   const_pointer;
-      typedef typename iunordered_map::size_type       size_type;
+      typedef typename iunordered_multiset::value_type      value_type;
+      typedef typename iunordered_multiset::key_type        key_type;
+      typedef typename iunordered_multiset::hasher          hasher;
+      typedef typename iunordered_multiset::key_equal       key_equal;
+      typedef typename iunordered_multiset::reference       reference;
+      typedef typename iunordered_multiset::const_reference const_reference;
+      typedef typename iunordered_multiset::pointer         pointer;
+      typedef typename iunordered_multiset::const_pointer   const_pointer;
+      typedef typename iunordered_multiset::size_type       size_type;
 
-      friend class iunordered_map;
+      friend class iunordered_multiset;
 
       //*********************************
       iterator()
@@ -234,39 +230,39 @@ namespace etl
       }
 
       //*********************************
-      std::pair<const TKey, T> operator *()
+      reference operator *()
       {
-        return inode->key_value_pair;
+        return inode->key;
       }
 
       //*********************************
       const_reference operator *() const
       {
-        return inode->key_value_pair;
+        return inode->key;
       }
 
       //*********************************
       pointer operator &()
       {
-        return &(inode->key_value_pair);
+        return &(inode->key);
       }
 
       //*********************************
       const_pointer operator &() const
       {
-        return &(inode->key_value_pair);
+        return &(inode->key);
       }
 
       //*********************************
       pointer operator ->()
       {
-        return &(inode->key_value_pair);
+        return &(inode->key);
       }
 
       //*********************************
       const_pointer operator ->() const
       {
-        return &(inode->key_value_pair);
+        return &(inode->key);
       }
 
       //*********************************
@@ -321,22 +317,21 @@ namespace etl
     };
 
     //*********************************************************************
-    class const_iterator : public std::iterator<std::forward_iterator_tag, const T>
+    class const_iterator : public std::iterator<std::forward_iterator_tag, const TKey>
     {
     public:
 
-      typedef typename iunordered_map::value_type      value_type;
-      typedef typename iunordered_map::key_type        key_type;
-      typedef typename iunordered_map::mapped_type     mapped_type;
-      typedef typename iunordered_map::hasher          hasher;
-      typedef typename iunordered_map::key_equal       key_equal;
-      typedef typename iunordered_map::reference       reference;
-      typedef typename iunordered_map::const_reference const_reference;
-      typedef typename iunordered_map::pointer         pointer;
-      typedef typename iunordered_map::const_pointer   const_pointer;
-      typedef typename iunordered_map::size_type       size_type;
+      typedef typename iunordered_multiset::value_type      value_type;
+      typedef typename iunordered_multiset::key_type        key_type;
+      typedef typename iunordered_multiset::hasher          hasher;
+      typedef typename iunordered_multiset::key_equal       key_equal;
+      typedef typename iunordered_multiset::reference       reference;
+      typedef typename iunordered_multiset::const_reference const_reference;
+      typedef typename iunordered_multiset::pointer         pointer;
+      typedef typename iunordered_multiset::const_pointer   const_pointer;
+      typedef typename iunordered_multiset::size_type       size_type;
 
-      friend class iunordered_map;
+      friend class iunordered_multiset;
       friend class iterator;
 
       //*********************************
@@ -345,7 +340,7 @@ namespace etl
       }
 
       //*********************************
-      const_iterator(const typename iunordered_map::iterator& other)
+      const_iterator(const typename iunordered_multiset::iterator& other)
         : ibuckets_end(other.ibuckets_end),
           ibucket(other.ibucket),
           inode(other.inode)
@@ -406,19 +401,19 @@ namespace etl
       //*********************************
       const_reference operator *() const
       {
-        return inode->key_value_pair;
+        return inode->key;
       }
 
       //*********************************
       const_pointer operator &() const
       {
-        return &(inode->key_value_pair);
+        return &(inode->key);
       }
 
       //*********************************
       const_pointer operator ->() const
       {
-        return &(inode->key_value_pair);
+        return &(inode->key);
       }
 
       //*********************************
@@ -475,8 +470,8 @@ namespace etl
     typedef typename std::iterator_traits<iterator>::difference_type difference_type;
 
     //*********************************************************************
-    /// Returns an iterator to the beginning of the unordered_map.
-    ///\return An iterator to the beginning of the unordered_map.
+    /// Returns an iterator to the beginning of the unordered_multiset.
+    ///\return An iterator to the beginning of the unordered_multiset.
     //*********************************************************************
     iterator begin()
     {
@@ -484,8 +479,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const_iterator to the beginning of the unordered_map.
-    ///\return A const iterator to the beginning of the unordered_map.
+    /// Returns a const_iterator to the beginning of the unordered_multiset.
+    ///\return A const iterator to the beginning of the unordered_multiset.
     //*********************************************************************
     const_iterator begin() const
     {
@@ -493,8 +488,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const_iterator to the beginning of the unordered_map.
-    ///\return A const iterator to the beginning of the unordered_map.
+    /// Returns a const_iterator to the beginning of the unordered_multiset.
+    ///\return A const iterator to the beginning of the unordered_multiset.
     //*********************************************************************
     const_iterator cbegin() const
     {
@@ -502,8 +497,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns an iterator to the beginning of the unordered_map bucket.
-    ///\return An iterator to the beginning of the unordered_map bucket.
+    /// Returns an iterator to the beginning of the unordered_multiset bucket.
+    ///\return An iterator to the beginning of the unordered_multiset bucket.
     //*********************************************************************
     local_iterator begin(size_t i)
     {
@@ -511,8 +506,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const_iterator to the beginning of the unordered_map bucket.
-    ///\return A const iterator to the beginning of the unordered_map bucket.
+    /// Returns a const_iterator to the beginning of the unordered_multiset bucket.
+    ///\return A const iterator to the beginning of the unordered_multiset bucket.
     //*********************************************************************
     local_const_iterator begin(size_t i) const
     {
@@ -520,8 +515,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const_iterator to the beginning of the unordered_map bucket.
-    ///\return A const iterator to the beginning of the unordered_map bucket.
+    /// Returns a const_iterator to the beginning of the unordered_multiset bucket.
+    ///\return A const iterator to the beginning of the unordered_multiset bucket.
     //*********************************************************************
     local_const_iterator cbegin(size_t i) const
     {
@@ -529,8 +524,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns an iterator to the end of the unordered_map.
-    ///\return An iterator to the end of the unordered_map.
+    /// Returns an iterator to the end of the unordered_multiset.
+    ///\return An iterator to the end of the unordered_multiset.
     //*********************************************************************
     iterator end()
     {
@@ -538,8 +533,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const_iterator to the end of the unordered_map.
-    ///\return A const iterator to the end of the unordered_map.
+    /// Returns a const_iterator to the end of the unordered_multiset.
+    ///\return A const iterator to the end of the unordered_multiset.
     //*********************************************************************
     const_iterator end() const
     {
@@ -547,8 +542,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const_iterator to the end of the unordered_map.
-    ///\return A const iterator to the end of the unordered_map.
+    /// Returns a const_iterator to the end of the unordered_multiset.
+    ///\return A const iterator to the end of the unordered_multiset.
     //*********************************************************************
     const_iterator cend() const
     {
@@ -556,8 +551,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns an iterator to the end of the unordered_map bucket.
-    ///\return An iterator to the end of the unordered_map bucket.
+    /// Returns an iterator to the end of the unordered_multiset bucket.
+    ///\return An iterator to the end of the unordered_multiset bucket.
     //*********************************************************************
     local_iterator end(size_t i)
     {
@@ -565,8 +560,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const_iterator to the end of the unordered_map bucket.
-    ///\return A const iterator to the end of the unordered_map bucket.
+    /// Returns a const_iterator to the end of the unordered_multiset bucket.
+    ///\return A const iterator to the end of the unordered_multiset bucket.
     //*********************************************************************
     local_const_iterator end(size_t i) const
     {
@@ -574,8 +569,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const_iterator to the end of the unordered_map bucket.
-    ///\return A const iterator to the end of the unordered_map bucket.
+    /// Returns a const_iterator to the end of the unordered_multiset bucket.
+    ///\return A const iterator to the end of the unordered_multiset bucket.
     //*********************************************************************
     local_const_iterator cend(size_t i) const
     {
@@ -621,115 +616,9 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a reference to the value at index 'key'
-    ///\param key The key.
-    ///\return A reference to the value at index 'key'
-    //*********************************************************************
-    mapped_type& operator [](key_value_parameter_t key)
-    {
-      // Find the bucket.
-      bucket_list_iterator ibucket = pbuckets->begin() + bucket(key);
-
-      // Find the first node in the bucket.
-      local_iterator inode = ibucket->begin();
-
-      // Walk the list looking for the right one.
-      while (inode != ibucket->end())
-      {
-        // Equal keys?
-        if (key_equal_function(key, inode->key_value_pair.first))
-        {
-          // Found a match.
-          return inode->key_value_pair.second;
-        }
-        else
-        {
-          ++inode;
-        }
-      }
-
-      // Doesn't exist, so add a new one.
-      // Get a new node.
-      node_t& node = *pnodepool->allocate(node_t(value_type(key, T())));
-      ibucket->insert_after(ibucket->before_begin(), node);
-
-      return ibucket->begin()->key_value_pair.second;
-    }
-
-    //*********************************************************************
-    /// Returns a reference to the value at index 'key'
-    /// If asserts or exceptions are enabled, emits an etl::unordered_map_out_of_range if the key is not in the range.
-    ///\param key The key.
-    ///\return A reference to the value at index 'key'
-    //*********************************************************************
-    mapped_type& at(key_value_parameter_t key)
-    {
-      // Find the bucket.
-      bucket_list_iterator ibucket = pbuckets->begin() + bucket(key);
-
-      // Find the first node in the bucket.
-      local_iterator inode = ibucket->begin();
-
-      // Walk the list looking for the right one.
-      while (inode != ibucket->end())
-      {
-        // Equal keys?
-        if (key_equal_function(key, inode->key_value_pair.first))
-        {
-          // Found a match.
-          return inode->key_value_pair.second;
-        }
-        else
-        {
-          ++inode;
-        }
-      }
-
-      // Doesn't exist.
-      ETL_ASSERT(false, ETL_ERROR(unordered_map_out_of_range));
-
-      return begin()->second;
-    }
-
-    //*********************************************************************
-    /// Returns a const reference to the value at index 'key'
-    /// If asserts or exceptions are enabled, emits an etl::unordered_map_out_of_range if the key is not in the range.
-    ///\param key The key.
-    ///\return A const reference to the value at index 'key'
-    //*********************************************************************
-    const mapped_type& at(key_value_parameter_t key) const
-    {
-      // Find the bucket.
-      bucket_list_t::const_iterator ibucket = pbuckets->begin() + bucket(key);
-
-      // Find the first node in the bucket.
-      bucket_t::const_iterator inode = ibucket->begin();
-
-      // Walk the list looking for the right one.
-      while (inode != ibucket->end())
-      {
-        // Equal keys?
-        if (key_equal_function(key, inode->key_value_pair.first))
-        {
-          // Found a match.
-          return inode->key_value_pair.second;
-        }
-        else
-        {
-          ++inode;
-        }
-      }
-
-      // Doesn't exist.
-      ETL_ASSERT(false, ETL_ERROR(unordered_map_out_of_range));
-
-      return begin()->second;
-    }
-
-    //*********************************************************************
-    /// Assigns values to the unordered_map.
-    /// If asserts or exceptions are enabled, emits unordered_map_full if the unordered_map does not have enough free space.
-    /// If asserts or exceptions are enabled, emits unordered_map_iterator if the iterators are reversed.
+    /// Assigns values to the unordered_multiset.
+    /// If asserts or exceptions are enabled, emits unordered_multiset_full if the unordered_multiset does not have enough free space.
+    /// If asserts or exceptions are enabled, emits unordered_multiset_iterator if the iterators are reversed.
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
@@ -738,8 +627,8 @@ namespace etl
     {
 #ifdef _DEBUG
       difference_type count = std::distance(first, last);
-      ETL_ASSERT(count >= 0, ETL_ERROR(unordered_map_iterator));
-      ETL_ASSERT(size_t(count) <= max_size() , ETL_ERROR(unordered_map_full));
+      ETL_ASSERT(count >= 0, ETL_ERROR(unordered_multiset_iterator));
+      ETL_ASSERT(size_t(count) <= max_size() , ETL_ERROR(unordered_multiset_full));
 #endif
 
       clear();
@@ -751,18 +640,15 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Inserts a value to the unordered_map.
-    /// If asserts or exceptions are enabled, emits unordered_map_full if the unordered_map is already full.
+    /// Inserts a value to the unordered_multiset.
+    /// If asserts or exceptions are enabled, emits unordered_multiset_full if the unordered_multiset is already full.
     ///\param value The value to insert.
     //*********************************************************************
-    std::pair<iterator, bool> insert(const value_type& key_value_pair)
+    std::pair<iterator, bool> insert(const value_type& key)
     {
       std::pair<iterator, bool> result(end(), false);
 
-      ETL_ASSERT(!full(), ETL_ERROR(unordered_map_full));
-
-      const key_type&    key    = key_value_pair.first;
-      const mapped_type& mapped = key_value_pair.second;
+      ETL_ASSERT(!full(), ETL_ERROR(unordered_multiset_full));
 
       // Get the hash index.
       size_t index = bucket(key);
@@ -775,7 +661,7 @@ namespace etl
       if (bucket.empty())
       {
         // Get a new node.
-        node_t& node = *pnodepool->allocate(node_t(key_value_pair));
+        node_t& node = *pnodepool->allocate(node_t(key));
 
         // Just add the pointer to the bucket;
         bucket.insert_after(bucket.before_begin(), node);
@@ -794,7 +680,7 @@ namespace etl
         while (inode != bucket.end())
         {
           // Do we already have this key?
-          if (inode->key_value_pair.first == key)
+          if (inode->key == key)
           {
             break;
           }
@@ -803,38 +689,34 @@ namespace etl
           ++inode;
         }
 
-        // Not already there?
-        if (inode == bucket.end())
-        {
-          // Get a new node.
-          node_t& node = *pnodepool->allocate(node_t(key_value_pair));
+        // Get a new node.
+        node_t& node = *pnodepool->allocate(node_t(key));
 
-          // Add the node to the end of the bucket;
-          bucket.insert_after(inode_previous, node);
-          ++inode_previous;
+        // Add the node to the end of the bucket;
+        bucket.insert_after(inode_previous, node);
+        ++inode_previous;
 
-          result.first  = iterator(pbuckets->end(), ibucket, inode_previous);
-          result.second = true;
-        }
+        result.first  = iterator(pbuckets->end(), ibucket, inode_previous);
+        result.second = true;
       }
 
       return result;
     }
 
     //*********************************************************************
-    /// Inserts a value to the unordered_map.
-    /// If asserts or exceptions are enabled, emits unordered_map_full if the unordered_map is already full.
+    /// Inserts a value to the unordered_multiset.
+    /// If asserts or exceptions are enabled, emits unordered_multiset_full if the unordered_multiset is already full.
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(const_iterator position, const value_type& key_value_pair)
+    iterator insert(const_iterator position, const value_type& key)
     {
-      return insert(key_value_pair).first;
+      return insert(key).first;
     }
 
     //*********************************************************************
-    /// Inserts a range of values to the unordered_map.
-    /// If asserts or exceptions are enabled, emits unordered_map_full if the unordered_map does not have enough free space.
+    /// Inserts a range of values to the unordered_multiset.
+    /// If asserts or exceptions are enabled, emits unordered_multiset_full if the unordered_multiset does not have enough free space.
     ///\param position The position to insert at.
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.
@@ -851,7 +733,7 @@ namespace etl
     //*********************************************************************
     /// Erases an element.
     ///\param key The key to erase.
-    ///\return The number of elements erased. 0 or 1.
+    ///\return The number of elements erased.
     //*********************************************************************
     size_t erase(key_value_parameter_t key)
     {
@@ -861,18 +743,22 @@ namespace etl
       bucket_t& bucket = (*pbuckets)[bucket_id];
 
       local_iterator iprevious = bucket.before_begin();
-      local_iterator icurrent  = bucket.begin();
+      local_iterator icurrent = bucket.begin();
 
-      while ((icurrent != bucket.end()) && (icurrent->key_value_pair.first != key))
+      while (icurrent != bucket.end())
       {
-        ++iprevious;
+        if (icurrent->key == key)
+        {
+          bucket.erase_after(iprevious);
+          ++count;
+          icurrent = iprevious;
+        }
+        else
+        {
+          ++iprevious;
+        }
+
         ++icurrent;
-      }
-
-      if (icurrent != bucket.end())
-      {
-        bucket.erase_after(iprevious);
-        count = 1;
       }
 
       return count;
@@ -962,7 +848,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Clears the unordered_map.
+    /// Clears the unordered_multiset.
     //*************************************************************************
     void clear()
     {
@@ -976,7 +862,23 @@ namespace etl
     //*********************************************************************
     size_t count(key_value_parameter_t key) const
     {
-      return (find(key) == end()) ? 0 : 1;
+      size_t n = 0;
+      const_iterator first = find(key);
+      const_iterator last = first;
+
+      if (last != end())
+      {
+        ++last;
+        ++n;
+
+        while ((last != end()) && (key == *last))
+        {
+          ++last;
+          ++n;
+        }
+      }
+
+      return n;
     }
 
     //*********************************************************************
@@ -1001,7 +903,7 @@ namespace etl
         while (inode != iend)
         {
           // Do we have this one?
-          if (key_equal_function(key, inode->key_value_pair.first))
+          if (key_equal_function(key, inode->key))
           {
             return iterator(pbuckets->end(), ibucket, inode);
           }
@@ -1035,7 +937,7 @@ namespace etl
         while (inode != iend)
         {
           // Do we have this one?
-          if (key_equal_function(key, inode->key_value_pair.first))
+          if (key_equal_function(key, inode->key))
           {
             return iterator(pbuckets->end(), ibucket, inode);
           }
@@ -1063,6 +965,11 @@ namespace etl
       if (last != end())
       {
         ++last;
+
+        while ((last != end()) && (key == *last))
+        {
+          ++last;
+        }
       }
 
       return std::pair<iterator, iterator>(first, last);
@@ -1084,13 +991,18 @@ namespace etl
       if (last != end())
       {
         ++last;
+
+        while ((last != end()) && (key == *last))
+        {
+          ++last;
+        }
       }
 
       return std::pair<const_iterator, const_iterator>(first, last);
     }
 
     //*************************************************************************
-    /// Gets the size of the unordered_map.
+    /// Gets the size of the unordered_multiset.
     //*************************************************************************
     size_type size() const
     {
@@ -1098,7 +1010,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the maximum possible size of the unordered_map.
+    /// Gets the maximum possible size of the unordered_multiset.
     //*************************************************************************
     size_type max_size() const
     {
@@ -1106,7 +1018,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Checks to see if the unordered_map is empty.
+    /// Checks to see if the unordered_multiset is empty.
     //*************************************************************************
     bool empty() const
     {
@@ -1114,7 +1026,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Checks to see if the unordered_map is full.
+    /// Checks to see if the unordered_multiset is full.
     //*************************************************************************
     bool full() const
     {
@@ -1160,7 +1072,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    iunordered_map& operator = (const iunordered_map& rhs)
+    iunordered_multiset& operator = (const iunordered_multiset& rhs)
     {
       // Skip if doing self assignment
       if (this != &rhs)
@@ -1176,14 +1088,14 @@ namespace etl
     //*********************************************************************
     /// Constructor.
     //*********************************************************************
-    iunordered_map(pool_t& node_pool, bucket_list_t& buckets)
+    iunordered_multiset(pool_t& node_pool, bucket_list_t& buckets)
       : pnodepool(&node_pool),
         pbuckets(&buckets)
     {
     }
 
     //*********************************************************************
-    /// Initialise the unordered_map.
+    /// Initialise the unordered_multiset.
     //*********************************************************************
     void initialise()
     {
@@ -1221,7 +1133,7 @@ namespace etl
     }
 
     // Disable copy construction.
-    iunordered_map(const iunordered_map&);
+    iunordered_multiset(const iunordered_multiset&);
 
     /// The pool of data nodes used in the list.
     pool_t* pnodepool;
@@ -1242,26 +1154,26 @@ namespace etl
 
   //***************************************************************************
   /// Equal operator.
-  ///\param lhs Reference to the first unordered_map.
-  ///\param rhs Reference to the second unordered_map.
+  ///\param lhs Reference to the first unordered_multiset.
+  ///\param rhs Reference to the second unordered_multiset.
   ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
-  ///\ingroup unordered_map
+  ///\ingroup unordered_multiset
   //***************************************************************************
   template <typename TKey, typename TMapped, typename TKeyCompare>
-  bool operator ==(const etl::iunordered_map<TKey, TMapped, TKeyCompare>& lhs, const etl::iunordered_map<TKey, TMapped, TKeyCompare>& rhs)
+  bool operator ==(const etl::iunordered_multiset<TKey, TMapped, TKeyCompare>& lhs, const etl::iunordered_multiset<TKey, TMapped, TKeyCompare>& rhs)
   {
     return (lhs.size() == rhs.size()) && std::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //***************************************************************************
   /// Not equal operator.
-  ///\param lhs Reference to the first unordered_map.
-  ///\param rhs Reference to the second unordered_map.
+  ///\param lhs Reference to the first unordered_multiset.
+  ///\param rhs Reference to the second unordered_multiset.
   ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
-  ///\ingroup unordered_map
+  ///\ingroup unordered_multiset
   //***************************************************************************
   template <typename TKey, typename TMapped, typename TKeyCompare>
-  bool operator !=(const etl::iunordered_map<TKey, TMapped, TKeyCompare>& lhs, const etl::iunordered_map<TKey, TMapped, TKeyCompare>& rhs)
+  bool operator !=(const etl::iunordered_multiset<TKey, TMapped, TKeyCompare>& lhs, const etl::iunordered_multiset<TKey, TMapped, TKeyCompare>& rhs)
   {
     return !(lhs == rhs);
   }
