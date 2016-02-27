@@ -910,6 +910,56 @@ namespace
         CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<63>::value_type>::value));
         CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<64>::value_type>::value));
     }
+
+    //*************************************************************************
+    TEST(test_sign_extend_template1)
+    {
+      uint8_t value8 = 0x2A;
+      value8 &= 0x3F; // 6 bit number.
+
+      CHECK_EQUAL(-22, (etl::sign_extend<int8_t,  6>(value8)));
+      CHECK_EQUAL(-22, (etl::sign_extend<int16_t, 6>(value8)));
+      CHECK_EQUAL(-22, (etl::sign_extend<int32_t, 6>(value8)));
+      CHECK_EQUAL(-22, (etl::sign_extend<int64_t, 6>(value8)));
+
+      uint16_t value16 = 0x2AAA;
+      value16 &= 0x3FFF; // 14 bit number.
+
+      CHECK_EQUAL(-5462, (etl::sign_extend<int16_t, 14>(value16)));
+      CHECK_EQUAL(-5462, (etl::sign_extend<int32_t, 14>(value16)));
+      CHECK_EQUAL(-5462, (etl::sign_extend<int64_t, 14>(value16)));
+
+      uint32_t value32 = 0x2AAAAAAA;
+      value32 &= 0x3FFFFFFF; // 30 bit number.
+
+      CHECK_EQUAL(-357913942, (etl::sign_extend<int32_t, 30>(value32)));
+      CHECK_EQUAL(-357913942, (etl::sign_extend<int64_t, 30>(value32)));
+    }
+
+    //*************************************************************************
+    TEST(test_sign_extend_template2)
+    {
+      uint8_t value8 = 0x2A;
+      value8 &= 0x3F; // 6 bit number.
+
+      CHECK_EQUAL(-22, (etl::sign_extend<int8_t>(value8, 6)));
+      CHECK_EQUAL(-22, (etl::sign_extend<int16_t>(value8, 6)));
+      CHECK_EQUAL(-22, (etl::sign_extend<int32_t>(value8, 6)));
+      CHECK_EQUAL(-22, (etl::sign_extend<int64_t>(value8, 6)));
+
+      uint16_t value16 = 0x2AAA;
+      value16 &= 0x3FFF; // 14 bit number.
+
+      CHECK_EQUAL(-5462, (etl::sign_extend<int16_t>(value16, 14)));
+      CHECK_EQUAL(-5462, (etl::sign_extend<int32_t>(value16, 14)));
+      CHECK_EQUAL(-5462, (etl::sign_extend<int64_t>(value16, 14)));
+
+      uint32_t value32 = 0x2AAAAAAA;
+      value32 &= 0x3FFFFFFF; // 30 bit number.
+
+      CHECK_EQUAL(-357913942, (etl::sign_extend<int32_t>(value32, 30)));
+      CHECK_EQUAL(-357913942, (etl::sign_extend<int64_t>(value32, 30)));
+    }
   };
 }
 
