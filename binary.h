@@ -35,6 +35,9 @@ SOFTWARE.
 /// Binary utilities
 ///\ingroup utilities
 
+#include <limits>
+#include <assert.h>
+
 #include "type_traits.h"
 #include "integral_limits.h"
 #include "static_assert.h"
@@ -494,6 +497,58 @@ namespace etl
     folded_value ^= value & mask;
 
     return folded_value;
+  }
+
+  //***************************************************************************
+  /// Sign extend.
+  /// Converts an N bit binary number, where bit N-1 is the sign bit, to a signed integral type.
+  //***************************************************************************
+  template <typename TReturn, const size_t NBITS, typename TValue>
+  TReturn sign_extend(TValue value)
+  {
+    STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
+    STATIC_ASSERT(etl::is_integral<TReturn>::value, "TReturn not an integral type");
+    STATIC_ASSERT(etl::is_signed<TReturn>::value,   "TReturn not a signed type");
+    STATIC_ASSERT(NBITS <= std::numeric_limits<TReturn>::digits, "NBITS too large for return type");
+
+    typedef etl::make_unsigned<TReturn>::type mask_t;
+
+    mask_t negative = (1 << (NBITS - 1));
+    TReturn signed_value = value;
+
+    if ((signed_value & negative) != 0)
+    {
+      mask_t sign_bits = ~((1 << NBITS) - 1);
+      signed_value = value | sign_bits;
+    }
+
+    return signed_value;
+  }
+
+  //***************************************************************************
+  /// Sign extend.
+  /// Converts an N bit binary number, where bit N-1 is the sign bit, to a signed integral type.
+  //***************************************************************************
+  template <typename TReturn, typename TValue>
+  TReturn sign_extend(TValue value, const size_t NBITS)
+  {
+    STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
+    STATIC_ASSERT(etl::is_integral<TReturn>::value, "TReturn not an integral type");
+    STATIC_ASSERT(etl::is_signed<TReturn>::value,   "TReturn not a signed type");
+    assert(NBITS <= std::numeric_limits<TReturn>::digits);
+
+    typedef etl::make_unsigned<TReturn>::type mask_t;
+
+    mask_t negative = (1 << (NBITS - 1));
+    TReturn signed_value = value;
+
+    if ((signed_value & negative) != 0)
+    {
+      mask_t sign_bits = ~((1 << NBITS) - 1);
+      signed_value = value | sign_bits;
+    }
+
+    return signed_value;
   }
 
   //***************************************************************************
