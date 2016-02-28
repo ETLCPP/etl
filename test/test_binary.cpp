@@ -934,6 +934,27 @@ namespace
 
       CHECK_EQUAL(-357913942, (etl::sign_extend<int32_t, 30>(value32)));
       CHECK_EQUAL(-357913942, (etl::sign_extend<int64_t, 30>(value32)));
+
+      value8 = 0x0A;
+      value8 &= 0x3F; // 6 bit number.
+
+      CHECK_EQUAL(10, (etl::sign_extend<int8_t, 6>(value8)));
+      CHECK_EQUAL(10, (etl::sign_extend<int16_t, 6>(value8)));
+      CHECK_EQUAL(10, (etl::sign_extend<int32_t, 6>(value8)));
+      CHECK_EQUAL(10, (etl::sign_extend<int64_t, 6>(value8)));
+
+      value16 = 0x0AAA;
+      value16 &= 0x3FFF; // 14 bit number.
+
+      CHECK_EQUAL(2730, (etl::sign_extend<int16_t, 14>(value16)));
+      CHECK_EQUAL(2730, (etl::sign_extend<int32_t, 14>(value16)));
+      CHECK_EQUAL(2730, (etl::sign_extend<int64_t, 14>(value16)));
+
+      value32 = 0x0AAAAAAA;
+      value32 &= 0x3FFFFFFF; // 30 bit number.
+
+      CHECK_EQUAL(178956970, (etl::sign_extend<int32_t, 30>(value32)));
+      CHECK_EQUAL(178956970, (etl::sign_extend<int64_t, 30>(value32)));
     }
 
     //*************************************************************************
@@ -959,6 +980,27 @@ namespace
 
       CHECK_EQUAL(-357913942, (etl::sign_extend<int32_t>(value32, 30)));
       CHECK_EQUAL(-357913942, (etl::sign_extend<int64_t>(value32, 30)));
+
+      value8 = 0x0A;
+      value8 &= 0x3F; // 6 bit number.
+
+      CHECK_EQUAL(10, (etl::sign_extend<int8_t>(value8, 6)));
+      CHECK_EQUAL(10, (etl::sign_extend<int16_t>(value8, 6)));
+      CHECK_EQUAL(10, (etl::sign_extend<int32_t>(value8, 6)));
+      CHECK_EQUAL(10, (etl::sign_extend<int64_t>(value8, 6)));
+
+      value16 = 0x0AAA;
+      value16 &= 0x3FFF; // 14 bit number.
+
+      CHECK_EQUAL(2730, (etl::sign_extend<int16_t>(value16, 14)));
+      CHECK_EQUAL(2730, (etl::sign_extend<int32_t>(value16, 14)));
+      CHECK_EQUAL(2730, (etl::sign_extend<int64_t>(value16, 14)));
+
+      value32 = 0x0AAAAAAA;
+      value32 &= 0x3FFFFFFF; // 30 bit number.
+
+      CHECK_EQUAL(178956970, (etl::sign_extend<int32_t>(value32, 30)));
+      CHECK_EQUAL(178956970, (etl::sign_extend<int64_t>(value32, 30)));
     }
   };
 }
