@@ -126,355 +126,355 @@
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\Win32\TimeHelpers.h">
       <Filter>UnitTest++\Win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\doxygen.h">
+    <ClInclude Include="..\..\src\doxygen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\enum_type.h">
+    <ClInclude Include="..\..\src\enum_type.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\exception.h">
+    <ClInclude Include="..\..\src\exception.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\function.h">
+    <ClInclude Include="..\..\src\function.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\array.h">
+    <ClInclude Include="..\..\src\array.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\iqueue.h">
+    <ClInclude Include="..\..\src\iqueue.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\istack.h">
+    <ClInclude Include="..\..\src\istack.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\container.h">
+    <ClInclude Include="..\..\src\container.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ivector.h">
+    <ClInclude Include="..\..\src\ivector.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\queue.h">
+    <ClInclude Include="..\..\src\queue.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\stack.h">
+    <ClInclude Include="..\..\src\stack.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\vector.h">
+    <ClInclude Include="..\..\src\vector.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\largest.h">
+    <ClInclude Include="..\..\src\largest.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\nullptr.h">
+    <ClInclude Include="..\..\src\nullptr.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\numeric.h">
+    <ClInclude Include="..\..\src\numeric.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\cyclic_value.h">
+    <ClInclude Include="..\..\src\cyclic_value.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\static_assert.h">
+    <ClInclude Include="..\..\src\static_assert.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\type_traits.h">
+    <ClInclude Include="..\..\src\type_traits.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\visitor.h">
+    <ClInclude Include="..\..\src\visitor.h">
       <Filter>ETL\Patterns</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\observer.h">
+    <ClInclude Include="..\..\src\observer.h">
       <Filter>ETL\Patterns</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\functional.h">
+    <ClInclude Include="..\..\src\functional.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\list.h">
+    <ClInclude Include="..\..\src\list.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ilist.h">
+    <ClInclude Include="..\..\src\ilist.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\map.h">
+    <ClInclude Include="..\..\src\map.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\imap.h">
+    <ClInclude Include="..\..\src\imap.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\crc16.h">
+    <ClInclude Include="..\..\src\crc16.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\crc16_ccitt.h">
+    <ClInclude Include="..\..\src\crc16_ccitt.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\crc32.h">
+    <ClInclude Include="..\..\src\crc32.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\crc64_ecma.h">
+    <ClInclude Include="..\..\src\crc64_ecma.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\crc8_ccitt.h">
+    <ClInclude Include="..\..\src\crc8_ccitt.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\log.h">
+    <ClInclude Include="..\..\src\log.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\deque.h">
+    <ClInclude Include="..\..\src\deque.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ideque.h">
+    <ClInclude Include="..\..\src\ideque.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
     <ClInclude Include="..\ExtraCheckMacros.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\forward_list.h">
+    <ClInclude Include="..\..\src\forward_list.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\iforward_list.h">
+    <ClInclude Include="..\..\src\iforward_list.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\bitset.h">
+    <ClInclude Include="..\..\src\bitset.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\smallest.h">
+    <ClInclude Include="..\..\src\smallest.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\integral_limits.h">
+    <ClInclude Include="..\..\src\integral_limits.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\variant.h">
+    <ClInclude Include="..\..\src\variant.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\crc16_kermit.h">
+    <ClInclude Include="..\..\src\crc16_kermit.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\endian.h">
+    <ClInclude Include="..\..\src\endian.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\parameter_type.h">
+    <ClInclude Include="..\..\src\parameter_type.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\alignment.h">
+    <ClInclude Include="..\..\src\alignment.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\pool.h">
+    <ClInclude Include="..\..\src\pool.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\power.h">
+    <ClInclude Include="..\..\src\power.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\fibonacci.h">
+    <ClInclude Include="..\..\src\fibonacci.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\factorial.h">
+    <ClInclude Include="..\..\src\factorial.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\algorithm.h">
+    <ClInclude Include="..\..\src\algorithm.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\error_handler.h">
+    <ClInclude Include="..\..\src\error_handler.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\instance_count.h">
+    <ClInclude Include="..\..\src\instance_count.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\checksum.h">
+    <ClInclude Include="..\..\src\checksum.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\fnv_1.h">
+    <ClInclude Include="..\..\src\fnv_1.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\hash.h">
+    <ClInclude Include="..\..\src\hash.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ipool.h">
+    <ClInclude Include="..\..\src\ipool.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\radix.h">
+    <ClInclude Include="..\..\src\radix.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ibitset.h">
+    <ClInclude Include="..\..\src\ibitset.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
     <ClInclude Include="..\data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\bloom_filter.h">
+    <ClInclude Include="..\..\src\bloom_filter.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\fixed_iterator.h">
+    <ClInclude Include="..\..\src\fixed_iterator.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\binary.h">
+    <ClInclude Include="..\..\src\binary.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\flat_map.h">
+    <ClInclude Include="..\..\src\flat_map.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\iflat_map.h">
+    <ClInclude Include="..\..\src\iflat_map.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ihash.h">
+    <ClInclude Include="..\..\src\ihash.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\flat_set.h">
+    <ClInclude Include="..\..\src\flat_set.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\iflat_set.h">
+    <ClInclude Include="..\..\src\iflat_set.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\unordered_map.h">
+    <ClInclude Include="..\..\src\unordered_map.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\iunordered_map.h">
+    <ClInclude Include="..\..\src\iunordered_map.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\io_port.h">
+    <ClInclude Include="..\..\src\io_port.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\optional.h">
+    <ClInclude Include="..\..\src\optional.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\iset.h">
+    <ClInclude Include="..\..\src\iset.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\set.h">
+    <ClInclude Include="..\..\src\set.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\imultimap.h">
+    <ClInclude Include="..\..\src\imultimap.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\multimap.h">
+    <ClInclude Include="..\..\src\multimap.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\imultiset.h">
+    <ClInclude Include="..\..\src\imultiset.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\multiset.h">
+    <ClInclude Include="..\..\src\multiset.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ipriority_queue.h">
+    <ClInclude Include="..\..\src\ipriority_queue.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\priority_queue.h">
+    <ClInclude Include="..\..\src\priority_queue.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\jenkins.h">
+    <ClInclude Include="..\..\src\jenkins.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\murmur3.h">
+    <ClInclude Include="..\..\src\murmur3.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\murmurhash3.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\pearson.h">
+    <ClInclude Include="..\..\src\pearson.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\flat_multimap.h">
+    <ClInclude Include="..\..\src\flat_multimap.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\flat_multiset.h">
+    <ClInclude Include="..\..\src\flat_multiset.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\iflat_multiset.h">
+    <ClInclude Include="..\..\src\iflat_multiset.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\iflat_multimap.h">
+    <ClInclude Include="..\..\src\iflat_multimap.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\intrusive_forward_list.h">
+    <ClInclude Include="..\..\src\intrusive_forward_list.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\private\deque_base.h">
+    <ClInclude Include="..\..\src\private\deque_base.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\private\flat_map_base.h">
+    <ClInclude Include="..\..\src\private\flat_map_base.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\private\flat_multimap_base.h">
+    <ClInclude Include="..\..\src\private\flat_multimap_base.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\private\flat_multiset_base.h">
+    <ClInclude Include="..\..\src\private\flat_multiset_base.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\private\flat_set_base.h">
+    <ClInclude Include="..\..\src\private\flat_set_base.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\private\forward_list_base.h">
+    <ClInclude Include="..\..\src\private\forward_list_base.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\private\list_base.h">
+    <ClInclude Include="..\..\src\private\list_base.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\private\map_base.h">
+    <ClInclude Include="..\..\src\private\map_base.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\private\multimap_base.h">
+    <ClInclude Include="..\..\src\private\multimap_base.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\private\multiset_base.h">
+    <ClInclude Include="..\..\src\private\multiset_base.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\private\pool_base.h">
+    <ClInclude Include="..\..\src\private\pool_base.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\private\queue_base.h">
+    <ClInclude Include="..\..\src\private\queue_base.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\private\set_base.h">
+    <ClInclude Include="..\..\src\private\set_base.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\private\stack_base.h">
+    <ClInclude Include="..\..\src\private\stack_base.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\private\vector_base.h">
+    <ClInclude Include="..\..\src\private\vector_base.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\multi_array.h">
+    <ClInclude Include="..\..\src\multi_array.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\char_traits.h">
+    <ClInclude Include="..\..\src\char_traits.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\icache.h">
+    <ClInclude Include="..\..\src\icache.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lru_cache.h">
+    <ClInclude Include="..\..\src\lru_cache.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mru_cache.h">
+    <ClInclude Include="..\..\src\mru_cache.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\imru_cache.h">
+    <ClInclude Include="..\..\src\imru_cache.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ilru_cache.h">
+    <ClInclude Include="..\..\src\ilru_cache.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\rr_cache.h">
+    <ClInclude Include="..\..\src\rr_cache.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\irr_cache.h">
+    <ClInclude Include="..\..\src\irr_cache.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\intrusive_links.h">
+    <ClInclude Include="..\..\src\intrusive_links.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\intrusive_list.h">
+    <ClInclude Include="..\..\src\intrusive_list.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\unordered_set.h">
+    <ClInclude Include="..\..\src\unordered_set.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\iunordered_multimap.h">
+    <ClInclude Include="..\..\src\iunordered_multimap.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\iunordered_set.h">
+    <ClInclude Include="..\..\src\iunordered_set.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\unordered_multiset.h">
+    <ClInclude Include="..\..\src\unordered_multiset.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
   </ItemGroup>
