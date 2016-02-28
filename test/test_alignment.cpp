@@ -28,8 +28,8 @@ SOFTWARE.
 
 #include <UnitTest++/UnitTest++.h>
 
-#include "../alignment.h"
-#include "../type_traits.h"
+#include "../src/alignment.h"
+#include "../src/type_traits.h"
 
 #include <type_traits>
 #include <utility>

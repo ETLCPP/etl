@@ -35,8 +35,8 @@ SOFTWARE.
 #include <vector>
 #include <stdint.h>
 
-#include "../murmur3.h"
-#include "../endian.h"
+#include "../src/murmur3.h"
+#include "../src/endian.h"
 
 namespace
 {		

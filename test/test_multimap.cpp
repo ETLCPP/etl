@@ -35,7 +35,7 @@ SOFTWARE.
 #include <iterator>
 #include <string>
 
-#include "../multimap.h"
+#include "../src/multimap.h"
 
 static const size_t SIZE = 10;
 

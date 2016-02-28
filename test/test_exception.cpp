@@ -29,7 +29,7 @@ SOFTWARE.
 #include <UnitTest++/UnitTest++.h>
 #include <string>
 
-#include "../exception.h"
+#include "../src/exception.h"
 
 namespace 
 {		

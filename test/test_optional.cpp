@@ -31,8 +31,8 @@ SOFTWARE.
 #include <string>
 #include <ostream>
 
-#include "../optional.h"
-#include "../vector.h"
+#include "../src/optional.h"
+#include "../src/vector.h"
 #include "data.h"
 
 typedef TestDataNDC<std::string> Data;

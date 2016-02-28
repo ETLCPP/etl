@@ -31,12 +31,12 @@ SOFTWARE.
 #include <stdlib.h>
 #include <vector>
 
-#include "../bloom_filter.h"
+#include "../src/bloom_filter.h"
 
-#include "../fnv_1.h"
-#include "../crc16.h"
-#include "../crc16_ccitt.h"
-#include "../crc32.h"
+#include "../src/fnv_1.h"
+#include "../src/crc16.h"
+#include "../src/crc16_ccitt.h"
+#include "../src/crc32.h"
 
 struct hash1_t
 {

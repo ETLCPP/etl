@@ -28,8 +28,8 @@ SOFTWARE.
 
 #include <UnitTest++/UnitTest++.h>
 
-#include "../algorithm.h"
-#include "../container.h"
+#include "../src/algorithm.h"
+#include "../src/container.h"
 
 #include <vector>
 #include <algorithm>

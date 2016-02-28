@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include <UnitTest++/UnitTest++.h>
 
-#include "../functional.h"
+#include "../src/functional.h"
 
 #include <list>
 #include <vector>

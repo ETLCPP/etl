@@ -30,7 +30,7 @@ SOFTWARE.
 
 #include <UnitTest++/UnitTest++.h>
 
-#include "../cyclic_value.h"
+#include "../src/cyclic_value.h"
 
 namespace
 {		

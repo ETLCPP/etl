@@ -37,15 +37,13 @@ SOFTWARE.
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "error_handler.h"
-
-namespace etl
-{
-#include "../exception.h"
-#include "../error_handler.h"
+#include "exception.h"
 
 #undef ETL_FILE
 #define ETL_FILE "12"
 
+namespace etl
+{
   //***************************************************************************
   /// The base class for priority_queue exceptions.
   ///\ingroup queue

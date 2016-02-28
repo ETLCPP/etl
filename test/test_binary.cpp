@@ -31,10 +31,10 @@ SOFTWARE.
 #include <cstdint>
 #include <type_traits>
 
-#include "../binary.h"
-#include "../bitset.h"
-#include "../fnv_1.h"
-#include "../integral_limits.h"
+#include "../src/binary.h"
+#include "../src/bitset.h"
+#include "../src/fnv_1.h"
+#include "../src/integral_limits.h"
 
 #undef max
 

@@ -39,8 +39,8 @@ SOFTWARE.
 
 #include "data.h"
 
-#include "../unordered_set.h"
-#include "../checksum.h"
+#include "../src/unordered_set.h"
+#include "../src/checksum.h"
 
 namespace
 {

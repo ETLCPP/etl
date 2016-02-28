@@ -36,7 +36,7 @@ SOFTWARE.
 #include <string>
 #include <vector>
 
-#include "../set.h"
+#include "../src/set.h"
 
 static const size_t SIZE = 10;
 

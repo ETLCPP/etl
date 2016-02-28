@@ -33,8 +33,8 @@ SOFTWARE.
 #include <vector>
 #include <stdint.h>
 
-#include "../checksum.h"
-#include "../endian.h"
+#include "../src/checksum.h"
+#include "../src/endian.h"
 
 namespace
 {		

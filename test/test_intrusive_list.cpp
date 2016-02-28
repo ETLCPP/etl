@@ -31,7 +31,7 @@ SOFTWARE.
 
 #include "data.h"
 
-#include "../intrusive_list.h"
+#include "../src/intrusive_list.h"
 
 #include <algorithm>
 #include <array>
