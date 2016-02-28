@@ -511,7 +511,7 @@ namespace etl
     STATIC_ASSERT(etl::is_signed<TReturn>::value,   "TReturn not a signed type");
     STATIC_ASSERT(NBITS <= std::numeric_limits<TReturn>::digits, "NBITS too large for return type");
 
-    typedef etl::make_unsigned<TReturn>::type mask_t;
+    typedef typename etl::make_unsigned<TReturn>::type mask_t;
 
     mask_t negative = (1 << (NBITS - 1));
     TReturn signed_value = value;
@@ -537,7 +537,7 @@ namespace etl
     STATIC_ASSERT(etl::is_signed<TReturn>::value,   "TReturn not a signed type");
     assert(NBITS <= std::numeric_limits<TReturn>::digits);
 
-    typedef etl::make_unsigned<TReturn>::type mask_t;
+    typedef typename etl::make_unsigned<TReturn>::type mask_t;
 
     mask_t negative = (1 << (NBITS - 1));
     TReturn signed_value = value;
