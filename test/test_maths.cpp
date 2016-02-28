@@ -28,10 +28,10 @@ SOFTWARE.
 
 #include <UnitTest++/UnitTest++.h>
 
-#include "../log.h"
-#include "../power.h"
-#include "../fibonacci.h"
-#include "../factorial.h"
+#include "../src/log.h"
+#include "../src/power.h"
+#include "../src/fibonacci.h"
+#include "../src/factorial.h"
 
 namespace
 {

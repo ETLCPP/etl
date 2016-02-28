@@ -32,7 +32,7 @@ SOFTWARE.
 
 #include "data.h"
 
-#include "../stack.h"
+#include "../src/stack.h"
 
 namespace
 {

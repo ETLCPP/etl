@@ -29,7 +29,7 @@ SOFTWARE.
 #include <UnitTest++/UnitTest++.h>
 #include <string>
 
-#include "../enum_type.h"
+#include "../src/enum_type.h"
 
 struct enum_test
 {

@@ -35,7 +35,7 @@ SOFTWARE.
 #include <iterator>
 #include <string>
 
-#include "../multiset.h"
+#include "../src/multiset.h"
 
 static const size_t SIZE = 10;
 

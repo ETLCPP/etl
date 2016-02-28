@@ -36,7 +36,7 @@ SOFTWARE.
 #include <string>
 #include <vector>
 
-#include "../map.h"
+#include "../src/map.h"
 
 static const size_t SIZE = 10;
 

@@ -584,21 +584,6 @@
     <ClCompile Include="..\test_crc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\crc16.cpp">
-      <Filter>ETL\Maths</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\crc16_ccitt.cpp">
-      <Filter>ETL\Maths</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\crc32.cpp">
-      <Filter>ETL\Maths</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\crc64_ecma.cpp">
-      <Filter>ETL\Maths</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\crc8_ccitt.cpp">
-      <Filter>ETL\Maths</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_deque.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -610,9 +595,6 @@
     </ClCompile>
     <ClCompile Include="..\test_variant.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\crc16_kermit.cpp">
-      <Filter>ETL\Maths</Filter>
     </ClCompile>
     <ClCompile Include="..\test_smallest.cpp">
       <Filter>Source Files</Filter>
@@ -628,9 +610,6 @@
     </ClCompile>
     <ClCompile Include="..\test_algorithm.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\error_handler.cpp">
-      <Filter>ETL\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="..\test_error_handler.cpp">
       <Filter>Source Files</Filter>
@@ -707,9 +686,6 @@
     <ClCompile Include="..\test_flat_multiset.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\pearson.cpp">
-      <Filter>ETL\Maths</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_pearson.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -739,6 +715,30 @@
     </ClCompile>
     <ClCompile Include="..\test_unordered_multiset.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\pearson.cpp">
+      <Filter>ETL\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\crc64_ecma.cpp">
+      <Filter>ETL\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\crc32.cpp">
+      <Filter>ETL\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\crc16_kermit.cpp">
+      <Filter>ETL\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\crc16_ccitt.cpp">
+      <Filter>ETL\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\crc16.cpp">
+      <Filter>ETL\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\crc8_ccitt.cpp">
+      <Filter>ETL\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\error_handler.cpp">
+      <Filter>ETL\Utilities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

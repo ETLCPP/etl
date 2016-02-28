@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include <UnitTest++/UnitTest++.h>
 
-#include "../numeric.h"
+#include "../src/numeric.h"
 
 #include <algorithm>
 #include <numeric>

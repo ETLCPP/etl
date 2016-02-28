@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include <UnitTest++/UnitTest++.h>
 
-#include "../instance_count.h"
+#include "../src/instance_count.h"
 
 #include <list>
 #include <vector>

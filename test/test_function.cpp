@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include <UnitTest++/UnitTest++.h>
 
-#include "../function.h"
+#include "../src/function.h"
 
 //*****************************************************************************
 const int VALUE = 1;

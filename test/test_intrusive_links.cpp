@@ -31,7 +31,7 @@ SOFTWARE.
 
 #include "data.h"
 
-#include "../intrusive_links.h"
+#include "../src/intrusive_links.h"
 
 namespace
 {

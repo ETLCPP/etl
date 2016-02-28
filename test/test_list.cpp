@@ -29,7 +29,7 @@ SOFTWARE.
 #include <UnitTest++/UnitTest++.h>
 #include "ExtraCheckMacros.h"
 
-#include "../list.h"
+#include "../src/list.h"
 
 #include "data.h"
 

@@ -32,7 +32,7 @@ SOFTWARE.
 #include <type_traits>
 #include <bitset>
 
-#include "../integral_limits.h"
+#include "../src/integral_limits.h"
 
 #undef min
 #undef max

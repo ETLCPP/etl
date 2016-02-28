@@ -33,7 +33,7 @@ SOFTWARE.
 #include <vector>
 #include <stdint.h>
 
-#include "../hash.h"
+#include "../src/hash.h"
 
 namespace
 {

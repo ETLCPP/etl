@@ -38,7 +38,7 @@ namespace std
 }
 #endif
 
-#include "../type_traits.h"
+#include "../src/type_traits.h"
 #include <type_traits>
 
 // A class to test non-fundamental types.

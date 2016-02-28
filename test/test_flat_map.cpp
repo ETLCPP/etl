@@ -38,7 +38,7 @@ SOFTWARE.
 
 #include "data.h"
 
-#include "../flat_map.h"
+#include "../src/flat_map.h"
 
 namespace
 {

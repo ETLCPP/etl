@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include <UnitTest++/UnitTest++.h>
 
-#include "../container.h"
+#include "../src/container.h"
 
 #include <list>
 

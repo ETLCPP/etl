@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include <UnitTest++/UnitTest++.h>
 
-#include "../largest.h"
+#include "../src/largest.h"
 
 #include <type_traits>
 

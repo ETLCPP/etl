@@ -33,8 +33,8 @@ SOFTWARE.
 #include <sstream>
 #include <string>
 
-#include "../error_handler.h"
-#include "../exception.h"
+#include "../src/error_handler.h"
+#include "../src/exception.h"
 
 bool error_received;
 

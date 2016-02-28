@@ -35,8 +35,8 @@ SOFTWARE.
 #include <vector>
 #include <stdint.h>
 
-#include "../jenkins.h"
-#include "../endian.h"
+#include "../src/jenkins.h"
+#include "../src/endian.h"
 
 template <typename TIterator>
 uint32_t jenkins32(TIterator begin, TIterator end)

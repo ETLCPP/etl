@@ -33,7 +33,7 @@ SOFTWARE.
 #include <vector>
 #include <stdint.h>
 
-#include "../fnv_1.h"
+#include "../src/fnv_1.h"
 
 namespace
 {		

@@ -32,7 +32,7 @@ SOFTWARE.
 #include <array>
 #include <algorithm>
 
-#include "../vector.h"
+#include "../src/vector.h"
 
 namespace
 {		

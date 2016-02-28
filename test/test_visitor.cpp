@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include <UnitTest++/UnitTest++.h>
 
-#include "../visitor.h"
+#include "../src/visitor.h"
 
 //*****************************************************************************
 // Pre-declare the data types.

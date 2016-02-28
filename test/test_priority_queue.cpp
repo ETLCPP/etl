@@ -30,7 +30,7 @@ SOFTWARE.
 
 #include <queue>
 
-#include "../priority_queue.h"
+#include "../src/priority_queue.h"
 
 namespace
 {		
