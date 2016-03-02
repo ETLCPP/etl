@@ -37,7 +37,7 @@ SOFTWARE.
 #include "frame_check_sequence.h"
 
 #if defined(COMPILER_KEIL)
-#pragma diag_suppress 1300 
+#pragma diag_suppress 1300
 #endif
 
 ///\defgroup crc8_ccitt 8 bit CRC calculation
@@ -73,7 +73,7 @@ namespace etl
     {
       return crc;
     }
-  }; 
+  };
 
   //*************************************************************************
   /// CRC8 CCITT
@@ -87,7 +87,7 @@ namespace etl
     //*************************************************************************
     crc8_ccitt()
     {
-      reset();
+      this->reset();
     }
 
     //*************************************************************************
@@ -98,8 +98,8 @@ namespace etl
     template<typename TIterator>
     crc8_ccitt(TIterator begin, const TIterator end)
     {
-      reset();
-      add(begin, end);
+      this->reset();
+      this->add(begin, end);
     }
   };
 }

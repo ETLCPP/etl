@@ -76,7 +76,7 @@ namespace etl
 
     intrusive_forward_list_empty(string_type file_name, numeric_type line_number)
       : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:empty", ETL_FILE"A"), file_name, line_number)
-    { 
+    {
     }
   };
 
@@ -845,7 +845,7 @@ namespace etl
     {
       iterator i_item = begin();
       iterator i_last_item = before_begin();
-      
+
       while (i_item != end())
       {
         if (predicate(*i_item))
@@ -1056,18 +1056,20 @@ namespace etl
   private:
 
     link_type start_link; ///< The link that acts as the intrusive_forward_list start.
-    
+
     //*************************************************************************
     /// Counter type based on count option.
     //*************************************************************************
-    template <const size_t OPTION>
-    class counter_type;
+    template <const size_t OPTION, bool dummy = true>
+    class counter_type 
+    {
+    };
 
     //*************************************************************************
     /// Slow type.
     //*************************************************************************
-    template <>
-    class counter_type<etl::count_option::SLOW_COUNT>
+    template <bool dummy>
+    class counter_type<etl::count_option::SLOW_COUNT, dummy>
     {
     public:
 
@@ -1100,8 +1102,8 @@ namespace etl
     //*************************************************************************
     /// Fast type.
     //*************************************************************************
-    template <>
-    class counter_type<etl::count_option::FAST_COUNT>
+    template <bool dummy>
+    class counter_type<etl::count_option::FAST_COUNT, dummy>
     {
     public:
 
@@ -1144,7 +1146,7 @@ namespace etl
     };
 
     counter_type<COUNT_OPTION> current_size; ///< Counts the number of elements in the list.
-    
+
     //*************************************************************************
     /// Is the intrusive_forward_list a trivial length?
     //*************************************************************************

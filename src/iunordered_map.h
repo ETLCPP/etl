@@ -700,10 +700,10 @@ namespace etl
     const mapped_type& at(key_value_parameter_t key) const
     {
       // Find the bucket.
-      bucket_list_t::const_iterator ibucket = pbuckets->begin() + bucket(key);
+      typename bucket_list_t::const_iterator ibucket = pbuckets->begin() + bucket(key);
 
       // Find the first node in the bucket.
-      bucket_t::const_iterator inode = ibucket->begin();
+      typename bucket_t::const_iterator inode = ibucket->begin();
 
       // Walk the list looking for the right one.
       while (inode != ibucket->end())
@@ -1049,8 +1049,8 @@ namespace etl
 
     //*********************************************************************
     /// Returns a range containing all elements with key key in the container.
-    /// The range is defined by two iterators, the first pointing to the first 
-    /// element of the wanted range and the second pointing past the last 
+    /// The range is defined by two iterators, the first pointing to the first
+    /// element of the wanted range and the second pointing past the last
     /// element of the range.
     ///\param key The key to search for.
     ///\return An iterator pair to the range of elements if the key exists, otherwise end().
@@ -1070,8 +1070,8 @@ namespace etl
 
     //*********************************************************************
     /// Returns a range containing all elements with key key in the container.
-    /// The range is defined by two iterators, the first pointing to the first 
-    /// element of the wanted range and the second pointing past the last 
+    /// The range is defined by two iterators, the first pointing to the first
+    /// element of the wanted range and the second pointing past the last
     /// element of the range.
     ///\param key The key to search for.
     ///\return A const iterator pair to the range of elements if the key exists, otherwise end().

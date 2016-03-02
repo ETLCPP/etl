@@ -37,7 +37,7 @@ SOFTWARE.
 #include "frame_check_sequence.h"
 
 #if defined(COMPILER_KEIL)
-#pragma diag_suppress 1300 
+#pragma diag_suppress 1300
 #endif
 
 ///\defgroup crc32 32 bit CRC calculation
@@ -87,7 +87,7 @@ namespace etl
     //*************************************************************************
     crc32()
     {
-      reset();
+      this->reset();
     }
 
     //*************************************************************************
@@ -98,8 +98,8 @@ namespace etl
     template<typename TIterator>
     crc32(TIterator begin, const TIterator end)
     {
-      reset();
-      add(begin, end);
+      this->reset();
+      this->add(begin, end);
     }
   };
 }

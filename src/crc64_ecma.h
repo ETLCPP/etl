@@ -37,7 +37,7 @@ SOFTWARE.
 #include "frame_check_sequence.h"
 
 #if defined(COMPILER_KEIL)
-#pragma diag_suppress 1300 
+#pragma diag_suppress 1300
 #endif
 
 ///\defgroup crc64_ecma 64 bit CRC ECMA calculation
@@ -87,7 +87,7 @@ namespace etl
     //*************************************************************************
     crc64_ecma()
     {
-      reset();
+      this->reset();
     }
 
     //*************************************************************************
@@ -98,8 +98,8 @@ namespace etl
     template<typename TIterator>
     crc64_ecma(TIterator begin, const TIterator end)
     {
-      reset();
-      add(begin, end);
+      this->reset();
+      this->add(begin, end);
     }
   };
 }
