@@ -72,25 +72,25 @@ namespace etl
 
     //*************************************************************************
     /// Constructor, with size.
-    ///\param initialSize The initial size of the vector.
+    ///\param initial_size The initial size of the vector.
     //*************************************************************************
-    explicit vector(size_t initialSize)
+    explicit vector(size_t initial_size)
       : ivector<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
       ivector<T>::initialise();
-      ivector<T>::resize(initialSize);
+      ivector<T>::resize(initial_size);
     }
 
     //*************************************************************************
     /// Constructor, from initial size and value.
-    ///\param initialSize  The initial size of the vector.
+    ///\param initial_size  The initial size of the vector.
     ///\param value        The value to fill the vector with.
     //*************************************************************************
-    vector(size_t initialSize, typename ivector<T>::parameter_t value)
+    vector(size_t initial_size, typename ivector<T>::parameter_t value)
       : ivector<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
       ivector<T>::initialise();
-      ivector<T>::resize(initialSize, value);
+      ivector<T>::resize(initial_size, value);
     }
 
     //*************************************************************************

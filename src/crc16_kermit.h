@@ -37,7 +37,7 @@ SOFTWARE.
 #include "frame_check_sequence.h"
 
 #if defined(COMPILER_KEIL)
-#pragma diag_suppress 1300 
+#pragma diag_suppress 1300
 #endif
 
 ///\defgroup crc16_kermit 16 bit CRC Kermit calculation
@@ -50,7 +50,7 @@ namespace etl
   /// \ingroup crc
   //***************************************************************************
   extern const uint16_t CRC_KERMIT[];
- 
+
   //***************************************************************************
   /// CRC16 Kermit policy.
   /// Calculates CRC16 Kermit using polynomial 0x1021
@@ -87,7 +87,7 @@ namespace etl
     //*************************************************************************
     crc16_kermit()
     {
-      reset();
+      this->reset();
     }
 
     //*************************************************************************
@@ -98,8 +98,8 @@ namespace etl
     template<typename TIterator>
     crc16_kermit(TIterator begin, const TIterator end)
     {
-      reset();
-      add(begin, end);
+      this->reset();
+      this->add(begin, end);
     }
   };
 }

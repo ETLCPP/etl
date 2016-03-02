@@ -122,7 +122,7 @@ namespace etl
     //*************************************************************************
     checksum()
     {
-      reset();
+      this->reset();
     }
 
     //*************************************************************************
@@ -133,8 +133,8 @@ namespace etl
     template<typename TIterator>
     checksum(TIterator begin, const TIterator end)
     {
-      reset();
-      add(begin, end);
+      this->reset();
+      this->add(begin, end);
     }
   };
 
@@ -151,7 +151,7 @@ namespace etl
     //*************************************************************************
     bsd_checksum()
     {
-      reset();
+      this->reset();
     }
 
     //*************************************************************************
@@ -162,8 +162,8 @@ namespace etl
     template<typename TIterator>
     bsd_checksum(TIterator begin, const TIterator end)
     {
-      reset();
-      add(begin, end);
+      this->reset();
+      this->add(begin, end);
     }
   };
 
@@ -180,7 +180,7 @@ namespace etl
     //*************************************************************************
     xor_checksum()
     {
-      reset();
+      this->reset();
     }
 
     //*************************************************************************
@@ -191,11 +191,10 @@ namespace etl
     template<typename TIterator>
     xor_checksum(TIterator begin, const TIterator end)
     {
-      reset();
-      add(begin, end);
+      this->reset();
+      this->add(begin, end);
     }
   };
-
 }
 
 #endif

@@ -37,7 +37,7 @@ SOFTWARE.
 #include "frame_check_sequence.h"
 
 #if defined(COMPILER_KEIL)
-#pragma diag_suppress 1300 
+#pragma diag_suppress 1300
 #endif
 
 ///\defgroup crc16_ccitt 16 bit CRC CCITT calculation
@@ -50,7 +50,7 @@ namespace etl
   /// \ingroup crc16_ccitt
   //***************************************************************************
   extern const uint16_t CRC_CCITT[];
-  
+
   //***************************************************************************
   /// CRC16 CCITT policy.
   /// Calculates CRC16 CCITT using polynomial 0x1021
@@ -87,7 +87,7 @@ namespace etl
     //*************************************************************************
     crc16_ccitt()
     {
-      reset();
+      this->reset();
     }
 
     //*************************************************************************
@@ -98,8 +98,8 @@ namespace etl
     template<typename TIterator>
     crc16_ccitt(TIterator begin, const TIterator end)
     {
-      reset();
-      add(begin, end);
+      this->reset();
+      this->add(begin, end);
     }
   };
 }

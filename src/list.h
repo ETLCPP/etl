@@ -77,19 +77,19 @@ namespace etl
     //*************************************************************************
     /// Construct from size.
     //*************************************************************************
-    explicit list(size_t initialSize)
+    explicit list(size_t initial_size)
       : ilist<T>(node_pool, MAX_SIZE)
     {
-      ilist<T>::assign(initialSize, T());
+      ilist<T>::assign(initial_size, T());
     }
 
     //*************************************************************************
     /// Construct from size and value.
     //*************************************************************************
-    list(size_t initialSize, typename ilist<T>::parameter_t value)
+    list(size_t initial_size, typename ilist<T>::parameter_t value)
       : ilist<T>(node_pool, MAX_SIZE)
     {
-      ilist<T>::assign(initialSize, value);
+      ilist<T>::assign(initial_size, value);
     }
 
     //*************************************************************************

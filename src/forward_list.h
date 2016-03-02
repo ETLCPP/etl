@@ -77,10 +77,10 @@ namespace etl
     //*************************************************************************
     /// Construct from size and value.
     //*************************************************************************
-    explicit forward_list(size_t initialSize, typename iforward_list<T>::parameter_t value = T())
+    explicit forward_list(size_t initial_size, typename iforward_list<T>::parameter_t value = T())
       : iforward_list<T>(node_pool, MAX_SIZE)
     {
-      iforward_list<T>::assign(initialSize, value);
+      iforward_list<T>::assign(initial_size, value);
     }
 
     //*************************************************************************

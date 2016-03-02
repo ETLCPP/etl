@@ -193,7 +193,7 @@ namespace etl
     //*********************************************************************
     void resize(size_t new_size)
     {
-      ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(vector_full));
+      //ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(vector_full));
 
       // Size up or size down?
       if (new_size > current_size)
@@ -273,6 +273,13 @@ namespace etl
     reference at(size_t i)
     {
       ETL_ASSERT(i < current_size, ETL_ERROR(vector_out_of_bounds));
+
+//      if (i >= current_size)
+//      {
+//
+//        throw etl::vector_out_of_bounds("a", 1);
+//      }
+
       return p_buffer[i];
     }
 

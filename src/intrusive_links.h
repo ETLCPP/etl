@@ -74,7 +74,7 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Link exception.  
+  /// Link exception.
   //***************************************************************************
   class link_exception : public etl::exception
   {
@@ -87,7 +87,7 @@ namespace etl
   };
 
   //***************************************************************************
-  /// not unlinked exception.  
+  /// not unlinked exception.
   //***************************************************************************
   class not_unlinked_exception : public etl::link_exception
   {
@@ -131,7 +131,7 @@ namespace etl
   /// A forward link.
   //***************************************************************************
   template <const size_t ID_ = 0, const size_t OPTION_ = etl::link_option::DEFAULT>
-  struct forward_link 
+  struct forward_link
     : public __private_intrusive_links__::forward_link_base<forward_link<ID_, OPTION_>, ID_, OPTION_>
   {
   };
@@ -145,7 +145,7 @@ namespace etl
   {
     forward_link()
     {
-      clear();
+      this->clear();
     }
   };
 
@@ -160,12 +160,12 @@ namespace etl
   {
     forward_link()
     {
-      clear();
+      this->clear();
     }
 
     ~forward_link()
     {
-      assert(etl_next != nullptr);
+      assert(this->etl_next != nullptr);
     }
   };
 
@@ -279,7 +279,7 @@ namespace etl
     else
     {
       last.etl_next = nullptr;
-    }   
+    }
   }
 
   // Reference
@@ -369,12 +369,12 @@ namespace etl
   /// A bidirectional link.
   //***************************************************************************
   template <const size_t ID_ = 0, const size_t OPTION_ = etl::link_option::DEFAULT>
-  struct bidirectional_link 
+  struct bidirectional_link
     : public __private_intrusive_links__::bidirectional_link_base<bidirectional_link<ID_, OPTION_>, ID_, OPTION_>
   {
     void unlink()
     {
-      base_unlink();
+      this->base_unlink();
     }
   };
 
@@ -383,23 +383,23 @@ namespace etl
   // When this link is destroyed it will automatically unlink itself.
   //******************************************************************
   template <const size_t ID_>
-  struct bidirectional_link<ID_, etl::link_option::AUTO> 
+  struct bidirectional_link<ID_, etl::link_option::AUTO>
     : public __private_intrusive_links__::bidirectional_link_base<bidirectional_link<ID_, etl::link_option::AUTO>, ID_, etl::link_option::AUTO>
   {
     bidirectional_link()
     {
-      clear();
+      this->clear();
     }
 
     ~bidirectional_link()
     {
-      base_unlink();
+      this->base_unlink();
     }
 
     void unlink()
     {
-      base_unlink();
-      clear();
+      this->base_unlink();
+      this->clear();
     }
   };
 
@@ -409,24 +409,24 @@ namespace etl
   // is destroyed.
   //******************************************************************
   template <const size_t ID_>
-  struct bidirectional_link<ID_, etl::link_option::CHECKED> 
+  struct bidirectional_link<ID_, etl::link_option::CHECKED>
     : public __private_intrusive_links__::bidirectional_link_base<bidirectional_link<ID_, etl::link_option::CHECKED>, ID_, etl::link_option::CHECKED>
   {
     bidirectional_link()
     {
-      clear();
+      this->clear();
     }
 
     ~bidirectional_link()
     {
-      assert(etl_previous == nullptr);
-      assert(etl_next     == nullptr);
+      assert(this->etl_previous == nullptr);
+      assert(this->etl_next     == nullptr);
     }
 
     void unlink()
     {
-      base_unlink();
-      clear();
+      this->base_unlink();
+      this->clear();
     }
   };
 
@@ -696,7 +696,7 @@ namespace etl
   {
     tree_link()
     {
-      clear();
+      this->clear();
     }
   };
 
@@ -711,14 +711,14 @@ namespace etl
   {
     tree_link()
     {
-      clear();
+      this->clear();
     }
 
     ~tree_link()
     {
-      assert(etl_parent != nullptr);
-      assert(etl_left   != nullptr);
-      assert(etl_right  != nullptr);
+      assert(this->etl_parent != nullptr);
+      assert(this->etl_left   != nullptr);
+      assert(this->etl_right  != nullptr);
     }
   };
 
