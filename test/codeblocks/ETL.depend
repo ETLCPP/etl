@@ -2803,7 +2803,7 @@
 	"Posix/TimeHelpers.h"
 	"Win32/TimeHelpers.h"
 
-1414845610 d:\users\john\documents\programming\github\unittest-cpp\unittest++\win32\timehelpers.h
+1456667834 d:\users\john\documents\programming\github\unittest-cpp\unittest++\win32\timehelpers.h
 	"../Config.h"
 	"../HelperMacros.h"
 
@@ -2898,10 +2898,10 @@
 	"CurrentTest.h"
 	"ReportAssertImpl.h"
 
-1452338450 source:d:\users\john\documents\programming\github\etl\test\test_algorithm.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_algorithm.cpp
 	<UnitTest++/UnitTest++.h>
-	"../algorithm.h"
-	"../container.h"
+	"../src/algorithm.h"
+	"../src/container.h"
 	<vector>
 	<algorithm>
 	<functional>
@@ -2923,10 +2923,10 @@
 	<stddef.h>
 	<iterator>
 
-1452796556 source:d:\users\john\documents\programming\github\etl\test\test_alignment.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_alignment.cpp
 	<UnitTest++/UnitTest++.h>
-	"../alignment.h"
-	"../type_traits.h"
+	"../src/alignment.h"
+	"../src/type_traits.h"
 	<type_traits>
 	<utility>
 	<string>
@@ -2939,13 +2939,13 @@
 
 1450265856 d:\users\john\documents\programming\github\etl\static_assert.h
 
-1452338450 source:d:\users\john\documents\programming\github\etl\test\test_array.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_array.cpp
 	<UnitTest++/UnitTest++.h>
-	"../array.h"
+	"../src/array.h"
 	<array>
 	<algorithm>
 	<iterator>
-	"../integral_limits.h"
+	"../src/integral_limits.h"
 
 1450265856 d:\users\john\documents\programming\github\etl\array.h
 	<iterator>
@@ -2966,14 +2966,14 @@
 	<stddef.h>
 	"type_traits.h"
 
-1452796556 source:d:\users\john\documents\programming\github\etl\test\test_binary.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_binary.cpp
 	<UnitTest++/UnitTest++.h>
 	<cstdint>
 	<type_traits>
-	"../binary.h"
-	"../bitset.h"
-	"../fnv_1.h"
-	"../integral_limits.h"
+	"../src/binary.h"
+	"../src/bitset.h"
+	"../src/fnv_1.h"
+	"../src/integral_limits.h"
 
 1450265856 d:\users\john\documents\programming\github\etl\binary.h
 	"type_traits.h"
@@ -3029,22 +3029,22 @@
 	"exception.h"
 	"error_handler.h"
 
-1452796556 source:d:\users\john\documents\programming\github\etl\test\test_bitset.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_bitset.cpp
 	<UnitTest++/UnitTest++.h>
 	<limits>
 	<type_traits>
 	<bitset>
-	"../bitset.h"
+	"../src/bitset.h"
 
-1452796556 source:d:\users\john\documents\programming\github\etl\test\test_bloom_filter.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_bloom_filter.cpp
 	<UnitTest++/UnitTest++.h>
 	<stdlib.h>
 	<vector>
-	"../bloom_filter.h"
-	"../fnv_1.h"
-	"../crc16.h"
-	"../crc16_ccitt.h"
-	"../crc32.h"
+	"../src/bloom_filter.h"
+	"../src/fnv_1.h"
+	"../src/crc16.h"
+	"../src/crc16_ccitt.h"
+	"../src/crc32.h"
 
 1450265856 d:\users\john\documents\programming\github\etl\bloom_filter.h
 	"parameter_type.h"
@@ -3073,14 +3073,14 @@
 	<iterator>
 	"static_assert.h"
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_checksum.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_checksum.cpp
 	<UnitTest++/UnitTest++.h>
 	<iterator>
 	<string>
 	<vector>
 	<stdint.h>
-	"../checksum.h"
-	"../endian.h"
+	"../src/checksum.h"
+	"../src/endian.h"
 
 1450265856 d:\users\john\documents\programming\github\etl\checksum.h
 	<stdint.h>
@@ -3088,23 +3088,23 @@
 	"type_traits.h"
 	"ihash.h"
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_container.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_container.cpp
 	<UnitTest++/UnitTest++.h>
-	"../container.h"
+	"../src/container.h"
 	<list>
 
-1452796556 source:d:\users\john\documents\programming\github\etl\test\test_crc.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_crc.cpp
 	<UnitTest++/UnitTest++.h>
 	<iterator>
 	<string>
 	<vector>
 	<stdint.h>
-	"../crc8_ccitt.h"
-	"../crc16.h"
-	"../crc16_ccitt.h"
-	"../crc16_kermit.h"
-	"../crc32.h"
-	"../crc64_ecma.h"
+	"../src/crc8_ccitt.h"
+	"../src/crc16.h"
+	"../src/crc16_ccitt.h"
+	"../src/crc16_kermit.h"
+	"../src/crc32.h"
+	"../src/crc64_ecma.h"
 
 1450265856 d:\users\john\documents\programming\github\etl\crc8_ccitt.h
 	<stdint.h>
@@ -3121,9 +3121,9 @@
 	"static_assert.h"
 	"type_traits.h"
 
-1452796556 source:d:\users\john\documents\programming\github\etl\test\test_cyclic_value.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_cyclic_value.cpp
 	<UnitTest++/UnitTest++.h>
-	"../cyclic_value.h"
+	"../src/cyclic_value.h"
 
 1452794793 d:\users\john\documents\programming\github\etl\cyclic_value.h
 	<stddef.h>
@@ -3131,10 +3131,10 @@
 	"static_assert.h"
 	"exception.h"
 
-1452878867 source:d:\users\john\documents\programming\github\etl\test\test_deque.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_deque.cpp
 	<UnitTest++/UnitTest++.h>
 	"ExtraCheckMacros.h"
-	"../deque.h"
+	"../src/deque.h"
 	"data.h"
 	<vector>
 	<deque>
@@ -3175,33 +3175,33 @@
 	<stddef.h>
 	"exception.h"
 
-1450265856 d:\users\john\documents\programming\github\etl\test\data.h
+1456432601 d:\users\john\documents\programming\github\etl\test\data.h
 	<ostream>
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_endian.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_endian.cpp
 	<UnitTest++/UnitTest++.h>
 	<string>
-	"../endian.h"
+	"../src/endian.h"
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_enum_type.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_enum_type.cpp
 	<UnitTest++/UnitTest++.h>
 	<string>
-	"../enum_type.h"
+	"../src/enum_type.h"
 
-1453406068 source:d:\users\john\documents\programming\github\etl\test\test_error_handler.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_error_handler.cpp
 	<UnitTest++/UnitTest++.h>
 	<Windows.h>
 	<sstream>
 	<string>
-	"../error_handler.h"
-	"../exception.h"
+	"../src/error_handler.h"
+	"../src/exception.h"
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_exception.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_exception.cpp
 	<UnitTest++/UnitTest++.h>
 	<string>
-	"../exception.h"
+	"../src/exception.h"
 
-1452796556 source:d:\users\john\documents\programming\github\etl\test\test_flat_map.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_flat_map.cpp
 	<UnitTest++/UnitTest++.h>
 	<map>
 	<array>
@@ -3211,7 +3211,7 @@
 	<string>
 	<vector>
 	"data.h"
-	"../flat_map.h"
+	"../src/flat_map.h"
 
 1452796556 d:\users\john\documents\programming\github\etl\flat_map.h
 	<stddef.h>
@@ -3263,7 +3263,7 @@
 	"alignment.h"
 	"array.h"
 
-1452796556 source:d:\users\john\documents\programming\github\etl\test\test_flat_set.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_flat_set.cpp
 	<UnitTest++/UnitTest++.h>
 	<set>
 	<array>
@@ -3273,7 +3273,7 @@
 	<string>
 	<vector>
 	"data.h"
-	"../flat_set.h"
+	"../src/flat_set.h"
 
 1452796556 d:\users\john\documents\programming\github\etl\flat_set.h
 	<stddef.h>
@@ -3300,19 +3300,19 @@
 	"ivector.h"
 	"error_handler.h"
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_fnv_1.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_fnv_1.cpp
 	<UnitTest++/UnitTest++.h>
 	<iterator>
 	<string>
 	<vector>
 	<stdint.h>
-	"../fnv_1.h"
+	"../src/fnv_1.h"
 
-1453063876 source:d:\users\john\documents\programming\github\etl\test\test_forward_list.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_forward_list.cpp
 	<UnitTest++/UnitTest++.h>
 	"ExtraCheckMacros.h"
 	"data.h"
-	"../forward_list.h"
+	"../src/forward_list.h"
 	<algorithm>
 	<array>
 	<forward_list>
@@ -3359,51 +3359,51 @@
 	<stddef.h>
 	"exception.h"
 
-1451003290 source:d:\users\john\documents\programming\github\etl\test\test_function.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_function.cpp
 	<UnitTest++/UnitTest++.h>
-	"../function.h"
+	"../src/function.h"
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_functional.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_functional.cpp
 	<UnitTest++/UnitTest++.h>
-	"../functional.h"
+	"../src/functional.h"
 	<list>
 	<vector>
 	<numeric>
 
 1450265856 d:\users\john\documents\programming\github\etl\functional.h
 
-1452796556 source:d:\users\john\documents\programming\github\etl\test\test_hash.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_hash.cpp
 	<UnitTest++/UnitTest++.h>
 	<iterator>
 	<string>
 	<vector>
 	<stdint.h>
-	"../hash.h"
+	"../src/hash.h"
 
 1450265856 d:\users\john\documents\programming\github\etl\hash.h
 	<stdint.h>
 	"fnv_1.h"
 	"type_traits.h"
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_instance_count.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_instance_count.cpp
 	<UnitTest++/UnitTest++.h>
-	"../instance_count.h"
+	"../src/instance_count.h"
 	<list>
 	<vector>
 	<numeric>
 
 1450265856 d:\users\john\documents\programming\github\etl\instance_count.h
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_integral_limits.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_integral_limits.cpp
 	<UnitTest++/UnitTest++.h>
 	<limits>
 	<type_traits>
 	<bitset>
-	"../integral_limits.h"
+	"../src/integral_limits.h"
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_io_port.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_io_port.cpp
 	<UnitTest++/UnitTest++.h>
-	"../io_port.h"
+	"../src/io_port.h"
 	<stdint.h>
 
 1450265856 d:\users\john\documents\programming\github\etl\io_port.h
@@ -3411,18 +3411,18 @@
 	"nullptr.h"
 	"parameter_type.h"
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_largest.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_largest.cpp
 	<UnitTest++/UnitTest++.h>
-	"../largest.h"
+	"../src/largest.h"
 	<type_traits>
 
 1450265856 d:\users\john\documents\programming\github\etl\largest.h
 	"type_traits.h"
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_list.cpp
+1456964521 source:d:\users\john\documents\programming\github\etl\test\test_list.cpp
 	<UnitTest++/UnitTest++.h>
 	"ExtraCheckMacros.h"
-	"../list.h"
+	"../src/list.h"
 	"data.h"
 	<algorithm>
 	<array>
@@ -3450,12 +3450,12 @@
 	<stddef.h>
 	"exception.h"
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_maths.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_maths.cpp
 	<UnitTest++/UnitTest++.h>
-	"../log.h"
-	"../power.h"
-	"../fibonacci.h"
-	"../factorial.h"
+	"../src/log.h"
+	"../src/power.h"
+	"../src/fibonacci.h"
+	"../src/factorial.h"
 
 1450265856 d:\users\john\documents\programming\github\etl\fibonacci.h
 	<stddef.h>
@@ -3463,17 +3463,17 @@
 1450265856 d:\users\john\documents\programming\github\etl\factorial.h
 	<stddef.h>
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_numeric.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_numeric.cpp
 	<UnitTest++/UnitTest++.h>
-	"../numeric.h"
+	"../src/numeric.h"
 	<algorithm>
 	<numeric>
 
 1450265856 d:\users\john\documents\programming\github\etl\numeric.h
 
-1450468191 source:d:\users\john\documents\programming\github\etl\test\test_observer.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_observer.cpp
 	<UnitTest++/UnitTest++.h>
-	"../observer.h"
+	"../src/observer.h"
 
 1450959449 d:\users\john\documents\programming\github\etl\observer.h
 	<algorithm>
@@ -3481,10 +3481,10 @@
 	"exception.h"
 	"error_handler.h"
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_queue.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_queue.cpp
 	<UnitTest++/UnitTest++.h>
 	<queue>
-	"../queue.h"
+	"../src/queue.h"
 
 1450265856 d:\users\john\documents\programming\github\etl\queue.h
 	<stddef.h>
@@ -3505,16 +3505,16 @@
 	<stddef.h>
 	"exception.h"
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_smallest.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_smallest.cpp
 	<UnitTest++/UnitTest++.h>
-	"../smallest.h"
+	"../src/smallest.h"
 	<type_traits>
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_stack.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_stack.cpp
 	<UnitTest++/UnitTest++.h>
 	<stack>
 	"data.h"
-	"../stack.h"
+	"../src/stack.h"
 
 1450265856 d:\users\john\documents\programming\github\etl\stack.h
 	<stddef.h>
@@ -3536,24 +3536,24 @@
 	<stddef.h>
 	"exception.h"
 
-1452338102 source:d:\users\john\documents\programming\github\etl\test\test_vector.cpp
+1456953182 source:d:\users\john\documents\programming\github\etl\test\test_vector.cpp
 	<UnitTest++/UnitTest++.h>
 	<vector>
 	<array>
 	<algorithm>
-	"../vector.h"
+	"../src/vector.h"
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_visitor.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_visitor.cpp
 	<UnitTest++/UnitTest++.h>
-	"../visitor.h"
+	"../src/visitor.h"
 
 1450265856 d:\users\john\documents\programming\github\etl\visitor.h
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_fixed_iterator.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_fixed_iterator.cpp
 	<UnitTest++/UnitTest++.h>
 	<vector>
 	<ostream>
-	"../fixed_iterator.h"
+	"../src/fixed_iterator.h"
 
 1450265856 d:\users\john\documents\programming\github\etl\fixed_iterator.h
 	<iterator>
@@ -3600,7 +3600,7 @@
 	"../exception.h"
 	"../error_handler.h"
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_map.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_map.cpp
 	<UnitTest++/UnitTest++.h>
 	<map>
 	<array>
@@ -3609,7 +3609,7 @@
 	<iterator>
 	<string>
 	<vector>
-	"../map.h"
+	"../src/map.h"
 
 1452337350 d:\users\john\documents\programming\github\etl\map.h
 	<stddef.h>
@@ -3635,12 +3635,12 @@
 	"../exception.h"
 	"../error_handler.h"
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_optional.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_optional.cpp
 	<UnitTest++/UnitTest++.h>
 	<string>
 	<ostream>
-	"../optional.h"
-	"../vector.h"
+	"../src/optional.h"
+	"../src/vector.h"
 	"data.h"
 
 1452796556 d:\users\john\documents\programming\github\etl\optional.h
@@ -3649,20 +3649,20 @@
 	"exception.h"
 	"error_handler.h"
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_pool.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_pool.cpp
 	<UnitTest++/UnitTest++.h>
 	"ExtraCheckMacros.h"
 	"data.h"
 	<set>
 	<vector>
-	"../pool.h"
+	"../src/pool.h"
 
 1450265856 d:\users\john\documents\programming\github\etl\private\queue_base.h
 	<stddef.h>
 	"../exception.h"
 	"../error_handler.h"
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_set.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_set.cpp
 	<UnitTest++/UnitTest++.h>
 	<set>
 	<array>
@@ -3671,7 +3671,7 @@
 	<iterator>
 	<string>
 	<vector>
-	"../set.h"
+	"../src/set.h"
 
 1452337350 d:\users\john\documents\programming\github\etl\set.h
 	<stddef.h>
@@ -3702,15 +3702,15 @@
 	"../exception.h"
 	"../error_handler.h"
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_type_traits.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_type_traits.cpp
 	<UnitTest++/UnitTest++.h>
-	"../type_traits.h"
+	"../src/type_traits.h"
 	<type_traits>
 
-1450265856 source:d:\users\john\documents\programming\github\etl\test\test_variant.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_variant.cpp
 	<UnitTest++/UnitTest++.h>
 	"ExtraCheckMacros.h"
-	"../variant.h"
+	"../src/variant.h"
 	<array>
 	<vector>
 	<algorithm>
@@ -4784,11 +4784,11 @@
 
 1452516033 /home/jwellbelove/Programming/etl/visitor.h
 
-1453405766 source:d:\users\john\documents\programming\github\etl\test\test_intrusive_forward_list.cpp
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_intrusive_forward_list.cpp
 	<UnitTest++/UnitTest++.h>
 	"ExtraCheckMacros.h"
 	"data.h"
-	"../intrusive_forward_list.h"
+	"../src/intrusive_forward_list.h"
 	<algorithm>
 	<array>
 	<forward_list>
@@ -4808,4 +4808,562 @@
 1453324561 d:\users\john\documents\programming\github\etl\intrusive_forward_list_link.h
 	"error_handler.h"
 	"array.h"
+
+1456669289 source:d:\users\john\documents\programming\github\etl\src\crc16.cpp
+	<stdint.h>
+
+1456669289 source:d:\users\john\documents\programming\github\etl\src\crc16_ccitt.cpp
+	<stdint.h>
+
+1456669289 source:d:\users\john\documents\programming\github\etl\src\crc16_kermit.cpp
+	<stdint.h>
+
+1456669289 source:d:\users\john\documents\programming\github\etl\src\crc32.cpp
+	<stdint.h>
+
+1456669289 source:d:\users\john\documents\programming\github\etl\src\crc64_ecma.cpp
+	<stdint.h>
+
+1456669289 source:d:\users\john\documents\programming\github\etl\src\crc8_ccitt.cpp
+	<stdint.h>
+
+1456669289 source:d:\users\john\documents\programming\github\etl\src\error_handler.cpp
+	"error_handler.h"
+	"nullptr.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\error_handler.h
+	<assert.h>
+	"exception.h"
+	"function.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\exception.h
+
+1456669289 d:\users\john\documents\programming\github\etl\src\function.h
+
+1456669289 d:\users\john\documents\programming\github\etl\src\nullptr.h
+
+1456669289 source:d:\users\john\documents\programming\github\etl\src\pearson.cpp
+	<stdint.h>
+
+1456669289 d:\users\john\documents\programming\github\etl\src\algorithm.h
+	<algorithm>
+	<iterator>
+	<utility>
+	<functional>
+	<stdint.h>
+	"type_traits.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\type_traits.h
+	<stddef.h>
+	"nullptr.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\container.h
+	<stddef.h>
+	<iterator>
+
+1456669289 d:\users\john\documents\programming\github\etl\src\alignment.h
+	<stdint.h>
+	"type_traits.h"
+	"static_assert.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\static_assert.h
+
+1456669289 d:\users\john\documents\programming\github\etl\src\array.h
+	<iterator>
+	<functional>
+	<algorithm>
+	<stddef.h>
+	"exception.h"
+	"type_traits.h"
+	"parameter_type.h"
+	"static_assert.h"
+	"error_handler.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\parameter_type.h
+	"type_traits.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\integral_limits.h
+	<climits>
+	<stddef.h>
+	"type_traits.h"
+
+1456953182 d:\users\john\documents\programming\github\etl\src\binary.h
+	<limits>
+	<assert.h>
+	"type_traits.h"
+	"integral_limits.h"
+	"static_assert.h"
+	"log.h"
+	"power.h"
+	"smallest.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\log.h
+	<stddef.h>
+
+1456669289 d:\users\john\documents\programming\github\etl\src\power.h
+	<stddef.h>
+	"log.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\smallest.h
+	<stdint.h>
+	"integral_limits.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\bitset.h
+	<algorithm>
+	<iterator>
+	<string.h>
+	<stddef.h>
+	"integral_limits.h"
+	"algorithm.h"
+	"nullptr.h"
+	"log.h"
+	"ibitset.h"
+	"error_handler.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\ibitset.h
+	<algorithm>
+	<stdint.h>
+	<string.h>
+	"exception.h"
+	"integral_limits.h"
+	"binary.h"
+	"algorithm.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\fnv_1.h
+	<stdint.h>
+	"static_assert.h"
+	"type_traits.h"
+	"ihash.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\ihash.h
+	<stdint.h>
+	<utility>
+	"exception.h"
+	"error_handler.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\bloom_filter.h
+	"parameter_type.h"
+	"bitset.h"
+	"type_traits.h"
+	"binary.h"
+	"log.h"
+	"power.h"
+
+1456953131 d:\users\john\documents\programming\github\etl\src\crc16.h
+	<stdint.h>
+	<iterator>
+	"frame_check_sequence.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\frame_check_sequence.h
+	<stdint.h>
+	"static_assert.h"
+	"type_traits.h"
+	"binary.h"
+
+1456953131 d:\users\john\documents\programming\github\etl\src\crc16_ccitt.h
+	<stdint.h>
+	<iterator>
+	"frame_check_sequence.h"
+
+1456953131 d:\users\john\documents\programming\github\etl\src\crc32.h
+	<stdint.h>
+	<iterator>
+	"frame_check_sequence.h"
+
+1456953131 d:\users\john\documents\programming\github\etl\src\checksum.h
+	<stdint.h>
+	"binary.h"
+	"frame_check_sequence.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\endian.h
+	<stdint.h>
+	"enum_type.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\enum_type.h
+
+1456953131 d:\users\john\documents\programming\github\etl\src\crc8_ccitt.h
+	<stdint.h>
+	<iterator>
+	"frame_check_sequence.h"
+
+1456953131 d:\users\john\documents\programming\github\etl\src\crc16_kermit.h
+	<stdint.h>
+	<iterator>
+	"frame_check_sequence.h"
+
+1456953131 d:\users\john\documents\programming\github\etl\src\crc64_ecma.h
+	<stdint.h>
+	<iterator>
+	"frame_check_sequence.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\cyclic_value.h
+	<stddef.h>
+	<algorithm>
+	"static_assert.h"
+	"exception.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\deque.h
+	<stddef.h>
+	<stdint.h>
+	<iterator>
+	<algorithm>
+	"ideque.h"
+	"container.h"
+	"alignment.h"
+	"array.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\ideque.h
+	<stddef.h>
+	<iterator>
+	"algorithm.h"
+	"type_traits.h"
+	"private/deque_base.h"
+	"parameter_type.h"
+	"error_handler.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\private\deque_base.h
+	<stddef.h>
+	"../exception.h"
+	"../error_handler.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\fixed_iterator.h
+	<iterator>
+
+1456669289 d:\users\john\documents\programming\github\etl\src\flat_map.h
+	<stddef.h>
+	<iterator>
+	<functional>
+	"iflat_map.h"
+	"vector.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\iflat_map.h
+	<iterator>
+	<algorithm>
+	<functional>
+	<utility>
+	<stddef.h>
+	"private/flat_map_base.h"
+	"type_traits.h"
+	"parameter_type.h"
+	"ivector.h"
+	"error_handler.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\private\flat_map_base.h
+	<stddef.h>
+	"../exception.h"
+	"../ivector.h"
+	"../error_handler.h"
+
+1456953131 d:\users\john\documents\programming\github\etl\src\ivector.h
+	<iterator>
+	<algorithm>
+	<functional>
+	<stddef.h>
+	"algorithm.h"
+	"private/vector_base.h"
+	"type_traits.h"
+	"parameter_type.h"
+	"error_handler.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\private\vector_base.h
+	<stddef.h>
+	"../exception.h"
+	"../error_handler.h"
+
+1456953131 d:\users\john\documents\programming\github\etl\src\vector.h
+	<stddef.h>
+	<stdint.h>
+	<iterator>
+	"ivector.h"
+	"container.h"
+	"alignment.h"
+	"array.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\flat_set.h
+	<stddef.h>
+	<iterator>
+	<functional>
+	"iflat_set.h"
+	"vector.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\iflat_set.h
+	<iterator>
+	<algorithm>
+	<functional>
+	<utility>
+	<stddef.h>
+	"private/flat_set_base.h"
+	"type_traits.h"
+	"parameter_type.h"
+	"ivector.h"
+	"error_handler.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\private\flat_set_base.h
+	<stddef.h>
+	"../exception.h"
+	"../ivector.h"
+	"../error_handler.h"
+
+1456953131 d:\users\john\documents\programming\github\etl\src\forward_list.h
+	<stddef.h>
+	"pool.h"
+	"iforward_list.h"
+	"container.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\pool.h
+	"alignment.h"
+	"array.h"
+	"bitset.h"
+	"ipool.h"
+	<iterator>
+
+1456669289 d:\users\john\documents\programming\github\etl\src\ipool.h
+	<iterator>
+	"private/pool_base.h"
+	"nullptr.h"
+	"ibitset.h"
+	"error_handler.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\private\pool_base.h
+	<stddef.h>
+	"../exception.h"
+	"../error_handler.h"
+	"../error_handler.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\iforward_list.h
+	<iterator>
+	<algorithm>
+	<functional>
+	<stddef.h>
+	"pool.h"
+	"nullptr.h"
+	"private/forward_list_base.h"
+	"type_traits.h"
+	"parameter_type.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\private\forward_list_base.h
+	<stddef.h>
+	"../exception.h"
+	"../error_handler.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\functional.h
+
+1456669289 d:\users\john\documents\programming\github\etl\src\hash.h
+	<stdint.h>
+	"fnv_1.h"
+	"type_traits.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\instance_count.h
+
+1456953131 d:\users\john\documents\programming\github\etl\src\intrusive_forward_list.h
+	<iterator>
+	<algorithm>
+	<functional>
+	<stddef.h>
+	"nullptr.h"
+	"type_traits.h"
+	"exception.h"
+	"error_handler.h"
+	"intrusive_links.h"
+	"algorithm.h"
+
+1456953131 d:\users\john\documents\programming\github\etl\src\intrusive_links.h
+	<assert.h>
+	"nullptr.h"
+	"type_traits.h"
+	"exception.h"
+	"error_handler.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\io_port.h
+	<stdint.h>
+	"nullptr.h"
+	"parameter_type.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\largest.h
+	"type_traits.h"
+
+1456953131 d:\users\john\documents\programming\github\etl\src\list.h
+	<stddef.h>
+	"ilist.h"
+	"container.h"
+	"pool.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\ilist.h
+	<iterator>
+	<algorithm>
+	<functional>
+	<stddef.h>
+	"nullptr.h"
+	"private/list_base.h"
+	"type_traits.h"
+	"parameter_type.h"
+	"pool.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\private\list_base.h
+	<stddef.h>
+	"../exception.h"
+	"../error_handler.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\map.h
+	<stddef.h>
+	<iterator>
+	<functional>
+	"imap.h"
+	"container.h"
+	"pool.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\imap.h
+	<iterator>
+	<algorithm>
+	<functional>
+	<stddef.h>
+	"nullptr.h"
+	"private/map_base.h"
+	"type_traits.h"
+	"parameter_type.h"
+	"pool.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\private\map_base.h
+	<stddef.h>
+	"../exception.h"
+	"../error_handler.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\fibonacci.h
+	<stddef.h>
+
+1456669289 d:\users\john\documents\programming\github\etl\src\factorial.h
+	<stddef.h>
+
+1456669289 d:\users\john\documents\programming\github\etl\src\numeric.h
+
+1456669289 d:\users\john\documents\programming\github\etl\src\observer.h
+	<algorithm>
+	"vector.h"
+	"exception.h"
+	"error_handler.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\optional.h
+	"alignment.h"
+	"type_traits.h"
+	"exception.h"
+	"error_handler.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\queue.h
+	<stddef.h>
+	<stdint.h>
+	"iqueue.h"
+	"container.h"
+	"alignment.h"
+	"array.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\iqueue.h
+	<stddef.h>
+	"private/queue_base.h"
+	"type_traits.h"
+	"parameter_type.h"
+	"error_handler.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\private\queue_base.h
+	<stddef.h>
+	"../exception.h"
+	"../error_handler.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\set.h
+	<stddef.h>
+	<iterator>
+	<functional>
+	"iset.h"
+	"container.h"
+	"pool.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\iset.h
+	<iterator>
+	<algorithm>
+	<functional>
+	<stddef.h>
+	"nullptr.h"
+	"private/set_base.h"
+	"type_traits.h"
+	"parameter_type.h"
+	"pool.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\private\set_base.h
+	<stddef.h>
+	"../exception.h"
+	"../error_handler.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\stack.h
+	<stddef.h>
+	<stdint.h>
+	<algorithm>
+	"istack.h"
+	"container.h"
+	"alignment.h"
+	"array.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\istack.h
+	<stddef.h>
+	"private/stack_base.h"
+	"type_traits.h"
+	"parameter_type.h"
+	"error_handler.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\private\stack_base.h
+	<stddef.h>
+	"../exception.h"
+	"../error_handler.h"
+
+1456669289 source:d:\users\john\documents\programming\github\etl\test\test_unordered_map.cpp
+	<UnitTest++/UnitTest++.h>
+	<map>
+	<array>
+	<algorithm>
+	<utility>
+	<iterator>
+	<string>
+	<vector>
+	<numeric>
+	"data.h"
+	"../src/unordered_map.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\unordered_map.h
+	<stddef.h>
+	<iterator>
+	<functional>
+	"iunordered_map.h"
+	"container.h"
+	"pool.h"
+	"vector.h"
+	"intrusive_forward_list.h"
+	"hash.h"
+
+1456953131 d:\users\john\documents\programming\github\etl\src\iunordered_map.h
+	<iterator>
+	<algorithm>
+	<functional>
+	<utility>
+	<stddef.h>
+	"type_traits.h"
+	"parameter_type.h"
+	"hash.h"
+	"nullptr.h"
+	"ipool.h"
+	"ivector.h"
+	"error_handler.h"
+	"intrusive_forward_list.h"
+	"exception.h"
+	"error_handler.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\variant.h
+	<stdint.h>
+	"array.h"
+	"largest.h"
+	"exception.h"
+	"type_traits.h"
+	"integral_limits.h"
+	"static_assert.h"
+	"alignment.h"
+	"error_handler.h"
+
+1456669289 d:\users\john\documents\programming\github\etl\src\visitor.h
 
