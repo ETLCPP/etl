@@ -924,7 +924,7 @@ namespace
 
       are_equal = std::equal(data2.begin(), data2.end(), compare_data2.begin());
       CHECK(are_equal);
-      
+
       // Move to the end.
       compare_data.assign(unsorted_data.begin(), unsorted_data.end());
       compare_data2.assign(unsorted_data.begin(), unsorted_data.end());
@@ -1173,48 +1173,6 @@ namespace
       are_equal = std::equal(data2.begin(), data2.end(), compare_data2.begin());
       CHECK(are_equal);
     }
-    
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_splice_list_same)
-    {
-      CompareData compare_data(unsorted_data.begin(), unsorted_data.end());
-      DataNDC data(unsorted_data.begin(), unsorted_data.end());
-
-      CompareData::iterator compare_to;
-      DataNDC::iterator to;
-
-      // Move to the beginning.
-      compare_to = compare_data.begin();
-      compare_data.splice(compare_to, compare_data);
-
-      to = data.begin();
-      data.splice(to, data);
-
-      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
-      CHECK(are_equal);
-
-      // Move to the end.
-      compare_to = compare_data.end();
-      compare_data.splice(compare_to, compare_data);
-
-      to = data.end();
-      data.splice(to, data);
-
-      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
-      CHECK(are_equal);
-
-      // Move nearby.
-      compare_to = compare_data.begin();
-      std::advance(compare_to, 7);
-      compare_data.splice(compare_to, compare_data);
-
-      to = data.begin();
-      std::advance(to, 7);
-      data.splice(to, data);
-
-      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
-      CHECK(are_equal);
-    }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_splice_list_different)
@@ -1240,7 +1198,7 @@ namespace
 
       are_equal = std::equal(data2.begin(), data2.end(), compare_data2.begin());
       CHECK(are_equal);
-      
+
       // Move to the end.
       compare_data.assign(unsorted_data.begin(), unsorted_data.end());
       compare_data2.assign(unsorted_data.begin(), unsorted_data.end());
