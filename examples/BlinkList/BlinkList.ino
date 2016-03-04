@@ -14,12 +14,29 @@ void setup()
   pinMode(13, OUTPUT);
 }
 
+void iterate(const etl::ilist<int>& delays)
+{
+    etl::ilist<int>::const_iterator itr;
+
+    // Iterate through the list.
+    itr = delays.begin();
+
+    while (itr != delays.end())
+    {
+      digitalWrite(13, HIGH);   // turn the LED on (HIGH is the voltage level)
+      delay(100);               // wait
+      digitalWrite(13, LOW);    // turn the LED off by making the voltage LOW
+      delay(*itr++);            // wait
+    }
+}
+
 void loop()
 {
   int delay_times1[] = { 900, 800, 700, 600, 500, 400, 300, 200, 100 };
   int delay_times2[] = { 400, 300, 200, 100 };
 
   // Fill the first delay list, then reverse it.
+  // Notice how we don't have to work out the size of the array!
   etl::list<int, 10> delays1(etl::begin(delay_times1), etl::end(delay_times1));
   delays1.reverse();
 
@@ -28,29 +45,7 @@ void loop()
 
   while (true)
   {
-    // Common iterator for both lists;
-    etl::ilist<int>::const_iterator itr;
-
-    // Iterate through the first list.
-    itr = delays1.begin();
-
-    while (itr != delays1.end())
-    {
-      digitalWrite(13, HIGH);   // turn the LED on (HIGH is the voltage level)
-      delay(100);               // wait
-      digitalWrite(13, LOW);    // turn the LED off by making the voltage LOW
-      delay(*itr++);            // wait
-    }
-
-    // Iterate through the second list.
-    itr = delays2.begin();
-
-    while (itr != delays2.end())
-    {
-      digitalWrite(13, HIGH);   // turn the LED on (HIGH is the voltage level)
-      delay(100);               // wait
-      digitalWrite(13, LOW);    // turn the LED off by making the voltage LOW
-      delay(*itr++);            // wait
-    }
+    iterate(delays1);
+    iterate(delays2);
   }
 }
