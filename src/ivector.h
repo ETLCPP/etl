@@ -198,12 +198,9 @@ namespace etl
       // Size up or size down?
       if (new_size > current_size)
       {
-        for (size_t i = current_size; i < new_size; ++i)
+        while (current_size < new_size)
         {
-          while (current_size < new_size)
-          {
-            create_element();
-          }
+          create_element();
         }
       }
       else if (new_size < current_size)
