@@ -193,7 +193,7 @@ namespace etl
     //*********************************************************************
     void resize(size_t new_size)
     {
-      //ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(vector_full));
+      ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(vector_full));
 
       // Size up or size down?
       if (new_size > current_size)
