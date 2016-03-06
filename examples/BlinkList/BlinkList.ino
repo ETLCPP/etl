@@ -7,6 +7,7 @@
 
 #include <etl_arduino.h> // Contains platform macros for Arduino.
 #include <list.h>
+#include <container.h>
 
 void setup()
 {
@@ -36,12 +37,14 @@ void loop()
   int delay_times2[] = { 400, 300, 200, 100 };
 
   // Fill the first delay list, then reverse it.
-  // Notice how we don't have to work out the size of the array!
-  etl::list<int, 10> delays1(etl::begin(delay_times1), etl::end(delay_times1));
+  // Notice how we don't have to know the size of the array!
+  const size_t size1 = sizeof(etl::array_size(delay_times1));
+  etl::list<int, size1> delays1(etl::begin(delay_times1), etl::end(delay_times1));
   delays1.reverse();
 
   // Fill the second delay list,
-  etl::list<int, 4> delays2(etl::begin(delay_times2), etl::end(delay_times2));
+  const size_t size2 = sizeof(etl::array_size(delay_times2));
+  etl::list<int, size2> delays2(etl::begin(delay_times2), etl::end(delay_times2));
 
   while (true)
   {
