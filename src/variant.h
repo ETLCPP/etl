@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include <stdint.h>
 
+#include "platform.h"
 #include "array.h"
 #include "largest.h"
 #include "exception.h"
@@ -42,7 +43,7 @@ SOFTWARE.
 #include "alignment.h"
 #include "error_handler.h"
 
-#if defined(COMPILER_KEIL)
+#if defined(ETL_COMPILER_KEIL)
   #pragma diag_suppress 940
 	#pragma diag_suppress 111
 #endif

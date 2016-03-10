@@ -29,9 +29,11 @@ SOFTWARE.
 #ifndef __ETL_STATIC_ASSERT__
 #define __ETL_STATIC_ASSERT__
 
-#if defined(COMPILER_MICROSOFT)
+#include "platform.h"
+
+#if defined(ETL_COMPILER_MICROSOFT)
   #define STATIC_ASSERT(Condition, Message) static_assert(Condition, Message)
-#elif defined(COMPILER_GCC)
+#elif defined(ETL_COMPILER_GCC)
   #define STATIC_ASSERT(Condition, Message) static_assert(Condition, Message)
 #else
 	template <bool Condition>

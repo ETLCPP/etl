@@ -15,9 +15,6 @@
 					<Add option="-std=c++11" />
 					<Add option="-g" />
 					<Add option="-D_DEBUG" />
-					<Add option="-DUNITTEST_MINGW" />
-					<Add option="-DPLATFORM_WINDOWS" />
-					<Add option="-DCOMPILER_GCC" />
 					<Add option="-DETL_THROW_EXCEPTIONS" />
 					<Add option="-DETL_VERBOSE_ERRORS" />
 					<Add option="-DETL_CHECK_PUSH_POP" />
@@ -32,9 +29,6 @@
 					<Add option="-std=c++11" />
 					<Add option="-g" />
 					<Add option="-D_DEBUG" />
-					<Add option="-DUNITTEST_MINGW" />
-					<Add option="-DPLATFORM_LINUX" />
-					<Add option="-DCOMPILER_GCC" />
 					<Add option="-DETL_THROW_EXCEPTIONS" />
 					<Add option="-DETL_VERBOSE_ERRORS" />
 					<Add option="-DETL_CHECK_PUSH_POP" />
@@ -46,12 +40,13 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-std=c++11" />
 			<Add option="-Wall" />
+			<Add option="-std=c++11" />
 			<Add option="-g" />
 			<Add option="-fexceptions" />
-			<Add option="-DCOMPILER_GCC" />
 			<Add option="-DETL_THROW_EXCEPTIONS" />
+			<Add option="-DETL_VERBOSE_ERRORS" />
+			<Add option="-DETL_CHECK_PUSH_POP" />
 			<Add option="-D_DEBUG" />
 			<Add directory="../../../unittest-cpp" />
 		</Compiler>
@@ -203,6 +198,7 @@
 		<Unit filename="../../src/parameter_type.h" />
 		<Unit filename="../../src/pearson.cpp" />
 		<Unit filename="../../src/pearson.h" />
+		<Unit filename="../../src/platform.h" />
 		<Unit filename="../../src/pool.h" />
 		<Unit filename="../../src/power.h" />
 		<Unit filename="../../src/priority_queue.h" />
@@ -213,6 +209,12 @@
 		<Unit filename="../../src/stack.h" />
 		<Unit filename="../../src/static_assert.h" />
 		<Unit filename="../../src/string.h" />
+		<Unit filename="../../src/test1.h">
+			<Option target="Windows" />
+		</Unit>
+		<Unit filename="../../src/test2.h">
+			<Option target="Windows" />
+		</Unit>
 		<Unit filename="../../src/type_traits.h" />
 		<Unit filename="../../src/unordered_map.h" />
 		<Unit filename="../../src/unordered_multimap.h" />
@@ -222,13 +224,17 @@
 		<Unit filename="../../src/vector.h" />
 		<Unit filename="../../src/visitor.h" />
 		<Unit filename="../ExtraCheckMacros.h" />
+		<Unit filename="../data.h" />
 		<Unit filename="../main.cpp" />
+		<Unit filename="../murmurhash3.cpp" />
+		<Unit filename="../murmurhash3.h" />
 		<Unit filename="../test_algorithm.cpp" />
 		<Unit filename="../test_alignment.cpp" />
 		<Unit filename="../test_array.cpp" />
 		<Unit filename="../test_binary.cpp" />
 		<Unit filename="../test_bitset.cpp" />
 		<Unit filename="../test_bloom_filter.cpp" />
+		<Unit filename="../test_bsd_checksum.cpp" />
 		<Unit filename="../test_checksum.cpp" />
 		<Unit filename="../test_container.cpp" />
 		<Unit filename="../test_crc.cpp" />
@@ -240,6 +246,8 @@
 		<Unit filename="../test_exception.cpp" />
 		<Unit filename="../test_fixed_iterator.cpp" />
 		<Unit filename="../test_flat_map.cpp" />
+		<Unit filename="../test_flat_multimap.cpp" />
+		<Unit filename="../test_flat_multiset.cpp" />
 		<Unit filename="../test_flat_set.cpp" />
 		<Unit filename="../test_fnv_1.cpp" />
 		<Unit filename="../test_forward_list.cpp" />
@@ -249,24 +257,36 @@
 		<Unit filename="../test_instance_count.cpp" />
 		<Unit filename="../test_integral_limits.cpp" />
 		<Unit filename="../test_intrusive_forward_list.cpp" />
+		<Unit filename="../test_intrusive_links.cpp" />
+		<Unit filename="../test_intrusive_list.cpp" />
 		<Unit filename="../test_io_port.cpp" />
+		<Unit filename="../test_jenkins.cpp" />
 		<Unit filename="../test_largest.cpp" />
 		<Unit filename="../test_list.cpp" />
 		<Unit filename="../test_map.cpp" />
 		<Unit filename="../test_maths.cpp" />
+		<Unit filename="../test_multimap.cpp" />
+		<Unit filename="../test_multiset.cpp" />
+		<Unit filename="../test_murmur3.cpp" />
 		<Unit filename="../test_numeric.cpp" />
 		<Unit filename="../test_observer.cpp" />
 		<Unit filename="../test_optional.cpp" />
+		<Unit filename="../test_pearson.cpp" />
 		<Unit filename="../test_pool.cpp" />
+		<Unit filename="../test_priority_queue.cpp" />
 		<Unit filename="../test_queue.cpp" />
 		<Unit filename="../test_set.cpp" />
 		<Unit filename="../test_smallest.cpp" />
 		<Unit filename="../test_stack.cpp" />
 		<Unit filename="../test_type_traits.cpp" />
 		<Unit filename="../test_unordered_map.cpp" />
+		<Unit filename="../test_unordered_multimap.cpp" />
+		<Unit filename="../test_unordered_multiset.cpp" />
+		<Unit filename="../test_unordered_set.cpp" />
 		<Unit filename="../test_variant.cpp" />
 		<Unit filename="../test_vector.cpp" />
 		<Unit filename="../test_visitor.cpp" />
+		<Unit filename="../test_xor_checksum.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

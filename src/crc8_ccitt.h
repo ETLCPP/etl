@@ -34,9 +34,10 @@ SOFTWARE.
 #include <stdint.h>
 #include <iterator>
 
+#include "platform.h"
 #include "frame_check_sequence.h"
 
-#if defined(COMPILER_KEIL)
+#if defined(ETL_COMPILER_KEIL)
 #pragma diag_suppress 1300
 #endif
 

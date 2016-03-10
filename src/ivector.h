@@ -37,13 +37,14 @@ SOFTWARE.
 #include <functional>
 #include <stddef.h>
 
+#include "platform.h"
 #include "algorithm.h"
 #include "private/vector_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "error_handler.h"
 
-#ifdef COMPILER_GCC
+#ifdef ETL_COMPILER_GCC
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 

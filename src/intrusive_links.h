@@ -291,8 +291,8 @@ namespace etl
     {
       node.etl_next = node.etl_next->etl_next;
 
-      if ((TLink::OPTION == etl::link_option::AUTO) ||
-          (TLink::OPTION == etl::link_option::CHECKED))
+      if ((int(TLink::OPTION) == etl::link_option::AUTO) ||
+          (int(TLink::OPTION) == etl::link_option::CHECKED))
       {
         node.clear();
       }
@@ -306,8 +306,8 @@ namespace etl
   {
     before.etl_next = last.etl_next;
 
-    if ((TLink::OPTION == etl::link_option::AUTO) ||
-        (TLink::OPTION == etl::link_option::CHECKED))
+    if ((int(TLink::OPTION) == etl::link_option::AUTO) ||
+        (int(TLink::OPTION) == etl::link_option::CHECKED))
     {
       last.clear();
     }
@@ -638,7 +638,7 @@ namespace etl
       }
 
       if ((TLink::OPTION == etl::link_option::AUTO) ||
-          (TLink::OPTION == etl::link_option::CHECKED))
+          (int(TLink::OPTION) == etl::link_option::CHECKED))
       {
         first.etl_previous = nullptr;
         last.etl_next = nullptr;

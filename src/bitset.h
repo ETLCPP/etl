@@ -36,6 +36,7 @@ SOFTWARE.
 #include <string.h>
 #include <stddef.h>
 
+#include "platform.h"
 #include "integral_limits.h"
 #include "algorithm.h"
 #include "nullptr.h"
@@ -45,7 +46,7 @@ SOFTWARE.
 #define ETL_NO_CHECKS
 #include "error_handler.h"
 
-#if defined(COMPILER_KEIL)
+#if defined(ETL_COMPILER_KEIL)
 #pragma diag_suppress 1300 
 #endif
 

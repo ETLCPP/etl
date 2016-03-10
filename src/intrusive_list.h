@@ -77,7 +77,7 @@ namespace etl
 
     intrusive_list_empty(string_type file_name, numeric_type line_number)
       : intrusive_list_exception(ETL_ERROR_TEXT("intrusive_list:empty", ETL_FILE"A"), file_name, line_number)
-    { 
+    {
     }
   };
 
@@ -445,7 +445,7 @@ namespace etl
 
     //*************************************************************************
     /// Assigns a range of values to the intrusive_list.
-    /// If ETL_THROW_EXCEPTIONS & _DEBUG are defined emits a 
+    /// If ETL_THROW_EXCEPTIONS & _DEBUG are defined emits a
     /// intrusive_list_iterator_exception if the iterators are reversed.
     //*************************************************************************
     template <typename TIterator>
@@ -922,7 +922,7 @@ namespace etl
     void splice(iterator position, list_type& list, iterator isource)
     {
       link_type& before = *position.p_value->link_type::etl_previous;
-      
+
       etl::unlink<link_type>(*isource.p_value);
       etl::link_splice<link_type>(before, *isource.p_value);
 
@@ -1008,9 +1008,9 @@ namespace etl
             {
               value_type* value = other_begin;
               other_begin = static_cast<value_type*>(other_begin->link_type::etl_next);
-              etl::link_splice<link_type>(*begin->link_type::etl_previous, *value);              
+              etl::link_splice<link_type>(*begin->link_type::etl_previous, *value);
             }
-          }  
+          }
         }
 
         // Any left over?
@@ -1037,14 +1037,14 @@ namespace etl
     //*************************************************************************
     /// Counter type based on count option.
     //*************************************************************************
-    template <const size_t OPTION>
+    template <const size_t OPTION, bool dummy = true>
     class counter_type;
 
     //*************************************************************************
     /// Slow type.
     //*************************************************************************
-    template <>
-    class counter_type<etl::count_option::SLOW_COUNT>
+    template <bool dummy>
+    class counter_type<etl::count_option::SLOW_COUNT, dummy>
     {
     public:
 
@@ -1077,8 +1077,8 @@ namespace etl
     //*************************************************************************
     /// Fast type.
     //*************************************************************************
-    template <>
-    class counter_type<etl::count_option::FAST_COUNT>
+    template <bool dummy>
+    class counter_type<etl::count_option::FAST_COUNT, dummy>
     {
     public:
 

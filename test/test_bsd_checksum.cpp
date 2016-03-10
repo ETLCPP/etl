@@ -47,7 +47,7 @@ namespace
     {
       value_type value = *begin++;
 
-      for (int i = 0; i < sizeof(value_type); ++i)
+      for (size_t i = 0; i < sizeof(value_type); ++i)
       {
         uint8_t byte = (value >> (i * 8)) & 0xFF;
         checksum = etl::rotate_right(checksum) + byte;
@@ -81,7 +81,7 @@ namespace
       {
         checksum_calculator.add(data[i]);
       }
-      
+
       uint8_t sum     = checksum_calculator;
       uint8_t compare = reference_checksum<uint8_t>(data.begin(), data.end());
 

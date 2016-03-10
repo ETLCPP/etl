@@ -644,7 +644,7 @@ namespace etl
 
       // Obtain the inserted node (might be nullptr if node was a duplicate)
       inserted_node = insert_node(root_node, node);
-      
+
       // Insert node into tree and return iterator to new node location in tree
       return iterator(*this, inserted_node);
     }
@@ -687,11 +687,6 @@ namespace etl
       {
         insert(*first++);
       }
-    }
-
-    void print() const
-    {
-      print_tree(root_node);
     }
 
     //*********************************************************************

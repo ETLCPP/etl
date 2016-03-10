@@ -1,3 +1,5 @@
+
+
 #include "algorithm.h"
 #include "alignment.h"
 #include "array.h"
@@ -35,7 +37,7 @@ struct Test
 		  d(d)
 	{
 	}
-	
+
 	int i;
 	double d;
 };
@@ -54,15 +56,15 @@ void test_algorithm()
 	int  y = 1;
 	int* p;
 	bool b;
-  
+
 	// minmax_element
 	result1 = etl::minmax_element(etl::begin(data), etl::end(data));
 	result1 = etl::minmax_element(etl::begin(data), etl::end(data), std::greater<int>());
-	
+
 	// minmax
 	result2 = etl::minmax(x, y);
 	result2 = etl::minmax(x, y, std::greater<int>());
-		
+
 	// is_sorted_until
 	p = etl::is_sorted_until(etl::begin(data), etl::end(data));
   p = etl::is_sorted_until(etl::begin(data), etl::end(data), std::greater<int>());
@@ -70,37 +72,37 @@ void test_algorithm()
 	// is_sorted
 	b = etl::is_sorted(etl::begin(data), etl::end(data));
   b = etl::is_sorted(etl::begin(data), etl::end(data), std::greater<int>());
-	
+
 	// copy_n
 	p = etl::copy_n(etl::begin(data), 5, etl::begin(data2));
 
 	// copy_if
 	p = etl::copy_if(etl::begin(data), etl::end(data), etl::begin(data2), std::bind2nd(std::greater<int>(), 4));
-	
+
 	// find_if_not
 	p = etl::find_if_not(etl::begin(data), etl::end(data), std::bind2nd(std::greater<int>(), 4));
-	
+
 	// all_of
 	b = etl::all_of(etl::begin(data), etl::end(data), std::bind2nd(std::greater<int>(), 4));
-	
+
 	// any_of
 	b = etl::any_of(etl::begin(data), etl::end(data), std::bind2nd(std::greater<int>(), 4));
-	
+
 	// none_of
 	b = etl::none_of(etl::begin(data), etl::end(data), std::bind2nd(std::greater<int>(), 4));
-	
+
 	// is_permutation
 	b = etl::is_permutation(etl::begin(data), etl::end(data), etl::begin(data2));
 	b = etl::is_permutation(etl::begin(data), etl::end(data), etl::begin(data2), std::equal_to<int>());
 	b = etl::is_permutation(etl::begin(data), etl::end(data), etl::begin(data2), etl::end(data2));
 	b = etl::is_permutation(etl::begin(data), etl::end(data), etl::begin(data2), etl::end(data2), std::equal_to<int>());
-	
+
 	// is_partitioned
 	b = etl::is_partitioned(etl::begin(data), etl::end(data), std::bind2nd(std::greater<int>(), 4));
-	
+
 	// partition_point
 	p = etl::partition_point(etl::begin(data), etl::end(data), std::bind2nd(std::greater<int>(), 4));
-	
+
 	// partition_copy
 	result1 = etl::partition_copy(etl::begin(data), etl::end(data), etl::begin(data2), etl::begin(data3), std::bind2nd(std::greater<int>(), 4));
 }
@@ -114,12 +116,12 @@ etl::aligned_storage_as<100, double>::type data10;
 void test_alignment()
 {
   int a = static_cast<int&>(data9);
-  
+
 	etl::aligned_storage<1, 1>::type  data1;
 	etl::aligned_storage<1, 2>::type  data2;
 	etl::aligned_storage<1, 4>::type  data3;
 	etl::aligned_storage<1, 8>::type  data4;
-	
+
 	etl::aligned_storage_as<1, char>::type   data5;
 	etl::aligned_storage_as<1, short>::type  data6;
 	etl::aligned_storage_as<1, int>::type    data7;
@@ -132,7 +134,7 @@ void test_alignment()
 void test_array()
 {
 	etl::array<int, 10> a;
-	
+
 	int i = a[4];
 	int s = a.size();
 	a.fill(45);
@@ -155,7 +157,7 @@ void test_bitset()
 	etl::bitset<63> b63;
 	etl::bitset<64> b64;
 	etl::bitset<65> b65;
-	
+
 	b65.set();
 	b65.set(4, true);
 	b65.reset();
@@ -165,9 +167,9 @@ void test_bitset()
 	b = b65[64];
 	b65.flip();
 	b65.flip(5);
-	
+
 	etl::ibitset& ib = b65;
-	
+
 	ib.set();
 	ib.set(4, true);
 	ib.reset();
@@ -184,24 +186,24 @@ void test_bitset()
 void test_crc()
 {
 	char data[]  = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-	
+
 	uint8_t crc1 = etl::crc8_ccitt(etl::begin(data), etl::end(data));
 	uint8_t crc2 = etl::crc8_ccitt(etl::begin(data), etl::end(data));
 
 	uint16_t crc3 = etl::crc16(etl::begin(data), etl::end(data));
 	uint16_t crc4 = etl::crc16(etl::begin(data), etl::end(data));
-	
+
 	uint16_t crc5 = etl::crc16_ccitt(etl::begin(data), etl::end(data));
 	uint16_t crc6 = etl::crc16_ccitt(etl::begin(data), etl::end(data));
 
 	uint16_t crc7 = etl::crc16_kermit(etl::begin(data), etl::end(data));
 	uint16_t crc8 = etl::crc16_kermit(etl::begin(data), etl::end(data));
-	
+
 	uint32_t crc9  = etl::crc32(etl::begin(data), etl::end(data));
 	uint32_t crc10 = etl::crc32(etl::begin(data), etl::end(data));
-	
+
 	uint64_t crc11 = etl::crc64_ecma(etl::begin(data), etl::end(data));
-	uint64_t crc12 = etl::crc64_ecma(etl::begin(data), etl::end(data));	
+	uint64_t crc12 = etl::crc64_ecma(etl::begin(data), etl::end(data));
 }
 
 //*****************************************************************************
@@ -210,14 +212,14 @@ void test_crc()
 void test_cyclic_value()
 {
 	etl::cyclic_value<int, 1, 10> cv1;
-	
+
 	etl::cyclic_value<int> cv2;
 	cv2.set(3, 8);
-	
+
 	cv1.advance(3);
 	cv1.to_first();
 	cv1.to_last();
-	
+
 	--cv1;
 	++cv1;
 	int f = cv1.first();
@@ -226,7 +228,7 @@ void test_cyclic_value()
 	int v = cv1;
 	cv1   = v;
 	cv1   = cv2;
-	
+
 	bool b;
   b	= cv1 == cv2;
 	b = cv1 != cv2;
@@ -258,7 +260,7 @@ struct dynamic_serial_port
   etl::io_port_rw<uint16_t> control;
   etl::io_port_ro<uint16_t> status;
   etl::io_port_wos<uint8_t> control2;
-};	
+};
 
 //*****************************************************************************
 // io_port
@@ -266,17 +268,17 @@ struct dynamic_serial_port
 void test_io_port()
 {
 	serial_port<0x1234> port1;
-	
+
   uint8_t rxdata  = port1.rxdata;
 	port1.txdata    = 0x34;
 	port1.control   = 0x5678; // Little endian.
 	uint16_t status = port1.status;
 	port1.control2  = 0xDE;
   int control2    = port1.control2;
-	
+
 	uint8_t memory[7];
 	dynamic_serial_port port2(memory);
-	
+
   uint8_t rxdata2  = port2.rxdata;
 	port2.txdata     = 0x34;
 	port2.control    = 0x5678; // Little endian.
@@ -291,15 +293,15 @@ void test_io_port()
 void test_variant()
 {
 	typedef etl::variant<int, double, Test> Data;
-	
+
 	Data data;
 
 	data = int(1);
 	int i = data;
-	
+
 	data = double(2.2);
 	double d = data;
-	
+
 	data = Test(3, 3.3);
 	Test test(data);
 }
@@ -310,14 +312,14 @@ void test_variant()
 void test_deque()
 {
 	typedef etl::deque<Test, 10> Data;
-	
+
 	Data data;
-	
+
 	data.push_back(Test(1, 1.1));
 	data.push_back(Test(2, 2.2));
-	
+
 	Data::iterator it = data.begin();
-	data.erase(it);	
+	data.erase(it);
 }
 
 //*****************************************************************************
@@ -326,12 +328,12 @@ void test_deque()
 void test_vector()
 {
 	typedef etl::vector<Test, 10> Data;
-	
+
 	Data data;
-	
+
 	data.push_back(Test(1, 1.1));
 	data.push_back(Test(2, 2.2));
-	
+
 	Data::iterator it = data.begin();
 	data.erase(it);
 }
@@ -343,21 +345,21 @@ void test_list()
 {
 	typedef etl::list<Test, 10> Data;
 	typedef etl::list<int, 10>  Data2;
-	
+
 	Data  data;
 	Data2 data2;
-	
+
 	data.push_back(Test(1, 1.1));
   data.push_front(Test(3, 3.3));
 	data.reverse();
-	
+
 	Data::iterator it = data.begin();
 	data.erase(it);
-	
+
 	data2.push_back(1);
   data2.push_front(3);
 	data2.reverse();
-	
+
 	Data2::iterator it2 = data2.begin();
 	data2.erase(it2);
 }
@@ -368,14 +370,14 @@ void test_list()
 void test_map()
 {
 	typedef etl::map<int, int, 10> Data;
-	
+
 	Data data;
-	
+
 	data.insert(std::pair<int, int>(1, 2));
 	data.insert(std::pair<int, int>(3, 4));
-	
+
 	Data::iterator it = data.begin();
-	data.erase(it);	
+	data.erase(it);
 }
 
 //*****************************************************************************

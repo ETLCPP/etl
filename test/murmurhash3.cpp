@@ -14,7 +14,7 @@
 
 // Microsoft Visual Studio
 
-#if defined(_MSC_VER)
+#if defined(ETL_COMPILER_MICROSOFT)
 
 #define FORCE_INLINE    __forceinline
 
@@ -27,7 +27,7 @@
 
 // Other compilers
 
-#else   // defined(_MSC_VER)
+#else   // defined(ETL_COMPILER_MICROSOFT)
 
 #define FORCE_INLINE inline __attribute__((always_inline))
 
@@ -46,7 +46,7 @@ inline uint64_t rotl64(uint64_t x, int8_t r)
 
 #define BIG_CONSTANT(x) (x##LLU)
 
-#endif // !defined(_MSC_VER)
+#endif // !defined(ETL_COMPILER_MICROSOFT)
 
 //-----------------------------------------------------------------------------
 // Block read - if your platform needs to do endian-swapping or can only

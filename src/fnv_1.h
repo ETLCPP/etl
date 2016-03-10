@@ -33,11 +33,12 @@ SOFTWARE.
 
 #include <stdint.h>
 
+#include "platform.h"
 #include "static_assert.h"
 #include "type_traits.h"
 #include "ihash.h"
 
-#if defined(COMPILER_KEIL)
+#if defined(ETL_COMPILER_KEIL)
 #pragma diag_suppress 1300 
 #endif
 
