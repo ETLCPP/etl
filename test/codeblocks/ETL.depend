@@ -4854,7 +4854,7 @@
 	<stdint.h>
 	"type_traits.h"
 
-1457464314 d:\users\john\documents\programming\github\etl\src\type_traits.h
+1457559890 d:\users\john\documents\programming\github\etl\src\type_traits.h
 	<stddef.h>
 	"platform.h"
 	"nullptr.h"
@@ -5065,7 +5065,7 @@
 	"../ivector.h"
 	"../error_handler.h"
 
-1457463503 d:\users\john\documents\programming\github\etl\src\ivector.h
+1457595336 d:\users\john\documents\programming\github\etl\src\ivector.h
 	<iterator>
 	<algorithm>
 	<functional>
@@ -5380,7 +5380,7 @@
 
 1456669289 d:\users\john\documents\programming\github\etl\src\visitor.h
 
-1457548818 d:\users\john\documents\programming\github\etl\src\platform.h
+1457570381 d:\users\john\documents\programming\github\etl\src\platform.h
 
 1457463956 source:d:\users\john\documents\programming\github\etl\test\murmurhash3.cpp
 	"MurmurHash3.h"
