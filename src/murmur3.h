@@ -33,11 +33,12 @@ SOFTWARE.
 
 #include <stdint.h>
 
+#include "platform.h"
 #include "ihash.h"
 #include "binary.h"
 #include "error_handler.h"
 
-#if defined(COMPILER_KEIL)
+#if defined(ETL_COMPILER_KEIL)
 #pragma diag_suppress 1300
 #endif
 

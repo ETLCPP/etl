@@ -1,3 +1,5 @@
+///\file
+
 /******************************************************************************
 The MIT License(MIT)
 
@@ -5,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 http://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2016 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -26,23 +28,42 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_STATIC_ASSERT__
-#define __ETL_STATIC_ASSERT__
-
-#include "platform.h"
-
-#if defined(ETL_COMPILER_MICROSOFT)
-  #define STATIC_ASSERT(Condition, Message) static_assert(Condition, Message)
-#elif defined(ETL_COMPILER_GCC)
-  #define STATIC_ASSERT(Condition, Message) static_assert(Condition, Message)
-#else
-	template <bool Condition>
-  struct STATIC_ASSERTION_FAILURE;
-
-  template <>
-  struct STATIC_ASSERTION_FAILURE<true> {};
-
-  #define STATIC_ASSERT(Condition, Message) enum { assertdummy = sizeof(STATIC_ASSERTION_FAILURE<(bool)(Condition)>) }
+#if defined(__linux__)
+#define ETL_PLATFORM_LINUX
 #endif
 
+#if defined(__WIN32) || defined(__WIN64)
+#define ETL_PLATFORM_WINDOWS
 #endif
+
+#if defined(__IAR_SYSTEMS_ICC__)
+#define ETL_COMPILER_IAR
+#endif
+
+#if defined(__KEIL__) && !defined(__GNUC__)
+#define ETL_COMPILER_KEIL
+#endif
+
+#if defined(__ghs__)
+#define ETL_COMPILER_GREEN_HILLS
+#endif
+
+#if defined(__INTEL_COMPILER)
+#define ETL_COMPILER_INTEL
+#endif
+
+#if defined(_MSC_VER)
+#define ETL_COMPILER_MICROSOFT
+#endif
+
+#if defined(__GNUC__)
+#define ETL_COMPILER_GCC
+#endif
+
+#if (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER < 1600)) || \
+     defined(ETL_COMPILER_KEIL) || \
+     defined(ETL_COMPILER_IAR) || \
+     (defined(ETL_COMPILER_GCC) && (__cplusplus < 201103L))
+  #define NO_NULLPTR_SUPPORT
+#endif
+

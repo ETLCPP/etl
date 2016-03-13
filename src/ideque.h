@@ -101,7 +101,7 @@ namespace etl
       //***************************************************
       iterator& operator ++()
       {
-        index = (index == p_deque->BUFFER_SIZE - 1) ? 0 : index + 1;
+        index = (static_cast<size_t>(index) == p_deque->BUFFER_SIZE - 1) ? 0 : index + 1;
 
         return *this;
       }
@@ -110,7 +110,7 @@ namespace etl
       iterator operator ++(int)
       {
         iterator previous(*this);
-        index = (index == p_deque->BUFFER_SIZE - 1) ? 0 : index + 1;
+        index = (static_cast<size_t>(index) == p_deque->BUFFER_SIZE - 1) ? 0 : index + 1;
 
         return previous;
       }
@@ -304,7 +304,7 @@ namespace etl
       const_iterator operator ++(int)
       {
         const_iterator previous(*this);
-        index = (index == p_deque->BUFFER_SIZE - 1) ? 0 : index + 1;
+        index = (static_cast<size_t>(index) == p_deque->BUFFER_SIZE - 1) ? 0 : index + 1;
 
         return previous;
       }
@@ -781,7 +781,6 @@ namespace etl
         // Are we closer to the front?
         if (distance(_begin, insert_position) <= difference_type(current_size / 2))
         {
-          size_t insert_index  = std::distance(begin(), position);
           size_t n_insert      = n;
           size_t n_move        = std::distance(begin(), position);
           size_t n_create_copy = std::min(n_insert, n_move);

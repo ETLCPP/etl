@@ -5,7 +5,6 @@
 #undef min
 #undef max
 
-#include <etl_arduino.h> // Contains platform macros for Arduino.
 #include <list.h>
 #include <container.h>
 

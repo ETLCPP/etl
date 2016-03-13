@@ -176,7 +176,7 @@ namespace
     TEST(test_optional_container)
     {
       // The indexed access doesn't work in Linux for some reason!!!
-#ifndef PLATFORM_LINUX
+#ifndef ETL_PLATFORM_LINUX
       etl::optional<etl::vector<Data, 10>> container;
       CHECK(!bool(container));//
 

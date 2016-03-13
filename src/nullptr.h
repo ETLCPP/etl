@@ -31,11 +31,13 @@ SOFTWARE.
 #ifndef __ETL_NULLPTR__
 #define __ETL_NULLPTR__
 
+#include "platform.h"
+
 ///\defgroup nullptr nullptr
 /// A definition of nullptr for compilers that don't support it as standard.
 ///\ingroup utilities
 
-#if (defined(_MSC_VER) && (_MSC_VER < 1600)) || defined(COMPILER_KEIL) || defined(COMPILER_IAR)
+#if defined(NO_NULLPTR_SUPPORT)
 namespace std
 {
   //*****************************************************************************

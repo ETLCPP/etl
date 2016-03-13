@@ -85,24 +85,10 @@ namespace
   };
 
   //***************************************************************************
-  bool operator ==(const ItemDCNode& lhs, const ItemDCNode& rhs)
-  {
-    return lhs.data == rhs.data;
-  }
 
   bool operator ==(const ItemNDCNode& lhs, const ItemNDCNode& rhs)
   {
     return lhs.data == rhs.data;
-  }
-
-  bool operator !=(const ItemDCNode& lhs, const ItemDCNode& rhs)
-  {
-    return lhs.data != rhs.data;
-  }
-
-  bool operator !=(const ItemNDCNode& lhs, const ItemNDCNode& rhs)
-  {
-    return lhs.data != rhs.data;
   }
 
   std::ostream& operator << (std::ostream& os, const ItemNDCNode& node)
@@ -137,10 +123,10 @@ namespace
   typedef std::vector<ItemNDCNode> InitialDataNDC;
 }
 
-namespace 
-{		
+namespace
+{
   SUITE(test_forward_list)
-  {   
+  {
     InitialDataNDC unsorted_data;
     InitialDataNDC sorted_data;
     InitialDataNDC sorted_data2;

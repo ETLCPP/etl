@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include <stddef.h>
 
+#include "platform.h"
 #include "nullptr.h"
 
 ///\defgroup type_traits type_traits
@@ -240,7 +241,7 @@ namespace etl
   template <typename T> struct make_signed { typedef  T type; };
   template <> struct make_signed<char> { typedef  signed char type; };
   template <> struct make_signed<unsigned char> { typedef  signed char type; };
-#if defined(COMPILER_GCC)
+#if defined(ETL_COMPILER_GCC)
   template <> struct make_signed<wchar_t>
   {
     typedef wchar_t type;
@@ -267,7 +268,7 @@ namespace etl
   template <> struct make_unsigned<char> { typedef unsigned char type; };
   template <> struct make_unsigned<signed char> { typedef unsigned char type; };
   template <> struct make_unsigned<short> { typedef unsigned short type; };
-#if defined(COMPILER_GCC) && !defined(PLATFORM_LINUX)
+#if defined(ETL_COMPILER_GCC) && !defined(ETL_PLATFORM_LINUX)
   template <> struct make_unsigned<wchar_t>
   {
     typedef wchar_t type;
@@ -341,19 +342,19 @@ namespace etl
   /// Alignment templates.
   /// These require compiler specific intrinsics.
   ///\ingroup type_traits
-#ifdef COMPILER_MICROSOFT
+#ifdef ETL_COMPILER_MICROSOFT
   template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof(T))> {};
 #endif
 
-#ifdef COMPILER_GCC
+#ifdef ETL_COMPILER_GCC
   template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof__(T))> {};
 #endif
 
-#ifdef COMPILER_KEIL
+#ifdef ETL_COMPILER_KEIL
   template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof__(T))> {};
 #endif
 
-#ifdef COMPILER_IAR
+#ifdef ETL_COMPILER_IAR
   template <typename T> struct alignment_of : integral_constant<size_t, size_t(__ALIGNOF__(T))> {};
 #endif
 

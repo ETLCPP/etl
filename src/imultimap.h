@@ -708,11 +708,6 @@ namespace etl
       }
     }
 
-    void print() const
-    {
-      print_tree(root_node);
-    }
-
     //*********************************************************************
     /// Returns an iterator pointing to the first element in the container
     /// whose key is not considered to go before the key provided or end()

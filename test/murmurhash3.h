@@ -10,7 +10,9 @@
 
 // Microsoft Visual Studio
 
-#if defined(_MSC_VER) && (_MSC_VER < 1600)
+#include "../src/platform.h"
+
+#if defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER < 1600)
 
 typedef unsigned char uint8_t;
 typedef unsigned int uint32_t;
@@ -18,11 +20,11 @@ typedef unsigned __int64 uint64_t;
 
 // Other compilers
 
-#else   // defined(_MSC_VER)
+#else   // defined(ETL_COMPILER_MICROSOFT)
 
 #include <stdint.h>
 
-#endif // !defined(_MSC_VER)
+#endif // !defined(ETL_COMPILER_MICROSOFT)
 
 //-----------------------------------------------------------------------------
 

@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include <stdint.h>
 
+#include "platform.h"
 #include "static_assert.h"
 #include "type_traits.h"
 #include "endian.h"
@@ -40,8 +41,8 @@ SOFTWARE.
 #include "array.h"
 #include "container.h"
 
-#if defined(COMPILER_KEIL)
-#pragma diag_suppress 1300 
+#if defined(ETL_COMPILER_KEIL)
+#pragma diag_suppress 1300
 #endif
 
 ///\defgroup pearson Pearson hash calculation
@@ -122,7 +123,7 @@ namespace etl
     {
       if (first)
       {
-        for (size_t i = 0; i < HASH_SIZE; ++i)
+        for (size_t i = 0; i < HASH_LENGTH; ++i)
         {
           hash[i] = PEARSON_LOOKUP[(uint32_t(value) + i) % 256];
         }
@@ -131,7 +132,7 @@ namespace etl
       }
       else
       {
-        for (size_t i = 0; i < HASH_SIZE; ++i)
+        for (size_t i = 0; i < HASH_LENGTH; ++i)
         {
           hash[i] = PEARSON_LOOKUP[hash[i] ^ value];
         }

@@ -28,7 +28,6 @@ SOFTWARE.
 
 #include <UnitTest++/UnitTest++.h>
 
-#include <set>
 #include <array>
 #include <algorithm>
 #include <utility>

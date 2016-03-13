@@ -70,7 +70,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;ETL_THROW_EXCEPTIONS;PLATFORM_WINDOWS;COMPILER_MICROSOFT;ETL_VERBOSE_ERRORS;ETL_CHECK_PUSH_POP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;ETL_THROW_EXCEPTIONS;ETL_VERBOSE_ERRORS;ETL_CHECK_PUSH_POP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../../../unittest-cpp</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
@@ -89,7 +89,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;ETL_THROW_EXCEPTIONS;PLATFORM_WINDOWS;COMPILER_MICROSOFT;ETL_VERBOSE_ERRORS;ETL_CHECK_PUSH_POP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;ETL_THROW_EXCEPTIONS;ETL_VERBOSE_ERRORS;ETL_CHECK_PUSH_POP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../../../unittest-cpp</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
@@ -111,7 +111,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;ETL_THROW_EXCEPTIONS;PLATFORM_WINDOWS;COMPILER_MICROSOFT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;ETL_THROW_EXCEPTIONS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../../../unittest-cpp</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -214,6 +214,7 @@
     <ClInclude Include="..\..\src\iset.h" />
     <ClInclude Include="..\..\src\istack.h" />
     <ClInclude Include="..\..\src\container.h" />
+    <ClInclude Include="..\..\src\istring.h" />
     <ClInclude Include="..\..\src\iunordered_map.h" />
     <ClInclude Include="..\..\src\iunordered_multimap.h" />
     <ClInclude Include="..\..\src\iunordered_set.h" />
@@ -255,6 +256,7 @@
     <ClInclude Include="..\..\src\private\queue_base.h" />
     <ClInclude Include="..\..\src\private\set_base.h" />
     <ClInclude Include="..\..\src\private\stack_base.h" />
+    <ClInclude Include="..\..\src\private\string_base.h" />
     <ClInclude Include="..\..\src\private\vector_base.h" />
     <ClInclude Include="..\..\src\queue.h" />
     <ClInclude Include="..\..\src\radix.h" />
@@ -263,6 +265,9 @@
     <ClInclude Include="..\..\src\smallest.h" />
     <ClInclude Include="..\..\src\stack.h" />
     <ClInclude Include="..\..\src\static_assert.h" />
+    <ClInclude Include="..\..\src\string.h" />
+    <ClInclude Include="..\..\src\test1.h" />
+    <ClInclude Include="..\..\src\test2.h" />
     <ClInclude Include="..\..\src\type_traits.h" />
     <ClInclude Include="..\..\src\unordered_map.h" />
     <ClInclude Include="..\..\src\unordered_multiset.h" />

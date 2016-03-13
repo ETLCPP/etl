@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include <UnitTest++/UnitTest++.h>
 
-#if defined(COMPILER_GCC)
+#if defined(ETL_COMPILER_GCC)
 namespace std
 {
   template <typename T>
