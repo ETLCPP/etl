@@ -1038,7 +1038,9 @@ namespace etl
     /// Counter type based on count option.
     //*************************************************************************
     template <const size_t OPTION, bool dummy = true>
-    class counter_type;
+    class counter_type
+    {
+    };
 
     //*************************************************************************
     /// Slow type.
