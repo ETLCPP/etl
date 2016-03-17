@@ -156,14 +156,18 @@ namespace etl
   {
     STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
 
+    T result;
+
     if (distance > 0)
     {
-      return rotate_left(value, size_t(distance));
+      result = rotate_left(value, size_t(distance));
     }
     else
     {
-      return rotate_right(value, size_t(-distance));
+      result = rotate_right(value, size_t(-distance));
     }
+
+    return result;
   }
 
   //***************************************************************************
@@ -440,7 +444,7 @@ namespace etl
     value ^= value >> 8;
     value ^= value >> 4;
     value &= 0x0F;
-    return (0x96 >> value) & 1;
+    return (0x6996 >> value) & 1;
   }
 
   //***************************************************************************
