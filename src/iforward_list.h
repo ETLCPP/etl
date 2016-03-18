@@ -463,7 +463,7 @@ namespace etl
       if (i_node != end())
       {
         // Reduce.
-        erase_after(i_node, end());
+        erase_after(i_last_node, end());
       }
       else if (i_node == end())
       {
