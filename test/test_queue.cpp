@@ -301,6 +301,19 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_pop_exception)
+    {
+      etl::queue<int, 4> queue;
+
+      queue.push(1);
+      queue.push(2);
+      queue.pop();
+      queue.pop();
+
+      CHECK_THROW(queue.pop(), etl::queue_empty);
+    }
+
+    //*************************************************************************
     TEST(test_assignment)
     {
       etl::queue<int, 4> queue;
