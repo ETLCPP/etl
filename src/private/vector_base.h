@@ -102,20 +102,6 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup vector
-  /// Vector iterator exception.
-  //***************************************************************************
-  class vector_iterator : public vector_exception
-  {
-  public:
-
-    vector_iterator(string_type file_name, numeric_type line_number)
-      : vector_exception(ETL_ERROR_TEXT("vector:iterator", ETL_FILE"D"), file_name, line_number)
-    {
-    }
-  };
-
-  //***************************************************************************
-  ///\ingroup vector
   /// The base class for all templated vector types.
   //***************************************************************************
   class vector_base
