@@ -180,6 +180,24 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_pop_excess)
+    {
+      etl::stack<int, 4> stack;
+
+      for (size_t i = 0; i < stack.max_size(); ++i)
+      {
+        stack.push(1);
+      }
+
+      for (size_t i = 0; i < stack.max_size(); ++i)
+      {
+        stack.pop();
+      }
+
+      CHECK_THROW(stack.pop(), etl::stack_empty);
+    }
+
+    //*************************************************************************
     TEST(test_top)
     {
       etl::stack<int, 4> stack;
