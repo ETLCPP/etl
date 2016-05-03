@@ -90,20 +90,6 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup flat_map
-  /// Vector iterator exception.
-  //***************************************************************************
-  class flat_map_iterator : public flat_map_exception
-  {
-  public:
-
-    flat_map_iterator(string_type file_name, numeric_type line_number)
-      : flat_map_exception(ETL_ERROR_TEXT("flat_map:iterator", ETL_FILE"C"), file_name, line_number)
-    {
-    }
-  };
-
-  //***************************************************************************
-  ///\ingroup flat_map
   /// The base class for all templated flat_map types.
   //***************************************************************************
   class flat_map_base
