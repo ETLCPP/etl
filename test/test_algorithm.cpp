@@ -280,6 +280,12 @@ namespace
       int* partition1 = std::partition_point(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 4));
       int* partition2 = etl::partition_point(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 4));
       CHECK_EQUAL(std::distance(std::begin(data1), partition1), std::distance(std::begin(data1), partition2));
+
+      std::partition(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 8));
+
+      partition1 = std::partition_point(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 0));
+      partition2 = etl::partition_point(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 0));
+      CHECK_EQUAL(std::distance(std::begin(data1), partition1), std::distance(std::begin(data1), partition2));
     }
 
     //=========================================================================
