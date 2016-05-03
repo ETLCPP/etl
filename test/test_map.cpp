@@ -334,6 +334,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_at_exception)
+    {
+      Data data(initial_data.begin(), initial_data.end());
+
+      CHECK_THROW(data.at("10"), etl::map_out_of_bounds);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_at_const)
     {
       const Compare_Data compare_data(initial_data.begin(), initial_data.end());
@@ -349,6 +357,14 @@ namespace
       CHECK_EQUAL(data.at("7"), compare_data.at("7"));
       CHECK_EQUAL(data.at("8"), compare_data.at("8"));
       CHECK_EQUAL(data.at("9"), compare_data.at("9"));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_at_const_exception)
+    {
+      const Data data(initial_data.begin(), initial_data.end());
+
+      CHECK_THROW(data.at("10"), etl::map_out_of_bounds);
     }
 
     //*************************************************************************
@@ -412,6 +428,28 @@ namespace
                             data.end(),
                             compare_data.begin());
 
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_value2)
+    {
+      Compare_Data compare_data;
+      Data data;
+
+      data.insert(Data::value_type(std::string("0"), 0));
+      compare_data.insert(std::make_pair(std::string("0"), 0));
+
+      data.insert(Data::value_type(std::string("1"), 1));
+      compare_data.insert(std::make_pair(std::string("1"), 1));
+
+      data.insert(Data::value_type(std::string("-1"), -1));
+      compare_data.insert(std::make_pair(std::string("-1"), -1));
+
+      // Check that elements in map are the same
+      bool isEqual = Check_Equal(data.begin(),
+                                 data.end(),
+                                 compare_data.begin());
       CHECK(isEqual);
     }
 
