@@ -97,6 +97,19 @@ TReturn test_fold_bits(uint64_t value, int size)
   return result;
 }
 
+// Slow gray to binary
+template <typename T>
+T compare_gray_to_binary(T value)
+{
+  T mask;
+  for (mask = value >> 1; mask != 0; mask = mask >> 1)
+  {
+    value = value ^ mask;
+  }
+
+  return value;
+}
+
 namespace
 {
   SUITE(test_binary)
@@ -393,13 +406,16 @@ namespace
     TEST(test_rotate16)
     {
       uint16_t value;
+      int offset;
 
+      offset = 4;
       value = 0xB73C;
-      value = etl::rotate(value, 4);
+      value = etl::rotate(value, offset);
       CHECK_EQUAL(0x73CB, int(value));
 
+      offset = -4;
       value = 0xB73C;
-      value = etl::rotate(value, -4);
+      value = etl::rotate(value, offset);
       CHECK_EQUAL(0xCB73, int(value));
     }
 
@@ -524,6 +540,24 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_reverse_bytes64)
+    {
+      uint64_t value;
+
+      value = 0x0123456789ABCDEF;
+      value = etl::reverse_bytes(value);
+      CHECK_EQUAL(0xEFCDAB8967452301U, value);
+
+      value = 0xA5A55A5AA5A55A5A;
+      value = etl::reverse_bytes(value);
+      CHECK_EQUAL(0x5A5AA5A55A5AA5A5U, value);
+
+      value = 0x5A5AA5A55A5AA5A5;
+      value = etl::reverse_bytes(value);
+      CHECK_EQUAL(0xA5A55A5AA5A55A5AU, value);
+    }
+
+    //*************************************************************************
     TEST(test_binary_to_gray8)
     {
       uint8_t last_gray = 0;
@@ -608,11 +642,57 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_count_bits_8)
+    TEST(test_gray_to_binary8)
+    {
+      for (size_t i = 1; i <= std::numeric_limits<uint8_t>::max(); ++i)
+      {
+        CHECK_EQUAL(compare_gray_to_binary(uint8_t(i)), etl::gray_to_binary(uint8_t(i)));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_gray_to_binary16)
     {
       for (size_t i = 1; i <= std::numeric_limits<uint16_t>::max(); ++i)
       {
-        CHECK_EQUAL(test_count(i), etl::count_bits(i));
+        CHECK_EQUAL(compare_gray_to_binary(uint16_t(i)), etl::gray_to_binary(uint16_t(i)));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_gray_to_binary32)
+    {
+      etl::fnv_1a_32 hash;
+
+      hash.add(1);
+
+      for (size_t i = 1; i < 1000000; ++i)
+      {
+        uint32_t value = hash.value();
+        CHECK_EQUAL(compare_gray_to_binary(value), etl::gray_to_binary(value));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_gray_to_binary64)
+    {
+      etl::fnv_1a_64 hash;
+
+      hash.add(1);
+
+      for (size_t i = 1; i < 1000000; ++i)
+      {
+        uint64_t value = hash.value();
+        CHECK_EQUAL(compare_gray_to_binary(value), etl::gray_to_binary(value));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_count_bits_8)
+    {
+      for (size_t i = 1; i <= std::numeric_limits<uint8_t>::max(); ++i)
+      {
+        CHECK_EQUAL(test_count(i), etl::count_bits(uint8_t(i)));
       }
     }
 
@@ -621,7 +701,7 @@ namespace
     {
       for (size_t i = 1; i <= std::numeric_limits<uint16_t>::max(); ++i)
       {
-        CHECK_EQUAL(test_count(i), etl::count_bits(i));
+        CHECK_EQUAL(test_count(i), etl::count_bits(uint16_t(i)));
       }
     }
 
@@ -660,7 +740,7 @@ namespace
     {
       for (size_t i = 1; i <= std::numeric_limits<uint8_t>::max(); ++i)
       {
-        CHECK_EQUAL(test_parity(i), etl::parity(i));
+        CHECK_EQUAL(test_parity(i), etl::parity(uint8_t(i)));
       }
     }
 
@@ -669,7 +749,7 @@ namespace
     {
       for (size_t i = 1; i <= std::numeric_limits<uint16_t>::max(); ++i)
       {
-        CHECK_EQUAL(test_parity(i), etl::parity(i));
+        CHECK_EQUAL(test_parity(i), etl::parity(uint16_t(i)));
       }
     }
 
