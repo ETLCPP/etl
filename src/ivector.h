@@ -271,13 +271,6 @@ namespace etl
     reference at(size_t i)
     {
       ETL_ASSERT(i < current_size, ETL_ERROR(vector_out_of_bounds));
-
-//      if (i >= current_size)
-//      {
-//
-//        throw etl::vector_out_of_bounds("a", 1);
-//      }
-
       return p_buffer[i];
     }
 
@@ -359,7 +352,6 @@ namespace etl
     {
 #ifdef _DEBUG
       difference_type count = std::distance(first, last);
-      ETL_ASSERT(count >= 0, ETL_ERROR(vector_iterator));
       ETL_ASSERT(static_cast<size_t>(count) <= MAX_SIZE, ETL_ERROR(vector_full));
 #endif
 
