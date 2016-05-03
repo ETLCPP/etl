@@ -576,6 +576,22 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_pop_front_exception)
+    {
+      DataNDC data;
+
+      CHECK_THROW(data.pop_front(), etl::list_empty);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_pop_back_exception)
+    {
+      DataNDC data;
+
+      CHECK_THROW(data.pop_back(), etl::list_empty);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_single)
     {
       CompareData compare_data(sorted_data.begin(), sorted_data.end());
@@ -765,6 +781,20 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_unique_trivial)
+    {
+      CompareData compare_data;
+      DataNDC data;
+
+      compare_data.unique();
+      data.unique();
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_remove)
     {
       CompareData compare_data(sorted_data.begin(), sorted_data.end());
@@ -811,6 +841,20 @@ namespace
     {
       CompareData compare_data(unsorted_data.begin(), unsorted_data.end());
       DataNDC data(unsorted_data.begin(), unsorted_data.end());
+
+      compare_data.sort();
+      data.sort();
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_sort_trivial)
+    {
+      CompareData compare_data;
+      DataNDC data;
 
       compare_data.sort();
       data.sort();
@@ -1067,6 +1111,19 @@ namespace
       data.splice(to, data, begin, end);
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+      CHECK(are_equal);
+
+      // Move to same place.
+      begin = data.begin();
+      std::advance(begin, 2);
+      end = begin;
+      std::advance(end, 3);
+      to = data.begin();
+      std::advance(to, 2);
+
+      DataNDC data2(data);
+      data.splice(to, data, begin, end);
+      are_equal = std::equal(data.begin(), data.end(), data2.begin());
       CHECK(are_equal);
 
       // Move to illegal place.
@@ -1349,6 +1406,15 @@ namespace
 
       CHECK_EQUAL(data0.size(), compare0.size());
       CHECK_EQUAL(data1.size(), compare1.size());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_merge_exception)
+    {
+      DataNDC2 data0(unsorted_data.begin(), unsorted_data.end());
+      DataNDC2 data1(unsorted_data.begin(), unsorted_data.end());
+
+      CHECK_THROW(data0.merge(data1), etl::list_unsorted);
     }
   };
 }
