@@ -322,6 +322,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_at_out_of_bounds)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      CHECK_THROW(data.at(10), etl::flat_map_out_of_bounds);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_at_const)
     {
       const Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
@@ -338,6 +346,15 @@ namespace
       CHECK_EQUAL(data.at(8), compare_data.at(8));
       CHECK_EQUAL(data.at(9), compare_data.at(9));
     }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_at_const_out_of_bounds)
+    {
+      const DataNDC data(initial_data.begin(), initial_data.end());
+
+      CHECK_THROW(data.at(10), etl::flat_map_out_of_bounds);
+    }
+
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_range)
