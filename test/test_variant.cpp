@@ -75,8 +75,18 @@ struct derived_2 : public base
 };
 
 // Test variant types.
-typedef etl::variant<char, int, std::string> test_variant_1;
-typedef etl::variant<int, short, double> test_variant_2;
+typedef etl::variant<char, int, std::string> test_variant_3a;
+typedef etl::variant<int, short, double> test_variant_3b;
+
+typedef etl::variant<int8_t> test_variant_1;
+typedef etl::variant<int8_t, uint8_t> test_variant_2;
+typedef etl::variant<int8_t, uint8_t, int16_t> test_variant_3;
+typedef etl::variant<int8_t, uint8_t, int16_t, uint16_t> test_variant_4;
+typedef etl::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t> test_variant_5;
+typedef etl::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t> test_variant_6;
+typedef etl::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t, int64_t> test_variant_7;
+typedef etl::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t, int64_t, uint64_t> test_variant_8;
+
 typedef etl::variant<derived_1, derived_2> test_variant_polymorphic;
 typedef etl::variant<char, unsigned char, short, unsigned short, int, unsigned int, long, unsigned long> test_variant_max_types;
 
@@ -108,7 +118,7 @@ namespace
     //*************************************************************************
     TEST(test_constructor_default)
     {
-      CHECK_NO_THROW(test_variant_1 variant);
+      CHECK_NO_THROW(test_variant_3a variant);
     }
 
     //*************************************************************************
@@ -116,7 +126,7 @@ namespace
     {
       // Char.
       char c = 'a';
-      test_variant_1 variant_char(c);
+      test_variant_3a variant_char(c);
 
       CHECK(variant_char.is_type<char>());
       CHECK(variant_char.is_valid());
@@ -124,7 +134,7 @@ namespace
 
       // Int.
       int i = 1;
-      test_variant_1 variant_int(i);
+      test_variant_3a variant_int(i);
 
       CHECK(variant_int.is_type<int>());
       CHECK(variant_int.is_valid());
@@ -132,7 +142,7 @@ namespace
 
       // String.
       std::string text("Some Text");
-      test_variant_1 variant_text(text);
+      test_variant_3a variant_text(text);
 
       CHECK(variant_text.is_type<std::string>());
       CHECK(variant_text.is_valid());
@@ -143,9 +153,9 @@ namespace
     TEST(test_copy_constructor)
     {
       std::string text("Some Text");
-      test_variant_1 variant_1(text);
+      test_variant_3a variant_1(text);
 
-      test_variant_1 variant_2(variant_1);
+      test_variant_3a variant_2(variant_1);
 
       CHECK(variant_1.is_same_type(variant_2));
       CHECK(variant_2.is_valid());
@@ -156,7 +166,7 @@ namespace
     TEST(test_assign_from_value)
     {
       std::string text("Some Text");
-      test_variant_1 variant;
+      test_variant_3a variant;
 
       variant = text;
 
@@ -168,8 +178,8 @@ namespace
     TEST(test_assign_from_variant)
     {
       std::string text("Some Text");
-      test_variant_1 variant_1;
-      test_variant_1 variant_2;
+      test_variant_3a variant_1;
+      test_variant_3a variant_2;
 
       variant_1 = text;
       variant_2 = variant_1;
@@ -182,7 +192,7 @@ namespace
     TEST(test_assignment_incorrect_type_exception)
     {
       std::string text("Some Text");
-      test_variant_1 variant;
+      test_variant_3a variant;
       variant = text;
 
       int i;
@@ -194,8 +204,8 @@ namespace
     TEST(test_is_same_type)
     {
       std::string text("Some Text");
-      test_variant_1 variant_1;
-      test_variant_1 variant_2;
+      test_variant_3a variant_1;
+      test_variant_3a variant_2;
 
       variant_1 = 1;
       variant_2 = 2;
@@ -211,8 +221,8 @@ namespace
     //*************************************************************************
     TEST(test_is_same_type_different_variants)
     {
-      test_variant_1 variant_1;
-      test_variant_2 variant_2;
+      test_variant_3a variant_1;
+      test_variant_3b variant_2;
 
       variant_1 = 1;
       variant_2 = 2;
@@ -226,18 +236,18 @@ namespace
     }
 
     //*************************************************************************
-    TEST(Testis_supported_type)
+    TEST(test_is_supported_type)
     {
-      CHECK(test_variant_1::is_supported_type<char>());
-      CHECK(test_variant_1::is_supported_type<int>());
-      CHECK(test_variant_1::is_supported_type<std::string>());
-      CHECK(!test_variant_1::is_supported_type<short>());
+      CHECK(test_variant_3a::is_supported_type<char>());
+      CHECK(test_variant_3a::is_supported_type<int>());
+      CHECK(test_variant_3a::is_supported_type<std::string>());
+      CHECK(!test_variant_3a::is_supported_type<short>());
     }
 
     //*************************************************************************
-    TEST(TestIsValid)
+    TEST(test_is_valid)
     {
-      test_variant_1 variant;
+      test_variant_3a variant;
 
       CHECK(!variant.is_valid());
 
@@ -246,9 +256,9 @@ namespace
     }
 
     //*************************************************************************
-    TEST(TestIsType)
+    TEST(test_is_type)
     {
-      test_variant_1 variant;
+      test_variant_3a variant;
       variant = 1;
       CHECK(variant.is_type<int>());
 
@@ -260,9 +270,9 @@ namespace
     }
 
     //*************************************************************************
-    TEST(TestGet)
+    TEST(test_get)
     {
-      test_variant_1 variant;
+      test_variant_3a variant;
 
       variant = 1;
       CHECK_EQUAL(1, variant.get<int>());
@@ -275,10 +285,28 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_get_const)
+    {
+      test_variant_3a variant;
+
+      variant = 1;
+      const test_variant_3a cvariant1(variant);
+      CHECK_EQUAL(1, cvariant1.get<int>());
+
+      variant = 'a';
+      const test_variant_3a cvariant2(variant);
+      CHECK_EQUAL('a', cvariant2.get<char>());
+
+      variant = std::string("Some Text");
+      const test_variant_3a cvariant3(variant);
+      CHECK_EQUAL(std::string("Some Text"), cvariant3.get<std::string>());
+    }
+
+    //*************************************************************************
     TEST(test_assignment)
     {
-      test_variant_1 variant1;
-      test_variant_1 variant2;
+      test_variant_3a variant1;
+      test_variant_3a variant2;
 
       variant1 = 1;
       variant2 = variant1;
@@ -289,7 +317,7 @@ namespace
     //*************************************************************************
     TEST(test_self_assignment)
     {
-      test_variant_1 variant;
+      test_variant_3a variant;
 
       variant = 1;
       variant = variant;
@@ -300,18 +328,18 @@ namespace
     //*************************************************************************
     TEST(TestGetException)
     {
-      test_variant_1 variant;
+      test_variant_3a variant;
       variant = 1;
 
       char c;
-      CHECK_THROW(c = variant.get<char>(), etl::variant_exception);
+      CHECK_THROW(c = variant.get<char>(), etl::variant_incorrect_type_exception);
       (void)c;
     }
 
     //*************************************************************************
     TEST(TestGetReference)
     {
-      test_variant_1 variant;
+      test_variant_3a variant;
       variant = 1;
 
       int& ir = variant.get<int>();
@@ -324,7 +352,7 @@ namespace
     //*************************************************************************
     TEST(TestGetConstReference)
     {
-      test_variant_1 variant;
+      test_variant_3a variant;
       variant = 1;
       const int& ir = variant.get<int>();
       CHECK_EQUAL(1, ir);
@@ -336,7 +364,7 @@ namespace
     //*************************************************************************
     TEST(TestCallReader)
     {
-      class reader : public test_variant_1::reader
+      class reader : public test_variant_3a::reader
       {
       public:
 
@@ -364,7 +392,7 @@ namespace
         int i;
       };
 
-      test_variant_1 variant;
+      test_variant_3a variant;
       reader reader;
 
       variant = 'a';
@@ -381,26 +409,183 @@ namespace
     }
 
     //*************************************************************************
-    TEST(TestConversionOperators)
+    TEST(test_conversion_operators)
     {
-      test_variant_1 variant;
-      variant = 1;
-      int i = variant;
-      CHECK_EQUAL(i, variant.get<int>());
+      int8_t   i8;
+      uint8_t  ui8;
+      int16_t  i16;
+      uint16_t ui16;
+      int32_t  i32;
+      uint32_t ui32;
+      int64_t  i64;
+      uint64_t ui64;
 
-      variant = std::string("Some Text");
-      std::string text = variant;
-      CHECK_EQUAL(text, variant.get<std::string>());
+      test_variant_1 variant1;
+      test_variant_2 variant2;
+      test_variant_3 variant3;
+      test_variant_4 variant4;
+      test_variant_5 variant5;
+      test_variant_6 variant6;
+      test_variant_7 variant7;
+      test_variant_8 variant8;
 
-      variant = 'a';
-      char c = variant;
-      CHECK_EQUAL(c, variant.get<char>());
+      // Variant 1
+      variant1 = int8_t(1);
+      i8 = variant1;
+      CHECK_EQUAL(i8, variant1.get<int8_t>());
+
+      // Variant 2
+      variant2 = int8_t(1);
+      i8 = variant2;
+      CHECK_EQUAL(i8, variant2.get<int8_t>());
+
+      variant2 = uint8_t(2);
+      ui8 = variant2;
+      CHECK_EQUAL(ui8, variant2.get<uint8_t>());
+
+      // Variant 3
+      variant3 = int8_t(1);
+      i8 = variant3;
+      CHECK_EQUAL(i8, variant3.get<int8_t>());
+
+      variant3 = uint8_t(2);
+      ui8 = variant3;
+      CHECK_EQUAL(ui8, variant3.get<uint8_t>());
+
+      variant3 = int16_t(3);
+      i16 = variant3;
+      CHECK_EQUAL(i16, variant3.get<int16_t>());
+
+      // Variant 4
+      variant4 = int8_t(1);
+      i8 = variant4;
+      CHECK_EQUAL(i8, variant4.get<int8_t>());
+
+      variant4 = uint8_t(2);
+      ui8 = variant4;
+      CHECK_EQUAL(ui8, variant4.get<uint8_t>());
+
+      variant4 = int16_t(3);
+      i16 = variant4;
+      CHECK_EQUAL(i16, variant4.get<int16_t>());
+
+      variant4 = uint16_t(4);
+      ui16 = variant4;
+      CHECK_EQUAL(ui16, variant4.get<uint16_t>());
+
+      // Variant 5
+      variant5 = int8_t(1);
+      i8 = variant5;
+      CHECK_EQUAL(i8, variant5.get<int8_t>());
+
+      variant5 = uint8_t(2);
+      ui8 = variant5;
+      CHECK_EQUAL(ui8, variant5.get<uint8_t>());
+
+      variant5 = int16_t(3);
+      i16 = variant5;
+      CHECK_EQUAL(i16, variant5.get<int16_t>());
+
+      variant5 = uint16_t(4);
+      ui16 = variant5;
+      CHECK_EQUAL(ui16, variant5.get<uint16_t>());
+
+      variant5 = int32_t(5);
+      i32 = variant5;
+      CHECK_EQUAL(i32, variant5.get<int32_t>());
+
+      // Variant 6
+      variant6 = int8_t(1);
+      i8 = variant6;
+      CHECK_EQUAL(i8, variant6.get<int8_t>());
+
+      variant6 = uint8_t(2);
+      ui8 = variant6;
+      CHECK_EQUAL(ui8, variant6.get<uint8_t>());
+
+      variant6 = int16_t(3);
+      i16 = variant6;
+      CHECK_EQUAL(i16, variant6.get<int16_t>());
+
+      variant6 = uint16_t(4);
+      ui16 = variant6;
+      CHECK_EQUAL(ui16, variant6.get<uint16_t>());
+
+      variant6 = int32_t(5);
+      i32 = variant6;
+      CHECK_EQUAL(i32, variant6.get<int32_t>());
+
+      variant6 = uint32_t(6);
+      ui32 = variant6;
+      CHECK_EQUAL(ui32, variant6.get<uint32_t>());
+
+      // Variant 7
+      variant7 = int8_t(1);
+      i8 = variant7;
+      CHECK_EQUAL(i8, variant7.get<int8_t>());
+
+      variant7 = uint8_t(2);
+      ui8 = variant7;
+      CHECK_EQUAL(ui8, variant7.get<uint8_t>());
+
+      variant7 = int16_t(3);
+      i16 = variant7;
+      CHECK_EQUAL(i16, variant7.get<int16_t>());
+
+      variant7 = uint16_t(4);
+      ui16 = variant7;
+      CHECK_EQUAL(ui16, variant7.get<uint16_t>());
+
+      variant7 = int32_t(5);
+      i32 = variant7;
+      CHECK_EQUAL(i32, variant7.get<int32_t>());
+
+      variant7 = uint32_t(6);
+      ui32 = variant7;
+      CHECK_EQUAL(ui32, variant7.get<uint32_t>());
+
+      variant7 = int64_t(7);
+      i64 = variant7;
+      CHECK_EQUAL(i64, variant7.get<int64_t>());
+
+      // Variant 8
+      variant8 = int8_t(1);
+      i8 = variant8;
+      CHECK_EQUAL(i8, variant8.get<int8_t>());
+
+      variant8 = uint8_t(2);
+      ui8 = variant8;
+      CHECK_EQUAL(ui8, variant8.get<uint8_t>());
+
+      variant8 = int16_t(3);
+      i16 = variant8;
+      CHECK_EQUAL(i16, variant8.get<int16_t>());
+
+      variant8 = uint16_t(4);
+      ui16 = variant8;
+      CHECK_EQUAL(ui16, variant8.get<uint16_t>());
+
+      variant8 = int32_t(5);
+      i32 = variant8;
+      CHECK_EQUAL(i32, variant8.get<int32_t>());
+
+      variant8 = uint32_t(6);
+      ui32 = variant8;
+      CHECK_EQUAL(ui32, variant8.get<uint32_t>());
+
+      variant8 = int64_t(7);
+      i64 = variant8;
+      CHECK_EQUAL(i64, variant8.get<int64_t>());
+
+      variant8 = uint64_t(8);
+      ui64 = variant8;
+      CHECK_EQUAL(ui64, variant8.get<uint64_t>());
     }
 
     //*************************************************************************
     TEST(TestConversionOperatorsConstReference)
     {
-      test_variant_1 variant;
+      test_variant_3a variant;
       variant = 1;
       const int& i = variant;
       CHECK_EQUAL(i, variant.get<int>());
@@ -425,8 +610,8 @@ namespace
     //*************************************************************************
     TEST(TestSwap)
     {
-      test_variant_1 variant_1;
-      test_variant_1 variant_2;
+      test_variant_3a variant_1;
+      test_variant_3a variant_2;
 
       variant_1 = 1;
       variant_2 = std::string("Some Text");
@@ -440,7 +625,7 @@ namespace
     //*************************************************************************
     TEST(TestClear)
     {
-      test_variant_1 variant;
+      test_variant_3a variant;
 
       variant = 1;
       variant.clear();
