@@ -44,40 +44,26 @@ SOFTWARE.
 
 namespace etl
 {
-  namespace __private_bloom_filter__
-  {
-    // Placeholder null hash for defaulted template parameters.
-    struct null_hash
-    {
-      template <typename T>
-      size_t operator ()(T)
-      {
-        return 0;
-      }
-    };
-  }
-
   //***************************************************************************
   /// An implementation of a bloom filter.
   /// Allows up to three hashes to be defined.
   /// Hashes must support the () operator and define 'argument_type'.
   ///\tparam DESIRED_WIDTH The desired number of hash results that can be stored. Rounded up to best fit the underlying bitset.
   ///\tparam THash1        The first hash generator class.
-  ///\tparam THash2        The second hash generator class. If omitted, uses the null hash.
-  ///\tparam THash3        The third hash generator class.  If omitted, uses the null hash.
+  ///\tparam THash2        The second hash generator class. Default unused.
+  ///\tparam THash3        The third hash generator class.  Default unused.
   /// The hash classes must define <b>argument_type</b>.
   ///\ingroup bloom_filter
   //***************************************************************************
   template <const size_t DESIRED_WIDTH,
             typename     THash1,
-            typename     THash2 = __private_bloom_filter__::null_hash,
-            typename     THash3 = __private_bloom_filter__::null_hash>
+            typename     THash2 = void,
+            typename     THash3 = void>
   class bloom_filter
   {
   private:
 
     typedef typename etl::parameter_type<typename THash1::argument_type>::type parameter_t;
-    typedef __private_bloom_filter__::null_hash null_hash;
 
   public:
 
@@ -99,19 +85,36 @@ namespace etl
     /// Adds a key to the filter.
     ///\param key The key to add.
     //***************************************************************************
-    void add(parameter_t key)
+    template <typename T2 = THash2, typename T3 = THash3>
+    typename etl::enable_if<etl::is_same<T2, void>::value && etl::is_same<T3, void>::value, void>::type
+    add(parameter_t key)
     {
       flags.set(get_hash<THash1>(key));
+    }
 
-      if (!etl::is_same<THash2, null_hash>::value)
-      {
-        flags.set(get_hash<THash2>(key));
-      }
-
-      if (!etl::is_same<THash3, null_hash>::value)
-      {
-        flags.set(get_hash<THash3>(key));
-      }
+    //***************************************************************************
+    /// Adds a key to the filter.
+    ///\param key The key to add.
+    //***************************************************************************
+    template <typename T2 = THash2, typename T3 = THash3>
+    typename etl::enable_if<!etl::is_same<T2, void>::value && etl::is_same<T3, void>::value, void>::type
+    add(parameter_t key)
+    {
+      flags.set(get_hash<THash1>(key));
+      flags.set(get_hash<THash2>(key));
+    }
+    
+    //***************************************************************************
+    /// Adds a key to the filter.
+    ///\param key The key to add.
+    //***************************************************************************
+    template <typename T2 = THash2, typename T3 = THash3>
+    typename etl::enable_if<!etl::is_same<T2, void>::value && !etl::is_same<T3, void>::value, void>::type
+    add(parameter_t key)
+    {
+      flags.set(get_hash<THash1>(key));
+      flags.set(get_hash<THash2>(key));
+      flags.set(get_hash<THash3>(key));
     }
 
     //***************************************************************************
@@ -119,23 +122,42 @@ namespace etl
     ///\param  key The key to test.
     ///\return <b>true</b> if the key exists in the filter.
     //***************************************************************************
-    bool exists(parameter_t key) const
+    template <typename T2 = THash2, typename T3 = THash3>
+    typename etl::enable_if<etl::is_same<T2, void>::value && etl::is_same<T3, void>::value, bool>::type
+    exists(parameter_t key) const
     {
       bool exists1 = flags[get_hash<THash1>(key)];
-      bool exists2 = true;
-      bool exists3 = true;
 
-      // Do we have a second hash?
-      if (!etl::is_same<THash2, null_hash>::value)
-      {
-        exists2 = flags[get_hash<THash2>(key)];
-      }
+      return exists1;
+    }
 
-      // Do we have a third hash?
-      if (!etl::is_same<THash3, null_hash>::value)
-      {
-        exists3 = flags[get_hash<THash3>(key)];
-      }
+    //***************************************************************************
+    /// Tests a key to see if it exists in the filter.
+    ///\param  key The key to test.
+    ///\return <b>true</b> if the key exists in the filter.
+    //***************************************************************************
+    template <typename T2 = THash2, typename T3 = THash3>
+    typename etl::enable_if<!etl::is_same<T2, void>::value && etl::is_same<T3, void>::value, bool>::type
+    exists(parameter_t key) const
+    {
+      bool exists1 = flags[get_hash<THash1>(key)];
+      bool exists2 = flags[get_hash<THash2>(key)];
+
+      return exists1 && exists2;
+    }
+
+    //***************************************************************************
+    /// Tests a key to see if it exists in the filter.
+    ///\param  key The key to test.
+    ///\return <b>true</b> if the key exists in the filter.
+    //***************************************************************************
+    template <typename T2 = THash2, typename T3 = THash3>
+    typename etl::enable_if<!etl::is_same<T2, void>::value && !etl::is_same<T3, void>::value, bool>::type
+    exists(parameter_t key) const
+    {
+      bool exists1 = flags[get_hash<THash1>(key)];
+      bool exists2 = flags[get_hash<THash2>(key)];
+      bool exists3 = flags[get_hash<THash3>(key)];
 
       return exists1 && exists2 && exists3;
     }

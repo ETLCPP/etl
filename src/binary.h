@@ -543,7 +543,7 @@ namespace etl
 
     typedef typename etl::make_unsigned<TReturn>::type mask_t;
 
-    mask_t negative = (1 << (NBITS - 1));
+    mask_t negative = (TReturn(1) << (NBITS - 1));
     TReturn signed_value = value;
 
     if ((signed_value & negative) != 0)

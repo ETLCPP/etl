@@ -76,34 +76,6 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup flat_multimap
-  /// Vector out of bounds exception.
-  //***************************************************************************
-  class flat_multimap_out_of_bounds : public flat_multimap_exception
-  {
-  public:
-
-    flat_multimap_out_of_bounds(string_type file_name, numeric_type line_number)
-      : flat_multimap_exception(ETL_ERROR_TEXT("flat_multimap:bounds", ETL_FILE"B"), file_name, line_number)
-    {
-    }
-  };
-
-  //***************************************************************************
-  ///\ingroup flat_multimap
-  /// Vector iterator exception.
-  //***************************************************************************
-  class flat_multimap_iterator : public flat_multimap_exception
-  {
-  public:
-
-    flat_multimap_iterator(string_type file_name, numeric_type line_number)
-      : flat_multimap_exception(ETL_ERROR_TEXT("flat_multimap:iterator", ETL_FILE"C"), file_name, line_number)
-    {
-    }
-  };
-
-  //***************************************************************************
-  ///\ingroup flat_multimap
   /// The base class for all templated flat_multimap types.
   //***************************************************************************
   class flat_multimap_base

@@ -150,6 +150,18 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_jenkins_32_finalised_exception)
+    {
+      std::string data("123456789");
+
+      etl::jenkins<uint32_t> j32;
+      j32.add(data.begin(), data.end());
+      uint32_t hash = j32;
+
+      CHECK_THROW(j32.add(0), etl::hash_finalised);
+    }
+
+    //*************************************************************************
     TEST(test_jenkins_64_constructor)
     {
       std::string data("123456789");

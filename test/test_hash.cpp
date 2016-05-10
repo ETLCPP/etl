@@ -148,10 +148,7 @@ namespace
     {
       size_t hash = etl::hash<float>()((float)(1.2345));
 
-      if (sizeof(size_t) == sizeof(long long))
-        CHECK_EQUAL(0x884B5E3F478AF88F, hash);
-      else
-        CHECK_EQUAL(0x3F9E0419, hash);
+      CHECK_EQUAL(0X3F9E0419, hash);
     }
 
     //*************************************************************************
@@ -159,8 +156,8 @@ namespace
     {
       size_t hash = etl::hash<double>()((double)(1.2345));
 
-      if (sizeof(size_t) == sizeof(long long))
-        CHECK_EQUAL(0x3FF3C083126E978D, hash);
+      if (sizeof(size_t) == sizeof(double))
+        CHECK_EQUAL(0X3FF3C083126E978D, hash);
       else
         CHECK_EQUAL(0x86FBF224, hash);
     }

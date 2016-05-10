@@ -156,6 +156,24 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_resize_up)
+    {
+      const size_t INITIAL_SIZE = 4;
+      const size_t NEW_SIZE = 8;
+      const ItemNDC VALUE("1");
+
+      DataNDC data(INITIAL_SIZE, VALUE);
+      data.resize(NEW_SIZE);
+
+      CompareDataNDC compare_data(INITIAL_SIZE, VALUE);
+      compare_data.resize(NEW_SIZE);
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_up_value)
     {
       const size_t INITIAL_SIZE = 4;
@@ -184,6 +202,24 @@ namespace
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_down)
+    {
+      const size_t INITIAL_SIZE = 4;
+      const size_t NEW_SIZE = 2;
+      const ItemNDC VALUE("1");
+
+      DataNDC data(INITIAL_SIZE, VALUE);
+      data.resize(NEW_SIZE);
+
+      CompareDataNDC compare_data(INITIAL_SIZE, VALUE);
+      compare_data.resize(NEW_SIZE);
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_resize_down_value)
     {
       const size_t INITIAL_SIZE = 4;
       const size_t NEW_SIZE = 2;
@@ -294,6 +330,47 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_after_position_size_value)
+    {
+      const size_t INITIAL_SIZE = 4;
+      const ItemNDC VALUE("1");
+      const ItemNDC INSERT_VALUE("2");
+
+      CompareDataNDC compare_data(INITIAL_SIZE, VALUE);
+      DataNDC data(INITIAL_SIZE, VALUE);
+
+      size_t offset = 2;
+
+      DataNDC::iterator i_data = data.begin();
+      std::advance(i_data, offset);
+
+      CompareDataNDC::iterator i_compare_data = compare_data.begin();
+      std::advance(i_compare_data, offset);
+
+      data.insert_after(i_data, 2, INSERT_VALUE);
+      compare_data.insert_after(i_compare_data, 2, INSERT_VALUE);
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(are_equal);
+
+      offset = 0;
+
+      i_data = data.begin();
+      std::advance(i_data, offset);
+
+      i_compare_data = compare_data.begin();
+      std::advance(i_compare_data, offset);
+
+      data.insert_after(i_data, 2, INSERT_VALUE);
+      compare_data.insert_after(i_compare_data, 2, INSERT_VALUE);
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_after_range)
     {
       std::vector<ItemNDC> test1 = { ItemNDC("0"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3"), ItemNDC("4") };
@@ -355,6 +432,61 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_push_front_null)
+    {
+      CompareDataNDC compare_data;
+      DataNDC data;
+
+      compare_data.push_front(ItemNDC("1"));
+      compare_data.push_front(ItemNDC("2"));
+      compare_data.push_front(ItemNDC("3"));
+      compare_data.push_front(ItemNDC("4"));
+      compare_data.push_front(ItemNDC("5"));
+      compare_data.push_front(ItemNDC("6"));
+
+      CHECK_NO_THROW(data.push_front());
+      data.front() = ItemNDC("1");
+      CHECK_NO_THROW(data.push_front());
+      data.front() = ItemNDC("2");
+      CHECK_NO_THROW(data.push_front());
+      data.front() = ItemNDC("3");
+      CHECK_NO_THROW(data.push_front());
+      data.front() = ItemNDC("4");
+      CHECK_NO_THROW(data.push_front());
+      data.front() = ItemNDC("5");
+      CHECK_NO_THROW(data.push_front());
+      data.front() = ItemNDC("6");
+
+      CHECK_EQUAL(6, data.size());
+      CHECK_EQUAL(6, std::distance(data.begin(), data.end()));
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_front_const)
+    {
+      const DataNDC data(sorted_data.begin(), sorted_data.end());
+
+      CHECK_EQUAL(ItemNDC("0"), data.front());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_before_begin_const)
+    {
+      const DataNDC data(sorted_data.begin(), sorted_data.end());
+
+      DataNDC::const_iterator itr = data.before_begin();
+      ++itr;
+
+      are_equal = std::equal(data.begin(), data.end(), itr);
+
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_front_excess)
     {  
       DataNDC data;
@@ -385,6 +517,24 @@ namespace
       }
       
       CHECK(data.empty());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_pop_front_empty)
+    {
+      DataNDC data;
+
+      CHECK_NO_THROW(data.push_front(ItemNDC("0")));
+      CHECK_NO_THROW(data.push_front(ItemNDC("1")));
+      CHECK_NO_THROW(data.push_front(ItemNDC("2")));
+      CHECK_NO_THROW(data.push_front(ItemNDC("3")));
+
+      data.pop_front();
+      data.pop_front();
+      data.pop_front();
+      data.pop_front();
+
+      CHECK_THROW(data.pop_front(), etl::forward_list_empty);
     }
 
     //*************************************************************************
@@ -621,10 +771,38 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_reverse_empty)
+    {
+      CompareDataNDC compare_data;
+      DataNDC data;
+
+      compare_data.reverse();
+      data.reverse();
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_sort)
     {
       CompareDataNDC compare_data(unsorted_data.begin(), unsorted_data.end());
       DataNDC data(unsorted_data.begin(), unsorted_data.end());
+
+      compare_data.sort();
+      data.sort();
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_sort_empty)
+    {
+      CompareDataNDC compare_data;
+      DataNDC data;
 
       compare_data.sort();
       data.sort();
@@ -842,6 +1020,19 @@ namespace
       std::advance(i_to_before, 2);
 
       CHECK_THROW(data.move_after(i_first_before, i_last, i_to_before), etl::forward_list_iterator);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_binary_comparisons)
+    {
+      DataNDC data1(sorted_data.begin(), sorted_data.end());
+      DataNDC data2(sorted_data.begin(), sorted_data.end());
+      DataNDC data3(unsorted_data.begin(), unsorted_data.end());
+
+      CHECK(data1 == data2);
+      CHECK(data1 != data3);
+      CHECK(data1 < data3);
+      CHECK(data3 > data1);
     }
   };
 }

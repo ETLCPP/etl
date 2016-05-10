@@ -224,7 +224,7 @@ namespace etl
     {
 #ifdef _DEBUG
       difference_type count = std::distance(first, last);
-      ETL_ASSERT(count >= 0, ETL_ERROR(flat_multimap_iterator));
+      ETL_ASSERT(count <= difference_type(capacity()), ETL_ERROR(flat_multimap_full));
 #endif
 
       clear();
@@ -242,11 +242,11 @@ namespace etl
     //*********************************************************************
     std::pair<iterator, bool> insert(const value_type& value)
     {
+      ETL_ASSERT(!buffer.full(), ETL_ERROR(flat_multimap_full));
+
       std::pair<iterator, bool> result(end(), false);
 
       iterator i_element = lower_bound(value.first);
-
-      ETL_ASSERT(!buffer.full(), ETL_ERROR(flat_multimap_full));
 
       if (i_element == end())
       {

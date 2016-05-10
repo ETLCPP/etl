@@ -28,42 +28,35 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
+// Define the platform.
 #if defined(__linux__)
 #define ETL_PLATFORM_LINUX
-#endif
-
-#if defined(__WIN32) || defined(__WIN64)
+#elif defined(WIN32) || defined(WIN64)
 #define ETL_PLATFORM_WINDOWS
+#else
+#define ETL_PLATFORM_GENERIC
 #endif
 
+// Define the compiler.
 #if defined(__IAR_SYSTEMS_ICC__)
 #define ETL_COMPILER_IAR
-#endif
-
-#if defined(__KEIL__) && !defined(__GNUC__)
+#elif defined(__KEIL__) && !defined(__GNUC__)
 #define ETL_COMPILER_KEIL
-#endif
-
-#if defined(__ghs__)
+#elif defined(__ghs__)
 #define ETL_COMPILER_GREEN_HILLS
-#endif
-
-#if defined(__INTEL_COMPILER)
+#elif defined(__INTEL_COMPILER)
 #define ETL_COMPILER_INTEL
-#endif
-
-#if defined(_MSC_VER)
+#elif defined(_MSC_VER)
 #define ETL_COMPILER_MICROSOFT
-#endif
-
-#if defined(__GNUC__)
+#elif defined(__GNUC__)
 #define ETL_COMPILER_GCC
+#else
+#define ETL_COMPILER_GENERIC
 #endif
 
 #if (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER < 1600)) || \
      defined(ETL_COMPILER_KEIL) || \
      defined(ETL_COMPILER_IAR) || \
      (defined(ETL_COMPILER_GCC) && (__cplusplus < 201103L))
-  #define NO_NULLPTR_SUPPORT
+#define NO_NULLPTR_SUPPORT
 #endif
-

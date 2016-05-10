@@ -273,8 +273,6 @@ namespace etl
     {
 #ifdef _DEBUG
       difference_type count = std::distance(first, last);
-
-      ETL_ASSERT(count >= 0, ETL_ERROR(flat_map_iterator));
       ETL_ASSERT(count <= difference_type(capacity()), ETL_ERROR(flat_map_full));
 #endif
 

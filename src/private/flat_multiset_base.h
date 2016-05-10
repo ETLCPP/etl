@@ -76,34 +76,6 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup flat_multiset
-  /// Flat multiset out of bounds exception.
-  //***************************************************************************
-  class flat_multiset_out_of_bounds : public flat_multiset_exception
-  {
-  public:
-
-    flat_multiset_out_of_bounds(string_type file_name, numeric_type line_number)
-      : flat_multiset_exception(ETL_ERROR_TEXT("flat_multiset:bounds", ETL_FILE"B"), file_name, line_number)
-    {
-    }
-  };
-
-  //***************************************************************************
-  ///\ingroup flat_multiset
-  /// Vector iterator exception.
-  //***************************************************************************
-  class flat_multiset_iterator : public flat_multiset_exception
-  {
-  public:
-
-    flat_multiset_iterator(string_type file_name, numeric_type line_number)
-      : flat_multiset_exception(ETL_ERROR_TEXT("flat_multiset:iterator", ETL_FILE"C"), file_name, line_number)
-    {
-    }
-  };
-
-  //***************************************************************************
-  ///\ingroup flat_multiset
   /// The base class for all templated flat_multiset types.
   //***************************************************************************
   class flat_multiset_base

@@ -781,11 +781,8 @@ namespace etl
     {
       if (&other == this)
       {
-        if (from != to)
-        {
-          // Internal move.
-          move(to, from);
-        }
+        // Internal move.
+        move(to, from);
       }
       else
       {
@@ -802,11 +799,8 @@ namespace etl
     {
       if (&other == this)
       {
-        if (first != to)
-        {
-          // Internal move.
-          move(to, first, last);
-        }
+        // Internal move.
+        move(to, first, last);
       }
       else
       {

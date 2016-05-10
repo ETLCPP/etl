@@ -1216,6 +1216,23 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_pop_back_exception)
+    {
+      Compare_Data compare_data = { N1, N2, N3, N4, N5 };
+      DataNDC data;
+
+      data.assign(compare_data.begin(), compare_data.end());
+
+      data.pop_back();
+      data.pop_back();
+      data.pop_back();
+      data.pop_back();
+      data.pop_back();
+
+      CHECK_THROW(data.pop_back(), etl::deque_empty);
+    }
+
+    //*************************************************************************
     TEST(test_push_front_null)
     {
       Compare_DataDC compare_data = { DC("5"), DC("4"), DC("3"), DC("2"), DC("1") };
@@ -1282,6 +1299,23 @@ namespace
       }
 
       CHECK_THROW(data.push_front(N999), etl::deque_full);
+    }
+
+    //*************************************************************************
+    TEST(test_pop_front_exception)
+    {
+      Compare_Data compare_data = { N1, N2, N3, N4, N5 };
+      DataNDC data;
+
+      data.assign(compare_data.begin(), compare_data.end());
+
+      data.pop_front();
+      data.pop_front();
+      data.pop_front();
+      data.pop_front();
+      data.pop_front();
+
+      CHECK_THROW(data.pop_front(), etl::deque_empty);
     }
 
     //*************************************************************************

@@ -273,6 +273,19 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_resize_down_value)
+    {
+      const size_t INITIAL_SIZE = 5;
+      const size_t NEW_SIZE = 2;
+      const int INITIAL_VALUE = 1;
+
+      Data data(INITIAL_SIZE);
+      data.resize(NEW_SIZE, INITIAL_VALUE);
+
+      CHECK_EQUAL(data.size(), NEW_SIZE);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_empty)
     {
       Data data;
@@ -532,6 +545,19 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_pop_back_exception)
+    {
+      Data data;
+
+      data.resize(2);
+
+      data.pop_back();
+      data.pop_back();
+
+      CHECK_THROW(data.pop_back(), etl::vector_empty);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_value)
     {
       const size_t INITIAL_SIZE = 5;
@@ -732,8 +758,8 @@ namespace
       Data data(compare_data.begin(), compare_data.end());
 
       bool is_equal = std::equal(data.begin(),
-                                data.end(),
-                                compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
 
       CHECK(is_equal);
     }
@@ -746,8 +772,8 @@ namespace
       Data data(compare_data.begin(), compare_data.end());
 
       bool is_equal = std::equal(data.cbegin(),
-                                data.cend(),
-                                compare_data.cbegin());
+                                 data.cend(),
+                                 compare_data.cbegin());
 
       CHECK(is_equal);
     }
@@ -760,8 +786,8 @@ namespace
       Data data(compare_data.begin(), compare_data.end());
 
       bool is_equal = std::equal(data.rbegin(),
-                                data.rend(),
-                                compare_data.rbegin());
+                                 data.rend(),
+                                 compare_data.rbegin());
 
       CHECK(is_equal);
     }
@@ -769,13 +795,27 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_reverse_iterator)
     {
-      Compare_Data compare_data(initial_data.begin(), initial_data.end());
+      const Compare_Data compare_data(initial_data.begin(), initial_data.end());
 
-      Data data(compare_data.begin(), compare_data.end());
+      const Data data(compare_data.begin(), compare_data.end());
 
       bool is_equal = std::equal(data.crbegin(),
-                                data.crend(),
-                                compare_data.crbegin());
+                                 data.crend(),
+                                 compare_data.crbegin());
+
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_const_reverse_iterator2)
+    {
+      const Compare_Data compare_data(initial_data.begin(), initial_data.end());
+
+      const Data data(compare_data.begin(), compare_data.end());
+
+      bool is_equal = std::equal(data.rbegin(),
+                                 data.rend(),
+                                 compare_data.rbegin());
 
       CHECK(is_equal);
     }

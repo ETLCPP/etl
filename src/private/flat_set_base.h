@@ -76,20 +76,6 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup flat_set
-  /// Vector out of bounds exception.
-  //***************************************************************************
-  class flat_set_out_of_bounds : public flat_set_exception
-  {
-  public:
-
-    flat_set_out_of_bounds(string_type file_name, numeric_type line_number)
-      : flat_set_exception(ETL_ERROR_TEXT("flat_set:bounds", ETL_FILE"B"), file_name, line_number)
-    {
-    }
-  };
-
-  //***************************************************************************
-  ///\ingroup flat_set
   /// Vector iterator exception.
   //***************************************************************************
   class flat_set_iterator : public flat_set_exception
