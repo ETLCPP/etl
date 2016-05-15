@@ -13,8 +13,9 @@ const int KEY            = XX;   // The pin that the key is attached to.
 
 void setup()
 {
-  // Initialize LED pin as an output.
+  // Initialize LED pin as an output and set off.
   pinMode(LED_BUILTIN , OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
   
   // Initialize KEY pin as an input.
   pinMode(KEY, INPUT);
@@ -34,5 +35,5 @@ void loop()
     }
   }
   
-  delay(1); // Wait 1ms
+  delay(SAMPLE_TIME); // Wait 1ms
 }
