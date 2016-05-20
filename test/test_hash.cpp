@@ -170,6 +170,26 @@ namespace
 
       CHECK_EQUAL(size_t(&i), hash);
     }
+
+    //*************************************************************************
+    TEST(test_hash_const_pointer)
+    {
+      int i;
+      size_t hash = etl::hash<const int*>()(&i);
+
+      CHECK_EQUAL(size_t(&i), hash);
+    }
+
+    //*************************************************************************
+    TEST(test_hash_const_pointer_const)
+    {
+      int i;
+      const int * const pi = &i;
+
+      size_t hash = etl::hash<const int *>()(pi);
+
+      CHECK_EQUAL(size_t(&i), hash);
+    }
   };
 }
 
