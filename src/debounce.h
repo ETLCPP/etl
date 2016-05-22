@@ -119,7 +119,7 @@ namespace etl
       uint8_t state;
 
       /// The state count.
-      int16_t count;
+      uint16_t count;
     };
   }
 
@@ -170,13 +170,12 @@ namespace etl
     {
       debounce_base::add(sample);
 
-      if (sample)
+      if (count < REPEAT_THRESHOLD)
       {
-        // Set sample.
-        if (count < REPEAT_THRESHOLD)
+        ++count;
+
+        if (sample)
         {
-          ++count;
-            
           if (count == VALID_THRESHOLD)
           {
             // Set.
@@ -196,16 +195,12 @@ namespace etl
             state |= REPEATING;
             count = HOLD_THRESHOLD;
           }
-        }
-      }
-      else
-      {
-        // Clear sample.
-        if (count > -VALID_THRESHOLD)
-        {
-          --count;
 
-          if (count == -VALID_THRESHOLD)
+          state |= LAST;        
+        }
+        else
+        {
+          if (count == VALID_THRESHOLD)
           {
             // Clear.
             state |= CHANGED;
@@ -213,16 +208,9 @@ namespace etl
             state &= ~HELD;
             state &= ~REPEATING;
           }
-        }
-      }
 
-      if (sample)
-      {
-        state |= LAST;
-      }
-      else
-      {
-        state &= ~LAST;
+          state &= ~LAST;
+        }
       }
 
       return (state & CHANGED) != 0;
@@ -266,13 +254,12 @@ namespace etl
     {
       debounce_base::add(sample);
 
-      if (sample)
+      if (count < HOLD_THRESHOLD)
       {
-        // Set sample.
-        if (count < HOLD_THRESHOLD)
-        {
-          ++count;
+        ++count;
 
+        if (sample)
+        {
           if (count == VALID_THRESHOLD)
           {
             // Set.
@@ -285,32 +272,22 @@ namespace etl
             state |= CHANGED;
             state |= HELD;
           }
-        }
-      }
-      else
-      {
-        // Clear sample.
-        if (count > -VALID_THRESHOLD)
-        {
-          --count;
 
-          if (count == -VALID_THRESHOLD)
+          state |= LAST;
+        }
+        else
+        {
+          if (count == VALID_THRESHOLD)
           {
             // Clear.
             state |= CHANGED;
             state &= ~CURRENT;
             state &= ~HELD;
+            state &= ~REPEATING;
           }
-        }
-      }
 
-      if (sample)
-      {
-        state |= LAST;
-      }
-      else
-      {
-        state &= ~LAST;
+          state &= ~LAST;
+        }
       }
 
       return (state & CHANGED) != 0;
@@ -352,44 +329,34 @@ namespace etl
     {
       debounce_base::add(sample);
 
-      if (sample)
+      if (count < VALID_THRESHOLD)
       {
-        // Set sample.
-        if (count < VALID_THRESHOLD)
-        {
-          ++count;
+        ++count;
 
+        if (sample)
+        {
           if (count == VALID_THRESHOLD)
           {
             // Set.
             state |= CHANGED;
             state |= CURRENT;
           }
-        }
-      }
-      else
-      {
-        // Clear sample.
-        if (count > -VALID_THRESHOLD)
-        {
-          --count;
 
-          if (count == -VALID_THRESHOLD)
+          state |= LAST;
+        }
+        else
+        {
+          if (count == VALID_THRESHOLD)
           {
             // Clear.
             state |= CHANGED;
             state &= ~CURRENT;
+            state &= ~HELD;
+            state &= ~REPEATING;
           }
-        }
-      }
 
-      if (sample)
-      {
-        state |= LAST;
-      }
-      else
-      {
-        state &= ~LAST;
+          state &= ~LAST;
+        }
       }
 
       return (state & CHANGED) != 0;
@@ -453,33 +420,35 @@ namespace etl
     {
       debounce_base::add(sample);
 
-      if (sample)
+      if (count < repeat_threshold)
       {
-        // Set sample.
-        if (count < repeat_threshold)
-        {
-          ++count;
+        ++count;
 
+        if (sample)
+        {
           if (count == valid_threshold)
           {
-            // Set.
-            state |= CHANGED;
-            state |= CURRENT;
+            if (sample)
+            {
+              // Set.
+              state |= CHANGED;
+              state |= CURRENT;
+            }
           }
-          
+
           if (hold_threshold != valid_threshold)
           {
-            if (count == hold_threshold)
+            if ((count == hold_threshold) && sample)
             {
               // Held.
               state |= CHANGED;
               state |= HELD;
             }
           }
-          
+
           if (repeat_threshold != hold_threshold)
           {
-            if (count == repeat_threshold)
+            if ((count == repeat_threshold) && sample)
             {
               // Repeat.
               state |= CHANGED;
@@ -487,16 +456,12 @@ namespace etl
               count = hold_threshold;
             }
           }
-        }
-      }
-      else
-      {
-        // Clear sample.
-        if (count > -valid_threshold)
-        {
-          --count;
 
-          if (count == -valid_threshold)
+          state |= LAST;
+        }
+        else
+        {
+          if (count == valid_threshold)
           {
             // Clear.
             state |= CHANGED;
@@ -504,16 +469,9 @@ namespace etl
             state &= ~HELD;
             state &= ~REPEATING;
           }
-        }
-      }
 
-      if (sample)
-      {
-        state |= LAST;
-      }
-      else
-      {
-        state &= ~LAST;
+          state &= ~LAST;
+        }
       }
 
       return (state & CHANGED) != 0;
