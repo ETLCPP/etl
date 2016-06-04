@@ -731,7 +731,7 @@ namespace etl
   template <typename T>
   bool operator >(const etl::ivector<T>& lhs, const etl::ivector<T>& rhs)
   {
-    return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end(), std::greater<T>());
+    return operator <(rhs, lhs);
   }
 
   //***************************************************************************

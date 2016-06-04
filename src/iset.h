@@ -1583,11 +1583,7 @@ bool operator <(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>&
 template <typename T, typename TCompare>
 bool operator >(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>& rhs)
 {
-  return std::lexicographical_compare(lhs.begin(),
-                                      lhs.end(),
-                                      rhs.begin(),
-                                      rhs.end(),
-                                      std::greater<T>());
+  return operator <(rhs, lhs);
 }
 
 //*************************************************************************

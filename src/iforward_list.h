@@ -1015,11 +1015,7 @@ bool operator <(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& r
 template <typename T>
 bool operator >(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& rhs)
 {
-  return std::lexicographical_compare(lhs.begin(),
-                                      lhs.end(),
-                                      rhs.begin(),
-                                      rhs.end(),
-                                      std::greater<T>());
+  return operator <(rhs, lhs);
 }
 
 //*************************************************************************

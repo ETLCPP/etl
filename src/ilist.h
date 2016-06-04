@@ -1168,11 +1168,7 @@ bool operator <(const etl::ilist<T>& lhs, const etl::ilist<T>& rhs)
 template <typename T>
 bool operator >(const etl::ilist<T>& lhs, const etl::ilist<T>& rhs)
 {
-  return std::lexicographical_compare(lhs.begin(),
-                                      lhs.end(),
-                                      rhs.begin(),
-                                      rhs.end(),
-                                      std::greater<T>());
+  return operator <(rhs, lhs);
 }
 
 //*************************************************************************

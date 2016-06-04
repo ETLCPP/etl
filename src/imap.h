@@ -1652,11 +1652,7 @@ bool operator <(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::ima
 template <typename TKey, typename TMapped, typename TKeyCompare>
 bool operator >(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
 {
-  return std::lexicographical_compare(lhs.begin(),
-                                      lhs.end(),
-                                      rhs.begin(),
-                                      rhs.end(),
-                                      std::greater<TMapped>());
+  return operator <(rhs, lhs);
 }
 
 //*************************************************************************

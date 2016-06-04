@@ -416,11 +416,7 @@ namespace etl
   template <typename T, std::size_t SIZE>
   bool operator <=(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
-    return !std::lexicographical_compare(lhs.cbegin(),
-                                         lhs.cend(), 
-                                         rhs.cbegin(),
-                                         rhs.cend(),
-                                         std::greater<T>());
+    return !operator >(lhs, rhs);
   }
 
   //*************************************************************************
@@ -432,11 +428,7 @@ namespace etl
   //*************************************************************************
   bool operator >(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
-    return std::lexicographical_compare(lhs.cbegin(),
-                                        lhs.cend(), 
-                                        rhs.cbegin(), 
-                                        rhs.cend(),
-                                        std::greater<T>());
+    return operator <(rhs, lhs);
   }
 
   //*************************************************************************
@@ -448,10 +440,7 @@ namespace etl
   template <typename T, std::size_t SIZE>
   bool operator >=(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
-    return !std::lexicographical_compare(lhs.cbegin(), 
-                                         lhs.cend(), 
-                                         rhs.cbegin(),
-                                         rhs.cend());
+    return !operator <(lhs, rhs);
   }
 
   //*************************************************************************

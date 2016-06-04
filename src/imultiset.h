@@ -1366,11 +1366,7 @@ bool operator <(const etl::imultiset<T, TCompare>& lhs, const etl::imultiset<T, 
 template <typename T, typename TCompare>
 bool operator >(const etl::imultiset<T, TCompare>& lhs, const etl::imultiset<T, TCompare>& rhs)
 {
-  return std::lexicographical_compare(lhs.begin(),
-                                      lhs.end(),
-                                      rhs.begin(),
-                                      rhs.end(),
-                                      std::greater<T>());
+  return operator <(rhs, lhs);
 }
 
 //*************************************************************************
