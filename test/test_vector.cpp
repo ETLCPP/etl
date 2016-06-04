@@ -939,11 +939,6 @@ namespace
 
       Data data(INITIAL_SIZE);
 
-      size_t a = sizeof(Data);
-      size_t b = SIZE * sizeof(int);
-      size_t c = sizeof(etl::vector_base);
-      size_t d = sizeof(etl::ivector<int>);
-
       size_t expected_size = (SIZE * sizeof(int)) + (2 * sizeof(size_t)) + sizeof(int*);
 
       CHECK_EQUAL(expected_size, sizeof(Data));
