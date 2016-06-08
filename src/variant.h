@@ -42,6 +42,7 @@ SOFTWARE.
 #include "static_assert.h"
 #include "alignment.h"
 #include "error_handler.h"
+#include "largest.h"
 
 #if defined(ETL_COMPILER_KEIL)
   #pragma diag_suppress 940
@@ -725,6 +726,7 @@ namespace etl
     {
       STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
+      destruct_current();
       new(static_cast<T*>(data)) T(value);
       type_id = Type_Id_Lookup<T>::type_id;
       return *this;
@@ -886,10 +888,29 @@ namespace etl
   private:
 
     //***************************************************************************
+    /// Destruct the current occupant of the variant.
+    //***************************************************************************
+    void destruct_current()
+    {
+      switch (type_id)
+      {
+        case 0: { static_cast<T1*>(data)->~T1(); break; }
+        case 1: { static_cast<T2*>(data)->~T2(); break; }
+        case 2: { static_cast<T3*>(data)->~T3(); break; }
+        case 3: { static_cast<T4*>(data)->~T4(); break; }
+        case 4: { static_cast<T5*>(data)->~T5(); break; }
+        case 5: { static_cast<T6*>(data)->~T6(); break; }
+        case 6: { static_cast<T7*>(data)->~T7(); break; }
+        case 7: { static_cast<T8*>(data)->~T8(); break; }
+        default: { break; }
+      }
+    }
+
+    //***************************************************************************
     /// The internal storage.
     /// Aligned on a suitable boundary, which should be good for all types.
     //***************************************************************************
-    typename etl::aligned_storage<sizeof(largest_t), etl::alignment_of<largest_t>::value>::type data;
+    typename etl::aligned_storage<sizeof(largest_t), etl::largest_alignment<T1, T2, T3, T4, T5, T6, T7, T8>::value>::type data;
 
     //***************************************************************************
     /// The id of the current stored type.
