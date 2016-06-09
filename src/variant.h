@@ -726,9 +726,20 @@ namespace etl
     {
       STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
-      destruct_current();
-      new(static_cast<T*>(data)) T(value);
-      type_id = Type_Id_Lookup<T>::type_id;
+      // Assigning the  same type as last time?
+      if (type_id == Type_Id_Lookup<T>::type_id)
+      {
+        // Do a simple copy.
+        *static_cast<T*>(data) = value;
+      }
+      else
+      {
+        // We must destruct the old type, as the new one is different.
+        destruct_current();
+        new(static_cast<T*>(data)) T(value);
+        type_id = Type_Id_Lookup<T>::type_id;
+      }
+
       return *this;
     }
 
