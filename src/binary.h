@@ -353,7 +353,7 @@ namespace etl
   {
     uint32_t count;
     static const int S[] = { 1, 2, 4 };
-    static const int B[] = { 0x55, 0x33, 0x0F };
+    static const uint8_t B[] = { 0x55, 0x33, 0x0F };
 
     count = value - ((value >> 1) & B[0]);
     count = ((count >> S[1]) & B[1]) + (count & B[1]);
@@ -371,7 +371,7 @@ namespace etl
   {
     uint32_t count;
     static const int S[] = { 1, 2, 4, 8 };
-    static const int B[] = { 0x5555, 0x3333, 0x0F0F, 0x00FF };
+    static const uint16_t B[] = { 0x5555, 0x3333, 0x0F0F, 0x00FF };
 
     count = value - ((value >> 1) & B[0]);
     count = ((count >> S[1]) & B[1]) + (count & B[1]);
@@ -390,7 +390,7 @@ namespace etl
   {
     uint32_t count;
     static const int S[] = { 1, 2, 4, 8, 16 };
-    static const int B[] = { 0x55555555, 0x33333333, 0x0F0F0F0F, 0x00FF00FF, 0x0000FFFF };
+    static const uint32_t B[] = { 0x55555555, 0x33333333, 0x0F0F0F0F, 0x00FF00FF, 0x0000FFFF };
 
     count = value - ((value >> 1) & B[0]);
     count = ((count >> S[1]) & B[1]) + (count & B[1]);
@@ -815,7 +815,7 @@ namespace etl
     b11111100 = 252,
     b11111101 = 253,
     b11111110 = 254,
-    b11111111 = 255,
+    b11111111 = 255
   };
 }
 
