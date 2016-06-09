@@ -726,7 +726,7 @@ namespace etl
     {
       STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
-      // Assigning the  same type as last time?
+      // Assigning the same type as last time?
       if (type_id == Type_Id_Lookup<T>::type_id)
       {
         // Do a simple copy.
