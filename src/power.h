@@ -45,10 +45,10 @@ namespace etl
   /// Calculates powers.
   ///\note Only supports positive N.
   //***************************************************************************
-  template <const size_t N, const size_t POWER>
+  template <const size_t NV, const size_t POWER>
   struct power
   {
-    static const uint64_t value = N * power<N, POWER - 1>::value;
+    static const uint64_t value = NV * power<NV, POWER - 1>::value;
   };
 
   //***************************************************************************
@@ -56,8 +56,8 @@ namespace etl
   ///\note Only supports positive N.
   /// Specialisation for POWER == 0.
   //***************************************************************************
-  template <const size_t N>
-  struct power<N, 0>
+  template <const size_t NV>
+  struct power<NV, 0>
   {
     static const uint64_t value = 1;
   };
@@ -65,18 +65,18 @@ namespace etl
   //***************************************************************************
   /// Declaration of static 'value' for power.
   //***************************************************************************
-  template <const size_t N, const size_t POWER> const uint64_t power<N, POWER>::value;
+  template <const size_t NV, const size_t POWER> const uint64_t power<NV, POWER>::value;
 
   //***************************************************************************
   ///\ingroup power
   /// Calculates the rounded up power of 2.
   //***************************************************************************
-  template <const size_t N>
+  template <const size_t NV>
   struct power_of_2_round_up
   {
     enum value_type
     {
-      value = 1 << (etl::log2<N - 1>::value + 1)
+      value = 1 << (etl::log2<NV - 1>::value + 1)
     };
   };
 
@@ -98,12 +98,12 @@ namespace etl
   ///\ingroup power
   /// Calculates the rounded down power of 2.
   //***************************************************************************
-  template <const size_t N>
+  template <const size_t NV>
   struct power_of_2_round_down
   {
     enum value_type
     {
-      value = 1 << (etl::log2<N - 1>::value)
+      value = 1 << (etl::log2<NV - 1>::value)
     };
   };
 
@@ -153,10 +153,10 @@ namespace etl
   ///\ingroup power
   /// Checks if N is a power of 2.
   //***************************************************************************
-  template <const size_t N>
+  template <const size_t NV>
   struct is_power_of_2
   {
-    static const bool value = (N & (N - 1)) == 0;
+    static const bool value = (NV & (NV - 1)) == 0;
   };
 
   //***************************************************************************

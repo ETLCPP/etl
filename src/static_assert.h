@@ -42,7 +42,7 @@ SOFTWARE.
   template <>
   struct STATIC_ASSERTION_FAILURE<true> {};
 
-  #define STATIC_ASSERT(Condition, Message) enum { assertdummy = sizeof(STATIC_ASSERTION_FAILURE<(bool)(Condition)>) }
+  #define STATIC_ASSERT(Condition, Message) { enum { assertdummy = sizeof(STATIC_ASSERTION_FAILURE<(bool)(Condition)>) }; }
 #endif
 
 #endif

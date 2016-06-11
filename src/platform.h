@@ -50,13 +50,17 @@ SOFTWARE.
 #define ETL_COMPILER_MICROSOFT
 #elif defined(__GNUC__)
 #define ETL_COMPILER_GCC
+#elif defined(__TI_COMPILER_VERSION__) && defined(__MSP430__)
+#define ETL_COMPILER_TI_MSP430
 #else
 #define ETL_COMPILER_GENERIC
 #endif
 
 #if (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER < 1600)) || \
      defined(ETL_COMPILER_KEIL) || \
+ ||  defined(ETL_COMPILER_TI_MSP430) \
      defined(ETL_COMPILER_IAR) || \
      (defined(ETL_COMPILER_GCC) && (__cplusplus < 201103L))
 #define NO_NULLPTR_SUPPORT
+#define NO_LARGE_CHAR_SUPPORT
 #endif

@@ -49,15 +49,15 @@ namespace std
   public:
 
     // Convertible to any type of null non-member pointer.
-    template<class T>
+    template<typename T>
     operator T*() const
     {
       return 0;
     }
 
     // Or any type of null member pointer.
-    template<class C, class T>
-    operator T C::*() const
+    template<typename ANYCLASS, typename T>
+    operator T ANYCLASS::*() const
     {
       return 0;
     }
@@ -84,15 +84,15 @@ class nullptr_t
 public:
 
   // Convertible to any type of null non-member pointer.
-  template<class T>
+  template<typename T>
   operator T*() const
   {
     return 0;
   }
 
   // Or any type of null member pointer.
-  template<class C, class T>
-  operator T C::*() const
+  template<typename ANYCLASS, typename T>
+  operator T ANYCLASS::*() const
   {
     return 0;
   }

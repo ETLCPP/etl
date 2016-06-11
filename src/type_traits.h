@@ -219,7 +219,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_array : false_type {};
   template <typename T> struct is_array<T[]> : true_type {};
-  template <typename T, size_t N> struct is_array<T[N]> : true_type {};
+  template <typename T, size_t MAXN> struct is_array<T[MAXN]> : true_type {};
 
   /// is_pointer
   ///\ingroup type_traits
@@ -295,38 +295,38 @@ namespace etl
 
   /// extent
   ///\ingroup type_traits
-  template <typename T, size_t N = 0>
+  template <typename T, size_t MAXN = 0>
   struct extent : integral_constant<size_t, 0> {};
 
   template <typename T>
   struct extent<T[], 0> : integral_constant<size_t, 0> {};
 
-  template <typename T, size_t N>
-  struct extent<T[], N> : integral_constant<size_t, extent<T, N - 1>::value> {};
+  template <typename T, size_t MAXN>
+  struct extent<T[], MAXN> : integral_constant<size_t, extent<T, MAXN - 1>::value> {};
 
-  template <typename T, size_t N>
-  struct extent<T[N], 0> : integral_constant<size_t, N> {};
+  template <typename T, size_t MAXN>
+  struct extent<T[MAXN], 0> : integral_constant<size_t, MAXN> {};
 
-  template <typename T, size_t I, size_t N>
-  struct extent<T[I], N> : integral_constant<size_t, extent<T, N - 1>::value> {};
+  template <typename T, size_t I, size_t MAXN>
+  struct extent<T[I], MAXN> : integral_constant<size_t, extent<T, MAXN - 1>::value> {};
 
   /// remove_extent
   ///\ingroup type_traits
   template <typename T> struct remove_extent { typedef T type; };
   template <typename T> struct remove_extent<T[]> { typedef T type; };
-  template <typename T, size_t N> struct remove_extent<T[N]> { typedef T type;};
+  template <typename T, size_t MAXN> struct remove_extent<T[MAXN]> { typedef T type;};
 
   /// remove_all_extents
   ///\ingroup type_traits
   template <typename T> struct remove_all_extents { typedef T type;};
   template <typename T> struct remove_all_extents<T[]> { typedef typename remove_all_extents<T>::type type; };
-  template <typename T, size_t N> struct remove_all_extents<T[N]> { typedef typename remove_all_extents<T>::type type; };
+  template <typename T, size_t MAXN> struct remove_all_extents<T[MAXN]> { typedef typename remove_all_extents<T>::type type; };
 
   /// rank
   ///\ingroup type_traits
   template <typename T>struct rank : integral_constant<size_t, 0> {};
   template <typename T> struct rank<T[]> : public integral_constant<size_t, rank<T>::value + 1> {};
-  template <typename T, size_t N> struct rank<T[N]> : public integral_constant<size_t, rank<T>::value + 1> {};
+  template <typename T, size_t MAXN> struct rank<T[MAXN]> : public integral_constant<size_t, rank<T>::value + 1> {};
 
   /// decay
   ///\ingroup type_traits
@@ -355,6 +355,10 @@ namespace etl
 #endif
 
 #ifdef ETL_COMPILER_IAR
+  template <typename T> struct alignment_of : integral_constant<size_t, size_t(__ALIGNOF__(T))> {};
+#endif
+
+#ifdef ETL_COMPILER_TI_MSP430
   template <typename T> struct alignment_of : integral_constant<size_t, size_t(__ALIGNOF__(T))> {};
 #endif
 
