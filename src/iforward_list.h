@@ -1015,7 +1015,7 @@ bool operator <(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& r
 template <typename T>
 bool operator >(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& rhs)
 {
-  return operator <(rhs, lhs);
+  return (rhs < lhs);
 }
 
 //*************************************************************************
@@ -1028,7 +1028,7 @@ bool operator >(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& r
 template <typename T>
 bool operator <=(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& rhs)
 {
-  return !operator >(lhs, rhs);
+  return !(lhs > rhs);
 }
 
 //*************************************************************************
@@ -1041,7 +1041,7 @@ bool operator <=(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& 
 template <typename T>
 bool operator >=(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& rhs)
 {
-  return !operator <(lhs, rhs);
+  return !(lhs < rhs);
 }
 
 #if WIN32

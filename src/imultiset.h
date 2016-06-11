@@ -1366,7 +1366,7 @@ bool operator <(const etl::imultiset<T, TCompare>& lhs, const etl::imultiset<T, 
 template <typename T, typename TCompare>
 bool operator >(const etl::imultiset<T, TCompare>& lhs, const etl::imultiset<T, TCompare>& rhs)
 {
-  return operator <(rhs, lhs);
+  return (rhs < lhs);
 }
 
 //*************************************************************************
@@ -1379,7 +1379,7 @@ bool operator >(const etl::imultiset<T, TCompare>& lhs, const etl::imultiset<T, 
 template <typename T, typename TCompare>
 bool operator <=(const etl::imultiset<T, TCompare>& lhs, const etl::imultiset<T, TCompare>& rhs)
 {
-  return !operator >(lhs, rhs);
+  return !(lhs > rhs);
 }
 
 //*************************************************************************
@@ -1392,7 +1392,7 @@ bool operator <=(const etl::imultiset<T, TCompare>& lhs, const etl::imultiset<T,
 template <typename T, typename TCompare>
 bool operator >=(const etl::imultiset<T, TCompare>& lhs, const etl::imultiset<T, TCompare>& rhs)
 {
-  return !operator <(lhs, rhs);
+  return !(lhs < rhs);
 }
 
 #if WIN32

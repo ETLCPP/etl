@@ -1652,7 +1652,7 @@ bool operator <(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::ima
 template <typename TKey, typename TMapped, typename TKeyCompare>
 bool operator >(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
 {
-  return operator <(rhs, lhs);
+  return (rhs < lhs);
 }
 
 //*************************************************************************
@@ -1665,7 +1665,7 @@ bool operator >(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::ima
 template <typename TKey, typename TMapped, typename TKeyCompare>
 bool operator <=(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
 {
-  return !operator >(lhs, rhs);
+  return !(lhs > rhs);
 }
 
 //*************************************************************************
@@ -1678,7 +1678,7 @@ bool operator <=(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::im
 template <typename TKey, typename TMapped, typename TKeyCompare>
 bool operator >=(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
 {
-  return !operator <(lhs, rhs);
+  return !(lhs < rhs);
 }
 
 #if WIN32

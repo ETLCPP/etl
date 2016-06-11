@@ -1583,7 +1583,7 @@ bool operator <(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>&
 template <typename T, typename TCompare>
 bool operator >(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>& rhs)
 {
-  return operator <(rhs, lhs);
+  return (rhs < lhs);
 }
 
 //*************************************************************************
@@ -1596,7 +1596,7 @@ bool operator >(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>&
 template <typename T, typename TCompare>
 bool operator <=(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>& rhs)
 {
-  return !operator >(lhs, rhs);
+  return !(lhs > rhs);
 }
 
 //*************************************************************************
@@ -1609,7 +1609,7 @@ bool operator <=(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>
 template <typename T, typename TCompare>
 bool operator >=(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>& rhs)
 {
-  return !operator <(lhs, rhs);
+  return !(lhs < rhs);
 }
 
 #if WIN32

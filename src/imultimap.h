@@ -1385,7 +1385,7 @@ bool operator <(const etl::imultimap<TKey, TMapped, TKeyCompare>& lhs, const etl
 template <typename TKey, typename TMapped, typename TKeyCompare>
 bool operator >(const etl::imultimap<TKey, TMapped, TKeyCompare>& lhs, const etl::imultimap<TKey, TMapped, TKeyCompare>& rhs)
 {
-  return operator <(rhs, lhs);
+  return (rhs < lhs);
 }
 
 //*************************************************************************
@@ -1398,7 +1398,7 @@ bool operator >(const etl::imultimap<TKey, TMapped, TKeyCompare>& lhs, const etl
 template <typename TKey, typename TMapped, typename TKeyCompare>
 bool operator <=(const etl::imultimap<TKey, TMapped, TKeyCompare>& lhs, const etl::imultimap<TKey, TMapped, TKeyCompare>& rhs)
 {
-  return !operator >(lhs, rhs);
+  return !(lhs > rhs);
 }
 
 //*************************************************************************
@@ -1411,7 +1411,7 @@ bool operator <=(const etl::imultimap<TKey, TMapped, TKeyCompare>& lhs, const et
 template <typename TKey, typename TMapped, typename TKeyCompare>
 bool operator >=(const etl::imultimap<TKey, TMapped, TKeyCompare>& lhs, const etl::imultimap<TKey, TMapped, TKeyCompare>& rhs)
 {
-  return !operator <(lhs, rhs);
+  return !(lhs < rhs);
 }
 
 #if WIN32

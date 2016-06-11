@@ -1168,7 +1168,7 @@ bool operator <(const etl::ilist<T>& lhs, const etl::ilist<T>& rhs)
 template <typename T>
 bool operator >(const etl::ilist<T>& lhs, const etl::ilist<T>& rhs)
 {
-  return operator <(rhs, lhs);
+  return (rhs < lhs);
 }
 
 //*************************************************************************
@@ -1181,7 +1181,7 @@ bool operator >(const etl::ilist<T>& lhs, const etl::ilist<T>& rhs)
 template <typename T>
 bool operator <=(const etl::ilist<T>& lhs, const etl::ilist<T>& rhs)
 {
-  return !operator >(lhs, rhs);
+  return !(lhs > rhs);
 }
 
 //*************************************************************************
@@ -1194,7 +1194,7 @@ bool operator <=(const etl::ilist<T>& lhs, const etl::ilist<T>& rhs)
 template <typename T>
 bool operator >=(const etl::ilist<T>& lhs, const etl::ilist<T>& rhs)
 {
-  return !operator <(lhs, rhs);
+  return !(lhs < rhs);
 }
 
 #if WIN32
