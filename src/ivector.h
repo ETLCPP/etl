@@ -439,12 +439,15 @@ namespace etl
     {
       ETL_ASSERT((current_size)+1 <= MAX_SIZE, ETL_ERROR(vector_full));
 
-      create_element(value);
-
       if (position != end())
       {
+        create_element();
         std::copy_backward(position, end() - 1, end());
         *position = value;
+      }
+      else
+      {
+        create_element(value);
       }
 
       return position;
@@ -647,7 +650,19 @@ namespace etl
     //*********************************************************************
     /// Create a new element with a default value at the back.
     //*********************************************************************
-    void create_element()
+    template <typename U = T>
+    typename etl::enable_if<etl::is_fundamental<U>::value, void>::type
+    create_element()
+    {
+      current_size++;
+    }
+
+    //*********************************************************************
+    /// Create a new element with a default value at the back.
+    //*********************************************************************
+    template <typename U = T>
+    typename etl::enable_if<!etl::is_fundamental<U>::value, void>::type
+    create_element()
     {
       new(&p_buffer[current_size++]) T();
     }
@@ -655,7 +670,19 @@ namespace etl
     //*********************************************************************
     /// Create a new element with a value at the back
     //*********************************************************************
-    void create_element(parameter_t value)
+    template <typename U = T>
+    typename etl::enable_if<etl::is_fundamental<U>::value, void>::type
+    create_element(parameter_t value)
+    {
+      p_buffer[current_size++] = value;
+    }
+
+    //*********************************************************************
+    /// Create a new element with a value at the back
+    //*********************************************************************
+    template <typename U = T>
+    typename etl::enable_if<!etl::is_fundamental<U>::value, void>::type
+    create_element(parameter_t value)
     {
       new(&p_buffer[current_size++]) T(value);
     }
@@ -663,7 +690,19 @@ namespace etl
     //*********************************************************************
     /// Create a new element with a value at the index
     //*********************************************************************
-    void create_element_at(size_t index, parameter_t value)
+    template <typename U = T>
+    typename etl::enable_if<etl::is_fundamental<U>::value, void>::type
+    create_element_at(size_t index, parameter_t value)
+    {
+      p_buffer[index] = value;
+    }
+
+    //*********************************************************************
+    /// Create a new element with a value at the index
+    //*********************************************************************
+    template <typename U = T>
+    typename etl::enable_if<!etl::is_fundamental<U>::value, void>::type
+    create_element_at(size_t index, parameter_t value)
     {
       new(&p_buffer[index]) T(value);
     }
@@ -671,9 +710,21 @@ namespace etl
     //*********************************************************************
     /// Destroy an element at the back.
     //*********************************************************************
-    void destroy_element()
+    template <typename U = T>
+    typename etl::enable_if<etl::is_fundamental<U>::value, void>::type
+    destroy_element()
     {
-      p_buffer[--current_size].~T();
+      --current_size;
+    }
+
+    //*********************************************************************
+    /// Destroy an element at the back.
+    //*********************************************************************
+    template <typename U = T>
+    typename etl::enable_if<!etl::is_fundamental<U>::value, void>::type
+    destroy_element()
+    {
+      p_buffer[--current_size].~U();
     }
 
     // Disable copy construction.
@@ -731,7 +782,7 @@ namespace etl
   template <typename T>
   bool operator >(const etl::ivector<T>& lhs, const etl::ivector<T>& rhs)
   {
-    return operator <(rhs, lhs);
+    return (rhs < lhs);
   }
 
   //***************************************************************************
@@ -744,7 +795,7 @@ namespace etl
   template <typename T>
   bool operator <=(const etl::ivector<T>& lhs, const etl::ivector<T>& rhs)
   {
-    return !operator >(lhs, rhs);
+    return !(lhs > rhs);
   }
 
   //***************************************************************************
@@ -757,7 +808,7 @@ namespace etl
   template <typename T>
   bool operator >=(const etl::ivector<T>& lhs, const etl::ivector<T>& rhs)
   {
-    return !operator <(lhs, rhs);
+    return !(lhs < rhs);
   }
 }
 

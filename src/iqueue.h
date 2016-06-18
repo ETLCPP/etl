@@ -112,7 +112,27 @@ namespace etl
     /// otherwise does nothing if full.
     ///\param value The value to push to the queue.
     //*************************************************************************
-    void push(parameter_t value)
+    template <typename U = T>
+    typename etl::enable_if<etl::is_fundamental<U>::value, void>::type
+    push(parameter_t value)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(queue_full));
+#endif
+      p_buffer[in] = value;
+      in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
+      ++current_size;
+    }
+
+    //*************************************************************************
+    /// Adds a value to the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full is the queue is already full,
+    /// otherwise does nothing if full.
+    ///\param value The value to push to the queue.
+    //*************************************************************************
+    template <typename U = T>
+    typename etl::enable_if<!etl::is_fundamental<U>::value, void>::type
+    push(parameter_t value)
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
@@ -130,7 +150,32 @@ namespace etl
     /// otherwise does nothing if full.
     /// \return A reference to the position to 'push' to.
     //*************************************************************************
-    reference push()
+    template <typename U = T>
+    typename etl::enable_if<etl::is_fundamental<U>::value, reference>::type
+    push()
+    {
+      const size_type next = in;
+
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(queue_full));
+#endif
+      in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
+      ++current_size;
+
+      return p_buffer[next];
+    }
+
+    //*************************************************************************
+    /// Allows a possibly more efficient 'push' by moving to the next input value
+    /// and returning a reference to it.
+    /// This may eliminate a copy by allowing direct construction in-place.<br>
+    /// If asserts or exceptions are enabled, throws an etl::queue_full is the queue is already full,
+    /// otherwise does nothing if full.
+    /// \return A reference to the position to 'push' to.
+    //*************************************************************************
+    template <typename U = T>
+    typename etl::enable_if<!etl::is_fundamental<U>::value, reference>::type
+    push()
     {
       const size_type next = in;
 
@@ -147,7 +192,26 @@ namespace etl
     //*************************************************************************
     /// Clears the queue to the empty state.
     //*************************************************************************
-    void clear()
+    template <typename U = T>
+    typename etl::enable_if<etl::is_fundamental<U>::value, void>::type
+    clear()
+    {
+      while (current_size > 0)
+      {
+        out = (out == (MAX_SIZE - 1)) ? 0 : out + 1;
+        --current_size;
+      }
+
+      in = 0;
+      out = 0;
+    }
+
+    //*************************************************************************
+    /// Clears the queue to the empty state.
+    //*************************************************************************
+    template <typename U = T>
+    typename etl::enable_if<!etl::is_fundamental<U>::value, void>::type
+    clear()
     {
       while (current_size > 0)
       {
@@ -164,7 +228,24 @@ namespace etl
     /// Removes the oldest value from the back of the queue.
     /// Does nothing if the queue is already empty.
     //*************************************************************************
-    void pop()
+    template <typename U = T>
+    typename etl::enable_if<etl::is_fundamental<U>::value, void>::type
+    pop()
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!empty(), ETL_ERROR(queue_empty));
+#endif
+      out = (out == (MAX_SIZE - 1)) ? 0 : out + 1;
+      --current_size;
+    }
+
+    //*************************************************************************
+    /// Removes the oldest value from the back of the queue.
+    /// Does nothing if the queue is already empty.
+    //*************************************************************************
+    template <typename U = T>
+    typename etl::enable_if<!etl::is_fundamental<U>::value, void>::type
+    pop()
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!empty(), ETL_ERROR(queue_empty));

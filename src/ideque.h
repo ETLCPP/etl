@@ -1240,7 +1240,7 @@ namespace etl
       _end = iterator(0, *this, p_buffer);
     }
 
-    iterator _begin;    ///Iterator to the _begin item in the deque.
+    iterator _begin;   ///Iterator to the _begin item in the deque.
     iterator _end;     ///Iterator to the _end item in the deque.
     pointer  p_buffer; ///The buffer for the deque.
 
@@ -1249,7 +1249,24 @@ namespace etl
     //*********************************************************************
     /// Create a new element with a default value at the front.
     //*********************************************************************
-    void create_element_front()
+    template <typename U = T>
+    typename etl::enable_if<etl::is_fundamental<U>::value, void>::type
+    create_element_front()
+    {
+      if (!empty())
+      {
+        --_begin;
+      }
+
+      ++current_size;
+    }
+
+    //*********************************************************************
+    /// Create a new element with a default value at the front.
+    //*********************************************************************
+    template <typename U = T>
+    typename etl::enable_if<!etl::is_fundamental<U>::value, void>::type
+    create_element_front()
     {
       if (!empty())
       {
@@ -1264,7 +1281,40 @@ namespace etl
     /// Create a new elements from a range at the front.
     //*********************************************************************
     template <typename TIterator>
-    void create_element_front(size_t n, TIterator from)
+    typename etl::enable_if<etl::is_fundamental<typename std::iterator_traits<TIterator>::value_type>::value, void>::type
+    create_element_front(size_t n, TIterator from)
+    {
+      if (n == 0)
+      {
+        return;
+      }
+
+      if (!empty())
+      {
+        --_begin;
+        --n;
+      }
+
+      if (n > 0)
+      {
+        _begin -= n;
+      }
+
+      iterator item = _begin;
+
+      do
+      {
+        *item++ = *from++;
+        ++current_size;
+      } while (n-- != 0);
+    }
+
+    //*********************************************************************
+    /// Create a new elements from a range at the front.
+    //*********************************************************************
+    template <typename TIterator>
+    typename etl::enable_if<!etl::is_fundamental<typename std::iterator_traits<TIterator>::value_type>::value, void>::type
+    create_element_front(size_t n, TIterator from)
     {
       if (n == 0)
       {
@@ -1295,7 +1345,20 @@ namespace etl
     //*********************************************************************
     /// Create a new element with a default value at the back.
     //*********************************************************************
-    void create_element_back()
+    template <typename U = T>
+    typename etl::enable_if<etl::is_fundamental<U>::value, void>::type
+    create_element_back()
+    {
+      ++_end;
+      ++current_size;
+    }
+
+    //*********************************************************************
+    /// Create a new element with a default value at the back.
+    //*********************************************************************
+    template <typename U = T>
+    typename etl::enable_if<!etl::is_fundamental<U>::value, void>::type
+    create_element_back()
     {
       new(&(*_end)) T();
       ++_end;
@@ -1305,7 +1368,20 @@ namespace etl
     //*********************************************************************
     /// Create a new element with a default value at the front.
     //*********************************************************************
-    void create_element_front(parameter_t value)
+    template <typename U = T>
+    typename etl::enable_if<etl::is_fundamental<U>::value, void>::type
+    create_element_front(parameter_t value)
+    {
+      --_begin;
+      ++current_size;
+    }
+
+    //*********************************************************************
+    /// Create a new element with a default value at the front.
+    //*********************************************************************
+    template <typename U = T>
+    typename etl::enable_if<!etl::is_fundamental<U>::value, void>::type
+    create_element_front(parameter_t value)
     {
       --_begin;
       new(&(*_begin)) T(value);
@@ -1315,7 +1391,21 @@ namespace etl
     //*********************************************************************
     /// Create a new element with a value at the back
     //*********************************************************************
-    void create_element_back(parameter_t value)
+    template <typename U = T>
+    typename etl::enable_if<etl::is_fundamental<U>::value, void>::type
+    create_element_back(parameter_t value)
+    {
+      *_end = value;
+      ++_end;
+      ++current_size;
+    }
+
+    //*********************************************************************
+    /// Create a new element with a value at the back
+    //*********************************************************************
+    template <typename U = T>
+    typename etl::enable_if<!etl::is_fundamental<U>::value, void>::type
+    create_element_back(parameter_t value)
     {
       new(&(*_end)) T(value);
       ++_end;
@@ -1325,7 +1415,20 @@ namespace etl
     //*********************************************************************
     /// Destroy an element at the front.
     //*********************************************************************
-    void destroy_element_front()
+    template <typename U = T>
+    typename etl::enable_if<etl::is_fundamental<U>::value, void>::type
+    destroy_element_front()
+    {
+      --current_size;
+      ++_begin;
+    }
+
+    //*********************************************************************
+    /// Destroy an element at the front.
+    //*********************************************************************
+    template <typename U = T>
+    typename etl::enable_if<!etl::is_fundamental<U>::value, void>::type
+    destroy_element_front()
     {
       (*_begin).~T();
       --current_size;
@@ -1335,7 +1438,20 @@ namespace etl
     //*********************************************************************
     /// Destroy an element at the back.
     //*********************************************************************
-    void destroy_element_back()
+    template <typename U = T>
+    typename etl::enable_if<etl::is_fundamental<U>::value, void>::type
+    destroy_element_back()
+    {
+      --_end;
+      --current_size;
+    }
+
+    //*********************************************************************
+    /// Destroy an element at the back.
+    //*********************************************************************
+    template <typename U = T>
+    typename etl::enable_if<!etl::is_fundamental<U>::value, void>::type
+    destroy_element_back()
     {
       --_end;
       (*_end).~T();
@@ -1431,7 +1547,7 @@ bool operator <(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
 template <typename T>
 bool operator <=(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
 {
-  return !operator >(lhs, rhs);
+  return !(lhs > rhs);
 }
 
 //***************************************************************************
@@ -1444,7 +1560,7 @@ bool operator <=(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
 template <typename T>
 bool operator >(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
 {
-  return operator <(rhs, lhs);
+  return (rhs < lhs);
 }
 
 //***************************************************************************
@@ -1457,7 +1573,7 @@ bool operator >(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
 template <typename T>
 bool operator >=(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
 {
-  return !operator <(lhs, rhs);
+  return !(lhs < rhs);
 }
 
 #undef __ETL_IN_IDEQUE_H__

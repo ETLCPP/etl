@@ -84,7 +84,25 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::stack_full is the stack is already full.
     ///\param value The value to push to the stack.
     //*************************************************************************
-    void push(parameter_t value)
+    template <typename U = T>
+    typename etl::enable_if<etl::is_fundamental<U>::value, void>::type
+    push(parameter_t value)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(stack_full));
+#endif
+      top_index = current_size++;
+      p_buffer[top_index] = value;
+    }
+
+    //*************************************************************************
+    /// Adds a value to the stack.
+    /// If asserts or exceptions are enabled, throws an etl::stack_full is the stack is already full.
+    ///\param value The value to push to the stack.
+    //*************************************************************************
+    template <typename U = T>
+    typename etl::enable_if<!etl::is_fundamental<U>::value, void>::type
+    push(parameter_t value)
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(stack_full));
@@ -100,7 +118,28 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::stack_full is the stack is already full.
     /// \return A reference to the position to 'push' to.
     //*************************************************************************
-    reference push()
+    template <typename U = T>
+    typename etl::enable_if<etl::is_fundamental<U>::value, reference>::type
+    push()
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(stack_full));
+#endif
+      top_index = current_size++;
+
+      return p_buffer[top_index];
+    }
+
+    //*************************************************************************
+    /// Allows a possibly more efficient 'push' by moving to the next input value
+    /// and returning a reference to it.
+    /// This may eliminate a copy by allowing direct construction in-place.<br>
+    /// If asserts or exceptions are enabled, throws an etl::stack_full is the stack is already full.
+    /// \return A reference to the position to 'push' to.
+    //*************************************************************************
+    template <typename U = T>
+    typename etl::enable_if<!etl::is_fundamental<U>::value, reference>::type
+    push()
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(stack_full));
@@ -123,7 +162,23 @@ namespace etl
     //*************************************************************************
     /// Clears the stack to the empty state.
     //*************************************************************************
-    void clear()
+    template <typename U = T>
+    typename etl::enable_if<etl::is_fundamental<U>::value, void>::type
+    clear()
+    {
+      while (current_size > 0)
+      {
+        --top_index;
+        --current_size;
+      }
+    }
+
+    //*************************************************************************
+    /// Clears the stack to the empty state.
+    //*************************************************************************
+    template <typename U = T>
+    typename etl::enable_if<!etl::is_fundamental<U>::value, void>::type
+    clear()
     {
       while (current_size > 0)
       {
@@ -137,7 +192,24 @@ namespace etl
     /// Removes the oldest item from the top of the stack.
     /// Does nothing if the stack is already empty.
     //*************************************************************************
-    void pop()
+    template <typename U = T>
+    typename etl::enable_if<etl::is_fundamental<U>::value, void>::type
+    pop()
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!empty(), ETL_ERROR(stack_empty));
+#endif
+      --top_index;
+      --current_size;
+    }
+
+    //*************************************************************************
+    /// Removes the oldest item from the top of the stack.
+    /// Does nothing if the stack is already empty.
+    //*************************************************************************
+    template <typename U = T>
+    typename etl::enable_if<!etl::is_fundamental<U>::value, void>::type
+    pop()
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!empty(), ETL_ERROR(stack_empty));
