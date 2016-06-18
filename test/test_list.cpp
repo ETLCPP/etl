@@ -341,6 +341,8 @@ namespace
       data.insert(i_data, INSERT_VALUE);
       compare_data.insert(i_compare_data, INSERT_VALUE);
 
+      CHECK_EQUAL(compare_data.size(), data.size());
+
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
 
       CHECK(are_equal);
