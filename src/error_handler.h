@@ -102,11 +102,15 @@ namespace etl
     #define ETL_ASSERT(b, e) {if (!(b)) {throw((e));}}                                 // If the condition fails, throws an exception.
   #endif
 #else
-  #if defined(NDEBUG)
-    #define ETL_ASSERT(b, e)                                                           // Does nothing.
-  #else
-    #if defined(ETL_LOG_ERRORS)
+  #if defined(ETL_LOG_ERRORS)
+    #if defined(NDEBUG)
+      #define ETL_ASSERT(b, e) {etl::error_handler::error((e));}                       // If the condition fails, calls the error handler
+    #else
       #define ETL_ASSERT(b, e) {etl::error_handler::error((e)); assert((b));}          // If the condition fails, calls the error handler then asserts.
+    #endif
+  #else
+    #if defined(NDEBUG)
+      #define ETL_ASSERT(b, e)                                                         // Does nothing.
     #else
       #define ETL_ASSERT(b, e) assert((b))                                             // If the condition fails, asserts.
     #endif
