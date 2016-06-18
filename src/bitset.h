@@ -65,11 +65,11 @@ namespace etl
   ///\tparam N The number of bits.
   ///\ingroup bitset
   //*************************************************************************
-  template <const size_t N>
+  template <const size_t MAXN>
   class bitset : public ibitset
   {
 
-    static const size_t    ARRAY_SIZE = (N % BITS_PER_ELEMENT == 0) ? N / BITS_PER_ELEMENT : N / BITS_PER_ELEMENT + 1;
+    static const size_t    ARRAY_SIZE = (MAXN % BITS_PER_ELEMENT == 0) ? MAXN / BITS_PER_ELEMENT : MAXN / BITS_PER_ELEMENT + 1;
 
   public:
 
@@ -81,7 +81,7 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     bitset()
-      : ibitset(N, ARRAY_SIZE, data)
+      : ibitset(MAXN, ARRAY_SIZE, data)
     {
       reset();
     }
@@ -89,8 +89,8 @@ namespace etl
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
-    bitset(const bitset<N>& other)
-      : ibitset(N, ARRAY_SIZE, data)
+    bitset(const bitset<MAXN>& other)
+      : ibitset(MAXN, ARRAY_SIZE, data)
     {
       etl::copy_n(other.data, ARRAY_SIZE, data);
     }
@@ -99,7 +99,7 @@ namespace etl
     /// Construct from a value.
     //*************************************************************************
     bitset(unsigned long long value)
-      : ibitset(N, ARRAY_SIZE, data)
+      : ibitset(MAXN, ARRAY_SIZE, data)
     {
       initialise(value);
     }
@@ -108,7 +108,7 @@ namespace etl
     /// Construct from a string.
     //*************************************************************************
     bitset(const char* text)
-      : ibitset(N, ARRAY_SIZE, data)
+      : ibitset(MAXN, ARRAY_SIZE, data)
     {
       set(text);
     }
@@ -116,7 +116,7 @@ namespace etl
     //*************************************************************************
     /// Set all of the bits.
     //*************************************************************************
-    bitset<N>& set()
+    bitset<MAXN>& set()
     {
       ibitset::set();
       return *this;
@@ -125,7 +125,7 @@ namespace etl
     //*************************************************************************
     /// Set the bit at the position.
     //*************************************************************************
-    bitset<N>& set(size_t position, bool value = true)
+    bitset<MAXN>& set(size_t position, bool value = true)
     {     
       ibitset::set(position, value);
       return *this;
@@ -134,7 +134,7 @@ namespace etl
     //*************************************************************************
     /// Set from a string.
     //*************************************************************************
-    bitset<N>& set(const char* text)
+    bitset<MAXN>& set(const char* text)
     {
       ETL_ASSERT(text != 0, ETL_ERROR(bitset_nullptr));
       ibitset::set(text);
@@ -145,7 +145,7 @@ namespace etl
     //*************************************************************************
     /// Reset all of the bits.
     //*************************************************************************
-    bitset<N>& reset()
+    bitset<MAXN>& reset()
     {
       ibitset::reset();
       return *this;
@@ -154,7 +154,7 @@ namespace etl
     //*************************************************************************
     /// Reset the bit at the position.
     //*************************************************************************
-    bitset<N>& reset(size_t position)
+    bitset<MAXN>& reset(size_t position)
     {
       ibitset::reset(position);
       return *this;
@@ -163,7 +163,7 @@ namespace etl
     //*************************************************************************
     /// Flip all of the bits.
     //*************************************************************************
-    bitset<N>& flip()
+    bitset<MAXN>& flip()
     {
       ibitset::flip();
       return *this;
@@ -172,7 +172,7 @@ namespace etl
     //*************************************************************************
     /// Flip the bit at the position.
     //*************************************************************************
-    bitset<N>& flip(size_t position)
+    bitset<MAXN>& flip(size_t position)
     {
       ibitset::flip(position);
       return *this;
@@ -181,7 +181,7 @@ namespace etl
     //*************************************************************************
     /// operator =
     //*************************************************************************
-    bitset<N>& operator =(const bitset<N>& other)
+    bitset<MAXN>& operator =(const bitset<MAXN>& other)
     {
       if (this != &other)
       {
@@ -194,7 +194,7 @@ namespace etl
     //*************************************************************************
     /// operator &=
     //*************************************************************************
-    bitset<N>& operator &=(const bitset<N>& other)
+    bitset<MAXN>& operator &=(const bitset<MAXN>& other)
     {
       ibitset::operator &=(other);
       return *this;
@@ -203,7 +203,7 @@ namespace etl
     //*************************************************************************
     /// operator |=
     //*************************************************************************
-    bitset<N>& operator |=(const bitset<N>& other)
+    bitset<MAXN>& operator |=(const bitset<MAXN>& other)
     {
       ibitset::operator |=(other);
       return *this;
@@ -212,7 +212,7 @@ namespace etl
     //*************************************************************************
     /// operator ^=
     //*************************************************************************
-    bitset<N>& operator ^=(const bitset<N>& other)
+    bitset<MAXN>& operator ^=(const bitset<MAXN>& other)
     {
       ibitset::operator ^=(other);
       return *this;
@@ -221,9 +221,9 @@ namespace etl
     //*************************************************************************
     /// operator ~
     //*************************************************************************
-    bitset<N> operator ~() const
+    bitset<MAXN> operator ~() const
     {
-      bitset<N> temp(*this);
+      bitset<MAXN> temp(*this);
 
       temp.invert();
       
@@ -233,9 +233,9 @@ namespace etl
     //*************************************************************************
     /// operator <<
     //*************************************************************************
-    bitset<N> operator<<(size_t shift) const
+    bitset<MAXN> operator<<(size_t shift) const
     {
-      bitset<N> temp(*this);
+      bitset<MAXN> temp(*this);
 
       temp <<= shift;
 
@@ -245,7 +245,7 @@ namespace etl
     //*************************************************************************
     /// operator <<=
     //*************************************************************************
-    bitset<N>& operator<<=(size_t shift)
+    bitset<MAXN>& operator<<=(size_t shift)
     {
       ibitset::operator <<=(shift);
       return *this;
@@ -254,9 +254,9 @@ namespace etl
     //*************************************************************************
     /// operator >>
     //*************************************************************************
-    bitset<N> operator>>(size_t shift) const
+    bitset<MAXN> operator>>(size_t shift) const
     {
-      bitset<N> temp(*this);
+      bitset<MAXN> temp(*this);
 
       temp >>= shift;
 
@@ -266,7 +266,7 @@ namespace etl
     //*************************************************************************
     /// operator >>=
     //*************************************************************************
-    bitset<N>& operator>>=(size_t shift)
+    bitset<MAXN>& operator>>=(size_t shift)
     {
       ibitset::operator >>=(shift);
       return *this;
@@ -275,7 +275,7 @@ namespace etl
     //*************************************************************************
     /// operator ==
     //*************************************************************************
-    friend bool operator == (const bitset<N>& lhs, const bitset<N>& rhs)
+    friend bool operator == (const bitset<MAXN>& lhs, const bitset<MAXN>& rhs)
     {
       return ibitset::is_equal(lhs, rhs);
     }
@@ -289,10 +289,10 @@ namespace etl
   /// operator &
   ///\ingroup bitset
   //***************************************************************************
-  template <const size_t N>
-  bitset<N> operator & (const bitset<N>& lhs, const bitset<N>& rhs)
+  template <const size_t MAXN>
+  bitset<MAXN> operator & (const bitset<MAXN>& lhs, const bitset<MAXN>& rhs)
   {
-    bitset<N> temp(lhs);
+    bitset<MAXN> temp(lhs);
     temp &= rhs;
     return temp;
   }
@@ -301,10 +301,10 @@ namespace etl
   /// operator |
   ///\ingroup bitset
   //***************************************************************************
-  template<const size_t N>
-  bitset<N> operator | (const bitset<N>& lhs, const bitset<N>& rhs)
+  template<const size_t MAXN>
+  bitset<MAXN> operator | (const bitset<MAXN>& lhs, const bitset<MAXN>& rhs)
   {
-    bitset<N> temp(lhs);
+    bitset<MAXN> temp(lhs);
     temp |= rhs;
     return temp;
   }
@@ -313,10 +313,10 @@ namespace etl
   /// operator ^
   ///\ingroup bitset
   //***************************************************************************
-  template<const size_t N>
-  bitset<N> operator ^ (const bitset<N>& lhs, const bitset<N>& rhs)
+  template<const size_t MAXN>
+  bitset<MAXN> operator ^ (const bitset<MAXN>& lhs, const bitset<MAXN>& rhs)
   {
-    bitset<N> temp(lhs);
+    bitset<MAXN> temp(lhs);
     temp ^= rhs;
     return temp;
   }
@@ -325,8 +325,8 @@ namespace etl
   /// operator !=
   ///\ingroup bitset
   //***************************************************************************
-  template<const size_t N>
-  bool operator != (const bitset<N>& lhs, const bitset<N>& rhs)
+  template<const size_t MAXN>
+  bool operator != (const bitset<MAXN>& lhs, const bitset<MAXN>& rhs)
   {
     return !(lhs == rhs);
   }
@@ -335,8 +335,8 @@ namespace etl
 //*************************************************************************
 /// swap
 //*************************************************************************
-template <const size_t N>
-void swap(etl::bitset<N>& lhs, etl::bitset<N>& rhs)
+template <const size_t MAXN>
+void swap(etl::bitset<MAXN>& lhs, etl::bitset<MAXN>& rhs)
 {
   lhs.swap(rhs);
 }
