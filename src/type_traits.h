@@ -152,7 +152,7 @@ namespace etl
   /// is_signed
   ///\ingroup type_traits
   template <typename T> struct is_signed : false_type {};
-  template <> struct is_signed<char> : true_type {};
+  template <> struct is_signed<char> : integral_constant<bool, (char(255) < 0)> {};
   template <> struct is_signed<wchar_t> : public etl::integral_constant<bool, static_cast<bool>(wchar_t(-1) < wchar_t(0))> {};
   template <> struct is_signed<signed char> : true_type {};
   template <> struct is_signed<short> : true_type {};
@@ -170,6 +170,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_unsigned : false_type {};
   template <> struct is_unsigned<bool> : true_type {};
+  template <> struct is_unsigned<char> : integral_constant<bool, (char(255) > 0)> {};
   template <> struct is_unsigned<unsigned char> : true_type {};
   template <> struct is_unsigned<wchar_t> : public etl::integral_constant<bool, (wchar_t(-1) > wchar_t(0))> {};
   template <> struct is_unsigned<unsigned short> : true_type {};
