@@ -574,9 +574,11 @@ namespace
         data.insert(data.begin() + offset, INITIAL_VALUE);
         compare_data.insert(compare_data.begin() + offset, INITIAL_VALUE);
 
+        CHECK_EQUAL(compare_data.size(), data.size());
+
         bool is_equal = std::equal(data.begin(),
                                    data.end(),
-                                  compare_data.begin());
+                                   compare_data.begin());
 
         CHECK(is_equal);
       }
