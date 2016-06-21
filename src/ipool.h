@@ -46,7 +46,7 @@ namespace etl
   //***************************************************************************
   template <typename T>
   class ipool : public pool_base
-  {
+  {   
   public:
 
     typedef T        value_type;
@@ -319,34 +319,8 @@ namespace etl
     /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
     /// \note The state of the object returned is undefined.
     //*************************************************************************
-    template <typename U = T>
-    typename etl::enable_if<etl::is_fundamental<U>::value, T*>::type
-    allocate()
+    T* allocate()
     {
-#if defined(_DEBUG) || defined(DEBUG)
-      ETL_ASSERT(items_allocated < MAX_SIZE && !in_use_flags.test(next_free), ETL_ERROR(pool_no_allocation));
-#else
-      ETL_ASSERT(items_allocated < MAX_SIZE, ETL_ERROR(pool_no_allocation));
-#endif
-
-      T* result = &p_buffer[next_free];
-      in_use_flags.set(next_free);
-      next_free = in_use_flags.find_first(false);
-      ++items_allocated;
-      return result;
-    }
-
-	  //*************************************************************************
-	  /// Allocate an object from the pool.
-	  /// Uses the default constructor.
-	  /// If asserts or exceptions are enabled and there are no more free items an
-	  /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
-	  /// \note The state of the object returned is undefined.
-	  //*************************************************************************
-    template <typename U = T>
-    typename etl::enable_if<!etl::is_fundamental<U>::value, T*>::type
-	  allocate()
-	  {
 #if defined(_DEBUG) || defined(DEBUG)
       ETL_ASSERT(items_allocated < MAX_SIZE && !in_use_flags.test(next_free), ETL_ERROR(pool_no_allocation));
 #else
@@ -354,45 +328,21 @@ namespace etl
 #endif
 
       T* result = new(&p_buffer[next_free]) T();
-		  in_use_flags.set(next_free);
-		  next_free = in_use_flags.find_first(false);
-		  ++items_allocated;
-		  return result;
-	  }
 
-    //*************************************************************************
-    /// Allocate an object from the pool from an ititial value.
-    /// If asserts or exceptions are enabled and there are no more free items an
-    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
-    /// \note The state of the object returned is undefined.
-    //*************************************************************************
-    template <typename U = T>
-    typename etl::enable_if<etl::is_fundamental<U>::value, T*>::type
-    allocate(const T& initial)
-    {
-#if defined(_DEBUG) || defined(DEBUG)
-      ETL_ASSERT(items_allocated < MAX_SIZE && !in_use_flags.test(next_free), ETL_ERROR(pool_no_allocation));
-#else
-      ETL_ASSERT(items_allocated < MAX_SIZE, ETL_ERROR(pool_no_allocation));
-#endif
-
-      T* result = &p_buffer[next_free];
-      *result = initial;      
       in_use_flags.set(next_free);
       next_free = in_use_flags.find_first(false);
       ++items_allocated;
+
       return result;
     }
 
     //*************************************************************************
-    /// Allocate an object from the pool from an ititial value.
+    /// Allocate an object from the pool from an initial value.
     /// If asserts or exceptions are enabled and there are no more free items an
     /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
     /// \note The state of the object returned is undefined.
     //*************************************************************************
-    template <typename U = T>
-    typename etl::enable_if<!etl::is_fundamental<U>::value, T*>::type
-    allocate(const T& initial)
+    T* allocate(const T& initial)
     {
 #if defined(_DEBUG) || defined(DEBUG)
       ETL_ASSERT(items_allocated < MAX_SIZE && !in_use_flags.test(next_free), ETL_ERROR(pool_no_allocation));
@@ -401,9 +351,11 @@ namespace etl
 #endif
 
       T* result = new(&p_buffer[next_free]) T(initial);
+
       in_use_flags.set(next_free);
       next_free = in_use_flags.find_first(false);
       ++items_allocated;
+
       return result;
     }
     
@@ -424,41 +376,12 @@ namespace etl
     /// pool then an etl::pool_object_not_in_pool is thrown.
     /// \param p_object A pointer to the object to be released.
     //*************************************************************************
-    template <typename U = T>
-    typename etl::enable_if<etl::is_fundamental<U>::value, void>::type
-    release(const T* const p_object)
+    void release(const T* const p_object)
     {
       // Does it belong to me?
       ETL_ASSERT(is_in_pool(p_object), ETL_ERROR(pool_object_not_in_pool));
 
       // Where is it in the buffer?
-      typename std::iterator_traits<T*>::difference_type distance = p_object - p_buffer;
-      size_t index = static_cast<size_t>(distance);
-
-      // Check that it hasn't already been released.
-      if (in_use_flags.test(index))
-      {
-        // Destroy the object and mark as available.
-        in_use_flags.reset(index);
-        --items_allocated;
-        next_free = index;
-      }
-    }
-
-    //*************************************************************************
-    /// Release an object in the pool.
-    /// If asserts or exceptions are enabled and the object does not belong to this
-    /// pool then an etl::pool_object_not_in_pool is thrown.
-    /// \param p_object A pointer to the object to be released.
-    //*************************************************************************
-    template <typename U = T>
-    typename etl::enable_if<!etl::is_fundamental<U>::value, void>::type
-    release(const T* const p_object)
-    {
-      // Does it belong to me?
-      ETL_ASSERT(is_in_pool(p_object), ETL_ERROR(pool_object_not_in_pool));
-
-    	// Where is it in the buffer?
       typename std::iterator_traits<T*>::difference_type distance = p_object - p_buffer;
       size_t index = static_cast<size_t>(distance);
 

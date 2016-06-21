@@ -76,13 +76,6 @@ namespace etl
 
     typedef typename parameter_type<T>::type parameter_t;
 
-  private:
-
-    template <typename U>
-    struct no_construct : integral_constant<bool, etl::is_fundamental<U>::value || etl::is_pointer<U>::value>
-    {
-    };
- 
   public:
 
     //*********************************************************************
@@ -659,14 +652,7 @@ namespace etl
     //*********************************************************************
     void create_element()
     {
-      if (no_construct<T>::value)
-      {
-        current_size++;
-      }
-      else
-      {
-        new(&p_buffer[current_size++]) T();
-      }
+      new(&p_buffer[current_size++]) T();
     }
 
     //*********************************************************************
@@ -674,14 +660,7 @@ namespace etl
     //*********************************************************************
     void create_element(parameter_t value)
     {
-      if (no_construct<T>::value)
-      {
-        p_buffer[current_size++] = value;
-      }
-      else
-      {
-        new(&p_buffer[current_size++]) T(value);
-      }
+      new(&p_buffer[current_size++]) T(value);
     }
 
     //*********************************************************************
@@ -689,14 +668,7 @@ namespace etl
     //*********************************************************************
     void create_element_at(size_t index, parameter_t value)
     {
-      if (no_construct<T>::value)
-      {
-        p_buffer[index] = value;
-      }
-      else
-      {
-        new(&p_buffer[index]) T(value);
-      }
+      new(&p_buffer[index]) T(value);
     }
 
     //*********************************************************************
@@ -704,14 +676,7 @@ namespace etl
     //*********************************************************************
     void destroy_element()
     {
-      if (no_construct<T>::value)
-      {
-        --current_size;
-      }
-      else
-      {
-        p_buffer[--current_size].~T();
-      }
+      p_buffer[--current_size].~T();
     }
 
     // Disable copy construction.
