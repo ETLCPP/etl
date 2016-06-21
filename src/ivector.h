@@ -76,6 +76,13 @@ namespace etl
 
     typedef typename parameter_type<T>::type parameter_t;
 
+  private:
+
+    template <typename U>
+    struct no_construct : integral_constant<bool, etl::is_fundamental<U>::value || etl::is_pointer<U>::value>
+    {
+    };
+ 
   public:
 
     //*********************************************************************
@@ -650,81 +657,61 @@ namespace etl
     //*********************************************************************
     /// Create a new element with a default value at the back.
     //*********************************************************************
-    template <typename U = T>
-    typename etl::enable_if<etl::is_fundamental<U>::value, void>::type
-    create_element()
+    void create_element()
     {
-      current_size++;
-    }
-
-    //*********************************************************************
-    /// Create a new element with a default value at the back.
-    //*********************************************************************
-    template <typename U = T>
-    typename etl::enable_if<!etl::is_fundamental<U>::value, void>::type
-    create_element()
-    {
-      new(&p_buffer[current_size++]) T();
+      if (no_construct<T>::value)
+      {
+        current_size++;
+      }
+      else
+      {
+        new(&p_buffer[current_size++]) T();
+      }
     }
 
     //*********************************************************************
     /// Create a new element with a value at the back
     //*********************************************************************
-    template <typename U = T>
-    typename etl::enable_if<etl::is_fundamental<U>::value, void>::type
-    create_element(parameter_t value)
+    void create_element(parameter_t value)
     {
-      p_buffer[current_size++] = value;
-    }
-
-    //*********************************************************************
-    /// Create a new element with a value at the back
-    //*********************************************************************
-    template <typename U = T>
-    typename etl::enable_if<!etl::is_fundamental<U>::value, void>::type
-    create_element(parameter_t value)
-    {
-      new(&p_buffer[current_size++]) T(value);
+      if (no_construct<T>::value)
+      {
+        p_buffer[current_size++] = value;
+      }
+      else
+      {
+        new(&p_buffer[current_size++]) T(value);
+      }
     }
 
     //*********************************************************************
     /// Create a new element with a value at the index
     //*********************************************************************
-    template <typename U = T>
-    typename etl::enable_if<etl::is_fundamental<U>::value, void>::type
-    create_element_at(size_t index, parameter_t value)
+    void create_element_at(size_t index, parameter_t value)
     {
-      p_buffer[index] = value;
-    }
-
-    //*********************************************************************
-    /// Create a new element with a value at the index
-    //*********************************************************************
-    template <typename U = T>
-    typename etl::enable_if<!etl::is_fundamental<U>::value, void>::type
-    create_element_at(size_t index, parameter_t value)
-    {
-      new(&p_buffer[index]) T(value);
+      if (no_construct<T>::value)
+      {
+        p_buffer[index] = value;
+      }
+      else
+      {
+        new(&p_buffer[index]) T(value);
+      }
     }
 
     //*********************************************************************
     /// Destroy an element at the back.
     //*********************************************************************
-    template <typename U = T>
-    typename etl::enable_if<etl::is_fundamental<U>::value, void>::type
-    destroy_element()
+    void destroy_element()
     {
-      --current_size;
-    }
-
-    //*********************************************************************
-    /// Destroy an element at the back.
-    //*********************************************************************
-    template <typename U = T>
-    typename etl::enable_if<!etl::is_fundamental<U>::value, void>::type
-    destroy_element()
-    {
-      p_buffer[--current_size].~U();
+      if (no_construct<T>::value)
+      {
+        --current_size;
+      }
+      else
+      {
+        p_buffer[--current_size].~T();
+      }
     }
 
     // Disable copy construction.
