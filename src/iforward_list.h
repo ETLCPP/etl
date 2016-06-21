@@ -32,7 +32,9 @@ SOFTWARE.
 #define __ETL_IFORWARD_LIST__
 #define __ETL_IN_IFORWARD_LIST_H__
 
-#if WIN32
+#include "platform.h"
+
+#ifdef ETL_COMPILER_MICROSOFT
 #undef min
 #endif
 
@@ -1044,7 +1046,7 @@ bool operator >=(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& 
   return !(lhs < rhs);
 }
 
-#if WIN32
+#ifdef ETL_COMPILER_MICROSOFT
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 #endif
 

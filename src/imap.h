@@ -42,8 +42,9 @@ SOFTWARE.
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "pool.h"
+#include "platform.h"
 
-#if WIN32
+#ifdef ETL_COMPILER_MICROSOFT
 #undef min
 #endif
 
@@ -1681,7 +1682,7 @@ bool operator >=(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::im
   return !(lhs < rhs);
 }
 
-#if WIN32
+#ifdef ETL_COMPILER_MICROSOFT
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 #endif
 
