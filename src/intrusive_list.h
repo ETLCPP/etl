@@ -31,7 +31,9 @@ SOFTWARE.
 #ifndef __ETL_INTRUSIVE_LIST__
 #define __ETL_INTRUSIVE_LIST__
 
-#if WIN32
+#include "platform.h"
+
+#ifdef ETL_COMPILER_MICROSOFT
 #undef min
 #endif
 
@@ -532,54 +534,32 @@ namespace etl
 
     //*************************************************************************
     /// Inserts a value to the intrusive_list before the specified position.
+    /// Checks that the value is unlinked if CHECKED
     //*************************************************************************
-    template <typename T = TLink>
-    typename etl::enable_if<(T::OPTION == etl::link_option::DEFAULT) || (T::OPTION == etl::link_option::AUTO), iterator>::type
-    insert(iterator position, value_type& value)
+    iterator insert(iterator position, value_type& value)
     {
+      if (TLink::OPTION == etl::link_option::CHECKED)
+      {
+        ETL_ASSERT(!value.TLink::is_linked(), ETL_ERROR(etl::not_unlinked_exception));
+      }
+
       insert_link(position.p_value->link_type::etl_previous, value);
       return iterator(value);
     }
 
     //*************************************************************************
-    /// Inserts a value to the intrusive_list before the specified position.
-    /// Checks that the value is unlinked.
-    //*************************************************************************
-    template <typename T = TLink>
-    typename etl::enable_if<T::OPTION == etl::link_option::CHECKED, iterator>::type
-    insert(iterator position, value_type& value)
-    {
-      ETL_ASSERT(!value.TLink::is_linked(), ETL_ERROR(etl::not_unlinked_exception));
-
-      insert_link(position.p_value->etl_previous, value);
-      return iterator(value);
-    }
-
-    //*************************************************************************
-    /// Inserts a range of values to the intrusive_list before the specified position.
-    //*************************************************************************
-    template <typename TIterator, typename T = TLink>
-    typename etl::enable_if<(T::OPTION == etl::link_option::DEFAULT) || (T::OPTION == etl::link_option::AUTO), void>::type
-    insert(iterator position, TIterator first, TIterator last)
-    {
-      while (first != last)
-      {
-        // Set up the next free link.
-        insert_link(*position.p_value->link_type::etl_previous, *first++);
-      }
-    }
-
-    //*************************************************************************
     /// Inserts a range of values to the intrusive_list after the specified position.
-    /// Checks that the values are unlinked.
+    /// Checks that the values are unlinked if CHECKED.
     //*************************************************************************
-    template <typename TIterator, typename T = TLink>
-    typename etl::enable_if<T::OPTION == etl::link_option::CHECKED, void>::type
-    insert(iterator position, TIterator first, TIterator last)
+    template <typename TIterator>
+    void insert(iterator position, TIterator first, TIterator last)
     {
       while (first != last)
       {
-        ETL_ASSERT(!position.p_value->TLink::is_linked(), ETL_ERROR(etl::not_unlinked_exception));
+        if (TLink::OPTION == etl::link_option::CHECKED)
+        {
+          ETL_ASSERT(!position.p_value->TLink::is_linked(), ETL_ERROR(etl::not_unlinked_exception));
+        }
 
         // Set up the next free link.
         insert_link(*position.p_value->link_type::etl_previous, *first++);
@@ -601,10 +581,9 @@ namespace etl
 
     //*************************************************************************
     /// Erases a range of elements.
+    /// Clears the links after erasing if AUTO or CHECKED.
     //*************************************************************************
-    template <typename T = TLink>
-    typename etl::enable_if<T::OPTION == etl::link_option::DEFAULT, iterator>::type
-    erase(iterator first, iterator last)
+    iterator erase(iterator first, iterator last)
     {
       link_type* p_first = first.p_value;
       link_type* p_last  = last.p_value;
@@ -617,41 +596,21 @@ namespace etl
         current_size -= std::distance(first, last);
       }
 
-      if (p_last == &terminal_link)
+      if ((TLink::OPTION == etl::link_option::AUTO) ||
+          (TLink::OPTION == etl::link_option::CHECKED))
       {
-        return end();
-      }
-      else
-      {
-        return iterator(*static_cast<value_type*>(p_last));
-      }
-    }
+        // Clear the ones in between.
+        link_type* p_next;
 
-    //*************************************************************************
-    /// Erases a range of elements.
-    /// Clears the links after erasing.
-    //*************************************************************************
-    template <typename T = TLink>
-    typename etl::enable_if<(T::OPTION == etl::link_option::AUTO) || (T::OPTION == etl::link_option::CHECKED), iterator>::type
-    erase(iterator first, iterator last)
-    {
-      link_type* p_first = first.p_value;
-      link_type* p_last  = last.p_value;
+        while (p_first != p_last)
+        {
+          // One less.
+          --current_size;
 
-      // Join the ends.
-      etl::link<link_type>(p_first->etl_previous, p_last);
-
-      // Clear the ones in between.
-      link_type* p_next;
-
-      while (p_first != p_last)
-      {
-        // One less.
-        --current_size;
-
-        p_next = p_first->etl_next; // Remember the next link.
-        p_first->TLink::clear();    // Clear the link.
-        p_first = p_next;           // Move to the next link.
+          p_next = p_first->etl_next; // Remember the next link.
+          p_first->TLink::clear();    // Clear the link.
+          p_first = p_next;           // Move to the next link.
+        }
       }
 
       if (p_last == &terminal_link)
@@ -867,21 +826,16 @@ namespace etl
     //*************************************************************************
     /// Returns the number of elements.
     //*************************************************************************
-    template <const size_t OPT = COUNT_OPTION>
-    typename etl::enable_if<OPT == etl::count_option::FAST_COUNT, size_t>::type
-    size() const
+    size_t size() const
     {
-      return current_size.count;
-    }
-
-    //*************************************************************************
-    /// Returns the number of elements.
-    //*************************************************************************
-    template <const size_t OPT = COUNT_OPTION>
-    typename etl::enable_if<OPT == etl::count_option::SLOW_COUNT, size_t>::type
-    size() const
-    {
-      return std::distance(cbegin(), cend());
+      if (COUNT_OPTION == etl::count_option::SLOW_COUNT)
+      {
+        return std::distance(cbegin(), cend());
+      }
+      else
+      {
+        return current_size.count;
+      }
     }
 
     //*************************************************************************
@@ -1237,7 +1191,7 @@ namespace etl
   };
 }
 
-#if WIN32
+#ifdef ETL_COMPILER_MICROSOFT
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 #endif
 
