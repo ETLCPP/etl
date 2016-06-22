@@ -811,14 +811,15 @@ namespace etl
       }
       else
       {
-        return current_size.count;
+        return current_size.get_count();
       }
     }
 
     //*************************************************************************
     /// Splice another list into this one.
     //*************************************************************************
-    void splice_after(iterator position, list_type& list)
+    template <const size_t COUNT_OPTION2>
+    void splice_after(iterator position, etl::intrusive_forward_list<TValue, TLink, COUNT_OPTION2>& list)
     {
       // No point splicing to ourself!
       if (&list != this)
@@ -856,7 +857,8 @@ namespace etl
     //*************************************************************************
     /// Splice an element from another list into this one.
     //*************************************************************************
-    void splice(iterator position, list_type& list, iterator isource)
+    template <const size_t COUNT_OPTION2>
+    void splice(iterator position, etl::intrusive_forward_list<TValue, TLink, COUNT_OPTION2>& list, iterator isource)
     {
       link_type& before = *position.p_value;
 
@@ -876,7 +878,8 @@ namespace etl
     //*************************************************************************
     /// Splice a range of elements from another list into this one.
     //*************************************************************************
-    void splice_after(iterator position, list_type& list, iterator begin_, iterator end_)
+    template <const size_t COUNT_OPTION2>
+    void splice_after(iterator position, etl::intrusive_forward_list<TValue, TLink, COUNT_OPTION2>& list, iterator begin_, iterator end_)
     {
       if (!list.empty())
       {
@@ -1024,6 +1027,11 @@ namespace etl
       {
         return *this;
       }
+
+      size_t get_count() const
+      {
+        return 0;
+      }
     };
 
     //*************************************************************************
@@ -1067,6 +1075,11 @@ namespace etl
       {
         count -= diff;
         return *this;
+      }
+
+      size_t get_count() const
+      {
+        return count;
       }
 
       size_t count;

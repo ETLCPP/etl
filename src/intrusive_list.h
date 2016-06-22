@@ -834,7 +834,7 @@ namespace etl
       }
       else
       {
-        return current_size.count;
+        return current_size.get_count();
       }
     }
 
@@ -1028,6 +1028,11 @@ namespace etl
       {
         return *this;
       }
+
+      size_t get_count() const
+      {
+        return 0;
+      }
     };
 
     //*************************************************************************
@@ -1071,6 +1076,11 @@ namespace etl
       {
         count -= diff;
         return *this;
+      }
+
+      size_t get_count() const
+      {
+        return count;
       }
 
       size_t count;

@@ -117,7 +117,7 @@ namespace
   //***************************************************************************
   typedef etl::intrusive_forward_list<ItemDCNode,  FirstLink>  DataDC0;
   typedef etl::intrusive_forward_list<ItemDCNode,  SecondLink> DataDC1;
-  typedef etl::intrusive_forward_list<ItemNDCNode, FirstLink>  DataNDC0;
+  typedef etl::intrusive_forward_list<ItemNDCNode, FirstLink, etl::count_option::SLOW_COUNT>  DataNDC0;
   typedef etl::intrusive_forward_list<ItemNDCNode, SecondLink> DataNDC1;
 
   typedef std::vector<ItemNDCNode> InitialDataNDC;
