@@ -289,13 +289,13 @@ namespace etl
   {
     if (node.etl_next != nullptr)
     {
-      TLink* old_next = node.etl_next;
-      node.etl_next = old_next->etl_next;
+      TLink* unlinked_node = node.etl_next;
+      node.etl_next = unlinked_node->etl_next;
 
       if ((int(TLink::OPTION) == etl::link_option::AUTO) ||
           (int(TLink::OPTION) == etl::link_option::CHECKED))
       {
-        old_next.clear();
+        unlinked_node->clear();
       }
     }
   }
