@@ -40,8 +40,9 @@ namespace
   //*******************************************************
   typedef etl::forward_link<0> FirstFLink;
   typedef etl::forward_link<1> SecondFLink;
+  typedef etl::forward_link<2, etl::link_option::AUTO> ThirdFLinkAuto;
 
-  struct FData : public FirstFLink, public SecondFLink
+  struct FData : public FirstFLink, public SecondFLink, public ThirdFLinkAuto
   {
     FData(int value)
       : value(value)
@@ -347,6 +348,18 @@ namespace
       CHECK(data3.SecondFLink::etl_next == &data2);
       CHECK(data2.SecondFLink::etl_next == &data0);
       CHECK(data0.SecondFLink::etl_next == nullptr);
+
+      // Check auto link.
+      etl::link<ThirdFLinkAuto>(data0, data1);
+      etl::link<ThirdFLinkAuto>(data1, data2);
+      etl::link<ThirdFLinkAuto>(data2, data3);
+      etl::link<ThirdFLinkAuto>(data3, nullptr);
+
+      etl::unlink_after<ThirdFLinkAuto>(data1);
+
+      CHECK(data0.ThirdFLinkAuto::etl_next == &data1);
+      CHECK(data1.ThirdFLinkAuto::etl_next == &data3);
+      CHECK(data3.ThirdFLinkAuto::etl_next == nullptr);
     }
 
     //*************************************************************************
