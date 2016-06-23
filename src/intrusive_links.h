@@ -32,6 +32,7 @@ SOFTWARE.
 #define __ETL_INTRUSIVE_LINKS__
 
 #include <assert.h>
+#include <utility>
 
 #include "nullptr.h"
 #include "type_traits.h"
