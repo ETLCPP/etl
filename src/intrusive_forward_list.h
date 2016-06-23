@@ -129,7 +129,7 @@ namespace etl
   ///\ingroup intrusive_forward_list
   ///\note TLink must be a base of TValue.
   //***************************************************************************
-  template <typename TValue, typename TLink = etl::forward_link<>, const size_t COUNT_OPTION = etl::count_option::FAST_COUNT >
+  template <typename TValue, typename TLink = etl::forward_link<0>, const size_t COUNT_OPTION = etl::count_option::FAST_COUNT >
   class intrusive_forward_list
   {
   public:

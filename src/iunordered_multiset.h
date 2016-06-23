@@ -130,7 +130,7 @@ namespace etl
 
     typedef typename parameter_type<TKey>::type key_value_parameter_t;
 
-    typedef etl::forward_link<> link_t;
+    typedef etl::forward_link<0> link_t;
 
     // The nodes that store the elements.
     struct node_t : public link_t
