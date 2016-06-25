@@ -129,7 +129,7 @@ namespace etl
   ///\ingroup intrusive_forward_list
   ///\note TLink must be a base of TValue.
   //***************************************************************************
-  template <typename TValue, typename TLink = etl::forward_link<0>, const size_t COUNT_OPTION = etl::count_option::FAST_COUNT >
+  template <typename TValue, typename TLink = etl::forward_link<0> >
   class intrusive_forward_list
   {
   public:
@@ -145,7 +145,14 @@ namespace etl
     typedef const value_type& const_reference;
     typedef size_t            size_type;
 
-    typedef intrusive_forward_list<TValue, TLink, COUNT_OPTION> list_type;
+    enum
+    {
+      // The count option is based on the type of link.
+      COUNT_OPTION = ((TLink::OPTION == etl::link_option::AUTO) ||
+                      (TLink::OPTION == etl::link_option::CHECKED)) ? etl::count_option::SLOW_COUNT : etl::count_option::FAST_COUNT
+    };
+
+    typedef intrusive_forward_list<TValue, TLink> list_type;
 
     //*************************************************************************
     /// iterator.
@@ -818,8 +825,7 @@ namespace etl
     //*************************************************************************
     /// Splice another list into this one.
     //*************************************************************************
-    template <const size_t COUNT_OPTION2>
-    void splice_after(iterator position, etl::intrusive_forward_list<TValue, TLink, COUNT_OPTION2>& list)
+    void splice_after(iterator position, etl::intrusive_forward_list<TValue, TLink>& list)
     {
       // No point splicing to ourself!
       if (&list != this)
@@ -857,8 +863,7 @@ namespace etl
     //*************************************************************************
     /// Splice an element from another list into this one.
     //*************************************************************************
-    template <const size_t COUNT_OPTION2>
-    void splice(iterator position, etl::intrusive_forward_list<TValue, TLink, COUNT_OPTION2>& list, iterator isource)
+    void splice(iterator position, etl::intrusive_forward_list<TValue, TLink>& list, iterator isource)
     {
       link_type& before = *position.p_value;
 
@@ -878,8 +883,7 @@ namespace etl
     //*************************************************************************
     /// Splice a range of elements from another list into this one.
     //*************************************************************************
-    template <const size_t COUNT_OPTION2>
-    void splice_after(iterator position, etl::intrusive_forward_list<TValue, TLink, COUNT_OPTION2>& list, iterator begin_, iterator end_)
+    void splice_after(iterator position, etl::intrusive_forward_list<TValue, TLink>& list, iterator begin_, iterator end_)
     {
       if (!list.empty())
       {

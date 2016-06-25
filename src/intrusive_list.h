@@ -116,16 +116,19 @@ namespace etl
   ///\ingroup intrusive_list
   ///\note TLink must be a base of TValue.
   //***************************************************************************
-  template <typename TValue, typename TLink = etl::bidirectional_link<>, const size_t COUNT_OPTION = etl::count_option::FAST_COUNT>
+  template <typename TValue, typename TLink = etl::bidirectional_link<0> >
   class intrusive_list
   {
   public:
 
-    // Ensure that the link option is compatible with the count option.
-    STATIC_ASSERT(!((COUNT_OPTION == etl::count_option::FAST_COUNT) && (TLink::OPTION == etl::link_option::AUTO)),    "Auto link not compatible with fast count option");
-    STATIC_ASSERT(!((COUNT_OPTION == etl::count_option::FAST_COUNT) && (TLink::OPTION == etl::link_option::CHECKED)), "Checked link not compatible with fast count option");
+    enum
+    {
+      // The count option is based on the type of link.
+      COUNT_OPTION = ((TLink::OPTION == etl::link_option::AUTO) || 
+                      (TLink::OPTION == etl::link_option::CHECKED)) ? etl::count_option::SLOW_COUNT : etl::count_option::FAST_COUNT
+    };
 
-    typedef intrusive_list<TValue, TLink, COUNT_OPTION> list_type;
+    typedef intrusive_list<TValue, TLink> list_type;
 
     // Node typedef.
     typedef TLink             link_type;

@@ -45,7 +45,7 @@ typedef TestDataNDC<std::string> ItemNDC;
 
 namespace
 {
-  typedef etl::forward_link<0> FirstLink;
+  typedef etl::forward_link<0, etl::link_option::AUTO> FirstLink;
   typedef etl::forward_link<1> SecondLink;
 
   //***************************************************************************
@@ -117,7 +117,7 @@ namespace
   //***************************************************************************
   typedef etl::intrusive_forward_list<ItemDCNode,  FirstLink>  DataDC0;
   typedef etl::intrusive_forward_list<ItemDCNode,  SecondLink> DataDC1;
-  typedef etl::intrusive_forward_list<ItemNDCNode, FirstLink, etl::count_option::SLOW_COUNT>  DataNDC0;
+  typedef etl::intrusive_forward_list<ItemNDCNode, FirstLink>  DataNDC0;
   typedef etl::intrusive_forward_list<ItemNDCNode, SecondLink> DataNDC1;
 
   typedef std::vector<ItemNDCNode> InitialDataNDC;
