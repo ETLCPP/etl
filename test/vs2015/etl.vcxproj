@@ -157,6 +157,7 @@
     <ClInclude Include="..\..\src\algorithm.h" />
     <ClInclude Include="..\..\src\alignment.h" />
     <ClInclude Include="..\..\src\array.h" />
+    <ClInclude Include="..\..\src\basic_string.h" />
     <ClInclude Include="..\..\src\binary.h" />
     <ClInclude Include="..\..\src\bitset.h" />
     <ClInclude Include="..\..\src\bloom_filter.h" />
@@ -215,6 +216,7 @@
     <ClInclude Include="..\..\src\iset.h" />
     <ClInclude Include="..\..\src\istack.h" />
     <ClInclude Include="..\..\src\container.h" />
+    <ClInclude Include="..\..\src\ibasic_string.h" />
     <ClInclude Include="..\..\src\iunordered_map.h" />
     <ClInclude Include="..\..\src\iunordered_multimap.h" />
     <ClInclude Include="..\..\src\iunordered_set.h" />
@@ -239,6 +241,7 @@
     <ClInclude Include="..\..\src\optional.h" />
     <ClInclude Include="..\..\src\parameter_type.h" />
     <ClInclude Include="..\..\src\pearson.h" />
+    <ClInclude Include="..\..\src\platform.h" />
     <ClInclude Include="..\..\src\pool.h" />
     <ClInclude Include="..\..\src\power.h" />
     <ClInclude Include="..\..\src\priority_queue.h" />
@@ -265,15 +268,19 @@
     <ClInclude Include="..\..\src\smallest.h" />
     <ClInclude Include="..\..\src\stack.h" />
     <ClInclude Include="..\..\src\static_assert.h" />
+    <ClInclude Include="..\..\src\string.h" />
     <ClInclude Include="..\..\src\test1.h" />
     <ClInclude Include="..\..\src\test2.h" />
     <ClInclude Include="..\..\src\type_traits.h" />
+    <ClInclude Include="..\..\src\u16string.h" />
+    <ClInclude Include="..\..\src\u32string.h" />
     <ClInclude Include="..\..\src\unordered_map.h" />
     <ClInclude Include="..\..\src\unordered_multiset.h" />
     <ClInclude Include="..\..\src\unordered_set.h" />
     <ClInclude Include="..\..\src\variant.h" />
     <ClInclude Include="..\..\src\vector.h" />
     <ClInclude Include="..\..\src\visitor.h" />
+    <ClInclude Include="..\..\src\wstring.h" />
     <ClInclude Include="..\data.h" />
     <ClInclude Include="..\ExtraCheckMacros.h" />
     <ClInclude Include="..\murmurhash3.h" />
@@ -374,6 +381,10 @@
     <ClCompile Include="..\test_set.cpp" />
     <ClCompile Include="..\test_smallest.cpp" />
     <ClCompile Include="..\test_stack.cpp" />
+    <ClCompile Include="..\test_string_char.cpp" />
+    <ClCompile Include="..\test_string_u16.cpp" />
+    <ClCompile Include="..\test_string_u32.cpp" />
+    <ClCompile Include="..\test_string_wchar_t.cpp" />
     <ClCompile Include="..\test_type_traits.cpp" />
     <ClCompile Include="..\test_unordered_map.cpp" />
     <ClCompile Include="..\test_unordered_multimap.cpp" />
@@ -386,6 +397,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Doxyfile" />
+    <None Include="..\..\library.properties" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
