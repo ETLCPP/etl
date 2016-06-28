@@ -132,7 +132,7 @@ namespace etl
     //*************************************************************************
     static void assign(char_type& r, const char_type& c)
     {
-      r = a;
+      r = c;
     }
     
     //*************************************************************************
@@ -155,9 +155,9 @@ namespace etl
       }
       else
       {
-        etl::copy_n(std::reverse_iterator(src + count), 
-                    std::reverse_iterator(src), 
-                    std::reverse_iterator(dest + count));  
+        etl::copy_n(std::reverse_iterator<char_type*>(src + count),
+                    count,
+                    std::reverse_iterator<char_type*>(dest + count));
       }
       
       return dest;

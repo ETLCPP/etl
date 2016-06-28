@@ -63,7 +63,7 @@ namespace etl
       AUTO,
       CHECKED
     };
-  };
+  }
 
   namespace count_option
   {

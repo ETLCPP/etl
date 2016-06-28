@@ -79,7 +79,7 @@ namespace etl
       : ibasic_string<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
       ibasic_string<T>::initialise();
-      ibasic_string<T>::assign(text, text + etl::char_traits<T>::length(text))
+      ibasic_string<T>::assign(text, text + etl::char_traits<T>::length(text));
     }
 
     //*************************************************************************
@@ -91,7 +91,7 @@ namespace etl
       : ibasic_string<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
       ibasic_string<T>::initialise();
-      ibasic_string<T>::assign(text, text + count)
+      ibasic_string<T>::assign(text, text + count);
     }
     
     //*************************************************************************

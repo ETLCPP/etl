@@ -849,7 +849,7 @@ namespace etl
     ///\param len The number of characters to copy.
     ///\param pos The position to start copying from.
     //*********************************************************************
-    size_t copy(const_pointer s, size_t len, size_t pos = 0) const
+    size_t copy(const_pointer s, size_t len, size_t pos = 0)
     {
       clear();
 
@@ -859,6 +859,7 @@ namespace etl
       }
 
       current_size = len;
+      return current_size;
     }
 
     //*********************************************************************
