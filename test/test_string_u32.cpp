@@ -2053,8 +2053,8 @@ namespace
       CHECK_EQUAL(length1, length2);
 
       bool is_equal = std::equal(buffer1,
-        buffer1 + length1,
-        buffer2);
+                                 buffer1 + length1,
+                                 buffer2);
       CHECK(is_equal);
     }
 
