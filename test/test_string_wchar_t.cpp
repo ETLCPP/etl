@@ -2044,10 +2044,10 @@ namespace
       value_t buffer1[SIZE];
       value_t buffer2[SIZE];
 
-      size_t length1 = compare_text.copy(buffer1, 2, 5);
+      size_t length1 = compare_text.copy(buffer1, 5, 2);
       buffer1[length1] = STR('\0');
 
-      size_t length2 = compare_text.copy(buffer2, 2, 5);
+      size_t length2 = compare_text.copy(buffer2, 5, 2);
       buffer2[length2] = STR('\0');
 
       CHECK_EQUAL(length1, length2);

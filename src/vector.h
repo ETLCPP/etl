@@ -48,13 +48,13 @@ SOFTWARE.
 
 namespace etl
 {
-  template <typename T, const size_t MAX_SIZE_>
   //***************************************************************************
   /// A vector implementation that uses a fixed size buffer.
   ///\tparam T The element type.
   ///\tparam MAX_SIZE_ The maximum number of elements that can be stored.
   ///\ingroup vector
   //***************************************************************************
+  template <typename T, const size_t MAX_SIZE_>
   class vector : public ivector<T>
   {
   public:
@@ -131,6 +131,92 @@ namespace etl
   private:
 
     typename etl::aligned_storage<sizeof(T) * MAX_SIZE, etl::alignment_of<T>::value>::type buffer;
+  };
+
+
+  //***************************************************************************
+  /// A vector implementation that uses a fixed size buffer.
+  ///\tparam T The element type.
+  ///\tparam MAX_SIZE_ The maximum number of elements that can be stored.
+  ///\ingroup vector
+  //***************************************************************************
+  template <typename T, const size_t MAX_SIZE_>
+  class vector<T*, MAX_SIZE_> : public ivector<T*>
+  {
+  public:
+
+    static const size_t MAX_SIZE = MAX_SIZE_;
+
+    //*************************************************************************
+    /// Constructor.
+    //*************************************************************************
+    vector()
+      : ivector<T*>(reinterpret_cast<void**>(&buffer), MAX_SIZE)
+    {
+      ivector<T*>::initialise();
+    }
+
+    //*************************************************************************
+    /// Constructor, with size.
+    ///\param initial_size The initial size of the vector.
+    //*************************************************************************
+    explicit vector(size_t initial_size)
+      : ivector<T*>(reinterpret_cast<void**>(&buffer), MAX_SIZE)
+    {
+      ivector<T*>::initialise();
+      ivector<T*>::resize(initial_size);
+    }
+
+    //*************************************************************************
+    /// Constructor, from initial size and value.
+    ///\param initial_size  The initial size of the vector.
+    ///\param value        The value to fill the vector with.
+    //*************************************************************************
+    vector(size_t initial_size, typename ivector<T*>::parameter_t value)
+      : ivector<T*>(reinterpret_cast<void**>(&buffer), MAX_SIZE)
+    {
+      ivector<T*>::initialise();
+      ivector<T*>::resize(initial_size, value);
+    }
+
+    //*************************************************************************
+    /// Constructor, from an iterator range.
+    ///\tparam TIterator The iterator type.
+    ///\param first The iterator to the first element.
+    ///\param last  The iterator to the last element + 1.
+    //*************************************************************************
+    template <typename TIterator>
+    vector(TIterator first, TIterator last)
+      : ivector<T*>(reinterpret_cast<void**>(&buffer), MAX_SIZE)
+    {
+      ivector<T*>::assign(first, last);
+    }
+
+    //*************************************************************************
+    /// Copy constructor.
+    //*************************************************************************
+    vector(const vector& other)
+      : ivector<T*>(reinterpret_cast<void**>(&buffer), MAX_SIZE)
+    {
+      ivector<T*>::assign(other.begin(), other.end());
+    }
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    vector& operator = (const vector& rhs)
+    {
+      if (&rhs != this)
+      {
+        ivector<T*>::assign(rhs.cbegin(), rhs.cend());
+      }
+
+      return *this;
+    }
+
+  private:
+
+    typename etl::aligned_storage<sizeof(void*) * MAX_SIZE, etl::alignment_of<void*>::value>::type buffer;
   };
 }
 

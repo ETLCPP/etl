@@ -849,17 +849,16 @@ namespace etl
     ///\param len The number of characters to copy.
     ///\param pos The position to start copying from.
     //*********************************************************************
-    size_t copy(const_pointer s, size_t len, size_t pos = 0)
+    size_t copy(pointer s, size_t len, size_t pos = 0)
     {
-      clear();
+      size_t endpos = std::min(pos + len, size());
 
-      for (size_t i = pos; i < pos + len; ++i)
+      for (size_t i = pos; i < endpos; ++i)
       {
-        p_buffer[i] = *s++;
+        *s++ = p_buffer[i];
       }
 
-      current_size = len;
-      return current_size;
+      return endpos - pos;
     }
 
     //*********************************************************************
