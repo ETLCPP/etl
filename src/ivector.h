@@ -836,7 +836,7 @@ namespace etl
   }
 }
 
-#include "ivectorpointer.h"
+//#include "ivectorpointer.h"
 
 #undef __ETL_IN_IVECTOR_H__
 #endif
