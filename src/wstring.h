@@ -84,7 +84,7 @@ namespace etl
     ///\param length   The number of characters. Default = npos.
     //*************************************************************************
     wstring(const etl::wstring<MAX_SIZE_>& other, size_t position, size_t length = npos)
-      : wstring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
+      : iwstring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
       ETL_ASSERT(position < other.size(), ETL_ERROR(string_out_of_bounds));
 
