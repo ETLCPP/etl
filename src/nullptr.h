@@ -109,6 +109,8 @@ private:
 //*****************************************************************************
 const nullptr_t nullptr = {};
 
+#else
+    #include <cstddef>
 #endif
 #endif
 
