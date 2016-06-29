@@ -140,7 +140,7 @@ namespace etl
       {
         VALID_THRESHOLD  = VALID_COUNT,
         HOLD_THRESHOLD   = VALID_THRESHOLD + HOLD_COUNT,
-        REPEAT_THRESHOLD = HOLD_THRESHOLD + REPEAT_COUNT,
+        REPEAT_THRESHOLD = HOLD_THRESHOLD + REPEAT_COUNT
       };
 
       using debounce_base::add;
@@ -301,7 +301,7 @@ namespace etl
 
     enum
     {
-      VALID_THRESHOLD = VALID_COUNT,
+      VALID_THRESHOLD = VALID_COUNT
     };
     
     using debounce_base::add;
