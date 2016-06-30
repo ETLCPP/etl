@@ -87,7 +87,7 @@ namespace etl
 /// Asserts a condition.
 /// Versions of the macro that return a constant value of 'true' will allow the compiler to optimise away
 /// any 'if' statements that it is contained within.
-/// If ETL_NO_CHECKS is defined then no runtime checks are executed at all. 
+/// If ETL_NO_CHECKS is defined then no runtime checks are executed at all.
 /// If asserts or exceptions are enabled then the error is thrown if the assert fails. The return value is always 'true'.
 /// If ETL_LOG_ERRORS is defined then the error is logged if the assert fails. The return value is the value of the boolean test.
 /// Otherwise 'assert' is called. The return value is always 'true'.
@@ -104,9 +104,9 @@ namespace etl
 #else
   #if defined(ETL_LOG_ERRORS)
     #if defined(NDEBUG)
-      #define ETL_ASSERT(b, e) {etl::error_handler::error((e));}                       // If the condition fails, calls the error handler
+      #define ETL_ASSERT(b, e) {if(!(b)) {etl::error_handler::error((e));}}              // If the condition fails, calls the error handler
     #else
-      #define ETL_ASSERT(b, e) {etl::error_handler::error((e)); assert((b));}          // If the condition fails, calls the error handler then asserts.
+      #define ETL_ASSERT(b, e) {if(!(b)) {etl::error_handler::error((e));} assert((b));} // If the condition fails, calls the error handler then asserts.
     #endif
   #else
     #if defined(NDEBUG)
@@ -124,7 +124,7 @@ namespace etl
 #endif
 
 #if defined(ETL_VERBOSE_ERRORS)
-  #define ETL_ERROR_TEXT(verbose_text, terse_text) (verbose_text) // Use the verbose text. 
+  #define ETL_ERROR_TEXT(verbose_text, terse_text) (verbose_text) // Use the verbose text.
 #else
   #define ETL_ERROR_TEXT(verbose_text, terse_text) (terse_text)   // Use the terse text.
 #endif
