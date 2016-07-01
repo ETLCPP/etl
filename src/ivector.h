@@ -74,8 +74,9 @@ namespace etl
 
   private:
 
+    // Type trait to allow selection of simple algorithms for simple types.
     template <typename U>
-    struct no_constructor : integral_constant<bool, etl::is_fundamental<U>::value || etl::is_pointer<U>::value>
+    struct is_simple_type : integral_constant<bool, etl::is_fundamental<U>::value || etl::is_pointer<U>::value>
     {
     };
 
@@ -145,7 +146,7 @@ namespace etl
     //*********************************************************************
     reverse_iterator rbegin()
     {
-	    return reverse_iterator(end());
+      return reverse_iterator(end());
     }
 
     //*********************************************************************
@@ -154,7 +155,7 @@ namespace etl
     //*********************************************************************
     const_reverse_iterator rbegin() const
     {
-	    return const_reverse_iterator(end());
+      return const_reverse_iterator(end());
     }
 
     //*********************************************************************
@@ -181,7 +182,7 @@ namespace etl
     //*********************************************************************
     const_reverse_iterator crbegin() const
     {
-	    return const_reverse_iterator(cend());
+      return const_reverse_iterator(cend());
     }
 
     //*********************************************************************
@@ -190,7 +191,7 @@ namespace etl
     //*********************************************************************
     const_reverse_iterator crend() const
     {
-	    return const_reverse_iterator(cbegin());
+      return const_reverse_iterator(cbegin());
     }
 
     //*********************************************************************
@@ -203,19 +204,28 @@ namespace etl
     {
       ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(vector_full));
 
-      // Size up or size down?
-      if (new_size > current_size)
+      // Choose the algorithm according to type.
+      // The unused branch should be optimised away.
+      if (is_simple_type<value_type>::value)
       {
-        while (current_size < new_size)
-        {
-          create_element();
-        }
+        current_size = new_size;
       }
-      else if (new_size < current_size)
+      else
       {
-        while (current_size > new_size)
+        // Size up or size down?
+        if (new_size > current_size)
         {
-          destroy_element();
+          while (current_size < new_size)
+          {
+            create_element();
+          }
+        }
+        else if (new_size < current_size)
+        {
+          while (current_size > new_size)
+          {
+            destroy_element();
+          }
         }
       }
     }
@@ -231,20 +241,35 @@ namespace etl
     {
       ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(vector_full));
 
-      // Size up?
-      if (new_size > current_size)
+      // Choose the algorithm according to type.
+      // The unused branch should be optimised away.
+      if (is_simple_type<value_type>::value)
       {
+        // Size up if necessary.
         while (current_size < new_size)
         {
-          create_element(value);
+          p_buffer[current_size++] = value;
         }
+
+        current_size = new_size;
       }
-      // Size down?
-      else if (new_size < current_size)
+      else
       {
-        while (current_size > new_size)
+        // Size up?
+        if (new_size > current_size)
         {
-          destroy_element();
+          while (current_size < new_size)
+          {
+            create_element(value);
+          }
+        }
+        // Size down?
+        else if (new_size < current_size)
+        {
+          while (current_size > new_size)
+          {
+            destroy_element();
+          }
         }
       }
     }
@@ -364,11 +389,22 @@ namespace etl
 
       initialise();
 
-      // Safe to copy.
-      while (first != last)
+      // Choose the algorithm according to type.
+      // The unused branch should be optimised away.
+      if (is_simple_type<value_type>::value)
       {
-        create_element(*first);
-        ++first;
+        while (first != last)
+        {
+          p_buffer[current_size++] = *first++;
+        }
+      }
+      else
+      {
+        while (first != last)
+        {
+          create_element(*first);
+          ++first;
+        }
       }
     }
 
@@ -384,10 +420,22 @@ namespace etl
 
       ETL_ASSERT(n <= MAX_SIZE, ETL_ERROR(vector_full));
 
-      while (n > 0)
+      // Choose the algorithm according to type.
+      // The unused branch should be optimised away.
+      if (is_simple_type<value_type>::value)
       {
-        create_element(value);
-        --n;
+        for (size_t current_size = 0; current_size < n; ++current_size)
+        {
+          p_buffer[current_size] = value;
+        }
+      }
+      else
+      {
+        while (n > 0)
+        {
+          create_element(value);
+          --n;
+        }
       }
     }
 
@@ -482,10 +530,10 @@ namespace etl
       else
       {
         // Create copy (backwards).
-        size_t n_insert = n;
-        size_t from = size() - 1;
-        size_t to   = from + n_insert;
-        size_t n_move = std::distance(position, end());
+        size_t n_insert      = n;
+        size_t from          = size() - 1;
+        size_t to            = from + n_insert;
+        size_t n_move        = std::distance(position, end());
         size_t n_create_copy = std::min(n_insert, n_move);
 
         for (size_t i = 0; i < n_create_copy; ++i)
@@ -528,7 +576,7 @@ namespace etl
     ///\param last     The last + 1 element to add.
     //*********************************************************************
     template <class TIterator>
-    typename etl::enable_if<no_constructor<typename std::iterator_traits<TIterator>::value_type>::value, void>::type
+    typename etl::enable_if<is_simple_type<typename std::iterator_traits<TIterator>::value_type>::value, void>::type
     insert(iterator position, TIterator first, TIterator last)
     {
       size_t count = std::distance(first, last);
@@ -539,28 +587,27 @@ namespace etl
       {
         while (first != last)
         {
-          create_element(*first);
-          ++first;
+          p_buffer[current_size++] = *first++;
         }
       }
       else
       {
-        size_t insert_index  = std::distance(begin(), position);
-        size_t n_insert      = count;
+        size_t insert_index = std::distance(begin(), position);
+        size_t n_insert = count;
 
         // Create copy (backwards).
         size_t from = size() - 1;
-        size_t to   = from + n_insert;
+        size_t to = from + n_insert;
         size_t n_move = std::distance(position, end());
         size_t n_create_copy = std::min(n_insert, n_move);
         for (size_t i = 0; i < n_create_copy; ++i)
         {
-          create_element_at(to--, p_buffer[from--]);
+          p_buffer[to--] = p_buffer[from--];
         }
 
         // Copy old.
         from = insert_index;
-        to   = from + n_insert;
+        to = from + n_insert;
         size_t n_copy_old = (size() > n_insert) ? size() - n_insert : 0;
         etl::copy_n(&p_buffer[from], n_copy_old, &p_buffer[to]);
 
@@ -575,8 +622,7 @@ namespace etl
         to = size();
         for (size_t i = 0; i < n_create_new; ++i)
         {
-          create_element_at(to++, *first);
-          ++first;
+          p_buffer[to++] = *first++;
         }
 
         current_size += n_insert;
@@ -592,8 +638,8 @@ namespace etl
     ///\param last     The last + 1 element to add.
     //*********************************************************************
     template <class TIterator>
-    typename etl::enable_if<!no_constructor<typename std::iterator_traits<TIterator>::value_type>::value, void>::type
-      insert(iterator position, TIterator first, TIterator last)
+    typename etl::enable_if<!is_simple_type<typename std::iterator_traits<TIterator>::value_type>::value, void>::type
+    insert(iterator position, TIterator first, TIterator last)
     {
       size_t count = std::distance(first, last);
 
@@ -673,10 +719,18 @@ namespace etl
       std::copy(last, end(), first);
       size_t n_delete = std::distance(first, last);
 
-      // Destroy the elements left over at the end.
-      while (n_delete-- > 0)
+      if (is_simple_type<value_type>::value)
       {
-        destroy_element();
+        // Just adjust the count.
+        current_size -= n_delete;
+      }
+      else
+      {
+        // Destroy the elements left over at the end.
+        while (n_delete-- > 0)
+        {
+          destroy_element();
+        }
       }
 
       return first;
@@ -711,11 +765,22 @@ namespace etl
     //*********************************************************************
     void initialise()
     {
-      while (current_size > 0)
+      // Choose the algorithm according to type.
+      // The unused branch should be optimised away.
+      if (is_simple_type<value_type>::value)
       {
-        destroy_element();
+        current_size = 0;
+      }
+      else
+      {
+        while (current_size > 0)
+        {
+          destroy_element();
+        }
       }
     }
+
+    T* p_buffer;
 
   private:
 
@@ -753,8 +818,6 @@ namespace etl
 
     // Disable copy construction.
     ivector(const ivector&);
-
-    T* p_buffer;
   };
 
   //***************************************************************************
@@ -787,7 +850,7 @@ namespace etl
   /// Less than operator.
   ///\param lhs Reference to the first vector.
   ///\param rhs Reference to the second vector.
-  ///\return <b>true</b> if the first vector is lexigraphically less than the second, otherwise <b>false</b>
+  ///\return <b>true</b> if the first vector is lexicographically less than the second, otherwise <b>false</b>
   ///\ingroup vector
   //***************************************************************************
   template <typename T>
@@ -800,7 +863,7 @@ namespace etl
   /// Greater than operator.
   ///\param lhs Reference to the first vector.
   ///\param rhs Reference to the second vector.
-  ///\return <b>true</b> if the first vector is lexigraphically greater than the second, otherwise <b>false</b>
+  ///\return <b>true</b> if the first vector is lexicographically greater than the second, otherwise <b>false</b>
   ///\ingroup vector
   //***************************************************************************
   template <typename T>
@@ -813,7 +876,7 @@ namespace etl
   /// Less than or equal operator.
   ///\param lhs Reference to the first vector.
   ///\param rhs Reference to the second vector.
-  ///\return <b>true</b> if the first vector is lexigraphically less than or equal to the second, otherwise <b>false</b>
+  ///\return <b>true</b> if the first vector is lexicographically less than or equal to the second, otherwise <b>false</b>
   ///\ingroup vector
   //***************************************************************************
   template <typename T>
@@ -826,7 +889,7 @@ namespace etl
   /// Greater than or equal operator.
   ///\param lhs Reference to the first vector.
   ///\param rhs Reference to the second vector.
-  ///\return <b>true</b> if the first vector is lexigraphically greater than or equal to the second, otherwise <b>false</b>
+  ///\return <b>true</b> if the first vector is lexicographically greater than or equal to the second, otherwise <b>false</b>
   ///\ingroup vector
   //***************************************************************************
   template <typename T>
@@ -836,7 +899,7 @@ namespace etl
   }
 }
 
-//#include "ivectorpointer.h"
+#include "ivectorpointer.h"
 
 #undef __ETL_IN_IVECTOR_H__
 #endif

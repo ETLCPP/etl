@@ -392,6 +392,7 @@
     <ClCompile Include="..\test_unordered_set.cpp" />
     <ClCompile Include="..\test_variant.cpp" />
     <ClCompile Include="..\test_vector.cpp" />
+    <ClCompile Include="..\test_vector_pointer.cpp" />
     <ClCompile Include="..\test_visitor.cpp" />
     <ClCompile Include="..\test_xor_checksum.cpp" />
   </ItemGroup>

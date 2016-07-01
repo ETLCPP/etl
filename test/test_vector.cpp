@@ -117,8 +117,8 @@ namespace
       CHECK(!data.empty());
 
       bool is_equal = std::equal(data.begin(),
-                                data.end(),
-                                compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
 
       CHECK(is_equal);
     }
@@ -160,8 +160,8 @@ namespace
       other_data = data;
 
       bool is_equal = std::equal(data.begin(),
-                                data.end(),
-                                other_data.begin());
+                                 data.end(),
+                                 other_data.begin());
 
       CHECK(is_equal);
     }
@@ -193,8 +193,8 @@ namespace
       other_data = other_data;
 
       bool is_equal = std::equal(data.begin(),
-                                data.end(),
-                                other_data.begin());
+                                 data.end(),
+                                 other_data.begin());
 
       CHECK(is_equal);
     }
