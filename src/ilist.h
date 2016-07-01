@@ -319,7 +319,7 @@ namespace etl
       const node_t* p_node;
     };
 
-		typedef typename std::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename std::iterator_traits<iterator>::difference_type difference_type;
 
     typedef std::reverse_iterator<iterator>       reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
@@ -446,7 +446,7 @@ namespace etl
 
     //*************************************************************************
     /// Assigns a range of values to the list.
-		/// If asserts or exceptions are enabled throws etl::list_full if the list does not have enough free space.
+    /// If asserts or exceptions are enabled throws etl::list_full if the list does not have enough free space.
     /// If ETL_THROW_EXCEPTIONS & _DEBUG are defined throws list_iterator if the iterators are reversed.
     //*************************************************************************
     template <typename TIterator>
@@ -559,7 +559,7 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!empty(), ETL_ERROR(list_empty));
 #endif
-    	node_t& node = get_tail();
+      node_t& node = get_tail();
       remove_node(node);
     }
 
@@ -1147,7 +1147,7 @@ bool operator !=(const etl::ilist<T>& lhs, const etl::ilist<T>& rhs)
 /// Less than operator.
 ///\param lhs Reference to the first list.
 ///\param rhs Reference to the second list.
-///\return <b>true</b> if the first list is lexigraphically less than the
+///\return <b>true</b> if the first list is lexicographically less than the
 /// second, otherwise <b>false</b>.
 //*************************************************************************
 template <typename T>
@@ -1163,7 +1163,7 @@ bool operator <(const etl::ilist<T>& lhs, const etl::ilist<T>& rhs)
 /// Greater than operator.
 ///\param lhs Reference to the first list.
 ///\param rhs Reference to the second list.
-///\return <b>true</b> if the first list is lexigraphically greater than the
+///\return <b>true</b> if the first list is lexicographically greater than the
 /// second, otherwise <b>false</b>.
 //*************************************************************************
 template <typename T>
@@ -1176,7 +1176,7 @@ bool operator >(const etl::ilist<T>& lhs, const etl::ilist<T>& rhs)
 /// Less than or equal operator.
 ///\param lhs Reference to the first list.
 ///\param rhs Reference to the second list.
-///\return <b>true</b> if the first list is lexigraphically less than or equal
+///\return <b>true</b> if the first list is lexicographically less than or equal
 /// to the second, otherwise <b>false</b>.
 //*************************************************************************
 template <typename T>
@@ -1189,7 +1189,7 @@ bool operator <=(const etl::ilist<T>& lhs, const etl::ilist<T>& rhs)
 /// Greater than or equal operator.
 ///\param lhs Reference to the first list.
 ///\param rhs Reference to the second list.
-///\return <b>true</b> if the first list is lexigraphically greater than or
+///\return <b>true</b> if the first list is lexicographically greater than or
 /// equal to the second, otherwise <b>false</b>.
 //*************************************************************************
 template <typename T>

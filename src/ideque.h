@@ -1409,7 +1409,7 @@ bool operator !=(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
 /// Less than operator.
 ///\param lhs  Reference to the _begin deque.
 ///\param rhs  Reference to the second deque.
-///\return <b>true</b> if the _begin deque is lexigraphically less than the second, otherwise <b>false</b>
+///\return <b>true</b> if the _begin deque is lexicographically less than the second, otherwise <b>false</b>
 ///\ingroup deque
 //***************************************************************************
 template <typename T>
@@ -1425,7 +1425,7 @@ bool operator <(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
 /// Less than or equal operator.
 ///\param lhs  Reference to the _begin deque.
 ///\param rhs  Reference to the second deque.
-///\return <b>true</b> if the _begin deque is lexigraphically less than or equal to the second, otherwise <b>false</b>
+///\return <b>true</b> if the _begin deque is lexicographically less than or equal to the second, otherwise <b>false</b>
 ///\ingroup deque
 //***************************************************************************
 template <typename T>
@@ -1438,7 +1438,7 @@ bool operator <=(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
 /// Greater than operator.
 ///\param lhs  Reference to the _begin deque.
 ///\param rhs  Reference to the second deque.
-///\return <b>true</b> if the _begin deque is lexigraphically greater than the second, otherwise <b>false</b>
+///\return <b>true</b> if the _begin deque is lexicographically greater than the second, otherwise <b>false</b>
 ///\ingroup deque
 //***************************************************************************
 template <typename T>
@@ -1451,7 +1451,7 @@ bool operator >(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
 /// Greater than or equal operator.
 ///\param "lhs  Reference to the _begin deque.
 ///\param "rhs  Reference to the second deque.
-///\return <b>true</b> if the _begin deque is lexigraphically greater than or equal to the second, otherwise <b>false</b>
+///\return <b>true</b> if the _begin deque is lexicographically greater than or equal to the second, otherwise <b>false</b>
 ///\ingroup deque
 //***************************************************************************
 template <typename T>
