@@ -46,7 +46,21 @@ namespace etl
   namespace __private_hash__
   {
     //*************************************************************************
+    /// Hash to use when size_t is 16 bits.
+    /// T is always expected to be size_t.
+    //*************************************************************************
+    template <typename T>
+    typename enable_if<sizeof(T) == sizeof(uint16_t), size_t>::type
+    generic_hash(uint8_t* begin, uint8_t* end)
+    {
+      uint32_t h = fnv_1a_32(begin, end);
+
+      return static_cast<size_t>(h ^ (h >> 16));
+    }
+
+    //*************************************************************************
     /// Hash to use when size_t is 32 bits.
+    /// T is always expected to be size_t.
     //*************************************************************************
     template <typename T>
     typename enable_if<sizeof(T) == sizeof(uint32_t), size_t>::type
@@ -57,6 +71,7 @@ namespace etl
 
     //*************************************************************************
     /// Hash to use when size_t is 64 bits.
+    /// T is always expected to be size_t.
     //*************************************************************************
     template <typename T>
     typename enable_if<sizeof(T) == sizeof(uint64_t), size_t>::type
