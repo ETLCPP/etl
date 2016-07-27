@@ -510,6 +510,15 @@
     <ClInclude Include="..\..\src\wstring.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\ivectorpointer.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\private\pvoidvector.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\type_def.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\AssertException.cpp">

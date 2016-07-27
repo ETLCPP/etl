@@ -151,7 +151,7 @@ namespace etl
     /// Constructor.
     //*************************************************************************
     vector()
-      : ivector<T*>(reinterpret_cast<void**>(&buffer), MAX_SIZE)
+      : ivector<T*>(reinterpret_cast<T**>(&buffer), MAX_SIZE)
     {
       ivector<T*>::initialise();
     }
@@ -161,7 +161,7 @@ namespace etl
     ///\param initial_size The initial size of the vector.
     //*************************************************************************
     explicit vector(size_t initial_size)
-      : ivector<T*>(reinterpret_cast<void**>(&buffer), MAX_SIZE)
+      : ivector<T*>(reinterpret_cast<T**>(&buffer), MAX_SIZE)
     {
       ivector<T*>::initialise();
       ivector<T*>::resize(initial_size);
@@ -173,7 +173,7 @@ namespace etl
     ///\param value        The value to fill the vector with.
     //*************************************************************************
     vector(size_t initial_size, typename ivector<T*>::parameter_t value)
-      : ivector<T*>(reinterpret_cast<void**>(&buffer), MAX_SIZE)
+      : ivector<T*>(reinterpret_cast<T**>(&buffer), MAX_SIZE)
     {
       ivector<T*>::initialise();
       ivector<T*>::resize(initial_size, value);
@@ -187,7 +187,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     vector(TIterator first, TIterator last)
-      : ivector<T*>(reinterpret_cast<void**>(&buffer), MAX_SIZE)
+      : ivector<T*>(reinterpret_cast<T**>(&buffer), MAX_SIZE)
     {
       ivector<T*>::assign(first, last);
     }
@@ -196,7 +196,7 @@ namespace etl
     /// Copy constructor.
     //*************************************************************************
     vector(const vector& other)
-      : ivector<T*>(reinterpret_cast<void**>(&buffer), MAX_SIZE)
+      : ivector<T*>(reinterpret_cast<T**>(&buffer), MAX_SIZE)
     {
       ivector<T*>::assign(other.begin(), other.end());
     }
@@ -216,7 +216,7 @@ namespace etl
 
   private:
 
-    typename etl::aligned_storage<sizeof(void*) * MAX_SIZE, etl::alignment_of<void*>::value>::type buffer;
+    typename etl::aligned_storage<sizeof(T*) * MAX_SIZE, etl::alignment_of<T*>::value>::type buffer;
   };
 }
 

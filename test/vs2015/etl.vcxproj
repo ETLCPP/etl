@@ -221,6 +221,7 @@
     <ClInclude Include="..\..\src\iunordered_multimap.h" />
     <ClInclude Include="..\..\src\iunordered_set.h" />
     <ClInclude Include="..\..\src\ivector.h" />
+    <ClInclude Include="..\..\src\ivectorpointer.h" />
     <ClInclude Include="..\..\src\jenkins.h" />
     <ClInclude Include="..\..\src\largest.h" />
     <ClInclude Include="..\..\src\list.h" />
@@ -256,6 +257,7 @@
     <ClInclude Include="..\..\src\private\multimap_base.h" />
     <ClInclude Include="..\..\src\private\multiset_base.h" />
     <ClInclude Include="..\..\src\private\pool_base.h" />
+    <ClInclude Include="..\..\src\private\pvoidvector.h" />
     <ClInclude Include="..\..\src\private\queue_base.h" />
     <ClInclude Include="..\..\src\private\set_base.h" />
     <ClInclude Include="..\..\src\private\stack_base.h" />
@@ -271,6 +273,7 @@
     <ClInclude Include="..\..\src\string.h" />
     <ClInclude Include="..\..\src\test1.h" />
     <ClInclude Include="..\..\src\test2.h" />
+    <ClInclude Include="..\..\src\type_def.h" />
     <ClInclude Include="..\..\src\type_traits.h" />
     <ClInclude Include="..\..\src\u16string.h" />
     <ClInclude Include="..\..\src\u32string.h" />

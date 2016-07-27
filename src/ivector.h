@@ -424,9 +424,10 @@ namespace etl
       // The unused branch should be optimised away.
       if (is_simple_type<value_type>::value)
       {
-        for (size_t current_size = 0; current_size < n; ++current_size)
+        while (n > 0)
         {
-          p_buffer[current_size] = value;
+          p_buffer[current_size++] = value;
+          --n;
         }
       }
       else
@@ -600,6 +601,7 @@ namespace etl
         size_t to = from + n_insert;
         size_t n_move = std::distance(position, end());
         size_t n_create_copy = std::min(n_insert, n_move);
+
         for (size_t i = 0; i < n_create_copy; ++i)
         {
           p_buffer[to--] = p_buffer[from--];
@@ -899,7 +901,7 @@ namespace etl
   }
 }
 
-//#include "ivectorpointer.h"
+#include "private/ivectorpointer.h"
 
 #undef __ETL_IN_IVECTOR_H__
 #endif
