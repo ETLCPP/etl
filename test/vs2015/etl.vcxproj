@@ -388,6 +388,7 @@
     <ClCompile Include="..\test_string_u16.cpp" />
     <ClCompile Include="..\test_string_u32.cpp" />
     <ClCompile Include="..\test_string_wchar_t.cpp" />
+    <ClCompile Include="..\test_type_def.cpp" />
     <ClCompile Include="..\test_type_traits.cpp" />
     <ClCompile Include="..\test_unordered_map.cpp" />
     <ClCompile Include="..\test_unordered_multimap.cpp" />
