@@ -226,7 +226,7 @@ namespace etl
         //*********************************************************************
         type_def& operator >>=(TValue rhs)
         {
-            value >>= rhs.value;
+            value >>= rhs;
             return *this;
         }
 
@@ -238,7 +238,7 @@ namespace etl
         }
 
         //*********************************************************************
-        TValue get(const type_def& rhs) const
+        TValue get() const
         {
             return value;
         }
