@@ -33,6 +33,8 @@ SOFTWARE.
 
 namespace etl
 {
+    #define ETL_TYPEDEF(T, name) class name##_tag; typedef etl::type_def<name##_tag, T> name
+
     //*************************************************************************
     /// A template type to define strong typedefs.
     /// Usage:
