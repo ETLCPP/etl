@@ -108,7 +108,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds a value to the queue.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full is the queue is already full,
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full,
     /// otherwise does nothing if full.
     ///\param value The value to push to the queue.
     //*************************************************************************

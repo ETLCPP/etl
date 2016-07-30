@@ -1063,7 +1063,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds an item to the back of the deque.
-    /// If asserts or exceptions are enabled, throws an etl::deque_full is the deque is already full.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
     ///\param item The item to push to the deque.
     //*************************************************************************
     void push_back(parameter_t item)
@@ -1076,7 +1076,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds one to the front of the deque and returns a reference to the new element.
-    /// If asserts or exceptions are enabled, throws an etl::deque_full is the deque is already full.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
     ///\return A reference to the item to assign to.
     //*************************************************************************
     reference push_back()
@@ -1103,7 +1103,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds an item to the front of the deque.
-    /// If asserts or exceptions are enabled, throws an etl::deque_full is the deque is already full.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
     ///\param item The item to push to the deque.
     //*************************************************************************
     void push_front(parameter_t item)
@@ -1116,7 +1116,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds one to the front of the deque and returns a reference to the new element.
-    /// If asserts or exceptions are enabled, throws an etl::deque_full is the deque is already full.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
     ///\return A reference to the item to assign to.
     //*************************************************************************
     reference push_front()
