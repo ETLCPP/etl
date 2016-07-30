@@ -37,13 +37,28 @@ namespace
   SUITE(test_type_def)
   {
     //=========================================================================
+    TEST(test_macro)
+    {
+      ETL_TYPEDEF(uint32_t, type1_t);
+      ETL_TYPEDEF(uint32_t, type2_t);
+
+      type1_t t1 = type1_t(1);
+      type2_t t2 = type2_t(1);
+
+      uint32_t i1 = t1;
+      uint32_t i2 = t2;
+
+      CHECK_EQUAL(i1, i2);
+    }
+
+    //=========================================================================
     TEST(test_implicit)
     {
-      class __type1_t__;
-      typedef etl::type_def<__type1_t__, uint32_t> type1_t;
+      class type1_t_tag;
+      typedef etl::type_def<type1_t_tag, uint32_t> type1_t;
 
-      class __type2_t__;
-      typedef etl::type_def<__type2_t__, uint32_t> type2_t;
+      class type2_t_tag;
+      typedef etl::type_def<type2_t_tag, uint32_t> type2_t;
 
       type1_t t1 = type1_t(1);
       type2_t t2 = type2_t(1);
@@ -57,11 +72,11 @@ namespace
     //=========================================================================
     TEST(test_get)
     {
-      class __type1_t__;
-      typedef etl::type_def<__type1_t__, uint32_t> type1_t;
+      class type1_t_tag;
+      typedef etl::type_def<type1_t_tag, uint32_t> type1_t;
 
-      class __type2_t__;
-      typedef etl::type_def<__type2_t__, uint32_t> type2_t;
+      class type2_t_tag;
+      typedef etl::type_def<type2_t_tag, uint32_t> type2_t;
 
       type1_t t1(1);
       type2_t t2(1);
