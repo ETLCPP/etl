@@ -622,7 +622,6 @@ namespace etl
   ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
   ///\ingroup vector
   //***************************************************************************
-  template <typename void*>
   bool operator ==(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
     return (lhs.size() == rhs.size()) && std::equal(lhs.begin(), lhs.end(), rhs.begin());
@@ -635,7 +634,6 @@ namespace etl
   ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
   ///\ingroup vector
   //***************************************************************************
-  template <typename void*>
   bool operator !=(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
     return !(lhs == rhs);
@@ -648,7 +646,6 @@ namespace etl
   ///\return <b>true</b> if the first vector is lexicographically less than the second, otherwise <b>false</b>
   ///\ingroup vector
   //***************************************************************************
-  template <typename void*>
   bool operator <(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
     return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
@@ -661,7 +658,6 @@ namespace etl
   ///\return <b>true</b> if the first vector is lexicographically greater than the second, otherwise <b>false</b>
   ///\ingroup vector
   //***************************************************************************
-  template <typename void*>
   bool operator >(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
     return (rhs < lhs);
@@ -674,7 +670,6 @@ namespace etl
   ///\return <b>true</b> if the first vector is lexicographically less than or equal to the second, otherwise <b>false</b>
   ///\ingroup vector
   //***************************************************************************
-  template <typename void*>
   bool operator <=(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
     return !(lhs > rhs);
@@ -687,7 +682,6 @@ namespace etl
   ///\return <b>true</b> if the first vector is lexicographically greater than or equal to the second, otherwise <b>false</b>
   ///\ingroup vector
   //***************************************************************************
-  template <typename void*>
   bool operator >=(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
     return !(lhs < rhs);
