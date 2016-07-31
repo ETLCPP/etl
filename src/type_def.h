@@ -39,9 +39,12 @@ namespace etl
     /// A template type to define strong typedefs.
     /// Usage:
     ///\code
-    /// class __MyType__;
-    /// typedef etl::type_def<__MyType__, int> MyType_t;
-    /// MyType_t value;
+    /// // Short form.
+    /// ETL_TYPEDEF(int, mytype);
+    /// 
+    /// // Long form.
+    /// class mytype_t_tag;
+    /// typedef etl::type_def<mytype_t_tag, int> mytype_t_tag;
     ///\endcode
     //*************************************************************************
     template <typename TIdType, typename TValue>

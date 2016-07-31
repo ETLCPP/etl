@@ -315,6 +315,7 @@
     <ClCompile Include="..\..\src\crc8_ccitt.cpp" />
     <ClCompile Include="..\..\src\error_handler.cpp" />
     <ClCompile Include="..\..\src\pearson.cpp" />
+    <ClCompile Include="..\..\src\private\pvoidvector.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\murmurhash3.cpp" />
     <ClCompile Include="..\test_algorithm.cpp" />

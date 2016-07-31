@@ -31,16 +31,18 @@ SOFTWARE.
 #ifndef __ETL_PVOIDVECTOR__
 #define __ETL_PVOIDVECTOR__
 
+#define __ETL_IN_PVOIDVECTOR__
+
 #include <iterator>
 #include <algorithm>
 #include <functional>
 #include <stddef.h>
 
-#include "platform.h"
-#include "algorithm.h"
-#include "private/vector_base.h"
-#include "type_traits.h"
-#include "error_handler.h"
+#include "../platform.h"
+#include "../algorithm.h"
+#include "vector_base.h"
+#include "../type_traits.h"
+#include "../error_handler.h"
 
 #ifdef ETL_COMPILER_GCC
 #pragma GCC diagnostic ignored "-Wunused-variable"
@@ -614,82 +616,12 @@ namespace etl
     // Disable copy construction.
     pvoidvector(const pvoidvector&);
   };
-
-  //***************************************************************************
-  /// Equal operator.
-  ///\param lhs Reference to the first vector.
-  ///\param rhs Reference to the second vector.
-  ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
-  ///\ingroup vector
-  //***************************************************************************
-  bool operator ==(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
-  {
-    return (lhs.size() == rhs.size()) && std::equal(lhs.begin(), lhs.end(), rhs.begin());
-  }
-
-  //***************************************************************************
-  /// Not equal operator.
-  ///\param lhs Reference to the first vector.
-  ///\param rhs Reference to the second vector.
-  ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
-  ///\ingroup vector
-  //***************************************************************************
-  bool operator !=(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
-  {
-    return !(lhs == rhs);
-  }
-
-  //***************************************************************************
-  /// Less than operator.
-  ///\param lhs Reference to the first vector.
-  ///\param rhs Reference to the second vector.
-  ///\return <b>true</b> if the first vector is lexicographically less than the second, otherwise <b>false</b>
-  ///\ingroup vector
-  //***************************************************************************
-  bool operator <(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
-  {
-    return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
-  }
-
-  //***************************************************************************
-  /// Greater than operator.
-  ///\param lhs Reference to the first vector.
-  ///\param rhs Reference to the second vector.
-  ///\return <b>true</b> if the first vector is lexicographically greater than the second, otherwise <b>false</b>
-  ///\ingroup vector
-  //***************************************************************************
-  bool operator >(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
-  {
-    return (rhs < lhs);
-  }
-
-  //***************************************************************************
-  /// Less than or equal operator.
-  ///\param lhs Reference to the first vector.
-  ///\param rhs Reference to the second vector.
-  ///\return <b>true</b> if the first vector is lexicographically less than or equal to the second, otherwise <b>false</b>
-  ///\ingroup vector
-  //***************************************************************************
-  bool operator <=(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
-  {
-    return !(lhs > rhs);
-  }
-
-  //***************************************************************************
-  /// Greater than or equal operator.
-  ///\param lhs Reference to the first vector.
-  ///\param rhs Reference to the second vector.
-  ///\return <b>true</b> if the first vector is lexicographically greater than or equal to the second, otherwise <b>false</b>
-  ///\ingroup vector
-  //***************************************************************************
-  bool operator >=(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
-  {
-    return !(lhs < rhs);
-  }
 }
 
 #ifdef ETL_COMPILER_MICROSOFT
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 #endif
+
+#undef __ETL_IN_PVOIDVECTOR__
 
 #endif
