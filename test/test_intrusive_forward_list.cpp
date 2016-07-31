@@ -45,7 +45,7 @@ typedef TestDataNDC<std::string> ItemNDC;
 
 namespace
 {
-  typedef etl::forward_link<0> FirstLink;
+  typedef etl::forward_link<0, etl::link_option::AUTO> FirstLink;
   typedef etl::forward_link<1> SecondLink;
 
   //***************************************************************************

@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 http://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2016 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,61 +28,51 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_IVECTOR__
-#define __ETL_IVECTOR__
-#define __ETL_IN_IVECTOR_H__
+#ifndef __ETL_PVOIDVECTOR__
+#define __ETL_PVOIDVECTOR__
+
+#define __ETL_IN_PVOIDVECTOR__
 
 #include <iterator>
 #include <algorithm>
 #include <functional>
 #include <stddef.h>
 
-#include "platform.h"
-#include "algorithm.h"
-#include "private/vector_base.h"
-#include "type_traits.h"
-#include "parameter_type.h"
-#include "error_handler.h"
+#include "../platform.h"
+#include "../algorithm.h"
+#include "vector_base.h"
+#include "../type_traits.h"
+#include "../error_handler.h"
 
 #ifdef ETL_COMPILER_GCC
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
+#ifdef ETL_COMPILER_MICROSOFT
+#undef min
+#endif
+
 namespace etl
 {
   //***************************************************************************
-  /// The base class for specifically sized vectors.
-  /// Can be used as a reference type for all vectors containing a specific type.
+  /// The base class for void* vectors.
   ///\ingroup vector
   //***************************************************************************
-  template <typename T>
-  class ivector : public vector_base
+  class pvoidvector : public vector_base
   {
   public:
 
-    typedef T                                     value_type;
-    typedef T&                                    reference;
-    typedef const T&                              const_reference;
-    typedef T*                                    pointer;
-    typedef const T*                              const_pointer;
-    typedef T*                                    iterator;
-    typedef const T*                              const_iterator;
+    typedef void*                                 value_type;
+    typedef void*&                                reference;
+    typedef const void*&                          const_reference;
+    typedef void**                                pointer;
+    typedef const void**                          const_pointer;
+    typedef void**                                iterator;
+    typedef const void**                          const_iterator;
     typedef std::reverse_iterator<iterator>       reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
     typedef size_t                                size_type;
     typedef typename std::iterator_traits<iterator>::difference_type difference_type;
-
-  private:
-
-    // Type trait to allow selection of simple algorithms for simple types.
-    template <typename U>
-    struct is_simple_type : integral_constant<bool, etl::is_fundamental<U>::value || etl::is_pointer<U>::value>
-    {
-    };
-
-  protected:
-
-    typedef typename parameter_type<T>::type parameter_t;
 
   public:
 
@@ -101,7 +91,7 @@ namespace etl
     //*********************************************************************
     const_iterator begin() const
     {
-      return &p_buffer[0];
+      return const_iterator(&p_buffer[0]);
     }
 
     //*********************************************************************
@@ -119,7 +109,7 @@ namespace etl
     //*********************************************************************
     const_iterator end() const
     {
-      return &p_buffer[current_size];
+      return const_iterator(&p_buffer[current_size]);
     }
 
     //*********************************************************************
@@ -128,7 +118,7 @@ namespace etl
     //*********************************************************************
     const_iterator cbegin() const
     {
-      return &p_buffer[0];
+      return const_iterator(&p_buffer[0]);
     }
 
     //*********************************************************************
@@ -137,7 +127,7 @@ namespace etl
     //*********************************************************************
     const_iterator cend() const
     {
-      return &p_buffer[current_size];
+      return const_iterator(&p_buffer[current_size]);
     }
 
     //*********************************************************************
@@ -204,30 +194,7 @@ namespace etl
     {
       ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(vector_full));
 
-      // Choose the algorithm according to type.
-      // The unused branch should be optimised away.
-      if (is_simple_type<value_type>::value)
-      {
-        current_size = new_size;
-      }
-      else
-      {
-        // Size up or size down?
-        if (new_size > current_size)
-        {
-          while (current_size < new_size)
-          {
-            create_element();
-          }
-        }
-        else if (new_size < current_size)
-        {
-          while (current_size > new_size)
-          {
-            destroy_element();
-          }
-        }
-      }
+      current_size = new_size;
     }
 
     //*********************************************************************
@@ -237,41 +204,17 @@ namespace etl
     ///\param new_size The new size.
     ///\param value   The value to fill new elements with. Default = default constructed value.
     //*********************************************************************
-    void resize(size_t new_size, T value)
+    void resize(size_t new_size, value_type value)
     {
       ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(vector_full));
 
-      // Choose the algorithm according to type.
-      // The unused branch should be optimised away.
-      if (is_simple_type<value_type>::value)
+      // Size up if necessary.
+      while (current_size < new_size)
       {
-        // Size up if necessary.
-        while (current_size < new_size)
-        {
-          p_buffer[current_size++] = value;
-        }
+        p_buffer[current_size++] = value;
+      }
 
-        current_size = new_size;
-      }
-      else
-      {
-        // Size up?
-        if (new_size > current_size)
-        {
-          while (current_size < new_size)
-          {
-            create_element(value);
-          }
-        }
-        // Size down?
-        else if (new_size < current_size)
-        {
-          while (current_size > new_size)
-          {
-            destroy_element();
-          }
-        }
-      }
+      current_size = new_size;
     }
 
     //*********************************************************************
@@ -291,7 +234,7 @@ namespace etl
     //*********************************************************************
     const_reference operator [](size_t i) const
     {
-      return p_buffer[i];
+      return const_reference(p_buffer[i]);
     }
 
     //*********************************************************************
@@ -315,7 +258,7 @@ namespace etl
     const_reference at(size_t i) const
     {
       ETL_ASSERT(i < current_size, ETL_ERROR(vector_out_of_bounds));
-      return p_buffer[i];
+      return const_reference(p_buffer[i]);
     }
 
     //*********************************************************************
@@ -333,7 +276,7 @@ namespace etl
     //*********************************************************************
     const_reference front() const
     {
-      return p_buffer[0];
+      return const_reference(p_buffer[0]);
     }
 
     //*********************************************************************
@@ -351,7 +294,7 @@ namespace etl
     //*********************************************************************
     const_reference back() const
     {
-      return p_buffer[current_size - 1];
+      return const_reference(p_buffer[current_size - 1]);
     }
 
     //*********************************************************************
@@ -369,7 +312,7 @@ namespace etl
     //*********************************************************************
     const_pointer data() const
     {
-      return p_buffer;
+      return const_pointer(p_buffer);
     }
 
     //*********************************************************************
@@ -389,22 +332,9 @@ namespace etl
 
       initialise();
 
-      // Choose the algorithm according to type.
-      // The unused branch should be optimised away.
-      if (is_simple_type<value_type>::value)
+      while (first != last)
       {
-        while (first != last)
-        {
-          p_buffer[current_size++] = *first++;
-        }
-      }
-      else
-      {
-        while (first != last)
-        {
-          create_element(*first);
-          ++first;
-        }
+        p_buffer[current_size++] = const_cast<void*>(*first++);
       }
     }
 
@@ -414,29 +344,15 @@ namespace etl
     ///\param n     The number of elements to add.
     ///\param value The value to insert for each element.
     //*********************************************************************
-    void assign(size_t n, parameter_t value)
+    void assign(size_t n, value_type value)
     {
       initialise();
 
       ETL_ASSERT(n <= MAX_SIZE, ETL_ERROR(vector_full));
 
-      // Choose the algorithm according to type.
-      // The unused branch should be optimised away.
-      if (is_simple_type<value_type>::value)
+      for (size_t current_size = 0; current_size < n; ++current_size)
       {
-        while (n > 0)
-        {
-          p_buffer[current_size++] = value;
-          --n;
-        }
-      }
-      else
-      {
-        while (n > 0)
-        {
-          create_element(value);
-          --n;
-        }
+        p_buffer[current_size] = value;
       }
     }
 
@@ -457,7 +373,8 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(current_size != MAX_SIZE, ETL_ERROR(vector_full));
 #endif
-      create_element();
+
+      ++current_size;
     }
 
     //*********************************************************************
@@ -465,12 +382,12 @@ namespace etl
     /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
     ///\param value The value to add.
     //*********************************************************************
-    void push_back(parameter_t value)
+    void push_back(value_type value)
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(current_size != MAX_SIZE, ETL_ERROR(vector_full));
 #endif
-      create_element(value);
+      p_buffer[current_size++] = value;
     }
 
     //*************************************************************************
@@ -482,7 +399,7 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(current_size > 0, ETL_ERROR(vector_empty));
 #endif
-      destroy_element();
+      --current_size;
     }
 
     //*********************************************************************
@@ -491,19 +408,19 @@ namespace etl
     ///\param position The position to insert before.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, parameter_t value)
+    iterator insert(iterator position, value_type value)
     {
       ETL_ASSERT((current_size)+1 <= MAX_SIZE, ETL_ERROR(vector_full));
 
       if (position != end())
       {
-        create_element();
+        ++current_size;
         std::copy_backward(position, end() - 1, end());
         *position = value;
       }
       else
       {
-        create_element(value);
+        p_buffer[current_size++] = value;
       }
 
       return position;
@@ -516,7 +433,7 @@ namespace etl
     ///\param n        The number of elements to add.
     ///\param value    The value to insert.
     //*********************************************************************
-    void insert(iterator position, size_t n, parameter_t value)
+    void insert(iterator position, size_t n, value_type value)
     {
       ETL_ASSERT((current_size)+1 <= MAX_SIZE, ETL_ERROR(vector_full));
 
@@ -524,7 +441,7 @@ namespace etl
       {
         while (n > 0)
         {
-          create_element(value);
+          p_buffer[current_size++] = value;
           --n;
         }
       }
@@ -539,7 +456,7 @@ namespace etl
 
         for (size_t i = 0; i < n_create_copy; ++i)
         {
-          create_element_at(to--, p_buffer[from--]);
+          p_buffer[to--] = p_buffer[from--];
         }
 
         // Copy old.
@@ -558,10 +475,9 @@ namespace etl
 
         // Create new.
         to = size();
-
         for (size_t i = 0; i < n_create_new; ++i)
         {
-          create_element_at(to++, value);
+          p_buffer[to++] = value;
         }
 
         current_size += n_insert;
@@ -576,9 +492,8 @@ namespace etl
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.
     //*********************************************************************
-    template <class TIterator>
-    typename etl::enable_if<is_simple_type<typename std::iterator_traits<TIterator>::value_type>::value, void>::type
-    insert(iterator position, TIterator first, TIterator last)
+    template <typename TIterator>
+    void insert(iterator position, TIterator first, TIterator last)
     {
       size_t count = std::distance(first, last);
 
@@ -601,7 +516,6 @@ namespace etl
         size_t to = from + n_insert;
         size_t n_move = std::distance(position, end());
         size_t n_create_copy = std::min(n_insert, n_move);
-
         for (size_t i = 0; i < n_create_copy; ++i)
         {
           p_buffer[to--] = p_buffer[from--];
@@ -632,70 +546,6 @@ namespace etl
     }
     
     //*********************************************************************
-    /// Inserts a range of values to the vector.
-    /// If asserts or exceptions are enabled, emits vector_full if the vector does not have enough free space.
-    /// For non-fundamental types.
-    ///\param position The position to insert before.
-    ///\param first    The first element to add.
-    ///\param last     The last + 1 element to add.
-    //*********************************************************************
-    template <class TIterator>
-    typename etl::enable_if<!is_simple_type<typename std::iterator_traits<TIterator>::value_type>::value, void>::type
-    insert(iterator position, TIterator first, TIterator last)
-    {
-      size_t count = std::distance(first, last);
-
-      ETL_ASSERT((current_size)+count <= MAX_SIZE, ETL_ERROR(vector_full));
-
-      if (position == end())
-      {
-        while (first != last)
-        {
-          create_element(*first);
-          ++first;
-        }
-      }
-      else
-      {
-        size_t insert_index = std::distance(begin(), position);
-        size_t n_insert = count;
-
-        // Create copy (backwards).
-        size_t from = size() - 1;
-        size_t to = from + n_insert;
-        size_t n_move = std::distance(position, end());
-        size_t n_create_copy = std::min(n_insert, n_move);
-        for (size_t i = 0; i < n_create_copy; ++i)
-        {
-          create_element_at(to--, p_buffer[from--]);
-        }
-
-        // Copy old.
-        from = insert_index;
-        to = from + n_insert;
-        size_t n_copy_old = (size() > n_insert) ? size() - n_insert : 0;
-        etl::copy_n(&p_buffer[from], n_copy_old, &p_buffer[to]);
-
-        // Copy new.
-        to = insert_index;
-        size_t n_create_new = (n_insert > n_create_copy) ? n_insert - n_create_copy : 0;
-        size_t n_copy_new = (n_insert > n_create_new) ? n_insert - n_create_new : 0;
-        etl::copy_n(first, n_copy_new, &p_buffer[to]);
-        first += n_copy_new;
-
-        // Create new.
-        to = size();
-        for (size_t i = 0; i < n_create_new; ++i)
-        {
-          create_element_at(to++, *first);
-          ++first;
-        }
-
-        current_size += n_insert;
-      }
-    }
-
-    //*********************************************************************
     /// Erases an element.
     ///\param i_element Iterator to the element.
     ///\return An iterator pointing to the element that followed the erased element.
@@ -703,7 +553,7 @@ namespace etl
     iterator erase(iterator i_element)
     {
       std::copy(i_element + 1, end(), i_element);
-      destroy_element();
+      --current_size;
 
       return i_element;
     }
@@ -721,19 +571,8 @@ namespace etl
       std::copy(last, end(), first);
       size_t n_delete = std::distance(first, last);
 
-      if (is_simple_type<value_type>::value)
-      {
-        // Just adjust the count.
-        current_size -= n_delete;
-      }
-      else
-      {
-        // Destroy the elements left over at the end.
-        while (n_delete-- > 0)
-        {
-          destroy_element();
-        }
-      }
+      // Just adjust the count.
+      current_size -= n_delete;
 
       return first;
     }
@@ -741,7 +580,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    ivector& operator = (const ivector& rhs)
+    pvoidvector& operator = (const pvoidvector& rhs)
     {
       if (&rhs != this)
       {
@@ -756,7 +595,7 @@ namespace etl
     //*********************************************************************
     /// Constructor.
     //*********************************************************************
-    ivector(T* p_buffer, size_t MAX_SIZE)
+    pvoidvector(void** p_buffer, size_t MAX_SIZE)
       : vector_base(MAX_SIZE),
         p_buffer(p_buffer)
     {
@@ -767,141 +606,22 @@ namespace etl
     //*********************************************************************
     void initialise()
     {
-      // Choose the algorithm according to type.
-      // The unused branch should be optimised away.
-      if (is_simple_type<value_type>::value)
-      {
-        current_size = 0;
-      }
-      else
-      {
-        while (current_size > 0)
-        {
-          destroy_element();
-        }
-      }
+      current_size = 0;
     }
 
-    T* p_buffer;
+    void** p_buffer;
 
   private:
 
-    //*********************************************************************
-    /// Create a new element with a default value at the back.
-    //*********************************************************************
-    inline void create_element()
-    {
-      new(&p_buffer[current_size++]) T();
-    }
-
-    //*********************************************************************
-    /// Create a new element with a value at the back
-    //*********************************************************************
-    inline void create_element(parameter_t value)
-    {
-      new(&p_buffer[current_size++]) T(value);
-    }
-
-    //*********************************************************************
-    /// Create a new element with a value at the index
-    //*********************************************************************
-    inline void create_element_at(size_t index, parameter_t value)
-    {
-      new(&p_buffer[index]) T(value);
-    }
-
-    //*********************************************************************
-    /// Destroy an element at the back.
-    //*********************************************************************
-    inline void destroy_element()
-    {
-      p_buffer[--current_size].~T();
-    }
-
     // Disable copy construction.
-    ivector(const ivector&);
+    pvoidvector(const pvoidvector&);
   };
-
-  //***************************************************************************
-  /// Equal operator.
-  ///\param lhs Reference to the first vector.
-  ///\param rhs Reference to the second vector.
-  ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
-  ///\ingroup vector
-  //***************************************************************************
-  template <typename T>
-  bool operator ==(const etl::ivector<T>& lhs, const etl::ivector<T>& rhs)
-  {
-    return (lhs.size() == rhs.size()) && std::equal(lhs.begin(), lhs.end(), rhs.begin());
-  }
-
-  //***************************************************************************
-  /// Not equal operator.
-  ///\param lhs Reference to the first vector.
-  ///\param rhs Reference to the second vector.
-  ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
-  ///\ingroup vector
-  //***************************************************************************
-  template <typename T>
-  bool operator !=(const etl::ivector<T>& lhs, const etl::ivector<T>& rhs)
-  {
-    return !(lhs == rhs);
-  }
-
-  //***************************************************************************
-  /// Less than operator.
-  ///\param lhs Reference to the first vector.
-  ///\param rhs Reference to the second vector.
-  ///\return <b>true</b> if the first vector is lexicographically less than the second, otherwise <b>false</b>
-  ///\ingroup vector
-  //***************************************************************************
-  template <typename T>
-  bool operator <(const etl::ivector<T>& lhs, const etl::ivector<T>& rhs)
-  {
-    return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
-  }
-
-  //***************************************************************************
-  /// Greater than operator.
-  ///\param lhs Reference to the first vector.
-  ///\param rhs Reference to the second vector.
-  ///\return <b>true</b> if the first vector is lexicographically greater than the second, otherwise <b>false</b>
-  ///\ingroup vector
-  //***************************************************************************
-  template <typename T>
-  bool operator >(const etl::ivector<T>& lhs, const etl::ivector<T>& rhs)
-  {
-    return (rhs < lhs);
-  }
-
-  //***************************************************************************
-  /// Less than or equal operator.
-  ///\param lhs Reference to the first vector.
-  ///\param rhs Reference to the second vector.
-  ///\return <b>true</b> if the first vector is lexicographically less than or equal to the second, otherwise <b>false</b>
-  ///\ingroup vector
-  //***************************************************************************
-  template <typename T>
-  bool operator <=(const etl::ivector<T>& lhs, const etl::ivector<T>& rhs)
-  {
-    return !(lhs > rhs);
-  }
-
-  //***************************************************************************
-  /// Greater than or equal operator.
-  ///\param lhs Reference to the first vector.
-  ///\param rhs Reference to the second vector.
-  ///\return <b>true</b> if the first vector is lexicographically greater than or equal to the second, otherwise <b>false</b>
-  ///\ingroup vector
-  //***************************************************************************
-  template <typename T>
-  bool operator >=(const etl::ivector<T>& lhs, const etl::ivector<T>& rhs)
-  {
-    return !(lhs < rhs);
-  }
 }
 
-#include "private/ivectorpointer.h"
+#ifdef ETL_COMPILER_MICROSOFT
+#define min(a,b) (((a) < (b)) ? (a) : (b))
+#endif
 
-#undef __ETL_IN_IVECTOR_H__
+#undef __ETL_IN_PVOIDVECTOR__
+
 #endif

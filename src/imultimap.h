@@ -42,8 +42,9 @@ SOFTWARE.
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "pool.h"
+#include "platform.h"
 
-#if WIN32
+#ifdef ETL_COMPILER_MICROSOFT
 #undef min
 #endif
 
@@ -282,7 +283,7 @@ namespace etl
       // Pointer to the current node for this iterator
       Node* p_node;
     };
-    friend iterator;
+    friend class iterator;
 
     //*************************************************************************
     /// const_iterator
@@ -392,7 +393,7 @@ namespace etl
       // Pointer to the current node for this iterator
       const Node* p_node;
     };
-    friend const_iterator;
+    friend class const_iterator;
 
     typedef typename std::iterator_traits<iterator>::difference_type difference_type;
 
@@ -1385,11 +1386,7 @@ bool operator <(const etl::imultimap<TKey, TMapped, TKeyCompare>& lhs, const etl
 template <typename TKey, typename TMapped, typename TKeyCompare>
 bool operator >(const etl::imultimap<TKey, TMapped, TKeyCompare>& lhs, const etl::imultimap<TKey, TMapped, TKeyCompare>& rhs)
 {
-  return std::lexicographical_compare(lhs.begin(),
-                                      lhs.end(),
-                                      rhs.begin(),
-                                      rhs.end(),
-                                      std::greater<TMapped>());
+  return (rhs < lhs);
 }
 
 //*************************************************************************
@@ -1402,7 +1399,7 @@ bool operator >(const etl::imultimap<TKey, TMapped, TKeyCompare>& lhs, const etl
 template <typename TKey, typename TMapped, typename TKeyCompare>
 bool operator <=(const etl::imultimap<TKey, TMapped, TKeyCompare>& lhs, const etl::imultimap<TKey, TMapped, TKeyCompare>& rhs)
 {
-  return !operator >(lhs, rhs);
+  return !(lhs > rhs);
 }
 
 //*************************************************************************
@@ -1415,10 +1412,10 @@ bool operator <=(const etl::imultimap<TKey, TMapped, TKeyCompare>& lhs, const et
 template <typename TKey, typename TMapped, typename TKeyCompare>
 bool operator >=(const etl::imultimap<TKey, TMapped, TKeyCompare>& lhs, const etl::imultimap<TKey, TMapped, TKeyCompare>& rhs)
 {
-  return !operator <(lhs, rhs);
+  return !(lhs < rhs);
 }
 
-#if WIN32
+#ifdef ETL_COMPILER_MICROSOFT
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 #endif
 

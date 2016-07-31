@@ -38,6 +38,10 @@ SOFTWARE.
 // Test classes for polymorphic tests.
 struct base
 {
+  virtual ~base()
+  {
+  }
+
   base()
     : value(0)
   {

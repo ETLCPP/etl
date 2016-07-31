@@ -416,11 +416,7 @@ namespace etl
   template <typename T, std::size_t SIZE>
   bool operator <=(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
-    return !std::lexicographical_compare(lhs.cbegin(),
-                                         lhs.cend(), 
-                                         rhs.cbegin(),
-                                         rhs.cend(),
-                                         std::greater<T>());
+    return !(lhs > rhs);
   }
 
   //*************************************************************************
@@ -432,11 +428,7 @@ namespace etl
   //*************************************************************************
   bool operator >(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
-    return std::lexicographical_compare(lhs.cbegin(),
-                                        lhs.cend(), 
-                                        rhs.cbegin(), 
-                                        rhs.cend(),
-                                        std::greater<T>());
+    return (rhs < lhs);
   }
 
   //*************************************************************************
@@ -448,24 +440,21 @@ namespace etl
   template <typename T, std::size_t SIZE>
   bool operator >=(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
-    return !std::lexicographical_compare(lhs.cbegin(), 
-                                         lhs.cend(), 
-                                         rhs.cbegin(),
-                                         rhs.cend());
+    return !(lhs < rhs);
   }
 
   //*************************************************************************
   /// Gets a reference to an element in the array.
   ///\tparam I The index.
   ///\tparam T The type.
-  ///\tparam N The array size.
+  ///\tparam MAXN The array size.
   ///\param a The array.
   ///\return A reference to the element
   //*************************************************************************
-  template <std::size_t I, typename T, std::size_t N>
-  inline T& get(array<T, N>& a)
+  template <std::size_t I, typename T, std::size_t MAXN>
+  inline T& get(array<T, MAXN>& a)
   {
-    STATIC_ASSERT(I < N, "Index out of bounds");
+    STATIC_ASSERT(I < MAXN, "Index out of bounds");
     return a[I];
   }
 
@@ -473,14 +462,14 @@ namespace etl
   /// Gets a const reference to an element in the array.
   ///\tparam I The index.
   ///\tparam T The type.
-  ///\tparam N The array size.
+  ///\tparam MAXN The array size.
   ///\param a The array.
   ///\return A const reference to the element
   //*************************************************************************
-  template <std::size_t I, typename T, std::size_t N>
-  inline const T& get(const array<T, N>& a)
+  template <std::size_t I, typename T, std::size_t MAXN>
+  inline const T& get(const array<T, MAXN>& a)
   {
-    STATIC_ASSERT(I < N, "Index out of bounds");
+    STATIC_ASSERT(I < MAXN, "Index out of bounds");
     return a[I];
   }
 }

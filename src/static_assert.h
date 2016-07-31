@@ -36,13 +36,18 @@ SOFTWARE.
 #elif defined(ETL_COMPILER_GCC)
   #define STATIC_ASSERT(Condition, Message) static_assert(Condition, Message)
 #else
-	template <bool Condition>
-  struct STATIC_ASSERTION_FAILURE;
+  template <bool Condition>
+  struct STATIC_ASSERT_FAILED;
 
   template <>
-  struct STATIC_ASSERTION_FAILURE<true> {};
+  struct STATIC_ASSERT_FAILED<true> {};
 
-  #define STATIC_ASSERT(Condition, Message) enum { assertdummy = sizeof(STATIC_ASSERTION_FAILURE<(bool)(Condition)>) }
+  #define ETL_FCAT(a,b)	           a##b
+  #define ETL_ACAT(a,b)            ETL_FCAT(a,b)
+  #define STATIC_ASSERT(cond,msg)                                                \
+		  enum                                                                   \
+		  {  ETL_ACAT(dummy,__LINE__)=sizeof(STATIC_ASSERT_FAILED<(bool)(cond)>) \
+	  	  }
 #endif
 
 #endif

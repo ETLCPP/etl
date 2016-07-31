@@ -59,17 +59,17 @@ SOFTWARE.
 /// <b>Using the enumeration.</b>
 ///\code
 /// CompassDirection direction;          // Default construction.
-/// 
+///
 /// direction = CompassDirection::North; // Assignment from an enumeration constant;
-/// 
+///
 /// int value = direction;               // Implicit conversion to 'int'.
-/// 
+///
 /// direction = CompassDirection(value); // Explicit conversion from 'int'.
-/// 
+///
 /// direction = CompassDirection(3);     // Explicit conversion from an invalid value. This unfortunately cannot be avoided. Caveat emptor!
-/// 
-/// direction = value;                   // **** Compilation error ****
-/// 
+///
+/// direction = value;                   // Implicit conversion from 'int'. **** Compilation error ****
+///
 /// std::cout << "Direction = " << direction.c_str(); // Prints "Direction = North"
 ///\endcode
 /// If a conversion to a string is not required then the 'ENUM_TYPE' declaration may be omitted.

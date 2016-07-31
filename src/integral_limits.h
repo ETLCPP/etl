@@ -35,8 +35,9 @@ SOFTWARE.
 #include <stddef.h>
 
 #include "type_traits.h"
+#include "platform.h"
 
-#if WIN32
+#ifdef ETL_COMPILER_MICROSOFT
 #undef min
 #undef max
 #endif
@@ -200,7 +201,7 @@ namespace etl
   };
 }
 
-#if WIN32
+#ifdef ETL_COMPILER_MICROSOFT
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 #define max(a,b) (((a) > (b)) ? (a) : (b))
 #endif

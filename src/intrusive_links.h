@@ -32,6 +32,7 @@ SOFTWARE.
 #define __ETL_INTRUSIVE_LINKS__
 
 #include <assert.h>
+#include <utility>
 
 #include "nullptr.h"
 #include "type_traits.h"
@@ -62,7 +63,7 @@ namespace etl
       AUTO,
       CHECKED
     };
-  };
+  }
 
   namespace count_option
   {
@@ -130,7 +131,7 @@ namespace etl
   //***************************************************************************
   /// A forward link.
   //***************************************************************************
-  template <const size_t ID_ = 0, const size_t OPTION_ = etl::link_option::DEFAULT>
+  template <const size_t ID_, const size_t OPTION_ = etl::link_option::DEFAULT>
   struct forward_link
     : public __private_intrusive_links__::forward_link_base<forward_link<ID_, OPTION_>, ID_, OPTION_>
   {
@@ -289,12 +290,13 @@ namespace etl
   {
     if (node.etl_next != nullptr)
     {
-      node.etl_next = node.etl_next->etl_next;
+      TLink* unlinked_node = node.etl_next;
+      node.etl_next = unlinked_node->etl_next;
 
       if ((int(TLink::OPTION) == etl::link_option::AUTO) ||
           (int(TLink::OPTION) == etl::link_option::CHECKED))
       {
-        node.clear();
+        unlinked_node->clear();
       }
     }
   }
@@ -368,7 +370,7 @@ namespace etl
   //***************************************************************************
   /// A bidirectional link.
   //***************************************************************************
-  template <const size_t ID_ = 0, const size_t OPTION_ = etl::link_option::DEFAULT>
+  template <const size_t ID_, const size_t OPTION_ = etl::link_option::DEFAULT>
   struct bidirectional_link
     : public __private_intrusive_links__::bidirectional_link_base<bidirectional_link<ID_, OPTION_>, ID_, OPTION_>
   {
@@ -681,7 +683,7 @@ namespace etl
   //***************************************************************************
   /// A tree link.
   //***************************************************************************
-  template <const size_t ID_ = 0, const size_t OPTION_ = etl::link_option::DEFAULT>
+  template <const size_t ID_, const size_t OPTION_ = etl::link_option::DEFAULT>
   struct tree_link
     : public __private_intrusive_links__::tree_link_base<tree_link<ID_, OPTION_>, ID_, OPTION_>
   {

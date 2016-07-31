@@ -31,14 +31,23 @@ SOFTWARE.
 #ifndef __ETL_CHAR_TRAITS__
 #define __ETL_CHAR_TRAITS__
 
+#include <algorithm>
+
+#include "platform.h"
 #include "stdint.h"
-#include "algorithms.h"
+#include "algorithm.h"
 
 //*****************************************************************************
 ///\defgroup char_traits char_traits
 /// Character traits
 ///\ingroup string
 //*****************************************************************************
+
+// Define the large character types if necessary.
+#ifdef NO_LARGE_CHAR_SUPPORT
+typedef int16_t char16_t;
+typedef int32_t char32_t;
+#endif
 
 namespace etl
 {
@@ -81,11 +90,17 @@ namespace etl
   };
   
   //***************************************************************************
-  /// Specialisation for char.
+  /// Character traits for any character type.
   //***************************************************************************
   template<typename T>
   struct char_traits : public char_traits_types<T>
   {   
+    typedef typename char_traits_types<T>::char_type  char_type;
+    typedef typename char_traits_types<T>::int_type   int_type;
+    typedef typename char_traits_types<T>::off_type   off_type;
+    typedef typename char_traits_types<T>::pos_type   pos_type;
+    typedef typename char_traits_types<T>::state_type state_type;
+    
     //*************************************************************************
     static bool eq(char_type a, char_type b)
     {
@@ -99,7 +114,7 @@ namespace etl
     }     
     
     //*************************************************************************
-    static size_t length(const char* str)
+    static size_t length(const char_type* str)
     {
       size_t count = 0;
           
@@ -117,7 +132,7 @@ namespace etl
     //*************************************************************************
     static void assign(char_type& r, const char_type& c)
     {
-      r = a;
+      r = c;
     }
     
     //*************************************************************************
@@ -134,15 +149,15 @@ namespace etl
     //*************************************************************************
     static char_type* move(char_type* dest, const char_type* src, size_t count)
     {
-      if ((dest < src) || (dest > (src + count))
+      if ((dest < src) || (dest > (src + count)))
       {
         etl::copy_n(src, src + count, dest);
       }
       else
       {
-        etl::copy_n(std::reverse_iterator(src + count), 
-                    std::reverse_iterator(src), 
-                    std::reverse_iterator(dest + count));  
+        etl::copy_n(std::reverse_iterator<char_type*>(src + count),
+                    count,
+                    std::reverse_iterator<char_type*>(dest + count));
       }
       
       return dest;

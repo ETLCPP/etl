@@ -39,8 +39,9 @@ SOFTWARE.
 #include "integral_limits.h"
 #include "binary.h"
 #include "algorithm.h"
+#include "platform.h"
 
-#if WIN32
+#ifdef ETL_COMPILER_MICROSOFT
 #undef min
 #endif
 
@@ -704,7 +705,7 @@ namespace etl
 }
 
 
-#if WIN32
+#ifdef ETL_COMPILER_MICROSOFT
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 #endif
 

@@ -42,7 +42,7 @@ SOFTWARE.
 
 //*****************************************************************************
 ///\defgroup stack stack
-/// A First-in / first-out stack with the capacity defined at compile time,
+/// A Last-in / first-out stack with the capacity defined at compile time,
 /// written in the STL style.
 ///\ingroup containers
 //*****************************************************************************

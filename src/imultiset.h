@@ -42,8 +42,9 @@ SOFTWARE.
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "pool.h"
+#include "platform.h"
 
-#if WIN32
+#ifdef ETL_COMPILER_MICROSOFT
 #undef min
 #endif
 
@@ -263,7 +264,7 @@ namespace etl
       // Pointer to the current node for this iterator
       Node* p_node;
     };
-    friend iterator;
+    friend class iterator;
 
     //*************************************************************************
     /// const_iterator
@@ -373,7 +374,7 @@ namespace etl
       // Pointer to the current node for this iterator
       const Node* p_node;
     };
-    friend const_iterator;
+    friend class const_iterator;
 
     typedef typename std::iterator_traits<iterator>::difference_type difference_type;
 
@@ -1366,11 +1367,7 @@ bool operator <(const etl::imultiset<T, TCompare>& lhs, const etl::imultiset<T, 
 template <typename T, typename TCompare>
 bool operator >(const etl::imultiset<T, TCompare>& lhs, const etl::imultiset<T, TCompare>& rhs)
 {
-  return std::lexicographical_compare(lhs.begin(),
-                                      lhs.end(),
-                                      rhs.begin(),
-                                      rhs.end(),
-                                      std::greater<T>());
+  return (rhs < lhs);
 }
 
 //*************************************************************************
@@ -1383,7 +1380,7 @@ bool operator >(const etl::imultiset<T, TCompare>& lhs, const etl::imultiset<T, 
 template <typename T, typename TCompare>
 bool operator <=(const etl::imultiset<T, TCompare>& lhs, const etl::imultiset<T, TCompare>& rhs)
 {
-  return !operator >(lhs, rhs);
+  return !(lhs > rhs);
 }
 
 //*************************************************************************
@@ -1396,10 +1393,10 @@ bool operator <=(const etl::imultiset<T, TCompare>& lhs, const etl::imultiset<T,
 template <typename T, typename TCompare>
 bool operator >=(const etl::imultiset<T, TCompare>& lhs, const etl::imultiset<T, TCompare>& rhs)
 {
-  return !operator <(lhs, rhs);
+  return !(lhs < rhs);
 }
 
-#if WIN32
+#ifdef ETL_COMPILER_MICROSOFT
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 #endif
 

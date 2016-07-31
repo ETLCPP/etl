@@ -49,13 +49,13 @@ SOFTWARE.
 
 namespace etl
 {
-  template <typename T, const size_t MAX_SIZE_>
   //***************************************************************************
   /// A basic_string implementation that uses a fixed size buffer.
   ///\tparam T The element type.
   ///\tparam MAX_SIZE_ The maximum number of elements that can be stored.
   ///\ingroup basic_string
   //***************************************************************************
+  template <typename T, const size_t MAX_SIZE_>
   class basic_string : public ibasic_string<T>
   {
   public:
@@ -72,17 +72,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Constructor, with size.
-    ///\param initialSize The initial size of the basic_string.
-    //*************************************************************************
-    explicit basic_string(size_t count, T c)
-      : ibasic_string<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
-    {
-      ibasic_string<T>::initialise();
-      ibasic_string<T>::resize(initialSize);
-    }
-
-    //*************************************************************************
     /// Constructor, from null terminated text.
     ///\param text The initial text of the basic_string.
     //*************************************************************************
@@ -90,7 +79,7 @@ namespace etl
       : ibasic_string<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
       ibasic_string<T>::initialise();
-      ibasic_string<T>::assign(text, text + etl::char_traits<T>::length(text))
+      ibasic_string<T>::assign(text, text + etl::char_traits<T>::length(text));
     }
 
     //*************************************************************************
@@ -102,7 +91,7 @@ namespace etl
       : ibasic_string<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
       ibasic_string<T>::initialise();
-      ibasic_string<T>::assign(text, text + count)
+      ibasic_string<T>::assign(text, text + count);
     }
     
     //*************************************************************************

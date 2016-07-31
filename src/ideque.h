@@ -1063,7 +1063,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds an item to the back of the deque.
-    /// If asserts or exceptions are enabled, throws an etl::deque_full is the deque is already full.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
     ///\param item The item to push to the deque.
     //*************************************************************************
     void push_back(parameter_t item)
@@ -1076,7 +1076,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds one to the front of the deque and returns a reference to the new element.
-    /// If asserts or exceptions are enabled, throws an etl::deque_full is the deque is already full.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
     ///\return A reference to the item to assign to.
     //*************************************************************************
     reference push_back()
@@ -1103,7 +1103,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds an item to the front of the deque.
-    /// If asserts or exceptions are enabled, throws an etl::deque_full is the deque is already full.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
     ///\param item The item to push to the deque.
     //*************************************************************************
     void push_front(parameter_t item)
@@ -1116,7 +1116,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds one to the front of the deque and returns a reference to the new element.
-    /// If asserts or exceptions are enabled, throws an etl::deque_full is the deque is already full.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
     ///\return A reference to the item to assign to.
     //*************************************************************************
     reference push_front()
@@ -1240,7 +1240,7 @@ namespace etl
       _end = iterator(0, *this, p_buffer);
     }
 
-    iterator _begin;    ///Iterator to the _begin item in the deque.
+    iterator _begin;   ///Iterator to the _begin item in the deque.
     iterator _end;     ///Iterator to the _end item in the deque.
     pointer  p_buffer; ///The buffer for the deque.
 
@@ -1409,7 +1409,7 @@ bool operator !=(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
 /// Less than operator.
 ///\param lhs  Reference to the _begin deque.
 ///\param rhs  Reference to the second deque.
-///\return <b>true</b> if the _begin deque is lexigraphically less than the second, otherwise <b>false</b>
+///\return <b>true</b> if the _begin deque is lexicographically less than the second, otherwise <b>false</b>
 ///\ingroup deque
 //***************************************************************************
 template <typename T>
@@ -1425,43 +1425,39 @@ bool operator <(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
 /// Less than or equal operator.
 ///\param lhs  Reference to the _begin deque.
 ///\param rhs  Reference to the second deque.
-///\return <b>true</b> if the _begin deque is lexigraphically less than or equal to the second, otherwise <b>false</b>
+///\return <b>true</b> if the _begin deque is lexicographically less than or equal to the second, otherwise <b>false</b>
 ///\ingroup deque
 //***************************************************************************
 template <typename T>
 bool operator <=(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
 {
-  return !operator >(lhs, rhs);
+  return !(lhs > rhs);
 }
 
 //***************************************************************************
 /// Greater than operator.
 ///\param lhs  Reference to the _begin deque.
 ///\param rhs  Reference to the second deque.
-///\return <b>true</b> if the _begin deque is lexigraphically greater than the second, otherwise <b>false</b>
+///\return <b>true</b> if the _begin deque is lexicographically greater than the second, otherwise <b>false</b>
 ///\ingroup deque
 //***************************************************************************
 template <typename T>
 bool operator >(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
 {
-  return std::lexicographical_compare(lhs.begin(),
-                                      lhs.end(),
-                                      rhs.begin(),
-                                      rhs.end(),
-                                      std::greater<T>());
+  return (rhs < lhs);
 }
 
 //***************************************************************************
 /// Greater than or equal operator.
 ///\param "lhs  Reference to the _begin deque.
 ///\param "rhs  Reference to the second deque.
-///\return <b>true</b> if the _begin deque is lexigraphically greater than or equal to the second, otherwise <b>false</b>
+///\return <b>true</b> if the _begin deque is lexicographically greater than or equal to the second, otherwise <b>false</b>
 ///\ingroup deque
 //***************************************************************************
 template <typename T>
 bool operator >=(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
 {
-  return !operator <(lhs, rhs);
+  return !(lhs < rhs);
 }
 
 #undef __ETL_IN_IDEQUE_H__

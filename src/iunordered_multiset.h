@@ -49,7 +49,7 @@ SOFTWARE.
 #include "error_handler.h"
 
 #undef ETL_FILE
-#define ETL_FILE "23"
+#define ETL_FILE "26"
 
 namespace etl
 {
@@ -130,7 +130,7 @@ namespace etl
 
     typedef typename parameter_type<TKey>::type key_value_parameter_t;
 
-    typedef etl::forward_link<> link_t;
+    typedef etl::forward_link<0> link_t;
 
     // The nodes that store the elements.
     struct node_t : public link_t
@@ -951,8 +951,8 @@ namespace etl
 
     //*********************************************************************
     /// Returns a range containing all elements with key key in the container.
-    /// The range is defined by two iterators, the first pointing to the first 
-    /// element of the wanted range and the second pointing past the last 
+    /// The range is defined by two iterators, the first pointing to the first
+    /// element of the wanted range and the second pointing past the last
     /// element of the range.
     ///\param key The key to search for.
     ///\return An iterator pair to the range of elements if the key exists, otherwise end().
@@ -977,8 +977,8 @@ namespace etl
 
     //*********************************************************************
     /// Returns a range containing all elements with key key in the container.
-    /// The range is defined by two iterators, the first pointing to the first 
-    /// element of the wanted range and the second pointing past the last 
+    /// The range is defined by two iterators, the first pointing to the first
+    /// element of the wanted range and the second pointing past the last
     /// element of the range.
     ///\param key The key to search for.
     ///\return A const iterator pair to the range of elements if the key exists, otherwise end().

@@ -46,7 +46,7 @@ namespace etl
   //***************************************************************************
   template <typename T>
   class ipool : public pool_base
-  {
+  {   
   public:
 
     typedef T        value_type;
@@ -312,15 +312,15 @@ namespace etl
       return end();
     }
 
-	  //*************************************************************************
-	  /// Allocate an object from the pool.
-	  /// Uses the default constructor.
-	  /// If asserts or exceptions are enabled and there are no more free items an
-	  /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
-	  /// \note The state of the object returned is undefined.
-	  //*************************************************************************
-	  T* allocate()
-	  {
+    //*************************************************************************
+    /// Allocate an object from the pool.
+    /// Uses the default constructor.
+    /// If asserts or exceptions are enabled and there are no more free items an
+    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
+    /// \note The state of the object returned is undefined.
+    //*************************************************************************
+    T* allocate()
+    {
 #if defined(_DEBUG) || defined(DEBUG)
       ETL_ASSERT(items_allocated < MAX_SIZE && !in_use_flags.test(next_free), ETL_ERROR(pool_no_allocation));
 #else
@@ -328,14 +328,16 @@ namespace etl
 #endif
 
       T* result = new(&p_buffer[next_free]) T();
-		  in_use_flags.set(next_free);
-		  next_free = in_use_flags.find_first(false);
-		  ++items_allocated;
-		  return result;
-	  }
+
+      in_use_flags.set(next_free);
+      next_free = in_use_flags.find_first(false);
+      ++items_allocated;
+
+      return result;
+    }
 
     //*************************************************************************
-    /// Allocate an object from the pool from an ititial value.
+    /// Allocate an object from the pool from an initial value.
     /// If asserts or exceptions are enabled and there are no more free items an
     /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
     /// \note The state of the object returned is undefined.
@@ -349,9 +351,11 @@ namespace etl
 #endif
 
       T* result = new(&p_buffer[next_free]) T(initial);
+
       in_use_flags.set(next_free);
       next_free = in_use_flags.find_first(false);
       ++items_allocated;
+
       return result;
     }
     
@@ -377,7 +381,7 @@ namespace etl
       // Does it belong to me?
       ETL_ASSERT(is_in_pool(p_object), ETL_ERROR(pool_object_not_in_pool));
 
-    	// Where is it in the buffer?
+      // Where is it in the buffer?
       typename std::iterator_traits<T*>::difference_type distance = p_object - p_buffer;
       size_t index = static_cast<size_t>(distance);
 

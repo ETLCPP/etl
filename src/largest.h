@@ -149,7 +149,7 @@ namespace etl
       t13 = alignment_of<T13>::value,
       t14 = alignment_of<T14>::value,
       t15 = alignment_of<T15>::value,
-      t16 = alignment_of<T16>::value,
+      t16 = alignment_of<T16>::value
     };
 
   public:

@@ -46,7 +46,21 @@ namespace etl
   namespace __private_hash__
   {
     //*************************************************************************
+    /// Hash to use when size_t is 16 bits.
+    /// T is always expected to be size_t.
+    //*************************************************************************
+    template <typename T>
+    typename enable_if<sizeof(T) == sizeof(uint16_t), size_t>::type
+    generic_hash(uint8_t* begin, uint8_t* end)
+    {
+      uint32_t h = fnv_1a_32(begin, end);
+
+      return static_cast<size_t>(h ^ (h >> 16));
+    }
+
+    //*************************************************************************
     /// Hash to use when size_t is 32 bits.
+    /// T is always expected to be size_t.
     //*************************************************************************
     template <typename T>
     typename enable_if<sizeof(T) == sizeof(uint32_t), size_t>::type
@@ -57,6 +71,7 @@ namespace etl
 
     //*************************************************************************
     /// Hash to use when size_t is 64 bits.
+    /// T is always expected to be size_t.
     //*************************************************************************
     template <typename T>
     typename enable_if<sizeof(T) == sizeof(uint64_t), size_t>::type
@@ -215,20 +230,17 @@ namespace etl
   struct hash<long>
   {
     // If it fits into a size_t.
-    template <typename T = long>
-    typename etl::enable_if<sizeof(size_t) >= sizeof(T), size_t>::type
-    operator ()(T v) const
+    size_t operator ()(long v) const
     {
-      return static_cast<size_t>(v);
-    }
-
-    // If it doesn't fit into a size_t.
-    template <typename T = long>
-    typename etl::enable_if<sizeof(size_t) < sizeof(T), size_t>::type
-    operator ()(T v) const
-    {
-      uint8_t* p = reinterpret_cast<uint8_t*>(&v);
-      return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
+      if (sizeof(size_t) >= sizeof(v))
+      {
+        return static_cast<size_t>(v);
+      }
+      else
+      {
+        uint8_t* p = reinterpret_cast<uint8_t*>(&v);
+        return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
+      }
     }
   };
 
@@ -240,20 +252,17 @@ namespace etl
   struct hash<long long>
   {
     // If it fits into a size_t.
-    template <typename T = long long>
-    typename etl::enable_if<sizeof(size_t) >= sizeof(T), size_t>::type
-      operator ()(T v) const
+    size_t operator ()(long long v) const
     {
-      return static_cast<size_t>(v);
-    }
-
-    // If it doesn't fit into a size_t.
-    template <typename T = long long>
-    typename etl::enable_if<sizeof(size_t) < sizeof(T), size_t>::type
-      operator ()(T v) const
-    {
-      uint8_t* p = reinterpret_cast<uint8_t*>(&v);
-      return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
+      if (sizeof(size_t) >= sizeof(v))
+      {
+        return static_cast<size_t>(v);
+      }
+      else
+      {
+        uint8_t* p = reinterpret_cast<uint8_t*>(&v);
+        return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
+      }
     }
   };
 
@@ -265,20 +274,17 @@ namespace etl
   struct hash<unsigned long>
   {
     // If it fits into a size_t.
-    template <typename T = unsigned long>
-    typename etl::enable_if<sizeof(size_t) >= sizeof(T), size_t>::type
-      operator ()(T v) const
+    size_t  operator ()(unsigned long v) const
     {
-      return static_cast<size_t>(v);
-    }
-
-    // If it doesn't fit into a size_t.
-    template <typename T = unsigned long>
-    typename etl::enable_if<sizeof(size_t) < sizeof(T), size_t>::type
-      operator ()(T v) const
-    {
-      uint8_t* p = reinterpret_cast<uint8_t*>(&v);
-      return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
+      if (sizeof(size_t) >= sizeof(v))
+      {
+        return static_cast<size_t>(v);
+      }
+      else
+      {
+        uint8_t* p = reinterpret_cast<uint8_t*>(&v);
+        return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
+      }
     }
   };
 
@@ -290,20 +296,17 @@ namespace etl
   struct hash<unsigned long long>
   {
     // If it fits into a size_t.
-    template <typename T = unsigned long long>
-    typename etl::enable_if<sizeof(size_t) >= sizeof(T), size_t>::type
-      operator ()(T v) const
+    size_t  operator ()(unsigned long long v) const
     {
-      return static_cast<size_t>(v);
-    }
-
-    // If it doesn't fit into a size_t.
-    template <typename T = unsigned long long>
-    typename etl::enable_if<sizeof(size_t) < sizeof(T), size_t>::type
-      operator ()(T v) const
-    {
-      uint8_t* p = reinterpret_cast<uint8_t*>(&v);
-      return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
+      if (sizeof(size_t) >= sizeof(v))
+      {
+        return static_cast<size_t>(v);
+      }
+      else
+      {
+        uint8_t* p = reinterpret_cast<uint8_t*>(&v);
+        return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
+      }
     }
   };
 
@@ -315,20 +318,17 @@ namespace etl
   struct hash<float>
   {
     // If it's the same size as a size_t.
-    template <typename T = float>
-    typename etl::enable_if<sizeof(size_t) == sizeof(T), size_t>::type
-      operator ()(T v) const
+    size_t operator ()(float v) const
     {
-      return *reinterpret_cast<size_t*>(&v);
-    }
-
-    // If it's not the same size as a size_t.
-    template <typename T = float>
-    typename etl::enable_if<sizeof(size_t) != sizeof(T), size_t>::type
-      operator ()(T v) const
-    {
-      uint8_t* p = reinterpret_cast<uint8_t*>(&v);
-      return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
+      if (sizeof(size_t) == sizeof(v))
+      {
+        return *reinterpret_cast<size_t*>(&v);
+      }
+      else
+      {
+        uint8_t* p = reinterpret_cast<uint8_t*>(&v);
+        return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
+      }
     }
   };
 
@@ -340,20 +340,17 @@ namespace etl
   struct hash<double>
   {
     // If it's the same size as a size_t.
-    template <typename T = double>
-    typename etl::enable_if<sizeof(size_t) == sizeof(T), size_t>::type
-      operator ()(T v) const
+    size_t  operator ()(double v) const
     {
-      return *reinterpret_cast<size_t*>(&v);
-    }
-
-    // If it's not the same size as a size_t.
-    template <typename T = double>
-    typename etl::enable_if<sizeof(size_t) != sizeof(T), size_t>::type
-      operator ()(T v) const
-    {
-      uint8_t* p = reinterpret_cast<uint8_t*>(&v);
-      return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
+      if (sizeof(size_t) == sizeof(v))
+      {
+        return *reinterpret_cast<size_t*>(&v);
+      }
+      else
+      {
+        uint8_t* p = reinterpret_cast<uint8_t*>(&v);
+        return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
+      }
     }
   };
 
@@ -365,20 +362,17 @@ namespace etl
   struct hash<long double>
   {
     // If it's the same size as a size_t.
-    template <typename T = long double>
-    typename etl::enable_if<sizeof(size_t) == sizeof(T), size_t>::type
-      operator ()(T v) const
+    size_t operator ()(long double v) const
     {
-      return *reinterpret_cast<size_t*>(&v);
-    }
-
-    // If it's not the same size as a size_t.
-    template <typename T = long double>
-    typename etl::enable_if<sizeof(size_t) != sizeof(T), size_t>::type
-      operator ()(T v) const
-    {
-      uint8_t* p = reinterpret_cast<uint8_t*>(&v);
-      return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
+      if (sizeof(size_t) == sizeof(v))
+      {
+        return *reinterpret_cast<size_t*>(&v);
+      }
+      else
+      {
+        uint8_t* p = reinterpret_cast<uint8_t*>(&v);
+        return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
+      }
     }
   };
 
@@ -389,38 +383,17 @@ namespace etl
   template <typename T>
   struct hash<T*>
   {
-    // If it's the same size as a size_t.
-    template <typename U = T>
-    typename etl::enable_if<sizeof(size_t) == sizeof(U*), size_t>::type
-      operator ()(U* v) const
+    size_t operator ()(const T* v) const
     {
-      return reinterpret_cast<size_t>(v);
-    }
-
-    // If it's the same size as a size_t.
-    template <typename U = T>
-    typename etl::enable_if<sizeof(size_t) == sizeof(U*), size_t>::type
-      operator ()(const U* v) const
-    {
-      return reinterpret_cast<size_t>(v);
-    }
-
-    // If it's not the same size as a size_t.
-    template <typename U = T>
-    typename etl::enable_if<sizeof(size_t) != sizeof(U*), size_t>::type
-      operator ()(U* v) const
-    {
-      uint8_t* p = reinterpret_cast<uint8_t*>(&v);
-      return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
-    }
-
-    // If it's not the same size as a size_t.
-    template <typename U = T>
-    typename etl::enable_if<sizeof(size_t) != sizeof(U*), size_t>::type
-      operator ()(const U* v) const
-    {
-      const uint8_t* p = reinterpret_cast<const uint8_t*>(&v);
-      return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
+      if (sizeof(size_t) == sizeof(T*))
+      {
+        return reinterpret_cast<size_t>(v);
+      }
+      else
+      {
+        uint8_t* p = reinterpret_cast<uint8_t*>(&v);
+        return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
+      }
     }
   };
 }

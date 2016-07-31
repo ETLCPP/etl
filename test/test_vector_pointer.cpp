@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 http://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2016 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -36,13 +36,13 @@ SOFTWARE.
 
 namespace
 {		
-  SUITE(test_vector)
+  SUITE(test_vector_pointer)
   {
     static const size_t SIZE = 10;
 
-    typedef etl::vector<int, SIZE> Data;
-    typedef etl::ivector<int>      IData;
-    typedef std::vector<int>       Compare_Data;
+    typedef etl::vector<int*, SIZE> Data;
+    typedef etl::ivector<int*>      IData;
+    typedef std::vector<int*>       Compare_Data;
 
     Compare_Data initial_data;
     Compare_Data less_data;
@@ -56,10 +56,25 @@ namespace
     {
       SetupFixture()
       {
-        int n[]         = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-        int n_insert[]  = { 11, 12, 13 };
-        int n_less[]    = { 0, 1, 2, 3, 3, 5, 6, 7, 8, 9 };
-        int n_greater[] = { 0, 1, 2, 4, 4, 5, 6, 7, 8, 9 };
+        int n0 = 0;
+        int n1 = 1;
+        int n2 = 2;
+        int n3 = 3;
+        int n4 = 4;
+        int n5 = 5;
+        int n6 = 6;
+        int n7 = 7;
+        int n8 = 8;
+        int n9 = 9;
+        int n11 = 11;
+        int n12 = 12;
+        int n13 = 13;
+
+
+        int* n[]         = { &n0, &n1, &n2, &n3, &n4, &n5, &n6, &n7, &n8, &n9 };
+        int* n_insert[]  = { &n11, &n12, &n13 };
+        int* n_less[]    = { &n0, &n1, &n2, &n3, &n3, &n5, &n6, &n7, &n8, &n9 };
+        int* n_greater[] = { &n0, &n1, &n2, &n4, &n4, &n5, &n6, &n7, &n8, &n9 };
 
         initial_data.assign(std::begin(n), std::end(n));
         insert_data.assign(std::begin(n_insert), std::end(n_insert));
@@ -106,19 +121,17 @@ namespace
     TEST_FIXTURE(SetupFixture, test_constructor_size_value)
     {
       const size_t INITIAL_SIZE = 5;
-      const int INITIAL_VALUE = 1;
+      int INITIAL_VALUE = 1;
 
-      std::array<int, INITIAL_SIZE> compare_data;
-      compare_data.fill(INITIAL_VALUE);
+      std::array<int*, INITIAL_SIZE> compare_data;
+      compare_data.fill(&INITIAL_VALUE);
 
-      Data data(INITIAL_SIZE, INITIAL_VALUE);
+      Data data(INITIAL_SIZE, &INITIAL_VALUE);
 
       CHECK(data.size() == INITIAL_SIZE);
       CHECK(!data.empty());
 
-      bool is_equal = std::equal(data.begin(),
-                                 data.end(),
-                                 compare_data.begin());
+      bool is_equal = std::equal(data.begin(), data.end(), compare_data.begin());
 
       CHECK(is_equal);
     }
@@ -147,7 +160,7 @@ namespace
       Data data2(data);
       CHECK(data2 == data);
       
-      data2[2] = -1;
+      data2[2] = nullptr;
       CHECK(data2 != data);
     }
 
@@ -159,9 +172,7 @@ namespace
 
       other_data = data;
 
-      bool is_equal = std::equal(data.begin(),
-                                 data.end(),
-                                 other_data.begin());
+      bool is_equal = std::equal(data.begin(), data.end(), other_data.begin());
 
       CHECK(is_equal);
     }
@@ -177,9 +188,7 @@ namespace
 
       idata2 = idata1;
 
-      bool is_equal = std::equal(data1.begin(),
-                                 data1.end(),
-                                 data2.begin());
+      bool is_equal = std::equal(data1.begin(), data1.end(), data2.begin());
 
       CHECK(is_equal);
     }
@@ -192,9 +201,7 @@ namespace
 
       other_data = other_data;
 
-      bool is_equal = std::equal(data.begin(),
-                                 data.end(),
-                                 other_data.begin());
+      bool is_equal = std::equal(data.begin(), data.end(), other_data.begin());
 
       CHECK(is_equal);
     }
@@ -236,13 +243,13 @@ namespace
     {
       const size_t INITIAL_SIZE = 5;
       const size_t NEW_SIZE = 8;
-      const int INITIAL_VALUE = 1;
+      int INITIAL_VALUE = 1;
 
-      Data data(INITIAL_SIZE, INITIAL_VALUE);
-      data.resize(NEW_SIZE, INITIAL_VALUE);
+      Data data(INITIAL_SIZE, &INITIAL_VALUE);
+      data.resize(NEW_SIZE, &INITIAL_VALUE);
 
-      std::array<int, NEW_SIZE> compare_data;
-      compare_data.fill(INITIAL_VALUE);
+      std::array<int*, NEW_SIZE> compare_data;
+      compare_data.fill(&INITIAL_VALUE);
 
       bool is_equal = std::equal(data.begin(), data.end(), compare_data.begin());
 
@@ -277,10 +284,10 @@ namespace
     {
       const size_t INITIAL_SIZE = 5;
       const size_t NEW_SIZE = 2;
-      const int INITIAL_VALUE = 1;
+      int INITIAL_VALUE = 1;
 
       Data data(INITIAL_SIZE);
-      data.resize(NEW_SIZE, INITIAL_VALUE);
+      data.resize(NEW_SIZE, &INITIAL_VALUE);
 
       CHECK_EQUAL(data.size(), NEW_SIZE);
     }
@@ -402,9 +409,7 @@ namespace
 
       Data data(compare_data.begin(), compare_data.end());
 
-      bool is_equal = std::equal(data.data(),
-        data.data() + data.size(),
-        compare_data.begin());
+      bool is_equal = std::equal(data.data(), data.data() + data.size(), compare_data.begin());
 
       CHECK(is_equal);
     }
@@ -416,9 +421,7 @@ namespace
 
       const Data data(compare_data.begin(), compare_data.end());
 
-      bool is_equal = std::equal(data.data(),
-                                data.data() + data.size(),
-                                compare_data.begin());
+      bool is_equal = std::equal(data.data(), data.data() + data.size(), compare_data.begin());
 
       CHECK(is_equal);
     }
@@ -432,9 +435,7 @@ namespace
 
       data.assign(compare_data.begin(), compare_data.end());
 
-      bool is_equal = std::equal(data.begin(),
-                                data.end(),
-                                compare_data.begin());
+      bool is_equal = std::equal(data.begin(), data.end(), compare_data.begin());
 
       CHECK(is_equal);
     }
@@ -443,16 +444,14 @@ namespace
     TEST_FIXTURE(SetupFixture, test_assign_size_value)
     {
       const size_t INITIAL_SIZE = 5;
-      const int INITIAL_VALUE = 1;
-      std::array<int, INITIAL_SIZE> compare_data;
-      compare_data.fill(INITIAL_VALUE);
+      int INITIAL_VALUE = 1;
+      std::array<int*, INITIAL_SIZE> compare_data;
+      compare_data.fill(&INITIAL_VALUE);
 
       Data data;
-      data.assign(INITIAL_SIZE, INITIAL_VALUE);
+      data.assign(INITIAL_SIZE, &INITIAL_VALUE);
 
-      bool is_equal = std::equal(data.begin(),
-                                data.end(),
-                                compare_data.begin());
+      bool is_equal = std::equal(data.begin(), data.end(), compare_data.begin());
 
       CHECK(is_equal);
     }
@@ -462,13 +461,13 @@ namespace
     {
       const size_t INITIAL_SIZE = SIZE;
       const size_t EXCESS_SIZE = SIZE + 1;
-      const int INITIAL_VALUE = 1;
-      std::array<int, INITIAL_SIZE> compare_data;
-      compare_data.fill(INITIAL_VALUE);
+      int INITIAL_VALUE = 1;
+      std::array<int*, INITIAL_SIZE> compare_data;
+      compare_data.fill(&INITIAL_VALUE);
 
       Data data;
 
-      CHECK_THROW(data.assign(EXCESS_SIZE, INITIAL_VALUE), etl::vector_full);
+      CHECK_THROW(data.assign(EXCESS_SIZE, &INITIAL_VALUE), etl::vector_full);
     }
 
     //*************************************************************************
@@ -477,19 +476,19 @@ namespace
       Compare_Data compare_data;
       Data data;
 
+      int d;
+
       for (size_t i = 0; i < SIZE; ++i)
       {
-        compare_data.push_back(i);
+        compare_data.push_back(&d);
       }
 
       for (size_t i = 0; i < SIZE; ++i)
       {
-        data.push_back(i);
+        data.push_back(&d);
       }
 
-      bool is_equal = std::equal(data.begin(),
-                                data.end(),
-                                compare_data.begin());
+      bool is_equal = std::equal(data.begin(), data.end(), compare_data.begin());
 
       CHECK(is_equal);
     }
@@ -500,14 +499,14 @@ namespace
       Compare_Data compare_data;
       Data data;
 
-      compare_data.push_back(1);
+      int d;
+
+      compare_data.push_back(&d);
 
       data.push_back();
-      data[0] = 1;
+      data[0] = &d;
 
-      bool is_equal = std::equal(data.begin(),
-                                data.end(),
-                                compare_data.begin());
+      bool is_equal = std::equal(data.begin(), data.end(), compare_data.begin());
 
       CHECK(is_equal);
     }
@@ -517,12 +516,14 @@ namespace
     {
       Data data;
 
+      int d;
+
       for (size_t i = 0; i < SIZE; ++i)
       {
-        data.push_back(i);
+        data.push_back(&d);
       }
 
-      CHECK_THROW(data.push_back(SIZE), etl::vector_full);
+      CHECK_THROW(data.push_back(&d), etl::vector_full);
     }
 
     //*************************************************************************
@@ -561,7 +562,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_insert_position_value)
     {
       const size_t INITIAL_SIZE = 5;
-      const int INITIAL_VALUE   = 1;
+      int INITIAL_VALUE   = 1;
 
       for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
       {
@@ -571,8 +572,8 @@ namespace
         data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
 
-        data.insert(data.begin() + offset, INITIAL_VALUE);
-        compare_data.insert(compare_data.begin() + offset, INITIAL_VALUE);
+        data.insert(data.begin() + offset, &INITIAL_VALUE);
+        compare_data.insert(compare_data.begin() + offset, &INITIAL_VALUE);
 
         CHECK_EQUAL(compare_data.size(), data.size());
 
@@ -588,22 +589,21 @@ namespace
     TEST_FIXTURE(SetupFixture, test_insert_position_value_excess)
     {
       const size_t INITIAL_SIZE     = SIZE;
-      const int INITIAL_VALUE       = 1;
-      const int UNINITIALISED_VALUE = -1;
+      int INITIAL_VALUE       = 1;
 
-      Data data(INITIAL_SIZE, INITIAL_VALUE);
+      Data data(INITIAL_SIZE, &INITIAL_VALUE);
 
       size_t offset = 2;
 
-      CHECK_THROW(data.insert(data.begin() + offset, INITIAL_VALUE), etl::vector_full);
+      CHECK_THROW(data.insert(data.begin() + offset, &INITIAL_VALUE), etl::vector_full);
 
       offset = 0;
 
-      CHECK_THROW(data.insert(data.begin() + offset, INITIAL_VALUE), etl::vector_full);
+      CHECK_THROW(data.insert(data.begin() + offset, &INITIAL_VALUE), etl::vector_full);
 
       offset = data.size();
 
-      CHECK_THROW(data.insert(data.begin() + offset, INITIAL_VALUE), etl::vector_full);
+      CHECK_THROW(data.insert(data.begin() + offset, &INITIAL_VALUE), etl::vector_full);
     }
 
     //*************************************************************************
@@ -611,7 +611,7 @@ namespace
     {
       const size_t INITIAL_SIZE     = 5;
       const size_t INSERT_SIZE      = 3;
-      const int INITIAL_VALUE       = 11;
+      int INITIAL_VALUE = 11;
       
       for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
       {
@@ -620,8 +620,8 @@ namespace
 
         data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
-        data.insert(data.begin() + offset, INSERT_SIZE, INITIAL_VALUE);
-        compare_data.insert(compare_data.begin() + offset, INSERT_SIZE, INITIAL_VALUE);
+        data.insert(data.begin() + offset, INSERT_SIZE, &INITIAL_VALUE);
+        compare_data.insert(compare_data.begin() + offset, INSERT_SIZE, &INITIAL_VALUE);
 
         bool is_equal = std::equal(data.begin(),
                                    data.end(),
@@ -636,25 +636,25 @@ namespace
     {
       const size_t INITIAL_SIZE = SIZE;
       const size_t INSERT_SIZE  = 4;
-      const int INITIAL_VALUE   = 1;
+      int INITIAL_VALUE   = 1;
 
-      Data data(INITIAL_SIZE, INITIAL_VALUE);
+      Data data(INITIAL_SIZE, &INITIAL_VALUE);
 
       size_t offset = 0;
 
-      CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, INITIAL_VALUE), etl::vector_full);
+      CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, &INITIAL_VALUE), etl::vector_full);
 
       offset = 2;
 
-      CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, INITIAL_VALUE), etl::vector_full);
+      CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, &INITIAL_VALUE), etl::vector_full);
 
       offset = 4;
 
-      CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, INITIAL_VALUE), etl::vector_full);
+      CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, &INITIAL_VALUE), etl::vector_full);
 
       offset = data.size();
 
-      CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, INITIAL_VALUE), etl::vector_full);
+      CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, &INITIAL_VALUE), etl::vector_full);
     }
 
     //*************************************************************************
@@ -685,9 +685,9 @@ namespace
     TEST_FIXTURE(SetupFixture, test_insert_position_range_excess)
     {
       const size_t INITIAL_SIZE = 5;
-      const int INITIAL_VALUE   = 1;
+      int INITIAL_VALUE   = 1;
 
-      Data data(INITIAL_SIZE, INITIAL_VALUE);
+      Data data(INITIAL_SIZE, &INITIAL_VALUE);
 
       size_t offset = 0;
 

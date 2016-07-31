@@ -162,13 +162,13 @@ namespace etl
   /// Defines 'type' which is the type of the smallest unsigned integer.
   ///\ingroup smallest
   //***************************************************************************
-  template <const size_t N>
+  template <const size_t NBITS>
   struct smallest_uint_for_bits
   {
   private:
     
     // Determines the index of the best unsigned type for the required number of bits.
-    static const int TYPE_INDEX = ((N >  8) ? 1 : 0) + ((N > 16) ? 1 : 0) + ((N > 32) ? 1 : 0);
+    static const int TYPE_INDEX = ((NBITS >  8) ? 1 : 0) + ((NBITS > 16) ? 1 : 0) + ((NBITS > 32) ? 1 : 0);
 
   public:
 

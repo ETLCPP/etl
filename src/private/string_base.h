@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 http://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2016 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,91 +28,99 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#if !defined(__ETL_IN_IVECTOR_H__) && !defined(__ETL_IN_PVOIDVECTOR__)
-#error This header is a private element of etl::vector, etl::ivector & etl::pvoidvector
+#ifndef __ETL_IN_ISTRING_H__
+#error This header is a private element of etl::string & etl::istring
 #endif
 
-#ifndef __ETL_VECTOR_BASE__
-#define __ETL_VECTOR_BASE__
+#ifndef __ETL_STRING_BASE__
+#define __ETL_STRING_BASE__
 
 #include <stddef.h>
 
+#include "../platform.h"
+#include "../integral_limits.h"
 #include "../exception.h"
 #include "../error_handler.h"
 
-#define ETL_FILE "17"
+#define ETL_FILE "24"
+
+#ifdef ETL_COMPILER_MICROSOFT
+#undef max
+#endif
 
 namespace etl
 {
   //***************************************************************************
-  ///\ingroup vector
-  /// Exception base for vectors
+  ///\ingroup string
+  /// Exception base for strings
   //***************************************************************************
-  class vector_exception : public exception
+  class string_exception : public exception
   {
   public:
 
-    vector_exception(string_type what, string_type file_name, numeric_type line_number)
+    string_exception(string_type what, string_type file_name, numeric_type line_number)
       : exception(what, file_name, line_number)
     {
     }
   };
 
   //***************************************************************************
-  ///\ingroup vector
-  /// Vector full exception.
+  ///\ingroup string
+  /// String empty exception.
   //***************************************************************************
-  class vector_full : public vector_exception
+  class string_empty : public string_exception
   {
   public:
 
-    vector_full(string_type file_name, numeric_type line_number)
-      : vector_exception(ETL_ERROR_TEXT("vector:full", ETL_FILE"A"), file_name, line_number)
+    string_empty(string_type file_name, numeric_type line_number)
+      : string_exception(ETL_ERROR_TEXT("string:empty", ETL_FILE"A"), file_name, line_number)
     {
     }
   };
 
   //***************************************************************************
-  ///\ingroup vector
-  /// Vector empty exception.
+  ///\ingroup string
+  /// String out of bounds exception.
   //***************************************************************************
-  class vector_empty : public vector_exception
+  class string_out_of_bounds : public string_exception
   {
   public:
 
-    vector_empty(string_type file_name, numeric_type line_number)
-      : vector_exception(ETL_ERROR_TEXT("vector:empty", ETL_FILE"B"), file_name, line_number)
+    string_out_of_bounds(string_type file_name, numeric_type line_number)
+      : string_exception(ETL_ERROR_TEXT("string:bounds", ETL_FILE"B"), file_name, line_number)
     {
     }
   };
 
   //***************************************************************************
-  ///\ingroup vector
-  /// Vector out of bounds exception.
+  ///\ingroup string
+  /// String iterator exception.
   //***************************************************************************
-  class vector_out_of_bounds : public vector_exception
+  class string_iterator : public string_exception
   {
   public:
 
-    vector_out_of_bounds(string_type file_name, numeric_type line_number)
-      : vector_exception(ETL_ERROR_TEXT("vector:bounds", ETL_FILE"C"), file_name, line_number)
+    string_iterator(string_type file_name, numeric_type line_number)
+      : string_exception(ETL_ERROR_TEXT("string:iterator", ETL_FILE"D"), file_name, line_number)
     {
     }
   };
 
   //***************************************************************************
-  ///\ingroup vector
-  /// The base class for all templated vector types.
+  ///\ingroup string
+  /// The base class for all templated string types.
   //***************************************************************************
-  class vector_base
+  class string_base
   {
   public:
 
     typedef size_t size_type;
 
+    static const size_t npos = etl::integral_limits<size_t>::max;
+
     //*************************************************************************
-    /// Gets the current size of the vector.
-    ///\return The current size of the vector.
+    /// Gets the current size of the string.
+    ///\return The current size of the string.
     //*************************************************************************
     size_type size() const
     {
@@ -120,7 +128,16 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Checks the 'empty' state of the vector.
+    /// Gets the current size of the string.
+    ///\return The current size of the string.
+    //*************************************************************************
+    size_type length() const
+    {
+      return current_size;
+    }
+
+    //*************************************************************************
+    /// Checks the 'empty' state of the string.
     ///\return <b>true</b> if empty.
     //*************************************************************************
     bool empty() const
@@ -129,7 +146,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Checks the 'full' state of the vector.
+    /// Checks the 'full' state of the string.
     ///\return <b>true</b> if full.
     //*************************************************************************
     bool full() const
@@ -138,8 +155,8 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Returns the capacity of the vector.
-    ///\return The capacity of the vector.
+    /// Returns the capacity of the string.
+    ///\return The capacity of the string.
     //*************************************************************************
     size_type capacity() const
     {
@@ -147,8 +164,8 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Returns the maximum possible size of the vector.
-    ///\return The maximum size of the vector.
+    /// Returns the maximum possible size of the string.
+    ///\return The maximum size of the string.
     //*************************************************************************
     size_type max_size() const
     {
@@ -164,21 +181,36 @@ namespace etl
       return max_size() - size();
     }
 
+    //*************************************************************************
+    /// Returns whether the string was truncated by the lat operation.
+    ///\return Whether the string was truncated by the lat operation.
+    //*************************************************************************
+    size_t truncated() const
+    {
+      return is_truncated;
+    }
+
   protected:
 
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    vector_base(size_t max_size)
-      : current_size(0),
+    string_base(size_t max_size)
+      : is_truncated(false),
+        current_size(0),
         MAX_SIZE(max_size)
     {
     }
 
-    size_type       current_size; ///<The current number of elements in the vector.
-    const size_type MAX_SIZE;     ///<The maximum number of elements in the vector.
+    bool            is_truncated; ///< Set to true if the operation truncated the string.
+    size_type       current_size; ///< The current number of elements in the string.
+    const size_type MAX_SIZE;     ///< The maximum number of elements in the string.
   };
 }
+
+#ifdef ETL_COMPILER_MICROSOFT
+#define max(a,b) (((a) > (b)) ? (a) : (b))
+#endif
 
 #undef ETL_FILE
 

@@ -157,6 +157,7 @@
     <ClInclude Include="..\..\src\algorithm.h" />
     <ClInclude Include="..\..\src\alignment.h" />
     <ClInclude Include="..\..\src\array.h" />
+    <ClInclude Include="..\..\src\basic_string.h" />
     <ClInclude Include="..\..\src\binary.h" />
     <ClInclude Include="..\..\src\bitset.h" />
     <ClInclude Include="..\..\src\bloom_filter.h" />
@@ -215,10 +216,12 @@
     <ClInclude Include="..\..\src\iset.h" />
     <ClInclude Include="..\..\src\istack.h" />
     <ClInclude Include="..\..\src\container.h" />
+    <ClInclude Include="..\..\src\ibasic_string.h" />
     <ClInclude Include="..\..\src\iunordered_map.h" />
     <ClInclude Include="..\..\src\iunordered_multimap.h" />
     <ClInclude Include="..\..\src\iunordered_set.h" />
     <ClInclude Include="..\..\src\ivector.h" />
+    <ClInclude Include="..\..\src\ivectorpointer.h" />
     <ClInclude Include="..\..\src\jenkins.h" />
     <ClInclude Include="..\..\src\largest.h" />
     <ClInclude Include="..\..\src\list.h" />
@@ -239,6 +242,7 @@
     <ClInclude Include="..\..\src\optional.h" />
     <ClInclude Include="..\..\src\parameter_type.h" />
     <ClInclude Include="..\..\src\pearson.h" />
+    <ClInclude Include="..\..\src\platform.h" />
     <ClInclude Include="..\..\src\pool.h" />
     <ClInclude Include="..\..\src\power.h" />
     <ClInclude Include="..\..\src\priority_queue.h" />
@@ -253,6 +257,7 @@
     <ClInclude Include="..\..\src\private\multimap_base.h" />
     <ClInclude Include="..\..\src\private\multiset_base.h" />
     <ClInclude Include="..\..\src\private\pool_base.h" />
+    <ClInclude Include="..\..\src\private\pvoidvector.h" />
     <ClInclude Include="..\..\src\private\queue_base.h" />
     <ClInclude Include="..\..\src\private\set_base.h" />
     <ClInclude Include="..\..\src\private\stack_base.h" />
@@ -265,15 +270,20 @@
     <ClInclude Include="..\..\src\smallest.h" />
     <ClInclude Include="..\..\src\stack.h" />
     <ClInclude Include="..\..\src\static_assert.h" />
+    <ClInclude Include="..\..\src\string.h" />
     <ClInclude Include="..\..\src\test1.h" />
     <ClInclude Include="..\..\src\test2.h" />
+    <ClInclude Include="..\..\src\type_def.h" />
     <ClInclude Include="..\..\src\type_traits.h" />
+    <ClInclude Include="..\..\src\u16string.h" />
+    <ClInclude Include="..\..\src\u32string.h" />
     <ClInclude Include="..\..\src\unordered_map.h" />
     <ClInclude Include="..\..\src\unordered_multiset.h" />
     <ClInclude Include="..\..\src\unordered_set.h" />
     <ClInclude Include="..\..\src\variant.h" />
     <ClInclude Include="..\..\src\vector.h" />
     <ClInclude Include="..\..\src\visitor.h" />
+    <ClInclude Include="..\..\src\wstring.h" />
     <ClInclude Include="..\data.h" />
     <ClInclude Include="..\ExtraCheckMacros.h" />
     <ClInclude Include="..\murmurhash3.h" />
@@ -305,6 +315,7 @@
     <ClCompile Include="..\..\src\crc8_ccitt.cpp" />
     <ClCompile Include="..\..\src\error_handler.cpp" />
     <ClCompile Include="..\..\src\pearson.cpp" />
+    <ClCompile Include="..\..\src\private\pvoidvector.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\murmurhash3.cpp" />
     <ClCompile Include="..\test_algorithm.cpp" />
@@ -374,6 +385,11 @@
     <ClCompile Include="..\test_set.cpp" />
     <ClCompile Include="..\test_smallest.cpp" />
     <ClCompile Include="..\test_stack.cpp" />
+    <ClCompile Include="..\test_string_char.cpp" />
+    <ClCompile Include="..\test_string_u16.cpp" />
+    <ClCompile Include="..\test_string_u32.cpp" />
+    <ClCompile Include="..\test_string_wchar_t.cpp" />
+    <ClCompile Include="..\test_type_def.cpp" />
     <ClCompile Include="..\test_type_traits.cpp" />
     <ClCompile Include="..\test_unordered_map.cpp" />
     <ClCompile Include="..\test_unordered_multimap.cpp" />
@@ -381,11 +397,13 @@
     <ClCompile Include="..\test_unordered_set.cpp" />
     <ClCompile Include="..\test_variant.cpp" />
     <ClCompile Include="..\test_vector.cpp" />
+    <ClCompile Include="..\test_vector_pointer.cpp" />
     <ClCompile Include="..\test_visitor.cpp" />
     <ClCompile Include="..\test_xor_checksum.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Doxyfile" />
+    <None Include="..\..\library.properties" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -32,7 +32,9 @@ SOFTWARE.
 #define __ETL_IFORWARD_LIST__
 #define __ETL_IN_IFORWARD_LIST_H__
 
-#if WIN32
+#include "platform.h"
+
+#ifdef ETL_COMPILER_MICROSOFT
 #undef min
 #endif
 
@@ -993,7 +995,7 @@ bool operator !=(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& 
 /// Less than operator.
 ///\param lhs Reference to the first forward_list.
 ///\param rhs Reference to the second forward_list.
-///\return <b>true</b> if the first forward_list is lexigraphically less than the
+///\return <b>true</b> if the first forward_list is lexicographically less than the
 /// second, otherwise <b>false</b>.
 //*************************************************************************
 template <typename T>
@@ -1009,46 +1011,42 @@ bool operator <(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& r
 /// Greater than operator.
 ///\param lhs Reference to the first forward_list.
 ///\param rhs Reference to the second forward_list.
-///\return <b>true</b> if the first forward_list is lexigraphically greater than the
+///\return <b>true</b> if the first forward_list is lexicographically greater than the
 /// second, otherwise <b>false</b>.
 //*************************************************************************
 template <typename T>
 bool operator >(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& rhs)
 {
-  return std::lexicographical_compare(lhs.begin(),
-                                      lhs.end(),
-                                      rhs.begin(),
-                                      rhs.end(),
-                                      std::greater<T>());
+  return (rhs < lhs);
 }
 
 //*************************************************************************
 /// Less than or equal operator.
 ///\param lhs Reference to the first forward_list.
 ///\param rhs Reference to the second forward_list.
-///\return <b>true</b> if the first forward_list is lexigraphically less than or equal
+///\return <b>true</b> if the first forward_list is lexicographically less than or equal
 /// to the second, otherwise <b>false</b>.
 //*************************************************************************
 template <typename T>
 bool operator <=(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& rhs)
 {
-  return !operator >(lhs, rhs);
+  return !(lhs > rhs);
 }
 
 //*************************************************************************
 /// Greater than or equal operator.
 ///\param lhs Reference to the first forward_list.
 ///\param rhs Reference to the second forward_list.
-///\return <b>true</b> if the first forward_list is lexigraphically greater than or
+///\return <b>true</b> if the first forward_list is lexicographically greater than or
 /// equal to the second, otherwise <b>false</b>.
 //*************************************************************************
 template <typename T>
 bool operator >=(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& rhs)
 {
-  return !operator <(lhs, rhs);
+  return !(lhs < rhs);
 }
 
-#if WIN32
+#ifdef ETL_COMPILER_MICROSOFT
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 #endif
 

@@ -31,7 +31,9 @@ SOFTWARE.
 #ifndef __ETL_INTRUSIVE_FORWARD_LIST__
 #define __ETL_INTRUSIVE_FORWARD_LIST__
 
-#if WIN32
+#include "platform.h"
+
+#ifdef ETL_COMPILER_MICROSOFT
 #undef min
 #endif
 
@@ -127,7 +129,7 @@ namespace etl
   ///\ingroup intrusive_forward_list
   ///\note TLink must be a base of TValue.
   //***************************************************************************
-  template <typename TValue, typename TLink = etl::forward_link<>, const size_t COUNT_OPTION = etl::count_option::FAST_COUNT >
+  template <typename TValue, typename TLink = etl::forward_link<0> >
   class intrusive_forward_list
   {
   public:
@@ -143,7 +145,14 @@ namespace etl
     typedef const value_type& const_reference;
     typedef size_t            size_type;
 
-    typedef intrusive_forward_list<TValue, TLink, COUNT_OPTION> list_type;
+    enum
+    {
+      // The count option is based on the type of link.
+      COUNT_OPTION = ((TLink::OPTION == etl::link_option::AUTO) ||
+                      (TLink::OPTION == etl::link_option::CHECKED)) ? etl::count_option::SLOW_COUNT : etl::count_option::FAST_COUNT
+    };
+
+    typedef intrusive_forward_list<TValue, TLink> list_type;
 
     //*************************************************************************
     /// iterator.
@@ -494,55 +503,32 @@ namespace etl
 
     //*************************************************************************
     /// Inserts a value to the intrusive_forward_list after the specified position.
+    /// Checks that the value is unlinked if CHECKED.
     //*************************************************************************
-    template <typename T = TLink>
-    typename etl::enable_if<T::OPTION == etl::link_option::DEFAULT, iterator>::type
-    insert_after(iterator position, value_type& value)
+    iterator insert_after(iterator position, value_type& value)
     {
-      insert_link_after(*position.p_value, value);
-      return iterator(value);
-    }
-
-    //*************************************************************************
-    /// Inserts a value to the intrusive_forward_list after the specified position.
-    /// Checks that the value is unlinked.
-    //*************************************************************************
-    template <typename T = TLink>
-    typename etl::enable_if<T::OPTION == etl::link_option::CHECKED, iterator>::type
-    insert_after(iterator position, value_type& value)
-    {
-      ETL_ASSERT(!value.TLink::is_linked(), ETL_ERROR(etl::not_unlinked_exception));
-
-      insert_link_after(*position.p_value, value);
-      return iterator(value);
-    }
-
-    //*************************************************************************
-    /// Inserts a range of values to the intrusive_forward_list after the specified position.
-    //*************************************************************************
-    template <typename TIterator, typename T = TLink>
-    typename etl::enable_if<T::OPTION == etl::link_option::DEFAULT, void>::type
-    insert_after(iterator position, TIterator first, TIterator last)
-    {
-      while (first != last)
+      if (TLink::OPTION == etl::link_option::CHECKED)
       {
-        // Set up the next free link.
-        insert_link_after(*position.p_value, *first++);
-        ++position;
+        ETL_ASSERT(!value.TLink::is_linked(), ETL_ERROR(etl::not_unlinked_exception));
       }
+
+      insert_link_after(*position.p_value, value);
+      return iterator(value);
     }
 
     //*************************************************************************
     /// Inserts a range of values to the intrusive_forward_list after the specified position.
-    /// Checks that the values are unlinked.
+    /// Checks that the values are unlinked if CHECKED.
     //*************************************************************************
-    template <typename TIterator, typename T = TLink>
-    typename etl::enable_if<T::OPTION == etl::link_option::CHECKED, void>::type
-    insert_after(iterator position, TIterator first, TIterator last)
+    template <typename TIterator>
+    void insert_after(iterator position, TIterator first, TIterator last)
     {
       while (first != last)
       {
-        ETL_ASSERT(!position.p_value->TLink::is_linked(), ETL_ERROR(etl::not_unlinked_exception));
+        if (TLink::OPTION == etl::link_option::CHECKED)
+        {
+          ETL_ASSERT(!position.p_value->TLink::is_linked(), ETL_ERROR(etl::not_unlinked_exception));
+        }
 
         // Set up the next free link.
         insert_link_after(*position.p_value, *first++);
@@ -552,81 +538,29 @@ namespace etl
 
     //*************************************************************************
     /// Erases the value at the specified position.
+    /// Clears the link after erasing if CHECKED.
     //*************************************************************************
-    template <typename T = TLink>
-    typename etl::enable_if<T::OPTION == etl::link_option::DEFAULT, iterator>::type
-    erase_after(iterator position)
+    iterator erase_after(iterator position)
     {
       iterator next(position);
       ++next;
       ++next;
 
       remove_link_after(*position.p_value);
-
-      return next;
-    }
-
-    //*************************************************************************
-    /// Erases the value at the specified position.
-    /// Clears the link after erasing.
-    //*************************************************************************
-    template <typename T = TLink>
-    typename etl::enable_if<T::OPTION == etl::link_option::CHECKED, iterator>::type
-    erase_after(iterator position)
-    {
-      iterator next(position);
-      ++next;
-      ++next;
-
-      remove_link_after(*position.p_value);
-      position.p_value->TLink::clear();
+      
+      if (TLink::OPTION == etl::link_option::CHECKED)
+      {
+        position.p_value->TLink::clear();
+      }
 
       return next;
     }
 
     //*************************************************************************
     /// Erases a range of elements.
+    /// Clears the links after erasing if CHECKED.
     //*************************************************************************
-    template <typename T = TLink>
-    typename etl::enable_if<T::OPTION == etl::link_option::DEFAULT, iterator>::type
-    erase_after(iterator first, iterator last)
-    {
-      link_type* p_first = first.p_value;
-      link_type* p_last  = last.p_value;
-      link_type* p_next  = p_first->etl_next;
-
-      // Join the ends.
-      etl::link<link_type>(p_first, p_last);
-
-      p_first = p_next;
-
-      // Erase the ones in between.
-      while (p_first != p_last)
-      {
-        // One less.
-        --current_size;
-
-        p_next  = p_first->etl_next; // Remember the next link.
-        p_first = p_next;            // Move to the next link.
-      }
-
-      if (p_next == nullptr)
-      {
-        return end();
-      }
-      else
-      {
-        return iterator(*static_cast<value_type*>(p_last));
-      }
-    }
-
-    //*************************************************************************
-    /// Erases a range of elements.
-    /// Clears the links after erasing.
-    //*************************************************************************
-    template <typename T = TLink>
-    typename etl::enable_if<T::OPTION == etl::link_option::CHECKED, iterator>::type
-    erase_after(iterator first, iterator last)
+    iterator erase_after(iterator first, iterator last)
     {
       link_type* p_first = first.p_value;
       link_type* p_last = last.p_value;
@@ -644,7 +578,12 @@ namespace etl
         --current_size;
 
         p_next = p_first->etl_next; // Remember the next link.
-        p_first->TLink::clear();    // Clear the link.
+
+        if (TLink::OPTION == etl::link_option::CHECKED)
+        {
+          p_first->TLink::clear();    // Clear the link.
+        }
+
         p_first = p_next;           // Move to the next link.
       }
 
@@ -871,27 +810,22 @@ namespace etl
     //*************************************************************************
     /// Returns the number of elements.
     //*************************************************************************
-    template <const size_t OPT = COUNT_OPTION>
-    typename etl::enable_if<OPT == etl::count_option::FAST_COUNT, size_t>::type
-      size() const
+    size_t size() const
     {
-      return current_size.count;
-    }
-
-    //*************************************************************************
-    /// Returns the number of elements.
-    //*************************************************************************
-    template <const size_t OPT = COUNT_OPTION>
-    typename etl::enable_if<OPT == etl::count_option::SLOW_COUNT, size_t>::type
-      size() const
-    {
-      return std::distance(cbegin(), cend());
+      if (COUNT_OPTION == etl::count_option::SLOW_COUNT)
+      {
+        return std::distance(cbegin(), cend());
+      }
+      else
+      {
+        return current_size.get_count();
+      }
     }
 
     //*************************************************************************
     /// Splice another list into this one.
     //*************************************************************************
-    void splice_after(iterator position, list_type& list)
+    void splice_after(iterator position, etl::intrusive_forward_list<TValue, TLink>& list)
     {
       // No point splicing to ourself!
       if (&list != this)
@@ -929,7 +863,7 @@ namespace etl
     //*************************************************************************
     /// Splice an element from another list into this one.
     //*************************************************************************
-    void splice(iterator position, list_type& list, iterator isource)
+    void splice(iterator position, etl::intrusive_forward_list<TValue, TLink>& list, iterator isource)
     {
       link_type& before = *position.p_value;
 
@@ -949,7 +883,7 @@ namespace etl
     //*************************************************************************
     /// Splice a range of elements from another list into this one.
     //*************************************************************************
-    void splice_after(iterator position, list_type& list, iterator begin_, iterator end_)
+    void splice_after(iterator position, etl::intrusive_forward_list<TValue, TLink>& list, iterator begin_, iterator end_)
     {
       if (!list.empty())
       {
@@ -1097,6 +1031,11 @@ namespace etl
       {
         return *this;
       }
+
+      size_t get_count() const
+      {
+        return 0;
+      }
     };
 
     //*************************************************************************
@@ -1140,6 +1079,11 @@ namespace etl
       {
         count -= diff;
         return *this;
+      }
+
+      size_t get_count() const
+      {
+        return count;
       }
 
       size_t count;
@@ -1216,7 +1160,7 @@ namespace etl
   };
 }
 
-#if WIN32
+#ifdef ETL_COMPILER_MICROSOFT
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 #endif
 
