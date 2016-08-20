@@ -148,7 +148,7 @@ namespace etl
     //*********************************************************************
     reverse_iterator rbegin()
     {
-	    return reverse_iterator(end());
+      return reverse_iterator(end());
     }
 
     //*********************************************************************
@@ -157,7 +157,7 @@ namespace etl
     //*********************************************************************
     const_reverse_iterator rbegin() const
     {
-	    return const_reverse_iterator(end());
+      return const_reverse_iterator(end());
     }
 
     //*********************************************************************
@@ -184,7 +184,7 @@ namespace etl
     //*********************************************************************
     const_reverse_iterator crbegin() const
     {
-	    return const_reverse_iterator(cend());
+      return const_reverse_iterator(cend());
     }
 
     //*********************************************************************
@@ -193,7 +193,7 @@ namespace etl
     //*********************************************************************
     const_reverse_iterator crend() const
     {
-	    return const_reverse_iterator(cbegin());
+      return const_reverse_iterator(cbegin());
     }
 
     //*********************************************************************
