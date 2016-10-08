@@ -324,7 +324,7 @@ namespace etl
       const value_type* p_value;
     };
 
-		typedef typename std::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename std::iterator_traits<iterator>::difference_type difference_type;
 
     //*************************************************************************
     /// Constructor.
@@ -657,7 +657,7 @@ namespace etl
 
       if (is_trivial_list())
       {
-	      return;
+        return;
       }
 
       while (true)
@@ -696,32 +696,32 @@ namespace etl
             // Decide whether the next link of merge comes from left or right.
             if (left_size == 0)
             {
-		          // Left is empty. The link must come from right.
-		          i_link = i_right;
+              // Left is empty. The link must come from right.
+              i_link = i_right;
               ++i_right;
               --right_size;
-		        }
+            }
             else if (right_size == 0 || i_right == end())
             {
-		          // Right is empty. The link must come from left.
-		          i_link = i_left;
+              // Right is empty. The link must come from left.
+              i_link = i_left;
               ++i_left;
               --left_size;
-		        }
+            }
             else if (compare(*i_left, *i_right))
             {
-		          // First link of left is lower or same. The link must come from left.
-		          i_link = i_left;
+              // First link of left is lower or same. The link must come from left.
+              i_link = i_left;
               ++i_left;
               --left_size;
-		        }
+            }
             else
             {
-		          // First link of right is lower. The link must come from right.
-		          i_link  = i_right;
+              // First link of right is lower. The link must come from right.
+              i_link  = i_right;
               ++i_right;
               --right_size;
-		        }
+            }
 
             // Add the next link to the merged head.
             if (i_head == before_begin())
