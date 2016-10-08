@@ -114,6 +114,11 @@ namespace etl
         OPTION = OPTION_
       };
 
+      forward_link_base()
+      {
+        clear();
+      }
+
       void clear()
       {
         etl_next = nullptr;
@@ -328,6 +333,11 @@ namespace etl
         ID     = ID_,
         OPTION = OPTION_
       };
+
+      bidirectional_link_base()
+      {
+        clear();
+      }
 
       void clear()
       {
@@ -661,6 +671,11 @@ namespace etl
         ID     = ID_,
         OPTION = OPTION_
       };
+
+      tree_link_base()
+      {
+        clear();
+      }
 
       void clear()
       {
