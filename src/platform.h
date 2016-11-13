@@ -28,19 +28,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
+#include <stdint.h>
+#include "static_assert.h"
+
 // Define the platform.
-// For FreeRTOS you must define ETL_PLATFORM_FREERTOS in the project settings.
-#if defined(__linux__)
-#define ETL_PLATFORM_LINUX
-#elif defined(WIN32) || defined(WIN64)
-#define ETL_PLATFORM_WINDOWS
-#elif defined(__VXWORKS__) || defined(_WRS_VXWORKS_MAJOR)
-#define ETL_PLATFORM_VXWORKS
-#elif defined(__QNX__) || defined(__QNXNTO__)
-#define ETL_PLATFORM_QNX
-#elif defined(_WIN32_WCE)
-#define ETL_PLATFORM_WINDOWS_CE
-#else
+// The target platform will normally be defined as a compiler pre-processor directive.
+// Defines ETL_PLATFORM_GENERIC if a recognised platform is not declared.
+#if !defined(ETL_PLATFORM_LINUX) && !defined(ETL_PLATFORM_WINDOWS) && !defined(ETL_PLATFORM_WINDOWS_CE) && !defined(ETL_PLATFORM_VXWORKS) && !defined(ETL_PLATFORM_QNX)
+#pragma message("ETL: Using generic platform")
 #define ETL_PLATFORM_GENERIC
 #endif
 
@@ -63,11 +58,15 @@ SOFTWARE.
 #define ETL_COMPILER_GENERIC
 #endif
 
+// Check to see if the compiler supports nullptr and large character types.
 #if (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER < 1600)) || \
      defined(ETL_COMPILER_KEIL) || \
      defined(ETL_COMPILER_TI_MSP430) || \
      defined(ETL_COMPILER_IAR) || \
      (defined(ETL_COMPILER_GCC) && (__cplusplus < 201103L))
-#define NO_NULLPTR_SUPPORT
-#define NO_LARGE_CHAR_SUPPORT
+#define ETL_ETL_NO_NULLPTR_SUPPORT
+#define ETL_ETL_NO_LARGE_CHAR_SUPPORT
 #endif
+
+// Some targets do not support 8bit or even 16bit types.
+#define ETL_8BIT_SUPPORT ((sizeof(uint_least8_t) != sizeof(uint16_t)) && (sizeof(uint_least8_t) != sizeof(uint32_t)))
