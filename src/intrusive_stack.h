@@ -118,6 +118,15 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Gets a const reference to the value at the top of the stack.<br>
+    /// \return A const reference to the value at the top of the stack.
+    //*************************************************************************
+    const_reference top() const
+    {
+      return *static_cast<const TValue*>(p_top);
+    }
+
+    //*************************************************************************
     /// Adds a value to the stack.
     ///\param value The value to push to the stack.
     //*************************************************************************
@@ -146,15 +155,6 @@ namespace etl
       p_top->clear();
       p_top = p_next;
       --current_size;
-    }
-
-    //*************************************************************************
-    /// Gets a const reference to the value at the top of the stack.<br>
-    /// \return A const reference to the value at the top of the stack.
-    //*************************************************************************
-    const_reference top() const
-    {
-      return *p_top;
     }
 
     //*************************************************************************
