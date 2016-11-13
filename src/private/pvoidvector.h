@@ -392,7 +392,7 @@ namespace etl
 
     //*************************************************************************
     /// Removes an element from the end of the vector.
-    /// Does nothing if the vector is empty.
+    /// Undefined behaviour if the vector is empty.
     //*************************************************************************
     void pop_back()
     {
