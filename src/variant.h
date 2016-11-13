@@ -132,7 +132,7 @@ namespace etl
     //***************************************************************************
     /// The type used for ids.
     //***************************************************************************
-    typedef uint8_t type_id_t;
+    typedef uint_least8_t type_id_t;
 
     //***************************************************************************
     /// The id a unsupported types.
@@ -196,15 +196,15 @@ namespace etl
     template <typename T>
     struct Type_Id_Lookup
     {
-      static const uint8_t type_id = etl::is_same<T, T1>::value ? 0 :
-                                     etl::is_same<T, T2>::value ? 1 :
-                                     etl::is_same<T, T3>::value ? 2 :
-                                     etl::is_same<T, T4>::value ? 3 :
-                                     etl::is_same<T, T5>::value ? 4 :
-                                     etl::is_same<T, T6>::value ? 5 :
-                                     etl::is_same<T, T7>::value ? 6 :
-                                     etl::is_same<T, T8>::value ? 7 :
-                                     UNSUPPORTED_TYPE_ID;
+      static const uint_least8_t type_id = etl::is_same<T, T1>::value ? 0 :
+                                           etl::is_same<T, T2>::value ? 1 :
+                                           etl::is_same<T, T3>::value ? 2 :
+                                           etl::is_same<T, T4>::value ? 3 :
+                                           etl::is_same<T, T5>::value ? 4 :
+                                           etl::is_same<T, T6>::value ? 5 :
+                                           etl::is_same<T, T7>::value ? 6 :
+                                           etl::is_same<T, T8>::value ? 7 :
+                                           UNSUPPORTED_TYPE_ID;
     };
 
     //***************************************************************************
@@ -424,7 +424,7 @@ namespace etl
     {
     public:
 
-      TBase& operator()(uint8_t* p_data, uint8_t typeId)
+      TBase& operator()(uint_least8_t* p_data, uint_least8_t typeId)
       {
         switch (typeId)
         {
@@ -440,7 +440,7 @@ namespace etl
         }
       }
 
-      const TBase& operator()(uint8_t* p_data, uint8_t typeId) const
+      const TBase& operator()(uint_least8_t* p_data, uint_least8_t typeId) const
       {
         switch (typeId)
         {
@@ -465,7 +465,7 @@ namespace etl
     {
     public:
 
-      TBase& operator()(uint8_t* p_data, uint8_t typeId)
+      TBase& operator()(uint_least8_t* p_data, uint_least8_t typeId)
       {
         switch (typeId)
         {
@@ -480,7 +480,7 @@ namespace etl
         }
       }
 
-      const TBase& operator()(uint8_t* p_data, uint8_t typeId) const
+      const TBase& operator()(uint_least8_t* p_data, uint_least8_t typeId) const
       {
         switch (typeId)
         {
@@ -504,7 +504,7 @@ namespace etl
     {
     public:
 
-      TBase& operator()(uint8_t* p_data, uint8_t typeId)
+      TBase& operator()(uint_least8_t* p_data, uint_least8_t typeId)
       {
         switch (typeId)
         {
@@ -518,7 +518,7 @@ namespace etl
         }
       }
 
-      const TBase& operator()(uint8_t* p_data, uint8_t typeId) const
+      const TBase& operator()(uint_least8_t* p_data, uint_least8_t typeId) const
       {
         switch (typeId)
         {
@@ -541,7 +541,7 @@ namespace etl
     {
     public:
 
-      TBase& operator()(uint8_t* p_data, uint8_t typeId)
+      TBase& operator()(uint_least8_t* p_data, uint_least8_t typeId)
       {
         switch (typeId)
         {
@@ -554,7 +554,7 @@ namespace etl
         }
       }
 
-      const TBase& operator()(uint8_t* p_data, uint8_t typeId) const
+      const TBase& operator()(uint_least8_t* p_data, uint_least8_t typeId) const
       {
         switch (typeId)
         {
@@ -576,7 +576,7 @@ namespace etl
     {
     public:
 
-      TBase& operator()(uint8_t* p_data, uint8_t typeId)
+      TBase& operator()(uint_least8_t* p_data, uint_least8_t typeId)
       {
         switch (typeId)
         {
@@ -588,7 +588,7 @@ namespace etl
         }
       }
 
-      const TBase& operator()(uint8_t* p_data, uint8_t typeId) const
+      const TBase& operator()(uint_least8_t* p_data, uint_least8_t typeId) const
       {
         switch (typeId)
         {
@@ -609,7 +609,7 @@ namespace etl
     {
     public:
 
-      TBase& operator()(uint8_t* p_data, uint8_t typeId)
+      TBase& operator()(uint_least8_t* p_data, uint_least8_t typeId)
       {
         switch (typeId)
         {
@@ -620,7 +620,7 @@ namespace etl
         }
       }
 
-      const TBase& operator()(uint8_t* p_data, uint8_t typeId) const
+      const TBase& operator()(uint_least8_t* p_data, uint_least8_t typeId) const
       {
         switch (typeId)
         {
@@ -640,7 +640,7 @@ namespace etl
     {
     public:
 
-      TBase& operator()(uint8_t* p_data, uint8_t typeId)
+      TBase& operator()(uint_least8_t* p_data, uint_least8_t typeId)
       {
         switch (typeId)
         {
@@ -650,7 +650,7 @@ namespace etl
         }
       }
 
-      const TBase& operator()(uint8_t* p_data, uint8_t typeId) const
+      const TBase& operator()(uint_least8_t* p_data, uint_least8_t typeId) const
       {
         switch (typeId)
         {
@@ -669,12 +669,12 @@ namespace etl
     {
     public:
 
-      TBase& operator()(uint8_t* p_data, uint8_t typeId)
+      TBase& operator()(uint_least8_t* p_data, uint_least8_t typeId)
       {
         return reinterpret_cast<U1&>(*p_data);
       }
 
-      const TBase& operator()(uint8_t* p_data, uint8_t typeId) const
+      const TBase& operator()(uint_least8_t* p_data, uint_least8_t typeId) const
       {
         return reinterpret_cast<const U1&>(*p_data);
       }

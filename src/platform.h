@@ -29,7 +29,7 @@ SOFTWARE.
 ******************************************************************************/
 
 #include <stdint.h>
-#include "static_assert.h"
+#include <limits.h>
 
 // Define the platform.
 // The target platform will normally be defined as a compiler pre-processor directive.
@@ -68,5 +68,6 @@ SOFTWARE.
 #define ETL_ETL_NO_LARGE_CHAR_SUPPORT
 #endif
 
-// Some targets do not support 8bit or even 16bit types.
-#define ETL_8BIT_SUPPORT ((sizeof(uint_least8_t) != sizeof(uint16_t)) && (sizeof(uint_least8_t) != sizeof(uint32_t)))
+// Some targets do not support 8bit types.
+#define ETL_8BIT_SUPPORT (CHAR_BIT == 8)
+

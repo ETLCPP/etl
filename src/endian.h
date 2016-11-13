@@ -68,7 +68,7 @@ namespace etl
   struct endianness
   {
     endianness()
-      : ETL_ENDIAN_TEST(0x0011)
+      : ETL_ENDIAN_TEST(0x0011223344556677)
     {
     }
 
@@ -79,12 +79,12 @@ namespace etl
 
     operator endian() const
     {
-      return (*reinterpret_cast<const uint8_t*>(&ETL_ENDIAN_TEST) == 0x11) ? endian::little : endian::big;
+      return (*reinterpret_cast<const uint32_t*>(&ETL_ENDIAN_TEST) == 0x44556677) ? endian::little : endian::big;
     }
 
   private:
 
-    const uint16_t ETL_ENDIAN_TEST;
+    const uint64_t ETL_ENDIAN_TEST;
   };
 }
 
