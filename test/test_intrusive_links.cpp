@@ -40,9 +40,9 @@ namespace
   //*******************************************************
   typedef etl::forward_link<0> FirstFLink;
   typedef etl::forward_link<1> SecondFLink;
-  typedef etl::forward_link<2, etl::link_option::AUTO> ThirdFLinkAuto;
+  typedef etl::forward_link<2, etl::link_option::CHECKED> ThirdFLinkChecked;
 
-  struct FData : public FirstFLink, public SecondFLink, public ThirdFLinkAuto
+  struct FData : public FirstFLink, public SecondFLink, public ThirdFLinkChecked
   {
     FData(int value)
       : value(value)
@@ -349,17 +349,22 @@ namespace
       CHECK(data2.SecondFLink::etl_next == &data0);
       CHECK(data0.SecondFLink::etl_next == nullptr);
 
-      // Check auto link.
-      etl::link<ThirdFLinkAuto>(data0, data1);
-      etl::link<ThirdFLinkAuto>(data1, data2);
-      etl::link<ThirdFLinkAuto>(data2, data3);
-      etl::link<ThirdFLinkAuto>(data3, nullptr);
+      // Check checked link.
+      etl::link<ThirdFLinkChecked>(data0, data1);
+      etl::link<ThirdFLinkChecked>(data1, data2);
+      etl::link<ThirdFLinkChecked>(data2, data3);
+      etl::link<ThirdFLinkChecked>(data3, nullptr);
 
-      etl::unlink_after<ThirdFLinkAuto>(data1);
+      etl::unlink_after<ThirdFLinkChecked>(data1);
 
-      CHECK(data0.ThirdFLinkAuto::etl_next == &data1);
-      CHECK(data1.ThirdFLinkAuto::etl_next == &data3);
-      CHECK(data3.ThirdFLinkAuto::etl_next == nullptr);
+      CHECK(data0.ThirdFLinkChecked::etl_next == &data1);
+      CHECK(data1.ThirdFLinkChecked::etl_next == &data3);
+      CHECK(data3.ThirdFLinkChecked::etl_next == nullptr);
+
+      data0.ThirdFLinkChecked::clear();
+      data1.ThirdFLinkChecked::clear();
+      data2.ThirdFLinkChecked::clear();
+      data3.ThirdFLinkChecked::clear();
     }
 
     //*************************************************************************
