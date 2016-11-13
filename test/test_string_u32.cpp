@@ -636,20 +636,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_pop_back_excess)
-    {
-      Text text;
-
-      text.resize(2);
-
-      text.pop_back();
-      text.pop_back();
-
-      text.pop_back();
-      CHECK(text.empty());
-    }
-
-    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_value)
     {
       const size_t INITIAL_SIZE = 5;

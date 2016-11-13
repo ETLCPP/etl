@@ -294,10 +294,6 @@ namespace
       priority_queue.pop();
       compare_priority_queue.pop();
       CHECK_EQUAL(compare_priority_queue.size(), priority_queue.size());
-
-      // Go one beyond (which we handle without throwing)
-      priority_queue.pop();
-      CHECK_EQUAL(compare_priority_queue.size(), priority_queue.size());
     }
 
     //*************************************************************************
