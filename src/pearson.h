@@ -41,6 +41,8 @@ SOFTWARE.
 #include "array.h"
 #include "container.h"
 
+STATIC_ASSERT(ETL_8BIT_SUPPORT, "This file does not currently support targets with no 8bit type");
+
 #if defined(ETL_COMPILER_KEIL)
 #pragma diag_suppress 1300
 #endif

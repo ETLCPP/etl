@@ -30,6 +30,11 @@ SOFTWARE.
 
 #include <stdint.h>
 
+#include "platform.h"
+#include "static_assert.h"
+
+STATIC_ASSERT(ETL_8BIT_SUPPORT, "This file does not currently support targets with no 8bit type");
+
 namespace etl
 {
   //***************************************************************************
@@ -56,3 +61,4 @@ namespace etl
     213, 163, 150, 101, 129,  14, 249, 205, 214,   1,  41,  56, 162,  72, 239,  82
   } ;
 }
+

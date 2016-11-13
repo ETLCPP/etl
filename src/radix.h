@@ -53,7 +53,7 @@ namespace etl
       hex       = 16
     };
 
-    DECLARE_ENUM_TYPE(radix, uint8_t)
+    DECLARE_ENUM_TYPE(radix, uint_least8_t)
     ENUM_TYPE(undefined, "undefined")
     ENUM_TYPE(binary,    "binary")
     ENUM_TYPE(octal,     "octal")

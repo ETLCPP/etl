@@ -29,9 +29,12 @@ SOFTWARE.
 
 #include <stdint.h>
 
+#include "platform.h"
 #include "static_assert.h"
 #include "type_traits.h"
 #include "binary.h"
+
+STATIC_ASSERT(ETL_8BIT_SUPPORT, "This file does not currently support targets with no 8bit type");
 
 ///\defgroup frame_check_sequence Frame check sequence calculation
 ///\ingroup maths

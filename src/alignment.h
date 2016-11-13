@@ -174,7 +174,7 @@ namespace etl
 
       union
       {
-        uint8_t data[LENGTH];
+        uint_least8_t data[LENGTH];
         typename etl::type_with_alignment<ALIGNMENT>::type __etl_alignment_type__; // A POD type that has the same alignment as ALIGNMENT.
       };
     };
