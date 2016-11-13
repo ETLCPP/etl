@@ -135,7 +135,7 @@ namespace etl
 
     //*************************************************************************
     /// Removes the oldest item from the top of the stack.
-    /// Does nothing if the stack is already empty.
+    /// Undefined behaviour if the stack is already empty.
     //*************************************************************************
     void pop()
     {

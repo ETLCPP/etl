@@ -460,14 +460,15 @@ namespace etl
 
     //*************************************************************************
     /// Removes an element from the end of the string.
-    /// Does nothing if the string is empty.
+    /// Undefined behaviour if the string is empty.
     //*************************************************************************
     void pop_back()
     {
-      if (current_size > 0)
-      {
-        p_buffer[--current_size] = 0;
-      }
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!empty(), ETL_ERROR(string_empty));
+#endif
+
+      p_buffer[--current_size] = 0;
     }
 
     //*********************************************************************
