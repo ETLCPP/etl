@@ -37,6 +37,8 @@ SOFTWARE.
 #include "static_assert.h"
 #include "type_traits.h"
 #include "ihash.h"
+#include "frame_check_sequence.h"
+
 
 #if defined(ETL_COMPILER_KEIL)
 #pragma diag_suppress 1300 
@@ -48,21 +50,48 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
+  /// fnv_1 policy.
+  /// Calculates FNV1.
+  //***************************************************************************
+  struct fnv_1_policy_64
+  {
+    typedef uint64_t value_type;
+
+    inline uint64_t initial() const
+    {
+      return OFFSET_BASIS;
+    }
+
+    inline uint64_t add(uint64_t hash, uint8_t value) const
+    {
+      hash *= PRIME;
+      hash ^= value;
+      return  hash;
+    }
+
+    inline uint64_t final(uint64_t hash) const
+    {
+      return hash;
+    }
+
+    static const uint64_t OFFSET_BASIS = 0xCBF29CE484222325;
+    static const uint64_t PRIME        = 0x00000100000001b3;
+  };
+  
+  //***************************************************************************
   /// Calculates the fnv_1_64 hash.
   ///\ingroup fnv_1_64
   //***************************************************************************
-  class fnv_1_64
+  class fnv_1_64 : public etl::frame_check_sequence<fnv_1_policy_64>
   {
   public:
-
-    typedef uint64_t value_type;
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
     fnv_1_64()
     {
-      reset();
+      this->reset();
     }
 
     //*************************************************************************
@@ -73,90 +102,54 @@ namespace etl
     template<typename TIterator>
     fnv_1_64(TIterator begin, const TIterator end)
     {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
+      this->reset();
+      this->add(begin, end);
+    }
+  };
+  
+  //***************************************************************************
+  /// fnv_1a policy.
+  /// Calculates FNV1A.
+  //***************************************************************************
+  struct fnv_1a_policy_64
+  {
+    typedef uint64_t value_type;
 
-      reset();
-      while (begin != end)
-      {
-        hash *= PRIME;
-        hash ^= *begin++;
-      }
+    inline uint64_t initial() const
+    {
+      return OFFSET_BASIS;
     }
 
-    //*************************************************************************
-    /// Resets the CRC to the initial state.
-    //*************************************************************************
-    void reset()
+    inline uint64_t add(uint64_t hash, uint8_t value) const
     {
-      hash = OFFSET_BASIS;
-    }
-
-    //*************************************************************************
-    /// Adds a range.
-    /// \param begin
-    /// \param end
-    //*************************************************************************
-    template<typename TIterator>
-    void add(TIterator begin, const TIterator end)
-    {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
-
-      while (begin != end)
-      {
-        hash *= PRIME;
-        hash ^= *begin++;
-      }
-    }
-
-    //*************************************************************************
-    /// \param value The char to add to the fnv_1_64.
-    //*************************************************************************
-    void add(uint8_t value)
-    {
-      hash *= PRIME;
       hash ^= value;
+      hash *= PRIME;
+      return  hash;
     }
 
-    //*************************************************************************
-    /// Gets the fnv_1_64 value.
-    //*************************************************************************
-    value_type value() const
+    inline uint64_t final(uint64_t hash) const
     {
       return hash;
     }
-
-    //*************************************************************************
-    /// Conversion operator to value_type.
-    //*************************************************************************
-    operator value_type () const
-    {
-      return hash;
-    }
-
-  private:
-
-    value_type hash;
 
     static const uint64_t OFFSET_BASIS = 0xCBF29CE484222325;
     static const uint64_t PRIME        = 0x00000100000001b3;
   };
-
+  
   //***************************************************************************
   /// Calculates the fnv_1a_64 hash.
   ///\ingroup fnv_1a_64
   //***************************************************************************
-  class fnv_1a_64
+  class fnv_1a_64 : public etl::frame_check_sequence<fnv_1a_policy_64>
   {
   public:
-
-    typedef uint64_t value_type;
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
     fnv_1a_64()
     {
-      reset();
+      this->reset();
     }
 
     //*************************************************************************
@@ -167,90 +160,54 @@ namespace etl
     template<typename TIterator>
     fnv_1a_64(TIterator begin, const TIterator end)
     {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
+      this->reset();
+      this->add(begin, end);
+    }
+  };
 
-      reset();
-      while (begin != end)
-      {
-        hash ^= *begin++;
-        hash *= PRIME;
-      }
+  //***************************************************************************
+  /// fnv_1 policy.
+  /// Calculates FNV1.
+  //***************************************************************************
+  struct fnv_1_policy_32
+  {
+    typedef uint32_t value_type;
+
+    inline uint32_t initial() const
+    {
+      return OFFSET_BASIS;
     }
 
-    //*************************************************************************
-    /// Resets the CRC to the initial state.
-    //*************************************************************************
-    void reset()
+    inline uint32_t add(uint32_t hash, uint8_t value) const
     {
-      hash = OFFSET_BASIS;
-    }
-
-    //*************************************************************************
-    /// Adds a range.
-    /// \param begin
-    /// \param end
-    //*************************************************************************
-    template<typename TIterator>
-    void add(TIterator begin, const TIterator end)
-    {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
-      
-      while (begin != end)
-      {
-        hash ^= *begin++;
-        hash *= PRIME;
-      }
-    }
-
-    //*************************************************************************
-    /// \param value The char to add to the fnv_1a_64.
-    //*************************************************************************
-    void add(uint8_t value)
-    {
-      hash ^= value;
       hash *= PRIME;
+      hash ^= value;
+      return  hash;
     }
 
-    //*************************************************************************
-    /// Gets the fnv_1a_64 value.
-    //*************************************************************************
-    value_type value() const
+    inline uint32_t final(uint32_t hash) const
     {
       return hash;
     }
 
-    //*************************************************************************
-    /// Conversion operator to value_type.
-    //*************************************************************************
-    operator value_type () const
-    {
-      return hash;
-    }
-
-  private:
-
-    value_type hash;
-
-    static const uint64_t OFFSET_BASIS = 0xCBF29CE484222325;
-    static const uint64_t PRIME        = 0x00000100000001b3;
+    static const uint32_t OFFSET_BASIS = 0x811C9DC5;
+    static const uint32_t PRIME        = 0x01000193;
   };
 
   //***************************************************************************
   /// Calculates the fnv_1_32 hash.
   ///\ingroup fnv_1_32
   //***************************************************************************
-  class fnv_1_32
+  class fnv_1_32 : public etl::frame_check_sequence<fnv_1_policy_32>
   {
   public:
-
-    typedef uint32_t value_type;
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
     fnv_1_32()
     {
-      reset();
+      this->reset();
     }
 
     //*************************************************************************
@@ -261,69 +218,35 @@ namespace etl
     template<typename TIterator>
     fnv_1_32(TIterator begin, const TIterator end)
     {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
+      this->reset();
+      this->add(begin, end);
+    }
+  };
+    
+  //***************************************************************************
+  /// fnv_1a policy.
+  /// Calculates FNV1A.
+  //***************************************************************************
+  struct fnv_1a_policy_32
+  {
+    typedef uint32_t value_type;
 
-      reset();
-      while (begin != end)
-      {
-        hash *= PRIME;
-        hash ^= *begin++;
-      }
+    inline uint32_t initial() const
+    {
+      return OFFSET_BASIS;
     }
 
-    //*************************************************************************
-    /// Resets the CRC to the initial state.
-    //*************************************************************************
-    void reset()
+    inline uint32_t add(uint32_t hash, uint8_t value) const
     {
-      hash = OFFSET_BASIS;
-    }
-
-    //*************************************************************************
-    /// Adds a range.
-    /// \param begin
-    /// \param end
-    //*************************************************************************
-    template<typename TIterator>
-    void add(TIterator begin, const TIterator end)
-    {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
-
-      while (begin != end)
-      {
-        hash *= PRIME;
-        hash ^= *begin++;
-      }
-    }
-
-    //*************************************************************************
-    /// \param value The char to add to the fnv_1_32.
-    //*************************************************************************
-    void add(uint8_t value)
-    {
-      hash *= PRIME;
       hash ^= value;
+      hash *= PRIME;
+      return  hash;
     }
 
-    //*************************************************************************
-    /// Gets the fnv_1_32 value.
-    //*************************************************************************
-    value_type value() const
+    inline uint32_t final(uint32_t hash) const
     {
       return hash;
     }
-
-    //*************************************************************************
-    /// Conversion operator to value_type.
-    //*************************************************************************
-    operator value_type () const
-    {
-      return hash;
-    }
-
-  private:
-
-    value_type hash;
 
     static const uint32_t OFFSET_BASIS = 0x811C9DC5;
     static const uint32_t PRIME        = 0x01000193;
@@ -333,18 +256,16 @@ namespace etl
   /// Calculates the fnv_1a_32 hash.
   ///\ingroup fnv_1a_32
   //***************************************************************************
-  class fnv_1a_32
+  class fnv_1a_32 : public etl::frame_check_sequence<fnv_1a_policy_32>
   {
   public:
-
-    typedef uint32_t value_type;
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
     fnv_1a_32()
     {
-      reset();
+      this->reset();
     }
 
     //*************************************************************************
@@ -355,72 +276,9 @@ namespace etl
     template<typename TIterator>
     fnv_1a_32(TIterator begin, const TIterator end)
     {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
-
-      reset();
-      while (begin != end)
-      {
-        hash ^= *begin++;
-        hash *= PRIME;
-      }
+      this->reset();
+      this->add(begin, end);
     }
-
-    //*************************************************************************
-    /// Resets the CRC to the initial state.
-    //*************************************************************************
-    void reset()
-    {
-      hash = OFFSET_BASIS;
-    }
-
-    //*************************************************************************
-    /// Adds a range.
-    /// \param begin
-    /// \param end
-    //*************************************************************************
-    template<typename TIterator>
-    void add(TIterator begin, const TIterator end)
-    {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
-
-      while (begin != end)
-      {
-        hash ^= *begin++;
-        hash *= PRIME;
-      }
-    }
-
-    //*************************************************************************
-    /// \param value The char to add to the fnv_1a_32.
-    //*************************************************************************
-    void add(uint8_t value)
-    {
-      hash ^= value;
-      hash *= PRIME;
-    }
-
-    //*************************************************************************
-    /// Gets the fnv_1a_32 value.
-    //*************************************************************************
-    value_type value() const
-    {
-      return hash;
-    }
-
-    //*************************************************************************
-    /// Conversion operator to value_type.
-    //*************************************************************************
-    operator value_type () const
-    {
-      return hash;
-    }
-
-  private:
-
-    value_type hash;
-
-    static const uint32_t OFFSET_BASIS = 0x811C9DC5;
-    static const uint32_t PRIME        = 0x01000193;
   };
 }
 
