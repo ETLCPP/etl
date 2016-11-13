@@ -46,7 +46,7 @@ SOFTWARE.
 
 #if defined(ETL_COMPILER_KEIL)
   #pragma diag_suppress 940
-	#pragma diag_suppress 111
+  #pragma diag_suppress 111
 #endif
 
 #undef ETL_FILE

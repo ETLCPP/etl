@@ -47,15 +47,15 @@ namespace etl
   template <typename T, const T VALUE>
   struct integral_constant
   {
-	  static const T value = VALUE;
+    static const T value = VALUE;
 
-	  typedef T value_type;
+    typedef T value_type;
     typedef integral_constant<T, VALUE> type;
 
-	  operator value_type() const
-	  {
-		   return value;
-	  }
+    operator value_type() const
+    {
+       return value;
+    }
   };
 
   /// integral_constant specialisations
@@ -250,9 +250,9 @@ namespace etl
 #else
   template <> struct make_signed<wchar_t>
   {
-	  typedef etl::conditional<sizeof(wchar_t) == sizeof(short), short,
-		        etl::conditional<sizeof(wchar_t) == sizeof(int),   int,
-		        etl::conditional<sizeof(wchar_t) == sizeof(long),  long, void>::type>::type>::type type;
+    typedef etl::conditional<sizeof(wchar_t) == sizeof(short), short,
+            etl::conditional<sizeof(wchar_t) == sizeof(int),   int,
+            etl::conditional<sizeof(wchar_t) == sizeof(long),  long, void>::type>::type>::type type;
   };
 #endif
   template <> struct make_signed<unsigned short> { typedef  short type; };
@@ -277,9 +277,9 @@ namespace etl
 #else
   template <> struct make_unsigned<wchar_t>
   {
-	  typedef etl::conditional<sizeof(wchar_t) == sizeof(unsigned short), unsigned short,
-		        etl::conditional<sizeof(wchar_t) == sizeof(unsigned int),   unsigned int,
-		        etl::conditional<sizeof(wchar_t) == sizeof(unsigned long),  unsigned long, void>::type>::type>::type type;
+    typedef etl::conditional<sizeof(wchar_t) == sizeof(unsigned short), unsigned short,
+            etl::conditional<sizeof(wchar_t) == sizeof(unsigned int),   unsigned int,
+            etl::conditional<sizeof(wchar_t) == sizeof(unsigned long),  unsigned long, void>::type>::type>::type type;
   };
 #endif
   template <> struct make_unsigned<int> { typedef unsigned int type; };
