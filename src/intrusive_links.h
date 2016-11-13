@@ -146,17 +146,10 @@ namespace etl
   // There is no valid specialisation for auto link
   //******************************************************************
   template <const size_t ID_>
-  struct forward_link<ID_, etl::link_option::AUTO>
-    : public __private_intrusive_links__::forward_link_base<forward_link<ID_, etl::link_option::AUTO>, ID_, etl::link_option::AUTO>
-  {
-    forward_link()
-    {
-      this->clear();
-    }
-  };
+  struct forward_link<ID_, etl::link_option::AUTO>;
 
   //******************************************************************
-  // Specialisation for checked unlink option.
+  // Specialisation for checked link option.
   // An error will be generated if the links are valid when the object
   // is destroyed.
   //******************************************************************
@@ -171,7 +164,7 @@ namespace etl
 
     ~forward_link()
     {
-      assert(this->etl_next != nullptr);
+      assert(this->etl_next == nullptr);
     }
   };
 
@@ -708,14 +701,7 @@ namespace etl
   // There is no valid specialisation for auto link
   //******************************************************************
   template <const size_t ID_>
-  struct tree_link<ID_, etl::link_option::AUTO>
-    : public __private_intrusive_links__::tree_link_base<tree_link<ID_, etl::link_option::AUTO>, ID_, etl::link_option::AUTO>
-  {
-    tree_link()
-    {
-      this->clear();
-    }
-  };
+  struct tree_link<ID_, etl::link_option::AUTO>;
 
   //******************************************************************
   // Specialisation for checked unlink option.
@@ -733,9 +719,9 @@ namespace etl
 
     ~tree_link()
     {
-      assert(this->etl_parent != nullptr);
-      assert(this->etl_left   != nullptr);
-      assert(this->etl_right  != nullptr);
+      assert(this->etl_parent == nullptr);
+      assert(this->etl_left   == nullptr);
+      assert(this->etl_right  == nullptr);
     }
   };
 
