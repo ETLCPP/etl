@@ -34,11 +34,40 @@ SOFTWARE.
 #include <stddef.h>
 
 #include "type_traits.h"
-#include "parameter_type.h"
 #include "error_handler.h"
+#include "intrusive_links.h"
+#include "private/counter_type.h"
 
 namespace etl
 {
+  //***************************************************************************
+  /// Exception base for intrusive stack
+  ///\ingroup intrusive_stack
+  //***************************************************************************
+  class intrusive_stack_exception : public etl::exception
+  {
+  public:
+
+    intrusive_stack_exception(string_type what, string_type file_name, numeric_type line_number)
+      : exception(what, file_name, line_number)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// intrusive_stack empty exception.
+  ///\ingroup intrusive_stack
+  //***************************************************************************
+  class intrusive_stack_empty : public intrusive_stack_exception
+  {
+  public:
+
+    intrusive_stack_empty(string_type file_name, numeric_type line_number)
+      : intrusive_stack_exception(ETL_ERROR_TEXT("intrusive_stack:empty", ETL_FILE"A"), file_name, line_number)
+    {
+    }
+  };
+
   //***************************************************************************
   ///\ingroup stack
   /// An intrusive stack. Stores elements derived from etl::forward_link
@@ -46,7 +75,7 @@ namespace etl
   /// \tparam TValue The type of value that the stack holds.
   /// \tparam TLink  The link type that the value is derived from.
   //***************************************************************************
-  template <typename TValue, typename TLink = etl::bidirectional_link<0> >
+  template <typename TValue, typename TLink>
   class intrusive_stack
   {
   public:
@@ -62,15 +91,20 @@ namespace etl
     typedef const value_type& const_reference;
     typedef size_t            size_type;
 
-  public:
+    enum
+    {
+      // The count option is based on the type of link.
+      COUNT_OPTION = ((TLink::OPTION == etl::link_option::AUTO) || (TLink::OPTION == etl::link_option::CHECKED)) ?
+                     etl::count_option::SLOW_COUNT : 
+                     etl::count_option::FAST_COUNT
+    };
 
     //*************************************************************************
     /// Constructor
     //*************************************************************************
     intrusive_stack()
-    : p_top(&base)
+    : p_top(nullptr)
     {
-
     }
 
     //*************************************************************************
@@ -80,7 +114,7 @@ namespace etl
     //*************************************************************************
     reference top()
     {
-      return *p_top;
+      return *static_cast<TValue*>(p_top);
     }
 
     //*************************************************************************
@@ -89,8 +123,29 @@ namespace etl
     //*************************************************************************
     void push(link_type& value)
     {
-      etl::link(p_top, value);
+      if (p_top != nullptr)
+      {
+        etl::link(value, p_top);
+      }
+        
       p_top = &value;
+
+      ++current_size;
+    }
+
+    //*************************************************************************
+    /// Removes the oldest item from the top of the stack.
+    /// Undefined behaviour if the stack is already empty.
+    //*************************************************************************
+    void pop()
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!empty(), ETL_ERROR(intrusive_stack_empty));
+#endif
+      link_type* p_next = p_top->etl_next;
+      p_top->clear();
+      p_top = p_next;
+      --current_size;
     }
 
     //*************************************************************************
@@ -107,31 +162,58 @@ namespace etl
     //*************************************************************************
     void clear()
     {
-        unlink(base, *p_top);
+      while (!empty())
+      {
+        pop();
+      }
+      current_size = 0;
     }
 
     //*************************************************************************
-    /// Removes the oldest item from the top of the stack.
-    /// Does nothing if the stack is already empty.
+    /// Checks if the stack is in the empty state.
     //*************************************************************************
-    void pop()
+    bool empty() const
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(p_top != &base, ETL_ERROR(intrusive_stack_empty));
-#endif
-      link_type* p_previous = p_top->etl_previous;
-      unlink(p_top);
-      p_top = p_previous;
+      return p_top == nullptr;
+    }
+
+    //*************************************************************************
+    /// Returns the number of elements.
+    //*************************************************************************
+    size_t size() const
+    {
+      if (COUNT_OPTION == etl::count_option::SLOW_COUNT)
+      {
+        size_t count = 0;
+
+        if (p_top != nullptr)
+        {
+          link_type* p_link = p_top;
+
+          while (p_link != nullptr)
+          {
+            ++count;
+            p_link = p_link->etl_next;
+          }
+        }
+
+        return count;
+      }
+      else
+      {
+        return current_size.get_count();
+      }
     }
 
   private:
 
     // Disable copy construction and assignment.
     intrusive_stack(const intrusive_stack&);
-    intrusive_stack& operator = (const intrusive_stack& rhs)
+    intrusive_stack& operator = (const intrusive_stack& rhs);
 
-    link_type  base;  // The base of the stack.
     link_type* p_top; // The current top of the stack.
+
+    etl::counter_type<COUNT_OPTION> current_size; ///< Counts the number of elements in the list.
   };
 }
 
