@@ -35,6 +35,13 @@ SOFTWARE.
 
 namespace etl
 {
+  //***************************************************************************
+  /// A callback class designed to be multiply inherited by other client classes.
+  /// The class is parameterised with a callback parameter type and a unique id.
+  /// The unique id allows muliple callbacks with the same parameter type.
+  ///\tparam TParameter The callback parameter type.
+  ///\tparam ID The unique id for this callback.
+  //***************************************************************************
   template <typename TParameter, const int ID>
   class callback
   {
