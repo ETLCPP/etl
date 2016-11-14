@@ -28,6 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
+#error In Development. Do not use.
+
 #ifndef __ETL_CALLBACK__
 #define __ETL_CALLBACK__
 
