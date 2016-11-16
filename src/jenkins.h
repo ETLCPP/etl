@@ -50,24 +50,96 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  /// Calculates the jenkins hash.
-  ///\ingroup jenkins
+  /// Jenkins32 policy.
+  /// Calculates 32 bit Jenkins hash.
   //***************************************************************************
-  template <typename THash>
-  class jenkins
+  struct jenkins32_policy
+  {
+    typedef uint32_t value_type;
+
+    inline uint32_t initial() const
+    {
+      is_finalised = false;
+
+      return 0;
+    }
+
+    inline uint32_t add(uint8_t hash, uint8_t value) const
+    {
+      ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised));
+
+      hash += value;
+      hash += (hash << 10);
+      hash ^= (hash >> 6);
+
+      return hash;
+    }
+
+    inline uint32_t final(uint8_t hash) const
+    {
+      hash += (hash << 3);
+      hash ^= (hash >> 11);
+      hash += (hash << 15);
+      is_finalised = true;
+
+      return hash;
+    }
+
+    bool is_finalised;
+  };
+
+  //***************************************************************************
+  /// Jenkins64 policy.
+  /// Calculates 32 bit Jenkins hash.
+  //***************************************************************************
+  struct jenkins64_policy
+  {
+    typedef uint64_t value_type;
+
+    inline uint64_t initial() const
+    {
+      is_finalised = false;
+
+      return 0;
+    }
+
+    inline uint64_t add(uint8_t hash, uint8_t value) const
+    {
+      ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised));
+
+      hash += value;
+      hash += (hash << 10);
+      hash ^= (hash >> 6);
+
+      return hash;
+    }
+
+    inline uint64_t final(uint8_t hash) const
+    {
+      hash += (hash << 3);
+      hash ^= (hash >> 11);
+      hash += (hash << 15);
+      is_finalised = true;
+
+      return hash;
+    }
+
+    bool is_finalised;
+  };
+
+  //*************************************************************************
+  /// Jenkins32
+  //*************************************************************************
+  class jenkins32 : public etl::frame_check_sequence<etl::jenkins32_policy>
   {
   public:
-
-    STATIC_ASSERT((etl::is_same<THash, uint32_t>::value || etl::is_same<THash, uint64_t>::value), "Only 32 & 64 bit types supported");
-
-    typedef THash value_type;
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    jenkins()
+    jenkins32()
     {
-      reset();
+      this->reset();
     }
 
     //*************************************************************************
@@ -76,92 +148,39 @@ namespace etl
     /// \param end   End of the range.
     //*************************************************************************
     template<typename TIterator>
-    jenkins(TIterator begin, const TIterator end)
+    jenkins32(TIterator begin, const TIterator end)
     {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
+      this->reset();
+      this->add(begin, end);
+    }
+  };
 
-      reset();
+  //*************************************************************************
+  /// Jenkins64
+  //*************************************************************************
+  class jenkins64 : public etl::frame_check_sequence<etl::jenkins64_policy>
+  {
+  public:
 
-      while (begin != end)
-      {
-        hash += *begin++;
-        hash += (hash << 10);
-        hash ^= (hash >> 6);
-      }
+    //*************************************************************************
+    /// Default constructor.
+    //*************************************************************************
+    jenkins64()
+    {
+      this->reset();
     }
 
     //*************************************************************************
-    /// Resets the CRC to the initial state.
-    //*************************************************************************
-    void reset()
-    {
-      hash = 0;
-      is_finalised = false;
-    }
-
-    //*************************************************************************
-    /// Adds a range.
-    /// \param begin
-    /// \param end
+    /// Constructor from range.
+    /// \param begin Start of the range.
+    /// \param end   End of the range.
     //*************************************************************************
     template<typename TIterator>
-    void add(TIterator begin, const TIterator end)
+    jenkins64(TIterator begin, const TIterator end)
     {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
-      ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised));
-
-      while (begin != end)
-      {
-        hash += *begin++;
-        hash += (hash << 10);
-        hash ^= (hash >> 6);
-      }
+      this->reset();
+      this->add(begin, end);
     }
-
-    //*************************************************************************
-    /// \param value The char to add to the jenkins.
-    //*************************************************************************
-    void add(uint8_t value)
-    {
-      ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised));
-
-      hash += value;
-      hash += (hash << 10);
-      hash ^= (hash >> 6);
-    }
-
-    //*************************************************************************
-    /// Gets the jenkins value.
-    //*************************************************************************
-    value_type value()
-    {
-      finalise();
-      return hash;
-    }
-
-    //*************************************************************************
-    /// Conversion operator to value_type.
-    //*************************************************************************
-    operator value_type ()
-    {
-      return value();
-    }
-
-  private:
-
-    void finalise()
-    {
-      if (!is_finalised)
-      {
-        hash += (hash << 3);
-        hash ^= (hash >> 11);
-        hash += (hash << 15);
-        is_finalised = true;
-      }
-    }
-
-    value_type hash;
-    bool is_finalised;
   };
 }
 
