@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "basic_string.h"
+#include "hash.h"
 
 #if defined(ETL_COMPILER_MICROSOFT)
   #undef min
@@ -179,6 +180,22 @@ namespace etl
   private:
 
     value_type buffer[MAX_SIZE + 1];
+  };
+
+  //***************************************************************************
+  /// Specialisation for string.
+  ///\ingroup hash
+  //***************************************************************************
+  template <>
+  struct hash <string>
+  {
+    size_t operator ()(const string& s) const
+    {
+      uint8_t* p_begin = &s[0];
+      uint8_t* p_end   = &s[s.size()];
+
+      return etl::__private_hash__::generic_hash(p_begin, p_end);
+    }
   };
 }
 
