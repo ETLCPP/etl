@@ -34,13 +34,15 @@ The library is intended for any compiler that supports C++ 03.
 - Templated compile time constants
 - Templated design pattern base classes (Visitor, Observer)
 - Reverse engineered C++ 0x11 features (type traits, algorithms, containers etc.)
-- Smart enumerations
+- Type-safe enumerations
+- Type-safe typedefs
 - 8, 16, 32 & 64 bit CRC calculations
 - Checksums & hash functions
 - Variants (a type that can store many types in a type-safe interface)
 - Choice of asserts, exceptions, error handler or no checks on errors
 - Many utilities for template support.
 - Easy to read and documented source.
+- Free email support
 
 Any help porting the library to work under different platforms and compilers would be gratefully received.
 I am especially interested in people who are using Keil, IAR, Green Hills, TI Code Composer etc, bare metal or RTOS, and DSPs.
