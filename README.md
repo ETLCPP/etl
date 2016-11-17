@@ -43,5 +43,6 @@ The library is intended for any compiler that supports C++ 03.
 - Easy to read and documented source.
 
 Any help porting the library to work under different platforms and compilers would be gratefully received.
+I am especially interested in people who are using Keil, IAR, Green Hills, TI Code Composer etc, bare metal or RTOS, and DSPs.
 
 See (http://www.etlcpp.com) for up-to-date information.
