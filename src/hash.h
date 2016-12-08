@@ -32,6 +32,7 @@ SOFTWARE.
 #define __ETL_HASH__
 
 #include <stdint.h>
+#include <stdlib.h>
 
 // The default hash calculation.
 #include "fnv_1.h"
@@ -322,7 +323,9 @@ namespace etl
     {
       if (sizeof(size_t) == sizeof(v))
       {
-        return *reinterpret_cast<size_t*>(&v);
+        size_t t;
+        memcpy(&t, &v, sizeof(size_t));
+        return t;
       }
       else
       {
@@ -344,7 +347,9 @@ namespace etl
     {
       if (sizeof(size_t) == sizeof(v))
       {
-        return *reinterpret_cast<size_t*>(&v);
+        size_t t;
+        memcpy(&t, &v, sizeof(size_t));
+        return t;
       }
       else
       {
@@ -366,7 +371,9 @@ namespace etl
     {
       if (sizeof(size_t) == sizeof(v))
       {
-        return *reinterpret_cast<size_t*>(&v);
+        size_t t;
+        memcpy(&t, &v, sizeof(size_t));
+        return t;
       }
       else
       {
@@ -387,7 +394,9 @@ namespace etl
     {
       if (sizeof(size_t) == sizeof(T*))
       {
-        return reinterpret_cast<size_t>(v);
+        size_t t;
+        memcpy(&t, &v, sizeof(size_t));
+        return t;
       }
       else
       {
