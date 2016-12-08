@@ -230,9 +230,9 @@ namespace etl
   template<>
   struct hash<long>
   {
-    // If it fits into a size_t.
     size_t operator ()(long v) const
     {
+      // If it's the same size as a size_t.
       if (sizeof(size_t) >= sizeof(v))
       {
         return static_cast<size_t>(v);
@@ -252,9 +252,9 @@ namespace etl
   template<>
   struct hash<long long>
   {
-    // If it fits into a size_t.
     size_t operator ()(long long v) const
     {
+      // If it's the same size as a size_t.
       if (sizeof(size_t) >= sizeof(v))
       {
         return static_cast<size_t>(v);
@@ -274,9 +274,9 @@ namespace etl
   template<>
   struct hash<unsigned long>
   {
-    // If it fits into a size_t.
     size_t  operator ()(unsigned long v) const
     {
+      // If it's the same size as a size_t.
       if (sizeof(size_t) >= sizeof(v))
       {
         return static_cast<size_t>(v);
@@ -296,9 +296,9 @@ namespace etl
   template<>
   struct hash<unsigned long long>
   {
-    // If it fits into a size_t.
     size_t  operator ()(unsigned long long v) const
     {
+      // If it's the same size as a size_t.
       if (sizeof(size_t) >= sizeof(v))
       {
         return static_cast<size_t>(v);
@@ -318,9 +318,9 @@ namespace etl
   template<>
   struct hash<float>
   {
-    // If it's the same size as a size_t.
     size_t operator ()(float v) const
     {
+      // If it's the same size as a size_t.
       if (sizeof(size_t) == sizeof(v))
       {
         size_t t;
@@ -342,9 +342,9 @@ namespace etl
   template<>
   struct hash<double>
   {
-    // If it's the same size as a size_t.
     size_t  operator ()(double v) const
     {
+      // If it's the same size as a size_t.
       if (sizeof(size_t) == sizeof(v))
       {
         size_t t;
@@ -366,9 +366,9 @@ namespace etl
   template<>
   struct hash<long double>
   {
-    // If it's the same size as a size_t.
     size_t operator ()(long double v) const
     {
+      // If it's the same size as a size_t.
       if (sizeof(size_t) == sizeof(v))
       {
         size_t t;
@@ -392,6 +392,7 @@ namespace etl
   {
     size_t operator ()(const T* v) const
     {
+      // If it's the same size as a size_t.
       if (sizeof(size_t) == sizeof(T*))
       {
         size_t t;
