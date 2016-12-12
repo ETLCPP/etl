@@ -46,7 +46,7 @@ namespace etl
   //***************************************************************************
   template <typename T>
   class ipool : public pool_base
-  {   
+  {
   public:
 
     typedef T        value_type;
@@ -358,7 +358,7 @@ namespace etl
 
       return result;
     }
-    
+
     //*************************************************************************
     /// Release an object in the pool.
     /// If asserts or exceptions are enabled and the object does not belong to this
@@ -503,6 +503,14 @@ namespace etl
         p_buffer(p_buffer),
         in_use_flags(in_use_flags)
     {
+    }
+
+    //*************************************************************************
+    /// Destructor
+    //*************************************************************************
+    ~ipool()
+    {
+      release_all();
     }
 
   private:
