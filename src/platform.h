@@ -77,7 +77,7 @@ SOFTWARE.
 #endif
 
 // Check to see if the compiler supports static_assert.
-#if (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER >= 1600) || \
+#if (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER >= 1600)) || \
     (defined(ETL_COMPILER_GCC) && (__cplusplus >= 201103L))
 #define ETL_STATIC_ASSERT_SUPPORTED
 #endif
