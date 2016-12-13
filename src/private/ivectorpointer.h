@@ -35,7 +35,7 @@ SOFTWARE.
 #error  This header is a private element of etl::ivector
 #endif
 
-#include "private/pvoidvector.h"
+#include "pvoidvector.h"
 
 namespace etl
 {
