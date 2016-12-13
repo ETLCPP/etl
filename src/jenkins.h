@@ -39,9 +39,10 @@ SOFTWARE.
 #include "type_traits.h"
 #include "error_handler.h"
 #include "ihash.h"
+#include "frame_check_sequence.h"
 
 #if defined(ETL_COMPILER_KEIL)
-#pragma diag_suppress 1300 
+#pragma diag_suppress 1300
 #endif
 
 ///\defgroup jenkins Jenkins 32 & 64 bit hash calculations
@@ -57,7 +58,7 @@ namespace etl
   {
     typedef uint32_t value_type;
 
-    inline uint32_t initial() const
+    inline uint32_t initial()
     {
       is_finalised = false;
 
@@ -75,7 +76,7 @@ namespace etl
       return hash;
     }
 
-    inline uint32_t final(uint8_t hash) const
+    inline uint32_t final(uint8_t hash)
     {
       hash += (hash << 3);
       hash ^= (hash >> 11);
@@ -96,7 +97,7 @@ namespace etl
   {
     typedef uint64_t value_type;
 
-    inline uint64_t initial() const
+    inline uint64_t initial()
     {
       is_finalised = false;
 
@@ -114,7 +115,7 @@ namespace etl
       return hash;
     }
 
-    inline uint64_t final(uint8_t hash) const
+    inline uint64_t final(uint8_t hash)
     {
       hash += (hash << 3);
       hash ^= (hash >> 11);
