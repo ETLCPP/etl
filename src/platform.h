@@ -31,31 +31,39 @@ SOFTWARE.
 #include <stdint.h>
 #include <limits.h>
 
-// Define the platform.
-// The target platform will normally be defined as a compiler pre-processor directive.
-// Defines ETL_PLATFORM_GENERIC if a recognised platform is not declared.
-#if !defined(ETL_PLATFORM_LINUX) && !defined(ETL_PLATFORM_WINDOWS) && !defined(ETL_PLATFORM_WINDOWS_CE) && !defined(ETL_PLATFORM_VXWORKS) && !defined(ETL_PLATFORM_QNX)
-#pragma message("ETL: Using generic platform")
-#define ETL_PLATFORM_GENERIC
-#endif
-
 // Define the compiler.
 #if defined(__IAR_SYSTEMS_ICC__)
-#define ETL_COMPILER_IAR
+  #define ETL_COMPILER_IAR
 #elif defined(__KEIL__) && !defined(__GNUC__)
-#define ETL_COMPILER_KEIL
+  #define ETL_COMPILER_KEIL
 #elif defined(__ghs__)
-#define ETL_COMPILER_GREEN_HILLS
+  #define ETL_COMPILER_GREEN_HILLS
 #elif defined(__INTEL_COMPILER)
-#define ETL_COMPILER_INTEL
+  #define ETL_COMPILER_INTEL
 #elif defined(_MSC_VER)
-#define ETL_COMPILER_MICROSOFT
+  #define ETL_COMPILER_MICROSOFT
 #elif defined(__GNUC__)
-#define ETL_COMPILER_GCC
+  #define ETL_COMPILER_GCC
 #elif defined(__TI_COMPILER_VERSION__) && defined(__MSP430__)
-#define ETL_COMPILER_TI_MSP430
+  #define ETL_COMPILER_TI_MSP430
+#elif defined(_MRI)
+  #define ETL_COMPILER_MICROTEC
+#elif defined(__HIGHC__)
+  #define ETL_COMPILER_METAWARE_HIGH
+#elif defined(__llvm__)
+  #define ETL_COMPILER_LLVM
+#elif defined(__KCC_VERSION)
+  #define ETL_COMPILER_KAI
+#elif defined(_COMO__)
+  #define ETL_COMPILER_COMEAU
+#elif defined(__BORLANDC__)
+  #define ETL_COMPILER_BORLAND
+#elif defined(__CC_ARM)
+  #define ETL_COMPILER_ARM
+#elif defined(__MRC__)
+  #define ETL_COMPILER_MPW
 #else
-#define ETL_COMPILER_GENERIC
+  #define ETL_COMPILER_GENERIC
 #endif
 
 // Check to see if the compiler supports nullptr and large character types.
@@ -64,8 +72,14 @@ SOFTWARE.
      defined(ETL_COMPILER_TI_MSP430) || \
      defined(ETL_COMPILER_IAR) || \
      (defined(ETL_COMPILER_GCC) && (__cplusplus < 201103L))
-#define ETL_ETL_NO_NULLPTR_SUPPORT
-#define ETL_ETL_NO_LARGE_CHAR_SUPPORT
+  #define ETL_ETL_NO_NULLPTR_SUPPORT
+  #define ETL_ETL_NO_LARGE_CHAR_SUPPORT
+#endif
+
+// Check to see if the compiler supports static_assert.
+#if (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER >= 1600) || \
+    (defined(ETL_COMPILER_GCC) && (__cplusplus >= 201103L))
+#define ETL_STATIC_ASSERT_SUPPORTED
 #endif
 
 // Some targets do not support 8bit types.

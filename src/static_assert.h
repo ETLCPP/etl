@@ -31,9 +31,7 @@ SOFTWARE.
 
 #include "platform.h"
 
-#if defined(ETL_COMPILER_MICROSOFT)
-  #define STATIC_ASSERT(Condition, Message) static_assert(Condition, Message)
-#elif defined(ETL_COMPILER_GCC)
+#if defined(ETL_STATIC_ASSERT_SUPPORTED)
   #define STATIC_ASSERT(Condition, Message) static_assert(Condition, Message)
 #else
   template <bool Condition>
@@ -42,12 +40,13 @@ SOFTWARE.
   template <>
   struct STATIC_ASSERT_FAILED<true> {};
 
-  #define ETL_FCAT(a,b)	           a##b
-  #define ETL_ACAT(a,b)            ETL_FCAT(a,b)
-  #define STATIC_ASSERT(cond,msg)                                                \
-		  enum                                                                   \
-		  {  ETL_ACAT(dummy,__LINE__)=sizeof(STATIC_ASSERT_FAILED<(bool)(cond)>) \
-	  	  }
+  #define ETL_SA1(a,b) a##b
+  #define ETL_SA2(a,b) ETL_SA1(a,b)
+  #define STATIC_ASSERT(Condition, Message) \
+		  enum \
+		  { \
+        ETL_SA2(dummy, __LINE__) = sizeof(STATIC_ASSERT_FAILED<(bool)(Condition)>) \
+	    }
 #endif
 
 #endif
