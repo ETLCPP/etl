@@ -53,9 +53,9 @@ namespace etl
 
     typedef TPolicy policy_type;
     typedef typename policy_type::value_type value_type;
-    
+
     STATIC_ASSERT(etl::is_unsigned<value_type>::value, "Signed frame check type not supported");
-    
+
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
@@ -113,7 +113,7 @@ namespace etl
     //*************************************************************************
     /// Gets the FCS value.
     //*************************************************************************
-    value_type value() const
+    value_type value()
     {
       return policy.final(frame_check);
     }
@@ -121,7 +121,7 @@ namespace etl
     //*************************************************************************
     /// Conversion operator to value_type.
     //*************************************************************************
-    operator value_type () const
+    operator value_type ()
     {
       return policy.final(frame_check);
     }
