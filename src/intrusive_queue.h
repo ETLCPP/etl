@@ -40,6 +40,8 @@ SOFTWARE.
 #include "intrusive_links.h"
 #include "private/counter_type.h"
 
+#define ETL_FILE "29"
+
 namespace etl
 {
   //***************************************************************************
@@ -252,5 +254,7 @@ namespace etl
     etl::counter_type<COUNT_OPTION> current_size; ///< Counts the number of elements in the list.
   };
 }
+
+#undef ETL_FILE
 
 #endif

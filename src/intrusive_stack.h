@@ -38,6 +38,8 @@ SOFTWARE.
 #include "intrusive_links.h"
 #include "private/counter_type.h"
 
+#define ETL_FILE "28"
+
 namespace etl
 {
   //***************************************************************************
@@ -95,7 +97,7 @@ namespace etl
     {
       // The count option is based on the type of link.
       COUNT_OPTION = ((TLink::OPTION == etl::link_option::AUTO) || (TLink::OPTION == etl::link_option::CHECKED)) ?
-                     etl::count_option::SLOW_COUNT : 
+                     etl::count_option::SLOW_COUNT :
                      etl::count_option::FAST_COUNT
     };
 
@@ -136,7 +138,7 @@ namespace etl
       {
         etl::link(value, p_top);
       }
-        
+
       p_top = &value;
 
       ++current_size;
@@ -216,5 +218,7 @@ namespace etl
     etl::counter_type<COUNT_OPTION> current_size; ///< Counts the number of elements in the list.
   };
 }
+
+#undef ETL_FILE
 
 #endif
