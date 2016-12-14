@@ -24,3 +24,6 @@
 24 variant
 25 iunordered_multimap
 26 iunordered_multiset
+27 string_base
+28 intrusive_stack
+29 intrusive_queue
