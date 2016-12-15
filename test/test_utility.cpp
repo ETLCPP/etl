@@ -1,5 +1,3 @@
-///\file
-
 /******************************************************************************
 The MIT License(MIT)
 
@@ -7,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 http://www.etlcpp.com
 
-Copyright(c) 2016 jwellbelove
+Copyright(c) 2014 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,30 +26,36 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_UTILITY__
-#define __ETL_UTILITY__
+#include <UnitTest++/UnitTest++.h>
 
-///\defgroup utility utility
-///\ingroup utilities
+#include "../src/utility.h"
 
-namespace etl
+namespace
 {
-  template <typename T, typename U = T>
-  T exchange(T& object, U& new_value)
+  SUITE(test_utility)
   {
-    T old_value = object;
-    object = new_value;
-    return old_value;
-  }
+    //=========================================================================
+    TEST(test_exchange)
+    {
+      int a = 1;
+      int b = 2;
+      int c = etl::exchange(a, b); // c = a, a = b
 
-  template <typename T, typename U = T>
-  T exchange(T& object, const U& new_value)
-  {
-    T old_value = object;
-    object = new_value;
-    return old_value;
-  }
+      CHECK_EQUAL(2, a);
+      CHECK_EQUAL(2, b);
+      CHECK_EQUAL(1, c);
+    }
+
+    //=========================================================================
+    TEST(test_exchange_const)
+    {
+      int a = 1;
+      const int b = 2;
+      int c = etl::exchange(a, b); // c = a, a = b
+
+      CHECK_EQUAL(2, a);
+      CHECK_EQUAL(2, b);
+      CHECK_EQUAL(1, c);
+    }
+  };
 }
-
-#endif
-
