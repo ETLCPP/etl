@@ -31,6 +31,8 @@ SOFTWARE.
 #ifndef __ETL_UTILITY__
 #define __ETL_UTILITY__
 
+#include "type_traits.h"
+
 ///\defgroup utility utility
 ///\ingroup utilities
 
@@ -50,6 +52,12 @@ namespace etl
     T old_value = object;
     object = new_value;
     return old_value;
+  }
+
+  template <typename T>
+  etl::add_const_t<T>& as_const(T& t)
+  {
+    return t;
   }
 }
 
