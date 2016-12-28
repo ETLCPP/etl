@@ -423,7 +423,7 @@ namespace
       CHECK_NO_THROW(data.push_front(ItemNDC("5")));
       CHECK_NO_THROW(data.push_front(ItemNDC("6")));
 
-      CHECK_EQUAL(6, data.size());
+      CHECK_EQUAL(6U, data.size());
       CHECK_EQUAL(6, std::distance(data.begin(), data.end()));
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
@@ -457,7 +457,7 @@ namespace
       CHECK_NO_THROW(data.push_front());
       data.front() = ItemNDC("6");
 
-      CHECK_EQUAL(6, data.size());
+      CHECK_EQUAL(6U, data.size());
       CHECK_EQUAL(6, std::distance(data.begin(), data.end()));
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
