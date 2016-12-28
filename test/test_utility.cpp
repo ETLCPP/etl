@@ -32,6 +32,22 @@ SOFTWARE.
 
 namespace
 {
+  bool nonConstCalled;
+  bool constCalled;
+
+  void TestText(std::string&)
+  {
+    nonConstCalled = true;
+  }
+
+  void TestText(const std::string&)
+  {
+    constCalled = true;
+  }
+}
+
+namespace
+{
   SUITE(test_utility)
   {
     //=========================================================================
@@ -56,6 +72,28 @@ namespace
       CHECK_EQUAL(2, a);
       CHECK_EQUAL(2, b);
       CHECK_EQUAL(1, c);
+    }
+
+    //=========================================================================
+    TEST(test_as_const)
+    {
+      std::string text = "Hello World!";
+      
+      nonConstCalled = false;
+      constCalled    = false;
+      
+      TestText(text);
+
+      CHECK(nonConstCalled);
+      CHECK(!constCalled);
+
+      nonConstCalled = false;
+      constCalled = false;
+
+      TestText(etl::as_const(text));
+
+      CHECK(!nonConstCalled);
+      CHECK(constCalled);
     }
   };
 }
