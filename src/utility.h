@@ -38,6 +38,9 @@ SOFTWARE.
 
 namespace etl
 {
+  //***************************************************************************
+  /// exchange
+  //***************************************************************************
   template <typename T, typename U = T>
   T exchange(T& object, U& new_value)
   {
@@ -46,6 +49,9 @@ namespace etl
     return old_value;
   }
 
+  //***************************************************************************
+  /// exchange (const)
+  //***************************************************************************
   template <typename T, typename U = T>
   T exchange(T& object, const U& new_value)
   {
@@ -54,8 +60,11 @@ namespace etl
     return old_value;
   }
 
+  //***************************************************************************
+  /// as_const
+  //***************************************************************************
   template <typename T>
-  etl::add_const_t<T>& as_const(T& t)
+  typename etl::add_const<T>::type& as_const(T& t)
   {
     return t;
   }
