@@ -154,6 +154,48 @@ namespace etl
     {
       typedef uint_least64_t type;
     };
+
+    //*************************************************************************
+    // Determine the type to hold the number of bits based on the index.
+    //*************************************************************************
+    template <const int index>
+    struct best_fit_int_type;
+
+    //*************************************************************************
+    // Less than or equal to 8 bits.
+    //*************************************************************************
+    template <>
+    struct best_fit_int_type<0>
+    {
+      typedef int_least8_t type;
+    };
+
+    //*************************************************************************
+    // 9 to 16 bits.
+    //*************************************************************************
+    template <>
+    struct best_fit_int_type<1>
+    {
+      typedef int_least16_t type;
+    };
+
+    //*************************************************************************
+    // 17 to 31 bits.
+    //*************************************************************************
+    template <>
+    struct best_fit_int_type<2>
+    {
+      typedef int_least32_t type;
+    };
+
+    //*************************************************************************
+    // Greater than 32 bits.
+    //*************************************************************************
+    template <>
+    struct best_fit_int_type<3>
+    {
+      typedef int_least64_t type;
+    };
   }
 
   //***************************************************************************
@@ -168,11 +210,76 @@ namespace etl
   private:
     
     // Determines the index of the best unsigned type for the required number of bits.
-    static const int TYPE_INDEX = ((NBITS >  8) ? 1 : 0) + ((NBITS > 16) ? 1 : 0) + ((NBITS > 32) ? 1 : 0);
+    static const int TYPE_INDEX = ((NBITS >  8) ? 1 : 0) + 
+                                  ((NBITS > 16) ? 1 : 0) +
+                                  ((NBITS > 32) ? 1 : 0);
 
   public:
 
     typedef typename __private_smallest__::best_fit_uint_type<TYPE_INDEX>::type type;
+  };
+
+  //***************************************************************************
+  /// Template to determine the smallest signed int type that can contain a 
+  /// value with the specified number of bits.
+  /// Defines 'type' which is the type of the smallest signed integer.
+  ///\ingroup smallest
+  //***************************************************************************
+  template <const size_t NBITS>
+  struct smallest_int_for_bits
+  {
+  private:
+
+    // Determines the index of the best unsigned type for the required number of bits.
+    static const int TYPE_INDEX = ((NBITS >  8) ? 1 : 0) +
+                                  ((NBITS > 16) ? 1 : 0) +
+                                  ((NBITS > 32) ? 1 : 0);
+
+  public:
+
+    typedef typename __private_smallest__::best_fit_int_type<TYPE_INDEX>::type type;
+  };
+
+  //***************************************************************************
+  /// Template to determine the smallest unsigned int type that can contain the
+  /// specified unsigned value.
+  /// Defines 'type' which is the type of the smallest unsigned integer.
+  ///\ingroup smallest
+  //***************************************************************************
+  template <const uintmax_t VALUE>
+  struct smallest_uint_for_value
+  {
+  private:
+
+    // Determines the index of the best unsigned type for the required value.
+    static const int TYPE_INDEX = ((VALUE > UINT8_MAX)  ? 1 : 0) +
+                                  ((VALUE > UINT16_MAX) ? 1 : 0) + 
+                                  ((VALUE > UINT32_MAX) ? 1 : 0);
+
+  public:
+
+    typedef typename __private_smallest__::best_fit_uint_type<TYPE_INDEX>::type type;
+  };
+
+  //***************************************************************************
+  /// Template to determine the smallest int type that can contain the
+  /// specified signed value.
+  /// Defines 'type' which is the type of the smallest signed integer.
+  ///\ingroup smallest
+  //***************************************************************************
+  template <const intmax_t VALUE>
+  struct smallest_int_for_value
+  {
+  private:
+
+    // Determines the index of the best signed type for the required value.
+    static const int TYPE_INDEX = (((VALUE > INT8_MAX)  || (VALUE < INT8_MIN))  ? 1 : 0) + 
+                                  (((VALUE > INT16_MAX) || (VALUE < INT16_MIN)) ? 1 : 0) +
+                                  (((VALUE > INT32_MAX) || (VALUE < INT32_MIN)) ? 1 : 0);
+
+  public:
+
+    typedef typename __private_smallest__::best_fit_int_type<TYPE_INDEX>::type type;
   };
 }
 
