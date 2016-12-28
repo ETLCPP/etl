@@ -146,13 +146,6 @@ namespace etl
     typedef const value_type& const_reference;
     typedef size_t            size_type;
 
-    enum
-    {
-      // The count option is based on the type of link.
-      COUNT_OPTION = ((TLink::OPTION == etl::link_option::AUTO) ||
-                      (TLink::OPTION == etl::link_option::CHECKED)) ? etl::count_option::SLOW_COUNT : etl::count_option::FAST_COUNT
-    };
-
     typedef intrusive_forward_list<TValue, TLink> list_type;
 
     //*************************************************************************
@@ -325,7 +318,7 @@ namespace etl
       const value_type* p_value;
     };
 
-		typedef typename std::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename std::iterator_traits<iterator>::difference_type difference_type;
 
     //*************************************************************************
     /// Constructor.
@@ -421,11 +414,6 @@ namespace etl
     //*************************************************************************
     void clear()
     {
-      if (TLink::OPTION == etl::link_option::CHECKED)
-      {
-        erase_after(before_begin(), end());
-      }
-
       initialise();
     }
 
@@ -452,7 +440,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(DEBUG)
       difference_type count = std::distance(first, last);
       ETL_ASSERT(count >= 0, ETL_ERROR(intrusive_forward_list_iterator_exception));
 #endif
@@ -546,14 +534,11 @@ namespace etl
     {
       iterator next(position);
       ++next;
-      ++next;
-
-      remove_link_after(*position.p_value);
-      
-      //if (TLink::OPTION == etl::link_option::CHECKED)
-      //{
-      //  position.p_value->TLink::clear();
-      //}
+      if (next != end())
+      {
+        ++next;
+        remove_link_after(*position.p_value);
+      }
 
       return next;
     }
@@ -579,14 +564,8 @@ namespace etl
         // One less.
         --current_size;
 
-        p_next = p_first->etl_next; // Remember the next link.
-
-        if (TLink::OPTION == etl::link_option::CHECKED)
-        {
-          p_first->TLink::clear();    // Clear the link.
-        }
-
-        p_first = p_next;           // Move to the next link.
+        p_next  = p_first->etl_next; // Remember the next link.
+        p_first = p_next;            // Move to the next link.
       }
 
       if (p_next == nullptr)
@@ -659,7 +638,7 @@ namespace etl
 
       if (is_trivial_list())
       {
-	      return;
+        return;
       }
 
       while (true)
@@ -698,32 +677,32 @@ namespace etl
             // Decide whether the next link of merge comes from left or right.
             if (left_size == 0)
             {
-		          // Left is empty. The link must come from right.
-		          i_link = i_right;
+              // Left is empty. The link must come from right.
+              i_link = i_right;
               ++i_right;
               --right_size;
-		        }
+            }
             else if (right_size == 0 || i_right == end())
             {
-		          // Right is empty. The link must come from left.
-		          i_link = i_left;
+              // Right is empty. The link must come from left.
+              i_link = i_left;
               ++i_left;
               --left_size;
-		        }
+            }
             else if (compare(*i_left, *i_right))
             {
-		          // First link of left is lower or same. The link must come from left.
-		          i_link = i_left;
+              // First link of left is lower or same. The link must come from left.
+              i_link = i_left;
               ++i_left;
               --left_size;
-		        }
+            }
             else
             {
-		          // First link of right is lower. The link must come from right.
-		          i_link  = i_right;
+              // First link of right is lower. The link must come from right.
+              i_link  = i_right;
               ++i_right;
               --right_size;
-		        }
+            }
 
             // Add the next link to the merged head.
             if (i_head == before_begin())
@@ -814,14 +793,7 @@ namespace etl
     //*************************************************************************
     size_t size() const
     {
-      if (COUNT_OPTION == etl::count_option::SLOW_COUNT)
-      {
-        return std::distance(cbegin(), cend());
-      }
-      else
-      {
-        return current_size.get_count();
-      }
+      return current_size;
     }
 
     //*************************************************************************
@@ -835,14 +807,10 @@ namespace etl
         if (!other.empty())
         {
           link_type& first = other.get_head();
-          other.initialise();
 
-          if (COUNT_OPTION == etl::count_option::FAST_COUNT)
+          if (&other != this)
           {
-            if (&other != this)
-            {
-              current_size += other.size();
-            }
+            current_size += other.size();
           }
 
           link_type& before = *position.p_value;
@@ -857,6 +825,8 @@ namespace etl
           }
 
           etl::link<link_type>(last, after);
+
+          other.initialise();
         }
       }
     }
@@ -871,13 +841,10 @@ namespace etl
       etl::unlink<link_type>(*isource.p_value);
       etl::link_splice<link_type>(before, *isource.p_value);
 
-      if (COUNT_OPTION == etl::count_option::FAST_COUNT)
+      if (&other != this)
       {
-        if (&other != this)
-        {
-          ++current_size;
-          --other.current_size;
-        }
+        ++current_size;
+        --other.current_size;
       }
     }
 
@@ -888,14 +855,11 @@ namespace etl
     {
       if (!other.empty())
       {
-        if (COUNT_OPTION == etl::count_option::FAST_COUNT)
+        if (&other != this)
         {
-          if (&other != this)
-          {
-            size_t n = std::distance(begin_, end_) - 1;
-            current_size += n;
-            other.current_size -= n;
-          }
+          size_t n = std::distance(begin_, end_) - 1;
+          current_size += n;
+          other.current_size -= n;
         }
 
         link_type* first = begin_.p_value;
@@ -979,10 +943,7 @@ namespace etl
           }
         }
 
-        if (COUNT_OPTION == etl::count_option::FAST_COUNT)
-        {
-          current_size += other.size();
-        }
+        current_size += other.size();
 
         other.initialise();
       }
@@ -992,7 +953,7 @@ namespace etl
 
     link_type start_link; ///< The link that acts as the intrusive_forward_list start.
 
-    counter_type<COUNT_OPTION> current_size; ///< Counts the number of elements in the list.
+    size_t current_size; ///< Counts the number of elements in the list.
 
     //*************************************************************************
     /// Is the intrusive_forward_list a trivial length?
@@ -1017,7 +978,9 @@ namespace etl
     //*************************************************************************
     void remove_link_after(link_type& link)
     {
-      if (link.etl_next != nullptr)
+      link_type* p_next = link.etl_next;
+
+      if (p_next != nullptr)
       {
         etl::unlink_after<link_type>(link);
         --current_size;

@@ -31,8 +31,6 @@ SOFTWARE.
 #ifndef __ETL_INTRUSIVE_QUEUE__
 #define __ETL_INTRUSIVE_QUEUE__
 
-#error In Development. Do not use.
-
 #include <stddef.h>
 
 #include "type_traits.h"
@@ -95,20 +93,13 @@ namespace etl
     typedef const value_type& const_reference;
     typedef size_t            size_type;
 
-    enum
-    {
-      // The count option is based on the type of link.
-      COUNT_OPTION = ((TLink::OPTION == etl::link_option::AUTO) || (TLink::OPTION == etl::link_option::CHECKED)) ?
-                     etl::count_option::SLOW_COUNT :
-                     etl::count_option::FAST_COUNT
-    };
-
     //*************************************************************************
     /// Constructor
     //*************************************************************************
     intrusive_queue()
     : p_front(nullptr),
-      p_back(nullptr)
+      p_back(nullptr),
+      current_size(0)
     {
     }
 
@@ -158,15 +149,17 @@ namespace etl
     //*************************************************************************
     void push(link_type& value)
     {
+      value.clear();
+
       if (p_back != nullptr)
       {
-        etl::link(p_front, value);
+        etl::link(p_back, value);        
       }
       else
-      {
+      { 
         p_front = &value;
       }
-
+      
       p_back = &value;
 
       ++current_size;
@@ -182,13 +175,13 @@ namespace etl
       ETL_ASSERT(!empty(), ETL_ERROR(intrusive_queue_empty));
 #endif
       link_type* p_next = p_front->etl_next;
-      p_front->clear();
+      
       p_front = p_next;
 
       // Now empty?
       if (p_front == nullptr)
       {
-        p_back == nullptr;
+        p_back = nullptr;
       }
 
       --current_size;
@@ -203,6 +196,7 @@ namespace etl
       {
         pop();
       }
+
       current_size = 0;
     }
 
@@ -211,7 +205,7 @@ namespace etl
     //*************************************************************************
     bool empty() const
     {
-      return p_front == nullptr;
+      return current_size == 0;
     }
 
     //*************************************************************************
@@ -219,27 +213,7 @@ namespace etl
     //*************************************************************************
     size_t size() const
     {
-      if (COUNT_OPTION == etl::count_option::SLOW_COUNT)
-      {
-        size_t count = 0;
-
-        if (p_front != nullptr)
-        {
-          link_type* p_link = p_front;
-
-          while (p_link != nullptr)
-          {
-            ++count;
-            p_link = p_link->etl_next;
-          }
-        }
-
-        return count;
-      }
-      else
-      {
-        return current_size.get_count();
-      }
+      return current_size;
     }
 
   private:
@@ -251,7 +225,7 @@ namespace etl
     link_type* p_front; // The current front of the queue.
     link_type* p_back;  // The current back of the queue.
 
-    etl::counter_type<COUNT_OPTION> current_size; ///< Counts the number of elements in the list.
+    size_t current_size; ///< Counts the number of elements in the list.
   };
 }
 

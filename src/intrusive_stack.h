@@ -93,19 +93,12 @@ namespace etl
     typedef const value_type& const_reference;
     typedef size_t            size_type;
 
-    enum
-    {
-      // The count option is based on the type of link.
-      COUNT_OPTION = ((TLink::OPTION == etl::link_option::AUTO) || (TLink::OPTION == etl::link_option::CHECKED)) ?
-                     etl::count_option::SLOW_COUNT :
-                     etl::count_option::FAST_COUNT
-    };
-
     //*************************************************************************
     /// Constructor
     //*************************************************************************
     intrusive_stack()
-    : p_top(nullptr)
+    : p_top(nullptr),
+      current_size(0)
     {
     }
 
@@ -134,6 +127,8 @@ namespace etl
     //*************************************************************************
     void push(link_type& value)
     {
+      value.clear();
+
       if (p_top != nullptr)
       {
         etl::link(value, p_top);
@@ -154,7 +149,6 @@ namespace etl
       ETL_ASSERT(!empty(), ETL_ERROR(intrusive_stack_empty));
 #endif
       link_type* p_next = p_top->etl_next;
-      p_top->clear();
       p_top = p_next;
       --current_size;
     }
@@ -168,6 +162,7 @@ namespace etl
       {
         pop();
       }
+
       current_size = 0;
     }
 
@@ -176,7 +171,7 @@ namespace etl
     //*************************************************************************
     bool empty() const
     {
-      return p_top == nullptr;
+      return current_size == 0;
     }
 
     //*************************************************************************
@@ -184,27 +179,7 @@ namespace etl
     //*************************************************************************
     size_t size() const
     {
-      if (COUNT_OPTION == etl::count_option::SLOW_COUNT)
-      {
-        size_t count = 0;
-
-        if (p_top != nullptr)
-        {
-          link_type* p_link = p_top;
-
-          while (p_link != nullptr)
-          {
-            ++count;
-            p_link = p_link->etl_next;
-          }
-        }
-
-        return count;
-      }
-      else
-      {
-        return current_size.get_count();
-      }
+      return current_size;
     }
 
   private:
@@ -215,7 +190,7 @@ namespace etl
 
     link_type* p_top; // The current top of the stack.
 
-    etl::counter_type<COUNT_OPTION> current_size; ///< Counts the number of elements in the list.
+    size_t current_size; ///< Counts the number of elements in the list.
   };
 }
 
