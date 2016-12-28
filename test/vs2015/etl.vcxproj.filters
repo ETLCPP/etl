@@ -498,9 +498,6 @@
     <ClInclude Include="..\..\src\ibasic_string.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\string.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\u16string.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
@@ -520,6 +517,15 @@
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\intrusive_stack.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\utility.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\intrusive_queue.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\cstring.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -810,6 +816,12 @@
       <Filter>ETL\Private</Filter>
     </ClCompile>
     <ClCompile Include="..\test_intrusive_stack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_utility.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_intrusive_queue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

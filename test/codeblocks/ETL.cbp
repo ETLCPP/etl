@@ -19,6 +19,9 @@
 					<Add option="-DETL_VERBOSE_ERRORS" />
 					<Add option="-DETL_CHECK_PUSH_POP" />
 				</Compiler>
+				<ExtraCommands>
+					<Add after="${TARGET_OUTPUT_DIR}${TARGET_OUTPUT_BASENAME}" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Linux">
 				<Option output="bin/Debug/ETL" prefix_auto="1" extension_auto="1" />
@@ -34,7 +37,7 @@
 					<Add option="-DETL_CHECK_PUSH_POP" />
 				</Compiler>
 				<ExtraCommands>
-					<Add after="bin/Debug/ETL" />
+					<Add after="${TARGET_OUTPUT_DIR}${TARGET_OUTPUT_BASENAME}" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -84,6 +87,8 @@
 		<Unit filename="../../../unittest-cpp/UnitTest++/ReportAssert.cpp" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/ReportAssert.h" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/ReportAssertImpl.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/RequiredCheckException.cpp" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/RequiredCheckTestReporter.cpp" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/Test.cpp" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/Test.h" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/TestDetails.cpp" />
@@ -100,6 +105,7 @@
 		<Unit filename="../../../unittest-cpp/UnitTest++/TestRunner.cpp" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/TestRunner.h" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/TestSuite.h" />
+		<Unit filename="../../../unittest-cpp/UnitTest++/ThrowingTestReporter.cpp" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/TimeConstraint.cpp" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/TimeConstraint.h" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/TimeHelpers.h" />
@@ -114,6 +120,7 @@
 		<Unit filename="../../src/algorithm.h" />
 		<Unit filename="../../src/alignment.h" />
 		<Unit filename="../../src/array.h" />
+		<Unit filename="../../src/basic_string.h" />
 		<Unit filename="../../src/binary.h" />
 		<Unit filename="../../src/bitset.h" />
 		<Unit filename="../../src/bloom_filter.h" />
@@ -132,8 +139,10 @@
 		<Unit filename="../../src/crc64_ecma.h" />
 		<Unit filename="../../src/crc8_ccitt.cpp" />
 		<Unit filename="../../src/crc8_ccitt.h" />
+		<Unit filename="../../src/cstring.h" />
 		<Unit filename="../../src/cyclic_hash.h" />
 		<Unit filename="../../src/cyclic_value.h" />
+		<Unit filename="../../src/debounce.h" />
 		<Unit filename="../../src/deque.h" />
 		<Unit filename="../../src/endian.h" />
 		<Unit filename="../../src/enum_type.h" />
@@ -172,6 +181,8 @@
 		<Unit filename="../../src/intrusive_forward_list_link.h" />
 		<Unit filename="../../src/intrusive_links.h" />
 		<Unit filename="../../src/intrusive_list.h" />
+		<Unit filename="../../src/intrusive_queue.h" />
+		<Unit filename="../../src/intrusive_stack.h" />
 		<Unit filename="../../src/io_port.h" />
 		<Unit filename="../../src/ipool.h" />
 		<Unit filename="../../src/ipriority_queue.h" />
@@ -183,6 +194,7 @@
 		<Unit filename="../../src/iunordered_multiset.h" />
 		<Unit filename="../../src/iunordered_set.h" />
 		<Unit filename="../../src/ivector.h" />
+		<Unit filename="../../src/ivectorpointer.h" />
 		<Unit filename="../../src/jenkins.h" />
 		<Unit filename="../../src/largest.h" />
 		<Unit filename="../../src/list.h" />
@@ -202,6 +214,7 @@
 		<Unit filename="../../src/pool.h" />
 		<Unit filename="../../src/power.h" />
 		<Unit filename="../../src/priority_queue.h" />
+		<Unit filename="../../src/private/pvoidvector.cpp" />
 		<Unit filename="../../src/queue.h" />
 		<Unit filename="../../src/radix.h" />
 		<Unit filename="../../src/set.h" />
@@ -215,14 +228,19 @@
 		<Unit filename="../../src/test2.h">
 			<Option target="Windows" />
 		</Unit>
+		<Unit filename="../../src/type_def.h" />
 		<Unit filename="../../src/type_traits.h" />
+		<Unit filename="../../src/u16string.h" />
+		<Unit filename="../../src/u32string.h" />
 		<Unit filename="../../src/unordered_map.h" />
 		<Unit filename="../../src/unordered_multimap.h" />
 		<Unit filename="../../src/unordered_multiset.h" />
 		<Unit filename="../../src/unordered_set.h" />
+		<Unit filename="../../src/utility.h" />
 		<Unit filename="../../src/variant.h" />
 		<Unit filename="../../src/vector.h" />
 		<Unit filename="../../src/visitor.h" />
+		<Unit filename="../../src/wstring.h" />
 		<Unit filename="../ExtraCheckMacros.h" />
 		<Unit filename="../data.h" />
 		<Unit filename="../main.cpp" />
@@ -239,6 +257,7 @@
 		<Unit filename="../test_container.cpp" />
 		<Unit filename="../test_crc.cpp" />
 		<Unit filename="../test_cyclic_value.cpp" />
+		<Unit filename="../test_debounce.cpp" />
 		<Unit filename="../test_deque.cpp" />
 		<Unit filename="../test_endian.cpp" />
 		<Unit filename="../test_enum_type.cpp" />
@@ -259,6 +278,8 @@
 		<Unit filename="../test_intrusive_forward_list.cpp" />
 		<Unit filename="../test_intrusive_links.cpp" />
 		<Unit filename="../test_intrusive_list.cpp" />
+		<Unit filename="../test_intrusive_queue.cpp" />
+		<Unit filename="../test_intrusive_stack.cpp" />
 		<Unit filename="../test_io_port.cpp" />
 		<Unit filename="../test_jenkins.cpp" />
 		<Unit filename="../test_largest.cpp" />
@@ -278,13 +299,20 @@
 		<Unit filename="../test_set.cpp" />
 		<Unit filename="../test_smallest.cpp" />
 		<Unit filename="../test_stack.cpp" />
+		<Unit filename="../test_string_char.cpp" />
+		<Unit filename="../test_string_u16.cpp" />
+		<Unit filename="../test_string_u32.cpp" />
+		<Unit filename="../test_string_wchar_t.cpp" />
+		<Unit filename="../test_type_def.cpp" />
 		<Unit filename="../test_type_traits.cpp" />
 		<Unit filename="../test_unordered_map.cpp" />
 		<Unit filename="../test_unordered_multimap.cpp" />
 		<Unit filename="../test_unordered_multiset.cpp" />
 		<Unit filename="../test_unordered_set.cpp" />
+		<Unit filename="../test_utility.cpp" />
 		<Unit filename="../test_variant.cpp" />
 		<Unit filename="../test_vector.cpp" />
+		<Unit filename="../test_vector_pointer.cpp" />
 		<Unit filename="../test_visitor.cpp" />
 		<Unit filename="../test_xor_checksum.cpp" />
 		<Extensions>
