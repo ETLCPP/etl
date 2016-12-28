@@ -28,8 +28,8 @@ SOFTWARE.
 
 #include <UnitTest++/UnitTest++.h>
 
-#include <stdlib.h>
 #include <vector>
+#include <string.h>
 
 #include "../src/bloom_filter.h"
 
@@ -38,13 +38,15 @@ SOFTWARE.
 #include "../src/crc16_ccitt.h"
 #include "../src/crc32.h"
 
+#include "../src/char_traits.h"
+
 struct hash1_t
 {
   typedef const char* argument_type;
 
   size_t operator ()(argument_type text) const
   {
-    return etl::fnv_1a_32(text, text + strlen(text));
+    return etl::fnv_1a_32(text, text + etl::char_traits<char>::length(text));
   }
 };
 
@@ -54,7 +56,7 @@ struct hash2_t
 
   size_t operator ()(argument_type text) const
   {
-    return etl::crc32(text, text + strlen(text));
+    return etl::crc32(text, text + etl::char_traits<char>::length(text));
   }
 };
 
@@ -64,7 +66,7 @@ struct hash3_t
 
   size_t operator ()(argument_type text) const
   {
-    return etl::crc16(text, text + strlen(text)) | (etl::crc16_ccitt(text, text + strlen(text)) << 16);
+    return etl::crc16(text, text + etl::char_traits<char>::length(text)) | (etl::crc16_ccitt(text, text + etl::char_traits<char>::length(text)) << 16);
   }
 };
 
@@ -106,7 +108,7 @@ namespace
       CHECK(!any_exist);
 
       size_t usage = bloom.usage();
-      CHECK(usage >= 0);
+      CHECK(usage > 0);
       CHECK(usage < 100);
 
       size_t count = bloom.count();
@@ -145,7 +147,6 @@ namespace
       CHECK(!any_exist);
 
       size_t usage = bloom.usage();
-      CHECK(usage >= 0);
       CHECK(usage < 100);
 
       size_t count = bloom.count();
@@ -184,7 +185,6 @@ namespace
       CHECK(!any_exist);
 
       size_t usage = bloom.usage();
-      CHECK(usage >= 0);
       CHECK(usage < 100);
 
       size_t count = bloom.count();
