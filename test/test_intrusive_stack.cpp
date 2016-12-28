@@ -35,19 +35,10 @@ SOFTWARE.
 
 namespace
 {
-  enum
-  {
-    DEFAULT,
-    AUTO,
-    CHECKED
-  };
+  typedef etl::forward_link<0>       link0;
+  typedef etl::bidirectional_link<1> link1;
 
-  etl::forward_link<DEFAULT, etl::link_option::DEFAULT> link;
-
-  typedef etl::forward_link<DEFAULT, etl::link_option::DEFAULT> default_link;
-  typedef etl::forward_link<CHECKED, etl::link_option::CHECKED> checked_link;
-
-  struct Data : public default_link, public checked_link
+  struct Data : public link0, public link1
   {
     Data(int i)
       : i(i)
@@ -79,24 +70,24 @@ namespace
     //*************************************************************************
     TEST(test_constructor)
     {
-      etl::intrusive_stack<Data, default_link> stackD;
-      etl::intrusive_stack<Data, checked_link> stackC;
+      etl::intrusive_stack<Data, link0> stackD;
+      etl::intrusive_stack<Data, link1> stackC;
 
       CHECK(stackD.empty());
       CHECK(stackC.empty());
 
-      CHECK_EQUAL(0, stackD.size());
-      CHECK_EQUAL(0, stackC.size());
+      CHECK_EQUAL(0U, stackD.size());
+      CHECK_EQUAL(0U, stackC.size());
     }
 
     //*************************************************************************
     TEST(test_empty)
     {
-      etl::intrusive_stack<Data, default_link> stackD;
-      etl::intrusive_stack<Data, checked_link> stackC;
-
       Data data1(1);
       Data data2(2);
+
+      etl::intrusive_stack<Data, link0> stackD;
+      etl::intrusive_stack<Data, link1> stackC;
 
       CHECK(stackD.empty());
       CHECK(stackC.empty());
@@ -106,20 +97,17 @@ namespace
 
       CHECK(!stackD.empty());
       CHECK(!stackC.empty());
-
-      data1.checked_link::clear();
-      data2.checked_link::clear();
     }
 
     //*************************************************************************
     TEST(test_size)
     {
-      etl::intrusive_stack<Data, default_link> stackD;
-      etl::intrusive_stack<Data, checked_link> stackC;
-
       Data data1(1);
       Data data2(2);
       Data data3(3);
+
+      etl::intrusive_stack<Data, link0> stackD;
+      etl::intrusive_stack<Data, link1> stackC;
 
       stackD.push(data1);
       stackD.push(data2);
@@ -130,20 +118,17 @@ namespace
 
       CHECK_EQUAL(3U, stackD.size());
       CHECK_EQUAL(2U, stackC.size());
-
-      data1.checked_link::clear();
-      data2.checked_link::clear();
     }
 
     //*************************************************************************
     TEST(test_clear)
     {
-      etl::intrusive_stack<Data, default_link> stackD;
-      etl::intrusive_stack<Data, checked_link> stackC;
-
       Data data1(1);
       Data data2(2);
       Data data3(3);
+
+      etl::intrusive_stack<Data, link0> stackD;
+      etl::intrusive_stack<Data, link1> stackC;
 
       stackD.push(data1);
       stackD.push(data2);
@@ -162,12 +147,12 @@ namespace
     //*************************************************************************
     TEST(test_push)
     {
-      etl::intrusive_stack<Data, default_link> stackD;
-      etl::intrusive_stack<Data, checked_link> stackC;
-
       Data data1(1);
       Data data2(2);
       Data data3(3);
+
+      etl::intrusive_stack<Data, link0> stackD;
+      etl::intrusive_stack<Data, link1> stackC;
 
       stackD.push(data1);
       CHECK_EQUAL(stackD.top(), data1);
@@ -183,21 +168,17 @@ namespace
 
       stackC.push(data2);
       CHECK_EQUAL(stackC.top(), data2);
-
-      data1.checked_link::clear();
-      data2.checked_link::clear();
     }
-
 
     //*************************************************************************
     TEST(test_pop)
     {
-      etl::intrusive_stack<Data, default_link> stackD;
-      etl::intrusive_stack<Data, checked_link> stackC;
-
       Data data1(1);
       Data data2(2);
       Data data3(3);
+
+      etl::intrusive_stack<Data, link0> stackD;
+      etl::intrusive_stack<Data, link1> stackC;
 
       stackD.push(data1);
       stackD.push(data2);
@@ -219,20 +200,17 @@ namespace
       CHECK_EQUAL(stackC.top(), data1);
       stackC.pop();
       CHECK(stackC.empty());
-
-      data1.checked_link::clear();
-      data2.checked_link::clear();
     }
 
     //*************************************************************************
     TEST(test_top_const)
     {
-      etl::intrusive_stack<Data, default_link> stackD;
-      const etl::intrusive_stack<Data, default_link>& stackDR = stackD;
-
       Data data1(1);
       Data data2(2);
       Data data3(3);
+
+      etl::intrusive_stack<Data, link0> stackD;
+      const etl::intrusive_stack<Data, link0>& stackDR = stackD;
 
       stackD.push(data1);
       stackD.push(data2);
