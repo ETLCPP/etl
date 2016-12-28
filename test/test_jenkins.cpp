@@ -85,7 +85,7 @@ namespace
     {
       std::string data("123456789");
 
-      uint32_t hash    = etl::jenkins<uint32_t>(data.begin(), data.end());
+      uint32_t hash    = etl::jenkins32(data.begin(), data.end());
       uint32_t compare = jenkins32(data.begin(), data.end());
 
       CHECK_EQUAL(compare, hash);
@@ -96,7 +96,7 @@ namespace
     {
       std::string data("123456789");
 
-      etl::jenkins<uint32_t> jenkins_32_calculator;
+      etl::jenkins32 jenkins_32_calculator;
 
       for (size_t i = 0; i < data.size(); ++i)
       {
@@ -114,7 +114,7 @@ namespace
     {
       std::string data("123456789");
 
-      etl::jenkins<uint32_t> jenkins_32_calculator;
+      etl::jenkins32 jenkins_32_calculator;
 
       jenkins_32_calculator.add(data.begin(), data.end());
 
@@ -132,9 +132,9 @@ namespace
       std::vector<uint32_t> data2 = { 0x04030201, 0x08070605 };
       std::vector<uint8_t>  data3 = { 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
 
-      uint32_t hash1 = etl::jenkins<uint32_t>(data1.begin(), data1.end());
-      uint32_t hash2 = etl::jenkins<uint32_t>((uint8_t*)&data2[0], (uint8_t*)&data2[0] + (data2.size() * sizeof(uint32_t)));
-      uint32_t hash3 = etl::jenkins<uint32_t>(data3.rbegin(), data3.rend());
+      uint32_t hash1 = etl::jenkins32(data1.begin(), data1.end());
+      uint32_t hash2 = etl::jenkins32((uint8_t*)&data2[0], (uint8_t*)&data2[0] + (data2.size() * sizeof(uint32_t)));
+      uint32_t hash3 = etl::jenkins32(data3.rbegin(), data3.rend());
 
       CHECK_EQUAL(hash1, hash2);
       CHECK_EQUAL(hash1, hash3);
@@ -146,7 +146,7 @@ namespace
       CHECK_EQUAL(compare2, hash2);
 
       uint64_t compare3 = jenkins32(data3.rbegin(), data3.rend());
-      CHECK_EQUAL(compare2, hash3);
+      CHECK_EQUAL(compare3, hash3);
     }
 
     //*************************************************************************
@@ -154,9 +154,10 @@ namespace
     {
       std::string data("123456789");
 
-      etl::jenkins<uint32_t> j32;
+      etl::jenkins32 j32;
       j32.add(data.begin(), data.end());
-      uint32_t hash = j32;
+
+      j32.value();
 
       CHECK_THROW(j32.add(0), etl::hash_finalised);
     }
@@ -166,7 +167,7 @@ namespace
     {
       std::string data("123456789");
 
-      uint64_t hash = etl::jenkins<uint64_t>(data.begin(), data.end());
+      uint64_t hash = etl::jenkins64(data.begin(), data.end());
       uint64_t compare = jenkins64(data.begin(), data.end());
 
       CHECK_EQUAL(compare, hash);
@@ -177,7 +178,7 @@ namespace
     {
       std::string data("123456789");
 
-      etl::jenkins<uint64_t> jenkins_64_calculator;
+      etl::jenkins64 jenkins_64_calculator;
 
       for (size_t i = 0; i < data.size(); ++i)
       {
@@ -195,7 +196,7 @@ namespace
     {
       std::string data("123456789");
 
-      etl::jenkins<uint64_t> jenkins_64_calculator;
+      etl::jenkins64 jenkins_64_calculator;
 
       jenkins_64_calculator.add(data.begin(), data.end());
 
@@ -213,9 +214,9 @@ namespace
       std::vector<uint32_t> data2 = { 0x04030201, 0x08070605 };
       std::vector<uint8_t>  data3 = { 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
 
-      uint64_t hash1 = etl::jenkins<uint64_t>(data1.begin(), data1.end());
-      uint64_t hash2 = etl::jenkins<uint64_t>((uint8_t*)&data2[0], (uint8_t*)&data2[0] + (data2.size() * sizeof(uint32_t)));
-      uint64_t hash3 = etl::jenkins<uint64_t>(data3.rbegin(), data3.rend());
+      uint64_t hash1 = etl::jenkins64(data1.begin(), data1.end());
+      uint64_t hash2 = etl::jenkins64((uint8_t*)&data2[0], (uint8_t*)&data2[0] + (data2.size() * sizeof(uint32_t)));
+      uint64_t hash3 = etl::jenkins64(data3.rbegin(), data3.rend());
       CHECK_EQUAL(hash1, hash2);
       CHECK_EQUAL(hash1, hash3);
 
@@ -226,7 +227,7 @@ namespace
       CHECK_EQUAL(compare2, hash2);
 
       uint64_t compare3 = jenkins64(data3.rbegin(), data3.rend());
-      CHECK_EQUAL(compare2, hash3);
+      CHECK_EQUAL(compare3, hash3);
     }
   };
 }

@@ -40,7 +40,7 @@ class TestDataDC
 public:
 
   TestDataDC()
-	: value(T())
+  : value(T())
   {
   }
 
@@ -90,7 +90,7 @@ class TestDataNDC
 public:
 
   TestDataNDC()
-	: value(T())
+  : value(T())
   {}
 
   TestDataNDC(const T& value)

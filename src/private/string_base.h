@@ -42,7 +42,7 @@ SOFTWARE.
 #include "../exception.h"
 #include "../error_handler.h"
 
-#define ETL_FILE "24"
+#define ETL_FILE "27"
 
 #ifdef ETL_COMPILER_MICROSOFT
 #undef max
@@ -116,7 +116,10 @@ namespace etl
 
     typedef size_t size_type;
 
-    static const size_t npos = etl::integral_limits<size_t>::max;
+    enum
+    {
+      npos = etl::integral_limits<size_t>::max
+    };
 
     //*************************************************************************
     /// Gets the current size of the string.

@@ -277,7 +277,7 @@ namespace etl
   ///\ingroup container
   ///**************************************************************************
   template<typename TValue, const size_t ARRAY_SIZE>
-  size_t size(TValue(&data)[ARRAY_SIZE])
+  size_t size(TValue(&)[ARRAY_SIZE])
   {
     return ARRAY_SIZE;
   }

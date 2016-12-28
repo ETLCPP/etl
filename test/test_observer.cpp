@@ -125,7 +125,7 @@ public:
   //*******************************************
   // Notification1 is passed by value.
   //*******************************************
-	void notification(Notification1 data1)
+  void notification(Notification1 /*data1*/)
 	{
     ++data1_count;
 	}
@@ -133,7 +133,7 @@ public:
   //*******************************************
   // Notification2 is passed by reference.
   //*******************************************
-	void notification(Notification2& data2)
+  void notification(Notification2& /*data2*/)
 	{
     ++data2_count;
 	}
@@ -141,7 +141,7 @@ public:
   //*******************************************
 	// Notification3 is passed by const reference.
   //*******************************************
-	void notification(const Notification3& data3)
+  void notification(const Notification3& /*data3*/)
 	{
     ++data3_count;
 	}
@@ -170,7 +170,7 @@ public:
   //*******************************************
   // Notification1 is passed by value.
   //*******************************************
-	void notification(Notification1 data1)
+  void notification(Notification1 /*data1*/)
 	{
     ++data1_count;
 	}
@@ -178,7 +178,7 @@ public:
   //*******************************************
   // Notification2 is passed by reference.
   //*******************************************
-	void notification(Notification2& data2)
+  void notification(Notification2& /*data2*/)
 	{
     ++data2_count;
 	}
@@ -186,7 +186,7 @@ public:
   //*******************************************
   // Notification3 is passed by const reference.
   //*******************************************
-  void notification(const Notification3& data3)
+  void notification(const Notification3& /*data3*/)
 	{
     ++data3_count;
 	}

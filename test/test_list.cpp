@@ -270,7 +270,7 @@ namespace
       DataNDC data(sorted_data.begin(), sorted_data.end());
       data.clear();
 
-      CHECK_EQUAL(data.size(), 0);
+      CHECK_EQUAL(0U, data.size());
     }
 
     //*************************************************************************
@@ -678,7 +678,7 @@ namespace
       // Check that it is still in a valid state.
       data.push_back(ItemNDC("1"));
       CHECK(!data.empty());
-      CHECK_EQUAL(1, data.size());
+      CHECK_EQUAL(1U, data.size());
     }
 
     //*************************************************************************

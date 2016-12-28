@@ -116,7 +116,7 @@ namespace etl
         REPEATING = 16
       };
 
-      uint8_t state;
+      uint_least8_t state;
 
       /// The state count.
       uint16_t count;

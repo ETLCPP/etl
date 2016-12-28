@@ -242,19 +242,16 @@ namespace etl
   template <typename T> struct make_signed { typedef  T type; };
   template <> struct make_signed<char> { typedef  signed char type; };
   template <> struct make_signed<unsigned char> { typedef  signed char type; };
-#if defined(ETL_COMPILER_GCC)
+
   template <> struct make_signed<wchar_t>
   {
-    typedef wchar_t type;
+    typedef typename etl::conditional<sizeof(wchar_t) == sizeof(int16_t),
+                                      int16_t,
+                                      etl::conditional<sizeof(wchar_t) == sizeof(int32_t),
+                                                              int32_t,
+                                                              void>::type>::type type;
   };
-#else
-  template <> struct make_signed<wchar_t>
-  {
-	  typedef etl::conditional<sizeof(wchar_t) == sizeof(short), short,
-		        etl::conditional<sizeof(wchar_t) == sizeof(int),   int,
-		        etl::conditional<sizeof(wchar_t) == sizeof(long),  long, void>::type>::type>::type type;
-  };
-#endif
+
   template <> struct make_signed<unsigned short> { typedef  short type; };
   template <> struct make_signed<unsigned int> { typedef int type; };
   template <> struct make_signed<unsigned long> { typedef  long type; };
@@ -269,19 +266,16 @@ namespace etl
   template <> struct make_unsigned<char> { typedef unsigned char type; };
   template <> struct make_unsigned<signed char> { typedef unsigned char type; };
   template <> struct make_unsigned<short> { typedef unsigned short type; };
-#if defined(ETL_COMPILER_GCC) && !defined(ETL_PLATFORM_LINUX)
+
   template <> struct make_unsigned<wchar_t>
   {
-    typedef wchar_t type;
+    typedef typename etl::conditional<sizeof(wchar_t) == sizeof(uint16_t),
+                                      uint16_t,
+                                      etl::conditional<sizeof(wchar_t) == sizeof(uint32_t),
+                                                       uint32_t,
+                                                       void>::type>::type type;
   };
-#else
-  template <> struct make_unsigned<wchar_t>
-  {
-	  typedef etl::conditional<sizeof(wchar_t) == sizeof(unsigned short), unsigned short,
-		        etl::conditional<sizeof(wchar_t) == sizeof(unsigned int),   unsigned int,
-		        etl::conditional<sizeof(wchar_t) == sizeof(unsigned long),  unsigned long, void>::type>::type>::type type;
-  };
-#endif
+
   template <> struct make_unsigned<int> { typedef unsigned int type; };
   template <> struct make_unsigned<long> { typedef unsigned long type; };
   template <> struct make_unsigned<long long> { typedef unsigned long long type; };

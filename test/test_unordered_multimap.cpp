@@ -369,14 +369,14 @@ namespace
 
       size_t count = data.erase(K10);
 
-      CHECK_EQUAL(1, count);
+      CHECK_EQUAL(1U, count);
 
       DataNDC::iterator idata = data.find(K10);
       CHECK(idata == data.end());
 
       count = data.erase(K11);
 
-      CHECK_EQUAL(3, count);
+      CHECK_EQUAL(3U, count);
 
       idata = data.find(K11);
       CHECK(idata == data.end());
@@ -456,13 +456,13 @@ namespace
       DataNDC data(equal_data.begin(), equal_data.end());
 
       size_t count = data.count(K10);
-      CHECK_EQUAL(1, count);
+      CHECK_EQUAL(1U, count);
 
       count = data.count(K11);
-      CHECK_EQUAL(3, count);
+      CHECK_EQUAL(3U, count);
 
       count = data.count(K1);
-      CHECK_EQUAL(0, count);
+      CHECK_EQUAL(0U, count);
     }
 
     //*************************************************************************

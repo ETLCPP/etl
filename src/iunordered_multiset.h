@@ -625,7 +625,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(DEBUG)
       difference_type count = std::distance(first, last);
       ETL_ASSERT(count >= 0, ETL_ERROR(unordered_multiset_iterator));
       ETL_ASSERT(size_t(count) <= max_size() , ETL_ERROR(unordered_multiset_full));

@@ -35,8 +35,6 @@ SOFTWARE.
 #error  This header is a private element of etl::ivector
 #endif
 
-#include "pvoidvector.h"
-
 namespace etl
 {
   //***************************************************************************
@@ -44,9 +42,14 @@ namespace etl
   /// Can be used as a reference type for all vectors containing a specific pointer type.
   ///\ingroup vector
   //***************************************************************************
-  template <typename T>
-  class ivector<T*> : public pvoidvector
+  template <typename T/*, typename etl::enable_if<!etl::is_same<T*, void*>::value, void>::type*/>
+  class ivector<T*> : public ivector<void*>
   {
+  private:
+
+  // Stops warning messages about unused template parameter.
+  //const bool not_void_ptr = typedef etl::is_same<T*, void*>::value;
+
   public:
 
     typedef T*                                    value_type;
@@ -67,7 +70,7 @@ namespace etl
 
   private:
 
-    typedef pvoidvector base_t;
+    typedef ivector<void*> base_t;
 
   public:
 
@@ -440,8 +443,8 @@ namespace etl
     //*********************************************************************
     /// Constructor.
     //*********************************************************************
-    ivector(T** p_buffer, size_t MAX_SIZE)
-      : pvoidvector(reinterpret_cast<void**>(p_buffer), MAX_SIZE)
+    ivector(void** p_buffer, size_t MAX_SIZE)
+      : ivector<void*>(p_buffer, MAX_SIZE)
     {
     }
   };
@@ -456,7 +459,7 @@ namespace etl
   template <typename T>
   bool operator ==(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
   {
-    return pvoidvector_equal(lhs, rhs);
+    return (lhs.size() == rhs.size()) && std::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //***************************************************************************
@@ -469,7 +472,7 @@ namespace etl
   template <typename T>
   bool operator !=(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
   {
-    return pvoidvector_not_equal(lhs, rhs);
+    return !(lhs == rhs);
   }
 
   //***************************************************************************
@@ -482,7 +485,7 @@ namespace etl
   template <typename T>
   bool operator <(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
   {
-    return pvoidvector_less_than(lhs, rhs);
+    return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
 
   //***************************************************************************
@@ -495,7 +498,7 @@ namespace etl
   template <typename T>
   bool operator >(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
   {
-    return pvoidvector_greater_than(lhs, rhs);
+    return (rhs < lhs);
   }
 
   //***************************************************************************
@@ -508,7 +511,7 @@ namespace etl
   template <typename T>
   bool operator <=(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
   {
-    return pvoidvector_less_than_equal(lhs, rhs);
+    return !(lhs > rhs);
   }
 
   //***************************************************************************
@@ -521,40 +524,7 @@ namespace etl
   template <typename T>
   bool operator >=(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
   {
-    return pvoidvector_greater_than_equal(lhs, rhs);
-  }
-
-  //***************************************************************************
-  // Helper functions
-  //***************************************************************************
-  inline bool pvoidvector_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
-  {
-    return operator ==(lhs, rhs);
-  }
-
-  inline bool pvoidvector_not_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
-  {
-    return operator !=(lhs, rhs);
-  }
-
-  inline bool pvoidvector_less_than(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
-  {
-    return operator <(lhs, rhs);
-  }
-
-  inline bool pvoidvector_greater_than(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
-  {
-    return operator >(lhs, rhs);
-  }
-
-  inline bool pvoidvector_less_than_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
-  {
-    return operator <=(lhs, rhs);
-  }
-
-  inline bool pvoidvector_greater_than_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
-  {
-    return operator >=(lhs, rhs);
+    return !(lhs < rhs);
   }
 }
 

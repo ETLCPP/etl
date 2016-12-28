@@ -382,7 +382,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(DEBUG)
       difference_type count = std::distance(first, last);
       ETL_ASSERT(static_cast<size_t>(count) <= MAX_SIZE, ETL_ERROR(vector_full));
 #endif

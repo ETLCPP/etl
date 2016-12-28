@@ -295,7 +295,7 @@ namespace etl
       //***************************************************
       const_iterator& operator ++()
       {
-        index = (index == p_deque->BUFFER_SIZE - 1) ? 0 : index + 1;
+        index = (static_cast<size_t>(index) == p_deque->BUFFER_SIZE - 1) ? 0 : index + 1;
 
         return *this;
       }
@@ -331,7 +331,7 @@ namespace etl
         if (offset > 0)
         {
           index -= offset;
-          index = (index < 0) ? index + p_deque->BUFFER_SIZE : index;
+          index = (index < 0) ? static_cast<size_t>(index) + p_deque->BUFFER_SIZE : index;
         }
         else if (offset < 0)
         {

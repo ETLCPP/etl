@@ -46,7 +46,7 @@ namespace
 
       uint32_t hash = etl::fnv_1_32(data.begin(), data.end());
 
-      CHECK_EQUAL(0x24148816, hash);
+      CHECK_EQUAL(0x24148816U, hash);
     }
 
     //*************************************************************************
@@ -63,7 +63,7 @@ namespace
 
       uint32_t hash = fnv_1_32_calculator.value();
 
-      CHECK_EQUAL(0x24148816, hash);
+      CHECK_EQUAL(0x24148816U, hash);
     }
 
     //*************************************************************************
@@ -77,7 +77,7 @@ namespace
 
       uint32_t hash = fnv_1_32_calculator.value();
 
-      CHECK_EQUAL(0x24148816, hash);
+      CHECK_EQUAL(0x24148816U, hash);
     }
 
     //*************************************************************************
@@ -102,7 +102,7 @@ namespace
 
       uint32_t hash = etl::fnv_1a_32(data.begin(), data.end());
 
-      CHECK_EQUAL(0xBB86B11C, hash);
+      CHECK_EQUAL(0xBB86B11CU, hash);
     }
 
     //*************************************************************************
@@ -119,7 +119,7 @@ namespace
 
       uint32_t hash = fnv_1a_32_calculator.value();
 
-      CHECK_EQUAL(0xBB86B11C, hash);
+      CHECK_EQUAL(0xBB86B11CU, hash);
     }
 
     //*************************************************************************
@@ -133,7 +133,7 @@ namespace
 
       uint32_t hash = fnv_1a_32_calculator.value();
 
-      CHECK_EQUAL(0xBB86B11C, hash);
+      CHECK_EQUAL(0xBB86B11CU, hash);
     }
 
     //*************************************************************************
@@ -158,7 +158,7 @@ namespace
 
       uint64_t hash = etl::fnv_1_64(data.begin(), data.end());
 
-      CHECK_EQUAL(0xA72FFC362BF916D6, hash);
+      CHECK_EQUAL(0xA72FFC362BF916D6U, hash);
     }
 
     //*************************************************************************
@@ -175,7 +175,7 @@ namespace
       
       uint64_t hash = fnv_1_64_calculator;
 
-      CHECK_EQUAL(0xA72FFC362BF916D6, hash);
+      CHECK_EQUAL(0xA72FFC362BF916D6U, hash);
     }
 
     //*************************************************************************
@@ -189,7 +189,7 @@ namespace
 
       uint64_t hash = fnv_1_64_calculator.value();
 
-      CHECK_EQUAL(0xA72FFC362BF916D6, hash);
+      CHECK_EQUAL(0xA72FFC362BF916D6U, hash);
     }
 
     //*************************************************************************
@@ -214,7 +214,7 @@ namespace
 
       uint64_t hash = etl::fnv_1a_64(data.begin(), data.end());
 
-      CHECK_EQUAL(0x06D5573923C6CDFC, hash);
+      CHECK_EQUAL(0x06D5573923C6CDFCU, hash);
     }
 
     //*************************************************************************
@@ -231,7 +231,7 @@ namespace
 
       uint64_t hash = fnv_1a_64_calculator;
 
-      CHECK_EQUAL(0x06D5573923C6CDFC, hash);
+      CHECK_EQUAL(0x06D5573923C6CDFCU, hash);
     }
 
     //*************************************************************************
@@ -245,7 +245,7 @@ namespace
 
       uint64_t hash = fnv_1a_64_calculator.value();
 
-      CHECK_EQUAL(0x06D5573923C6CDFC, hash);
+      CHECK_EQUAL(0x06D5573923C6CDFCU, hash);
     }
 
     //*************************************************************************

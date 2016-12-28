@@ -325,7 +325,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(DEBUG)
       difference_type count = std::distance(first, last);
       ETL_ASSERT(static_cast<size_t>(count) <= MAX_SIZE, ETL_ERROR(vector_full));
 #endif
@@ -616,6 +616,20 @@ namespace etl
     // Disable copy construction.
     pvoidvector(const pvoidvector&);
   };
+
+  bool pvoidvector_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool pvoidvector_not_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool pvoidvector_less_than(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool pvoidvector_greater_than(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool pvoidvector_less_than_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool pvoidvector_greater_than_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+
+  bool operator ==(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool operator !=(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool operator  <(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool operator  >(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool operator <=(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool operator >=(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
 }
 
 #ifdef ETL_COMPILER_MICROSOFT

@@ -33,6 +33,8 @@ SOFTWARE.
 
 #include "platform.h"
 #include "basic_string.h"
+#include "ibasic_string.h"
+#include "hash.h"
 
 #if defined(ETL_COMPILER_MICROSOFT)
   #undef min
@@ -40,7 +42,7 @@ SOFTWARE.
 
 namespace etl
 {
-  typedef ibasic_string<char> istring;
+  typedef etl::ibasic_string<char> istring;
 
   //***************************************************************************
   /// A string implementation that uses a fixed size buffer.
@@ -151,11 +153,11 @@ namespace etl
     {
       etl::string<MAX_SIZE_> new_string;
 
-      if (position != size())
+      if (position != this->size())
       {
-        ETL_ASSERT(position < size(), ETL_ERROR(string_out_of_bounds));
+        ETL_ASSERT(position < this->size(), ETL_ERROR(string_out_of_bounds));
 
-        length = std::min(length, size() - position);
+        length = std::min(length, this->size() - position);
 
         new_string.assign(buffer + position, buffer + position + length);
       }
@@ -179,6 +181,19 @@ namespace etl
   private:
 
     value_type buffer[MAX_SIZE + 1];
+  };
+
+  //*************************************************************************
+  /// Hash function.
+  //*************************************************************************
+  template <>
+  struct hash<etl::istring>
+  {
+    size_t operator()(const etl::istring& text) const
+    {
+      return etl::__private_hash__::generic_hash<>(reinterpret_cast<const uint8_t*>(&text[0]), 
+                                                   reinterpret_cast<const uint8_t*>(&text[text.size()]));
+    }
   };
 }
 

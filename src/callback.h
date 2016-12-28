@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 http://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2015 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,63 +28,53 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_ENDIAN__
-#define __ETL_ENDIAN__
-
-#include <stdint.h>
-
-#include "enum_type.h"
-
-///\defgroup endian endian
-/// Constants & utilities for endianess
-///\ingroup utilities
+#ifndef __ETL_CALLBACK__
+#define __ETL_CALLBACK__
 
 namespace etl
 {
   //***************************************************************************
-  /// Constants to denote endianness of operations.
-  ///\ingroup endian
+  /// A callback class designed to be multiply inherited by other client classes.
+  /// The class is parametrised with a callback parameter type and a unique id.
+  /// The unique id allows multiple callbacks with the same parameter type.
+  ///\tparam TParameter The callback parameter type.
+  ///\tparam ID The unique id for this callback.
   //***************************************************************************
-  struct endian
+  template <typename TParameter, const int ID>
+  class callback
   {
-    enum enum_type
-    {
-      little,
-      big,
-      native
-    };
-
-    DECLARE_ENUM_TYPE(endian, int)
-    ENUM_TYPE(little, "little")
-    ENUM_TYPE(big,    "big")
-    ENUM_TYPE(native, "native")
-    END_ENUM_TYPE
-  };
-
-  //***************************************************************************
-  /// Checks the endianness of the platform.
-  ///\ingroup endian
-  //***************************************************************************
-  struct endianness
-  {
-    endianness()
-      : ETL_ENDIAN_TEST(0x0011223344556677)
-    {
-    }
-
-    endian operator ()() const
-    {
-      return endian(*this);
-    }
-
-    operator endian() const
-    {
-      return (*reinterpret_cast<const uint32_t*>(&ETL_ENDIAN_TEST) == 0x44556677) ? endian::little : endian::big;
-    }
-
   private:
 
-    const uint64_t ETL_ENDIAN_TEST;
+    // Creates a parameter type unique to this ID.
+    template <typename T, const int I>
+    struct parameter
+    {
+        parameter(T value)
+            : value(value)
+        {
+        }
+
+        typedef T value_type;
+
+        T value;
+
+    private:
+
+        parameter();
+    };
+
+    // Specialisation for void.
+    template <const int I>
+    struct parameter<void, I>
+    {
+        typedef void value_type;
+    };
+
+  public:
+
+    typedef parameter<TParameter, ID> type;
+
+    virtual void etl_callback(type p = type()) = 0;
   };
 }
 

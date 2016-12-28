@@ -35,7 +35,7 @@ SOFTWARE.
 /// The base class for all ETL exceptions.
 ///\ingroup utilities
 
-namespace etl 
+namespace etl
 {
   //***************************************************************************
   ///\ingroup exception
@@ -66,6 +66,7 @@ namespace etl
       : reason(reason),
         line(line)
     {
+    (void)file;
     }
 #endif
 

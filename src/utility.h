@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 http://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2016 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,64 +28,47 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_ENDIAN__
-#define __ETL_ENDIAN__
+#ifndef __ETL_UTILITY__
+#define __ETL_UTILITY__
 
-#include <stdint.h>
+#include "type_traits.h"
 
-#include "enum_type.h"
-
-///\defgroup endian endian
-/// Constants & utilities for endianess
+///\defgroup utility utility
 ///\ingroup utilities
 
 namespace etl
 {
   //***************************************************************************
-  /// Constants to denote endianness of operations.
-  ///\ingroup endian
+  /// exchange
   //***************************************************************************
-  struct endian
+  template <typename T, typename U = T>
+  T exchange(T& object, U& new_value)
   {
-    enum enum_type
-    {
-      little,
-      big,
-      native
-    };
-
-    DECLARE_ENUM_TYPE(endian, int)
-    ENUM_TYPE(little, "little")
-    ENUM_TYPE(big,    "big")
-    ENUM_TYPE(native, "native")
-    END_ENUM_TYPE
-  };
+    T old_value = object;
+    object = new_value;
+    return old_value;
+  }
 
   //***************************************************************************
-  /// Checks the endianness of the platform.
-  ///\ingroup endian
+  /// exchange (const)
   //***************************************************************************
-  struct endianness
+  template <typename T, typename U = T>
+  T exchange(T& object, const U& new_value)
   {
-    endianness()
-      : ETL_ENDIAN_TEST(0x0011223344556677)
-    {
-    }
+    T old_value = object;
+    object = new_value;
+    return old_value;
+  }
 
-    endian operator ()() const
-    {
-      return endian(*this);
-    }
-
-    operator endian() const
-    {
-      return (*reinterpret_cast<const uint32_t*>(&ETL_ENDIAN_TEST) == 0x44556677) ? endian::little : endian::big;
-    }
-
-  private:
-
-    const uint64_t ETL_ENDIAN_TEST;
-  };
+  //***************************************************************************
+  /// as_const
+  //***************************************************************************
+  template <typename T>
+  typename etl::add_const<T>::type& as_const(T& t)
+  {
+    return t;
+  }
 }
 
 #endif
+

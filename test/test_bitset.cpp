@@ -432,6 +432,8 @@ namespace
       bool bc = ~compare[3];
       bool bd = ~data[3];
 
+      CHECK_EQUAL(bc, bd);
+
       for (size_t i = 0; i < data.size(); ++i)
       {
         CHECK_EQUAL(compare.test(i), data.test(i));
@@ -593,7 +595,7 @@ namespace
       etl::bitset<60> data2(0x23456789);
       etl::bitset<60> data3(0x12345678 & 0x23456789);
 
-      etl::bitset<60>& rdata = data2 &= data1;
+      data2 &= data1;
       CHECK(data2 == data3);
     }
 
@@ -616,7 +618,7 @@ namespace
       etl::bitset<60> data2(0x23456789);
       etl::bitset<60> data3(0x12345678 | 0x23456789);
 
-      etl::bitset<60>& rdata = data2 |= data1;
+      data2 |= data1;
       CHECK(data2 == data3);
     }
 
@@ -639,7 +641,7 @@ namespace
       etl::bitset<60> data2(0x23456789);
       etl::bitset<60> data3(0x12345678 ^ 0x23456789);
 
-      etl::bitset<60>& rdata = data2 ^= data1;
+      data2 ^= data1;
       CHECK(data2 == data3);
     }
 
@@ -723,32 +725,32 @@ namespace
       etl::bitset<6> data;
 
       data.set("000000");
-      CHECK_EQUAL(0, data.find_first(false));
+      CHECK_EQUAL(0U, data.find_first(false));
       CHECK_EQUAL(etl::ibitset::npos, data.find_first(true));
 
       data.set("111111");
       CHECK_EQUAL(etl::ibitset::npos, data.find_first(false));
-      CHECK_EQUAL(0, data.find_first(true));
+      CHECK_EQUAL(0U, data.find_first(true));
 
       data.set("000001");
-      CHECK_EQUAL(1, data.find_first(false));
-      CHECK_EQUAL(0, data.find_first(true));
+      CHECK_EQUAL(1U, data.find_first(false));
+      CHECK_EQUAL(0U, data.find_first(true));
 
       data.set("100000");
-      CHECK_EQUAL(0, data.find_first(false));
-      CHECK_EQUAL(5, data.find_first(true));
+      CHECK_EQUAL(0U, data.find_first(false));
+      CHECK_EQUAL(5U, data.find_first(true));
 
       data.set("100001");
-      CHECK_EQUAL(1, data.find_first(false));
-      CHECK_EQUAL(0, data.find_first(true));
+      CHECK_EQUAL(1U, data.find_first(false));
+      CHECK_EQUAL(0U, data.find_first(true));
 
       data.set("001110");
-      CHECK_EQUAL(0, data.find_first(false));
-      CHECK_EQUAL(1, data.find_first(true));
+      CHECK_EQUAL(0U, data.find_first(false));
+      CHECK_EQUAL(1U, data.find_first(true));
 
       data.set("110001");
-      CHECK_EQUAL(1, data.find_first(false));
-      CHECK_EQUAL(0, data.find_first(true));
+      CHECK_EQUAL(1U, data.find_first(false));
+      CHECK_EQUAL(0U, data.find_first(true));
     }
 
     //*************************************************************************
@@ -757,24 +759,24 @@ namespace
       etl::bitset<6> data;
 
       data.set("000000");
-      CHECK_EQUAL(0, data.find_next(false, 0));
-      CHECK_EQUAL(1, data.find_next(false, 1));
+      CHECK_EQUAL(0U, data.find_next(false, 0));
+      CHECK_EQUAL(1U, data.find_next(false, 1));
       CHECK_EQUAL(etl::ibitset::npos, data.find_next(true, 2));
 
       data.set("111111");
-      CHECK_EQUAL(0, data.find_next(true,  0));
-      CHECK_EQUAL(1, data.find_next(true,  1));
+      CHECK_EQUAL(0U, data.find_next(true,  0));
+      CHECK_EQUAL(1U, data.find_next(true,  1));
       CHECK_EQUAL(etl::ibitset::npos, data.find_next(false, 2));
 
       data.set("001110");
-      CHECK_EQUAL(0, data.find_next(false, 0));
-      CHECK_EQUAL(1, data.find_next(true,  0));
-      CHECK_EQUAL(4, data.find_next(false, 1));
+      CHECK_EQUAL(0U, data.find_next(false, 0));
+      CHECK_EQUAL(1U, data.find_next(true,  0));
+      CHECK_EQUAL(4U, data.find_next(false, 1));
 
       data.set("110001");
-      CHECK_EQUAL(0, data.find_next(true,  0));
-      CHECK_EQUAL(1, data.find_next(false, 0));
-      CHECK_EQUAL(4, data.find_next(true,  1));
+      CHECK_EQUAL(0U, data.find_next(true,  0));
+      CHECK_EQUAL(1U, data.find_next(false, 0));
+      CHECK_EQUAL(4U, data.find_next(true,  1));
     }
 
 

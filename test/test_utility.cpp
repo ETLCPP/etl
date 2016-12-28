@@ -1,5 +1,3 @@
-///\file
-
 /******************************************************************************
 The MIT License(MIT)
 
@@ -28,64 +26,74 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_ENDIAN__
-#define __ETL_ENDIAN__
+#include <UnitTest++/UnitTest++.h>
 
-#include <stdint.h>
+#include "../src/utility.h"
 
-#include "enum_type.h"
-
-///\defgroup endian endian
-/// Constants & utilities for endianess
-///\ingroup utilities
-
-namespace etl
+namespace
 {
-  //***************************************************************************
-  /// Constants to denote endianness of operations.
-  ///\ingroup endian
-  //***************************************************************************
-  struct endian
+  bool nonConstCalled;
+  bool constCalled;
+
+  void TestText(std::string&)
   {
-    enum enum_type
-    {
-      little,
-      big,
-      native
-    };
+    nonConstCalled = true;
+  }
 
-    DECLARE_ENUM_TYPE(endian, int)
-    ENUM_TYPE(little, "little")
-    ENUM_TYPE(big,    "big")
-    ENUM_TYPE(native, "native")
-    END_ENUM_TYPE
-  };
-
-  //***************************************************************************
-  /// Checks the endianness of the platform.
-  ///\ingroup endian
-  //***************************************************************************
-  struct endianness
+  void TestText(const std::string&)
   {
-    endianness()
-      : ETL_ENDIAN_TEST(0x0011223344556677)
-    {
-    }
-
-    endian operator ()() const
-    {
-      return endian(*this);
-    }
-
-    operator endian() const
-    {
-      return (*reinterpret_cast<const uint32_t*>(&ETL_ENDIAN_TEST) == 0x44556677) ? endian::little : endian::big;
-    }
-
-  private:
-
-    const uint64_t ETL_ENDIAN_TEST;
-  };
+    constCalled = true;
+  }
 }
 
-#endif
+namespace
+{
+  SUITE(test_utility)
+  {
+    //=========================================================================
+    TEST(test_exchange)
+    {
+      int a = 1;
+      int b = 2;
+      int c = etl::exchange(a, b); // c = a, a = b
+
+      CHECK_EQUAL(2, a);
+      CHECK_EQUAL(2, b);
+      CHECK_EQUAL(1, c);
+    }
+
+    //=========================================================================
+    TEST(test_exchange_const)
+    {
+      int a = 1;
+      const int b = 2;
+      int c = etl::exchange(a, b); // c = a, a = b
+
+      CHECK_EQUAL(2, a);
+      CHECK_EQUAL(2, b);
+      CHECK_EQUAL(1, c);
+    }
+
+    //=========================================================================
+    TEST(test_as_const)
+    {
+      std::string text = "Hello World!";
+      
+      nonConstCalled = false;
+      constCalled    = false;
+      
+      TestText(text);
+
+      CHECK(nonConstCalled);
+      CHECK(!constCalled);
+
+      nonConstCalled = false;
+      constCalled = false;
+
+      TestText(etl::as_const(text));
+
+      CHECK(!nonConstCalled);
+      CHECK(constCalled);
+    }
+  };
+}
