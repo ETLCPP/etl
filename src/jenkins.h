@@ -65,7 +65,7 @@ namespace etl
       return 0;
     }
 
-    inline uint32_t add(uint8_t hash, uint8_t value) const
+    inline uint32_t add(value_type hash, uint8_t value) const
     {
       ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised));
 
@@ -76,7 +76,7 @@ namespace etl
       return hash;
     }
 
-    inline uint32_t final(uint8_t hash)
+    inline uint32_t final(value_type hash)
     {
       hash += (hash << 3);
       hash ^= (hash >> 11);
@@ -104,7 +104,7 @@ namespace etl
       return 0;
     }
 
-    inline uint64_t add(uint8_t hash, uint8_t value) const
+    inline uint64_t add(value_type hash, uint8_t value) const
     {
       ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised));
 
@@ -115,7 +115,7 @@ namespace etl
       return hash;
     }
 
-    inline uint64_t final(uint8_t hash)
+    inline uint64_t final(value_type hash)
     {
       hash += (hash << 3);
       hash ^= (hash >> 11);
