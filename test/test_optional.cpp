@@ -184,7 +184,7 @@ namespace
       CHECK(bool(container));
 
       container.value().resize(5, Data("1"));
-      CHECK_EQUAL(5, container.value().size());
+      CHECK_EQUAL(5U, container.value().size());
 
       CHECK_EQUAL(Data("1"), container.value()[0]);
       CHECK_EQUAL(Data("1"), container.value()[1]);
