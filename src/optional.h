@@ -218,7 +218,7 @@ namespace etl
     //***************************************************************************
     T* operator ->()
     {
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(DEBUG)
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
@@ -230,7 +230,7 @@ namespace etl
     //***************************************************************************
     const T* operator ->() const
     {
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(DEBUG)
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
@@ -242,7 +242,7 @@ namespace etl
     //***************************************************************************
     T& operator *()
     {
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(DEBUG)
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
@@ -254,7 +254,7 @@ namespace etl
     //***************************************************************************
     const T& operator *() const
     {
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(DEBUG)
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
@@ -274,7 +274,7 @@ namespace etl
     //***************************************************************************
     T& value()
     {
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(DEBUG)
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
@@ -286,7 +286,7 @@ namespace etl
     //***************************************************************************
     const T& value() const
     {
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(DEBUG)
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
