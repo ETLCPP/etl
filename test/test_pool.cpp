@@ -36,6 +36,11 @@ SOFTWARE.
 
 #include "../src/pool.h"
 
+#if defined(ETL_COMPILER_GCC)
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#endif
+
 typedef TestDataDC<std::string>  Test_Data;
 typedef TestDataNDC<std::string> Test_Data2;
 
@@ -145,7 +150,7 @@ namespace
     TEST(test_available)
     {
       etl::pool<Test_Data, 4> pool;
-      CHECK_EQUAL(4, pool.available());
+      CHECK_EQUAL(4U, pool.available());
 
       Test_Data* p;
 
@@ -385,3 +390,7 @@ namespace
     }
   };
 }
+
+#if defined(ETL_COMPILER_GCC)
+  #pragma GCC diagnostic pop
+#endif
