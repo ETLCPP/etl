@@ -36,7 +36,7 @@ SOFTWARE.
 #include <algorithm>
 #include <functional>
 #include <stddef.h>
-#include <cstring>
+#include <string.h>
 
 #include "private/string_base.h"
 #include "platform.h"
@@ -460,7 +460,7 @@ namespace etl
 
     //*************************************************************************
     /// Removes an element from the end of the string.
-    /// Undefined behaviour if the string is empty.
+    /// Does nothing if the string is empty.
     //*************************************************************************
     void pop_back()
     {
@@ -468,7 +468,7 @@ namespace etl
       ETL_ASSERT(!empty(), ETL_ERROR(string_empty));
 #endif
 
-      p_buffer[--current_size] = 0;
+        p_buffer[--current_size] = 0;
     }
 
     //*********************************************************************

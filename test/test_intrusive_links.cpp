@@ -349,7 +349,7 @@ namespace
       CHECK(data2.SecondFLink::etl_next == &data0);
       CHECK(data0.SecondFLink::etl_next == nullptr);
 
-      // Check checked link.
+      // Check auto link.
       etl::link<ThirdFLinkChecked>(data0, data1);
       etl::link<ThirdFLinkChecked>(data1, data2);
       etl::link<ThirdFLinkChecked>(data2, data3);
@@ -360,11 +360,6 @@ namespace
       CHECK(data0.ThirdFLinkChecked::etl_next == &data1);
       CHECK(data1.ThirdFLinkChecked::etl_next == &data3);
       CHECK(data3.ThirdFLinkChecked::etl_next == nullptr);
-
-      data0.ThirdFLinkChecked::clear();
-      data1.ThirdFLinkChecked::clear();
-      data2.ThirdFLinkChecked::clear();
-      data3.ThirdFLinkChecked::clear();
     }
 
     //*************************************************************************

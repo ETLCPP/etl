@@ -392,7 +392,7 @@ namespace etl
 
     //*************************************************************************
     /// Removes an element from the end of the vector.
-    /// Undefined behaviour if the vector is empty.
+    /// Does nothing if the vector is empty.
     //*************************************************************************
     void pop_back()
     {
@@ -616,6 +616,20 @@ namespace etl
     // Disable copy construction.
     pvoidvector(const pvoidvector&);
   };
+
+  bool pvoidvector_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool pvoidvector_not_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool pvoidvector_less_than(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool pvoidvector_greater_than(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool pvoidvector_less_than_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool pvoidvector_greater_than_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+
+  bool operator ==(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool operator !=(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool operator  <(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool operator  >(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool operator <=(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool operator >=(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
 }
 
 #ifdef ETL_COMPILER_MICROSOFT

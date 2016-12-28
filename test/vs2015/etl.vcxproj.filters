@@ -522,12 +522,6 @@
     <ClInclude Include="..\..\src\intrusive_stack.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\private\counter_type.h">
-      <Filter>ETL\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\frame_check_sequence.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\AssertException.cpp">

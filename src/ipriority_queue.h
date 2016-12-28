@@ -180,14 +180,14 @@ namespace etl
 
     //*************************************************************************
     /// Removes the oldest value from the back of the priority queue.
-    /// Undefined behaviour if the priority queue is already empty.
+    /// Does nothing if the priority queue is already empty.
     //*************************************************************************
     void pop()
     {
-      // Move largest element to end
-      std::pop_heap(container.begin(), container.end(), TCompare());
-      // Actually remove largest element at end
-      container.pop_back();
+        // Move largest element to end
+        std::pop_heap(container.begin(), container.end(), TCompare());
+        // Actually remove largest element at end
+        container.pop_back();
     }
 
     //*************************************************************************

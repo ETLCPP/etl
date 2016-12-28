@@ -35,7 +35,7 @@ SOFTWARE.
 #error  This header is a private element of etl::ivector
 #endif
 
-#include "private/pvoidvector.h"
+#include "pvoidvector.h"
 
 namespace etl
 {
@@ -456,7 +456,7 @@ namespace etl
   template <typename T>
   bool operator ==(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
   {
-    return (lhs.size() == rhs.size()) && std::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return pvoidvector_equal(lhs, rhs);
   }
 
   //***************************************************************************
@@ -469,7 +469,7 @@ namespace etl
   template <typename T>
   bool operator !=(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
   {
-    return !(lhs == rhs);
+    return pvoidvector_not_equal(lhs, rhs);
   }
 
   //***************************************************************************
@@ -482,7 +482,7 @@ namespace etl
   template <typename T>
   bool operator <(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
   {
-    return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    return pvoidvector_less_than(lhs, rhs);
   }
 
   //***************************************************************************
@@ -495,7 +495,7 @@ namespace etl
   template <typename T>
   bool operator >(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
   {
-    return (rhs < lhs);
+    return pvoidvector_greater_than(lhs, rhs);
   }
 
   //***************************************************************************
@@ -508,7 +508,7 @@ namespace etl
   template <typename T>
   bool operator <=(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
   {
-    return !(lhs > rhs);
+    return pvoidvector_less_than_equal(lhs, rhs);
   }
 
   //***************************************************************************
@@ -521,7 +521,40 @@ namespace etl
   template <typename T>
   bool operator >=(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
   {
-    return !(lhs < rhs);
+    return pvoidvector_greater_than_equal(lhs, rhs);
+  }
+
+  //***************************************************************************
+  // Helper functions
+  //***************************************************************************
+  inline bool pvoidvector_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
+  {
+    return operator ==(lhs, rhs);
+  }
+
+  inline bool pvoidvector_not_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
+  {
+    return operator !=(lhs, rhs);
+  }
+
+  inline bool pvoidvector_less_than(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
+  {
+    return operator <(lhs, rhs);
+  }
+
+  inline bool pvoidvector_greater_than(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
+  {
+    return operator >(lhs, rhs);
+  }
+
+  inline bool pvoidvector_less_than_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
+  {
+    return operator <=(lhs, rhs);
+  }
+
+  inline bool pvoidvector_greater_than_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
+  {
+    return operator >=(lhs, rhs);
   }
 }
 

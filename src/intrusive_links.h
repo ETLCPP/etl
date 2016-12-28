@@ -149,7 +149,7 @@ namespace etl
   struct forward_link<ID_, etl::link_option::AUTO>;
 
   //******************************************************************
-  // Specialisation for checked link option.
+  // Specialisation for checked unlink option.
   // An error will be generated if the links are valid when the object
   // is destroyed.
   //******************************************************************
@@ -669,7 +669,6 @@ namespace etl
       {
         clear();
       }
-
       void clear()
       {
         etl_parent = nullptr;

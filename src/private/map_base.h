@@ -178,8 +178,8 @@ namespace etl
       /// Constructor
       //***********************************************************************
       Node() :
-        weight(kNeither),
-        dir(kNeither)
+        weight(uint_least8_t(kNeither)),
+        dir(uint_least8_t(kNeither))
       {
       }
 
@@ -188,13 +188,13 @@ namespace etl
       //***********************************************************************
       void mark_as_leaf()
       {
-        weight = kNeither;
-        dir    = kNeither;
+        weight = uint_least8_t(kNeither);
+        dir    = uint_least8_t(kNeither);
         children[0] = nullptr;
         children[1] = nullptr;
       }
 
-      Node*         children[2];
+      Node*   children[2];
       uint_least8_t weight;
       uint_least8_t dir;
     };
@@ -222,12 +222,12 @@ namespace etl
       while (weight_node)
       {
         // Keep going until we reach a terminal node (dir == kNeither)
-        if (kNeither != weight_node->dir)
+        if (uint_least8_t(kNeither) != weight_node->dir)
         {
           // Does this insert balance the previous weight factor value?
           if (weight_node->weight == 1 - weight_node->dir)
           {
-            weight_node->weight = kNeither;
+            weight_node->weight = uint_least8_t(kNeither);
           }
           else
           {
@@ -245,14 +245,14 @@ namespace etl
       } // while(weight_node)
 
         // Step 2: Update weight for critical_node or rotate tree to balance node
-      if (kNeither == critical_node->weight)
+      if (uint_least8_t(kNeither) == critical_node->weight)
       {
         critical_node->weight = critical_node->dir;
       }
       // If direction is different than weight, then it will now be balanced
       else if (critical_node->dir != critical_node->weight)
       {
-        critical_node->weight = kNeither;
+        critical_node->weight = uint_least8_t(kNeither);
       }
       // Rotate is required to balance the tree at the critical node
       else
@@ -296,11 +296,11 @@ namespace etl
       // New root now becomes parent of current position
       new_root->children[1 - dir] = position;
       // Clear weight factor from current position
-      position->weight = kNeither;
+      position->weight = uint_least8_t(kNeither);
       // Newly detached right now becomes current position
       position = new_root;
       // Clear weight factor from new root
-      position->weight = kNeither;
+      position->weight = uint_least8_t(kNeither);
     }
 
     //*************************************************************************
@@ -323,7 +323,7 @@ namespace etl
       // Capture new root (either E or D depending on dir)
       Node* new_root = position->children[dir]->children[1 - dir];
       // Set weight factor for B or C based on F or G existing and being a different than dir
-      position->children[dir]->weight = third != kNeither && third != dir ? dir : kNeither;
+      position->children[dir]->weight = third != uint_least8_t(kNeither) && third != dir ? dir : uint_least8_t(kNeither);
 
       // Detach new root from its tree (replace with new roots child)
       position->children[dir]->children[1 - dir] =
@@ -331,7 +331,7 @@ namespace etl
       // Attach current left tree to new root
       new_root->children[dir] = position->children[dir];
       // Set weight factor for A based on F or G
-      position->weight = third != kNeither && third == dir ? 1 - dir : kNeither;
+      position->weight = third != uint_least8_t(kNeither) && third == dir ? 1 - dir : uint_least8_t(kNeither);
 
       // Move new root's right tree to current roots left tree
       position->children[dir] = new_root->children[1 - dir];
@@ -340,7 +340,7 @@ namespace etl
       // Replace current position with new root
       position = new_root;
       // Clear weight factor for new current position
-      position->weight = kNeither;
+      position->weight = uint_least8_t(kNeither);
     }
 
     //*************************************************************************

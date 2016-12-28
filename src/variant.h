@@ -225,6 +225,14 @@ namespace etl
 
   public:
 
+    //***************************************************************************
+    /// Destructor.
+    //***************************************************************************
+    ~variant()
+    {
+      destruct_current();
+    }
+
     //*************************************************************************
     //**** Reader types *******************************************************
     //*************************************************************************
@@ -712,17 +720,21 @@ namespace etl
     ///\param other The other variant object to copy.
     //***************************************************************************
     variant(const variant& other)
-      : data(other.data),
-        type_id(other.type_id)
     {
-    }
+      switch (other.type_id)
+      {
+        case 0: new(static_cast<T1*>(data)) T1(other.get<T1>()); break;
+        case 1: new(static_cast<T2*>(data)) T2(other.get<T2>()); break;
+        case 2: new(static_cast<T3*>(data)) T3(other.get<T3>()); break;
+        case 3: new(static_cast<T4*>(data)) T4(other.get<T4>()); break;
+        case 4: new(static_cast<T5*>(data)) T5(other.get<T5>()); break;
+        case 5: new(static_cast<T6*>(data)) T6(other.get<T6>()); break;
+        case 6: new(static_cast<T7*>(data)) T7(other.get<T7>()); break;
+        case 7: new(static_cast<T8*>(data)) T8(other.get<T8>()); break;
+        default: break;
+      }
 
-    //***************************************************************************
-    /// Destructor.
-    //***************************************************************************
-    ~variant()
-    {
-      destruct_current();
+      type_id = other.type_id;
     }
 
     //***************************************************************************
@@ -734,18 +746,37 @@ namespace etl
     {
       STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
-      // Assigning the same type as last time?
-      if (type_id == Type_Id_Lookup<T>::type_id)
+      destruct_current();
+      new(static_cast<T*>(data)) T(value);
+      type_id = Type_Id_Lookup<T>::type_id;
+
+      return *this;
+    }
+
+    //***************************************************************************
+    /// Assignment operator for variant type.
+    ///\param other The variant to assign.
+    //***************************************************************************
+    variant& operator =(const variant& other)
+    {
+      if (this != &other)
       {
-        // Do a simple copy.
-        *static_cast<T*>(data) = value;
-      }
-      else
-      {
-        // We must destruct the old type, as the new one is different.
         destruct_current();
-        new(static_cast<T*>(data)) T(value);
-        type_id = Type_Id_Lookup<T>::type_id;
+
+        switch (other.type_id)
+        {
+        case 0: new(static_cast<T1*>(data)) T1(other.get<T1>()); break;
+        case 1: new(static_cast<T2*>(data)) T2(other.get<T2>()); break;
+        case 2: new(static_cast<T3*>(data)) T3(other.get<T3>()); break;
+        case 3: new(static_cast<T4*>(data)) T4(other.get<T4>()); break;
+        case 4: new(static_cast<T5*>(data)) T5(other.get<T5>()); break;
+        case 5: new(static_cast<T6*>(data)) T6(other.get<T6>()); break;
+        case 6: new(static_cast<T7*>(data)) T7(other.get<T7>()); break;
+        case 7: new(static_cast<T8*>(data)) T8(other.get<T8>()); break;
+        default: break;
+        }
+
+        type_id = other.type_id;
       }
 
       return *this;
@@ -923,6 +954,8 @@ namespace etl
         case 7: { static_cast<T8*>(data)->~T8(); break; }
         default: { break; }
       }
+
+      type_id = UNSUPPORTED_TYPE_ID;
     }
 
     //***************************************************************************

@@ -183,19 +183,16 @@ namespace etl
     value_type buffer[MAX_SIZE + 1];
   };
 
-  //***************************************************************************
-  /// Specialisation for wstring.
-  ///\ingroup hash
-  //***************************************************************************
+  //*************************************************************************
+  /// Hash function.
+  //*************************************************************************
   template <>
-  struct hash <wstring>
+  struct hash<etl::iwstring>
   {
-    size_t operator ()(const wstring& s) const
+    size_t operator()(const etl::iwstring& text) const
     {
-      uint8_t* p_begin = &s[0];
-      uint8_t* p_end   = &s[s.size()];
-
-      return etl::__private_hash__::generic_hash(p_begin, p_end);
+      return etl::__private_hash__::generic_hash<>(reinterpret_cast<const uint8_t*>(&text[0]),
+                                                         reinterpret_cast<const uint8_t*>(&text[text.size()]));
     }
   };
 }

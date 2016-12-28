@@ -193,6 +193,22 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_assign_from_variant2)
+    {
+      std::string text("Some Text");
+      int integer(99);
+      test_variant_3a variant_1;
+      test_variant_3a variant_2;
+
+      variant_1 = text;
+      variant_2 = integer;
+      variant_2 = variant_1;
+
+      CHECK_EQUAL(text, variant_2.get<std::string>());
+      CHECK(variant_2.is_valid());
+    }
+
+    //*************************************************************************
     TEST(test_assignment_incorrect_type_exception)
     {
       std::string text("Some Text");

@@ -28,8 +28,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#error In Development. Do not use.
-
 #ifndef __ETL_CALLBACK__
 #define __ETL_CALLBACK__
 
@@ -37,8 +35,8 @@ namespace etl
 {
   //***************************************************************************
   /// A callback class designed to be multiply inherited by other client classes.
-  /// The class is parameterised with a callback parameter type and a unique id.
-  /// The unique id allows muliple callbacks with the same parameter type.
+  /// The class is parametrised with a callback parameter type and a unique id.
+  /// The unique id allows multiple callbacks with the same parameter type.
   ///\tparam TParameter The callback parameter type.
   ///\tparam ID The unique id for this callback.
   //***************************************************************************

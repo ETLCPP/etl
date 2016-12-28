@@ -70,7 +70,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CNSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;ETL_THROW_EXCEPTIONS;ETL_VERBOSE_ERRORS;ETL_CHECK_PUSH_POP;ETL_PLATFORM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;ETL_THROW_EXCEPTIONS;ETL_VERBOSE_ERRORS;ETL_CHECK_PUSH_POP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../../../unittest-cpp</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
@@ -185,7 +185,6 @@
     <ClInclude Include="..\..\src\flat_set.h" />
     <ClInclude Include="..\..\src\fnv_1.h" />
     <ClInclude Include="..\..\src\forward_list.h" />
-    <ClInclude Include="..\..\src\frame_check_sequence.h" />
     <ClInclude Include="..\..\src\function.h" />
     <ClInclude Include="..\..\src\functional.h" />
     <ClInclude Include="..\..\src\hash.h" />
@@ -248,7 +247,6 @@
     <ClInclude Include="..\..\src\pool.h" />
     <ClInclude Include="..\..\src\power.h" />
     <ClInclude Include="..\..\src\priority_queue.h" />
-    <ClInclude Include="..\..\src\private\counter_type.h" />
     <ClInclude Include="..\..\src\private\deque_base.h" />
     <ClInclude Include="..\..\src\private\flat_map_base.h" />
     <ClInclude Include="..\..\src\private\flat_multimap_base.h" />
@@ -359,9 +357,15 @@
     <ClCompile Include="..\test_hash.cpp" />
     <ClCompile Include="..\test_instance_count.cpp" />
     <ClCompile Include="..\test_integral_limits.cpp" />
-    <ClCompile Include="..\test_intrusive_forward_list.cpp" />
-    <ClCompile Include="..\test_intrusive_links.cpp" />
-    <ClCompile Include="..\test_intrusive_list.cpp" />
+    <ClCompile Include="..\test_intrusive_forward_list.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\test_intrusive_links.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\test_intrusive_list.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\test_intrusive_stack.cpp" />
     <ClCompile Include="..\test_io_port.cpp" />
     <ClCompile Include="..\test_jenkins.cpp" />

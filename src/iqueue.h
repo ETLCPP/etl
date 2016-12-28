@@ -162,7 +162,7 @@ namespace etl
 
     //*************************************************************************
     /// Removes the oldest value from the back of the queue.
-    /// Undefined behaviour if the queue is already empty.
+    /// Does nothing if the queue is already empty.
     //*************************************************************************
     void pop()
     {

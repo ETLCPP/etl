@@ -182,19 +182,16 @@ namespace etl
     value_type buffer[MAX_SIZE + 1];
   };
 
-  //***************************************************************************
-  /// Specialisation for u32string.
-  ///\ingroup hash
-  //***************************************************************************
+  //*************************************************************************
+  /// Hash function.
+  //*************************************************************************
   template <>
-  struct hash <u32string>
+  struct hash<etl::iu32string>
   {
-    size_t operator ()(const u32string& s) const
+    size_t operator()(const etl::iu32string& text) const
     {
-      uint8_t* p_begin = &s[0];
-      uint8_t* p_end   = &s[s.size()];
-
-      return etl::__private_hash__::generic_hash(p_begin, p_end);
+      return etl::__private_hash__::generic_hash<>(reinterpret_cast<const uint8_t*>(&text[0]),
+        reinterpret_cast<const uint8_t*>(&text[text.size()]));
     }
   };
 }

@@ -40,11 +40,11 @@ namespace etl
     /// Usage:
     ///\code
     /// // Short form.
-    /// ETL_TYPEDEF(int, mytype_t);
+    /// ETL_TYPEDEF(int, mytype);
     /// 
     /// // Long form.
     /// class mytype_t_tag;
-    /// typedef etl::type_def<mytype_t_tag, int> mytype_t;
+    /// typedef etl::type_def<mytype_t_tag, int> mytype_t_tag;
     ///\endcode
     //*************************************************************************
     template <typename TIdType, typename TValue>
@@ -77,18 +77,6 @@ namespace etl
         operator TValue() const
         {
             return value;
-        }
-
-        //*********************************************************************
-        explicit operator bool() const
-        {
-            return static_cast<bool>(value);
-        }
-
-        //*********************************************************************
-        bool operator !() const
-        {
-            return !bool(value);
         }
 
         //*********************************************************************
@@ -255,33 +243,9 @@ namespace etl
         }
 
         //*********************************************************************
-        const TValue& get() const
+        TValue get() const
         {
             return value;
-        }
-
-        //*********************************************************************
-        friend type_def operator +(const type_def& lhs, const type_def& rhs)
-        {
-            return type_def(lhs.value + rhs.value);
-        }
-
-        //*********************************************************************
-        friend type_def operator -(const type_def& lhs, const type_def& rhs)
-        {
-            return type_def(lhs.value - rhs.value);
-        }
-
-        //*********************************************************************
-        friend type_def operator *(const type_def& lhs, const type_def& rhs)
-        {
-            return type_def(lhs.value * rhs.value);
-        }
-
-        //*********************************************************************
-        friend type_def operator /(const type_def& lhs, const type_def& rhs)
-        {
-            return type_def(lhs.value / rhs.value);
         }
 
         //*********************************************************************

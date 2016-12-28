@@ -50,9 +50,9 @@ namespace etl
     /// Hash to use when size_t is 16 bits.
     /// T is always expected to be size_t.
     //*************************************************************************
-    template <typename T>
+    template <typename T = size_t>
     typename enable_if<sizeof(T) == sizeof(uint16_t), size_t>::type
-    generic_hash(uint8_t* begin, uint8_t* end)
+    generic_hash(const uint8_t* begin, const uint8_t* end)
     {
       uint32_t h = fnv_1a_32(begin, end);
 
@@ -63,9 +63,9 @@ namespace etl
     /// Hash to use when size_t is 32 bits.
     /// T is always expected to be size_t.
     //*************************************************************************
-    template <typename T>
+    template <typename T = size_t>
     typename enable_if<sizeof(T) == sizeof(uint32_t), size_t>::type
-    generic_hash(uint8_t* begin, uint8_t* end)
+    generic_hash(const uint8_t* begin, const uint8_t* end)
     {
       return fnv_1a_32(begin, end);
     }
@@ -74,9 +74,9 @@ namespace etl
     /// Hash to use when size_t is 64 bits.
     /// T is always expected to be size_t.
     //*************************************************************************
-    template <typename T>
+    template <typename T = size_t>
     typename enable_if<sizeof(T) == sizeof(uint64_t), size_t>::type
-    generic_hash(uint8_t* begin, uint8_t* end)
+    generic_hash(const uint8_t* begin, const uint8_t* end)
     {
       return fnv_1a_64(begin, end);
     }
@@ -323,9 +323,15 @@ namespace etl
       // If it's the same size as a size_t.
       if (sizeof(size_t) == sizeof(v))
       {
-        size_t t;
-        memcpy(&t, &v, sizeof(size_t));
-        return t;
+        union
+        {
+          size_t s;
+          float  v;
+        } u;
+
+        u.v = v;
+
+        return u.s;
       }
       else
       {
@@ -347,9 +353,15 @@ namespace etl
       // If it's the same size as a size_t.
       if (sizeof(size_t) == sizeof(v))
       {
-        size_t t;
-        memcpy(&t, &v, sizeof(size_t));
-        return t;
+        union
+        {
+          size_t s;
+          double v;
+        } u;
+
+        u.v = v;
+        
+        return u.s;
       }
       else
       {
@@ -371,9 +383,15 @@ namespace etl
       // If it's the same size as a size_t.
       if (sizeof(size_t) == sizeof(v))
       {
-        size_t t;
-        memcpy(&t, &v, sizeof(size_t));
-        return t;
+        union
+        {
+          size_t s;
+          long double v;
+        } u;
+
+        u.v = v;
+
+        return u.s;
       }
       else
       {
@@ -395,9 +413,15 @@ namespace etl
       // If it's the same size as a size_t.
       if (sizeof(size_t) == sizeof(T*))
       {
-        size_t t;
-        memcpy(&t, &v, sizeof(size_t));
-        return t;
+        union
+        {
+          size_t s;
+          const T* v;
+        } u;
+
+        u.v = v;
+
+        return u.s;
       }
       else
       {

@@ -106,17 +106,17 @@ namespace etl
       this->add(begin, end);
     }
   };
-  
+
   //***************************************************************************
   /// fnv_1a policy.
   /// Calculates FNV1A.
   //***************************************************************************
   struct fnv_1a_policy_64
-  {
+    {
     typedef uint64_t value_type;
 
     inline uint64_t initial() const
-    {
+      {
       return OFFSET_BASIS;
     }
 
@@ -124,7 +124,7 @@ namespace etl
     {
       hash ^= value;
       hash *= PRIME;
-      return  hash;
+      return hash;
     }
 
     inline uint64_t final(uint64_t hash) const
@@ -135,7 +135,7 @@ namespace etl
     static const uint64_t OFFSET_BASIS = 0xCBF29CE484222325;
     static const uint64_t PRIME        = 0x00000100000001b3;
   };
-  
+
   //***************************************************************************
   /// Calculates the fnv_1a_64 hash.
   ///\ingroup fnv_1a_64
@@ -170,11 +170,11 @@ namespace etl
   /// Calculates FNV1.
   //***************************************************************************
   struct fnv_1_policy_32
-  {
-    typedef uint32_t value_type;
-
-    inline uint32_t initial() const
     {
+    typedef uint32_t value_type;
+      
+    inline uint32_t initial() const
+      {
       return OFFSET_BASIS;
     }
 
@@ -182,7 +182,7 @@ namespace etl
     {
       hash *= PRIME;
       hash ^= value;
-      return  hash;
+      return hash;
     }
 
     inline uint32_t final(uint32_t hash) const
@@ -222,17 +222,17 @@ namespace etl
       this->add(begin, end);
     }
   };
-    
+
   //***************************************************************************
   /// fnv_1a policy.
   /// Calculates FNV1A.
   //***************************************************************************
   struct fnv_1a_policy_32
-  {
+    {
     typedef uint32_t value_type;
 
     inline uint32_t initial() const
-    {
+      {
       return OFFSET_BASIS;
     }
 
@@ -240,7 +240,7 @@ namespace etl
     {
       hash ^= value;
       hash *= PRIME;
-      return  hash;
+      return hash;
     }
 
     inline uint32_t final(uint32_t hash) const
