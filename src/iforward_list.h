@@ -354,7 +354,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(DEBUG)
       difference_type count = std::distance(first, last);
       ETL_ASSERT(count >= 0, ETL_ERROR(forward_list_iterator));
 #endif
@@ -512,7 +512,7 @@ namespace etl
     template <typename TIterator>
     void insert_after(iterator position, TIterator first, TIterator last)
     {
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(DEBUG)
       difference_type count = std::distance(first, last);
       ETL_ASSERT((count + current_size) <= MAX_SIZE, ETL_ERROR(forward_list_full));
 #endif
@@ -609,7 +609,7 @@ namespace etl
         return; // Can't more to before yourself!
       }
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(DEBUG)
       // Check that we are not doing an illegal move!
       for (const_iterator item = first_before; item != last; ++item)
       {
