@@ -97,7 +97,7 @@ namespace
       priority_queue.push(2);
       priority_queue.push(3);
 
-      CHECK_EQUAL(3, priority_queue.size());
+      CHECK_EQUAL(3U, priority_queue.size());
     }
 
     //*************************************************************************
@@ -108,7 +108,7 @@ namespace
       priority_queue.push(1);
       priority_queue.push(2);
       priority_queue.clear();
-      CHECK_EQUAL(0, priority_queue.size());
+      CHECK_EQUAL(0U, priority_queue.size());
     }
 
     //*************************************************************************

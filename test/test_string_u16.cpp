@@ -969,8 +969,8 @@ namespace
       Text append(insert_text.c_str());
 
       // Whole string.
-      compare_text.append(insert_text, 0);
-      text.append(append, 0);
+      compare_text.append(insert_text, 0, std::u16string::npos);
+      text.append(append, 0, etl::iu16string::npos);
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
