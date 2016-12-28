@@ -79,44 +79,167 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_smallest_size_for_bits)
+    TEST(test_smallest_uint_for_bits)
     {
       bool type;
 
-      type = std::is_same<uint8_t, etl::smallest_uint_for_bits<7>::type>::value;
+      type = std::is_same<uint_least8_t, etl::smallest_uint_for_bits<7>::type>::value;
       CHECK(type);
 
-      type = std::is_same<uint8_t, etl::smallest_uint_for_bits<8>::type>::value;
+      type = std::is_same<uint_least8_t, etl::smallest_uint_for_bits<8>::type>::value;
       CHECK(type);
 
-      type = std::is_same<uint16_t, etl::smallest_uint_for_bits<9>::type>::value;
+      type = std::is_same<uint_least16_t, etl::smallest_uint_for_bits<9>::type>::value;
       CHECK(type);
 
-      type = std::is_same<uint16_t, etl::smallest_uint_for_bits<15>::type>::value;
+      type = std::is_same<uint_least16_t, etl::smallest_uint_for_bits<15>::type>::value;
       CHECK(type);
 
-      type = std::is_same<uint16_t, etl::smallest_uint_for_bits<16>::type>::value;
+      type = std::is_same<uint_least16_t, etl::smallest_uint_for_bits<16>::type>::value;
       CHECK(type);
 
-      type = std::is_same<uint32_t, etl::smallest_uint_for_bits<17>::type>::value;
+      type = std::is_same<uint_least32_t, etl::smallest_uint_for_bits<17>::type>::value;
       CHECK(type);
 
-      type = std::is_same<uint32_t, etl::smallest_uint_for_bits<31>::type>::value;
+      type = std::is_same<uint_least32_t, etl::smallest_uint_for_bits<31>::type>::value;
       CHECK(type);
 
-      type = std::is_same<uint32_t, etl::smallest_uint_for_bits<32>::type>::value;
+      type = std::is_same<uint_least32_t, etl::smallest_uint_for_bits<32>::type>::value;
       CHECK(type);
 
-      type = std::is_same<uint64_t, etl::smallest_uint_for_bits<33>::type>::value;
+      type = std::is_same<uint_least64_t, etl::smallest_uint_for_bits<33>::type>::value;
       CHECK(type);
 
-      type = std::is_same<uint64_t, etl::smallest_uint_for_bits<63>::type>::value;
+      type = std::is_same<uint_least64_t, etl::smallest_uint_for_bits<63>::type>::value;
       CHECK(type);
 
-      type = std::is_same<uint64_t, etl::smallest_uint_for_bits<64>::type>::value;
+      type = std::is_same<uint_least64_t, etl::smallest_uint_for_bits<64>::type>::value;
       CHECK(type);
 
-      type = std::is_same<uint64_t, etl::smallest_uint_for_bits<65>::type>::value;
+      type = std::is_same<uint_least64_t, etl::smallest_uint_for_bits<65>::type>::value;
+      CHECK(type);
+    }
+
+    //*************************************************************************
+    TEST(test_smallest_int_for_bits)
+    {
+      bool type;
+
+      type = std::is_same<int_least8_t, etl::smallest_int_for_bits<7>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least8_t, etl::smallest_int_for_bits<8>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least16_t, etl::smallest_int_for_bits<9>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least16_t, etl::smallest_int_for_bits<15>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least16_t, etl::smallest_int_for_bits<16>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least32_t, etl::smallest_int_for_bits<17>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least32_t, etl::smallest_int_for_bits<31>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least32_t, etl::smallest_int_for_bits<32>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least64_t, etl::smallest_int_for_bits<33>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least64_t, etl::smallest_int_for_bits<63>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least64_t, etl::smallest_int_for_bits<64>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least64_t, etl::smallest_int_for_bits<65>::type>::value;
+      CHECK(type);
+    }
+
+    //*************************************************************************
+    TEST(test_smallest_uint_for_value)
+    {
+      bool type;
+
+      type = std::is_same<uint_least8_t, etl::smallest_uint_for_value<0>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<uint_least8_t, etl::smallest_uint_for_value<UINT8_MAX>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<uint_least16_t, etl::smallest_uint_for_value<UINT8_MAX + 1>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<uint_least16_t, etl::smallest_uint_for_value<UINT16_MAX>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<uint_least32_t, etl::smallest_uint_for_value<UINT16_MAX + 1>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<uint_least32_t, etl::smallest_uint_for_value<UINT32_MAX>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<uint_least64_t, etl::smallest_uint_for_value<uint64_t(UINT32_MAX) + 1>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<uint_least64_t, etl::smallest_uint_for_value<UINT64_MAX>::type>::value;
+      CHECK(type);
+    }
+
+    //*************************************************************************
+    TEST(test_smallest_int_for_value)
+    {
+      bool type;
+
+      type = std::is_same<int_least8_t, etl::smallest_int_for_value<0>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least8_t, etl::smallest_int_for_value<INT8_MIN>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least8_t, etl::smallest_int_for_value<INT8_MAX>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least16_t, etl::smallest_int_for_value<INT8_MIN - 1>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least16_t, etl::smallest_int_for_value<INT8_MAX + 1>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least16_t, etl::smallest_int_for_value<INT16_MIN>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least16_t, etl::smallest_int_for_value<INT16_MAX>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least32_t, etl::smallest_int_for_value<INT16_MIN - 1>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least32_t, etl::smallest_int_for_value<INT16_MAX + 1>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least32_t, etl::smallest_int_for_value<INT32_MIN>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least32_t, etl::smallest_int_for_value<INT32_MAX>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least64_t, etl::smallest_int_for_value<intmax_t(INT32_MIN) - 1>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least64_t, etl::smallest_int_for_value<intmax_t(INT32_MAX) + 1>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least64_t, etl::smallest_int_for_value<INT64_MIN>::type>::value;
+      CHECK(type);
+
+      type = std::is_same<int_least64_t, etl::smallest_int_for_value<INT64_MAX>::type>::value;
       CHECK(type);
     }
   };
