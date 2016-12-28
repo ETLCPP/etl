@@ -36,7 +36,6 @@ SOFTWARE.
 #include "type_traits.h"
 #include "error_handler.h"
 #include "intrusive_links.h"
-#include "private/counter_type.h"
 
 #define ETL_FILE "29"
 

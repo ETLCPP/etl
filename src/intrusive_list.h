@@ -49,7 +49,6 @@ SOFTWARE.
 #include "intrusive_links.h"
 #include "static_assert.h"
 #include "algorithm.h"
-#include "private/counter_type.h"
 
 #undef ETL_FILE
 #define ETL_FILE "21"

@@ -48,7 +48,6 @@ SOFTWARE.
 #include "error_handler.h"
 #include "intrusive_links.h"
 #include "algorithm.h"
-#include "private/counter_type.h"
 
 #undef ETL_FILE
 #define ETL_FILE "20"
