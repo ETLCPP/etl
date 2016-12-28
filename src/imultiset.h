@@ -656,7 +656,7 @@ namespace etl
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, const value_type& value)
+    iterator insert(iterator /*position*/, const value_type& value)
     {
       // Ignore position provided and just do a normal insert
       return insert(value);
@@ -668,7 +668,7 @@ namespace etl
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(const_iterator position, const value_type& value)
+    iterator insert(const_iterator /*position*/, const value_type& value)
     {
       // Ignore position provided and just do a normal insert
       return insert(value);
