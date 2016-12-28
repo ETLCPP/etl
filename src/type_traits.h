@@ -245,9 +245,9 @@ namespace etl
 
   template <> struct make_signed<wchar_t>
   {
-    typedef typename etl::conditional<sizeof(wchar_t) == sizeof(int16_t), 
+    typedef typename etl::conditional<sizeof(wchar_t) == sizeof(int16_t),
                                       int16_t,
-                                      etl::conditional<sizeof(wchar_t) == sizeof(int32_t), 
+                                      etl::conditional<sizeof(wchar_t) == sizeof(int32_t),
                                                               int32_t,
                                                               void>::type>::type type;
   };
