@@ -872,6 +872,7 @@ namespace etl
       if (icurrent != bucket.end())
       {
         bucket.erase_after(iprevious);
+        pnodepool->release(*icurrent);
         count = 1;
       }
 
@@ -899,6 +900,7 @@ namespace etl
       }
 
       bucket.erase_after(iprevious);
+      pnodepool->release(*icurrent);
 
       return inext;
     }
@@ -940,7 +942,16 @@ namespace etl
         }
 
         // Erase the range.
+        local_iterator irelease = iprevious;
+        ++irelease;
+
         ibucket->erase_after(iprevious, iend);
+
+        while (irelease != iend)
+        {
+          pnodepool->release(*irelease);
+          ++irelease;
+        }
 
         // At the end of this bucket?
         if (iend == ibucket->end())

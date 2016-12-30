@@ -527,7 +527,6 @@ namespace etl
 
     //*************************************************************************
     /// Erases the value at the specified position.
-    /// Clears the link after erasing if CHECKED.
     //*************************************************************************
     iterator erase_after(iterator position)
     {
@@ -544,36 +543,32 @@ namespace etl
 
     //*************************************************************************
     /// Erases a range of elements.
-    /// Clears the links after erasing if CHECKED.
     //*************************************************************************
     iterator erase_after(iterator first, iterator last)
     {
-      link_type* p_first = first.p_value;
-      link_type* p_last = last.p_value;
-      link_type* p_next = p_first->etl_next;
-
-      // Join the ends.
-      etl::link<link_type>(p_first, p_last);
-
-      p_first = p_next;
-
-      // Erase the ones in between.
-      while (p_first != p_last)
+      if (first != last)
       {
-        // One less.
-        --current_size;
+        current_size -= std::distance(first, last) - 1;
 
-        p_next  = p_first->etl_next; // Remember the next link.
-        p_first = p_next;            // Move to the next link.
-      }
+        link_type* p_first = first.p_value;
+        link_type* p_last = last.p_value;
+        link_type* p_next = p_first->etl_next;
 
-      if (p_next == nullptr)
-      {
-        return end();
+        // Join the ends.
+        etl::link<link_type>(p_first, p_last);
+
+        if (p_next == nullptr)
+        {
+          return end();
+        }
+        else
+        {
+          return last;
+        }
       }
       else
       {
-        return iterator(*static_cast<value_type*>(p_last));
+        return last;
       }
     }
 

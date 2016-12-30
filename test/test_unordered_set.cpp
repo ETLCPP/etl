@@ -301,6 +301,10 @@ namespace
 
       CHECK(idata == data.end());
       CHECK(inext == iafter);
+
+      // Test that erase really does erase from the pool.
+      CHECK(!data.full());
+      CHECK(!data.empty());
     }
 
     //*************************************************************************
@@ -316,6 +320,11 @@ namespace
       test.assign(data.begin(), data.end());
 
       idata = data.erase(idata, idata_end); // Erase N5, N6, N7
+
+      CHECK_EQUAL(initial_data.size() - 3, data.size());
+      CHECK(!data.full());
+      CHECK(!data.empty());
+
       CHECK(idata == data.find(N8));
 
       test.assign(data.begin(), data.end());
