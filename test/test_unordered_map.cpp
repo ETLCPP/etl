@@ -435,6 +435,10 @@ namespace
 
       DataNDC::iterator idata = data.find(K5);
       CHECK(idata == data.end());
+
+      // Test that erase really does erase from the pool.
+      CHECK(!data.full());
+      CHECK(!data.empty());
     }
 
     //*************************************************************************
@@ -462,6 +466,11 @@ namespace
       DataNDC::iterator idata_end = data.find(K8);
 
       idata = data.erase(idata, idata_end); // Erase K5, K6, K7
+      
+      CHECK_EQUAL(initial_data.size() - 3, data.size());
+      CHECK(!data.full());
+      CHECK(!data.empty());
+
       CHECK(idata == data.find(K8));
 
       idata = data.find(K0);
