@@ -28,6 +28,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
+//*****************************************************************************
+// The algorithm for this implementation is based on this paper.
+//
+// Fast Efficient Fixed-Size Memory Pool
+// https://www.thinkmind.org/index.php?view=article&articleid=computation_tools_2012_1_10_80006
+//
+// Ben Kenwright
+// School of Computer Science
+// Newcastle University
+// Newcastle, United Kingdom,
+// b.kenwright@ncl.ac.uk
+//*****************************************************************************
+
 #ifndef __ETL_IPOOL__
 #define __ETL_IPOOL__
 #define __ETL_IN_IPOOL_H__
@@ -36,7 +49,7 @@ SOFTWARE.
 
 #include "private/pool_base.h"
 #include "nullptr.h"
-#include "ibitset.h"
+//#include "ibitset.h"
 #include "error_handler.h"
 
 namespace etl
@@ -44,7 +57,7 @@ namespace etl
   //***************************************************************************
   ///\ingroup pool
   //***************************************************************************
-  template <typename T>
+  template <typename T, typename TIndex = int32_t>
   class ipool : public pool_base
   {
   public:
@@ -57,306 +70,44 @@ namespace etl
     typedef size_t   size_type;
 
     //*************************************************************************
-    /// iterator
-    //*************************************************************************
-    class iterator : public std::iterator<std::forward_iterator_tag, const T>
-    {
-    public:
-
-      friend class ipool;
-      friend class const_iterator;
-
-      //*******************************
-      iterator()
-        : index(0),
-          p_buffer(nullptr),
-          p_in_use_flags(nullptr)
-      {
-      }
-
-      //*******************************
-      iterator(const iterator& other)
-        : index(other.index),
-          p_buffer(other.p_buffer),
-          p_in_use_flags(other.p_in_use_flags)
-      {
-      }
-
-      //*******************************
-      iterator& operator ++()
-      {
-        index = p_in_use_flags->find_next(true, index + 1);
-        return *this;
-      }
-
-      //*******************************
-      iterator operator ++(int)
-      {
-        iterator temp(*this);
-        index = p_in_use_flags->find_next(true, index + 1);
-        return temp;
-      }
-
-      //*******************************
-      iterator operator =(const iterator& other)
-      {
-        index          = other.index;
-        p_buffer       = other.p_buffer;
-        p_in_use_flags = other.p_in_use_flags;
-        return *this;
-      }
-
-      //*******************************
-      const_reference operator *() const
-      {
-        return p_buffer[index];
-      }
-
-      //*******************************
-      const_pointer operator ->() const
-      {
-        return &p_buffer[index];
-      }
-
-      //*******************************
-      friend bool operator == (const iterator& lhs, const iterator& rhs)
-      {
-        return (lhs.p_buffer == rhs.p_buffer) && (lhs.index == rhs.index);
-      }
-
-      //*******************************
-      friend bool operator != (const iterator& lhs, const iterator& rhs)
-      {
-        return !(lhs == rhs);
-      }
-
-    private:
-
-      //*******************************
-      iterator(size_t         index,
-               pointer        p_buffer,
-               const ibitset* p_in_use_flags)
-        : index(index),
-          p_buffer(p_buffer),
-          p_in_use_flags(p_in_use_flags)
-      {
-      }
-
-      size_t         index;
-      pointer        p_buffer;
-      const ibitset* p_in_use_flags;
-    };
-
-
-    //*************************************************************************
-    /// const_iterator
-    //*************************************************************************
-    class const_iterator : public std::iterator<std::forward_iterator_tag, const T>
-    {
-    public:
-
-      friend class ipool;
-
-      //*******************************
-      const_iterator()
-        : index(0),
-          p_buffer(nullptr),
-          p_in_use_flags(nullptr)
-      {
-      }
-
-      //*******************************
-      const_iterator(const const_iterator& other)
-        : index(other.index),
-          p_buffer(other.p_buffer),
-          p_in_use_flags(other.p_in_use_flags)
-      {
-      }
-
-      //*******************************
-      const_iterator(const typename ipool::iterator& other)
-        : index(other.index),
-          p_buffer(other.p_buffer),
-          p_in_use_flags(other.p_in_use_flags)
-      {
-      }
-
-      //*******************************
-      const_iterator& operator ++()
-      {
-        index = p_in_use_flags->find_next(true, index + 1);
-        return *this;
-      }
-
-      //*******************************
-      const_iterator operator ++(int)
-      {
-        const_iterator temp(*this);
-        index = p_in_use_flags->find_next(true, index + 1);
-        return temp;
-      }
-
-      //*******************************
-      const_iterator operator =(const const_iterator& other)
-      {
-        index          = other.index;
-        p_buffer       = other.p_buffer;
-        p_in_use_flags = other.p_in_use_flags;
-        return *this;
-      }
-
-      //*******************************
-      const_reference operator *() const
-      {
-        return p_buffer[index];
-      }
-
-      //*******************************
-      const_pointer operator ->() const
-      {
-        return &p_buffer[index];
-      }
-
-      //*******************************
-      friend bool operator == (const const_iterator& lhs, const const_iterator& rhs)
-      {
-        return (lhs.p_buffer == rhs.p_buffer) && (lhs.index == rhs.index);
-      }
-
-      //*******************************
-      friend bool operator != (const const_iterator& lhs, const const_iterator& rhs)
-      {
-        return !(lhs == rhs);
-      }
-
-    private:
-
-      //*******************************
-      const_iterator(size_t         index,
-                     const_pointer  p_buffer,
-                     const ibitset* p_in_use_flags)
-        : index(index),
-          p_buffer(p_buffer),
-          p_in_use_flags(p_in_use_flags)
-      {
-      }
-
-      size_t         index;
-      const_pointer  p_buffer;
-      const ibitset* p_in_use_flags;
-    };
-
-    //*************************************************************************
-    /// Get an iterator to the first allocated item in the pool.
-    //*************************************************************************
-    iterator begin()
-    {
-      size_t index = in_use_flags.find_first(true);
-
-      if (index != ibitset::npos)
-      {
-        return iterator(index, p_buffer, &in_use_flags);
-      }
-      else
-      {
-        return end();
-      }
-    }
-
-    //*************************************************************************
-    /// Get a const iterator to the first allocated item in the pool.
-    //*************************************************************************
-    const_iterator begin() const
-    {
-      size_t index = in_use_flags.find_first(true);
-
-      if (index != ibitset::npos)
-      {
-        return const_iterator(index, p_buffer, &in_use_flags);
-      }
-      else
-      {
-        return end();
-      }
-    }
-
-    //*************************************************************************
-    /// Get a const iterator to the first allocated item in the pool.
-    //*************************************************************************
-    const_iterator cbegin() const
-    {
-      return begin();
-    }
-
-    //*************************************************************************
-    /// Get an iterator to the end of the pool.
-    //*************************************************************************
-    iterator end()
-    {
-      return iterator(ibitset::npos, p_buffer, &in_use_flags);
-    }
-
-    //*************************************************************************
-    /// Get a const iterator to the end of the pool.
-    //*************************************************************************
-    const_iterator end() const
-    {
-      return const_iterator(ibitset::npos, p_buffer, &in_use_flags);
-    }
-
-    //*************************************************************************
-    /// Get a const iterator to the end of the pool.
-    //*************************************************************************
-    const_iterator cend() const
-    {
-      return end();
-    }
-
-    //*************************************************************************
     /// Allocate an object from the pool.
     /// Uses the default constructor.
     /// If asserts or exceptions are enabled and there are no more free items an
     /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
-    /// \note The state of the object returned is undefined.
     //*************************************************************************
     T* allocate()
     {
-#if defined(_DEBUG) || defined(DEBUG)
-      ETL_ASSERT(items_allocated < MAX_SIZE && !in_use_flags.test(next_free), ETL_ERROR(pool_no_allocation));
-#else
-      ETL_ASSERT(items_allocated < MAX_SIZE, ETL_ERROR(pool_no_allocation));
-#endif
-
-      T* result = new(&p_buffer[next_free]) T();
-
-      in_use_flags.set(next_free);
-      next_free = in_use_flags.find_first(false);
-      ++items_allocated;
-
-      return result;
+      return allocate(T());
     }
 
     //*************************************************************************
     /// Allocate an object from the pool from an initial value.
     /// If asserts or exceptions are enabled and there are no more free items an
     /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
-    /// \note The state of the object returned is undefined.
     //*************************************************************************
     T* allocate(const T& initial)
     {
-#if defined(_DEBUG) || defined(DEBUG)
-      ETL_ASSERT(items_allocated < MAX_SIZE && !in_use_flags.test(next_free), ETL_ERROR(pool_no_allocation));
-#else
       ETL_ASSERT(items_allocated < MAX_SIZE, ETL_ERROR(pool_no_allocation));
-#endif
 
-      T* result = new(&p_buffer[next_free]) T(initial);
+      T* p_value = nullptr;
 
-      in_use_flags.set(next_free);
-      next_free = in_use_flags.find_first(false);
-      ++items_allocated;
+      if (available() > 0)
+      {
+        p_value = new(&p_next->value) T(initial);
+        p_next->index = -p_next->index;
+        ++items_allocated;
 
-      return result;
+        if (available() != 0)
+        {
+          p_next = AddressFromIndex(p_next->index);          
+        }
+        else
+        {
+          p_next = nullptr;
+        }
+      }
+
+      return p_value;
     }
 
     //*************************************************************************
@@ -381,19 +132,24 @@ namespace etl
       // Does it belong to me?
       ETL_ASSERT(is_in_pool(p_object), ETL_ERROR(pool_object_not_in_pool));
 
-      // Where is it in the buffer?
-      typename std::iterator_traits<T*>::difference_type distance = p_object - p_buffer;
-      size_t index = static_cast<size_t>(distance);
+      // Get the pointer to the element by adjusting for the index.
+      uintptr_t p = (uintptr_t)p_object - offsetof(Element, value);
 
-      // Check that it hasn't already been released.
-      if (in_use_flags.test(index))
+      Element* p_element = reinterpret_cast<Element*>(p);
+
+      if (p_next != nullptr)
       {
-        // Destroy the object and mark as available.
-        p_object->~T();
-        in_use_flags.reset(index);
-        --items_allocated;
-        next_free = index;
+        p_element->index = -IndexFromAddress(p_next);
       }
+      else
+      {
+        p_element->index = -TIndex(MAX_SIZE);
+      }
+
+      p_object->~T();
+
+      p_next = p_element;
+      --items_allocated;
     }
 
     //*************************************************************************
@@ -401,18 +157,19 @@ namespace etl
     //*************************************************************************
     void release_all()
     {
-      const_iterator i_object = begin();
-
-      while (i_object != end())
+      for (size_t i = 0; i < MAX_SIZE; ++i)
       {
-        i_object->~T();
-        ++i_object;
+        if (p_buffer[i].index > 0)
+        {
+          p_buffer[i].value.~T();
+        }
+
+        p_buffer[i].index = -int32_t(i + 1);
       }
 
-      in_use_flags.reset();
       items_allocated = 0;
-      next_free       = 0;
-      }
+      p_next = p_buffer;
+    }
 
     //*************************************************************************
     /// Check to see if the object belongs to the pool.
@@ -432,77 +189,37 @@ namespace etl
     bool is_in_pool(const T* p_object) const
     {
       // Does this object belong to this pool?
-      typename std::iterator_traits<T*>::difference_type distance = p_object - p_buffer;
+      // Get the pointer to the element by adjusting for the index.
+      uintptr_t p = (uintptr_t)p_object - sizeof(TIndex);
 
-      // Within the range of the buffer?
-      return ((distance >= 0) && (distance < static_cast<typename std::iterator_traits<T*>::difference_type>(MAX_SIZE)));
+      Element* p_element = reinterpret_cast<Element*>(p);
+
+      // Within the range of the buffer?      
+      intptr_t distance = p_element - p_buffer;
+      return ((distance >= 0) && (distance < static_cast<intptr_t>(MAX_SIZE)));
     }
-
-    //*************************************************************************
-    /// Gets the iterator to the object.
-    /// If the object is not in the pool then end() is returned.
-    /// \param object A const reference to the object to be checked.
-    /// \return An iterator to the object or end().
-    //*************************************************************************
-    iterator get_iterator(T& object)
-    {
-      if (is_in_pool(object))
-      {
-        iterator i_object = begin();
-
-        while (i_object != end())
-        {
-          // Same one?
-          if (&object == &*i_object)
-          {
-            return i_object;
-          }
-
-          ++i_object;
-        }
-      }
-
-      return end();
-    }
-
-    //*************************************************************************
-    /// Gets the const_iterator to the object.
-    /// If the object is not in the pool then end() is returned.
-    /// \param object A const reference to the object to be checked.
-    /// \return An const_iterator to the object or end().
-    //*************************************************************************
-    const_iterator get_iterator(const T& object) const
-    {
-      if (is_in_pool(object))
-      {
-        const_iterator i_object = begin();
-
-        while (i_object != end())
-        {
-          // Same one?
-          if (&object == &*i_object)
-          {
-            return i_object;
-          }
-
-          ++i_object;
-        }
-      }
-
-      return end();
-    }
-
 
   protected:
+
+    struct Element
+    {
+      TIndex index;
+      T      value;
+    };
 
     //*************************************************************************
     /// Constructor
     //*************************************************************************
-    ipool(T* p_buffer, ibitset& in_use_flags, size_t size)
+    ipool(Element* p_buffer, size_t size)
       : pool_base(size),
         p_buffer(p_buffer),
-        in_use_flags(in_use_flags)
+        p_next(p_buffer)
+        
     {
+      for (int32_t i = 0; i < MAX_SIZE; ++i)
+      {
+        p_buffer[i].index = -(i + 1);
+      }
     }
 
     //*************************************************************************
@@ -515,12 +232,23 @@ namespace etl
 
   private:
 
+    Element* AddressFromIndex(TIndex i) const
+    {
+      i = (i < 0) ? -i : i;
+      return &p_buffer[i];
+    }
+
+    TIndex IndexFromAddress(const Element* p_element) const
+    {
+      return TIndex(p_element - p_buffer);
+    }
+    
     // Disable copy construction and assignment.
     ipool(const ipool&);
     ipool& operator =(const ipool&);
 
-    T*       p_buffer;
-    ibitset& in_use_flags;
+    Element* p_buffer;
+    Element* p_next;
   };
 }
 

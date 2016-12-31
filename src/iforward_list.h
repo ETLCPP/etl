@@ -256,7 +256,7 @@ namespace etl
       const Node* p_node;
     };
 
-		typedef typename std::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename std::iterator_traits<iterator>::difference_type difference_type;
 
     //*************************************************************************
     /// Gets the beginning of the forward_list.
@@ -348,7 +348,7 @@ namespace etl
 
     //*************************************************************************
     /// Assigns a range of values to the forward_list.
-		/// If asserts or exceptions are enabled throws etl::forward_list_full if the forward_list does not have enough free space.
+    /// If asserts or exceptions are enabled throws etl::forward_list_full if the forward_list does not have enough free space.
     /// If ETL_THROW_EXCEPTIONS & _DEBUG are defined throws forward_list_iterator if the iterators are reversed.
     //*************************************************************************
     template <typename TIterator>
@@ -532,10 +532,15 @@ namespace etl
     iterator erase_after(iterator position)
     {
       iterator next(position);
-      ++next;
-      ++next;
-
-      remove_node_after(*position.p_node);
+      if (next != end())
+      {
+        ++next;
+        if (next != end())
+        {
+          ++next;
+          remove_node_after(*position.p_node);
+        }
+      }
 
       return next;
     }
@@ -545,33 +550,40 @@ namespace etl
     //*************************************************************************
     iterator erase_after(iterator first, iterator last)
     {
-      Node* p_first = first.p_node;
-      Node* p_last  = last.p_node;
-      Node* p_next  = p_first->next;
-
-      // Join the ends.
-      join(p_first, p_last);
-
-      p_first = p_next;
-
-      // Erase the ones in between.
-      while (p_first != p_last)
+      if (first != end() && (first != last))
       {
-        // One less.
-        --current_size;
+        Node* p_first = first.p_node;
+        Node* p_last = last.p_node;
+        Node* p_next = p_first->next;
 
-        p_next = p_first->next;                               // Remember the next node.
-        destroy_data_node(static_cast<Data_Node&>(*p_first)); // Destroy the pool object.
-        p_first = p_next;                                     // Move to the next node.
-      }
+        // Join the ends.
+        join(p_first, p_last);
 
-      if (p_next == nullptr)
-      {
-        return end();
+        p_first = p_next;
+
+        // Erase the ones in between.
+        while (p_first != p_last)
+        {
+          // One less.
+          --current_size;
+
+          p_next = p_first->next;                               // Remember the next node.
+          destroy_data_node(static_cast<Data_Node&>(*p_first)); // Destroy the pool object.
+          p_first = p_next;                                     // Move to the next node.
+        }
+
+        if (p_next == nullptr)
+        {
+          return end();
+        }
+        else
+        {
+          return iterator(*p_last);
+        }
       }
       else
       {
-        return iterator(*p_last);
+        return end();
       }
     }
 
@@ -580,7 +592,7 @@ namespace etl
     //*************************************************************************
     void move_after(const_iterator from_before, const_iterator to_before)
     {
-      if (from_before == to_before) // Can't more to after yourself!
+      if (from_before == to_before) // Can't move to after yourself!
       {
         return;
       }
@@ -707,7 +719,7 @@ namespace etl
 
       if (is_trivial_list())
       {
-	      return;
+        return;
       }
 
       while (true)
@@ -746,32 +758,32 @@ namespace etl
             // Decide whether the next node of merge comes from left or right.
             if (left_size == 0)
             {
-		          // Left is empty. The node must come from right.
-		          p_node = p_right;
+              // Left is empty. The node must come from right.
+              p_node = p_right;
               ++p_right;
               --right_size;
-		        }
+            }
             else if (right_size == 0 || p_right == end())
             {
-		          // Right is empty. The node must come from left.
-		          p_node = p_left;
+              // Right is empty. The node must come from left.
+              p_node = p_left;
               ++p_left;
               --left_size;
-		        }
+            }
             else if (compare(*p_left, *p_right))
             {
-		          // First node of left is lower or same. The node must come from left.
-		          p_node = p_left;
+              // First node of left is lower or same. The node must come from left.
+              p_node = p_left;
               ++p_left;
               --left_size;
-		        }
+            }
             else
             {
-		          // First node of right is lower. The node must come from right.
-		          p_node  = p_right;
+              // First node of right is lower. The node must come from right.
+              p_node  = p_right;
               ++p_right;
               --right_size;
-		        }
+            }
 
             // Add the next node to the merged head.
             if (p_head == before_begin())

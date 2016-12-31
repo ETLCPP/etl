@@ -50,8 +50,8 @@ namespace etl
   /// A templated pool implementation that uses a fixed size pool.
   ///\ingroup pool
   //*************************************************************************
-  template <typename T, const size_t SIZE_>
-  class pool : public ipool<T>
+  template <typename T, const size_t SIZE_, typename TIndex = int32_t>
+  class pool : public ipool<T, TIndex>
   {
   public:
 
@@ -61,7 +61,7 @@ namespace etl
     /// Constructor
     //*************************************************************************
     pool()
-      : ipool<T>(reinterpret_cast<T*>(&buffer[0]), in_use, SIZE)
+      : ipool<T, TIndex>(reinterpret_cast<Element*>(&buffer[0]), SIZE)
     {
     }
 
@@ -70,16 +70,15 @@ namespace etl
     //*************************************************************************
     ~pool()
     {
-      ipool<T>::release_all();
+      ipool<T, TIndex>::release_all();
     }
 
   private:
 
-    ///< The memory for the pool of objects.
-    typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[SIZE];
+    typedef typename ipool<T, TIndex>::Element Element;
 
-    ///< The set of flags that indicate which items are free in the pool.
-    bitset<SIZE> in_use;
+    ///< The memory for the pool of objects.
+    typename etl::aligned_storage<sizeof(Element), etl::alignment_of<Element>::value>::type buffer[SIZE];
 
     // Should not be copied.
     pool(const pool&);

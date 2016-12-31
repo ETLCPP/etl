@@ -143,13 +143,15 @@ namespace etl
     pool_base(size_t max_size)
       : next_free(0),
         items_allocated(0),
+        items_initialised(0),
         MAX_SIZE(max_size)       
     {
     }
 
-    size_t       next_free;       ///< The next free slot in the block.
-    size_t       items_allocated; ///< The number of items allocated.
-    const size_t MAX_SIZE;        ///< The maximum number of objects that can be allocated.
+    size_t       next_free;         ///< The next free slot in the block.
+    size_t       items_allocated;   ///< The number of items allocated.
+    size_t       items_initialised; ///< The number of items that have been initialised with an index;
+    const size_t MAX_SIZE;          ///< The maximum number of objects that can be allocated.
   };
 }
 

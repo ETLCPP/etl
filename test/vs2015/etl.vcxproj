@@ -222,6 +222,7 @@
     <ClInclude Include="..\..\src\ibasic_string.h" />
     <ClInclude Include="..\..\src\iunordered_map.h" />
     <ClInclude Include="..\..\src\iunordered_multimap.h" />
+    <ClInclude Include="..\..\src\iunordered_multiset.h" />
     <ClInclude Include="..\..\src\iunordered_set.h" />
     <ClInclude Include="..\..\src\ivector.h" />
     <ClInclude Include="..\..\src\ivectorpointer.h" />
