@@ -71,6 +71,12 @@ namespace etl
 
     template <const size_t NBITS>
     const typename max_value_for_nbits_helper<NBITS>::value_type max_value_for_nbits_helper<NBITS>::value;
+
+    static const uint_least8_t bit_position_lookup[32] =
+    {
+      0,   1, 28,  2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17,  4, 8,
+      31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18,  6, 11,  5, 10, 9
+    };
   }
 
   /// Definition for non-zero NBITS.
@@ -562,6 +568,39 @@ namespace etl
     }
 
     return signed_value;
+  }
+
+  //***************************************************************************
+  /// Find the position of the first set bit.
+  /// Starts from LSB.
+  //***************************************************************************
+  uint_least8_t find_first_set_bit(uint32_t value)
+  {
+      return __private_binary__::bit_position_lookup[((uint32_t)((value & -value) * 0x077CB531U)) >> 27];
+  }
+
+  //***************************************************************************
+  /// Find the position of the first clear bit.
+  /// Starts from LSB.
+  //***************************************************************************
+  uint_least8_t find_first_clear_bit(uint32_t value)
+  {
+      value ~= value;
+      return __private_binary__::bit_position_lookup[((uint32_t)((value & -value) * 0x077CB531U)) >> 27];
+  }
+
+  //***************************************************************************
+  /// Find the position of the first bit that is clear or set.
+  /// Starts from LSB.
+  //***************************************************************************
+  uint_least8_t find_first_bit(bool state, uint32_t value)
+  {
+      if (!state)
+      {
+        value ~= value;
+      }
+
+      return __private_binary__::bit_position_lookup[((uint32_t)((value & -value) * 0x077CB531U)) >> 27];
   }
 
   //***************************************************************************
