@@ -571,19 +571,38 @@ namespace etl
   }
 
   //***************************************************************************
+  /// Find the value of the first set bit.
+  /// Starts from LSB.
+  //***************************************************************************
+  uint32_t first_set_bit(uint32_t value)
+  {
+      return (uint32_t)(value & -value);
+  }
+
+  //***************************************************************************
   /// Find the position of the first set bit.
   /// Starts from LSB.
   //***************************************************************************
-  uint_least8_t find_first_set_bit(uint32_t value)
+  uint_least8_t first_set_bit_position(uint32_t value)
   {
-      return __private_binary__::bit_position_lookup[((uint32_t)((value & -value) * 0x077CB531U)) >> 27];
+      return __private_binary__::bit_position_lookup[(first_set_bit(value) * 0x077CB531U) >> 27];
+  }
+
+  //***************************************************************************
+  /// Find the value of the first clear bit.
+  /// Starts from LSB.
+  //***************************************************************************
+  uint32_t first_clear_bit(uint32_t value)
+  {
+      value = ~value;
+      return (uint32_t)(value & -value);
   }
 
   //***************************************************************************
   /// Find the position of the first clear bit.
   /// Starts from LSB.
   //***************************************************************************
-  uint_least8_t find_first_clear_bit(uint32_t value)
+  uint_least8_t first_clear_bit_position(uint32_t value)
   {
       value ~= value;
       return __private_binary__::bit_position_lookup[((uint32_t)((value & -value) * 0x077CB531U)) >> 27];
@@ -593,7 +612,21 @@ namespace etl
   /// Find the position of the first bit that is clear or set.
   /// Starts from LSB.
   //***************************************************************************
-  uint_least8_t find_first_bit(bool state, uint32_t value)
+  uint_least8_t first_bit(bool state, uint32_t value)
+  {
+      if (!state)
+      {
+        value ~= value;
+      }
+
+      return (uint32_t)(value & -value);
+  }
+
+  //***************************************************************************
+  /// Find the position of the first bit that is clear or set.
+  /// Starts from LSB.
+  //***************************************************************************
+  uint_least8_t first_bit_position(bool state, uint32_t value)
   {
       if (!state)
       {
