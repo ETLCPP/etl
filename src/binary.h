@@ -71,12 +71,6 @@ namespace etl
 
     template <const size_t NBITS>
     const typename max_value_for_nbits_helper<NBITS>::value_type max_value_for_nbits_helper<NBITS>::value;
-
-    static const uint_least8_t bit_position_lookup[32] =
-    {
-      0,   1, 28,  2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17,  4, 8,
-      31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18,  6, 11,  5, 10, 9
-    };
   }
 
   /// Definition for non-zero NBITS.
@@ -571,69 +565,85 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Find the value of the first set bit.
-  /// Starts from LSB.
+  /// Count trailing zeros.
+  /// Uses a binary search.
   //***************************************************************************
-  uint32_t first_set_bit(uint32_t value)
+  template <typename T>
+  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint32_t>::value, uint_least8_t>::type
+  count_trailing_zeros(uint32_t value)
   {
-      return (uint32_t)(value & -value);
+      uint_least8_t count;
+
+      if (value & 0x1)
+      {
+        count = 0;
+      }
+      else
+      {
+        count = 1;
+
+        if ((value & 0xffff) == 0)
+        {
+          value >>= 16;
+          count += 16;
+        }
+
+        if ((value & 0xff) == 0)
+        {
+          value >>= 8;
+          count += 8;
+        }
+
+        if ((value & 0xf) == 0)
+        {
+          value >>= 4;
+          count += 4;
+        }
+
+        if ((value & 0x3) == 0)
+        {
+          value >>= 2;
+          count += 2;
+        }
+
+        count -= value & 0x1;
+      }
   }
 
   //***************************************************************************
   /// Find the position of the first set bit.
   /// Starts from LSB.
   //***************************************************************************
-  uint_least8_t first_set_bit_position(uint32_t value)
+  template <typename T>
+  uint_least8_t first_set_bit_position(T value)
   {
-      return __private_binary__::bit_position_lookup[(first_set_bit(value) * 0x077CB531U) >> 27];
-  }
-
-  //***************************************************************************
-  /// Find the value of the first clear bit.
-  /// Starts from LSB.
-  //***************************************************************************
-  uint32_t first_clear_bit(uint32_t value)
-  {
-      value = ~value;
-      return (uint32_t)(value & -value);
+      return count_trailing_zeros(value);
   }
 
   //***************************************************************************
   /// Find the position of the first clear bit.
   /// Starts from LSB.
   //***************************************************************************
-  uint_least8_t first_clear_bit_position(uint32_t value)
+  template <typename T>
+  uint_least8_t first_clear_bit_position(T value)
   {
       value ~= value;
-      return __private_binary__::bit_position_lookup[((uint32_t)((value & -value) * 0x077CB531U)) >> 27];
+      return count_trailing_zeros(value);
   }
 
   //***************************************************************************
   /// Find the position of the first bit that is clear or set.
   /// Starts from LSB.
   //***************************************************************************
-  uint_least8_t first_bit(bool state, uint32_t value)
+  template <typename T>
+  uint_least8_t first_bit_position(bool state, T value)
   {
       if (!state)
       {
         value ~= value;
       }
 
-      return (uint32_t)(value & -value);
-  }
-
-  //***************************************************************************
-  /// Find the position of the first bit that is clear or set.
-  /// Starts from LSB.
-  //***************************************************************************
-  uint_least8_t first_bit_position(bool state, uint32_t value)
-  {
-      if (!state)
-      {
-        value ~= value;
-      }
-
-      return __private_binary__::bit_position_lookup[((uint32_t)((value & -value) * 0x077CB531U)) >> 27];
+      return count_trailing_zeros(value);
   }
 
   //***************************************************************************
