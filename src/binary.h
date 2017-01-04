@@ -564,13 +564,12 @@ namespace etl
     return signed_value;
   }
 
+#if ETL_8BIT_SUPPORT
   //***************************************************************************
-  /// Count trailing zeros.
+  /// Count trailing zeros. bit.
   /// Uses a binary search.
   //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint32_t>::value, uint_least8_t>::type
-  count_trailing_zeros(uint32_t value)
+  uint_least8_t count_trailing_zeros(uint8_t value)
   {
       uint_least8_t count;
 
@@ -582,19 +581,146 @@ namespace etl
       {
         count = 1;
 
-        if ((value & 0xffff) == 0)
+        if ((value & 0xF) == 0)
         {
-          value >>= 16;
-          count += 16;
+          value >>= 4;
+          count += 4;
         }
 
-        if ((value & 0xff) == 0)
+        if ((value & 0x3) == 0)
+        {
+          value >>= 2;
+          count += 2;
+        }
+
+        count -= value & 0x1;
+      }
+
+      return count;
+  }
+#endif
+
+  //***************************************************************************
+  /// Count trailing zeros. 16bit.
+  /// Uses a binary search.
+  //***************************************************************************
+  uint_least8_t count_trailing_zeros(uint16_t value)
+  {
+      uint_least8_t count;
+
+      if (value & 0x1)
+      {
+        count = 0;
+      }
+      else
+      {
+        count = 1;
+
+        if ((value & 0xFF) == 0)
         {
           value >>= 8;
           count += 8;
         }
 
-        if ((value & 0xf) == 0)
+        if ((value & 0xF) == 0)
+        {
+          value >>= 4;
+          count += 4;
+        }
+
+        if ((value & 0x3) == 0)
+        {
+          value >>= 2;
+          count += 2;
+        }
+
+        count -= value & 0x1;
+      }
+
+      return count;
+  }
+
+  //***************************************************************************
+  /// Count trailing zeros. 32bit.
+  /// Uses a binary search.
+  //***************************************************************************
+  uint_least8_t count_trailing_zeros(uint32_t value)
+  {
+      uint_least8_t count;
+
+      if (value & 0x1)
+      {
+        count = 0;
+      }
+      else
+      {
+        count = 1;
+
+        if ((value & 0xFFFF) == 0)
+        {
+          value >>= 16;
+          count += 16;
+        }
+
+        if ((value & 0xFF) == 0)
+        {
+          value >>= 8;
+          count += 8;
+        }
+
+        if ((value & 0xF) == 0)
+        {
+          value >>= 4;
+          count += 4;
+        }
+
+        if ((value & 0x3) == 0)
+        {
+          value >>= 2;
+          count += 2;
+        }
+
+        count -= value & 0x1;
+      }
+
+      return count;
+  }
+
+  //***************************************************************************
+  /// Count trailing zeros. 64bit.
+  /// Uses a binary search.
+  //***************************************************************************
+  uint_least8_t count_trailing_zeros(uint64_t value)
+  {
+      uint_least8_t count;
+
+      if (value & 0x1)
+      {
+        count = 0;
+      }
+      else
+      {
+        count = 1;
+
+        if ((value & 0xFFFFFFFF) == 0)
+        {
+          value >>= 32;
+          count += 32;
+        }
+
+        if ((value & 0xFFFF) == 0)
+        {
+          value >>= 16;
+          count += 16;
+        }
+
+        if ((value & 0xFF) == 0)
+        {
+          value >>= 8;
+          count += 8;
+        }
+
+        if ((value & 0xF) == 0)
         {
           value >>= 4;
           count += 4;
