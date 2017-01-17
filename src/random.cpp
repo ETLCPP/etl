@@ -56,10 +56,12 @@ namespace etl
 {
   //***************************************************************************
   /// Default constructor.
+  /// Attempts to come up with a reasonable non-zero seed.
   //***************************************************************************
   random::random()
   {
-    // An attempt to come up with a reasonable non-zero seed.
+    // An attempt to come up with a reasonable non-zero seed, 
+    // based on the address of the instance.
     uintptr_t n = reinterpret_cast<uintptr_t>(this);
     uint32_t seed = static_cast<uint32_t>(n);
     initialise(seed);
@@ -67,6 +69,7 @@ namespace etl
 
   //***************************************************************************
   /// Constructor with seed value.
+  ///\param seed The new seed value.
   //***************************************************************************
   random::random(uint32_t seed)
   {
@@ -100,6 +103,7 @@ namespace etl
 
   //***************************************************************************
   /// Initialises the sequence with a new seed value.
+  ///\param seed The new seed value.
   //***************************************************************************
   void random::initialize(uint32_t seed)
   {
