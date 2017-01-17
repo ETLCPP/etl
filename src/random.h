@@ -47,7 +47,7 @@ namespace etl
       random();
       random(uint32_t seed);
       void initialise(uint32_t seed);
-      uint32_t operator()() const;
+      uint32_t operator()();
 
     private:
 

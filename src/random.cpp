@@ -40,8 +40,8 @@ namespace etl
   {
     // An attempt to come up with a reasonable non-zero seed,
     // based on the address of the instance.
-    uintptr_t n = reinterpret_cast<uintptr_t>(this);
-    uint32_t seed = static_cast<uint32_t>(n);
+    uintptr_t n    = reinterpret_cast<uintptr_t>(this);
+    uint32_t  seed = static_cast<uint32_t>(n);
     initialise(seed);
   }
 
@@ -58,7 +58,7 @@ namespace etl
   /// Initialises the sequence with a new seed value.
   ///\param seed The new seed value.
   //***************************************************************************
-  void random::initialize(uint32_t seed)
+  void random::initialise(uint32_t seed)
   {
     state[0] = seed;
     state[1] = seed + 3;
@@ -69,17 +69,17 @@ namespace etl
   //***************************************************************************
   /// Get the next random number.
   //***************************************************************************
-  uint32_t random::operator()() constant
+  uint32_t random::operator()()
   {
-	  uint32_t n = state[3];
-	  n ^= n << 11;
-	  n ^= n >> 8;
-	  state[3] = state[2];
+    uint32_t n = state[3];
+    n ^= n << 11;
+    n ^= n >> 8;
+    state[3] = state[2];
     state[2] = state[1];
     state[1] = state[0];
-	  n ^= state[0];
-	  n ^= state[0] >> 19;
-	  state[0] = n;
+    n ^= state[0];
+    n ^= state[0] >> 19;
+    state[0] = n;
 
     return n;
   }
