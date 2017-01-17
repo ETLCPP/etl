@@ -47,14 +47,11 @@ namespace etl
       random();
       random(uint32_t seed);
       void initialise(uint32_t seed);
-      uint32_t get() const;
+      uint32_t operator()() const;
 
-  private:
+    private:
 
-    void twist();
-
-    uint32_t  mt[N];
-    uint16_t  index;
+      uint32_t state[4];
   };
 }
 

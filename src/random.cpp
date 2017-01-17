@@ -30,28 +30,6 @@ SOFTWARE.
 
 #include "random.h"
 
-namespace
-{
-  enum
-  {
-      W = 32
-      N = 624,
-      M = 397,
-      R = 31,
-      A = 0x9908B0DF,
-      F = 1812433253,
-      U = 11,
-      S = 7,
-      B = 0x9D2C5680,
-      T = 15,
-      C = 0xEFC60000,
-      L = 18,
-
-      MASK_LOWER = (1ull << R) - 1,
-      MASK_UPPER = (1ull << R)
-  };
-}
-
 namespace etl
 {
   //***************************************************************************
@@ -60,7 +38,7 @@ namespace etl
   //***************************************************************************
   random::random()
   {
-    // An attempt to come up with a reasonable non-zero seed, 
+    // An attempt to come up with a reasonable non-zero seed,
     // based on the address of the instance.
     uintptr_t n = reinterpret_cast<uintptr_t>(this);
     uint32_t seed = static_cast<uint32_t>(n);
@@ -77,67 +55,32 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Get the next random number.
-  //***************************************************************************
-  uint32_t random::get() const
-  {
-    uint32_t n;
-    uint16_t i = index;
-
-    if (index >= N)
-    {
-      twist();
-      i = index;
-    }
-
-    n = mt[i];
-    index = i + 1;
-
-    n ^= (mt[i] >> U);
-    n ^= (n << S) & B;
-    n ^= (n << T) & C;
-    n ^= (n >> L);
-
-    return n;
-  }
-
-  //***************************************************************************
   /// Initialises the sequence with a new seed value.
   ///\param seed The new seed value.
   //***************************************************************************
   void random::initialize(uint32_t seed)
   {
-    uint32_t i;
-
-    mt[0] = seed;
-
-    for (i = 1; i < N; i++)
-    {
-      mt[i] = (F * (mt[i - 1] ^ (mt[i - 1] >> (W - 2))) + i);
-    }
-
-    index = N;
+    state[0] = seed;
+    state[1] = seed + 3;
+    state[2] = seed + 5;
+    state[3] = seed + 7;
   }
 
   //***************************************************************************
-  /// Creates the next iteration.
+  /// Get the next random number.
   //***************************************************************************
-  void random::twist()
+  uint32_t random::operator()() constant
   {
-    for (uint32_t i = 0; i < N; i++ )
-    {
-      uint32_t x = (mt[i] & MASK_UPPER) + (mt[(i + 1) % N] & MASK_LOWER);
+	  uint32_t n = state[3];
+	  n ^= n << 11;
+	  n ^= n >> 8;
+	  state[3] = state[2];
+    state[2] = state[1];
+    state[1] = state[0];
+	  n ^= state[0];
+	  n ^= state[0] >> 19;
+	  state[0] = n;
 
-      uint32_t xA = x >> 1;
-
-      if (x & 0x01)
-      {
-        xA ^= A;
-      }
-
-      mt[i] = mt[(i + M) % N] ^ xA;
-    }
-
-    index = 0;
+    return n;
   }
 }
