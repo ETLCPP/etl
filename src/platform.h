@@ -72,8 +72,8 @@ SOFTWARE.
      defined(ETL_COMPILER_TI_MSP430) || \
      defined(ETL_COMPILER_IAR) || \
      (defined(ETL_COMPILER_GCC) && (__cplusplus < 201103L))
-  #define ETL_ETL_NO_NULLPTR_SUPPORT
-  #define ETL_ETL_NO_LARGE_CHAR_SUPPORT
+  #define ETL_NO_NULLPTR_SUPPORT
+  #define ETL_NO_LARGE_CHAR_SUPPORT
 #endif
 
 // Check to see if the compiler supports static_assert.
