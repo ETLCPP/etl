@@ -39,12 +39,12 @@ SOFTWARE.
 /// those defined as constants.
 /// <b>Declaring the enumeration.</b>
 ///\code
-///   DECLARE_USER_TYPE(CompassDirection, int)
-///   USER_TYPE(North, 0)
-///   USER_TYPE(South, 180)
-///   USER_TYPE(East,  90)
-///   USER_TYPE(West,  270)
-///   END_USER_TYPE
+///   ETL_DECLARE_USER_TYPE(CompassDirection, int)
+///   ETL_USER_TYPE(North, 0)
+///   ETL_USER_TYPE(South, 180)
+///   ETL_USER_TYPE(East,  90)
+///   ETL_USER_TYPE(West,  270)
+///   ETL_END_USER_TYPE(CompassDirection)
 ///\endcode
 /// <b>Using the enumeration.</b>
 ///\code
@@ -55,78 +55,71 @@ SOFTWARE.
 /// int value = int(direction);          // Explicit conversion to 'int'.
 /// int value = direction.get();
 ///
-/// const int& value = direction.get();  // Bind to internal value.
+/// int& value = direction.get();        // Bind to internal value.
+/// const int& value = direction.get();
 ///
 /// direction = CompassDirection(value); // Explicit conversion from 'int'.
 ///
 /// direction = CompassDirection(3);     // Explicit conversion from a value.
 ///
 /// ++direction;                         // Manipulate the value;
-/// direction -= 20;
+/// direction -= CompassDirection(20);
 ///
 /// direction = value;                   // Implicit conversion from 'int'. **** Compilation error ****
 ///
-/// std::cout << "Direction = " << direction.c_str(); // Prints "Direction = North"
 ///\endcode
-/// If a conversion to a string is not required then the 'ENUM_TYPE' declaration may be omitted.
-/// In that case the c_str() function will return a "?". This will also be the case for any
-/// enumeration value that does not have an ENUM_TYPE entry.
 ///\ingroup utilities
 
 //*****************************************************************************
 // The declaration of the structure.
 //*****************************************************************************
-#define DECLARE_USER_TYPE(TypeName, ValueType) \
+#define ETL_DECLARE_USER_TYPE(TypeName, ValueType) \
   struct TypeName \
   { \
+    typedef ValueType value_type; \
+    TypeName() {} \
+    TypeName(const TypeName &other) : value(other.value) {} \
+    TypeName& operator=(const TypeName &other) { value = other.value; return *this; } \
+    explicit TypeName(ValueType value) : value(value) {} \
+    explicit operator ValueType() const { return value; } \
+    ValueType& get() { return value; } \
+    const ValueType& get() const { return value; } \
+    TypeName& operator ++() { ++value; return *this; } \
+    TypeName operator ++(int) { TypeName temp(*this); TypeName::operator ++(); return temp; } \
+    TypeName& operator --() { --value; return *this; } \
+    TypeName operator --(int) { TypeName temp(*this); TypeName::operator --(); return temp; } \
+    TypeName& operator +=(const TypeName& rhs) { value += rhs.value; return *this; } \
+    TypeName& operator -=(const TypeName& rhs) { value -= rhs.value; return *this; } \
+    TypeName& operator *=(const TypeName& rhs) { value *= rhs.value; return *this; } \
+    TypeName& operator /=(const TypeName& rhs) { value /= rhs.value; return *this; } \
+    TypeName& operator %=(const TypeName& rhs) { value %= rhs.value; return *this; } \
+    TypeName& operator &=(const TypeName& rhs) { value &= rhs.value; return *this; } \
+    TypeName& operator &=(ValueType mask) { value &= mask; return *this; } \
+    TypeName& operator |=(const TypeName& rhs) { value |= rhs.value; return *this; } \
+    TypeName& operator |=(ValueType mask) { value &= mask; return *this; } \
+    TypeName& operator ^=(const TypeName& rhs) { value ^= rhs.value; return *this; } \
+    TypeName& operator ^=(ValueType mask) { value ^= mask; return *this; } \
+    TypeName& operator <<=(ValueType distance) { value <<= distance; return *this; } \
+    TypeName& operator >>=(ValueType distance) { value >>= distance; return *this; } \
+  private: \
+    ValueType value; \
+  public: \
     enum enum_type \
-    { \
+    {
 
 //*****************************************************************************
 // The predefined constants.
 //*****************************************************************************
-#define USER_TYPE(enum_name, value) \
+#define ETL_USER_TYPE(enum_name, value) \
       enum_name = value,
 
 //*****************************************************************************
 // The final section of the structure.
 //*****************************************************************************
-#define END_USER_TYPE \
+#define ETL_END_USER_TYPE(TypeName) \
     }; \
+    TypeName(enum_type value) : value(static_cast<value_type>(value)) {} \
+  };
 
-  typedef ValueType value_type; \
-  TypeName() {} \
-  TypeName(const TypeName &other) : value(other.value) {} \
-  TypeName(enum_type value) : value(value) {} \
-  TypeName& operator=(const TypeName &other) {value = other.value; return *this;} \
-  explicit TypeName(value_type value) : value(static_cast<enum_type>(value)) {} \
-  explicit operator value_type() const {return static_cast<value_type>(value);} \
-  value_type& get() {return static_cast<value_type>(value);} \
-  const value_type& get() const {return static_cast<value_type>(value);} \
-  TypeName& operator ++() { ++value; return *this; } \
-  TypeName operator ++(int) { TypeName temp(*this); TypeName::operator ++(); return temp; } \
-  TypeName& operator --() { --value; return *this; }
-  TypeName operator --(int) { TypeName temp(*this); TypeName::operator --(); return temp; } \
-  TypeName& operator +=(value_type rhs) { value += rhs; return *this; } \
-  TypeName& operator +=(const TypeName& rhs) { value += rhs.value; return *this; } \
-  TypeName& operator -=(value_type rhs) { value -= rhs; return *this; } \
-  TypeName& operator -=(const TypeName& rhs) { value -= rhs.value; return *this; } \
-  TypeName& operator *=(value_type rhs) { value *= rhs; return *this; } \
-  TypeName& operator *=(const TypeName& rhs) { value *= rhs.value; return *this; } \
-  TypeName& operator /=(value_type rhs) { value /= rhs; return *this; } \
-  TypeName& operator /=(const TypeName& rhs) { value /= rhs.value; return *this; } \
-  TypeName& operator %=(value_type rhs) { value %= rhs; return *this; } \
-  TypeName& operator %=(const TypeName& rhs) { value %= rhs.value; return *this; } \
-  TypeName& operator &=(value_type rhs) { value &= rhs; return *this; } \
-  TypeName& operator &=(const TypeName& rhs) { value &= rhs.value; return *this; } \
-  TypeName& operator |=(value_type rhs) { value |= rhs; return *this; } \
-  TypeName& operator |=(const TypeName& rhs) { value |= rhs.value; return *this; } \
-  TypeName& operator ^=(value_type rhs) { value ^= rhs; return *this; } \
-  TypeName& operator ^=(const TypeName& rhs) { value ^= rhs.value; return *this; } \
-  TypeName& operator <<=(value_type rhs) { value <<= rhs; return *this; } \
-  TypeName& operator >>=(value_type rhs) { value >>= rhs; return *this; } \
-private: \
-  value_type value; \
-};
 
 #endif
