@@ -48,12 +48,12 @@ SOFTWARE.
 ///     West  = 270
 ///   };
 ///
-///   DECLARE_ENUM_TYPE(CompassDirection, int)
-///   ENUM_TYPE(North, "North")
-///   ENUM_TYPE(South, "South")
-///   ENUM_TYPE(East,  "East")
-///   ENUM_TYPE(West,  "West")
-///   END_ENUM_TYPE
+///   ETL_DECLARE_ENUM_TYPE(CompassDirection, int)
+///   ETL_ENUM_TYPE(North, "North")
+///   ETL_ENUM_TYPE(South, "South")
+///   ETL_ENUM_TYPE(East,  "East")
+///   ETL_ENUM_TYPE(West,  "West")
+///   ETL_END_ENUM_TYPE
 /// };
 ///\endcode
 /// <b>Using the enumeration.</b>
@@ -80,7 +80,7 @@ SOFTWARE.
 //*****************************************************************************
 // The declaration of the member functions and the first section of the 'c_str' function.
 //*****************************************************************************
-#define DECLARE_ENUM_TYPE(TypeName, ValueType) \
+#define ETL_DECLARE_ENUM_TYPE(TypeName, ValueType) \
   typedef ValueType value_type; \
 	TypeName() {} \
 	TypeName(const TypeName &other) : value(other.value) {} \
@@ -98,14 +98,14 @@ SOFTWARE.
 //*****************************************************************************
 // A case in the 'c_str' function's switch statement.
 //*****************************************************************************
-#define ENUM_TYPE(value, name) \
+#define ETL_ENUM_TYPE(value, name) \
       case value: \
         return name; \
 
 //*****************************************************************************
 // The final section of the 'c_str' function and the value declaration.
 //*****************************************************************************
-#define END_ENUM_TYPE \
+#define ETL_END_ENUM_TYPE \
       default: \
         return "?"; \
     } \
