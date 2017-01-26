@@ -755,7 +755,7 @@ namespace etl
   template <typename T>
   uint_least8_t first_clear_bit_position(T value)
   {
-      value ~= value;
+      value = ~value;
       return count_trailing_zeros(value);
   }
 
@@ -768,7 +768,7 @@ namespace etl
   {
       if (!state)
       {
-        value ~= value;
+        value = ~value;
       }
 
       return count_trailing_zeros(value);
