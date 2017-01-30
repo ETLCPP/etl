@@ -60,10 +60,11 @@ namespace etl
   //***************************************************************************
   void random::initialise(uint32_t seed)
   {
-    state[0] = seed;
-    state[1] = seed + 3;
-    state[2] = seed + 5;
-    state[3] = seed + 7;
+    // Add the first four primes to ensure that the seed isn't zero.
+    state[0] = seed + 3;
+    state[1] = seed + 5;
+    state[2] = seed + 7;
+    state[3] = seed + 11;
   }
 
   //***************************************************************************

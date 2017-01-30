@@ -36,9 +36,9 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  /// A 32 bit Mersenne Twister random number generator.
-  /// Based on C/C++ code on Wikipedia.
-  /// https://en.wikipedia.org/wiki/Mersenne_Twister#C.2FC.2B.2B_implementation
+  /// A 32 bit random number generator.
+  /// Uses a 128 bit XOR shift algorithm.
+  /// https://en.wikipedia.org/wiki/Xorshift
   //***************************************************************************
   class random
   {
