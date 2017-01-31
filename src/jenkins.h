@@ -45,16 +45,16 @@ SOFTWARE.
 #pragma diag_suppress 1300
 #endif
 
-///\defgroup jenkins Jenkins 32 & 64 bit hash calculations
+///\defgroup jenkins Jenkins 32 hash calculation
 ///\ingroup maths
 
 namespace etl
 {
   //***************************************************************************
-  /// Jenkins32 policy.
+  /// Jenkins policy.
   /// Calculates 32 bit Jenkins hash.
   //***************************************************************************
-  struct jenkins32_policy
+  struct jenkins_policy
   {
     typedef uint32_t value_type;
 
@@ -89,56 +89,17 @@ namespace etl
     bool is_finalised;
   };
 
-  //***************************************************************************
-  /// Jenkins64 policy.
-  /// Calculates 32 bit Jenkins hash.
-  //***************************************************************************
-  struct jenkins64_policy
-  {
-    typedef uint64_t value_type;
-
-    inline uint64_t initial()
-    {
-      is_finalised = false;
-
-      return 0;
-    }
-
-    inline uint64_t add(value_type hash, uint8_t value) const
-    {
-      ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised));
-
-      hash += value;
-      hash += (hash << 10);
-      hash ^= (hash >> 6);
-
-      return hash;
-    }
-
-    inline uint64_t final(value_type hash)
-    {
-      hash += (hash << 3);
-      hash ^= (hash >> 11);
-      hash += (hash << 15);
-      is_finalised = true;
-
-      return hash;
-    }
-
-    bool is_finalised;
-  };
-
   //*************************************************************************
-  /// Jenkins32
+  /// jenkins
   //*************************************************************************
-  class jenkins32 : public etl::frame_check_sequence<etl::jenkins32_policy>
+  class jenkins : public etl::frame_check_sequence<etl::jenkins_policy>
   {
   public:
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    jenkins32()
+    jenkins()
     {
       this->reset();
     }
@@ -149,35 +110,7 @@ namespace etl
     /// \param end   End of the range.
     //*************************************************************************
     template<typename TIterator>
-    jenkins32(TIterator begin, const TIterator end)
-    {
-      this->reset();
-      this->add(begin, end);
-    }
-  };
-
-  //*************************************************************************
-  /// Jenkins64
-  //*************************************************************************
-  class jenkins64 : public etl::frame_check_sequence<etl::jenkins64_policy>
-  {
-  public:
-
-    //*************************************************************************
-    /// Default constructor.
-    //*************************************************************************
-    jenkins64()
-    {
-      this->reset();
-    }
-
-    //*************************************************************************
-    /// Constructor from range.
-    /// \param begin Start of the range.
-    /// \param end   End of the range.
-    //*************************************************************************
-    template<typename TIterator>
-    jenkins64(TIterator begin, const TIterator end)
+    jenkins(TIterator begin, const TIterator end)
     {
       this->reset();
       this->add(begin, end);

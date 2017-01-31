@@ -74,9 +74,9 @@ namespace etl
     //*************************************************************************
     /// The data node element in the forward_list.
     //*************************************************************************
-    struct Data_Node : public Node
+    struct data_node_t : public node_t
     {
-      explicit Data_Node(parameter_t value)
+      explicit data_node_t(parameter_t value)
         : value(value)
       {}
 
@@ -99,7 +99,7 @@ namespace etl
       {
       }
 
-      iterator(Node& node)
+      iterator(node_t& node)
         : p_node(&node)
       {
       }
@@ -170,7 +170,7 @@ namespace etl
 
     private:
 
-      Node* p_node;
+      node_t* p_node;
     };
 
     //*************************************************************************
@@ -187,12 +187,12 @@ namespace etl
       {
       }
 
-      const_iterator(Node& node)
+      const_iterator(node_t& node)
         : p_node(&node)
       {
       }
 
-      const_iterator(const Node& node)
+      const_iterator(const node_t& node)
         : p_node(&node)
       {
       }
@@ -253,10 +253,10 @@ namespace etl
 
     private:
 
-      const Node* p_node;
+      const node_t* p_node;
     };
 
-		typedef typename std::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename std::iterator_traits<iterator>::difference_type difference_type;
 
     //*************************************************************************
     /// Gets the beginning of the forward_list.
@@ -279,7 +279,7 @@ namespace etl
     //*************************************************************************
     iterator before_begin()
     {
-      return iterator(static_cast<Data_Node&>(start_node));
+      return iterator(static_cast<data_node_t&>(start_node));
     }
 
     //*************************************************************************
@@ -287,7 +287,7 @@ namespace etl
     //*************************************************************************
     const_iterator before_begin() const
     {
-      return const_iterator(static_cast<const Data_Node&>(start_node));
+      return const_iterator(static_cast<const data_node_t&>(start_node));
     }
 
     //*************************************************************************
@@ -348,7 +348,7 @@ namespace etl
 
     //*************************************************************************
     /// Assigns a range of values to the forward_list.
-		/// If asserts or exceptions are enabled throws etl::forward_list_full if the forward_list does not have enough free space.
+    /// If asserts or exceptions are enabled throws etl::forward_list_full if the forward_list does not have enough free space.
     /// If ETL_THROW_EXCEPTIONS & _DEBUG are defined throws forward_list_iterator if the iterators are reversed.
     //*************************************************************************
     template <typename TIterator>
@@ -361,18 +361,17 @@ namespace etl
 
       initialise();
 
-      Node* p_last_node = &start_node;
+      node_t* p_last_node = &start_node;
 
       // Add all of the elements.
       while (first != last)
       {
         ETL_ASSERT(!full(), ETL_ERROR(forward_list_iterator));
 
-        Data_Node& data_node = allocate_data_node(*first++);
+        data_node_t& data_node = allocate_data_node(*first++);
         join(p_last_node, &data_node);
         data_node.next = nullptr;
         p_last_node = &data_node;
-        ++current_size;
       }
     }
 
@@ -385,16 +384,15 @@ namespace etl
 
       initialise();
 
-      Node* p_last_node = &start_node;
-        
+      node_t* p_last_node = &start_node;
+
       // Add all of the elements.
-      while (current_size < n)
+      while (size() < n)
       {
-        Data_Node& data_node = allocate_data_node(value);
+        data_node_t& data_node = allocate_data_node(value);
         join(p_last_node, &data_node);
         data_node.next = nullptr;
         p_last_node = &data_node;
-        ++current_size;
       }
     }
 
@@ -403,11 +401,7 @@ namespace etl
     //*************************************************************************
     void push_front()
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
-#endif
-      Data_Node& data_node = allocate_data_node(T());
-      insert_node_after(start_node, data_node);
+      push_front(T());
     }
 
     //*************************************************************************
@@ -418,7 +412,8 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 #endif
-      Data_Node& data_node = allocate_data_node(value);
+
+      data_node_t& data_node = allocate_data_node(value);
       insert_node_after(start_node, data_node);
     }
 
@@ -485,7 +480,7 @@ namespace etl
     {
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 
-      Data_Node& data_node = allocate_data_node(value);
+      data_node_t& data_node = allocate_data_node(value);
       insert_node_after(*position.p_node, data_node);
 
       return iterator(data_node);
@@ -501,7 +496,7 @@ namespace etl
       for (size_t i = 0; !full() && (i < n); ++i)
       {
         // Set up the next free node.
-        Data_Node& data_node = allocate_data_node(value);
+        data_node_t& data_node = allocate_data_node(value);
         insert_node_after(*position.p_node, data_node);
       }
     }
@@ -514,13 +509,13 @@ namespace etl
     {
 #if defined(_DEBUG) || defined(DEBUG)
       difference_type count = std::distance(first, last);
-      ETL_ASSERT((count + current_size) <= MAX_SIZE, ETL_ERROR(forward_list_full));
+      ETL_ASSERT((count + size()) <= MAX_SIZE, ETL_ERROR(forward_list_full));
 #endif
 
       while (first != last)
       {
         // Set up the next free node.
-        Data_Node& data_node = allocate_data_node(*first++);
+        data_node_t& data_node = allocate_data_node(*first++);
         insert_node_after(*position.p_node, data_node);
         ++position;
       }
@@ -532,10 +527,15 @@ namespace etl
     iterator erase_after(iterator position)
     {
       iterator next(position);
-      ++next;
-      ++next;
-
-      remove_node_after(*position.p_node);
+      if (next != end())
+      {
+        ++next;
+        if (next != end())
+        {
+          ++next;
+          remove_node_after(*position.p_node);
+        }
+      }
 
       return next;
     }
@@ -545,33 +545,37 @@ namespace etl
     //*************************************************************************
     iterator erase_after(iterator first, iterator last)
     {
-      Node* p_first = first.p_node;
-      Node* p_last  = last.p_node;
-      Node* p_next  = p_first->next;
-
-      // Join the ends.
-      join(p_first, p_last);
-
-      p_first = p_next;
-
-      // Erase the ones in between.
-      while (p_first != p_last)
+      if (first != end() && (first != last))
       {
-        // One less.
-        --current_size;
+        node_t* p_first = first.p_node;
+        node_t* p_last = last.p_node;
+        node_t* p_next = p_first->next;
 
-        p_next = p_first->next;                               // Remember the next node.
-        destroy_data_node(static_cast<Data_Node&>(*p_first)); // Destroy the pool object.
-        p_first = p_next;                                     // Move to the next node.
-      }
+        // Join the ends.
+        join(p_first, p_last);
 
-      if (p_next == nullptr)
-      {
-        return end();
+        p_first = p_next;
+
+        // Erase the ones in between.
+        while (p_first != p_last)
+        {
+          p_next = p_first->next;                               // Remember the next node.
+          destroy_data_node(static_cast<data_node_t&>(*p_first)); // Destroy the pool object.
+          p_first = p_next;                                     // Move to the next node.
+        }
+
+        if (p_next == nullptr)
+        {
+          return end();
+        }
+        else
+        {
+          return iterator(*p_last);
+        }
       }
       else
       {
-        return iterator(*p_last);
+        return end();
       }
     }
 
@@ -580,15 +584,15 @@ namespace etl
     //*************************************************************************
     void move_after(const_iterator from_before, const_iterator to_before)
     {
-      if (from_before == to_before) // Can't more to after yourself!
+      if (from_before == to_before) // Can't move to after yourself!
       {
         return;
       }
 
-      Node* p_from_before = const_cast<Node*>(from_before.p_node); // We're not changing the value, just it's position.
-      Node* p_to_before   = const_cast<Node*>(to_before.p_node);   // We're not changing the value, just it's position.
+      node_t* p_from_before = const_cast<node_t*>(from_before.p_node); // We're not changing the value, just it's position.
+      node_t* p_to_before   = const_cast<node_t*>(to_before.p_node);   // We're not changing the value, just it's position.
 
-      Node* p_from = p_from_before->next;
+      node_t* p_from = p_from_before->next;
 
       // Disconnect from the list.
       join(p_from_before, p_from->next);
@@ -617,11 +621,11 @@ namespace etl
       }
 #endif
 
-      Node* p_first_before = const_cast<Node*>(first_before.p_node); // We're not changing the value, just it's position.
-      Node* p_last         = const_cast<Node*>(last.p_node);         // We're not changing the value, just it's position.
-      Node* p_to_before    = const_cast<Node*>(to_before.p_node);    // We're not changing the value, just it's position.
-      Node* p_first        = p_first_before->next;
-      Node* p_final        = p_first_before;
+      node_t* p_first_before = const_cast<node_t*>(first_before.p_node); // We're not changing the value, just it's position.
+      node_t* p_last         = const_cast<node_t*>(last.p_node);         // We're not changing the value, just it's position.
+      node_t* p_to_before    = const_cast<node_t*>(to_before.p_node);    // We're not changing the value, just it's position.
+      node_t* p_first        = p_first_before->next;
+      node_t* p_final        = p_first_before;
 
       // Find the last node that will be moved.
       while (p_final->next != p_last)
@@ -658,8 +662,8 @@ namespace etl
         return;
       }
 
-      Node* last    = &get_head();
-      Node* current = last->next;
+      node_t* last    = &get_head();
+      node_t* current = last->next;
 
       while (current != nullptr)
       {
@@ -707,7 +711,7 @@ namespace etl
 
       if (is_trivial_list())
       {
-	      return;
+        return;
       }
 
       while (true)
@@ -746,32 +750,32 @@ namespace etl
             // Decide whether the next node of merge comes from left or right.
             if (left_size == 0)
             {
-		          // Left is empty. The node must come from right.
-		          p_node = p_right;
+              // Left is empty. The node must come from right.
+              p_node = p_right;
               ++p_right;
               --right_size;
-		        }
+            }
             else if (right_size == 0 || p_right == end())
             {
-		          // Right is empty. The node must come from left.
-		          p_node = p_left;
+              // Right is empty. The node must come from left.
+              p_node = p_left;
               ++p_left;
               --left_size;
-		        }
+            }
             else if (compare(*p_left, *p_right))
             {
-		          // First node of left is lower or same. The node must come from left.
-		          p_node = p_left;
+              // First node of left is lower or same. The node must come from left.
+              p_node = p_left;
               ++p_left;
               --left_size;
-		        }
+            }
             else
             {
-		          // First node of right is lower. The node must come from right.
-		          p_node  = p_right;
+              // First node of right is lower. The node must come from right.
+              p_node  = p_right;
               ++p_right;
               --right_size;
-		        }
+            }
 
             // Add the next node to the merged head.
             if (p_head == before_begin())
@@ -867,9 +871,8 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    iforward_list(etl::ipool<Data_Node>& node_pool, size_t max_size_)
-      : forward_list_base(max_size_),
-        p_node_pool(&node_pool)
+    iforward_list(etl::ipool& node_pool, size_t max_size_)
+      : forward_list_base(node_pool, max_size_)
     {
     }
 
@@ -880,57 +883,62 @@ namespace etl
     {
       if (!empty())
       {
-        p_node_pool->release_all();
+        node_t* p_first = start_node.next;
+        node_t* p_next;
+
+        // Erase the ones in between.
+        while (p_first != nullptr)
+        {
+          p_next = p_first->next;                                 // Remember the next node.
+          destroy_data_node(static_cast<data_node_t&>(*p_first)); // Destroy the pool object.
+          p_first = p_next;                                       // Move to the next node.
+        }
       }
 
-      current_size = 0;
       start_node.next = nullptr;
     }
 
   private:
 
-    /// The pool of data nodes used in the list.
-    etl::ipool<Data_Node>* p_node_pool;
-
     //*************************************************************************
-    /// Downcast a Node* to a Data_Node*
+    /// Downcast a node_t* to a data_node_t*
     //*************************************************************************
-    static Data_Node* data_cast(Node* p_node)
+    static data_node_t* data_cast(node_t* p_node)
     {
-      return static_cast<Data_Node*>(p_node);
+      return static_cast<data_node_t*>(p_node);
     }
 
     //*************************************************************************
-    /// Downcast a Node& to a Data_Node&
+    /// Downcast a node_t& to a data_node_t&
     //*************************************************************************
-    static Data_Node& data_cast(Node& node)
+    static data_node_t& data_cast(node_t& node)
     {
-      return static_cast<Data_Node&>(node);
+      return static_cast<data_node_t&>(node);
     }
 
     //*************************************************************************
-    /// Downcast a const Node* to a const Data_Node*
+    /// Downcast a const node_t* to a const data_node_t*
     //*************************************************************************
-    static const Data_Node* data_cast(const Node* p_node)
+    static const data_node_t* data_cast(const node_t* p_node)
     {
-      return static_cast<const Data_Node*>(p_node);
+      return static_cast<const data_node_t*>(p_node);
     }
 
     //*************************************************************************
-    /// Downcast a const Node& to a const Data_Node&
+    /// Downcast a const node_t& to a const data_node_t&
     //*************************************************************************
-    static const Data_Node& data_cast(const Node& node)
+    static const data_node_t& data_cast(const node_t& node)
     {
-      return static_cast<const Data_Node&>(node);
+      return static_cast<const data_node_t&>(node);
     }
 
     //*************************************************************************
     /// Remove a node.
     //*************************************************************************
-    void remove_node_after(Node& node)
+    void remove_node_after(node_t& node)
     {
       // The node to erase.
-      Node* p_node = node.next;
+      node_t* p_node = node.next;
 
       if (p_node != nullptr)
       {
@@ -938,27 +946,30 @@ namespace etl
         join(&node, p_node->next);
 
         // Destroy the pool object.
-        destroy_data_node(static_cast<Data_Node&>(*p_node));
-
-        // One less.
-        --current_size;
+        destroy_data_node(static_cast<data_node_t&>(*p_node));
       }
     }
 
     //*************************************************************************
-    /// Allocate a Data_Node.
+    /// Allocate a data_node_t.
     //*************************************************************************
-    Data_Node& allocate_data_node(parameter_t value) const
+    data_node_t& allocate_data_node(parameter_t value)
     {
-      return *(p_node_pool->allocate(Data_Node(value)));
+      data_node_t* p_node = p_node_pool->allocate<data_node_t>();
+      new (&(p_node->value)) T(value);
+      ++construct_count;
+
+      return *p_node;
     }
 
     //*************************************************************************
-    /// Destroy a Data_Node.
+    /// Destroy a data_node_t.
     //*************************************************************************
-    void destroy_data_node(Data_Node& node) const
+    void destroy_data_node(data_node_t& node)
     {
-      p_node_pool->release(node);
+      node.value.~T();
+      p_node_pool->release(&node);
+      --construct_count;
     }
 
     // Disable copy construction.

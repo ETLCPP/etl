@@ -190,6 +190,8 @@ namespace
 
       Data data(compare_data.begin(), compare_data.end());
 
+      size_t d = std::distance(data.begin(), data.end());
+
       CHECK(data.size() == SIZE);
       CHECK(!data.empty());
     }

@@ -41,7 +41,7 @@ namespace etl
     ///\code
     /// // Short form.
     /// ETL_TYPEDEF(int, mytype);
-    /// 
+    ///
     /// // Long form.
     /// class mytype_t_tag;
     /// typedef etl::type_def<mytype_t_tag, int> mytype_t_tag;
@@ -74,7 +74,7 @@ namespace etl
         }
 
         //*********************************************************************
-        operator TValue() const
+        explicit operator TValue() const
         {
             return value;
         }
@@ -243,7 +243,13 @@ namespace etl
         }
 
         //*********************************************************************
-        TValue get() const
+        TValue& get()
+        {
+            return value;
+        }
+
+        //*********************************************************************
+        const TValue& get() const
         {
             return value;
         }

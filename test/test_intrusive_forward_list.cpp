@@ -718,6 +718,9 @@ namespace
 
       data0.reverse(); // Just reverse one of them.
 
+      CHECK_EQUAL(data1.size(), data0.size());
+      CHECK_EQUAL(data0.size(), std::distance(data0.begin(), data0.end()));
+
       are_equal = std::equal(data0.begin(), data0.end(), sorted_data.rbegin());
       CHECK(are_equal);
 

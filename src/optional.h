@@ -128,7 +128,7 @@ namespace etl
     {
       if (valid)
       {
-        new (storage.template get_address<T>()) T(other.value());
+       new (storage.template get_address<T>()) T(other.value());
       }
     }
 
@@ -137,7 +137,7 @@ namespace etl
     //***************************************************************************
     optional(const T& value)
     {
-      new (storage.template get_address<T>()) T(value);
+     new (storage.template get_address<T>()) T(value);
       valid = true;
     }
 
@@ -186,7 +186,7 @@ namespace etl
           }
           else
           {
-            new (storage.template get_address<T>()) T(other.value());
+           new (storage.template get_address<T>()) T(other.value());
             valid = true;
           }
         }
@@ -206,7 +206,7 @@ namespace etl
       }
       else
       {
-        new (storage.template get_address<T>()) T(value);
+       new (storage.template get_address<T>()) T(value);
         valid = true;
       }
 

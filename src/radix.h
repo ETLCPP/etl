@@ -53,13 +53,13 @@ namespace etl
       hex       = 16
     };
 
-    DECLARE_ENUM_TYPE(radix, uint_least8_t)
-    ENUM_TYPE(undefined, "undefined")
-    ENUM_TYPE(binary,    "binary")
-    ENUM_TYPE(octal,     "octal")
-    ENUM_TYPE(decimal,   "decimal")
-    ENUM_TYPE(hex,       "hex")
-    END_ENUM_TYPE
+    ETL_DECLARE_ENUM_TYPE(radix, uint_least8_t)
+    ETL_ENUM_TYPE(undefined, "undefined")
+    ETL_ENUM_TYPE(binary,    "binary")
+    ETL_ENUM_TYPE(octal,     "octal")
+    ETL_ENUM_TYPE(decimal,   "decimal")
+    ETL_ENUM_TYPE(hex,       "hex")
+    ETL_END_ENUM_TYPE
   };
 }
 

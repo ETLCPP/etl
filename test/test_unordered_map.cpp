@@ -80,9 +80,9 @@ namespace
     typedef std::pair<std::string, DC>  ElementDC;
     typedef std::pair<std::string, NDC> ElementNDC;
 
-    typedef etl::unordered_map<std::string, DC,  SIZE, simple_hash> DataDC;
-    typedef etl::unordered_map<std::string, NDC, SIZE, simple_hash> DataNDC;
-    typedef etl::iunordered_map<std::string, NDC, simple_hash>      IDataNDC;
+    typedef etl::unordered_map<std::string, DC,  SIZE, SIZE / 2, simple_hash> DataDC;
+    typedef etl::unordered_map<std::string, NDC, SIZE, SIZE / 2, simple_hash> DataNDC;
+    typedef etl::iunordered_map<std::string, NDC, simple_hash> IDataNDC;
 
     NDC N0 = NDC("A");
     NDC N1 = NDC("B");
@@ -462,25 +462,29 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      DataNDC::iterator idata     = data.find(K5);
-      DataNDC::iterator idata_end = data.find(K8);
+      DataNDC::iterator idata     = data.begin();
+      std::advance(idata, 2);
 
-      idata = data.erase(idata, idata_end); // Erase K5, K6, K7
+      DataNDC::iterator idata_end = data.begin();
+      std::advance(idata_end, 5);
       
+      data.erase(idata, idata_end);
+
       CHECK_EQUAL(initial_data.size() - 3, data.size());
       CHECK(!data.full());
       CHECK(!data.empty());
 
-      CHECK(idata == data.find(K8));
+      idata = data.find(K8);
+      CHECK(idata != data.end());
 
       idata = data.find(K0);
       CHECK(idata != data.end());
 
       idata = data.find(K1);
-      CHECK(idata != data.end());
+      CHECK(idata == data.end());
 
       idata = data.find(K2);
-      CHECK(idata != data.end());
+      CHECK(idata == data.end());
 
       idata = data.find(K3);
       CHECK(idata != data.end());
@@ -489,13 +493,13 @@ namespace
       CHECK(idata != data.end());
 
       idata = data.find(K5);
-      CHECK(idata == data.end());
+      CHECK(idata != data.end());
 
       idata = data.find(K6);
       CHECK(idata == data.end());
 
       idata = data.find(K7);
-      CHECK(idata == data.end());
+      CHECK(idata != data.end());
 
       idata = data.find(K8);
       CHECK(idata != data.end());
@@ -631,13 +635,18 @@ namespace
       CHECK_CLOSE(0.0, data.load_factor(), 0.01);
 
       // Half the buckets used.
-      data.assign(initial_data.begin(), initial_data.begin() + (initial_data.size() / 2));
-      CHECK_CLOSE(0.5, data.load_factor(), 0.01);
+      data.assign(initial_data.begin(), initial_data.begin() + (initial_data.size() / 4));
+      CHECK_CLOSE(0.4, data.load_factor(), 0.01);
 
       // All of the buckets used.
-      data.clear();
       data.assign(initial_data.begin(), initial_data.end());
-      CHECK_CLOSE(1.0, data.load_factor(), 0.01);
+      CHECK_CLOSE(2.0, data.load_factor(), 0.01);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_release)
+    {
+
     }
   };
 }

@@ -53,7 +53,7 @@ namespace etl
   //*************************************************************************
   /// A templated unordered_multiset implementation that uses a fixed size buffer.
   //*************************************************************************
-  template <typename TKey, const size_t MAX_SIZE_, typename THash = etl::hash<TKey>, typename TKeyEqual = std::equal_to<TKey> >
+  template <typename TKey, const size_t MAX_SIZE_, size_t MAX_BUCKETS_ = MAX_SIZE_, typename THash = etl::hash<TKey>, typename TKeyEqual = std::equal_to<TKey> >
   class unordered_multiset : public iunordered_multiset<TKey, THash, TKeyEqual>
   {
   private:
@@ -63,12 +63,14 @@ namespace etl
   public:
 
     static const size_t MAX_SIZE = MAX_SIZE_;
+    static const size_t MAX_BUCKETS = MAX_BUCKETS_;
+
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
     unordered_multiset()
-      : base(node_pool, buckets)
+      : base(node_pool, buckets, MAX_BUCKETS)
     {
       base::initialise();
     }
@@ -77,7 +79,7 @@ namespace etl
     /// Copy constructor.
     //*************************************************************************
     unordered_multiset(const unordered_multiset& other)
-      : base(node_pool, buckets)
+      : base(node_pool, buckets, MAX_BUCKETS)
     {
 			base::assign(other.cbegin(), other.cend());
     }
@@ -90,9 +92,17 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     unordered_multiset(TIterator first, TIterator last)
-      : base(node_pool, buckets)
+      : base(node_pool, buckets, MAX_BUCKETS)
     {
       base::assign(first, last);
+    }
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~unordered_multiset()
+    {
+      base::initialise();
     }
 
     //*************************************************************************
@@ -115,7 +125,7 @@ namespace etl
     etl::pool<typename base::node_t, MAX_SIZE> node_pool;
 
     /// The buckets of node lists.
-    etl::vector<etl::intrusive_forward_list<typename base::node_t>, MAX_SIZE> buckets;
+    etl::intrusive_forward_list<typename base::node_t> buckets[MAX_BUCKETS_];
   };
 
 }

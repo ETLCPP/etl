@@ -45,8 +45,8 @@ namespace
       type1_t t1 = type1_t(1);
       type2_t t2 = type2_t(1);
 
-      uint32_t i1 = t1;
-      uint32_t i2 = t2;
+      uint32_t i1 = t1.get();
+      uint32_t i2 = t2.get();
 
       CHECK_EQUAL(i1, i2);
     }
@@ -63,8 +63,8 @@ namespace
       type1_t t1 = type1_t(1);
       type2_t t2 = type2_t(1);
 
-      uint32_t i1 = t1;
-      uint32_t i2 = t2;
+      uint32_t i1 = t1.get();
+      uint32_t i2 = t2.get();
 
       CHECK_EQUAL(i1, i2);
     }
@@ -93,30 +93,30 @@ namespace
       uint32_t i = 0x5A3D;
       type_t t(0x5A3D);
 
-      CHECK_EQUAL(++i, ++t);
-      CHECK_EQUAL(i++, t++);
-      CHECK_EQUAL(--i, --t);
-      CHECK_EQUAL(i--, t--);
-      CHECK_EQUAL(i += 2, t += 2);
-      CHECK_EQUAL(i += 2, t += type_t(2));
-      CHECK_EQUAL(i -= 2, t -= 2);
-      CHECK_EQUAL(i -= 2, t -= type_t(2));
-      CHECK_EQUAL(i *= 2, t *= 2);
-      CHECK_EQUAL(i *= 2, t *= type_t(2));
-      CHECK_EQUAL(i /= 2, t /= 2);
-      CHECK_EQUAL(i /= 2, t /= type_t(2));
-      CHECK_EQUAL(i &= 0xFF00, t &= 0xFF00);
-      CHECK_EQUAL(i &= 0xFF00, t &= type_t(0xFF00));
-      CHECK_EQUAL(i |= 0x003D, t |= 0x003D);
-      CHECK_EQUAL(i |= 0x003D, t |= type_t(0x003D));
-      CHECK_EQUAL(i ^= 0xAA55, t ^= 0xAA55);
-      CHECK_EQUAL(i ^= 0xAA55, t ^= type_t(0xAA55));
-      CHECK_EQUAL(i <<= 2, t <<= 2);
-      CHECK_EQUAL(i >>= 2, t >>= 2);
-      CHECK_EQUAL(i %= 23, t %= 23);
+      CHECK_EQUAL(++i, uint32_t(++t));
+      CHECK_EQUAL(i++, uint32_t(t++));
+      CHECK_EQUAL(--i, uint32_t(--t));
+      CHECK_EQUAL(i--, uint32_t(t--));
+      CHECK_EQUAL(i += 2, uint32_t(t += 2));
+      CHECK_EQUAL(i += 2, uint32_t(t += type_t(2)));
+      CHECK_EQUAL(i -= 2, uint32_t(t -= 2));
+      CHECK_EQUAL(i -= 2, uint32_t(t -= type_t(2)));
+      CHECK_EQUAL(i *= 2, uint32_t(t *= 2));
+      CHECK_EQUAL(i *= 2, uint32_t(t *= type_t(2)));
+      CHECK_EQUAL(i /= 2, uint32_t(t /= 2));
+      CHECK_EQUAL(i /= 2, uint32_t(t /= type_t(2)));
+      CHECK_EQUAL(i &= 0xFF00, uint32_t(t &= 0xFF00));
+      CHECK_EQUAL(i &= 0xFF00, uint32_t(t &= type_t(0xFF00)));
+      CHECK_EQUAL(i |= 0x003D, uint32_t(t |= 0x003D));
+      CHECK_EQUAL(i |= 0x003D, uint32_t(t |= type_t(0x003D)));
+      CHECK_EQUAL(i ^= 0xAA55, uint32_t(t ^= 0xAA55));
+      CHECK_EQUAL(i ^= 0xAA55, uint32_t(t ^= type_t(0xAA55)));
+      CHECK_EQUAL(i <<= 2, uint32_t(t <<= 2));
+      CHECK_EQUAL(i >>= 2, uint32_t(t >>= 2));
+      CHECK_EQUAL(i %= 23, uint32_t(t %= 23));
 
       t = type_t(0x1234);
-      CHECK_EQUAL(0x1234U, t);
+      CHECK_EQUAL(0x1234U, uint32_t(t));
     }
 
     //=========================================================================

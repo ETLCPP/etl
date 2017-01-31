@@ -89,7 +89,7 @@ namespace etl
     forward_list(const forward_list& other)
       : iforward_list<T>(node_pool, MAX_SIZE)
     {
-			iforward_list<T>::assign(other.cbegin(), other.cend());
+      iforward_list<T>::assign(other.cbegin(), other.cend());
     }
 
     //*************************************************************************
@@ -100,6 +100,14 @@ namespace etl
       : iforward_list<T>(node_pool, MAX_SIZE)
     {
       iforward_list<T>::assign(first, last);
+    }
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~forward_list()
+    {
+      iforward_list<T>::initialise();
     }
 
     //*************************************************************************
@@ -118,7 +126,7 @@ namespace etl
   private:
 
     /// The pool of nodes used in the list.
-    etl::pool<typename iforward_list<T>::Data_Node, MAX_SIZE> node_pool;
+    etl::pool<typename iforward_list<T>::data_node_t, MAX_SIZE> node_pool;
   };
 }
 

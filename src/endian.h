@@ -54,11 +54,11 @@ namespace etl
       native
     };
 
-    DECLARE_ENUM_TYPE(endian, int)
-    ENUM_TYPE(little, "little")
-    ENUM_TYPE(big,    "big")
-    ENUM_TYPE(native, "native")
-    END_ENUM_TYPE
+    ETL_DECLARE_ENUM_TYPE(endian, int)
+    ETL_ENUM_TYPE(little, "little")
+    ETL_ENUM_TYPE(big,    "big")
+    ETL_ENUM_TYPE(native, "native")
+    ETL_END_ENUM_TYPE
   };
 
   //***************************************************************************

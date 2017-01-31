@@ -396,14 +396,10 @@ namespace etl
   count_bits(T value)
   {
     uint32_t count;
-    static const int S[] = { 1, 2, 4, 8, 16 };
-    static const uint32_t B[] = { 0x55555555, 0x33333333, 0x0F0F0F0F, 0x00FF00FF, 0x0000FFFF };
 
-    count = value - ((value >> 1) & B[0]);
-    count = ((count >> S[1]) & B[1]) + (count & B[1]);
-    count = ((count >> S[2]) + count) & B[2];
-    count = ((count >> S[3]) + count) & B[3];
-    count = ((count >> S[4]) + count) & B[4];
+    value = value - ((value >> 1) & 0x55555555);
+    value = (value & 0x33333333) + ((value >> 2) & 0x33333333);
+    count = ((value + (value >> 4) & 0xF0F0F0F) * 0x1010101) >> 24;
 
     return count;
   }
@@ -562,6 +558,224 @@ namespace etl
     }
 
     return signed_value;
+  }
+
+#if ETL_8BIT_SUPPORT
+  //***************************************************************************
+  /// Count trailing zeros. bit.
+  /// Uses a binary search.
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint8_t>::value, uint_least8_t>::type
+  count_trailing_zeros(T value)
+  {
+      uint_least8_t count;
+
+      if (value & 0x1)
+      {
+        count = 0;
+      }
+      else
+      {
+        count = 1;
+
+        if ((value & 0xF) == 0)
+        {
+          value >>= 4;
+          count += 4;
+        }
+
+        if ((value & 0x3) == 0)
+        {
+          value >>= 2;
+          count += 2;
+        }
+
+        count -= value & 0x1;
+      }
+
+      return count;
+  }
+#endif
+
+  //***************************************************************************
+  /// Count trailing zeros. 16bit.
+  /// Uses a binary search.
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint16_t>::value, uint_least8_t>::type
+   count_trailing_zeros(T value)
+  {
+      uint_least8_t count;
+
+      if (value & 0x1)
+      {
+        count = 0;
+      }
+      else
+      {
+        count = 1;
+
+        if ((value & 0xFF) == 0)
+        {
+          value >>= 8;
+          count += 8;
+        }
+
+        if ((value & 0xF) == 0)
+        {
+          value >>= 4;
+          count += 4;
+        }
+
+        if ((value & 0x3) == 0)
+        {
+          value >>= 2;
+          count += 2;
+        }
+
+        count -= value & 0x1;
+      }
+
+      return count;
+  }
+
+  //***************************************************************************
+  /// Count trailing zeros. 32bit.
+  /// Uses a binary search.
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint32_t>::value, uint_least8_t>::type
+   count_trailing_zeros(T value)
+  {
+      uint_least8_t count;
+
+      if (value & 0x1)
+      {
+        count = 0;
+      }
+      else
+      {
+        count = 1;
+
+        if ((value & 0xFFFF) == 0)
+        {
+          value >>= 16;
+          count += 16;
+        }
+
+        if ((value & 0xFF) == 0)
+        {
+          value >>= 8;
+          count += 8;
+        }
+
+        if ((value & 0xF) == 0)
+        {
+          value >>= 4;
+          count += 4;
+        }
+
+        if ((value & 0x3) == 0)
+        {
+          value >>= 2;
+          count += 2;
+        }
+
+        count -= value & 0x1;
+      }
+
+      return count;
+  }
+
+  //***************************************************************************
+  /// Count trailing zeros. 64bit.
+  /// Uses a binary search.
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint64_t>::value, uint_least8_t>::type
+   count_trailing_zeros(T value)
+  {
+      uint_least8_t count;
+
+      if (value & 0x1)
+      {
+        count = 0;
+      }
+      else
+      {
+        count = 1;
+
+        if ((value & 0xFFFFFFFF) == 0)
+        {
+          value >>= 32;
+          count += 32;
+        }
+
+        if ((value & 0xFFFF) == 0)
+        {
+          value >>= 16;
+          count += 16;
+        }
+
+        if ((value & 0xFF) == 0)
+        {
+          value >>= 8;
+          count += 8;
+        }
+
+        if ((value & 0xF) == 0)
+        {
+          value >>= 4;
+          count += 4;
+        }
+
+        if ((value & 0x3) == 0)
+        {
+          value >>= 2;
+          count += 2;
+        }
+
+        count -= value & 0x1;
+      }
+
+      return count;
+  }
+
+  //***************************************************************************
+  /// Find the position of the first set bit.
+  /// Starts from LSB.
+  //***************************************************************************
+  template <typename T>
+  uint_least8_t first_set_bit_position(T value)
+  {
+      return count_trailing_zeros(value);
+  }
+
+  //***************************************************************************
+  /// Find the position of the first clear bit.
+  /// Starts from LSB.
+  //***************************************************************************
+  template <typename T>
+  uint_least8_t first_clear_bit_position(T value)
+  {
+      value = ~value;
+      return count_trailing_zeros(value);
+  }
+
+  //***************************************************************************
+  /// Find the position of the first bit that is clear or set.
+  /// Starts from LSB.
+  //***************************************************************************
+  template <typename T>
+  uint_least8_t first_bit_position(bool state, T value)
+  {
+      if (!state)
+      {
+        value = ~value;
+      }
+
+      return count_trailing_zeros(value);
   }
 
   //***************************************************************************

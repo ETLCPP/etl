@@ -126,7 +126,7 @@ namespace etl
   private:
 
     /// The pool of data nodes used in the set.
-    ipool<Data_Node>* p_node_pool;
+    etl::ipool* p_node_pool;
 
     //*************************************************************************
     /// Downcast a Node* to a Data_Node*
@@ -761,7 +761,7 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    iset(ipool<Data_Node>& node_pool, size_t max_size_)
+    iset(ipool& node_pool, size_t max_size_)
       : set_base(max_size_)
       , p_node_pool(&node_pool)
     {
@@ -772,13 +772,7 @@ namespace etl
     //*************************************************************************
     void initialise()
     {
-      if (!empty())
-      {
-        p_node_pool->release_all();
-      }
-
-      current_size = 0;
-      root_node = nullptr;
+      erase(begin(), end());
     }
 
   private:
@@ -786,17 +780,22 @@ namespace etl
     //*************************************************************************
     /// Allocate a Data_Node.
     //*************************************************************************
-    Data_Node& allocate_data_node(value_type value) const
+    Data_Node& allocate_data_node(value_type value)
     {
-      return *(p_node_pool->allocate(Data_Node(value)));
+      Data_Node& node = *p_node_pool->allocate<Data_Node>();
+      new ((void*)&node.value) value_type(value);
+      ++construct_count;
+      return node;
     }
 
     //*************************************************************************
     /// Destroy a Data_Node.
     //*************************************************************************
-    void destroy_data_node(Data_Node& node) const
+    void destroy_data_node(Data_Node& node)
     {
+      node.value.~value_type();
       p_node_pool->release(&node);
+      --construct_count;
     }
 
     //*************************************************************************

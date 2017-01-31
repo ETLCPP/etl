@@ -531,11 +531,14 @@ namespace etl
     iterator erase_after(iterator position)
     {
       iterator next(position);
-      ++next;
       if (next != end())
       {
         ++next;
-        remove_link_after(*position.p_value);
+        if (next != end())
+        {
+          ++next;
+          remove_link_after(*position.p_value);
+        }
       }
 
       return next;
@@ -546,7 +549,7 @@ namespace etl
     //*************************************************************************
     iterator erase_after(iterator first, iterator last)
     {
-      if (first != last)
+      if (first != end() && (first != last))
       {
         current_size -= std::distance(first, last) - 1;
 

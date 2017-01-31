@@ -164,7 +164,7 @@ namespace etl
     //*********************************************************************
     reverse_iterator rbegin()
     {
-	    return buffer.rbegin();
+      return buffer.rbegin();
     }
 
     //*********************************************************************
@@ -224,7 +224,7 @@ namespace etl
       if (i_element == end())
       {
         // Doesn't exist, so create a new one.
-	      value_type value(key, mapped_type());
+        value_type value(key, mapped_type());
         i_element = insert(value).first;
       }
 

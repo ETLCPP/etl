@@ -765,6 +765,9 @@ namespace
       compare_data.reverse();
       data.reverse();
 
+      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(data.size(), std::distance(data.begin(), data.end()));
+
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
 
       CHECK(are_equal);

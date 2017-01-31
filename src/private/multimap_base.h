@@ -38,6 +38,7 @@ SOFTWARE.
 #include <stddef.h>
 #include "../exception.h"
 #include "../error_handler.h"
+#include "../debug_count.h"
 
 #undef ETL_FILE
 #define ETL_FILE "9"
@@ -580,6 +581,7 @@ namespace etl
     size_type current_size;   ///< The number of the used nodes.
     const size_type MAX_SIZE; ///< The maximum size of the map.
     Node* root_node;          ///< The node that acts as the multimap root.
+    etl::debug_count construct_count;
   };
 }
 
