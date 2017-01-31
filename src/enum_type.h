@@ -72,9 +72,9 @@ SOFTWARE.
 ///
 /// std::cout << "Direction = " << direction.c_str(); // Prints "Direction = North"
 ///\endcode
-/// If a conversion to a string is not required then the 'ENUM_TYPE' declaration may be omitted.
+/// If a conversion to a string is not required then the 'ETL_ENUM_TYPE' declaration may be omitted.
 /// In that case the c_str() function will return a "?". This will also be the case for any
-/// enumeration value that does not have an ENUM_TYPE entry.
+/// enumeration value that does not have an ETL_ENUM_TYPE entry.
 ///\ingroup utilities
 
 //*****************************************************************************
