@@ -668,6 +668,8 @@ namespace
         Compare_Data compare_data;
         Data data;
 
+        data.resize(SIZE, -1);
+
         data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         data.insert(data.begin() + offset, insert_data.begin(), insert_data.end());
@@ -932,18 +934,6 @@ namespace
 
       const Data initial2(initial_data.begin(), initial_data.end());
       CHECK((initial >= initial2) == (initial_data >= initial_data));
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_allocated_size)
-    {
-      const size_t INITIAL_SIZE = 5;
-
-      Data data(INITIAL_SIZE);
-
-      size_t expected_size = (SIZE * sizeof(int)) + (2 * sizeof(size_t)) + sizeof(int*);
-
-      CHECK_EQUAL(expected_size, sizeof(Data));
     }
   };
 }

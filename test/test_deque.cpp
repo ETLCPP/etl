@@ -41,8 +41,8 @@ SOFTWARE.
 
 namespace
 {
-	SUITE(test_deque)
-	{
+  SUITE(test_deque)
+  {
     const size_t SIZE = 14;
 
     typedef TestDataDC<std::string>  DC;
@@ -84,12 +84,12 @@ namespace
     std::vector<DC>  initial_data_dc = { DC("0"), DC("1"), DC("2"), DC("3"), DC("4"), DC("5"), DC("6"), DC("7"), DC("8"), DC("9"), DC("10"), DC("11"), DC("12"), DC("13") };
 
     //*************************************************************************
-		TEST(test_constructor)
-		{
+    TEST(test_constructor)
+    {
       DataDC data;
 
       CHECK_EQUAL(SIZE, data.max_size());
-		}
+    }
 
     //*************************************************************************
     TEST(test_constructor_fill)
@@ -118,24 +118,18 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_constructor_range_excess)
+    TEST(test_copy_constructor)
     {
-      CHECK_THROW(DataNDC data(initial_data_excess.begin(), initial_data_excess.end()), etl::deque_full);
-    }
-
-    //*************************************************************************
-		TEST(test_copy_constructor)
-		{
       DataNDC deque1(initial_data.begin(), initial_data.end());
       DataNDC deque2(deque1);
 
       CHECK_EQUAL(deque1.size(), deque2.size());
       CHECK(std::equal(deque1.begin(), deque1.end(), deque2.begin()));
-		}
+    }
 
     //*************************************************************************
-		TEST(test_assignment)
-		{
+    TEST(test_assignment)
+    {
       DataNDC deque1(initial_data.begin(), initial_data.end());
       DataNDC deque2;
 
@@ -143,7 +137,7 @@ namespace
 
       CHECK_EQUAL(deque1.size(), deque2.size());
       CHECK(std::equal(deque1.begin(), deque1.end(), deque2.begin()));
-		}
+    }
 
     //*************************************************************************
     TEST(test_assignment_interface)
@@ -1477,8 +1471,8 @@ namespace
     }
 
     //*************************************************************************
-		TEST(test_equality_operator)
-		{
+    TEST(test_equality_operator)
+    {
       Compare_Data same      = { N1, N2, N3, N4, N5, N6 };
       Compare_Data different = { N6, N5, N4, N3, N2, N1 };
 
@@ -1491,7 +1485,7 @@ namespace
       std::copy(different.begin(), different.end(), deque2.begin());
 
       CHECK(!(deque1 == deque2));
-		}
+    }
 
     //*************************************************************************
     TEST(test_inequality_operator)
@@ -1520,5 +1514,5 @@ namespace
        CHECK(data.rbegin()  == data.rend());
        CHECK(data.crbegin() == data.crend());
      }
-	};
+  };
 }

@@ -58,9 +58,9 @@ namespace
       }
     };
 
-    typedef etl::unordered_set<DC,  SIZE, simple_hash> DataDC;
-    typedef etl::unordered_set<NDC, SIZE, simple_hash> DataNDC;
-    typedef etl::iunordered_set<NDC, simple_hash>      IDataNDC;
+    typedef etl::unordered_set<DC,  SIZE, SIZE / 2, simple_hash> DataDC;
+    typedef etl::unordered_set<NDC, SIZE, SIZE / 2, simple_hash> DataNDC;
+    typedef etl::iunordered_set<NDC, simple_hash> IDataNDC;
 
     NDC N0  = NDC("FF");
     NDC N1  = NDC("FG");
@@ -312,31 +312,29 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      DataNDC::iterator idata     = data.find(N5);
-      DataNDC::iterator idata_end = data.find(N8);
+      DataNDC::iterator idata = data.begin();
+      std::advance(idata, 2);
 
-      std::vector<NDC> test;
+      DataNDC::iterator idata_end = data.begin();
+      std::advance(idata_end, 5);
 
-      test.assign(data.begin(), data.end());
-
-      idata = data.erase(idata, idata_end); // Erase N5, N6, N7
+      data.erase(idata, idata_end);
 
       CHECK_EQUAL(initial_data.size() - 3, data.size());
       CHECK(!data.full());
       CHECK(!data.empty());
 
-      CHECK(idata == data.find(N8));
-
-      test.assign(data.begin(), data.end());
+      idata = data.find(N8);
+      CHECK(idata != data.end());
 
       idata = data.find(N0);
       CHECK(idata != data.end());
 
       idata = data.find(N1);
-      CHECK(idata != data.end());
+      CHECK(idata == data.end());
 
       idata = data.find(N2);
-      CHECK(idata != data.end());
+      CHECK(idata == data.end());
 
       idata = data.find(N3);
       CHECK(idata != data.end());
@@ -345,13 +343,13 @@ namespace
       CHECK(idata != data.end());
 
       idata = data.find(N5);
-      CHECK(idata == data.end());
+      CHECK(idata != data.end());
 
       idata = data.find(N6);
       CHECK(idata == data.end());
 
       idata = data.find(N7);
-      CHECK(idata == data.end());
+      CHECK(idata != data.end());
 
       idata = data.find(N8);
       CHECK(idata != data.end());
@@ -434,13 +432,13 @@ namespace
       CHECK_CLOSE(0.0, data.load_factor(), 0.01);
 
       // Half the buckets used.
-      data.assign(initial_data.begin(), initial_data.begin() + (initial_data.size() / 2));
-      CHECK_CLOSE(0.5, data.load_factor(), 0.01);
+      data.assign(initial_data.begin(), initial_data.begin() + (initial_data.size() / 4));
+      CHECK_CLOSE(0.4, data.load_factor(), 0.01);
 
       // All of the buckets used.
       data.clear();
       data.assign(initial_data.begin(), initial_data.end());
-      CHECK_CLOSE(1.0, data.load_factor(), 0.01);
+      CHECK_CLOSE(2.0, data.load_factor(), 0.01);
     }
   };
 }

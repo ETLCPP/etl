@@ -833,6 +833,9 @@ namespace
       compare_data.reverse();
       data.reverse();
 
+      CHECK_EQUAL(compare_data.size(), data.size());
+      CHECK_EQUAL(data.size(), std::distance(data.begin(), data.end()));
+
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
 
       CHECK(are_equal);
@@ -1316,8 +1319,8 @@ namespace
       are_equal = std::equal(data0.begin(), data0.end(), compare0.begin());
       CHECK(are_equal);
 
-      CHECK_EQUAL(data0.size(), compare0.size());
-      CHECK_EQUAL(data1.size(), compare1.size());
+      CHECK_EQUAL(compare0.size(), data0.size());
+      CHECK_EQUAL(compare1.size(), data1.size());
     }
 
     //*************************************************************************
@@ -1337,8 +1340,8 @@ namespace
       are_equal = std::equal(data0.begin(), data0.end(), compare0.begin());
       CHECK(are_equal);
 
-      CHECK_EQUAL(data0.size(), compare0.size());
-      CHECK_EQUAL(data2.size(), compare2.size());
+      CHECK_EQUAL(compare0.size(), data0.size());
+      CHECK_EQUAL(compare2.size(), data2.size());
     }
 
     //*************************************************************************
@@ -1358,8 +1361,8 @@ namespace
       are_equal = std::equal(data0.begin(), data0.end(), compare0.begin());
       CHECK(are_equal);
 
-      CHECK_EQUAL(data0.size(), compare0.size());
-      CHECK_EQUAL(data3.size(), compare3.size());
+      CHECK_EQUAL(compare0.size(), data0.size());
+      CHECK_EQUAL(compare3.size(), data3.size());
     }
 
     //*************************************************************************
@@ -1379,8 +1382,8 @@ namespace
       are_equal = std::equal(data0.begin(), data0.end(), compare0.begin());
       CHECK(are_equal);
 
-      CHECK_EQUAL(data0.size(), compare0.size());
-      CHECK_EQUAL(data4.size(), compare4.size());
+      CHECK_EQUAL(compare0.size(), data0.size());
+      CHECK_EQUAL(compare4.size(), data4.size());
     }
 
     //*************************************************************************
@@ -1394,6 +1397,8 @@ namespace
       data0.reverse();
       data1.reverse();
 
+
+
       CompareData compare0(merge_data0.begin(), merge_data0.end());
       CompareData compare1(merge_data1.begin(), merge_data1.end());
 
@@ -1406,8 +1411,8 @@ namespace
       are_equal = std::equal(data0.begin(), data0.end(), compare0.begin());
       CHECK(are_equal);
 
-      CHECK_EQUAL(data0.size(), compare0.size());
-      CHECK_EQUAL(data1.size(), compare1.size());
+      CHECK_EQUAL(compare0.size(), data0.size());
+      CHECK_EQUAL(compare1.size(), data1.size());
     }
 
     //*************************************************************************
