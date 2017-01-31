@@ -68,7 +68,7 @@ namespace etl
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
-    explicit multimap(const multimap& other)
+    multimap(const multimap& other)
       : imultimap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
     {
 			imultimap<TKey, TValue, TCompare>::assign(other.cbegin(), other.cend());
@@ -85,6 +85,14 @@ namespace etl
       : imultimap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
     {
       imultimap<TKey, TValue, TCompare>::assign(first, last);
+    }
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~multimap()
+    {
+      imultimap<TKey, TValue, TCompare>::initialise();
     }
 
     //*************************************************************************

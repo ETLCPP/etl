@@ -164,7 +164,7 @@ namespace etl
     //*********************************************************************
     reverse_iterator rbegin()
     {
-	    return buffer.rbegin();
+      return buffer.rbegin();
     }
 
     //*********************************************************************
@@ -300,7 +300,7 @@ namespace etl
     //*********************************************************************
     size_t erase(key_value_parameter_t key)
     {
-	  std::pair<iterator, iterator> range = equal_range(key);
+    std::pair<iterator, iterator> range = equal_range(key);
 
       if (range.first == end())
       {
@@ -308,8 +308,8 @@ namespace etl
       }
       else
       {
-		size_t count = std::distance(range.first, range.second);
-		erase(range.first, range.second);
+    size_t count = std::distance(range.first, range.second);
+    erase(range.first, range.second);
         return count;
       }
     }
@@ -398,9 +398,9 @@ namespace etl
     //*********************************************************************
     size_t count(key_value_parameter_t key) const
     {
-	    std::pair<const_iterator, const_iterator> range = equal_range(key);
+      std::pair<const_iterator, const_iterator> range = equal_range(key);
 
-	  return std::distance(range.first, range.second);
+    return std::distance(range.first, range.second);
     }
 
     //*********************************************************************

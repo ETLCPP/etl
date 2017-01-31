@@ -28,46 +28,70 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-//*****************************************************************************
-// The algorithm for this implementation is based on this paper.
-//
-// Fast Efficient Fixed-Size Memory Pool
-// https://www.thinkmind.org/index.php?view=article&articleid=computation_tools_2012_1_10_80006
-//
-// Ben Kenwright
-// School of Computer Science
-// Newcastle University
-// Newcastle, United Kingdom,
-// b.kenwright@ncl.ac.uk
-//*****************************************************************************
-
 #ifndef __ETL_IPOOL__
 #define __ETL_IPOOL__
 #define __ETL_IN_IPOOL_H__
 
 #include <iterator>
 
-#include "private/pool_base.h"
 #include "nullptr.h"
-//#include "ibitset.h"
+#include "alignment.h"
 #include "error_handler.h"
+
+#include <algorithm>
+
+#undef ETL_FILE
+#define ETL_FILE "11"
 
 namespace etl
 {
   //***************************************************************************
+  /// The base class for pool exceptions.
   ///\ingroup pool
   //***************************************************************************
-  template <typename T, typename TIndex = int32_t>
-  class ipool : public pool_base
+  class pool_exception : public exception
   {
   public:
 
-    typedef T        value_type;
-    typedef T*       pointer;
-    typedef const T* const_pointer;
-    typedef T&       reference;
-    typedef const T& const_reference;
-    typedef size_t   size_type;
+    pool_exception(string_type what, string_type file_name, numeric_type line_number)
+      : exception(what, file_name, line_number)
+    {}
+  };
+
+  //***************************************************************************
+  /// The exception thrown when the pool has no more free items.
+  ///\ingroup pool
+  //***************************************************************************
+  class pool_no_allocation : public pool_exception
+  {
+  public:
+
+    explicit pool_no_allocation(string_type file_name, numeric_type line_number)
+      : pool_exception(ETL_ERROR_TEXT("pool:allocation", ETL_FILE"A"), file_name, line_number)
+    {}
+  };
+
+  //***************************************************************************
+  /// The exception thrown when an object is released which does not belong to the pool.
+  ///\ingroup pool
+  //***************************************************************************
+  class pool_object_not_in_pool : public pool_exception
+  {
+  public:
+
+    pool_object_not_in_pool(string_type file_name, numeric_type line_number)
+      : pool_exception(ETL_ERROR_TEXT("pool:notinpool", ETL_FILE"B"), file_name, line_number)
+    {}
+  };
+
+  //***************************************************************************
+  ///\ingroup pool
+  //***************************************************************************
+  class ipool
+  {
+  public:
+
+    typedef size_t size_type;
 
     //*************************************************************************
     /// Allocate an object from the pool.
@@ -75,39 +99,10 @@ namespace etl
     /// If asserts or exceptions are enabled and there are no more free items an
     /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
     //*************************************************************************
+    template <typename T>
     T* allocate()
     {
-      return allocate(T());
-    }
-
-    //*************************************************************************
-    /// Allocate an object from the pool from an initial value.
-    /// If asserts or exceptions are enabled and there are no more free items an
-    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
-    //*************************************************************************
-    T* allocate(const T& initial)
-    {
-      ETL_ASSERT(items_allocated < MAX_SIZE, ETL_ERROR(pool_no_allocation));
-
-      T* p_value = nullptr;
-
-      if (available() > 0)
-      {
-        p_value = new(&p_next->value) T(initial);
-        p_next->index = -p_next->index;
-        ++items_allocated;
-
-        if (available() != 0)
-        {
-          p_next = AddressFromIndex(p_next->index);          
-        }
-        else
-        {
-          p_next = nullptr;
-        }
-      }
-
-      return p_value;
+      return reinterpret_cast<T*>(allocate_item());
     }
 
     //*************************************************************************
@@ -116,58 +111,18 @@ namespace etl
     /// pool then an etl::pool_object_not_in_pool is thrown.
     /// \param p_object A pointer to the object to be released.
     //*************************************************************************
-    void release(const T& object)
+    void release(const void* p_object)
     {
-      release(&object);
+      release_item((char*)p_object);
     }
 
     //*************************************************************************
-    /// Release an object in the pool.
-    /// If asserts or exceptions are enabled and the object does not belong to this
-    /// pool then an etl::pool_object_not_in_pool is thrown.
-    /// \param p_object A pointer to the object to be released.
-    //*************************************************************************
-    void release(const T* const p_object)
-    {
-      // Does it belong to me?
-      ETL_ASSERT(is_in_pool(p_object), ETL_ERROR(pool_object_not_in_pool));
-
-      // Get the pointer to the element by adjusting for the index.
-      uintptr_t p = (uintptr_t)p_object - offsetof(Element, value);
-
-      Element* p_element = reinterpret_cast<Element*>(p);
-
-      if (p_next != nullptr)
-      {
-        p_element->index = -IndexFromAddress(p_next);
-      }
-      else
-      {
-        p_element->index = -TIndex(MAX_SIZE);
-      }
-
-      p_object->~T();
-
-      p_next = p_element;
-      --items_allocated;
-    }
-
-    //*************************************************************************
-    /// Releases all objects in the pool.
+    /// Release all objects in the pool.
     //*************************************************************************
     void release_all()
     {
-      for (size_t i = 0; i < MAX_SIZE; ++i)
-      {
-        if (p_buffer[i].index > 0)
-        {
-          p_buffer[i].value.~T();
-        }
-
-        p_buffer[i].index = -int32_t(i + 1);
-      }
-
-      items_allocated = 0;
+      items_allocated   = 0;
+      items_initialised = 0;
       p_next = p_buffer;
     }
 
@@ -176,81 +131,172 @@ namespace etl
     /// \param p_object A pointer to the object to be checked.
     /// \return <b>true<\b> if it does, otherwise <b>false</b>
     //*************************************************************************
-    bool is_in_pool(const T& object) const
+    //template <typename T>
+    bool is_in_pool(const void* p_object) const
     {
-      return is_in_pool(&object);
+      return is_item_in_pool((const char*)p_object);
     }
 
     //*************************************************************************
-    /// Check to see if the object belongs to the pool.
-    /// \param p_object A pointer to the object to be checked.
-    /// \return <b>true<\b> if it does, otherwise <b>false</b>
+    /// Returns the maximum number of items in the pool.
     //*************************************************************************
-    bool is_in_pool(const T* p_object) const
+    size_t max_items() const
     {
-      // Does this object belong to this pool?
-      // Get the pointer to the element by adjusting for the index.
-      uintptr_t p = (uintptr_t)p_object - sizeof(TIndex);
+      return MAX_ITEMS;
+    }
 
-      Element* p_element = reinterpret_cast<Element*>(p);
+    //*************************************************************************
+    /// Returns the number of free items in the pool.
+    //*************************************************************************
+    size_t available() const
+    {
+      return MAX_ITEMS - items_allocated;
+    }
 
-      // Within the range of the buffer?      
-      intptr_t distance = p_element - p_buffer;
-      return ((distance >= 0) && (distance < static_cast<intptr_t>(MAX_SIZE)));
+    //*************************************************************************
+    /// Returns the number of allocated items in the pool.
+    //*************************************************************************
+    size_t size() const
+    {
+      return items_allocated;
+    }
+
+    //*************************************************************************
+    /// Checks to see if there are no allocated items in the pool.
+    /// \return <b>true</b> if there are none allocated.
+    //*************************************************************************
+    bool empty() const
+    {
+      return items_allocated == 0;
+    }
+
+    //*************************************************************************
+    /// Checks to see if there are no free items in the pool.
+    /// \return <b>true</b> if there are none free.
+    //*************************************************************************
+    bool full() const
+    {
+      return items_allocated == MAX_ITEMS;
     }
 
   protected:
-
-    struct Element
-    {
-      TIndex index;
-      T      value;
-    };
-
+    
     //*************************************************************************
     /// Constructor
     //*************************************************************************
-    ipool(Element* p_buffer, size_t size)
-      : pool_base(size),
-        p_buffer(p_buffer),
-        p_next(p_buffer)
-        
+    ipool(char* p_buffer_, uint32_t item_size, uint32_t max_items)
+      : p_buffer(p_buffer_),
+        p_next(p_buffer_),
+        items_allocated(0),
+        items_initialised(0),
+        ITEM_SIZE(item_size),
+        MAX_ITEMS(max_items)
     {
-      for (int32_t i = 0; i < MAX_SIZE; ++i)
-      {
-        p_buffer[i].index = -(i + 1);
-      }
-    }
-
-    //*************************************************************************
-    /// Destructor
-    //*************************************************************************
-    ~ipool()
-    {
-      release_all();
     }
 
   private:
 
-    Element* AddressFromIndex(TIndex i) const
+    //*************************************************************************
+    /// Allocate an item from the pool.
+    //*************************************************************************
+    char* allocate_item()
     {
-      i = (i < 0) ? -i : i;
-      return &p_buffer[i];
+      char* p_value = nullptr;
+
+      // Any free space left?
+      if (items_allocated < MAX_ITEMS)
+      {
+        // Initialise another one if necessary.
+        if (items_initialised < MAX_ITEMS)
+        {
+          uintptr_t p = reinterpret_cast<uintptr_t>(p_buffer + (items_initialised * ITEM_SIZE));
+          *reinterpret_cast<uintptr_t*>(p) = p + ITEM_SIZE;
+          ++items_initialised;
+        }
+
+        // Get the address of new allocated item.
+        p_value = p_next;
+
+        ++items_allocated;
+        if (items_allocated != MAX_ITEMS)
+        {
+          // Set up the pointer to the next free item
+          p_next = *reinterpret_cast<char**>(p_next);
+        }
+        else
+        {
+          // No more left!
+          p_next = nullptr;
+        }
+      }
+      else
+      {
+        ETL_ASSERT(false, ETL_ERROR(etl::pool_no_allocation));
+      }
+
+      return p_value;
     }
 
-    TIndex IndexFromAddress(const Element* p_element) const
+    //*************************************************************************
+    /// Release an item back to the pool.
+    //*************************************************************************
+    void release_item(char* p_value)
     {
-      return TIndex(p_element - p_buffer);
+      // Does it belong to us?
+      ETL_ASSERT(is_item_in_pool(p_value), ETL_ERROR(pool_object_not_in_pool));
+
+      if (p_next != nullptr)
+      {
+        // Point it to the current free item.
+        *(uintptr_t*)p_value = reinterpret_cast<uintptr_t>(p_next);
+      }
+      else
+      {
+        // This is the only free item.
+        *((uintptr_t*)p_value) = 0;        
+      }
+
+      p_next = p_value;
+
+      --items_allocated;
     }
-    
+
+    //*************************************************************************
+    /// Check if the item belongs to this pool.
+    //*************************************************************************
+    bool is_item_in_pool(const char* p) const
+    {
+      // Within the range of the buffer?
+      intptr_t distance = p - p_buffer;
+      bool is_within_range = (distance >= 0) && (distance <= intptr_t((ITEM_SIZE * MAX_ITEMS) - ITEM_SIZE));
+
+      // Modulus and division can be slow on some architectures, so only do this in debug.
+#if defined(_DEBUG) || defined(DEBUG)
+      // Is the address on a valid object boundary?
+      bool is_valid_address = ((distance % ITEM_SIZE) == 0);
+#else
+      bool is_valid_address = true;
+#endif
+
+      return is_within_range && is_valid_address;
+    }
+
     // Disable copy construction and assignment.
     ipool(const ipool&);
     ipool& operator =(const ipool&);
 
-    Element* p_buffer;
-    Element* p_next;
+    char* p_buffer;
+    char* p_next;
+    
+    uint32_t  items_allocated;   ///< The number of items allocated.
+    uint32_t  items_initialised; ///< The number of items initialised.
+
+    const uint32_t ITEM_SIZE;    ///< The size of allocated items.
+    const uint32_t MAX_ITEMS;    ///< The maximum number of objects that can be allocated.
   };
 }
+
+#undef ETL_FILE
 
 #undef __ETL_IN_IPOOL_H__
 

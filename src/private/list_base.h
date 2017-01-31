@@ -36,8 +36,10 @@ SOFTWARE.
 #define __ETL_LIST_BASE__
 
 #include <stddef.h>
+#include "pool.h"
 #include "../exception.h"
 #include "../error_handler.h"
+#include "../debug_count.h"
 
 #undef ETL_FILE
 #define ETL_FILE "7"
@@ -141,7 +143,7 @@ namespace etl
       //***********************************************************************
       /// Reverses the previous & next pointers.
       //***********************************************************************
-      void reverse()
+      inline void reverse()
       {
         std::swap(previous, next);
       }
@@ -163,21 +165,18 @@ namespace etl
       node_t* p_node = terminal_node.next;
 
       while (p_node != &terminal_node)
-      {
-        p_node->reverse();
-        p_node = p_node->previous; // Now we've reversed it, we must go to the previous node.
+      {       
+        node_t* p_temp = p_node->previous;
+        p_node->previous = p_node->next;
+        p_node->next = p_temp;
+        p_node = p_node->previous;
       }
 
       // Terminal node.
-      p_node->reverse();
-    }
-
-    //*************************************************************************
-    /// Gets the size of the list.
-    //*************************************************************************
-    size_type size() const
-    {
-      return current_size;
+      node_t* p_temp = p_node->previous;
+      p_node->previous = p_node->next;
+      p_node->next = p_temp;
+      p_node = p_node->previous;
     }
 
     //*************************************************************************
@@ -189,11 +188,19 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Gets the size of the list.
+    //*************************************************************************
+    size_type size() const
+    {
+      return p_node_pool->size();
+    }
+
+    //*************************************************************************
     /// Checks to see if the list is empty.
     //*************************************************************************
     bool empty() const
     {
-      return current_size == 0;
+      return p_node_pool->empty();
     }
 
     //*************************************************************************
@@ -201,7 +208,7 @@ namespace etl
     //*************************************************************************
     bool full() const
     {
-      return current_size == MAX_SIZE;
+      return p_node_pool->size() == MAX_SIZE;
     }
 
     //*************************************************************************
@@ -212,6 +219,15 @@ namespace etl
     {
       return max_size() - size();
     }
+
+    //*************************************************************************
+    /// Is the list a trivial length?
+    //*************************************************************************
+    bool is_trivial_list() const
+    {
+      return (size() < 2);
+    }
+
 
   protected:
 
@@ -255,17 +271,6 @@ namespace etl
       // Connect to the list.
       join(*position.previous, node);
       join(node, position);
-
-      // One more.
-      ++current_size;
-    }
-
-    //*************************************************************************
-    /// Is the list a trivial length?
-    //*************************************************************************
-    bool is_trivial_list() const
-    {
-      return (size() < 2);
     }
 
     //*************************************************************************
@@ -280,17 +285,18 @@ namespace etl
     //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
-    list_base(size_type max_size)
-      : current_size(0),
+    list_base(etl::ipool& node_pool,
+              size_type   max_size)
+      : p_node_pool(&node_pool),
         MAX_SIZE(max_size)
 
     {
     }
 
-    
-    node_t            terminal_node; ///< The node that acts as the list start and end.
-    size_type       current_size;  ///< The number of the used nodes.
-    const size_type MAX_SIZE;      ///< The maximum size of the list.
+    etl::ipool*      p_node_pool;     ///< The pool of data nodes used in the list.
+    node_t           terminal_node;   ///< The node that acts as the list start and end.
+    const size_type  MAX_SIZE;        ///< The maximum size of the list.
+    etl::debug_count construct_count; ///< Internal debugging.
   };
 }
 

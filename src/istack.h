@@ -90,7 +90,8 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(stack_full));
 #endif
       top_index = current_size++;
-      new(&p_buffer[top_index]) T(value);
+      new (&p_buffer[top_index]) T(value);
+      ++construct_count;
     }
 
     //*************************************************************************
@@ -106,7 +107,8 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(stack_full));
 #endif
       top_index = current_size++;
-      new(&p_buffer[top_index]) T();
+      new (&p_buffer[top_index]) T();
+      ++construct_count;
 
       return p_buffer[top_index];
     }
@@ -130,6 +132,7 @@ namespace etl
         p_buffer[top_index].~T();
         --top_index;
         --current_size;
+        --construct_count;
       }
     }
 
@@ -145,6 +148,7 @@ namespace etl
       p_buffer[top_index].~T();
       --top_index;
       --current_size;
+      --construct_count;
     }
 
     //*************************************************************************

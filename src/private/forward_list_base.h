@@ -38,6 +38,7 @@ SOFTWARE.
 #include <stddef.h>
 #include "../exception.h"
 #include "../error_handler.h"
+#include "../debug_count.h"
 
 #undef ETL_FILE
 #define ETL_FILE "6"
@@ -111,14 +112,14 @@ namespace etl
     //*************************************************************************
     /// The node element in the forward_list.
     //*************************************************************************
-    struct Node
+    struct node_t
     {
-      Node()
+      node_t()
         : next(nullptr)
       {
       }
 
-      Node* next;
+      node_t* next;
     };
 
   public:
@@ -130,7 +131,7 @@ namespace etl
     //*************************************************************************
     size_type size() const
     {
-      return current_size;
+      return p_node_pool->size();
     }
 
     //*************************************************************************
@@ -146,7 +147,7 @@ namespace etl
     //*************************************************************************
     bool empty() const
     {
-      return current_size == 0;
+      return p_node_pool->empty();
     }
 
     //*************************************************************************
@@ -154,7 +155,7 @@ namespace etl
     //*************************************************************************
     bool full() const
     {
-      return current_size == MAX_SIZE;
+      return p_node_pool->full();
     }
 
     //*************************************************************************
@@ -163,7 +164,7 @@ namespace etl
     //*************************************************************************
     size_t available() const
     {
-      return max_size() - size();
+      return p_node_pool->available();
     }
 
     //*************************************************************************
@@ -176,9 +177,9 @@ namespace etl
         return;
       }
 
-      Node* p_last    = &start_node;
-      Node* p_current = p_last->next;
-      Node* p_next    = p_current->next;
+      node_t* p_last    = &start_node;
+      node_t* p_current = p_last->next;
+      node_t* p_next    = p_current->next;
 
       p_current->next = nullptr;
 
@@ -199,9 +200,8 @@ namespace etl
     //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
-    forward_list_base(size_type max_size)
-      : next_free(0),
-        current_size(0),
+    forward_list_base(etl::ipool& node_pool, size_type max_size)
+      : p_node_pool(&node_pool),
         MAX_SIZE(max_size)
     {
     }
@@ -209,7 +209,7 @@ namespace etl
     //*************************************************************************
     /// Get the head node.
     //*************************************************************************
-    Node& get_head()
+    node_t& get_head()
     {
       return *start_node.next;
     }
@@ -217,7 +217,7 @@ namespace etl
     //*************************************************************************
     /// Get the head node.
     //*************************************************************************
-    const Node& get_head() const
+    const node_t& get_head() const
     {
       return *start_node.next;
     }
@@ -225,17 +225,13 @@ namespace etl
     //*************************************************************************
     /// Insert a node.
     //*************************************************************************
-    void insert_node_after(Node& position, Node& node)
+    inline void insert_node_after(node_t& position, node_t& node)
     {
       // Connect to the forward_list.
-      node.next = position.next;
-
+      join(&node, position.next);
       join(&position, &node);
-
-      // One more.
-      ++current_size;
     }
-    
+
     //*************************************************************************
     /// Is the forward_list a trivial length?
     //*************************************************************************
@@ -247,15 +243,15 @@ namespace etl
     //*************************************************************************
     /// Join two nodes.
     //*************************************************************************
-    void join(Node* left, Node* right)
+    void join(node_t* left, node_t* right)
     {
       left->next = right;
     }
 
-    Node start_node;          ///< The node that acts as the forward_list start.
-    size_type next_free;      ///< The index of the next free node.
-    size_type current_size;   ///< The number of items in the list.
-    const size_type MAX_SIZE; ///< The maximum size of the forward_list.
+    node_t           start_node;      ///< The node that acts as the forward_list start.
+    etl::ipool*      p_node_pool;     ///< The pool of data nodes used in the list.
+    const size_type  MAX_SIZE;        ///< The maximum size of the forward_list.
+    etl::debug_count construct_count; ///< Internal debugging.
   };
 }
 

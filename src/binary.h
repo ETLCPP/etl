@@ -396,14 +396,10 @@ namespace etl
   count_bits(T value)
   {
     uint32_t count;
-    static const int S[] = { 1, 2, 4, 8, 16 };
-    static const uint32_t B[] = { 0x55555555, 0x33333333, 0x0F0F0F0F, 0x00FF00FF, 0x0000FFFF };
 
-    count = value - ((value >> 1) & B[0]);
-    count = ((count >> S[1]) & B[1]) + (count & B[1]);
-    count = ((count >> S[2]) + count) & B[2];
-    count = ((count >> S[3]) + count) & B[3];
-    count = ((count >> S[4]) + count) & B[4];
+    value = value - ((value >> 1) & 0x55555555);
+    value = (value & 0x33333333) + ((value >> 2) & 0x33333333);
+    count = ((value + (value >> 4) & 0xF0F0F0F) * 0x1010101) >> 24;
 
     return count;
   }
@@ -569,7 +565,9 @@ namespace etl
   /// Count trailing zeros. bit.
   /// Uses a binary search.
   //***************************************************************************
-  uint_least8_t count_trailing_zeros(uint8_t value)
+  template <typename T>
+  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint8_t>::value, uint_least8_t>::type
+  count_trailing_zeros(T value)
   {
       uint_least8_t count;
 
@@ -604,7 +602,9 @@ namespace etl
   /// Count trailing zeros. 16bit.
   /// Uses a binary search.
   //***************************************************************************
-  uint_least8_t count_trailing_zeros(uint16_t value)
+  template <typename T>
+  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint16_t>::value, uint_least8_t>::type
+   count_trailing_zeros(T value)
   {
       uint_least8_t count;
 
@@ -644,7 +644,9 @@ namespace etl
   /// Count trailing zeros. 32bit.
   /// Uses a binary search.
   //***************************************************************************
-  uint_least8_t count_trailing_zeros(uint32_t value)
+  template <typename T>
+  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint32_t>::value, uint_least8_t>::type
+   count_trailing_zeros(T value)
   {
       uint_least8_t count;
 
@@ -690,7 +692,9 @@ namespace etl
   /// Count trailing zeros. 64bit.
   /// Uses a binary search.
   //***************************************************************************
-  uint_least8_t count_trailing_zeros(uint64_t value)
+  template <typename T>
+  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint64_t>::value, uint_least8_t>::type
+   count_trailing_zeros(T value)
   {
       uint_least8_t count;
 

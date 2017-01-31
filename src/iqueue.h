@@ -117,9 +117,10 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
 #endif
-      new(&p_buffer[in]) T(value);
+      new (&p_buffer[in]) T(value);
       in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
       ++current_size;
+      ++construct_count;
     }
 
     //*************************************************************************
@@ -137,9 +138,10 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
 #endif
-      new(&p_buffer[in]) T();
+      new (&p_buffer[in]) T();
       in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
       ++current_size;
+      ++construct_count;
 
       return p_buffer[next];
     }
@@ -154,6 +156,7 @@ namespace etl
         p_buffer[out].~T();
         out = (out == (MAX_SIZE - 1)) ? 0 : out + 1;
         --current_size;
+        --construct_count;
       }
 
       in = 0;
@@ -172,6 +175,7 @@ namespace etl
       p_buffer[out].~T();
       out = (out == (MAX_SIZE - 1)) ? 0 : out + 1;
       --current_size;
+      --construct_count;
     }
 
     //*************************************************************************

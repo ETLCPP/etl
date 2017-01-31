@@ -41,8 +41,8 @@ SOFTWARE.
 #include "private/list_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
-#include "pool.h"
 #include "platform.h"
+#include "algorithm.h"
 
 #ifdef ETL_COMPILER_MICROSOFT
 #undef min
@@ -85,15 +85,12 @@ namespace etl
 
   private:
 
-    /// The pool of data nodes used in the list.
-    etl::ipool<data_node_t>* p_node_pool;
-
     //*************************************************************************
     /// Downcast a node_t* to a data_node_t*
     //*************************************************************************
     static data_node_t* data_cast(node_t* p_node)
     {
-      return static_cast<data_node_t*>(p_node);
+      return reinterpret_cast<data_node_t*>(p_node);
     }
 
     //*************************************************************************
@@ -101,7 +98,7 @@ namespace etl
     //*************************************************************************
     static data_node_t& data_cast(node_t& node)
     {
-      return static_cast<data_node_t&>(node);
+      return reinterpret_cast<data_node_t&>(node);
     }
 
     //*************************************************************************
@@ -109,7 +106,7 @@ namespace etl
     //*************************************************************************
     static const data_node_t* data_cast(const node_t* p_node)
     {
-      return static_cast<const data_node_t*>(p_node);
+      return reinterpret_cast<const data_node_t*>(p_node);
     }
 
     //*************************************************************************
@@ -117,7 +114,7 @@ namespace etl
     //*************************************************************************
     static const data_node_t& data_cast(const node_t& node)
     {
-      return static_cast<const data_node_t&>(node);
+      return reinterpret_cast<const data_node_t&>(node);
     }
 
   public:
@@ -462,11 +459,10 @@ namespace etl
       // Add all of the elements.
       while (first != last)
       {
-        data_node_t& data_node = allocate_data_node(*first);
-        join(get_tail(), data_node);
-        join(data_node, terminal_node);
+        data_node_t& node = allocate_data_node(*first);
+        join(get_tail(), node);
+        join(node, terminal_node);
         ++first;
-        ++current_size;
       }
     }
 
@@ -482,12 +478,11 @@ namespace etl
       initialise();
 
       // Add all of the elements.
-      while (current_size < n)
+      while (size() < n)
       {
-        data_node_t& data_node = allocate_data_node(value);
-        join(*terminal_node.previous, data_node);
-        join(data_node, terminal_node);
-        ++current_size;
+        data_node_t& node = allocate_data_node(value);
+        join(*terminal_node.previous, node);
+        join(node, terminal_node);
       }
     }
 
@@ -496,11 +491,7 @@ namespace etl
     //*************************************************************************
     void push_front()
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(list_full));
-#endif
-      data_node_t& data_node = allocate_data_node(T());
-      insert_node(get_head(), data_node);
+      push_front(T());
     }
 
     //*************************************************************************
@@ -511,8 +502,7 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(list_full));
 #endif
-      node_t& data_node = allocate_data_node(value);
-      insert_node(get_head(), data_node);
+      insert_node(get_head(), allocate_data_node(value));
     }
 
     //*************************************************************************
@@ -532,11 +522,7 @@ namespace etl
     //*************************************************************************
     void push_back()
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(list_full));
-#endif
-      data_node_t& data_node = allocate_data_node(T());
-      insert_node(terminal_node, data_node);
+      push_back(T());
     }
 
     //*************************************************************************
@@ -547,8 +533,7 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(list_full));
 #endif
-      data_node_t& data_node = allocate_data_node(value);
-      insert_node(terminal_node, data_node);
+      insert_node(terminal_node, allocate_data_node(value));
     }
 
     //*************************************************************************
@@ -586,8 +571,7 @@ namespace etl
         ETL_ASSERT(!full(), ETL_ERROR(list_full));
 
         // Set up the next free node and insert.
-        data_node_t& data_node = allocate_data_node(value);
-        insert_node(*position.p_node, data_node);
+        insert_node(*position.p_node, allocate_data_node(value));
       }
     }
 
@@ -602,8 +586,7 @@ namespace etl
         ETL_ASSERT(!full(), ETL_ERROR(list_full));
 
         // Set up the next free node and insert.
-        data_node_t& data_node = allocate_data_node(*first++);
-        insert_node(*position.p_node, data_node);
+        insert_node(*position.p_node, allocate_data_node(*first++));
       }
     }
 
@@ -612,12 +595,9 @@ namespace etl
     //*************************************************************************
     iterator erase(iterator position)
     {
-      iterator next(position);
-      ++next;
-
-      remove_node(*position.p_node);
-      
-      return next;
+      ++position;
+      remove_node(*position.p_node->previous);      
+      return position;
     }
 
     //*************************************************************************
@@ -635,12 +615,9 @@ namespace etl
       // Erase the ones in between.
       while (p_first != p_last)
       {
-        // One less.
-        --current_size;
-
-        p_next  = p_first->next;                              // Remember the next node.
+        p_next  = p_first->next;                                // Remember the next node.
         destroy_data_node(static_cast<data_node_t&>(*p_first)); // Destroy the current node.
-        p_first = p_next;                                     // Move to the next node.
+        p_first = p_next;                                       // Move to the next node.
       }
 
       return last;
@@ -846,6 +823,9 @@ namespace etl
             ++this_begin;
           }
 
+          bool t = this_begin != this_end;
+          bool o = other_begin != other_end;
+
           // Insert.
           if (this_begin != this_end)
           {
@@ -853,6 +833,8 @@ namespace etl
             {
               insert(this_begin, *other_begin);
               ++other_begin;
+
+              o = other_begin != other_end;
             }
           }
         }
@@ -1001,15 +983,14 @@ namespace etl
 
       return *this;
     }
-
+    
   protected:
 
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    ilist(etl::ipool<data_node_t>& node_pool, size_t max_size_)
-      : list_base(max_size_),
-        p_node_pool(&node_pool)
+    ilist(etl::ipool& node_pool, size_t max_size_)
+      : list_base(node_pool, max_size_)
     {
     }
 
@@ -1020,10 +1001,16 @@ namespace etl
     {
       if (!empty())
       {
-        p_node_pool->release_all();
+        node_t* p_first = terminal_node.next;
+        node_t* p_last  = &terminal_node;
+
+        while (p_first != p_last)
+        {
+          destroy_data_node(static_cast<data_node_t&>(*p_first)); // Destroy the current node.
+          p_first = p_first->next;                                // Move to the next node.
+        }
       }
 
-      current_size = 0;
       join(terminal_node, terminal_node);
     }
 
@@ -1093,25 +1080,28 @@ namespace etl
 
       // Destroy the pool object.
       destroy_data_node(static_cast<data_node_t&>(node));
-
-      // One less.
-      --current_size;
     }
 
     //*************************************************************************
     /// Allocate a data_node_t.
     //*************************************************************************
-    data_node_t& allocate_data_node(parameter_t value) const
+    data_node_t& allocate_data_node(parameter_t value)
     {
-      return *(p_node_pool->allocate(data_node_t(value)));
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      new (&(p_data_node->value)) T(value);
+      ++construct_count;
+
+      return *p_data_node;
     }
 
     //*************************************************************************
     /// Destroy a data_node_t.
     //*************************************************************************
-    void destroy_data_node(data_node_t& node) const
+    void destroy_data_node(data_node_t& node)
     {
+      node.value.~T();
       p_node_pool->release(&node);
+      --construct_count;
     }
 
     // Disable copy construction.

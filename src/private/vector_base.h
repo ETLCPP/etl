@@ -39,6 +39,7 @@ SOFTWARE.
 
 #include "../exception.h"
 #include "../error_handler.h"
+#include "../debug_count.h"
 
 #define ETL_FILE "17"
 
@@ -175,8 +176,9 @@ namespace etl
     {
     }
 
-    size_type       current_size; ///<The current number of elements in the vector.
-    const size_type MAX_SIZE;     ///<The maximum number of elements in the vector.
+    size_type       current_size;     ///<The current number of elements in the vector.
+    const size_type MAX_SIZE;         ///<The maximum number of elements in the vector.
+    etl::debug_count construct_count; ///< Internal debugging.
   };
 }
 

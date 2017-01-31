@@ -68,7 +68,7 @@ namespace etl
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
-    explicit multiset(const multiset& other)
+    multiset(const multiset& other)
       : imultiset<T, TCompare>(node_pool, MAX_SIZE)
     {
 			imultiset<T, TCompare>::assign(other.cbegin(), other.cend());
@@ -85,6 +85,14 @@ namespace etl
       : imultiset<T, TCompare>(node_pool, MAX_SIZE)
     {
       imultiset<T, TCompare>::assign(first, last);
+    }
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~multiset()
+    {
+      imultiset<T, TCompare>::initialise();
     }
 
     //*************************************************************************

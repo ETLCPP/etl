@@ -69,7 +69,7 @@ namespace etl
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
-    explicit set(const set& other)
+    set(const set& other)
       : iset<T, TCompare>(node_pool, MAX_SIZE)
     {
 			iset<T, TCompare>::assign(other.cbegin(), other.cend());
@@ -86,6 +86,14 @@ namespace etl
       : iset<T, TCompare>(node_pool, MAX_SIZE)
     {
       iset<T, TCompare>::assign(first, last);
+    }
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~set()
+    {
+      iset<T, TCompare>::initialise();
     }
 
     //*************************************************************************

@@ -53,7 +53,7 @@ namespace etl
   //*************************************************************************
   /// A templated unordered_multimap implementation that uses a fixed size buffer.
   //*************************************************************************
-  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename THash = etl::hash<TKey>, typename TKeyEqual = std::equal_to<TKey> >
+  template <typename TKey, typename TValue, const size_t MAX_SIZE_, const size_t MAX_BUCKETS_ = MAX_SIZE_, typename THash = etl::hash<TKey>, typename TKeyEqual = std::equal_to<TKey> >
   class unordered_multimap : public iunordered_multimap<TKey, TValue, THash, TKeyEqual>
   {
   private:
@@ -62,13 +62,14 @@ namespace etl
 
   public:
 
-    static const size_t MAX_SIZE = MAX_SIZE_;
+    static const size_t MAX_SIZE    = MAX_SIZE_;
+    static const size_t MAX_BUCKETS = MAX_BUCKETS_;
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
     unordered_multimap()
-      : base(node_pool, buckets)
+      : base(node_pool, buckets, MAX_BUCKETS)
     {
       base::initialise();
     }
@@ -77,7 +78,7 @@ namespace etl
     /// Copy constructor.
     //*************************************************************************
     unordered_multimap(const unordered_multimap& other)
-      : base(node_pool, buckets)
+      : base(node_pool, buckets, MAX_BUCKETS)
     {
 			base::assign(other.cbegin(), other.cend());
     }
@@ -90,9 +91,17 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     unordered_multimap(TIterator first, TIterator last)
-      : base(node_pool, buckets)
+      : base(node_pool, buckets, MAX_BUCKETS)
     {
       base::assign(first, last);
+    }
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~unordered_multimap()
+    {
+      base::initialise();
     }
 
     //*************************************************************************
@@ -115,7 +124,7 @@ namespace etl
     etl::pool<typename base::node_t, MAX_SIZE> node_pool;
 
     /// The buckets of node lists.
-    etl::vector<etl::intrusive_forward_list<typename base::node_t>, MAX_SIZE> buckets;
+    etl::intrusive_forward_list<typename base::node_t> buckets[MAX_BUCKETS_];
   };
 
 }

@@ -93,47 +93,7 @@ namespace etl
   {
   public:
 
-    //*************************************************************************
-    /// Returns the maximum number of items in the pool.
-    //*************************************************************************
-    size_t max_size() const
-    {
-      return MAX_SIZE;
-    }
 
-    //*************************************************************************
-    /// Returns the number of free items in the pool.
-    //*************************************************************************
-    size_t available() const
-    {
-      return MAX_SIZE - items_allocated;
-    }
-
-    //*************************************************************************
-    /// Returns the number of allocated items in the pool.
-    //*************************************************************************
-    size_t size() const
-    {
-      return items_allocated;
-    }
-
-    //*************************************************************************
-    /// Checks to see if there are no allocated items in the pool.
-    /// \return <b>true</b> if there are none allocated.
-    //*************************************************************************
-    bool empty() const
-    {
-      return items_allocated == 0;
-    }
-
-    //*************************************************************************
-    /// Checks to see if there are no free items in the pool.
-    /// \return <b>true</b> if there are none free.
-    //*************************************************************************
-    bool full() const
-    {
-      return items_allocated == MAX_SIZE;
-    }
 
   protected:
 
@@ -142,16 +102,11 @@ namespace etl
     //*************************************************************************
     pool_base(size_t max_size)
       : next_free(0),
-        items_allocated(0),
-        items_initialised(0),
-        MAX_SIZE(max_size)       
+              
     {
     }
 
-    size_t       next_free;         ///< The next free slot in the block.
-    size_t       items_allocated;   ///< The number of items allocated.
-    size_t       items_initialised; ///< The number of items that have been initialised with an index;
-    const size_t MAX_SIZE;          ///< The maximum number of objects that can be allocated.
+
   };
 }
 
