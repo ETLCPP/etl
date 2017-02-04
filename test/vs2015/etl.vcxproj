@@ -63,6 +63,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -111,8 +112,9 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;ETL_THROW_EXCEPTIONS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;ETL_THROW_EXCEPTIONS;ETL_VERBOSE_ERRORS;ETL_CHECK_PUSH_POP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../../../unittest-cpp</AdditionalIncludeDirectories>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -172,6 +174,7 @@
     <ClInclude Include="..\..\src\cstring.h" />
     <ClInclude Include="..\..\src\cyclic_value.h" />
     <ClInclude Include="..\..\src\debounce.h" />
+    <ClInclude Include="..\..\src\debug_count.h" />
     <ClInclude Include="..\..\src\deque.h" />
     <ClInclude Include="..\..\src\doxygen.h" />
     <ClInclude Include="..\..\src\endian.h" />
@@ -220,6 +223,7 @@
     <ClInclude Include="..\..\src\istack.h" />
     <ClInclude Include="..\..\src\container.h" />
     <ClInclude Include="..\..\src\ibasic_string.h" />
+    <ClInclude Include="..\..\src\iterator.h" />
     <ClInclude Include="..\..\src\iunordered_map.h" />
     <ClInclude Include="..\..\src\iunordered_multimap.h" />
     <ClInclude Include="..\..\src\iunordered_multiset.h" />
@@ -269,6 +273,7 @@
     <ClInclude Include="..\..\src\private\vector_base.h" />
     <ClInclude Include="..\..\src\queue.h" />
     <ClInclude Include="..\..\src\radix.h" />
+    <ClInclude Include="..\..\src\random.h" />
     <ClInclude Include="..\..\src\rr_cache.h" />
     <ClInclude Include="..\..\src\set.h" />
     <ClInclude Include="..\..\src\smallest.h" />
@@ -281,8 +286,10 @@
     <ClInclude Include="..\..\src\u16string.h" />
     <ClInclude Include="..\..\src\u32string.h" />
     <ClInclude Include="..\..\src\unordered_map.h" />
+    <ClInclude Include="..\..\src\unordered_multimap.h" />
     <ClInclude Include="..\..\src\unordered_multiset.h" />
     <ClInclude Include="..\..\src\unordered_set.h" />
+    <ClInclude Include="..\..\src\user_type.h" />
     <ClInclude Include="..\..\src\utility.h" />
     <ClInclude Include="..\..\src\variant.h" />
     <ClInclude Include="..\..\src\vector.h" />
@@ -320,6 +327,7 @@
     <ClCompile Include="..\..\src\error_handler.cpp" />
     <ClCompile Include="..\..\src\pearson.cpp" />
     <ClCompile Include="..\..\src\private\pvoidvector.cpp" />
+    <ClCompile Include="..\..\src\random.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\murmurhash3.cpp" />
     <ClCompile Include="..\test_algorithm.cpp" />
@@ -347,8 +355,12 @@
     <ClCompile Include="..\test_error_handler.cpp" />
     <ClCompile Include="..\test_exception.cpp" />
     <ClCompile Include="..\test_fixed_iterator.cpp" />
-    <ClCompile Include="..\test_flat_multimap.cpp" />
-    <ClCompile Include="..\test_flat_multiset.cpp" />
+    <ClCompile Include="..\test_flat_multimap.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\test_flat_multiset.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\test_flat_set.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug No Unit Tests|Win32'">false</ExcludedFromBuild>
@@ -383,7 +395,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug No Unit Tests|Win32'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\test_map.cpp" />
+    <ClCompile Include="..\test_map.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\test_maths.cpp" />
     <ClCompile Include="..\test_multimap.cpp" />
     <ClCompile Include="..\test_multiset.cpp" />
@@ -398,7 +413,12 @@
     <ClCompile Include="..\test_pool.cpp" />
     <ClCompile Include="..\test_priority_queue.cpp" />
     <ClCompile Include="..\test_queue.cpp" />
-    <ClCompile Include="..\test_set.cpp" />
+    <ClCompile Include="..\test_random.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\test_set.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\test_smallest.cpp" />
     <ClCompile Include="..\test_stack.cpp" />
     <ClCompile Include="..\test_string_char.cpp" />
