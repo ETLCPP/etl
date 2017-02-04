@@ -32,6 +32,7 @@ SOFTWARE.
 #include "../src/container.h"
 
 #include <vector>
+#include <list>
 #include <algorithm>
 #include <functional>
 #include <numeric>
@@ -144,16 +145,130 @@ namespace
     }
 
     //=========================================================================
+    TEST(copy_4_parameter_random_iterator)
+    {
+      int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      int data2[] = { 1, 2, 3, 4, 5 };
+
+      int out1[10];
+      int out2[5];
+
+      int check1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      int check2[] = { 1, 2, 3, 4, 5 };
+      int check3[] = { 1, 2, 3, 4, 5, 0, 0, 0, 0, 0 };
+
+      int* result;
+
+      // Same size.
+      std::fill(std::begin(out1), std::end(out1), 0);
+      result = etl::copy(std::begin(data1), std::end(data1), std::begin(out1), std::end(out1));
+      CHECK_EQUAL(std::end(out1), result);
+      bool is_same = std::equal(std::begin(out1), std::end(out1), std::begin(check1));
+      CHECK(is_same);
+
+      // Destination smaller.
+      std::fill(std::begin(out2), std::end(out2), 0);
+      result = etl::copy(std::begin(data1), std::end(data1), std::begin(out2), std::end(out2));
+      CHECK_EQUAL(std::end(out2), result);
+      is_same = std::equal(std::begin(out2), std::end(out2), std::begin(check2));
+      CHECK(is_same);
+
+      // Source smaller.
+      std::fill(std::begin(out1), std::end(out1), 0);
+      result = etl::copy(std::begin(data2), std::end(data2), std::begin(out1), std::end(out1));
+      CHECK_EQUAL(std::begin(out1) + 5, result);
+      is_same = std::equal(std::begin(out1), std::end(out1), std::begin(check3));
+      CHECK(is_same);
+    }
+
+    //=========================================================================
+    TEST(copy_4_parameter_non_random_iterator)
+    {
+      std::list<int> data1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      std::list<int> data2 = { 1, 2, 3, 4, 5 };
+
+      int out1[10];
+      int out2[5];
+
+      int check1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      int check2[] = { 1, 2, 3, 4, 5 };
+      int check3[] = { 1, 2, 3, 4, 5, 0, 0, 0, 0, 0 };
+
+      int* result;
+
+      // Same size.
+      std::fill(std::begin(out1), std::end(out1), 0);
+      result = etl::copy(std::begin(data1), std::end(data1), std::begin(out1), std::end(out1));
+      CHECK_EQUAL(std::end(out1), result);
+      bool is_same = std::equal(std::begin(out1), std::end(out1), std::begin(check1));
+      CHECK(is_same);
+
+      // Destination smaller.
+      std::fill(std::begin(out2), std::end(out2), 0);
+      result = etl::copy(std::begin(data1), std::end(data1), std::begin(out2), std::end(out2));
+      CHECK_EQUAL(std::end(out2), result);
+      is_same = std::equal(std::begin(out2), std::end(out2), std::begin(check2));
+      CHECK(is_same);
+
+      // Source smaller.
+      std::fill(std::begin(out1), std::end(out1), 0);
+      result = etl::copy(std::begin(data2), std::end(data2), std::begin(out1), std::end(out1));
+      CHECK_EQUAL(std::begin(out1) + 5, result);
+      is_same = std::equal(std::begin(out1), std::end(out1), std::begin(check3));
+      CHECK(is_same);
+    }
+
+    //=========================================================================
     TEST(copy_n)
     {
       int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
       int data2[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
       int data3[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
+      int* result;
+
       std::copy_n(std::begin(data1), 4, std::begin(data2));
-      etl::copy_n(std::begin(data1), 4, std::begin(data3));
+      result = etl::copy_n(std::begin(data1), 4, std::begin(data3));
+
+      CHECK_EQUAL(std::begin(data3) + 4, result);
 
       bool is_same = std::equal(std::begin(data2), std::end(data2), std::begin(data3));
+      CHECK(is_same);
+    }
+
+    //=========================================================================
+    TEST(copy_n_4_parameter)
+    {
+      int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+      int out1[10];
+      int out2[5];
+
+      int check1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      int check2[] = { 1, 2, 3, 4, 5 };
+      int check3[] = { 1, 2, 3, 4, 5, 0, 0, 0, 0, 0 };
+
+      int* result;
+
+      // Same size.
+      std::fill(std::begin(out1), std::end(out1), 0);
+      result = etl::copy_n(std::begin(data1), 10, std::begin(out1), std::end(out1));
+      CHECK_EQUAL(std::end(out1), result);
+      bool is_same = std::equal(std::begin(out1), std::end(out1), std::begin(check1));
+      CHECK(is_same);
+
+      // Destination smaller.
+      std::fill(std::begin(out2), std::end(out2), 0);
+      result = etl::copy_n(std::begin(data1), 10, std::begin(out2), std::end(out2));
+      CHECK_EQUAL(std::end(out2), result);
+      is_same = std::equal(std::begin(out2), std::end(out2), std::begin(check2));
+      CHECK(is_same);
+
+      // Source smaller.
+      std::fill(std::begin(out1), std::end(out1), 0);
+      result = etl::copy_n(std::begin(data1), 5, std::begin(out1), std::end(out1));
+      CHECK_EQUAL(std::begin(out1) + 5, result);
+      is_same = std::equal(std::begin(out1), std::end(out1), std::begin(check3));
       CHECK(is_same);
     }
 
@@ -169,6 +284,44 @@ namespace
       etl::copy_if(std::begin(data1), std::end(data1), std::begin(data3), std::bind2nd(std::less<int>(), 5));
 
       bool is_same = std::equal(std::begin(data2), std::end(data2), std::begin(data3));
+      CHECK(is_same);
+    }
+
+    //=========================================================================
+    TEST(copy_if_4_parameter)
+    {
+      int data1[] = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
+      int data2[] = { 1, 8, 2, 7, 3 };
+
+      int out1[4];
+      int out2[2];
+      int out3[10];
+
+      int check1[] = { 1, 2, 3, 4 };
+      int check2[] = { 1, 2 };
+      int check3[] = { 1, 2, 3, 4, 0, 0, 0, 0, 0, 0 };
+
+      int* result;
+
+      // Exact size.
+      std::fill(std::begin(out1), std::end(out1), 0);
+      result = etl::copy_if(std::begin(data1), std::end(data1), std::begin(out1), std::end(out1), std::bind2nd(std::less<int>(), 5));
+      CHECK_EQUAL(std::end(out1), result);
+      bool is_same = std::equal(std::begin(out1), std::end(out1), std::begin(check1));
+      CHECK(is_same);
+
+      // Destination smaller.
+      std::fill(std::begin(out2), std::end(out2), 0);
+      result = etl::copy_if(std::begin(data1), std::end(data1), std::begin(out2), std::end(out2), std::bind2nd(std::less<int>(), 5));
+      CHECK_EQUAL(std::end(out2), result);
+      is_same = std::equal(std::begin(out2), std::end(out2), std::begin(check2));
+      CHECK(is_same);
+
+      // Destination larger.
+      std::fill(std::begin(out3), std::end(out3), 0);
+      result = etl::copy_if(std::begin(data1), std::end(data1), std::begin(out3), std::end(out3), std::bind2nd(std::less<int>(), 5));
+      CHECK_EQUAL(std::begin(out3) + 4, result);
+      is_same = std::equal(std::begin(out3), std::end(out3), std::begin(check3));
       CHECK(is_same);
     }
 

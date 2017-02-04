@@ -33,14 +33,17 @@ SOFTWARE.
 
 ///\defgroup algorithm algorithm
 /// Reverse engineered algorithms from C++ 0x11
+/// Additional new variants of certain algorithms.
 ///\ingroup utilities
 
 #include <algorithm>
 #include <iterator>
 #include <utility>
 #include <functional>
+#include <iterator>
 #include <stdint.h>
 
+#include "iterator.h"
 #include "type_traits.h"
 
 namespace etl
@@ -67,7 +70,7 @@ namespace etl
       {
         maximum = begin;
       }
-        
+
       ++begin;
     }
 
@@ -95,7 +98,7 @@ namespace etl
   template <typename T>
   std::pair<const T&, const T&> minmax(const T& a, const T& b)
   {
-	  return (b < a) ? std::pair<const T&, const T&>(b, a) : std::pair<const T&, const T&>(a, b);
+    return (b < a) ? std::pair<const T&, const T&>(b, a) : std::pair<const T&, const T&>(a, b);
   }
 
   //***************************************************************************
@@ -184,6 +187,55 @@ namespace etl
   }
 
   //***************************************************************************
+  /// copy
+  /// A form of copy where the smallest of the two ranges is used.
+  /// There is currently no STL equivalent.
+  /// Specialisation for random access iterators.
+  ///\param i_begin Beginning of the input range.
+  ///\param i_end   End of the input range.
+  ///\param o_begin Beginning of the output range.
+  ///\param o_end   End of the output range.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TInputIterator, typename TOutputIterator>
+  typename etl::enable_if<etl::is_random_iterator<TInputIterator>::value &&
+                          etl::is_random_iterator<TOutputIterator>::value, TOutputIterator>::type
+   copy(TInputIterator  i_begin, TInputIterator  i_end,
+        TOutputIterator o_begin, TOutputIterator o_end)
+  {
+      size_t s_size = std::distance(i_begin, i_end);
+      size_t d_size = std::distance(o_begin, o_end);
+      size_t size   = (s_size < d_size) ? s_size : d_size;
+
+      return std::copy(i_begin, i_begin + size, o_begin);
+  }
+
+  //***************************************************************************
+  /// copy
+  /// A form of copy where the smallest of the two ranges is used.
+  /// There is currently no STL equivalent.
+  /// Specialisation for non random access iterators.
+  ///\param i_begin Beginning of the input range.
+  ///\param i_end   End of the input range.
+  ///\param o_begin Beginning of the output range.
+  ///\param o_end   End of the output range.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TInputIterator, typename TOutputIterator>
+  typename etl::enable_if<!etl::is_random_iterator<TInputIterator>::value ||
+                          !etl::is_random_iterator<TOutputIterator>::value, TOutputIterator>::type
+   copy(TInputIterator  i_begin, TInputIterator  i_end,
+        TOutputIterator o_begin, TOutputIterator o_end)
+  {
+    while ((i_begin != i_end) && (o_begin != o_end))
+    {
+      *o_begin++ = *i_begin++;
+    }
+
+    return o_begin;
+  }
+
+  //***************************************************************************
   /// copy_n
   ///\ingroup algorithm
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/copy_n"></a>
@@ -191,15 +243,18 @@ namespace etl
   template <typename TInputIterator, typename Size, typename TOutputIterator>
   TOutputIterator copy_n(TInputIterator begin, Size count, TOutputIterator result)
   {
-    if (count > 0)
-    {
-      for (Size i = 0; i < count; ++i)
-      {
-        *result++ = *begin++;
-      }
-    }
+    return std::copy(begin, begin + count, result);
+  }
 
-    return result;
+  //***************************************************************************
+  /// copy_n
+  /// A form of copy_n where the smallest of the two ranges is used.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TInputIterator, typename Size, typename TOutputIterator>
+  TOutputIterator copy_n(TInputIterator i_begin, Size count, TOutputIterator o_begin, TOutputIterator o_end)
+  {    
+    return  etl::copy(i_begin, i_begin + count, o_begin, o_end);;
   }
 
   //***************************************************************************
@@ -221,6 +276,30 @@ namespace etl
     }
 
     return out;
+  }
+
+  //***************************************************************************
+  /// copy_if
+  /// A form of copy_if where it terminates when the first end iterator is reached.
+  /// There is currently no STL equivelent.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TInputIterator, typename TOutputIterator, typename TUnaryPredicate>
+  TOutputIterator copy_if(TInputIterator  i_begin, TInputIterator  i_end,
+                          TOutputIterator o_begin, TOutputIterator o_end,
+                          TUnaryPredicate predicate)
+  {
+    while ((i_begin != i_end) && (o_begin != o_end))
+    {
+      if (predicate(*i_begin))
+      {
+        *o_begin++ = *i_begin;
+      }
+
+      ++i_begin;
+    }
+
+    return o_begin;
   }
 
   //***************************************************************************
@@ -449,10 +528,10 @@ namespace etl
   //***************************************************************************
   template <typename TSource, typename TDestinationTrue, typename TDestinationFalse, typename TUnaryPredicate>
   std::pair<TDestinationTrue, TDestinationFalse> partition_copy(TSource           begin,
-	                                                              TSource           end,
-	                                                              TDestinationTrue  destination_true,
-															                                	TDestinationFalse destination_false,
-															                                	TUnaryPredicate   predicate)
+                                                                TSource           end,
+                                                                TDestinationTrue  destination_true,
+                                                                TDestinationFalse destination_false,
+                                                                TUnaryPredicate   predicate)
   {
     while (begin != end)
     {
