@@ -36,7 +36,7 @@ namespace etl
   /// Default constructor.
   /// Attempts to come up with a reasonable non-zero seed.
   //***************************************************************************
-  random::random()
+  random_xorshift::random_xorshift()
   {
     // An attempt to come up with a reasonable non-zero seed,
     // based on the address of the instance.
@@ -49,7 +49,7 @@ namespace etl
   /// Constructor with seed value.
   ///\param seed The new seed value.
   //***************************************************************************
-  random::random(uint32_t seed)
+  random_xorshift::random_xorshift(uint32_t seed)
   {
     initialise(seed);
   }
@@ -58,7 +58,7 @@ namespace etl
   /// Initialises the sequence with a new seed value.
   ///\param seed The new seed value.
   //***************************************************************************
-  void random::initialise(uint32_t seed)
+  void random_xorshift::initialise(uint32_t seed)
   {
     // Add the first four primes to ensure that the seed isn't zero.
     state[0] = seed + 3;
@@ -68,9 +68,9 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Get the next random number.
+  /// Get the next random_xorshift number.
   //***************************************************************************
-  uint32_t random::operator()()
+  uint32_t random_xorshift::operator()()
   {
     uint32_t n = state[3];
     n ^= n << 11;

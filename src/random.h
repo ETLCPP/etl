@@ -35,17 +35,28 @@ SOFTWARE.
 
 namespace etl
 {
+  class random
+  {
+  public:
+
+    virtual ~random()
+    {
+    }
+
+    virtual uint32_t operator()() = 0;
+  };
+
   //***************************************************************************
   /// A 32 bit random number generator.
   /// Uses a 128 bit XOR shift algorithm.
   /// https://en.wikipedia.org/wiki/Xorshift
   //***************************************************************************
-  class random
+  class random_xorshift : public random
   {
     public:
 
-      random();
-      random(uint32_t seed);
+      random_xorshift();
+      random_xorshift(uint32_t seed);
       void initialise(uint32_t seed);
       uint32_t operator()();
 
