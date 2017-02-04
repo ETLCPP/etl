@@ -44,10 +44,24 @@ namespace
     TEST(test_sequence)
     {
       std::vector<uint32_t> out1(32768);
-
-      etl::random r;
+      etl::random_xorshift r;
       
-      std::generate(out1.begin(), out1.end(), r);
+      struct generator
+      {
+        generator(etl::random& r_)
+          : r(r_)
+        {
+        }
+
+        uint32_t operator()()
+        {
+          return r();
+        }
+
+        etl::random& r;
+      };
+
+      std::generate(out1.begin(), out1.end(), generator(r));
 
       std::ofstream file("random.csv");
 
