@@ -38,17 +38,7 @@ SOFTWARE.
 namespace etl
 {
   //*****************************************************************************
-  /// Fills uninitailised memory with N values.
-  ///\ingroup memory
-  //*****************************************************************************
-  template <typename TIterator, typename TSize, typename T>
-  TIterator uninitialized_fill_n(TIterator o_begin, TSize count, const T& value)
-  {
-    return etl::uninitialized_fill(o_begin, o_begin + count, value);
-  }
-
-  //*****************************************************************************
-  /// Fills uninitailised memory range with a value.
+  /// Fills uninitialised memory range with a value.
   ///\ingroup memory
   //*****************************************************************************
   template <typename TIterator, typename T>
@@ -58,7 +48,7 @@ namespace etl
 
     while (o_begin != o_end)
     {
-      ::new (static_cast<void*>(&*o_begin))) value_type(value);
+      ::new (static_cast<void*>(&*o_begin)) value_type(value);
       ++o_begin;
     }
 
@@ -66,32 +56,101 @@ namespace etl
   }
 
   //*****************************************************************************
-  /// Copies N objects to uninitailised memory.
+  /// Fills uninitialised memory range with a value.
   ///\ingroup memory
   //*****************************************************************************
-  template <typename TInputIterator, typename TSize, typename TOutputIterator>
-  TIterator uninitialized_copy_n(TInputIterator i_begin, TSize count, TOutputIterator o_begin)
+  template <typename TIterator, typename T, typename TCounter>
+  TIterator uninitialized_fill(TIterator o_begin, TIterator o_end, const T& value, TCounter& count)
   {
-    return etl::uninitialized_copy(i_begin, i_begin + count, o_begin);
+    typedef typename std::iterator_traits<TIterator>::value_type value_type;
+
+    while (o_begin != o_end)
+    {
+      ::new (static_cast<void*>(&*o_begin)) value_type(value);
+      ++o_begin;
+      ++count;
+    }
+
+    return o_begin;
   }
 
   //*****************************************************************************
-  /// Copies a range of objects to uninitailised memory.
+  /// Fills uninitialised memory with N values.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename TIterator, typename TSize, typename T>
+  TIterator uninitialized_fill_n(TIterator o_begin, TSize n, const T& value)
+  {
+    return etl::uninitialized_fill(o_begin, o_begin + n, value);
+  }
+
+  //*****************************************************************************
+  /// Fills uninitialised memory with N values.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename TIterator, typename TSize, typename T, typename TCounter>
+  TIterator uninitialized_fill_n(TIterator o_begin, TSize n, const T& value, TCounter& count)
+  {
+    return etl::uninitialized_fill(o_begin, o_begin + n, value, count);
+  }
+
+  //*****************************************************************************
+  /// Copies a range of objects to uninitialised memory.
   ///\ingroup memory
   //*****************************************************************************
   template <typename TInputIterator, typename TOutputIterator>
-  TIterator uninitialized_copy(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin)
+  TOutputIterator uninitialized_copy(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin)
   {
     typedef typename std::iterator_traits<TOutputIterator>::value_type value_type;
 
     while (i_begin != i_end)
     {
-      ::new (static_cast<void*>(&*o_begin))) value_type(*i_begin);
-      ++i_begin
-      ++o_begin
+      ::new (static_cast<void*>(&*o_begin)) value_type(*i_begin);
+      ++i_begin;
+      ++o_begin;
     }
 
     return o_begin;
+  }
+
+  //*****************************************************************************
+  /// Copies a range of objects to uninitialised memory.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename TInputIterator, typename TOutputIterator, typename TCounter>
+  TOutputIterator uninitialized_copy(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin, TCounter& count)
+  {
+    typedef typename std::iterator_traits<TOutputIterator>::value_type value_type;
+
+    while (i_begin != i_end)
+    {
+      ::new (static_cast<void*>(&*o_begin)) value_type(*i_begin);
+      ++i_begin;
+      ++o_begin;
+      ++count;
+    }
+
+    return o_begin;
+  }
+
+  //*****************************************************************************
+  /// Copies N objects to uninitialised memory.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename TInputIterator, typename TSize, typename TOutputIterator>
+  TOutputIterator uninitialized_copy_n(TInputIterator i_begin, TSize n, TOutputIterator o_begin)
+  {
+    return etl::uninitialized_copy(i_begin, i_begin + n, o_begin);
+  }
+
+  //*****************************************************************************
+  /// Copies N objects to uninitialised memory.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename TInputIterator, typename TSize, typename TOutputIterator, typename TCounter>
+  TOutputIterator uninitialized_copy_n(TInputIterator i_begin, TSize n, TOutputIterator o_begin, TCounter& count)
+  {
+    return etl::uninitialized_copy(i_begin, i_begin + n, o_begin, count);
   }
 }
 
