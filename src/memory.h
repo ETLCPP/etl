@@ -32,6 +32,9 @@ SOFTWARE.
 #define __ETL_MEMORY__
 
 #include <iterator>
+#include <algorithm>
+
+#include "type_traits.h"
 
 ///\defgroup memory memory
 ///\ingroup etl
@@ -174,12 +177,15 @@ namespace etl
   template <typename TOutputIterator>
   void uninitialized_default_construct(TOutputIterator o_begin, TOutputIterator o_end)
   {
-    typedef typename std::iterator_traits<TOutputIterator>::value_type value_type;
-
-    while (o_begin != o_end)
+    if (!etl::is_pod<typename std::iterator_traits<TOutputIterator>::type>::value)
     {
-      ::new (static_cast<void*>(etl::addressof(*o_begin))) value_type;
-      ++o_begin;
+      typedef typename std::iterator_traits<TOutputIterator>::value_type value_type;
+
+      while (o_begin != o_end)
+      {
+        ::new (static_cast<void*>(etl::addressof(*o_begin))) value_type;
+        ++o_begin;
+      }
     }
   }
 
@@ -191,13 +197,20 @@ namespace etl
   template <typename TOutputIterator, typename TCounter>
   void uninitialized_default_construct(TOutputIterator o_begin, TOutputIterator o_end, TCounter& count)
   {
-    typedef typename std::iterator_traits<TOutputIterator>::value_type value_type;
-
-    while (o_begin != o_end)
+    if (!etl::is_pod<typename std::iterator_traits<TOutputIterator>::type>::value)
     {
-      ::new (static_cast<void*>(etl::addressof(*o_begin))) value_type;
-      ++o_begin;
-      ++count;
+      typedef typename std::iterator_traits<TOutputIterator>::value_type value_type;
+
+      while (o_begin != o_end)
+      {
+        ::new (static_cast<void*>(etl::addressof(*o_begin))) value_type;
+        ++o_begin;
+        ++count;
+      }
+    }
+    else
+    {
+      count = std::distance(o_begin, o_end);
     }
   }
 
@@ -210,7 +223,10 @@ namespace etl
   {
     TOutputIterator o_end = o_begin + n;
 
-    etl::uninitialized_default_construct(o_begin, o_end);
+    if (!etl::is_pod<typename std::iterator_traits<TOutputIterator>::type>::value)
+    {
+        etl::uninitialized_default_construct(o_begin, o_end);
+    }
 
     return o_end;
   }
@@ -225,7 +241,14 @@ namespace etl
   {
     TOutputIterator o_end = o_begin + n;
 
-    etl::uninitialized_default_construct(o_begin, o_end, count);
+    if (!etl::is_pod<typename std::iterator_traits<TOutputIterator>::type>::value)
+    {
+        etl::uninitialized_default_construct(o_begin, o_end, count);
+    }
+    else
+    {
+        count += n;
+    }
 
     return o_end;
   }
@@ -298,7 +321,18 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-  inline void destroy_at(T* p)
+  typename etl::enable_if<etl::is_pod<T>::value, void>::type
+   destroy_at(T* p)
+  {
+  }
+
+  //*****************************************************************************
+  /// Destroys an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  typename etl::enable_if<!etl::is_pod<T>::value, void>::type
+   destroy_at(T* p)
   {
     p->~T();
   }
@@ -309,7 +343,20 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T, typename TCounter>
-  inline void destroy_at(T* p, TCounter& count)
+  typename etl::enable_if<etl::is_pod<T>::value, void>::type
+   destroy_at(T* p, TCounter& count)
+  {
+    --count;
+  }
+
+  //*****************************************************************************
+  /// Destroys an item at address p.
+  /// Debug counter version.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T, typename TCounter>
+  typename etl::enable_if<!etl::is_pod<T>::value, void>::type
+   destroy_at(T* p, TCounter& count)
   {
     p->~T();
     --count;
@@ -322,10 +369,13 @@ namespace etl
   template <typename TIterator>
   void destroy(TIterator i_begin, TIterator i_end)
   {
-    while (i_begin != i_end)
+    if (!etl::is_pod<typename std::iterator_traits<TIterator>::type>::value)
     {
-      etl::destroy_at(etl::addressof(*i_begin));
-      ++i_begin;
+      while (i_begin != i_end)
+      {
+        etl::destroy_at(etl::addressof(*i_begin));
+        ++i_begin;
+      }
     }
   }
 
@@ -337,11 +387,18 @@ namespace etl
   template <typename TIterator, typename TCounter>
   void destroy(TIterator i_begin, TIterator i_end, TCounter& count)
   {
-    while (i_begin != i_end)
+    if (!etl::is_pod<typename std::iterator_traits<TIterator>::type>::value)
     {
-      etl::destroy_at(etl::addressof(*i_begin));
-      ++i_begin;
-      --count;
+      while (i_begin != i_end)
+      {
+        etl::destroy_at(etl::addressof(*i_begin));
+        ++i_begin;
+        --count;
+      }
+    }
+    else
+    {
+      count -= std::distance(i_begin, i_end);
     }
   }
 
@@ -352,14 +409,21 @@ namespace etl
   template <typename TIterator, typename TSize>
   TIterator destroy_n(TIterator i_begin, TSize n)
   {
-    while (n > 0)
+    if (!etl::is_pod<typename std::iterator_traits<TIterator>::type>::value)
     {
-      etl::destroy_at(etl::addressof(*i_begin));
-      ++i_begin;
-      --n;
-    }
+      while (n > 0)
+      {
+        etl::destroy_at(etl::addressof(*i_begin));
+        ++i_begin;
+        --n;
+      }
 
-    return i_begin;
+      return i_begin;
+    }
+    else
+    {
+      return i_begin + n;
+    }
   }
 
   //*****************************************************************************
@@ -370,15 +434,23 @@ namespace etl
   template <typename TIterator, typename TSize, typename TCounter>
   TIterator destroy_n(TIterator i_begin, TSize n, TCounter& count)
   {
-    while (n > 0)
+    if (!etl::is_pod<typename std::iterator_traits<TIterator>::type>::value)
     {
-      etl::destroy_at(etl::addressof(*i_begin));
-      ++i_begin;
-      --n;
-      --count;
-    }
+      while (n > 0)
+      {
+        etl::destroy_at(etl::addressof(*i_begin));
+        ++i_begin;
+        --n;
+        --count;
+      }
 
-    return i_begin;
+      return i_begin;
+    }
+    else
+    {
+      count -= n;
+      return i_begin + n;
+    }
   }
 }
 
