@@ -232,6 +232,12 @@ namespace etl
   template <typename T> struct is_reference : false_type {};
   template <typename T> struct is_reference<T&> : true_type {};
 
+  /// is_pod
+  /// For C++03 only fundamental and pointers types can be detected.
+  ///\ingroup type_traits
+  template <typename T> struct is_pod : etl::integral_constant<bool, etl::is_fundamental<T>::value ||
+                                                                     etl::is_pointer<T>::value> {};
+
   /// conditional
   ///\ingroup type_traits
   template <bool B, typename T, typename F>  struct conditional { typedef T type; };
