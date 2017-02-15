@@ -74,6 +74,18 @@ namespace etl
       return *this;
     }
 
+    inline debug_count& operator +=(int32_t n)
+    {
+      count += n;
+      return *this;
+    }
+
+    inline debug_count& operator -=(int32_t n)
+    {
+      count -= n;
+      return *this;
+    }
+
     inline operator int32_t()
     {
       return count;
@@ -97,6 +109,16 @@ namespace etl
     }
 
     inline debug_count& operator --()
+    {
+      return *this;
+    }
+
+    inline debug_count& operator +=(int32_t /*n*/)
+    {
+      return *this;
+    }
+
+    inline debug_count& operator -=(int32_t /*n*/)
     {
       return *this;
     }
