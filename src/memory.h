@@ -56,7 +56,7 @@ namespace etl
   //*****************************************************************************
   template <typename TOutputIterator, typename T>
   typename etl::enable_if<etl::has_trivial_constructor<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
-   uninitialized_fill(TOutputIterator o_begin, TOutputIterator o_end, T value)
+   uninitialized_fill(TOutputIterator o_begin, TOutputIterator o_end, const T& value)
   {
     std::fill(o_begin, o_end, value);
 
@@ -89,7 +89,7 @@ namespace etl
   //*****************************************************************************
   template <typename TOutputIterator, typename T, typename TCounter>
   typename etl::enable_if<etl::has_trivial_constructor<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
-   uninitialized_fill(TOutputIterator o_begin, TOutputIterator o_end, T value, TCounter& count)
+   uninitialized_fill(TOutputIterator o_begin, TOutputIterator o_end, const T& value, TCounter& count)
   {
     std::fill(o_begin, o_end, value);
     count += std::distance(o_begin, o_end);
@@ -239,6 +239,50 @@ namespace etl
   }
 
   //*****************************************************************************
+  /// Default contruct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::has_trivial_constructor<T>::value, void>::type
+   uninitialized_default_construct(T* /*p*/)
+  {
+  }
+
+  //*****************************************************************************
+  /// Default contruct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T, typename TCounter>
+  typename etl::enable_if<etl::has_trivial_constructor<T>::value, void>::type
+   uninitialized_default_construct(T* /*p*/, TCounter& count)
+  {
+    ++count;
+  }
+
+  //*****************************************************************************
+  /// Default contruct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  typename etl::enable_if<!etl::has_trivial_constructor<T>::value, void>::type
+   uninitialized_default_construct(T* p)
+  {
+    ::new (p) T;
+  }
+
+  //*****************************************************************************
+  /// Default contruct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T, typename TCounter>
+  typename etl::enable_if<!etl::has_trivial_constructor<T>::value, void>::type
+   uninitialized_default_construct(T* p, TCounter& count)
+  {
+    ::new (p) T;
+    ++count;
+  }
+
+  //*****************************************************************************
   /// Default initialises a range of objects to uninitialised memory.
   ///\ingroup memory
   //*****************************************************************************
@@ -357,6 +401,48 @@ namespace etl
     count += n;
 
     return o_end;
+  }
+
+  //*****************************************************************************
+  /// Value construct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  inline void uninitialized_value_construct(T* p)
+  {
+    ::new (p) T();
+  }
+
+  //*****************************************************************************
+  /// Value construct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T, typename TCounter>
+  inline void uninitialized_value_construct(T* p, TCounter& count)
+  {
+    ::new (p) T();
+    ++count;
+  }
+
+  //*****************************************************************************
+  /// Copy construct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  inline void uninitialized_value_construct(T* p, const T& value)
+  {
+    ::new (p) T(value);
+  }
+
+  //*****************************************************************************
+  /// Copy construct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T, typename TCounter>
+  inline void uninitialized_value_construct(T* p, const T& value, TCounter& count)
+  {
+    ::new (p) T(value);
+    ++count;
   }
 
   //*****************************************************************************
@@ -521,8 +607,9 @@ namespace etl
     {
       etl::destroy_at(etl::addressof(*i_begin));
       ++i_begin;
-      --count;
     }
+
+    count -= std::distance(i_begin, i_end);
   }
 
   //*****************************************************************************
