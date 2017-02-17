@@ -244,7 +244,7 @@ namespace etl
   //*****************************************************************************
   template <typename T>
   typename etl::enable_if<etl::has_trivial_constructor<T>::value, void>::type
-   uninitialized_default_construct(T* /*p*/)
+   construct_default_at(T* /*p*/)
   {
   }
 
@@ -254,7 +254,7 @@ namespace etl
   //*****************************************************************************
   template <typename T, typename TCounter>
   typename etl::enable_if<etl::has_trivial_constructor<T>::value, void>::type
-   uninitialized_default_construct(T* /*p*/, TCounter& count)
+   construct_default_at(T* /*p*/, TCounter& count)
   {
     ++count;
   }
@@ -265,7 +265,7 @@ namespace etl
   //*****************************************************************************
   template <typename T>
   typename etl::enable_if<!etl::has_trivial_constructor<T>::value, void>::type
-   uninitialized_default_construct(T* p)
+   construct_default_at(T* p)
   {
     ::new (p) T;
   }
@@ -276,7 +276,7 @@ namespace etl
   //*****************************************************************************
   template <typename T, typename TCounter>
   typename etl::enable_if<!etl::has_trivial_constructor<T>::value, void>::type
-   uninitialized_default_construct(T* p, TCounter& count)
+   construct_default_at(T* p, TCounter& count)
   {
     ::new (p) T;
     ++count;
@@ -408,7 +408,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-  inline void uninitialized_value_construct(T* p)
+  inline void construct_value_at(T* p)
   {
     ::new (p) T();
   }
@@ -418,7 +418,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T, typename TCounter>
-  inline void uninitialized_value_construct(T* p, TCounter& count)
+  inline void construct_value_at(T* p, TCounter& count)
   {
     ::new (p) T();
     ++count;
@@ -429,7 +429,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-  inline void uninitialized_value_construct(T* p, const T& value)
+  inline void construct_copy_at(T* p, const T& value)
   {
     ::new (p) T(value);
   }
@@ -439,7 +439,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T, typename TCounter>
-  inline void uninitialized_value_construct(T* p, const T& value, TCounter& count)
+  inline void construct_copy_at(T* p, const T& value, TCounter& count)
   {
     ::new (p) T(value);
     ++count;
