@@ -55,8 +55,8 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TOutputIterator, typename T>
-  typename etl::enable_if<etl::is_pod<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
-   uninitialized_fill(TOutputIterator o_begin, TOutputIterator o_end, T value)
+  typename etl::enable_if<etl::has_trivial_constructor<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+   uninitialized_fill(TOutputIterator o_begin, TOutputIterator o_end, const T& value)
   {
     std::fill(o_begin, o_end, value);
 
@@ -68,7 +68,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TOutputIterator, typename T>
-  typename etl::enable_if<!etl::is_pod<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+  typename etl::enable_if<!etl::has_trivial_constructor<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
    uninitialized_fill(TOutputIterator o_begin, TOutputIterator o_end, const T& value)
   {
     typedef typename std::iterator_traits<TOutputIterator>::value_type value_type;
@@ -88,8 +88,8 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TOutputIterator, typename T, typename TCounter>
-  typename etl::enable_if<etl::is_pod<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
-   uninitialized_fill(TOutputIterator o_begin, TOutputIterator o_end, T value, TCounter& count)
+  typename etl::enable_if<etl::has_trivial_constructor<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+   uninitialized_fill(TOutputIterator o_begin, TOutputIterator o_end, const T& value, TCounter& count)
   {
     std::fill(o_begin, o_end, value);
     count += std::distance(o_begin, o_end);
@@ -103,7 +103,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TOutputIterator, typename T, typename TCounter>
-  typename etl::enable_if<!etl::is_pod<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+  typename etl::enable_if<!etl::has_trivial_constructor<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
    uninitialized_fill(TOutputIterator o_begin, TOutputIterator o_end, const T& value, TCounter& count)
   {
     count += std::distance(o_begin, o_end);
@@ -147,7 +147,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TInputIterator, typename TOutputIterator>
-  typename etl::enable_if<etl::is_pod<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+  typename etl::enable_if<etl::has_trivial_constructor<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
    uninitialized_copy(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin)
   {
     return std::copy(i_begin, i_end, o_begin);
@@ -158,7 +158,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TInputIterator, typename TOutputIterator>
-  typename etl::enable_if<!etl::is_pod<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+  typename etl::enable_if<!etl::has_trivial_constructor<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
    uninitialized_copy(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin)
   {
     typedef typename std::iterator_traits<TOutputIterator>::value_type value_type;
@@ -181,7 +181,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TInputIterator, typename TOutputIterator, typename TCounter>
-  typename etl::enable_if<etl::is_pod<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+  typename etl::enable_if<etl::has_trivial_constructor<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
    uninitialized_copy(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin, TCounter& count)
   {
     TOutputIterator o_end = std::copy(i_begin, i_end, o_begin);
@@ -196,7 +196,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TInputIterator, typename TOutputIterator, typename TCounter>
-  typename etl::enable_if<!etl::is_pod<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+  typename etl::enable_if<!etl::has_trivial_constructor<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
    uninitialized_copy(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin, TCounter& count)
   {
     typedef typename std::iterator_traits<TOutputIterator>::value_type value_type;
@@ -239,11 +239,55 @@ namespace etl
   }
 
   //*****************************************************************************
+  /// Default contruct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::has_trivial_constructor<T>::value, void>::type
+   construct_default_at(T* /*p*/)
+  {
+  }
+
+  //*****************************************************************************
+  /// Default contruct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T, typename TCounter>
+  typename etl::enable_if<etl::has_trivial_constructor<T>::value, void>::type
+   construct_default_at(T* /*p*/, TCounter& count)
+  {
+    ++count;
+  }
+
+  //*****************************************************************************
+  /// Default contruct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  typename etl::enable_if<!etl::has_trivial_constructor<T>::value, void>::type
+   construct_default_at(T* p)
+  {
+    ::new (p) T;
+  }
+
+  //*****************************************************************************
+  /// Default contruct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T, typename TCounter>
+  typename etl::enable_if<!etl::has_trivial_constructor<T>::value, void>::type
+   construct_default_at(T* p, TCounter& count)
+  {
+    ::new (p) T;
+    ++count;
+  }
+
+  //*****************************************************************************
   /// Default initialises a range of objects to uninitialised memory.
   ///\ingroup memory
   //*****************************************************************************
   template <typename TOutputIterator>
-  typename etl::enable_if<etl::is_pod<typename std::iterator_traits<TOutputIterator>::value_type>::value, void>::type
+  typename etl::enable_if<etl::has_trivial_constructor<typename std::iterator_traits<TOutputIterator>::value_type>::value, void>::type
    uninitialized_default_construct(TOutputIterator /*o_begin*/, TOutputIterator /*o_end*/)
   {
   }
@@ -253,7 +297,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TOutputIterator>
-  typename etl::enable_if<!etl::is_pod<typename std::iterator_traits<TOutputIterator>::value_type>::value, void>::type
+  typename etl::enable_if<!etl::has_trivial_constructor<typename std::iterator_traits<TOutputIterator>::value_type>::value, void>::type
    uninitialized_default_construct(TOutputIterator o_begin, TOutputIterator o_end)
   {
     typedef typename std::iterator_traits<TOutputIterator>::value_type value_type;
@@ -271,7 +315,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TOutputIterator, typename TCounter>
-  typename etl::enable_if<etl::is_pod<typename std::iterator_traits<TOutputIterator>::value_type>::value, void>::type
+  typename etl::enable_if<etl::has_trivial_constructor<typename std::iterator_traits<TOutputIterator>::value_type>::value, void>::type
    uninitialized_default_construct(TOutputIterator o_begin, TOutputIterator o_end, TCounter& count)
   {
     count = std::distance(o_begin, o_end);
@@ -283,7 +327,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TOutputIterator, typename TCounter>
-  typename etl::enable_if<!etl::is_pod<typename std::iterator_traits<TOutputIterator>::value_type>::value, void>::type
+  typename etl::enable_if<!etl::has_trivial_constructor<typename std::iterator_traits<TOutputIterator>::value_type>::value, void>::type
    uninitialized_default_construct(TOutputIterator o_begin, TOutputIterator o_end, TCounter& count)
   {
     count += std::distance(o_begin, o_end);
@@ -302,7 +346,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TOutputIterator, typename TSize>
-  typename etl::enable_if<etl::is_pod<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+  typename etl::enable_if<etl::has_trivial_constructor<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
    uninitialized_default_construct_n(TOutputIterator o_begin, TSize n)
   {
     TOutputIterator o_end = o_begin + n;
@@ -315,7 +359,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TOutputIterator, typename TSize>  
-  typename etl::enable_if<!etl::is_pod<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+  typename etl::enable_if<!etl::has_trivial_constructor<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
    uninitialized_default_construct_n(TOutputIterator o_begin, TSize n)
   {
     TOutputIterator o_end = o_begin + n;
@@ -331,7 +375,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TOutputIterator, typename TSize, typename TCounter>
-  typename etl::enable_if<etl::is_pod<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+  typename etl::enable_if<etl::has_trivial_constructor<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
    uninitialized_default_construct_n(TOutputIterator o_begin, TSize n, TCounter& count)
   {
     TOutputIterator o_end = o_begin + n;
@@ -347,7 +391,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TOutputIterator, typename TSize, typename TCounter>
-  typename etl::enable_if<!etl::is_pod<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+  typename etl::enable_if<!etl::has_trivial_constructor<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
    uninitialized_default_construct_n(TOutputIterator o_begin, TSize n, TCounter& count)
   {
     TOutputIterator o_end = o_begin + n;
@@ -357,6 +401,48 @@ namespace etl
     count += n;
 
     return o_end;
+  }
+
+  //*****************************************************************************
+  /// Value construct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  inline void construct_value_at(T* p)
+  {
+    ::new (p) T();
+  }
+
+  //*****************************************************************************
+  /// Value construct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T, typename TCounter>
+  inline void construct_value_at(T* p, TCounter& count)
+  {
+    ::new (p) T();
+    ++count;
+  }
+
+  //*****************************************************************************
+  /// Copy construct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  inline void construct_copy_at(T* p, const T& value)
+  {
+    ::new (p) T(value);
+  }
+
+  //*****************************************************************************
+  /// Copy construct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T, typename TCounter>
+  inline void construct_copy_at(T* p, const T& value, TCounter& count)
+  {
+    ::new (p) T(value);
+    ++count;
   }
 
   //*****************************************************************************
@@ -430,7 +516,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-  typename etl::enable_if<etl::is_pod<T>::value, void>::type
+  typename etl::enable_if<etl::has_trivial_destructor<T>::value, void>::type
    destroy_at(T* /*p*/)
   {
   }
@@ -440,7 +526,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-  typename etl::enable_if<!etl::is_pod<T>::value, void>::type
+  typename etl::enable_if<!etl::has_trivial_destructor<T>::value, void>::type
    destroy_at(T* p)
   {
     p->~T();
@@ -452,7 +538,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T, typename TCounter>
-  typename etl::enable_if<etl::is_pod<T>::value, void>::type
+  typename etl::enable_if<etl::has_trivial_destructor<T>::value, void>::type
    destroy_at(T* /*p*/, TCounter& count)
   {
     --count;
@@ -464,7 +550,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T, typename TCounter>
-  typename etl::enable_if<!etl::is_pod<T>::value, void>::type
+  typename etl::enable_if<!etl::has_trivial_destructor<T>::value, void>::type
    destroy_at(T* p, TCounter& count)
   {
     p->~T();
@@ -476,7 +562,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TIterator>
-  typename etl::enable_if<etl::is_pod<typename std::iterator_traits<TIterator>::value_type>::value, void>::type
+  typename etl::enable_if<etl::has_trivial_destructor<typename std::iterator_traits<TIterator>::value_type>::value, void>::type
    destroy(TIterator /*i_begin*/, TIterator /*i_end*/)
   {
   }
@@ -486,7 +572,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TIterator>
-  typename etl::enable_if<!etl::is_pod<typename std::iterator_traits<TIterator>::value_type>::value, void>::type
+  typename etl::enable_if<!etl::has_trivial_destructor<typename std::iterator_traits<TIterator>::value_type>::value, void>::type
    destroy(TIterator i_begin, TIterator i_end)
   {
     while (i_begin != i_end)
@@ -502,7 +588,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TIterator, typename TCounter>
-  typename etl::enable_if<etl::is_pod<typename std::iterator_traits<TIterator>::value_type>::value, void>::type
+  typename etl::enable_if<etl::has_trivial_destructor<typename std::iterator_traits<TIterator>::value_type>::value, void>::type
    destroy(TIterator i_begin, TIterator i_end, TCounter& count)
   {
     count -= std::distance(i_begin, i_end);
@@ -514,15 +600,16 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TIterator, typename TCounter>
-  typename etl::enable_if<!etl::is_pod<typename std::iterator_traits<TIterator>::value_type>::value, void>::type
+  typename etl::enable_if<!etl::has_trivial_destructor<typename std::iterator_traits<TIterator>::value_type>::value, void>::type
    destroy(TIterator i_begin, TIterator i_end, TCounter& count)
   {
     while (i_begin != i_end)
     {
       etl::destroy_at(etl::addressof(*i_begin));
       ++i_begin;
-      --count;
     }
+
+    count -= std::distance(i_begin, i_end);
   }
 
   //*****************************************************************************
@@ -530,7 +617,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TIterator, typename TSize>
-  typename etl::enable_if<etl::is_pod<typename std::iterator_traits<TIterator>::value_type>::value, TIterator>::type
+  typename etl::enable_if<etl::has_trivial_destructor<typename std::iterator_traits<TIterator>::value_type>::value, TIterator>::type
    destroy_n(TIterator i_begin, TSize n)
   {
     return i_begin + n;
@@ -541,7 +628,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TIterator, typename TSize>
-  typename etl::enable_if<!etl::is_pod<typename std::iterator_traits<TIterator>::value_type>::value, TIterator>::type
+  typename etl::enable_if<!etl::has_trivial_destructor<typename std::iterator_traits<TIterator>::value_type>::value, TIterator>::type
    destroy_n(TIterator i_begin, TSize n)
   {
     while (n > 0)
@@ -560,7 +647,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TIterator, typename TSize, typename TCounter>
-  typename etl::enable_if<etl::is_pod<typename std::iterator_traits<TIterator>::value_type>::value, TIterator>::type
+  typename etl::enable_if<etl::has_trivial_destructor<typename std::iterator_traits<TIterator>::value_type>::value, TIterator>::type
    destroy_n(TIterator i_begin, TSize n, TCounter& count)
   {
     count -= n;
@@ -573,7 +660,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TIterator, typename TSize, typename TCounter>
-  typename etl::enable_if<!etl::is_pod<typename std::iterator_traits<TIterator>::value_type>::value, TIterator>::type
+  typename etl::enable_if<!etl::has_trivial_destructor<typename std::iterator_traits<TIterator>::value_type>::value, TIterator>::type
    destroy_n(TIterator i_begin, TSize n, TCounter& count)
   {
     count -= n;

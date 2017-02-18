@@ -233,10 +233,30 @@ namespace etl
   template <typename T> struct is_reference<T&> : true_type {};
 
   /// is_pod
-  /// For C++03 only fundamental and pointers types can be detected.
+  /// For C++03, only fundamental and pointers types are recognised.
   ///\ingroup type_traits
   template <typename T> struct is_pod : etl::integral_constant<bool, etl::is_fundamental<T>::value ||
                                                                      etl::is_pointer<T>::value> {};
+
+  /// has_trivial_constructor
+  /// For C++03, only POD types are recognised.
+  ///\ingroup type_traits
+  template <typename T> struct has_trivial_constructor : etl::is_pod<T> {};
+
+  /// has_trivial_copy_constructor
+  /// For C++03, only POD types are recognised.
+  ///\ingroup type_traits
+  template <typename T> struct has_trivial_copy_constructor : etl::is_pod<T> {};
+
+  /// has_trivial_destructor
+  /// For C++03, only POD types are recognised.
+  ///\ingroup type_traits
+  template <typename T> struct has_trivial_destructor : etl::is_pod<T> {};
+
+  /// has_trivial_assignment
+  /// For C++03, only POD types are recognised.
+  ///\ingroup type_traits
+  template <typename T> struct has_trivial_assignment : etl::is_pod<T> {};
 
   /// conditional
   ///\ingroup type_traits
