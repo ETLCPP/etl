@@ -74,7 +74,7 @@ namespace etl
         }
 
         //*********************************************************************
-        explicit operator TValue() const
+        operator TValue() const
         {
             return value;
         }
