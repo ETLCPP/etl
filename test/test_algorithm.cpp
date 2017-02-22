@@ -471,5 +471,51 @@ namespace
       int* p = std::find_if_not(std::begin(data1), std::end(data1), std::bind2nd(std::less<int>(), 4));
       CHECK_EQUAL(5, *p);
     }
+
+    //=========================================================================
+    TEST(for_each_if)
+    {
+      int data1[] = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
+      
+      struct Sum
+      {
+        Sum() : sum(0) { }
+
+        Sum& operator()(int i)
+        {
+          sum += i;
+
+          return *this;
+        }
+
+        int sum;
+      } accumulator;
+
+      // For each if everything less than 5.
+      accumulator = etl::for_each_if(std::begin(data1),
+                                     std::end(data1),
+                                     accumulator,
+                                     std::bind2nd(std::less<int>(), 5));
+
+      CHECK_EQUAL(10, accumulator.sum);
+    }
+
+    //=========================================================================
+    TEST(transform_if)
+    {
+      int data1[] = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
+      int data2[] = { 0, 0, 0, 0, 0, 0, 0, 0,  0, 0 };
+      int data3[] = { 2, 0, 4, 0, 6, 0, 8, 0,  0, 0 };
+
+      // Double everything less than 5.
+      etl::transform_if(std::begin(data1), 
+                        std::end(data1), 
+                        std::begin(data2), 
+                        std::bind2nd(std::multiplies<int>(), 2),
+                        std::bind2nd(std::less<int>(), 5));
+
+      bool is_same = std::equal(std::begin(data2), std::end(data2), std::begin(data3));
+      CHECK(is_same);
+    }
   };
 }

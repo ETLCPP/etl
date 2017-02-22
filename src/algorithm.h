@@ -547,6 +547,45 @@ namespace etl
 
     return std::pair<TDestinationTrue, TDestinationFalse>(destination_true, destination_false);
   }
+
+  //***************************************************************************
+  /// Like for_each but applies a predicate before calling the function.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename TUnaryFunction, typename TUnaryPredicate>
+  TUnaryFunction for_each_if(TIterator begin, const TIterator end, TUnaryFunction function, TUnaryPredicate predicate)
+  {
+    while (begin != end)
+    {
+      if (predicate(*begin))
+      {
+        function(*begin);
+      }
+
+      ++begin;
+    }
+
+    return function;
+  }
+
+  //***************************************************************************
+  /// Like transform but applies a predicate before calling the function.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TInputIterator, typename TOutputIterator, typename TUnaryFunction, typename TUnaryPredicate>
+  void transform_if(TInputIterator i_begin, const TInputIterator i_end, TOutputIterator o_begin, TUnaryFunction function, TUnaryPredicate predicate)
+  {
+    while (i_begin != i_end)
+    {
+      if (predicate(*i_begin))
+      {
+        *o_begin = function(*i_begin);
+      }
+
+      ++i_begin;
+      ++o_begin;
+    }
+  }
 }
 
 #endif
