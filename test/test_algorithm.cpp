@@ -476,7 +476,7 @@ namespace
     TEST(for_each_if)
     {
       int data1[] = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
-      
+
       struct Sum
       {
         Sum() : sum(0) { }
@@ -503,18 +503,18 @@ namespace
     //=========================================================================
     TEST(transform_if)
     {
-      int data1[] = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
-      int data2[] = { 0, 0, 0, 0, 0, 0, 0, 0,  0, 0 };
-      int data3[] = { 2, 0, 4, 0, 6, 0, 8, 0,  0, 0 };
+      int input[]   = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
+      int output[]  = { 0, 0, 0, 0, 0, 0, 0, 0,  0, 0 };
+      int compare[] = { 2, 4, 6, 8, 0, 0, 0, 0,  0, 0 };
 
-      // Double everything less than 5.
-      etl::transform_if(std::begin(data1), 
-                        std::end(data1), 
-                        std::begin(data2), 
+      // Double everything less than 5 and copy to output.
+      etl::transform_if(std::begin(input),
+                        std::end(input),
+                        std::begin(output),
                         std::bind2nd(std::multiplies<int>(), 2),
                         std::bind2nd(std::less<int>(), 5));
 
-      bool is_same = std::equal(std::begin(data2), std::end(data2), std::begin(data3));
+      bool is_same = std::equal(std::begin(output), std::end(output), std::begin(compare));
       CHECK(is_same);
     }
   };

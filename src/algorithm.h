@@ -253,7 +253,7 @@ namespace etl
   //***************************************************************************
   template <typename TInputIterator, typename Size, typename TOutputIterator>
   TOutputIterator copy_n(TInputIterator i_begin, Size count, TOutputIterator o_begin, TOutputIterator o_end)
-  {    
+  {
     return  etl::copy(i_begin, i_begin + count, o_begin, o_end);;
   }
 
@@ -579,11 +579,10 @@ namespace etl
     {
       if (predicate(*i_begin))
       {
-        *o_begin = function(*i_begin);
+        *o_begin++ = function(*i_begin);
       }
 
       ++i_begin;
-      ++o_begin;
     }
   }
 }
