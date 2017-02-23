@@ -112,33 +112,6 @@ namespace etl
     typedef size_t size_type;
 
     //*************************************************************************
-    /// Gets the current size of the vector.
-    ///\return The current size of the vector.
-    //*************************************************************************
-    size_type size() const
-    {
-      return current_size;
-    }
-
-    //*************************************************************************
-    /// Checks the 'empty' state of the vector.
-    ///\return <b>true</b> if empty.
-    //*************************************************************************
-    bool empty() const
-    {
-      return (current_size == 0);
-    }
-
-    //*************************************************************************
-    /// Checks the 'full' state of the vector.
-    ///\return <b>true</b> if full.
-    //*************************************************************************
-    bool full() const
-    {
-      return current_size == MAX_SIZE;
-    }
-
-    //*************************************************************************
     /// Returns the capacity of the vector.
     ///\return The capacity of the vector.
     //*************************************************************************
@@ -156,27 +129,16 @@ namespace etl
       return MAX_SIZE;
     }
 
-    //*************************************************************************
-    /// Returns the remaining capacity.
-    ///\return The remaining capacity.
-    //*************************************************************************
-    size_t available() const
-    {
-      return max_size() - size();
-    }
-
   protected:
 
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
     vector_base(size_t max_size)
-      : current_size(0),
-        MAX_SIZE(max_size)
+      : MAX_SIZE(max_size)
     {
     }
 
-    size_type       current_size;     ///<The current number of elements in the vector.
     const size_type MAX_SIZE;         ///<The maximum number of elements in the vector.
     etl::debug_count construct_count; ///< Internal debugging.
   };
