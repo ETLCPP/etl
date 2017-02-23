@@ -312,7 +312,7 @@ namespace etl
 
       while (first != last)
       {
-        p_buffer[current_size++] = (void*)*first++;
+        *p_end++ = (void*)*first++;
       }
     }
 
