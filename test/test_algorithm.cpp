@@ -501,6 +501,67 @@ namespace
     }
 
     //=========================================================================
+    TEST(transform_4_parameter)
+    {
+      int input[]    = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
+      int output[]   = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+      int compare[] = { 2, 16, 4, 14, 6, 0, 0, 0, 0, 0 };
+
+      // Double everything and copy to output.
+      etl::transform(std::begin(input),
+                     std::end(input),
+                     std::begin(output),
+                     std::begin(output) + (etl::size(output) / 2),
+                     std::bind2nd(std::multiplies<int>(), 2));
+
+      bool is_same = std::equal(std::begin(output), std::end(output), std::begin(compare));
+      CHECK(is_same);
+
+      std::fill(std::begin(output), std::end(output), 0);
+
+      etl::transform(std::begin(input),
+                     std::begin(input) + (etl::size(input) / 2),
+                     std::begin(output),
+                     std::end(output),
+                     std::bind2nd(std::multiplies<int>(), 2));
+
+      is_same = std::equal(std::begin(output), std::end(output), std::begin(compare));
+      CHECK(is_same);
+    }
+
+    //=========================================================================
+    TEST(transform_n_random_iterator)
+    {
+      int input[] = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
+      int output[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+      int compare[] = { 2, 16, 4, 14, 6, 12, 8, 0, 0, 0 };
+
+      etl::transform_n(std::begin(input),
+                       7,
+                       std::begin(output),
+                       std::bind2nd(std::multiplies<int>(), 2));
+
+      bool is_same = std::equal(std::begin(output), std::end(output), std::begin(compare));
+      CHECK(is_same);
+    }
+
+    //=========================================================================
+    TEST(transform_n_non_random_iterator)
+    {
+      std::list<int> input = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
+      int output[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+      int compare[] = { 2, 16, 4, 14, 6, 12, 8, 0, 0, 0 };
+
+      etl::transform_n(std::begin(input),
+                       7,
+                       std::begin(output),
+                       std::bind2nd(std::multiplies<int>(), 2));
+
+      bool is_same = std::equal(std::begin(output), std::end(output), std::begin(compare));
+      CHECK(is_same);
+    }
+
+    //=========================================================================
     TEST(transform_if)
     {
       int input[]   = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
@@ -515,6 +576,64 @@ namespace
                         std::bind2nd(std::less<int>(), 5));
 
       bool is_same = std::equal(std::begin(output), std::end(output), std::begin(compare));
+      CHECK(is_same);
+    }
+
+    //=========================================================================
+    TEST(transform_if_4_parameter)
+    {
+      int input[] = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
+      int output[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+      int compare1[] = { 2, 4, 6, 8, 0, 0, 0, 0,  0, 0 };
+      int compare2[] = { 2, 4, 6, 0, 0, 0, 0, 0,  0, 0 };
+
+      // Double everything and copy to output.
+      etl::transform_if(std::begin(input),
+                        std::end(input),
+                        std::begin(output),
+                        std::begin(output) + (etl::size(output) / 2),
+                        std::bind2nd(std::multiplies<int>(), 2),
+                        std::bind2nd(std::less<int>(), 5));
+
+      bool is_same = std::equal(std::begin(output), std::end(output), std::begin(compare1));
+      CHECK(is_same);
+
+      std::fill(std::begin(output), std::end(output), 0);
+
+      etl::transform_if(std::begin(input),
+                        std::begin(input) + (etl::size(input) / 2),
+                        std::begin(output),
+                        std::end(output),
+                        std::bind2nd(std::multiplies<int>(), 2),
+                        std::bind2nd(std::less<int>(), 5));
+
+      is_same = std::equal(std::begin(output), std::end(output), std::begin(compare2));
+      CHECK(is_same);
+    }
+
+    //=========================================================================
+    TEST(partition_transform)
+    {
+      int input[]         = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
+      int output_true[]   = { 0, 0, 0, 0, 0, 0, 0, 0,  0, 0 };
+      int output_false[]  = { 0, 0, 0, 0, 0, 0, 0, 0,  0, 0 };
+      int compare_true[]  = { 2, 4, 6, 8, 0, 0, 0, 0,  0, 0 };
+      int compare_false[] = { -16, -14, -12, -10, -20, -18, 0, 0, 0, 0 };
+
+      // Multiply everything less than 5 by 2 and copy to output_true.
+      // Multiply everything not less than 5 by -2 and copy to output_false.
+      etl::partition_transform(std::begin(input),
+                               std::end(input),
+                               std::begin(output_true),
+                               std::begin(output_false),
+                               std::bind2nd(std::multiplies<int>(), 2),
+                               std::bind2nd(std::multiplies<int>(), -2),
+                               std::bind2nd(std::less<int>(), 5));
+
+      bool is_same = std::equal(std::begin(output_true), std::end(output_true), std::begin(compare_true));
+      CHECK(is_same);
+
+      is_same = std::equal(std::begin(output_false), std::end(output_false), std::begin(compare_false));
       CHECK(is_same);
     }
   };
