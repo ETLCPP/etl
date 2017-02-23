@@ -91,9 +91,10 @@ namespace etl
   typename etl::enable_if<etl::has_trivial_constructor<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
    uninitialized_fill(TOutputIterator o_begin, TOutputIterator o_end, const T& value, TCounter& count)
   {
-    std::fill(o_begin, o_end, value);
     count += std::distance(o_begin, o_end);
 
+    std::fill(o_begin, o_end, value);
+    
     return o_end;
   }
 
@@ -108,13 +109,7 @@ namespace etl
   {
     count += std::distance(o_begin, o_end);
 
-    typedef typename std::iterator_traits<TOutputIterator>::value_type value_type;
-
-    while (o_begin != o_end)
-    {
-      ::new (static_cast<void*>(etl::addressof(*o_begin))) value_type(value);
-      ++o_begin;
-    }
+    etl::uninitialized_fill(o_begin, o_end, value);
 
     return o_end;
   }
@@ -199,16 +194,7 @@ namespace etl
   typename etl::enable_if<!etl::has_trivial_constructor<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
    uninitialized_copy(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin, TCounter& count)
   {
-    typedef typename std::iterator_traits<TOutputIterator>::value_type value_type;
-
-    TOutputIterator o_end = o_begin;
-
-    while (i_begin != i_end)
-    {
-      ::new (static_cast<void*>(etl::addressof(*o_end))) value_type(*i_begin);
-      ++i_begin;
-      ++o_end;
-    }
+    TOutputIterator o_end = etl::uninitialized_copy(i_begin, i_end, o_begin);
 
     count += std::distance(o_begin, o_end);
 
@@ -244,7 +230,7 @@ namespace etl
   //*****************************************************************************
   template <typename T>
   typename etl::enable_if<etl::has_trivial_constructor<T>::value, void>::type
-   construct_default_at(T* /*p*/)
+   create_default_at(T* /*p*/)
   {
   }
 
@@ -254,7 +240,7 @@ namespace etl
   //*****************************************************************************
   template <typename T, typename TCounter>
   typename etl::enable_if<etl::has_trivial_constructor<T>::value, void>::type
-   construct_default_at(T* /*p*/, TCounter& count)
+   create_default_at(T* /*p*/, TCounter& count)
   {
     ++count;
   }
@@ -265,7 +251,7 @@ namespace etl
   //*****************************************************************************
   template <typename T>
   typename etl::enable_if<!etl::has_trivial_constructor<T>::value, void>::type
-   construct_default_at(T* p)
+   create_default_at(T* p)
   {
     ::new (p) T;
   }
@@ -276,7 +262,7 @@ namespace etl
   //*****************************************************************************
   template <typename T, typename TCounter>
   typename etl::enable_if<!etl::has_trivial_constructor<T>::value, void>::type
-   construct_default_at(T* p, TCounter& count)
+   create_default_at(T* p, TCounter& count)
   {
     ::new (p) T;
     ++count;
@@ -332,13 +318,7 @@ namespace etl
   {
     count += std::distance(o_begin, o_end);
 
-    typedef typename std::iterator_traits<TOutputIterator>::value_type value_type;
-
-    while (o_begin != o_end)
-    {
-      ::new (static_cast<void*>(etl::addressof(*o_begin))) value_type;
-      ++o_begin;
-    }
+    etl::uninitialized_default_construct(o_begin, o_end);
   }
 
   //*****************************************************************************
@@ -408,7 +388,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-  inline void construct_value_at(T* p)
+  inline void create_value_at(T* p)
   {
     ::new (p) T();
   }
@@ -418,7 +398,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T, typename TCounter>
-  inline void construct_value_at(T* p, TCounter& count)
+  inline void create_value_at(T* p, TCounter& count)
   {
     ::new (p) T();
     ++count;
@@ -429,7 +409,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-  inline void construct_copy_at(T* p, const T& value)
+  inline void create_copy_at(T* p, const T& value)
   {
     ::new (p) T(value);
   }
@@ -439,7 +419,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T, typename TCounter>
-  inline void construct_copy_at(T* p, const T& value, TCounter& count)
+  inline void create_copy_at(T* p, const T& value, TCounter& count)
   {
     ::new (p) T(value);
     ++count;
@@ -450,7 +430,21 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TOutputIterator>
-  void uninitialized_value_construct(TOutputIterator o_begin, TOutputIterator o_end)
+  typename etl::enable_if<etl::has_trivial_constructor<typename std::iterator_traits<TOutputIterator>::value_type>::value, void>::type
+   uninitialized_value_construct(TOutputIterator o_begin, TOutputIterator o_end)
+  {
+    typedef typename std::iterator_traits<TOutputIterator>::value_type value_type;
+
+    std::fill(o_begin, o_end, value_type());
+  }
+
+  //*****************************************************************************
+  /// Default initialises a range of objects to uninitialised memory.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename TOutputIterator>
+  typename etl::enable_if<!etl::has_trivial_constructor<typename std::iterator_traits<TOutputIterator>::value_type>::value, void>::type
+   uninitialized_value_construct(TOutputIterator o_begin, TOutputIterator o_end)
   {
     typedef typename std::iterator_traits<TOutputIterator>::value_type value_type;
 
@@ -471,13 +465,7 @@ namespace etl
   {
     count += std::distance(o_begin, o_end);
 
-    typedef typename std::iterator_traits<TOutputIterator>::value_type value_type;
-
-    while (o_begin != o_end)
-    {
-      ::new (static_cast<void*>(etl::addressof(*o_begin))) value_type();
-      ++o_begin;      
-    }
+    etl::uninitialized_value_construct(o_begin, o_end);
   }
 
   //*****************************************************************************
@@ -603,13 +591,13 @@ namespace etl
   typename etl::enable_if<!etl::has_trivial_destructor<typename std::iterator_traits<TIterator>::value_type>::value, void>::type
    destroy(TIterator i_begin, TIterator i_end, TCounter& count)
   {
+    count -= std::distance(i_begin, i_end);
+
     while (i_begin != i_end)
     {
       etl::destroy_at(etl::addressof(*i_begin));
       ++i_begin;
     }
-
-    count -= std::distance(i_begin, i_end);
   }
 
   //*****************************************************************************
