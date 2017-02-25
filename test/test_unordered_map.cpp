@@ -105,6 +105,27 @@ namespace
     NDC N18 = NDC("S");
     NDC N19 = NDC("T");
 
+    DC M0 = DC("A");
+    DC M1 = DC("B");
+    DC M2 = DC("C");
+    DC M3 = DC("D");
+    DC M4 = DC("E");
+    DC M5 = DC("F");
+    DC M6 = DC("G");
+    DC M7 = DC("H");
+    DC M8 = DC("I");
+    DC M9 = DC("J");
+    DC M10 = DC("K");
+    DC M11 = DC("L");
+    DC M12 = DC("M");
+    DC M13 = DC("N");
+    DC M14 = DC("O");
+    DC M15 = DC("P");
+    DC M16 = DC("Q");
+    DC M17 = DC("R");
+    DC M18 = DC("S");
+    DC M19 = DC("T");
+   
     const char* K0  = "FF"; // 0
     const char* K1  = "FG"; // 1
     const char* K2  = "FH"; // 2
@@ -127,6 +148,8 @@ namespace
     const char* K19 = "FY"; // 9
 
     std::string K[] = { K0, K1, K2, K3, K4, K5, K6, K7, K8, K9, K10, K11, K12, K13, K14, K15, K16, K17, K18, K19 };
+
+    std::vector<ElementDC> initial_data_dc;
 
     std::vector<ElementNDC> initial_data;
     std::vector<ElementNDC> excess_data;
@@ -174,9 +197,16 @@ namespace
           ElementNDC(K15, N15), ElementNDC(K16, N16), ElementNDC(K17, N17), ElementNDC(K18, N18), ElementNDC(K19, N19)
         };
 
+        ElementDC n4[] =
+        {
+          ElementDC(K0, M0), ElementDC(K1, M1), ElementDC(K2, M2), ElementDC(K3, M3), ElementDC(K4, M4),
+          ElementDC(K5, M5), ElementDC(K6, M6), ElementDC(K7, M7), ElementDC(K8, M8), ElementDC(K9, M9)
+        };
+
         initial_data.assign(std::begin(n), std::end(n));
         excess_data.assign(std::begin(n2), std::end(n2));
         different_data.assign(std::begin(n3), std::end(n3));
+        initial_data_dc.assign(std::begin(n4), std::end(n4));
       }
     };
 
@@ -194,7 +224,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_range)
     {
-      DataNDC data(initial_data.begin(), initial_data.end());
+      DataDC data(initial_data_dc.begin(), initial_data_dc.end());
 
       CHECK(data.size() == SIZE);
       CHECK(!data.empty());
@@ -266,46 +296,46 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_index_read)
     {
-      DataNDC data(initial_data.begin(), initial_data.end());
+      DataDC data(initial_data_dc.begin(), initial_data_dc.end());
 
-      CHECK_EQUAL(N0, data[K0]);
-      CHECK_EQUAL(N1, data[K1]);
-      CHECK_EQUAL(N2, data[K2]);
-      CHECK_EQUAL(N3, data[K3]);
-      CHECK_EQUAL(N4, data[K4]);
-      CHECK_EQUAL(N5, data[K5]);
-      CHECK_EQUAL(N6, data[K6]);
-      CHECK_EQUAL(N7, data[K7]);
-      CHECK_EQUAL(N8, data[K8]);
-      CHECK_EQUAL(N9, data[K9]);
+      CHECK_EQUAL(M0, data[K0]);
+      CHECK_EQUAL(M1, data[K1]);
+      CHECK_EQUAL(M2, data[K2]);
+      CHECK_EQUAL(M3, data[K3]);
+      CHECK_EQUAL(M4, data[K4]);
+      CHECK_EQUAL(M5, data[K5]);
+      CHECK_EQUAL(M6, data[K6]);
+      CHECK_EQUAL(M7, data[K7]);
+      CHECK_EQUAL(M8, data[K8]);
+      CHECK_EQUAL(M9, data[K9]);
     }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_index_write)
     {
-      DataNDC data(initial_data.begin(), initial_data.end());
+      DataDC data(initial_data_dc.begin(), initial_data_dc.end());
 
-      data[K0] = N9;
-      data[K1] = N8;
-      data[K2] = N7;
-      data[K3] = N6;
-      data[K4] = N5;
-      data[K5] = N4;
-      data[K6] = N3;
-      data[K7] = N2;
-      data[K8] = N1;
-      data[K9] = N0;
+      data[K0] = M9;
+      data[K1] = M8;
+      data[K2] = M7;
+      data[K3] = M6;
+      data[K4] = M5;
+      data[K5] = M4;
+      data[K6] = M3;
+      data[K7] = M2;
+      data[K8] = M1;
+      data[K9] = M0;
 
-      CHECK_EQUAL(N9, data[K0]);
-      CHECK_EQUAL(N8, data[K1]);
-      CHECK_EQUAL(N7, data[K2]);
-      CHECK_EQUAL(N6, data[K3]);
-      CHECK_EQUAL(N5, data[K4]);
-      CHECK_EQUAL(N4, data[K5]);
-      CHECK_EQUAL(N3, data[K6]);
-      CHECK_EQUAL(N2, data[K7]);
-      CHECK_EQUAL(N1, data[K8]);
-      CHECK_EQUAL(N0, data[K9]);
+      CHECK_EQUAL(M9, data[K0]);
+      CHECK_EQUAL(M8, data[K1]);
+      CHECK_EQUAL(M7, data[K2]);
+      CHECK_EQUAL(M6, data[K3]);
+      CHECK_EQUAL(M5, data[K4]);
+      CHECK_EQUAL(M4, data[K5]);
+      CHECK_EQUAL(M3, data[K6]);
+      CHECK_EQUAL(M2, data[K7]);
+      CHECK_EQUAL(M1, data[K8]);
+      CHECK_EQUAL(M0, data[K9]);
     }
 
     //*************************************************************************

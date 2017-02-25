@@ -546,6 +546,9 @@
     <ClInclude Include="..\..\src\iterator.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\memory.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\AssertException.cpp">
@@ -846,6 +849,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_set.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_iterator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_memory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_vector_non_trivial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

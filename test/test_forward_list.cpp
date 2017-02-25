@@ -52,6 +52,7 @@ namespace
     typedef etl::forward_list<ItemNDC, SIZE> DataNDC;
     typedef etl::iforward_list<ItemNDC>      IDataNDC;
 
+    typedef std::forward_list<ItemDC> CompareDataDC;
     typedef std::forward_list<ItemNDC> CompareDataNDC;
     typedef std::vector<ItemNDC> InitialDataNDC;
 
@@ -77,7 +78,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_default_constructor)
     {
-      DataNDC data;
+      DataDC data;
 
       CHECK(data.empty());
       CHECK_EQUAL(data.max_size(), SIZE);
@@ -160,12 +161,12 @@ namespace
     {
       const size_t INITIAL_SIZE = 4;
       const size_t NEW_SIZE = 8;
-      const ItemNDC VALUE("1");
+      const ItemDC VALUE("1");
 
-      DataNDC data(INITIAL_SIZE, VALUE);
+      DataDC data(INITIAL_SIZE, VALUE);
       data.resize(NEW_SIZE);
 
-      CompareDataNDC compare_data(INITIAL_SIZE, VALUE);
+      CompareDataDC compare_data(INITIAL_SIZE, VALUE);
       compare_data.resize(NEW_SIZE);
 
       CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
@@ -207,12 +208,12 @@ namespace
     {
       const size_t INITIAL_SIZE = 4;
       const size_t NEW_SIZE = 2;
-      const ItemNDC VALUE("1");
+      const ItemDC VALUE("1");
 
-      DataNDC data(INITIAL_SIZE, VALUE);
+      DataDC data(INITIAL_SIZE, VALUE);
       data.resize(NEW_SIZE);
 
-      CompareDataNDC compare_data(INITIAL_SIZE, VALUE);
+      CompareDataDC compare_data(INITIAL_SIZE, VALUE);
       compare_data.resize(NEW_SIZE);
 
       CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
@@ -447,28 +448,28 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_front_null)
     {
-      CompareDataNDC compare_data;
-      DataNDC data;
+      CompareDataDC compare_data;
+      DataDC data;
 
-      compare_data.push_front(ItemNDC("1"));
-      compare_data.push_front(ItemNDC("2"));
-      compare_data.push_front(ItemNDC("3"));
-      compare_data.push_front(ItemNDC("4"));
-      compare_data.push_front(ItemNDC("5"));
-      compare_data.push_front(ItemNDC("6"));
+      compare_data.push_front(ItemDC("1"));
+      compare_data.push_front(ItemDC("2"));
+      compare_data.push_front(ItemDC("3"));
+      compare_data.push_front(ItemDC("4"));
+      compare_data.push_front(ItemDC("5"));
+      compare_data.push_front(ItemDC("6"));
 
       CHECK_NO_THROW(data.push_front());
-      data.front() = ItemNDC("1");
+      data.front() = ItemDC("1");
       CHECK_NO_THROW(data.push_front());
-      data.front() = ItemNDC("2");
+      data.front() = ItemDC("2");
       CHECK_NO_THROW(data.push_front());
-      data.front() = ItemNDC("3");
+      data.front() = ItemDC("3");
       CHECK_NO_THROW(data.push_front());
-      data.front() = ItemNDC("4");
+      data.front() = ItemDC("4");
       CHECK_NO_THROW(data.push_front());
-      data.front() = ItemNDC("5");
+      data.front() = ItemDC("5");
       CHECK_NO_THROW(data.push_front());
-      data.front() = ItemNDC("6");
+      data.front() = ItemDC("6");
 
       CHECK_EQUAL(6U, data.size());
       CHECK_EQUAL(6, std::distance(data.begin(), data.end()));
