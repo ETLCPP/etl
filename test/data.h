@@ -89,10 +89,6 @@ class TestDataNDC
 {
 public:
 
-  TestDataNDC()
-  : value(T())
-  {}
-
   TestDataNDC(const T& value)
     : value(value)
   {}

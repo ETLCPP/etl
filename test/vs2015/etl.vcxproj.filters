@@ -531,6 +531,24 @@
     <ClInclude Include="..\..\src\iunordered_multiset.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\unordered_multimap.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\random.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\user_type.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\debug_count.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\iterator.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\memory.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\AssertException.cpp">
@@ -632,9 +650,6 @@
     <ClCompile Include="..\test_list.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_map.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_crc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -711,15 +726,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_optional.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_set.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_multimap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_multiset.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_priority_queue.cpp">
@@ -825,6 +831,33 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_intrusive_queue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\random.cpp">
+      <Filter>ETL\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_random.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_map.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_multimap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_multiset.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_set.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_iterator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_memory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_vector_non_trivial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

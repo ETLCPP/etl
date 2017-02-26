@@ -37,11 +37,11 @@ SOFTWARE.
 #include <functional>
 #include <stddef.h>
 
+#include "platform.h"
 #include "nullptr.h"
 #include "private/list_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
-#include "platform.h"
 #include "algorithm.h"
 
 #ifdef ETL_COMPILER_MICROSOFT
@@ -449,7 +449,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {      
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(ETL_DEBUG)
       difference_type count = std::distance(first, last);
       ETL_ASSERT(count >= 0, ETL_ERROR(list_iterator));
       ETL_ASSERT(size_t(count) <= MAX_SIZE, ETL_ERROR(list_full));
@@ -471,7 +471,7 @@ namespace etl
     //*************************************************************************
     void assign(size_t n, parameter_t value)
     {
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(ETL_DEBUG)
       ETL_ASSERT(n <= MAX_SIZE, ETL_ERROR(list_full));
 #endif
 
@@ -1049,7 +1049,7 @@ namespace etl
         return; // Can't more to before yourself!
       }
 
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(ETL_DEBUG)
       // Check that we are not doing an illegal move!
       for (const_iterator item = first; item != last; ++item)
       {
@@ -1088,7 +1088,7 @@ namespace etl
     data_node_t& allocate_data_node(parameter_t value)
     {
       data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
-      new (&(p_data_node->value)) T(value);
+      ::new (&(p_data_node->value)) T(value);
       ++construct_count;
 
       return *p_data_node;

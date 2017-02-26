@@ -1,5 +1,3 @@
-///\file
-
 /******************************************************************************
 The MIT License(MIT)
 
@@ -7,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 http://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2016 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,45 +26,54 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_RANDOM__
-#define __ETL_RANDOM__
+#include <UnitTest++/UnitTest++.h>
 
 #include <stdint.h>
 
-namespace etl
+#include "../src/random.h"
+
+#include <vector>
+#include <algorithm>
+#include <fstream>
+
+namespace
 {
-  //***************************************************************************
-  /// The base for all 32 bit random number generators.
-  //***************************************************************************
-  class random
+  SUITE(test_random)
   {
-  public:
-
-    virtual ~random()
+    //=========================================================================
+    TEST(test_sequence)
     {
+      std::vector<uint32_t> out1(32768);
+      etl::random_xorshift r;
+      
+      struct generator
+      {
+        generator(etl::random& r_)
+          : r(r_)
+        {
+        }
+
+        uint32_t operator()()
+        {
+          return r();
+        }
+
+        etl::random& r;
+      };
+
+      std::generate(out1.begin(), out1.end(), generator(r));
+
+      std::ofstream file("random.csv");
+
+      if (!file.fail())
+      {
+        for (size_t i = 0; i < out1.size(); i += 2)
+        {
+          file << (out1[i] >> 16) << "," << (out1[i + 1] >> 16) << "\n";
+        }
+      }
+
+      file.close();
     }
-
-    virtual uint32_t operator()() = 0;
-  };
-
-  //***************************************************************************
-  /// A 32 bit random number generator.
-  /// Uses a 128 bit XOR shift algorithm.
-  /// https://en.wikipedia.org/wiki/Xorshift
-  //***************************************************************************
-  class random_xorshift : public random
-  {
-    public:
-
-      random_xorshift();
-      random_xorshift(uint32_t seed);
-      void initialise(uint32_t seed);
-      uint32_t operator()();
-
-    private:
-
-      uint32_t state[4];
   };
 }
-
-#endif

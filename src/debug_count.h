@@ -34,6 +34,8 @@ SOFTWARE.
 #include <stdint.h>
 #include <assert.h>
 
+#include "platform.h"
+
 ///\defgroup debug_count debug count
 ///\ingroup utilities
 
@@ -50,7 +52,7 @@ namespace etl
   {
   public:
     
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(ETL_DEBUG)
     inline debug_count()
       : count(0)
     {
@@ -71,6 +73,18 @@ namespace etl
     {
       --count;
       assert(count >= 0);
+      return *this;
+    }
+
+    inline debug_count& operator +=(int32_t n)
+    {
+      count += n;
+      return *this;
+    }
+
+    inline debug_count& operator -=(int32_t n)
+    {
+      count -= n;
       return *this;
     }
 
@@ -97,6 +111,16 @@ namespace etl
     }
 
     inline debug_count& operator --()
+    {
+      return *this;
+    }
+
+    inline debug_count& operator +=(int32_t /*n*/)
+    {
+      return *this;
+    }
+
+    inline debug_count& operator -=(int32_t /*n*/)
     {
       return *this;
     }

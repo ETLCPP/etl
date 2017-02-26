@@ -1252,7 +1252,7 @@ namespace etl
     void create_element_front()
     {
       --_begin;
-      new (&(*_begin)) T();
+      ::new (&(*_begin)) T();
       ++current_size;
       ++construct_count;
     }
@@ -1283,7 +1283,7 @@ namespace etl
 
       do
       {
-        new (&(*item++)) T(*from);
+        ::new (&(*item++)) T(*from);
         ++from;
         ++current_size;
         ++construct_count;
@@ -1295,7 +1295,7 @@ namespace etl
     //*********************************************************************
     void create_element_back()
     {
-      new (&(*_end)) T();
+      ::new (&(*_end)) T();
       ++_end;
       ++current_size;
       ++construct_count;
@@ -1307,7 +1307,7 @@ namespace etl
     void create_element_front(parameter_t value)
     {
       --_begin;
-      new (&(*_begin)) T(value);
+      ::new (&(*_begin)) T(value);
       ++current_size;
       ++construct_count;
     }
@@ -1317,7 +1317,7 @@ namespace etl
     //*********************************************************************
     void create_element_back(parameter_t value)
     {
-      new (&(*_end)) T(value);
+      ::new (&(*_end)) T(value);
       ++_end;
       ++current_size;
       ++construct_count;

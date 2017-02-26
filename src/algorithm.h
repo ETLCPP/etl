@@ -549,7 +549,7 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Like for_each but applies a predicate before calling the function.
+  /// Like std::for_each but applies a predicate before calling the function.
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TIterator, typename TUnaryFunction, typename TUnaryPredicate>
@@ -569,11 +569,66 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Like transform but applies a predicate before calling the function.
+  /// A form of std::transform where the transform returns when the first range
+  /// end is reached.
+  /// There is currently no STL equivalent.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TInputIterator, typename TOutputIterator, typename TUnaryFunction>
+  void transform(TInputIterator  i_begin,
+                 TInputIterator  i_end,
+                 TOutputIterator o_begin,
+                 TOutputIterator o_end,
+                 TUnaryFunction  function)
+  {
+    while ((i_begin != i_end) && (o_begin != o_end))
+    {
+      *o_begin++ = function(*i_begin++);
+    }
+  }
+
+  //***************************************************************************
+  /// Transform 'n' items.
+  /// There is currently no STL equivalent.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TInputIterator, typename TSize, typename TOutputIterator, typename TUnaryFunction>
+  typename etl::enable_if<etl::is_random_iterator<TInputIterator>::value, void>::type
+   transform_n(TInputIterator  i_begin,
+               TSize           n,
+               TOutputIterator o_begin,
+               TUnaryFunction  function)
+  {
+    std::transform(i_begin, i_begin + n, o_begin, function);
+  }
+
+  //***************************************************************************
+  /// Transform 'n' items.
+  /// There is currently no STL equivalent.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TInputIterator, typename TSize, typename TOutputIterator, typename TUnaryFunction>
+  typename etl::enable_if<!etl::is_random_iterator<TInputIterator>::value, void>::type
+   transform_n(TInputIterator  i_begin,
+               TSize           n,
+               TOutputIterator o_begin,
+               TUnaryFunction  function)
+  {
+    while (n > 0)
+    {
+      *o_begin++ = function(*i_begin++);
+      --n;
+    }
+  }
+
+  //***************************************************************************
+  /// Like std::transform but applies a predicate before calling the function.
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TInputIterator, typename TOutputIterator, typename TUnaryFunction, typename TUnaryPredicate>
-  void transform_if(TInputIterator i_begin, const TInputIterator i_end, TOutputIterator o_begin, TUnaryFunction function, TUnaryPredicate predicate)
+  TOutputIterator transform_if(TInputIterator i_begin, const TInputIterator i_end,
+                               TOutputIterator o_begin, TUnaryFunction function,
+                               TUnaryPredicate predicate)
   {
     while (i_begin != i_end)
     {
@@ -584,6 +639,63 @@ namespace etl
 
       ++i_begin;
     }
+
+    return o_begin;
+  }
+
+  //***************************************************************************
+  /// Like std::transform but applies a predicate before calling the function.
+  /// Returns when the first range end is reached.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TInputIterator, typename TOutputIterator, typename TUnaryFunction, typename TUnaryPredicate>
+  TOutputIterator transform_if(TInputIterator i_begin, const TInputIterator i_end,
+                               TOutputIterator o_begin, TOutputIterator o_end,
+                               TUnaryFunction function,
+                               TUnaryPredicate predicate)
+  {
+    while ((i_begin != i_end) && (o_begin != o_end))
+    {
+      if (predicate(*i_begin))
+      {
+        *o_begin++ = function(*i_begin);
+      }
+
+      ++i_begin;
+    }
+
+    return o_begin;
+  }
+
+  //***************************************************************************
+  /// Transforms the elements from the range (begin, end) to two different ranges
+  /// depending on the value returned by the predicate.<br>
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TSource, typename TDestinationTrue, typename TDestinationFalse,
+            typename TUnaryFunctionTrue, typename TUnaryFunctionFalse, typename TUnaryPredicate>
+  std::pair<TDestinationTrue, TDestinationFalse> partition_transform(TSource             begin,
+                                                                     TSource             end,
+                                                                     TDestinationTrue    destination_true,
+                                                                     TDestinationFalse   destination_false,
+                                                                     TUnaryFunctionTrue  function_true,
+                                                                     TUnaryFunctionFalse function_false,
+                                                                     TUnaryPredicate     predicate)
+  {
+    while (begin != end)
+    {
+      if (predicate(*begin))
+      {
+        *destination_true++ = function_true(*begin++);
+      }
+      else
+      {
+        *destination_false++ = function_false(*begin++);
+      }
+    }
+
+    return std::pair<TDestinationTrue, TDestinationFalse>(destination_true, destination_false);
+>>>>>>> origin/development
   }
 }
 

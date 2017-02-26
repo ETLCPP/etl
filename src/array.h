@@ -41,6 +41,7 @@ SOFTWARE.
 #include "parameter_type.h"
 #include "static_assert.h"
 #include "error_handler.h"
+#include "algorithm.h"
 
 ///\defgroup array array
 /// A replacement for std::array if you haven't got C++0x11.
@@ -76,18 +77,18 @@ namespace etl
     }
   };
 
-	//***************************************************************************
+  //***************************************************************************
   ///\ingroup array
   /// A replacement for std::array if you haven't got C++0x11.
-	//***************************************************************************
+  //***************************************************************************
   template <typename T, const size_t SIZE_>
   class array
-	{
+  {
   private:
 
     typedef typename parameter_type<T>::type parameter_t;
 
-	public:
+  public:
 
     enum
     {
@@ -102,9 +103,9 @@ namespace etl
     typedef T*                                    pointer;
     typedef const T*                              const_pointer;
     typedef T*                                    iterator;
-		typedef const T*                              const_iterator;
-		typedef std::reverse_iterator<iterator>       reverse_iterator;
-		typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef const T*                              const_iterator;
+    typedef std::reverse_iterator<iterator>       reverse_iterator;
+    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
     //*************************************************************************
     // Element access
@@ -204,29 +205,29 @@ namespace etl
     // Iterators
     //*************************************************************************
 
-		//*************************************************************************
-		/// Returns an iterator to the beginning of the array.
-		//*************************************************************************
-		iterator begin()
-		{
-			return &_buffer[0];
-		}
-    
-		//*************************************************************************
-		/// Returns a const iterator to the beginning of the array.
-		//*************************************************************************
-		const_iterator begin() const
-		{
-			return &_buffer[0];
-		}        
+    //*************************************************************************
+    /// Returns an iterator to the beginning of the array.
+    //*************************************************************************
+    iterator begin()
+    {
+      return &_buffer[0];
+    }
 
-		//*************************************************************************
-		/// Returns a const iterator to the beginning of the array.
-		//*************************************************************************
-		const_iterator cbegin() const
-		{
-			return begin();
-		} 
+    //*************************************************************************
+    /// Returns a const iterator to the beginning of the array.
+    //*************************************************************************
+    const_iterator begin() const
+    {
+      return &_buffer[0];
+    }
+
+    //*************************************************************************
+    /// Returns a const iterator to the beginning of the array.
+    //*************************************************************************
+    const_iterator cbegin() const
+    {
+      return begin();
+    }
 
     //*************************************************************************
     /// Returns an iterator to the end of the array.
@@ -252,53 +253,53 @@ namespace etl
       return &_buffer[SIZE];
     }
 
-		//*************************************************************************
-		// Returns an reverse iterator to the reverse beginning of the array.
-		//*************************************************************************
-		reverse_iterator rbegin()
-		{
-			return reverse_iterator(end());
-		}
-    
-		//*************************************************************************
-		/// Returns a const reverse iterator to the reverse beginning of the array.
-		//*************************************************************************
-		const_reverse_iterator rbegin() const
-		{
-			return const_reverse_iterator(end());
-		}        
+    //*************************************************************************
+    // Returns an reverse iterator to the reverse beginning of the array.
+    //*************************************************************************
+    reverse_iterator rbegin()
+    {
+      return reverse_iterator(end());
+    }
 
-		//*************************************************************************
-		/// Returns a const reverse iterator to the reverse beginning of the array.
-		//*************************************************************************
-		const_reverse_iterator crbegin() const
-		{
-			return const_reverse_iterator(end());
-		} 
+    //*************************************************************************
+    /// Returns a const reverse iterator to the reverse beginning of the array.
+    //*************************************************************************
+    const_reverse_iterator rbegin() const
+    {
+      return const_reverse_iterator(end());
+    }
 
-		//*************************************************************************
-		/// Returns a reverse iterator to the end of the array.
-		//*************************************************************************
-		reverse_iterator rend()
-		{
-			return reverse_iterator(begin());
-		}
-  
-		//*************************************************************************
-		/// Returns a const reverse iterator to the end of the array.
-		//*************************************************************************
-		const_reverse_iterator rend() const
-		{
-			return const_reverse_iterator(begin());
-		}
+    //*************************************************************************
+    /// Returns a const reverse iterator to the reverse beginning of the array.
+    //*************************************************************************
+    const_reverse_iterator crbegin() const
+    {
+      return const_reverse_iterator(end());
+    }
 
-		//*************************************************************************
-		/// Returns a const reverse iterator to the end of the array.
-		//*************************************************************************
-		const_reverse_iterator crend() const
-		{
-			return const_reverse_iterator(begin());
-		} 
+    //*************************************************************************
+    /// Returns a reverse iterator to the end of the array.
+    //*************************************************************************
+    reverse_iterator rend()
+    {
+      return reverse_iterator(begin());
+    }
+
+    //*************************************************************************
+    /// Returns a const reverse iterator to the end of the array.
+    //*************************************************************************
+    const_reverse_iterator rend() const
+    {
+      return const_reverse_iterator(begin());
+    }
+
+    //*************************************************************************
+    /// Returns a const reverse iterator to the end of the array.
+    //*************************************************************************
+    const_reverse_iterator crend() const
+    {
+      return const_reverse_iterator(begin());
+    }
 
     //*************************************************************************
     // Capacity
@@ -312,21 +313,21 @@ namespace etl
       return (SIZE == 0);
     }
 
-		//*************************************************************************
-		/// Returns the size of the array.
-		//*************************************************************************
-		size_t size() const
-		{
-			return SIZE;
-		}
+    //*************************************************************************
+    /// Returns the size of the array.
+    //*************************************************************************
+    size_t size() const
+    {
+      return SIZE;
+    }
 
-		//*************************************************************************
-		/// Returns the maximum possible size of the array.
-		//*************************************************************************
-		size_t max_size() const
-		{
-			return SIZE;
-		} 
+    //*************************************************************************
+    /// Returns the maximum possible size of the array.
+    //*************************************************************************
+    size_t max_size() const
+    {
+      return SIZE;
+    }
 
     //*************************************************************************
     // Operations
@@ -353,20 +354,215 @@ namespace etl
       }
     }
 
+    //*************************************************************************
+    /// Fills the array from the range.
+    /// If the range is larger than the array then the extra data is ignored.
+    /// If the range is smaller than the array then the unused array elements are left unmodified.
+    ///\param first The iterator to the first item in the ramge.
+    ///\param last  The iterator to one past the final item in the range.
+    //*************************************************************************
+    template <typename TIterator>
+    void assign(TIterator first, const TIterator last)
+    {
+      iterator itr = begin();
+
+      etl::copy(first, last, begin(), end());
+    }
+
+    //*************************************************************************
+    /// Fills the array from the range.
+    /// If the range is larger than the array then the extra data is ignored.
+    /// If the range is smaller than the array then the unused array elements are initialised with the supplied value.
+    ///\param first The iterator to the first item in the ramge.
+    ///\param last  The iterator to one past the final item in the range.
+    //*************************************************************************
+    template <typename TIterator>
+    void assign(TIterator first, const TIterator last, parameter_t value)
+    {
+      // Copy from the range.
+      iterator p = etl::copy(first, last, begin(), end());
+
+      // Default initialise any that are left.
+      std::fill(p, end(), value);
+    }
+
+    //*************************************************************************
+    /// Inserts a value into the array.
+    ///\param position The index of the position to insert at.
+    ///\param value    The value to insert.
+    //*************************************************************************
+    inline iterator insert_at(size_t position, parameter_t value)
+    {
+      return insert(begin() + position, value);
+    }
+
+    //*************************************************************************
+    /// Inserts a value into the array.
+    ///\param position The iterator to the position to insert at.
+    ///\param value    The value to insert.
+    //*************************************************************************
+    iterator insert(const_iterator position, parameter_t value)
+    {
+      iterator p = const_cast<iterator>(position);
+
+      std::copy_backward(p, end() - 1, end());
+      *p = value;
+
+      return p;
+    }
+
+    //*************************************************************************
+    /// Insert into the array from the range.
+    ///\param position The position to insert at.
+    ///\param first    The iterator to the first item in the range.
+    ///\param last     The iterator to one past the final item in the range.
+    //*************************************************************************
+    template <typename TIterator>
+    inline iterator insert_at(size_t position, TIterator first, const TIterator last)
+    {
+      return insert(begin() + position, first, last);
+    }
+
+    //*************************************************************************
+    /// Insert into the array from the range.
+    ///\param position The position to insert at.
+    ///\param first    The iterator to the first item in the range.
+    ///\param last     The iterator to one past the final item in the range.
+    //*************************************************************************
+    template <typename TIterator>
+    iterator insert(const_iterator position, TIterator first, const TIterator last)
+    {
+      iterator p = const_cast<iterator>(position);
+      iterator result(p);
+
+      size_t source_size       = std::distance(first, last);
+      size_t destination_space = std::distance(position, cend());
+
+      // Do we need to move anything?
+      if (source_size < destination_space)
+      {
+        size_t length = SIZE - (std::distance(begin(), p) + source_size);
+        std::copy_backward(p, p + length, end());
+      }
+
+      // Copy from the range.
+      etl::copy(first, last, p, end());
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// Erases a value from the array.
+    /// The after erase, the last value in the array will be unmodified.
+    ///\param position The index of the position to erase at.
+    //*************************************************************************
+    inline iterator erase_at(size_t position)
+    {
+      return erase(begin() + position);
+    }
+
+    //*************************************************************************
+    /// Inserts a value into the array.
+    /// The after erase, the last value in the array will be unmodified.
+    ///\param position The iterator to the position to erase at.
+    //*************************************************************************
+    iterator erase(const_iterator position)
+    {
+      iterator p = const_cast<iterator>(position);
+      std::copy(p + 1, end(), p);
+
+      return p;
+    }
+
+    //*************************************************************************
+    /// Erases a range of values from the array.
+    /// The after erase, the last values in the array will be unmodified.
+    ///\param first The first item to erase.
+    ///\param last  The one past the last item to erase.
+    //*************************************************************************
+    iterator erase_range(size_t first, size_t last)
+    {
+      return erase(begin() + first, begin() + last);
+    }
+
+    //*************************************************************************
+    /// Erases a range of values from the array.
+    /// The after erase, the last values in the array will be unmodified.
+    ///\param first The first item to erase.
+    ///\param last  The one past the last item to erase.
+    //*************************************************************************
+    iterator erase(const_iterator first, const_iterator last)
+    {
+      iterator p = const_cast<iterator>(first);
+      std::copy(last, cend(), p);
+      return p;
+    }
+
+    //*************************************************************************
+    /// Erases a value from the array.
+    ///\param position The index of the position to erase at.
+    ///\param value    The value to use to overwrite the last element in the array.
+    //*************************************************************************
+    inline iterator erase_at(size_t position, parameter_t value)
+    {
+      return erase(begin() + position, value);
+    }
+
+    //*************************************************************************
+    /// Inserts a value into the array.
+    ///\param position The iterator to the position to erase at.
+    ///\param value    The value to use to overwrite the last element in the array.
+    //*************************************************************************
+    iterator erase(const_iterator position, parameter_t value)
+    {
+      iterator p = const_cast<iterator>(position);
+
+      std::copy(p + 1, end(), p);
+      back() = value;
+
+      return p;
+    }
+
+    //*************************************************************************
+    /// Erases a range of values from the array.
+    ///\param first The first item to erase.
+    ///\param last  The one past the last item to erase.
+    ///\param value The value to use to overwrite the last elements in the array.
+    //*************************************************************************
+    iterator erase_range(size_t first, size_t last, parameter_t value)
+    {
+      return erase(begin() + first, begin() + last, value);
+    }
+
+    //*************************************************************************
+    /// Erases a range of values from the array.
+    ///\param position The iterator to the position to erase at.
+    ///\param value    The value to use to overwrite the last elements in the array.
+    //*************************************************************************
+    iterator erase(const_iterator first, const_iterator last, parameter_t value)
+    {
+      iterator p = const_cast<iterator>(first);
+
+      p = std::copy(last, cend(), p);
+      std::fill(p, end(), value);
+
+      return const_cast<iterator>(first);
+    }
+
     /// The array data.
     T _buffer[SIZE];
   };
 
   //*************************************************************************
-	/// Overloaded swap for etl::array<T, SIZE>
-	///\param lhs The first array.
-	///\param rhs The second array.
-	//*************************************************************************
+  /// Overloaded swap for etl::array<T, SIZE>
+  ///\param lhs The first array.
+  ///\param rhs The second array.
+  //*************************************************************************
   template <typename T, const size_t SIZE>
   void swap(etl::array<T, SIZE> &lhs, etl::array<T, SIZE> &rhs)
-	{
-		lhs.swap(rhs);
-	}
+  {
+    lhs.swap(rhs);
+  }
 
   //*************************************************************************
   /// Equal operator.
@@ -391,7 +587,7 @@ namespace etl
   {
     return !(lhs == rhs);
   }
-  
+
   //*************************************************************************
   /// Less than operator.
   ///\param lhs The first array.
@@ -402,8 +598,8 @@ namespace etl
   bool operator <(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
     return std::lexicographical_compare(lhs.cbegin(),
-                                        lhs.cend(), 
-                                        rhs.cbegin(), 
+                                        lhs.cend(),
+                                        rhs.cbegin(),
                                         rhs.cend());
   }
 

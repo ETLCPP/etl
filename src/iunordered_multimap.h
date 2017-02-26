@@ -37,6 +37,7 @@ SOFTWARE.
 #include <utility>
 #include <stddef.h>
 
+#include "platform.h"
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "hash.h"
@@ -628,7 +629,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(ETL_DEBUG)
       difference_type count = std::distance(first, last);
       ETL_ASSERT(count >= 0, ETL_ERROR(unordered_multimap_iterator));
       ETL_ASSERT(size_t(count) <= max_size() , ETL_ERROR(unordered_multimap_full));
@@ -668,7 +669,7 @@ namespace etl
       {
         // Get a new node.
         node_t& node = *pnodepool->allocate<node_t>();
-        new (&node.key_value_pair) value_type(key_value_pair);
+        ::new (&node.key_value_pair) value_type(key_value_pair);
         ++construct_count;
 
         // Just add the pointer to the bucket;
@@ -698,7 +699,7 @@ namespace etl
 
         // Get a new node.
         node_t& node = *pnodepool->allocate<node_t>();
-        new (&node.key_value_pair) value_type(key_value_pair);
+        ::new (&node.key_value_pair) value_type(key_value_pair);
         ++construct_count;
 
         // Add the node to the end of the bucket;

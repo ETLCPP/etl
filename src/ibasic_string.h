@@ -400,7 +400,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(ETL_DEBUG)
       difference_type count = std::distance(first, last);
       ETL_ASSERT(count >= 0, ETL_ERROR(string_iterator));
 #endif
@@ -893,7 +893,7 @@ namespace etl
     //*********************************************************************
     size_t find(const_pointer s, size_t pos = 0) const
     {
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(ETL_DEBUG)
       if ((pos + etl::strlen(s)) > size())
       {
         return npos;
@@ -920,7 +920,7 @@ namespace etl
     //*********************************************************************
     size_t find(const_pointer s, size_t pos, size_t n) const
     {
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(ETL_DEBUG)
       if ((pos + etl::strlen(s) - n) > size())
       {
         return npos;

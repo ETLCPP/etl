@@ -98,6 +98,28 @@ namespace
     NDC N18 = NDC("S");
     NDC N19 = NDC("T");
 
+    DC M0 = DC("A");
+    DC M1 = DC("B");
+    DC M2 = DC("C");
+    DC M3 = DC("D");
+    DC M4 = DC("E");
+    DC M5 = DC("F");
+    DC M6 = DC("G");
+    DC M7 = DC("H");
+    DC M8 = DC("I");
+    DC M9 = DC("J");
+    DC M10 = DC("K");
+    DC M11 = DC("L");
+    DC M12 = DC("M");
+    DC M13 = DC("N");
+    DC M14 = DC("O");
+    DC M15 = DC("P");
+    DC M16 = DC("Q");
+    DC M17 = DC("R");
+    DC M18 = DC("S");
+    DC M19 = DC("T");
+
+    std::vector<ElementDC>  initial_data_dc;
     std::vector<ElementNDC> initial_data;
     std::vector<ElementNDC> excess_data;
     std::vector<ElementNDC> different_data;
@@ -144,9 +166,16 @@ namespace
           ElementNDC(15, N15), ElementNDC(16, N16), ElementNDC(17, N17), ElementNDC(18, N18), ElementNDC(19, N19)
         };
 
+        ElementDC n4[] =
+        {
+          ElementDC(0, M0), ElementDC(1, M1), ElementDC(2, M2), ElementDC(3, M3), ElementDC(4, M4),
+          ElementDC(5, M5), ElementDC(6, M6), ElementDC(7, M7), ElementDC(8, M8), ElementDC(9, M9)
+        };
+
         initial_data.assign(std::begin(n), std::end(n));
         excess_data.assign(std::begin(n2), std::end(n2));
         different_data.assign(std::begin(n3), std::end(n3));
+        initial_data_dc.assign(std::begin(n4), std::end(n4));
       }
     };
 
@@ -262,9 +291,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_index)
     {
-      Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
+      Compare_DataDC compare_data(initial_data_dc.begin(), initial_data_dc.end());
 
-      DataNDC data(compare_data.begin(), compare_data.end());
+      DataDC data(compare_data.begin(), compare_data.end());
 
       CHECK_EQUAL(compare_data[0], data[0]);
       CHECK_EQUAL(compare_data[1], data[1]);
@@ -281,11 +310,11 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_index_value_changed)
     {
-      Compare_DataNDC compare_data;
-      DataNDC data;
+      Compare_DataDC compare_data;
+      DataDC data;
 
-      data[0] = N0;
-      compare_data[0] = N0;
+      data[0] = M0;
+      compare_data[0] = M0;
 
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),
@@ -293,8 +322,8 @@ namespace
 
       CHECK(isEqual);
 
-      data[0] = N2;
-      compare_data[0] = N2;
+      data[0] = M2;
+      compare_data[0] = M2;
 
       isEqual = Check_Equal(data.begin(),
                             data.end(),
