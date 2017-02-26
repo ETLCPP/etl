@@ -85,3 +85,6 @@ SOFTWARE.
 // Some targets do not support 8bit types.
 #define ETL_8BIT_SUPPORT (CHAR_BIT == 8)
 
+#if defined(_DEBUG) || defined(DEBUG)
+  #define ETL_DEBUG
+#endif

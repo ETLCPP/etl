@@ -783,7 +783,7 @@ namespace etl
     Data_Node& allocate_data_node(value_type value)
     {
       Data_Node& node = *p_node_pool->allocate<Data_Node>();
-      new ((void*)&node.value) value_type(value);
+      ::new ((void*)&node.value) value_type(value);
       ++construct_count;
       return node;
     }

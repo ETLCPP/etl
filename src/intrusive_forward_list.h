@@ -42,6 +42,7 @@ SOFTWARE.
 #include <functional>
 #include <stddef.h>
 
+#include "platform.h"
 #include "nullptr.h"
 #include "type_traits.h"
 #include "exception.h"
@@ -439,7 +440,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(ETL_DEBUG)
       difference_type count = std::distance(first, last);
       ETL_ASSERT(count >= 0, ETL_ERROR(intrusive_forward_list_iterator_exception));
 #endif

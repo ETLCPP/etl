@@ -34,6 +34,8 @@ SOFTWARE.
 #include <stdint.h>
 #include <assert.h>
 
+#include "platform.h"
+
 ///\defgroup debug_count debug count
 ///\ingroup utilities
 
@@ -50,7 +52,7 @@ namespace etl
   {
   public:
     
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(ETL_DEBUG)
     inline debug_count()
       : count(0)
     {

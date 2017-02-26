@@ -34,6 +34,7 @@ SOFTWARE.
 
 #include <iterator>
 
+#include "platform.h"
 #include "nullptr.h"
 #include "alignment.h"
 #include "error_handler.h"
@@ -271,7 +272,7 @@ namespace etl
       bool is_within_range = (distance >= 0) && (distance <= intptr_t((ITEM_SIZE * MAX_ITEMS) - ITEM_SIZE));
 
       // Modulus and division can be slow on some architectures, so only do this in debug.
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(ETL_DEBUG)
       // Is the address on a valid object boundary?
       bool is_valid_address = ((distance % ITEM_SIZE) == 0);
 #else

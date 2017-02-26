@@ -38,6 +38,7 @@ SOFTWARE.
 #include <utility>
 #include <stddef.h>
 
+#include "platform.h"
 #include "private/flat_multiset_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
@@ -198,7 +199,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(ETL_DEBUG)
       difference_type count = std::distance(first, last);
       ETL_ASSERT(count <= difference_type(capacity()), ETL_ERROR(flat_multiset_full));
 #endif
@@ -452,14 +453,67 @@ namespace etl
       return *this;
     }
 
+    //*************************************************************************
+    /// Gets the current size of the flat_multiset.
+    ///\return The current size of the flat_multiset.
+    //*************************************************************************
+    size_type size() const
+    {
+      return buffer.size();
+    }
+
+    //*************************************************************************
+    /// Checks the 'empty' state of the flat_multiset.
+    ///\return <b>true</b> if empty.
+    //*************************************************************************
+    bool empty() const
+    {
+      return buffer.empty();
+    }
+
+    //*************************************************************************
+    /// Checks the 'full' state of the flat_multiset.
+    ///\return <b>true</b> if full.
+    //*************************************************************************
+    bool full() const
+    {
+      return buffer.full();
+    }
+
+    //*************************************************************************
+    /// Returns the capacity of the flat_multiset.
+    ///\return The capacity of the flat_multiset.
+    //*************************************************************************
+    size_type capacity() const
+    {
+      return buffer.capacity();
+    }
+
+    //*************************************************************************
+    /// Returns the maximum possible size of the flat_multiset.
+    ///\return The maximum size of the flat_multiset.
+    //*************************************************************************
+    size_type max_size() const
+    {
+      return buffer.max_size();
+    }
+
+    //*************************************************************************
+    /// Returns the remaining capacity.
+    ///\return The remaining capacity.
+    //*************************************************************************
+    size_t available() const
+    {
+      return buffer.available();
+    }
+
   protected:
 
     //*********************************************************************
     /// Constructor.
     //*********************************************************************
     iflat_multiset(buffer_t& buffer)
-      : flat_multiset_base(buffer),
-        buffer(buffer)
+      : buffer(buffer)
     {
     }
 
