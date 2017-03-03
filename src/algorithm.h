@@ -695,7 +695,6 @@ namespace etl
     }
 
     return std::pair<TDestinationTrue, TDestinationFalse>(destination_true, destination_false);
->>>>>>> origin/development
   }
 }
 
