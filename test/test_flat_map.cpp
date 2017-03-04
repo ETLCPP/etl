@@ -36,12 +36,30 @@ SOFTWARE.
 #include <string>
 #include <vector>
 
+#include <iostream>
+
 #include "data.h"
 
 #include "../src/flat_map.h"
 
 namespace
 {
+  static const size_t SIZE = 10;
+
+  typedef TestDataDC<std::string>  DC;
+  typedef TestDataNDC<std::string> NDC;
+
+  typedef std::pair<int, DC>  ElementDC;
+  typedef std::pair<int, NDC> ElementNDC;
+
+  typedef etl::flat_map<int, DC, SIZE>  DataDC;
+  typedef etl::flat_map<int, NDC, SIZE> DataNDC;
+  typedef etl::iflat_map<int, DC>       IDataDC;
+  typedef etl::iflat_map<int, NDC>      IDataNDC;
+
+  typedef std::map<int, DC>  Compare_DataDC;
+  typedef std::map<int, NDC> Compare_DataNDC;
+
   //*************************************************************************
   template <typename T1, typename T2>
   bool Check_Equal(T1 begin1, T1 end1, T2 begin2)
@@ -60,23 +78,40 @@ namespace
     return true;
   }
 
+  //*************************************************************************
+  std::ostream& operator <<(std::ostream& os, const DataDC::iterator& itr)
+  {
+    os << itr->first;
+
+    return os;
+  }
+
+  //*************************************************************************
+  std::ostream& operator <<(std::ostream& os, const DataDC::const_iterator& itr)
+  {
+    os << itr->first;
+
+    return os;
+  }
+
+  //*************************************************************************
+  std::ostream& operator <<(std::ostream& os, const DataNDC::iterator& itr)
+  {
+    os << itr->first;
+
+    return os;
+  }
+
+  //*************************************************************************
+  std::ostream& operator <<(std::ostream& os, const DataNDC::const_iterator& itr)
+  {
+    os << itr->first;
+
+    return os;
+  }
+
   SUITE(test_flat_map)
   {
-    static const size_t SIZE = 10;
-
-    typedef TestDataDC<std::string>  DC;
-    typedef TestDataNDC<std::string> NDC;
-
-    typedef std::pair<int, DC>  ElementDC;
-    typedef std::pair<int, NDC> ElementNDC;
-
-    typedef etl::flat_map<int, DC, SIZE>  DataDC;
-    typedef etl::flat_map<int, NDC, SIZE> DataNDC;
-    typedef etl::iflat_map<int, NDC>      IDataNDC;
-
-    typedef std::map<int, DC>  Compare_DataDC;
-    typedef std::map<int, NDC> Compare_DataNDC;
-
     NDC N0 = NDC("A");
     NDC N1 = NDC("B");
     NDC N2 = NDC("C");
@@ -399,6 +434,8 @@ namespace
                                  compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK(std::is_sorted(data.begin(), data.end()));
     }
 
     //*************************************************************************
@@ -407,16 +444,20 @@ namespace
       Compare_DataNDC compare_data;
       DataNDC data;
 
-      data.insert(DataNDC::value_type(0, N0));
+      std::pair<DataNDC::iterator, bool> result;
+
+      result = data.insert(std::make_pair(0, N0));
       compare_data.insert(std::make_pair(0, N0));
 
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),
                                  compare_data.begin());
-
+      
       CHECK(isEqual);
+      CHECK(result.second);
+      CHECK(*result.first == std::make_pair(0, N0));
 
-      data.insert(std::make_pair(2, N2));
+      result = data.insert(std::make_pair(2, N2));
       compare_data.insert(std::make_pair(2, N2));
 
       isEqual = Check_Equal(data.begin(),
@@ -424,8 +465,10 @@ namespace
                             compare_data.begin());
 
       CHECK(isEqual);
+      CHECK(result.second);
+      CHECK(*result.first == std::make_pair(2, N2));
 
-      data.insert(std::make_pair(1, N1));
+      result = data.insert(std::make_pair(1, N1));
       compare_data.insert(std::make_pair(1, N1));
 
       isEqual = Check_Equal(data.begin(),
@@ -433,6 +476,10 @@ namespace
                             compare_data.begin());
 
       CHECK(isEqual);
+      CHECK(result.second);
+      CHECK(*result.first == std::make_pair(1, N1));
+
+      CHECK(std::is_sorted(data.begin(), data.end()));
     }
 
     //*************************************************************************
@@ -441,23 +488,30 @@ namespace
       Compare_DataNDC compare_data;
       DataNDC data;
 
-      data.insert(DataNDC::value_type(0, N0));
-      compare_data.insert(std::make_pair(0, N0));
+      std::pair<DataNDC::iterator, bool> result1;
+      std::pair<Compare_DataNDC::iterator, bool> result2;
+
+      result1 = data.insert(DataNDC::value_type(0, N0));
+      result2 = compare_data.insert(std::make_pair(0, N0));
 
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),
                                  compare_data.begin());
 
       CHECK(isEqual);
+      CHECK(result1.second);
+      CHECK(*result1.first == std::make_pair(0, N0));
 
-      data.insert(std::make_pair(0, N2));
-      compare_data.insert(std::make_pair(0, N2));
+      result1 = data.insert(std::make_pair(0, N2));
+      result2 = compare_data.insert(std::make_pair(0, N2));
 
       isEqual = Check_Equal(data.begin(),
                             data.end(),
                             compare_data.begin());
 
       CHECK(isEqual);
+      CHECK(!result1.second);
+      CHECK(*result1.first != std::make_pair(0, N2));
     }
 
     //*************************************************************************

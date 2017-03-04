@@ -37,6 +37,7 @@ SOFTWARE.
 
 #include "iflat_set.h"
 #include "vector.h"
+#include "pool.h"
 
 //*****************************************************************************
 ///\defgroup flat_set flat_set
@@ -66,7 +67,7 @@ namespace etl
     /// Constructor.
     //*************************************************************************
     flat_set()
-      : iflat_set<T, TCompare>(buffer)
+      : iflat_set<T, TCompare>(lookup, storage)
     {
     }
 
@@ -74,7 +75,7 @@ namespace etl
     /// Copy constructor.
     //*************************************************************************
     flat_set(const flat_set& other)
-      : iflat_set<T, TCompare>(buffer)
+      : iflat_set<T, TCompare>(lookup, storage)
     {
       iflat_set<T, TCompare>::assign(other.cbegin(), other.cend());
     }
@@ -87,9 +88,17 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     flat_set(TIterator first, TIterator last)
-      : iflat_set<T, TCompare>(buffer)
+      : iflat_set<T, TCompare>(lookup, storage)
     {
       iflat_set<T, TCompare>::assign(first, last);
+    }
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~flat_set()
+    {
+      iflat_set<T, TCompare>::clear();
     }
 
     //*************************************************************************
@@ -107,7 +116,13 @@ namespace etl
 
   private:
 
-    etl::vector<T, MAX_SIZE> buffer; ///<The vector that stores the elements.
+    typedef typename iflat_set<T, TCompare>::value_type node_t;
+
+    // The pool of nodes.
+    etl::pool<node_t, MAX_SIZE> storage;
+
+    // The vector that stores pointers to the nodes.
+    etl::vector<node_t*, MAX_SIZE> lookup;
   };
 }
 

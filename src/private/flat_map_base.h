@@ -40,6 +40,7 @@ SOFTWARE.
 #include "../exception.h"
 #include "../ivector.h"
 #include "../error_handler.h"
+#include "../debug_count.h"
 
 #undef ETL_FILE
 #define ETL_FILE "2"
@@ -97,6 +98,10 @@ namespace etl
   public:
 
     typedef size_t size_type;
+
+  protected:
+
+    etl::debug_count construct_count; ///< Internal debugging.
   };
 }
 
