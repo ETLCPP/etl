@@ -37,6 +37,7 @@ SOFTWARE.
 
 #include "iflat_multimap.h"
 #include "vector.h"
+#include "pool.h"
 
 //*****************************************************************************
 ///\defgroup flat_multimap flat_multimap
@@ -67,7 +68,7 @@ namespace etl
     /// Constructor.
     //*************************************************************************
     flat_multimap()
-      : iflat_multimap<TKey, TValue, TCompare>(buffer)
+      : iflat_multimap<TKey, TValue, TCompare>(lookup, storage)
     {
     }
 
@@ -75,7 +76,7 @@ namespace etl
     /// Copy constructor.
     //*************************************************************************
     flat_multimap(const flat_multimap& other)
-      : iflat_multimap<TKey, TValue, TCompare>(buffer)
+      : iflat_multimap<TKey, TValue, TCompare>(lookup, storage)
     {
       iflat_multimap<TKey, TValue, TCompare>::assign(other.cbegin(), other.cend());
     }
@@ -88,9 +89,17 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     flat_multimap(TIterator first, TIterator last)
-      : iflat_multimap<TKey, TValue, TCompare>(buffer)
+      : iflat_multimap<TKey, TValue, TCompare>(lookup, storage)
     {
       iflat_multimap<TKey, TValue, TCompare>::assign(first, last);
+    }
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~flat_multimap()
+    {
+      iflat_multimap<TKey, TValue, TCompare>::clear();
     }
 
     //*************************************************************************
@@ -108,7 +117,13 @@ namespace etl
 
   private:
 
-    etl::vector<typename iflat_multimap<TKey, TValue, TCompare>::value_type, MAX_SIZE> buffer; ///<The vector that stores the elements.
+    typedef typename iflat_multimap<TKey, TValue, TCompare>::value_type node_t;
+
+    // The pool of nodes.
+    etl::pool<node_t, MAX_SIZE> storage;
+
+    // The vector that stores pointers to the nodes.
+    etl::vector<node_t*, MAX_SIZE> lookup;
   };
 }
 

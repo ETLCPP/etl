@@ -42,49 +42,81 @@ SOFTWARE.
 
 namespace
 {
+  static const size_t SIZE = 10;
+
+  typedef TestDataDC<std::string>  DC;
+  typedef TestDataNDC<std::string> NDC;
+
+  typedef etl::flat_multiset<DC, SIZE>  DataDC;
+  typedef etl::flat_multiset<NDC, SIZE> DataNDC;
+  typedef etl::iflat_multiset<NDC>      IDataNDC;
+
+  typedef std::multiset<DC>  Compare_DataDC;
+  typedef std::multiset<NDC> Compare_DataNDC;
+
+  NDC NX = NDC("@");
+  NDC NY = NDC("[");
+
+  NDC N0 = NDC("A");
+  NDC N1 = NDC("B");
+  NDC N2 = NDC("C");
+  NDC N3 = NDC("D");
+  NDC N4 = NDC("E");
+  NDC N5 = NDC("F");
+  NDC N6 = NDC("G");
+  NDC N7 = NDC("H");
+  NDC N8 = NDC("I");
+  NDC N9 = NDC("J");
+  NDC N10 = NDC("K");
+  NDC N11 = NDC("L");
+  NDC N12 = NDC("M");
+  NDC N13 = NDC("N");
+  NDC N14 = NDC("O");
+  NDC N15 = NDC("P");
+  NDC N16 = NDC("Q");
+  NDC N17 = NDC("R");
+  NDC N18 = NDC("S");
+  NDC N19 = NDC("T");
+
+  std::vector<NDC> initial_data;
+  std::vector<NDC> excess_data;
+  std::vector<NDC> different_data;
+  std::vector<NDC> multi_data;
+
+  //*************************************************************************
+  std::ostream& operator <<(std::ostream& os, const DataDC::iterator& itr)
+  {
+    os << itr->value;
+
+    return os;
+  }
+
+  //*************************************************************************
+  std::ostream& operator <<(std::ostream& os, const DataDC::const_iterator& itr)
+  {
+    os << itr->value;
+
+    return os;
+  }
+
+  //*************************************************************************
+  std::ostream& operator <<(std::ostream& os, const DataNDC::iterator& itr)
+  {
+    os << itr->value;
+
+    return os;
+  }
+
+  //*************************************************************************
+  std::ostream& operator <<(std::ostream& os, const DataNDC::const_iterator& itr)
+  {
+    os << itr->value;
+
+    return os;
+  }
+
   SUITE(test_flat_multiset)
   {
-    static const size_t SIZE = 10;
-
-    typedef TestDataDC<std::string>  DC;
-    typedef TestDataNDC<std::string> NDC;
-
-    typedef etl::flat_multiset<DC, SIZE>  DataDC;
-    typedef etl::flat_multiset<NDC, SIZE> DataNDC;
-    typedef etl::iflat_multiset<NDC>      IDataNDC;
-
-    typedef std::multiset<DC>  Compare_DataDC;
-    typedef std::multiset<NDC> Compare_DataNDC;
-
-    NDC NX = NDC("@");
-    NDC NY = NDC("[");
-
-    NDC N0 = NDC("A");
-    NDC N1 = NDC("B");
-    NDC N2 = NDC("C");
-    NDC N3 = NDC("D");
-    NDC N4 = NDC("E");
-    NDC N5 = NDC("F");
-    NDC N6 = NDC("G");
-    NDC N7 = NDC("H");
-    NDC N8 = NDC("I");
-    NDC N9 = NDC("J");
-    NDC N10 = NDC("K");
-    NDC N11 = NDC("L");
-    NDC N12 = NDC("M");
-    NDC N13 = NDC("N");
-    NDC N14 = NDC("O");
-    NDC N15 = NDC("P");
-    NDC N16 = NDC("Q");
-    NDC N17 = NDC("R");
-    NDC N18 = NDC("S");
-    NDC N19 = NDC("T");
-
-    std::vector<NDC> initial_data;
-    std::vector<NDC> excess_data;
-    std::vector<NDC> different_data;
-    std::vector<NDC> multi_data;
-
     //*************************************************************************
     struct SetupFixture
     {
@@ -240,6 +272,8 @@ namespace
                                  compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK(std::is_sorted(data.begin(), data.end()));
     }
 
     //*************************************************************************
@@ -274,6 +308,8 @@ namespace
                             compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK(std::is_sorted(data.begin(), data.end()));
     }
 
     //*************************************************************************
@@ -308,6 +344,8 @@ namespace
                                 compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK(std::is_sorted(data.begin(), data.end()));
     }
 
     //*************************************************************************
@@ -316,6 +354,8 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
 
       CHECK_THROW(data.insert(N10), etl::flat_multiset_full);
+
+      CHECK(std::is_sorted(data.begin(), data.end()));
     }
 
     //*************************************************************************
@@ -332,6 +372,8 @@ namespace
                                  compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK(std::is_sorted(data.begin(), data.end()));
     }
 
     //*************************************************************************
@@ -340,6 +382,8 @@ namespace
       DataNDC data;
 
       CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::flat_multiset_full);
+
+      CHECK(std::is_sorted(data.begin(), data.end()));
     }
 
     //*************************************************************************

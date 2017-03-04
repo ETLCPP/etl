@@ -503,8 +503,8 @@ namespace
     //=========================================================================
     TEST(transform_4_parameter)
     {
-      int input[]    = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
-      int output[]   = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+      int input[]   = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
+      int output[]  = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
       int compare[] = { 2, 16, 4, 14, 6, 0, 0, 0, 0, 0 };
 
       // Double everything and copy to output.
@@ -580,34 +580,22 @@ namespace
     }
 
     //=========================================================================
-    TEST(transform_if_4_parameter)
+    TEST(transform_if_2_input_ranges)
     {
-      int input[] = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
-      int output[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-      int compare1[] = { 2, 4, 6, 8, 0, 0, 0, 0,  0, 0 };
-      int compare2[] = { 2, 4, 6, 0, 0, 0, 0, 0,  0, 0 };
+      int input1[] = { 1, 8, 2, 7, 3,  6, 4, 5, 10, 9 };
+      int input2[] = { 8, 7, 6, 5, 4, 10, 9, 3,  2, 1 };
+      int output[]  = { 0, 0, 0, 0, 0, 0, 0, 0,  0, 0 };
+      int compare[] = { 8, 12, 12, 60, 36, 0, 0, 0,  0, 0 };
 
-      // Double everything and copy to output.
-      etl::transform_if(std::begin(input),
-                        std::end(input),
+      // Multiply together everything where input1 is less than input2 and copy to output.
+      etl::transform_if(std::begin(input1),
+                        std::end(input1),
+                        std::begin(input2),
                         std::begin(output),
-                        std::begin(output) + (etl::size(output) / 2),
-                        std::bind2nd(std::multiplies<int>(), 2),
-                        std::bind2nd(std::less<int>(), 5));
+                        std::multiplies<int>(),
+                        std::less<int>());
 
-      bool is_same = std::equal(std::begin(output), std::end(output), std::begin(compare1));
-      CHECK(is_same);
-
-      std::fill(std::begin(output), std::end(output), 0);
-
-      etl::transform_if(std::begin(input),
-                        std::begin(input) + (etl::size(input) / 2),
-                        std::begin(output),
-                        std::end(output),
-                        std::bind2nd(std::multiplies<int>(), 2),
-                        std::bind2nd(std::less<int>(), 5));
-
-      is_same = std::equal(std::begin(output), std::end(output), std::begin(compare2));
+      bool is_same = std::equal(std::begin(output), std::end(output), std::begin(compare));
       CHECK(is_same);
     }
 
@@ -636,6 +624,32 @@ namespace
       is_same = std::equal(std::begin(output_false), std::end(output_false), std::begin(compare_false));
       CHECK(is_same);
     }
->>>>>>> origin/development
+
+    //=========================================================================
+    TEST(partition_transform_2_input_ranges)
+    {
+      int input1[] = { 1, 8, 2, 7, 3,  6, 4, 5, 10, 9 };
+      int input2[] = { 8, 7, 6, 5, 4, 10, 9, 3,  2, 1 };
+      int output_true[]  = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+      int output_false[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+      int compare_true[]  = { 8, 12, 12, 60, 36, 0, 0, 0, 0, 0 };
+      int compare_false[] = { 15, 12, 8, 12, 10, 0, 0, 0, 0, 0 };
+
+      // If input1 < input2 multiply else add.
+      etl::partition_transform(std::begin(input1),
+                               std::end(input1),
+                               std::begin(input2),
+                               std::begin(output_true),
+                               std::begin(output_false),
+                               std::multiplies<int>(),
+                               std::plus<int>(),
+                               std::less<int>());
+
+      bool is_same = std::equal(std::begin(output_true), std::end(output_true), std::begin(compare_true));
+      CHECK(is_same);
+
+      is_same = std::equal(std::begin(output_false), std::end(output_false), std::begin(compare_false));
+      CHECK(is_same);
+    }
   };
 }
