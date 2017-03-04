@@ -821,68 +821,6 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Like std::transform but applies a predicate before calling the function.
-  /// Returns when the first range end is reached.
-  ///\ingroup algorithm
-  //***************************************************************************
-  template <typename TInputIterator,
-            typename TOutputIterator,
-            typename TUnaryFunction,
-            typename TUnaryPredicate>
-  TOutputIterator transform_if(TInputIterator       i_begin,
-                               const TInputIterator i_end,
-                               TOutputIterator      o_begin,
-                               TOutputIterator      o_end,
-                               TUnaryFunction       function,
-                               TUnaryPredicate      predicate)
-  {
-    while ((i_begin != i_end) && (o_begin != o_end))
-    {
-      if (predicate(*i_begin))
-      {
-        *o_begin++ = function(*i_begin);
-      }
-
-      ++i_begin;
-    }
-
-    return o_begin;
-  }
-
-  //***************************************************************************
-  /// Like etl::transform_if but inputs from two ranges.
-  /// Returns when the first range end is reached.
-  ///\ingroup algorithm
-  //***************************************************************************
-  template <typename TInputIterator1,
-            typename TInputIterator2,
-            typename TOutputIterator,
-            typename TBinaryFunction,
-            typename TBinaryPredicate>
-  TOutputIterator transform_if(TInputIterator1       i_begin1,
-                               const TInputIterator1 i_end1,
-                               TInputIterator2       i_begin2,
-                               const TInputIterator1 i_end2,
-                               TOutputIterator       o_begin,
-                               const TInputIterator1 o_end,
-                               TBinaryFunction       function,
-                               TBinaryPredicate      predicate)
-  {
-    while ((i_begin1 != i_end1) && (i_begin2 != i_end2) && (o_begin != o_end))
-    {
-      if (predicate(*i_begin1, *i_begin2))
-      {
-        *o_begin++ = function(*i_begin1, *i_begin2);
-      }
-
-      ++i_begin1;
-      ++i_begin2;
-    }
-
-    return o_begin;
-  }
-
-  //***************************************************************************
   /// Transforms the elements from the range (begin, end) to two different ranges
   /// depending on the value returned by the predicate.<br>
   ///\ingroup algorithm
@@ -912,10 +850,9 @@ namespace etl
 
     return std::pair<TDestinationTrue, TDestinationFalse>(destination_true, destination_false);
   }
-}
 
   //***************************************************************************
-  /// Transforms the elements from the ranges (begin1, end1) & (begin2, end2)
+  /// Transforms the elements from the ranges (begin1, end1) & (begin2)
   /// to two different ranges depending on the value returned by the predicate.
   ///\ingroup algorithm
   //***************************************************************************
