@@ -711,7 +711,7 @@ namespace etl
                TOutputIterator o_begin,
                TBinaryFunction function)
   {
-    std::transform(i_begin, i_begin + n, i_begin2, o_begin, function);
+    std::transform(i_begin1, i_begin1 + n, i_begin2, o_begin, function);
   }
 
   //***************************************************************************
