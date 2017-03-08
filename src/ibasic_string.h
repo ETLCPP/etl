@@ -36,7 +36,7 @@ SOFTWARE.
 #include <algorithm>
 #include <functional>
 #include <stddef.h>
-#include <cstring>
+#include <string.h>
 
 #include "private/string_base.h"
 #include "platform.h"
@@ -148,7 +148,7 @@ namespace etl
     //*********************************************************************
     reverse_iterator rbegin()
     {
-	    return reverse_iterator(end());
+      return reverse_iterator(end());
     }
 
     //*********************************************************************
@@ -157,7 +157,7 @@ namespace etl
     //*********************************************************************
     const_reverse_iterator rbegin() const
     {
-	    return const_reverse_iterator(end());
+      return const_reverse_iterator(end());
     }
 
     //*********************************************************************
@@ -184,7 +184,7 @@ namespace etl
     //*********************************************************************
     const_reverse_iterator crbegin() const
     {
-	    return const_reverse_iterator(cend());
+      return const_reverse_iterator(cend());
     }
 
     //*********************************************************************
@@ -193,7 +193,7 @@ namespace etl
     //*********************************************************************
     const_reverse_iterator crend() const
     {
-	    return const_reverse_iterator(cbegin());
+      return const_reverse_iterator(cbegin());
     }
 
     //*********************************************************************
@@ -400,7 +400,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-#ifdef _DEBUG
+#if defined(ETL_DEBUG)
       difference_type count = std::distance(first, last);
       ETL_ASSERT(count >= 0, ETL_ERROR(string_iterator));
 #endif
@@ -464,10 +464,11 @@ namespace etl
     //*************************************************************************
     void pop_back()
     {
-      if (current_size > 0)
-      {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!empty(), ETL_ERROR(string_empty));
+#endif
+
         p_buffer[--current_size] = 0;
-      }
     }
 
     //*********************************************************************
@@ -892,7 +893,7 @@ namespace etl
     //*********************************************************************
     size_t find(const_pointer s, size_t pos = 0) const
     {
-#ifdef _DEBUG
+#if defined(ETL_DEBUG)
       if ((pos + etl::strlen(s)) > size())
       {
         return npos;
@@ -919,7 +920,7 @@ namespace etl
     //*********************************************************************
     size_t find(const_pointer s, size_t pos, size_t n) const
     {
-#ifdef _DEBUG
+#if defined(ETL_DEBUG)
       if ((pos + etl::strlen(s) - n) > size())
       {
         return npos;

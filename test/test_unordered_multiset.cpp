@@ -59,8 +59,8 @@ namespace
       }
     };
 
-    typedef etl::unordered_multiset<DC,  SIZE, simple_hash> DataDC;
-    typedef etl::unordered_multiset<NDC, SIZE, simple_hash> DataNDC;
+    typedef etl::unordered_multiset<DC,  SIZE, SIZE / 2, simple_hash> DataDC;
+    typedef etl::unordered_multiset<NDC, SIZE, SIZE / 2, simple_hash> DataNDC;
     typedef etl::iunordered_multiset<NDC, simple_hash>      IDataNDC;
 
     NDC N0  = NDC("FF");
@@ -294,14 +294,14 @@ namespace
 
       size_t count = data.erase(N0);
 
-      CHECK_EQUAL(1, count);
+      CHECK_EQUAL(1U, count);
 
       DataNDC::iterator idata = data.find(N0);
       CHECK(idata == data.end());
 
       count = data.erase(N1);
 
-      CHECK_EQUAL(3, count);
+      CHECK_EQUAL(3U, count);
 
       idata = data.find(N1);
       CHECK(idata == data.end());
@@ -321,6 +321,10 @@ namespace
 
       CHECK(idata == data.end());
       CHECK(inext == iafter);
+
+      // Test that erase really does erase from the pool.
+      CHECK(!data.full());
+      CHECK(!data.empty());
     }
 
     //*************************************************************************
@@ -328,26 +332,29 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      DataNDC::iterator idata     = data.find(N5);
-      DataNDC::iterator idata_end = data.find(N8);
+      DataNDC::iterator idata = data.begin();
+      std::advance(idata, 2);
 
-      std::vector<NDC> test;
+      DataNDC::iterator idata_end = data.begin();
+      std::advance(idata_end, 5);
 
-      test.assign(data.begin(), data.end());
+      data.erase(idata, idata_end);
 
-      idata = data.erase(idata, idata_end); // Erase N5, N6, N7
-      CHECK(idata == data.find(N8));
+      CHECK_EQUAL(initial_data.size() - 3, data.size());
+      CHECK(!data.full());
+      CHECK(!data.empty());
 
-      test.assign(data.begin(), data.end());
+      idata = data.find(N8);
+      CHECK(idata != data.end());
 
       idata = data.find(N0);
       CHECK(idata != data.end());
 
       idata = data.find(N1);
-      CHECK(idata != data.end());
+      CHECK(idata == data.end());
 
       idata = data.find(N2);
-      CHECK(idata != data.end());
+      CHECK(idata == data.end());
 
       idata = data.find(N3);
       CHECK(idata != data.end());
@@ -356,13 +363,13 @@ namespace
       CHECK(idata != data.end());
 
       idata = data.find(N5);
-      CHECK(idata == data.end());
+      CHECK(idata != data.end());
 
       idata = data.find(N6);
       CHECK(idata == data.end());
 
       idata = data.find(N7);
-      CHECK(idata == data.end());
+      CHECK(idata != data.end());
 
       idata = data.find(N8);
       CHECK(idata != data.end());
@@ -386,13 +393,13 @@ namespace
       DataNDC data(equal_data.begin(), equal_data.end());
 
       size_t count = data.count(N0);
-      CHECK_EQUAL(1, count);
+      CHECK_EQUAL(1U, count);
 
       count = data.count(N1);
-      CHECK_EQUAL(3, count);
+      CHECK_EQUAL(3U, count);
 
       count = data.count(N10);
-      CHECK_EQUAL(0, count);
+      CHECK_EQUAL(0U, count);
     }
 
     //*************************************************************************
@@ -510,13 +517,13 @@ namespace
       CHECK_CLOSE(0.0, data.load_factor(), 0.01);
 
       // Half the buckets used.
-      data.assign(initial_data.begin(), initial_data.begin() + (initial_data.size() / 2));
-      CHECK_CLOSE(0.5, data.load_factor(), 0.01);
+      data.assign(initial_data.begin(), initial_data.begin() + (initial_data.size() / 4));
+      CHECK_CLOSE(0.4, data.load_factor(), 0.01);
 
       // All of the buckets used.
       data.clear();
       data.assign(initial_data.begin(), initial_data.end());
-      CHECK_CLOSE(1.0, data.load_factor(), 0.01);
+      CHECK_CLOSE(2.0, data.load_factor(), 0.01);
     }
   };
 }

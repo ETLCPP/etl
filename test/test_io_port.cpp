@@ -32,7 +32,12 @@ SOFTWARE.
 
 #include <stdint.h>
 
-#pragma warning(disable:4101) // Unused variable.
+#if defined(ETL_COMPILER_GCC)
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wunused-variable"
+#else
+  #pragma warning(disable:4101) // Unused variable.
+#endif
 
 template <uintptr_t ADDRESS>
 struct serial_port
@@ -113,3 +118,7 @@ namespace
     }
   };
 }
+
+#if defined(ETL_COMPILER_GCC)
+  #pragma GCC diagnostic pop
+#endif

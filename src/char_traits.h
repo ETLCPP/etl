@@ -44,7 +44,7 @@ SOFTWARE.
 //*****************************************************************************
 
 // Define the large character types if necessary.
-#ifdef NO_LARGE_CHAR_SUPPORT
+#ifdef ETL_NO_LARGE_CHAR_SUPPORT
 typedef int16_t char16_t;
 typedef int32_t char32_t;
 #endif

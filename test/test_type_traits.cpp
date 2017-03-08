@@ -425,7 +425,7 @@ namespace
       CHECK((std::is_same<etl::make_signed<char>::type,               std::make_signed<char>::type>::value));
       CHECK((std::is_same<etl::make_signed<signed char>::type,        std::make_signed<signed char>::type>::value));
       CHECK((std::is_same<etl::make_signed<unsigned char>::type,      std::make_signed<unsigned char>::type>::value));
-      CHECK((std::is_same<etl::make_signed<wchar_t>::type,            std::make_signed<wchar_t>::type>::value));
+      CHECK(std::is_signed<etl::make_signed<wchar_t>::type>::value && (sizeof(wchar_t) == sizeof(etl::make_signed<wchar_t>::type)));
       CHECK((std::is_same<etl::make_signed<short>::type,              std::make_signed<short>::type>::value));
       CHECK((std::is_same<etl::make_signed<signed short>::type,       std::make_signed<signed short>::type>::value));
       CHECK((std::is_same<etl::make_signed<unsigned short>::type,     std::make_signed<unsigned short>::type>::value));
@@ -450,7 +450,7 @@ namespace
       CHECK((std::is_same<etl::make_unsigned<char>::type,               std::make_unsigned<char>::type>::value));
       CHECK((std::is_same<etl::make_unsigned<signed char>::type,        std::make_unsigned<signed char>::type>::value));
       CHECK((std::is_same<etl::make_unsigned<unsigned char>::type,      std::make_unsigned<unsigned char>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<wchar_t>::type,            std::make_unsigned<wchar_t>::type>::value));
+      CHECK(std::is_unsigned<etl::make_unsigned<wchar_t>::type>::value && (sizeof(wchar_t) == sizeof(etl::make_unsigned<wchar_t>::type)));
       CHECK((std::is_same<etl::make_unsigned<short>::type,              std::make_unsigned<short>::type>::value));
       CHECK((std::is_same<etl::make_unsigned<signed short>::type,       std::make_unsigned<signed short>::type>::value));
       CHECK((std::is_same<etl::make_unsigned<unsigned short>::type,     std::make_unsigned<unsigned short>::type>::value));

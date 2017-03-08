@@ -38,7 +38,7 @@ SOFTWARE.
 #include "iunordered_map.h"
 #include "container.h"
 #include "pool.h"
-#include "vector.h"
+#include "array.h"
 #include "intrusive_forward_list.h"
 #include "hash.h"
 
@@ -53,7 +53,7 @@ namespace etl
   //*************************************************************************
   /// A templated unordered_map implementation that uses a fixed size buffer.
   //*************************************************************************
-  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename THash = etl::hash<TKey>, typename TKeyEqual = std::equal_to<TKey> >
+  template <typename TKey, typename TValue, const size_t MAX_SIZE_, const size_t MAX_BUCKETS_ = MAX_SIZE_, typename THash = etl::hash<TKey>, typename TKeyEqual = std::equal_to<TKey> >
   class unordered_map : public iunordered_map<TKey, TValue, THash, TKeyEqual>
   {
   private:
@@ -62,13 +62,14 @@ namespace etl
 
   public:
 
-    static const size_t MAX_SIZE = MAX_SIZE_;
+    static const size_t MAX_SIZE    = MAX_SIZE_;
+    static const size_t MAX_BUCKETS = MAX_BUCKETS_;
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
     unordered_map()
-      : base(node_pool, buckets)
+      : base(node_pool, buckets, MAX_BUCKETS_)
     {
       base::initialise();
     }
@@ -77,9 +78,9 @@ namespace etl
     /// Copy constructor.
     //*************************************************************************
     unordered_map(const unordered_map& other)
-      : base(node_pool, buckets)
+      : base(node_pool, buckets, MAX_BUCKETS_)
     {
-			base::assign(other.cbegin(), other.cend());
+      base::assign(other.cbegin(), other.cend());
     }
 
     //*************************************************************************
@@ -90,9 +91,17 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     unordered_map(TIterator first, TIterator last)
-      : base(node_pool, buckets)
+      : base(node_pool, buckets, MAX_BUCKETS_)
     {
       base::assign(first, last);
+    }
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~unordered_map()
+    {
+      base::initialise();
     }
 
     //*************************************************************************
@@ -115,7 +124,7 @@ namespace etl
     etl::pool<typename base::node_t, MAX_SIZE> node_pool;
 
     /// The buckets of node lists.
-    etl::vector<etl::intrusive_forward_list<typename base::node_t>, MAX_SIZE> buckets;
+    etl::intrusive_forward_list<typename base::node_t> buckets[MAX_BUCKETS_];
   };
 
 }

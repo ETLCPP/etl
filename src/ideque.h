@@ -295,7 +295,7 @@ namespace etl
       //***************************************************
       const_iterator& operator ++()
       {
-        index = (index == p_deque->BUFFER_SIZE - 1) ? 0 : index + 1;
+        index = (static_cast<size_t>(index) == p_deque->BUFFER_SIZE - 1) ? 0 : index + 1;
 
         return *this;
       }
@@ -331,7 +331,7 @@ namespace etl
         if (offset > 0)
         {
           index -= offset;
-          index = (index < 0) ? index + p_deque->BUFFER_SIZE : index;
+          index = (index < 0) ? static_cast<size_t>(index) + p_deque->BUFFER_SIZE : index;
         }
         else if (offset < 0)
         {
@@ -1251,13 +1251,10 @@ namespace etl
     //*********************************************************************
     void create_element_front()
     {
-      if (!empty())
-      {
-        --_begin;
-      }
-
-      new(&(*_begin)) T();
+      --_begin;
+      ::new (&(*_begin)) T();
       ++current_size;
+      ++construct_count;
     }
 
     //*********************************************************************
@@ -1286,9 +1283,10 @@ namespace etl
 
       do
       {
-        new(&(*item++)) T(*from);
+        ::new (&(*item++)) T(*from);
         ++from;
         ++current_size;
+        ++construct_count;
       } while (n-- != 0);
     }
 
@@ -1297,9 +1295,10 @@ namespace etl
     //*********************************************************************
     void create_element_back()
     {
-      new(&(*_end)) T();
+      ::new (&(*_end)) T();
       ++_end;
       ++current_size;
+      ++construct_count;
     }
 
     //*********************************************************************
@@ -1308,8 +1307,9 @@ namespace etl
     void create_element_front(parameter_t value)
     {
       --_begin;
-      new(&(*_begin)) T(value);
+      ::new (&(*_begin)) T(value);
       ++current_size;
+      ++construct_count;
     }
 
     //*********************************************************************
@@ -1317,9 +1317,10 @@ namespace etl
     //*********************************************************************
     void create_element_back(parameter_t value)
     {
-      new(&(*_end)) T(value);
+      ::new (&(*_end)) T(value);
       ++_end;
       ++current_size;
+      ++construct_count;
     }
 
     //*********************************************************************
@@ -1329,6 +1330,7 @@ namespace etl
     {
       (*_begin).~T();
       --current_size;
+      --construct_count;
       ++_begin;
     }
 
@@ -1340,6 +1342,7 @@ namespace etl
       --_end;
       (*_end).~T();
       --current_size;
+      --construct_count;
     }
 
     //*************************************************************************

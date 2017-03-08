@@ -82,7 +82,7 @@ namespace etl
     //*********************************************************************
     iterator begin()
     {
-      return &p_buffer[0];
+      return p_buffer;
     }
 
     //*********************************************************************
@@ -91,7 +91,7 @@ namespace etl
     //*********************************************************************
     const_iterator begin() const
     {
-      return const_iterator(&p_buffer[0]);
+      return const_iterator(p_buffer);
     }
 
     //*********************************************************************
@@ -100,7 +100,7 @@ namespace etl
     //*********************************************************************
     iterator end()
     {
-      return &p_buffer[current_size];
+      return p_end;
     }
 
     //*********************************************************************
@@ -109,7 +109,7 @@ namespace etl
     //*********************************************************************
     const_iterator end() const
     {
-      return const_iterator(&p_buffer[current_size]);
+      return const_iterator(p_end);
     }
 
     //*********************************************************************
@@ -118,7 +118,7 @@ namespace etl
     //*********************************************************************
     const_iterator cbegin() const
     {
-      return const_iterator(&p_buffer[0]);
+      return const_iterator(p_buffer);
     }
 
     //*********************************************************************
@@ -127,7 +127,7 @@ namespace etl
     //*********************************************************************
     const_iterator cend() const
     {
-      return const_iterator(&p_buffer[current_size]);
+      return const_iterator(p_end);
     }
 
     //*********************************************************************
@@ -194,7 +194,7 @@ namespace etl
     {
       ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(vector_full));
 
-      current_size = new_size;
+      p_end = p_buffer + new_size;
     }
 
     //*********************************************************************
@@ -208,13 +208,15 @@ namespace etl
     {
       ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(vector_full));
 
+      pointer p_new_end = p_buffer + new_size;
+
       // Size up if necessary.
-      while (current_size < new_size)
+      if (p_end < p_new_end)
       {
-        p_buffer[current_size++] = value;
+        std::fill(p_end, p_new_end, value);
       }
 
-      current_size = new_size;
+      p_end = p_new_end;
     }
 
     //*********************************************************************
@@ -245,7 +247,7 @@ namespace etl
     //*********************************************************************
     reference at(size_t i)
     {
-      ETL_ASSERT(i < current_size, ETL_ERROR(vector_out_of_bounds));
+      ETL_ASSERT(i < size(), ETL_ERROR(vector_out_of_bounds));
       return p_buffer[i];
     }
 
@@ -257,7 +259,7 @@ namespace etl
     //*********************************************************************
     const_reference at(size_t i) const
     {
-      ETL_ASSERT(i < current_size, ETL_ERROR(vector_out_of_bounds));
+      ETL_ASSERT(i < size(), ETL_ERROR(vector_out_of_bounds));
       return const_reference(p_buffer[i]);
     }
 
@@ -285,7 +287,7 @@ namespace etl
     //*********************************************************************
     reference back()
     {
-      return p_buffer[current_size - 1];
+      return *(p_end  -1);
     }
 
     //*********************************************************************
@@ -294,7 +296,7 @@ namespace etl
     //*********************************************************************
     const_reference back() const
     {
-      return const_reference(p_buffer[current_size - 1]);
+      return const_reference(*(p_end - 1));
     }
 
     //*********************************************************************
@@ -325,7 +327,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-#ifdef _DEBUG
+#if defined(ETL_DEBUG)
       difference_type count = std::distance(first, last);
       ETL_ASSERT(static_cast<size_t>(count) <= MAX_SIZE, ETL_ERROR(vector_full));
 #endif
@@ -334,7 +336,7 @@ namespace etl
 
       while (first != last)
       {
-        p_buffer[current_size++] = const_cast<void*>(*first++);
+        *p_end++ = const_cast<void*>(*first++);
       }
     }
 
@@ -352,7 +354,7 @@ namespace etl
 
       for (size_t current_size = 0; current_size < n; ++current_size)
       {
-        p_buffer[current_size] = value;
+        *p_end++ = value;
       }
     }
 
@@ -371,10 +373,10 @@ namespace etl
     void push_back()
     {
 #if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(current_size != MAX_SIZE, ETL_ERROR(vector_full));
+      ETL_ASSERT(size() != MAX_SIZE, ETL_ERROR(vector_full));
 #endif
 
-      ++current_size;
+      ++p_end;
     }
 
     //*********************************************************************
@@ -385,9 +387,9 @@ namespace etl
     void push_back(value_type value)
     {
 #if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(current_size != MAX_SIZE, ETL_ERROR(vector_full));
+      ETL_ASSERT(size() != MAX_SIZE, ETL_ERROR(vector_full));
 #endif
-      p_buffer[current_size++] = value;
+      *p_end++ = value;
     }
 
     //*************************************************************************
@@ -397,9 +399,9 @@ namespace etl
     void pop_back()
     {
 #if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(current_size > 0, ETL_ERROR(vector_empty));
+      ETL_ASSERT(size() > 0, ETL_ERROR(vector_empty));
 #endif
-      --current_size;
+      --p_end;
     }
 
     //*********************************************************************
@@ -410,17 +412,17 @@ namespace etl
     //*********************************************************************
     iterator insert(iterator position, value_type value)
     {
-      ETL_ASSERT((current_size)+1 <= MAX_SIZE, ETL_ERROR(vector_full));
+      ETL_ASSERT(size() + 1 <= MAX_SIZE, ETL_ERROR(vector_full));
 
       if (position != end())
       {
-        ++current_size;
+        ++p_end;
         std::copy_backward(position, end() - 1, end());
         *position = value;
       }
       else
       {
-        p_buffer[current_size++] = value;
+        *p_end++ = value;
       }
 
       return position;
@@ -435,53 +437,12 @@ namespace etl
     //*********************************************************************
     void insert(iterator position, size_t n, value_type value)
     {
-      ETL_ASSERT((current_size)+1 <= MAX_SIZE, ETL_ERROR(vector_full));
+      ETL_ASSERT((size() + 1) <= MAX_SIZE, ETL_ERROR(vector_full));
 
-      if (position == end())
-      {
-        while (n > 0)
-        {
-          p_buffer[current_size++] = value;
-          --n;
-        }
-      }
-      else
-      {
-        // Create copy (backwards).
-        size_t n_insert      = n;
-        size_t from          = size() - 1;
-        size_t to            = from + n_insert;
-        size_t n_move        = std::distance(position, end());
-        size_t n_create_copy = std::min(n_insert, n_move);
+      std::copy_backward(position, p_end, p_end + n);
+      std::fill_n(position, n, value);
 
-        for (size_t i = 0; i < n_create_copy; ++i)
-        {
-          p_buffer[to--] = p_buffer[from--];
-        }
-
-        // Copy old.
-        size_t insert_index = std::distance(begin(), position);
-        from = insert_index;
-        to   = from + n_insert;
-        size_t n_copy_old = (size() > n_insert) ? size() - n_insert : 0;
-        etl::copy_n(&p_buffer[from], n_copy_old, &p_buffer[to]);
-
-        // Copy new.
-        to = insert_index;
-        
-        size_t n_create_new = (n_insert > n_create_copy) ? n_insert - n_create_copy : 0;
-        size_t n_copy_new = (n_insert > n_create_new) ? n_insert - n_create_new : 0;
-        std::fill_n(&p_buffer[to], n_copy_new, value);
-
-        // Create new.
-        to = size();
-        for (size_t i = 0; i < n_create_new; ++i)
-        {
-          p_buffer[to++] = value;
-        }
-
-        current_size += n_insert;
-      }
+      p_end += n;
     }
 
     //*********************************************************************
@@ -497,52 +458,11 @@ namespace etl
     {
       size_t count = std::distance(first, last);
 
-      ETL_ASSERT((current_size)+count <= MAX_SIZE, ETL_ERROR(vector_full));
+      ETL_ASSERT((size() + count) <= MAX_SIZE, ETL_ERROR(vector_full));
 
-      if (position == end())
-      {
-        while (first != last)
-        {
-          p_buffer[current_size++] = *first++;
-        }
-      }
-      else
-      {
-        size_t insert_index = std::distance(begin(), position);
-        size_t n_insert = count;
-
-        // Create copy (backwards).
-        size_t from = size() - 1;
-        size_t to = from + n_insert;
-        size_t n_move = std::distance(position, end());
-        size_t n_create_copy = std::min(n_insert, n_move);
-        for (size_t i = 0; i < n_create_copy; ++i)
-        {
-          p_buffer[to--] = p_buffer[from--];
-        }
-
-        // Copy old.
-        from = insert_index;
-        to = from + n_insert;
-        size_t n_copy_old = (size() > n_insert) ? size() - n_insert : 0;
-        etl::copy_n(&p_buffer[from], n_copy_old, &p_buffer[to]);
-
-        // Copy new.
-        to = insert_index;
-        size_t n_create_new = (n_insert > n_create_copy) ? n_insert - n_create_copy : 0;
-        size_t n_copy_new = (n_insert > n_create_new) ? n_insert - n_create_new : 0;
-        etl::copy_n(first, n_copy_new, &p_buffer[to]);
-        first += n_copy_new;
-
-        // Create new.
-        to = size();
-        for (size_t i = 0; i < n_create_new; ++i)
-        {
-          p_buffer[to++] = *first++;
-        }
-
-        current_size += n_insert;
-      }
+      std::copy_backward(position, p_end, p_end + count);
+      std::copy(first, last, position);
+      p_end += count;
     }
     
     //*********************************************************************
@@ -553,7 +473,7 @@ namespace etl
     iterator erase(iterator i_element)
     {
       std::copy(i_element + 1, end(), i_element);
-      --current_size;
+      --p_end;
 
       return i_element;
     }
@@ -572,7 +492,7 @@ namespace etl
       size_t n_delete = std::distance(first, last);
 
       // Just adjust the count.
-      current_size -= n_delete;
+      p_end -= n_delete;
 
       return first;
     }
@@ -590,14 +510,51 @@ namespace etl
       return *this;
     }
 
+    //*************************************************************************
+    /// Gets the current size of the vector.
+    ///\return The current size of the vector.
+    //*************************************************************************
+    size_type size() const
+    {
+      return size_t(p_end - p_buffer);
+    }
+
+    //*************************************************************************
+    /// Checks the 'empty' state of the vector.
+    ///\return <b>true</b> if empty.
+    //*************************************************************************
+    bool empty() const
+    {
+      return (p_end == p_buffer);
+    }
+
+    //*************************************************************************
+    /// Checks the 'full' state of the vector.
+    ///\return <b>true</b> if full.
+    //*************************************************************************
+    bool full() const
+    {
+      return size() == MAX_SIZE;
+    }
+
+    //*************************************************************************
+    /// Returns the remaining capacity.
+    ///\return The remaining capacity.
+    //*************************************************************************
+    size_t available() const
+    {
+      return max_size() - size();
+    }
+
   protected:
 
     //*********************************************************************
     /// Constructor.
     //*********************************************************************
-    pvoidvector(void** p_buffer, size_t MAX_SIZE)
+    pvoidvector(void** p_buffer_, size_t MAX_SIZE)
       : vector_base(MAX_SIZE),
-        p_buffer(p_buffer)
+        p_buffer(p_buffer_),
+        p_end(p_buffer_)
     {
     }
 
@@ -606,16 +563,31 @@ namespace etl
     //*********************************************************************
     void initialise()
     {
-      current_size = 0;
+      p_end = p_buffer;
     }
 
     void** p_buffer;
+    void** p_end;
 
   private:
 
     // Disable copy construction.
     pvoidvector(const pvoidvector&);
   };
+
+  bool pvoidvector_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool pvoidvector_not_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool pvoidvector_less_than(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool pvoidvector_greater_than(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool pvoidvector_less_than_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool pvoidvector_greater_than_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+
+  bool operator ==(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool operator !=(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool operator  <(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool operator  >(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool operator <=(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
+  bool operator >=(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
 }
 
 #ifdef ETL_COMPILER_MICROSOFT

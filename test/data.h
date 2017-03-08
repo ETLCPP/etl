@@ -40,7 +40,7 @@ class TestDataDC
 public:
 
   TestDataDC()
-	: value(T())
+  : value(T())
   {
   }
 
@@ -88,10 +88,6 @@ template <typename T>
 class TestDataNDC
 {
 public:
-
-  TestDataNDC()
-	: value(T())
-  {}
 
   TestDataNDC(const T& value)
     : value(value)

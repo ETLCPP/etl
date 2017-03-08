@@ -349,6 +349,232 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_assign)
+    {
+      int initial[] = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+      int source[]  = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };     
+      int check1[]  = { 0, 1, 2, 3, 4, -1, -1, -1, -1, -1 };
+      int check2[]  = { 0, 1, 2, 3, 4, 99, 99, 99, 99, 99 };
+      int check3[]  = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      Data data;
+
+      // Initial data.
+      data.assign(std::begin(initial), std::end(initial));
+      bool isEqual = std::equal(data.begin(), data.end(), std::begin(initial));
+      CHECK(isEqual);
+
+      // Assign smaller.
+      data.assign(std::begin(initial), std::end(initial));
+      data.assign(&source[0], &source[5]);
+      isEqual = std::equal(data.begin(), data.end(), std::begin(check1));
+      CHECK(isEqual);
+
+      // Assign smaller + default.
+      data.assign(std::begin(initial), std::end(initial));
+      data.assign(&source[0], &source[5], 99);
+      isEqual = std::equal(data.begin(), data.end(), std::begin(check2));
+      CHECK(isEqual);
+
+      // Assign larger.
+      data.assign(std::begin(initial), std::end(initial));
+      data.assign(&source[0], &source[13]);
+      isEqual = std::equal(data.begin(), data.end(), std::begin(check3));
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(test_insert_value)
+    {
+      int initial[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int check1[]  = { 99, 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+      int check2[]  = { 0, 1, 2, 3, 4, 99, 5, 6, 7, 8 };
+      int check3[]  = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 99 };
+
+      Data data;
+      Data::iterator result;
+
+      // Insert beginning.
+      data.assign(std::begin(initial), std::end(initial));
+      result = data.insert_at(0, 99);
+      CHECK_EQUAL(data[0], *result);
+      bool isEqual = std::equal(data.begin(), data.end(), std::begin(check1));
+      CHECK(isEqual);
+
+      // Insert middle.
+      data.assign(std::begin(initial), std::end(initial));
+      result = data.insert_at(5, 99);
+      CHECK_EQUAL(data[5], *result);
+      isEqual = std::equal(data.begin(), data.end(), std::begin(check2));
+      CHECK(isEqual);
+
+      // Insert end.
+      data.assign(std::begin(initial), std::end(initial));
+      result = data.insert_at(9, 99);
+      CHECK_EQUAL(data[9], *result);
+      isEqual = std::equal(data.begin(), data.end(), std::begin(check3));
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(test_insert_range)
+    {
+      int source1[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+      int source2[] = { 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
+      int check1[]  = { 12, 11, 10, 0, 1, 2, 3, 4, 5, 6 };
+      int check2[]  = { 0, 1, 2, 3, 12, 11, 10, 4, 5, 6 };
+      int check3[]  = { 0, 1, 2, 3, 4, 5, 6, 12, 11, 10 };
+      int check4[]  = { 12, 11, 10, 9, 8, 7, 6, 5, 4, 3 };
+      int check5[]  = { 0, 1, 2, 3, 12, 11, 10, 9, 8, 7, 6 };
+
+      Data data;
+      Data::iterator result;
+
+      // Insert smaller, beginning.
+      data.assign(std::begin(source1), std::end(source1));
+      result = data.insert_at(0, &source2[0], &source2[3]);
+      CHECK_EQUAL(data[0], *result);
+      bool isEqual = std::equal(data.begin(), data.end(), std::begin(check1));
+      CHECK(isEqual);
+
+      // Insert smaller, middle.
+      data.assign(std::begin(source1), std::end(source1));
+      result = data.insert_at(4, &source2[0], &source2[3]);
+      CHECK_EQUAL(data[4], *result);
+      isEqual = std::equal(data.begin(), data.end(), std::begin(check2));
+      CHECK(isEqual);
+
+      // Insert smaller, end.
+      data.assign(std::begin(source1), std::end(source1));
+      result = data.insert_at(7, &source2[0], &source2[3]);
+      CHECK_EQUAL(data[7], *result);
+      isEqual = std::equal(data.begin(), data.end(), std::begin(check3));
+      CHECK(isEqual);
+
+      // Insert larger, beginning.
+      data.assign(std::begin(source1), std::end(source1));
+      result = data.insert_at(0, &source2[0], &source2[13]);
+      CHECK_EQUAL(data[0], *result);
+      isEqual = std::equal(data.begin(), data.end(), std::begin(check4));
+      CHECK(isEqual);
+
+      // Insert larger, middle.
+      data.assign(std::begin(source1), std::end(source1));
+      result = data.insert_at(4, &source2[0], &source2[13]);
+      CHECK_EQUAL(data[4], *result);
+      isEqual = std::equal(data.begin(), data.end(), std::begin(check5));
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(test_erase_single)
+    {
+      int initial[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int check1a[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 9 };
+      int check1b[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 99 };
+      int check2a[] = { 0, 1, 2, 3, 4, 6, 7, 8, 9, 9 };
+      int check2b[] = { 0, 1, 2, 3, 4, 6, 7, 8, 9, 99 };
+      int check3a[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int check3b[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 99 };
+
+      Data data;
+      Data::iterator result;
+
+      // Erase beginning.
+      data.assign(std::begin(initial), std::end(initial));
+      result = data.erase_at(0);
+      CHECK_EQUAL(data[0], *result);
+      bool isEqual = std::equal(data.begin(), data.end(), std::begin(check1a));
+      CHECK(isEqual);
+
+      data.assign(std::begin(initial), std::end(initial));
+      result = data.erase_at(0, 99);
+      CHECK_EQUAL(data[0], *result);
+      isEqual = std::equal(data.begin(), data.end(), std::begin(check1b));
+      CHECK(isEqual);
+
+      // Erase middle.
+      data.assign(std::begin(initial), std::end(initial));
+      result = data.erase_at(5);
+      CHECK_EQUAL(data[5], *result);
+      isEqual = std::equal(data.begin(), data.end(), std::begin(check2a));
+      CHECK(isEqual);
+
+      data.assign(std::begin(initial), std::end(initial));
+      result = data.erase_at(5, 99);
+      CHECK_EQUAL(data[5], *result);
+      isEqual = std::equal(data.begin(), data.end(), std::begin(check2b));
+      CHECK(isEqual);
+
+      // Erase last.
+      data.assign(std::begin(initial), std::end(initial));
+      result = data.erase_at(9);
+      CHECK_EQUAL(data[9], *result);
+      isEqual = std::equal(data.begin(), data.end(), std::begin(check3a));
+      CHECK(isEqual);
+
+      data.assign(std::begin(initial), std::end(initial));
+      result = data.erase_at(9, 99);
+      CHECK_EQUAL(data[9], *result);
+      isEqual = std::equal(data.begin(), data.end(), std::begin(check3b));
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(test_erase_range)
+    {
+      int initial[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int check1a[] = { 5, 6, 7, 8, 9, 5, 6, 7, 8, 9 };
+      int check1b[] = { 5, 6, 7, 8, 9, 99, 99, 99, 99, 99 };
+      int check2a[] = { 0, 1, 7, 8, 9, 5, 6, 7, 8, 9 };
+      int check2b[] = { 0, 1, 7, 8, 9, 99, 99, 99, 99, 99 };
+      int check3a[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int check3b[] = { 0, 1, 2, 3, 4, 99, 99, 99, 99, 99 };
+
+      Data data;
+      Data::iterator result;
+
+      // Erase beginning.
+      data.assign(std::begin(initial), std::end(initial));
+      result = data.erase_range(0, 5);
+      CHECK_EQUAL(data[0], *result);
+      bool isEqual = std::equal(data.begin(), data.end(), std::begin(check1a));
+      CHECK(isEqual);
+
+      data.assign(std::begin(initial), std::end(initial));
+      result = data.erase_range(0, 5, 99);
+      CHECK_EQUAL(data[0], *result);
+      isEqual = std::equal(data.begin(), data.end(), std::begin(check1b));
+      CHECK(isEqual);
+
+      // Erase middle.
+      data.assign(std::begin(initial), std::end(initial));
+      result = data.erase_range(2, 7);
+      CHECK_EQUAL(data[2], *result);
+      isEqual = std::equal(data.begin(), data.end(), std::begin(check2a));
+      CHECK(isEqual);
+
+      data.assign(std::begin(initial), std::end(initial));
+      result = data.erase_range(2, 7, 99);
+      CHECK_EQUAL(data[2], *result);
+      isEqual = std::equal(data.begin(), data.end(), std::begin(check2b));
+      CHECK(isEqual);
+
+      // Erase last.
+      data.assign(std::begin(initial), std::end(initial));
+      result = data.erase_range(5, 10);
+      CHECK_EQUAL(data[5], *result);
+      isEqual = std::equal(data.begin(), data.end(), std::begin(check3a));
+      CHECK(isEqual);
+
+      data.assign(std::begin(initial), std::end(initial));
+      result = data.erase_range(5, 10, 99);
+      CHECK_EQUAL(data[5], *result);
+      isEqual = std::equal(data.begin(), data.end(), std::begin(check3b));
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
     TEST(test_equal)
     {
       Data data1 = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };

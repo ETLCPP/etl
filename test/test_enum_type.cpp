@@ -41,11 +41,11 @@ struct enum_test
     FOUR
   };
 
-  DECLARE_ENUM_TYPE(enum_test, int)
-  ENUM_TYPE(ZERO,  "ZERO")
-  ENUM_TYPE(ONE,   "ONE")
-  ENUM_TYPE(THREE, "THREE")
-  END_ENUM_TYPE
+  ETL_DECLARE_ENUM_TYPE(enum_test, int)
+  ETL_ENUM_TYPE(ZERO,  "ZERO")
+  ETL_ENUM_TYPE(ONE,   "ONE")
+  ETL_ENUM_TYPE(THREE, "THREE")
+  ETL_END_ENUM_TYPE
 };
 
 namespace 
@@ -75,7 +75,7 @@ namespace
       value = enum_test::THREE;
       CHECK_EQUAL(std::string("THREE"), std::string(value.c_str()));
 
-      // No ENUM_TYPE definition.
+      // No ETL_ENUM_TYPE definition.
       value = enum_test::FOUR;
       CHECK_EQUAL(std::string("?"), std::string(value.c_str()));
 

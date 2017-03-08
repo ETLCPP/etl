@@ -36,7 +36,7 @@ SOFTWARE.
 #include <string>
 #include <ostream>
 
-void f(int a)
+void f(int)
 {
 }
 

@@ -34,6 +34,7 @@ SOFTWARE.
 #include <stddef.h>
 #include <algorithm>
 
+#include "platform.h"
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "error_handler.h"
@@ -167,7 +168,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-#ifdef _DEBUG
+#if defined(ETL_DEBUG)
       difference_type count = std::distance(first, last);
       ETL_ASSERT(count >= 0, ETL_ERROR(priority_queue_iterator));
       ETL_ASSERT(static_cast<size_t>(count) <= max_size(), ETL_ERROR(priority_queue_full));
@@ -184,13 +185,10 @@ namespace etl
     //*************************************************************************
     void pop()
     {
-      if (!empty())
-      {
         // Move largest element to end
-	      std::pop_heap(container.begin(), container.end(), TCompare());
+        std::pop_heap(container.begin(), container.end(), TCompare());
         // Actually remove largest element at end
         container.pop_back();
-      }
     }
 
     //*************************************************************************

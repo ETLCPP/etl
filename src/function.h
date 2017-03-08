@@ -200,8 +200,8 @@ namespace etl
     /// Constructor.
     ///\param p_function Pointer to the function.
     //*************************************************************************
-    function(void(*p_function)(void))
-      : p_function(p_function)
+    function(void(*p_function_)(void))
+      : p_function(p_function_)
     {
     }
 

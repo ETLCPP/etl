@@ -38,6 +38,7 @@ SOFTWARE.
 #include <stddef.h>
 #include "../exception.h"
 #include "../error_handler.h"
+#include "../debug_count.h"
 
 #undef ETL_FILE
 #define ETL_FILE "10"
@@ -162,9 +163,9 @@ namespace etl
 
   protected:
 
-    static const uint8_t kLeft    = 0;
-    static const uint8_t kRight   = 1;
-    static const uint8_t kNeither = 2;
+    static const uint_least8_t kLeft    = 0;
+    static const uint_least8_t kRight   = 1;
+    static const uint_least8_t kNeither = 2;
 
     //*************************************************************************
     /// The node element in the multiset.
@@ -194,8 +195,8 @@ namespace etl
 
       Node* parent;
       Node* children[2];
-      uint8_t weight;
-      uint8_t dir;
+      uint_least8_t weight;
+      uint_least8_t dir;
     };
 
     //*************************************************************************
@@ -482,7 +483,7 @@ namespace etl
     //*************************************************************************
     /// Rotate two nodes at the position provided the to balance the tree
     //*************************************************************************
-    void rotate_2node(Node*& position, uint8_t dir)
+    void rotate_2node(Node*& position, uint_least8_t dir)
     {
       //     A            C             A          B
       //   B   C   ->   A   E   OR    B   C  ->  D   A
@@ -523,7 +524,7 @@ namespace etl
     //*************************************************************************
     /// Rotate three nodes at the position provided the to balance the tree
     //*************************************************************************
-    void rotate_3node(Node*& position, uint8_t dir, uint8_t third)
+    void rotate_3node(Node*& position, uint_least8_t dir, uint_least8_t third)
     {
       //        __A__             __E__            __A__             __D__
       //      _B_    C    ->     B     A    OR    B    _C_   ->     A     C
@@ -579,6 +580,7 @@ namespace etl
     size_type current_size;   ///< The number of the used nodes.
     const size_type MAX_SIZE; ///< The maximum size of the set.                    
     Node* root_node;          ///< The node that acts as the multiset root.
+    etl::debug_count construct_count;
   };
 }
 

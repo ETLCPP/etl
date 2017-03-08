@@ -42,6 +42,7 @@ SOFTWARE.
 #include <functional>
 #include <stddef.h>
 
+#include "platform.h"
 #include "nullptr.h"
 #include "type_traits.h"
 #include "exception.h"
@@ -120,13 +121,6 @@ namespace etl
   class intrusive_list
   {
   public:
-
-    enum
-    {
-      // The count option is based on the type of link.
-      COUNT_OPTION = ((TLink::OPTION == etl::link_option::AUTO) || 
-                      (TLink::OPTION == etl::link_option::CHECKED)) ? etl::count_option::SLOW_COUNT : etl::count_option::FAST_COUNT
-    };
 
     typedef intrusive_list<TValue, TLink> list_type;
 
@@ -341,7 +335,7 @@ namespace etl
       const value_type* p_value;
     };
 
-		typedef typename std::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename std::iterator_traits<iterator>::difference_type difference_type;
 
     //*************************************************************************
     /// Constructor.
@@ -349,6 +343,14 @@ namespace etl
     intrusive_list()
     {
       initialise();
+    }
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~intrusive_list()
+    {
+      clear();
     }
 
     //*************************************************************************
@@ -456,7 +458,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-#ifdef _DEBUG
+#if defined(ETL_DEBUG)
       difference_type count = std::distance(first, last);
       ETL_ASSERT(count >= 0, ETL_ERROR(intrusive_list_iterator_exception));
 #endif
@@ -478,7 +480,7 @@ namespace etl
     //*************************************************************************
     /// Pushes a value to the front of the intrusive_list.
     //*************************************************************************
-    void push_front(value_type& value)
+    void push_front(link_type& value)
     {
       insert_link(terminal_link, value);
     }
@@ -537,33 +539,21 @@ namespace etl
 
     //*************************************************************************
     /// Inserts a value to the intrusive_list before the specified position.
-    /// Checks that the value is unlinked if CHECKED
     //*************************************************************************
     iterator insert(iterator position, value_type& value)
     {
-      if (TLink::OPTION == etl::link_option::CHECKED)
-      {
-        ETL_ASSERT(!value.TLink::is_linked(), ETL_ERROR(etl::not_unlinked_exception));
-      }
-
       insert_link(position.p_value->link_type::etl_previous, value);
       return iterator(value);
     }
 
     //*************************************************************************
     /// Inserts a range of values to the intrusive_list after the specified position.
-    /// Checks that the values are unlinked if CHECKED.
     //*************************************************************************
     template <typename TIterator>
     void insert(iterator position, TIterator first, TIterator last)
     {
       while (first != last)
       {
-        if (TLink::OPTION == etl::link_option::CHECKED)
-        {
-          ETL_ASSERT(!position.p_value->TLink::is_linked(), ETL_ERROR(etl::not_unlinked_exception));
-        }
-
         // Set up the next free link.
         insert_link(*position.p_value->link_type::etl_previous, *first++);
       }
@@ -594,27 +584,7 @@ namespace etl
       // Join the ends.
       etl::link<link_type>(p_first->etl_previous, p_last);
 
-      if (COUNT_OPTION == etl::count_option::FAST_COUNT)
-      {
-        current_size -= std::distance(first, last);
-      }
-
-      if ((TLink::OPTION == etl::link_option::AUTO) ||
-          (TLink::OPTION == etl::link_option::CHECKED))
-      {
-        // Clear the ones in between.
-        link_type* p_next;
-
-        while (p_first != p_last)
-        {
-          // One less.
-          --current_size;
-
-          p_next = p_first->etl_next; // Remember the next link.
-          p_first->TLink::clear();    // Clear the link.
-          p_first = p_next;           // Move to the next link.
-        }
-      }
+      current_size -= std::distance(first, last);
 
       if (p_last == &terminal_link)
       {
@@ -831,35 +801,25 @@ namespace etl
     //*************************************************************************
     size_t size() const
     {
-      if (COUNT_OPTION == etl::count_option::SLOW_COUNT)
-      {
-        return std::distance(cbegin(), cend());
-      }
-      else
-      {
-        return current_size.get_count();
-      }
+      return current_size;
     }
 
     //*************************************************************************
     /// Splice another list into this one.
     //*************************************************************************
-    void splice(iterator position, list_type& list)
+    void splice(iterator position, list_type& other)
     {
       // No point splicing to ourself!
-      if (&list != this)
+      if (&other != this)
       {
-        if (!list.empty())
+        if (!other.empty())
         {
-          link_type& first = *list.get_head();
-          link_type& last = *list.get_tail();
+          link_type& first = *other.get_head();
+          link_type& last = *other.get_tail();
 
-          if (COUNT_OPTION == etl::count_option::FAST_COUNT)
+          if (&other != this)
           {
-            if (&list != this)
-            {
-              current_size += list.size();
-            }
+            current_size += other.size();
           }
 
           link_type& after = *position.p_value;
@@ -868,7 +828,7 @@ namespace etl
           etl::link<link_type>(before, first);
           etl::link<link_type>(last, after);
 
-          list.clear();
+          other.initialise();
         }
       }
     }
@@ -876,38 +836,32 @@ namespace etl
     //*************************************************************************
     /// Splice an element from another list into this one.
     //*************************************************************************
-    void splice(iterator position, list_type& list, iterator isource)
+    void splice(iterator position, list_type& other, iterator isource)
     {
       link_type& before = *position.p_value->link_type::etl_previous;
 
       etl::unlink<link_type>(*isource.p_value);
       etl::link_splice<link_type>(before, *isource.p_value);
 
-      if (COUNT_OPTION == etl::count_option::FAST_COUNT)
+      if (&other != this)
       {
-        if (&list != this)
-        {
-          ++current_size;
-          --list.current_size;
-        }
+        ++current_size;
+        --other.current_size;
       }
     }
 
     //*************************************************************************
     /// Splice a range of elements from another list into this one.
     //*************************************************************************
-    void splice(iterator position, list_type& list, iterator begin_, iterator end_)
+    void splice(iterator position, list_type& other, iterator begin_, iterator end_)
     {
-      if (!list.empty())
+      if (!other.empty())
       {
-        if (COUNT_OPTION == etl::count_option::FAST_COUNT)
+        if (&other != this)
         {
-          if (&list != this)
-          {
-            size_t n = std::distance(begin_, end_);
-            current_size += n;
-            list.current_size -= n;
-          }
+          size_t n = std::distance(begin_, end_);
+          current_size += n;
+          other.current_size -= n;
         }
 
         link_type& first = *begin_.p_value;
@@ -926,26 +880,26 @@ namespace etl
     //*************************************************************************
     /// Merge another list into this one. Both lists should be sorted.
     //*************************************************************************
-    void merge(list_type& list)
+    void merge(list_type& other)
     {
-      merge(list, std::less<value_type>());
+      merge(other, std::less<value_type>());
     }
 
     //*************************************************************************
     /// Merge another list into this one. Both lists should be sorted.
     //*************************************************************************
     template <typename TCompare>
-    void merge(list_type& list, TCompare compare)
+    void merge(list_type& other, TCompare compare)
     {
-      if (!list.empty())
+      if (!other.empty())
       {
 #if _DEBUG
-        ETL_ASSERT(etl::is_sorted(list.begin(), list.end(), compare), ETL_ERROR(intrusive_list_unsorted));
+        ETL_ASSERT(etl::is_sorted(other.begin(), other.end(), compare), ETL_ERROR(intrusive_list_unsorted));
         ETL_ASSERT(etl::is_sorted(begin(), end(), compare), ETL_ERROR(intrusive_list_unsorted));
 #endif
 
-        value_type* other_begin = static_cast<value_type*>(list.get_head());
-        value_type* other_end   = static_cast<value_type*>(&list.terminal_link);
+        value_type* other_begin = static_cast<value_type*>(other.get_head());
+        value_type* other_end   = static_cast<value_type*>(&other.terminal_link);
 
         value_type* begin = static_cast<value_type*>(get_head());
         value_type* end   = static_cast<value_type*>(&terminal_link);
@@ -976,13 +930,9 @@ namespace etl
           etl::link_splice<link_type>(*get_tail(), *other_begin, *other_end->link_type::etl_previous);
         }
 
+        current_size += other.size();
 
-        if (COUNT_OPTION == etl::count_option::FAST_COUNT)
-        {
-          current_size += list.size();
-        }
-
-        list.clear();
+        other.initialise();
       }
     }
 
@@ -991,105 +941,7 @@ namespace etl
     /// The link that acts as the intrusive_list start & end.
     link_type terminal_link;
 
-    //*************************************************************************
-    /// Counter type based on count option.
-    //*************************************************************************
-    template <const size_t OPTION, bool dummy = true>
-    class counter_type
-    {
-    };
-
-    //*************************************************************************
-    /// Slow type.
-    //*************************************************************************
-    template <bool dummy>
-    class counter_type<etl::count_option::SLOW_COUNT, dummy>
-    {
-    public:
-
-      counter_type& operator ++()
-      {
-        return *this;
-      }
-
-      counter_type& operator --()
-      {
-        return *this;
-      }
-
-      counter_type& operator =(size_t new_count)
-      {
-        return *this;
-      }
-
-      counter_type& operator +=(size_t diff)
-      {
-        return *this;
-      }
-
-      counter_type& operator -=(size_t diff)
-      {
-        return *this;
-      }
-
-      size_t get_count() const
-      {
-        return 0;
-      }
-    };
-
-    //*************************************************************************
-    /// Fast type.
-    //*************************************************************************
-    template <bool dummy>
-    class counter_type<etl::count_option::FAST_COUNT, dummy>
-    {
-    public:
-
-      counter_type()
-        : count(0)
-      {
-      }
-
-      counter_type& operator ++()
-      {
-        ++count;
-        return *this;
-      }
-
-      counter_type& operator --()
-      {
-        --count;
-        return *this;
-      }
-
-      counter_type& operator =(size_t new_count)
-      {
-        count = new_count;
-        return *this;
-      }
-
-      counter_type& operator +=(size_t diff)
-      {
-        count += diff;
-        return *this;
-      }
-
-      counter_type& operator -=(size_t diff)
-      {
-        count -= diff;
-        return *this;
-      }
-
-      size_t get_count() const
-      {
-        return count;
-      }
-
-      size_t count;
-    };
-
-    counter_type<COUNT_OPTION> current_size; ///< Counts the number of elements in the list.
+    size_t current_size; ///< Counts the number of elements in the list.
 
     //*************************************************************************
     /// Is the intrusive_list a trivial length?

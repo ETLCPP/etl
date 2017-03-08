@@ -8,7 +8,7 @@
  8 map_base
  9 multimap_base
 10 multiset_base
-11 pool_base
+11 ipool
 12 ipriority_queue
 13 queue_base
 14 set_base
@@ -24,3 +24,6 @@
 24 variant
 25 iunordered_multimap
 26 iunordered_multiset
+27 string_base
+28 intrusive_stack
+29 intrusive_queue

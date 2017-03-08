@@ -33,10 +33,12 @@ SOFTWARE.
 
 #include "alignment.h"
 #include "array.h"
-#include "bitset.h"
+#include "container.h"
+#include "integral_limits.h"
 #include "ipool.h"
 
 #include <iterator>
+#include <algorithm>
 
 //*****************************************************************************
 ///\defgroup pool pool
@@ -51,7 +53,7 @@ namespace etl
   ///\ingroup pool
   //*************************************************************************
   template <typename T, const size_t SIZE_>
-  class pool : public ipool<T>
+  class pool : public ipool
   {
   public:
 
@@ -61,25 +63,29 @@ namespace etl
     /// Constructor
     //*************************************************************************
     pool()
-      : ipool<T>(reinterpret_cast<T*>(&buffer[0]), in_use, SIZE)
+      : ipool(reinterpret_cast<char*>(&buffer[0]), ELEMENT_SIZE, SIZE)
     {
     }
 
-    //*************************************************************************
-    /// Destructor
-    //*************************************************************************
     ~pool()
     {
-      ipool<T>::release_all();
+
     }
 
   private:
 
-    ///< The memory for the pool of objects.
-    typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[SIZE];
+    // The pool element.
+    union Element
+    {
+      uint32_t next;             ///< Index of the next free element.
+      char     value[sizeof(T)]; ///< Storage for value type.
+      typename etl::type_with_alignment<etl::alignment_of<T>::value>::type dummy; ///< Dummy item to get correct alignment.
+    };
 
-    ///< The set of flags that indicate which items are free in the pool.
-    bitset<SIZE> in_use;
+    ///< The memory for the pool of objects.
+    typename etl::aligned_storage<sizeof(Element), etl::alignment_of<Element>::value>::type buffer[SIZE];
+
+    static const uint32_t ELEMENT_SIZE = sizeof(Element);
 
     // Should not be copied.
     pool(const pool&);

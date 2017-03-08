@@ -37,18 +37,18 @@ SOFTWARE.
 
 #include "iflat_map.h"
 #include "vector.h"
+#include "pool.h"
 
 //*****************************************************************************
 ///\defgroup flat_map flat_map
 /// A flat_map with the capacity defined at compile time.
 /// Has insertion of O(N) and flat_map of O(logN)
-/// Duplicate entries and not allowed.
+/// Duplicate entries are not allowed.
 ///\ingroup containers
 //*****************************************************************************
 
 namespace etl
 {
-  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename TCompare = std::less<TKey> >
   //***************************************************************************
   /// A flat_map implementation that uses a fixed size buffer.
   ///\tparam TKey     The key type.
@@ -57,6 +57,7 @@ namespace etl
   ///\tparam MAX_SIZE_ The maximum number of elements that can be stored.
   ///\ingroup flat_map
   //***************************************************************************
+  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename TCompare = std::less<TKey> >
   class flat_map : public iflat_map<TKey, TValue, TCompare>
   {
   public:
@@ -67,7 +68,7 @@ namespace etl
     /// Constructor.
     //*************************************************************************
     flat_map()
-      : iflat_map<TKey, TValue, TCompare>(buffer)
+      : iflat_map<TKey, TValue, TCompare>(lookup, storage)
     {
     }
 
@@ -75,7 +76,7 @@ namespace etl
     /// Copy constructor.
     //*************************************************************************
     flat_map(const flat_map& other)
-      : iflat_map<TKey, TValue, TCompare>(buffer)
+      : iflat_map<TKey, TValue, TCompare>(lookup, storage)
     {
       iflat_map<TKey, TValue, TCompare>::assign(other.cbegin(), other.cend());
     }
@@ -88,9 +89,17 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     flat_map(TIterator first, TIterator last)
-      : iflat_map<TKey, TValue, TCompare>(buffer)
+      : iflat_map<TKey, TValue, TCompare>(lookup, storage)
     {
       iflat_map<TKey, TValue, TCompare>::assign(first, last);
+    }
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~flat_map()
+    {
+      iflat_map<TKey, TValue, TCompare>::clear();
     }
 
     //*************************************************************************
@@ -108,7 +117,13 @@ namespace etl
 
   private:
 
-    etl::vector<typename iflat_map<TKey, TValue, TCompare>::value_type, MAX_SIZE> buffer; ///<The vector that stores the elements.
+    typedef typename iflat_map<TKey, TValue, TCompare>::value_type node_t;
+
+    // The pool of nodes.
+    etl::pool<node_t, MAX_SIZE> storage;
+    
+    // The vector that stores pointers to the nodes.
+    etl::vector<node_t*, MAX_SIZE> lookup;
   };
 }
 

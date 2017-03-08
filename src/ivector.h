@@ -43,6 +43,7 @@ SOFTWARE.
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "error_handler.h"
+#include "memory.h"
 
 #ifdef ETL_COMPILER_GCC
 #pragma GCC diagnostic ignored "-Wunused-variable"
@@ -72,14 +73,6 @@ namespace etl
     typedef size_t                                size_type;
     typedef typename std::iterator_traits<iterator>::difference_type difference_type;
 
-  private:
-
-    // Type trait to allow selection of simple algorithms for simple types.
-    template <typename U>
-    struct is_simple_type : integral_constant<bool, etl::is_fundamental<U>::value || etl::is_pointer<U>::value>
-    {
-    };
-
   protected:
 
     typedef typename parameter_type<T>::type parameter_t;
@@ -92,7 +85,7 @@ namespace etl
     //*********************************************************************
     iterator begin()
     {
-      return &p_buffer[0];
+      return p_buffer;
     }
 
     //*********************************************************************
@@ -101,7 +94,7 @@ namespace etl
     //*********************************************************************
     const_iterator begin() const
     {
-      return &p_buffer[0];
+      return p_buffer;
     }
 
     //*********************************************************************
@@ -110,7 +103,7 @@ namespace etl
     //*********************************************************************
     iterator end()
     {
-      return &p_buffer[current_size];
+      return p_end;
     }
 
     //*********************************************************************
@@ -119,7 +112,7 @@ namespace etl
     //*********************************************************************
     const_iterator end() const
     {
-      return &p_buffer[current_size];
+      return p_end;
     }
 
     //*********************************************************************
@@ -128,7 +121,7 @@ namespace etl
     //*********************************************************************
     const_iterator cbegin() const
     {
-      return &p_buffer[0];
+      return p_buffer;
     }
 
     //*********************************************************************
@@ -137,7 +130,7 @@ namespace etl
     //*********************************************************************
     const_iterator cend() const
     {
-      return &p_buffer[current_size];
+      return p_end;
     }
 
     //*********************************************************************
@@ -202,32 +195,7 @@ namespace etl
     //*********************************************************************
     void resize(size_t new_size)
     {
-      ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(vector_full));
-
-      // Choose the algorithm according to type.
-      // The unused branch should be optimised away.
-      if (is_simple_type<value_type>::value)
-      {
-        current_size = new_size;
-      }
-      else
-      {
-        // Size up or size down?
-        if (new_size > current_size)
-        {
-          while (current_size < new_size)
-          {
-            create_element();
-          }
-        }
-        else if (new_size < current_size)
-        {
-          while (current_size > new_size)
-          {
-            destroy_element();
-          }
-        }
-      }
+      resize(new_size, T());
     }
 
     //*********************************************************************
@@ -237,41 +205,72 @@ namespace etl
     ///\param new_size The new size.
     ///\param value   The value to fill new elements with. Default = default constructed value.
     //*********************************************************************
-    void resize(size_t new_size, T value)
+    template <typename U = T>
+    typename etl::enable_if<etl::has_trivial_constructor<U>::value, void>::type
+      resize(size_t new_size, T value)
     {
       ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(vector_full));
 
-      // Choose the algorithm according to type.
-      // The unused branch should be optimised away.
-      if (is_simple_type<value_type>::value)
-      {
-        // Size up if necessary.
-        while (current_size < new_size)
-        {
-          p_buffer[current_size++] = value;
-        }
+      const size_t current_size = size();
+      size_t delta = (current_size < new_size) ? new_size - current_size : current_size - new_size;
 
-        current_size = new_size;
+      if (current_size < new_size)
+      {
+        std::fill_n(p_end, delta, value);
+#if defined(ETL_DEBUG)
+        construct_count += delta;
+#endif
       }
       else
       {
-        // Size up?
-        if (new_size > current_size)
-        {
-          while (current_size < new_size)
-          {
-            create_element(value);
-          }
-        }
-        // Size down?
-        else if (new_size < current_size)
-        {
-          while (current_size > new_size)
-          {
-            destroy_element();
-          }
-        }
+        p_end -= delta;
+#if defined(ETL_DEBUG)
+        construct_count -= delta;
+#endif
       }
+
+      p_end = p_buffer + new_size;
+    }
+
+    //*********************************************************************
+    /// Resizes the vector.
+    /// If asserts or exceptions are enabled and the new size is larger than the
+    /// maximum then a vector_full is thrown.
+    ///\param new_size The new size.
+    ///\param value   The value to fill new elements with. Default = default constructed value.
+    //*********************************************************************
+    template <typename U = T>
+    typename etl::enable_if<!etl::has_trivial_constructor<U>::value, void>::type
+     resize(size_t new_size, T value)
+    {
+      ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(vector_full));
+
+      const size_t current_size = size();
+      size_t delta = (current_size < new_size) ? new_size - current_size : current_size - new_size;
+
+      if (current_size < new_size)
+      {
+        etl::uninitialized_fill_n(p_end, delta, value);
+#if defined(ETL_DEBUG)
+        construct_count += delta;
+#endif
+      }
+      else
+      {
+        etl::destroy_n(p_end - delta, delta);
+#if defined(ETL_DEBUG)
+        construct_count -= delta;
+#endif
+      }
+
+      p_end = p_buffer + new_size;
+    }
+
+    //*********************************************************************
+    /// Does nothing.
+    //*********************************************************************
+    void reserve(size_t)
+    {
     }
 
     //*********************************************************************
@@ -302,7 +301,7 @@ namespace etl
     //*********************************************************************
     reference at(size_t i)
     {
-      ETL_ASSERT(i < current_size, ETL_ERROR(vector_out_of_bounds));
+      ETL_ASSERT(i < size(), ETL_ERROR(vector_out_of_bounds));
       return p_buffer[i];
     }
 
@@ -314,7 +313,7 @@ namespace etl
     //*********************************************************************
     const_reference at(size_t i) const
     {
-      ETL_ASSERT(i < current_size, ETL_ERROR(vector_out_of_bounds));
+      ETL_ASSERT(i < size(), ETL_ERROR(vector_out_of_bounds));
       return p_buffer[i];
     }
 
@@ -324,7 +323,7 @@ namespace etl
     //*********************************************************************
     reference front()
     {
-      return p_buffer[0];
+      return *p_buffer;
     }
 
     //*********************************************************************
@@ -333,7 +332,7 @@ namespace etl
     //*********************************************************************
     const_reference front() const
     {
-      return p_buffer[0];
+      return *p_buffer;
     }
 
     //*********************************************************************
@@ -342,7 +341,7 @@ namespace etl
     //*********************************************************************
     reference back()
     {
-      return p_buffer[current_size - 1];
+      return *(p_end - 1);
     }
 
     //*********************************************************************
@@ -351,7 +350,7 @@ namespace etl
     //*********************************************************************
     const_reference back() const
     {
-      return p_buffer[current_size - 1];
+      return *(p_end - 1);
     }
 
     //*********************************************************************
@@ -382,30 +381,18 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-#ifdef _DEBUG
+#if defined(ETL_DEBUG)
       difference_type count = std::distance(first, last);
       ETL_ASSERT(static_cast<size_t>(count) <= MAX_SIZE, ETL_ERROR(vector_full));
 #endif
 
       initialise();
 
-      // Choose the algorithm according to type.
-      // The unused branch should be optimised away.
-      if (is_simple_type<value_type>::value)
-      {
-        while (first != last)
-        {
-          p_buffer[current_size++] = *first++;
-        }
-      }
-      else
-      {
-        while (first != last)
-        {
-          create_element(*first);
-          ++first;
-        }
-      }
+#if defined(ETL_DEBUG)        
+      p_end = etl::uninitialized_copy(first, last, p_buffer, construct_count);
+#else
+      p_end = etl::uninitialized_copy(first, last, p_buffer);
+#endif
     }
 
     //*********************************************************************
@@ -416,28 +403,15 @@ namespace etl
     //*********************************************************************
     void assign(size_t n, parameter_t value)
     {
-      initialise();
-
       ETL_ASSERT(n <= MAX_SIZE, ETL_ERROR(vector_full));
 
-      // Choose the algorithm according to type.
-      // The unused branch should be optimised away.
-      if (is_simple_type<value_type>::value)
-      {
-        while (n > 0)
-        {
-          p_buffer[current_size++] = value;
-          --n;
-        }
-      }
-      else
-      {
-        while (n > 0)
-        {
-          create_element(value);
-          --n;
-        }
-      }
+      initialise();
+
+#if defined(ETL_DEBUG)        
+      p_end = etl::uninitialized_fill_n(p_buffer, n, value, construct_count);
+#else
+      p_end = etl::uninitialized_fill_n(p_buffer, n, value);
+#endif
     }
 
     //*************************************************************************
@@ -455,9 +429,10 @@ namespace etl
     void push_back()
     {
 #if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(current_size != MAX_SIZE, ETL_ERROR(vector_full));
+      ETL_ASSERT(size() != MAX_SIZE, ETL_ERROR(vector_full));
 #endif
-      create_element();
+
+      create_back();
     }
 
     //*********************************************************************
@@ -468,9 +443,9 @@ namespace etl
     void push_back(parameter_t value)
     {
 #if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(current_size != MAX_SIZE, ETL_ERROR(vector_full));
+      ETL_ASSERT(size() != MAX_SIZE, ETL_ERROR(vector_full));
 #endif
-      create_element(value);
+      create_back(value);
     }
 
     //*************************************************************************
@@ -480,9 +455,9 @@ namespace etl
     void pop_back()
     {
 #if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(current_size > 0, ETL_ERROR(vector_empty));
+      ETL_ASSERT(size() > 0, ETL_ERROR(vector_empty));
 #endif
-      destroy_element();
+      destroy_back();
     }
 
     //*********************************************************************
@@ -493,17 +468,17 @@ namespace etl
     //*********************************************************************
     iterator insert(iterator position, parameter_t value)
     {
-      ETL_ASSERT((current_size)+1 <= MAX_SIZE, ETL_ERROR(vector_full));
+      ETL_ASSERT(size() + 1 <= MAX_SIZE, ETL_ERROR(vector_full));
 
-      if (position != end())
+      if (position == end())
       {
-        create_element();
-        std::copy_backward(position, end() - 1, end());
-        *position = value;
+        create_back(value);
       }
       else
       {
-        create_element(value);
+        create_back(back());
+        std::copy_backward(position, p_end - 1, p_end);
+        *position = value;
       }
 
       return position;
@@ -516,55 +491,113 @@ namespace etl
     ///\param n        The number of elements to add.
     ///\param value    The value to insert.
     //*********************************************************************
-    void insert(iterator position, size_t n, parameter_t value)
+    template <typename U = T>
+    typename etl::enable_if<etl::has_trivial_constructor<U>::value, void>::type
+      insert(iterator position, size_t n, parameter_t value)
     {
-      ETL_ASSERT((current_size)+1 <= MAX_SIZE, ETL_ERROR(vector_full));
+      ETL_ASSERT((size() + n) <= MAX_SIZE, ETL_ERROR(vector_full));
 
-      if (position == end())
+      std::copy_backward(position, p_end, p_end + n);
+      std::fill_n(position, n, value);
+
+      construct_count += n;
+      p_end += n;
+    }
+
+    //*********************************************************************
+    /// Inserts 'n' values to the vector.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector does not have enough free space.
+    ///\param position The position to insert before.
+    ///\param n        The number of elements to add.
+    ///\param value    The value to insert.
+    //*********************************************************************
+    template <typename U = T>
+    typename etl::enable_if<!etl::has_trivial_constructor<U>::value, void>::type
+      insert(iterator position, size_t n, parameter_t value)
+    {
+      ETL_ASSERT((size() + n) <= MAX_SIZE, ETL_ERROR(vector_full));
+
+      size_t insert_n = n;
+      size_t insert_begin = std::distance(begin(), position);
+      size_t insert_end = insert_begin + insert_n;
+
+      // Copy old data.
+      size_t copy_old_n;
+      size_t construct_old_n;
+      iterator p_construct_old;
+
+      if (insert_end > size())
       {
-        while (n > 0)
-        {
-          create_element(value);
-          --n;
-        }
+        copy_old_n = 0;
+        construct_old_n = size() - insert_begin;
+        p_construct_old = p_buffer + insert_end;
       }
       else
       {
-        // Create copy (backwards).
-        size_t n_insert      = n;
-        size_t from          = size() - 1;
-        size_t to            = from + n_insert;
-        size_t n_move        = std::distance(position, end());
-        size_t n_create_copy = std::min(n_insert, n_move);
+        copy_old_n = size() - insert_begin - insert_n;
+        construct_old_n = insert_n;
+        p_construct_old = p_end;
+      }
 
-        for (size_t i = 0; i < n_create_copy; ++i)
-        {
-          create_element_at(to--, p_buffer[from--]);
-        }
+      size_t copy_new_n = construct_old_n;
+      size_t construct_new_n = insert_n - copy_new_n;
 
-        // Copy old.
-        size_t insert_index = std::distance(begin(), position);
-        from = insert_index;
-        to   = from + n_insert;
-        size_t n_copy_old = (size() > n_insert) ? size() - n_insert : 0;
-        etl::copy_n(&p_buffer[from], n_copy_old, &p_buffer[to]);
+#if defined(ETL_DEBUG)
+      // Construct old.
+      etl::uninitialized_copy_n(p_end - construct_old_n, construct_old_n, p_construct_old, construct_count);
 
-        // Copy new.
-        to = insert_index;
-        
-        size_t n_create_new = (n_insert > n_create_copy) ? n_insert - n_create_copy : 0;
-        size_t n_copy_new = (n_insert > n_create_new) ? n_insert - n_create_new : 0;
-        std::fill_n(&p_buffer[to], n_copy_new, value);
+      // Copy old.
+      etl::copy_n(p_buffer + insert_begin, copy_old_n, p_buffer + insert_end);
 
-        // Create new.
-        to = size();
+      // Construct new.
+      etl::uninitialized_fill_n(p_end, construct_new_n, value, construct_count);
 
-        for (size_t i = 0; i < n_create_new; ++i)
-        {
-          create_element_at(to++, value);
-        }
+      // Copy new.
+      std::fill_n(p_buffer + insert_begin, copy_new_n, value);
+#else
+      // Construct old.
+      etl::uninitialized_copy_n(p_end - construct_old_n, construct_old_n, p_construct_old);
 
-        current_size += n_insert;
+      // Copy old.
+      etl::copy_n(p_buffer + insert_begin, copy_old_n, p_buffer + insert_end);
+
+      // Construct new.
+      etl::uninitialized_fill_n(p_end, construct_new_n, value);
+
+      // Copy new.
+      std::fill_n(p_buffer + insert_begin, copy_new_n, value);
+#endif
+
+      p_end += n;
+    }
+
+    //*********************************************************************
+    /// Inserts a range of values to the vector.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector does not have enough free space.
+    /// For fundamental and pointer types.
+    ///\param position The position to insert before.
+    ///\param first    The first element to add.
+    ///\param last     The last + 1 element to add.
+    //*********************************************************************
+    template <class TIterator, typename U = T>
+    typename etl::enable_if<etl::has_trivial_constructor<U>::value, void>::type
+      insert(iterator position, TIterator first, TIterator last)
+    {
+      size_t count = std::distance(first, last);
+
+      ETL_ASSERT((size() + count) <= MAX_SIZE, ETL_ERROR(vector_full));
+
+      construct_count += count;
+
+      if (position == end())
+      {
+        p_end = std::copy(first, last, p_end);
+      }
+      else
+      {
+        std::copy_backward(position, p_end, p_end + count);
+        std::copy(first, last, position);
+        p_end += count;
       }
     }
 
@@ -576,125 +609,68 @@ namespace etl
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.
     //*********************************************************************
-    template <class TIterator>
-    typename etl::enable_if<is_simple_type<typename std::iterator_traits<TIterator>::value_type>::value, void>::type
-    insert(iterator position, TIterator first, TIterator last)
+    template <class TIterator, typename U = T>
+    typename etl::enable_if<!etl::has_trivial_constructor<U>::value, void>::type
+     insert(iterator position, TIterator first, TIterator last)
     {
       size_t count = std::distance(first, last);
 
-      ETL_ASSERT((current_size)+count <= MAX_SIZE, ETL_ERROR(vector_full));
+      ETL_ASSERT((size() + count) <= MAX_SIZE, ETL_ERROR(vector_full));
 
-      if (position == end())
+      size_t insert_n     = count;
+      size_t insert_begin = std::distance(begin(), position);
+      size_t insert_end   = insert_begin + insert_n;
+
+      // Copy old data.
+      size_t copy_old_n;
+      size_t construct_old_n;
+      iterator p_construct_old;
+
+      if (insert_end > size())
       {
-        while (first != last)
-        {
-          p_buffer[current_size++] = *first++;
-        }
+        copy_old_n      = 0;
+        construct_old_n = size() - insert_begin;
+        p_construct_old = p_buffer + insert_end;
       }
       else
       {
-        size_t insert_index = std::distance(begin(), position);
-        size_t n_insert = count;
-
-        // Create copy (backwards).
-        size_t from = size() - 1;
-        size_t to = from + n_insert;
-        size_t n_move = std::distance(position, end());
-        size_t n_create_copy = std::min(n_insert, n_move);
-
-        for (size_t i = 0; i < n_create_copy; ++i)
-        {
-          p_buffer[to--] = p_buffer[from--];
-        }
-
-        // Copy old.
-        from = insert_index;
-        to = from + n_insert;
-        size_t n_copy_old = (size() > n_insert) ? size() - n_insert : 0;
-        etl::copy_n(&p_buffer[from], n_copy_old, &p_buffer[to]);
-
-        // Copy new.
-        to = insert_index;
-        size_t n_create_new = (n_insert > n_create_copy) ? n_insert - n_create_copy : 0;
-        size_t n_copy_new = (n_insert > n_create_new) ? n_insert - n_create_new : 0;
-        etl::copy_n(first, n_copy_new, &p_buffer[to]);
-        first += n_copy_new;
-
-        // Create new.
-        to = size();
-        for (size_t i = 0; i < n_create_new; ++i)
-        {
-          p_buffer[to++] = *first++;
-        }
-
-        current_size += n_insert;
+        copy_old_n      = size() - insert_begin - insert_n;
+        construct_old_n = insert_n;
+        p_construct_old = p_end;
       }
+
+      size_t copy_new_n      = construct_old_n;
+      size_t construct_new_n = insert_n - copy_new_n;
+      
+#if defined(ETL_DEBUG)
+      // Construct old.
+      etl::uninitialized_copy_n(p_end - construct_old_n, construct_old_n, p_construct_old, construct_count);
+
+      // Copy old.
+      etl::copy_n(p_buffer + insert_begin, copy_old_n, p_buffer + insert_end);
+
+      // Construct new.
+      etl::uninitialized_copy_n(first + copy_new_n, construct_new_n, p_end, construct_count);
+
+      // Copy new.
+      etl::copy_n(first, copy_new_n, p_buffer + insert_begin);
+#else
+      // Construct old.
+      etl::uninitialized_copy_n(p_end - construct_old_n, construct_old_n, p_construct_old);
+
+      // Copy old.
+      etl::copy_n(p_buffer + insert_begin, copy_old_n, p_buffer + insert_end);
+
+      // Construct new.
+      etl::uninitialized_copy_n(first + copy_new_n, construct_new_n, p_end);
+
+      // Copy new.
+      etl::copy_n(first, copy_new_n, p_buffer + insert_begin);
+#endif
+
+      p_end += count;
     }
     
-    //*********************************************************************
-    /// Inserts a range of values to the vector.
-    /// If asserts or exceptions are enabled, emits vector_full if the vector does not have enough free space.
-    /// For non-fundamental types.
-    ///\param position The position to insert before.
-    ///\param first    The first element to add.
-    ///\param last     The last + 1 element to add.
-    //*********************************************************************
-    template <class TIterator>
-    typename etl::enable_if<!is_simple_type<typename std::iterator_traits<TIterator>::value_type>::value, void>::type
-    insert(iterator position, TIterator first, TIterator last)
-    {
-      size_t count = std::distance(first, last);
-
-      ETL_ASSERT((current_size)+count <= MAX_SIZE, ETL_ERROR(vector_full));
-
-      if (position == end())
-      {
-        while (first != last)
-        {
-          create_element(*first);
-          ++first;
-        }
-      }
-      else
-      {
-        size_t insert_index = std::distance(begin(), position);
-        size_t n_insert = count;
-
-        // Create copy (backwards).
-        size_t from = size() - 1;
-        size_t to = from + n_insert;
-        size_t n_move = std::distance(position, end());
-        size_t n_create_copy = std::min(n_insert, n_move);
-        for (size_t i = 0; i < n_create_copy; ++i)
-        {
-          create_element_at(to--, p_buffer[from--]);
-        }
-
-        // Copy old.
-        from = insert_index;
-        to = from + n_insert;
-        size_t n_copy_old = (size() > n_insert) ? size() - n_insert : 0;
-        etl::copy_n(&p_buffer[from], n_copy_old, &p_buffer[to]);
-
-        // Copy new.
-        to = insert_index;
-        size_t n_create_new = (n_insert > n_create_copy) ? n_insert - n_create_copy : 0;
-        size_t n_copy_new = (n_insert > n_create_new) ? n_insert - n_create_new : 0;
-        etl::copy_n(first, n_copy_new, &p_buffer[to]);
-        first += n_copy_new;
-
-        // Create new.
-        to = size();
-        for (size_t i = 0; i < n_create_new; ++i)
-        {
-          create_element_at(to++, *first);
-          ++first;
-        }
-
-        current_size += n_insert;
-      }
-    }
-
     //*********************************************************************
     /// Erases an element.
     ///\param i_element Iterator to the element.
@@ -703,8 +679,8 @@ namespace etl
     iterator erase(iterator i_element)
     {
       std::copy(i_element + 1, end(), i_element);
-      destroy_element();
-
+      destroy_back();
+      
       return i_element;
     }
 
@@ -716,23 +692,53 @@ namespace etl
     ///\param last  Iterator to the last element.
     ///\return An iterator pointing to the element that followed the erased element.
     //*********************************************************************
-    iterator erase(iterator first, iterator last)
+    template <typename U = T>
+    typename etl::enable_if<etl::has_trivial_constructor<U>::value, iterator>::type
+     erase(iterator first, iterator last)
     {
-      std::copy(last, end(), first);
-      size_t n_delete = std::distance(first, last);
-
-      if (is_simple_type<value_type>::value)
+      if (first == begin() && last == end())
       {
-        // Just adjust the count.
-        current_size -= n_delete;
+        clear();
       }
       else
       {
+        std::copy(last, end(), first);
+        size_t n_delete = std::distance(first, last);
+        construct_count -= n_delete;
+        p_end -= n_delete;
+      }
+
+      return first;
+    }
+
+    //*********************************************************************
+    /// Erases a range of elements.
+    /// The range includes all the elements between first and last, including the
+    /// element pointed by first, but not the one pointed by last.
+    ///\param first Iterator to the first element.
+    ///\param last  Iterator to the last element.
+    ///\return An iterator pointing to the element that followed the erased element.
+    //*********************************************************************
+    template <typename U = T>
+    typename etl::enable_if<!etl::has_trivial_constructor<U>::value, iterator>::type
+     erase(iterator first, iterator last)
+    {
+      if (first == begin() && last == end())
+      {
+        clear();
+      }
+      else
+      {
+        std::copy(last, end(), first);
+        size_t n_delete = std::distance(first, last);
+
         // Destroy the elements left over at the end.
-        while (n_delete-- > 0)
-        {
-          destroy_element();
-        }
+#if defined(ETL_DEBUG)
+        etl::destroy(p_end - n_delete, p_end, construct_count);
+#else
+        etl::destroy(p_end - n_delete, p_end);
+#endif          
+        p_end -= n_delete;
       }
 
       return first;
@@ -751,14 +757,51 @@ namespace etl
       return *this;
     }
 
+    //*************************************************************************
+    /// Gets the current size of the vector.
+    ///\return The current size of the vector.
+    //*************************************************************************
+    size_type size() const
+    {
+      return size_t(p_end - p_buffer);
+    }
+
+    //*************************************************************************
+    /// Checks the 'empty' state of the vector.
+    ///\return <b>true</b> if empty.
+    //*************************************************************************
+    bool empty() const
+    {
+      return (p_end == p_buffer);
+    }
+
+    //*************************************************************************
+    /// Checks the 'full' state of the vector.
+    ///\return <b>true</b> if full.
+    //*************************************************************************
+    bool full() const
+    {
+      return size() == MAX_SIZE;
+    }
+
+    //*************************************************************************
+    /// Returns the remaining capacity.
+    ///\return The remaining capacity.
+    //*************************************************************************
+    size_t available() const
+    {
+      return max_size() - size();
+    }
+
   protected:
 
     //*********************************************************************
     /// Constructor.
     //*********************************************************************
-    ivector(T* p_buffer, size_t MAX_SIZE)
+    ivector(T* p_buffer_, size_t MAX_SIZE)
       : vector_base(MAX_SIZE),
-        p_buffer(p_buffer)
+        p_buffer(p_buffer_),
+        p_end(p_buffer_)
     {
     }
 
@@ -767,55 +810,58 @@ namespace etl
     //*********************************************************************
     void initialise()
     {
-      // Choose the algorithm according to type.
-      // The unused branch should be optimised away.
-      if (is_simple_type<value_type>::value)
-      {
-        current_size = 0;
-      }
-      else
-      {
-        while (current_size > 0)
-        {
-          destroy_element();
-        }
-      }
+#if defined(ETL_DEBUG)
+      etl::destroy(p_buffer, p_end, construct_count);
+#else
+      etl::destroy(p_buffer, p_end);
+#endif
+
+      p_end = p_buffer;
     }
 
-    T* p_buffer;
-
   private:
+
+    pointer p_buffer; ///< Pointer to the start of the buffer.
+    pointer p_end;    ///< Pointer to one past the last element in the buffer.
 
     //*********************************************************************
     /// Create a new element with a default value at the back.
     //*********************************************************************
-    inline void create_element()
+    inline void create_back()
     {
-      new(&p_buffer[current_size++]) T();
+#if defined(ETL_DEBUG)
+      etl::create_value_at(p_end, construct_count);
+#else
+      etl::create_value_at(p_end);
+#endif
+      ++p_end;
     }
 
     //*********************************************************************
     /// Create a new element with a value at the back
     //*********************************************************************
-    inline void create_element(parameter_t value)
+    inline void create_back(parameter_t value)
     {
-      new(&p_buffer[current_size++]) T(value);
-    }
-
-    //*********************************************************************
-    /// Create a new element with a value at the index
-    //*********************************************************************
-    inline void create_element_at(size_t index, parameter_t value)
-    {
-      new(&p_buffer[index]) T(value);
+#if defined(ETL_DEBUG)
+      etl::create_copy_at(p_end, value, construct_count);
+#else
+      etl::create_copy_at(p_end, value);
+#endif
+      ++p_end;
     }
 
     //*********************************************************************
     /// Destroy an element at the back.
     //*********************************************************************
-    inline void destroy_element()
+    inline void destroy_back()
     {
-      p_buffer[--current_size].~T();
+      --p_end;
+
+#if defined(ETL_DEBUG)
+      etl::destroy_at(p_end, construct_count);
+#else
+      etl::destroy_at(p_end);
+#endif
     }
 
     // Disable copy construction.

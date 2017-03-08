@@ -39,6 +39,7 @@ SOFTWARE.
 
 #include "../exception.h"
 #include "../error_handler.h"
+#include "../debug_count.h"
 
 #undef ETL_FILE
 #define ETL_FILE "13"
@@ -153,10 +154,11 @@ namespace etl
     {
     }
 
-    size_type in;             ///< Where to input new data.
-    size_type out;            ///< Where to get the oldest data.
-    size_type current_size;   ///< The number of items in the queue.
-    const size_type MAX_SIZE; ///< The maximum number of items in the queue.
+    size_type in;                     ///< Where to input new data.
+    size_type out;                    ///< Where to get the oldest data.
+    size_type current_size;           ///< The number of items in the queue.
+    const size_type MAX_SIZE;         ///< The maximum number of items in the queue.
+    etl::debug_count construct_count; ///< For internal debugging purposes.
   };
 }
 

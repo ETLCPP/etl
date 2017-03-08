@@ -43,10 +43,10 @@ namespace
     TEST(test_hash_bool)
     {
       size_t hash = etl::hash<bool>()(false);
-      CHECK_EQUAL(0, hash);
+      CHECK_EQUAL(0U, hash);
 
       hash = etl::hash<bool>()(true);
-      CHECK_EQUAL(1, hash);
+      CHECK_EQUAL(1U, hash);
     }
 
     //*************************************************************************
@@ -54,7 +54,7 @@ namespace
     {
       size_t hash = etl::hash<char>()((char)(0x5A));
 
-      CHECK_EQUAL(0x5A, hash);
+      CHECK_EQUAL(0x5AU, hash);
     }
 
     //*************************************************************************
@@ -62,7 +62,7 @@ namespace
     {
       size_t hash = etl::hash<signed char>()((signed char)(0x5A));
 
-      CHECK_EQUAL(0x5A, hash);
+      CHECK_EQUAL(0x5AU, hash);
     }
 
     //*************************************************************************
@@ -70,7 +70,7 @@ namespace
     {
       size_t hash = etl::hash<unsigned char>()((unsigned char)(0x5A));
 
-      CHECK_EQUAL(0x5A, hash);
+      CHECK_EQUAL(0x5AU, hash);
     }
 
     //*************************************************************************
@@ -78,7 +78,7 @@ namespace
     {
       size_t hash = etl::hash<short>()((short)(0x5AA5));
 
-      CHECK_EQUAL(0x5AA5, hash);
+      CHECK_EQUAL(0x5AA5U, hash);
     }
 
     //*************************************************************************
@@ -86,7 +86,7 @@ namespace
     {
       size_t hash = etl::hash<unsigned short>()((unsigned short)(0x5AA5));
 
-      CHECK_EQUAL(0x5AA5, hash);
+      CHECK_EQUAL(0x5AA5U, hash);
     }
 
     //*************************************************************************
@@ -94,7 +94,7 @@ namespace
     {
       size_t hash = etl::hash<int>()((int)(0x5AA555AA));
 
-      CHECK_EQUAL(0x5AA555AA, hash);
+      CHECK_EQUAL(0x5AA555AAU, hash);
     }
 
     //*************************************************************************
@@ -102,7 +102,7 @@ namespace
     {
       size_t hash = etl::hash<unsigned int>()((unsigned int)(0x5AA555AA));
 
-      CHECK_EQUAL(0x5AA555AA, hash);
+      CHECK_EQUAL(0x5AA555AAU, hash);
     }
 
     //*************************************************************************
@@ -110,7 +110,7 @@ namespace
     {
       size_t hash = etl::hash<long>()((long)(0x5AA555AA));
 
-      CHECK_EQUAL(0x5AA555AA, hash);
+      CHECK_EQUAL(0x5AA555AAU, hash);
     }
 
     //*************************************************************************
@@ -118,7 +118,7 @@ namespace
     {
       size_t hash = etl::hash<unsigned long>()((unsigned long)(0x5AA555AA));
 
-      CHECK_EQUAL(0x5AA555AA, hash);
+      CHECK_EQUAL(0x5AA555AAU, hash);
     }
 
     //*************************************************************************
@@ -127,9 +127,9 @@ namespace
       size_t hash = etl::hash<long long>()((long long)(0x5AA555AA3CC333CC));
 
       if (sizeof(size_t) == sizeof(long long))
-        CHECK_EQUAL(0x5AA555AA3CC333CC, hash);
+        CHECK_EQUAL(0x5AA555AA3CC333CCU, hash);
       else
-        CHECK_EQUAL(0xEC6A8D69, hash);
+        CHECK_EQUAL(0xEC6A8D69U, hash);
     }
 
     //*************************************************************************
@@ -138,9 +138,9 @@ namespace
       size_t hash = etl::hash<unsigned long long>()((unsigned long long)(0x5AA555AA3CC333CC));
 
       if (sizeof(size_t) == sizeof(unsigned long long))
-        CHECK_EQUAL(0x5AA555AA3CC333CC, hash);
+        CHECK_EQUAL(0x5AA555AA3CC333CCU, hash);
       else
-        CHECK_EQUAL(0xEC6A8D69, hash);
+        CHECK_EQUAL(0xEC6A8D69U, hash);
     }
 
     //*************************************************************************
@@ -148,7 +148,7 @@ namespace
     {
       size_t hash = etl::hash<float>()((float)(1.2345));
 
-      CHECK_EQUAL(0X3F9E0419, hash);
+      CHECK_EQUAL(0X3F9E0419U, hash);
     }
 
     //*************************************************************************
@@ -157,9 +157,9 @@ namespace
       size_t hash = etl::hash<double>()((double)(1.2345));
 
       if (sizeof(size_t) == sizeof(double))
-        CHECK_EQUAL(0X3FF3C083126E978D, hash);
+        CHECK_EQUAL(0X3FF3C083126E978DU, hash);
       else
-        CHECK_EQUAL(0x86FBF224, hash);
+        CHECK_EQUAL(0x86FBF224U, hash);
     }
 
     //*************************************************************************

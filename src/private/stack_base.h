@@ -39,6 +39,7 @@ SOFTWARE.
 
 #include "../exception.h"
 #include "../error_handler.h"
+#include "../debug_count.h"
 
 #define ETL_FILE "15"
 
@@ -152,9 +153,10 @@ namespace etl
     {
     }
 
-    size_type top_index;      ///< The index of the top of the stack.
-    size_type current_size;   ///< The number of items in the stack.
-    const size_type MAX_SIZE; ///< The maximum number of items in the stack.
+    size_type top_index;              ///< The index of the top of the stack.
+    size_type current_size;           ///< The number of items in the stack.
+    const size_type MAX_SIZE;         ///< The maximum number of items in the stack.
+    etl::debug_count construct_count; ///< For internal debugging purposes.
   };
 }
 

@@ -37,6 +37,7 @@ SOFTWARE.
 #include <utility>
 #include <stddef.h>
 
+#include "platform.h"
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "hash.h"
@@ -47,6 +48,7 @@ SOFTWARE.
 #include "intrusive_forward_list.h"
 #include "exception.h"
 #include "error_handler.h"
+#include "debug_count.h"
 
 #undef ETL_FILE
 #define ETL_FILE "23"
@@ -146,10 +148,7 @@ namespace etl
   private:
 
     typedef etl::intrusive_forward_list<node_t, link_t> bucket_t;
-    typedef etl::ipool<node_t>                          pool_t;
-    typedef etl::ivector<bucket_t>                      bucket_list_t;
-
-    typedef typename bucket_list_t::iterator  bucket_list_iterator;
+    typedef etl::ipool pool_t;
 
   public:
 
@@ -181,8 +180,8 @@ namespace etl
 
       //*********************************
       iterator(const iterator& other)
-        : ibuckets_end(other.ibuckets_end),
-          ibucket(other.ibucket),
+        : pbuckets_end(other.pbuckets_end),
+          pbucket(other.pbucket),
           inode(other.inode)
       {
       }
@@ -193,19 +192,19 @@ namespace etl
         ++inode;
 
         // The end of this node list?
-        if (inode == ibucket->end())
+        if (inode == pbucket->end())
         {
           // Search for the next non-empty bucket.
-          ++ibucket;
-          while ((ibucket != ibuckets_end) && (ibucket->empty()))
+          ++pbucket;
+          while ((pbucket != pbuckets_end) && (pbucket->empty()))
           {
-            ++ibucket;
+            ++pbucket;
           }
 
           // If not past the end, get the first node in the bucket.
-          if (ibucket != ibuckets_end)
+          if (pbucket != pbuckets_end)
           {
-            inode = ibucket->begin();
+            inode = pbucket->begin();
           }
         }
 
@@ -223,8 +222,8 @@ namespace etl
       //*********************************
       iterator operator =(const iterator& other)
       {
-        ibuckets_end = other.ibuckets_end;
-        ibucket      = other.ibucket;
+        pbuckets_end = other.pbuckets_end;
+        pbucket      = other.pbucket;
         inode        = other.inode;
         return *this;
       }
@@ -280,9 +279,9 @@ namespace etl
     private:
 
       //*********************************
-      iterator(bucket_list_iterator ibuckets_end, bucket_list_iterator ibucket, local_iterator inode)
-        : ibuckets_end(ibuckets_end),
-          ibucket(ibucket),
+      iterator(bucket_t* pbuckets_end, bucket_t* pbucket, local_iterator inode)
+        : pbuckets_end(pbuckets_end),
+          pbucket(pbucket),
           inode(inode)
       {
       }
@@ -296,13 +295,13 @@ namespace etl
       //*********************************
       bucket_t& get_bucket()
       {
-        return *ibucket;
+        return *pbucket;
       }
 
       //*********************************
-      bucket_list_iterator& get_bucket_list_iterator()
+      bucket_t*& get_bucket_list_iterator()
       {
-        return ibucket;
+        return pbucket;
       }
 
       //*********************************
@@ -311,8 +310,8 @@ namespace etl
         return inode;
       }
 
-      bucket_list_iterator ibuckets_end;
-      bucket_list_iterator ibucket;
+      bucket_t* pbuckets_end;
+      bucket_t* pbucket;
       local_iterator       inode;
     };
 
@@ -341,16 +340,16 @@ namespace etl
 
       //*********************************
       const_iterator(const typename iunordered_set::iterator& other)
-        : ibuckets_end(other.ibuckets_end),
-          ibucket(other.ibucket),
+        : pbuckets_end(other.pbuckets_end),
+          pbucket(other.pbucket),
           inode(other.inode)
       {
       }
 
       //*********************************
       const_iterator(const const_iterator& other)
-        : ibuckets_end(other.ibuckets_end),
-          ibucket(other.ibucket),
+        : pbuckets_end(other.pbuckets_end),
+          pbucket(other.pbucket),
           inode(other.inode)
       {
       }
@@ -361,20 +360,20 @@ namespace etl
         ++inode;
 
         // The end of this node list?
-        if (inode == ibucket->end())
+        if (inode == pbucket->end())
         {
           // Search for the next non-empty bucket.
 
-          ++ibucket;
-          while ((ibucket != ibuckets_end) && (ibucket->empty()))
+          ++pbucket;
+          while ((pbucket != pbuckets_end) && (pbucket->empty()))
           {
-            ++ibucket;
+            ++pbucket;
           }
 
           // If not past the end, get the first node in the bucket.
-          if (ibucket != ibuckets_end)
+          if (pbucket != pbuckets_end)
           {
-            inode = ibucket->begin();
+            inode = pbucket->begin();
           }
         }
 
@@ -392,8 +391,8 @@ namespace etl
       //*********************************
       const_iterator operator =(const const_iterator& other)
       {
-        ibuckets_end = other.ibuckets_end;
-        ibucket      = other.ibucket;
+        pbuckets_end = other.pbuckets_end;
+        pbucket      = other.pbucket;
         inode        = other.inode;
         return *this;
       }
@@ -431,9 +430,9 @@ namespace etl
     private:
 
       //*********************************
-      const_iterator(bucket_list_iterator ibuckets_end, bucket_list_iterator ibucket, local_iterator inode)
-        : ibuckets_end(ibuckets_end),
-          ibucket(ibucket),
+      const_iterator(bucket_t* pbuckets_end, bucket_t* pbucket, local_iterator inode)
+        : pbuckets_end(pbuckets_end),
+          pbucket(pbucket),
           inode(inode)
       {
       }
@@ -447,13 +446,13 @@ namespace etl
       //*********************************
       bucket_t& get_bucket()
       {
-        return *ibucket;
+        return *pbucket;
       }
 
       //*********************************
-      bucket_list_iterator& get_bucket_list_iterator()
+      bucket_t*& get_bucket_list_iterator()
       {
-        return ibucket;
+        return pbucket;
       }
 
       //*********************************
@@ -462,8 +461,8 @@ namespace etl
         return inode;
       }
 
-      bucket_list_iterator ibuckets_end;
-      bucket_list_iterator ibucket;
+      bucket_t* pbuckets_end;
+      bucket_t* pbucket;
       local_iterator       inode;
     };
 
@@ -475,7 +474,7 @@ namespace etl
     //*********************************************************************
     iterator begin()
     {
-      return iterator(pbuckets->end(), first, first->begin());
+      return iterator(pbuckets + number_of_buckets, first, first->begin());
     }
 
     //*********************************************************************
@@ -484,7 +483,7 @@ namespace etl
     //*********************************************************************
     const_iterator begin() const
     {
-      return const_iterator(pbuckets->end(), first, first->begin());
+      return const_iterator(pbuckets + number_of_buckets, first, first->begin());
     }
 
     //*********************************************************************
@@ -493,7 +492,7 @@ namespace etl
     //*********************************************************************
     const_iterator cbegin() const
     {
-      return const_iterator(pbuckets->end(), first, first->begin());
+      return const_iterator(pbuckets + number_of_buckets, first, first->begin());
     }
 
     //*********************************************************************
@@ -502,7 +501,7 @@ namespace etl
     //*********************************************************************
     local_iterator begin(size_t i)
     {
-      return (*pbuckets)[i].begin();
+      return pbuckets[i].begin();
     }
 
     //*********************************************************************
@@ -511,7 +510,7 @@ namespace etl
     //*********************************************************************
     local_const_iterator begin(size_t i) const
     {
-      return (*pbuckets)[i].cbegin();
+      return pbuckets[i].cbegin();
     }
 
     //*********************************************************************
@@ -520,7 +519,7 @@ namespace etl
     //*********************************************************************
     local_const_iterator cbegin(size_t i) const
     {
-      return (*pbuckets)[i].cbegin();
+      return pbuckets[i].cbegin();
     }
 
     //*********************************************************************
@@ -529,7 +528,7 @@ namespace etl
     //*********************************************************************
     iterator end()
     {
-      return iterator(pbuckets->end(), last, last->end());
+      return iterator(pbuckets + number_of_buckets, last, last->end());
     }
 
     //*********************************************************************
@@ -538,7 +537,7 @@ namespace etl
     //*********************************************************************
     const_iterator end() const
     {
-      return const_iterator(pbuckets->end(), last, last->end());
+      return const_iterator(pbuckets + number_of_buckets, last, last->end());
     }
 
     //*********************************************************************
@@ -547,7 +546,7 @@ namespace etl
     //*********************************************************************
     const_iterator cend() const
     {
-      return const_iterator(pbuckets->end(), last, last->end());
+      return const_iterator(pbuckets + number_of_buckets, last, last->end());
     }
 
     //*********************************************************************
@@ -556,7 +555,7 @@ namespace etl
     //*********************************************************************
     local_iterator end(size_t i)
     {
-      return (*pbuckets)[i].end();
+      return pbuckets[i].end();
     }
 
     //*********************************************************************
@@ -565,7 +564,7 @@ namespace etl
     //*********************************************************************
     local_const_iterator end(size_t i) const
     {
-      return (*pbuckets)[i].cend();
+      return pbuckets[i].cend();
     }
 
     //*********************************************************************
@@ -574,7 +573,7 @@ namespace etl
     //*********************************************************************
     local_const_iterator cend(size_t i) const
     {
-      return (*pbuckets)[i].cend();
+      return pbuckets[i].cend();
     }
 
     //*********************************************************************
@@ -583,7 +582,7 @@ namespace etl
     //*********************************************************************
     size_type bucket(key_value_parameter_t key) const
     {
-      return key_hash_function(key) % pbuckets->size();
+      return key_hash_function(key) % number_of_buckets;
     }
 
     //*********************************************************************
@@ -594,7 +593,7 @@ namespace etl
     {
       size_t index = bucket(key);
 
-      return std::distance((*pbuckets)[index].begin(), (*pbuckets)[index].end());
+      return std::distance(pbuckets[index].begin(), pbuckets[index].end());
     }
 
     //*********************************************************************
@@ -603,7 +602,7 @@ namespace etl
     //*********************************************************************
     size_type max_bucket_count() const
     {
-      return max_size();
+      return number_of_buckets;
     }
 
     //*********************************************************************
@@ -612,7 +611,7 @@ namespace etl
     //*********************************************************************
     size_type bucket_count() const
     {
-      return max_size();
+      return number_of_buckets;
     }
 
     //*********************************************************************
@@ -625,7 +624,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-#ifdef _DEBUG
+#if defined(ETL_DEBUG)
       difference_type count = std::distance(first, last);
       ETL_ASSERT(count >= 0, ETL_ERROR(unordered_set_iterator));
       ETL_ASSERT(size_t(count) <= max_size() , ETL_ERROR(unordered_set_full));
@@ -654,22 +653,24 @@ namespace etl
       size_t index = bucket(key);
 
       // Get the bucket & bucket iterator.
-      bucket_list_iterator ibucket = pbuckets->begin() + index;
-      bucket_t& bucket = *ibucket;
+      bucket_t* pbucket = pbuckets + index;
+      bucket_t& bucket = *pbucket;
 
       // The first one in the bucket?
       if (bucket.empty())
       {
         // Get a new node.
-        node_t& node = *pnodepool->allocate(node_t(key));
+        node_t& node = *pnodepool->allocate<node_t>();
+        ::new (&node.key) value_type(key);
+        ++construct_count;
 
         // Just add the pointer to the bucket;
         bucket.insert_after(bucket.before_begin(), node);
 
-        result.first  = iterator(pbuckets->end(), ibucket, ibucket->begin());
+        result.first  = iterator(pbuckets + number_of_buckets, pbucket, pbucket->begin());
         result.second = true;
 
-        adjust_first_last_markers(ibucket);
+        adjust_first_last_markers(pbucket);
       }
       else
       {
@@ -693,13 +694,15 @@ namespace etl
         if (inode == bucket.end())
         {
           // Get a new node.
-          node_t& node = *pnodepool->allocate(node_t(key));
+          node_t& node = *pnodepool->allocate<node_t>();
+          ::new (&node.key) value_type(key);
+          ++construct_count;
 
           // Add the node to the end of the bucket;
           bucket.insert_after(inode_previous, node);
           ++inode_previous;
 
-          result.first  = iterator(pbuckets->end(), ibucket, inode_previous);
+          result.first  = iterator(pbuckets + number_of_buckets, pbucket, inode_previous);
           result.second = true;
         }
       }
@@ -742,23 +745,28 @@ namespace etl
     size_t erase(key_value_parameter_t key)
     {
       size_t count = 0;
-      size_t bucket_id = bucket(key);
+      size_t index = bucket(key);
 
-      bucket_t& bucket = (*pbuckets)[bucket_id];
+      bucket_t& bucket = pbuckets[index];
 
       local_iterator iprevious = bucket.before_begin();
-      local_iterator icurrent  = bucket.begin();
+      local_iterator icurrent = bucket.begin();
 
+      // Search for the key, if we have it.
       while ((icurrent != bucket.end()) && (icurrent->key != key))
       {
         ++iprevious;
         ++icurrent;
       }
 
+      // Did we find it?
       if (icurrent != bucket.end())
       {
-        bucket.erase_after(iprevious);
+        bucket.erase_after(iprevious);  // Unlink from the bucket.
+        icurrent->key.~value_type();    // Destroy the value.
+        pnodepool->release(&*icurrent); // Release it back to the pool.
         count = 1;
+        --construct_count;
       }
 
       return count;
@@ -771,20 +779,23 @@ namespace etl
     iterator erase(const_iterator ielement)
     {
       // Make a note of the next one.
-      iterator inext(pbuckets->end(), ielement.get_bucket_list_iterator(), ielement.get_local_iterator());
+      iterator inext((pbuckets + number_of_buckets), ielement.get_bucket_list_iterator(), ielement.get_local_iterator());
       ++inext;
 
-      bucket_t&      bucket    = ielement.get_bucket();
-      local_iterator icurrent  = ielement.get_local_iterator();
+      bucket_t&      bucket = ielement.get_bucket();
       local_iterator iprevious = bucket.before_begin();
+      local_iterator icurrent = ielement.get_local_iterator();
 
-      // Find the node we're interested in.
+      // Find the node previous to the one we're interested in.
       while (iprevious->etl_next != &*icurrent)
       {
         ++iprevious;
       }
 
-      bucket.erase_after(iprevious);
+      bucket.erase_after(iprevious);  // Unlink from the bucket.
+      icurrent->key.~value_type();    // Destroy the value.
+      pnodepool->release(&*icurrent); // Release it back to the pool.
+      --construct_count;
 
       return inext;
     }
@@ -799,48 +810,45 @@ namespace etl
     iterator erase(const_iterator first, const_iterator last)
     {
       // Make a note of the last.
-      iterator result(pbuckets->end(), last.get_bucket_list_iterator(), last.get_local_iterator());
+      iterator result((pbuckets + number_of_buckets), last.get_bucket_list_iterator(), last.get_local_iterator());
 
       // Get the starting point.
-      bucket_list_iterator ibucket   = first.get_bucket_list_iterator();
-      local_iterator       ifirst    = first.get_local_iterator();
-      local_iterator       iprevious = ibucket->before_begin();
-      local_iterator       iend;
+      bucket_t*      pbucket = first.get_bucket_list_iterator();
+      local_iterator iprevious = pbucket->before_begin();
+      local_iterator icurrent = first.get_local_iterator();
+      local_iterator iend = last.get_local_iterator(); // Note: May not be in the same bucket as icurrent.
 
-      // Find the first node we're interested in.
-      while (iprevious->etl_next != &*ifirst)
+                                                       // Find the node previous to the first one.
+      while (iprevious->etl_next != &*icurrent)
       {
         ++iprevious;
       }
 
-      iend = iprevious;
-      iend++;
-
-      while (first != last)
+      while (icurrent != iend)
       {
-        // Find how far we can go in this bucket.
-        while ((first != last) && (iend != ibucket->end()))
-        {
-          ++first;
-          ++iend;
-        }
 
-        // Erase the range.
-        ibucket->erase_after(iprevious, iend);
+        local_iterator inext = pbucket->erase_after(iprevious); // Unlink from the bucket.
+        icurrent->key.~value_type();    // Destroy the value.
+        pnodepool->release(&*icurrent); // Release it back to the pool.
+        --construct_count;
 
-        // At the end of this bucket?
-        if (iend == ibucket->end())
+        icurrent = inext;
+
+        // Are we there yet?
+        if (icurrent != iend)
         {
-          // Move on to the next bucket.
-          ++ibucket;
-          iprevious = ibucket->before_begin();
-          iend = iprevious;
-          ++iend;
-        }
-        else
-        {
-          // Still in the same bucket.
-          iprevious = iend;
+          // At the end of this bucket?
+          if ((icurrent == pbucket->end()))
+          {
+            // Find the next non-empty one.
+            do
+            {
+              ++pbucket;
+            } while (pbucket->empty());
+
+            iprevious = pbucket->before_begin();
+            icurrent = pbucket->begin();
+          }
         }
       }
 
@@ -874,8 +882,8 @@ namespace etl
     {
       size_t index = bucket(key);
 
-      bucket_list_iterator ibucket = pbuckets->begin() + index;
-      bucket_t&            bucket  = *ibucket;
+      bucket_t* pbucket = pbuckets + index;
+      bucket_t& bucket  = *pbucket;
 
       // Is the bucket not empty?
       if (!bucket.empty())
@@ -889,7 +897,7 @@ namespace etl
           // Do we have this one?
           if (key_equal_function(key, inode->key))
           {
-            return iterator(pbuckets->end(), ibucket, inode);
+            return iterator(pbuckets + number_of_buckets, pbucket, inode);
           }
 
           ++inode;
@@ -908,8 +916,8 @@ namespace etl
     {
       size_t index = bucket(key);
 
-      bucket_list_iterator ibucket = pbuckets->begin() + index;
-      bucket_t&            bucket  = *ibucket;
+      bucket_t* pbucket = pbuckets + index;
+      bucket_t& bucket  = *pbucket;
 
       // Is the bucket not empty?
       if (!bucket.empty())
@@ -923,7 +931,7 @@ namespace etl
           // Do we have this one?
           if (key_equal_function(key, inode->key))
           {
-            return iterator(pbuckets->end(), ibucket, inode);
+            return iterator(pbuckets + number_of_buckets, pbucket, inode);
           }
 
           ++inode;
@@ -988,7 +996,7 @@ namespace etl
     //*************************************************************************
     size_type max_size() const
     {
-      return pnodepool->max_size();
+      return pnodepool->max_items();
     }
 
     //*************************************************************************
@@ -1062,9 +1070,10 @@ namespace etl
     //*********************************************************************
     /// Constructor.
     //*********************************************************************
-    iunordered_set(pool_t& node_pool, bucket_list_t& buckets)
+    iunordered_set(pool_t& node_pool, bucket_t* pbuckets_, size_t number_of_buckets)
       : pnodepool(&node_pool),
-        pbuckets(&buckets)
+        pbuckets(pbuckets_),
+        number_of_buckets(number_of_buckets)
     {
     }
 
@@ -1073,20 +1082,37 @@ namespace etl
     //*********************************************************************
     void initialise()
     {
-      pbuckets->resize(pnodepool->max_size());
-
       if (!empty())
       {
-        pnodepool->release_all();
-
-        for (size_t i = 0; i < pbuckets->size(); ++i)
+        // For each bucket...
+        for (size_t i = 0; i < number_of_buckets; ++i)
         {
-          (*pbuckets)[i].clear();
+          bucket_t& bucket = pbuckets[i];
+
+          if (!bucket.empty())
+          {
+            // For each item in the bucket...
+            local_iterator it = bucket.begin();
+
+            while (it != bucket.end())
+            {
+              // Destroy the value contents.
+              it->key.~value_type();
+              ++it;
+              --construct_count;
+            }
+
+            // Now it's safe to clear the bucket.
+            bucket.clear();
+          }
         }
+
+        // Now it's safe to clear the entire pool in one go.
+        pnodepool->release_all();
       }
 
-      first = pbuckets->begin();
-      last  = first;
+      first = pbuckets;
+      last = first;
     }
 
   private:
@@ -1094,15 +1120,15 @@ namespace etl
     //*********************************************************************
     /// Adjust the first and last markers according to the new entry.
     //*********************************************************************
-    void adjust_first_last_markers(bucket_list_iterator ibucket)
+    void adjust_first_last_markers(bucket_t* pbucket)
     {
-      if (ibucket < first)
+      if (pbucket < first)
       {
-        first = ibucket;
+        first = pbucket;
       }
-      else if (ibucket > last)
+      else if (pbucket > last)
       {
-        last = ibucket;
+        last = pbucket;
       }
     }
 
@@ -1113,17 +1139,23 @@ namespace etl
     pool_t* pnodepool;
 
     /// The bucket list.
-    bucket_list_t* pbuckets;
+    bucket_t* pbuckets;
+
+    /// The number of buckets.
+    const size_t number_of_buckets;
 
     /// The first and last iterators to buckets with values.
-    bucket_list_iterator first;
-    bucket_list_iterator last;
+    bucket_t* first;
+    bucket_t* last;
 
     /// The function that creates the hashes.
     hasher key_hash_function;
 
     /// The function that compares the keys for equality.
     key_equal key_equal_function;
+
+    /// For library debugging purposes only.
+    etl::debug_count construct_count;
   };
 
   //***************************************************************************

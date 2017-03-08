@@ -38,10 +38,12 @@ SOFTWARE.
 #include <utility>
 #include <stddef.h>
 
+#include "platform.h"
 #include "private/flat_set_base.h"
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "ivector.h"
+#include "ipool.h"
 #include "error_handler.h"
 
 namespace etl
@@ -54,25 +56,230 @@ namespace etl
   template <typename T, typename TKeyCompare = std::less<T> >
   class iflat_set : public flat_set_base
   {
+  public:
+
+    typedef T                 key_type;
+    typedef T                 value_type;
+    typedef TKeyCompare       key_compare;
+    typedef value_type&       reference;
+    typedef const value_type& const_reference;
+    typedef value_type*       pointer;
+    typedef const value_type* const_pointer;
+    typedef size_t            size_type;
+
   private:
 
-    typedef etl::ivector<T> buffer_t;
+    typedef etl::ivector<value_type*> lookup_t;
+    typedef etl::ipool                storage_t;
 
   public:
 
-    typedef T                                         key_type;
-    typedef T                                         value_type;
-    typedef TKeyCompare                               key_compare;
-    typedef value_type&                               reference;
-    typedef const value_type&                         const_reference;
-    typedef value_type*                               pointer;
-    typedef const value_type*                         const_pointer;
-    typedef typename buffer_t::iterator               iterator;
-    typedef typename buffer_t::const_iterator         const_iterator;
-    typedef typename buffer_t::reverse_iterator       reverse_iterator;
-    typedef typename buffer_t::const_reverse_iterator const_reverse_iterator;
-    typedef size_t                                    size_type;
-    typedef typename std::iterator_traits<iterator>::difference_type difference_type;
+    //*************************************************************************
+    class iterator : public std::iterator<std::bidirectional_iterator_tag, value_type>
+    {
+    public:
+
+      friend class iflat_set;
+
+      iterator()
+      {
+      }
+
+      iterator(typename lookup_t::iterator ilookup)
+        : ilookup(ilookup)
+      {
+      }
+
+      iterator(const iterator& other)
+        : ilookup(other.ilookup)
+      {
+      }
+
+      iterator& operator =(const iterator& other)
+      {
+        ilookup = other.ilookup;
+        return *this;
+      }
+
+      iterator& operator ++()
+      {
+        ++ilookup;
+        return *this;
+      }
+
+      iterator operator ++(int)
+      {
+        iterator temp(*this);
+        ++ilookup;
+        return temp;
+      }
+
+      iterator& operator --()
+      {
+        --ilookup;
+        return *this;
+      }
+
+      iterator operator --(int)
+      {
+        iterator temp(*this);
+        --ilookup;
+        return temp;
+      }
+
+      reference operator *()
+      {
+        return *(*ilookup);
+      }
+
+      const_reference operator *() const
+      {
+        return *(*ilookup);
+      }
+
+      pointer operator &()
+      {
+        return etl::addressof(*(*ilookup));
+      }
+
+      const_pointer operator &() const
+      {
+        return &(*(*ilookup));
+      }
+
+      pointer operator ->()
+      {
+        return etl::addressof(*(*ilookup));
+      }
+
+      const_pointer operator ->() const
+      {
+        return etl::addressof(*(*ilookup));
+      }
+
+      friend bool operator == (const iterator& lhs, const iterator& rhs)
+      {
+        return lhs.ilookup == rhs.ilookup;
+      }
+
+      friend bool operator != (const iterator& lhs, const iterator& rhs)
+      {
+        return !(lhs == rhs);
+      }
+
+    private:
+
+      typename lookup_t::iterator ilookup;
+    };
+
+    //*************************************************************************
+    class const_iterator : public std::iterator<std::bidirectional_iterator_tag, const value_type>
+    {
+    public:
+
+      friend class iflat_set;
+
+      const_iterator()
+      {
+      }
+
+      const_iterator(typename lookup_t::const_iterator ilookup)
+        : ilookup(ilookup)
+      {
+      }
+
+      const_iterator(const iterator& other)
+        : ilookup(other.ilookup)
+      {
+      }
+
+      const_iterator(const const_iterator& other)
+        : ilookup(other.ilookup)
+      {
+      }
+
+      const_iterator& operator =(const iterator& other)
+      {
+        ilookup = other.ilookup;
+        return *this;
+      }
+
+      const_iterator& operator =(const const_iterator& other)
+      {
+        ilookup = other.ilookup;
+        return *this;
+      }
+
+      const_iterator& operator ++()
+      {
+        ++ilookup;
+        return *this;
+      }
+
+      const_iterator operator ++(int)
+      {
+        const_iterator temp(*this);
+        ++ilookup;
+        return temp;
+      }
+
+      const_iterator& operator --()
+      {
+        --ilookup;
+        return *this;
+      }
+
+      const_iterator operator --(int)
+      {
+        const_iterator temp(*this);
+        --ilookup;
+        return temp;
+      }
+
+      reference operator *()
+      {
+        return *(*ilookup);
+      }
+
+      const_reference operator *() const
+      {
+        return *(*ilookup);
+      }
+
+      pointer operator &()
+      {
+        return etl::addressof(*(*ilookup));
+      }
+
+      const_pointer operator &() const
+      {
+        return etl::addressof(*(*ilookup));
+      }
+
+      pointer operator ->()
+      {
+        return etl::addressof(*(*ilookup));
+      }
+
+      const_pointer operator ->() const
+      {
+        return etl::addressof(*(*ilookup));
+      }
+
+      friend bool operator == (const const_iterator& lhs, const const_iterator& rhs)
+      {
+        return lhs.ilookup == rhs.ilookup;
+      }
+
+      friend bool operator != (const const_iterator& lhs, const const_iterator& rhs)
+      {
+        return !(lhs == rhs);
+      }
+
+    private:
+
+      typename lookup_t::const_iterator ilookup;
+    };
 
   protected:
 
@@ -80,13 +287,17 @@ namespace etl
 
   public:
 
+    typedef std::reverse_iterator<iterator>       reverse_iterator;
+    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef typename std::iterator_traits<iterator>::difference_type difference_type;
+
     //*********************************************************************
     /// Returns an iterator to the beginning of the flat_set.
     ///\return An iterator to the beginning of the flat_set.
     //*********************************************************************
     iterator begin()
     {
-      return buffer.begin();
+      return iterator(lookup.begin());
     }
 
     //*********************************************************************
@@ -95,7 +306,7 @@ namespace etl
     //*********************************************************************
     const_iterator begin() const
     {
-      return buffer.begin();
+      return const_iterator(lookup.begin());
     }
 
     //*********************************************************************
@@ -104,7 +315,7 @@ namespace etl
     //*********************************************************************
     iterator end()
     {
-      return buffer.end();
+      return iterator(lookup.end());
     }
 
     //*********************************************************************
@@ -113,7 +324,7 @@ namespace etl
     //*********************************************************************
     const_iterator end() const
     {
-      return buffer.end();
+      return const_iterator(lookup.end());
     }
 
     //*********************************************************************
@@ -122,7 +333,7 @@ namespace etl
     //*********************************************************************
     const_iterator cbegin() const
     {
-      return buffer.cbegin();
+      return const_iterator(lookup.cbegin());
     }
 
     //*********************************************************************
@@ -131,7 +342,7 @@ namespace etl
     //*********************************************************************
     const_iterator cend() const
     {
-      return buffer.cend();
+      return const_iterator(lookup.cend());
     }
 
     //*********************************************************************
@@ -140,7 +351,7 @@ namespace etl
     //*********************************************************************
     reverse_iterator rbegin()
     {
-	    return buffer.rbegin();
+      return reverse_iterator(lookup.rbegin());
     }
 
     //*********************************************************************
@@ -149,7 +360,7 @@ namespace etl
     //*********************************************************************
     const_reverse_iterator rbegin() const
     {
-      return buffer.rbegin();
+      return const_reverse_iterator(lookup.rbegin());
     }
 
     //*********************************************************************
@@ -158,7 +369,7 @@ namespace etl
     //*********************************************************************
     reverse_iterator rend()
     {
-      return buffer.rend();
+      return reverse_iterator(lookup.rend());
     }
 
     //*********************************************************************
@@ -167,7 +378,7 @@ namespace etl
     //*********************************************************************
     const_reverse_iterator rend() const
     {
-      return buffer.rend();
+      return const_reverse_iterator(lookup.rend());
     }
 
     //*********************************************************************
@@ -176,7 +387,7 @@ namespace etl
     //*********************************************************************
     const_reverse_iterator crbegin() const
     {
-      return buffer.crbegin();
+      return const_reverse_iterator(lookup.crbegin());
     }
 
     //*********************************************************************
@@ -185,7 +396,7 @@ namespace etl
     //*********************************************************************
     const_reverse_iterator crend() const
     {
-      return buffer.crend();
+      return const_reverse_iterator(lookup.crend());
     }
 
     //*********************************************************************
@@ -198,7 +409,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-#ifdef _DEBUG
+#if defined(ETL_DEBUG)
       difference_type count = std::distance(first, last);
       ETL_ASSERT(count <= difference_type(capacity()), ETL_ERROR(flat_set_full));
 #endif
@@ -220,16 +431,19 @@ namespace etl
     {
       std::pair<iterator, bool> result(end(), false);
 
-      ETL_ASSERT(!buffer.full(), ETL_ERROR(flat_set_full));
+      ETL_ASSERT(!lookup.full(), ETL_ERROR(flat_set_full));
 
       iterator i_element = std::lower_bound(begin(), end(), value, TKeyCompare());
 
       if (i_element == end())
       {
         // At the end. Doesn't exist.
-        buffer.push_back(value);
-        result.first = end() - 1;
+        value_type* pvalue = storage.allocate<value_type>();
+        ::new (pvalue) value_type(value);
+        lookup.push_back(pvalue);
+        result.first = --end();
         result.second = true;
+        ++construct_count;
       }
       else
       {
@@ -237,9 +451,12 @@ namespace etl
         // Does not exist already?
         if (*i_element != value)
         {
-          buffer.insert(i_element, value);
+          value_type* pvalue = storage.allocate<value_type>();
+          ::new (pvalue) value_type(value);
+          lookup.insert(i_element.ilookup, pvalue);
           result.first = i_element;
           result.second = true;
+          ++construct_count;
         }
         else
         {
@@ -293,7 +510,10 @@ namespace etl
       }
       else
       {
-        buffer.erase(i_element);
+        i_element->~value_type();
+        storage.release(etl::addressof(*i_element));
+        lookup.erase(i_element.ilookup);
+        --construct_count;
         return 1;
       }
     }
@@ -304,7 +524,10 @@ namespace etl
     //*********************************************************************
     void erase(iterator i_element)
     {
-      buffer.erase(i_element);
+      i_element->~value_type();
+      storage.release(etl::addressof(*i_element));
+      lookup.erase(i_element.ilookup);
+      --construct_count;
     }
 
     //*********************************************************************
@@ -316,7 +539,17 @@ namespace etl
     //*********************************************************************
     void erase(iterator first, iterator last)
     {
-      buffer.erase(first, last);
+      iterator itr = first;
+
+      while (itr != last)
+      {
+        itr->~value_type();
+        storage.release(etl::addressof(*itr));
+        ++itr;
+        --construct_count;
+      }
+
+      lookup.erase(first.ilookup, last.ilookup);;
     }
 
     //*************************************************************************
@@ -324,7 +557,7 @@ namespace etl
     //*************************************************************************
     void clear()
     {
-      buffer.clear();
+      erase(begin(), end());
     }
 
     //*********************************************************************
@@ -458,14 +691,68 @@ namespace etl
       return *this;
     }
 
+    //*************************************************************************
+    /// Gets the current size of the flat_set.
+    ///\return The current size of the flat_set.
+    //*************************************************************************
+    size_type size() const
+    {
+      return lookup.size();
+    }
+
+    //*************************************************************************
+    /// Checks the 'empty' state of the flat_set.
+    ///\return <b>true</b> if empty.
+    //*************************************************************************
+    bool empty() const
+    {
+      return lookup.empty();
+    }
+
+    //*************************************************************************
+    /// Checks the 'full' state of the flat_set.
+    ///\return <b>true</b> if full.
+    //*************************************************************************
+    bool full() const
+    {
+      return lookup.full();
+    }
+
+    //*************************************************************************
+    /// Returns the capacity of the flat_set.
+    ///\return The capacity of the flat_set.
+    //*************************************************************************
+    size_type capacity() const
+    {
+      return lookup.capacity();
+    }
+
+    //*************************************************************************
+    /// Returns the maximum possible size of the flat_set.
+    ///\return The maximum size of the flat_set.
+    //*************************************************************************
+    size_type max_size() const
+    {
+      return lookup.max_size();
+    }
+
+    //*************************************************************************
+    /// Returns the remaining capacity.
+    ///\return The remaining capacity.
+    //*************************************************************************
+    size_t available() const
+    {
+      return lookup.available();
+    }
+
   protected:
 
     //*********************************************************************
     /// Constructor.
     //*********************************************************************
-    iflat_set(buffer_t& buffer)
-      : flat_set_base(buffer),
-        buffer(buffer)
+    iflat_set(lookup_t& lookup_, storage_t& storage)
+      : lookup(lookup_),
+        storage(storage)
     {
     }
 
@@ -474,7 +761,8 @@ namespace etl
     // Disable copy construction.
     iflat_set(const iflat_set&);
 
-    buffer_t& buffer;
+    lookup_t&  lookup;
+    storage_t& storage;
   };
 
   //***************************************************************************

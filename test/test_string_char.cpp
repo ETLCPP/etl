@@ -32,7 +32,7 @@ SOFTWARE.
 #include <array>
 #include <algorithm>
 
-#include "../src/string.h"
+#include "../src/cstring.h"
 
 #undef min
 
@@ -636,20 +636,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_pop_back_excess)
-    {
-      Text text;
-
-      text.resize(2);
-
-      text.pop_back();
-      text.pop_back();
-
-      text.pop_back();
-      CHECK(text.empty());
-    }
-
-    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_value)
     {
       const size_t INITIAL_SIZE = 5;
@@ -983,8 +969,8 @@ namespace
       Text append(insert_text.c_str());
 
       // Whole string.
-      compare_text.append(insert_text, 0);
-      text.append(append, 0);
+      compare_text.append(insert_text, 0, std::string::npos);
+      text.append(append, 0, Text::npos);
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2081,7 +2067,7 @@ namespace
       CHECK_EQUAL(position1, position2);
 
       position2 = haystack.find(needle, position2 + 1);
-      CHECK_EQUAL(etl::istring::npos, position2);
+      CHECK_EQUAL(etl::string<50>::npos, position2);
 
       etl::string<50> pin(STR("pin"));
       position2 = haystack.find(pin);

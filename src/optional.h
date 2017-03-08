@@ -31,6 +31,7 @@ SOFTWARE.
 #ifndef __ETL_OPTIONAL__
 #define __ETL_OPTIONAL__
 
+#include "platform.h"
 #include "alignment.h"
 #include "type_traits.h"
 #include "exception.h"
@@ -128,7 +129,7 @@ namespace etl
     {
       if (valid)
       {
-        new (storage.template get_address<T>()) T(other.value());
+       ::new (storage.template get_address<T>()) T(other.value());
       }
     }
 
@@ -137,7 +138,7 @@ namespace etl
     //***************************************************************************
     optional(const T& value)
     {
-      new (storage.template get_address<T>()) T(value);
+     ::new (storage.template get_address<T>()) T(value);
       valid = true;
     }
 
@@ -186,7 +187,7 @@ namespace etl
           }
           else
           {
-            new (storage.template get_address<T>()) T(other.value());
+           ::new (storage.template get_address<T>()) T(other.value());
             valid = true;
           }
         }
@@ -206,7 +207,7 @@ namespace etl
       }
       else
       {
-        new (storage.template get_address<T>()) T(value);
+       ::new (storage.template get_address<T>()) T(value);
         valid = true;
       }
 
@@ -218,7 +219,7 @@ namespace etl
     //***************************************************************************
     T* operator ->()
     {
-#ifdef _DEBUG
+#if defined(ETL_DEBUG)
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
@@ -230,7 +231,7 @@ namespace etl
     //***************************************************************************
     const T* operator ->() const
     {
-#ifdef _DEBUG
+#if defined(ETL_DEBUG)
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
@@ -242,7 +243,7 @@ namespace etl
     //***************************************************************************
     T& operator *()
     {
-#ifdef _DEBUG
+#if defined(ETL_DEBUG)
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
@@ -254,7 +255,7 @@ namespace etl
     //***************************************************************************
     const T& operator *() const
     {
-#ifdef _DEBUG
+#if defined(ETL_DEBUG)
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
@@ -274,7 +275,7 @@ namespace etl
     //***************************************************************************
     T& value()
     {
-#ifdef _DEBUG
+#if defined(ETL_DEBUG)
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
@@ -286,7 +287,7 @@ namespace etl
     //***************************************************************************
     const T& value() const
     {
-#ifdef _DEBUG
+#if defined(ETL_DEBUG)
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 

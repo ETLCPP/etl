@@ -39,35 +39,69 @@ SOFTWARE.
 #include "type_traits.h"
 #include "error_handler.h"
 #include "ihash.h"
+#include "frame_check_sequence.h"
 
 #if defined(ETL_COMPILER_KEIL)
-#pragma diag_suppress 1300 
+#pragma diag_suppress 1300
 #endif
 
-///\defgroup jenkins Jenkins 32 & 64 bit hash calculations
+///\defgroup jenkins Jenkins 32 hash calculation
 ///\ingroup maths
 
 namespace etl
 {
   //***************************************************************************
-  /// Calculates the jenkins hash.
-  ///\ingroup jenkins
+  /// Jenkins policy.
+  /// Calculates 32 bit Jenkins hash.
   //***************************************************************************
-  template <typename THash>
-  class jenkins
+  struct jenkins_policy
+  {
+    typedef uint32_t value_type;
+
+    inline uint32_t initial()
+    {
+      is_finalised = false;
+
+      return 0;
+    }
+
+    inline uint32_t add(value_type hash, uint8_t value) const
+    {
+      ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised));
+
+      hash += value;
+      hash += (hash << 10);
+      hash ^= (hash >> 6);
+
+      return hash;
+    }
+
+    inline uint32_t final(value_type hash)
+    {
+      hash += (hash << 3);
+      hash ^= (hash >> 11);
+      hash += (hash << 15);
+      is_finalised = true;
+
+      return hash;
+    }
+
+    bool is_finalised;
+  };
+
+  //*************************************************************************
+  /// jenkins
+  //*************************************************************************
+  class jenkins : public etl::frame_check_sequence<etl::jenkins_policy>
   {
   public:
-
-    STATIC_ASSERT((etl::is_same<THash, uint32_t>::value || etl::is_same<THash, uint64_t>::value), "Only 32 & 64 bit types supported");
-
-    typedef THash value_type;
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
     jenkins()
     {
-      reset();
+      this->reset();
     }
 
     //*************************************************************************
@@ -78,90 +112,9 @@ namespace etl
     template<typename TIterator>
     jenkins(TIterator begin, const TIterator end)
     {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
-
-      reset();
-
-      while (begin != end)
-      {
-        hash += *begin++;
-        hash += (hash << 10);
-        hash ^= (hash >> 6);
-      }
+      this->reset();
+      this->add(begin, end);
     }
-
-    //*************************************************************************
-    /// Resets the CRC to the initial state.
-    //*************************************************************************
-    void reset()
-    {
-      hash = 0;
-      is_finalised = false;
-    }
-
-    //*************************************************************************
-    /// Adds a range.
-    /// \param begin
-    /// \param end
-    //*************************************************************************
-    template<typename TIterator>
-    void add(TIterator begin, const TIterator end)
-    {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
-      ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised));
-
-      while (begin != end)
-      {
-        hash += *begin++;
-        hash += (hash << 10);
-        hash ^= (hash >> 6);
-      }
-    }
-
-    //*************************************************************************
-    /// \param value The char to add to the jenkins.
-    //*************************************************************************
-    void add(uint8_t value)
-    {
-      ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised));
-
-      hash += value;
-      hash += (hash << 10);
-      hash ^= (hash >> 6);
-    }
-
-    //*************************************************************************
-    /// Gets the jenkins value.
-    //*************************************************************************
-    value_type value()
-    {
-      finalise();
-      return hash;
-    }
-
-    //*************************************************************************
-    /// Conversion operator to value_type.
-    //*************************************************************************
-    operator value_type ()
-    {
-      return value();
-    }
-
-  private:
-
-    void finalise()
-    {
-      if (!is_finalised)
-      {
-        hash += (hash << 3);
-        hash ^= (hash >> 11);
-        hash += (hash << 15);
-        is_finalised = true;
-      }
-    }
-
-    value_type hash;
-    bool is_finalised;
   };
 }
 

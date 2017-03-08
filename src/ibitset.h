@@ -85,7 +85,7 @@ namespace etl
 
     // The type used for each element in the array.
 #if !defined(ETL_BITSET_ELEMENT_TYPE)
-    typedef uint8_t element_t;
+    typedef uint_least8_t element_t;
 #else
     typedef ETL_BITSET_ELEMENT_TYPE element_t;
 #endif

@@ -38,8 +38,8 @@ SOFTWARE.
 #include <stddef.h>
 
 #include "../exception.h"
-#include "../ivector.h"
 #include "../error_handler.h"
+#include "../debug_count.h"
 
 #undef ETL_FILE
 #define ETL_FILE "5"
@@ -98,71 +98,9 @@ namespace etl
 
     typedef size_t size_type;
 
-    //*************************************************************************
-    /// Gets the current size of the flat_set.
-    ///\return The current size of the flat_set.
-    //*************************************************************************
-    size_type size() const
-    {
-      return vbase.size();
-    }
-
-    //*************************************************************************
-    /// Checks the 'empty' state of the flat_set.
-    ///\return <b>true</b> if empty.
-    //*************************************************************************
-    bool empty() const
-    {
-      return vbase.empty();
-    }
-
-    //*************************************************************************
-    /// Checks the 'full' state of the flat_set.
-    ///\return <b>true</b> if full.
-    //*************************************************************************
-    bool full() const
-    {
-      return vbase.full();
-    }
-
-    //*************************************************************************
-    /// Returns the capacity of the flat_set.
-    ///\return The capacity of the flat_set.
-    //*************************************************************************
-    size_type capacity() const
-    {
-      return vbase.capacity();
-    }
-
-    //*************************************************************************
-    /// Returns the maximum possible size of the flat_set.
-    ///\return The maximum size of the flat_set.
-    //*************************************************************************
-    size_type max_size() const
-    {
-      return vbase.max_size();
-    }
-
-    //*************************************************************************
-    /// Returns the remaining capacity.
-    ///\return The remaining capacity.
-    //*************************************************************************
-    size_t available() const
-    {
-      return vbase.available();
-    }
-
   protected:
 
-    //*************************************************************************
-    /// Constructor.
-    //*************************************************************************
-    flat_set_base(vector_base& vbase)
-      : vbase(vbase)
-    {
-    }
-
-    vector_base& vbase;
+    etl::debug_count construct_count;
   };
 }
 
