@@ -101,6 +101,7 @@ namespace etl
 
   //***************************************************************************
   /// Aligned storage
+  /// LENGTH should be determined in terms of sizeof()
   ///\ingroup alignment
   //***************************************************************************
   template <const size_t LENGTH, const size_t ALIGNMENT>
@@ -174,7 +175,7 @@ namespace etl
 
       union
       {
-        uint_least8_t data[LENGTH];
+        char data[LENGTH];
         typename etl::type_with_alignment<ALIGNMENT>::type __etl_alignment_type__; // A POD type that has the same alignment as ALIGNMENT.
       };
     };
