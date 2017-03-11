@@ -463,7 +463,7 @@ namespace etl
     //*********************************************************************
     const mapped_type& at(key_value_parameter_t key) const
     {
-      typename const_iterator i_element = lower_bound(key);
+      const_iterator i_element = lower_bound(key);
 
       ETL_ASSERT(i_element != end(), ETL_ERROR(flat_map_out_of_bounds));
 
