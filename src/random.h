@@ -46,6 +46,7 @@ namespace etl
     {
     }
 
+    virtual void initialise(uint32_t seed) = 0;
     virtual uint32_t operator()() = 0;
   };
 
