@@ -77,9 +77,9 @@ namespace etl
     // The pool element.
     union Element
     {
-      uint32_t next;             ///< Index of the next free element.
-      char     value[sizeof(T)]; ///< Storage for value type.
-      typename etl::type_with_alignment<etl::alignment_of<T>::value>::type dummy; ///< Dummy item to get correct alignment.
+      uintptr_t next;             ///< Pointer to the next free element.
+      char      value[sizeof(T)]; ///< Storage for value type.
+      typename  etl::type_with_alignment<etl::alignment_of<T>::value>::type dummy; ///< Dummy item to get correct alignment.
     };
 
     ///< The memory for the pool of objects.
