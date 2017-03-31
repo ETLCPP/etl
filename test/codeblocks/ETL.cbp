@@ -194,7 +194,6 @@
 		<Unit filename="../../src/iunordered_multiset.h" />
 		<Unit filename="../../src/iunordered_set.h" />
 		<Unit filename="../../src/ivector.h" />
-		<Unit filename="../../src/ivectorpointer.h" />
 		<Unit filename="../../src/jenkins.h" />
 		<Unit filename="../../src/largest.h" />
 		<Unit filename="../../src/list.h" />
