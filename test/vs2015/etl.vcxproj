@@ -230,7 +230,6 @@
     <ClInclude Include="..\..\src\iunordered_multiset.h" />
     <ClInclude Include="..\..\src\iunordered_set.h" />
     <ClInclude Include="..\..\src\ivector.h" />
-    <ClInclude Include="..\..\src\ivectorpointer.h" />
     <ClInclude Include="..\..\src\jenkins.h" />
     <ClInclude Include="..\..\src\largest.h" />
     <ClInclude Include="..\..\src\list.h" />

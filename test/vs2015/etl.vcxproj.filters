@@ -507,9 +507,6 @@
     <ClInclude Include="..\..\src\wstring.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\ivectorpointer.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\private\pvoidvector.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
