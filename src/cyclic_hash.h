@@ -2,6 +2,8 @@
 #ifndef CYCLICHASH
 #define CYCLICHASH
 
+#error EXPERIMENTAL. DO NOT USE
+
 #include "characterhash.h"
 
 /**
