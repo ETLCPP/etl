@@ -31,7 +31,7 @@ SOFTWARE.
 #ifndef __ETL_INTEGRAL_LIMITS__
 #define __ETL_INTEGRAL_LIMITS__
 
-#include <climits>
+#include <limits.h>
 #include <stddef.h>
 
 #include "type_traits.h"
