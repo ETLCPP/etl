@@ -237,27 +237,12 @@ namespace etl
         return temp;
       }
 
-      reference operator *()
-      {
-        return *(*ilookup);
-      }
-
       const_reference operator *() const
       {
         return *(*ilookup);
       }
 
-      pointer operator &()
-      {
-        return etl::addressof(*(*ilookup));
-      }
-
       const_pointer operator &() const
-      {
-        return etl::addressof(*(*ilookup));
-      }
-
-      pointer operator ->()
       {
         return etl::addressof(*(*ilookup));
       }
