@@ -58,7 +58,7 @@ namespace etl
   {
   public:
 
-    typedef std::pair<TKey, TMapped> value_type;
+    typedef std::pair<const TKey, TMapped> value_type;
 
   private:
 

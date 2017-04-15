@@ -455,7 +455,7 @@ namespace
       
       CHECK(isEqual);
       CHECK(result.second);
-      CHECK(*result.first == std::make_pair(0, N0));
+      CHECK(*result.first == DataNDC::value_type(0, N0));
 
       result = data.insert(std::make_pair(2, N2));
       compare_data.insert(std::make_pair(2, N2));
@@ -466,7 +466,7 @@ namespace
 
       CHECK(isEqual);
       CHECK(result.second);
-      CHECK(*result.first == std::make_pair(2, N2));
+      CHECK(*result.first == DataNDC::value_type(2, N2));
 
       result = data.insert(std::make_pair(1, N1));
       compare_data.insert(std::make_pair(1, N1));
@@ -477,7 +477,7 @@ namespace
 
       CHECK(isEqual);
       CHECK(result.second);
-      CHECK(*result.first == std::make_pair(1, N1));
+      CHECK(*result.first == DataNDC::value_type(1, N1));
 
       CHECK(std::is_sorted(data.begin(), data.end()));
     }
@@ -500,7 +500,7 @@ namespace
 
       CHECK(isEqual);
       CHECK(result1.second);
-      CHECK(*result1.first == std::make_pair(0, N0));
+      CHECK(*result1.first == DataNDC::value_type(0, N0));
 
       result1 = data.insert(std::make_pair(0, N2));
       result2 = compare_data.insert(std::make_pair(0, N2));
@@ -511,7 +511,7 @@ namespace
 
       CHECK(isEqual);
       CHECK(!result1.second);
-      CHECK(*result1.first != std::make_pair(0, N2));
+      CHECK(*result1.first != DataNDC::value_type(0, N2));
     }
 
     //*************************************************************************
