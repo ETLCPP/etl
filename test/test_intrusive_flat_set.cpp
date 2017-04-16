@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 http://www.etlcpp.com
 
-Copyright(c) 2015 jwellbelove
+Copyright(c) 2017 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -38,7 +38,7 @@ SOFTWARE.
 
 #include "data.h"
 
-#include "../src/flat_set.h"
+#include "../src/intrusive_flat_set.h"
 
 namespace
 {
@@ -47,9 +47,9 @@ namespace
   typedef TestDataDC<std::string>  DC;
   typedef TestDataNDC<std::string> NDC;
 
-  typedef etl::flat_set<DC, SIZE>  DataDC;
-  typedef etl::flat_set<NDC, SIZE> DataNDC;
-  typedef etl::iflat_set<NDC>      IDataNDC;
+  typedef etl::intrusive_flat_set<DC, SIZE>  DataDC;
+  typedef etl::intrusive_flat_set<NDC, SIZE> DataNDC;
+  typedef etl::iintrusive_flat_set<NDC>      IDataNDC;
 
   typedef std::set<DC>  Compare_DataDC;
   typedef std::set<NDC> Compare_DataNDC;
@@ -161,65 +161,17 @@ namespace
     {
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
 
-      DataNDC data(compare_data.begin(), compare_data.end());
+      DataNDC data(initial_data.begin(), initial_data.end());
 
       CHECK(data.size() == SIZE);
       CHECK(!data.empty());
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_assignment)
-    {
-      DataNDC data(initial_data.begin(), initial_data.end());
-      DataNDC other_data;
-
-      other_data = data;
-
-      bool isEqual = std::equal(data.begin(),
-                                 data.end(),
-                                 other_data.begin());
-
-      CHECK(isEqual);
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_assignment_interface)
-    {
-      DataNDC data1(initial_data.begin(), initial_data.end());
-      DataNDC data2;
-
-      IDataNDC& idata1 = data1;
-      IDataNDC& idata2 = data2;
-
-      idata2 = idata1;
-
-      bool isEqual = std::equal(data1.begin(),
-                                data1.end(),
-                                data2.begin());
-
-      CHECK(isEqual);
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_self_assignment)
-    {
-      DataNDC data(initial_data.begin(), initial_data.end());
-      DataNDC other_data(data);
-
-      other_data = other_data;
-
-      bool isEqual = std::equal(data.begin(),
-                                 data.end(),
-                                 other_data.begin());
-
-      CHECK(isEqual);
-    }
-
-    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_begin)
     {
       DataNDC data(initial_data.begin(), initial_data.end());
-      const DataNDC constData(data);
+      const DataNDC constData(initial_data.begin(), initial_data.end());
 
       CHECK_EQUAL(data.begin(), std::begin(data));
       CHECK_EQUAL(constData.begin(), std::begin(constData));
@@ -229,7 +181,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_end)
     {
       DataNDC data(initial_data.begin(), initial_data.end());
-      const DataNDC constData(data);
+      const DataNDC constData(initial_data.begin(), initial_data.end());
 
       CHECK_EQUAL(data.end(), std::end(data));
       CHECK_EQUAL(constData.end(), std::end(constData));
@@ -261,7 +213,7 @@ namespace
 
       DataNDC data;
 
-      data.assign(compare_data.begin(), compare_data.end());
+      data.assign(initial_data.begin(), initial_data.end());
 
       bool isEqual = std::equal(data.begin(),
                                  data.end(),
@@ -345,7 +297,7 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.insert(N10), etl::flat_set_full);
+      CHECK_THROW(data.insert(N10), etl::intrusive_flat_set_full);
 
       CHECK(std::is_sorted(data.begin(), data.end()));
     }
@@ -373,7 +325,7 @@ namespace
     {
       DataNDC data;
 
-      CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::flat_set_full);
+      CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::intrusive_flat_set_full);
 
       CHECK(std::is_sorted(data.begin(), data.end()));
     }
@@ -454,7 +406,7 @@ namespace
     {
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
 
-      DataNDC data(compare_data.begin(), compare_data.end());
+      DataNDC data(initial_data.begin(), initial_data.end());
       data.clear();
 
       CHECK_EQUAL(data.size(), size_t(0));
@@ -465,7 +417,7 @@ namespace
     {
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
 
-      DataNDC data(compare_data.begin(), compare_data.end());
+      DataNDC data(initial_data.begin(), initial_data.end());
 
       bool isEqual = std::equal(data.begin(),
                                 data.end(),
@@ -479,7 +431,7 @@ namespace
     {
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
 
-      DataNDC data(compare_data.begin(), compare_data.end());
+      DataNDC data(initial_data.begin(), initial_data.end());
 
       bool isEqual = std::equal(data.cbegin(),
                                 data.cend(),
@@ -493,7 +445,7 @@ namespace
     {
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
 
-      DataNDC data(compare_data.begin(), compare_data.end());
+      DataNDC data(initial_data.begin(), initial_data.end());
 
       bool isEqual = std::equal(data.rbegin(),
                                 data.rend(),
@@ -507,7 +459,7 @@ namespace
     {
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
 
-      DataNDC data(compare_data.begin(), compare_data.end());
+      DataNDC data(initial_data.begin(), initial_data.end());
 
       bool isEqual = std::equal(data.crbegin(),
                                 data.crend(),
