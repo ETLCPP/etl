@@ -36,6 +36,7 @@ SOFTWARE.
 ///\ingroup utilities
 
 #include <stdint.h>
+#include <iterator>
 
 #include "nullptr.h"
 #include "parameter_type.h"
@@ -55,7 +56,7 @@ namespace etl
 
   public:
 
-    class iterator
+    class iterator : public std::iterator<std::bidirectional_iterator_tag, T>
     {
       typedef io_port_rw<T, ADDRESS> iop_t;
 
@@ -67,14 +68,14 @@ namespace etl
       }
 
       iterator(const iterator& other)
-        : p_iop(other)
+        : p_iop(other.p_iop)
       {
       }
 
       iterator& operator =(const iterator& other)
       {
         p_iop = other.p_iop;
-		return *this;
+		    return *this;
       }
 
       iop_t& operator *()
@@ -160,6 +161,58 @@ namespace etl
 
   public:
 
+    class iterator : public std::iterator<std::bidirectional_iterator_tag, T>
+    {
+      typedef io_port_ro<T, ADDRESS> iop_t;
+
+    public:
+
+      iterator(iop_t& iop)
+        : p_iop(&iop)
+      {
+      }
+
+      iterator(const iterator& other)
+        : p_iop(other.p_iop)
+      {
+      }
+
+      iterator& operator =(const iterator& other)
+      {
+        p_iop = other.p_iop;
+		    return *this;
+      }
+
+      const iop_t& operator *() const
+      {
+        return *p_iop;
+      }
+
+      iterator& operator ++()
+      {
+        return *this;
+      }
+
+      iterator operator ++(int)
+      {
+        return *this;
+      }
+
+      iterator& operator --()
+      {
+        return *this;
+      }
+
+      iterator operator --(int)
+      {
+        return *this;
+      }
+
+    private:
+
+      iop_t* p_iop;
+    };
+
     /// Read.
     operator T() volatile const
     {
@@ -176,6 +229,12 @@ namespace etl
     pointer_t get_address()
     {
       return reinterpret_cast<pointer_t>(ADDRESS);
+    }
+
+    /// Get the iterator.
+    iterator get_iterator()
+    {
+      return iterator(*this);
     }
   };
 
@@ -195,6 +254,58 @@ namespace etl
 
   public:
 
+    class iterator : public std::iterator<std::bidirectional_iterator_tag, T>
+    {
+      typedef io_port_wo<T, ADDRESS> iop_t;
+
+    public:
+
+      iterator(iop_t& iop)
+        : p_iop(&iop)
+      {
+      }
+
+      iterator(const iterator& other)
+        : p_iop(other.p_iop)
+      {
+      }
+
+      iterator& operator =(const iterator& other)
+      {
+        p_iop = other.p_iop;
+	    	return *this;
+      }
+
+      iop_t& operator *()
+      {
+        return *p_iop;
+      }
+
+      iterator& operator ++()
+      {
+        return *this;
+      }
+
+      iterator operator ++(int)
+      {
+        return *this;
+      }
+
+      iterator& operator --()
+      {
+        return *this;
+      }
+
+      iterator operator --(int)
+      {
+        return *this;
+      }
+
+    private:
+
+      iop_t* p_iop;
+    };
+
     /// Write.
     void operator =(parameter_t value)
     {
@@ -205,6 +316,12 @@ namespace etl
     pointer_t get_address()
     {
       return reinterpret_cast<pointer_t>(ADDRESS);
+    }
+
+    /// Get the iterator.
+    iterator get_iterator()
+    {
+      return iterator(*this);
     }
   };
 
@@ -220,6 +337,63 @@ namespace etl
     typedef typename etl::parameter_type<T>::type parameter_t;
 
   public:
+
+    class iterator : public std::iterator<std::bidirectional_iterator_tag, T>
+    {
+      typedef io_port_wos<T, ADDRESS> iop_t;
+
+    public:
+
+      iterator(iop_t& iop)
+        : p_iop(&iop)
+      {
+      }
+
+      iterator(const iterator& other)
+        : p_iop(other.p_iop)
+      {
+      }
+
+      iterator& operator =(const iterator& other)
+      {
+        p_iop = other.p_iop;
+		    return *this;
+      }
+
+      iop_t& operator *()
+      {
+        return *p_iop;
+      }
+
+      const iop_t& operator *() const
+      {
+        return *p_iop;
+      }
+
+      iterator& operator ++()
+      {
+        return *this;
+      }
+
+      iterator operator ++(int)
+      {
+        return *this;
+      }
+
+      iterator& operator --()
+      {
+        return *this;
+      }
+
+      iterator operator --(int)
+      {
+        return *this;
+      }
+
+    private:
+
+      iop_t* p_iop;
+    };
 
     /// Read.
     operator T() const
@@ -247,6 +421,12 @@ namespace etl
       return reinterpret_cast<pointer_t>(ADDRESS);
     }
 
+    /// Get the iterator.
+    iterator get_iterator()
+    {
+      return iterator(*this);
+    }
+
   private:
 
     T shadow_value;
@@ -265,6 +445,64 @@ namespace etl
     typedef typename etl::parameter_type<T>::type parameter_t;
 
   public:
+
+    class iterator : public std::iterator<std::bidirectional_iterator_tag, T>
+    {
+      typedef io_port_rw<T, 0> iop_t;
+
+    public:
+
+      iterator(iop_t& iop)
+        : p_iop(&iop)
+      {
+      }
+
+      iterator(const iterator& other)
+        : p_iop(other.p_iop)
+      {
+      }
+
+      iterator& operator =(const iterator& other)
+      {
+        p_iop = other.p_iop;
+        return *this;
+      }
+
+      iop_t& operator *()
+      {
+        return *p_iop;
+      }
+
+      const iop_t& operator *() const
+      {
+        return *p_iop;
+      }
+
+      iterator& operator ++()
+      {
+        return *this;
+      }
+
+      iterator operator ++(int)
+      {
+        return *this;
+      }
+
+      iterator& operator --()
+      {
+        return *this;
+      }
+
+      iterator operator --(int)
+      {
+        return *this;
+      }
+
+    private:
+
+      iop_t* p_iop;
+    };
+
 
     // Default constructor.
     io_port_rw()
@@ -288,6 +526,12 @@ namespace etl
     pointer_t get_address()
     {
       return address;
+    }
+
+    /// Get the iterator.
+    iterator get_iterator()
+    {
+      return iterator(*this);
     }
 
     /// Read.
@@ -327,6 +571,58 @@ namespace etl
 
   public:
 
+    class iterator : public std::iterator<std::bidirectional_iterator_tag, T>
+    {
+      typedef io_port_ro<T, 0> iop_t;
+
+    public:
+
+      iterator(iop_t& iop)
+        : p_iop(&iop)
+      {
+      }
+
+      iterator(const iterator& other)
+        : p_iop(other.p_iop)
+      {
+      }
+
+      iterator& operator =(const iterator& other)
+      {
+        p_iop = other.p_iop;
+        return *this;
+      }
+
+      const iop_t& operator *() const
+      {
+        return *p_iop;
+      }
+
+      iterator& operator ++()
+      {
+        return *this;
+      }
+
+      iterator operator ++(int)
+      {
+        return *this;
+      }
+
+      iterator& operator --()
+      {
+        return *this;
+      }
+
+      iterator operator --(int)
+      {
+        return *this;
+      }
+
+    private:
+
+      iop_t* p_iop;
+    };
+
     // Default constructor.
     io_port_ro()
       : address(nullptr)
@@ -348,6 +644,12 @@ namespace etl
     pointer_t get_address()
     {
       return address;
+    }
+
+    /// Get the iterator.
+    iterator get_iterator()
+    {
+      return iterator(*this);
     }
 
     /// Read.
@@ -385,6 +687,58 @@ namespace etl
 
   public:
 
+    class iterator : public std::iterator<std::bidirectional_iterator_tag, T>
+    {
+      typedef io_port_wo<T, 0> iop_t;
+
+    public:
+
+      iterator(iop_t& iop)
+        : p_iop(&iop)
+      {
+      }
+
+      iterator(const iterator& other)
+        : p_iop(other.p_iop)
+      {
+      }
+
+      iterator& operator =(const iterator& other)
+      {
+        p_iop = other.p_iop;
+        return *this;
+      }
+
+      iop_t& operator *()
+      {
+        return *p_iop;
+      }
+
+      iterator& operator ++()
+      {
+        return *this;
+      }
+
+      iterator operator ++(int)
+      {
+        return *this;
+      }
+
+      iterator& operator --()
+      {
+        return *this;
+      }
+
+      iterator operator --(int)
+      {
+        return *this;
+      }
+
+    private:
+
+      iop_t* p_iop;
+    };
+
     typedef typename etl::parameter_type<T>::type parameter_t;
 
     // Default constructor.
@@ -409,6 +763,12 @@ namespace etl
     pointer_t get_address()
     {
       return address;
+    }
+
+    /// Get the iterator.
+    iterator get_iterator()
+    {
+      return iterator(*this);
     }
 
     /// Write.
@@ -439,6 +799,63 @@ namespace etl
 
   public:
 
+    class iterator : public std::iterator<std::bidirectional_iterator_tag, T>
+    {
+      typedef io_port_wos<T, 0> iop_t;
+
+    public:
+
+      iterator(iop_t& iop)
+        : p_iop(&iop)
+      {
+      }
+
+      iterator(const iterator& other)
+        : p_iop(other.p_iop)
+      {
+      }
+
+      iterator& operator =(const iterator& other)
+      {
+        p_iop = other.p_iop;
+        return *this;
+      }
+
+      iop_t& operator *()
+      {
+        return *p_iop;
+      }
+
+      const iop_t& operator *() const
+      {
+        return *p_iop;
+      }
+
+      iterator& operator ++()
+      {
+        return *this;
+      }
+
+      iterator operator ++(int)
+      {
+        return *this;
+      }
+
+      iterator& operator --()
+      {
+        return *this;
+      }
+
+      iterator operator --(int)
+      {
+        return *this;
+      }
+
+    private:
+
+      iop_t* p_iop;
+    };
+
     // Default constructor.
     io_port_wos()
       : address(nullptr)
@@ -461,6 +878,12 @@ namespace etl
     pointer_t get_address()
     {
       return address;
+    }
+
+    /// Get the iterator.
+    iterator get_iterator()
+    {
+      return iterator(*this);
     }
 
     /// Read.
