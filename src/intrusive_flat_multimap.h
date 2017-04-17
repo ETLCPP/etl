@@ -297,7 +297,7 @@ namespace etl
 
   protected:
 
-    typedef typename parameter_type<TKey>::type key_value_parameter_t;
+    typedef typename etl::parameter_type<TKey>::type key_value_parameter_t;
 
   private:
 
