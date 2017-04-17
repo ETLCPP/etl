@@ -39,9 +39,8 @@ SOFTWARE.
 
 #include "platform.h"
 #include "type_traits.h"
-#include "ivector.h"
 #include "vector.h"
-#include "ipool.h"
+#include "pool.h"
 #include "error_handler.h"
 #include "exception.h"
 

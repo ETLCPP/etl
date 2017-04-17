@@ -35,7 +35,6 @@ SOFTWARE.
 
 #include "exception.h"
 #include "vector.h"
-#include "ivector.h"
 #include "error_handler.h"
 
 #undef ETL_FILE

@@ -39,11 +39,10 @@ SOFTWARE.
 
 #include "platform.h"
 #include "type_traits.h"
-#include "ipool.h"
+#include "pool.h"
 #include "error_handler.h"
 #include "exception.h"
 #include "vector.h"
-#include "ivector.h"
 
 #undef ETL_FILE
 #define ETL_FILE "32"

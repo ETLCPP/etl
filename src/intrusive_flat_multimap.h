@@ -34,11 +34,9 @@ SOFTWARE.
 #include <stddef.h>
 
 #include "exception.h"
-#include "ivector.h"
 #include "error_handler.h"
 #include "debug_count.h"
 #include "vector.h"
-#include "ivector.h"
 
 #undef ETL_FILE
 #define ETL_FILE "31"
