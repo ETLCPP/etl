@@ -89,7 +89,7 @@ namespace etl
 
   protected:
 
-    typedef typename parameter_type<T>::type parameter_t;
+    typedef typename etl::parameter_type<T>::type parameter_t;
 
   public:
 

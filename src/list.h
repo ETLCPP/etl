@@ -333,7 +333,7 @@ namespace etl
 
   protected:
 
-    typedef typename parameter_type<T, is_fundamental<T>::value || is_pointer<T>::value>::type parameter_t;
+    typedef typename etl::parameter_type<T, is_fundamental<T>::value || is_pointer<T>::value>::type parameter_t;
 
     //*************************************************************************
     /// The data node element in the list.
