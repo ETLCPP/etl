@@ -34,10 +34,17 @@ SOFTWARE.
 #include <stddef.h>
 #include <stdint.h>
 
-#include "iqueue.h"
 #include "container.h"
 #include "alignment.h"
 #include "array.h"
+#include "exception.h"
+#include "error_handler.h"
+#include "debug_count.h"
+#include "type_traits.h"
+#include "parameter_type.h"
+
+#undef ETL_FILE
+#define ETL_FILE "13"
 
 //*****************************************************************************
 ///\defgroup queue queue
@@ -49,6 +56,304 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
+  /// The base class for queue exceptions.
+  ///\ingroup queue
+  //***************************************************************************
+  class queue_exception : public exception
+  {
+  public:
+
+    queue_exception(string_type what, string_type file_name, numeric_type line_number)
+      : exception(what, file_name, line_number)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// The exception thrown when the queue is full.
+  ///\ingroup queue
+  //***************************************************************************
+  class queue_full : public queue_exception
+  {
+  public:
+
+    queue_full(string_type file_name, numeric_type line_number)
+      : queue_exception(ETL_ERROR_TEXT("queue:full", ETL_FILE"A"), file_name, line_number)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// The exception thrown when the queue is empty.
+  ///\ingroup queue
+  //***************************************************************************
+  class queue_empty : public queue_exception
+  {
+  public:
+
+    queue_empty(string_type file_name, numeric_type line_number)
+      : queue_exception(ETL_ERROR_TEXT("queue:empty", ETL_FILE"B"), file_name, line_number)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// The base class for all queues.
+  ///\ingroup queue
+  //***************************************************************************
+  class queue_base
+  {
+  public:
+
+    typedef size_t size_type; ///< The type used for determining the size of queue.
+
+    //*************************************************************************
+    /// Returns the current number of items in the queue.
+    //*************************************************************************
+    size_type size() const
+    {
+      return current_size;
+    }
+
+    //*************************************************************************
+    /// Returns the maximum number of items that can be queued.
+    //*************************************************************************
+    size_type max_size() const
+    {
+      return MAX_SIZE;
+    }
+
+    //*************************************************************************
+    /// Checks to see if the queue is empty.
+    /// \return <b>true</b> if the queue is empty, otherwise <b>false</b>
+    //*************************************************************************
+    bool empty() const
+    {
+      return current_size == 0;
+    }
+
+    //*************************************************************************
+    /// Checks to see if the queue is full.
+    /// \return <b>true</b> if the queue is full, otherwise <b>false</b>
+    //*************************************************************************
+    bool full() const
+    {
+      return current_size == MAX_SIZE;
+    }
+
+    //*************************************************************************
+    /// Returns the remaining capacity.
+    ///\return The remaining capacity.
+    //*************************************************************************
+    size_t available() const
+    {
+      return max_size() - size();
+    }
+
+  protected:
+
+    //*************************************************************************
+    /// The constructor that is called from derived classes.
+    //*************************************************************************
+    queue_base(size_type max_size)
+      : in(0),
+      out(0),
+      current_size(0),
+      MAX_SIZE(max_size)
+    {
+    }
+
+    size_type in;                     ///< Where to input new data.
+    size_type out;                    ///< Where to get the oldest data.
+    size_type current_size;           ///< The number of items in the queue.
+    const size_type MAX_SIZE;         ///< The maximum number of items in the queue.
+    etl::debug_count construct_count; ///< For internal debugging purposes.
+  };
+
+  //***************************************************************************
+  ///\ingroup queue
+  ///\brief This is the base for all queues that contain a particular type.
+  ///\details Normally a reference to this type will be taken from a derived queue.
+  ///\code
+  /// etl::queue<int, 10> myQueue;
+  /// etl::iqueue<int>& iQueue = myQueue;
+  ///\endcode
+  /// \warning This queue cannot be used for concurrent access from multiple threads.
+  /// \tparam T The type of value that the queue holds.
+  //***************************************************************************
+  template <typename T>
+  class iqueue : public etl::queue_base
+  {
+  public:
+
+    typedef T                     value_type;      ///< The type stored in the queue.
+    typedef T&                    reference;       ///< A reference to the type used in the queue.
+    typedef const T&              const_reference; ///< A const reference to the type used in the queue.
+    typedef T*                    pointer;         ///< A pointer to the type used in the queue.
+    typedef const T*              const_pointer;   ///< A const pointer to the type used in the queue.
+    typedef queue_base::size_type size_type;       ///< The type used for determining the size of the queue.
+
+  private:
+
+    typedef typename parameter_type<T>::type parameter_t;
+
+  public:
+
+    //*************************************************************************
+    /// Gets a reference to the value at the front of the queue.<br>
+    /// \return A reference to the value at the front of the queue.
+    //*************************************************************************
+    reference front()
+    {
+      return p_buffer[out];
+    }
+
+    //*************************************************************************
+    /// Gets a const reference to the value at the front of the queue.<br>
+    /// \return A const reference to the value at the front of the queue.
+    //*************************************************************************
+    const_reference front() const
+    {
+      return p_buffer[out];
+    }
+
+    //*************************************************************************
+    /// Gets a reference to the value at the back of the queue.<br>
+    /// \return A reference to the value at the back of the queue.
+    //*************************************************************************
+    reference back()
+    {
+      return p_buffer[in == 0 ? MAX_SIZE - 1 : in - 1];
+    }
+
+    //*************************************************************************
+    /// Gets a const reference to the value at the back of the queue.<br>
+    /// \return A const reference to the value at the back of the queue.
+    //*************************************************************************
+    const_reference back() const
+    {
+      return p_buffer[in == 0 ? MAX_SIZE - 1 : in - 1];
+    }
+
+    //*************************************************************************
+    /// Adds a value to the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full,
+    /// otherwise does nothing if full.
+    ///\param value The value to push to the queue.
+    //*************************************************************************
+    void push(parameter_t value)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(queue_full));
+#endif
+      ::new (&p_buffer[in]) T(value);
+      in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
+      ++current_size;
+      ++construct_count;
+    }
+
+    //*************************************************************************
+    /// Allows a possibly more efficient 'push' by moving to the next input value
+    /// and returning a reference to it.
+    /// This may eliminate a copy by allowing direct construction in-place.<br>
+    /// If asserts or exceptions are enabled, throws an etl::queue_full is the queue is already full,
+    /// otherwise does nothing if full.
+    /// \return A reference to the position to 'push' to.
+    //*************************************************************************
+    reference push()
+    {
+      const size_type next = in;
+
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(queue_full));
+#endif
+      ::new (&p_buffer[in]) T();
+      in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
+      ++current_size;
+      ++construct_count;
+
+      return p_buffer[next];
+    }
+
+    //*************************************************************************
+    /// Clears the queue to the empty state.
+    //*************************************************************************
+    void clear()
+    {
+      while (current_size > 0)
+      {
+        p_buffer[out].~T();
+        out = (out == (MAX_SIZE - 1)) ? 0 : out + 1;
+        --current_size;
+        --construct_count;
+      }
+
+      in = 0;
+      out = 0;
+    }
+
+    //*************************************************************************
+    /// Removes the oldest value from the back of the queue.
+    /// Does nothing if the queue is already empty.
+    //*************************************************************************
+    void pop()
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!empty(), ETL_ERROR(queue_empty));
+#endif
+      p_buffer[out].~T();
+      out = (out == (MAX_SIZE - 1)) ? 0 : out + 1;
+      --current_size;
+      --construct_count;
+    }
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    iqueue& operator = (const iqueue& rhs)
+    {
+      if (&rhs != this)
+      {
+        clone(rhs);
+      }
+
+      return *this;
+    }
+
+  protected:
+
+    //*************************************************************************
+    /// Make this a clone of the supplied queue
+    //*************************************************************************
+    void clone(const iqueue& other)
+    {
+      size_t index = other.out;
+
+      for (size_t i = 0; i < other.size(); ++i)
+      {
+        push(other.p_buffer[index]);
+        index = (index == (MAX_SIZE - 1)) ? 0 : index + 1;
+      }
+    }
+
+    //*************************************************************************
+    /// The constructor that is called from derived classes.
+    //*************************************************************************
+    iqueue(T* p_buffer, size_type max_size)
+      : queue_base(max_size),
+      p_buffer(p_buffer)
+    {
+    }
+
+  private:
+
+    // Disable copy construction.
+    iqueue(const iqueue&);
+
+    T* p_buffer; ///< The internal buffer.
+  };
+
+  //***************************************************************************
   ///\ingroup queue
   /// A fixed capacity queue.
   /// This queue does not support concurrent access by different threads.
@@ -56,7 +361,7 @@ namespace etl
   /// \tparam SIZE The maximum capacity of the queue.
   //***************************************************************************
   template <typename T, const size_t SIZE>
-  class queue : public iqueue<T>
+  class queue : public etl::iqueue<T>
   {
   public:
 
@@ -64,7 +369,7 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     queue()
-      : iqueue<T>(reinterpret_cast<T*>(&buffer[0]), SIZE)
+      : etl::iqueue<T>(reinterpret_cast<T*>(&buffer[0]), SIZE)
     {
     }
 
@@ -72,9 +377,9 @@ namespace etl
     /// Copy constructor
     //*************************************************************************
     queue(const queue& rhs)
-      : iqueue<T>(reinterpret_cast<T*>(&buffer[0]), SIZE)
+      : etl::iqueue<T>(reinterpret_cast<T*>(&buffer[0]), SIZE)
     {
-      iqueue<T>::clone(rhs);
+      etl::iqueue<T>::clone(rhs);
     }
 
     //*************************************************************************
@@ -82,7 +387,7 @@ namespace etl
     //*************************************************************************
     ~queue()
     {
-      iqueue<T>::clear();
+      etl::iqueue<T>::clear();
     }
 
     //*************************************************************************
@@ -92,7 +397,7 @@ namespace etl
     {
       if (&rhs != this)
       {
-        iqueue<T>::clone(rhs);
+        etl::iqueue<T>::clone(rhs);
       }
 
       return *this;
@@ -104,5 +409,7 @@ namespace etl
     typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[SIZE];
   };
 }
+
+#undef ETL_FILE
 
 #endif
