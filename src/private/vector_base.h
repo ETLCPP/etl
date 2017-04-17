@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#if !defined(__ETL_IN_IVECTOR_H__) && !defined(__ETL_IN_PVOIDVECTOR__)
-#error This header is a private element of etl::vector, etl::ivector & etl::pvoidvector
+#if !defined(__ETL_IN_VECTOR_H__) && !defined(__ETL_IN_PVOIDVECTOR__)
+#error This header is a private element of etl::vector & etl::pvoidvector
 #endif
 
 #ifndef __ETL_VECTOR_BASE__

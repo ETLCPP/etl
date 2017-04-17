@@ -31,7 +31,7 @@ SOFTWARE.
 #ifndef __ETL_IVECTOR_POINTER__
 #define __ETL_IVECTOR_POINTER__
 
-#ifndef __ETL_IN_IVECTOR_H__
+#ifndef __ETL_IN_VECTOR_H__
 #error  This header is a private element of etl::ivector
 #endif
 
