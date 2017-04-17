@@ -575,13 +575,6 @@ namespace etl
     pvoidvector(const pvoidvector&);
   };
 
-  bool pvoidvector_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
-  bool pvoidvector_not_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
-  bool pvoidvector_less_than(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
-  bool pvoidvector_greater_than(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
-  bool pvoidvector_less_than_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
-  bool pvoidvector_greater_than_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
-
   bool operator ==(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
   bool operator !=(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
   bool operator  <(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
