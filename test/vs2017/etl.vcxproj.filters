@@ -435,6 +435,12 @@
     <ClInclude Include="..\..\src\intrusive_flat_set.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\message_processor.h">
+      <Filter>ETL\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\message_processor_generator.h">
+      <Filter>ETL\Patterns</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\AssertException.cpp">
@@ -758,6 +764,9 @@
     <ClCompile Include="..\test_intrusive_flat_multiset.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_message_processor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Doxyfile">
@@ -765,6 +774,9 @@
     </None>
     <None Include="..\..\library.properties">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\src\CreateMessageProcessor.bat">
+      <Filter>ETL\Patterns</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

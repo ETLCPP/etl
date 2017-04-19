@@ -216,6 +216,8 @@
     <ClInclude Include="..\..\src\flat_map.h" />
     <ClInclude Include="..\..\src\map.h" />
     <ClInclude Include="..\..\src\memory.h" />
+    <ClInclude Include="..\..\src\message_processor.h" />
+    <ClInclude Include="..\..\src\message_processor_generator.h" />
     <ClInclude Include="..\..\src\mru_cache.h" />
     <ClInclude Include="..\..\src\multimap.h" />
     <ClInclude Include="..\..\src\multiset.h" />
@@ -370,6 +372,7 @@
     </ClCompile>
     <ClCompile Include="..\test_maths.cpp" />
     <ClCompile Include="..\test_memory.cpp" />
+    <ClCompile Include="..\test_message_processor.cpp" />
     <ClCompile Include="..\test_multimap.cpp" />
     <ClCompile Include="..\test_multiset.cpp" />
     <ClCompile Include="..\test_murmur3.cpp" />
@@ -412,6 +415,7 @@
   <ItemGroup>
     <None Include="..\..\Doxyfile" />
     <None Include="..\..\library.properties" />
+    <None Include="..\..\src\CreateMessageProcessor.bat" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\src\file_error_numbers.txt" />
