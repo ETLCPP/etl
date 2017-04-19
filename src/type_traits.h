@@ -271,11 +271,11 @@ namespace etl
 
   template <> struct make_signed<wchar_t>
   {
-    typedef typename etl::conditional<sizeof(wchar_t) == sizeof(int16_t),
-                                      int16_t,
-                                      etl::conditional<sizeof(wchar_t) == sizeof(int32_t),
-                                                              int32_t,
-                                                              void>::type>::type type;
+    typedef etl::conditional<sizeof(wchar_t) == sizeof(int16_t),
+                                    int16_t,
+                                    etl::conditional<sizeof(wchar_t) == sizeof(int32_t),
+                                                            int32_t,
+                                                            void>::type>::type type;
   };
 
   template <> struct make_signed<unsigned short> { typedef  short type; };
@@ -295,11 +295,11 @@ namespace etl
 
   template <> struct make_unsigned<wchar_t>
   {
-    typedef typename etl::conditional<sizeof(wchar_t) == sizeof(uint16_t),
-                                      uint16_t,
-                                      etl::conditional<sizeof(wchar_t) == sizeof(uint32_t),
-                                                       uint32_t,
-                                                       void>::type>::type type;
+    typedef etl::conditional<sizeof(wchar_t) == sizeof(uint16_t),
+                                    uint16_t,
+                                    etl::conditional<sizeof(wchar_t) == sizeof(uint32_t),
+                                                     uint32_t,
+                                                     void>::type>::type type;
   };
 
   template <> struct make_unsigned<int> { typedef unsigned int type; };
