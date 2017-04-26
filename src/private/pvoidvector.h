@@ -72,7 +72,7 @@ namespace etl
     typedef std::reverse_iterator<iterator>       reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
     typedef size_t                                size_type;
-    typedef typename std::iterator_traits<iterator>::difference_type difference_type;
+    typedef std::iterator_traits<iterator>::difference_type difference_type;
 
   public:
 
