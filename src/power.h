@@ -32,6 +32,7 @@ SOFTWARE.
 #define __ETL_POW__
 
 #include <stddef.h>
+#include <stdint.h>
 #include "log.h"
 
 ///\defgroup power power
