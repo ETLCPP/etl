@@ -44,8 +44,8 @@ SOFTWARE.
   #define ETL_COMPILER_MICROSOFT
 #elif defined(__GNUC__)
   #define ETL_COMPILER_GCC
-#elif defined(__TI_COMPILER_VERSION__) && defined(__MSP430__)
-  #define ETL_COMPILER_TI_MSP430
+#elif defined(__TI_COMPILER_VERSION__)
+  #define ETL_COMPILER_TI
 #elif defined(_MRI)
   #define ETL_COMPILER_MICROTEC
 #elif defined(__HIGHC__)
@@ -69,7 +69,7 @@ SOFTWARE.
 // Check to see if the compiler supports nullptr and large character types.
 #if (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER < 1600)) || \
      defined(ETL_COMPILER_KEIL) || \
-     defined(ETL_COMPILER_TI_MSP430) || \
+     defined(ETL_COMPILER_TI) || \
      defined(ETL_COMPILER_IAR) || \
      (defined(ETL_COMPILER_GCC) && (__cplusplus < 201103L))
   #define ETL_NO_NULLPTR_SUPPORT

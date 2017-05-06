@@ -379,7 +379,7 @@ namespace etl
   template <typename T> struct alignment_of : integral_constant<size_t, size_t(__ALIGNOF__(T))> {};
 #endif
 
-#ifdef ETL_COMPILER_TI_MSP430
+#ifdef ETL_COMPILER_TI
   template <typename T> struct alignment_of : integral_constant<size_t, size_t(__ALIGNOF__(T))> {};
 #endif
 
