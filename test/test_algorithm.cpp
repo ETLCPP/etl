@@ -26,10 +26,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 
-#include "../src/algorithm.h"
-#include "../src/container.h"
+#include "algorithm.h"
+#include "container.h"
 
 #include <vector>
 #include <list>
@@ -291,7 +291,6 @@ namespace
     TEST(copy_if_4_parameter)
     {
       int data1[] = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
-      int data2[] = { 1, 8, 2, 7, 3 };
 
       int out1[4];
       int out2[2];

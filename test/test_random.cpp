@@ -26,11 +26,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 
 #include <stdint.h>
 
-#include "../src/random.h"
+#include "random.h"
 
 #include <vector>
 #include <algorithm>

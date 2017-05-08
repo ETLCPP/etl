@@ -399,7 +399,7 @@ namespace etl
 
     value = value - ((value >> 1) & 0x55555555);
     value = (value & 0x33333333) + ((value >> 2) & 0x33333333);
-    count = ((value + (value >> 4) & 0xF0F0F0F) * 0x1010101) >> 24;
+    count = (((value + (value >> 4)) & 0xF0F0F0F) * 0x1010101) >> 24;
 
     return count;
   }

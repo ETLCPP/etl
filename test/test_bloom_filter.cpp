@@ -26,19 +26,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 
 #include <vector>
 #include <string.h>
 
-#include "../src/bloom_filter.h"
+#include "bloom_filter.h"
 
-#include "../src/fnv_1.h"
-#include "../src/crc16.h"
-#include "../src/crc16_ccitt.h"
-#include "../src/crc32.h"
+#include "fnv_1.h"
+#include "crc16.h"
+#include "crc16_ccitt.h"
+#include "crc32.h"
 
-#include "../src/char_traits.h"
+#include "char_traits.h"
 
 struct hash1_t
 {

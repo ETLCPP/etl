@@ -1,0 +1,425 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug No Unit Tests|Win32">
+      <Configuration>Debug No Unit Tests</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>unittest</RootNamespace>
+    <ProjectName>etl</ProjectName>
+    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug No Unit Tests|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug No Unit Tests|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug No Unit Tests|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;ETL_THROW_EXCEPTIONS;ETL_VERBOSE_ERRORS;ETL_CHECK_PUSH_POP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../../unittest-cpp/UnitTest++/;../../src</AdditionalIncludeDirectories>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <PostBuildEvent>
+      <Command>$(OutDir)\etl.exe</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug No Unit Tests|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;ETL_THROW_EXCEPTIONS;ETL_VERBOSE_ERRORS;ETL_CHECK_PUSH_POP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../../unittest-cpp/UnitTest++/;../../src</AdditionalIncludeDirectories>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;ETL_THROW_EXCEPTIONS;ETL_VERBOSE_ERRORS;ETL_CHECK_PUSH_POP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../../unittest-cpp/UnitTest++/;../../src</AdditionalIncludeDirectories>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <PostBuildEvent>
+      <Command>$(OutDir)\etl.exe</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\AssertException.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\CheckMacros.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\Checks.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\CompositeTestReporter.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\Config.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\CurrentTest.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\DeferredTestReporter.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\DeferredTestResult.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\ExceptionMacros.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\ExecuteTest.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\HelperMacros.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\MemoryOutStream.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\ReportAssert.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\ReportAssertImpl.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\Test.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\TestDetails.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\TestList.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\TestMacros.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\TestReporter.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\TestReporterStdout.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\TestResults.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\TestRunner.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\TestSuite.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\TimeConstraint.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\TimeHelpers.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\UnitTest++.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\UnitTestPP.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\Win32\TimeHelpers.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\XmlTestReporter.h" />
+    <ClInclude Include="..\..\src\algorithm.h" />
+    <ClInclude Include="..\..\src\alignment.h" />
+    <ClInclude Include="..\..\src\array.h" />
+    <ClInclude Include="..\..\src\basic_string.h" />
+    <ClInclude Include="..\..\src\binary.h" />
+    <ClInclude Include="..\..\src\bitset.h" />
+    <ClInclude Include="..\..\src\bloom_filter.h" />
+    <ClInclude Include="..\..\src\char_traits.h" />
+    <ClInclude Include="..\..\src\checksum.h" />
+    <ClInclude Include="..\..\src\crc16.h" />
+    <ClInclude Include="..\..\src\crc16_ccitt.h" />
+    <ClInclude Include="..\..\src\crc16_kermit.h" />
+    <ClInclude Include="..\..\src\crc32.h" />
+    <ClInclude Include="..\..\src\crc64_ecma.h" />
+    <ClInclude Include="..\..\src\crc8_ccitt.h" />
+    <ClInclude Include="..\..\src\cstring.h" />
+    <ClInclude Include="..\..\src\cyclic_value.h" />
+    <ClInclude Include="..\..\src\debounce.h" />
+    <ClInclude Include="..\..\src\debug_count.h" />
+    <ClInclude Include="..\..\src\deque.h" />
+    <ClInclude Include="..\..\src\doxygen.h" />
+    <ClInclude Include="..\..\src\endian.h" />
+    <ClInclude Include="..\..\src\enum_type.h" />
+    <ClInclude Include="..\..\src\error_handler.h" />
+    <ClInclude Include="..\..\src\exception.h" />
+    <ClInclude Include="..\..\src\factorial.h" />
+    <ClInclude Include="..\..\src\fibonacci.h" />
+    <ClInclude Include="..\..\src\fixed_iterator.h" />
+    <ClInclude Include="..\..\src\flat_multimap.h" />
+    <ClInclude Include="..\..\src\flat_multiset.h" />
+    <ClInclude Include="..\..\src\flat_set.h" />
+    <ClInclude Include="..\..\src\fnv_1.h" />
+    <ClInclude Include="..\..\src\forward_list.h" />
+    <ClInclude Include="..\..\src\function.h" />
+    <ClInclude Include="..\..\src\functional.h" />
+    <ClInclude Include="..\..\src\hash.h" />
+    <ClInclude Include="..\..\src\icache.h" />
+    <ClInclude Include="..\..\src\ihash.h" />
+    <ClInclude Include="..\..\src\instance_count.h" />
+    <ClInclude Include="..\..\src\integral_limits.h" />
+    <ClInclude Include="..\..\src\intrusive_flat_map.h" />
+    <ClInclude Include="..\..\src\intrusive_flat_multimap.h" />
+    <ClInclude Include="..\..\src\intrusive_flat_multiset.h" />
+    <ClInclude Include="..\..\src\intrusive_flat_set.h" />
+    <ClInclude Include="..\..\src\intrusive_forward_list.h" />
+    <ClInclude Include="..\..\src\intrusive_links.h" />
+    <ClInclude Include="..\..\src\intrusive_list.h" />
+    <ClInclude Include="..\..\src\intrusive_queue.h" />
+    <ClInclude Include="..\..\src\intrusive_stack.h" />
+    <ClInclude Include="..\..\src\io_port.h" />
+    <ClInclude Include="..\..\src\container.h" />
+    <ClInclude Include="..\..\src\iterator.h" />
+    <ClInclude Include="..\..\src\jenkins.h" />
+    <ClInclude Include="..\..\src\largest.h" />
+    <ClInclude Include="..\..\src\list.h" />
+    <ClInclude Include="..\..\src\log.h" />
+    <ClInclude Include="..\..\src\flat_map.h" />
+    <ClInclude Include="..\..\src\map.h" />
+    <ClInclude Include="..\..\src\memory.h" />
+    <ClInclude Include="..\..\src\message_processor.h" />
+    <ClInclude Include="..\..\src\message_processor_generator.h" />
+    <ClInclude Include="..\..\src\mru_cache.h" />
+    <ClInclude Include="..\..\src\multimap.h" />
+    <ClInclude Include="..\..\src\multiset.h" />
+    <ClInclude Include="..\..\src\multi_array.h" />
+    <ClInclude Include="..\..\src\murmur3.h" />
+    <ClInclude Include="..\..\src\nullptr.h" />
+    <ClInclude Include="..\..\src\numeric.h" />
+    <ClInclude Include="..\..\src\observer.h" />
+    <ClInclude Include="..\..\src\optional.h" />
+    <ClInclude Include="..\..\src\parameter_type.h" />
+    <ClInclude Include="..\..\src\pearson.h" />
+    <ClInclude Include="..\..\src\platform.h" />
+    <ClInclude Include="..\..\src\pool.h" />
+    <ClInclude Include="..\..\src\power.h" />
+    <ClInclude Include="..\..\src\priority_queue.h" />
+    <ClInclude Include="..\..\src\private\pvoidvector.h" />
+    <ClInclude Include="..\..\src\private\vector_base.h" />
+    <ClInclude Include="..\..\src\queue.h" />
+    <ClInclude Include="..\..\src\radix.h" />
+    <ClInclude Include="..\..\src\random.h" />
+    <ClInclude Include="..\..\src\rr_cache.h" />
+    <ClInclude Include="..\..\src\set.h" />
+    <ClInclude Include="..\..\src\smallest.h" />
+    <ClInclude Include="..\..\src\stack.h" />
+    <ClInclude Include="..\..\src\static_assert.h" />
+    <ClInclude Include="..\..\src\test1.h" />
+    <ClInclude Include="..\..\src\test2.h" />
+    <ClInclude Include="..\..\src\type_def.h" />
+    <ClInclude Include="..\..\src\type_traits.h" />
+    <ClInclude Include="..\..\src\u16string.h" />
+    <ClInclude Include="..\..\src\u32string.h" />
+    <ClInclude Include="..\..\src\unordered_map.h" />
+    <ClInclude Include="..\..\src\unordered_multimap.h" />
+    <ClInclude Include="..\..\src\unordered_multiset.h" />
+    <ClInclude Include="..\..\src\unordered_set.h" />
+    <ClInclude Include="..\..\src\user_type.h" />
+    <ClInclude Include="..\..\src\utility.h" />
+    <ClInclude Include="..\..\src\variant.h" />
+    <ClInclude Include="..\..\src\vector.h" />
+    <ClInclude Include="..\..\src\visitor.h" />
+    <ClInclude Include="..\..\src\wstring.h" />
+    <ClInclude Include="..\data.h" />
+    <ClInclude Include="..\ExtraCheckMacros.h" />
+    <ClInclude Include="..\murmurhash3.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\AssertException.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\Checks.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\CompositeTestReporter.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\CurrentTest.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\DeferredTestReporter.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\DeferredTestResult.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\MemoryOutStream.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\ReportAssert.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\Test.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\TestDetails.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\TestList.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\TestReporter.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\TestReporterStdout.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\TestResults.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\TestRunner.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\TimeConstraint.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\Win32\TimeHelpers.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\XmlTestReporter.cpp" />
+    <ClCompile Include="..\..\src\crc16.cpp" />
+    <ClCompile Include="..\..\src\crc16_ccitt.cpp" />
+    <ClCompile Include="..\..\src\crc16_kermit.cpp" />
+    <ClCompile Include="..\..\src\crc32.cpp" />
+    <ClCompile Include="..\..\src\crc64_ecma.cpp" />
+    <ClCompile Include="..\..\src\crc8_ccitt.cpp" />
+    <ClCompile Include="..\..\src\error_handler.cpp" />
+    <ClCompile Include="..\..\src\pearson.cpp" />
+    <ClCompile Include="..\..\src\private\pvoidvector.cpp" />
+    <ClCompile Include="..\..\src\random.cpp" />
+    <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\murmurhash3.cpp" />
+    <ClCompile Include="..\test_algorithm.cpp" />
+    <ClCompile Include="..\test_alignment.cpp" />
+    <ClCompile Include="..\test_array.cpp">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../unittest-cpp</AdditionalIncludeDirectories>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\test_binary.cpp" />
+    <ClCompile Include="..\test_bitset.cpp" />
+    <ClCompile Include="..\test_bloom_filter.cpp" />
+    <ClCompile Include="..\test_bsd_checksum.cpp" />
+    <ClCompile Include="..\test_checksum.cpp" />
+    <ClCompile Include="..\test_container.cpp" />
+    <ClCompile Include="..\test_crc.cpp" />
+    <ClCompile Include="..\test_cyclic_value.cpp" />
+    <ClCompile Include="..\test_debounce.cpp" />
+    <ClCompile Include="..\test_deque.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug No Unit Tests|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\test_endian.cpp" />
+    <ClCompile Include="..\test_enum_type.cpp" />
+    <ClCompile Include="..\test_error_handler.cpp" />
+    <ClCompile Include="..\test_exception.cpp" />
+    <ClCompile Include="..\test_fixed_iterator.cpp" />
+    <ClCompile Include="..\test_flat_multimap.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\test_flat_multiset.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\test_flat_set.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug No Unit Tests|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\test_fnv_1.cpp" />
+    <ClCompile Include="..\test_forward_list.cpp" />
+    <ClCompile Include="..\test_function.cpp" />
+    <ClCompile Include="..\test_functional.cpp" />
+    <ClCompile Include="..\test_hash.cpp" />
+    <ClCompile Include="..\test_instance_count.cpp" />
+    <ClCompile Include="..\test_integral_limits.cpp" />
+    <ClCompile Include="..\test_intrusive_flat_map.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\test_intrusive_flat_multimap.cpp" />
+    <ClCompile Include="..\test_intrusive_flat_multiset.cpp" />
+    <ClCompile Include="..\test_intrusive_flat_set.cpp" />
+    <ClCompile Include="..\test_intrusive_forward_list.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\test_intrusive_links.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\test_intrusive_list.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\test_intrusive_queue.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\test_intrusive_stack.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\test_io_port.cpp" />
+    <ClCompile Include="..\test_iterator.cpp" />
+    <ClCompile Include="..\test_jenkins.cpp" />
+    <ClCompile Include="..\test_largest.cpp" />
+    <ClCompile Include="..\test_list.cpp" />
+    <ClCompile Include="..\test_flat_map.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug No Unit Tests|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\test_map.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\test_maths.cpp" />
+    <ClCompile Include="..\test_memory.cpp" />
+    <ClCompile Include="..\test_multimap.cpp" />
+    <ClCompile Include="..\test_multiset.cpp" />
+    <ClCompile Include="..\test_murmur3.cpp" />
+    <ClCompile Include="..\test_numeric.cpp" />
+    <ClCompile Include="..\test_observer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug No Unit Tests|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\test_optional.cpp" />
+    <ClCompile Include="..\test_pearson.cpp" />
+    <ClCompile Include="..\test_pool.cpp" />
+    <ClCompile Include="..\test_priority_queue.cpp" />
+    <ClCompile Include="..\test_queue.cpp" />
+    <ClCompile Include="..\test_random.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\test_set.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\test_smallest.cpp" />
+    <ClCompile Include="..\test_stack.cpp" />
+    <ClCompile Include="..\test_string_char.cpp" />
+    <ClCompile Include="..\test_string_u16.cpp" />
+    <ClCompile Include="..\test_string_u32.cpp" />
+    <ClCompile Include="..\test_string_wchar_t.cpp" />
+    <ClCompile Include="..\test_type_def.cpp" />
+    <ClCompile Include="..\test_type_traits.cpp" />
+    <ClCompile Include="..\test_unordered_map.cpp" />
+    <ClCompile Include="..\test_unordered_multimap.cpp" />
+    <ClCompile Include="..\test_unordered_multiset.cpp" />
+    <ClCompile Include="..\test_unordered_set.cpp" />
+    <ClCompile Include="..\test_utility.cpp" />
+    <ClCompile Include="..\test_variant.cpp" />
+    <ClCompile Include="..\test_vector.cpp" />
+    <ClCompile Include="..\test_vector_non_trivial.cpp" />
+    <ClCompile Include="..\test_vector_pointer.cpp" />
+    <ClCompile Include="..\test_visitor.cpp" />
+    <ClCompile Include="..\test_xor_checksum.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Doxyfile" />
+    <None Include="..\..\library.properties" />
+    <None Include="..\..\src\CreateMessageProcessor.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\src\file_error_numbers.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

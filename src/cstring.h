@@ -33,7 +33,6 @@ SOFTWARE.
 
 #include "platform.h"
 #include "basic_string.h"
-#include "ibasic_string.h"
 #include "hash.h"
 
 #if defined(ETL_COMPILER_MICROSOFT)

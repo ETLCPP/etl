@@ -26,10 +26,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 #include <string>
 
-#include "../src/enum_type.h"
+#include "enum_type.h"
 
 struct enum_test
 {

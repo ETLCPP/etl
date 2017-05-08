@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 
 #include <set>
 #include <array>
@@ -38,47 +38,50 @@ SOFTWARE.
 
 #include "data.h"
 
-#include "../src/flat_set.h"
+#include "flat_set.h"
 
-static const size_t SIZE = 10;
+namespace
+{
+  static const size_t SIZE = 10;
 
-typedef TestDataDC<std::string>  DC;
-typedef TestDataNDC<std::string> NDC;
+  typedef TestDataDC<std::string>  DC;
+  typedef TestDataNDC<std::string> NDC;
 
-typedef etl::flat_set<DC, SIZE>  DataDC;
-typedef etl::flat_set<NDC, SIZE> DataNDC;
-typedef etl::iflat_set<NDC>      IDataNDC;
+  typedef etl::flat_set<DC, SIZE>  DataDC;
+  typedef etl::flat_set<NDC, SIZE> DataNDC;
+  typedef etl::iflat_set<NDC>      IDataNDC;
 
-typedef std::set<DC>  Compare_DataDC;
-typedef std::set<NDC> Compare_DataNDC;
+  typedef std::set<DC>  Compare_DataDC;
+  typedef std::set<NDC> Compare_DataNDC;
 
-NDC NX = NDC("@");
-NDC NY = NDC("[");
+  NDC NX = NDC("@");
+  NDC NY = NDC("[");
 
-NDC N0 = NDC("A");
-NDC N1 = NDC("B");
-NDC N2 = NDC("C");
-NDC N3 = NDC("D");
-NDC N4 = NDC("E");
-NDC N5 = NDC("F");
-NDC N6 = NDC("G");
-NDC N7 = NDC("H");
-NDC N8 = NDC("I");
-NDC N9 = NDC("J");
-NDC N10 = NDC("K");
-NDC N11 = NDC("L");
-NDC N12 = NDC("M");
-NDC N13 = NDC("N");
-NDC N14 = NDC("O");
-NDC N15 = NDC("P");
-NDC N16 = NDC("Q");
-NDC N17 = NDC("R");
-NDC N18 = NDC("S");
-NDC N19 = NDC("T");
+  NDC N0 = NDC("A");
+  NDC N1 = NDC("B");
+  NDC N2 = NDC("C");
+  NDC N3 = NDC("D");
+  NDC N4 = NDC("E");
+  NDC N5 = NDC("F");
+  NDC N6 = NDC("G");
+  NDC N7 = NDC("H");
+  NDC N8 = NDC("I");
+  NDC N9 = NDC("J");
+  NDC N10 = NDC("K");
+  NDC N11 = NDC("L");
+  NDC N12 = NDC("M");
+  NDC N13 = NDC("N");
+  NDC N14 = NDC("O");
+  NDC N15 = NDC("P");
+  NDC N16 = NDC("Q");
+  NDC N17 = NDC("R");
+  NDC N18 = NDC("S");
+  NDC N19 = NDC("T");
 
-std::vector<NDC> initial_data;
-std::vector<NDC> excess_data;
-std::vector<NDC> different_data;
+  std::vector<NDC> initial_data;
+  std::vector<NDC> excess_data;
+  std::vector<NDC> different_data;
+}
 
 //*************************************************************************
 std::ostream& operator <<(std::ostream& os, const DataDC::iterator& itr)
@@ -380,9 +383,6 @@ namespace
     {
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
       DataNDC data(initial_data.begin(), initial_data.end());
-
-      Compare_DataNDC::iterator i_compare = compare_data.begin();
-      DataNDC::iterator i_data = data.begin();
 
       size_t count_compare = compare_data.erase(N5);
       size_t count         = data.erase(N5);

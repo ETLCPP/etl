@@ -26,13 +26,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 
 #include <limits>
 #include <type_traits>
 #include <bitset>
 
-#include "../src/integral_limits.h"
+#include "integral_limits.h"
 
 #undef min
 #undef max

@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 
 #include <limits>
 #include <type_traits>
@@ -34,7 +34,7 @@ SOFTWARE.
 
 #define ETL_IN_UNIT_TEST
 
-#include "../src/bitset.h"
+#include "bitset.h"
 
 #undef min
 #undef max

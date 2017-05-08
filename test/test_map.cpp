@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 
 #include <map>
 #include <array>
@@ -36,7 +36,7 @@ SOFTWARE.
 #include <string>
 #include <vector>
 
-#include "../src/map.h"
+#include "map.h"
 
 static const size_t SIZE = 10;
 
@@ -192,6 +192,7 @@ namespace
 
       size_t d = std::distance(data.begin(), data.end());
 
+      CHECK(d == SIZE);
       CHECK(data.size() == SIZE);
       CHECK(!data.empty());
     }
@@ -228,7 +229,7 @@ namespace
 
       CHECK(isEqual);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_self_assignment)
     {

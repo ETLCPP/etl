@@ -26,10 +26,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 #include "ExtraCheckMacros.h"
 
-#include "../src/list.h"
+#include "list.h"
 
 #include "data.h"
 
@@ -852,7 +852,7 @@ namespace
       data.reverse();
 
       CHECK_EQUAL(compare_data.size(), data.size());
-      CHECK_EQUAL(data.size(), std::distance(data.begin(), data.end()));
+      CHECK_EQUAL(data.size(), size_t(std::distance(data.begin(), data.end())));
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
 

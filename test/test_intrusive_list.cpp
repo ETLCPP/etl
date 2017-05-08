@@ -26,12 +26,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 #include "ExtraCheckMacros.h"
 
 #include "data.h"
 
-#include "../src/intrusive_list.h"
+#include "intrusive_list.h"
 
 #include <algorithm>
 #include <array>
@@ -761,7 +761,7 @@ namespace
       data0.reverse(); // Just reverse one of them.
 
       CHECK_EQUAL(data1.size(), data0.size());
-      CHECK_EQUAL(data0.size(), std::distance(data0.begin(), data0.end()));
+      CHECK_EQUAL(data0.size(), size_t(std::distance(data0.begin(), data0.end())));
 
       are_equal = std::equal(data0.begin(), data0.end(), sorted_data.rbegin());
       CHECK(are_equal);

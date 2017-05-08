@@ -26,12 +26,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 #include "ExtraCheckMacros.h"
 
 #include "data.h"
 
-#include "../src/forward_list.h"
+#include "forward_list.h"
 
 #include <algorithm>
 #include <array>
@@ -39,8 +39,8 @@ SOFTWARE.
 #include <vector>
 #include <string>
 
-namespace 
-{		
+namespace
+{
   SUITE(test_forward_list)
   {
     const size_t SIZE = 10;
@@ -169,7 +169,7 @@ namespace
       CompareDataDC compare_data(INITIAL_SIZE, VALUE);
       compare_data.resize(NEW_SIZE);
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -188,7 +188,7 @@ namespace
       CompareDataNDC compare_data(INITIAL_SIZE, VALUE);
       compare_data.resize(NEW_SIZE, VALUE);
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -216,7 +216,7 @@ namespace
       CompareDataDC compare_data(INITIAL_SIZE, VALUE);
       compare_data.resize(NEW_SIZE);
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -235,7 +235,7 @@ namespace
       CompareDataNDC compare_data(INITIAL_SIZE, VALUE);
       compare_data.resize(NEW_SIZE, VALUE);
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -502,7 +502,7 @@ namespace
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_front_excess)
-    {  
+    {
       DataNDC data;
 
       CHECK_NO_THROW(data.push_front(ItemNDC("0")));
@@ -529,7 +529,7 @@ namespace
         CHECK_NO_THROW(data.push_front(ItemNDC("1")));
         data.pop_front();
       }
-      
+
       CHECK(data.empty());
     }
 
@@ -788,8 +788,8 @@ namespace
       compare_data.reverse();
       data.reverse();
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
-      CHECK_EQUAL(data.size(), std::distance(data.begin(), data.end()));
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
+      CHECK_EQUAL(data.size(), size_t(std::distance(data.begin(), data.end())));
 
       CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
 

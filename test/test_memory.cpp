@@ -26,10 +26,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 
-#include "../src/memory.h"
-#include "../src/debug_count.h"
+#include "memory.h"
+#include "debug_count.h"
 
 #include <string>
 #include <array>
@@ -48,13 +48,13 @@ namespace
 
   std::array<non_trivial_t, SIZE> test_data_non_trivial =
   {
-    "one", "two",   "three", "four", "five", 
+    "one", "two",   "three", "four", "five",
     "six", "seven", "eight", "nine", "ten"
   };
 
   std::array<trivial_t, SIZE> test_data_trivial =
   {
-    0x11223344, 0x22334455, 0x33445566, 0x44556677, 0x55667788, 
+    0x11223344, 0x22334455, 0x33445566, 0x44556677, 0x55667788,
     0x66778899, 0x778899AA, 0x8899AABB, 0x99AABBCC, 0xAABBCCDD
   };
 
@@ -107,9 +107,9 @@ namespace
 
       std::fill(std::begin(n), std::end(n), 0xFF);
       etl::create_value_at(pn);
-      CHECK_EQUAL(0x0000000, *pn);
+      CHECK_EQUAL(0x0000000U, *pn);
       etl::destroy_at(pn);
-      CHECK_EQUAL(0x0000000, *pn);
+      CHECK_EQUAL(0x0000000U, *pn);
 
       std::fill(std::begin(n), std::end(n), 0xFF);
       etl::create_copy_at(pn, test_item_trivial);
@@ -123,26 +123,26 @@ namespace
       std::fill(std::begin(n), std::end(n), 0xFF);
       etl::create_default_at(pn, count);
       CHECK_EQUAL(0xFFFFFFFF, *pn);
-      CHECK_EQUAL(1, count);
+      CHECK_EQUAL(1U, count);
       etl::destroy_at(pn, count);
       CHECK_EQUAL(0xFFFFFFFF, *pn);
-      CHECK_EQUAL(0, count);
+      CHECK_EQUAL(0U, count);
 
       std::fill(std::begin(n), std::end(n), 0xFF);
       etl::create_value_at(pn, count);
-      CHECK_EQUAL(0x0000000, *pn);
-      CHECK_EQUAL(1, count);
+      CHECK_EQUAL(0x0000000U, *pn);
+      CHECK_EQUAL(1U, count);
       etl::destroy_at(pn, count);
-      CHECK_EQUAL(0x0000000, *pn);
-      CHECK_EQUAL(0, count);
+      CHECK_EQUAL(0x0000000U, *pn);
+      CHECK_EQUAL(0U, count);
 
       std::fill(std::begin(n), std::end(n), 0xFF);
       etl::create_copy_at(pn, test_item_trivial, count);
       CHECK_EQUAL(test_item_trivial, *pn);
-      CHECK_EQUAL(1, count);
+      CHECK_EQUAL(1U, count);
       etl::destroy_at(pn, count);
       CHECK_EQUAL(test_item_trivial, *pn);
-      CHECK_EQUAL(0, count);
+      CHECK_EQUAL(0U, count);
     }
 
     //*************************************************************************
@@ -173,25 +173,25 @@ namespace
       std::fill(std::begin(n), std::end(n), 0xFF);
       etl::create_default_at(pn, count);
       CHECK_EQUAL(test_item_non_trivial_null, *pn);
-      CHECK_EQUAL(1, count);
+      CHECK_EQUAL(1U, count);
       etl::destroy_at(pn, count);
-      CHECK_EQUAL(0, count);
+      CHECK_EQUAL(0U, count);
 
       count = 0;
       std::fill(std::begin(n), std::end(n), 0xFF);
       etl::create_value_at(pn, count);
       CHECK_EQUAL(test_item_non_trivial_null, *pn);
-      CHECK_EQUAL(1, count);
+      CHECK_EQUAL(1U, count);
       etl::destroy_at(pn, count);
-      CHECK_EQUAL(0, count);
+      CHECK_EQUAL(0U, count);
 
       count = 0;
       std::fill(std::begin(n), std::end(n), 0xFF);
       etl::create_copy_at(pn, test_item_non_trivial, count);
       CHECK_EQUAL(test_item_non_trivial, *pn);
-      CHECK_EQUAL(1, count);
+      CHECK_EQUAL(1U, count);
       etl::destroy_at(pn, count);
-      CHECK_EQUAL(0, count);
+      CHECK_EQUAL(0U, count);
     }
 
     //*************************************************************************
@@ -208,7 +208,7 @@ namespace
       trivial_t* result;
 
       result = std::find_if_not(output_trivial, output_trivial + SIZE, [](trivial_t i) { return i == test_item_trivial; });
-                                 
+
       CHECK(result == output_trivial + SIZE);
       etl::destroy(p, p + SIZE);
 
@@ -223,7 +223,7 @@ namespace
       CHECK_EQUAL(SIZE, count);
 
       etl::destroy(p, p + SIZE, count);
-      CHECK_EQUAL(0, count);
+      CHECK_EQUAL(0U, count);
     }
 
     //*************************************************************************
@@ -257,7 +257,7 @@ namespace
       CHECK_EQUAL(SIZE, count);
 
       etl::destroy(p, p + SIZE, count);
-      CHECK_EQUAL(0, count);
+      CHECK_EQUAL(0U, count);
     }
 
     //*************************************************************************
@@ -286,7 +286,7 @@ namespace
       CHECK(is_equal);
       CHECK_EQUAL(SIZE, count);
       etl::destroy(p, p + SIZE, count);
-      CHECK_EQUAL(0, count);
+      CHECK_EQUAL(0U, count);
     }
 
     //*************************************************************************
@@ -315,7 +315,7 @@ namespace
       CHECK(is_equal);
       CHECK_EQUAL(SIZE, count);
       etl::destroy(p, p + SIZE, count);
-      CHECK_EQUAL(0, count);
+      CHECK_EQUAL(0U, count);
     }
 
     //*************************************************************************
@@ -347,7 +347,7 @@ namespace
       CHECK_EQUAL(SIZE, count);
 
       etl::destroy(p, p + SIZE, count);
-      CHECK_EQUAL(0, count);
+      CHECK_EQUAL(0U, count);
     }
 
     //*************************************************************************
@@ -379,7 +379,7 @@ namespace
       CHECK_EQUAL(SIZE, count);
 
       etl::destroy(p, p + SIZE, count);
-      CHECK_EQUAL(0, count);
+      CHECK_EQUAL(0U, count);
     }
 
     //*************************************************************************
@@ -411,7 +411,7 @@ namespace
       CHECK_EQUAL(SIZE, count);
 
       etl::destroy(p, p + SIZE, count);
-      CHECK_EQUAL(0, count);
+      CHECK_EQUAL(0U, count);
     }
 
     //*************************************************************************
@@ -443,7 +443,7 @@ namespace
       CHECK_EQUAL(SIZE, count);
 
       etl::destroy(p, p + SIZE, count);
-      CHECK_EQUAL(0, count);
+      CHECK_EQUAL(0U, count);
     }
   };
 }

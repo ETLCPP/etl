@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 
 #include "murmurhash3.h" // The 'C' reference implementation.
 
@@ -35,8 +35,8 @@ SOFTWARE.
 #include <vector>
 #include <stdint.h>
 
-#include "../src/murmur3.h"
-#include "../src/endian.h"
+#include "murmur3.h"
+#include "endian.h"
 
 namespace
 {		

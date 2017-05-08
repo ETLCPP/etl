@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 http://www.etlcpp.com
 
-Copyright(c) 2015 jwellbelove
+Copyright(c) 2017 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,9 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_IFLAT_MULTIMAP__
-#define __ETL_IFLAT_MULTIMAP__
-#define __ETL_IN_IFLAT_MULTIMAP_H__
+#ifndef __ETL_INTRUSIVE_FLAT_SET__
+#define __ETL_INTRUSIVE_FLAT_SET__
 
 #include <iterator>
 #include <algorithm>
@@ -39,36 +38,71 @@ SOFTWARE.
 #include <stddef.h>
 
 #include "platform.h"
-#include "private/flat_multimap_base.h"
 #include "type_traits.h"
-#include "parameter_type.h"
-#include "ivector.h"
+#include "pool.h"
 #include "error_handler.h"
-#include "ipool.h"
+#include "exception.h"
+#include "vector.h"
+
+#undef ETL_FILE
+#define ETL_FILE "32"
 
 namespace etl
 {
   //***************************************************************************
-  /// The base class for specifically sized flat_multimaps.
-  /// Can be used as a reference type for all flat_multimaps containing a specific type.
-  ///\ingroup flat_multimap
+  ///\ingroup intrusive_flat_set
+  /// Exception base for intrusive_flat_sets
   //***************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare = std::less<TKey> >
-  class iflat_multimap : public flat_multimap_base
+  class intrusive_flat_set_exception : public exception
   {
   public:
 
-    typedef std::pair<TKey, TMapped> value_type;
+    intrusive_flat_set_exception(string_type what, string_type file_name, numeric_type line_number)
+      : exception(what, file_name, line_number)
+    {
+    }
+  };
 
-  private:
-
-    typedef etl::ivector<value_type*> lookup_t;
-    typedef etl::ipool                storage_t;
-
+  //***************************************************************************
+  ///\ingroup intrusive_flat_set
+  /// Vector full exception.
+  //***************************************************************************
+  class intrusive_flat_set_full : public intrusive_flat_set_exception
+  {
   public:
 
-    typedef TKey              key_type;
-    typedef TMapped           mapped_type;
+    intrusive_flat_set_full(string_type file_name, numeric_type line_number)
+      : intrusive_flat_set_exception(ETL_ERROR_TEXT("intrusive_flat_set:full", ETL_FILE"A"), file_name, line_number)
+    {
+    }
+  };
+
+  //***************************************************************************
+  ///\ingroup intrusive_flat_set
+  /// Vector iterator exception.
+  //***************************************************************************
+  class intrusive_flat_set_iterator : public intrusive_flat_set_exception
+  {
+  public:
+
+    intrusive_flat_set_iterator(string_type file_name, numeric_type line_number)
+      : intrusive_flat_set_exception(ETL_ERROR_TEXT("intrusive_flat_set:iterator", ETL_FILE"C"), file_name, line_number)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// The base class for specifically sized intrusive_flat_sets.
+  /// Can be used as a reference type for all intrusive_flat_sets containing a specific type.
+  ///\ingroup intrusive_flat_set
+  //***************************************************************************
+  template <typename T, typename TKeyCompare = std::less<T> >
+  class iintrusive_flat_set
+  {
+  public:
+
+    typedef T                 key_type;
+    typedef T                 value_type;
     typedef TKeyCompare       key_compare;
     typedef value_type&       reference;
     typedef const value_type& const_reference;
@@ -76,12 +110,18 @@ namespace etl
     typedef const value_type* const_pointer;
     typedef size_t            size_type;
 
+  private:
+
+    typedef etl::ivector<value_type*> lookup_t;
+
+  public:
+
     //*************************************************************************
     class iterator : public std::iterator<std::bidirectional_iterator_tag, value_type>
     {
     public:
 
-      friend class iflat_multimap;
+      friend class iintrusive_flat_set;
 
       iterator()
       {
@@ -179,7 +219,7 @@ namespace etl
     {
     public:
 
-      friend class iflat_multimap;
+      friend class iintrusive_flat_set;
 
       const_iterator()
       {
@@ -268,39 +308,19 @@ namespace etl
       typename lookup_t::const_iterator ilookup;
     };
 
+  protected:
+
+    typedef typename etl::parameter_type<T>::type parameter_t;
+
+  public:
+
     typedef std::reverse_iterator<iterator>       reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
     typedef typename std::iterator_traits<iterator>::difference_type difference_type;
 
-  protected:
-
-    typedef typename parameter_type<TKey>::type key_value_parameter_t;
-
-  private:
-
     //*********************************************************************
-    /// How to compare elements and keys.
-    //*********************************************************************
-    class compare
-    {
-    public:
-
-      bool operator ()(const value_type& element, key_type key) const
-      {
-        return key_compare()(element.first, key);
-      }
-
-      bool operator ()(key_type key, const value_type& element) const
-      {
-        return key_compare()(key, element.first);
-      }
-    };
-
-  public:
-
-    //*********************************************************************
-    /// Returns an iterator to the beginning of the flat_multimap.
-    ///\return An iterator to the beginning of the flat_multimap.
+    /// Returns an iterator to the beginning of the intrusive_flat_set.
+    ///\return An iterator to the beginning of the intrusive_flat_set.
     //*********************************************************************
     iterator begin()
     {
@@ -308,8 +328,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const_iterator to the beginning of the flat_multimap.
-    ///\return A const iterator to the beginning of the flat_multimap.
+    /// Returns a const_iterator to the beginning of the intrusive_flat_set.
+    ///\return A const iterator to the beginning of the intrusive_flat_set.
     //*********************************************************************
     const_iterator begin() const
     {
@@ -317,8 +337,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns an iterator to the end of the flat_multimap.
-    ///\return An iterator to the end of the flat_multimap.
+    /// Returns an iterator to the end of the intrusive_flat_set.
+    ///\return An iterator to the end of the intrusive_flat_set.
     //*********************************************************************
     iterator end()
     {
@@ -326,8 +346,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const_iterator to the end of the flat_multimap.
-    ///\return A const iterator to the end of the flat_multimap.
+    /// Returns a const_iterator to the end of the intrusive_flat_set.
+    ///\return A const iterator to the end of the intrusive_flat_set.
     //*********************************************************************
     const_iterator end() const
     {
@@ -335,8 +355,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const_iterator to the beginning of the flat_multimap.
-    ///\return A const iterator to the beginning of the flat_multimap.
+    /// Returns a const_iterator to the beginning of the intrusive_flat_set.
+    ///\return A const iterator to the beginning of the intrusive_flat_set.
     //*********************************************************************
     const_iterator cbegin() const
     {
@@ -344,8 +364,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const_iterator to the end of the flat_multimap.
-    ///\return A const iterator to the end of the flat_multimap.
+    /// Returns a const_iterator to the end of the intrusive_flat_set.
+    ///\return A const iterator to the end of the intrusive_flat_set.
     //*********************************************************************
     const_iterator cend() const
     {
@@ -353,8 +373,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns an reverse iterator to the reverse beginning of the flat_multimap.
-    ///\return Iterator to the reverse beginning of the flat_multimap.
+    /// Returns an reverse iterator to the reverse beginning of the intrusive_flat_set.
+    ///\return Iterator to the reverse beginning of the intrusive_flat_set.
     //*********************************************************************
     reverse_iterator rbegin()
     {
@@ -362,8 +382,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const reverse iterator to the reverse beginning of the flat_multimap.
-    ///\return Const iterator to the reverse beginning of the flat_multimap.
+    /// Returns a const reverse iterator to the reverse beginning of the intrusive_flat_set.
+    ///\return Const iterator to the reverse beginning of the intrusive_flat_set.
     //*********************************************************************
     const_reverse_iterator rbegin() const
     {
@@ -371,8 +391,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a reverse iterator to the end + 1 of the flat_multimap.
-    ///\return Reverse iterator to the end + 1 of the flat_multimap.
+    /// Returns a reverse iterator to the end + 1 of the intrusive_flat_set.
+    ///\return Reverse iterator to the end + 1 of the intrusive_flat_set.
     //*********************************************************************
     reverse_iterator rend()
     {
@@ -380,8 +400,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const reverse iterator to the end + 1 of the flat_multimap.
-    ///\return Const reverse iterator to the end + 1 of the flat_multimap.
+    /// Returns a const reverse iterator to the end + 1 of the intrusive_flat_set.
+    ///\return Const reverse iterator to the end + 1 of the intrusive_flat_set.
     //*********************************************************************
     const_reverse_iterator rend() const
     {
@@ -389,8 +409,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const reverse iterator to the reverse beginning of the flat_multimap.
-    ///\return Const reverse iterator to the reverse beginning of the flat_multimap.
+    /// Returns a const reverse iterator to the reverse beginning of the intrusive_flat_set.
+    ///\return Const reverse iterator to the reverse beginning of the intrusive_flat_set.
     //*********************************************************************
     const_reverse_iterator crbegin() const
     {
@@ -398,8 +418,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const reverse iterator to the end + 1 of the flat_multimap.
-    ///\return Const reverse iterator to the end + 1 of the flat_multimap.
+    /// Returns a const reverse iterator to the end + 1 of the intrusive_flat_set.
+    ///\return Const reverse iterator to the end + 1 of the intrusive_flat_set.
     //*********************************************************************
     const_reverse_iterator crend() const
     {
@@ -407,9 +427,9 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Assigns values to the flat_multimap.
-    /// If asserts or exceptions are enabled, emits flat_multimap_full if the flat_multimap does not have enough free space.
-    /// If asserts or exceptions are enabled, emits flat_multimap_iterator if the iterators are reversed.
+    /// Assigns values to the intrusive_flat_set.
+    /// If asserts or exceptions are enabled, emits intrusive_flat_set_full if the intrusive_flat_set does not have enough free space.
+    /// If asserts or exceptions are enabled, emits intrusive_flat_set_iterator if the iterators are reversed.
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
@@ -418,7 +438,7 @@ namespace etl
     {
 #if defined(ETL_DEBUG)
       difference_type count = std::distance(first, last);
-      ETL_ASSERT(count <= difference_type(capacity()), ETL_ERROR(flat_multimap_full));
+      ETL_ASSERT(count <= difference_type(capacity()), ETL_ERROR(intrusive_flat_set_full));
 #endif
 
       clear();
@@ -430,35 +450,59 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Inserts a value to the flat_multimap.
-    /// If asserts or exceptions are enabled, emits flat_multimap_full if the flat_multimap is already full.
+    /// Inserts a value to the intrusive_flat_set.
+    /// If asserts or exceptions are enabled, emits intrusive_flat_set_full if the intrusive_flat_set is already full.
     ///\param value    The value to insert.
     //*********************************************************************
-    std::pair<iterator, bool> insert(const value_type& value)
+    std::pair<iterator, bool> insert(value_type& value)
     {
-      ETL_ASSERT(!lookup.full(), ETL_ERROR(flat_multimap_full));
+      std::pair<iterator, bool> result(end(), false);
 
-std::pair<iterator, bool> result(end(), false);
+      ETL_ASSERT(!lookup.full(), ETL_ERROR(intrusive_flat_set_full));
 
-      iterator i_element = lower_bound(value.first);
+      iterator i_element = std::lower_bound(begin(), end(), value, TKeyCompare());
 
-      return insert_at(i_element, value);
+      if (i_element == end())
+      {
+        // At the end. Doesn't exist.
+        lookup.push_back(&value);
+        result.first = --end();
+        result.second = true;
+      }
+      else
+      {
+        // Not at the end.
+        // Does not exist already?
+        if (*i_element != value)
+        {
+          lookup.insert(i_element.ilookup, &value);
+          result.first = i_element;
+          result.second = true;
+        }
+        else
+        {
+          result.first = i_element;
+          result.second = false;
+        }
+      }
+
+      return result;
     }
 
     //*********************************************************************
-    /// Inserts a value to the flast_multi.
-    /// If asserts or exceptions are enabled, emits flat_map_full if the flat_map is already full.
+    /// Inserts a value to the intrusive_flat_set.
+    /// If asserts or exceptions are enabled, emits intrusive_flat_set_full if the intrusive_flat_set is already full.
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, const value_type& value)
+    iterator insert(iterator position, value_type& value)
     {
       return insert(value).first;
     }
 
     //*********************************************************************
-    /// Inserts a range of values to the flat_multimap.
-    /// If asserts or exceptions are enabled, emits flat_multimap_full if the flat_multimap does not have enough free space.
+    /// Inserts a range of values to the intrusive_flat_set.
+    /// If asserts or exceptions are enabled, emits intrusive_flat_set_full if the intrusive_flat_set does not have enough free space.
     ///\param position The position to insert at.
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.
@@ -477,19 +521,18 @@ std::pair<iterator, bool> result(end(), false);
     ///\param key The key to erase.
     ///\return The number of elements erased. 0 or 1.
     //*********************************************************************
-    size_t erase(key_value_parameter_t key)
+    size_t erase(value_type& key)
     {
-      std::pair<iterator, iterator> range = equal_range(key);
+      iterator i_element = find(key);
 
-      if (range.first == end())
+      if (i_element == end())
       {
         return 0;
       }
       else
       {
-        size_t count = std::distance(range.first, range.second);
-        erase(range.first, range.second);
-        return count;
+        lookup.erase(i_element.ilookup);
+        return 1;
       }
     }
 
@@ -499,10 +542,7 @@ std::pair<iterator, bool> result(end(), false);
     //*********************************************************************
     void erase(iterator i_element)
     {
-      i_element->~value_type();
-      storage.release(etl::addressof(*i_element));
       lookup.erase(i_element.ilookup);
-      --construct_count;
     }
 
     //*********************************************************************
@@ -514,21 +554,11 @@ std::pair<iterator, bool> result(end(), false);
     //*********************************************************************
     void erase(iterator first, iterator last)
     {
-      iterator itr = first;
-
-      while (itr != last)
-      {
-        itr->~value_type();
-        storage.release(etl::addressof(*itr));
-        ++itr;
-        --construct_count;
-      }
-
-      lookup.erase(first.ilookup, last.ilookup);
+      lookup.erase(first.ilookup, last.ilookup);;
     }
 
     //*************************************************************************
-    /// Clears the flat_multimap.
+    /// Clears the intrusive_flat_set.
     //*************************************************************************
     void clear()
     {
@@ -540,13 +570,13 @@ std::pair<iterator, bool> result(end(), false);
     ///\param key The key to search for.
     ///\return An iterator pointing to the element or end() if not found.
     //*********************************************************************
-    iterator find(key_value_parameter_t key)
+    iterator find(value_type& key)
     {
-      iterator itr = lower_bound(key);
+      iterator itr = std::lower_bound(begin(), end(), key, TKeyCompare());
 
       if (itr != end())
       {
-        if (!key_compare()(itr->first, key) && !key_compare()(key, itr->first))
+        if (!key_compare()(*itr, key) && !key_compare()(key, *itr))
         {
           return itr;
         }
@@ -564,13 +594,13 @@ std::pair<iterator, bool> result(end(), false);
     ///\param key The key to search for.
     ///\return An iterator pointing to the element or end() if not found.
     //*********************************************************************
-    const_iterator find(key_value_parameter_t key) const
+    const_iterator find(value_type& key) const
     {
-      const_iterator itr = lower_bound(key);
+      const_iterator itr = std::lower_bound(begin(), end(), key, TKeyCompare());
 
       if (itr != end())
       {
-        if (!key_compare()(itr->first, key) && !key_compare()(key, itr->first))
+        if (!key_compare()(*itr, key) && !key_compare()(key, *itr))
         {
           return itr;
         }
@@ -588,11 +618,9 @@ std::pair<iterator, bool> result(end(), false);
     ///\param key The key to search for.
     ///\return 1 if the key exists, otherwise 0.
     //*********************************************************************
-    size_t count(key_value_parameter_t key) const
+    size_t count(value_type& key) const
     {
-      std::pair<const_iterator, const_iterator> range = equal_range(key);
-
-    return std::distance(range.first, range.second);
+      return (find(key) == end()) ? 0 : 1;
     }
 
     //*********************************************************************
@@ -600,9 +628,9 @@ std::pair<iterator, bool> result(end(), false);
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    iterator lower_bound(key_value_parameter_t key)
+    iterator lower_bound(value_type& key)
     {
-      return std::lower_bound(begin(), end(), key, compare());
+      return std::lower_bound(begin(), end(), key, TKeyCompare());
     }
 
     //*********************************************************************
@@ -610,9 +638,9 @@ std::pair<iterator, bool> result(end(), false);
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    const_iterator lower_bound(key_value_parameter_t key) const
+    const_iterator lower_bound(value_type& key) const
     {
-      return std::lower_bound(cbegin(), cend(), key, compare());
+      return std::lower_bound(cbegin(), cend(), key, TKeyCompare());
     }
 
     //*********************************************************************
@@ -620,9 +648,9 @@ std::pair<iterator, bool> result(end(), false);
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    iterator upper_bound(key_value_parameter_t key)
+    iterator upper_bound(value_type& key)
     {
-      return std::upper_bound(begin(), end(), key, compare());
+      return std::upper_bound(begin(), end(), key, TKeyCompare());
     }
 
     //*********************************************************************
@@ -630,9 +658,9 @@ std::pair<iterator, bool> result(end(), false);
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    const_iterator upper_bound(key_value_parameter_t key) const
+    const_iterator upper_bound(value_type& key) const
     {
-      return std::upper_bound(begin(), end(), key, compare());
+      return std::upper_bound(cbegin(), cend(), key, TKeyCompare());
     }
 
     //*********************************************************************
@@ -640,11 +668,9 @@ std::pair<iterator, bool> result(end(), false);
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    std::pair<iterator, iterator> equal_range(key_value_parameter_t key)
+    std::pair<iterator, iterator> equal_range(value_type& key)
     {
-      iterator i_lower = std::lower_bound(begin(), end(), key, compare());
-
-      return std::make_pair(i_lower, std::upper_bound(i_lower, end(), key, compare()));
+      return std::equal_range(begin(), end(), key, TKeyCompare());
     }
 
     //*********************************************************************
@@ -652,29 +678,14 @@ std::pair<iterator, bool> result(end(), false);
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    std::pair<const_iterator, const_iterator> equal_range(key_value_parameter_t key) const
+    std::pair<const_iterator, const_iterator> equal_range(value_type& key) const
     {
-      const_iterator i_lower = std::lower_bound(cbegin(), cend(), key, compare());
-
-      return std::make_pair(i_lower, std::upper_bound(i_lower, cend(), key, compare()));
+      return std::upper_bound(cbegin(), cend(), key, TKeyCompare());
     }
 
     //*************************************************************************
-    /// Assignment operator.
-    //*************************************************************************
-    iflat_multimap& operator = (const iflat_multimap& rhs)
-    {
-      if (&rhs != this)
-      {
-        assign(rhs.cbegin(), rhs.cend());
-      }
-
-      return *this;
-    }
-
-    //*************************************************************************
-    /// Gets the current size of the flat_multiset.
-    ///\return The current size of the flat_multiset.
+    /// Gets the current size of the intrusive_flat_set.
+    ///\return The current size of the intrusive_flat_set.
     //*************************************************************************
     size_type size() const
     {
@@ -682,7 +693,7 @@ std::pair<iterator, bool> result(end(), false);
     }
 
     //*************************************************************************
-    /// Checks the 'empty' state of the flat_multiset.
+    /// Checks the 'empty' state of the intrusive_flat_set.
     ///\return <b>true</b> if empty.
     //*************************************************************************
     bool empty() const
@@ -691,7 +702,7 @@ std::pair<iterator, bool> result(end(), false);
     }
 
     //*************************************************************************
-    /// Checks the 'full' state of the flat_multiset.
+    /// Checks the 'full' state of the intrusive_flat_set.
     ///\return <b>true</b> if full.
     //*************************************************************************
     bool full() const
@@ -700,8 +711,8 @@ std::pair<iterator, bool> result(end(), false);
     }
 
     //*************************************************************************
-    /// Returns the capacity of the flat_multiset.
-    ///\return The capacity of the flat_multiset.
+    /// Returns the capacity of the intrusive_flat_set.
+    ///\return The capacity of the intrusive_flat_set.
     //*************************************************************************
     size_type capacity() const
     {
@@ -709,8 +720,8 @@ std::pair<iterator, bool> result(end(), false);
     }
 
     //*************************************************************************
-    /// Returns the maximum possible size of the flat_multiset.
-    ///\return The maximum size of the flat_multiset.
+    /// Returns the maximum possible size of the intrusive_flat_set.
+    ///\return The maximum size of the intrusive_flat_set.
     //*************************************************************************
     size_type max_size() const
     {
@@ -731,80 +742,103 @@ std::pair<iterator, bool> result(end(), false);
     //*********************************************************************
     /// Constructor.
     //*********************************************************************
-    iflat_multimap(lookup_t& lookup_, storage_t& storage_)
-      : lookup(lookup_),
-        storage(storage_)
+    iintrusive_flat_set(lookup_t& lookup_)
+      : lookup(lookup_)
     {
     }
 
   private:
 
-    //*********************************************************************
-    /// Inserts a value to the flat_multimap.
-    ///\param i_element The place to insert.
-    ///\param value     The value to insert.
-    //*********************************************************************
-    std::pair<iterator, bool> insert_at(iterator i_element, const value_type& value)
+    // Disable copy construction.
+    iintrusive_flat_set(const iintrusive_flat_set&);
+    iintrusive_flat_set& operator =(const iintrusive_flat_set&);
+
+    lookup_t& lookup;
+  };
+
+  //***************************************************************************
+  /// An intrusive flat set
+  ///\ingroup intrusive_flat_set
+  //***************************************************************************
+  template <typename TKey, const size_t MAX_SIZE_, typename TKeyCompare = std::less<TKey> >
+  class intrusive_flat_set : public iintrusive_flat_set<TKey, TKeyCompare>
+  {
+  public:
+
+    static const size_t MAX_SIZE = MAX_SIZE_;
+
+    //*************************************************************************
+    /// Constructor.
+    //*************************************************************************
+    intrusive_flat_set()
+      : iintrusive_flat_set<TKey, TKeyCompare>(lookup)
     {
-      std::pair<iterator, bool> result(end(), false);
-
-      if (i_element == end())
-      {
-        // At the end.
-        value_type* pvalue = storage.allocate<value_type>();
-        ::new (pvalue) value_type(value);
-        lookup.push_back(pvalue);
-        result.first = --end();
-        result.second = true;        
-      }
-      else
-      {
-        // Not at the end.
-        value_type* pvalue = storage.allocate<value_type>();
-        ::new (pvalue) value_type(value);
-        lookup.insert(i_element.ilookup, pvalue);
-        result.first = i_element;
-        result.second = true;
-      }
-
-      ++construct_count;
-
-      return result;
     }
 
-    // Disable copy construction.
-    iflat_multimap(const iflat_multimap&);
+    //*************************************************************************
+    /// Copy constructor.
+    //*************************************************************************
+    intrusive_flat_set(const intrusive_flat_set& other)
+      : iintrusive_flat_set<TKey, TKeyCompare>(lookup)
+    {
+      iintrusive_flat_set<TKey, TKeyCompare>::assign(other.cbegin(), other.cend());
+    }
 
-    lookup_t&  lookup;
-    storage_t& storage;
+    //*************************************************************************
+    /// Constructor, from an iterator range.
+    ///\tparam TIterator The iterator type.
+    ///\param first The iterator to the first element.
+    ///\param last  The iterator to the last element + 1.
+    //*************************************************************************
+    template <typename TIterator>
+    intrusive_flat_set(TIterator first, TIterator last)
+      : iintrusive_flat_set<TKey, TKeyCompare>(lookup)
+    {
+      iintrusive_flat_set<TKey, TKeyCompare>::assign(first, last);
+    }
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~intrusive_flat_set()
+    {
+      iintrusive_flat_set<TKey, TKeyCompare>::clear();
+    }
+
+  private:
+
+    typedef TKey value_type;
+
+    // The vector that stores pointers to the nodes.
+    etl::vector<value_type*, MAX_SIZE> lookup;
   };
 
   //***************************************************************************
   /// Equal operator.
-  ///\param lhs Reference to the first flat_multimap.
-  ///\param rhs Reference to the second flat_multimap.
+  ///\param lhs Reference to the first intrusive_flat_set.
+  ///\param rhs Reference to the second intrusive_flat_set.
   ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
-  ///\ingroup flat_multimap
+  ///\ingroup intrusive_flat_set
   //***************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare>
-  bool operator ==(const etl::iflat_multimap<TKey, TMapped, TKeyCompare>& lhs, const etl::iflat_multimap<TKey, TMapped, TKeyCompare>& rhs)
+  template <typename T, typename TKeyCompare>
+  bool operator ==(const etl::iintrusive_flat_set<T, TKeyCompare>& lhs, const etl::iintrusive_flat_set<T, TKeyCompare>& rhs)
   {
     return (lhs.size() == rhs.size()) && std::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //***************************************************************************
   /// Not equal operator.
-  ///\param lhs Reference to the first flat_multimap.
-  ///\param rhs Reference to the second flat_multimap.
+  ///\param lhs Reference to the first intrusive_flat_set.
+  ///\param rhs Reference to the second intrusive_flat_set.
   ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
-  ///\ingroup flat_multimap
+  ///\ingroup intrusive_flat_set
   //***************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare>
-  bool operator !=(const etl::iflat_multimap<TKey, TMapped, TKeyCompare>& lhs, const etl::iflat_multimap<TKey, TMapped, TKeyCompare>& rhs)
+  template <typename T, typename TKeyCompare>
+  bool operator !=(const etl::iintrusive_flat_set<T, TKeyCompare>& lhs, const etl::iintrusive_flat_set<T, TKeyCompare>& rhs)
   {
     return !(lhs == rhs);
   }
 }
 
-#undef __ETL_IN_IFLAT_MULTIMAP_H__
+#undef ETL_FILE
 #endif

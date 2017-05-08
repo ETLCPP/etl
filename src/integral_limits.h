@@ -97,7 +97,7 @@ namespace etl
   //***************************************************************************
   template <>
   struct integral_limits<char>
-  {  
+  {
     static const char min       = (etl::is_signed<char>::value) ? SCHAR_MIN : 0;
     static const char max       = (etl::is_signed<char>::value) ? SCHAR_MAX : UCHAR_MAX;
     static const int bits       = CHAR_BIT;
@@ -175,6 +175,18 @@ namespace etl
     static const int bits          = CHAR_BIT * (sizeof(unsigned long) / sizeof(char));
     static const bool is_signed    = etl::is_signed<unsigned long>::value;
   };
+
+#ifndef LLONG_MAX
+#define LLONG_MAX	9223372036854775807LL
+#endif
+
+#ifndef LLONG_MIN
+#define LLONG_MIN	(-LLONG_MAX - 1LL)
+#endif
+
+#ifndef ULLONG_MAX
+#define ULLONG_MAX 18446744073709551615ULL
+#endif
 
   //***************************************************************************
   ///\ingroup integral_limits
