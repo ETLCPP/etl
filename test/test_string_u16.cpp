@@ -26,13 +26,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 
 #include <string>
 #include <array>
 #include <algorithm>
 
-#include "../src/u16string.h"
+#include "u16string.h"
 
 #undef min
 

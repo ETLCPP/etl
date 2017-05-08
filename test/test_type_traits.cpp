@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 
 #if defined(ETL_COMPILER_GCC)
 namespace std
@@ -38,7 +38,7 @@ namespace std
 }
 #endif
 
-#include "../src/type_traits.h"
+#include "type_traits.h"
 #include <type_traits>
 
 // A class to test non-fundamental types.

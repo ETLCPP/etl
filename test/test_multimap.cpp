@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 
 #include <map>
 #include <array>
@@ -35,7 +35,7 @@ SOFTWARE.
 #include <iterator>
 #include <string>
 
-#include "../src/multimap.h"
+#include "multimap.h"
 
 static const size_t SIZE = 10;
 

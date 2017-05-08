@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 
 #include <set>
 #include <array>
@@ -38,7 +38,7 @@ SOFTWARE.
 
 #include "data.h"
 
-#include "../src/intrusive_flat_set.h"
+#include "intrusive_flat_set.h"
 
 namespace
 {
@@ -335,9 +335,6 @@ namespace
     {
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
       DataNDC data(initial_data.begin(), initial_data.end());
-
-      Compare_DataNDC::iterator i_compare = compare_data.begin();
-      DataNDC::iterator i_data = data.begin();
 
       size_t count_compare = compare_data.erase(N5);
       size_t count         = data.erase(N5);

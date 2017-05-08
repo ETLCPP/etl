@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 #include "ExtraCheckMacros.h"
 
 #include "data.h"
@@ -34,7 +34,7 @@ SOFTWARE.
 #include <set>
 #include <vector>
 
-#include "../src/pool.h"
+#include "pool.h"
 
 #if defined(ETL_COMPILER_GCC)
   #pragma GCC diagnostic push

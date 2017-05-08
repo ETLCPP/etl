@@ -278,11 +278,6 @@ namespace etl
         return temp;
       }
 
-      reference operator *()
-      {
-        return *(*ilookup);
-      }
-
       const_reference operator *() const
       {
         return *(*ilookup);
@@ -657,7 +652,7 @@ namespace etl
     {
       return std::lower_bound(cbegin(), cend(), key, TKeyCompare());
     }
-    
+
     //*********************************************************************
     /// Finds the upper bound of a key
     ///\param key The key to search for.
@@ -823,7 +818,7 @@ namespace etl
   private:
 
     typedef TKey value_type;
-    
+
     // The vector that stores pointers to the nodes.
     etl::vector<value_type*, MAX_SIZE> lookup;
   };

@@ -26,53 +26,58 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 
-#include "../src/iterator.h"
+#include "iterator.h"
 
-#include <iterator>
+//#include <iterator>
 
-struct input : public std::iterator<std::input_iterator_tag, int>
+namespace
 {
+  struct input : public std::iterator<std::input_iterator_tag, int>
+  {
 
-};
+  };
 
-struct output : public std::iterator<std::output_iterator_tag, int>
-{
+  struct output : public std::iterator<std::output_iterator_tag, int>
+  {
 
-};
+  };
 
-struct forward : public std::iterator<std::forward_iterator_tag, int>
-{
+  struct forward : public std::iterator<std::forward_iterator_tag, int>
+  {
 
-};
+  };
 
-struct bidirectional : public std::iterator<std::bidirectional_iterator_tag, int>
-{
+  struct bidirectional : public std::iterator<std::bidirectional_iterator_tag, int>
+  {
 
-};
+  };
 
-struct random : public std::iterator<std::random_access_iterator_tag, int>
-{
+  struct random : public std::iterator<std::random_access_iterator_tag, int>
+  {
 
-};
+  };
 
-typedef int* pointer;
-typedef const int* const_pointer;
+  typedef int* pointer;
+  typedef const int* const_pointer;
+}
 
 namespace
 {
   SUITE(test_iterator)
   {
+    // NOTE '!!' is required to keep GCC happy.
+
     TEST(test_input)
     {
-      CHECK(etl::is_input_iterator<input>::value);
+      CHECK(!!etl::is_input_iterator<input>::value);
       CHECK(!etl::is_output_iterator<input>::value);
       CHECK(!etl::is_forward_iterator<input>::value);
       CHECK(!etl::is_bidirectional_iterator<input>::value);
       CHECK(!etl::is_random_iterator<input>::value);
 
-      CHECK(etl::is_input_iterator_concept<input>::value);
+      CHECK(!!etl::is_input_iterator_concept<input>::value);
       CHECK(!etl::is_output_iterator_concept<input>::value);
       CHECK(!etl::is_forward_iterator_concept<input>::value);
       CHECK(!etl::is_bidirectional_iterator_concept<input>::value);
@@ -82,13 +87,13 @@ namespace
     TEST(test_output)
     {
       CHECK(!etl::is_input_iterator<output>::value);
-      CHECK(etl::is_output_iterator<output>::value);
+      CHECK(!!etl::is_output_iterator<output>::value);
       CHECK(!etl::is_forward_iterator<output>::value);
       CHECK(!etl::is_bidirectional_iterator<output>::value);
       CHECK(!etl::is_random_iterator<output>::value);
 
       CHECK(!etl::is_input_iterator_concept<output>::value);
-      CHECK(etl::is_output_iterator_concept<output>::value);
+      CHECK(etl::is_output_iterator_concept<output>::value == true);
       CHECK(!etl::is_forward_iterator_concept<output>::value);
       CHECK(!etl::is_bidirectional_iterator_concept<output>::value);
       CHECK(!etl::is_random_iterator_concept<output>::value);
@@ -98,13 +103,13 @@ namespace
     {
       CHECK(!etl::is_input_iterator<forward>::value);
       CHECK(!etl::is_output_iterator<forward>::value);
-      CHECK(etl::is_forward_iterator<forward>::value);
+      CHECK(!!etl::is_forward_iterator<forward>::value);
       CHECK(!etl::is_bidirectional_iterator<forward>::value);
       CHECK(!etl::is_random_iterator<forward>::value);
 
-      CHECK(etl::is_input_iterator_concept<forward>::value);
-      CHECK(etl::is_output_iterator_concept<forward>::value);
-      CHECK(etl::is_forward_iterator_concept<forward>::value);
+      CHECK(!!etl::is_input_iterator_concept<forward>::value);
+      CHECK(!!etl::is_output_iterator_concept<forward>::value);
+      CHECK(!!etl::is_forward_iterator_concept<forward>::value);
       CHECK(!etl::is_bidirectional_iterator_concept<forward>::value);
       CHECK(!etl::is_random_iterator_concept<forward>::value);
     }
@@ -114,13 +119,13 @@ namespace
       CHECK(!etl::is_input_iterator<bidirectional>::value);
       CHECK(!etl::is_output_iterator<bidirectional>::value);
       CHECK(!etl::is_forward_iterator<bidirectional>::value);
-      CHECK(etl::is_bidirectional_iterator<bidirectional>::value);
+      CHECK(!!etl::is_bidirectional_iterator<bidirectional>::value);
       CHECK(!etl::is_random_iterator<bidirectional>::value);
 
-      CHECK(etl::is_input_iterator_concept<bidirectional>::value);
-      CHECK(etl::is_output_iterator_concept<bidirectional>::value);
-      CHECK(etl::is_forward_iterator_concept<bidirectional>::value);
-      CHECK(etl::is_bidirectional_iterator_concept<bidirectional>::value);
+      CHECK(!!etl::is_input_iterator_concept<bidirectional>::value);
+      CHECK(!!etl::is_output_iterator_concept<bidirectional>::value);
+      CHECK(!!etl::is_forward_iterator_concept<bidirectional>::value);
+      CHECK(!!etl::is_bidirectional_iterator_concept<bidirectional>::value);
       CHECK(!etl::is_random_iterator_concept<bidirectional>::value);
     }
 
@@ -130,13 +135,13 @@ namespace
       CHECK(!etl::is_output_iterator<random>::value);
       CHECK(!etl::is_forward_iterator<random>::value);
       CHECK(!etl::is_bidirectional_iterator<random>::value);
-      CHECK(etl::is_random_iterator<random>::value);
+      CHECK(!!etl::is_random_iterator<random>::value);
 
-      CHECK(etl::is_input_iterator_concept<random>::value);
-      CHECK(etl::is_output_iterator_concept<random>::value);
-      CHECK(etl::is_forward_iterator_concept<random>::value);
-      CHECK(etl::is_bidirectional_iterator_concept<random>::value);
-      CHECK(etl::is_random_iterator_concept<random>::value);
+      CHECK(!!etl::is_input_iterator_concept<random>::value);
+      CHECK(!!etl::is_output_iterator_concept<random>::value);
+      CHECK(!!etl::is_forward_iterator_concept<random>::value);
+      CHECK(!!etl::is_bidirectional_iterator_concept<random>::value);
+      CHECK(!!etl::is_random_iterator_concept<random>::value);
     }
 
     TEST(test_pointer)
@@ -145,13 +150,13 @@ namespace
       CHECK(!etl::is_output_iterator<pointer>::value);
       CHECK(!etl::is_forward_iterator<pointer>::value);
       CHECK(!etl::is_bidirectional_iterator<pointer>::value);
-      CHECK(etl::is_random_iterator<pointer>::value);
+      CHECK(!!etl::is_random_iterator<pointer>::value);
 
-      CHECK(etl::is_input_iterator_concept<pointer>::value);
-      CHECK(etl::is_output_iterator_concept<pointer>::value);
-      CHECK(etl::is_forward_iterator_concept<pointer>::value);
-      CHECK(etl::is_bidirectional_iterator_concept<pointer>::value);
-      CHECK(etl::is_random_iterator_concept<pointer>::value);
+      CHECK(!!etl::is_input_iterator_concept<pointer>::value);
+      CHECK(!!etl::is_output_iterator_concept<pointer>::value);
+      CHECK(!!etl::is_forward_iterator_concept<pointer>::value);
+      CHECK(!!etl::is_bidirectional_iterator_concept<pointer>::value);
+      CHECK(!!etl::is_random_iterator_concept<pointer>::value);
     }
 
     TEST(test_const_pointer)
@@ -160,13 +165,13 @@ namespace
       CHECK(!etl::is_output_iterator<const_pointer>::value);
       CHECK(!etl::is_forward_iterator<const_pointer>::value);
       CHECK(!etl::is_bidirectional_iterator<const_pointer>::value);
-      CHECK(etl::is_random_iterator<const_pointer>::value);
+      CHECK(!!etl::is_random_iterator<const_pointer>::value);
 
-      CHECK(etl::is_input_iterator_concept<const_pointer>::value);
-      CHECK(etl::is_output_iterator_concept<const_pointer>::value);
-      CHECK(etl::is_forward_iterator_concept<const_pointer>::value);
-      CHECK(etl::is_bidirectional_iterator_concept<const_pointer>::value);
-      CHECK(etl::is_random_iterator_concept<const_pointer>::value);
+      CHECK(!!etl::is_input_iterator_concept<const_pointer>::value);
+      CHECK(!!etl::is_output_iterator_concept<const_pointer>::value);
+      CHECK(!!etl::is_forward_iterator_concept<const_pointer>::value);
+      CHECK(!!etl::is_bidirectional_iterator_concept<const_pointer>::value);
+      CHECK(!!etl::is_random_iterator_concept<const_pointer>::value);
     }
   };
 }

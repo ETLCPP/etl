@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 
 #include <map>
 #include <array>
@@ -38,7 +38,7 @@ SOFTWARE.
 
 #include "data.h"
 
-#include "../src/intrusive_flat_multimap.h"
+#include "intrusive_flat_multimap.h"
 
 namespace
 {
@@ -103,20 +103,20 @@ namespace
   }
 
   //*************************************************************************
-  std::ostream& operator <<(std::ostream& os, const DataDC::iterator& itr)
-  {
-    os << itr->first;
-
-    return os;
-  }
+//  std::ostream& operator <<(std::ostream& os, const DataDC::iterator& itr)
+//  {
+//    os << itr->first
+//
+//    return os;
+//  }
 
   //*************************************************************************
-  std::ostream& operator <<(std::ostream& os, const DataDC::const_iterator& itr)
-  {
-    os << itr->first;
-
-    return os;
-  }
+//  std::ostream& operator <<(std::ostream& os, const DataDC::const_iterator& itr)
+//  {
+//    os << itr->first;
+//
+//    return os;
+//  }
 
   //*************************************************************************
   std::ostream& operator <<(std::ostream& os, const DataNDC::iterator& itr)
@@ -375,9 +375,6 @@ namespace
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      Compare_DataNDC::iterator i_compare = compare_data.begin();
-      DataNDC::iterator i_data = data.begin();
-
       size_t count_compare = compare_data.erase(5);
       size_t count         = data.erase(5);
 
@@ -598,7 +595,7 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
 
       std::pair<DataNDC::iterator, DataNDC::iterator> i_data;
-      
+
       i_data = data.equal_range(-1);
       CHECK_EQUAL(data.begin(), i_data.first);
       CHECK_EQUAL(data.begin(), i_data.second);
@@ -642,7 +639,7 @@ namespace
 
       std::pair<Compare_DataNDC::iterator, Compare_DataNDC::iterator> compare_range;
       std::pair<DataNDC::iterator, DataNDC::iterator> test_range;
-    
+
       compare_range = compare_data.equal_range(0);
       test_range    = data.equal_range(0);
       CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));

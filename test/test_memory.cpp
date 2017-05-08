@@ -26,10 +26,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 
-#include "../src/memory.h"
-#include "../src/debug_count.h"
+#include "memory.h"
+#include "debug_count.h"
 
 #include <string>
 #include <array>

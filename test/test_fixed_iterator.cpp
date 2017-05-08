@@ -26,11 +26,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 #include <vector>
 #include <ostream>
 
-#include "../src/fixed_iterator.h"
+#include "fixed_iterator.h"
 
 template <typename TIterator>
 std::ostream& operator << (std::ostream& os, const etl::fixed_iterator<TIterator>& fi)

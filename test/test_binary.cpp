@@ -26,15 +26,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 
 #include <cstdint>
 #include <type_traits>
 
-#include "../src/binary.h"
-#include "../src/bitset.h"
-#include "../src/fnv_1.h"
-#include "../src/integral_limits.h"
+#include "binary.h"
+#include "bitset.h"
+#include "fnv_1.h"
+#include "integral_limits.h"
 
 #undef max
 

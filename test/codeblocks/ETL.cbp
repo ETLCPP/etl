@@ -13,12 +13,17 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-std=c++11" />
+					<Add option="-m32" />
 					<Add option="-g" />
 					<Add option="-D_DEBUG" />
 					<Add option="-DETL_THROW_EXCEPTIONS" />
 					<Add option="-DETL_VERBOSE_ERRORS" />
 					<Add option="-DETL_CHECK_PUSH_POP" />
+					<Add directory="../../src" />
 				</Compiler>
+				<Linker>
+					<Add option="-m32" />
+				</Linker>
 				<ExtraCommands>
 					<Add after="${TARGET_OUTPUT_DIR}${TARGET_OUTPUT_BASENAME}" />
 				</ExtraCommands>
@@ -51,7 +56,8 @@
 			<Add option="-DETL_VERBOSE_ERRORS" />
 			<Add option="-DETL_CHECK_PUSH_POP" />
 			<Add option="-D_DEBUG" />
-			<Add directory="../../../unittest-cpp" />
+			<Add directory="../../unittest-cpp/UnitTest++/" />
+			<Add directory="../../src" />
 		</Compiler>
 		<Unit filename="../../../unittest-cpp/UnitTest++/AssertException.cpp" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/AssertException.h" />
@@ -124,6 +130,7 @@
 		<Unit filename="../../src/binary.h" />
 		<Unit filename="../../src/bitset.h" />
 		<Unit filename="../../src/bloom_filter.h" />
+		<Unit filename="../../src/callback.h" />
 		<Unit filename="../../src/char_traits.h" />
 		<Unit filename="../../src/checksum.h" />
 		<Unit filename="../../src/container.h" />
@@ -143,7 +150,9 @@
 		<Unit filename="../../src/cyclic_hash.h" />
 		<Unit filename="../../src/cyclic_value.h" />
 		<Unit filename="../../src/debounce.h" />
+		<Unit filename="../../src/debug_count.h" />
 		<Unit filename="../../src/deque.h" />
+		<Unit filename="../../src/doxygen.h" />
 		<Unit filename="../../src/endian.h" />
 		<Unit filename="../../src/enum_type.h" />
 		<Unit filename="../../src/error_handler.cpp" />
@@ -162,43 +171,31 @@
 		<Unit filename="../../src/frame_check_sequence.h" />
 		<Unit filename="../../src/function.h" />
 		<Unit filename="../../src/functional.h" />
+		<Unit filename="../../src/functors.h" />
 		<Unit filename="../../src/hash.h" />
-		<Unit filename="../../src/ibitset.h" />
-		<Unit filename="../../src/ideque.h" />
-		<Unit filename="../../src/iflat_map.h" />
-		<Unit filename="../../src/iflat_multimap.h" />
-		<Unit filename="../../src/iflat_multiset.h" />
-		<Unit filename="../../src/iflat_set.h" />
-		<Unit filename="../../src/iforward_list.h" />
+		<Unit filename="../../src/icache.h" />
 		<Unit filename="../../src/ihash.h" />
-		<Unit filename="../../src/ilist.h" />
-		<Unit filename="../../src/imap.h" />
-		<Unit filename="../../src/imultimap.h" />
-		<Unit filename="../../src/imultiset.h" />
 		<Unit filename="../../src/instance_count.h" />
 		<Unit filename="../../src/integral_limits.h" />
+		<Unit filename="../../src/intrusive_flat_map.h" />
+		<Unit filename="../../src/intrusive_flat_multimap.h" />
+		<Unit filename="../../src/intrusive_flat_multiset.h" />
+		<Unit filename="../../src/intrusive_flat_set.h" />
 		<Unit filename="../../src/intrusive_forward_list.h" />
-		<Unit filename="../../src/intrusive_forward_list_link.h" />
 		<Unit filename="../../src/intrusive_links.h" />
 		<Unit filename="../../src/intrusive_list.h" />
 		<Unit filename="../../src/intrusive_queue.h" />
 		<Unit filename="../../src/intrusive_stack.h" />
 		<Unit filename="../../src/io_port.h" />
-		<Unit filename="../../src/ipool.h" />
-		<Unit filename="../../src/ipriority_queue.h" />
-		<Unit filename="../../src/iqueue.h" />
-		<Unit filename="../../src/iset.h" />
-		<Unit filename="../../src/istack.h" />
-		<Unit filename="../../src/iunordered_map.h" />
-		<Unit filename="../../src/iunordered_multimap.h" />
-		<Unit filename="../../src/iunordered_multiset.h" />
-		<Unit filename="../../src/iunordered_set.h" />
-		<Unit filename="../../src/ivector.h" />
+		<Unit filename="../../src/iterator.h" />
 		<Unit filename="../../src/jenkins.h" />
 		<Unit filename="../../src/largest.h" />
 		<Unit filename="../../src/list.h" />
 		<Unit filename="../../src/log.h" />
 		<Unit filename="../../src/map.h" />
+		<Unit filename="../../src/memory.h" />
+		<Unit filename="../../src/message_processor.h" />
+		<Unit filename="../../src/message_processor_generator.h" />
 		<Unit filename="../../src/multimap.h" />
 		<Unit filename="../../src/multiset.h" />
 		<Unit filename="../../src/murmur3.h" />
@@ -213,20 +210,19 @@
 		<Unit filename="../../src/pool.h" />
 		<Unit filename="../../src/power.h" />
 		<Unit filename="../../src/priority_queue.h" />
+		<Unit filename="../../src/private/ivectorpointer.h" />
 		<Unit filename="../../src/private/pvoidvector.cpp" />
+		<Unit filename="../../src/private/pvoidvector.h" />
+		<Unit filename="../../src/private/vector_base.h" />
 		<Unit filename="../../src/queue.h" />
 		<Unit filename="../../src/radix.h" />
+		<Unit filename="../../src/random.cpp" />
+		<Unit filename="../../src/random.h" />
+		<Unit filename="../../src/ratio.h" />
 		<Unit filename="../../src/set.h" />
 		<Unit filename="../../src/smallest.h" />
 		<Unit filename="../../src/stack.h" />
 		<Unit filename="../../src/static_assert.h" />
-		<Unit filename="../../src/string.h" />
-		<Unit filename="../../src/test1.h">
-			<Option target="Windows" />
-		</Unit>
-		<Unit filename="../../src/test2.h">
-			<Option target="Windows" />
-		</Unit>
 		<Unit filename="../../src/type_def.h" />
 		<Unit filename="../../src/type_traits.h" />
 		<Unit filename="../../src/u16string.h" />
@@ -235,6 +231,7 @@
 		<Unit filename="../../src/unordered_multimap.h" />
 		<Unit filename="../../src/unordered_multiset.h" />
 		<Unit filename="../../src/unordered_set.h" />
+		<Unit filename="../../src/user_type.h" />
 		<Unit filename="../../src/utility.h" />
 		<Unit filename="../../src/variant.h" />
 		<Unit filename="../../src/vector.h" />
@@ -274,17 +271,23 @@
 		<Unit filename="../test_hash.cpp" />
 		<Unit filename="../test_instance_count.cpp" />
 		<Unit filename="../test_integral_limits.cpp" />
+		<Unit filename="../test_intrusive_flat_map.cpp" />
+		<Unit filename="../test_intrusive_flat_multimap.cpp" />
+		<Unit filename="../test_intrusive_flat_multiset.cpp" />
+		<Unit filename="../test_intrusive_flat_set.cpp" />
 		<Unit filename="../test_intrusive_forward_list.cpp" />
 		<Unit filename="../test_intrusive_links.cpp" />
 		<Unit filename="../test_intrusive_list.cpp" />
 		<Unit filename="../test_intrusive_queue.cpp" />
 		<Unit filename="../test_intrusive_stack.cpp" />
 		<Unit filename="../test_io_port.cpp" />
+		<Unit filename="../test_iterator.cpp" />
 		<Unit filename="../test_jenkins.cpp" />
 		<Unit filename="../test_largest.cpp" />
 		<Unit filename="../test_list.cpp" />
 		<Unit filename="../test_map.cpp" />
 		<Unit filename="../test_maths.cpp" />
+		<Unit filename="../test_memory.cpp" />
 		<Unit filename="../test_multimap.cpp" />
 		<Unit filename="../test_multiset.cpp" />
 		<Unit filename="../test_murmur3.cpp" />
@@ -295,10 +298,12 @@
 		<Unit filename="../test_pool.cpp" />
 		<Unit filename="../test_priority_queue.cpp" />
 		<Unit filename="../test_queue.cpp" />
+		<Unit filename="../test_random.cpp" />
 		<Unit filename="../test_set.cpp" />
 		<Unit filename="../test_smallest.cpp" />
 		<Unit filename="../test_stack.cpp" />
 		<Unit filename="../test_string_char.cpp" />
+		<Unit filename="../test_string_char.cpp.bak" />
 		<Unit filename="../test_string_u16.cpp" />
 		<Unit filename="../test_string_u32.cpp" />
 		<Unit filename="../test_string_wchar_t.cpp" />
@@ -311,6 +316,7 @@
 		<Unit filename="../test_utility.cpp" />
 		<Unit filename="../test_variant.cpp" />
 		<Unit filename="../test_vector.cpp" />
+		<Unit filename="../test_vector_non_trivial.cpp" />
 		<Unit filename="../test_vector_pointer.cpp" />
 		<Unit filename="../test_visitor.cpp" />
 		<Unit filename="../test_xor_checksum.cpp" />

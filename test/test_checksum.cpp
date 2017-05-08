@@ -26,15 +26,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 
 #include <iterator>
 #include <string>
 #include <vector>
 #include <stdint.h>
 
-#include "../src/checksum.h"
-#include "../src/endian.h"
+#include "checksum.h"
+#include "endian.h"
 
 namespace
 {		

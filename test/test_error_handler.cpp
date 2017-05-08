@@ -26,15 +26,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 #if defined(ETL_PLATFORM_WINDOWS)
 #include <Windows.h>
 #endif
 #include <sstream>
 #include <string>
 
-#include "../src/error_handler.h"
-#include "../src/exception.h"
+#include "error_handler.h"
+#include "exception.h"
 
 bool error_received;
 

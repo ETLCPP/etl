@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 
 #include <map>
 #include <array>
@@ -39,7 +39,7 @@ SOFTWARE.
 
 #include "data.h"
 
-#include "../src/unordered_map.h"
+#include "unordered_map.h"
 
 namespace
 {

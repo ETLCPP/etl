@@ -82,7 +82,6 @@ namespace etl
   public:
 
     typedef std::pair<TKey, TMapped> value_type;
-    typedef size_t size_type;
 
   private:
 

@@ -26,12 +26,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 
-#include "../src/io_port.h"
+#include "io_port.h"
 
 #include <stdint.h>
 #include <array>
+#include <algorithm>
 
 #if defined(ETL_COMPILER_GCC)
   #pragma GCC diagnostic push
@@ -144,7 +145,7 @@ namespace
 
       // Read from RW IOP.
       etl::io_port_rw<uint8_t>::iterator itr_rw = iop_rw.get_iterator();
-      
+
       std::copy_n(itr_rw, result.size(), result.begin());
       compare.fill(0x12);
 

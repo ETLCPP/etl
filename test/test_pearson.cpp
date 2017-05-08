@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 
 #include <iterator>
 #include <string>
@@ -34,8 +34,8 @@ SOFTWARE.
 #include <iomanip>
 #include <stdint.h>
 
-#include "../src/pearson.h"
-#include "../src/endian.h"
+#include "pearson.h"
+#include "endian.h"
 
 const size_t HASH_SIZE = 8;
 typedef etl::pearson<HASH_SIZE>::value_type hash_t;

@@ -26,10 +26,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 
-#include "../src/intrusive_stack.h"
-#include "../src/intrusive_links.h"
+#include "intrusive_stack.h"
+#include "intrusive_links.h"
 
 #include <vector>
 

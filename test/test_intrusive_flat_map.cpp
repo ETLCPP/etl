@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 
 #include <map>
 #include <array>
@@ -40,7 +40,7 @@ SOFTWARE.
 
 #include "data.h"
 
-#include "../src/intrusive_flat_map.h"
+#include "intrusive_flat_map.h"
 
 namespace
 {
@@ -79,20 +79,20 @@ namespace
   }
 
   //*************************************************************************
-  std::ostream& operator <<(std::ostream& os, const DataDC::iterator& itr)
-  {
-    os << itr->first;
+//  std::ostream& operator <<(std::ostream& os, const DataDC::iterator& itr)
+//  {
+//    os << itr->first;
 
-    return os;
-  }
+//    return os;
+//  }
 
   //*************************************************************************
-  std::ostream& operator <<(std::ostream& os, const DataDC::const_iterator& itr)
-  {
-    os << itr->first;
+//  std::ostream& operator <<(std::ostream& os, const DataDC::const_iterator& itr)
+//  {
+//    os << itr->first;
 
-    return os;
-  }
+//    return os;
+//  }
 
   //*************************************************************************
   std::ostream& operator <<(std::ostream& os, const DataNDC::iterator& itr)
@@ -407,10 +407,10 @@ namespace
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),
                                  compare_data.begin());
-      
+
       CHECK(isEqual);
       CHECK(result.second);
-      CHECK(*result.first == std::make_pair(0, N0));
+      CHECK(*result.first == item);
 
       DataNDC::value_type item2(2, N2);
       result = data.insert(item2);
@@ -422,7 +422,7 @@ namespace
 
       CHECK(isEqual);
       CHECK(result.second);
-      CHECK(*result.first == std::make_pair(2, N2));
+      CHECK(*result.first == item2);
 
       DataNDC::value_type item1(1, N1);
       result = data.insert(item1);
@@ -479,24 +479,27 @@ namespace
       Compare_DataNDC compare_data;
       DataNDC data;
 
-      data.insert(std::make_pair(0, N0));
-      compare_data.insert(std::make_pair(0, N0));
+      DataNDC::value_type item0(0, N0);
+      data.insert(item0);
+      compare_data.insert(item0);
 
-      data.insert(std::make_pair(1, N1));
-      compare_data.insert(std::make_pair(1, N1));
+      DataNDC::value_type item1(1, N1);
+      data.insert(item1);
+      compare_data.insert(item1);
 
-      data.insert(std::make_pair(2, N2));
-      compare_data.insert(std::make_pair(2, N2));
+      DataNDC::value_type item2(2, N2);
+      data.insert(item2);
+      compare_data.insert(item2);
 
       // Do it again.
-      data.insert(std::make_pair(0, N0));
-      compare_data.insert(std::make_pair(0, N0));
+      data.insert(item0);
+      compare_data.insert(item0);
 
-      data.insert(std::make_pair(1, N1));
-      compare_data.insert(std::make_pair(1, N1));
+      data.insert(item1);
+      compare_data.insert(item1);
 
-      data.insert(std::make_pair(2, N2));
-      compare_data.insert(std::make_pair(2, N2));
+      data.insert(item2);
+      compare_data.insert(item2);
 
       CHECK_EQUAL(compare_data.size(), data.size());
 
@@ -510,7 +513,8 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.insert(std::make_pair(10, N10)), etl::intrusive_flat_map_full);
+      DataNDC::value_type item10(10, N10);
+      CHECK_THROW(data.insert(item10), etl::intrusive_flat_map_full);
     }
 
     //*************************************************************************
@@ -542,9 +546,6 @@ namespace
     {
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
       DataNDC data(initial_data.begin(), initial_data.end());
-
-      Compare_DataNDC::iterator i_compare = compare_data.begin();
-      DataNDC::iterator i_data = data.begin();
 
       size_t count_compare = compare_data.erase(5);
       size_t count         = data.erase(5);
@@ -763,7 +764,7 @@ namespace
       std::pair<Compare_DataNDC::iterator, Compare_DataNDC::iterator> i_compare;
 
       std::pair<DataNDC::iterator, DataNDC::iterator> i_data;
-      
+
       i_data = data.equal_range(-1);
       CHECK_EQUAL(data.begin(), i_data.first);
       CHECK_EQUAL(data.begin(), i_data.second);

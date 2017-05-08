@@ -26,12 +26,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <UnitTest++/UnitTest++.h>
+#include "UnitTest++.h"
 
-#include "../src/log.h"
-#include "../src/power.h"
-#include "../src/fibonacci.h"
-#include "../src/factorial.h"
+#include "log.h"
+#include "power.h"
+#include "fibonacci.h"
+#include "factorial.h"
 
 namespace
 {
