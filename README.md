@@ -1,6 +1,5 @@
 Embedded Template Library (ETL)
 -------------------------
-[![Build status](https://ci.appveyor.com/api/projects/status/b7jgecv7unqjw4u0/branch/master?svg=true)](https://ci.appveyor.com/project/jwellbelove/etl/branch/master)
 
 **Motivation**
 
