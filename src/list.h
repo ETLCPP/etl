@@ -1088,9 +1088,6 @@ namespace etl
             ++this_begin;
           }
 
-          bool t = this_begin != this_end;
-          bool o = other_begin != other_end;
-
           // Insert.
           if (this_begin != this_end)
           {
@@ -1098,8 +1095,6 @@ namespace etl
             {
               insert(this_begin, *other_begin);
               ++other_begin;
-
-              o = other_begin != other_end;
             }
           }
         }
