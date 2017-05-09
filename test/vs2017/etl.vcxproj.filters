@@ -423,23 +423,23 @@
     <ClInclude Include="..\..\src\memory.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\intrusive_flat_map.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\intrusive_flat_multimap.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\intrusive_flat_multiset.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\intrusive_flat_set.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\message_processor.h">
       <Filter>ETL\Patterns</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\message_processor_generator.h">
       <Filter>ETL\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\reference_flat_map.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\reference_flat_multimap.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\reference_flat_multiset.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\reference_flat_set.h">
+      <Filter>ETL\Containers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -752,16 +752,16 @@
     <ClCompile Include="..\test_vector_non_trivial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_intrusive_flat_map.cpp">
+    <ClCompile Include="..\test_reference_flat_map.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_intrusive_flat_multimap.cpp">
+    <ClCompile Include="..\test_reference_flat_multimap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_intrusive_flat_set.cpp">
+    <ClCompile Include="..\test_reference_flat_multiset.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_intrusive_flat_multiset.cpp">
+    <ClCompile Include="..\test_reference_flat_set.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

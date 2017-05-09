@@ -219,6 +219,10 @@
 		<Unit filename="../../src/random.cpp" />
 		<Unit filename="../../src/random.h" />
 		<Unit filename="../../src/ratio.h" />
+		<Unit filename="../../src/reference_flat_map.h" />
+		<Unit filename="../../src/reference_flat_multimap.h" />
+		<Unit filename="../../src/reference_flat_multiset.h" />
+		<Unit filename="../../src/reference_flat_set.h" />
 		<Unit filename="../../src/set.h" />
 		<Unit filename="../../src/smallest.h" />
 		<Unit filename="../../src/stack.h" />
@@ -271,10 +275,6 @@
 		<Unit filename="../test_hash.cpp" />
 		<Unit filename="../test_instance_count.cpp" />
 		<Unit filename="../test_integral_limits.cpp" />
-		<Unit filename="../test_intrusive_flat_map.cpp" />
-		<Unit filename="../test_intrusive_flat_multimap.cpp" />
-		<Unit filename="../test_intrusive_flat_multiset.cpp" />
-		<Unit filename="../test_intrusive_flat_set.cpp" />
 		<Unit filename="../test_intrusive_forward_list.cpp" />
 		<Unit filename="../test_intrusive_links.cpp" />
 		<Unit filename="../test_intrusive_list.cpp" />
@@ -299,6 +299,10 @@
 		<Unit filename="../test_priority_queue.cpp" />
 		<Unit filename="../test_queue.cpp" />
 		<Unit filename="../test_random.cpp" />
+		<Unit filename="../test_reference_flat_map.cpp" />
+		<Unit filename="../test_reference_flat_multimap.cpp" />
+		<Unit filename="../test_reference_flat_multiset.cpp" />
+		<Unit filename="../test_reference_flat_set.cpp" />
 		<Unit filename="../test_set.cpp" />
 		<Unit filename="../test_smallest.cpp" />
 		<Unit filename="../test_stack.cpp" />

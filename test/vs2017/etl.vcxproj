@@ -197,10 +197,6 @@
     <ClInclude Include="..\..\src\ihash.h" />
     <ClInclude Include="..\..\src\instance_count.h" />
     <ClInclude Include="..\..\src\integral_limits.h" />
-    <ClInclude Include="..\..\src\intrusive_flat_map.h" />
-    <ClInclude Include="..\..\src\intrusive_flat_multimap.h" />
-    <ClInclude Include="..\..\src\intrusive_flat_multiset.h" />
-    <ClInclude Include="..\..\src\intrusive_flat_set.h" />
     <ClInclude Include="..\..\src\intrusive_forward_list.h" />
     <ClInclude Include="..\..\src\intrusive_links.h" />
     <ClInclude Include="..\..\src\intrusive_list.h" />
@@ -238,6 +234,10 @@
     <ClInclude Include="..\..\src\queue.h" />
     <ClInclude Include="..\..\src\radix.h" />
     <ClInclude Include="..\..\src\random.h" />
+    <ClInclude Include="..\..\src\reference_flat_map.h" />
+    <ClInclude Include="..\..\src\reference_flat_multimap.h" />
+    <ClInclude Include="..\..\src\reference_flat_multiset.h" />
+    <ClInclude Include="..\..\src\reference_flat_set.h" />
     <ClInclude Include="..\..\src\rr_cache.h" />
     <ClInclude Include="..\..\src\set.h" />
     <ClInclude Include="..\..\src\smallest.h" />
@@ -336,12 +336,6 @@
     <ClCompile Include="..\test_hash.cpp" />
     <ClCompile Include="..\test_instance_count.cpp" />
     <ClCompile Include="..\test_integral_limits.cpp" />
-    <ClCompile Include="..\test_intrusive_flat_map.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\test_intrusive_flat_multimap.cpp" />
-    <ClCompile Include="..\test_intrusive_flat_multiset.cpp" />
-    <ClCompile Include="..\test_intrusive_flat_set.cpp" />
     <ClCompile Include="..\test_intrusive_forward_list.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
@@ -388,6 +382,10 @@
     <ClCompile Include="..\test_random.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\test_reference_flat_map.cpp" />
+    <ClCompile Include="..\test_reference_flat_multimap.cpp" />
+    <ClCompile Include="..\test_reference_flat_multiset.cpp" />
+    <ClCompile Include="..\test_reference_flat_set.cpp" />
     <ClCompile Include="..\test_set.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
