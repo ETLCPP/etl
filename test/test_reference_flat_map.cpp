@@ -40,7 +40,7 @@ SOFTWARE.
 
 #include "data.h"
 
-#include "intrusive_flat_map.h"
+#include "reference_flat_map.h"
 
 namespace
 {
@@ -52,10 +52,10 @@ namespace
   typedef std::pair<int, DC>  ElementDC;
   typedef std::pair<int, NDC> ElementNDC;
 
-  typedef etl::intrusive_flat_map<int, DC, SIZE>  DataDC;
-  typedef etl::intrusive_flat_map<int, NDC, SIZE> DataNDC;
-  typedef etl::iintrusive_flat_map<int, DC>       IDataDC;
-  typedef etl::iintrusive_flat_map<int, NDC>      IDataNDC;
+  typedef etl::reference_flat_map<int, DC, SIZE>  DataDC;
+  typedef etl::reference_flat_map<int, NDC, SIZE> DataNDC;
+  typedef etl::ireference_flat_map<int, DC>       IDataDC;
+  typedef etl::ireference_flat_map<int, NDC>      IDataNDC;
 
   typedef std::map<int, DC>  Compare_DataDC;
   typedef std::map<int, NDC> Compare_DataNDC;
@@ -344,7 +344,7 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.at(10), etl::intrusive_flat_map_out_of_bounds);
+      CHECK_THROW(data.at(10), etl::reference_flat_map_out_of_bounds);
     }
 
     //*************************************************************************
@@ -370,7 +370,7 @@ namespace
     {
       const DataNDC data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.at(10), etl::intrusive_flat_map_out_of_bounds);
+      CHECK_THROW(data.at(10), etl::reference_flat_map_out_of_bounds);
     }
 
 
@@ -514,7 +514,7 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
 
       DataNDC::value_type item10(10, N10);
-      CHECK_THROW(data.insert(item10), etl::intrusive_flat_map_full);
+      CHECK_THROW(data.insert(item10), etl::reference_flat_map_full);
     }
 
     //*************************************************************************
@@ -538,7 +538,7 @@ namespace
     {
       DataNDC data;
 
-      CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::intrusive_flat_map_full);
+      CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::reference_flat_map_full);
     }
 
     //*************************************************************************
