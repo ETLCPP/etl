@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_INTRUSIVE_FLAT_SET__
-#define __ETL_INTRUSIVE_FLAT_SET__
+#ifndef __ETL_REFERENCE_FLAT_MULTISET__
+#define __ETL_REFERENCE_FLAT_MULTISET__
 
 #include <iterator>
 #include <algorithm>
@@ -39,65 +39,65 @@ SOFTWARE.
 
 #include "platform.h"
 #include "type_traits.h"
+#include "vector.h"
 #include "pool.h"
 #include "error_handler.h"
 #include "exception.h"
-#include "vector.h"
 
 #undef ETL_FILE
-#define ETL_FILE "32"
+#define ETL_FILE "33"
 
 namespace etl
 {
   //***************************************************************************
-  ///\ingroup intrusive_flat_set
-  /// Exception base for intrusive_flat_sets
+  ///\ingroup reference_flat_multiset
+  /// Exception base for reference_flat_multisets
   //***************************************************************************
-  class intrusive_flat_set_exception : public exception
+  class reference_flat_multiset_exception : public exception
   {
   public:
 
-    intrusive_flat_set_exception(string_type what, string_type file_name, numeric_type line_number)
+    reference_flat_multiset_exception(string_type what, string_type file_name, numeric_type line_number)
       : exception(what, file_name, line_number)
     {
     }
   };
 
   //***************************************************************************
-  ///\ingroup intrusive_flat_set
+  ///\ingroup reference_flat_multiset
   /// Vector full exception.
   //***************************************************************************
-  class intrusive_flat_set_full : public intrusive_flat_set_exception
+  class reference_flat_multiset_full : public reference_flat_multiset_exception
   {
   public:
 
-    intrusive_flat_set_full(string_type file_name, numeric_type line_number)
-      : intrusive_flat_set_exception(ETL_ERROR_TEXT("intrusive_flat_set:full", ETL_FILE"A"), file_name, line_number)
+    reference_flat_multiset_full(string_type file_name, numeric_type line_number)
+      : reference_flat_multiset_exception(ETL_ERROR_TEXT("reference_flat_multiset:full", ETL_FILE"A"), file_name, line_number)
     {
     }
   };
 
   //***************************************************************************
-  ///\ingroup intrusive_flat_set
+  ///\ingroup reference_flat_multiset
   /// Vector iterator exception.
   //***************************************************************************
-  class intrusive_flat_set_iterator : public intrusive_flat_set_exception
+  class reference_flat_multiset_iterator : public reference_flat_multiset_exception
   {
   public:
 
-    intrusive_flat_set_iterator(string_type file_name, numeric_type line_number)
-      : intrusive_flat_set_exception(ETL_ERROR_TEXT("intrusive_flat_set:iterator", ETL_FILE"C"), file_name, line_number)
+    reference_flat_multiset_iterator(string_type file_name, numeric_type line_number)
+      : reference_flat_multiset_exception(ETL_ERROR_TEXT("reference_flat_multiset:iterator", ETL_FILE"C"), file_name, line_number)
     {
     }
   };
 
   //***************************************************************************
-  /// The base class for specifically sized intrusive_flat_sets.
-  /// Can be used as a reference type for all intrusive_flat_sets containing a specific type.
-  ///\ingroup intrusive_flat_set
+  /// The base class for specifically sized reference_flat_multisets.
+  /// Can be used as a reference type for all reference_flat_multisets containing a specific type.
+  ///\ingroup reference_flat_multiset
   //***************************************************************************
   template <typename T, typename TKeyCompare = std::less<T> >
-  class iintrusive_flat_set
+  class ireference_flat_multiset
   {
   public:
 
@@ -121,7 +121,7 @@ namespace etl
     {
     public:
 
-      friend class iintrusive_flat_set;
+      friend class ireference_flat_multiset;
 
       iterator()
       {
@@ -219,7 +219,7 @@ namespace etl
     {
     public:
 
-      friend class iintrusive_flat_set;
+      friend class ireference_flat_multiset;
 
       const_iterator()
       {
@@ -308,10 +308,6 @@ namespace etl
       typename lookup_t::const_iterator ilookup;
     };
 
-  protected:
-
-    typedef typename etl::parameter_type<T>::type parameter_t;
-
   public:
 
     typedef std::reverse_iterator<iterator>       reverse_iterator;
@@ -319,8 +315,8 @@ namespace etl
     typedef typename std::iterator_traits<iterator>::difference_type difference_type;
 
     //*********************************************************************
-    /// Returns an iterator to the beginning of the intrusive_flat_set.
-    ///\return An iterator to the beginning of the intrusive_flat_set.
+    /// Returns an iterator to the beginning of the reference_flat_multiset.
+    ///\return An iterator to the beginning of the reference_flat_multiset.
     //*********************************************************************
     iterator begin()
     {
@@ -328,8 +324,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const_iterator to the beginning of the intrusive_flat_set.
-    ///\return A const iterator to the beginning of the intrusive_flat_set.
+    /// Returns a const_iterator to the beginning of the reference_flat_multiset.
+    ///\return A const iterator to the beginning of the reference_flat_multiset.
     //*********************************************************************
     const_iterator begin() const
     {
@@ -337,8 +333,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns an iterator to the end of the intrusive_flat_set.
-    ///\return An iterator to the end of the intrusive_flat_set.
+    /// Returns an iterator to the end of the reference_flat_multiset.
+    ///\return An iterator to the end of the reference_flat_multiset.
     //*********************************************************************
     iterator end()
     {
@@ -346,8 +342,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const_iterator to the end of the intrusive_flat_set.
-    ///\return A const iterator to the end of the intrusive_flat_set.
+    /// Returns a const_iterator to the end of the reference_flat_multiset.
+    ///\return A const iterator to the end of the reference_flat_multiset.
     //*********************************************************************
     const_iterator end() const
     {
@@ -355,8 +351,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const_iterator to the beginning of the intrusive_flat_set.
-    ///\return A const iterator to the beginning of the intrusive_flat_set.
+    /// Returns a const_iterator to the beginning of the reference_flat_multiset.
+    ///\return A const iterator to the beginning of the reference_flat_multiset.
     //*********************************************************************
     const_iterator cbegin() const
     {
@@ -364,8 +360,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const_iterator to the end of the intrusive_flat_set.
-    ///\return A const iterator to the end of the intrusive_flat_set.
+    /// Returns a const_iterator to the end of the reference_flat_multiset.
+    ///\return A const iterator to the end of the reference_flat_multiset.
     //*********************************************************************
     const_iterator cend() const
     {
@@ -373,8 +369,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns an reverse iterator to the reverse beginning of the intrusive_flat_set.
-    ///\return Iterator to the reverse beginning of the intrusive_flat_set.
+    /// Returns an reverse iterator to the reverse beginning of the reference_flat_multiset.
+    ///\return Iterator to the reverse beginning of the reference_flat_multiset.
     //*********************************************************************
     reverse_iterator rbegin()
     {
@@ -382,8 +378,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const reverse iterator to the reverse beginning of the intrusive_flat_set.
-    ///\return Const iterator to the reverse beginning of the intrusive_flat_set.
+    /// Returns a const reverse iterator to the reverse beginning of the reference_flat_multiset.
+    ///\return Const iterator to the reverse beginning of the reference_flat_multiset.
     //*********************************************************************
     const_reverse_iterator rbegin() const
     {
@@ -391,8 +387,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a reverse iterator to the end + 1 of the intrusive_flat_set.
-    ///\return Reverse iterator to the end + 1 of the intrusive_flat_set.
+    /// Returns a reverse iterator to the end + 1 of the reference_flat_multiset.
+    ///\return Reverse iterator to the end + 1 of the reference_flat_multiset.
     //*********************************************************************
     reverse_iterator rend()
     {
@@ -400,8 +396,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const reverse iterator to the end + 1 of the intrusive_flat_set.
-    ///\return Const reverse iterator to the end + 1 of the intrusive_flat_set.
+    /// Returns a const reverse iterator to the end + 1 of the reference_flat_multiset.
+    ///\return Const reverse iterator to the end + 1 of the reference_flat_multiset.
     //*********************************************************************
     const_reverse_iterator rend() const
     {
@@ -409,8 +405,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const reverse iterator to the reverse beginning of the intrusive_flat_set.
-    ///\return Const reverse iterator to the reverse beginning of the intrusive_flat_set.
+    /// Returns a const reverse iterator to the reverse beginning of the reference_flat_multiset.
+    ///\return Const reverse iterator to the reverse beginning of the reference_flat_multiset.
     //*********************************************************************
     const_reverse_iterator crbegin() const
     {
@@ -418,8 +414,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Returns a const reverse iterator to the end + 1 of the intrusive_flat_set.
-    ///\return Const reverse iterator to the end + 1 of the intrusive_flat_set.
+    /// Returns a const reverse iterator to the end + 1 of the reference_flat_multiset.
+    ///\return Const reverse iterator to the end + 1 of the reference_flat_multiset.
     //*********************************************************************
     const_reverse_iterator crend() const
     {
@@ -427,9 +423,9 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Assigns values to the intrusive_flat_set.
-    /// If asserts or exceptions are enabled, emits intrusive_flat_set_full if the intrusive_flat_set does not have enough free space.
-    /// If asserts or exceptions are enabled, emits intrusive_flat_set_iterator if the iterators are reversed.
+    /// Assigns values to the reference_flat_multiset.
+    /// If asserts or exceptions are enabled, emits reference_flat_multiset_full if the reference_flat_multiset does not have enough free space.
+    /// If asserts or exceptions are enabled, emits reference_flat_multiset_iterator if the iterators are reversed.
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
@@ -438,7 +434,7 @@ namespace etl
     {
 #if defined(ETL_DEBUG)
       difference_type count = std::distance(first, last);
-      ETL_ASSERT(count <= difference_type(capacity()), ETL_ERROR(intrusive_flat_set_full));
+      ETL_ASSERT(count <= difference_type(capacity()), ETL_ERROR(reference_flat_multiset_full));
 #endif
 
       clear();
@@ -450,15 +446,15 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Inserts a value to the intrusive_flat_set.
-    /// If asserts or exceptions are enabled, emits intrusive_flat_set_full if the intrusive_flat_set is already full.
+    /// Inserts a value to the reference_flat_multiset.
+    /// If asserts or exceptions are enabled, emits reference_flat_multiset_full if the reference_flat_multiset is already full.
     ///\param value    The value to insert.
     //*********************************************************************
     std::pair<iterator, bool> insert(value_type& value)
     {
       std::pair<iterator, bool> result(end(), false);
 
-      ETL_ASSERT(!lookup.full(), ETL_ERROR(intrusive_flat_set_full));
+      ETL_ASSERT(!lookup.full(), ETL_ERROR(reference_flat_multiset_full));
 
       iterator i_element = std::lower_bound(begin(), end(), value, TKeyCompare());
 
@@ -472,26 +468,17 @@ namespace etl
       else
       {
         // Not at the end.
-        // Does not exist already?
-        if (*i_element != value)
-        {
-          lookup.insert(i_element.ilookup, &value);
-          result.first = i_element;
-          result.second = true;
-        }
-        else
-        {
-          result.first = i_element;
-          result.second = false;
-        }
+        lookup.insert(i_element.ilookup, &value);
+        result.first = i_element;
+        result.second = true;
       }
 
       return result;
     }
 
     //*********************************************************************
-    /// Inserts a value to the intrusive_flat_set.
-    /// If asserts or exceptions are enabled, emits intrusive_flat_set_full if the intrusive_flat_set is already full.
+    /// Inserts a value to the reference_flat_multiset.
+    /// If asserts or exceptions are enabled, emits reference_flat_multiset_full if the reference_flat_multiset is already full.
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -501,8 +488,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Inserts a range of values to the intrusive_flat_set.
-    /// If asserts or exceptions are enabled, emits intrusive_flat_set_full if the intrusive_flat_set does not have enough free space.
+    /// Inserts a range of values to the reference_flat_multiset.
+    /// If asserts or exceptions are enabled, emits reference_flat_multiset_full if the reference_flat_multiset does not have enough free space.
     ///\param position The position to insert at.
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.
@@ -523,16 +510,17 @@ namespace etl
     //*********************************************************************
     size_t erase(value_type& key)
     {
-      iterator i_element = find(key);
+      std::pair<iterator, iterator> range = equal_range(key);
 
-      if (i_element == end())
+      if (range.first == end())
       {
         return 0;
       }
       else
       {
-        lookup.erase(i_element.ilookup);
-        return 1;
+        size_t count = std::distance(range.first, range.second);
+        erase(range.first, range.second);
+        return count;
       }
     }
 
@@ -558,7 +546,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Clears the intrusive_flat_set.
+    /// Clears the reference_flat_multiset.
     //*************************************************************************
     void clear()
     {
@@ -620,7 +608,9 @@ namespace etl
     //*********************************************************************
     size_t count(value_type& key) const
     {
-      return (find(key) == end()) ? 0 : 1;
+      std::pair<const_iterator, const_iterator> range = equal_range(key);
+
+      return std::distance(range.first, range.second);
     }
 
     //*********************************************************************
@@ -680,12 +670,12 @@ namespace etl
     //*********************************************************************
     std::pair<const_iterator, const_iterator> equal_range(value_type& key) const
     {
-      return std::upper_bound(cbegin(), cend(), key, TKeyCompare());
+      return std::equal_range(begin(), end(), key, TKeyCompare());
     }
 
     //*************************************************************************
-    /// Gets the current size of the intrusive_flat_set.
-    ///\return The current size of the intrusive_flat_set.
+    /// Gets the current size of the reference_flat_multiset.
+    ///\return The current size of the reference_flat_multiset.
     //*************************************************************************
     size_type size() const
     {
@@ -693,7 +683,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Checks the 'empty' state of the intrusive_flat_set.
+    /// Checks the 'empty' state of the reference_flat_multiset.
     ///\return <b>true</b> if empty.
     //*************************************************************************
     bool empty() const
@@ -702,7 +692,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Checks the 'full' state of the intrusive_flat_set.
+    /// Checks the 'full' state of the reference_flat_multiset.
     ///\return <b>true</b> if full.
     //*************************************************************************
     bool full() const
@@ -711,8 +701,8 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Returns the capacity of the intrusive_flat_set.
-    ///\return The capacity of the intrusive_flat_set.
+    /// Returns the capacity of the reference_flat_multiset.
+    ///\return The capacity of the reference_flat_multiset.
     //*************************************************************************
     size_type capacity() const
     {
@@ -720,8 +710,8 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Returns the maximum possible size of the intrusive_flat_set.
-    ///\return The maximum size of the intrusive_flat_set.
+    /// Returns the maximum possible size of the reference_flat_multiset.
+    ///\return The maximum size of the reference_flat_multiset.
     //*************************************************************************
     size_type max_size() const
     {
@@ -742,7 +732,7 @@ namespace etl
     //*********************************************************************
     /// Constructor.
     //*********************************************************************
-    iintrusive_flat_set(lookup_t& lookup_)
+    ireference_flat_multiset(lookup_t& lookup_)
       : lookup(lookup_)
     {
     }
@@ -750,18 +740,18 @@ namespace etl
   private:
 
     // Disable copy construction.
-    iintrusive_flat_set(const iintrusive_flat_set&);
-    iintrusive_flat_set& operator =(const iintrusive_flat_set&);
+    ireference_flat_multiset(const ireference_flat_multiset&);
+    ireference_flat_multiset& operator =(const ireference_flat_multiset&);
 
     lookup_t& lookup;
   };
 
   //***************************************************************************
-  /// An intrusive flat set
-  ///\ingroup intrusive_flat_set
+  /// An reference flat set
+  ///\ingroup reference_flat_multiset
   //***************************************************************************
   template <typename TKey, const size_t MAX_SIZE_, typename TKeyCompare = std::less<TKey> >
-  class intrusive_flat_set : public iintrusive_flat_set<TKey, TKeyCompare>
+  class reference_flat_multiset : public ireference_flat_multiset<TKey, TKeyCompare>
   {
   public:
 
@@ -770,18 +760,18 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    intrusive_flat_set()
-      : iintrusive_flat_set<TKey, TKeyCompare>(lookup)
+    reference_flat_multiset()
+      : ireference_flat_multiset<TKey, TKeyCompare>(lookup)
     {
     }
 
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
-    intrusive_flat_set(const intrusive_flat_set& other)
-      : iintrusive_flat_set<TKey, TKeyCompare>(lookup)
+    reference_flat_multiset(const reference_flat_multiset& other)
+      : ireference_flat_multiset<TKey, TKeyCompare>(lookup)
     {
-      iintrusive_flat_set<TKey, TKeyCompare>::assign(other.cbegin(), other.cend());
+      ireference_flat_multiset<TKey, TKeyCompare>::assign(other.cbegin(), other.cend());
     }
 
     //*************************************************************************
@@ -791,18 +781,18 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    intrusive_flat_set(TIterator first, TIterator last)
-      : iintrusive_flat_set<TKey, TKeyCompare>(lookup)
+    reference_flat_multiset(TIterator first, TIterator last)
+      : ireference_flat_multiset<TKey, TKeyCompare>(lookup)
     {
-      iintrusive_flat_set<TKey, TKeyCompare>::assign(first, last);
+      ireference_flat_multiset<TKey, TKeyCompare>::assign(first, last);
     }
 
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
-    ~intrusive_flat_set()
+    ~reference_flat_multiset()
     {
-      iintrusive_flat_set<TKey, TKeyCompare>::clear();
+      ireference_flat_multiset<TKey, TKeyCompare>::clear();
     }
 
   private:
@@ -815,26 +805,26 @@ namespace etl
 
   //***************************************************************************
   /// Equal operator.
-  ///\param lhs Reference to the first intrusive_flat_set.
-  ///\param rhs Reference to the second intrusive_flat_set.
+  ///\param lhs Reference to the first reference_flat_multiset.
+  ///\param rhs Reference to the second reference_flat_multiset.
   ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
-  ///\ingroup intrusive_flat_set
+  ///\ingroup reference_flat_multiset
   //***************************************************************************
   template <typename T, typename TKeyCompare>
-  bool operator ==(const etl::iintrusive_flat_set<T, TKeyCompare>& lhs, const etl::iintrusive_flat_set<T, TKeyCompare>& rhs)
+  bool operator ==(const etl::ireference_flat_multiset<T, TKeyCompare>& lhs, const etl::ireference_flat_multiset<T, TKeyCompare>& rhs)
   {
     return (lhs.size() == rhs.size()) && std::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //***************************************************************************
   /// Not equal operator.
-  ///\param lhs Reference to the first intrusive_flat_set.
-  ///\param rhs Reference to the second intrusive_flat_set.
+  ///\param lhs Reference to the first reference_flat_multiset.
+  ///\param rhs Reference to the second reference_flat_multiset.
   ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
-  ///\ingroup intrusive_flat_set
+  ///\ingroup reference_flat_multiset
   //***************************************************************************
   template <typename T, typename TKeyCompare>
-  bool operator !=(const etl::iintrusive_flat_set<T, TKeyCompare>& lhs, const etl::iintrusive_flat_set<T, TKeyCompare>& rhs)
+  bool operator !=(const etl::ireference_flat_multiset<T, TKeyCompare>& lhs, const etl::ireference_flat_multiset<T, TKeyCompare>& rhs)
   {
     return !(lhs == rhs);
   }

@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 http://www.etlcpp.com
 
-Copyright(c) 2015 jwellbelove
+Copyright(c) 2017 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -38,7 +38,7 @@ SOFTWARE.
 
 #include "data.h"
 
-#include "intrusive_flat_multiset.h"
+#include "reference_flat_set.h"
 
 namespace
 {
@@ -47,12 +47,12 @@ namespace
   typedef TestDataDC<std::string>  DC;
   typedef TestDataNDC<std::string> NDC;
 
-  typedef etl::intrusive_flat_multiset<DC, SIZE>  DataDC;
-  typedef etl::intrusive_flat_multiset<NDC, SIZE> DataNDC;
-  typedef etl::iintrusive_flat_multiset<NDC>      IDataNDC;
+  typedef etl::reference_flat_set<DC, SIZE>  DataDC;
+  typedef etl::reference_flat_set<NDC, SIZE> DataNDC;
+  typedef etl::ireference_flat_set<NDC>      IDataNDC;
 
-  typedef std::multiset<DC>  Compare_DataDC;
-  typedef std::multiset<NDC> Compare_DataNDC;
+  typedef std::set<DC>  Compare_DataDC;
+  typedef std::set<NDC> Compare_DataNDC;
 
   NDC NX = NDC("@");
   NDC NY = NDC("[");
@@ -81,41 +81,43 @@ namespace
   std::vector<NDC> initial_data;
   std::vector<NDC> excess_data;
   std::vector<NDC> different_data;
-  std::vector<NDC> multi_data;
+}
 
-  //*************************************************************************
-//  std::ostream& operator <<(std::ostream& os, const DataDC::iterator& itr)
-//  {
-//    os << itr->value;
-//
-//    return os;
-//  }
+//*************************************************************************
+std::ostream& operator <<(std::ostream& os, const DataDC::iterator& itr)
+{
+  os << itr->value;
 
-  //*************************************************************************
-//  std::ostream& operator <<(std::ostream& os, const DataDC::const_iterator& itr)
-//  {
-//    os << itr->value;
-//
-//    return os;
-//  }
+  return os;
+}
 
-  //*************************************************************************
-  std::ostream& operator <<(std::ostream& os, const DataNDC::iterator& itr)
-  {
-    os << itr->value;
+//*************************************************************************
+std::ostream& operator <<(std::ostream& os, const DataDC::const_iterator& itr)
+{
+  os << itr->value;
 
-    return os;
-  }
+  return os;
+}
 
-  //*************************************************************************
-  std::ostream& operator <<(std::ostream& os, const DataNDC::const_iterator& itr)
-  {
-    os << itr->value;
+//*************************************************************************
+std::ostream& operator <<(std::ostream& os, const DataNDC::iterator& itr)
+{
+  os << itr->value;
 
-    return os;
-  }
+  return os;
+}
 
-  SUITE(test_flat_multiset)
+//*************************************************************************
+std::ostream& operator <<(std::ostream& os, const DataNDC::const_iterator& itr)
+{
+  os << itr->value;
+
+  return os;
+}
+
+namespace
+{
+  SUITE(test_flat_set)
   {
     //*************************************************************************
     struct SetupFixture
@@ -137,15 +139,9 @@ namespace
           N10, N11, N12, N13, N14, N15, N16, N17, N18, N19
         };
 
-        NDC n4[] =
-        {
-          N0, N0, N1, N2, N3, N1, N3, N3, N4, N2
-        };
-
         initial_data.assign(std::begin(n), std::end(n));
         excess_data.assign(std::begin(n2), std::end(n2));
         different_data.assign(std::begin(n3), std::end(n3));
-        multi_data.assign(std::begin(n4), std::end(n4));
       }
     };
 
@@ -238,8 +234,8 @@ namespace
       compare_data.insert(N0);
 
       bool isEqual = std::equal(data.begin(),
-                                 data.end(),
-                                 compare_data.begin());
+                                data.end(),
+                                compare_data.begin());
 
       CHECK(isEqual);
 
@@ -247,17 +243,19 @@ namespace
       compare_data.insert(N2);
 
       isEqual = std::equal(data.begin(),
-                            data.end(),
-                            compare_data.begin());
+                           data.end(),
+                           compare_data.begin());
 
       CHECK(isEqual);
 
       data.insert(N1);
       compare_data.insert(N1);
 
+      std::vector<NDC> test(data.begin(), data.end());
+
       isEqual = std::equal(data.begin(),
-                            data.end(),
-                            compare_data.begin());
+                           data.end(),
+                           compare_data.begin());
 
       CHECK(isEqual);
 
@@ -291,12 +289,6 @@ namespace
 
       CHECK_EQUAL(compare_data.size(), data.size());
 
-      bool isEqual = std::equal(data.begin(),
-                                data.end(),
-                                compare_data.begin());
-
-      CHECK(isEqual);
-
       CHECK(std::is_sorted(data.begin(), data.end()));
     }
 
@@ -305,7 +297,7 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.insert(N10), etl::intrusive_flat_multiset_full);
+      CHECK_THROW(data.insert(N10), etl::reference_flat_set_full);
 
       CHECK(std::is_sorted(data.begin(), data.end()));
     }
@@ -320,8 +312,8 @@ namespace
       compare_data.insert(initial_data.begin(), initial_data.end());
 
       bool isEqual = std::equal(data.begin(),
-                                 data.end(),
-                                 compare_data.begin());
+                                data.end(),
+                                compare_data.begin());
 
       CHECK(isEqual);
 
@@ -333,7 +325,7 @@ namespace
     {
       DataNDC data;
 
-      CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::intrusive_flat_multiset_full);
+      CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::reference_flat_set_full);
 
       CHECK(std::is_sorted(data.begin(), data.end()));
     }
@@ -350,8 +342,8 @@ namespace
       CHECK_EQUAL(count_compare, count);
 
       bool isEqual = std::equal(data.begin(),
-                                 data.end(),
-                                 compare_data.begin());
+                                data.end(),
+                                compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -372,8 +364,8 @@ namespace
       data.erase(i_data);
 
       bool isEqual = std::equal(data.begin(),
-                                 data.end(),
-                                 compare_data.begin());
+                                data.end(),
+                                compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -400,8 +392,8 @@ namespace
       data.erase(i_data, i_data_end);
 
       bool isEqual = std::equal(data.begin(),
-                                 data.end(),
-                                 compare_data.begin());
+                                data.end(),
+                                compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -480,9 +472,6 @@ namespace
 
       DataNDC::iterator it = data.find(N3);
       CHECK_EQUAL(N3, *it);
-
-      it = data.find(N19);
-      CHECK_EQUAL(data.end(), it);
     }
 
     //*************************************************************************
@@ -504,9 +493,6 @@ namespace
 
       DataNDC::const_iterator it = data.find(N3);
       CHECK_EQUAL(N3, *it);
-
-      it = data.find(N19);
-      CHECK_EQUAL(data.end(), it);
     }
 
     //*************************************************************************
@@ -566,7 +552,7 @@ namespace
       std::pair<DataNDC::iterator, DataNDC::iterator> i_data;
 
       i_data = data.equal_range(NX);
-      CHECK_EQUAL(data.begin(), i_data.first);
+      CHECK_EQUAL(data.begin(),   i_data.first);
       CHECK_EQUAL(data.begin(), i_data.second);
 
       i_data = data.equal_range(NY);
@@ -598,49 +584,6 @@ namespace
       const DataNDC different(different_data.begin(), different_data.end());
 
       CHECK(initial1 != different);
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_multi)
-    {
-      Compare_DataNDC compare_data(multi_data.begin(), multi_data.end());
-      DataNDC data(multi_data.begin(), multi_data.end());
-
-      std::pair<Compare_DataNDC::iterator, Compare_DataNDC::iterator> compare_range;
-      std::pair<DataNDC::iterator, DataNDC::iterator> test_range;
-
-      compare_range = compare_data.equal_range(N0);
-      test_range = data.equal_range(N0);
-      CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
-
-      compare_range = compare_data.equal_range(N1);
-      test_range = data.equal_range(N1);
-      CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
-
-      compare_range = compare_data.equal_range(N2);
-      test_range = data.equal_range(N2);
-      CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
-
-      compare_range = compare_data.equal_range(N3);
-      test_range = data.equal_range(N3);
-      CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
-
-      compare_range = compare_data.equal_range(N4);
-      test_range = data.equal_range(N4);
-      CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_count)
-    {
-      Compare_DataNDC compare_data(multi_data.begin(), multi_data.end());
-      DataNDC data(multi_data.begin(), multi_data.end());
-
-      CHECK_EQUAL(compare_data.count(N0), data.count(N0));
-      CHECK_EQUAL(compare_data.count(N1), data.count(N1));
-      CHECK_EQUAL(compare_data.count(N2), data.count(N2));
-      CHECK_EQUAL(compare_data.count(N3), data.count(N3));
-      CHECK_EQUAL(compare_data.count(N4), data.count(N4));
     }
   };
 }
