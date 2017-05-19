@@ -1,10 +1,11 @@
 Embedded Template Library (ETL)
 -------------------------
-[![Build status](https://ci.appveyor.com/api/projects/status/b7jgecv7unqjw4u0?svg=true)](https://ci.appveyor.com/project/jwellbelove/etl)
+
+AppVeyor [![Build status](https://ci.appveyor.com/api/projects/status/b7jgecv7unqjw4u0/branch/master?svg=true)](https://ci.appveyor.com/project/jwellbelove/etl/branch/master)
 
 **Motivation**
 
-C++ is a great language to use for embedded applications and templates are a powerful aspect. The standard library can offer a great deal of well tested functionality,  but there are some parts of the standard library that do not fit well with deterministic behaviour and limited resource requirements. These limitations usually preclude the use of dynamically allocated memory and containers with open ended sizes.  
+C++ is a great language to use for embedded applications and templates are a powerful aspect. The standard library can offer a great deal of well tested functionality,  but there are some parts of the standard library that do not fit well with deterministic behaviour and limited resource requirements. These limitations usually preclude the use of dynamically allocated memory and containers with open ended sizes.
 
 What is needed is a template library where the user can declare the size, or maximum size of any object upfront. Most embedded compilers do not currently support the standard beyond C++ 03, therefore excluding the programmer from using the enhanced features of the later library.
 
@@ -12,7 +13,7 @@ This is what the ETL attempts to achieve.
 
 **Summary**
 
-The ETL is not designed to completely replace the STL, but complement it.  
+The ETL is not designed to completely replace the STL, but complement it.
 Its design objective covers three areas.
 
 - Create a set of containers where the size or maximum size is determined at compile time. These containers are direct equivalents of those supplied in the STL.
