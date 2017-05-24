@@ -96,13 +96,28 @@ namespace etl
   {
   public:
 
+    //*******************************************
+    etl::fsm_state_id_t get_state_id() const
+    {
+      return state_id;
+    }
+
     virtual etl::fsm_state_id_t on_event(const etl::ifsm_event& event) = 0;
-    virtual etl::fsm_state_id_t get_state_id() const = 0;
 
   protected:
 
+    //*******************************************
+    ifsm_state(etl::fsm_state_id_t state_id_)
+      : state_id(state_id_)
+    {
+    }
+
     virtual void on_enter_state() {};
     virtual void on_exit_state() {};
+
+  private:
+
+    etl::fsm_state_id_t state_id;
   };
 
   //***************************************************************************
@@ -116,6 +131,12 @@ namespace etl
     {
       THIS_STATE_ID = STATE_ID_
     };
+
+    //*******************************************
+    fsm_state()
+      : ifsm_state(THIS_STATE_ID)
+    {
+    }
 
     //*******************************************
     etl::fsm_state_id_t on_event(const etl::ifsm_event& event)
