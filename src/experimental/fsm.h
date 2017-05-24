@@ -55,7 +55,23 @@ namespace etl
   {
   public:
 
-    virtual etl::fsm_event_id_t get_event_id() const = 0;
+    //*******************************************
+    etl::fsm_event_id_t get_event_id() const
+    {
+      return event_id;
+    }
+
+  protected:
+
+    //*******************************************
+    ifsm_event(etl::fsm_event_id_t event_id_)
+      : event_id(event_id_)
+    {
+    }
+
+  private:
+
+    etl::fsm_event_id_t event_id;
   };
 
   //***************************************************************************
@@ -69,10 +85,9 @@ namespace etl
       EVENT_ID = EVENT_ID_
     };
 
-    //*******************************************
-    etl::fsm_event_id_t get_event_id() const
+    fsm_event()
+      : ifsm_event(EVENT_ID)
     {
-      return EVENT_ID;
     }
   };
 
