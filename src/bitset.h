@@ -50,11 +50,10 @@ SOFTWARE.
 #undef min
 #endif
 
-#define ETL_NO_CHECKS
 #include "error_handler.h"
 
 #if defined(ETL_COMPILER_KEIL)
-#pragma diag_suppress 1300 
+#pragma diag_suppress 1300
 #endif
 
 //*****************************************************************************
@@ -739,7 +738,7 @@ namespace etl
     static const size_t ALLOCATED_BITS = ARRAY_SIZE * BITS_PER_ELEMENT;
 
   public:
-    
+
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
@@ -789,7 +788,7 @@ namespace etl
     /// Set the bit at the position.
     //*************************************************************************
     bitset<MAXN>& set(size_t position, bool value = true)
-    {     
+    {
       etl::ibitset::set(position, value);
       return *this;
     }
@@ -889,7 +888,7 @@ namespace etl
       etl::bitset<MAXN> temp(*this);
 
       temp.invert();
-      
+
       return temp;
     }
 
@@ -944,7 +943,7 @@ namespace etl
     }
 
   private:
-       
+
     element_t data[ARRAY_SIZE];
   };
 
