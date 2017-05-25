@@ -14,9 +14,20 @@
 
 namespace etl
 {
-  typedef uint32_t fsm_state_id_t;
-  typedef uint32_t fsm_event_id_t;
+#if !defined(ETL_FSM_STATE_ID_TYPE)
+    typedef uint_least8_t fsm_state_id_t;
+#else
+    typedef ETL_FSM_STATE_ID_TYPE fsm_state_id_t;
+#endif
 
+#if !defined(ETL_FSM_EVENT_ID_TYPE)
+    typedef uint_least8_t fsm_event_id_t;
+#else
+    typedef ETL_FSM_STATE_ID_TYPE fsm_event_id_t;
+#endif
+
+  //***************************************************************************
+  /// Base exception class for FSM.
   //***************************************************************************
   class fsm_exception : public etl::exception
   {
@@ -29,6 +40,8 @@ namespace etl
   };
 
   //***************************************************************************
+  /// Exception for null state pointer.
+  //***************************************************************************
   class fsm_nullstate_exception : public etl::fsm_exception
   {
   public:
@@ -39,6 +52,8 @@ namespace etl
     }
   };
 
+  //***************************************************************************
+  /// Exception for invalid state id.
   //***************************************************************************
   class fsm_state_id_exception : public etl::fsm_exception
   {
@@ -51,10 +66,14 @@ namespace etl
   };
 
   //***************************************************************************
+  /// Interface class for FSM events.
+  //***************************************************************************
   class ifsm_event
   {
   public:
 
+    //*******************************************
+    /// Gets the id for this event.
     //*******************************************
     etl::fsm_event_id_t get_event_id() const
     {
@@ -64,6 +83,8 @@ namespace etl
   protected:
 
     //*******************************************
+    /// Constructor.
+    //*******************************************
     ifsm_event(etl::fsm_event_id_t event_id_)
       : event_id(event_id_)
     {
@@ -71,9 +92,12 @@ namespace etl
 
   private:
 
-    etl::fsm_event_id_t event_id;
+    // The event id.
+    const etl::fsm_event_id_t event_id;
   };
 
+  //***************************************************************************
+  /// Base class for FSM events.
   //***************************************************************************
   template <const etl::fsm_event_id_t EVENT_ID_>
   class fsm_event : public etl::ifsm_event
@@ -85,6 +109,9 @@ namespace etl
       EVENT_ID = EVENT_ID_
     };
 
+    //*******************************************
+    /// Constructor.
+    //*******************************************
     fsm_event()
       : ifsm_event(EVENT_ID)
     {
@@ -92,10 +119,14 @@ namespace etl
   };
 
   //***************************************************************************
+  /// Interface class for FSM states.
+  //***************************************************************************
   class ifsm_state
   {
   public:
 
+    //*******************************************
+    /// Gets the id for this state.
     //*******************************************
     etl::fsm_state_id_t get_state_id() const
     {
@@ -107,37 +138,50 @@ namespace etl
   protected:
 
     //*******************************************
+    /// Constructor.
+    //*******************************************
     ifsm_state(etl::fsm_state_id_t state_id_)
       : state_id(state_id_)
     {
     }
 
-    virtual void on_enter_state() {};
-    virtual void on_exit_state() {};
+    virtual void on_enter_state() {}; // By default, do nothing.
+    virtual void on_exit_state() {};  // By default, do nothing.
 
   private:
 
-    etl::fsm_state_id_t state_id;
+    // The state id.
+    const etl::fsm_state_id_t state_id;
+
+    // Disabled.
+    ifsm_state(const ifsm_state&);
+    ifsm_state& operator =(const ifsm_state&);
   };
 
   //***************************************************************************
   // To be COG generated.
-  template <typename TState, const etl::fsm_state_id_t STATE_ID_, typename T1>
+  /// Base class for FSM states.
+  //***************************************************************************
+  template <typename TState, const etl::fsm_state_id_t STATE_ID_, typename T1, typename T2 = void>
   class fsm_state : public ifsm_state
   {
   public:
 
     enum
     {
-      THIS_STATE_ID = STATE_ID_
+      STATE_ID = STATE_ID_
     };
 
     //*******************************************
+    /// Constructor.
+    //*******************************************
     fsm_state()
-      : ifsm_state(THIS_STATE_ID)
+      : ifsm_state(STATE_ID)
     {
     }
 
+    //*******************************************
+    /// Top level event handler for the state.
     //*******************************************
     etl::fsm_state_id_t on_event(const etl::ifsm_event& event)
     {
@@ -147,17 +191,18 @@ namespace etl
       switch (id)
       {
         case T1::EVENT_ID: new_state_id = static_cast<TState&>(*this).on_event(static_cast<const T1&>(event)); break;
+        case T2::EVENT_ID: new_state_id = static_cast<TState&>(*this).on_event(static_cast<const T2&>(event)); break;
         default: new_state_id = static_cast<TState&>(*this).on_unknown_event(event); break;
       }
 
       return new_state_id;
     }
 
-    //*******************************************
-    etl::fsm_state_id_t get_state_id() const
-    {
-      return THIS_STATE_ID;
-    }
+  private:
+
+    // Disabled.
+    fsm_state(const fsm_state&);
+    fsm_state& operator =(const fsm_state&);
   };
 
   //***************************************************************************
@@ -167,20 +212,35 @@ namespace etl
   public:
 
     //*******************************************
+    /// Constructor.
+    //*******************************************
     fsm()
+      : p_state(nullptr)
     {
       state_list.fill(nullptr);
     }
 
     //*******************************************
+    /// Starts the FSM.
+    /// Can only be called once.
+    /// Subsequent calls will do nothing.
+    //*******************************************
     void start()
     {
-      p_state = state_list[0];
-      ETL_ASSERT(p_state != nullptr, ETL_ERROR(etl::fsm_nullstate_exception));
+      // Can only be started once.
+      if (p_state == nullptr)
+      {
+        p_state = state_list[0];
+        ETL_ASSERT(p_state != nullptr, ETL_ERROR(etl::fsm_nullstate_exception));
 
-      p_state->on_enter_state();
+        p_state->on_enter_state();
+      }
     }
 
+    //*******************************************
+    /// Adds a state to the FSM.
+    /// If the state has the same id as one already added
+    /// then the current state will be overwritten.
     //*******************************************
     void add_state(etl::ifsm_state& state)
     {
@@ -188,6 +248,8 @@ namespace etl
       state_list[state.get_state_id()] = &state;
     }
 
+    //*******************************************
+    /// Top level event handler for the FSM.
     //*******************************************
     void on_event(const etl::ifsm_event& event)
     {
@@ -207,17 +269,23 @@ namespace etl
     }
 
     //*******************************************
+    /// Gets the current state id.
+    //*******************************************
     etl::fsm_state_id_t get_state_id() const
     {
       return p_state->get_state_id();
     }
 
     //*******************************************
+    /// Gets a reference to the current state interface.
+    //*******************************************
     ifsm_state& get_state()
     {
       return *p_state;
     }
 
+    //*******************************************
+    /// Gets a const reference to the current state interface.
     //*******************************************
     const ifsm_state& get_state() const
     {
@@ -226,8 +294,12 @@ namespace etl
 
   private:
 
-    etl::ifsm_state* p_state;
-    etl::array<etl::ifsm_state*, MAX_STATES> state_list;
+    etl::ifsm_state* p_state;                            ///< A pointer to the current state.
+    etl::array<etl::ifsm_state*, MAX_STATES> state_list; ///< The list of added states.
+
+    // Disabled.
+    fsm(const fsm&);
+    fsm& operator =(const fsm&);
   };
 }
 
