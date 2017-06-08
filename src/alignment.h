@@ -65,10 +65,10 @@ namespace etl
     {
     public:
 
-      typedef typename type_with_alignment_matcher<ALIGNMENT == etl::alignment_of<T2>::value, ALIGNMENT, T2, T3, T4, T5, T6, T7, T8, void>::type type;
+      typedef typename type_with_alignment_matcher<ALIGNMENT <= etl::alignment_of<T2>::value, ALIGNMENT, T2, T3, T4, T5, T6, T7, T8, void>::type type;
     };
 
-    // Non-matching alignment, non left.
+    // Non-matching alignment, none left.
     template <const size_t ALIGNMENT>
     class type_with_alignment_matcher <false, ALIGNMENT, void, void, void, void, void, void, void, void>
     {
@@ -83,7 +83,7 @@ namespace etl
     {
     public:
 
-      typedef typename type_with_alignment_matcher<ALIGNMENT == etl::alignment_of<T1>::value, ALIGNMENT, T1, T2, T3, T4, T5, T6, T7, T8>::type type;
+      typedef typename type_with_alignment_matcher<ALIGNMENT <= etl::alignment_of<T1>::value, ALIGNMENT, T1, T2, T3, T4, T5, T6, T7, T8>::type type;
     };
   }
 
@@ -96,7 +96,7 @@ namespace etl
   {
   public:
 
-    typedef typename __private_alignment__::type_with_alignment_helper<ALIGNMENT, int8_t, int16_t, int32_t, int64_t, float, double, void*>::type type;
+    typedef typename __private_alignment__::type_with_alignment_helper<ALIGNMENT, int_least8_t, int_least16_t, int32_t, int64_t, float, double, void*>::type type;
   };
 
   //***************************************************************************
