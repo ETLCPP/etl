@@ -951,13 +951,13 @@ namespace etl
 
     //*********************************************************************
     /// Returns a range containing all elements with key 'key' in the container.
-    /// The range is defined by two iterators, the first pointing to the first 
-    /// element of the wanted range and the second pointing past the last 
+    /// The range is defined by two iterators, the first pointing to the first
+    /// element of the wanted range and the second pointing past the last
     /// element of the range.
     ///\param key The key to search for.
     ///\return An iterator pair to the range of elements if the key exists, otherwise end().
     //*********************************************************************
-    std::pair<iterator, iterator> equal_range(const key_value_parameter_t& key)
+    std::pair<iterator, iterator> equal_range(key_value_parameter_t key)
     {
       iterator first = find(key);
       iterator last = first;
@@ -972,13 +972,13 @@ namespace etl
 
     //*********************************************************************
     /// Returns a range containing all elements with key 'key' in the container.
-    /// The range is defined by two iterators, the first pointing to the first 
-    /// element of the wanted range and the second pointing past the last 
+    /// The range is defined by two iterators, the first pointing to the first
+    /// element of the wanted range and the second pointing past the last
     /// element of the range.
     ///\param key The key to search for.
     ///\return A const iterator pair to the range of elements if the key exists, otherwise end().
     //*********************************************************************
-    std::pair<const_iterator, const_iterator> equal_range(const key_value_parameter_t& key) const
+    std::pair<const_iterator, const_iterator> equal_range(key_value_parameter_t key) const
     {
       const_iterator first = find(key);
       const_iterator last = first;

@@ -145,7 +145,7 @@ namespace etl
     typedef typename etl::parameter_type<TKey>::type key_value_parameter_t;
 
     typedef etl::forward_link<0> link_t; // Default link.
-                                         
+
     struct node_t : public link_t // The nodes that store the elements.
     {
       node_t(const value_type& key_value_pair)
@@ -977,7 +977,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair to the range of elements if the key exists, otherwise end().
     //*********************************************************************
-    std::pair<iterator, iterator> equal_range(const key_value_parameter_t& key)
+    std::pair<iterator, iterator> equal_range(key_value_parameter_t key)
     {
       iterator first = find(key);
       iterator last = first;
@@ -1003,7 +1003,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return A const iterator pair to the range of elements if the key exists, otherwise end().
     //*********************************************************************
-    std::pair<const_iterator, const_iterator> equal_range(const key_value_parameter_t& key) const
+    std::pair<const_iterator, const_iterator> equal_range(key_value_parameter_t key) const
     {
       const_iterator first = find(key);
       const_iterator last = first;
