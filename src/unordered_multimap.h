@@ -142,7 +142,7 @@ namespace etl
     typedef size_t            size_type;
 
 
-    typedef typename etl::parameter_type<TKey>::type key_value_parameter_t;
+    typedef typename etl::parameter_type<TKey>::type key_parameter_t;
 
     typedef etl::forward_link<0> link_t; // Default link.
 
@@ -593,7 +593,7 @@ namespace etl
     /// Returns the bucket index for the key.
     ///\return The bucket index for the key.
     //*********************************************************************
-    size_type bucket(key_value_parameter_t key) const
+    size_type bucket(key_parameter_t key) const
     {
       return key_hash_function(key) % number_of_buckets;
     }
@@ -602,7 +602,7 @@ namespace etl
     /// Returns the size of the bucket key.
     ///\return The bucket size of the bucket key.
     //*********************************************************************
-    size_type bucket_size(key_value_parameter_t key) const
+    size_type bucket_size(key_parameter_t key) const
     {
       size_t index = bucket(key);
 
@@ -752,7 +752,7 @@ namespace etl
     ///\param key The key to erase.
     ///\return The number of elements erased.
     //*********************************************************************
-    size_t erase(key_value_parameter_t key)
+    size_t erase(key_parameter_t key)
     {
       size_t count = 0;
       size_t bucket_id = bucket(key);
@@ -880,7 +880,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return 1 if the key exists, otherwise 0.
     //*********************************************************************
-    size_t count(key_value_parameter_t key) const
+    size_t count(key_parameter_t key) const
     {
       size_t n = 0;
       const_iterator first = find(key);
@@ -906,7 +906,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator to the element if the key exists, otherwise end().
     //*********************************************************************
-    iterator find(key_value_parameter_t key)
+    iterator find(key_parameter_t key)
     {
       size_t index = bucket(key);
 
@@ -940,7 +940,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator to the element if the key exists, otherwise end().
     //*********************************************************************
-    const_iterator find(key_value_parameter_t key) const
+    const_iterator find(key_parameter_t key) const
     {
       size_t index = bucket(key);
 
@@ -977,7 +977,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair to the range of elements if the key exists, otherwise end().
     //*********************************************************************
-    std::pair<iterator, iterator> equal_range(key_value_parameter_t key)
+    std::pair<iterator, iterator> equal_range(key_parameter_t key)
     {
       iterator first = find(key);
       iterator last = first;
@@ -1003,7 +1003,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return A const iterator pair to the range of elements if the key exists, otherwise end().
     //*********************************************************************
-    std::pair<const_iterator, const_iterator> equal_range(key_value_parameter_t key) const
+    std::pair<const_iterator, const_iterator> equal_range(key_parameter_t key) const
     {
       const_iterator first = find(key);
       const_iterator last = first;
@@ -1252,7 +1252,7 @@ namespace etl
     unordered_multimap(const unordered_multimap& other)
       : base(node_pool, buckets, MAX_BUCKETS)
     {
-			base::assign(other.cbegin(), other.cend());
+      base::assign(other.cbegin(), other.cend());
     }
 
     //*************************************************************************

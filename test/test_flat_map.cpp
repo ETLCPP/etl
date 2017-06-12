@@ -230,9 +230,9 @@ namespace
     {
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
 
-      DataNDC data(compare_data.begin(), compare_data.end());
+      DataNDC data(initial_data.begin(), initial_data.end());
 
-      CHECK(data.size() == SIZE);
+      CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(!data.empty());
     }
 
