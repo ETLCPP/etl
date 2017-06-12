@@ -89,12 +89,3 @@ SOFTWARE.
 #if defined(_DEBUG) || defined(DEBUG)
   #define ETL_DEBUG
 #endif
-
-#if (defined(ETL_COMPILER_MICROSOFT) ||  \
-     defined(ETL_COMPILER_ARM))
-  #define ETL_INLINE __forceinline
-#elif defined(ETL_COMPILER_GCC)
-  #define ETL_INLINE __attribute__((always_inline))
-#else
-  #define ETL_INLINE inline
-#endif

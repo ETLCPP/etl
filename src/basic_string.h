@@ -1910,15 +1910,6 @@ namespace etl
       p_buffer[0] = 0;
     }
 
-    //*************************************************************************
-    /// Reconnects the base buffer pointer to physical buffer after a low level
-    /// memcpy or memmove.
-    //*************************************************************************
-    void rebase(value_type* buffer)
-    {
-      p_buffer = buffer;
-    }
-
   private:
 
     //*************************************************************************
@@ -2045,7 +2036,8 @@ namespace etl
   {
     return !(lhs == rhs);
   }
-  
+
+
   //***************************************************************************
   /// Less than operator.
   ///\param lhs Reference to the first string.

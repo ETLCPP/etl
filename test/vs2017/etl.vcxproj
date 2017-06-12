@@ -128,10 +128,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\fsm.h" />
-    <ClInclude Include="..\..\src\fsm_generator.h" />
-    <ClInclude Include="..\..\src\message_router.h" />
-    <ClInclude Include="..\..\src\message_router_generator.h" />
     <ClInclude Include="..\..\unittest-cpp\UnitTest++\AssertException.h" />
     <ClInclude Include="..\..\unittest-cpp\UnitTest++\CheckMacros.h" />
     <ClInclude Include="..\..\unittest-cpp\UnitTest++\Checks.h" />
@@ -216,6 +212,8 @@
     <ClInclude Include="..\..\src\flat_map.h" />
     <ClInclude Include="..\..\src\map.h" />
     <ClInclude Include="..\..\src\memory.h" />
+    <ClInclude Include="..\..\src\message_processor.h" />
+    <ClInclude Include="..\..\src\message_processor_generator.h" />
     <ClInclude Include="..\..\src\mru_cache.h" />
     <ClInclude Include="..\..\src\multimap.h" />
     <ClInclude Include="..\..\src\multiset.h" />
@@ -231,7 +229,6 @@
     <ClInclude Include="..\..\src\pool.h" />
     <ClInclude Include="..\..\src\power.h" />
     <ClInclude Include="..\..\src\priority_queue.h" />
-    <ClInclude Include="..\..\src\private\ivectorpointer.h" />
     <ClInclude Include="..\..\src\private\pvoidvector.h" />
     <ClInclude Include="..\..\src\private\vector_base.h" />
     <ClInclude Include="..\..\src\queue.h" />
@@ -334,7 +331,6 @@
     </ClCompile>
     <ClCompile Include="..\test_fnv_1.cpp" />
     <ClCompile Include="..\test_forward_list.cpp" />
-    <ClCompile Include="..\test_fsm.cpp" />
     <ClCompile Include="..\test_function.cpp" />
     <ClCompile Include="..\test_functional.cpp" />
     <ClCompile Include="..\test_hash.cpp" />
@@ -370,7 +366,6 @@
     </ClCompile>
     <ClCompile Include="..\test_maths.cpp" />
     <ClCompile Include="..\test_memory.cpp" />
-    <ClCompile Include="..\test_message_router.cpp" />
     <ClCompile Include="..\test_multimap.cpp" />
     <ClCompile Include="..\test_multiset.cpp" />
     <ClCompile Include="..\test_murmur3.cpp" />
@@ -388,15 +383,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\test_reference_flat_map.cpp" />
-    <ClCompile Include="..\test_reference_flat_multimap.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\test_reference_flat_multiset.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\test_reference_flat_set.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="..\test_reference_flat_multimap.cpp" />
+    <ClCompile Include="..\test_reference_flat_multiset.cpp" />
+    <ClCompile Include="..\test_reference_flat_set.cpp" />
     <ClCompile Include="..\test_set.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -423,8 +412,7 @@
   <ItemGroup>
     <None Include="..\..\Doxyfile" />
     <None Include="..\..\library.properties" />
-    <None Include="..\..\src\CreateFSM.bat" />
-    <None Include="..\..\src\CreateMessageRouter.bat" />
+    <None Include="..\..\src\CreateMessageProcessor.bat" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\src\file_error_numbers.txt" />

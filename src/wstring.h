@@ -186,7 +186,6 @@ namespace etl
   //*************************************************************************
   /// Hash function.
   //*************************************************************************
-#if ETL_8BIT_SUPPORT
   template <>
   struct hash<etl::iwstring>
   {
@@ -196,7 +195,6 @@ namespace etl
                                                          reinterpret_cast<const uint8_t*>(&text[text.size()]));
     }
   };
-#endif
 }
 
 #if defined(ETL_COMPILER_MICROSOFT)
