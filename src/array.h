@@ -364,8 +364,6 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, const TIterator last)
     {
-      iterator itr = begin();
-
       etl::copy(first, last, begin(), end());
     }
 
