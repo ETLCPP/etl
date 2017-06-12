@@ -49,8 +49,8 @@ namespace
   typedef TestDataDC<std::string>  DC;
   typedef TestDataNDC<std::string> NDC;
 
-  typedef std::pair<int, DC>  ElementDC;
-  typedef std::pair<int, NDC> ElementNDC;
+  typedef std::pair<const int, DC>  ElementDC;
+  typedef std::pair<const int, NDC> ElementNDC;
 
   typedef etl::reference_flat_map<int, DC, SIZE>  DataDC;
   typedef etl::reference_flat_map<int, NDC, SIZE> DataNDC;
@@ -154,10 +154,30 @@ namespace
     DC M18 = DC("S");
     DC M19 = DC("T");
 
-    std::vector<ElementDC>  initial_data_dc;
-    std::vector<ElementNDC> initial_data;
-    std::vector<ElementNDC> excess_data;
-    std::vector<ElementNDC> different_data;
+    std::array<ElementNDC, 10> initial_data =
+    {
+      ElementNDC(0, N0), ElementNDC(1, N1), ElementNDC(2, N2), ElementNDC(3, N3), ElementNDC(4, N4),
+      ElementNDC(5, N5), ElementNDC(6, N6), ElementNDC(7, N7), ElementNDC(8, N8), ElementNDC(9, N9)
+    };
+
+    std::array<ElementNDC, 11> excess_data =
+    {
+      ElementNDC(0, N0), ElementNDC(1, N1), ElementNDC(2, N2), ElementNDC(3, N3), ElementNDC(4, N4),
+      ElementNDC(5, N5), ElementNDC(6, N6), ElementNDC(7, N7), ElementNDC(8, N8), ElementNDC(9, N9),
+      ElementNDC(10, N10)
+    };
+
+    std::array<ElementNDC, 10> different_data =
+    {
+      ElementNDC(10, N10), ElementNDC(11, N11), ElementNDC(12, N12), ElementNDC(13, N13), ElementNDC(14, N14),
+      ElementNDC(15, N15), ElementNDC(16, N16), ElementNDC(17, N17), ElementNDC(18, N18), ElementNDC(19, N19)
+    };
+
+    std::array<ElementDC, 10> initial_data_dc =
+    {
+      ElementDC(0, M0), ElementDC(1, M1), ElementDC(2, M2), ElementDC(3, M3), ElementDC(4, M4),
+      ElementDC(5, M5), ElementDC(6, M6), ElementDC(7, M7), ElementDC(8, M8), ElementDC(9, M9)
+    };
 
     //*************************************************************************
     template <typename T1, typename T2>
@@ -182,35 +202,6 @@ namespace
     {
       SetupFixture()
       {
-        ElementNDC n[] =
-        {
-          ElementNDC(0, N0), ElementNDC(1, N1), ElementNDC(2, N2), ElementNDC(3, N3), ElementNDC(4, N4),
-          ElementNDC(5, N5), ElementNDC(6, N6), ElementNDC(7, N7), ElementNDC(8, N8), ElementNDC(9, N9)
-        };
-
-        ElementNDC n2[] =
-        {
-          ElementNDC(0, N0), ElementNDC(1, N1), ElementNDC(2, N2), ElementNDC(3, N3), ElementNDC(4, N4),
-          ElementNDC(5, N5), ElementNDC(6, N6), ElementNDC(7, N7), ElementNDC(8, N8), ElementNDC(9, N9),
-          ElementNDC(10, N10)
-        };
-
-        ElementNDC n3[] =
-        {
-          ElementNDC(10, N10), ElementNDC(11, N11), ElementNDC(12, N12), ElementNDC(13, N13), ElementNDC(14, N14),
-          ElementNDC(15, N15), ElementNDC(16, N16), ElementNDC(17, N17), ElementNDC(18, N18), ElementNDC(19, N19)
-        };
-
-        ElementDC n4[] =
-        {
-          ElementDC(0, M0), ElementDC(1, M1), ElementDC(2, M2), ElementDC(3, M3), ElementDC(4, M4),
-          ElementDC(5, M5), ElementDC(6, M6), ElementDC(7, M7), ElementDC(8, M8), ElementDC(9, M9)
-        };
-
-        initial_data.assign(std::begin(n), std::end(n));
-        excess_data.assign(std::begin(n2), std::end(n2));
-        different_data.assign(std::begin(n3), std::end(n3));
-        initial_data_dc.assign(std::begin(n4), std::end(n4));
       }
     };
 
@@ -344,7 +335,7 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.at(10), etl::reference_flat_map_out_of_bounds);
+      CHECK_THROW(data.at(10), etl::flat_map_out_of_bounds);
     }
 
     //*************************************************************************
@@ -370,7 +361,7 @@ namespace
     {
       const DataNDC data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.at(10), etl::reference_flat_map_out_of_bounds);
+      CHECK_THROW(data.at(10), etl::flat_map_out_of_bounds);
     }
 
 
@@ -514,7 +505,7 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
 
       DataNDC::value_type item10(10, N10);
-      CHECK_THROW(data.insert(item10), etl::reference_flat_map_full);
+      CHECK_THROW(data.insert(item10), etl::flat_map_full);
     }
 
     //*************************************************************************
@@ -538,7 +529,7 @@ namespace
     {
       DataNDC data;
 
-      CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::reference_flat_map_full);
+      CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::flat_map_full);
     }
 
     //*************************************************************************
