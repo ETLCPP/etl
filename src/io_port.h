@@ -511,7 +511,7 @@ namespace etl
     }
 
     // Constructor.
-    io_port_rw(uint8_t* address_)
+    io_port_rw(void* address_)
       : address(reinterpret_cast<pointer_t>(address_))
     {
     }
