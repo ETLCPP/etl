@@ -3017,5 +3017,27 @@ namespace
 
       CHECK_EQUAL(position1, position2);
     }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_memcpy)
+    {
+      Text text;
+
+      text.assign(STR("ABCDEF"));
+
+      char buffer[sizeof(Text)];
+
+      memcpy(&buffer, &text, sizeof(text));
+
+      Text& text2(*reinterpret_cast<Text*>(buffer));
+      text2.repair();
+
+      bool is_equal = Equal(text, text2);
+      CHECK(is_equal);
+
+      text = "GHIJKL";
+      is_equal = Equal(text, text2);
+      CHECK(!is_equal);
+    }
   };
 }
