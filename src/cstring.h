@@ -36,7 +36,7 @@ SOFTWARE.
 #include "hash.h"
 
 #if defined(ETL_COMPILER_MICROSOFT)
-  #undef min
+#undef min
 #endif
 
 namespace etl
@@ -185,19 +185,21 @@ namespace etl
   //*************************************************************************
   /// Hash function.
   //*************************************************************************
+#if ETL_8BIT_SUPPORT
   template <>
   struct hash<etl::istring>
   {
     size_t operator()(const etl::istring& text) const
     {
-      return etl::__private_hash__::generic_hash<>(reinterpret_cast<const uint8_t*>(&text[0]), 
-                                                   reinterpret_cast<const uint8_t*>(&text[text.size()]));
+      return etl::__private_hash__::generic_hash<>(reinterpret_cast<const uint8_t*>(&text[0]),
+        reinterpret_cast<const uint8_t*>(&text[text.size()]));
     }
   };
+#endif
 }
 
 #if defined(ETL_COMPILER_MICROSOFT)
-  #define min(a,b) (((a) < (b)) ? (a) : (b))
+#define min(a,b) (((a) < (b)) ? (a) : (b))
 #endif
 
 #endif
