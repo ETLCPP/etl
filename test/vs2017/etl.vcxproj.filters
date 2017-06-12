@@ -698,18 +698,6 @@
     <ClCompile Include="..\test_vector_non_trivial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_reference_flat_map.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_reference_flat_multimap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_reference_flat_multiset.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_reference_flat_set.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\unittest-cpp\UnitTest++\AssertException.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

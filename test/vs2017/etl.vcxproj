@@ -382,10 +382,6 @@
     <ClCompile Include="..\test_random.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\test_reference_flat_map.cpp" />
-    <ClCompile Include="..\test_reference_flat_multimap.cpp" />
-    <ClCompile Include="..\test_reference_flat_multiset.cpp" />
-    <ClCompile Include="..\test_reference_flat_set.cpp" />
     <ClCompile Include="..\test_set.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
