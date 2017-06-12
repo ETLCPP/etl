@@ -328,7 +328,7 @@ namespace etl
 
   protected:
 
-    typedef typename etl::parameter_type<TKey>::type key_value_parameter_t;
+    typedef typename etl::parameter_type<TKey>::type key_parameter_t;
 
   private:
 
@@ -531,7 +531,7 @@ namespace etl
     ///\param key The key to erase.
     ///\return The number of elements erased. 0 or 1.
     //*********************************************************************
-    size_t erase(key_value_parameter_t key)
+    size_t erase(key_parameter_t key)
     {
       std::pair<iterator, iterator> range = equal_range(key);
 
@@ -594,7 +594,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pointing to the element or end() if not found.
     //*********************************************************************
-    iterator find(key_value_parameter_t key)
+    iterator find(key_parameter_t key)
     {
       iterator itr = lower_bound(key);
 
@@ -618,7 +618,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pointing to the element or end() if not found.
     //*********************************************************************
-    const_iterator find(key_value_parameter_t key) const
+    const_iterator find(key_parameter_t key) const
     {
       const_iterator itr = lower_bound(key);
 
@@ -642,7 +642,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return 1 if the key exists, otherwise 0.
     //*********************************************************************
-    size_t count(key_value_parameter_t key) const
+    size_t count(key_parameter_t key) const
     {
       std::pair<const_iterator, const_iterator> range = equal_range(key);
 
@@ -654,7 +654,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    iterator lower_bound(key_value_parameter_t key)
+    iterator lower_bound(key_parameter_t key)
     {
       return std::lower_bound(begin(), end(), key, compare());
     }
@@ -664,7 +664,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    const_iterator lower_bound(key_value_parameter_t key) const
+    const_iterator lower_bound(key_parameter_t key) const
     {
       return std::lower_bound(cbegin(), cend(), key, compare());
     }
@@ -674,7 +674,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    iterator upper_bound(key_value_parameter_t key)
+    iterator upper_bound(key_parameter_t key)
     {
       return std::upper_bound(begin(), end(), key, compare());
     }
@@ -684,7 +684,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    const_iterator upper_bound(key_value_parameter_t key) const
+    const_iterator upper_bound(key_parameter_t key) const
     {
       return std::upper_bound(begin(), end(), key, compare());
     }
@@ -694,7 +694,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    std::pair<iterator, iterator> equal_range(key_value_parameter_t key)
+    std::pair<iterator, iterator> equal_range(key_parameter_t key)
     {
       iterator i_lower = std::lower_bound(begin(), end(), key, compare());
 
@@ -706,7 +706,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    std::pair<const_iterator, const_iterator> equal_range(key_value_parameter_t key) const
+    std::pair<const_iterator, const_iterator> equal_range(key_parameter_t key) const
     {
       const_iterator i_lower = std::lower_bound(cbegin(), cend(), key, compare());
 
