@@ -33,9 +33,14 @@ SOFTWARE.
 
 #include <stddef.h>
 
-#include "exception.h"
+#include "platform.h"
 #include "vector.h"
 #include "error_handler.h"
+#include "debug_count.h"
+#include "type_traits.h"
+#include "parameter_type.h"
+#include "exception.h"
+#include "static_assert.h"
 
 #undef ETL_FILE
 #define ETL_FILE "30"
@@ -54,11 +59,11 @@ namespace etl
   ///\ingroup reference_flat_map
   /// Exception base for reference_flat_maps
   //***************************************************************************
-  class reference_flat_map_exception : public exception
+  class flat_map_exception : public etl::exception
   {
   public:
 
-    reference_flat_map_exception(string_type what, string_type file_name, numeric_type line_number)
+    flat_map_exception(string_type what, string_type file_name, numeric_type line_number)
       : exception(what, file_name, line_number)
     {
     }
@@ -68,12 +73,12 @@ namespace etl
   ///\ingroup reference_flat_map
   /// Vector full exception.
   //***************************************************************************
-  class reference_flat_map_full : public reference_flat_map_exception
+  class flat_map_full : public etl::flat_map_exception
   {
   public:
 
-    reference_flat_map_full(string_type file_name, numeric_type line_number)
-      : reference_flat_map_exception(ETL_ERROR_TEXT("reference_flat_map: full", ETL_FILE"A"), file_name, line_number)
+    flat_map_full(string_type file_name, numeric_type line_number)
+      : flat_map_exception(ETL_ERROR_TEXT("flat_map: full", ETL_FILE"A"), file_name, line_number)
     {
     }
   };
@@ -82,12 +87,12 @@ namespace etl
   ///\ingroup reference_flat_map
   /// Vector out of bounds exception.
   //***************************************************************************
-  class reference_flat_map_out_of_bounds : public reference_flat_map_exception
+  class flat_map_out_of_bounds : public etl::flat_map_exception
   {
   public:
 
-    reference_flat_map_out_of_bounds(string_type file_name, numeric_type line_number)
-      : reference_flat_map_exception(ETL_ERROR_TEXT("reference_flat_map:bounds", ETL_FILE"B"), file_name, line_number)
+    flat_map_out_of_bounds(string_type file_name, numeric_type line_number)
+      : flat_map_exception(ETL_ERROR_TEXT("flat_map:bounds", ETL_FILE"B"), file_name, line_number)
     {
     }
   };
@@ -102,9 +107,9 @@ namespace etl
   {
   public:
 
-    typedef std::pair<TKey, TMapped> value_type;
+    typedef std::pair<const TKey, TMapped> value_type;
 
-  private:
+  protected:
 
     typedef etl::ivector<value_type*> lookup_t;
 
@@ -317,7 +322,7 @@ namespace etl
 
   protected:
 
-    typedef typename etl::parameter_type<TKey>::type key_value_parameter_t;
+    typedef typename etl::parameter_type<TKey>::type key_parameter_t;
 
   private:
 
@@ -454,11 +459,11 @@ namespace etl
     ///\param i The index.
     ///\return A reference to the value at index 'key'
     //*********************************************************************
-    mapped_type& operator [](key_value_parameter_t key)
+    mapped_type& operator [](key_parameter_t key)
     {
       iterator i_element = lower_bound(key);
 
-      ETL_ASSERT(i_element != end(), ETL_ERROR(reference_flat_map_out_of_bounds));
+      ETL_ASSERT(i_element != end(), ETL_ERROR(flat_map_out_of_bounds));
 
       return i_element->second;
     }
@@ -468,11 +473,11 @@ namespace etl
     ///\param i The index.
     ///\return A const reference to the value at index 'key'
     //*********************************************************************
-    const mapped_type& operator [](key_value_parameter_t key) const
+    const mapped_type& operator [](key_parameter_t key) const
     {
       iterator i_element = lower_bound(key);
 
-      ETL_ASSERT(i_element != end(), ETL_ERROR(reference_flat_map_out_of_bounds));
+      ETL_ASSERT(i_element != end(), ETL_ERROR(flat_map_out_of_bounds));
 
       return i_element->second;
     }
@@ -483,11 +488,11 @@ namespace etl
     ///\param i The index.
     ///\return A reference to the value at index 'key'
     //*********************************************************************
-    mapped_type& at(key_value_parameter_t key)
+    mapped_type& at(key_parameter_t key)
     {
       iterator i_element = lower_bound(key);
 
-      ETL_ASSERT(i_element != end(), ETL_ERROR(reference_flat_map_out_of_bounds));
+      ETL_ASSERT(i_element != end(), ETL_ERROR(flat_map_out_of_bounds));
 
       return i_element->second;
     }
@@ -498,11 +503,11 @@ namespace etl
     ///\param i The index.
     ///\return A const reference to the value at index 'key'
     //*********************************************************************
-    const mapped_type& at(key_value_parameter_t key) const
+    const mapped_type& at(key_parameter_t key) const
     {
       const_iterator i_element = lower_bound(key);
 
-      ETL_ASSERT(i_element != end(), ETL_ERROR(reference_flat_map_out_of_bounds));
+      ETL_ASSERT(i_element != end(), ETL_ERROR(flat_map_out_of_bounds));
 
       return i_element->second;
     }
@@ -517,9 +522,11 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
+      STATIC_ASSERT((etl::is_same<value_type, typename std::iterator_traits<TIterator>::value_type>::value), "Incompatible data for assign");
+
 #if defined(ETL_DEBUG)
       difference_type count = std::distance(first, last);
-      ETL_ASSERT(count <= difference_type(capacity()), ETL_ERROR(reference_flat_map_full));
+      ETL_ASSERT(count <= difference_type(capacity()), ETL_ERROR(flat_map_full));
 #endif
 
       clear();
@@ -574,7 +581,7 @@ namespace etl
     ///\param key The key to erase.
     ///\return The number of elements erased. 0 or 1.
     //*********************************************************************
-    size_t erase(key_value_parameter_t key)
+    size_t erase(key_parameter_t key)
     {
       iterator i_element = find(key);
 
@@ -623,7 +630,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pointing to the element or end() if not found.
     //*********************************************************************
-    iterator find(key_value_parameter_t key)
+    iterator find(key_parameter_t key)
     {
       iterator itr = lower_bound(key);
 
@@ -647,7 +654,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pointing to the element or end() if not found.
     //*********************************************************************
-    const_iterator find(key_value_parameter_t key) const
+    const_iterator find(key_parameter_t key) const
     {
       const_iterator itr = lower_bound(key);
 
@@ -671,7 +678,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return 1 if the key exists, otherwise 0.
     //*********************************************************************
-    size_t count(key_value_parameter_t key) const
+    size_t count(key_parameter_t key) const
     {
       return (find(key) == end()) ? 0 : 1;
     }
@@ -681,7 +688,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    iterator lower_bound(key_value_parameter_t key)
+    iterator lower_bound(key_parameter_t key)
     {
       return std::lower_bound(begin(), end(), key, compare());
     }
@@ -691,7 +698,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    const_iterator lower_bound(key_value_parameter_t key) const
+    const_iterator lower_bound(key_parameter_t key) const
     {
       return std::lower_bound(cbegin(), cend(), key, compare());
     }
@@ -701,7 +708,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    iterator upper_bound(key_value_parameter_t key)
+    iterator upper_bound(key_parameter_t key)
     {
       return std::upper_bound(begin(), end(), key, compare());
     }
@@ -711,7 +718,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    const_iterator upper_bound(key_value_parameter_t key) const
+    const_iterator upper_bound(key_parameter_t key) const
     {
       return std::upper_bound(begin(), end(), key, compare());
     }
@@ -721,7 +728,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    std::pair<iterator, iterator> equal_range(key_value_parameter_t key)
+    std::pair<iterator, iterator> equal_range(key_parameter_t key)
     {
       iterator i_lower = std::lower_bound(begin(), end(), key, compare());
 
@@ -733,7 +740,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    std::pair<const_iterator, const_iterator> equal_range(key_value_parameter_t key) const
+    std::pair<const_iterator, const_iterator> equal_range(key_parameter_t key) const
     {
       const_iterator i_lower = std::lower_bound(cbegin(), cend(), key, compare());
 
@@ -804,8 +811,6 @@ namespace etl
     {
     }
 
-  private:
-
     //*********************************************************************
     /// Inserts a value to the reference_flat_map.
     ///\param i_element The place to insert.
@@ -818,7 +823,7 @@ namespace etl
       if (i_element == end())
       {
         // At the end.
-        ETL_ASSERT(!lookup.full(), ETL_ERROR(reference_flat_map_full));
+        ETL_ASSERT(!lookup.full(), ETL_ERROR(flat_map_full));
 
         lookup.push_back(&value);
         result.first = --end();
@@ -833,7 +838,7 @@ namespace etl
         if (value.first != i_element->first)
         {
           // A new one.
-          ETL_ASSERT(!lookup.full(), ETL_ERROR(reference_flat_map_full));
+          ETL_ASSERT(!lookup.full(), ETL_ERROR(flat_map_full));
           lookup.insert(i_element.ilookup, &value);
           result.second = true;
         }
@@ -841,6 +846,8 @@ namespace etl
 
       return result;
     }
+
+  private:
 
     // Disable copy construction and assignment.
     ireference_flat_map(const ireference_flat_map&);
