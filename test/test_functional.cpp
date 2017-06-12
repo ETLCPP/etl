@@ -35,7 +35,7 @@ SOFTWARE.
 #include <numeric>
 
 namespace
-{		
+{
   SUITE(test_functional)
   {
     //*************************************************************************
@@ -54,15 +54,39 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_reference_wrapper_vector)
+    {
+      std::vector<etl::reference_wrapper<int>> ref_int;
+
+      int a = 1;
+      int b = 2;
+
+      ref_int.push_back(etl::ref(a));
+      ref_int.push_back(etl::ref(b));
+
+      CHECK_EQUAL(a, ref_int[0]);
+      CHECK_EQUAL(b, ref_int[1]);
+
+      ref_int[0] = 3;
+      ref_int[1] = 4;
+
+      CHECK_EQUAL(3, a);
+      CHECK_EQUAL(4, b);
+
+      CHECK_EQUAL(3, ref_int[0]);
+      CHECK_EQUAL(4, ref_int[1]);
+    }
+
+    //*************************************************************************
     TEST(test_reference_wrapper_container)
     {
-      std::list<int> test    = { 0, 1, 2, 3, 4 };
+      std::list<int> test = { 0, 1, 2, 3, 4 };
       std::list<int> compare = { 5, 6, 7, 8, 9 };
       std::vector<etl::reference_wrapper<int>> test_ref(test.begin(), test.end());
-      
+
       std::iota(test_ref.begin(), test_ref.end(), 5);
 
-      std::list<int>::const_iterator itest    = test.begin();
+      std::list<int>::const_iterator itest = test.begin();
       std::list<int>::const_iterator icompare = compare.begin();
       std::vector<etl::reference_wrapper<int>>::const_iterator ivector = test_ref.begin();
 
