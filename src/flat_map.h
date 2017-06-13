@@ -69,7 +69,7 @@ namespace etl
   private:
 
     typedef etl::ireference_flat_map<TKey, TMapped, TKeyCompare> refmap_t;
-    typedef refmap_t::lookup_t lookup_t;
+    typedef typename refmap_t::lookup_t lookup_t;
     typedef etl::ipool         storage_t;
 
   public:
