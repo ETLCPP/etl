@@ -65,8 +65,8 @@ namespace
   {
   public:
 
-    ItemNDCNode(const std::string& text)
-      : data(text)
+    ItemNDCNode(const std::string& text, int index = 0)
+      : data(text, index)
     {
     }
 
@@ -140,6 +140,7 @@ namespace
 {
   SUITE(test_intrusive_list)
   {
+    InitialDataNDC stable_sort_data;
     InitialDataNDC unsorted_data;
     InitialDataNDC sorted_data;
     InitialDataNDC sorted_data2;
@@ -157,12 +158,13 @@ namespace
     {
       SetupFixture()
       {
-        unsorted_data   = { ItemNDCNode("1"), ItemNDCNode("0"), ItemNDCNode("3"), ItemNDCNode("2"), ItemNDCNode("5"), ItemNDCNode("4"), ItemNDCNode("7"), ItemNDCNode("6"), ItemNDCNode("9"), ItemNDCNode("8") };
-        sorted_data     = { ItemNDCNode("0"), ItemNDCNode("1"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("4"), ItemNDCNode("5"), ItemNDCNode("6"), ItemNDCNode("7"), ItemNDCNode("8"), ItemNDCNode("9") };
-        sorted_data2    = { ItemNDCNode("0"), ItemNDCNode("1"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("4"), ItemNDCNode("5"), ItemNDCNode("6"), ItemNDCNode("7"), ItemNDCNode("8"), ItemNDCNode("9") };
-        non_unique_data = { ItemNDCNode("0"), ItemNDCNode("0"), ItemNDCNode("1"), ItemNDCNode("1"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("3"), ItemNDCNode("3"), ItemNDCNode("4"), ItemNDCNode("5") };
-        unique_data     = { ItemNDCNode("0"), ItemNDCNode("1"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("4"), ItemNDCNode("5") };
-        small_data      = { ItemNDCNode("0"), ItemNDCNode("1"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("4"), ItemNDCNode("5") };
+        stable_sort_data = { ItemNDCNode("1", 1), ItemNDCNode("2", 2), ItemNDCNode("3", 3), ItemNDCNode("2", 4), ItemNDCNode("0", 5), ItemNDCNode("2", 6), ItemNDCNode("7", 7), ItemNDCNode("4", 8), ItemNDCNode("4", 9), ItemNDCNode("8", 10) };
+        unsorted_data    = { ItemNDCNode("1"), ItemNDCNode("0"), ItemNDCNode("3"), ItemNDCNode("2"), ItemNDCNode("5"), ItemNDCNode("4"), ItemNDCNode("7"), ItemNDCNode("6"), ItemNDCNode("9"), ItemNDCNode("8") };
+        sorted_data      = { ItemNDCNode("0"), ItemNDCNode("1"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("4"), ItemNDCNode("5"), ItemNDCNode("6"), ItemNDCNode("7"), ItemNDCNode("8"), ItemNDCNode("9") };
+        sorted_data2     = { ItemNDCNode("0"), ItemNDCNode("1"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("4"), ItemNDCNode("5"), ItemNDCNode("6"), ItemNDCNode("7"), ItemNDCNode("8"), ItemNDCNode("9") };
+        non_unique_data  = { ItemNDCNode("0"), ItemNDCNode("0"), ItemNDCNode("1"), ItemNDCNode("1"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("3"), ItemNDCNode("3"), ItemNDCNode("4"), ItemNDCNode("5") };
+        unique_data      = { ItemNDCNode("0"), ItemNDCNode("1"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("4"), ItemNDCNode("5") };
+        small_data       = { ItemNDCNode("0"), ItemNDCNode("1"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("4"), ItemNDCNode("5") };
 
         merge_data0 = { ItemNDCNode("1"), ItemNDCNode("1"), ItemNDCNode("3"), ItemNDCNode("3"), ItemNDCNode("5"), ItemNDCNode("7"), ItemNDCNode("8") };
         merge_data1 = { ItemNDCNode("1"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("3"), ItemNDCNode("6"), ItemNDCNode("9"), ItemNDCNode("9") };
@@ -785,6 +787,29 @@ namespace
 
       are_equal = std::equal(data1.begin(), data1.end(), unsorted_data.begin());
       CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_stable_sort)
+    {
+      std::list<ItemNDCNode> compare_data(stable_sort_data.begin(), stable_sort_data.end());
+      DataNDC0 data(stable_sort_data.begin(), stable_sort_data.end());
+
+      compare_data.sort();
+      data.sort();
+
+      std::list<ItemNDCNode>::const_iterator citr = compare_data.begin();
+      DataNDC0::const_iterator ditr = data.begin();
+
+      while (ditr != data.end())
+      {
+        const ItemNDC& v = ditr->data;
+
+        CHECK_EQUAL(citr->data.index, ditr->data.index);
+
+        ++citr;
+        ++ditr;
+      }
     }
 
     //*************************************************************************

@@ -451,7 +451,7 @@ namespace etl
 
       const_pointer operator &() const
       {
-        return iforward_list::data_cast(p_node)->value;
+        return &(iforward_list::data_cast(p_node)->value);
       }
 
       const_pointer operator ->() const
@@ -980,7 +980,7 @@ namespace etl
               ++p_left;
               --left_size;
             }
-            else if (compare(*p_left, *p_right))
+            else if (!compare(*p_right, *p_left))
             {
               // First node of left is lower or same. The node must come from left.
               p_node = p_left;

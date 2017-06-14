@@ -40,12 +40,14 @@ class TestDataDC
 public:
 
   TestDataDC()
-  : value(T())
+  : value(T()),
+    index(0)
   {
   }
 
-  TestDataDC(const T& value)
-    : value(value)
+  TestDataDC(const T& value, int index = 0)
+    : value(value),
+      index(index)
   {
   }
 
@@ -59,7 +61,8 @@ public:
     return value > other.value;
   }
 
-  T value;
+  T   value;
+  int index;
 };
 
 template <typename T>
@@ -89,8 +92,9 @@ class TestDataNDC
 {
 public:
 
-  TestDataNDC(const T& value)
-    : value(value)
+  TestDataNDC(const T& value, int index = 0)
+    : value(value),
+      index(index)
   {}
 
   bool operator < (const TestDataNDC& other) const
@@ -104,6 +108,7 @@ public:
   }
 
   T value;
+  int index;
 };
 
 template <typename T>
