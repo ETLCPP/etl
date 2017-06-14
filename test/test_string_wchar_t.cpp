@@ -3017,6 +3017,20 @@ namespace
 
       CHECK_EQUAL(position1, position2);
     }
-  };
 
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_hash)
+    {
+      // Test with actual string type.
+      Text text(STR("ABCDEFHIJKL"));
+      size_t hash = etl::hash<Text>()(text);
+      size_t compare_hash = etl::fnv_1a_32(reinterpret_cast<const uint8_t*>(&text[0]), reinterpret_cast<const uint8_t*>(&text[text.size()]));
+      CHECK_EQUAL(compare_hash, hash);
+
+      // Test with interface string type.
+      IText& itext = text;
+      hash = etl::hash<IText>()(itext);
+      CHECK_EQUAL(compare_hash, hash);
+    }
+  };
 }
