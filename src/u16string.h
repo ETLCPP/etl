@@ -192,7 +192,17 @@ namespace etl
     size_t operator()(const etl::iu16string& text) const
     {
       return etl::__private_hash__::generic_hash<>(reinterpret_cast<const uint8_t*>(&text[0]),
-        reinterpret_cast<const uint8_t*>(&text[text.size()]));
+                                                   reinterpret_cast<const uint8_t*>(&text[text.size()]));
+    }
+  };
+
+  template <const size_t SIZE>
+  struct hash<etl::u16string<SIZE> >
+  {
+    size_t operator()(const etl::u16string<SIZE>& text) const
+    {
+      return etl::__private_hash__::generic_hash<>(reinterpret_cast<const uint8_t*>(&text[0]),
+                                                   reinterpret_cast<const uint8_t*>(&text[text.size()]));
     }
   };
 #endif
