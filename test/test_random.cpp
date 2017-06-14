@@ -63,17 +63,17 @@ namespace
 
       std::generate(out1.begin(), out1.end(), generator(r));
 
-      std::ofstream file("random.csv");
+      //std::ofstream file("random.csv");
 
-      if (!file.fail())
-      {
-        for (size_t i = 0; i < out1.size(); i += 2)
-        {
-          file << (out1[i] >> 16) << "," << (out1[i + 1] >> 16) << "\n";
-        }
-      }
+      //if (!file.fail())
+      //{
+      //  for (size_t i = 0; i < out1.size(); i += 2)
+      //  {
+      //    file << (out1[i] >> 16) << "," << (out1[i + 1] >> 16) << "\n";
+      //  }
+      //}
 
-      file.close();
+      //file.close();
     }
   };
 }
