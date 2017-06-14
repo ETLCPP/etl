@@ -558,12 +558,12 @@ namespace etl
 
       const_pointer operator &() const
       {
-        return ilist::data_cast(p_node)->value;
+        return &(ilist::data_cast(p_node)->value);
       }
 
-      const data_node_t* operator ->() const
+      const_pointer operator ->() const
       {
-        return p_node;
+        return &(ilist::data_cast(p_node)->value);
       }
 
       friend bool operator == (const const_iterator& lhs, const const_iterator& rhs)
@@ -1186,7 +1186,7 @@ namespace etl
               i_node = i_left++;
               --left_size;
             }
-            else if (compare(*i_left, *i_right))
+            else if (!compare(*i_right, *i_left))
             {
               // First node of left is lower or same. The node must come from left.
               i_node = i_left++;

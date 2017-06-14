@@ -702,7 +702,7 @@ namespace etl
               i_node = i_left++;
               --left_size;
             }
-            else if (compare(*i_left, *i_right))
+            else if (!compare(*i_right, *i_left))
             {
               // First node of left is lower or same. The node must come from left.
               i_node = i_left++;

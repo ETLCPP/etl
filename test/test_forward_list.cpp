@@ -38,6 +38,7 @@ SOFTWARE.
 #include <forward_list>
 #include <vector>
 #include <string>
+#include <list>
 
 namespace
 {
@@ -56,6 +57,7 @@ namespace
     typedef std::forward_list<ItemNDC> CompareDataNDC;
     typedef std::vector<ItemNDC> InitialDataNDC;
 
+    InitialDataNDC stable_sort_data;
     InitialDataNDC unsorted_data;
     InitialDataNDC sorted_data;
     InitialDataNDC non_unique_data;
@@ -68,10 +70,11 @@ namespace
     {
       SetupFixture()
       {
-        unsorted_data   = { ItemNDC("1"), ItemNDC("0"), ItemNDC("3"), ItemNDC("2"), ItemNDC("5"), ItemNDC("4"), ItemNDC("7"), ItemNDC("6"), ItemNDC("9"), ItemNDC("8") };
-        sorted_data     = { ItemNDC("0"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3"), ItemNDC("4"), ItemNDC("5"), ItemNDC("6"), ItemNDC("7"), ItemNDC("8"), ItemNDC("9") };
-        non_unique_data = { ItemNDC("0"), ItemNDC("0"), ItemNDC("1"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3"), ItemNDC("3"), ItemNDC("3"), ItemNDC("4"), ItemNDC("5") };
-        small_data      = { ItemNDC("0"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3"), ItemNDC("4"), ItemNDC("5") };
+        stable_sort_data = { ItemNDC("1", 1), ItemNDC("2", 2), ItemNDC("3", 3), ItemNDC("2", 4), ItemNDC("0", 5), ItemNDC("2", 6), ItemNDC("7", 7), ItemNDC("4", 8), ItemNDC("4", 9), ItemNDC("8", 10) };
+        unsorted_data    = { ItemNDC("1"), ItemNDC("0"), ItemNDC("3"), ItemNDC("2"), ItemNDC("5"), ItemNDC("4"), ItemNDC("7"), ItemNDC("6"), ItemNDC("9"), ItemNDC("8") };
+        sorted_data      = { ItemNDC("0"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3"), ItemNDC("4"), ItemNDC("5"), ItemNDC("6"), ItemNDC("7"), ItemNDC("8"), ItemNDC("9") };
+        non_unique_data  = { ItemNDC("0"), ItemNDC("0"), ItemNDC("1"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3"), ItemNDC("3"), ItemNDC("3"), ItemNDC("4"), ItemNDC("5") };
+        small_data       = { ItemNDC("0"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3"), ItemNDC("4"), ItemNDC("5") };
       }
     };
 
@@ -260,7 +263,7 @@ namespace
       data.assign(compare_data.begin(), compare_data.end());
       data.assign(compare_data.begin(), compare_data.end());
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -279,7 +282,7 @@ namespace
       data.assign(INITIAL_SIZE, VALUE);
       data.assign(INITIAL_SIZE, VALUE);
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -316,7 +319,7 @@ namespace
       data.insert_after(i_data, INSERT_VALUE);
       compare_data.insert_after(i_compare_data, INSERT_VALUE);
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -332,7 +335,7 @@ namespace
       data.insert_after(i_data, INSERT_VALUE);
       compare_data.insert_after(i_compare_data, INSERT_VALUE);
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -359,7 +362,7 @@ namespace
       data.insert_after(i_data, 2, INSERT_VALUE);
       compare_data.insert_after(i_compare_data, 2, INSERT_VALUE);
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -375,7 +378,7 @@ namespace
       data.insert_after(i_data, 2, INSERT_VALUE);
       compare_data.insert_after(i_compare_data, 2, INSERT_VALUE);
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -393,7 +396,7 @@ namespace
       compare_data.insert_after(compare_data.before_begin(), test2.begin(), test2.end());
       data.insert_after(data.before_begin(), test2.begin(), test2.end());
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -410,7 +413,7 @@ namespace
       compare_data.insert_after(icd, test2.begin(), test2.end());
       data.insert_after(id, test2.begin(), test2.end());
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -439,7 +442,7 @@ namespace
       CHECK_EQUAL(6U, data.size());
       CHECK_EQUAL(6, std::distance(data.begin(), data.end()));
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -566,7 +569,7 @@ namespace
       i_compare_data = compare_data.erase_after(i_compare_data);
       i_data         = data.erase_after(i_data);
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -575,7 +578,7 @@ namespace
       i_compare_data = compare_data.erase_after(compare_data.begin());
       i_data         = data.erase_after(data.begin());
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -592,7 +595,7 @@ namespace
       //std::advance(i_data, data.size() - 1);
       i_data = data.erase_after(i_data);
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
 
@@ -625,7 +628,7 @@ namespace
 
       CHECK_EQUAL(*i_compare_result, *i_result);
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -649,7 +652,7 @@ namespace
 
       CHECK(i_result == data.end());
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -728,7 +731,7 @@ namespace
       compare_data.unique();
       data.unique();
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -743,7 +746,7 @@ namespace
       compare_data.unique();
       data.unique();
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -758,7 +761,7 @@ namespace
       compare_data.remove(ItemNDC("7"));
       data.remove(ItemNDC("7"));
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -773,7 +776,7 @@ namespace
       compare_data.remove_if(std::bind2nd(std::equal_to<ItemNDC>(), ItemNDC("7")));
       data.remove_if(std::bind2nd(std::equal_to<ItemNDC>(), ItemNDC("7")));
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -791,7 +794,7 @@ namespace
       CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
       CHECK_EQUAL(data.size(), size_t(std::distance(data.begin(), data.end())));
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -819,10 +822,33 @@ namespace
       compare_data.sort();
       data.sort();
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_stable_sort)
+    {
+      std::list<ItemNDC> compare_data(stable_sort_data.begin(), stable_sort_data.end());
+      DataNDC data(stable_sort_data.begin(), stable_sort_data.end());
+
+      compare_data.sort();
+      data.sort();
+
+      std::list<ItemNDC>::const_iterator citr = compare_data.begin();
+      DataNDC::const_iterator        ditr = data.begin();
+
+      while (ditr != data.end())
+      {
+        const ItemNDC& v = *ditr;
+
+        CHECK_EQUAL(citr->index, ditr->index);
+
+        ++citr;
+        ++ditr;
+      }
     }
 
     //*************************************************************************
@@ -834,7 +860,7 @@ namespace
       compare_data.sort();
       data.sort();
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -865,7 +891,7 @@ namespace
       compare_data.splice_after(i_compare_to_before, compare_data, i_compare_from_before);
       data.move_after(i_from_before, i_to_before);
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -886,7 +912,7 @@ namespace
       compare_data.splice_after(i_compare_to_before, compare_data, i_compare_from_before);
       data.move_after(i_from_before, i_to_before);
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -907,7 +933,7 @@ namespace
       compare_data.splice_after(i_compare_to_before, compare_data, i_compare_from_before);
       data.move_after(i_from_before, i_to_before);
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -928,7 +954,7 @@ namespace
       compare_data.splice_after(i_compare_to_before, compare_data, i_compare_from_before);
       data.move_after(i_from_before, i_to_before);
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
@@ -967,7 +993,7 @@ namespace
       compare_data.splice_after(i_compare_to_before, compare_data, i_compare_first_before, i_compare_last);
       data.move_after(i_first_before, i_last, i_to_before);
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);

@@ -687,7 +687,7 @@ namespace etl
               ++i_left;
               --left_size;
             }
-            else if (compare(*i_left, *i_right))
+            else if (!compare(*i_right, *i_left))
             {
               // First link of left is lower or same. The link must come from left.
               i_link = i_left;
