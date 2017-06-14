@@ -212,8 +212,6 @@
     <ClInclude Include="..\..\src\flat_map.h" />
     <ClInclude Include="..\..\src\map.h" />
     <ClInclude Include="..\..\src\memory.h" />
-    <ClInclude Include="..\..\src\message_processor.h" />
-    <ClInclude Include="..\..\src\message_processor_generator.h" />
     <ClInclude Include="..\..\src\mru_cache.h" />
     <ClInclude Include="..\..\src\multimap.h" />
     <ClInclude Include="..\..\src\multiset.h" />
@@ -412,7 +410,6 @@
   <ItemGroup>
     <None Include="..\..\Doxyfile" />
     <None Include="..\..\library.properties" />
-    <None Include="..\..\src\CreateMessageProcessor.bat" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\src\file_error_numbers.txt" />
