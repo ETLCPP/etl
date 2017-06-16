@@ -464,7 +464,7 @@ namespace etl
       std::copy(first, last, position);
       p_end += count;
     }
-    
+
     //*********************************************************************
     /// Erases an element.
     ///\param i_element Iterator to the element.
@@ -564,6 +564,17 @@ namespace etl
     void initialise()
     {
       p_end = p_buffer;
+    }
+
+    //*************************************************************************
+    /// Fix the internal pointers after a low level memory copy.
+    //*************************************************************************
+    void fixup(void** p_buffer_)
+    {
+      uintptr_t length = p_end - p_buffer;
+
+      p_buffer = p_buffer_;
+      p_end    = p_buffer_ + length;
     }
 
     void** p_buffer;

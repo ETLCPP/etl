@@ -33,6 +33,10 @@ SOFTWARE.
 
 #define __ETL_IN_VECTOR_H__
 
+#ifdef ETL_C11_TYPE_TRAITS_SUPPORTED
+#include <type_traits>
+#endif
+
 #include <stddef.h>
 #include <stdint.h>
 #include <iterator>
@@ -402,7 +406,7 @@ namespace etl
 
       initialise();
 
-#if defined(ETL_DEBUG)        
+#if defined(ETL_DEBUG)
       p_end = etl::uninitialized_copy(first, last, p_buffer, construct_count);
 #else
       p_end = etl::uninitialized_copy(first, last, p_buffer);
@@ -421,7 +425,7 @@ namespace etl
 
       initialise();
 
-#if defined(ETL_DEBUG)        
+#if defined(ETL_DEBUG)
       p_end = etl::uninitialized_fill_n(p_buffer, n, value, construct_count);
 #else
       p_end = etl::uninitialized_fill_n(p_buffer, n, value);
@@ -751,7 +755,7 @@ namespace etl
         etl::destroy(p_end - n_delete, p_end, construct_count);
 #else
         etl::destroy(p_end - n_delete, p_end);
-#endif          
+#endif
         p_end -= n_delete;
       }
 
@@ -833,14 +837,24 @@ namespace etl
       p_end = p_buffer;
     }
 
+    //*************************************************************************
+    /// Fix the internal pointers after a low level memory copy.
+    //*************************************************************************
+    void fixup(T* p_buffer_)
+    {
+      uintptr_t length = p_end - p_buffer;
+      p_buffer = p_buffer_;
+      p_end    = p_buffer_ + length;
+    }
+
   private:
 
     pointer p_buffer; ///< Pointer to the start of the buffer.
     pointer p_end;    ///< Pointer to one past the last element in the buffer.
 
-                      //*********************************************************************
-                      /// Create a new element with a default value at the back.
-                      //*********************************************************************
+    //*********************************************************************
+    /// Create a new element with a default value at the back.
+    //*********************************************************************
     inline void create_back()
     {
 #if defined(ETL_DEBUG)
@@ -1048,11 +1062,23 @@ namespace etl
       return *this;
     }
 
+    //*************************************************************************
+    /// Fix the internal pointers after a low level memory copy.
+    //*************************************************************************
+    void fixup()
+    {
+      #ifdef ETL_C11_TYPE_TRAITS_SUPPORTED
+      ETL_STATIC_ASSERT(std::is_trivially_copyable<T>::value, "The stored type is not compatible with a low level copy");
+      #endif
+
+      etl::ivector<T>::fixup(buffer);
+    }
+
   private:
 
     typename etl::aligned_storage<sizeof(T) * MAX_SIZE, etl::alignment_of<T>::value>::type buffer;
   };
-  
+
   //***************************************************************************
   /// A vector implementation that uses a fixed size buffer.
   ///\tparam T The element type.
@@ -1131,6 +1157,14 @@ namespace etl
       }
 
       return *this;
+    }
+
+    //*************************************************************************
+    /// Fix the internal pointers after a low level memory copy.
+    //*************************************************************************
+    void fixup()
+    {
+      etl::ivector<T*>::fixup(buffer);
     }
 
   private:
