@@ -103,6 +103,20 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup vector
+  /// Vector incompatible type exception.
+  //***************************************************************************
+  class vector_incompatible_type : public vector_exception
+  {
+  public:
+
+    vector_incompatible_type(string_type file_name, numeric_type line_number)
+      : vector_exception(ETL_ERROR_TEXT("vector:type", ETL_FILE"D"), file_name, line_number)
+    {
+    }
+  };
+
+  //***************************************************************************
+  ///\ingroup vector
   /// The base class for all templated vector types.
   //***************************************************************************
   class vector_base

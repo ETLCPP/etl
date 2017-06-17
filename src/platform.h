@@ -83,6 +83,17 @@ SOFTWARE.
 #define ETL_STATIC_ASSERT_SUPPORTED
 #endif
 
+// Check to see if the compiler supports C++11 type traits.
+#if (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER >= 1600)) || \
+    (defined(ETL_COMPILER_GCC) && (__cplusplus >= 201103L))
+#define ETL_C11_TYPE_TRAITS_SUPPORTED
+#endif
+
+#if (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER >= 1600)) || \
+    (defined(ETL_COMPILER_GCC) && (__cplusplus >= 201402L))
+#define ETL_C11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
+#endif
+
 // Some targets do not support 8bit types.
 #define ETL_8BIT_SUPPORT (CHAR_BIT == 8)
 

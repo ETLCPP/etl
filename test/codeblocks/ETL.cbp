@@ -52,6 +52,9 @@
 			<Add option="-std=c++11" />
 			<Add option="-g" />
 			<Add option="-fexceptions" />
+			<Add option="-DETL_IVECTOR_REPAIR_ENABLE" />
+			<Add option="-DETL_ISTRING_REPAIR_ENABLE" />
+			<Add option="-DETL_IDEQUE_REPAIR_ENABLE" />
 			<Add option="-DETL_THROW_EXCEPTIONS" />
 			<Add option="-DETL_VERBOSE_ERRORS" />
 			<Add option="-DETL_CHECK_PUSH_POP" />

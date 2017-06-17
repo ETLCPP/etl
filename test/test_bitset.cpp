@@ -32,8 +32,6 @@ SOFTWARE.
 #include <type_traits>
 #include <bitset>
 
-#define ETL_IN_UNIT_TEST
-
 #include "bitset.h"
 
 #undef min

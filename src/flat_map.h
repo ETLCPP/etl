@@ -309,7 +309,7 @@ namespace etl
         ETL_ASSERT(!refmap_t::full(), ETL_ERROR(flat_map_full));
 
         value_type* pvalue = storage.allocate<value_type>();
-        ::new (pvalue) value_type(value);        
+        ::new (pvalue) value_type(value);
         ++construct_count;
         result = refmap_t::insert_at(i_element, *pvalue);
       }
@@ -686,7 +686,7 @@ namespace etl
 
     /// The pool of nodes.
     etl::pool<node_t, MAX_SIZE> storage;
-    
+
     /// The vector that stores pointers to the nodes.
     etl::vector<node_t*, MAX_SIZE> lookup;
   };

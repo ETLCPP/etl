@@ -1890,6 +1890,13 @@ namespace etl
       return *this;
     }
 
+#ifdef ETL_ISTRING_REPAIR_ENABLE
+    //*************************************************************************
+    /// Fix the internal pointers after a low level memory copy.
+    //*************************************************************************
+    virtual void repair() = 0;
+#endif
+
   protected:
 
     //*********************************************************************
@@ -1908,6 +1915,14 @@ namespace etl
     {
       current_size = 0;
       p_buffer[0] = 0;
+    }
+
+    //*************************************************************************
+    /// Fix the internal pointers after a low level memory copy.
+    //*************************************************************************
+    void repair(T* p_buffer_)
+    {
+      p_buffer = p_buffer_;
     }
 
   private:
@@ -2196,94 +2211,6 @@ namespace etl
   {
     return !(lhs < rhs);
   }
-
-  //***************************************************************************
-  /// A basic_string implementation that uses a fixed size buffer.
-  ///\tparam T The element type.
-  ///\tparam MAX_SIZE_ The maximum number of elements that can be stored.
-  ///\ingroup basic_string
-  //***************************************************************************
-  template <typename T, const size_t MAX_SIZE_>
-  class basic_string : public etl::ibasic_string<T>
-  {
-  public:
-
-    static const size_t MAX_SIZE = MAX_SIZE_;
-
-    //*************************************************************************
-    /// Constructor.
-    //*************************************************************************
-    basic_string()
-      : etl::ibasic_string<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
-    {
-      etl::ibasic_string<T>::initialise();
-    }
-
-    //*************************************************************************
-    /// Constructor, from null terminated text.
-    ///\param text The initial text of the basic_string.
-    //*************************************************************************
-    basic_string(const T* text)
-      : etl::ibasic_string<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
-    {
-      etl::ibasic_string<T>::initialise();
-      etl::ibasic_string<T>::assign(text, text + etl::char_traits<T>::length(text));
-    }
-
-    //*************************************************************************
-    /// Constructor, from null terminated text and count.
-    ///\param text  The initial text of the basic_string.
-    ///\param count The number of characters to copy.
-    //*************************************************************************
-    basic_string(const T* text, size_t count)
-      : etl::ibasic_string<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
-    {
-      etl::ibasic_string<T>::initialise();
-      etl::ibasic_string<T>::assign(text, text + count);
-    }
-    
-    //*************************************************************************
-    /// Constructor, from initial size and value.
-    ///\param initialSize  The initial size of the basic_string.
-    ///\param value        The value to fill the basic_string with.
-    //*************************************************************************
-    basic_string(size_t count, T c)
-      : etl::ibasic_string<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
-    {
-      etl::ibasic_string<T>::initialise();
-      etl::ibasic_string<T>::resize(count, c);
-    }
-
-    //*************************************************************************
-    /// Constructor, from an iterator range.
-    ///\tparam TIterator The iterator type.
-    ///\param first The iterator to the first element.
-    ///\param last  The iterator to the last element + 1.
-    //*************************************************************************
-    template <typename TIterator>
-    basic_string(TIterator first, TIterator last)
-      : etl::ibasic_string<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
-    {
-      etl::ibasic_string<T>::assign(first, last);
-    }
-
-    //*************************************************************************
-    /// Assignment operator.
-    //*************************************************************************
-    basic_string& operator = (const basic_string& rhs)
-    {
-      if (&rhs != this)
-      {
-        etl::ibasic_string<T>::assign(rhs.cbegin(), rhs.cend());
-      }
-
-      return *this;
-    }
-
-  private:
-
-    T buffer[MAX_SIZE + 1];
-  };
 }
 
 #ifdef ETL_COMPILER_MICROSOFT

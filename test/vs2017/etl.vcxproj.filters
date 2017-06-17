@@ -37,6 +37,9 @@
     <Filter Include="ETL\Private">
       <UniqueIdentifier>{7028012c-30c4-4993-b2d9-3b1521a610ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ETL\Frameworks">
+      <UniqueIdentifier>{5de50c3d-4679-4eb3-9b76-e43e1aad6a66}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\doxygen.h">
@@ -335,12 +338,6 @@
     </ClInclude>
     <ClInclude Include="..\..\src\memory.h">
       <Filter>ETL\Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\message_processor.h">
-      <Filter>ETL\Patterns</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\message_processor_generator.h">
-      <Filter>ETL\Patterns</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\reference_flat_map.h">
       <Filter>ETL\Containers</Filter>
@@ -773,7 +770,7 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\..\src\CreateMessageProcessor.bat">
-      <Filter>ETL\Patterns</Filter>
+      <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
