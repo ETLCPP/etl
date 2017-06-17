@@ -1890,6 +1890,13 @@ namespace etl
       return *this;
     }
 
+#ifdef ETL_ISTRING_REPAIR_ENABLE
+    //*************************************************************************
+    /// Fix the internal pointers after a low level memory copy.
+    //*************************************************************************
+    virtual void repair() = 0;
+#endif
+
   protected:
 
     //*********************************************************************
@@ -1908,6 +1915,14 @@ namespace etl
     {
       current_size = 0;
       p_buffer[0] = 0;
+    }
+
+    //*************************************************************************
+    /// Fix the internal pointers after a low level memory copy.
+    //*************************************************************************
+    void repair(T* p_buffer_)
+    {
+      p_buffer = p_buffer_;
     }
 
   private:

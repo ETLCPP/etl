@@ -3019,7 +3019,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_memcpy)
+    TEST_FIXTURE(SetupFixture, test_memcpy_repair)
     {
       Text text;
 
@@ -3029,14 +3029,42 @@ namespace
 
       memcpy(&buffer, &text, sizeof(text));
 
-      Text& text2(*reinterpret_cast<Text*>(buffer));
-      text2.repair();
+      Text& rtext(*reinterpret_cast<Text*>(buffer));
+      rtext.repair();
 
-      bool is_equal = Equal(text, text2);
+      CHECK(!rtext.empty());
+      CHECK(!rtext.full());
+
+      bool is_equal = Equal(text, rtext);
       CHECK(is_equal);
 
-      text = "GHIJKL";
-      is_equal = Equal(text, text2);
+      text = STR("GHIJKL");
+      is_equal = Equal(text, rtext);
+      CHECK(!is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_memcpy_repair_virtual)
+    {
+      Text text;
+
+      text.assign(STR("ABCDEF"));
+
+      char buffer[sizeof(Text)];
+
+      memcpy(&buffer, &text, sizeof(text));
+
+      IText& itext(*reinterpret_cast<IText*>(buffer));
+      itext.repair();
+
+      CHECK(!itext.empty());
+      CHECK(!itext.full());
+
+      bool is_equal = Equal(text, itext);
+      CHECK(is_equal);
+
+      text = STR("GHIJKL");
+      is_equal = Equal(text, itext);
       CHECK(!is_equal);
     }
   };

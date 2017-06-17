@@ -224,7 +224,7 @@ namespace etl
     ///\param value   The value to fill new elements with. Default = default constructed value.
     //*********************************************************************
     template <typename U = T>
-    typename etl::enable_if<etl::has_trivial_constructor<U>::value, void>::type
+    typename etl::enable_if<etl::is_trivially_constructible<U>::value, void>::type
       resize(size_t new_size, T value)
     {
       ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(vector_full));
@@ -258,7 +258,7 @@ namespace etl
     ///\param value   The value to fill new elements with. Default = default constructed value.
     //*********************************************************************
     template <typename U = T>
-    typename etl::enable_if<!etl::has_trivial_constructor<U>::value, void>::type
+    typename etl::enable_if<!etl::is_trivially_constructible<U>::value, void>::type
       resize(size_t new_size, T value)
     {
       ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(vector_full));
@@ -399,6 +399,8 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
+      STATIC_ASSERT((etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename std::iterator_traits<TIterator>::value_type>::type>::value), "Iterator type does not match container type");
+
 #if defined(ETL_DEBUG)
       difference_type count = std::distance(first, last);
       ETL_ASSERT(static_cast<size_t>(count) <= MAX_SIZE, ETL_ERROR(vector_full));
@@ -510,7 +512,7 @@ namespace etl
     ///\param value    The value to insert.
     //*********************************************************************
     template <typename U = T>
-    typename etl::enable_if<etl::has_trivial_constructor<U>::value, void>::type
+    typename etl::enable_if<etl::is_trivially_constructible<U>::value, void>::type
       insert(iterator position, size_t n, parameter_t value)
     {
       ETL_ASSERT((size() + n) <= MAX_SIZE, ETL_ERROR(vector_full));
@@ -530,7 +532,7 @@ namespace etl
     ///\param value    The value to insert.
     //*********************************************************************
     template <typename U = T>
-    typename etl::enable_if<!etl::has_trivial_constructor<U>::value, void>::type
+    typename etl::enable_if<!etl::is_trivially_constructible<U>::value, void>::type
       insert(iterator position, size_t n, parameter_t value)
     {
       ETL_ASSERT((size() + n) <= MAX_SIZE, ETL_ERROR(vector_full));
@@ -598,7 +600,7 @@ namespace etl
     ///\param last     The last + 1 element to add.
     //*********************************************************************
     template <class TIterator, typename U = T>
-    typename etl::enable_if<etl::has_trivial_constructor<U>::value, void>::type
+    typename etl::enable_if<etl::is_trivially_constructible<U>::value, void>::type
       insert(iterator position, TIterator first, TIterator last)
     {
       size_t count = std::distance(first, last);
@@ -628,7 +630,7 @@ namespace etl
     ///\param last     The last + 1 element to add.
     //*********************************************************************
     template <class TIterator, typename U = T>
-    typename etl::enable_if<!etl::has_trivial_constructor<U>::value, void>::type
+    typename etl::enable_if<!etl::is_trivially_constructible<U>::value, void>::type
       insert(iterator position, TIterator first, TIterator last)
     {
       size_t count = std::distance(first, last);
@@ -711,7 +713,7 @@ namespace etl
     ///\return An iterator pointing to the element that followed the erased element.
     //*********************************************************************
     template <typename U = T>
-    typename etl::enable_if<etl::has_trivial_constructor<U>::value, iterator>::type
+    typename etl::enable_if<etl::is_trivially_constructible<U>::value, iterator>::type
       erase(iterator first, iterator last)
     {
       if (first == begin() && last == end())
@@ -738,7 +740,7 @@ namespace etl
     ///\return An iterator pointing to the element that followed the erased element.
     //*********************************************************************
     template <typename U = T>
-    typename etl::enable_if<!etl::has_trivial_constructor<U>::value, iterator>::type
+    typename etl::enable_if<!etl::is_trivially_constructible<U>::value, iterator>::type
       erase(iterator first, iterator last)
     {
       if (first == begin() && last == end())
@@ -811,6 +813,13 @@ namespace etl
       return max_size() - size();
     }
 
+#ifdef ETL_IVECTOR_REPAIR_ENABLE
+    //*************************************************************************
+    /// Fix the internal pointers after a low level memory copy.
+    //*************************************************************************
+    virtual void repair() = 0;
+#endif
+
   protected:
 
     //*********************************************************************
@@ -840,7 +849,7 @@ namespace etl
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
-    void fixup(T* p_buffer_)
+    void repair(T* p_buffer_)
     {
       uintptr_t length = p_end - p_buffer;
       p_buffer = p_buffer_;
@@ -1065,13 +1074,13 @@ namespace etl
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
-    void fixup()
+    void repair()
     {
-      #ifdef ETL_C11_TYPE_TRAITS_SUPPORTED
-      ETL_STATIC_ASSERT(std::is_trivially_copyable<T>::value, "The stored type is not compatible with a low level copy");
+      #ifdef ETL_C11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
+      ETL_ASSERT(std::is_trivially_copyable<T>::value, ETL_ERROR(etl::vector_incompatible_type));
       #endif
 
-      etl::ivector<T>::fixup(buffer);
+      etl::ivector<T>::repair(buffer);
     }
 
   private:
@@ -1162,9 +1171,9 @@ namespace etl
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
-    void fixup()
+    void repair()
     {
-      etl::ivector<T*>::fixup(buffer);
+      etl::ivector<T*>::repair(buffer);
     }
 
   private:

@@ -89,6 +89,11 @@ SOFTWARE.
 #define ETL_C11_TYPE_TRAITS_SUPPORTED
 #endif
 
+#if (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER >= 1600)) || \
+    (defined(ETL_COMPILER_GCC) && (__cplusplus >= 201402L))
+#define ETL_C11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
+#endif
+
 // Some targets do not support 8bit types.
 #define ETL_8BIT_SUPPORT (CHAR_BIT == 8)
 

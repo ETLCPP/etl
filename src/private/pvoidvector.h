@@ -569,7 +569,7 @@ namespace etl
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
-    void fixup(void** p_buffer_)
+    void repair(void** p_buffer_)
     {
       uintptr_t length = p_end - p_buffer;
 

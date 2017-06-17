@@ -73,7 +73,6 @@ namespace etl
     string(const etl::string<MAX_SIZE_>& other)
       : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      istring::initialise();
       istring::assign(other.begin(), other.end());
     }
 
@@ -91,7 +90,6 @@ namespace etl
       // Set the length to the exact amount.
       length = (length > MAX_SIZE_) ? MAX_SIZE_ : length;
 
-      istring::initialise();
       istring::assign(other.begin() + position, other.begin() + position + length);
     }
 
@@ -102,7 +100,6 @@ namespace etl
     string(const value_type* text)
       : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      istring::initialise();
       istring::assign(text, text + etl::char_traits<value_type>::length(text));
     }
 
@@ -114,7 +111,6 @@ namespace etl
     string(const value_type* text, size_t count)
       : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      istring::initialise();
       istring::assign(text, text + count);
     }
 
@@ -175,6 +171,14 @@ namespace etl
       }
 
       return *this;
+    }
+
+    //*************************************************************************
+    /// Fix the internal pointers after a low level memory copy.
+    //*************************************************************************
+    void repair()
+    {
+      etl::istring::repair(buffer);
     }
 
   private:

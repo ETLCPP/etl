@@ -177,6 +177,14 @@ namespace etl
       return *this;
     }
 
+    //*************************************************************************
+    /// Fix the internal pointers after a low level memory copy.
+    //*************************************************************************
+    void repair()
+    {
+      etl::iu32string::repair(buffer);
+    }
+
   private:
 
     value_type buffer[MAX_SIZE + 1];
