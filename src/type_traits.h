@@ -47,15 +47,15 @@ namespace etl
   template <typename T, const T VALUE>
   struct integral_constant
   {
-	  static const T value = VALUE;
+    static const T value = VALUE;
 
-	  typedef T value_type;
+    typedef T value_type;
     typedef integral_constant<T, VALUE> type;
 
-	  operator value_type() const
-	  {
-		   return value;
-	  }
+    operator value_type() const
+    {
+       return value;
+    }
   };
 
   /// integral_constant specialisations
@@ -238,25 +238,25 @@ namespace etl
   template <typename T> struct is_pod : etl::integral_constant<bool, etl::is_fundamental<T>::value ||
                                                                      etl::is_pointer<T>::value> {};
 
-  /// has_trivial_constructor
+  /// is_trivially_constructible
   /// For C++03, only POD types are recognised.
   ///\ingroup type_traits
-  template <typename T> struct has_trivial_constructor : etl::is_pod<T> {};
+  template <typename T> struct is_trivially_constructible : etl::is_pod<T> {};
 
-  /// has_trivial_copy_constructor
+  /// is_trivially_copy_constructible
   /// For C++03, only POD types are recognised.
   ///\ingroup type_traits
-  template <typename T> struct has_trivial_copy_constructor : etl::is_pod<T> {};
+  template <typename T> struct is_trivially_copy_constructible : etl::is_pod<T> {};
 
-  /// has_trivial_destructor
+  /// is_trivially_destructible
   /// For C++03, only POD types are recognised.
   ///\ingroup type_traits
-  template <typename T> struct has_trivial_destructor : etl::is_pod<T> {};
+  template <typename T> struct is_trivially_destructible : etl::is_pod<T> {};
 
-  /// has_trivial_assignment
+  /// is_trivially_copy_assignable
   /// For C++03, only POD types are recognised.
   ///\ingroup type_traits
-  template <typename T> struct has_trivial_assignment : etl::is_pod<T> {};
+  template <typename T> struct is_trivially_copy_assignable : etl::is_pod<T> {};
 
   /// conditional
   ///\ingroup type_traits
