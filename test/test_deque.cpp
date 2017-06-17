@@ -38,6 +38,7 @@ SOFTWARE.
 #include <algorithm>
 #include <iostream>
 #include <numeric>
+#include <cstring>
 
 namespace
 {
@@ -48,6 +49,8 @@ namespace
     typedef TestDataDC<std::string>  DC;
     typedef TestDataNDC<std::string> NDC;
 
+    typedef etl::deque<int, SIZE>    DataInt;
+    typedef etl::ideque<int>         IDataInt;
     typedef etl::deque<DC, SIZE>     DataDC;
     typedef etl::deque<NDC, SIZE>    DataNDC;
     typedef etl::ideque<NDC>         IDataNDC;
@@ -82,6 +85,9 @@ namespace
     std::vector<NDC> initial_data_small = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
     std::vector<NDC> insert_data = { N10, N11, N12, N13, N14 };
     std::vector<DC>  initial_data_dc = { DC("0"), DC("1"), DC("2"), DC("3"), DC("4"), DC("5"), DC("6"), DC("7"), DC("8"), DC("9"), DC("10"), DC("11"), DC("12"), DC("13") };
+    std::vector<int> int_data1 = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
+    std::vector<int> int_data2 = { 15, 16, 17, 18 };
+
 
     //*************************************************************************
     TEST(test_constructor)
@@ -1514,5 +1520,81 @@ namespace
        CHECK(data.rbegin()  == data.rend());
        CHECK(data.crbegin() == data.crend());
      }
+
+    //*************************************************************************
+    TEST(test_memcpy_repair)
+    {
+      DataInt data(int_data1.begin(), int_data1.end());
+      data.pop_front();
+      data.pop_front();
+      data.pop_front();
+      data.pop_front();
+      data.insert(data.end(), int_data2.begin(), int_data2.end());
+
+      char buffer[sizeof(DataInt)];
+
+      memcpy(&buffer, &data, sizeof(data));
+
+      DataInt& rdata(*reinterpret_cast<DataInt*>(buffer));
+      rdata.repair();
+
+      // Check that the memcpy'd vector is the same.
+      CHECK_EQUAL(data.size(), rdata.size());
+      CHECK(!rdata.empty());
+      CHECK(rdata.full());
+
+      bool is_equal = std::equal(rdata.begin(),
+                                 rdata.end(),
+                                 data.begin());
+
+      CHECK(is_equal);
+
+      // Modify the original and check that the memcpy'd vector is not the same.
+      std::reverse(data.begin(), data.end());
+
+      is_equal = std::equal(rdata.begin(),
+                            rdata.end(),
+                            data.begin());
+
+      CHECK(!is_equal);
+    }
+
+    //*************************************************************************
+    TEST(test_memcpy_repair_virtual)
+    {
+      DataInt data(int_data1.begin(), int_data1.end());
+      data.pop_front();
+      data.pop_front();
+      data.pop_front();
+      data.pop_front();
+      data.insert(data.end(), int_data2.begin(), int_data2.end());
+
+      char buffer[sizeof(DataInt)];
+
+      memcpy(&buffer, &data, sizeof(data));
+
+      IDataInt& idata(*reinterpret_cast<DataInt*>(buffer));
+      idata.repair();
+
+      // Check that the memcpy'd vector is the same.
+      CHECK_EQUAL(data.size(), idata.size());
+      CHECK(!idata.empty());
+      CHECK(idata.full());
+
+      bool is_equal = std::equal(idata.begin(),
+                                 idata.end(),
+                                 data.begin());
+
+      CHECK(is_equal);
+
+      // Modify the original and check that the memcpy'd vector is not the same.
+      std::reverse(data.begin(), data.end());
+
+      is_equal = std::equal(idata.begin(),
+                            idata.end(),
+                            data.begin());
+
+      CHECK(!is_equal);
+    }
   };
 }

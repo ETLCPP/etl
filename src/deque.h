@@ -114,6 +114,20 @@ namespace etl
   };
 
   //***************************************************************************
+  ///\ingroup vector
+  /// Deque incompatible type exception.
+  //***************************************************************************
+  class deque_incompatible_type : public deque_exception
+  {
+  public:
+
+    deque_incompatible_type(string_type file_name, numeric_type line_number)
+      : deque_exception(ETL_ERROR_TEXT("deque:type", ETL_FILE"D"), file_name, line_number)
+    {
+    }
+  };
+
+  //***************************************************************************
   /// The base class for all templated deque types.
   ///\ingroup deque
   //***************************************************************************
@@ -1358,6 +1372,13 @@ namespace etl
       return *this;
     }
 
+#ifdef ETL_IDEQUE_REPAIR_ENABLE
+    //*************************************************************************
+    /// Fix the internal pointers after a low level memory copy.
+    //*************************************************************************
+    virtual void repair() = 0;
+#endif
+
   protected:
 
     //*************************************************************************
@@ -1380,7 +1401,18 @@ namespace etl
       }
 
       _begin = iterator(0, *this, p_buffer);
-      _end = iterator(0, *this, p_buffer);
+      _end   = iterator(0, *this, p_buffer);
+    }
+
+    //*************************************************************************
+    /// Fix the internal pointers after a low level memory copy.
+    //*************************************************************************
+    void repair(pointer p_buffer_)
+    {
+      p_buffer = p_buffer_;
+
+      _begin = iterator(_begin.index, *this, p_buffer);
+      _end   = iterator(_end.index,   *this, p_buffer);
     }
 
     iterator _begin;   ///Iterator to the _begin item in the deque.
@@ -1611,6 +1643,18 @@ namespace etl
       }
 
       return *this;
+    }
+
+    //*************************************************************************
+    /// Fix the internal pointers after a low level memory copy.
+    //*************************************************************************
+    void repair()
+    {
+#ifdef ETL_C11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
+      ETL_ASSERT(std::is_trivially_copyable<T>::value, ETL_ERROR(etl::deque_incompatible_type));
+#endif
+
+      etl::ideque<T>::repair(reinterpret_cast<T*>(&buffer[0]));
     }
 
   private:

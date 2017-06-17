@@ -31,11 +31,12 @@ SOFTWARE.
 #include <vector>
 #include <array>
 #include <algorithm>
+#include <cstring>
 
 #include "vector.h"
 
 namespace
-{		
+{
   SUITE(test_vector)
   {
     static const size_t SIZE = 10;
@@ -146,7 +147,7 @@ namespace
       Data data(initial_data.begin(), initial_data.end());
       Data data2(data);
       CHECK(data2 == data);
-      
+
       data2[2] = -1;
       CHECK(data2 != data);
     }
@@ -624,7 +625,7 @@ namespace
       const size_t INITIAL_SIZE     = 5;
       const size_t INSERT_SIZE      = 3;
       const int INITIAL_VALUE       = 11;
-      
+
       for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
       {
         Compare_Data compare_data;
@@ -718,7 +719,7 @@ namespace
       offset = 4;
 
       CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full);
-      
+
       offset = data.size();
 
       CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full);
@@ -762,7 +763,7 @@ namespace
 
       CHECK(is_equal);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_clear)
     {
@@ -954,6 +955,72 @@ namespace
 
       const Data initial2(initial_data.begin(), initial_data.end());
       CHECK((initial >= initial2) == (initial_data >= initial_data));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_memcpy_repair)
+    {
+      Data data(initial_data.begin(), initial_data.end());
+
+      char buffer[sizeof(Data)];
+
+      memcpy(&buffer, &data, sizeof(data));
+
+      Data& rdata(*reinterpret_cast<Data*>(buffer));
+      rdata.repair();
+
+      // Check that the memcpy'd vector is the same.
+      CHECK_EQUAL(data.size(), rdata.size());
+      CHECK(!rdata.empty());
+      CHECK(rdata.full());
+
+      bool is_equal = std::equal(rdata.begin(),
+                                 rdata.end(),
+                                 data.begin());
+
+      CHECK(is_equal);
+
+      // Modify the original and check that the memcpy'd vector is not the same.
+      std::reverse(data.begin(), data.end());
+
+      is_equal = std::equal(rdata.begin(),
+                            rdata.end(),
+                            data.begin());
+
+      CHECK(!is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_memcpy_repair_virtual)
+    {
+      Data data(initial_data.begin(), initial_data.end());
+
+      char buffer[sizeof(Data)];
+
+      memcpy(&buffer, &data, sizeof(data));
+
+      IData& idata(*reinterpret_cast<Data*>(buffer));
+      idata.repair();
+
+      // Check that the memcpy'd vector is the same.
+      CHECK_EQUAL(data.size(), idata.size());
+      CHECK(!idata.empty());
+      CHECK(idata.full());
+
+      bool is_equal = std::equal(idata.begin(),
+                                 idata.end(),
+                                 data.begin());
+
+      CHECK(is_equal);
+
+      // Modify the original and check that the memcpy'd vector is not the same.
+      std::reverse(data.begin(), data.end());
+
+      is_equal = std::equal(idata.begin(),
+                            idata.end(),
+                            data.begin());
+
+      CHECK(!is_equal);
     }
   };
 }
