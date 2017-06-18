@@ -36,6 +36,10 @@ SOFTWARE.
 #include "platform.h"
 #include "nullptr.h"
 
+#if defined(ETL_C11_TYPE_TRAITS_SUPPORTED)
+  #include <type_traits>
+#endif
+
 ///\defgroup type_traits type_traits
 /// A set of type traits definitions for compilers that do not support the standard header.
 /// \ingroup utilities
@@ -233,11 +237,38 @@ namespace etl
   template <typename T> struct is_reference<T&> : true_type {};
 
   /// is_pod
-  /// For C++03, only fundamental and pointers types are recognised.
   ///\ingroup type_traits
+
+#if defined(ETL_C11_TYPE_TRAITS_SUPPORTED)// && !defined(ETL_IN_UNIT_TEST)
+  // For compilers that support C++11
+  template <typename T> struct is_pod : std::is_pod<T> {};
+#else
+  /// For C++03, only fundamental and pointers types are recognised.
   template <typename T> struct is_pod : etl::integral_constant<bool, etl::is_fundamental<T>::value ||
                                                                      etl::is_pointer<T>::value> {};
+#endif
 
+#if defined(ETL_C11_TYPE_TRAITS_SUPPORTED) && defined(ETL_C11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED)// && !defined(ETL_IN_UNIT_TEST)
+  /// is_trivially_constructible
+  /// For C++03, only POD types are recognised.
+  ///\ingroup type_traits
+  template <typename T> struct is_trivially_constructible : std::is_trivially_constructible<T> {};
+
+  /// is_trivially_copy_constructible
+  /// For C++03, only POD types are recognised.
+  ///\ingroup type_traits
+  template <typename T> struct is_trivially_copy_constructible : std::is_trivially_copy_constructible<T> {};
+
+  /// is_trivially_destructible
+  /// For C++03, only POD types are recognised.
+  ///\ingroup type_traits
+  template <typename T> struct is_trivially_destructible : std::is_trivially_destructible<T> {};
+
+  /// is_trivially_copy_assignable
+  /// For C++03, only POD types are recognised.
+  ///\ingroup type_traits
+  template <typename T> struct is_trivially_copy_assignable : std::is_trivially_copy_assignable<T> {};
+#else
   /// is_trivially_constructible
   /// For C++03, only POD types are recognised.
   ///\ingroup type_traits
@@ -257,6 +288,7 @@ namespace etl
   /// For C++03, only POD types are recognised.
   ///\ingroup type_traits
   template <typename T> struct is_trivially_copy_assignable : etl::is_pod<T> {};
+#endif
 
   /// conditional
   ///\ingroup type_traits
@@ -363,24 +395,21 @@ namespace etl
   /// Alignment templates.
   /// These require compiler specific intrinsics.
   ///\ingroup type_traits
-#ifdef ETL_COMPILER_MICROSOFT
+#if defined(ETL_C11_ALIGNOF_SUPPORTED)
+  template <typename T> struct alignment_of : integral_constant<size_t, size_t(alignof(T))> {};
+#elif defined(ETL_COMPILER_MICROSOFT)
   template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof(T))> {};
-#endif
-
-#ifdef ETL_COMPILER_GCC
+#elif defined(ETL_COMPILER_GCC)
   template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof__(T))> {};
-#endif
-
-#ifdef ETL_COMPILER_KEIL
+#elif defined(ETL_COMPILER_KEIL)
   template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof__(T))> {};
-#endif
-
-#ifdef ETL_COMPILER_IAR
+#elif defined(ETL_COMPILER_IAR)
   template <typename T> struct alignment_of : integral_constant<size_t, size_t(__ALIGNOF__(T))> {};
-#endif
-
-#ifdef ETL_COMPILER_TI
+#elif defined(ETL_COMPILER_TI)
   template <typename T> struct alignment_of : integral_constant<size_t, size_t(__ALIGNOF__(T))> {};
+#else
+  // Best guess!
+  template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof__(T))> {};
 #endif
 
   /// Specialisation of 'alignment_of' for 'void'.
