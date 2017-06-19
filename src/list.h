@@ -192,7 +192,6 @@ namespace etl
       node_t* p_temp = p_node->previous;
       p_node->previous = p_node->next;
       p_node->next = p_temp;
-      p_node = p_node->previous;
     }
 
     //*************************************************************************
