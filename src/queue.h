@@ -120,7 +120,7 @@ namespace etl
     //*************************************************************************
     size_type max_size() const
     {
-      return MAX_SIZE;
+      return CAPACITY;
     }
 
     //*************************************************************************
@@ -138,7 +138,7 @@ namespace etl
     //*************************************************************************
     bool full() const
     {
-      return current_size == MAX_SIZE;
+      return current_size == CAPACITY;
     }
 
     //*************************************************************************
@@ -159,14 +159,14 @@ namespace etl
       : in(0),
       out(0),
       current_size(0),
-      MAX_SIZE(max_size)
+      CAPACITY(max_size)
     {
     }
 
     size_type in;                     ///< Where to input new data.
     size_type out;                    ///< Where to get the oldest data.
     size_type current_size;           ///< The number of items in the queue.
-    const size_type MAX_SIZE;         ///< The maximum number of items in the queue.
+    const size_type CAPACITY;         ///< The maximum number of items in the queue.
     etl::debug_count construct_count; ///< For internal debugging purposes.
   };
 
@@ -223,7 +223,7 @@ namespace etl
     //*************************************************************************
     reference back()
     {
-      return p_buffer[in == 0 ? MAX_SIZE - 1 : in - 1];
+      return p_buffer[in == 0 ? CAPACITY - 1 : in - 1];
     }
 
     //*************************************************************************
@@ -232,7 +232,7 @@ namespace etl
     //*************************************************************************
     const_reference back() const
     {
-      return p_buffer[in == 0 ? MAX_SIZE - 1 : in - 1];
+      return p_buffer[in == 0 ? CAPACITY - 1 : in - 1];
     }
 
     //*************************************************************************
@@ -247,7 +247,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
 #endif
       ::new (&p_buffer[in]) T(value);
-      in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
+      in = (in == (CAPACITY - 1)) ? 0 : in + 1;
       ++current_size;
       ++construct_count;
     }
@@ -268,7 +268,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
 #endif
       ::new (&p_buffer[in]) T();
-      in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
+      in = (in == (CAPACITY - 1)) ? 0 : in + 1;
       ++current_size;
       ++construct_count;
 
@@ -283,7 +283,7 @@ namespace etl
       while (current_size > 0)
       {
         p_buffer[out].~T();
-        out = (out == (MAX_SIZE - 1)) ? 0 : out + 1;
+        out = (out == (CAPACITY - 1)) ? 0 : out + 1;
         --current_size;
         --construct_count;
       }
@@ -302,7 +302,7 @@ namespace etl
       ETL_ASSERT(!empty(), ETL_ERROR(queue_empty));
 #endif
       p_buffer[out].~T();
-      out = (out == (MAX_SIZE - 1)) ? 0 : out + 1;
+      out = (out == (CAPACITY - 1)) ? 0 : out + 1;
       --current_size;
       --construct_count;
     }
@@ -332,7 +332,7 @@ namespace etl
       for (size_t i = 0; i < other.size(); ++i)
       {
         push(other.p_buffer[index]);
-        index = (index == (MAX_SIZE - 1)) ? 0 : index + 1;
+        index = (index == (CAPACITY - 1)) ? 0 : index + 1;
       }
     }
 
@@ -364,6 +364,8 @@ namespace etl
   class queue : public etl::iqueue<T>
   {
   public:
+
+    static const size_t MAX_SIZE = SIZE;
 
     //*************************************************************************
     /// Default constructor.

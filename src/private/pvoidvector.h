@@ -192,7 +192,7 @@ namespace etl
     //*********************************************************************
     void resize(size_t new_size)
     {
-      ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(vector_full));
+      ETL_ASSERT(new_size <= CAPACITY, ETL_ERROR(vector_full));
 
       p_end = p_buffer + new_size;
     }
@@ -206,7 +206,7 @@ namespace etl
     //*********************************************************************
     void resize(size_t new_size, value_type value)
     {
-      ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(vector_full));
+      ETL_ASSERT(new_size <= CAPACITY, ETL_ERROR(vector_full));
 
       pointer p_new_end = p_buffer + new_size;
 
@@ -329,7 +329,7 @@ namespace etl
     {
 #if defined(ETL_DEBUG)
       difference_type count = std::distance(first, last);
-      ETL_ASSERT(static_cast<size_t>(count) <= MAX_SIZE, ETL_ERROR(vector_full));
+      ETL_ASSERT(static_cast<size_t>(count) <= CAPACITY, ETL_ERROR(vector_full));
 #endif
 
       initialise();
@@ -350,7 +350,7 @@ namespace etl
     {
       initialise();
 
-      ETL_ASSERT(n <= MAX_SIZE, ETL_ERROR(vector_full));
+      ETL_ASSERT(n <= CAPACITY, ETL_ERROR(vector_full));
 
       for (size_t current_size = 0; current_size < n; ++current_size)
       {
@@ -373,7 +373,7 @@ namespace etl
     void push_back()
     {
 #if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(size() != MAX_SIZE, ETL_ERROR(vector_full));
+      ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
 #endif
 
       ++p_end;
@@ -387,7 +387,7 @@ namespace etl
     void push_back(value_type value)
     {
 #if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(size() != MAX_SIZE, ETL_ERROR(vector_full));
+      ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
 #endif
       *p_end++ = value;
     }
@@ -412,7 +412,7 @@ namespace etl
     //*********************************************************************
     iterator insert(iterator position, value_type value)
     {
-      ETL_ASSERT(size() + 1 <= MAX_SIZE, ETL_ERROR(vector_full));
+      ETL_ASSERT(size() + 1 <= CAPACITY, ETL_ERROR(vector_full));
 
       if (position != end())
       {
@@ -437,7 +437,7 @@ namespace etl
     //*********************************************************************
     void insert(iterator position, size_t n, value_type value)
     {
-      ETL_ASSERT((size() + 1) <= MAX_SIZE, ETL_ERROR(vector_full));
+      ETL_ASSERT((size() + 1) <= CAPACITY, ETL_ERROR(vector_full));
 
       std::copy_backward(position, p_end, p_end + n);
       std::fill_n(position, n, value);
@@ -458,7 +458,7 @@ namespace etl
     {
       size_t count = std::distance(first, last);
 
-      ETL_ASSERT((size() + count) <= MAX_SIZE, ETL_ERROR(vector_full));
+      ETL_ASSERT((size() + count) <= CAPACITY, ETL_ERROR(vector_full));
 
       std::copy_backward(position, p_end, p_end + count);
       std::copy(first, last, position);
@@ -534,7 +534,7 @@ namespace etl
     //*************************************************************************
     bool full() const
     {
-      return size() == MAX_SIZE;
+      return size() == CAPACITY;
     }
 
     //*************************************************************************

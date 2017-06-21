@@ -184,7 +184,7 @@ namespace etl
     //*************************************************************************
     bool full() const
     {
-      return current_size == MAX_SIZE;
+      return current_size == CAPACITY;
     }
 
     //*************************************************************************
@@ -193,7 +193,7 @@ namespace etl
     //*************************************************************************
     size_type capacity() const
     {
-      return MAX_SIZE;
+      return CAPACITY;
     }
 
     //*************************************************************************
@@ -202,7 +202,7 @@ namespace etl
     //*************************************************************************
     size_type max_size() const
     {
-      return MAX_SIZE;
+      return CAPACITY;
     }
 
     //*************************************************************************
@@ -230,14 +230,14 @@ namespace etl
     //*************************************************************************
     string_base(size_t max_size)
       : is_truncated(false),
-      current_size(0),
-      MAX_SIZE(max_size)
+        current_size(0),
+        CAPACITY(max_size)
     {
     }
 
     bool            is_truncated; ///< Set to true if the operation truncated the string.
     size_type       current_size; ///< The current number of elements in the string.
-    const size_type MAX_SIZE;     ///< The maximum number of elements in the string.
+    const size_type CAPACITY;     ///< The maximum number of elements in the string.
   };
 
   //***************************************************************************
@@ -388,7 +388,7 @@ namespace etl
     //*********************************************************************
     void resize(size_t new_size, T value)
     {
-      new_size = std::min(new_size, MAX_SIZE);
+      new_size = std::min(new_size, CAPACITY);
 
       // Size up?
       if (new_size > current_size)
@@ -505,7 +505,7 @@ namespace etl
     //*********************************************************************
     void assign(const etl::ibasic_string<T>& other)
     {
-      size_t length = std::min(MAX_SIZE, other.size());
+      size_t length = std::min(CAPACITY, other.size());
       assign(other.begin(), other.begin() + length);
     }
 
@@ -537,7 +537,7 @@ namespace etl
     {
       initialise();
 
-      while ((*other != 0) && (current_size < MAX_SIZE))
+      while ((*other != 0) && (current_size < CAPACITY))
       {
         p_buffer[current_size++] = *other++;
       }
@@ -555,7 +555,7 @@ namespace etl
     //*********************************************************************
     void assign(const_pointer other, size_t length)
     {
-      length = std::min(length, MAX_SIZE);
+      length = std::min(length, CAPACITY);
 
       initialise();
 
@@ -582,7 +582,7 @@ namespace etl
 
       initialise();
 
-      while ((first != last) && (current_size != MAX_SIZE))
+      while ((first != last) && (current_size != CAPACITY))
       {
         p_buffer[current_size++] = *first++;
       }
@@ -600,7 +600,7 @@ namespace etl
     {
       initialise();
 
-      n = std::min(n, MAX_SIZE);
+      n = std::min(n, CAPACITY);
 
       std::fill_n(begin(), n, value);
       current_size = n;
@@ -622,7 +622,7 @@ namespace etl
     //*********************************************************************
     void push_back(T value)
     {
-      if (current_size != MAX_SIZE)
+      if (current_size != CAPACITY)
       {
         p_buffer[current_size++] = value;
         is_truncated = false;
@@ -726,7 +726,7 @@ namespace etl
       // Quick hack, as iterators are pointers.
       iterator insert_position = const_cast<iterator>(position);
 
-      if (current_size < MAX_SIZE)
+      if (current_size < CAPACITY)
       {
         // Not full yet.
         if (position != end())
@@ -781,16 +781,16 @@ namespace etl
       const size_t start = std::distance(cbegin(), position);
 
       // No effect.
-      if (start == MAX_SIZE)
+      if (start == CAPACITY)
       {
         return;
       }
 
       // Fills the string to the end?
-      if ((start + n) >= MAX_SIZE)
+      if ((start + n) >= CAPACITY)
       {
-        is_truncated = ((current_size + n) > MAX_SIZE);
-        current_size = MAX_SIZE;
+        is_truncated = ((current_size + n) > CAPACITY);
+        current_size = CAPACITY;
         std::fill(insert_position, end(), value);
       }
       else
@@ -799,13 +799,13 @@ namespace etl
         const size_t shift_amount = n;
         const size_t to_position = start + shift_amount;
         const size_t remaining_characters = current_size - start;
-        const size_t max_shift_characters = MAX_SIZE - start - shift_amount;
+        const size_t max_shift_characters = CAPACITY - start - shift_amount;
         const size_t characters_to_shift = std::min(max_shift_characters, remaining_characters);
 
         // Will the string truncate?
-        if ((start + shift_amount + remaining_characters) > MAX_SIZE)
+        if ((start + shift_amount + remaining_characters) > CAPACITY)
         {
-          current_size = MAX_SIZE;
+          current_size = CAPACITY;
           is_truncated = true;
         }
         else
@@ -841,16 +841,16 @@ namespace etl
       const size_t n = std::distance(first, last);
 
       // No effect.
-      if (start == MAX_SIZE)
+      if (start == CAPACITY)
       {
         return;
       }
 
       // Fills the string to the end?
-      if ((start + n) >= MAX_SIZE)
+      if ((start + n) >= CAPACITY)
       {
-        is_truncated = ((current_size + n) > MAX_SIZE);
-        current_size = MAX_SIZE;
+        is_truncated = ((current_size + n) > CAPACITY);
+        current_size = CAPACITY;
 
         while (position != end())
         {
@@ -863,13 +863,13 @@ namespace etl
         const size_t shift_amount = n;
         const size_t to_position = start + shift_amount;
         const size_t remaining_characters = current_size - start;
-        const size_t max_shift_characters = MAX_SIZE - start - shift_amount;
+        const size_t max_shift_characters = CAPACITY - start - shift_amount;
         const size_t characters_to_shift = std::min(max_shift_characters, remaining_characters);
 
         // Will the string truncate?
-        if ((start + shift_amount + remaining_characters) > MAX_SIZE)
+        if ((start + shift_amount + remaining_characters) > CAPACITY)
         {
-          current_size = MAX_SIZE;
+          current_size = CAPACITY;
           is_truncated = true;
         }
         else
