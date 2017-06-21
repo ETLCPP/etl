@@ -131,7 +131,7 @@ namespace etl
     //*************************************************************************
     size_type capacity() const
     {
-      return MAX_SIZE;
+      return CAPACITY;
     }
 
     //*************************************************************************
@@ -140,7 +140,7 @@ namespace etl
     //*************************************************************************
     size_type max_size() const
     {
-      return MAX_SIZE;
+      return CAPACITY;
     }
 
   protected:
@@ -149,11 +149,11 @@ namespace etl
     /// Constructor.
     //*************************************************************************
     vector_base(size_t max_size)
-      : MAX_SIZE(max_size)
+      : CAPACITY(max_size)
     {
     }
 
-    const size_type MAX_SIZE;         ///<The maximum number of elements in the vector.
+    const size_type CAPACITY;         ///<The maximum number of elements in the vector.
     etl::debug_count construct_count; ///< Internal debugging.
   };
 }

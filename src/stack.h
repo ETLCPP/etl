@@ -123,7 +123,7 @@ namespace etl
     //*************************************************************************
     bool full() const
     {
-      return current_size == MAX_SIZE;
+      return current_size == CAPACITY;
     }
 
     //*************************************************************************
@@ -139,7 +139,7 @@ namespace etl
     //*************************************************************************
     size_type max_size() const
     {
-      return MAX_SIZE;
+      return CAPACITY;
     }
 
     //*************************************************************************
@@ -159,13 +159,13 @@ namespace etl
     stack_base(size_type max_size)
       : top_index(0),
       current_size(0),
-      MAX_SIZE(max_size)
+      CAPACITY(max_size)
     {
     }
 
     size_type top_index;              ///< The index of the top of the stack.
     size_type current_size;           ///< The number of items in the stack.
-    const size_type MAX_SIZE;         ///< The maximum number of items in the stack.
+    const size_type CAPACITY;         ///< The maximum number of items in the stack.
     etl::debug_count construct_count; ///< For internal debugging purposes.
   };
 
@@ -335,6 +335,8 @@ namespace etl
   class stack : public etl::istack<T>
   {
   public:
+
+    static const size_t MAX_SIZE = SIZE;
 
     //*************************************************************************
     /// Default constructor.

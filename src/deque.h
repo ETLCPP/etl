@@ -161,7 +161,7 @@ namespace etl
     //*************************************************************************
     bool full() const
     {
-      return current_size == MAX_SIZE;
+      return current_size == CAPACITY;
     }
 
     //*************************************************************************
@@ -170,7 +170,7 @@ namespace etl
     //*************************************************************************
     size_type max_size() const
     {
-      return MAX_SIZE;
+      return CAPACITY;
     }
 
     //*************************************************************************
@@ -189,13 +189,13 @@ namespace etl
     //*************************************************************************
     deque_base(size_t max_size, size_t buffer_size)
       : current_size(0),
-        MAX_SIZE(max_size),
+        CAPACITY(max_size),
         BUFFER_SIZE(buffer_size)
     {
     }
 
     size_type       current_size;     ///< The current number of elements in the deque.
-    const size_type MAX_SIZE;         ///< The maximum number of elements in the deque.
+    const size_type CAPACITY;         ///< The maximum number of elements in the deque.
     const size_type BUFFER_SIZE;      ///< The number of elements in the buffer.
     etl::debug_count construct_count; ///< Internal debugging.
   };
@@ -639,7 +639,7 @@ namespace etl
     //*************************************************************************
     void assign(size_type n, const value_type& value)
     {
-      ETL_ASSERT(n <= MAX_SIZE, ETL_ERROR(deque_full));
+      ETL_ASSERT(n <= CAPACITY, ETL_ERROR(deque_full));
 
       initialise();
 
@@ -910,7 +910,7 @@ namespace etl
     {
       iterator position;
 
-      ETL_ASSERT((current_size + n) <= MAX_SIZE, ETL_ERROR(deque_full));
+      ETL_ASSERT((current_size + n) <= CAPACITY, ETL_ERROR(deque_full));
 
       if (insert_position == begin())
       {
@@ -1021,7 +1021,7 @@ namespace etl
 
       difference_type n = std::distance(range_begin, range_end);
 
-      ETL_ASSERT((current_size + n) <= MAX_SIZE, ETL_ERROR(deque_full));
+      ETL_ASSERT((current_size + n) <= CAPACITY, ETL_ERROR(deque_full));
 
       if (insert_position == begin())
       {
@@ -1305,7 +1305,7 @@ namespace etl
     //*************************************************************************
     void resize(size_t new_size, const value_type& value = value_type())
     {
-      ETL_ASSERT(new_size <= MAX_SIZE, ETL_ERROR(deque_out_of_bounds));
+      ETL_ASSERT(new_size <= CAPACITY, ETL_ERROR(deque_out_of_bounds));
 
       // Make it smaller?
       if (new_size < current_size)

@@ -140,7 +140,7 @@ namespace etl
     //*************************************************************************
     size_type max_size() const
     {
-      return MAX_SIZE;
+      return CAPACITY;
     }
 
     //*************************************************************************
@@ -156,7 +156,7 @@ namespace etl
     //*************************************************************************
     bool full() const
     {
-      return current_size == MAX_SIZE;
+      return current_size == CAPACITY;
     }
 
     //*************************************************************************
@@ -165,7 +165,7 @@ namespace etl
     //*************************************************************************
     size_type capacity() const
     {
-      return MAX_SIZE;
+      return CAPACITY;
     }
 
     //*************************************************************************
@@ -220,7 +220,7 @@ namespace etl
     //*************************************************************************
     multimap_base(size_type max_size)
       : current_size(0)
-      , MAX_SIZE(max_size)
+      , CAPACITY(max_size)
       , root_node(nullptr)
 
     {
@@ -595,7 +595,7 @@ namespace etl
     }
 
     size_type current_size;   ///< The number of the used nodes.
-    const size_type MAX_SIZE; ///< The maximum size of the map.
+    const size_type CAPACITY; ///< The maximum size of the map.
     Node* root_node;          ///< The node that acts as the multimap root.
     etl::debug_count construct_count;
   };
