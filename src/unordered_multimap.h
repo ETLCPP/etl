@@ -49,7 +49,6 @@ SOFTWARE.
 #include "nullptr.h"
 #include "pool.h"
 #include "error_handler.h"
-#include "intrusive_forward_list.h"
 #include "exception.h"
 #include "debug_count.h"
 
