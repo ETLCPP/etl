@@ -542,7 +542,7 @@ namespace etl
     /// If asserts or exceptions are enabled, emits flat_map_full if the reference_flat_map is already full.
     ///\param value    The value to insert.
     //*********************************************************************
-    std::pair<iterator, bool> insert(value_type& value)
+    std::pair<iterator, bool> insert(reference value)
     {
       iterator i_element = lower_bound(value.first);
 
@@ -555,7 +555,7 @@ namespace etl
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, value_type& value)
+    iterator insert(iterator position, reference value)
     {
       return insert(value).first;
     }

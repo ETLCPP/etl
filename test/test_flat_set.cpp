@@ -54,71 +54,52 @@ namespace
   typedef std::set<DC>  Compare_DataDC;
   typedef std::set<NDC> Compare_DataNDC;
 
-  NDC NX = NDC("@");
-  NDC NY = NDC("[");
+  //*************************************************************************
+  std::ostream& operator <<(std::ostream& os, const DataNDC::iterator& itr)
+  {
+    os << itr->value;
 
-  NDC N0 = NDC("A");
-  NDC N1 = NDC("B");
-  NDC N2 = NDC("C");
-  NDC N3 = NDC("D");
-  NDC N4 = NDC("E");
-  NDC N5 = NDC("F");
-  NDC N6 = NDC("G");
-  NDC N7 = NDC("H");
-  NDC N8 = NDC("I");
-  NDC N9 = NDC("J");
-  NDC N10 = NDC("K");
-  NDC N11 = NDC("L");
-  NDC N12 = NDC("M");
-  NDC N13 = NDC("N");
-  NDC N14 = NDC("O");
-  NDC N15 = NDC("P");
-  NDC N16 = NDC("Q");
-  NDC N17 = NDC("R");
-  NDC N18 = NDC("S");
-  NDC N19 = NDC("T");
+    return os;
+  }
 
-  std::vector<NDC> initial_data;
-  std::vector<NDC> excess_data;
-  std::vector<NDC> different_data;
-}
+  //*************************************************************************
+  std::ostream& operator <<(std::ostream& os, const DataNDC::const_iterator& itr)
+  {
+    os << itr->value;
 
-//*************************************************************************
-std::ostream& operator <<(std::ostream& os, const DataDC::iterator& itr)
-{
-  os << itr->value;
+    return os;
+  }
 
-  return os;
-}
-
-//*************************************************************************
-std::ostream& operator <<(std::ostream& os, const DataDC::const_iterator& itr)
-{
-  os << itr->value;
-
-  return os;
-}
-
-//*************************************************************************
-std::ostream& operator <<(std::ostream& os, const DataNDC::iterator& itr)
-{
-  os << itr->value;
-
-  return os;
-}
-
-//*************************************************************************
-std::ostream& operator <<(std::ostream& os, const DataNDC::const_iterator& itr)
-{
-  os << itr->value;
-
-  return os;
-}
-
-namespace
-{
   SUITE(test_flat_set)
   {
+    NDC NX = NDC("@");
+    NDC NY = NDC("[");
+
+    NDC N0 = NDC("A");
+    NDC N1 = NDC("B");
+    NDC N2 = NDC("C");
+    NDC N3 = NDC("D");
+    NDC N4 = NDC("E");
+    NDC N5 = NDC("F");
+    NDC N6 = NDC("G");
+    NDC N7 = NDC("H");
+    NDC N8 = NDC("I");
+    NDC N9 = NDC("J");
+    NDC N10 = NDC("K");
+    NDC N11 = NDC("L");
+    NDC N12 = NDC("M");
+    NDC N13 = NDC("N");
+    NDC N14 = NDC("O");
+    NDC N15 = NDC("P");
+    NDC N16 = NDC("Q");
+    NDC N17 = NDC("R");
+    NDC N18 = NDC("S");
+    NDC N19 = NDC("T");
+
+    std::vector<NDC> initial_data;
+    std::vector<NDC> excess_data;
+    std::vector<NDC> different_data;
+
     //*************************************************************************
     struct SetupFixture
     {

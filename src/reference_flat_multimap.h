@@ -47,11 +47,11 @@ namespace etl
   ///\ingroup reference_flat_multimap
   /// Exception base for reference_flat_multimaps
   //***************************************************************************
-  class reference_flat_multimap_exception : public exception
+  class flat_multimap_exception : public exception
   {
   public:
 
-    reference_flat_multimap_exception(string_type what, string_type file_name, numeric_type line_number)
+    flat_multimap_exception(string_type what, string_type file_name, numeric_type line_number)
       : exception(what, file_name, line_number)
     {
     }
@@ -61,12 +61,12 @@ namespace etl
   ///\ingroup reference_flat_multimap
   /// Vector full exception.
   //***************************************************************************
-  class reference_flat_multimap_full : public reference_flat_multimap_exception
+  class flat_multimap_full : public flat_multimap_exception
   {
   public:
 
-    reference_flat_multimap_full(string_type file_name, numeric_type line_number)
-      : reference_flat_multimap_exception(ETL_ERROR_TEXT("reference_flat_multimap:full", ETL_FILE"A"), file_name, line_number)
+    flat_multimap_full(string_type file_name, numeric_type line_number)
+      : flat_multimap_exception(ETL_ERROR_TEXT("flat_multimap:full", ETL_FILE"A"), file_name, line_number)
     {
     }
   };
@@ -81,9 +81,9 @@ namespace etl
   {
   public:
 
-    typedef std::pair<TKey, TMapped> value_type;
+    typedef std::pair<const TKey, TMapped> value_type;
 
-  private:
+  protected:
 
     typedef etl::ivector<value_type*> lookup_t;
 
@@ -440,7 +440,7 @@ namespace etl
     {
 #if defined(ETL_DEBUG)
       difference_type count = std::distance(first, last);
-      ETL_ASSERT(count <= difference_type(capacity()), ETL_ERROR(reference_flat_multimap_full));
+      ETL_ASSERT(count <= difference_type(capacity()), ETL_ERROR(flat_multimap_full));
 #endif
 
       clear();
@@ -458,7 +458,7 @@ namespace etl
     //*********************************************************************
     std::pair<iterator, bool> insert(value_type& value)
     {
-      ETL_ASSERT(!lookup.full(), ETL_ERROR(reference_flat_multimap_full));
+      ETL_ASSERT(!lookup.full(), ETL_ERROR(flat_multimap_full));
 
       std::pair<iterator, bool> result(end(), false);
 
@@ -732,8 +732,6 @@ namespace etl
     {
     }
 
-  private:
-
     //*********************************************************************
     /// Inserts a value to the reference_flat_multimap.
     ///\param i_element The place to insert.
@@ -760,6 +758,8 @@ namespace etl
 
       return result;
     }
+
+  private:
 
     // Disable copy construction and assignment.
     ireference_flat_multimap(const ireference_flat_multimap&);

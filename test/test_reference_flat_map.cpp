@@ -110,7 +110,7 @@ namespace
     return os;
   }
 
-  SUITE(test_flat_map)
+  SUITE(test_reference_flat_map)
   {
     NDC N0 = NDC("A");
     NDC N1 = NDC("B");

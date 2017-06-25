@@ -51,13 +51,13 @@ namespace etl
 {
   //***************************************************************************
   ///\ingroup reference_flat_set
-  /// Exception base for reference_flat_sets
+  /// Exception base for flat_sets
   //***************************************************************************
-  class reference_flat_set_exception : public exception
+  class flat_set_exception : public exception
   {
   public:
 
-    reference_flat_set_exception(string_type what, string_type file_name, numeric_type line_number)
+    flat_set_exception(string_type what, string_type file_name, numeric_type line_number)
       : exception(what, file_name, line_number)
     {
     }
@@ -67,12 +67,12 @@ namespace etl
   ///\ingroup reference_flat_set
   /// Vector full exception.
   //***************************************************************************
-  class reference_flat_set_full : public reference_flat_set_exception
+  class flat_set_full : public flat_set_exception
   {
   public:
 
-    reference_flat_set_full(string_type file_name, numeric_type line_number)
-      : reference_flat_set_exception(ETL_ERROR_TEXT("reference_flat_set:full", ETL_FILE"A"), file_name, line_number)
+    flat_set_full(string_type file_name, numeric_type line_number)
+      : flat_set_exception(ETL_ERROR_TEXT("flat_set:full", ETL_FILE"A"), file_name, line_number)
     {
     }
   };
@@ -81,12 +81,12 @@ namespace etl
   ///\ingroup reference_flat_set
   /// Vector iterator exception.
   //***************************************************************************
-  class reference_flat_set_iterator : public reference_flat_set_exception
+  class flat_set_iterator : public flat_set_exception
   {
   public:
 
-    reference_flat_set_iterator(string_type file_name, numeric_type line_number)
-      : reference_flat_set_exception(ETL_ERROR_TEXT("reference_flat_set:iterator", ETL_FILE"C"), file_name, line_number)
+    flat_set_iterator(string_type file_name, numeric_type line_number)
+      : flat_set_exception(ETL_ERROR_TEXT("flat_set:iterator", ETL_FILE"C"), file_name, line_number)
     {
     }
   };
@@ -110,7 +110,7 @@ namespace etl
     typedef const value_type* const_pointer;
     typedef size_t            size_type;
 
-  private:
+  protected:
 
     typedef etl::ivector<value_type*> lookup_t;
 
@@ -438,7 +438,7 @@ namespace etl
     {
 #if defined(ETL_DEBUG)
       difference_type count = std::distance(first, last);
-      ETL_ASSERT(count <= difference_type(capacity()), ETL_ERROR(reference_flat_set_full));
+      ETL_ASSERT(count <= difference_type(capacity()), ETL_ERROR(flat_set_full));
 #endif
 
       clear();
@@ -454,39 +454,11 @@ namespace etl
     /// If asserts or exceptions are enabled, emits reference_flat_set_full if the reference_flat_set is already full.
     ///\param value    The value to insert.
     //*********************************************************************
-    std::pair<iterator, bool> insert(value_type& value)
+    std::pair<iterator, bool> insert(reference value)
     {
-      std::pair<iterator, bool> result(end(), false);
+      iterator i_element = lower_bound(value);
 
-      ETL_ASSERT(!lookup.full(), ETL_ERROR(reference_flat_set_full));
-
-      iterator i_element = std::lower_bound(begin(), end(), value, TKeyCompare());
-
-      if (i_element == end())
-      {
-        // At the end. Doesn't exist.
-        lookup.push_back(&value);
-        result.first = --end();
-        result.second = true;
-      }
-      else
-      {
-        // Not at the end.
-        // Does not exist already?
-        if (*i_element != value)
-        {
-          lookup.insert(i_element.ilookup, &value);
-          result.first = i_element;
-          result.second = true;
-        }
-        else
-        {
-          result.first = i_element;
-          result.second = false;
-        }
-      }
-
-      return result;
+      return insert_at(i_element, value);
     }
 
     //*********************************************************************
@@ -495,7 +467,7 @@ namespace etl
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, value_type& value)
+    iterator insert(iterator position, reference value)
     {
       return insert(value).first;
     }
@@ -521,7 +493,7 @@ namespace etl
     ///\param key The key to erase.
     ///\return The number of elements erased. 0 or 1.
     //*********************************************************************
-    size_t erase(value_type& key)
+    size_t erase(parameter_t key)
     {
       iterator i_element = find(key);
 
@@ -570,7 +542,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pointing to the element or end() if not found.
     //*********************************************************************
-    iterator find(value_type& key)
+    iterator find(parameter_t key)
     {
       iterator itr = std::lower_bound(begin(), end(), key, TKeyCompare());
 
@@ -594,7 +566,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pointing to the element or end() if not found.
     //*********************************************************************
-    const_iterator find(value_type& key) const
+    const_iterator find(parameter_t key) const
     {
       const_iterator itr = std::lower_bound(begin(), end(), key, TKeyCompare());
 
@@ -618,7 +590,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return 1 if the key exists, otherwise 0.
     //*********************************************************************
-    size_t count(value_type& key) const
+    size_t count(parameter_t key) const
     {
       return (find(key) == end()) ? 0 : 1;
     }
@@ -628,7 +600,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    iterator lower_bound(value_type& key)
+    iterator lower_bound(parameter_t key)
     {
       return std::lower_bound(begin(), end(), key, TKeyCompare());
     }
@@ -638,7 +610,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    const_iterator lower_bound(value_type& key) const
+    const_iterator lower_bound(parameter_t key) const
     {
       return std::lower_bound(cbegin(), cend(), key, TKeyCompare());
     }
@@ -648,7 +620,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    iterator upper_bound(value_type& key)
+    iterator upper_bound(parameter_t key)
     {
       return std::upper_bound(begin(), end(), key, TKeyCompare());
     }
@@ -658,7 +630,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    const_iterator upper_bound(value_type& key) const
+    const_iterator upper_bound(parameter_t key) const
     {
       return std::upper_bound(cbegin(), cend(), key, TKeyCompare());
     }
@@ -668,7 +640,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    std::pair<iterator, iterator> equal_range(value_type& key)
+    std::pair<iterator, iterator> equal_range(parameter_t key)
     {
       return std::equal_range(begin(), end(), key, TKeyCompare());
     }
@@ -678,7 +650,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    std::pair<const_iterator, const_iterator> equal_range(value_type& key) const
+    std::pair<const_iterator, const_iterator> equal_range(parameter_t key) const
     {
       return std::upper_bound(cbegin(), cend(), key, TKeyCompare());
     }
@@ -745,6 +717,42 @@ namespace etl
     ireference_flat_set(lookup_t& lookup_)
       : lookup(lookup_)
     {
+    }
+
+    //*********************************************************************
+    /// Inserts a value to the reference_flat_set.
+    ///\param i_element The place to insert.
+    ///\param value     The value to insert.
+    //*********************************************************************
+    std::pair<iterator, bool> insert_at(iterator i_element, reference value)
+    {
+      std::pair<iterator, bool> result(end(), false);
+
+      if (i_element == end())
+      {
+        // At the end.
+        ETL_ASSERT(!lookup.full(), ETL_ERROR(flat_set_full));
+
+        lookup.push_back(&value);
+        result.first = --end();
+        result.second = true;
+      }
+      else
+      {
+        // Not at the end.
+        result.first = i_element;
+
+        // Existing element?
+        if (value != *i_element)
+        {
+          // A new one.
+          ETL_ASSERT(!lookup.full(), ETL_ERROR(flat_set_full));
+          lookup.insert(i_element.ilookup, &value);
+          result.second = true;
+        }
+      }
+
+      return result;
     }
 
   private:

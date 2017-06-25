@@ -305,7 +305,7 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.insert(N10), etl::reference_flat_multiset_full);
+      CHECK_THROW(data.insert(N10), etl::flat_multiset_full);
 
       CHECK(std::is_sorted(data.begin(), data.end()));
     }
@@ -333,7 +333,7 @@ namespace
     {
       DataNDC data;
 
-      CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::reference_flat_multiset_full);
+      CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::flat_multiset_full);
 
       CHECK(std::is_sorted(data.begin(), data.end()));
     }

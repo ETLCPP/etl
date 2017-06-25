@@ -31,13 +31,7 @@ SOFTWARE.
 #ifndef __ETL_FLAT_MAP__
 #define __ETL_FLAT_MAP__
 
-//#include <stddef.h>
-//#include <iterator>
-//#include <functional>
-//#include <algorithm>
-//#include <functional>
-//#include <utility>
-
+#include "platform.h"
 #include "reference_flat_map.h"
 #include "pool.h"
 
@@ -62,18 +56,16 @@ namespace etl
   template <typename TKey, typename TMapped, typename TKeyCompare = std::less<TKey> >
   class iflat_map : private etl::ireference_flat_map<TKey, TMapped, TKeyCompare>
   {
-  public:
-
-    typedef std::pair<const TKey, TMapped> value_type;
-
   private:
 
     typedef etl::ireference_flat_map<TKey, TMapped, TKeyCompare> refmap_t;
     typedef typename refmap_t::lookup_t lookup_t;
-    typedef etl::ipool         storage_t;
+    typedef etl::ipool storage_t;
 
   public:
 
+
+    typedef std::pair<const TKey, TMapped> value_type;
     typedef TKey              key_type;
     typedef TMapped           mapped_type;
     typedef TKeyCompare       key_compare;
@@ -297,7 +289,7 @@ namespace etl
     /// If asserts or exceptions are enabled, emits flat_map_full if the flat_map is already full.
     ///\param value    The value to insert.
     //*********************************************************************
-    std::pair<iterator, bool> insert(const value_type& value)
+    std::pair<iterator, bool> insert(const_reference value)
     {
       iterator i_element = lower_bound(value.first);
 
@@ -323,7 +315,7 @@ namespace etl
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, const value_type& value)
+    iterator insert(iterator position, const_reference value)
     {
       return insert(value).first;
     }

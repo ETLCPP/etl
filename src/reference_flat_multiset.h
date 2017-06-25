@@ -53,11 +53,11 @@ namespace etl
   ///\ingroup reference_flat_multiset
   /// Exception base for reference_flat_multisets
   //***************************************************************************
-  class reference_flat_multiset_exception : public exception
+  class flat_multiset_exception : public exception
   {
   public:
 
-    reference_flat_multiset_exception(string_type what, string_type file_name, numeric_type line_number)
+    flat_multiset_exception(string_type what, string_type file_name, numeric_type line_number)
       : exception(what, file_name, line_number)
     {
     }
@@ -67,12 +67,12 @@ namespace etl
   ///\ingroup reference_flat_multiset
   /// Vector full exception.
   //***************************************************************************
-  class reference_flat_multiset_full : public reference_flat_multiset_exception
+  class flat_multiset_full : public flat_multiset_exception
   {
   public:
 
-    reference_flat_multiset_full(string_type file_name, numeric_type line_number)
-      : reference_flat_multiset_exception(ETL_ERROR_TEXT("reference_flat_multiset:full", ETL_FILE"A"), file_name, line_number)
+    flat_multiset_full(string_type file_name, numeric_type line_number)
+      : flat_multiset_exception(ETL_ERROR_TEXT("flat_multiset:full", ETL_FILE"A"), file_name, line_number)
     {
     }
   };
@@ -81,12 +81,12 @@ namespace etl
   ///\ingroup reference_flat_multiset
   /// Vector iterator exception.
   //***************************************************************************
-  class reference_flat_multiset_iterator : public reference_flat_multiset_exception
+  class flat_multiset_iterator : public flat_multiset_exception
   {
   public:
 
-    reference_flat_multiset_iterator(string_type file_name, numeric_type line_number)
-      : reference_flat_multiset_exception(ETL_ERROR_TEXT("reference_flat_multiset:iterator", ETL_FILE"C"), file_name, line_number)
+    flat_multiset_iterator(string_type file_name, numeric_type line_number)
+      : flat_multiset_exception(ETL_ERROR_TEXT("flat_multiset:iterator", ETL_FILE"C"), file_name, line_number)
     {
     }
   };
@@ -110,7 +110,7 @@ namespace etl
     typedef const value_type* const_pointer;
     typedef size_t            size_type;
 
-  private:
+  protected:
 
     typedef etl::ivector<value_type*> lookup_t;
 
@@ -308,6 +308,10 @@ namespace etl
       typename lookup_t::const_iterator ilookup;
     };
 
+  protected:
+
+    typedef typename etl::parameter_type<T>::type parameter_t;
+
   public:
 
     typedef std::reverse_iterator<iterator>       reverse_iterator;
@@ -434,7 +438,7 @@ namespace etl
     {
 #if defined(ETL_DEBUG)
       difference_type count = std::distance(first, last);
-      ETL_ASSERT(count <= difference_type(capacity()), ETL_ERROR(reference_flat_multiset_full));
+      ETL_ASSERT(count <= difference_type(capacity()), ETL_ERROR(flat_multiset_full));
 #endif
 
       clear();
@@ -454,7 +458,7 @@ namespace etl
     {
       std::pair<iterator, bool> result(end(), false);
 
-      ETL_ASSERT(!lookup.full(), ETL_ERROR(reference_flat_multiset_full));
+      ETL_ASSERT(!lookup.full(), ETL_ERROR(flat_multiset_full));
 
       iterator i_element = std::lower_bound(begin(), end(), value, TKeyCompare());
 
@@ -508,7 +512,7 @@ namespace etl
     ///\param key The key to erase.
     ///\return The number of elements erased. 0 or 1.
     //*********************************************************************
-    size_t erase(value_type& key)
+    size_t erase(parameter_t key)
     {
       std::pair<iterator, iterator> range = equal_range(key);
 
@@ -558,7 +562,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pointing to the element or end() if not found.
     //*********************************************************************
-    iterator find(value_type& key)
+    iterator find(parameter_t key)
     {
       iterator itr = std::lower_bound(begin(), end(), key, TKeyCompare());
 
@@ -582,7 +586,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pointing to the element or end() if not found.
     //*********************************************************************
-    const_iterator find(value_type& key) const
+    const_iterator find(parameter_t key) const
     {
       const_iterator itr = std::lower_bound(begin(), end(), key, TKeyCompare());
 
@@ -606,7 +610,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return 1 if the key exists, otherwise 0.
     //*********************************************************************
-    size_t count(value_type& key) const
+    size_t count(parameter_t key) const
     {
       std::pair<const_iterator, const_iterator> range = equal_range(key);
 
@@ -618,7 +622,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    iterator lower_bound(value_type& key)
+    iterator lower_bound(parameter_t key)
     {
       return std::lower_bound(begin(), end(), key, TKeyCompare());
     }
@@ -628,7 +632,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    const_iterator lower_bound(value_type& key) const
+    const_iterator lower_bound(parameter_t key) const
     {
       return std::lower_bound(cbegin(), cend(), key, TKeyCompare());
     }
@@ -638,7 +642,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    iterator upper_bound(value_type& key)
+    iterator upper_bound(parameter_t key)
     {
       return std::upper_bound(begin(), end(), key, TKeyCompare());
     }
@@ -648,7 +652,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    const_iterator upper_bound(value_type& key) const
+    const_iterator upper_bound(parameter_t key) const
     {
       return std::upper_bound(cbegin(), cend(), key, TKeyCompare());
     }
@@ -658,7 +662,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    std::pair<iterator, iterator> equal_range(value_type& key)
+    std::pair<iterator, iterator> equal_range(parameter_t key)
     {
       return std::equal_range(begin(), end(), key, TKeyCompare());
     }
@@ -668,7 +672,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    std::pair<const_iterator, const_iterator> equal_range(value_type& key) const
+    std::pair<const_iterator, const_iterator> equal_range(parameter_t key) const
     {
       return std::equal_range(begin(), end(), key, TKeyCompare());
     }
@@ -735,6 +739,38 @@ namespace etl
     ireference_flat_multiset(lookup_t& lookup_)
       : lookup(lookup_)
     {
+    }
+
+    //*********************************************************************
+    /// Inserts a value to the reference_flat_set.
+    ///\param i_element The place to insert.
+    ///\param value     The value to insert.
+    //*********************************************************************
+    std::pair<iterator, bool> insert_at(iterator i_element, reference value)
+    {
+      std::pair<iterator, bool> result(end(), false);
+
+      if (i_element == end())
+      {
+        // At the end.
+        ETL_ASSERT(!lookup.full(), ETL_ERROR(flat_multiset_full));
+
+        lookup.push_back(&value);
+        result.first = --end();
+        result.second = true;
+      }
+      else
+      {
+        // Not at the end.
+        result.first = i_element;
+
+        // A new one.
+        ETL_ASSERT(!lookup.full(), ETL_ERROR(flat_multiset_full));
+        lookup.insert(i_element.ilookup, &value);
+        result.second = true;
+      }
+
+      return result;
     }
 
   private:
