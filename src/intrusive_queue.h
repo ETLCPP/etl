@@ -71,76 +71,16 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup queue
-  /// An intrusive queue. Stores elements derived from etl::forward_link
-  /// \warning This queue cannot be used for concurrent access from multiple threads.
-  /// \tparam TValue The type of value that the queue holds.
+  /// Base for intrusive queue. Stores elements derived any type that supports an 'etl_next' pointer member.
   /// \tparam TLink  The link type that the value is derived from.
   //***************************************************************************
-  template <typename TValue, typename TLink>
-  class intrusive_queue
+  template <typename TLink>
+  class intrusive_queue_base
   {
   public:
 
     // Node typedef.
-    typedef TLink             link_type;
-
-    // STL style typedefs.
-    typedef TValue            value_type;
-    typedef value_type*       pointer;
-    typedef const value_type* const_pointer;
-    typedef value_type&       reference;
-    typedef const value_type& const_reference;
-    typedef size_t            size_type;
-
-    //*************************************************************************
-    /// Constructor
-    //*************************************************************************
-    intrusive_queue()
-    : p_front(nullptr),
-      p_back(nullptr),
-      current_size(0)
-    {
-    }
-
-    //*************************************************************************
-    /// Gets a reference to the value at the front of the queue.
-    /// Undefined behaviour if the queue is empty.
-    /// \return A reference to the value at the front of the queue.
-    //*************************************************************************
-    reference front()
-    {
-      return *static_cast<TValue*>(p_front);
-    }
-
-    //*************************************************************************
-    /// Gets a reference to the value at the back of the queue.
-    /// Undefined behaviour if the queue is empty.
-    /// \return A reference to the value at the back of the queue.
-    //*************************************************************************
-    reference back()
-    {
-      return *static_cast<TValue*>(p_back);
-    }
-
-    //*************************************************************************
-    /// Gets a const reference to the value at the front of the queue.
-    /// Undefined behaviour if the queue is empty.
-    /// \return A const reference to the value at the front of the queue.
-    //*************************************************************************
-    const_reference front() const
-    {
-      return *static_cast<const TValue*>(p_front);
-    }
-
-    //*************************************************************************
-    /// Gets a reference to the value at the back of the queue.
-    /// Undefined behaviour if the queue is empty.
-    /// \return A reference to the value at the back of the queue.
-    //*************************************************************************
-    const_reference back() const
-    {
-      return *static_cast<const TValue*>(p_back);
-    }
+    typedef TLink link_type;
 
     //*************************************************************************
     /// Adds a value to the queue.
@@ -152,13 +92,13 @@ namespace etl
 
       if (p_back != nullptr)
       {
-        etl::link(p_back, value);        
+        etl::link(p_back, value);
       }
       else
-      { 
+      {
         p_front = &value;
       }
-      
+
       p_back = &value;
 
       ++current_size;
@@ -174,7 +114,7 @@ namespace etl
       ETL_ASSERT(!empty(), ETL_ERROR(intrusive_queue_empty));
 #endif
       link_type* p_next = p_front->etl_next;
-      
+
       p_front = p_next;
 
       // Now empty?
@@ -215,16 +155,100 @@ namespace etl
       return current_size;
     }
 
+  protected:
+
+    //*************************************************************************
+    /// Constructor
+    //*************************************************************************
+    intrusive_queue_base()
+      : p_front(nullptr),
+        p_back(nullptr),
+        current_size(0)
+    {
+    }
+
+    link_type* p_front; ///< The current front of the queue.
+    link_type* p_back;  ///< The current back of the queue.
+
+    size_t current_size; ///< Counts the number of elements in the list.
+  };
+
+  //***************************************************************************
+  ///\ingroup queue
+  /// An intrusive queue. Stores elements derived from any type that supports an 'etl_next' pointer member.
+  /// \warning This queue cannot be used for concurrent access from multiple threads.
+  /// \tparam TValue The type of value that the queue holds.
+  /// \tparam TLink  The link type that the value is derived from.
+  //***************************************************************************
+  template <typename TValue, typename TLink>
+  class intrusive_queue : public etl::intrusive_queue_base<TLink>
+  {
+  public:
+
+    // Node typedef.
+    typedef typename etl::intrusive_queue_base<TLink> link_type;
+
+    // STL style typedefs.
+    typedef TValue            value_type;
+    typedef value_type*       pointer;
+    typedef const value_type* const_pointer;
+    typedef value_type&       reference;
+    typedef const value_type& const_reference;
+    typedef size_t            size_type;
+
+    //*************************************************************************
+    /// Constructor
+    //*************************************************************************
+    intrusive_queue()
+      : intrusive_queue_base<TLink>()
+    {
+    }
+
+    //*************************************************************************
+    /// Gets a reference to the value at the front of the queue.
+    /// Undefined behaviour if the queue is empty.
+    /// \return A reference to the value at the front of the queue.
+    //*************************************************************************
+    reference front()
+    {
+      return *static_cast<TValue*>(this->p_front);
+    }
+
+    //*************************************************************************
+    /// Gets a reference to the value at the back of the queue.
+    /// Undefined behaviour if the queue is empty.
+    /// \return A reference to the value at the back of the queue.
+    //*************************************************************************
+    reference back()
+    {
+      return *static_cast<TValue*>(this->p_back);
+    }
+
+    //*************************************************************************
+    /// Gets a const reference to the value at the front of the queue.
+    /// Undefined behaviour if the queue is empty.
+    /// \return A const reference to the value at the front of the queue.
+    //*************************************************************************
+    const_reference front() const
+    {
+      return *static_cast<const TValue*>(this->p_front);
+    }
+
+    //*************************************************************************
+    /// Gets a reference to the value at the back of the queue.
+    /// Undefined behaviour if the queue is empty.
+    /// \return A reference to the value at the back of the queue.
+    //*************************************************************************
+    const_reference back() const
+    {
+      return *static_cast<const TValue*>(this->p_back);
+    }
+
   private:
 
     // Disable copy construction and assignment.
     intrusive_queue(const intrusive_queue&);
     intrusive_queue& operator = (const intrusive_queue& rhs);
-
-    link_type* p_front; // The current front of the queue.
-    link_type* p_back;  // The current back of the queue.
-
-    size_t current_size; ///< Counts the number of elements in the list.
   };
 }
 

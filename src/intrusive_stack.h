@@ -71,54 +71,16 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup stack
-  /// An intrusive stack. Stores elements derived from etl::forward_link
-  /// \warning This stack cannot be used for concurrent access from multiple threads.
-  /// \tparam TValue The type of value that the stack holds.
+  /// Base for intrusive stack. Stores elements derived any type that supports an 'etl_next' pointer member.
   /// \tparam TLink  The link type that the value is derived from.
   //***************************************************************************
-  template <typename TValue, typename TLink>
-  class intrusive_stack
+  template <typename TLink>
+  class intrusive_stack_base
   {
   public:
 
     // Node typedef.
-    typedef TLink             link_type;
-
-    // STL style typedefs.
-    typedef TValue            value_type;
-    typedef value_type*       pointer;
-    typedef const value_type* const_pointer;
-    typedef value_type&       reference;
-    typedef const value_type& const_reference;
-    typedef size_t            size_type;
-
-    //*************************************************************************
-    /// Constructor
-    //*************************************************************************
-    intrusive_stack()
-    : p_top(nullptr),
-      current_size(0)
-    {
-    }
-
-    //*************************************************************************
-    /// Gets a reference to the value at the top of the stack.
-    /// Undefined behaviour if the stack is empty.
-    /// \return A reference to the value at the top of the stack.
-    //*************************************************************************
-    reference top()
-    {
-      return *static_cast<TValue*>(p_top);
-    }
-
-    //*************************************************************************
-    /// Gets a const reference to the value at the top of the stack.<br>
-    /// \return A const reference to the value at the top of the stack.
-    //*************************************************************************
-    const_reference top() const
-    {
-      return *static_cast<const TValue*>(p_top);
-    }
+    typedef TLink  link_type;
 
     //*************************************************************************
     /// Adds a value to the stack.
@@ -181,15 +143,77 @@ namespace etl
       return current_size;
     }
 
+  protected:
+
+    //*************************************************************************
+    /// Constructor
+    //*************************************************************************
+    intrusive_stack_base()
+      : p_top(nullptr),
+        current_size(0)
+    {
+    }
+
+    link_type* p_top; ///< The current top of the stack.
+
+    size_t current_size; ///< Counts the number of elements in the list.
+  };
+
+  //***************************************************************************
+  ///\ingroup stack
+  /// An intrusive stack. Stores elements derived from any type that supports an 'etl_next' pointer member.
+  /// \warning This stack cannot be used for concurrent access from multiple threads.
+  /// \tparam TValue The type of value that the stack holds.
+  /// \tparam TLink  The link type that the value is derived from.
+  //***************************************************************************
+  template <typename TValue, typename TLink>
+  class intrusive_stack : public etl::intrusive_stack_base<TLink>
+  {
+  public:
+
+    // Node typedef.
+    typedef typename etl::intrusive_stack_base<TLink>::link_type link_type;
+
+    // STL style typedefs.
+    typedef TValue            value_type;
+    typedef value_type*       pointer;
+    typedef const value_type* const_pointer;
+    typedef value_type&       reference;
+    typedef const value_type& const_reference;
+    typedef size_t            size_type;
+
+    //*************************************************************************
+    /// Constructor
+    //*************************************************************************
+    intrusive_stack()
+    : intrusive_stack_base<TLink>()
+    {
+    }
+
+    //*************************************************************************
+    /// Gets a reference to the value at the top of the stack.
+    /// Undefined behaviour if the stack is empty.
+    /// \return A reference to the value at the top of the stack.
+    //*************************************************************************
+    reference top()
+    {
+      return *static_cast<TValue*>(this->p_top);
+    }
+
+    //*************************************************************************
+    /// Gets a const reference to the value at the top of the stack.<br>
+    /// \return A const reference to the value at the top of the stack.
+    //*************************************************************************
+    const_reference top() const
+    {
+      return *static_cast<const TValue*>(this->p_top);
+    }
+
   private:
 
     // Disable copy construction and assignment.
     intrusive_stack(const intrusive_stack&);
     intrusive_stack& operator = (const intrusive_stack& rhs);
-
-    link_type* p_top; // The current top of the stack.
-
-    size_t current_size; ///< Counts the number of elements in the list.
   };
 }
 

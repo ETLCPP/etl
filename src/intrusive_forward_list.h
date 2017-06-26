@@ -126,17 +126,187 @@ namespace etl
   };
 
   //***************************************************************************
+  /// Base for intrusive forward list.
+  ///\ingroup intrusive_forward_list
+  //***************************************************************************
+  template <typename TLink>
+  class intrusive_forward_list_base
+  {
+  public:
+
+    // Node typedef.
+    typedef TLink link_type;
+
+    //*************************************************************************
+    /// Clears the intrusive_forward_list.
+    //*************************************************************************
+    void clear()
+    {
+      initialise();
+    }
+
+    //*************************************************************************
+    /// Assigns a range of values to the intrusive_forward_list.
+    /// If ETL_THROW_EXCEPTIONS & _DEBUG are defined throws forward_list_iterator if the iterators are reversed.
+    //*************************************************************************
+    template <typename TIterator>
+    void assign(TIterator first, TIterator last)
+    {
+#if defined(ETL_DEBUG)
+      intmax_t count = std::distance(first, last);
+      ETL_ASSERT(count >= 0, ETL_ERROR(intrusive_forward_list_iterator_exception));
+#endif
+
+      initialise();
+
+      link_type* p_last_link = &start_link;
+
+      // Add all of the elements.
+      while (first != last)
+      {
+        link_type& link = *first++;
+        etl::link_splice<link_type>(p_last_link, link);
+        p_last_link = &link;
+        ++current_size;
+      }
+    }
+
+    //*************************************************************************
+    /// Pushes a value to the front of the intrusive_forward_list.
+    //*************************************************************************
+    void push_front(link_type& value)
+    {
+      insert_link_after(start_link, value);
+    }
+
+    //*************************************************************************
+    /// Removes a value from the front of the intrusive_forward_list.
+    //*************************************************************************
+    void pop_front()
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!empty(), ETL_ERROR(intrusive_forward_list_empty));
+#endif
+      remove_link_after(start_link);
+    }
+
+    //*************************************************************************
+    /// Reverses the intrusive_forward_list.
+    //*************************************************************************
+    void reverse()
+    {
+      if (is_trivial_list())
+      {
+        return;
+      }
+
+      link_type* first = nullptr;             // To keep first link
+      link_type* second = start_link.etl_next; // To keep second link
+      link_type* track = start_link.etl_next; // Track the list
+
+      while (track != NULL)
+      {
+        track = track->etl_next;  // Track point to next link;
+        second->etl_next = first; // Second link point to first
+        first = second;          // Move first link to next
+        second = track;           // Move second link to next
+      }
+
+      etl::link<link_type>(start_link, first);
+    }
+
+    //*************************************************************************
+    /// Returns true if the list has no elements.
+    //*************************************************************************
+    bool empty() const
+    {
+      return start_link.etl_next == nullptr;
+    }
+
+    //*************************************************************************
+    /// Returns the number of elements.
+    //*************************************************************************
+    size_t size() const
+    {
+      return current_size;
+    }
+
+  protected:
+
+    link_type start_link; ///< The link that acts as the intrusive_forward_list start.
+
+    size_t current_size; ///< Counts the number of elements in the list.
+
+    //*************************************************************************
+    /// Is the intrusive_forward_list a trivial length?
+    //*************************************************************************
+    bool is_trivial_list() const
+    {
+      return (start_link.link_type::etl_next == nullptr) || (start_link.link_type::etl_next->etl_next == nullptr);;
+    }
+
+    //*************************************************************************
+    /// Insert a link.
+    //*************************************************************************
+    void insert_link_after(link_type& position, link_type& link)
+    {
+      // Connect to the intrusive_forward_list.
+      etl::link_splice<link_type>(position, link);
+      ++current_size;
+    }
+
+    //*************************************************************************
+    /// Remove a link.
+    //*************************************************************************
+    void remove_link_after(link_type& link)
+    {
+      link_type* p_next = link.etl_next;
+
+      if (p_next != nullptr)
+      {
+        etl::unlink_after<link_type>(link);
+        --current_size;
+      }
+    }
+
+    //*************************************************************************
+    /// Get the head link.
+    //*************************************************************************
+    link_type& get_head()
+    {
+      return *start_link.etl_next;
+    }
+
+    //*************************************************************************
+    /// Get the head link.
+    //*************************************************************************
+    const link_type& get_head() const
+    {
+      return *start_link.etl_next;
+    }
+
+    //*************************************************************************
+    /// Initialise the intrusive_forward_list.
+    //*************************************************************************
+    void initialise()
+    {
+      start_link.etl_next = nullptr;
+      current_size = 0;
+    }
+  };
+
+  //***************************************************************************
   /// An intrusive forward list.
   ///\ingroup intrusive_forward_list
   ///\note TLink must be a base of TValue.
   //***************************************************************************
   template <typename TValue, typename TLink = etl::forward_link<0> >
-  class intrusive_forward_list
+  class intrusive_forward_list : public etl::intrusive_forward_list_base<TLink>
   {
   public:
 
     // Node typedef.
-    typedef TLink             link_type;
+    typedef typename etl::intrusive_forward_list_base<TLink>::link_type link_type;
 
     // STL style typedefs.
     typedef TValue            value_type;
@@ -325,7 +495,7 @@ namespace etl
     //*************************************************************************
     intrusive_forward_list()
     {
-      initialise();
+      this->initialise();
     }
 
     //*************************************************************************
@@ -333,7 +503,7 @@ namespace etl
     //*************************************************************************
     ~intrusive_forward_list()
     {
-      clear();
+      this->clear();
     }
 
     //*************************************************************************
@@ -342,7 +512,7 @@ namespace etl
     template <typename TIterator>
     intrusive_forward_list(TIterator first, TIterator last)
     {
-      assign(first, last);
+      this->assign(first, last);
     }
 
     //*************************************************************************
@@ -350,7 +520,7 @@ namespace etl
     //*************************************************************************
     iterator begin()
     {
-      return iterator(static_cast<value_type&>(get_head()));
+      return iterator(static_cast<value_type&>(this->get_head()));
     }
 
     //*************************************************************************
@@ -358,7 +528,7 @@ namespace etl
     //*************************************************************************
     const_iterator begin() const
     {
-      return const_iterator(static_cast<const value_type&>(get_head()));
+      return const_iterator(static_cast<const value_type&>(this->get_head()));
     }
 
     //*************************************************************************
@@ -366,7 +536,7 @@ namespace etl
     //*************************************************************************
     iterator before_begin()
     {
-      return iterator(static_cast<value_type&>(start_link));
+      return iterator(static_cast<value_type&>(this->start_link));
     }
 
     //*************************************************************************
@@ -374,7 +544,7 @@ namespace etl
     //*************************************************************************
     const_iterator before_begin() const
     {
-      return const_iterator(static_cast<const value_type&>(start_link));
+      return const_iterator(static_cast<const value_type&>(this->start_link));
     }
 
     //*************************************************************************
@@ -382,7 +552,7 @@ namespace etl
     //*************************************************************************
     const_iterator cbegin() const
     {
-      return const_iterator(static_cast<const value_type&>(get_head()));
+      return const_iterator(static_cast<const value_type&>(this->get_head()));
     }
 
     //*************************************************************************
@@ -410,19 +580,11 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Clears the intrusive_forward_list.
-    //*************************************************************************
-    void clear()
-    {
-      initialise();
-    }
-
-    //*************************************************************************
     /// Gets a reference to the first element.
     //*************************************************************************
     reference front()
     {
-      return static_cast<value_type&>(get_head());
+      return static_cast<value_type&>(this->get_head());
     }
 
     //*************************************************************************
@@ -430,77 +592,7 @@ namespace etl
     //*************************************************************************
     const_reference front() const
     {
-      return static_cast<const value_type&>(get_head());;
-    }
-
-    //*************************************************************************
-    /// Assigns a range of values to the intrusive_forward_list.
-    /// If ETL_THROW_EXCEPTIONS & _DEBUG are defined throws forward_list_iterator if the iterators are reversed.
-    //*************************************************************************
-    template <typename TIterator>
-    void assign(TIterator first, TIterator last)
-    {
-#if defined(ETL_DEBUG)
-      difference_type count = std::distance(first, last);
-      ETL_ASSERT(count >= 0, ETL_ERROR(intrusive_forward_list_iterator_exception));
-#endif
-
-      initialise();
-
-      link_type* p_last_link = &start_link;
-
-      // Add all of the elements.
-      while (first != last)
-      {
-        link_type& link = *first++;
-        etl::link_splice<link_type>(p_last_link, link);
-        p_last_link = &link;
-        ++current_size;
-      }
-    }
-
-    //*************************************************************************
-    /// Pushes a value to the front of the intrusive_forward_list.
-    //*************************************************************************
-    void push_front(link_type& value)
-    {
-      insert_link_after(start_link, value);
-    }
-
-    //*************************************************************************
-    /// Removes a value from the front of the intrusive_forward_list.
-    //*************************************************************************
-    void pop_front()
-    {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!empty(), ETL_ERROR(intrusive_forward_list_empty));
-#endif
-      remove_link_after(start_link);
-    }
-
-    //*************************************************************************
-    /// Reverses the intrusive_forward_list.
-    //*************************************************************************
-    void reverse()
-    {
-      if (is_trivial_list())
-      {
-        return;
-      }
-
-      link_type* first  = nullptr;             // To keep first link
-      link_type* second = start_link.etl_next; // To keep second link
-      link_type* track  = start_link.etl_next; // Track the list
-
-      while (track != NULL)
-      {
-        track = track->etl_next;  // Track point to next link;
-        second->etl_next = first; // Second link point to first
-        first  = second;          // Move first link to next
-        second = track;           // Move second link to next
-      }
-
-      etl::link<link_type>(start_link, first);
+      return static_cast<const value_type&>(this->get_head());;
     }
 
     //*************************************************************************
@@ -508,7 +600,7 @@ namespace etl
     //*************************************************************************
     iterator insert_after(iterator position, value_type& value)
     {
-      insert_link_after(*position.p_value, value);
+      this->insert_link_after(*position.p_value, value);
       return iterator(value);
     }
 
@@ -521,7 +613,7 @@ namespace etl
       while (first != last)
       {
         // Set up the next free link.
-        insert_link_after(*position.p_value, *first++);
+        this->insert_link_after(*position.p_value, *first++);
         ++position;
       }
     }
@@ -538,7 +630,7 @@ namespace etl
         if (next != end())
         {
           ++next;
-          remove_link_after(*position.p_value);
+          this->remove_link_after(*position.p_value);
         }
       }
 
@@ -552,7 +644,7 @@ namespace etl
     {
       if (first != end() && (first != last))
       {
-        current_size -= std::distance(first, last) - 1;
+        this->current_size -= std::distance(first, last) - 1;
 
         link_type* p_first = first.p_value;
         link_type* p_last = last.p_value;
@@ -583,12 +675,12 @@ namespace etl
     template <typename TIsEqual>
     void unique(TIsEqual isEqual)
     {
-      if (empty())
+      if (this->empty())
       {
         return;
       }
 
-      link_type* last    = &get_head();
+      link_type* last    = &this->get_head();
       link_type* current = last->etl_next;
 
       while (current != nullptr)
@@ -596,7 +688,7 @@ namespace etl
         // Is this value the same as the last?
         if (isEqual(*static_cast<value_type*>(current), *static_cast<value_type*>(last)))
         {
-          remove_link_after(*last);
+          this->remove_link_after(*last);
         }
         else
         {
@@ -634,7 +726,7 @@ namespace etl
       int      left_size;
       int      right_size;
 
-      if (is_trivial_list())
+      if (this->is_trivial_list())
       {
         return;
       }
@@ -779,22 +871,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Returns true if the list has no elements.
-    //*************************************************************************
-    bool empty() const
-    {
-      return start_link.etl_next == nullptr;
-    }
-
-    //*************************************************************************
-    /// Returns the number of elements.
-    //*************************************************************************
-    size_t size() const
-    {
-      return current_size;
-    }
-
-    //*************************************************************************
     /// Splice another list into this one.
     //*************************************************************************
     void splice_after(iterator position, etl::intrusive_forward_list<TValue, TLink>& other)
@@ -808,7 +884,7 @@ namespace etl
 
           if (&other != this)
           {
-            current_size += other.size();
+            this->current_size += other.size();
           }
 
           link_type& before = *position.p_value;
@@ -841,7 +917,7 @@ namespace etl
 
       if (&other != this)
       {
-        ++current_size;
+        ++this->current_size;
         --other.current_size;
       }
     }
@@ -856,7 +932,7 @@ namespace etl
         if (&other != this)
         {
           size_t n = std::distance(begin_, end_) - 1;
-          current_size += n;
+          this->current_size += n;
           other.current_size -= n;
         }
 
@@ -903,7 +979,7 @@ namespace etl
         value_type* other_begin    = static_cast<value_type*>(&other.get_head());
         value_type* other_terminal = nullptr;
 
-        value_type* before      = static_cast<value_type*>(&start_link);
+        value_type* before      = static_cast<value_type*>(&this->start_link);
         value_type* before_next = get_next(before);
         value_type* terminal    = nullptr;
 
@@ -941,7 +1017,7 @@ namespace etl
           }
         }
 
-        current_size += other.size();
+        this->current_size += other.size();
 
         other.initialise();
       }
@@ -949,73 +1025,12 @@ namespace etl
 
   private:
 
-    link_type start_link; ///< The link that acts as the intrusive_forward_list start.
-
-    size_t current_size; ///< Counts the number of elements in the list.
-
-    //*************************************************************************
-    /// Is the intrusive_forward_list a trivial length?
-    //*************************************************************************
-    bool is_trivial_list() const
-    {
-      return (start_link.link_type::etl_next == nullptr) || (start_link.link_type::etl_next->etl_next == nullptr);;
-    }
-
-    //*************************************************************************
-    /// Insert a link.
-    //*************************************************************************
-    void insert_link_after(link_type& position, link_type& link)
-    {
-      // Connect to the intrusive_forward_list.
-      etl::link_splice<link_type>(position, link);
-      ++current_size;
-    }
-
-    //*************************************************************************
-    /// Remove a link.
-    //*************************************************************************
-    void remove_link_after(link_type& link)
-    {
-      link_type* p_next = link.etl_next;
-
-      if (p_next != nullptr)
-      {
-        etl::unlink_after<link_type>(link);
-        --current_size;
-      }
-    }
-
-    //*************************************************************************
-    /// Get the head link.
-    //*************************************************************************
-    link_type& get_head()
-    {
-      return *start_link.etl_next;
-    }
-
-    //*************************************************************************
-    /// Get the head link.
-    //*************************************************************************
-    const link_type& get_head() const
-    {
-      return *start_link.etl_next;
-    }
-
     //*************************************************************************
     /// Get the next value.
     //*************************************************************************
     value_type* get_next(link_type* link) const
     {
       return static_cast<value_type*>(link->etl_next);
-    }
-
-    //*************************************************************************
-    /// Initialise the intrusive_forward_list.
-    //*************************************************************************
-    void initialise()
-    {
-      start_link.etl_next = nullptr;
-      current_size = 0;
     }
 
     // Disabled.
