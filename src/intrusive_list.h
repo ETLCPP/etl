@@ -113,19 +113,254 @@ namespace etl
   };
 
   //***************************************************************************
+  /// Base for intrusive list.
+  ///\ingroup intrusive_list
+  //***************************************************************************
+  template <typename TLink>
+  class intrusive_list_base
+  {
+  public:
+
+    // Node typedef.
+    typedef TLink link_type;
+
+    //*************************************************************************
+    /// Assigns a range of values to the intrusive_list.
+    /// If ETL_THROW_EXCEPTIONS & _DEBUG are defined emits a
+    /// intrusive_list_iterator_exception if the iterators are reversed.
+    //*************************************************************************
+    template <typename TIterator>
+    void assign(TIterator first, TIterator last)
+    {
+#if defined(ETL_DEBUG)
+      intmax_t count = std::distance(first, last);
+      ETL_ASSERT(count >= 0, ETL_ERROR(intrusive_list_iterator_exception));
+#endif
+
+      initialise();
+
+      link_type* p_last_link = &terminal_link;
+
+      // Add all of the elements.
+      while (first != last)
+      {
+        link_type& link = *first++;
+        etl::link_splice<link_type>(p_last_link, link);
+        p_last_link = &link;
+        ++current_size;
+      }
+    }
+
+    //*************************************************************************
+    /// Pushes a value to the front of the intrusive_list.
+    //*************************************************************************
+    void push_front(link_type& value)
+    {
+      insert_link(terminal_link, value);
+    }
+
+    //*************************************************************************
+    /// Removes a value from the front of the intrusive_list.
+    //*************************************************************************
+    void pop_front()
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!empty(), ETL_ERROR(intrusive_list_empty));
+#endif
+      remove_link(get_head());
+    }
+
+    //*************************************************************************
+    /// Pushes a value to the back of the intrusive_list.
+    //*************************************************************************
+    void push_back(link_type& value)
+    {
+      insert_link(terminal_link.link_type::etl_previous, value);
+    }
+
+    //*************************************************************************
+    /// Removes a value from the back of the intrusive_list.
+    //*************************************************************************
+    void pop_back()
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!empty(), ETL_ERROR(intrusive_list_empty));
+#endif
+      remove_link(get_tail());
+    }
+
+    //*************************************************************************
+    /// Clears the intrusive_list.
+    //*************************************************************************
+    void clear()
+    {
+      initialise();
+    }
+
+    //*************************************************************************
+    /// Reverses the list.
+    //*************************************************************************
+    void reverse()
+    {
+      if (is_trivial_list())
+      {
+        return;
+      }
+
+      link_type* pnode = terminal_link.etl_next;
+
+      while (pnode != &terminal_link)
+      {
+        pnode->reverse();
+        pnode = pnode->etl_previous; // Now we've reversed it, we must go to the previous node.
+      }
+
+      // Terminal node.
+      pnode->reverse();
+    }
+
+    //*************************************************************************
+    /// Returns true if the list has no elements.
+    //*************************************************************************
+    bool empty() const
+    {
+      return (terminal_link.link_type::etl_next == &terminal_link);
+    }
+
+    //*************************************************************************
+    /// Returns the number of elements.
+    //*************************************************************************
+    size_t size() const
+    {
+      return current_size;
+    }
+
+  protected:
+
+    /// The link that acts as the intrusive_list start & end.
+    link_type terminal_link;
+
+    size_t current_size; ///< Counts the number of elements in the list.
+
+    //*************************************************************************
+    /// Is the intrusive_list a trivial length?
+    //*************************************************************************
+    bool is_trivial_list() const
+    {
+      return (terminal_link.link_type::etl_next == &terminal_link) || (terminal_link.link_type::etl_next->etl_next == &terminal_link);
+    }
+
+    //*************************************************************************
+    /// Insert a link.
+    //*************************************************************************
+    void insert_link(link_type& previous, link_type& new_link)
+    {
+      // Connect to the intrusive_list.
+      etl::link_splice<link_type>(previous, new_link);
+      ++current_size;
+    }
+
+    //*************************************************************************
+    /// Insert a link.
+    //*************************************************************************
+    void insert_link(link_type* previous, link_type& new_link)
+    {
+      // Connect to the intrusive_list.
+      etl::link_splice<link_type>(previous, new_link);
+      ++current_size;
+    }
+
+    //*************************************************************************
+    /// Insert a link.
+    //*************************************************************************
+    void insert_link(link_type& previous, link_type* new_link)
+    {
+      // Connect to the intrusive_list.
+      etl::link_splice<link_type>(previous, new_link);
+      ++current_size;
+    }
+
+    //*************************************************************************
+    /// Insert a link.
+    //*************************************************************************
+    void insert_link(link_type* previous, link_type* new_link)
+    {
+      // Connect to the intrusive_list.
+      etl::link_splice<link_type>(previous, new_link);
+      ++current_size;
+    }
+
+    //*************************************************************************
+    /// Remove a link.
+    //*************************************************************************
+    void remove_link(link_type& link)
+    {
+      etl::unlink<link_type>(link);
+      --current_size;
+    }
+
+    //*************************************************************************
+    /// Remove a link.
+    //*************************************************************************
+    void remove_link(link_type* link)
+    {
+      etl::unlink<link_type>(*link);
+      --current_size;
+    }
+
+    //*************************************************************************
+    /// Get the head link.
+    //*************************************************************************
+    link_type* get_head()
+    {
+      return terminal_link.etl_next;
+    }
+
+    //*************************************************************************
+    /// Get the head link.
+    //*************************************************************************
+    const link_type* get_head() const
+    {
+      return terminal_link.etl_next;
+    }
+
+    //*************************************************************************
+    /// Get the tail link.
+    //*************************************************************************
+    link_type* get_tail()
+    {
+      return terminal_link.etl_previous;
+    }
+
+    //*************************************************************************
+    /// Get the tail link.
+    //*************************************************************************
+    const link_type* get_tail() const
+    {
+      return terminal_link.etl_previous;
+    }
+
+    //*************************************************************************
+    /// Initialise the intrusive_list.
+    //*************************************************************************
+    void initialise()
+    {
+      etl::link(terminal_link, terminal_link);
+      current_size = 0;
+    }
+  };
+
+  //***************************************************************************
   /// An intrusive list.
   ///\ingroup intrusive_list
   ///\note TLink must be a base of TValue.
   //***************************************************************************
   template <typename TValue, typename TLink = etl::bidirectional_link<0> >
-  class intrusive_list
+  class intrusive_list : public etl::intrusive_list_base<TLink>
   {
   public:
 
     typedef intrusive_list<TValue, TLink> list_type;
-
-    // Node typedef.
-    typedef TLink             link_type;
 
     // STL style typedefs.
     typedef TValue            value_type;
@@ -411,14 +646,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Clears the intrusive_list.
-    //*************************************************************************
-    void clear()
-    {
-      initialise();
-    }
-
-    //*************************************************************************
     /// Gets a reference to the first element.
     //*************************************************************************
     reference front()
@@ -448,93 +675,6 @@ namespace etl
     const_reference back() const
     {
       return *static_cast<const value_type*>(get_tail());;
-    }
-
-    //*************************************************************************
-    /// Assigns a range of values to the intrusive_list.
-    /// If ETL_THROW_EXCEPTIONS & _DEBUG are defined emits a
-    /// intrusive_list_iterator_exception if the iterators are reversed.
-    //*************************************************************************
-    template <typename TIterator>
-    void assign(TIterator first, TIterator last)
-    {
-#if defined(ETL_DEBUG)
-      difference_type count = std::distance(first, last);
-      ETL_ASSERT(count >= 0, ETL_ERROR(intrusive_list_iterator_exception));
-#endif
-
-      initialise();
-
-      link_type* p_last_link = &terminal_link;
-
-      // Add all of the elements.
-      while (first != last)
-      {
-        link_type& link = *first++;
-        etl::link_splice<link_type>(p_last_link, link);
-        p_last_link = &link;
-        ++current_size;
-      }
-    }
-
-    //*************************************************************************
-    /// Pushes a value to the front of the intrusive_list.
-    //*************************************************************************
-    void push_front(link_type& value)
-    {
-      insert_link(terminal_link, value);
-    }
-
-    //*************************************************************************
-    /// Removes a value from the front of the intrusive_list.
-    //*************************************************************************
-    void pop_front()
-    {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!empty(), ETL_ERROR(intrusive_list_empty));
-#endif
-      remove_link(get_head());
-    }
-
-    //*************************************************************************
-    /// Pushes a value to the back of the intrusive_list.
-    //*************************************************************************
-    void push_back(value_type& value)
-    {
-      insert_link(terminal_link.link_type::etl_previous, value);
-    }
-
-    //*************************************************************************
-    /// Removes a value from the back of the intrusive_list.
-    //*************************************************************************
-    void pop_back()
-    {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!empty(), ETL_ERROR(intrusive_list_empty));
-#endif
-      remove_link(get_tail());
-    }
-
-    //*************************************************************************
-    /// Reverses the list.
-    //*************************************************************************
-    void reverse()
-    {
-      if (is_trivial_list())
-      {
-        return;
-      }
-
-      link_type* pnode = terminal_link.etl_next;
-
-      while (pnode != &terminal_link)
-      {
-        pnode->reverse();
-        pnode = pnode->etl_previous; // Now we've reversed it, we must go to the previous node.
-      }
-
-      // Terminal node.
-      pnode->reverse();
     }
 
     //*************************************************************************
@@ -789,22 +929,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Returns true if the list has no elements.
-    //*************************************************************************
-    bool empty() const
-    {
-      return (terminal_link.link_type::etl_next == &terminal_link);
-    }
-
-    //*************************************************************************
-    /// Returns the number of elements.
-    //*************************************************************************
-    size_t size() const
-    {
-      return current_size;
-    }
-
-    //*************************************************************************
     /// Splice another list into this one.
     //*************************************************************************
     void splice(iterator position, list_type& other)
@@ -934,120 +1058,6 @@ namespace etl
 
         other.initialise();
       }
-    }
-
-  private:
-
-    /// The link that acts as the intrusive_list start & end.
-    link_type terminal_link;
-
-    size_t current_size; ///< Counts the number of elements in the list.
-
-    //*************************************************************************
-    /// Is the intrusive_list a trivial length?
-    //*************************************************************************
-    bool is_trivial_list() const
-    {
-      return (terminal_link.link_type::etl_next == &terminal_link) || (terminal_link.link_type::etl_next->etl_next == &terminal_link);
-    }
-
-    //*************************************************************************
-    /// Insert a link.
-    //*************************************************************************
-    void insert_link(link_type& previous, link_type& new_link)
-    {
-      // Connect to the intrusive_list.
-      etl::link_splice<link_type>(previous, new_link);
-      ++current_size;
-    }
-
-    //*************************************************************************
-    /// Insert a link.
-    //*************************************************************************
-    void insert_link(link_type* previous, link_type& new_link)
-    {
-      // Connect to the intrusive_list.
-      etl::link_splice<link_type>(previous, new_link);
-      ++current_size;
-    }
-
-    //*************************************************************************
-    /// Insert a link.
-    //*************************************************************************
-    void insert_link(link_type& previous, link_type* new_link)
-    {
-      // Connect to the intrusive_list.
-      etl::link_splice<link_type>(previous, new_link);
-      ++current_size;
-    }
-
-    //*************************************************************************
-    /// Insert a link.
-    //*************************************************************************
-    void insert_link(link_type* previous, link_type* new_link)
-    {
-      // Connect to the intrusive_list.
-      etl::link_splice<link_type>(previous, new_link);
-      ++current_size;
-    }
-
-    //*************************************************************************
-    /// Remove a link.
-    //*************************************************************************
-    void remove_link(link_type& link)
-    {
-      etl::unlink<link_type>(link);
-      --current_size;
-    }
-
-    //*************************************************************************
-    /// Remove a link.
-    //*************************************************************************
-    void remove_link(link_type* link)
-    {
-      etl::unlink<link_type>(*link);
-      --current_size;
-    }
-
-    //*************************************************************************
-    /// Get the head link.
-    //*************************************************************************
-    link_type* get_head()
-    {
-      return terminal_link.etl_next;
-    }
-
-    //*************************************************************************
-    /// Get the head link.
-    //*************************************************************************
-    const link_type* get_head() const
-    {
-      return terminal_link.etl_next;
-    }
-
-    //*************************************************************************
-    /// Get the tail link.
-    //*************************************************************************
-    link_type* get_tail()
-    {
-      return terminal_link.etl_previous;
-    }
-
-    //*************************************************************************
-    /// Get the tail link.
-    //*************************************************************************
-    const link_type* get_tail() const
-    {
-      return terminal_link.etl_previous;
-    }
-
-    //*************************************************************************
-    /// Initialise the intrusive_list.
-    //*************************************************************************
-    void initialise()
-    {
-      etl::link(terminal_link, terminal_link);
-      current_size = 0;
     }
 
     // Disabled.
