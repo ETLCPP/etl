@@ -265,11 +265,14 @@ namespace etl
   template <typename TInputIterator,
             typename TSize,
             typename TOutputIterator>
-  TOutputIterator copy_n(TInputIterator  begin,
-                         TSize           count,
-                         TOutputIterator result)
+  TOutputIterator copy_n(TInputIterator  i_begin,
+                         TSize           n,
+                         TOutputIterator o_begin)
   {
-    return std::copy(begin, begin + count, result);
+    TInputIterator i_end(i_begin);
+    std::advance(i_end, n);
+
+    return std::copy(i_begin, i_end, o_begin);
   }
 
   //***************************************************************************
@@ -281,11 +284,14 @@ namespace etl
             typename TSize,
             typename TOutputIterator>
   TOutputIterator copy_n(TInputIterator  i_begin,
-                         TSize           count,
+                         TSize           n,
                          TOutputIterator o_begin,
                          TOutputIterator o_end)
   {
-    return  etl::copy(i_begin, i_begin + count, o_begin, o_end);;
+    TInputIterator i_end(i_begin);
+    std::advance(i_end, n);
+
+    return  etl::copy(i_begin, i_end, o_begin, o_end);;
   }
 
   //***************************************************************************
@@ -337,6 +343,34 @@ namespace etl
       }
 
       ++i_begin;
+    }
+
+    return o_begin;
+  }
+
+  //***************************************************************************
+  /// copy_n_if
+  /// Combination of copy_n and copy_if.
+  ///\ingroup algorithm
+    //***************************************************************************
+  template <typename TInputIterator,
+            typename TSize,
+            typename TOutputIterator,
+            typename TUnaryPredicate>
+  TOutputIterator copy_n_if(TInputIterator  begin,
+                            TSize           n,
+                            TOutputIterator result,
+                            TUnaryPredicate predicate)
+  {
+    while (n > 0)
+    {
+      if (predicate(*i_begin))
+      {
+        *o_begin++ = *i_begin;
+      }
+
+      ++i_begin;
+      --n;
     }
 
     return o_begin;
@@ -650,6 +684,53 @@ namespace etl
     }
 
     return function;
+  }
+
+    //***************************************************************************
+  /// Like std::for_each but for 'n' iterations.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator,
+            typename TSize,
+            typename TUnaryFunction>
+  TIterator for_each_n(TIterator       begin,
+                       TSize           n,
+                       TUnaryFunction  function)
+  {
+    while (n > 0)
+    {
+      function(*begin++);
+      --n;
+    }
+
+    return begin;
+  }
+
+  //***************************************************************************
+  /// Like std::for_each but applies a predicate before calling the function, for 'n' iterations
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator,
+            typename TSize,
+            typename TUnaryFunction,
+            typename TUnaryPredicate>
+  TIterator for_each_n_if(TIterator       begin,
+                          TSize           n,
+                          TUnaryFunction  function,
+                          TUnaryPredicate predicate)
+  {
+    while (n > 0)
+    {
+      if (predicate(*begin))
+      {
+        function(*begin);
+      }
+
+      ++begin;
+      --n;
+    }
+
+    return begin;
   }
 
   //***************************************************************************
