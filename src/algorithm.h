@@ -258,21 +258,40 @@ namespace etl
   }
 
   //***************************************************************************
-  /// copy_n
+  /// copy_n (Random input iterators)
   ///\ingroup algorithm
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/copy_n"></a>
   //***************************************************************************
   template <typename TInputIterator,
             typename TSize,
             typename TOutputIterator>
-  TOutputIterator copy_n(TInputIterator  i_begin,
-                         TSize           n,
-                         TOutputIterator o_begin)
+  typename etl::enable_if<etl::is_random_iterator<TInputIterator>::value, TOutputIterator>::type
+   copy_n(TInputIterator  i_begin,
+          TSize           n,
+          TOutputIterator o_begin)
   {
-    TInputIterator i_end(i_begin);
-    std::advance(i_end, n);
+    return std::copy(i_begin, i_begin + n, o_begin);
+  }
 
-    return std::copy(i_begin, i_end, o_begin);
+  //***************************************************************************
+  /// copy_n (Non-random input iterators)
+  ///\ingroup algorithm
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/copy_n"></a>
+  //***************************************************************************
+  template <typename TInputIterator,
+            typename TSize,
+            typename TOutputIterator>
+  typename etl::enable_if<!etl::is_random_iterator<TInputIterator>::value, TOutputIterator>::type
+   copy_n(TInputIterator  i_begin,
+          TSize           n,
+          TOutputIterator o_begin)
+  {
+    while (n-- > 0)
+    {
+      *o_begin++ = *i_begin++;
+    }
+
+    return o_begin;
   }
 
   //***************************************************************************
@@ -288,10 +307,34 @@ namespace etl
                          TOutputIterator o_begin,
                          TOutputIterator o_end)
   {
-    TInputIterator i_end(i_begin);
-    std::advance(i_end, n);
+    while ((n-- > 0) && (o_begin != o_end))
+    {
+      *o_begin++ = *i_begin++;
+    }
 
-    return  etl::copy(i_begin, i_end, o_begin, o_end);;
+    return o_begin;
+  }
+
+  //***************************************************************************
+  /// copy_n
+  /// A form of copy_n where the smallest of the two ranges is used.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TInputIterator,
+            typename TSize1,
+            typename TOutputIterator,
+            typename TSize2>
+  TOutputIterator copy_n(TInputIterator  i_begin,
+                         TSize1          n1,
+                         TOutputIterator o_begin,
+                         TSize2          n2)
+  {
+    while ((n1-- > 0) && (n2-- > 0))
+    {
+      *o_begin++ = *i_begin++;
+    }
+
+    return o_begin;
   }
 
   //***************************************************************************
@@ -357,12 +400,12 @@ namespace etl
             typename TSize,
             typename TOutputIterator,
             typename TUnaryPredicate>
-  TOutputIterator copy_n_if(TInputIterator  begin,
+  TOutputIterator copy_n_if(TInputIterator  i_begin,
                             TSize           n,
-                            TOutputIterator result,
+                            TOutputIterator o_begin,
                             TUnaryPredicate predicate)
   {
-    while (n > 0)
+    while (n-- > 0)
     {
       if (predicate(*i_begin))
       {
@@ -370,7 +413,6 @@ namespace etl
       }
 
       ++i_begin;
-      --n;
     }
 
     return o_begin;
@@ -697,10 +739,9 @@ namespace etl
                        TSize           n,
                        TUnaryFunction  function)
   {
-    while (n > 0)
+    while (n-- > 0)
     {
       function(*begin++);
-      --n;
     }
 
     return begin;
@@ -719,7 +760,7 @@ namespace etl
                           TUnaryFunction  function,
                           TUnaryPredicate predicate)
   {
-    while (n > 0)
+    while (n-- > 0)
     {
       if (predicate(*begin))
       {
@@ -727,7 +768,6 @@ namespace etl
       }
 
       ++begin;
-      --n;
     }
 
     return begin;
