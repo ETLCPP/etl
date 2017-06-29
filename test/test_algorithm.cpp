@@ -715,6 +715,44 @@ namespace
     }
 
     //=========================================================================
+    TEST(transform_n_if)
+    {
+      int input[] = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
+      int output[] = { 0, 0, 0, 0, 0, 0, 0, 0,  0, 0 };
+      int compare[] = { 2, 4, 6, 0, 0, 0, 0, 0,  0, 0 };
+
+      // Double everything less than 5 and copy to output.
+      etl::transform_n_if(std::begin(input),
+                          5,
+                          std::begin(output),
+                          std::bind2nd(std::multiplies<int>(), 2),
+                          std::bind2nd(std::less<int>(), 5));
+
+      bool is_same = std::equal(std::begin(output), std::end(output), std::begin(compare));
+      CHECK(is_same);
+    }
+
+    //=========================================================================
+    TEST(transform_n_if_2_input_ranges)
+    {
+      int input1[] = { 1, 8, 2, 7, 3,  6, 4, 5, 10, 9 };
+      int input2[] = { 8, 7, 6, 5, 4, 10, 9, 3,  2, 1 };
+      int output[] = { 0, 0, 0, 0, 0, 0, 0, 0,  0, 0 };
+      int compare[] = { 8, 12, 12, 0, 0, 0, 0, 0,  0, 0 };
+
+      // Multiply together everything where input1 is less than input2 and copy to output.
+      etl::transform_n_if(std::begin(input1),
+                          std::begin(input2),
+                          5,
+                          std::begin(output),
+                          std::multiplies<int>(),
+                          std::less<int>());
+
+      bool is_same = std::equal(std::begin(output), std::end(output), std::begin(compare));
+      CHECK(is_same);
+    }
+
+    //=========================================================================
     TEST(partition_transform)
     {
       int input[]         = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
