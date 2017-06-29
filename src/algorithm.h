@@ -942,6 +942,65 @@ namespace etl
   }
 
   //***************************************************************************
+  /// Like std::transform_if, for 'n' items.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TInputIterator,
+            typename TSize,
+            typename TOutputIterator,
+            typename TUnaryFunction,
+            typename TUnaryPredicate>
+  TOutputIterator transform_n_if(TInputIterator  i_begin,
+                                 TSize           n,
+                                 TOutputIterator o_begin,
+                                 TUnaryFunction  function,
+                                 TUnaryPredicate predicate)
+  {
+    while (n-- > 0)
+    {
+      if (predicate(*i_begin))
+      {
+        *o_begin++ = function(*i_begin);
+      }
+
+      ++i_begin;
+    }
+
+    return o_begin;
+  }
+
+  //***************************************************************************
+  /// Like etl::transform_if but inputs from two ranges for 'n' items.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TInputIterator1,
+            typename TInputIterator2,
+            typename TSize,
+            typename TOutputIterator,
+            typename TBinaryFunction,
+            typename TBinaryPredicate>
+  TOutputIterator transform_n_if(TInputIterator1  i_begin1,
+                                 TInputIterator2  i_begin2,
+                                 TSize            n,
+                                 TOutputIterator  o_begin,
+                                 TBinaryFunction  function,
+                                 TBinaryPredicate predicate)
+  {
+    while (n-- > 0)
+    {
+      if (predicate(*i_begin1, *i_begin2))
+      {
+        *o_begin++ = function(*i_begin1, *i_begin2);
+      }
+
+      ++i_begin1;
+      ++i_begin2;
+    }
+
+    return o_begin;
+  }
+
+  //***************************************************************************
   /// Transforms the elements from the range (begin, end) to two different ranges
   /// depending on the value returned by the predicate.<br>
   ///\ingroup algorithm
