@@ -82,7 +82,7 @@ SOFTWARE.
     TypeName(const TypeName &other) : value(other.value) {} \
     TypeName& operator=(const TypeName &other) { value = other.value; return *this; } \
     explicit TypeName(ValueType value) : value(value) {} \
-    explicit operator ValueType() const { return value; } \
+    operator ValueType() const { return value; } \
     ValueType& get() { return value; } \
     const ValueType& get() const { return value; } \
     TypeName& operator ++() { ++value; return *this; } \
@@ -106,7 +106,7 @@ SOFTWARE.
     /* Volatile definitions.*/ \
     TypeName(const volatile TypeName &other) : value(other.value) {} \
     void operator=(const volatile TypeName &other) volatile { value = other.value; } \
-    explicit operator ValueType() volatile const { return value; } \
+    operator ValueType() volatile const { return value; } \
     volatile ValueType& get() volatile { return value; } \
     const volatile ValueType& get() volatile const { return value; } \
     void operator ++() volatile { ++value; } \
