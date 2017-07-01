@@ -216,7 +216,6 @@
     <ClInclude Include="..\..\src\flat_map.h" />
     <ClInclude Include="..\..\src\map.h" />
     <ClInclude Include="..\..\src\memory.h" />
-    <ClInclude Include="..\..\src\mru_cache.h" />
     <ClInclude Include="..\..\src\multimap.h" />
     <ClInclude Include="..\..\src\multiset.h" />
     <ClInclude Include="..\..\src\multi_array.h" />
@@ -240,7 +239,6 @@
     <ClInclude Include="..\..\src\reference_flat_multimap.h" />
     <ClInclude Include="..\..\src\reference_flat_multiset.h" />
     <ClInclude Include="..\..\src\reference_flat_set.h" />
-    <ClInclude Include="..\..\src\rr_cache.h" />
     <ClInclude Include="..\..\src\set.h" />
     <ClInclude Include="..\..\src\smallest.h" />
     <ClInclude Include="..\..\src\stack.h" />

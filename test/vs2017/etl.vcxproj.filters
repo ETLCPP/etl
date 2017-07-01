@@ -38,7 +38,7 @@
       <UniqueIdentifier>{7028012c-30c4-4993-b2d9-3b1521a610ae}</UniqueIdentifier>
     </Filter>
     <Filter Include="ETL\Frameworks">
-      <UniqueIdentifier>{5de50c3d-4679-4eb3-9b76-e43e1aad6a66}</UniqueIdentifier>
+      <UniqueIdentifier>{6be3bc76-e17c-4be0-8b0b-d1053e1a1761}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -261,12 +261,6 @@
     <ClInclude Include="..\..\src\icache.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\mru_cache.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\rr_cache.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\intrusive_links.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
@@ -439,16 +433,16 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\fsm.h">
-      <Filter>ETL\Patterns</Filter>
+      <Filter>ETL\Frameworks</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\fsm_generator.h">
-      <Filter>ETL\Patterns</Filter>
+      <Filter>ETL\Frameworks</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\message_router.h">
-      <Filter>ETL\Patterns</Filter>
+      <Filter>ETL\Frameworks</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\message_router_generator.h">
-      <Filter>ETL\Patterns</Filter>
+      <Filter>ETL\Frameworks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -788,10 +782,10 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\..\src\CreateFSM.bat">
-      <Filter>ETL\Patterns</Filter>
+      <Filter>ETL\Frameworks</Filter>
     </None>
     <None Include="..\..\src\CreateMessageRouter.bat">
-      <Filter>ETL\Patterns</Filter>
+      <Filter>ETL\Frameworks</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
