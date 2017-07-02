@@ -37,9 +37,15 @@ SOFTWARE.
 #include "exception.h"
 #include "user_type.h"
 #include "message_router.h"
+#include "integral_limits.h"
+#include "largest.h"
 
 #undef ETL_FILE
 #define ETL_FILE "34"
+
+#ifdef ETL_COMPILER_MICROSOFT
+#undef max
+#endif
 
 namespace etl
 {
@@ -50,7 +56,8 @@ namespace etl
     typedef ETL_FSM_STATE_ID_TYPE fsm_state_id_t;
 #endif
 
-  typedef etl::imessage::id_t fsm_event_id_t;
+  // For internal FSM use.
+  typedef typename etl::larger_type<etl::message_id_t>::type fsm_internal_id_t;
 
   //***************************************************************************
   /// Base exception class for FSM.
@@ -111,7 +118,8 @@ namespace etl
   {
   public:
 
-    friend class fsm;
+    /// Allows ifsm_state functions to be private.
+    friend class fsm_helper;
 
     //*******************************************
     /// Gets the id for this state.
@@ -119,11 +127,9 @@ namespace etl
     etl::fsm_state_id_t get_state_id() const
     {
       return state_id;
-    }
+    }    
 
   protected:
-
-    virtual fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message) = 0;
 
     //*******************************************
     /// Constructor.
@@ -133,10 +139,12 @@ namespace etl
     {
     }
 
+  private:
+
+    virtual fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message) = 0;
+
     virtual void on_enter_state() {}; // By default, do nothing.
     virtual void on_exit_state() {};  // By default, do nothing.
-
-  private:
 
     // The state id.
     const etl::fsm_state_id_t state_id;
@@ -147,7 +155,57 @@ namespace etl
   };
 
   //***************************************************************************
-  class fsm : public etl::imessage_router
+  /// Helper class for FSM.
+  /// Allows ifsm_state functions to be private.
+  //***************************************************************************
+  class fsm_helper
+  {
+  public:
+
+    //*******************************************
+    inline fsm_state_id_t process_event(etl::ifsm_state&      state,
+                                        etl::imessage_router& source,
+                                        const etl::imessage&  message)
+    {
+      return state.process_event(source, message);
+    }
+
+    //*******************************************
+    inline void on_enter_state(etl::ifsm_state &state)
+    {
+      state.on_enter_state();
+    }
+
+    //*******************************************
+    inline void on_exit_state(etl::ifsm_state &state)
+    {
+      state.on_exit_state();
+    }
+  };
+
+  //***************************************************************************
+  // The code below has been auto generated. Do not manually edit.
+  //***************************************************************************
+  template <const fsm_internal_id_t ID1 = etl::integral_limits<fsm_internal_id_t>::max - 0, 
+            const fsm_internal_id_t ID2 = etl::integral_limits<fsm_internal_id_t>::max - 1, 
+            const fsm_internal_id_t ID3 = etl::integral_limits<fsm_internal_id_t>::max - 2, 
+            const fsm_internal_id_t ID4 = etl::integral_limits<fsm_internal_id_t>::max - 3, 
+            const fsm_internal_id_t ID5 = etl::integral_limits<fsm_internal_id_t>::max - 4, 
+            const fsm_internal_id_t ID6 = etl::integral_limits<fsm_internal_id_t>::max - 5, 
+            const fsm_internal_id_t ID7 = etl::integral_limits<fsm_internal_id_t>::max - 6, 
+            const fsm_internal_id_t ID8 = etl::integral_limits<fsm_internal_id_t>::max - 7, 
+            const fsm_internal_id_t ID9 = etl::integral_limits<fsm_internal_id_t>::max - 8, 
+            const fsm_internal_id_t ID10 = etl::integral_limits<fsm_internal_id_t>::max - 9, 
+            const fsm_internal_id_t ID11 = etl::integral_limits<fsm_internal_id_t>::max - 10, 
+            const fsm_internal_id_t ID12 = etl::integral_limits<fsm_internal_id_t>::max - 11, 
+            const fsm_internal_id_t ID13 = etl::integral_limits<fsm_internal_id_t>::max - 12, 
+            const fsm_internal_id_t ID14 = etl::integral_limits<fsm_internal_id_t>::max - 13, 
+            const fsm_internal_id_t ID15 = etl::integral_limits<fsm_internal_id_t>::max - 14, 
+            const fsm_internal_id_t ID16 = etl::integral_limits<fsm_internal_id_t>::max - 15>
+  //***************************************************************************
+  // The code above has been auto generated. Do not manually edit.
+  //***************************************************************************
+  class fsm : public etl::imessage_router , protected etl::fsm_helper
   {
   public:
 
@@ -192,7 +250,7 @@ namespace etl
         p_state = state_list[0];
         ETL_ASSERT(p_state != nullptr, ETL_ERROR(etl::fsm_null_state_exception));
 
-        p_state->on_enter_state();
+        fsm_helper::on_enter_state(*p_state);
       }
     }
 
@@ -204,22 +262,53 @@ namespace etl
       receive(etl::null_message_router(), message);
     }
 
+    //*******************************************
     void receive(etl::imessage_router& source, const etl::imessage& message)
     {       
-      etl::fsm_state_id_t next_state_id = p_state->process_event(source, message);
+      etl::fsm_state_id_t next_state_id = fsm_helper::process_event(*p_state, source, message);
 
       ETL_ASSERT(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
 
       // Have we changed state?
       if (next_state_id != p_state->get_state_id())
       {
-        p_state->on_exit_state();
+        //p_state->on_exit_state();
+        fsm_helper::on_exit_state(*p_state);
 
         p_state = state_list[next_state_id];
         ETL_ASSERT(p_state != nullptr, ETL_ERROR(etl::fsm_null_state_exception));
 
-        p_state->on_enter_state();
+        fsm_helper::on_enter_state(*p_state);
       }
+    }
+
+    //*******************************************
+    /// Does this FSM accept the message?
+    //*******************************************
+    bool accepts(const etl::imessage& msg) const
+    {
+      return accepts(msg.get_message_id());
+    }
+
+    //*******************************************
+    /// Does this FSM accept the message id?
+    //*******************************************
+    bool accepts(etl::message_id_t id) const
+    {
+      //***************************************************************************
+      // The code below has been auto generated. Do not manually edit.
+      //***************************************************************************
+      switch (fsm_internal_id_t(id))
+      {
+        case ID1: case ID2: case ID3: case ID4: case ID5: case ID6: case ID7: case ID8: 
+        case ID9: case ID10: case ID11: case ID12: case ID13: case ID14: case ID15: case ID16: 
+          return true; break;
+        default:
+          return false; break;
+      }
+      //***************************************************************************
+      // The code above has been auto generated. Do not manually edit.
+      //***************************************************************************
     }
 
     //*******************************************
@@ -310,8 +399,6 @@ namespace etl
   {
   public:
 
-    friend class fsm;
-
     enum
     {
       STATE_ID = STATE_ID_
@@ -325,7 +412,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::fsm_event_id_t event_id = message.get_message_id();
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -363,8 +450,6 @@ namespace etl
   class fsm_state<TState, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, void> : public ifsm_state
   {
   public:
-    friend class fsm;
-
 
     enum
     {
@@ -379,7 +464,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::fsm_event_id_t event_id = message.get_message_id();
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -416,8 +501,6 @@ namespace etl
   class fsm_state<TState, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, void, void> : public ifsm_state
   {
   public:
-    friend class fsm;
-
 
     enum
     {
@@ -432,7 +515,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::fsm_event_id_t event_id = message.get_message_id();
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -468,8 +551,6 @@ namespace etl
   class fsm_state<TState, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, void, void, void> : public ifsm_state
   {
   public:
-    friend class fsm;
-
 
     enum
     {
@@ -484,7 +565,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::fsm_event_id_t event_id = message.get_message_id();
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -518,8 +599,6 @@ namespace etl
   class fsm_state<TState, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, void, void, void, void> : public ifsm_state
   {
   public:
-    friend class fsm;
-
 
     enum
     {
@@ -534,7 +613,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::fsm_event_id_t event_id = message.get_message_id();
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -567,8 +646,6 @@ namespace etl
   class fsm_state<TState, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, void, void, void, void, void> : public ifsm_state
   {
   public:
-    friend class fsm;
-
 
     enum
     {
@@ -583,7 +660,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::fsm_event_id_t event_id = message.get_message_id();
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -615,8 +692,6 @@ namespace etl
   class fsm_state<TState, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, void, void, void, void, void, void> : public ifsm_state
   {
   public:
-    friend class fsm;
-
 
     enum
     {
@@ -631,7 +706,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::fsm_event_id_t event_id = message.get_message_id();
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -662,8 +737,6 @@ namespace etl
   class fsm_state<TState, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, void, void, void, void, void, void, void> : public ifsm_state
   {
   public:
-    friend class fsm;
-
 
     enum
     {
@@ -678,7 +751,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::fsm_event_id_t event_id = message.get_message_id();
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -707,8 +780,6 @@ namespace etl
   class fsm_state<TState, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, void, void, void, void, void, void, void, void> : public ifsm_state
   {
   public:
-    friend class fsm;
-
 
     enum
     {
@@ -723,7 +794,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::fsm_event_id_t event_id = message.get_message_id();
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -751,8 +822,6 @@ namespace etl
   class fsm_state<TState, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
   public:
-    friend class fsm;
-
 
     enum
     {
@@ -767,7 +836,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::fsm_event_id_t event_id = message.get_message_id();
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -794,8 +863,6 @@ namespace etl
   class fsm_state<TState, STATE_ID_, T1, T2, T3, T4, T5, T6, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
   public:
-    friend class fsm;
-
 
     enum
     {
@@ -810,7 +877,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::fsm_event_id_t event_id = message.get_message_id();
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -836,8 +903,6 @@ namespace etl
   class fsm_state<TState, STATE_ID_, T1, T2, T3, T4, T5, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
   public:
-    friend class fsm;
-
 
     enum
     {
@@ -852,7 +917,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::fsm_event_id_t event_id = message.get_message_id();
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -876,8 +941,6 @@ namespace etl
   class fsm_state<TState, STATE_ID_, T1, T2, T3, T4, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
   public:
-    friend class fsm;
-
 
     enum
     {
@@ -892,7 +955,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::fsm_event_id_t event_id = message.get_message_id();
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -915,8 +978,6 @@ namespace etl
   class fsm_state<TState, STATE_ID_, T1, T2, T3, void, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
   public:
-    friend class fsm;
-
 
     enum
     {
@@ -931,7 +992,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::fsm_event_id_t event_id = message.get_message_id();
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -953,8 +1014,6 @@ namespace etl
   class fsm_state<TState, STATE_ID_, T1, T2, void, void, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
   public:
-    friend class fsm;
-
 
     enum
     {
@@ -969,7 +1028,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::fsm_event_id_t event_id = message.get_message_id();
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -990,8 +1049,6 @@ namespace etl
   class fsm_state<TState, STATE_ID_, T1, void, void, void, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
   public:
-    friend class fsm;
-
 
     enum
     {
@@ -1006,7 +1063,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::fsm_event_id_t event_id = message.get_message_id();
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -1020,5 +1077,9 @@ namespace etl
 }
 
 #undef ETL_FILE
+
+#ifdef ETL_COMPILER_MICROSOFT
+#define max(a,b) (((a) > (b)) ? (a) : (b))
+#endif
 
 #endif

@@ -37,9 +37,15 @@ SOFTWARE.
 #include "exception.h"
 #include "user_type.h"
 #include "message_router.h"
+#include "integral_limits.h"
+#include "largest.h"
 
 #undef ETL_FILE
 #define ETL_FILE "34"
+
+#ifdef ETL_COMPILER_MICROSOFT
+#undef max
+#endif
 
 namespace etl
 {
@@ -50,7 +56,8 @@ namespace etl
     typedef ETL_FSM_STATE_ID_TYPE fsm_state_id_t;
 #endif
 
-  typedef etl::imessage::id_t fsm_event_id_t;
+  // For internal FSM use.
+  typedef typename etl::larger_type<etl::message_id_t>::type fsm_internal_id_t;
 
   //***************************************************************************
   /// Base exception class for FSM.
@@ -111,7 +118,8 @@ namespace etl
   {
   public:
 
-    friend class fsm;
+    /// Allows ifsm_state functions to be private.
+    friend class fsm_helper;
 
     //*******************************************
     /// Gets the id for this state.
@@ -119,11 +127,9 @@ namespace etl
     etl::fsm_state_id_t get_state_id() const
     {
       return state_id;
-    }
+    }    
 
   protected:
-
-    virtual fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message) = 0;
 
     //*******************************************
     /// Constructor.
@@ -133,10 +139,12 @@ namespace etl
     {
     }
 
+  private:
+
+    virtual fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message) = 0;
+
     virtual void on_enter_state() {}; // By default, do nothing.
     virtual void on_exit_state() {};  // By default, do nothing.
-
-  private:
 
     // The state id.
     const etl::fsm_state_id_t state_id;
@@ -147,7 +155,51 @@ namespace etl
   };
 
   //***************************************************************************
-  class fsm : public etl::imessage_router
+  /// Helper class for FSM.
+  /// Allows ifsm_state functions to be private.
+  //***************************************************************************
+  class fsm_helper
+  {
+  public:
+
+    //*******************************************
+    inline fsm_state_id_t process_event(etl::ifsm_state&      state,
+                                        etl::imessage_router& source,
+                                        const etl::imessage&  message)
+    {
+      return state.process_event(source, message);
+    }
+
+    //*******************************************
+    inline void on_enter_state(etl::ifsm_state &state)
+    {
+      state.on_enter_state();
+    }
+
+    //*******************************************
+    inline void on_exit_state(etl::ifsm_state &state)
+    {
+      state.on_exit_state();
+    }
+  };
+
+  /*[[[cog
+  import cog
+  cog.outl("//***************************************************************************")
+  cog.outl("// The code below has been auto generated. Do not manually edit.")
+  cog.outl("//***************************************************************************")
+  cog.out("template <")
+  for n in range(1, int(Handlers)):
+      cog.outl("const fsm_internal_id_t ID%d = etl::integral_limits<fsm_internal_id_t>::max - %d, " % (n, n - 1))
+      cog.out("          ")
+  cog.out("const fsm_internal_id_t ID%d = etl::integral_limits<fsm_internal_id_t>::max - %d" % (int(Handlers), int(Handlers) - 1))
+  cog.outl(">")
+  cog.outl("//***************************************************************************")
+  cog.outl("// The code above has been auto generated. Do not manually edit.")
+  cog.outl("//***************************************************************************")
+  ]]]*/
+  /*[[[end]]]*/
+  class fsm : public etl::imessage_router , protected etl::fsm_helper
   {
   public:
 
@@ -192,7 +244,7 @@ namespace etl
         p_state = state_list[0];
         ETL_ASSERT(p_state != nullptr, ETL_ERROR(etl::fsm_null_state_exception));
 
-        p_state->on_enter_state();
+        fsm_helper::on_enter_state(*p_state);
       }
     }
 
@@ -204,22 +256,61 @@ namespace etl
       receive(etl::null_message_router(), message);
     }
 
+    //*******************************************
     void receive(etl::imessage_router& source, const etl::imessage& message)
     {       
-      etl::fsm_state_id_t next_state_id = p_state->process_event(source, message);
+      etl::fsm_state_id_t next_state_id = fsm_helper::process_event(*p_state, source, message);
 
       ETL_ASSERT(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
 
       // Have we changed state?
       if (next_state_id != p_state->get_state_id())
       {
-        p_state->on_exit_state();
+        //p_state->on_exit_state();
+        fsm_helper::on_exit_state(*p_state);
 
         p_state = state_list[next_state_id];
         ETL_ASSERT(p_state != nullptr, ETL_ERROR(etl::fsm_null_state_exception));
 
-        p_state->on_enter_state();
+        fsm_helper::on_enter_state(*p_state);
       }
+    }
+
+    //*******************************************
+    /// Does this FSM accept the message?
+    //*******************************************
+    bool accepts(const etl::imessage& msg) const
+    {
+      return accepts(msg.get_message_id());
+    }
+
+    //*******************************************
+    /// Does this FSM accept the message id?
+    //*******************************************
+    bool accepts(etl::message_id_t id) const
+    {
+      /*[[[cog
+      import cog
+      cog.outl("//***************************************************************************")
+      cog.outl("// The code below has been auto generated. Do not manually edit.")
+      cog.outl("//***************************************************************************")
+      cog.outl("switch (fsm_internal_id_t(id))")
+      cog.outl("{")
+      cog.out("  ")
+      for n in range(1, int(Handlers) + 1):
+          cog.out("case ID%d: " % n)
+          if n % 8 == 0:
+              cog.outl("")
+              cog.out("  ")
+      cog.outl("  return true; break;")
+      cog.outl("  default:")
+      cog.outl("    return false; break;")
+      cog.outl("}")
+      cog.outl("//***************************************************************************")
+      cog.outl("// The code above has been auto generated. Do not manually edit.")
+      cog.outl("//***************************************************************************")
+      ]]]*/
+      /*[[[end]]]*/
     }
 
     //*******************************************
@@ -318,10 +409,6 @@ namespace etl
   cog.outl("{")
   cog.outl("public:")
   cog.outl("")
-
-  cog.outl("  friend class fsm;")
-  cog.outl("")
-
   cog.outl("  enum")
   cog.outl("  {")
   cog.outl("    STATE_ID = STATE_ID_")
@@ -335,7 +422,7 @@ namespace etl
   cog.outl("  etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)")
   cog.outl("  {")
   cog.outl("    etl::fsm_state_id_t new_state_id;")
-  cog.outl("    etl::fsm_event_id_t event_id = message.get_message_id();")
+  cog.outl("    etl::message_id_t event_id = message.get_message_id();")
   cog.outl("")
   cog.outl("    switch (event_id)")
   cog.outl("    {")
@@ -385,10 +472,6 @@ namespace etl
       cog.outl("void> : public ifsm_state")
       cog.outl("{")
       cog.outl("public:")
-
-      cog.outl("  friend class fsm;")
-      cog.outl("")
-
       cog.outl("")
       cog.outl("  enum")
       cog.outl("  {")
@@ -403,7 +486,7 @@ namespace etl
       cog.outl("  etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)")
       cog.outl("  {")
       cog.outl("    etl::fsm_state_id_t new_state_id;")
-      cog.outl("    etl::fsm_event_id_t event_id = message.get_message_id();")
+      cog.outl("    etl::message_id_t event_id = message.get_message_id();")
       cog.outl("")
       cog.outl("    switch (event_id)")
       cog.outl("    {")
@@ -424,5 +507,9 @@ namespace etl
 }
 
 #undef ETL_FILE
+
+#ifdef ETL_COMPILER_MICROSOFT
+#define max(a,b) (((a) > (b)) ? (a) : (b))
+#endif
 
 #endif

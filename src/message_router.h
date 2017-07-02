@@ -33,20 +33,20 @@ SOFTWARE.
 
 namespace etl
 {
+  /// Allow alternative type for message id.
+#if !defined(ETL_MESSAGE_ID_TYPE)
+    typedef uint_least8_t message_id_t;
+#else
+    typedef ETL_MESSAGE_ID_TYPE message_id_t;
+#endif
+
   //***************************************************************************
   class imessage
   {
   public:
-
-  /// Allow alternative type for message id.
-#if !defined(ETL_MESSAGE_ID_TYPE)
-    typedef uint_least8_t id_t;
-#else
-    typedef ETL_MESSAGE_ID_TYPE id_t;
-#endif
-
+    
     virtual ~imessage() {}
-    virtual id_t get_message_id() const = 0;
+    virtual etl::message_id_t get_message_id() const = 0;
   };
 
   //***************************************************************************
@@ -60,9 +60,9 @@ namespace etl
       ID = ID_
     };
 
-    id_t get_message_id() const
+    etl::message_id_t get_message_id() const
     {
-      return id_t(ID);
+      return etl::message_id_t(ID);
     }
   };
 
@@ -71,11 +71,18 @@ namespace etl
   {
   public:
     virtual ~imessage_router() {}
-    virtual void receive(const imessage& message) = 0;
-    virtual void receive(imessage_router& source, const imessage& message) = 0;
+    virtual void receive(const etl::imessage& message) = 0;
+    virtual void receive(imessage_router& source, const etl::imessage& message) = 0;
+
+    virtual bool accepts(etl::message_id_t id) const = 0;
+    
+    bool accepts(const etl::imessage& msg) const
+    {
+      return accepts(msg.get_message_id());
+    }
 
     void send_message(imessage_router& destination,
-                      const imessage&  message)
+                      const etl::imessage& message)
     {
       destination.receive(*this, message);
     }
@@ -89,12 +96,17 @@ namespace etl
   {
   public:
 
-    void receive(const imessage& message)
+    void receive(const etl::imessage& message)
     {
     }
 
-    void receive(imessage_router& source, const imessage& message)
+    void receive(etl::imessage_router& source, const etl::imessage& message)
     {
+    }
+
+    bool accepts(etl::message_id_t id) const
+    {
+      return false;
     }
   };
 
@@ -102,8 +114,8 @@ namespace etl
   /// Send a message to a router.
   /// Sets the 'sender' to etl::null_message_router type.
   //***************************************************************************
-  inline static void send_message(imessage_router& destination, 
-                                  const imessage&  message)
+  inline static void send_message(etl::imessage_router& destination, 
+                                  const etl::imessage&  message)
   {
     destination.receive(message);
   }
@@ -111,9 +123,9 @@ namespace etl
   //***************************************************************************
   /// Send a message to a router.
   //***************************************************************************
-  inline static void send_message(imessage_router& source, 
-                                  imessage_router& destination, 
-                                  const imessage&  message)
+  inline static void send_message(etl::imessage_router& source, 
+                                  etl::imessage_router& destination, 
+                                  const etl::imessage&  message)
   {
     destination.receive(source, message);
   }
@@ -148,14 +160,14 @@ namespace etl
   {
   public:
 
-    void receive(const imessage& msg)
+    void receive(const etl::imessage& msg)
     {
       receive(etl::null_message_router(), msg);
     }
 
-    void receive(imessage_router& source, const imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
-      const id_t id = msg.get_message_id();
+      const etl::message_id_t id = msg.get_message_id();
 
       switch (id)
       {
@@ -178,6 +190,18 @@ namespace etl
         default:  static_cast<TProcessor*>(this)->on_receive_unknown(source, msg); break;
       }
     }
+
+    bool accepts(etl::message_id_t id) const
+    {
+      switch (id)
+      {
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
+        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: case T15::ID: case T16::ID: 
+          return true; break;
+        default:
+          return false; break;
+      }
+    }
   };
 
   //***************************************************************************
@@ -193,12 +217,12 @@ namespace etl
   {
   public:
 
-    void receive(const imessage& msg)
+    void receive(const etl::imessage& msg)
     {
       receive(etl::null_message_router(), msg);
     }
 
-    void receive(imessage_router& source, const imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
       const size_t id = msg.get_message_id();
 
@@ -222,6 +246,18 @@ namespace etl
         default: static_cast<TProcessor*>(this)->on_receive_unknown(source, msg); break;
       }
     }
+
+    bool accepts(etl::message_id_t id) const
+    {
+      switch (id)
+      {
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
+        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: case T15::ID: 
+          return true; break;
+        default:
+          return false; break;
+      }
+    }
   };
 
   //***************************************************************************
@@ -237,12 +273,12 @@ namespace etl
   {
   public:
 
-    void receive(const imessage& msg)
+    void receive(const etl::imessage& msg)
     {
       receive(etl::null_message_router(), msg);
     }
 
-    void receive(imessage_router& source, const imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
       const size_t id = msg.get_message_id();
 
@@ -265,6 +301,18 @@ namespace etl
         default: static_cast<TProcessor*>(this)->on_receive_unknown(source, msg); break;
       }
     }
+
+    bool accepts(etl::message_id_t id) const
+    {
+      switch (id)
+      {
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
+        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: 
+          return true; break;
+        default:
+          return false; break;
+      }
+    }
   };
 
   //***************************************************************************
@@ -280,12 +328,12 @@ namespace etl
   {
   public:
 
-    void receive(const imessage& msg)
+    void receive(const etl::imessage& msg)
     {
       receive(etl::null_message_router(), msg);
     }
 
-    void receive(imessage_router& source, const imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
       const size_t id = msg.get_message_id();
 
@@ -307,6 +355,18 @@ namespace etl
         default: static_cast<TProcessor*>(this)->on_receive_unknown(source, msg); break;
       }
     }
+
+    bool accepts(etl::message_id_t id) const
+    {
+      switch (id)
+      {
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
+        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: 
+          return true; break;
+        default:
+          return false; break;
+      }
+    }
   };
 
   //***************************************************************************
@@ -321,12 +381,12 @@ namespace etl
   {
   public:
 
-    void receive(const imessage& msg)
+    void receive(const etl::imessage& msg)
     {
       receive(etl::null_message_router(), msg);
     }
 
-    void receive(imessage_router& source, const imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
       const size_t id = msg.get_message_id();
 
@@ -347,6 +407,18 @@ namespace etl
         default: static_cast<TProcessor*>(this)->on_receive_unknown(source, msg); break;
       }
     }
+
+    bool accepts(etl::message_id_t id) const
+    {
+      switch (id)
+      {
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
+        case T9::ID: case T10::ID: case T11::ID: case T12::ID: 
+          return true; break;
+        default:
+          return false; break;
+      }
+    }
   };
 
   //***************************************************************************
@@ -361,12 +433,12 @@ namespace etl
   {
   public:
 
-    void receive(const imessage& msg)
+    void receive(const etl::imessage& msg)
     {
       receive(etl::null_message_router(), msg);
     }
 
-    void receive(imessage_router& source, const imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
       const size_t id = msg.get_message_id();
 
@@ -386,6 +458,18 @@ namespace etl
         default: static_cast<TProcessor*>(this)->on_receive_unknown(source, msg); break;
       }
     }
+
+    bool accepts(etl::message_id_t id) const
+    {
+      switch (id)
+      {
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
+        case T9::ID: case T10::ID: case T11::ID: 
+          return true; break;
+        default:
+          return false; break;
+      }
+    }
   };
 
   //***************************************************************************
@@ -400,12 +484,12 @@ namespace etl
   {
   public:
 
-    void receive(const imessage& msg)
+    void receive(const etl::imessage& msg)
     {
       receive(etl::null_message_router(), msg);
     }
 
-    void receive(imessage_router& source, const imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
       const size_t id = msg.get_message_id();
 
@@ -424,6 +508,18 @@ namespace etl
         default: static_cast<TProcessor*>(this)->on_receive_unknown(source, msg); break;
       }
     }
+
+    bool accepts(etl::message_id_t id) const
+    {
+      switch (id)
+      {
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
+        case T9::ID: case T10::ID: 
+          return true; break;
+        default:
+          return false; break;
+      }
+    }
   };
 
   //***************************************************************************
@@ -438,12 +534,12 @@ namespace etl
   {
   public:
 
-    void receive(const imessage& msg)
+    void receive(const etl::imessage& msg)
     {
       receive(etl::null_message_router(), msg);
     }
 
-    void receive(imessage_router& source, const imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
       const size_t id = msg.get_message_id();
 
@@ -461,6 +557,18 @@ namespace etl
         default: static_cast<TProcessor*>(this)->on_receive_unknown(source, msg); break;
       }
     }
+
+    bool accepts(etl::message_id_t id) const
+    {
+      switch (id)
+      {
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
+        case T9::ID: 
+          return true; break;
+        default:
+          return false; break;
+      }
+    }
   };
 
   //***************************************************************************
@@ -474,12 +582,12 @@ namespace etl
   {
   public:
 
-    void receive(const imessage& msg)
+    void receive(const etl::imessage& msg)
     {
       receive(etl::null_message_router(), msg);
     }
 
-    void receive(imessage_router& source, const imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
       const size_t id = msg.get_message_id();
 
@@ -496,6 +604,18 @@ namespace etl
         default: static_cast<TProcessor*>(this)->on_receive_unknown(source, msg); break;
       }
     }
+
+    bool accepts(etl::message_id_t id) const
+    {
+      switch (id)
+      {
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
+        
+          return true; break;
+        default:
+          return false; break;
+      }
+    }
   };
 
   //***************************************************************************
@@ -509,12 +629,12 @@ namespace etl
   {
   public:
 
-    void receive(const imessage& msg)
+    void receive(const etl::imessage& msg)
     {
       receive(etl::null_message_router(), msg);
     }
 
-    void receive(imessage_router& source, const imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
       const size_t id = msg.get_message_id();
 
@@ -530,6 +650,17 @@ namespace etl
         default: static_cast<TProcessor*>(this)->on_receive_unknown(source, msg); break;
       }
     }
+
+    bool accepts(etl::message_id_t id) const
+    {
+      switch (id)
+      {
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: 
+          return true; break;
+        default:
+          return false; break;
+      }
+    }
   };
 
   //***************************************************************************
@@ -543,12 +674,12 @@ namespace etl
   {
   public:
 
-    void receive(const imessage& msg)
+    void receive(const etl::imessage& msg)
     {
       receive(etl::null_message_router(), msg);
     }
 
-    void receive(imessage_router& source, const imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
       const size_t id = msg.get_message_id();
 
@@ -561,6 +692,17 @@ namespace etl
         case T5::ID: static_cast<TProcessor*>(this)->on_receive(source, static_cast<const T5&>(msg)); break;
         case T6::ID: static_cast<TProcessor*>(this)->on_receive(source, static_cast<const T6&>(msg)); break;
         default: static_cast<TProcessor*>(this)->on_receive_unknown(source, msg); break;
+      }
+    }
+
+    bool accepts(etl::message_id_t id) const
+    {
+      switch (id)
+      {
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: 
+          return true; break;
+        default:
+          return false; break;
       }
     }
   };
@@ -576,12 +718,12 @@ namespace etl
   {
   public:
 
-    void receive(const imessage& msg)
+    void receive(const etl::imessage& msg)
     {
       receive(etl::null_message_router(), msg);
     }
 
-    void receive(imessage_router& source, const imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
       const size_t id = msg.get_message_id();
 
@@ -593,6 +735,17 @@ namespace etl
         case T4::ID: static_cast<TProcessor*>(this)->on_receive(source, static_cast<const T4&>(msg)); break;
         case T5::ID: static_cast<TProcessor*>(this)->on_receive(source, static_cast<const T5&>(msg)); break;
         default: static_cast<TProcessor*>(this)->on_receive_unknown(source, msg); break;
+      }
+    }
+
+    bool accepts(etl::message_id_t id) const
+    {
+      switch (id)
+      {
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: 
+          return true; break;
+        default:
+          return false; break;
       }
     }
   };
@@ -607,12 +760,12 @@ namespace etl
   {
   public:
 
-    void receive(const imessage& msg)
+    void receive(const etl::imessage& msg)
     {
       receive(etl::null_message_router(), msg);
     }
 
-    void receive(imessage_router& source, const imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
       const size_t id = msg.get_message_id();
 
@@ -623,6 +776,17 @@ namespace etl
         case T3::ID: static_cast<TProcessor*>(this)->on_receive(source, static_cast<const T3&>(msg)); break;
         case T4::ID: static_cast<TProcessor*>(this)->on_receive(source, static_cast<const T4&>(msg)); break;
         default: static_cast<TProcessor*>(this)->on_receive_unknown(source, msg); break;
+      }
+    }
+
+    bool accepts(etl::message_id_t id) const
+    {
+      switch (id)
+      {
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: 
+          return true; break;
+        default:
+          return false; break;
       }
     }
   };
@@ -637,12 +801,12 @@ namespace etl
   {
   public:
 
-    void receive(const imessage& msg)
+    void receive(const etl::imessage& msg)
     {
       receive(etl::null_message_router(), msg);
     }
 
-    void receive(imessage_router& source, const imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
       const size_t id = msg.get_message_id();
 
@@ -652,6 +816,17 @@ namespace etl
         case T2::ID: static_cast<TProcessor*>(this)->on_receive(source, static_cast<const T2&>(msg)); break;
         case T3::ID: static_cast<TProcessor*>(this)->on_receive(source, static_cast<const T3&>(msg)); break;
         default: static_cast<TProcessor*>(this)->on_receive_unknown(source, msg); break;
+      }
+    }
+
+    bool accepts(etl::message_id_t id) const
+    {
+      switch (id)
+      {
+        case T1::ID: case T2::ID: case T3::ID: 
+          return true; break;
+        default:
+          return false; break;
       }
     }
   };
@@ -666,12 +841,12 @@ namespace etl
   {
   public:
 
-    void receive(const imessage& msg)
+    void receive(const etl::imessage& msg)
     {
       receive(etl::null_message_router(), msg);
     }
 
-    void receive(imessage_router& source, const imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
       const size_t id = msg.get_message_id();
 
@@ -680,6 +855,17 @@ namespace etl
         case T1::ID: static_cast<TProcessor*>(this)->on_receive(source, static_cast<const T1&>(msg)); break;
         case T2::ID: static_cast<TProcessor*>(this)->on_receive(source, static_cast<const T2&>(msg)); break;
         default: static_cast<TProcessor*>(this)->on_receive_unknown(source, msg); break;
+      }
+    }
+
+    bool accepts(etl::message_id_t id) const
+    {
+      switch (id)
+      {
+        case T1::ID: case T2::ID: 
+          return true; break;
+        default:
+          return false; break;
       }
     }
   };
@@ -694,12 +880,12 @@ namespace etl
   {
   public:
 
-    void receive(const imessage& msg)
+    void receive(const etl::imessage& msg)
     {
       receive(etl::null_message_router(), msg);
     }
 
-    void receive(imessage_router& source, const imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
       const size_t id = msg.get_message_id();
 
@@ -707,6 +893,17 @@ namespace etl
       {
         case T1::ID: static_cast<TProcessor*>(this)->on_receive(source, static_cast<const T1&>(msg)); break;
         default: static_cast<TProcessor*>(this)->on_receive_unknown(source, msg); break;
+      }
+    }
+
+    bool accepts(etl::message_id_t id) const
+    {
+      switch (id)
+      {
+        case T1::ID: 
+          return true; break;
+        default:
+          return false; break;
       }
     }
   };

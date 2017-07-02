@@ -45,14 +45,16 @@ namespace
       START,
       STOP,
       STOPPED,
-      SET_SPEED
+      SET_SPEED,
+      UNSUPPORTED
     };
 
-    ETL_DECLARE_ENUM_TYPE(EventId, etl::fsm_event_id_t)
-    ETL_ENUM_TYPE(START,     "Start")
-    ETL_ENUM_TYPE(STOP,      "Stop")
-    ETL_ENUM_TYPE(STOPPED,   "Stopped")
-    ETL_ENUM_TYPE(SET_SPEED, "Set Speed")
+    ETL_DECLARE_ENUM_TYPE(EventId, etl::message_id_t)
+    ETL_ENUM_TYPE(START,       "Start")
+    ETL_ENUM_TYPE(STOP,        "Stop")
+    ETL_ENUM_TYPE(STOPPED,     "Stopped")
+    ETL_ENUM_TYPE(SET_SPEED,   "Set Speed")
+    ETL_ENUM_TYPE(UNSUPPORTED, "Unsupported")
     ETL_END_ENUM_TYPE
   };
 
@@ -84,6 +86,11 @@ namespace
 
   //***********************************
   class Stopped : public etl::message<EventId::STOPPED>
+  {
+  };
+
+  //***********************************
+  class Unsupported : public etl::message<EventId::UNSUPPORTED>
   {
   };
 
@@ -280,7 +287,7 @@ namespace
   //***********************************
   // The motor control FSM.
   //***********************************
-  class MotorControl : public etl::fsm
+  class MotorControl : public etl::fsm<EventId::SET_SPEED, EventId::START, EventId::STOP, EventId::STOPPED>
   {
   public:
 
@@ -493,6 +500,22 @@ namespace
       CHECK_EQUAL(1, motorControl.common.stopCount);
       CHECK_EQUAL(0, motorControl.common.stoppedCount);
       CHECK_EQUAL(0, motorControl.common.unknownCount);
+    }
+
+    //*************************************************************************
+    TEST(test_fsm_supported)
+    {
+      CHECK(motorControl.accepts(EventId::SET_SPEED));
+      CHECK(motorControl.accepts(EventId::START));
+      CHECK(motorControl.accepts(EventId::STOP));
+      CHECK(motorControl.accepts(EventId::STOPPED));
+      CHECK(!motorControl.accepts(EventId::UNSUPPORTED));
+
+      CHECK(motorControl.accepts(SetSpeed(0)));
+      CHECK(motorControl.accepts(Start()));
+      CHECK(motorControl.accepts(Stop()));
+      CHECK(motorControl.accepts(Stopped()));
+      CHECK(!motorControl.accepts(Unsupported()));
     }
   };
 }

@@ -33,20 +33,20 @@ SOFTWARE.
 
 namespace etl
 {
+  /// Allow alternative type for message id.
+#if !defined(ETL_MESSAGE_ID_TYPE)
+    typedef uint_least8_t message_id_t;
+#else
+    typedef ETL_MESSAGE_ID_TYPE message_id_t;
+#endif
+
   //***************************************************************************
   class imessage
   {
   public:
-
-  /// Allow alternative type for message id.
-#if !defined(ETL_MESSAGE_ID_TYPE)
-    typedef uint_least8_t id_t;
-#else
-    typedef ETL_MESSAGE_ID_TYPE id_t;
-#endif
-
+    
     virtual ~imessage() {}
-    virtual id_t get_message_id() const = 0;
+    virtual etl::message_id_t get_message_id() const = 0;
   };
 
   //***************************************************************************
@@ -60,9 +60,9 @@ namespace etl
       ID = ID_
     };
 
-    id_t get_message_id() const
+    etl::message_id_t get_message_id() const
     {
-      return id_t(ID);
+      return etl::message_id_t(ID);
     }
   };
 
@@ -71,11 +71,18 @@ namespace etl
   {
   public:
     virtual ~imessage_router() {}
-    virtual void receive(const imessage& message) = 0;
-    virtual void receive(imessage_router& source, const imessage& message) = 0;
+    virtual void receive(const etl::imessage& message) = 0;
+    virtual void receive(imessage_router& source, const etl::imessage& message) = 0;
+
+    virtual bool accepts(etl::message_id_t id) const = 0;
+    
+    bool accepts(const etl::imessage& msg) const
+    {
+      return accepts(msg.get_message_id());
+    }
 
     void send_message(imessage_router& destination,
-                      const imessage&  message)
+                      const etl::imessage& message)
     {
       destination.receive(*this, message);
     }
@@ -89,12 +96,17 @@ namespace etl
   {
   public:
 
-    void receive(const imessage& message)
+    void receive(const etl::imessage& message)
     {
     }
 
-    void receive(imessage_router& source, const imessage& message)
+    void receive(etl::imessage_router& source, const etl::imessage& message)
     {
+    }
+
+    bool accepts(etl::message_id_t id) const
+    {
+      return false;
     }
   };
 
@@ -102,8 +114,8 @@ namespace etl
   /// Send a message to a router.
   /// Sets the 'sender' to etl::null_message_router type.
   //***************************************************************************
-  inline static void send_message(imessage_router& destination, 
-                                  const imessage&  message)
+  inline static void send_message(etl::imessage_router& destination, 
+                                  const etl::imessage&  message)
   {
     destination.receive(message);
   }
@@ -111,9 +123,9 @@ namespace etl
   //***************************************************************************
   /// Send a message to a router.
   //***************************************************************************
-  inline static void send_message(imessage_router& source, 
-                                  imessage_router& destination, 
-                                  const imessage&  message)
+  inline static void send_message(etl::imessage_router& source, 
+                                  etl::imessage_router& destination, 
+                                  const etl::imessage&  message)
   {
     destination.receive(source, message);
   }
@@ -158,14 +170,14 @@ namespace etl
       cog.outl("{")
       cog.outl("public:")
       cog.outl("")
-      cog.outl("  void receive(const imessage& msg)")
+      cog.outl("  void receive(const etl::imessage& msg)")
       cog.outl("  {")
       cog.outl("    receive(etl::null_message_router(), msg);")
       cog.outl("  }")
       cog.outl("")
-      cog.outl("  void receive(imessage_router& source, const imessage& msg)")
+      cog.outl("  void receive(etl::imessage_router& source, const etl::imessage& msg)")
       cog.outl("  {")
-      cog.outl("    const id_t id = msg.get_message_id();")
+      cog.outl("    const etl::message_id_t id = msg.get_message_id();")
       cog.outl("")
       cog.outl("    switch (id)")
       cog.outl("    {")
@@ -176,6 +188,22 @@ namespace etl
       cog.out("      default:")
       cog.out("  static_cast<TProcessor*>(this)->on_receive_unknown(source, msg);")
       cog.outl(" break;")
+      cog.outl("    }")
+      cog.outl("  }")
+      cog.outl("")
+      cog.outl("  bool accepts(etl::message_id_t id) const")
+      cog.outl("  {")
+      cog.outl("    switch (id)")
+      cog.outl("    {")
+      cog.out("      ")
+      for n in range(1, int(Handlers) + 1):
+          cog.out("case T%d::ID: " % n)
+          if n % 8 == 0:
+              cog.outl("")
+              cog.out("      ")
+      cog.outl("  return true; break;")
+      cog.outl("      default:")
+      cog.outl("        return false; break;")
       cog.outl("    }")
       cog.outl("  }")
       cog.outl("};")
@@ -215,12 +243,12 @@ namespace etl
           cog.outl("{")
           cog.outl("public:")
           cog.outl("")
-          cog.outl("  void receive(const imessage& msg)")
+          cog.outl("  void receive(const etl::imessage& msg)")
           cog.outl("  {")
           cog.outl("    receive(etl::null_message_router(), msg);")
           cog.outl("  }")
           cog.outl("")
-          cog.outl("  void receive(imessage_router& source, const imessage& msg)")
+          cog.outl("  void receive(etl::imessage_router& source, const etl::imessage& msg)")
           cog.outl("  {")
           cog.outl("    const size_t id = msg.get_message_id();")
           cog.outl("")
@@ -233,6 +261,23 @@ namespace etl
           cog.out("      default:")
           cog.out(" static_cast<TProcessor*>(this)->on_receive_unknown(source, msg);")
           cog.outl(" break;")
+          cog.outl("    }")
+          cog.outl("  }")
+          cog.outl("")
+          cog.outl("  bool accepts(etl::message_id_t id) const")
+          cog.outl("  {")
+          cog.outl("    switch (id)")
+          cog.outl("    {")
+          cog.out("      ")
+          for t in range(1, n + 1):
+              cog.out("case T%d::ID: " % t)
+              if t % 8 == 0:
+                  cog.outl("")
+                  cog.out("      ")
+          cog.outl("")
+          cog.outl("        return true; break;")
+          cog.outl("      default:")
+          cog.outl("        return false; break;")
           cog.outl("    }")
           cog.outl("  }")
           cog.outl("};")
