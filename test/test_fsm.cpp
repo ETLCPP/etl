@@ -103,6 +103,7 @@ namespace
       IDLE,
       RUNNING,
       WINDING_DOWN,
+      LOCKED,
       NUMBER_OF_STATES
     };
 
@@ -110,6 +111,7 @@ namespace
     ETL_ENUM_TYPE(IDLE,         "Idle")
     ETL_ENUM_TYPE(RUNNING,      "Running")
     ETL_ENUM_TYPE(WINDING_DOWN, "Winding Down")
+    ETL_ENUM_TYPE(LOCKED,       "Locked")
     ETL_END_ENUM_TYPE
   };
 
@@ -195,9 +197,11 @@ namespace
     }
 
     //***********************************
-    void on_enter_state()
+    etl::fsm_state_id_t on_enter_state()
     {
       common.TurnRunningLampOff();
+
+      return StateId::LOCKED;
     }
 
     Common& common;
@@ -246,9 +250,12 @@ namespace
       return STATE_ID;
     }
 
-    void on_enter_state()
+    //***********************************
+    etl::fsm_state_id_t on_enter_state()
     {
       common.TurnRunningLampOn();
+
+      return STATE_ID;
     }
 
     Common& common;
@@ -285,6 +292,29 @@ namespace
   };
 
   //***********************************
+  // The locked state.
+  //***********************************
+  class Locked : public etl::fsm_state<Locked, StateId::LOCKED>
+  {
+  public:
+
+    //***********************************
+    Locked(Common& common)
+      : common(common)
+    {
+    }
+
+    //***********************************
+    etl::fsm_state_id_t on_event_unknown(etl::imessage_router& source, const etl::imessage& event)
+    {
+      ++common.unknownCount;
+      return STATE_ID;
+    }
+
+    Common& common;
+  };
+
+  //***********************************
   // The motor control FSM.
   //***********************************
   class MotorControl : public etl::fsm<EventId::SET_SPEED, EventId::START, EventId::STOP, EventId::STOPPED>
@@ -294,7 +324,8 @@ namespace
     MotorControl()
       : idle(common),
         running(common),
-        windingDown(common)
+        windingDown(common),
+        locked(common)
     {
       set_states(stateList, etl::size(stateList));
     }
@@ -307,10 +338,11 @@ namespace
     Idle        idle;
     Running     running;
     WindingDown windingDown;
+    Locked      locked;
 
     etl::ifsm_state* stateList[StateId::NUMBER_OF_STATES] =
     {
-      &idle, &running, &windingDown
+      &idle, &running, &windingDown, &locked
     };
   };
 
@@ -321,6 +353,8 @@ namespace
     //*************************************************************************
     TEST(test_fsm)
     {
+      etl::null_message_router nmr;
+
       motorControl.reset();
       motorControl.common.ClearStatistics();
 
@@ -344,9 +378,9 @@ namespace
       CHECK_EQUAL(0, motorControl.common.unknownCount);
 
       // Send unhandled events.
-      motorControl.receive(etl::null_message_router(), Stop());
-      motorControl.receive(etl::null_message_router(), Stopped());
-      motorControl.receive(etl::null_message_router(), SetSpeed(10));
+      motorControl.receive(nmr, Stop());
+      motorControl.receive(nmr, Stopped());
+      motorControl.receive(nmr, SetSpeed(10));
 
       CHECK_EQUAL(StateId::IDLE, motorControl.get_state_id());
       CHECK_EQUAL(StateId::IDLE, motorControl.get_state().get_state_id());
@@ -360,7 +394,7 @@ namespace
       CHECK_EQUAL(3, motorControl.common.unknownCount);
 
       // Send Start event.
-      motorControl.receive(etl::null_message_router(), Start());
+      motorControl.receive(nmr, Start());
 
       // Now in Running state.
 
@@ -376,8 +410,8 @@ namespace
       CHECK_EQUAL(3, motorControl.common.unknownCount);
 
       // Send unhandled events.
-      motorControl.receive(etl::null_message_router(), Start());
-      motorControl.receive(etl::null_message_router(), Stopped());
+      motorControl.receive(nmr, Start());
+      motorControl.receive(nmr, Stopped());
 
       CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state_id()));
       CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state().get_state_id()));
@@ -391,7 +425,7 @@ namespace
       CHECK_EQUAL(5, motorControl.common.unknownCount);
 
       // Send SetSpeed event.
-      motorControl.receive(etl::null_message_router(), SetSpeed(100));
+      motorControl.receive(nmr, SetSpeed(100));
 
       // Still in Running state.
 
@@ -407,7 +441,7 @@ namespace
       CHECK_EQUAL(5, motorControl.common.unknownCount);
 
       // Send Stop event.
-      motorControl.receive(etl::null_message_router(), Stop());
+      motorControl.receive(nmr, Stop());
 
       // Now in WindingDown state.
 
@@ -423,9 +457,9 @@ namespace
       CHECK_EQUAL(5, motorControl.common.unknownCount);
 
       // Send unhandled events.
-      motorControl.receive(etl::null_message_router(), Start());
-      motorControl.receive(etl::null_message_router(), Stop());
-      motorControl.receive(etl::null_message_router(), SetSpeed(100));
+      motorControl.receive(nmr, Start());
+      motorControl.receive(nmr, Stop());
+      motorControl.receive(nmr, SetSpeed(100));
 
       CHECK_EQUAL(StateId::WINDING_DOWN, int(motorControl.get_state_id()));
       CHECK_EQUAL(StateId::WINDING_DOWN, int(motorControl.get_state().get_state_id()));
@@ -439,12 +473,11 @@ namespace
       CHECK_EQUAL(8, motorControl.common.unknownCount);
 
       // Send Stopped event.
-      motorControl.receive(etl::null_message_router(), Stopped());
+      motorControl.receive(nmr, Stopped());
 
-      // Now in Idle state.
-
-      CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
-      CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state().get_state_id()));
+      // Now in Locked state via Idle state.
+      CHECK_EQUAL(StateId::LOCKED, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::LOCKED, int(motorControl.get_state().get_state_id()));
 
       CHECK_EQUAL(false, motorControl.common.isLampOn);
       CHECK_EQUAL(1, motorControl.common.setSpeedCount);
@@ -458,6 +491,8 @@ namespace
     //*************************************************************************
     TEST(test_fsm_emergency_stop)
     {
+      etl::null_message_router nmr;
+
       motorControl.reset();
       motorControl.common.ClearStatistics();
 
@@ -470,7 +505,7 @@ namespace
       // Now in Idle state.
 
       // Send Start event.
-      motorControl.receive(etl::null_message_router(), Start());
+      motorControl.receive(nmr, Start());
 
       // Now in Running state.
 
@@ -486,12 +521,11 @@ namespace
       CHECK_EQUAL(0, motorControl.common.unknownCount);
 
       // Send emergency Stop event.
-      motorControl.receive(etl::null_message_router(), Stop(true));
+      motorControl.receive(nmr, Stop(true));
 
-      // Now in Idle state.
-
-      CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
-      CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state().get_state_id()));
+      // Now in Locked state via Idle state.
+      CHECK_EQUAL(StateId::LOCKED, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::LOCKED, int(motorControl.get_state().get_state_id()));
 
       CHECK_EQUAL(false, motorControl.common.isLampOn);
       CHECK_EQUAL(0, motorControl.common.setSpeedCount);

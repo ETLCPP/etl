@@ -162,7 +162,8 @@ namespace etl
 
     void receive(const etl::imessage& msg)
     {
-      receive(etl::null_message_router(), msg);
+      etl::null_message_router nmr;
+      receive(nmr, msg);
     }
 
     void receive(etl::imessage_router& source, const etl::imessage& msg)
@@ -219,7 +220,8 @@ namespace etl
 
     void receive(const etl::imessage& msg)
     {
-      receive(etl::null_message_router(), msg);
+      etl::null_message_router nmr;
+      receive(nmr, msg);
     }
 
     void receive(etl::imessage_router& source, const etl::imessage& msg)
@@ -275,7 +277,8 @@ namespace etl
 
     void receive(const etl::imessage& msg)
     {
-      receive(etl::null_message_router(), msg);
+      etl::null_message_router nmr;
+      receive(nmr, msg);
     }
 
     void receive(etl::imessage_router& source, const etl::imessage& msg)
@@ -330,7 +333,8 @@ namespace etl
 
     void receive(const etl::imessage& msg)
     {
-      receive(etl::null_message_router(), msg);
+      etl::null_message_router nmr;
+      receive(nmr, msg);
     }
 
     void receive(etl::imessage_router& source, const etl::imessage& msg)
@@ -383,7 +387,8 @@ namespace etl
 
     void receive(const etl::imessage& msg)
     {
-      receive(etl::null_message_router(), msg);
+      etl::null_message_router nmr;
+      receive(nmr, msg);
     }
 
     void receive(etl::imessage_router& source, const etl::imessage& msg)
@@ -435,7 +440,8 @@ namespace etl
 
     void receive(const etl::imessage& msg)
     {
-      receive(etl::null_message_router(), msg);
+      etl::null_message_router nmr;
+      receive(nmr, msg);
     }
 
     void receive(etl::imessage_router& source, const etl::imessage& msg)
@@ -486,7 +492,8 @@ namespace etl
 
     void receive(const etl::imessage& msg)
     {
-      receive(etl::null_message_router(), msg);
+      etl::null_message_router nmr;
+      receive(nmr, msg);
     }
 
     void receive(etl::imessage_router& source, const etl::imessage& msg)
@@ -536,7 +543,8 @@ namespace etl
 
     void receive(const etl::imessage& msg)
     {
-      receive(etl::null_message_router(), msg);
+      etl::null_message_router nmr;
+      receive(nmr, msg);
     }
 
     void receive(etl::imessage_router& source, const etl::imessage& msg)
@@ -584,7 +592,8 @@ namespace etl
 
     void receive(const etl::imessage& msg)
     {
-      receive(etl::null_message_router(), msg);
+      etl::null_message_router nmr;
+      receive(nmr, msg);
     }
 
     void receive(etl::imessage_router& source, const etl::imessage& msg)
@@ -631,7 +640,8 @@ namespace etl
 
     void receive(const etl::imessage& msg)
     {
-      receive(etl::null_message_router(), msg);
+      etl::null_message_router nmr;
+      receive(nmr, msg);
     }
 
     void receive(etl::imessage_router& source, const etl::imessage& msg)
@@ -676,7 +686,8 @@ namespace etl
 
     void receive(const etl::imessage& msg)
     {
-      receive(etl::null_message_router(), msg);
+      etl::null_message_router nmr;
+      receive(nmr, msg);
     }
 
     void receive(etl::imessage_router& source, const etl::imessage& msg)
@@ -720,7 +731,8 @@ namespace etl
 
     void receive(const etl::imessage& msg)
     {
-      receive(etl::null_message_router(), msg);
+      etl::null_message_router nmr;
+      receive(nmr, msg);
     }
 
     void receive(etl::imessage_router& source, const etl::imessage& msg)
@@ -762,7 +774,8 @@ namespace etl
 
     void receive(const etl::imessage& msg)
     {
-      receive(etl::null_message_router(), msg);
+      etl::null_message_router nmr;
+      receive(nmr, msg);
     }
 
     void receive(etl::imessage_router& source, const etl::imessage& msg)
@@ -803,7 +816,8 @@ namespace etl
 
     void receive(const etl::imessage& msg)
     {
-      receive(etl::null_message_router(), msg);
+      etl::null_message_router nmr;
+      receive(nmr, msg);
     }
 
     void receive(etl::imessage_router& source, const etl::imessage& msg)
@@ -843,7 +857,8 @@ namespace etl
 
     void receive(const etl::imessage& msg)
     {
-      receive(etl::null_message_router(), msg);
+      etl::null_message_router nmr;
+      receive(nmr, msg);
     }
 
     void receive(etl::imessage_router& source, const etl::imessage& msg)
@@ -882,7 +897,8 @@ namespace etl
 
     void receive(const etl::imessage& msg)
     {
-      receive(etl::null_message_router(), msg);
+      etl::null_message_router nmr;
+      receive(nmr, msg);
     }
 
     void receive(etl::imessage_router& source, const etl::imessage& msg)

@@ -171,13 +171,13 @@ namespace etl
     }
 
     //*******************************************
-    inline fsm_state_id_t on_enter_state(etl::ifsm_state &state)
+    inline fsm_state_id_t on_enter_state(etl::ifsm_state& state)
     {
       return state.on_enter_state();
     }
 
     //*******************************************
-    inline void on_exit_state(etl::ifsm_state &state)
+    inline void on_exit_state(etl::ifsm_state& state)
     {
       state.on_exit_state();
     }
@@ -253,7 +253,8 @@ namespace etl
     //*******************************************
     void receive(const etl::imessage& message)
     {
-      receive(etl::null_message_router(), message);
+      etl::null_message_router nmr;
+      receive(nmr, message);
     }
 
     //*******************************************
@@ -424,6 +425,8 @@ namespace etl
   cog.outl("  {")
   cog.outl("  }")
   cog.outl("")
+  cog.outl("private:")
+  cog.outl("")
   cog.outl("  etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)")
   cog.outl("  {")
   cog.outl("    etl::fsm_state_id_t new_state_id;")
@@ -488,6 +491,8 @@ namespace etl
       cog.outl("  {")
       cog.outl("  }")
       cog.outl("")
+      cog.outl("private:")
+      cog.outl("")
       cog.outl("  etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)")
       cog.outl("  {")
       cog.outl("    etl::fsm_state_id_t new_state_id;")
@@ -507,6 +512,41 @@ namespace etl
       cog.outl("    return new_state_id;")
       cog.outl("  }")
       cog.outl("};")
+  ####################################
+  # Specialisation for zero messages.
+  ####################################
+  cog.outl("")
+  cog.outl("//***************************************************************************")
+  cog.outl("// Specialisation for 0 message types.")
+  cog.outl("//***************************************************************************")
+  cog.outl("template <typename TState, const etl::fsm_state_id_t STATE_ID_>")
+  cog.out("class fsm_state<TState, STATE_ID_, ")
+  for t in range(1, int(Handlers)):
+      cog.out("void, ")
+  if t % 16 == 0:
+      cog.outl("")
+      cog.out("               ")
+  cog.outl("void> : public ifsm_state")
+  cog.outl("{")
+  cog.outl("public:")
+  cog.outl("")
+  cog.outl("  enum")
+  cog.outl("  {")
+  cog.outl("    STATE_ID = STATE_ID_")
+  cog.outl("  };")
+  cog.outl("")
+  cog.outl("  fsm_state()")
+  cog.outl("    : ifsm_state(STATE_ID)")
+  cog.outl("  {")
+  cog.outl("  }")
+  cog.outl("")
+  cog.outl("private:")
+  cog.outl("")
+  cog.outl("  etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)")
+  cog.outl("  {")
+  cog.outl("    return static_cast<TState*>(this)->on_event_unknown(source, message);")
+  cog.outl("  }")
+  cog.outl("};")
   ]]]*/
   /*[[[end]]]*/
 }

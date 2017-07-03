@@ -127,7 +127,7 @@ namespace etl
     etl::fsm_state_id_t get_state_id() const
     {
       return state_id;
-    }    
+    }
 
   protected:
 
@@ -143,7 +143,7 @@ namespace etl
 
     virtual fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message) = 0;
 
-    virtual void on_enter_state() {}; // By default, do nothing.
+    virtual fsm_state_id_t on_enter_state() { return state_id; }; // By default, do nothing.
     virtual void on_exit_state() {};  // By default, do nothing.
 
     // The state id.
@@ -171,13 +171,13 @@ namespace etl
     }
 
     //*******************************************
-    inline void on_enter_state(etl::ifsm_state &state)
+    inline fsm_state_id_t on_enter_state(etl::ifsm_state& state)
     {
-      state.on_enter_state();
+      return state.on_enter_state();
     }
 
     //*******************************************
-    inline void on_exit_state(etl::ifsm_state &state)
+    inline void on_exit_state(etl::ifsm_state& state)
     {
       state.on_exit_state();
     }
@@ -259,26 +259,33 @@ namespace etl
     //*******************************************
     void receive(const etl::imessage& message)
     {
-      receive(etl::null_message_router(), message);
+      etl::null_message_router nmr;
+      receive(nmr, message);
     }
 
     //*******************************************
     void receive(etl::imessage_router& source, const etl::imessage& message)
-    {       
+    {
       etl::fsm_state_id_t next_state_id = fsm_helper::process_event(*p_state, source, message);
-
       ETL_ASSERT(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
 
+      etl::ifsm_state* p_next_state = state_list[next_state_id];
+
       // Have we changed state?
-      if (next_state_id != p_state->get_state_id())
+      if (p_next_state != p_state)
       {
-        //p_state->on_exit_state();
-        fsm_helper::on_exit_state(*p_state);
+        do
+        {
+          fsm_helper::on_exit_state(*p_state);
 
-        p_state = state_list[next_state_id];
-        ETL_ASSERT(p_state != nullptr, ETL_ERROR(etl::fsm_null_state_exception));
+          p_state = p_next_state;
+          
+          next_state_id = fsm_helper::on_enter_state(*p_state);
+          ETL_ASSERT(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
 
-        fsm_helper::on_enter_state(*p_state);
+          p_next_state = state_list[next_state_id];
+
+        } while (p_next_state != p_state); // Have we changed state again?
       }
     }
 
@@ -373,12 +380,12 @@ namespace etl
   // To generate to header file, run this at the command line.
   // Note: You will need Python and COG installed.
   //
-  // python -m cogapp -d -e -ofsm.h -DHandlers=<n> fsm_generator.h 
+  // python -m cogapp -d -e -ofsm.h -DHandlers=<n> fsm_generator.h
   // Where <n> is the number of messages to support.
   //
   // e.g.
   // To generate handlers for up to 16 events...
-  // python -m cogapp -d -e -ofsm.h -DHandlers=16 fsm_generator.h 
+  // python -m cogapp -d -e -ofsm.h -DHandlers=16 fsm_generator.h
   //
   // See CreateFSM.bat
   //***************************************************************************
@@ -408,6 +415,8 @@ namespace etl
       : ifsm_state(STATE_ID)
     {
     }
+
+  private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
@@ -461,6 +470,8 @@ namespace etl
     {
     }
 
+  private:
+
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
@@ -512,6 +523,8 @@ namespace etl
     {
     }
 
+  private:
+
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
@@ -562,6 +575,8 @@ namespace etl
     {
     }
 
+  private:
+
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
@@ -610,6 +625,8 @@ namespace etl
     {
     }
 
+  private:
+
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
@@ -657,6 +674,8 @@ namespace etl
     {
     }
 
+  private:
+
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
@@ -703,6 +722,8 @@ namespace etl
     {
     }
 
+  private:
+
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
@@ -748,6 +769,8 @@ namespace etl
     {
     }
 
+  private:
+
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
@@ -791,6 +814,8 @@ namespace etl
     {
     }
 
+  private:
+
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
@@ -833,6 +858,8 @@ namespace etl
     {
     }
 
+  private:
+
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
@@ -874,6 +901,8 @@ namespace etl
     {
     }
 
+  private:
+
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
@@ -914,6 +943,8 @@ namespace etl
     {
     }
 
+  private:
+
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
@@ -952,6 +983,8 @@ namespace etl
     {
     }
 
+  private:
+
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
@@ -989,6 +1022,8 @@ namespace etl
     {
     }
 
+  private:
+
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
@@ -1025,6 +1060,8 @@ namespace etl
     {
     }
 
+  private:
+
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
@@ -1060,6 +1097,8 @@ namespace etl
     {
     }
 
+  private:
+
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
@@ -1072,6 +1111,32 @@ namespace etl
       }
 
       return new_state_id;
+    }
+  };
+
+  //***************************************************************************
+  // Specialisation for 0 message types.
+  //***************************************************************************
+  template <typename TState, const etl::fsm_state_id_t STATE_ID_>
+  class fsm_state<TState, STATE_ID_, void, void, void, void, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
+  {
+  public:
+
+    enum
+    {
+      STATE_ID = STATE_ID_
+    };
+
+    fsm_state()
+      : ifsm_state(STATE_ID)
+    {
+    }
+
+  private:
+
+    etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
+    {
+      return static_cast<TState*>(this)->on_event_unknown(source, message);
     }
   };
 }
