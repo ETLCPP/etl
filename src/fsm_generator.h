@@ -220,15 +220,12 @@ namespace etl
       state_list       = p_states;
       number_of_states = etl::fsm_state_id_t(size);
 
+      ETL_ASSERT((number_of_states > 0), ETL_ERROR(etl::fsm_state_list_exception));
+
       for (etl::fsm_state_id_t i = 0; i < size; ++i)
       {
         ETL_ASSERT((state_list[i] != nullptr), ETL_ERROR(etl::fsm_null_state_exception));
       }
-
-      bool ok = (number_of_states > 0) &&
-                etl::is_sorted(state_list, state_list + number_of_states, fsm::CompareStateId());
-
-      ETL_ASSERT(ok, ETL_ERROR(etl::fsm_state_list_exception));
     }
 
     //*******************************************
@@ -363,14 +360,6 @@ namespace etl
     }
 
   private:
-
-    struct CompareStateId
-    {
-      bool operator()(etl::ifsm_state* lhs, etl::ifsm_state* rhs)
-      {
-        return lhs->get_state_id() < rhs->get_state_id();
-      }
-    };
 
     etl::ifsm_state*    p_state;          ///< A pointer to the current state.
     etl::ifsm_state**   state_list;       ///< The list of added states.
