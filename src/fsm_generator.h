@@ -143,8 +143,8 @@ namespace etl
 
     virtual fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message) = 0;
 
-    virtual fsm_state_id_t on_enter_state() { return state_id; }; // By default, do nothing.
-    virtual void on_exit_state() {};  // By default, do nothing.
+    virtual fsm_state_id_t on_enter_state() { return state_id; } // By default, do nothing.
+    virtual void on_exit_state() {}  // By default, do nothing.
 
     // The state id.
     const etl::fsm_state_id_t state_id;
