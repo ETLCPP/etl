@@ -31,6 +31,9 @@ SOFTWARE.
 
 #include <stdint.h>
 
+#undef ETL_FILE
+#define ETL_FILE "35"
+
 namespace etl
 {
   /// Allow alternative type for message id.
@@ -286,5 +289,7 @@ namespace etl
   ]]]*/
   /*[[[end]]]*/
 }
+
+#undef ETL_FILE
 
 #endif
