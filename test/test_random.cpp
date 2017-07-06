@@ -41,11 +41,11 @@ namespace
   SUITE(test_random)
   {
     //=========================================================================
-    TEST(test_sequence)
+    TEST(test_random_xorshift_sequence)
     {
-      std::vector<uint32_t> out1(32768);
+      std::vector<uint32_t> out1(10000);
       etl::random_xorshift r;
-      
+
       struct generator
       {
         generator(etl::random& r_)
@@ -63,17 +63,193 @@ namespace
 
       std::generate(out1.begin(), out1.end(), generator(r));
 
-      //std::ofstream file("random.csv");
+      std::ofstream file("random_xorshift.csv");
 
-      //if (!file.fail())
-      //{
-      //  for (size_t i = 0; i < out1.size(); i += 2)
-      //  {
-      //    file << (out1[i] >> 16) << "," << (out1[i + 1] >> 16) << "\n";
-      //  }
-      //}
+      if (!file.fail())
+      {
+        for (size_t i = 0; i < out1.size(); i += 2)
+        {
+          file << out1[i] << "," << out1[i + 1] << "\n";
+        }
+      }
 
-      //file.close();
+      file.close();
+    }
+
+    //=========================================================================
+    TEST(test_random_xorshift_range)
+    {
+      etl::random_xorshift r;
+
+      uint32_t low  = 1234;
+      uint32_t high = 9876;
+
+      for (int i = 0; i < 100000; ++i)
+      {
+        uint32_t n = r.range(low, high);
+
+        CHECK(n >= low);
+        CHECK(n <= high);
+      }
+    }
+
+    //=========================================================================
+    TEST(test_random_lcg_sequence)
+    {
+      std::vector<uint32_t> out1(10000);
+      etl::random_lcg r;
+
+      struct generator
+      {
+        generator(etl::random& r_)
+          : r(r_)
+        {
+        }
+
+        uint32_t operator()()
+        {
+          return r();
+        }
+
+        etl::random& r;
+      };
+
+      std::generate(out1.begin(), out1.end(), generator(r));
+
+      std::ofstream file("random_lcg.csv");
+
+      if (!file.fail())
+      {
+        for (size_t i = 0; i < out1.size(); i += 2)
+        {
+          file << out1[i] << "," << out1[i + 1] << "\n";
+        }
+      }
+
+      file.close();
+    }
+
+    //=========================================================================
+    TEST(test_random_lcg_range)
+    {
+      etl::random_lcg r;
+
+      uint32_t low  = 1234;
+      uint32_t high = 9876;
+
+      for (int i = 0; i < 100000; ++i)
+      {
+        uint32_t n = r.range(low, high);
+
+        CHECK(n >= low);
+        CHECK(n <= high);
+      }
+    }
+
+    //=========================================================================
+    TEST(test_random_clcg_sequence)
+    {
+      std::vector<uint32_t> out1(10000);
+      etl::random_clcg r;
+
+      struct generator
+      {
+        generator(etl::random& r_)
+          : r(r_)
+        {
+        }
+
+        uint32_t operator()()
+        {
+          return r();
+        }
+
+        etl::random& r;
+      };
+
+      std::generate(out1.begin(), out1.end(), generator(r));
+
+      std::ofstream file("random_clcg.csv");
+
+      if (!file.fail())
+      {
+        for (size_t i = 0; i < out1.size(); i += 2)
+        {
+          file << out1[i] << "," << out1[i + 1] << "\n";
+        }
+      }
+
+      file.close();
+    }
+
+    //=========================================================================
+    TEST(test_random_clcg_range)
+    {
+      etl::random_clcg r;
+
+      uint32_t low = 1234;
+      uint32_t high = 9876;
+
+      for (int i = 0; i < 100000; ++i)
+      {
+        uint32_t n = r.range(low, high);
+
+        CHECK(n >= low);
+        CHECK(n <= high);
+      }
+    }
+
+    //=========================================================================
+    TEST(test_random_lfsr_sequence)
+    {
+      std::vector<uint32_t> out1(10000);
+      etl::random_lsfr r(7);
+
+      struct generator
+      {
+        generator(etl::random& r_)
+          : r(r_)
+        {
+        }
+
+        uint32_t operator()()
+        {
+          return r();
+        }
+
+        etl::random& r;
+      };
+
+      std::generate(out1.begin(), out1.end(), generator(r));
+
+      std::ofstream file("random_lsfr.csv");
+
+      if (!file.fail())
+      {
+        for (size_t i = 0; i < out1.size(); i += 2)
+        {
+          file << out1[i] << "," << out1[i + 1] << "\n";
+        }
+      }
+
+      file.close();
+    }
+
+    //=========================================================================
+    TEST(test_random_lfsr_range)
+    {
+      etl::random_lsfr r(7);
+
+      uint32_t low  = 1234;
+      uint32_t high = 9876;
+
+      for (int i = 0; i < 100000; ++i)
+      {
+        uint32_t n = r.range(low, high);
+
+        CHECK(n >= low);
+        CHECK(n <= high);
+      }
     }
   };
 }

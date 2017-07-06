@@ -48,6 +48,7 @@ namespace etl
 
     virtual void initialise(uint32_t seed) = 0;
     virtual uint32_t operator()() = 0;
+    virtual uint32_t range(uint32_t low, uint32_t high) = 0;
   };
 
   //***************************************************************************
@@ -60,13 +61,88 @@ namespace etl
     public:
 
       random_xorshift();
-      random_xorshift(uint32_t seed);
+      explicit random_xorshift(uint32_t seed);
       void initialise(uint32_t seed);
       uint32_t operator()();
+      uint32_t range(uint32_t low, uint32_t high);
 
     private:
 
       uint32_t state[4];
+  };
+
+  //***************************************************************************
+  /// A 32 bit random number generator.
+  /// Uses a linear congruential generator.
+  /// https://cs.adelaide.edu.au/~paulc/teaching/montecarlo/node107.html
+  //***************************************************************************
+  class random_lcg : public random
+  {
+  public:
+
+    random_lcg();
+    explicit random_lcg(uint32_t seed);
+    void initialise(uint32_t seed);
+    uint32_t operator()();
+    uint32_t range(uint32_t low, uint32_t high);
+
+  private:
+
+    static const uint32_t a = 40014;
+    static const uint32_t m = 2147483563;
+
+    uint32_t value;
+  };
+
+  //***************************************************************************
+  /// A 32 bit random number generator.
+  /// Uses a combined linear congruential generator.
+  /// https://cs.adelaide.edu.au/~paulc/teaching/montecarlo/node107.html
+  //***************************************************************************
+  class random_clcg : public random
+  {
+    public:
+
+      random_clcg();
+      explicit random_clcg(uint32_t seed);
+      void initialise(uint32_t seed);
+      uint32_t operator()();
+      uint32_t range(uint32_t low, uint32_t high);
+
+    private:
+
+      static const uint32_t a1 = 40014;
+      static const uint32_t m1 = 2147483563;
+
+      static const uint32_t a2 = 40692;
+      static const uint32_t m2 = 2147483399;
+
+      uint32_t value1;
+      uint32_t value2;
+  };
+
+  //***************************************************************************
+  /// A 32 bit random number generator.
+  /// Uses a linear shift feedback register.
+  /// Set ITERATIONS_ to control the number of times that the lfsr is iterated on each call.
+  /// Default = 1
+  /// https://en.wikipedia.org/wiki/Linear-feedback_shift_register
+  //***************************************************************************
+  class random_lsfr : public random
+  {
+    public:
+
+      explicit random_lsfr(uint32_t iterations);
+      random_lsfr(uint32_t seed, uint32_t iterations);
+      void initialise(uint32_t seed);
+      uint32_t operator()();
+      uint32_t range(uint32_t low, uint32_t high);
+
+    private:
+
+      const uint32_t iterations;
+
+      uint32_t value;
   };
 }
 

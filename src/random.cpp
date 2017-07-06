@@ -33,12 +33,16 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
+  // XOR Shift
+  //***************************************************************************
+
+  //***************************************************************************
   /// Default constructor.
-  /// Attempts to come up with a reasonable non-zero seed.
+  /// Attempts to come up with a unique non-zero seed.
   //***************************************************************************
   random_xorshift::random_xorshift()
   {
-    // An attempt to come up with a reasonable non-zero seed,
+    // An attempt to come up with a unique non-zero seed,
     // based on the address of the instance.
     uintptr_t n    = reinterpret_cast<uintptr_t>(this);
     uint32_t  seed = static_cast<uint32_t>(n);
@@ -81,6 +85,211 @@ namespace etl
     n ^= state[0];
     n ^= state[0] >> 19;
     state[0] = n;
+
+    return n;
+  }
+
+  //***************************************************************************
+  /// Get the next random_xorshift number in a specified inclusive range.
+  //***************************************************************************
+  uint32_t random_xorshift::range(uint32_t low, uint32_t high)
+  {
+    uint32_t r = high - low + 1;
+    uint32_t n = operator()();
+    n %= r;
+    n += low;
+
+    return n;
+  }
+
+  //***************************************************************************
+  // Linear Congruential Generator
+  //***************************************************************************
+
+  //***************************************************************************
+  /// Default constructor.
+  /// Attempts to come up with a unique non-zero seed.
+  //***************************************************************************
+  random_lcg::random_lcg()
+  {
+    // An attempt to come up with a unique non-zero seed,
+    // based on the address of the instance.
+    uintptr_t n    = reinterpret_cast<uintptr_t>(this);
+    uint32_t  seed = static_cast<uint32_t>(n);
+    initialise(seed);
+  }
+
+  //***************************************************************************
+  /// Constructor with seed value.
+  ///\param seed The new seed value.
+  //***************************************************************************
+  random_lcg::random_lcg(uint32_t seed)
+  {
+    initialise(seed);
+  }
+
+  //***************************************************************************
+  /// Initialises the sequence with a new seed value.
+  ///\param seed The new seed value.
+  //***************************************************************************
+  void random_lcg::initialise(uint32_t seed)
+  {
+    seed = (seed == 0) ? 1 : seed;
+    value = (seed > m) ? m : seed;
+  }
+
+  //***************************************************************************
+  /// Get the next random_clcg number.
+  //***************************************************************************
+  uint32_t random_lcg::operator()()
+  {
+    value = (a * value) % m;
+
+    return value;
+  }
+
+  //***************************************************************************
+  /// Get the next random_clcg number in a specified inclusive range.
+  //***************************************************************************
+  uint32_t random_lcg::range(uint32_t low, uint32_t high)
+  {
+    uint32_t r = high - low + 1;
+    uint32_t n = operator()();
+    n %= r;
+    n += low;
+
+    return n;
+  }
+
+  //***************************************************************************
+  // Combined Linear Congruential Generator
+  //***************************************************************************
+
+  //***************************************************************************
+  /// Default constructor.
+  /// Attempts to come up with a unique non-zero seed.
+  //***************************************************************************
+  random_clcg::random_clcg()
+  {
+    // An attempt to come up with a unique non-zero seed,
+    // based on the address of the instance.
+    uintptr_t n = reinterpret_cast<uintptr_t>(this);
+    uint32_t  seed = static_cast<uint32_t>(n);
+    initialise(seed);
+  }
+
+  //***************************************************************************
+  /// Constructor with seed value.
+  ///\param seed The new seed value.
+  //***************************************************************************
+  random_clcg::random_clcg(uint32_t seed)
+  {
+    initialise(seed);
+  }
+
+  //***************************************************************************
+  /// Initialises the sequence with a new seed value.
+  ///\param seed The new seed value.
+  //***************************************************************************
+  void random_clcg::initialise(uint32_t seed)
+  {
+    seed = (seed == 0) ? 1 : seed;
+    value1 = (seed > m1) ? m1 : seed;
+    value2 = (seed > m1) ? m1 : seed;
+  }
+
+  //***************************************************************************
+  /// Get the next random_clcg number.
+  //***************************************************************************
+  uint32_t random_clcg::operator()()
+  {
+    static const uint32_t m = ((m1 > m2) ? m1 : m2);
+
+    value1 = (a1 * value1) % m1;
+    value2 = (a2 * value2) % m2;
+
+    return (value1 + value2) % m;
+  }
+
+  //***************************************************************************
+  /// Get the next random_clcg number in a specified inclusive range.
+  //***************************************************************************
+  uint32_t random_clcg::range(uint32_t low, uint32_t high)
+  {
+    uint32_t r = high - low + 1;
+    uint32_t n = operator()();
+    n %= r;
+    n += low;
+
+    return n;
+  }
+
+  //***************************************************************************
+  // Linear Shift Feedback Register
+  //***************************************************************************
+
+  //***************************************************************************
+  /// Default constructor.
+  /// Attempts to come up with a unique non-zero seed.
+  //***************************************************************************
+  random_lsfr::random_lsfr(uint32_t iterations_)
+    : iterations(iterations_ == 0 ? 1 : iterations_)
+  {
+    // An attempt to come up with a unique non-zero seed,
+    // based on the address of the instance.
+    uintptr_t n    = reinterpret_cast<uintptr_t>(this);
+    uint32_t  seed = static_cast<uint32_t>(n);
+    initialise(seed);
+  }
+
+  //***************************************************************************
+  /// Constructor with seed value.
+  ///\param seed The new seed value.
+  //***************************************************************************
+  random_lsfr::random_lsfr(uint32_t seed, uint32_t iterations)
+    : iterations(iterations)
+  {
+    initialise(seed);
+  }
+
+  //***************************************************************************
+  /// Initialises the sequence with a new seed value.
+  ///\param seed The new seed value.
+  //***************************************************************************
+  void random_lsfr::initialise(uint32_t seed)
+  {
+    value = seed;
+  }
+
+  //***************************************************************************
+  /// Get the next random_lsfr number.
+  //***************************************************************************
+  uint32_t random_lsfr::operator()()
+  {
+    static const uint32_t polynomial = 0x8020003;
+
+    for (uint32_t i = 0; i < iterations; ++i)
+    {
+      value >>= 1;
+
+      if ((value & 1) == 0)
+      {
+        value ^= polynomial;
+      }
+    }
+
+    return value;
+  }
+
+  //***************************************************************************
+  /// Get the next random_lsfr number in a specified inclusive range.
+  //***************************************************************************
+  uint32_t random_lsfr::range(uint32_t low, uint32_t high)
+  {
+    uint32_t r = high - low + 1;
+    uint32_t n = operator()();
+    n %= r;
+    n += low;
 
     return n;
   }
