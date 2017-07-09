@@ -252,7 +252,7 @@ namespace etl
   private:
 
     // Determines the index of the best unsigned type for the required value.
-    static const int TYPE_INDEX = ((VALUE > UINT8_MAX)  ? 1 : 0) +
+    static const int TYPE_INDEX = ((VALUE > UINT_LEAST8_MAX)  ? 1 : 0) +
                                   ((VALUE > UINT16_MAX) ? 1 : 0) + 
                                   ((VALUE > UINT32_MAX) ? 1 : 0);
 
@@ -273,7 +273,7 @@ namespace etl
   private:
 
     // Determines the index of the best signed type for the required value.
-    static const int TYPE_INDEX = (((VALUE > INT8_MAX)  || (VALUE < INT8_MIN))  ? 1 : 0) + 
+    static const int TYPE_INDEX = (((VALUE > INT_LEAST8_MAX)  || (VALUE < INT_LEAST8_MIN))  ? 1 : 0) + 
                                   (((VALUE > INT16_MAX) || (VALUE < INT16_MIN)) ? 1 : 0) +
                                   (((VALUE > INT32_MAX) || (VALUE < INT32_MIN)) ? 1 : 0);
 
