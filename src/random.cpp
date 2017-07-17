@@ -246,8 +246,8 @@ namespace etl
   /// Constructor with seed value.
   ///\param seed The new seed value.
   //***************************************************************************
-  random_lsfr::random_lsfr(uint32_t seed, uint32_t iterations)
-    : iterations(iterations)
+  random_lsfr::random_lsfr(uint32_t seed, uint32_t iterations_)
+    : iterations(iterations_)
   {
     initialise(seed);
   }

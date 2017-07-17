@@ -62,9 +62,9 @@ namespace etl
 
       random_xorshift();
       explicit random_xorshift(uint32_t seed);
-      void initialise(uint32_t seed);
-      uint32_t operator()();
-      uint32_t range(uint32_t low, uint32_t high);
+      void initialise(uint32_t seed) override;
+      uint32_t operator()() override;
+      uint32_t range(uint32_t low, uint32_t high) override;
 
     private:
 
@@ -82,9 +82,9 @@ namespace etl
 
     random_lcg();
     explicit random_lcg(uint32_t seed);
-    void initialise(uint32_t seed);
-    uint32_t operator()();
-    uint32_t range(uint32_t low, uint32_t high);
+    void initialise(uint32_t seed) override;
+    uint32_t operator()() override;
+    uint32_t range(uint32_t low, uint32_t high) override;
 
   private:
 
@@ -105,9 +105,9 @@ namespace etl
 
       random_clcg();
       explicit random_clcg(uint32_t seed);
-      void initialise(uint32_t seed);
-      uint32_t operator()();
-      uint32_t range(uint32_t low, uint32_t high);
+      void initialise(uint32_t seed) override;
+      uint32_t operator()() override;
+      uint32_t range(uint32_t low, uint32_t high) override;
 
     private:
 
@@ -134,9 +134,9 @@ namespace etl
 
       explicit random_lsfr(uint32_t iterations);
       random_lsfr(uint32_t seed, uint32_t iterations);
-      void initialise(uint32_t seed);
-      uint32_t operator()();
-      uint32_t range(uint32_t low, uint32_t high);
+      void initialise(uint32_t seed) override;
+      uint32_t operator()() override;
+      uint32_t range(uint32_t low, uint32_t high) override;
 
     private:
 
