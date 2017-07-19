@@ -52,6 +52,8 @@ namespace etl
   {
   public:
 
+    virtual ~ifunction() = 0;
+
     typedef TParameter parameter_type; ///< The type of parameter sent to the function.
 
     //*************************************************************************
@@ -68,6 +70,8 @@ namespace etl
   class ifunction<void>
   {
   public:
+
+    virtual ~ifunction() = 0;
 
     typedef void parameter_type; ///< The type of parameter sent to the function.
 
@@ -96,9 +100,9 @@ namespace etl
     ///\param object    Reference to the object
     ///\param p_function Pointer to the member function
     //*************************************************************************
-    function(TObject& object, void(TObject::* p_function)(TParameter))
+    function(TObject& object, void(TObject::* p_function_)(TParameter))
       : p_object(&object),
-        p_function(p_function)
+        p_function(p_function_)
     {
     }
 
@@ -133,9 +137,9 @@ namespace etl
     ///\param object   Reference to the object
     ///\param p_function Pointer to the member function
     //*************************************************************************
-    function(TObject& object, void(TObject::* p_function)(void))
+    function(TObject& object, void(TObject::* p_function_)(void))
       : p_object(&object),
-        p_function(p_function)
+        p_function(p_function_)
     {
     }
 
@@ -167,8 +171,8 @@ namespace etl
     /// Constructor.
     ///\param p_function Pointer to the function
     //*************************************************************************
-    function(void(*p_function)(TParameter))
-      : p_function(p_function)
+    function(void(*p_function_)(TParameter))
+      : p_function(p_function_)
     {
     }
 
@@ -176,7 +180,7 @@ namespace etl
     /// The function operator that calls the destination function.
     ///\param data The data to pass to the function.
     //*************************************************************************
-    virtual void operator ()(TParameter data)
+    virtual void operator ()(TParameter data) override
     {
       // Call the function with the data.
       (*p_function)(data);
@@ -208,7 +212,7 @@ namespace etl
     //*************************************************************************
     /// The function operator that calls the destination function.
     //*************************************************************************
-    virtual void operator ()()
+    virtual void operator ()() override
     {
       // Call the function.
       (*p_function)();

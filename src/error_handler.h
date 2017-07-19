@@ -56,8 +56,8 @@ namespace etl
     //*************************************************************************
     struct free_function : public etl::function<void, const etl::exception&>
     {
-      free_function(void (*p_function)(const etl::exception&))
-        : etl::function<void, const etl::exception&>(p_function)
+      free_function(void (*p_function_)(const etl::exception&))
+        : etl::function<void, const etl::exception&>(p_function_)
       {
       }
     };

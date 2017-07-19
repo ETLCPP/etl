@@ -339,9 +339,9 @@ namespace etl
     //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
-    iqueue(T* p_buffer, size_type max_size)
+    iqueue(T* p_buffer_, size_type max_size)
       : queue_base(max_size),
-      p_buffer(p_buffer)
+      p_buffer(p_buffer_)
     {
     }
 
