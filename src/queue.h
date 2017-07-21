@@ -285,7 +285,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
 #endif
       ::new (&p_buffer[in]) T(value1);
-      in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
+      in = (in == (CAPACITY - 1)) ? 0 : in + 1;
       ++current_size;
       ++construct_count;
     }
@@ -302,7 +302,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
 #endif
       ::new (&p_buffer[in]) T(value1, value2);
-      in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
+      in = (in == (CAPACITY - 1)) ? 0 : in + 1;
       ++current_size;
       ++construct_count;
     }
@@ -319,7 +319,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
 #endif
       ::new (&p_buffer[in]) T(value1, value2, value3);
-      in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
+      in = (in == (CAPACITY - 1)) ? 0 : in + 1;
       ++current_size;
       ++construct_count;
     }
@@ -336,7 +336,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
 #endif
       ::new (&p_buffer[in]) T(value1, value2, value3, value4);
-      in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
+      in = (in == (CAPACITY - 1)) ? 0 : in + 1;
       ++current_size;
       ++construct_count;
     }
