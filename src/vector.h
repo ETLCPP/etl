@@ -468,6 +468,70 @@ namespace etl
       create_back(value);
     }
 
+    //*********************************************************************
+    /// Constructs a value at the end of the vector.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    ///\param value The value to add.
+    //*********************************************************************
+    template <typename T1>
+    void emplace_back(const T1& value1)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
+#endif
+      ::new (p_end) T(value1);
+      ++p_end;
+      ++construct_count;
+    }
+
+    //*********************************************************************
+    /// Constructs a value at the end of the vector.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    ///\param value The value to add.
+    //*********************************************************************
+    template <typename T1, typename T2>
+    void emplace_back(const T1& value1, const T2& value2)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
+#endif
+      ::new (p_end) T(value1, value2);
+      ++p_end;
+      ++construct_count;
+    }
+
+    //*********************************************************************
+    /// Constructs a value at the end of the vector.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    ///\param value The value to add.
+    //*********************************************************************
+    template <typename T1, typename T2, typename T3>
+    void emplace_back(const T1& value1, const T2& value2, const T3& value3)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
+#endif
+      ::new (p_end) T(value1, value2, value3);
+      ++p_end;
+      ++construct_count;
+    }
+
+    //*********************************************************************
+    /// Constructs a value at the end of the vector.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    ///\param value The value to add.
+    //*********************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    void emplace_back(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
+#endif
+      ::new (p_end) T(value1, value2, value3, value4);
+      ++p_end;
+      ++construct_count;
+    }
+
     //*************************************************************************
     /// Removes an element from the end of the vector.
     /// Does nothing if the vector is empty.

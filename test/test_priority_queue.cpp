@@ -33,7 +33,37 @@ SOFTWARE.
 #include "priority_queue.h"
 
 namespace
-{		
+{
+  struct Item
+  {
+    Item(char c_, int i_, double d_)
+      : c(c_),
+      i(i_),
+      d(d_)
+    {
+    }
+
+    char c;
+    int i;
+    double d;
+  };
+
+  bool operator == (const Item& lhs, const Item& rhs)
+  {
+    return (lhs.c == rhs.c) && (lhs.i == rhs.i) && (lhs.d == rhs.d);
+  }
+
+  bool operator < (const Item& lhs, const Item& rhs)
+  {
+    return (lhs.c < rhs.c);
+  }
+
+  std::ostream& operator << (std::ostream& os, const Item& item)
+  {
+    os << item.c << "," << item.i << "," << item.d;
+    return os;
+  }
+
   SUITE(test_priority_queue)
   {
     static const size_t SIZE = 4;
@@ -216,6 +246,57 @@ namespace
       compare_priority_queue.push(4);
       CHECK_EQUAL(compare_priority_queue.size(), priority_queue.size());
       CHECK_EQUAL(compare_priority_queue.top(), priority_queue.top());
+
+      priority_queue.pop();
+      compare_priority_queue.pop();
+      CHECK_EQUAL(compare_priority_queue.size(), priority_queue.size());
+      CHECK_EQUAL(compare_priority_queue.top(), priority_queue.top());
+
+      priority_queue.pop();
+      compare_priority_queue.pop();
+      CHECK_EQUAL(compare_priority_queue.size(), priority_queue.size());
+      CHECK_EQUAL(compare_priority_queue.top(), priority_queue.top());
+
+      priority_queue.pop();
+      compare_priority_queue.pop();
+      CHECK_EQUAL(compare_priority_queue.size(), priority_queue.size());
+      CHECK_EQUAL(compare_priority_queue.top(), priority_queue.top());
+    }
+
+    //*************************************************************************
+    TEST(test_emplace)
+    {
+      etl::priority_queue<Item, SIZE> priority_queue;
+      std::priority_queue<Item> compare_priority_queue;
+
+      priority_queue.emplace('d', 4, 7.8);
+      compare_priority_queue.emplace('d', 4, 7.8);
+
+      priority_queue.emplace('b', 2, 3.4);
+      compare_priority_queue.emplace('b', 2, 3.4);
+
+      priority_queue.emplace('a', 1, 1.2);
+      compare_priority_queue.emplace('a', 1, 1.2);
+
+      priority_queue.emplace('c', 3, 5.6);
+      compare_priority_queue.emplace('c', 3, 5.6);
+      CHECK_EQUAL(compare_priority_queue.size(), priority_queue.size());
+      CHECK_EQUAL(compare_priority_queue.top(), priority_queue.top());
+
+      priority_queue.pop();
+      compare_priority_queue.pop();
+      CHECK_EQUAL(compare_priority_queue.size(), priority_queue.size());
+      CHECK_EQUAL(compare_priority_queue.top(), priority_queue.top());
+
+      priority_queue.pop();
+      compare_priority_queue.pop();
+      CHECK_EQUAL(compare_priority_queue.size(), priority_queue.size());
+      CHECK_EQUAL(compare_priority_queue.top(), priority_queue.top());
+
+      priority_queue.pop();
+      compare_priority_queue.pop();
+      CHECK_EQUAL(compare_priority_queue.size(), priority_queue.size());
+      CHECK_EQUAL(compare_priority_queue.top(), priority_queue.top());
     }
 
     //*************************************************************************
@@ -321,31 +402,31 @@ namespace
     }
 
     //*************************************************************************
-    //TEST(test_assignment_interface)
-    //{
-    //  etl::priority_queue<int, SIZE> priority_queue1;
-    //  
-    //  priority_queue1.push(1);
-    //  priority_queue1.push(4);
-    //  priority_queue1.push(3);
-    //  priority_queue1.push(2);
+    TEST(test_assignment_interface)
+    {
+      etl::priority_queue<int, SIZE> priority_queue1;
+      
+      priority_queue1.push(1);
+      priority_queue1.push(4);
+      priority_queue1.push(3);
+      priority_queue1.push(2);
 
-    //  etl::priority_queue<int, SIZE> priority_queue2;
+      etl::priority_queue<int, SIZE> priority_queue2;
 
-    //  etl::ipriority_queue<int> ipriority_queue1 = priority_queue1;
-    //  etl::ipriority_queue<int> ipriority_queue2 = priority_queue2;
+      etl::ipriority_queue<int, etl::vector<int, SIZE>, std::less<int>>& ipriority_queue1 = priority_queue1;      
+      etl::ipriority_queue<int, etl::vector<int, SIZE>, std::less<int>>& ipriority_queue2 = priority_queue2;
 
-    //  ipriority_queue2 = ipriority_queue1;
+      ipriority_queue2 = ipriority_queue1;
 
-    //  CHECK(priority_queue1.size() == priority_queue2.size());
+      CHECK(priority_queue1.size() == priority_queue2.size());
 
-    //  while (!priority_queue1.empty())
-    //  {
-    //    CHECK_EQUAL(priority_queue1.top(), priority_queue2.top());
-    //    priority_queue1.pop();
-    //    priority_queue2.pop();
-    //  }
-    //}
+      while (!priority_queue1.empty())
+      {
+        CHECK_EQUAL(priority_queue1.top(), priority_queue2.top());
+        priority_queue1.pop();
+        priority_queue2.pop();
+      }
+    }
 
     //*************************************************************************
     TEST(test_self_assignment)

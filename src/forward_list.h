@@ -636,6 +636,66 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Emplaces a value to the front of the list..
+    //*************************************************************************
+    template <typename T1>
+    void emplace_front(const T1& value1)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
+#endif
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(value1);
+      ++construct_count;
+      insert_node_after(start_node, *p_data_node);
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the front of the list..
+    //*************************************************************************
+    template <typename T1, typename T2>
+    void emplace_front(const T1& value1, const T2& value2)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
+#endif
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(value1, value2);
+      ++construct_count;
+      insert_node_after(start_node, *p_data_node);
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the front of the list..
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3>
+    void emplace_front(const T1& value1, const T2& value2, const T3& value3)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
+#endif
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(value1, value2, value3);
+      ++construct_count;
+      insert_node_after(start_node, *p_data_node);
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the front of the list..
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    void emplace_front(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
+#endif
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(value1, value2, value3, value4);
+      ++construct_count;
+      insert_node_after(start_node, *p_data_node);
+    }
+
+    //*************************************************************************
     /// Removes a value from the front of the forward_list.
     //*************************************************************************
     void pop_front()

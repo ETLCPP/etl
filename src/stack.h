@@ -223,6 +223,70 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Constructs a value in the stack place'.
+    /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
+    ///\param value The value to push to the stack.
+    //*************************************************************************
+    template <typename T1>
+    void emplace(const T1& value1)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(stack_full));
+#endif
+      top_index = current_size++;
+      ::new (&p_buffer[top_index]) T(value1);
+      ++construct_count;
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the stack place'.
+    /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
+    ///\param value The value to push to the stack.
+    //*************************************************************************
+    template <typename T1, typename T2>
+    void emplace(const T1& value1, const T2& value2)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(stack_full));
+#endif
+      top_index = current_size++;
+      ::new (&p_buffer[top_index]) T(value1, value2);
+      ++construct_count;
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the stack place'.
+    /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
+    ///\param value The value to push to the stack.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3>
+    void emplace(const T1& value1, const T2& value2, const T3& value3)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(stack_full));
+#endif
+      top_index = current_size++;
+      ::new (&p_buffer[top_index]) T(value1, value2, value3);
+      ++construct_count;
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the stack place'.
+    /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
+    ///\param value The value to push to the stack.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    void emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(stack_full));
+#endif
+      top_index = current_size++;
+      ::new (&p_buffer[top_index]) T(value1, value2, value3, value4);
+      ++construct_count;
+    }
+
+    //*************************************************************************
     /// Allows a possibly more efficient 'push' by moving to the next input value
     /// and returning a reference to it.
     /// This may eliminate a copy by allowing direct construction in-place.<br>

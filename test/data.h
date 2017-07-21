@@ -45,7 +45,7 @@ public:
   {
   }
 
-  TestDataDC(const T& value, int index = 0)
+  explicit TestDataDC(const T& value, int index = 0)
     : value(value),
       index(index)
   {
@@ -92,7 +92,7 @@ class TestDataNDC
 {
 public:
 
-  TestDataNDC(const T& value, int index = 0)
+  explicit TestDataNDC(const T& value, int index = 0)
     : value(value),
       index(index)
   {}

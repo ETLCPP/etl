@@ -378,6 +378,59 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_position_value)
+    {
+      const size_t INITIAL_SIZE = 4;
+      const ItemNDC VALUE = ItemNDC("1");
+      const std::string INSERT_VALUE = "2";
+
+      CompareData compare_data(INITIAL_SIZE, VALUE);
+      DataNDC data(INITIAL_SIZE, VALUE);
+
+      size_t offset = 2;
+
+      DataNDC::iterator i_data = data.begin();
+      std::advance(i_data, offset);
+
+      CompareData::iterator i_compare_data = compare_data.begin();
+      std::advance(i_compare_data, offset);
+
+      data.emplace(i_data, INSERT_VALUE);
+      compare_data.emplace(i_compare_data, INSERT_VALUE);
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(are_equal);
+
+      offset = 0;
+
+      i_data = data.begin();
+      std::advance(i_data, offset);
+
+      i_compare_data = compare_data.begin();
+      std::advance(i_compare_data, offset);
+
+      data.emplace(i_data, INSERT_VALUE);
+      compare_data.emplace(i_compare_data, INSERT_VALUE);
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(are_equal);
+
+      i_data = data.end();
+      i_compare_data = compare_data.end();
+
+      data.emplace(i_data, VALUE);
+      compare_data.emplace(i_compare_data, VALUE);
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_range)
     {
       std::vector<ItemNDC> test1 = { ItemNDC("1"), ItemNDC("2"), ItemNDC("3"), ItemNDC("4"), ItemNDC("5") };
@@ -442,6 +495,32 @@ namespace
       CHECK_NO_THROW(data.push_front(ItemNDC("4")));
       CHECK_NO_THROW(data.push_front(ItemNDC("5")));
       CHECK_NO_THROW(data.push_front(ItemNDC("6")));
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_front)
+    {
+      CompareData compare_data;
+      DataNDC data;
+
+      compare_data.emplace_front("1");
+      compare_data.emplace_front("2");
+      compare_data.emplace_front("3");
+      compare_data.emplace_front("4");
+      compare_data.emplace_front("5");
+      compare_data.emplace_front("6");
+
+      CHECK_NO_THROW(data.emplace_front("1"));
+      CHECK_NO_THROW(data.emplace_front("2"));
+      CHECK_NO_THROW(data.emplace_front("3"));
+      CHECK_NO_THROW(data.emplace_front("4"));
+      CHECK_NO_THROW(data.emplace_front("5"));
+      CHECK_NO_THROW(data.emplace_front("6"));
 
       CHECK_EQUAL(compare_data.size(), data.size());
 
@@ -543,6 +622,32 @@ namespace
       CHECK_NO_THROW(data.push_back(ItemNDC("4")));
       CHECK_NO_THROW(data.push_back(ItemNDC("5")));
       CHECK_NO_THROW(data.push_back(ItemNDC("6")));
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_back)
+    {
+      CompareData compare_data;
+      DataNDC data;
+
+      compare_data.emplace_back("1");
+      compare_data.emplace_back("2");
+      compare_data.emplace_back("3");
+      compare_data.emplace_back("4");
+      compare_data.emplace_back("5");
+      compare_data.emplace_back("6");
+
+      CHECK_NO_THROW(data.emplace_back("1"));
+      CHECK_NO_THROW(data.emplace_back("2"));
+      CHECK_NO_THROW(data.emplace_back("3"));
+      CHECK_NO_THROW(data.emplace_back("4"));
+      CHECK_NO_THROW(data.emplace_back("5"));
+      CHECK_NO_THROW(data.emplace_back("6"));
 
       CHECK_EQUAL(compare_data.size(), data.size());
 

@@ -496,7 +496,7 @@ namespace
       DataNDC data;
       DataNDC::hasher hash_function =  data.hash_function();
 
-      CHECK_EQUAL(simple_hash()(std::string("ABCDEF")), hash_function(std::string("ABCDEF")));
+      CHECK_EQUAL(simple_hash()(NDC(std::string("ABCDEF"))), hash_function(NDC(std::string("ABCDEF"))));
     }
 
     //*************************************************************************
@@ -505,8 +505,8 @@ namespace
       DataNDC data;
       DataNDC::key_equal key_eq = data.key_eq();
 
-      CHECK(key_eq(std::string("ABCDEF"), std::string("ABCDEF")));
-      CHECK(!key_eq(std::string("ABCDEF"), std::string("ABCDEG")));
+      CHECK(key_eq(NDC(std::string("ABCDEF")), NDC(std::string("ABCDEF"))));
+      CHECK(!key_eq(NDC(std::string("ABCDEF")), NDC(std::string("ABCDEG"))));
     }
 
     //*************************************************************************

@@ -34,6 +34,25 @@ SOFTWARE.
 
 namespace
 {
+  struct Item
+  {
+    Item(char c_, int i_, double d_)
+      : c(c_),
+        i(i_),
+        d(d_)
+    {
+    }
+
+    char c;
+    int i;
+    double d;
+  };
+
+  bool operator == (const Item& lhs, const Item& rhs)
+  {
+    return (lhs.c == rhs.c) && (lhs.i == rhs.i) && (lhs.d == rhs.d);
+  }
+
   SUITE(test_queue)
   {
     //*************************************************************************
@@ -254,6 +273,26 @@ namespace
       }
 
       CHECK(pass);
+    }
+
+    //*************************************************************************
+    TEST(test_multiple_emplace)
+    {
+      etl::queue<Item, 4> queue;
+
+      queue.emplace('a', 1, 1.2);
+      queue.emplace('b', 2, 3.4);
+      queue.emplace('c', 3, 5.6);
+      queue.emplace('d', 4, 7.8);
+
+      CHECK(queue.front() == Item('a', 1, 1.2));
+      queue.pop();
+      CHECK(queue.front() == Item('b', 2, 3.4));
+      queue.pop();
+      CHECK(queue.front() == Item('c', 3, 5.6));
+      queue.pop();
+      CHECK(queue.front() == Item('d', 4, 7.8));
+      queue.pop();
     }
 
     //*************************************************************************

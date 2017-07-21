@@ -489,7 +489,7 @@ namespace
       {
         std::string value(" ");
         value[0] = char('A' + i);
-        compare_data.push_back(value);
+        compare_data.push_back(NDC(value));
         data.push_back(NDC(value));
       }
 
@@ -535,6 +535,29 @@ namespace
       }
 
       CHECK_THROW(data.push_back(NDC("Z")), etl::vector_full);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_back)
+    {
+      CompareDataNDC compare_data;
+      DataNDC data;
+
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        std::string value(" ");
+        value[0] = char('A' + i);
+        compare_data.emplace_back(value);
+        data.emplace_back(value);
+      }
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+
+      bool is_equal = std::equal(data.begin(),
+                                 data.end(),
+                                 compare_data.begin());
+
+      CHECK(is_equal);
     }
 
     //*************************************************************************

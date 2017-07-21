@@ -770,6 +770,66 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Emplaces a value to the front of the list..
+    //*************************************************************************
+    template <typename T1>
+    void emplace_front(const T1& value1)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(list_full));
+#endif
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(value1);
+      ++construct_count;
+      insert_node(get_head(), *p_data_node);
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the front of the list..
+    //*************************************************************************
+    template <typename T1, typename T2>
+    void emplace_front(const T1& value1, const T2& value2)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(list_full));
+#endif
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(value1, value2);
+      ++construct_count;
+      insert_node(get_head(), *p_data_node);
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the front of the list..
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3>
+    void emplace_front(const T1& value1, const T2& value2, const T3& value3)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(list_full));
+#endif
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(value1, value2, value3);
+      ++construct_count;
+      insert_node(get_head(), *p_data_node);
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the front of the list..
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    void emplace_front(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(list_full));
+#endif
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(value1, value2, value3, value4);
+      ++construct_count;
+      insert_node(get_head(), *p_data_node);
+    }
+
+    //*************************************************************************
     /// Removes a value from the front of the list.
     //*************************************************************************
     void pop_front()
@@ -801,6 +861,66 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Emplaces a value to the back of the list..
+    //*************************************************************************
+    template <typename T1>
+    void emplace_back(const T1& value1)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(list_full));
+#endif
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(value1);
+      ++construct_count;
+      insert_node(terminal_node, *p_data_node);
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the back of the list..
+    //*************************************************************************
+    template <typename T1, typename T2>
+    void emplace_back(const T1& value1, const T2& value2)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(list_full));
+#endif
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(value1, value2);
+      ++construct_count;
+      insert_node(terminal_node, *p_data_node);
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the back of the list..
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3>
+    void emplace_back(const T1& value1, const T2& value2, const T3& value3)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(list_full));
+#endif
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(value1, value2, value3);
+      ++construct_count;
+      insert_node(terminal_node, *p_data_node);
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the back of the list..
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    void emplace_back(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(list_full));
+#endif
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(value1, value2, value3, value4);
+      ++construct_count;
+      insert_node(terminal_node, *p_data_node);
+    }
+
+    //*************************************************************************
     /// Removes a value from the back of the list.
     //*************************************************************************
     void pop_back()
@@ -823,6 +943,70 @@ namespace etl
       insert_node(*position.p_node, data_node);
 
       return iterator(data_node);
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the list at the specified position.
+    //*************************************************************************
+    template <typename T1>
+    iterator emplace(iterator position, const T1& value1)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(list_full));
+
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(value1);
+      ++construct_count;
+      insert_node(*position.p_node, *p_data_node);
+
+      return iterator(*p_data_node);
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the list at the specified position.
+    //*************************************************************************
+    template <typename T1, typename T2>
+    iterator emplace(iterator position, const T1& value1, const T2& value2)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(list_full));
+
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(value1, value2);
+      ++construct_count;
+      insert_node(*position.p_node, *p_data_node);
+
+      return iterator(*p_data_node);
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the list at the specified position.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3>
+    iterator emplace(iterator position, const T1& value1, const T2& value2, const T3& value3)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(list_full));
+
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(value1, value2, value3);
+      ++construct_count;
+      insert_node(*position.p_node, *p_data_node);
+
+      return iterator(*p_data_node);
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the list at the specified position.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    iterator emplace(iterator position, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(list_full));
+
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(value1, value2, value3, value4);
+      ++construct_count;
+      insert_node(*position.p_node, *p_data_node);
+
+      return iterator(*p_data_node);
     }
 
     //*************************************************************************

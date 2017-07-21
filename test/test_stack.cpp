@@ -36,6 +36,25 @@ SOFTWARE.
 
 namespace
 {
+  struct Item
+  {
+    Item(char c_, int i_, double d_)
+      : c(c_),
+      i(i_),
+      d(d_)
+    {
+    }
+
+    char c;
+    int i;
+    double d;
+  };
+
+  bool operator == (const Item& lhs, const Item& rhs)
+  {
+    return (lhs.c == rhs.c) && (lhs.i == rhs.i) && (lhs.d == rhs.d);
+  }
+
   SUITE(test_stack)
   {
     typedef TestDataDC<std::string>  ItemDC;
@@ -133,9 +152,34 @@ namespace
       CHECK_EQUAL(2U, stack.size());
 
       CHECK_EQUAL(2, stack.top());
-
       stack.pop();
       CHECK_EQUAL(1, stack.top());
+    }
+
+    //*************************************************************************
+    TEST(test_emplace)
+    {
+      etl::stack<Item, 4> stack;
+
+      stack.emplace('a', 1, 1.2);
+      CHECK_EQUAL(1U, stack.size());
+
+      stack.emplace('b', 2, 3.4);
+      CHECK_EQUAL(2U, stack.size());
+
+      stack.emplace('c', 3, 5.6);
+      CHECK_EQUAL(3U, stack.size());
+
+      stack.emplace('d', 4, 7.8);
+      CHECK_EQUAL(4U, stack.size());
+
+      CHECK(stack.top() == Item('d', 4, 7.8));
+      stack.pop();
+      CHECK(stack.top() == Item('c', 3, 5.6));
+      stack.pop();
+      CHECK(stack.top() == Item('b', 2, 3.4));
+      stack.pop();
+      CHECK(stack.top() == Item('a', 1, 1.2));
     }
 
     //*************************************************************************

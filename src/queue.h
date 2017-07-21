@@ -237,8 +237,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds a value to the queue.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full,
-    /// otherwise does nothing if full.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
     ///\param value The value to push to the queue.
     //*************************************************************************
     void push(parameter_t value)
@@ -256,8 +255,7 @@ namespace etl
     /// Allows a possibly more efficient 'push' by moving to the next input value
     /// and returning a reference to it.
     /// This may eliminate a copy by allowing direct construction in-place.<br>
-    /// If asserts or exceptions are enabled, throws an etl::queue_full is the queue is already full,
-    /// otherwise does nothing if full.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full is the queue is already full.
     /// \return A reference to the position to 'push' to.
     //*************************************************************************
     reference push()
@@ -273,6 +271,74 @@ namespace etl
       ++construct_count;
 
       return p_buffer[next];
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    ///\param value The value to use to construct the item to push to the queue.
+    //*************************************************************************
+    template <typename T1>
+    void emplace(const T1& value1)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(queue_full));
+#endif
+      ::new (&p_buffer[in]) T(value1);
+      in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
+      ++current_size;
+      ++construct_count;
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    ///\param value The value to use to construct the item to push to the queue.
+    //*************************************************************************
+    template <typename T1, typename T2>
+    void emplace(const T1& value1, const T2& value2)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(queue_full));
+#endif
+      ::new (&p_buffer[in]) T(value1, value2);
+      in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
+      ++current_size;
+      ++construct_count;
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    ///\param value The value to use to construct the item to push to the queue.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3>
+    void emplace(const T1& value1, const T2& value2, const T3& value3)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(queue_full));
+#endif
+      ::new (&p_buffer[in]) T(value1, value2, value3);
+      in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
+      ++current_size;
+      ++construct_count;
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    ///\param value The value to use to construct the item to push to the queue.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    void emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(queue_full));
+#endif
+      ::new (&p_buffer[in]) T(value1, value2, value3, value4);
+      in = (in == (MAX_SIZE - 1)) ? 0 : in + 1;
+      ++current_size;
+      ++construct_count;
     }
 
     //*************************************************************************
