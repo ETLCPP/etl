@@ -232,8 +232,7 @@ namespace etl
   /// Default constructor.
   /// Attempts to come up with a unique non-zero seed.
   //***************************************************************************
-  random_lsfr::random_lsfr(uint32_t iterations_)
-    : iterations(iterations_ == 0 ? 1 : iterations_)
+  random_lsfr::random_lsfr()
   {
     // An attempt to come up with a unique non-zero seed,
     // based on the address of the instance.
@@ -246,8 +245,7 @@ namespace etl
   /// Constructor with seed value.
   ///\param seed The new seed value.
   //***************************************************************************
-  random_lsfr::random_lsfr(uint32_t seed, uint32_t iterations)
-    : iterations(iterations)
+  random_lsfr::random_lsfr(uint32_t seed)
   {
     initialise(seed);
   }
@@ -266,16 +264,13 @@ namespace etl
   //***************************************************************************
   uint32_t random_lsfr::operator()()
   {
-    static const uint32_t polynomial = 0x8020003;
+    static const uint32_t polynomial = 0x80200003;
 
-    for (uint32_t i = 0; i < iterations; ++i)
+    value >>= 1;
+
+    if ((value & 1) == 1)
     {
-      value >>= 1;
-
-      if ((value & 1) == 0)
-      {
-        value ^= polynomial;
-      }
+      value ^= polynomial;
     }
 
     return value;

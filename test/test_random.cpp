@@ -203,7 +203,7 @@ namespace
     TEST(test_random_lfsr_sequence)
     {
       std::vector<uint32_t> out1(10000);
-      etl::random_lsfr r(7);
+      etl::random_lsfr r;
 
       struct generator
       {
