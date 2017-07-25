@@ -130,8 +130,12 @@
   <ItemGroup>
     <ClInclude Include="..\..\src\fsm.h" />
     <ClInclude Include="..\..\src\fsm_generator.h" />
+    <ClInclude Include="..\..\src\largest_generator.h" />
     <ClInclude Include="..\..\src\message_router.h" />
     <ClInclude Include="..\..\src\message_router_generator.h" />
+    <ClInclude Include="..\..\src\packet.h" />
+    <ClInclude Include="..\..\src\smallest_generator.h" />
+    <ClInclude Include="..\..\src\type_traits_generator.h" />
     <ClInclude Include="..\..\unittest-cpp\UnitTest++\AssertException.h" />
     <ClInclude Include="..\..\unittest-cpp\UnitTest++\CheckMacros.h" />
     <ClInclude Include="..\..\unittest-cpp\UnitTest++\Checks.h" />
@@ -377,6 +381,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug No Unit Tests|Win32'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\test_optional.cpp" />
+    <ClCompile Include="..\test_packet.cpp" />
     <ClCompile Include="..\test_pearson.cpp" />
     <ClCompile Include="..\test_pool.cpp" />
     <ClCompile Include="..\test_priority_queue.cpp" />
@@ -397,6 +402,7 @@
     <ClCompile Include="..\test_string_u16.cpp" />
     <ClCompile Include="..\test_string_u32.cpp" />
     <ClCompile Include="..\test_string_wchar_t.cpp" />
+    <ClCompile Include="..\test_task_scheduler.cpp" />
     <ClCompile Include="..\test_type_def.cpp" />
     <ClCompile Include="..\test_type_traits.cpp" />
     <ClCompile Include="..\test_unordered_map.cpp" />
@@ -414,8 +420,7 @@
   <ItemGroup>
     <None Include="..\..\Doxyfile" />
     <None Include="..\..\library.properties" />
-    <None Include="..\..\src\CreateFSM.bat" />
-    <None Include="..\..\src\CreateMessageRouter.bat" />
+    <None Include="..\..\src\generate.bat" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\src\file_error_numbers.txt" />

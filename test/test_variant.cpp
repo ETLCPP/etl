@@ -35,70 +35,70 @@ SOFTWARE.
 #include <vector>
 #include <algorithm>
 
-// Test classes for polymorphic tests.
-struct base
-{
-  virtual ~base()
-  {
-  }
-
-  base()
-    : value(0)
-  {
-  }
-
-  virtual void set() = 0;
-  int value;
-};
-
-struct not_base
-{
-  not_base()
-    : value(0)
-  {
-  }
-
-  virtual void set() = 0;
-  int value;
-};
-
-struct derived_1 : public base
-{
-  void set()
-  {
-    value = 1;
-  }
-};
-
-struct derived_2 : public base
-{
-  void set()
-  {
-    value = 2;
-  }
-};
-
-// Test variant types.
-typedef etl::variant<char, int, std::string> test_variant_3a;
-typedef etl::variant<int, short, double> test_variant_3b;
-
-typedef etl::variant<int8_t> test_variant_1;
-typedef etl::variant<int8_t, uint8_t> test_variant_2;
-typedef etl::variant<int8_t, uint8_t, int16_t> test_variant_3;
-typedef etl::variant<int8_t, uint8_t, int16_t, uint16_t> test_variant_4;
-typedef etl::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t> test_variant_5;
-typedef etl::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t> test_variant_6;
-typedef etl::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t, int64_t> test_variant_7;
-typedef etl::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t, int64_t, uint64_t> test_variant_8;
-
-typedef etl::variant<derived_1, derived_2> test_variant_polymorphic;
-typedef etl::variant<char, unsigned char, short, unsigned short, int, unsigned int, long, unsigned long> test_variant_max_types;
-
-// This line should compile with no errors.
-test_variant_max_types variant_max;
-
 namespace
 {
+  // Test classes for polymorphic tests.
+  struct base
+  {
+    virtual ~base()
+    {
+    }
+
+    base()
+      : value(0)
+    {
+    }
+
+    virtual void set() = 0;
+    int value;
+  };
+
+  struct not_base
+  {
+    not_base()
+      : value(0)
+    {
+    }
+
+    virtual void set() = 0;
+    int value;
+  };
+
+  struct derived_1 : public base
+  {
+    void set()
+    {
+      value = 1;
+    }
+  };
+
+  struct derived_2 : public base
+  {
+    void set()
+    {
+      value = 2;
+    }
+  };
+
+  // Test variant types.
+  typedef etl::variant<char, int, std::string> test_variant_3a;
+  typedef etl::variant<int, short, double> test_variant_3b;
+
+  typedef etl::variant<int8_t> test_variant_1;
+  typedef etl::variant<int8_t, uint8_t> test_variant_2;
+  typedef etl::variant<int8_t, uint8_t, int16_t> test_variant_3;
+  typedef etl::variant<int8_t, uint8_t, int16_t, uint16_t> test_variant_4;
+  typedef etl::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t> test_variant_5;
+  typedef etl::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t> test_variant_6;
+  typedef etl::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t, int64_t> test_variant_7;
+  typedef etl::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t, int64_t, uint64_t> test_variant_8;
+
+  typedef etl::variant<derived_1, derived_2> test_variant_polymorphic;
+  typedef etl::variant<char, unsigned char, short, unsigned short, int, unsigned int, long, unsigned long> test_variant_max_types;
+
+  // This line should compile with no errors.
+  test_variant_max_types variant_max;
+
   SUITE(test_variant)
   {
     TEST(test_alignment)

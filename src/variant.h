@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -42,7 +42,6 @@ SOFTWARE.
 #include "static_assert.h"
 #include "alignment.h"
 #include "error_handler.h"
-#include "largest.h"
 
 #if defined(ETL_COMPILER_KEIL)
   #pragma diag_suppress 940
@@ -125,6 +124,11 @@ namespace etl
     typedef typename largest_type<T1, T2, T3, T4, T5, T6, T7, T8>::type largest_t;
 
     //***************************************************************************
+    /// The largest size.
+    //***************************************************************************
+    static const size_t SIZE = sizeof(largest_t);
+
+    //***************************************************************************
     /// The largest alignment.
     //***************************************************************************
     static const size_t ALIGNMENT = etl::largest_alignment<T1, T2, T3, T4, T5, T6, T7, T8>::value;
@@ -138,46 +142,6 @@ namespace etl
     /// The id a unsupported types.
     //***************************************************************************
     static const type_id_t UNSUPPORTED_TYPE_ID = integral_limits<type_id_t>::max;
-
-    //***************************************************************************
-    /// Do we pass this type by value?
-    //***************************************************************************
-    template <typename T>
-    struct pass_by_value : integral_constant<bool, etl::is_fundamental<T>::value || etl::is_pointer<T>::value>
-    {
-    };
-
-    //***************************************************************************
-    /// Define the type for a parameter.
-    //***************************************************************************
-    template <typename T, bool>
-    struct type_definition;
-
-    //***************************************************************************
-    /// Pass by value.
-    //***************************************************************************
-    template <typename T>
-    struct type_definition<T, true>
-    {
-      typedef T type;
-    };
-
-    //***************************************************************************
-    /// Pass by const reference.
-    //***************************************************************************
-    template <typename T>
-    struct type_definition<T, false>
-    {
-      typedef const T& type;
-    };
-
-    //***************************************************************************
-    /// Determines the type for parameters.
-    //***************************************************************************
-    template <typename T>
-    struct parameter_type : public type_definition<T, pass_by_value<T>::value>
-    {
-    };
 
     //***************************************************************************
     /// Short form of no_type placeholders.
@@ -249,14 +213,14 @@ namespace etl
 
       friend class variant;
 
-      virtual void read(typename parameter_type<R1>::type value) = 0;
-      virtual void read(typename parameter_type<R2>::type value) = 0;
-      virtual void read(typename parameter_type<R3>::type value) = 0;
-      virtual void read(typename parameter_type<R4>::type value) = 0;
-      virtual void read(typename parameter_type<R5>::type value) = 0;
-      virtual void read(typename parameter_type<R6>::type value) = 0;
-      virtual void read(typename parameter_type<R7>::type value) = 0;
-      virtual void read(typename parameter_type<R8>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R1>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R2>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R3>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R4>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R5>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R6>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R7>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R8>::type value) = 0;
     };
 
     //*************************************************************************
@@ -269,13 +233,13 @@ namespace etl
 
       friend class variant;
 
-      virtual void read(typename parameter_type<R1>::type value) = 0;
-      virtual void read(typename parameter_type<R2>::type value) = 0;
-      virtual void read(typename parameter_type<R3>::type value) = 0;
-      virtual void read(typename parameter_type<R4>::type value) = 0;
-      virtual void read(typename parameter_type<R5>::type value) = 0;
-      virtual void read(typename parameter_type<R6>::type value) = 0;
-      virtual void read(typename parameter_type<R7>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R1>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R2>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R3>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R4>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R5>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R6>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R7>::type value) = 0;
 
     private:
 
@@ -292,12 +256,12 @@ namespace etl
 
       friend class variant;
 
-      virtual void read(typename parameter_type<R1>::type value) = 0;
-      virtual void read(typename parameter_type<R2>::type value) = 0;
-      virtual void read(typename parameter_type<R3>::type value) = 0;
-      virtual void read(typename parameter_type<R4>::type value) = 0;
-      virtual void read(typename parameter_type<R5>::type value) = 0;
-      virtual void read(typename parameter_type<R6>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R1>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R2>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R3>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R4>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R5>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R6>::type value) = 0;
 
     private:
 
@@ -315,11 +279,11 @@ namespace etl
 
       friend class variant;
 
-      virtual void read(typename parameter_type<R1>::type value) = 0;
-      virtual void read(typename parameter_type<R2>::type value) = 0;
-      virtual void read(typename parameter_type<R3>::type value) = 0;
-      virtual void read(typename parameter_type<R4>::type value) = 0;
-      virtual void read(typename parameter_type<R5>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R1>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R2>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R3>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R4>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R5>::type value) = 0;
 
     private:
 
@@ -338,10 +302,10 @@ namespace etl
 
       friend class variant;
 
-      virtual void read(typename parameter_type<R1>::type value) = 0;
-      virtual void read(typename parameter_type<R2>::type value) = 0;
-      virtual void read(typename parameter_type<R3>::type value) = 0;
-      virtual void read(typename parameter_type<R4>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R1>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R2>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R3>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R4>::type value) = 0;
 
     private:
 
@@ -361,9 +325,9 @@ namespace etl
 
       friend class variant;
 
-      virtual void read(typename parameter_type<R1>::type value) = 0;
-      virtual void read(typename parameter_type<R2>::type value) = 0;
-      virtual void read(typename parameter_type<R3>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R1>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R2>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R3>::type value) = 0;
 
     private:
 
@@ -384,8 +348,8 @@ namespace etl
 
       friend class variant;
 
-      virtual void read(typename parameter_type<R1>::type value) = 0;
-      virtual void read(typename parameter_type<R2>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R1>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R2>::type value) = 0;
 
     private:
 
@@ -407,7 +371,7 @@ namespace etl
 
       friend class variant;
 
-      virtual void read(typename parameter_type<R1>::type value) = 0;
+      virtual void read(typename etl::parameter_type<R1>::type value) = 0;
 
     private:
 
@@ -862,7 +826,7 @@ namespace etl
     //***************************************************************************
     void clear()
     {
-      type_id = UNSUPPORTED_TYPE_ID;
+      destruct_current();
     }
 
     //***************************************************************************
@@ -962,7 +926,7 @@ namespace etl
     /// The internal storage.
     /// Aligned on a suitable boundary, which should be good for all types.
     //***************************************************************************
-    typename etl::aligned_storage<sizeof(largest_t), etl::largest_alignment<T1, T2, T3, T4, T5, T6, T7, T8>::value>::type data;
+    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
 
     //***************************************************************************
     /// The id of the current stored type.

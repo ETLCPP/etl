@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_SCHEDULER__
-#define __ETL_SCHEDULER__
+#ifndef __ETL_TASK__
+#define __ETL_TASK__
 
 #include <stdint.h>
 
@@ -52,14 +52,14 @@ namespace etl
     }
   };
 
+  typedef uint_least8_t task_priority_t;
+
   //***************************************************************************
   /// Scheduler.
   //***************************************************************************
   class task
   {
   public:
-
-    typedef uint_least8_t task_priority_t;
 
     //*******************************************
     /// Constructor.
@@ -78,13 +78,10 @@ namespace etl
     }
 
     //*******************************************
-    /// Returns 'true' if the task has work to do
-    /// and is in the running state.
+    /// Called to check if the task has work.
+    /// Returns a score as to the amount of work it has to do.
     //*******************************************
-    bool task_request_work() const
-    {
-      return (task_running && task_has_work());
-    }
+    virtual uint_least8_t task_request_work() const = 0;
 
     //*******************************************
     /// Called to get the task to do work.
@@ -118,10 +115,8 @@ namespace etl
 
   private:
 
-    bool task_has_work() const = 0;
-
     bool task_running;
-    uint_least8_t task_priority;
+    etl::task_priority_t task_priority;
   };
 }
 

@@ -40,6 +40,12 @@
     <Filter Include="ETL\Frameworks">
       <UniqueIdentifier>{6be3bc76-e17c-4be0-8b0b-d1053e1a1761}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ETL\Frameworks\Generators">
+      <UniqueIdentifier>{c1264f38-22fa-4fcb-8cab-f254b1290eab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Utilities\Generators">
+      <UniqueIdentifier>{39015d44-a7cb-47f0-a7dd-27714f852363}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\doxygen.h">
@@ -435,14 +441,26 @@
     <ClInclude Include="..\..\src\fsm.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\fsm_generator.h">
-      <Filter>ETL\Frameworks</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\message_router.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\packet.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\fsm_generator.h">
+      <Filter>ETL\Frameworks\Generators</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\message_router_generator.h">
-      <Filter>ETL\Frameworks</Filter>
+      <Filter>ETL\Frameworks\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\largest_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\type_traits_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\smallest_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -773,6 +791,12 @@
     <ClCompile Include="..\test_message_router.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_packet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_task_scheduler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Doxyfile">
@@ -781,11 +805,8 @@
     <None Include="..\..\library.properties">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\..\src\CreateFSM.bat">
-      <Filter>ETL\Frameworks</Filter>
-    </None>
-    <None Include="..\..\src\CreateMessageRouter.bat">
-      <Filter>ETL\Frameworks</Filter>
+    <None Include="..\..\src\generate.bat">
+      <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
