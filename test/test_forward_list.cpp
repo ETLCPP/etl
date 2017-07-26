@@ -478,6 +478,35 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_front)
+    {
+      CompareDataNDC compare_data;
+      DataNDC data;
+
+      compare_data.emplace_front("1");
+      compare_data.emplace_front("2");
+      compare_data.emplace_front("3");
+      compare_data.emplace_front("4");
+      compare_data.emplace_front("5");
+      compare_data.emplace_front("6");
+
+      CHECK_NO_THROW(data.emplace_front("1"));
+      CHECK_NO_THROW(data.emplace_front("2"));
+      CHECK_NO_THROW(data.emplace_front("3"));
+      CHECK_NO_THROW(data.emplace_front("4"));
+      CHECK_NO_THROW(data.emplace_front("5"));
+      CHECK_NO_THROW(data.emplace_front("6"));
+
+      CHECK_EQUAL(6U, data.size());
+      CHECK_EQUAL(6, std::distance(data.begin(), data.end()));
+
+      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_front_null)
     {
       CompareDataDC compare_data;

@@ -617,7 +617,21 @@ namespace
       DataNDC data(compare_data.begin(), compare_data.end());
 
       Compare_Data::iterator cposition = compare_data.insert(compare_data.begin(), N14);
-      DataNDC::iterator         position  = data.insert(data.begin(), N14);
+      DataNDC::iterator      position  = data.insert(data.begin(), N14);
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+      CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
+      CHECK_EQUAL(std::distance(compare_data.begin(), cposition), std::distance(data.begin(), position));
+    }
+
+    //*************************************************************************
+    TEST(test_emplace_value_begin)
+    {
+      Compare_Data compare_data(initial_data_under.begin(), initial_data_under.end());
+      DataNDC data(compare_data.begin(), compare_data.end());
+
+      Compare_Data::iterator cposition = compare_data.emplace(compare_data.begin(), N14.value);
+      DataNDC::iterator      position  = data.emplace(data.begin(), N14.value);
 
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
@@ -631,7 +645,21 @@ namespace
       DataNDC data(compare_data.begin(), compare_data.end());
 
       Compare_Data::iterator cposition = compare_data.insert(compare_data.end(), N14);
-      DataNDC::iterator         position = data.insert(data.end(), N14);
+      DataNDC::iterator      position  = data.insert(data.end(), N14);
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+      CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
+      CHECK_EQUAL(std::distance(compare_data.begin(), cposition), std::distance(data.begin(), position));
+    }
+
+    //*************************************************************************
+    TEST(test_emplace_value_end)
+    {
+      Compare_Data compare_data(initial_data_under.begin(), initial_data_under.end());
+      DataNDC data(compare_data.begin(), compare_data.end());
+
+      Compare_Data::iterator cposition = compare_data.emplace(compare_data.end(), N14.value);
+      DataNDC::iterator      position  = data.emplace(data.end(), N14.value);
 
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
@@ -656,6 +684,30 @@ namespace
 
       cposition = compare_data.insert(compare_data.begin() + 4, N14);
       position  = data.insert(data.begin() + 4, N14);
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+      CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
+      CHECK_EQUAL(std::distance(compare_data.begin(), cposition), std::distance(data.begin(), position));
+    }
+
+    //*************************************************************************
+    TEST(test_emplace_value)
+    {
+      Compare_Data compare_data(initial_data_under.begin(), initial_data_under.end());
+      DataNDC data(compare_data.begin(), compare_data.end());
+
+      Compare_Data::iterator cposition = compare_data.emplace(compare_data.begin() + 3, N14.value);
+      DataNDC::iterator         position = data.emplace(data.begin() + 3, N14.value);
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+      CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
+      CHECK_EQUAL(std::distance(compare_data.begin(), cposition), std::distance(data.begin(), position));
+
+      compare_data.assign(initial_data_under.begin(), initial_data_under.end());
+      data.assign(compare_data.begin(), compare_data.end());
+
+      cposition = compare_data.emplace(compare_data.begin() + 4, N14.value);
+      position = data.emplace(data.begin() + 4, N14.value);
 
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
@@ -1175,6 +1227,33 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_emplace_back)
+    {
+      Compare_Data compare_data = { N1, N2, N3, N4, N5 };
+      DataNDC data;
+
+      CHECK_NO_THROW(data.emplace_back("1"));
+      CHECK_EQUAL(size_t(1), data.size());
+      CHECK(std::equal(compare_data.begin(), compare_data.end() - 4, data.begin()));
+
+      CHECK_NO_THROW(data.emplace_back("2"));
+      CHECK_EQUAL(size_t(2), data.size());
+      CHECK(std::equal(compare_data.begin(), compare_data.end() - 3, data.begin()));
+
+      CHECK_NO_THROW(data.emplace_back("3"));
+      CHECK_EQUAL(size_t(3), data.size());
+      CHECK(std::equal(compare_data.begin(), compare_data.end() - 2, data.begin()));
+
+      CHECK_NO_THROW(data.emplace_back("4"));
+      CHECK_EQUAL(size_t(4), data.size());
+      CHECK(std::equal(compare_data.begin(), compare_data.end() - 1, data.begin()));
+
+      CHECK_NO_THROW(data.emplace_back("5"));
+      CHECK_EQUAL(size_t(5), data.size());
+      CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
+    }
+
+    //*************************************************************************
     TEST(test_push_back_excess)
     {
       DataNDC data;
@@ -1284,6 +1363,33 @@ namespace
       CHECK(std::equal(compare_data.begin() + 1, compare_data.end(), data.begin()));
 
       CHECK_NO_THROW(data.push_front(N5));
+      CHECK_EQUAL(size_t(5), data.size());
+      CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_emplace_front)
+    {
+      Compare_Data compare_data = { N5, N4, N3, N2, N1 };
+      DataNDC data;
+
+      CHECK_NO_THROW(data.emplace_front("1"));
+      CHECK_EQUAL(size_t(1), data.size());
+      CHECK(std::equal(compare_data.begin() + 4, compare_data.end(), data.begin()));
+
+      CHECK_NO_THROW(data.emplace_front("2"));
+      CHECK_EQUAL(size_t(2), data.size());
+      CHECK(std::equal(compare_data.begin() + 3, compare_data.end(), data.begin()));
+
+      CHECK_NO_THROW(data.emplace_front("3"));
+      CHECK_EQUAL(size_t(3), data.size());
+      CHECK(std::equal(compare_data.begin() + 2, compare_data.end(), data.begin()));
+
+      CHECK_NO_THROW(data.emplace_front("4"));
+      CHECK_EQUAL(size_t(4), data.size());
+      CHECK(std::equal(compare_data.begin() + 1, compare_data.end(), data.begin()));
+
+      CHECK_NO_THROW(data.emplace_front("5"));
       CHECK_EQUAL(size_t(5), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
     }

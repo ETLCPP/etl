@@ -622,6 +622,33 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_position_value)
+    {
+      const size_t INITIAL_SIZE = 5;
+      const std::string INITIAL_VALUE("1");
+
+      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      {
+        CompareDataNDC compare_data;
+        DataNDC data;
+
+        data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
+        compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
+
+        data.emplace(data.begin() + offset, INITIAL_VALUE);
+        compare_data.emplace(compare_data.begin() + offset, INITIAL_VALUE);
+
+        CHECK_EQUAL(compare_data.size(), data.size());
+
+        bool is_equal = std::equal(data.begin(),
+                                   data.end(),
+                                   compare_data.begin());
+
+        CHECK(is_equal);
+      }
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_value_excess)
     {
       const size_t INITIAL_SIZE     = SIZE;
