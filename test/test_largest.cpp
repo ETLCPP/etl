@@ -97,5 +97,47 @@ namespace
 
       CHECK_EQUAL(std::alignment_of<S3>::value, size);
     }
+
+    //*************************************************************************
+    TEST(test_larger_int_type)
+    {
+      CHECK(bool(std::is_same<etl::larger_int_type<int8_t>::type,  int16_t>::value));
+      CHECK(bool(std::is_same<etl::larger_int_type<int16_t>::type, int32_t>::value));
+      CHECK(bool(std::is_same<etl::larger_int_type<int32_t>::type, int64_t>::value));
+      CHECK(bool(std::is_same<etl::larger_int_type<int64_t>::type, int64_t>::value));
+
+      CHECK(bool(std::is_same<etl::larger_int_type<uint8_t>::type,  int16_t>::value));
+      CHECK(bool(std::is_same<etl::larger_int_type<uint16_t>::type, int32_t>::value));
+      CHECK(bool(std::is_same<etl::larger_int_type<uint32_t>::type, int64_t>::value));
+      CHECK(bool(std::is_same<etl::larger_int_type<uint64_t>::type, int64_t>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_larger_uint_type)
+    {
+      CHECK(bool(std::is_same<etl::larger_uint_type<int8_t>::type,  uint16_t>::value));
+      CHECK(bool(std::is_same<etl::larger_uint_type<int16_t>::type, uint32_t>::value));
+      CHECK(bool(std::is_same<etl::larger_uint_type<int32_t>::type, uint64_t>::value));
+      CHECK(bool(std::is_same<etl::larger_uint_type<int64_t>::type, uint64_t>::value));
+
+      CHECK(bool(std::is_same<etl::larger_uint_type<uint8_t>::type,  uint16_t>::value));
+      CHECK(bool(std::is_same<etl::larger_uint_type<uint16_t>::type, uint32_t>::value));
+      CHECK(bool(std::is_same<etl::larger_uint_type<uint32_t>::type, uint64_t>::value));
+      CHECK(bool(std::is_same<etl::larger_uint_type<uint64_t>::type, uint64_t>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_larger_type)
+    {
+      CHECK(bool(std::is_same<etl::larger_type<int8_t>::type,  int16_t>::value));
+      CHECK(bool(std::is_same<etl::larger_type<int16_t>::type, int32_t>::value));
+      CHECK(bool(std::is_same<etl::larger_type<int32_t>::type, int64_t>::value));
+      CHECK(bool(std::is_same<etl::larger_type<int64_t>::type, int64_t>::value));
+
+      CHECK(bool(std::is_same<etl::larger_type<uint8_t>::type,  uint16_t>::value));
+      CHECK(bool(std::is_same<etl::larger_type<uint16_t>::type, uint32_t>::value));
+      CHECK(bool(std::is_same<etl::larger_type<uint32_t>::type, uint64_t>::value));
+      CHECK(bool(std::is_same<etl::larger_type<uint64_t>::type, uint64_t>::value));
+    }
   };
 }

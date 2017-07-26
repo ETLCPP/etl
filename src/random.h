@@ -132,15 +132,13 @@ namespace etl
   {
     public:
 
-      explicit random_lsfr(uint32_t iterations);
-      random_lsfr(uint32_t seed, uint32_t iterations);
+      random_lsfr();
+      explicit random_lsfr(uint32_t seed);
       void initialise(uint32_t seed);
       uint32_t operator()();
       uint32_t range(uint32_t low, uint32_t high);
 
     private:
-
-      const uint32_t iterations;
 
       uint32_t value;
   };

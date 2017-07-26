@@ -478,6 +478,49 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_after)
+    {
+      CompareDataNDC compare_data;
+      DataNDC data;
+
+      CompareDataNDC::iterator itc;
+
+      itc = compare_data.before_begin();
+      compare_data.emplace_after(itc, "1");
+      compare_data.emplace_after(itc, "2");
+
+      ++itc;
+      compare_data.emplace_after(itc, "3");
+      compare_data.emplace_after(itc, "4");
+
+      ++itc;
+      compare_data.emplace_after(itc, "5");
+      compare_data.emplace_after(itc, "6");
+
+      DataNDC::iterator itd;
+
+      itd = data.before_begin();
+      CHECK_NO_THROW(data.emplace_after(itd, "1"));
+      CHECK_NO_THROW(data.emplace_after(itd, "2"));
+
+      ++itd;
+      CHECK_NO_THROW(data.emplace_after(itd, "3"));
+      CHECK_NO_THROW(data.emplace_after(itd, "4"));
+
+      ++itd;
+      CHECK_NO_THROW(data.emplace_after(itd, "5"));
+      CHECK_NO_THROW(data.emplace_after(itd, "6"));
+
+      CHECK_EQUAL(6U, data.size());
+      CHECK_EQUAL(6, std::distance(data.begin(), data.end()));
+
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_front_null)
     {
       CompareDataDC compare_data;

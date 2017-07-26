@@ -765,6 +765,70 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Emplaces a value to the forward_list after the specified position.
+    //*************************************************************************
+    template <typename T1>
+    iterator emplace_after(iterator position, const T1& value1)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
+
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(value1);
+      ++construct_count;
+      insert_node_after(*position.p_node, *p_data_node);
+
+      return iterator(*p_data_node);
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the forward_list after the specified position.
+    //*************************************************************************
+    template <typename T1, typename T2>
+    iterator emplace_after(iterator position, const T1& value1, const T2& value2)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
+
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(value1, value2);
+      ++construct_count;
+      insert_node_after(*position.p_node, *p_data_node);
+
+      return iterator(*p_data_node);
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the forward_list after the specified position.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3>
+    iterator emplace_after(iterator position, const T1& value1, const T2& value2, const T3& value3)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
+
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(value1, value2, value3);
+      ++construct_count;
+      insert_node_after(*position.p_node, *p_data_node);
+
+      return iterator(*p_data_node);
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the forward_list after the specified position.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    iterator emplace_after(iterator position, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
+
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(value1, value2, value3, value4);
+      ++construct_count;
+      insert_node_after(*position.p_node, *p_data_node);
+
+      return iterator(*p_data_node);
+    }
+
+    //*************************************************************************
     /// Inserts 'n' copies of a value to the forward_list after the specified position.
     //*************************************************************************
     void insert_after(iterator position, size_t n, parameter_t value)

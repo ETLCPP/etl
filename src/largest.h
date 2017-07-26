@@ -35,6 +35,8 @@ SOFTWARE.
 ///\ingroup utilities
 
 #include "type_traits.h"
+#include "smallest.h"
+#include "static_assert.h"
 
 namespace etl 
 {
@@ -162,6 +164,57 @@ namespace etl
               ::value>::value>::value>::value>::value>::value>::value>::value>
               ::value>::value>::value>::value>::value>::value>::value
     };
+  };
+
+  //***************************************************************************
+  /// Defines a type that is as larger or larger than the specified type.
+  /// Will return the specified type is there is not a larger type.
+  ///\ingroup largest
+  //***************************************************************************
+  template <typename T>
+  struct larger_int_type
+  {
+    STATIC_ASSERT(etl::is_integral<T>::value, "Must be an integral type");
+
+    typedef typename etl::smallest_int_for_bits<etl::integral_limits<typename etl::make_signed<T>::type>::bits + 1>::type type;
+  };
+
+  //***************************************************************************
+  /// Defines a type that is as larger or larger than the specified type.
+  /// Will return the specified type is there is not a larger type.
+  ///\ingroup largest
+  //***************************************************************************
+  template <typename T>
+  struct larger_uint_type
+  {
+    STATIC_ASSERT(etl::is_integral<T>::value, "Must be an integral type");
+
+    typedef typename etl::smallest_uint_for_bits<etl::integral_limits<typename etl::make_unsigned<T>::type>::bits + 1>::type type;
+  };
+
+  //***************************************************************************
+  /// Defines a type that is as larger or larger than the specified type.
+  /// Will return the specified type is there is not a larger type.
+  /// The returned type will be of the same sign.
+  ///\ingroup largest
+  //***************************************************************************
+  template <typename T, bool IS_SIGNED = etl::is_signed<T>::value>
+  struct larger_type;
+
+  template <typename T>
+  struct larger_type<T, false>
+  {
+    STATIC_ASSERT(etl::is_integral<T>::value, "Must be an integral type");
+
+    typedef typename etl::smallest_uint_for_bits<etl::integral_limits<T>::bits + 1>::type type;
+  };
+
+  template <typename T>
+  struct larger_type<T, true>
+  {
+    STATIC_ASSERT(etl::is_integral<T>::value, "Must be an integral type");
+
+    typedef typename etl::smallest_int_for_bits<etl::integral_limits<T>::bits + 1>::type type;
   };
 }
 

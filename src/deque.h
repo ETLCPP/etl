@@ -39,6 +39,7 @@ SOFTWARE.
 #include "container.h"
 #include "alignment.h"
 #include "array.h"
+#include "memory.h"
 #include "exception.h"
 #include "error_handler.h"
 #include "debug_count.h"
@@ -900,6 +901,266 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Emplaces data into the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is full.
+    ///\param insert_position>The insert position.
+    //*************************************************************************
+    template <typename T1>
+    iterator emplace(const_iterator insert_position, const T1& value1)
+    {
+      iterator position(insert_position.index, *this, p_buffer);
+
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+
+      void* p;
+
+      if (insert_position == begin())
+      {
+        --_begin;
+        p = etl::addressof(*_begin);
+        ++current_size;
+        ++construct_count;
+        position = _begin;
+      }
+      else if (insert_position == end())
+      {
+        p = etl::addressof(*_end);
+        ++_end;
+        ++current_size;
+        ++construct_count;
+        position = _end - 1;
+      }
+      else
+      {
+        // Are we closer to the front?
+        if (std::distance(_begin, position) < std::distance(position, _end - 1))
+        {
+          // Construct the _begin.
+          create_element_front(*_begin);
+
+          // Move the values.
+          std::copy(_begin + 1, position, _begin);
+
+          // Write the new value.
+          --position;
+          (*position).~T();
+          p = etl::addressof(*position);
+        }
+        else
+        {
+          // Construct the _end.
+          create_element_back(*(_end - 1));
+
+          // Move the values.
+          std::copy_backward(position, _end - 2, _end - 1);
+
+          // Write the new value.
+          (*position).~T();
+          p = etl::addressof(*position);
+        }
+      }
+
+      ::new (p) T(value1);
+
+      return position;
+    }
+
+    //*************************************************************************
+    /// Emplaces data into the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is full.
+    ///\param insert_position>The insert position.
+    //*************************************************************************
+    template <typename T1, typename T2>
+    iterator emplace(const_iterator insert_position, const T1& value1, const T2& value2)
+    {
+      iterator position(insert_position.index, *this, p_buffer);
+
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+
+      void* p;
+
+      if (insert_position == begin())
+      {
+        --_begin;
+        p = etl::addressof(*_begin);
+        ++current_size;
+        ++construct_count;
+        position = _begin;
+      }
+      else if (insert_position == end())
+      {
+        p = etl::addressof(*_end);
+        ++_end;
+        ++current_size;
+        ++construct_count;
+        position = _end - 1;
+      }
+      else
+      {
+        // Are we closer to the front?
+        if (std::distance(_begin, position) < std::distance(position, _end - 1))
+        {
+          // Construct the _begin.
+          create_element_front(*_begin);
+
+          // Move the values.
+          std::copy(_begin + 1, position, _begin);
+
+          // Write the new value.
+          --position;
+          (*position).~T();
+          p = etl::addressof(*position);
+        }
+        else
+        {
+          // Construct the _end.
+          create_element_back(*(_end - 1));
+
+          // Move the values.
+          std::copy_backward(position, _end - 2, _end - 1);
+
+          // Write the new value.
+          (*position).~T();
+          p = etl::addressof(*position);
+        }
+      }
+
+      ::new (p) T(value1, value2);
+
+      return position;
+    }
+
+    //*************************************************************************
+    /// Emplaces data into the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is full.
+    ///\param insert_position>The insert position.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3>
+    iterator emplace(const_iterator insert_position, const T1& value1, const T2& value2, const T3& value3)
+    {
+      iterator position(insert_position.index, *this, p_buffer);
+
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+
+      void* p;
+
+      if (insert_position == begin())
+      {
+        --_begin;
+        p = etl::addressof(*_begin);
+        ++current_size;
+        ++construct_count;
+        position = _begin;
+      }
+      else if (insert_position == end())
+      {
+        p = etl::addressof(*_end);
+        ++_end;
+        ++current_size;
+        ++construct_count;
+        position = _end - 1;
+      }
+      else
+      {
+        // Are we closer to the front?
+        if (std::distance(_begin, position) < std::distance(position, _end - 1))
+        {
+          // Construct the _begin.
+          create_element_front(*_begin);
+
+          // Move the values.
+          std::copy(_begin + 1, position, _begin);
+
+          // Write the new value.
+          --position;
+          (*position).~T();
+          p = etl::addressof(*position);
+        }
+        else
+        {
+          // Construct the _end.
+          create_element_back(*(_end - 1));
+
+          // Move the values.
+          std::copy_backward(position, _end - 2, _end - 1);
+
+          // Write the new value.
+          (*position).~T();
+          p = etl::addressof(*position);
+        }
+      }
+
+      ::new (p) T(value1, value2, value3);
+
+      return position;
+    }
+
+    //*************************************************************************
+    /// Emplaces data into the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is full.
+    ///\param insert_position>The insert position.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    iterator emplace(const_iterator insert_position, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+      iterator position(insert_position.index, *this, p_buffer);
+
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+
+      void* p;
+
+      if (insert_position == begin())
+      {
+        --_begin;
+        p = etl::addressof(*_begin);
+        ++current_size;
+        ++construct_count;
+        position = _begin;
+      }
+      else if (insert_position == end())
+      {
+        p = etl::addressof(*_end);
+        ++_end;
+        ++current_size;
+        ++construct_count;
+        position = _end - 1;
+      }
+      else
+      {
+        // Are we closer to the front?
+        if (std::distance(_begin, position) < std::distance(position, _end - 1))
+        {
+          // Construct the _begin.
+          create_element_front(*_begin);
+
+          // Move the values.
+          std::copy(_begin + 1, position, _begin);
+
+          // Write the new value.
+          --position;
+          (*position).~T();
+          p = etl::addressof(*position);
+        }
+        else
+        {
+          // Construct the _end.
+          create_element_back(*(_end - 1));
+
+          // Move the values.
+          std::copy_backward(position, _end - 2, _end - 1);
+
+          // Write the new value.
+          (*position).~T();
+          p = etl::addressof(*position);
+        }
+      }
+
+      ::new (p) T(value1, value2, value3, value4);
+
+      return position;
+    }
+
+    //*************************************************************************
     /// Inserts 'n' copies of a value into the deque.
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is full.
     ///\param insert_position The insert position.
@@ -1248,6 +1509,74 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Emplaces an item to the back of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
+    //*************************************************************************
+    template <typename T1>
+    void emplace_back(const T1& value1)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+#endif
+
+      ::new (&(*_end)) T(value1);
+      ++_end;
+      ++current_size;
+      ++construct_count;
+    }
+
+    //*************************************************************************
+    /// Emplaces an item to the back of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
+    //*************************************************************************
+    template <typename T1, typename T2>
+    void emplace_back(const T1& value1, const T2& value2)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+#endif
+
+      ::new (&(*_end)) T(value1, value2);
+      ++_end;
+      ++current_size;
+      ++construct_count;
+    }
+
+    //*************************************************************************
+    /// Emplaces an item to the back of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3>
+    void emplace_back(const T1& value1, const T2& value2, const T3& value3)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+#endif
+
+      ::new (&(*_end)) T(value1, value2, value3);
+      ++_end;
+      ++current_size;
+      ++construct_count;
+    }
+
+    //*************************************************************************
+    /// Emplaces an item to the back of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    void emplace_back(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+#endif
+
+      ::new (&(*_end)) T(value1, value2, value3, value4);
+      ++_end;
+      ++current_size;
+      ++construct_count;
+    }
+
+    //*************************************************************************
     /// Removes the oldest item from the deque.
     //*************************************************************************
     void pop_back()
@@ -1284,6 +1613,74 @@ namespace etl
       create_element_front();
 
       return *_begin;
+    }
+
+    //*************************************************************************
+    /// Emplaces an item to the front of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
+    //*************************************************************************
+    template <typename T1>
+    void emplace_front(const T1& value1)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+#endif
+
+      --_begin;
+      ::new (&(*_begin)) T(value1);
+      ++current_size;
+      ++construct_count;
+    }
+
+    //*************************************************************************
+    /// Emplaces an item to the front of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
+    //*************************************************************************
+    template <typename T1, typename T2>
+    void emplace_front(const T1& value1, const T2& value2)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+#endif
+
+      --_begin;
+      ::new (&(*_begin)) T(value1, value2);
+      ++current_size;
+      ++construct_count;
+    }
+
+    //*************************************************************************
+    /// Emplaces an item to the front of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3>
+    void emplace_front(const T1& value1, const T2& value2, const T3& value3)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+#endif
+
+      --_begin;
+      ::new (&(*_begin)) T(value1, value2, value3);
+      ++current_size;
+      ++construct_count;
+    }
+
+    //*************************************************************************
+    /// Emplaces an item to the front of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    void emplace_front(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+#endif
+
+      --_begin;
+      ::new (&(*_begin)) T(value1, value2, value3, value4);
+      ++current_size;
+      ++construct_count;
     }
 
     //*************************************************************************

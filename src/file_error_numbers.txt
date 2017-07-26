@@ -31,3 +31,7 @@
 31 reference_flat_multimap
 32 reference_flat_set
 33 reference_flat_multiset
+34 fsm
+35 message_router
+36 scheduler
+37 task
