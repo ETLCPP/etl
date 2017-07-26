@@ -478,24 +478,38 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_emplace_front)
+    TEST_FIXTURE(SetupFixture, test_emplace_after)
     {
       CompareDataNDC compare_data;
       DataNDC data;
 
-      compare_data.emplace_front("1");
-      compare_data.emplace_front("2");
-      compare_data.emplace_front("3");
-      compare_data.emplace_front("4");
-      compare_data.emplace_front("5");
-      compare_data.emplace_front("6");
+      CompareDataNDC::iterator itc;
 
-      CHECK_NO_THROW(data.emplace_front("1"));
-      CHECK_NO_THROW(data.emplace_front("2"));
-      CHECK_NO_THROW(data.emplace_front("3"));
-      CHECK_NO_THROW(data.emplace_front("4"));
-      CHECK_NO_THROW(data.emplace_front("5"));
-      CHECK_NO_THROW(data.emplace_front("6"));
+      itc = compare_data.before_begin();
+      compare_data.emplace_after(itc, "1");
+      compare_data.emplace_after(itc, "2");
+
+      ++itc;
+      compare_data.emplace_after(itc, "3");
+      compare_data.emplace_after(itc, "4");
+
+      ++itc;
+      compare_data.emplace_after(itc, "5");
+      compare_data.emplace_after(itc, "6");
+
+      DataNDC::iterator itd;
+
+      itd = data.before_begin();
+      CHECK_NO_THROW(data.emplace_after(itd, "1"));
+      CHECK_NO_THROW(data.emplace_after(itd, "2"));
+
+      ++itd;
+      CHECK_NO_THROW(data.emplace_after(itd, "3"));
+      CHECK_NO_THROW(data.emplace_after(itd, "4"));
+
+      ++itd;
+      CHECK_NO_THROW(data.emplace_after(itd, "5"));
+      CHECK_NO_THROW(data.emplace_after(itd, "6"));
 
       CHECK_EQUAL(6U, data.size());
       CHECK_EQUAL(6, std::distance(data.begin(), data.end()));

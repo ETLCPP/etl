@@ -568,6 +568,118 @@ namespace etl
       return position;
     }
 
+    //*************************************************************************
+    /// Emplaces a value to the vextor at the specified position.
+    //*************************************************************************
+    template <typename T1>
+    iterator emplace(iterator position, const T1& value1)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(vector_full));
+
+      void* p;
+
+      if (position == end())
+      {
+        p = p_end++;
+        ++construct_count;
+      }
+      else
+      {
+        p = etl::addressof(*position);
+        create_back(back());
+        std::copy_backward(position, p_end - 1, p_end);
+        (*position).~T();
+      }
+
+      ::new (p) T(value1);
+
+      return position;
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the vextor at the specified position.
+    //*************************************************************************
+    template <typename T1, typename T2>
+    iterator emplace(iterator position, const T1& value1, const T2& value2)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(vector_full));
+
+      void* p;
+
+      if (position == end())
+      {
+        p = p_end++;
+        ++construct_count;
+      }
+      else
+      {
+        p = etl::addressof(*position);
+        create_back(back());
+        std::copy_backward(position, p_end - 1, p_end);
+        (*position).~T();
+      }
+
+      ::new (p) T(value1, value2);
+
+      return position;
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the vextor at the specified position.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3>
+    iterator emplace(iterator position, const T1& value1, const T2& value2, const T3& value3)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(vector_full));
+
+      void* p;
+
+      if (position == end())
+      {
+        p = p_end++;
+        ++construct_count;
+      }
+      else
+      {
+        p = etl::addressof(*position);
+        create_back(back());
+        std::copy_backward(position, p_end - 1, p_end);
+        (*position).~T();
+      }
+
+      ::new (p) T(value1, value2, value3);
+
+      return position;
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the vextor at the specified position.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    iterator emplace(iterator position, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(vector_full));
+
+      void* p;
+
+      if (position == end())
+      {
+        p = p_end++;
+        ++construct_count;
+      }
+      else
+      {
+        p = etl::addressof(*position);
+        create_back(back());
+        std::copy_backward(position, p_end - 1, p_end);
+        (*position).~T();
+      }
+
+      ::new (p) T(value1, value2, value3, value4);
+
+      return position;
+    }
+
     //*********************************************************************
     /// Inserts 'n' values to the vector.
     /// If asserts or exceptions are enabled, emits vector_full if the vector does not have enough free space.
