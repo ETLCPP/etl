@@ -514,7 +514,7 @@ namespace
       CHECK_EQUAL(6U, data.size());
       CHECK_EQUAL(6, std::distance(data.begin(), data.end()));
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), data.size());
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
