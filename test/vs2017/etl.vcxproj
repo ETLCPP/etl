@@ -131,6 +131,9 @@
     <ClInclude Include="..\..\src\fsm.h" />
     <ClInclude Include="..\..\src\fsm_generator.h" />
     <ClInclude Include="..\..\src\largest_generator.h" />
+    <ClInclude Include="..\..\src\message.h" />
+    <ClInclude Include="..\..\src\message_bus.h" />
+    <ClInclude Include="..\..\src\message_types.h" />
     <ClInclude Include="..\..\src\message_router.h" />
     <ClInclude Include="..\..\src\message_router_generator.h" />
     <ClInclude Include="..\..\src\packet.h" />
@@ -371,6 +374,7 @@
     </ClCompile>
     <ClCompile Include="..\test_maths.cpp" />
     <ClCompile Include="..\test_memory.cpp" />
+    <ClCompile Include="..\test_message_bus.cpp" />
     <ClCompile Include="..\test_message_router.cpp" />
     <ClCompile Include="..\test_multimap.cpp" />
     <ClCompile Include="..\test_multiset.cpp" />
@@ -421,6 +425,8 @@
     <None Include="..\..\Doxyfile" />
     <None Include="..\..\library.properties" />
     <None Include="..\..\src\generate.bat" />
+    <None Include="..\..\src\generate_fsm.bat" />
+    <None Include="..\..\src\generate_message_router.bat" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\src\file_error_numbers.txt" />

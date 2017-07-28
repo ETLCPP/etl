@@ -462,6 +462,15 @@
     <ClInclude Include="..\..\src\smallest_generator.h">
       <Filter>ETL\Utilities\Generators</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\message.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\message_bus.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\message_types.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -797,6 +806,9 @@
     <ClCompile Include="..\test_task_scheduler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_message_bus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Doxyfile">
@@ -806,6 +818,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\..\src\generate.bat">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\src\generate_message_router.bat">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\src\generate_fsm.bat">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

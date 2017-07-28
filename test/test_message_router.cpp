@@ -48,6 +48,12 @@ namespace
     MESSAGE5
   };
 
+  enum
+  {
+    ROUTER1,
+    ROUTER2
+  };
+
   struct Message1 : public etl::message<MESSAGE1>
   {
   };
@@ -83,7 +89,8 @@ namespace
   public:
 
     Router1()
-      : message1_count(0),
+      : message_router(ROUTER1),
+        message1_count(0),
         message2_count(0),
         message3_count(0),
         message4_count(0),
@@ -143,7 +150,8 @@ namespace
   public:
 
     Router2()
-      : message1_count(0),
+      : message_router(ROUTER2),
+        message1_count(0),
         message2_count(0),
         message4_count(0),
         message_unknown_count(0),

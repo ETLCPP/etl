@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2017 jwellbelove
 
@@ -65,6 +65,8 @@ cog.outl("//********************************************************************
 
 #include <stdint.h>
 
+#include "message.h"
+#include "message_types.h"
 #include "alignment.h"
 #include "error_handler.h"
 #include "exception.h"
@@ -75,80 +77,14 @@ cog.outl("//********************************************************************
 
 namespace etl
 {
-  /// Allow alternative type for message id.
-#if !defined(ETL_MESSAGE_ID_TYPE)
-  typedef uint_least8_t message_id_t;
-#else
-  typedef ETL_MESSAGE_ID_TYPE message_id_t;
-#endif
-
-  //***************************************************************************
-  class message_exception : public etl::exception
-  {
-  public:
-
-    message_exception(string_type what, string_type file_name, numeric_type line_number)
-      : exception(what, file_name, line_number)
-    {
-    }
-  };
-
-  //***************************************************************************
-  class unhandled_message_exception : public etl::message_exception
-  {
-  public:
-
-    unhandled_message_exception(string_type file_name, numeric_type line_number)
-      : message_exception(ETL_ERROR_TEXT("message:unknown", ETL_FILE"A"), file_name, line_number)
-    {
-    }
-  };
-
-  //***************************************************************************
-  class imessage
-  {
-  public:
-
-    //********************************************
-    virtual ~imessage() {}
-
-    const etl::message_id_t message_id;
-
-  protected:
-
-    //********************************************
-    imessage(etl::message_id_t id)
-      : message_id(id)
-    {
-    }
-  };
-
-  //***************************************************************************
-  template <const etl::message_id_t ID_>
-  class message : public imessage
-  {
-  public:
-
-    enum
-    {
-      ID = ID_
-    };
-
-    //********************************************
-    message()
-      : imessage(ID_)
-    {
-    }
-  };
-
   //***************************************************************************
   class imessage_router
   {
   public:
+
     virtual ~imessage_router() {}
     virtual void receive(const etl::imessage& message) = 0;
     virtual void receive(imessage_router& source, const etl::imessage& message) = 0;
-
     virtual bool accepts(etl::message_id_t id) const = 0;
     
     //********************************************
@@ -158,11 +94,29 @@ namespace etl
     }
 
     //********************************************
-    void send_message(imessage_router& destination,
-                      const etl::imessage& message)
+    etl::message_router_id_t get_message_router_id() const
     {
-      destination.receive(*this, message);
+      return message_router_id;
     }
+
+    static const message_router_id_t NULL_MESSAGE_ROUTER = 255;
+    static const message_router_id_t MESSAGE_BUS         = 254;
+    static const message_router_id_t ALL_MESSAGE_ROUTERS = 253;
+
+  protected:
+
+    imessage_router(etl::message_router_id_t id)
+      : message_router_id(id)
+    {
+    }
+
+  private:
+
+    // Disabled.
+    imessage_router(const imessage_router&);
+    imessage_router& operator =(const imessage_router&);
+
+    etl::message_router_id_t  message_router_id;
   };
 
   //***************************************************************************
@@ -172,6 +126,11 @@ namespace etl
   class null_message_router : public imessage_router
   {
   public:
+
+    null_message_router()
+      : imessage_router(imessage_router::NULL_MESSAGE_ROUTER)
+    {
+    }
 
     //********************************************
     void receive(const etl::imessage& message)
@@ -187,6 +146,13 @@ namespace etl
     bool accepts(etl::message_id_t id) const
     {
       return false;
+    }
+
+    //********************************************
+    static null_message_router& instance()
+    {
+      static null_message_router nmr;
+      return nmr;
     }
   };
 
@@ -305,10 +271,15 @@ namespace etl
       cog.outl("  };")
       cog.outl("")
       cog.outl("  //**********************************************")
+      cog.outl("  message_router(etl::message_router_id_t id)")
+      cog.outl("    : imessage_router(id)")
+      cog.outl("  {")
+      cog.outl("  }")
+      cog.outl("")
+      cog.outl("  //**********************************************")
       cog.outl("  void receive(const etl::imessage& msg)")
       cog.outl("  {")
-      cog.outl("    etl::null_message_router nmr;")
-      cog.outl("    receive(nmr, msg);")
+      cog.outl("    receive(etl::null_message_router::instance(), msg);")
       cog.outl("  }")
       cog.outl("")
       cog.outl("  //**********************************************")
@@ -455,10 +426,15 @@ namespace etl
           cog.outl("  };")
           cog.outl("")
           cog.outl("  //**********************************************")
+          cog.outl("  message_router(etl::message_router_id_t id)")
+          cog.outl("    : imessage_router(id)")
+          cog.outl("  {")
+          cog.outl("  }")
+          cog.outl("")
+          cog.outl("  //**********************************************")
           cog.outl("  void receive(const etl::imessage& msg)")
           cog.outl("  {")
-          cog.outl("    etl::null_message_router nmr;")
-          cog.outl("    receive(nmr, msg);")
+          cog.outl("    receive(etl::null_message_router::instance(), msg);")
           cog.outl("  }")
           cog.outl("")
           cog.outl("  //**********************************************")

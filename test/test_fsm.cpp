@@ -36,6 +36,9 @@ SOFTWARE.
 
 namespace
 {
+  const etl::message_router_id_t MOTOR_CONTROL = 0;
+
+
   //***************************************************************************
   // Events
   struct EventId
@@ -322,7 +325,8 @@ namespace
   public:
 
     MotorControl()
-      : idle(common),
+      : fsm(MOTOR_CONTROL),
+        idle(common),
         running(common),
         windingDown(common),
         locked(common)

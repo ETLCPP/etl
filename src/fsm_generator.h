@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2017 jwellbelove
 
@@ -234,8 +234,9 @@ namespace etl
     //*******************************************
     /// Constructor.
     //*******************************************
-    fsm()
-      : p_state(nullptr)
+    fsm(etl::message_router_id_t id)
+      : imessage_router(id),
+        p_state(nullptr)
     {
     }
 

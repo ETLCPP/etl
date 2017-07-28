@@ -29,7 +29,7 @@ SOFTWARE.
 ******************************************************************************/
 
 #if 0
-#error This header is a generator. Do not include.
+#error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
 #endif
 
 //***************************************************************************
