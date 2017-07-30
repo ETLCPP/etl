@@ -216,34 +216,34 @@ namespace
       etl::message_bus<2> bus1;
 
       RouterA router1(0);
-      RouterB router2(1);      
+      RouterB router2(1);
       RouterA router3(2);
 
-      CHECK_EQUAL(0, bus1.size());
+      CHECK_EQUAL(0U, bus1.size());
 
       CHECK_NO_THROW(bus1.subscribe(router1));
-      CHECK_EQUAL(1, bus1.size());
+      CHECK_EQUAL(1U, bus1.size());
 
       CHECK_NO_THROW(bus1.subscribe(router2));
-      CHECK_EQUAL(2, bus1.size());
+      CHECK_EQUAL(2U, bus1.size());
 
       CHECK_THROW(bus1.subscribe(router3), etl::message_bus_too_many_subscribers);
-      CHECK_EQUAL(2, bus1.size());
+      CHECK_EQUAL(2U, bus1.size());
 
       bus1.unsubscribe(router1);
-      CHECK_EQUAL(1, bus1.size());
+      CHECK_EQUAL(1U, bus1.size());
 
       // Erase router not in list.
       bus1.unsubscribe(router3);
-      CHECK_EQUAL(1, bus1.size());
+      CHECK_EQUAL(1U, bus1.size());
 
       // Erase using id.
       bus1.unsubscribe(router2.get_message_router_id());
-      CHECK_EQUAL(0, bus1.size());
+      CHECK_EQUAL(0U, bus1.size());
 
       // Erase router from empty list.
       bus1.unsubscribe(router2);
-      CHECK_EQUAL(0, bus1.size());
+      CHECK_EQUAL(0U, bus1.size());
     }
 
     //=========================================================================
@@ -266,13 +266,13 @@ namespace
       bus2.subscribe(router3);
       bus3.subscribe(router4);
 
-      CHECK_EQUAL(4, bus1.size());
+      CHECK_EQUAL(4U, bus1.size());
 
       bus1.unsubscribe(etl::imessage_bus::MESSAGE_BUS);
-      CHECK_EQUAL(2, bus1.size());
+      CHECK_EQUAL(2U, bus1.size());
 
       bus1.unsubscribe(etl::imessage_bus::ALL_MESSAGE_ROUTERS);
-      CHECK_EQUAL(0, bus1.size());
+      CHECK_EQUAL(0U, bus1.size());
     }
 
     //=========================================================================

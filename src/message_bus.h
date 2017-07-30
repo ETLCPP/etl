@@ -253,11 +253,11 @@ namespace etl
             ++range.first;
           }
 
-          // Do any message busses. 
+          // Do any message busses.
           // These are always at the end of the list.
           irouter = std::lower_bound(router_list.begin(),
                                      router_list.end(),
-                                     etl::imessage_router::MESSAGE_BUS,
+                                     etl::imessage_bus::MESSAGE_BUS,
                                      compare_router_id());
 
           while (irouter != router_list.end())
