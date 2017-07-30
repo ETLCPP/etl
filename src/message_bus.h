@@ -73,69 +73,26 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Duplicate router id.
-  //***************************************************************************
-  class message_bus_duplicate_router_id : public etl::message_bus_exception
-  {
-  public:
-
-    message_bus_duplicate_router_id(string_type file_name, numeric_type line_number)
-      : message_bus_exception(ETL_ERROR_TEXT("message bus:duplicate router id", ETL_FILE"B"), file_name, line_number)
-    {
-    }
-  };
-
-  //***************************************************************************
-  /// Base for message bus
+  /// Interface for message bus
   //***************************************************************************
   class imessage_bus : public etl::imessage_router
   {
+  private:
+
+    typedef etl::ivector<etl::imessage_router*> router_list_t;
+
   public:
 
-    imessage_bus()
-      : imessage_router(etl::imessage_router::MESSAGE_BUS)
+    //*******************************************
+    /// Constructor.
+    //*******************************************
+    imessage_bus(router_list_t& list)
+      : imessage_router(etl::imessage_router::MESSAGE_BUS),
+        router_list(list)
     {
     }
 
     using etl::imessage_router::receive;
-
-    virtual void receive(etl::message_router_id_t destination_router_id, const etl::imessage& message) = 0;
-    virtual void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& message) = 0;
-    virtual bool subscribe(etl::imessage_router& router) = 0;
-    virtual void unsubscribe(etl::message_router_id_t id) = 0;
-
-    //*******************************************
-    void unsubscribe(etl::imessage_router& router)
-    {
-      unsubscribe(router.get_message_router_id());
-    }
-  };
-
-  //***************************************************************************
-  /// The message bus
-  //***************************************************************************
-  template <uint_least8_t MAX_ROUTERS_>
-  class message_bus : public etl::imessage_bus
-  {
-  private:
-
-    //*******************************************
-    // How to compare router ids.
-    //*******************************************
-    struct compare_router_id
-    {
-      bool operator()(etl::imessage_router* prouter, etl::message_router_id_t id) const
-      {
-        return prouter->get_message_router_id() > id;
-      }
-
-      bool operator()(etl::message_router_id_t id, etl::imessage_router* prouter) const
-      {
-        return id > prouter->get_message_router_id();
-      }
-    };
-
-  public:
 
     //*******************************************
     /// Subscribe to the bus.
@@ -153,13 +110,21 @@ namespace etl
 
         if (ok)
         {
-          // Insert in order.
-          router_list_t::iterator irouter = std::lower_bound(router_list.begin(),
-                                                             router_list.end(),
-                                                             router.get_message_router_id(),
-                                                             compare_router_id());
+          if (router.get_message_router_id() == etl::imessage_router::MESSAGE_BUS)
+          {
+            // Message busses get added to the end.
+            router_list.push_back(&router);
+          }
+          else
+          {
+            // Routers get added in id order.
+            router_list_t::iterator irouter = std::lower_bound(router_list.begin(),
+                                                               router_list.end(),
+                                                               router.get_message_router_id(),
+                                                               compare_router_id());
 
-          router_list.insert(irouter, &router);
+            router_list.insert(irouter, &router);
+          }
         }
       }
 
@@ -169,19 +134,33 @@ namespace etl
     //*******************************************
     /// Unsubscribe from the bus.
     //*******************************************
-    using etl::imessage_bus::unsubscribe;
-
     void unsubscribe(etl::message_router_id_t id)
     {
-      std::pair<router_list_t::iterator, router_list_t::iterator> range = std::equal_range(router_list.begin(),
-                                                                                           router_list.end(), 
-                                                                                           id,
-                                                                                           compare_router_id());
-
-      while (range.first != range.second)
+      if (id == etl::imessage_bus::ALL_MESSAGE_ROUTERS)
       {
-        router_list.erase(range.first);
-        ++range.first;
+        clear();
+      }
+      else
+      {
+        std::pair<router_list_t::iterator, router_list_t::iterator> range = std::equal_range(router_list.begin(),
+                                                                                             router_list.end(),
+                                                                                             id,
+                                                                                             compare_router_id());
+
+        router_list.erase(range.first, range.second);
+      }
+    }
+
+    //*******************************************
+    void unsubscribe(etl::imessage_router& router)
+    {
+      router_list_t::iterator irouter = std::find(router_list.begin(),
+                                                  router_list.end(),
+                                                  &router);
+
+      if (irouter != router_list.end())
+      {
+        router_list.erase(irouter);
       }
     }
 
@@ -193,24 +172,24 @@ namespace etl
     }
 
     //*******************************************
-    void receive(etl::message_router_id_t destination_router_id, 
-                 const etl::imessage&     message)
+    void receive(etl::message_router_id_t destination_router_id,
+      const etl::imessage&     message)
     {
       etl::null_message_router nmr;
       receive(nmr, destination_router_id, message);
     }
 
     //*******************************************
-    void receive(etl::imessage_router& source, 
-                 const etl::imessage&  message)
+    void receive(etl::imessage_router& source,
+      const etl::imessage&  message)
     {
       receive(source, etl::imessage_router::ALL_MESSAGE_ROUTERS, message);
     }
 
     //*******************************************
-    void receive(etl::imessage_router&    source, 
-                 etl::message_router_id_t destination_router_id, 
-                 const etl::imessage&     message)
+    void receive(etl::imessage_router&    source,
+      etl::message_router_id_t destination_router_id,
+      const etl::imessage&     message)
     {
       switch (destination_router_id)
       {
@@ -258,23 +237,10 @@ namespace etl
         {
           router_list_t::iterator irouter = router_list.begin();
 
-          // Do any message busses first. 
-          // These are always at the start of the list.
-          while ((*irouter)->get_message_router_id() == etl::imessage_router::MESSAGE_BUS)
-          {
-            // The router is actually a bus.
-            etl::imessage_bus& bus = static_cast<etl::imessage_bus&>(**irouter);
-
-            // So pass it on.
-            bus.receive(source, destination_router_id, message);
-
-            ++irouter;
-          }
-          
           // See if routers with the id exist.
-          std::pair<router_list_t::iterator, router_list_t::iterator> range = std::equal_range(irouter,
-                                                                                               router_list.end(), 
-                                                                                               destination_router_id, 
+          std::pair<router_list_t::iterator, router_list_t::iterator> range = std::equal_range(router_list.begin(),
+                                                                                               router_list.end(),
+                                                                                               destination_router_id,
                                                                                                compare_router_id());
 
           // Call all of them.
@@ -286,6 +252,24 @@ namespace etl
             }
 
             ++range.first;
+          }
+
+          // Do any message busses. 
+          // These are always at the end of the list.
+          irouter = std::lower_bound(router_list.begin(),
+                                     router_list.end(),
+                                     etl::imessage_router::MESSAGE_BUS,
+                                     compare_router_id());
+
+          while (irouter != router_list.end())
+          {
+            // The router is actually a bus.
+            etl::imessage_bus& bus = static_cast<etl::imessage_bus&>(**irouter);
+
+            // So pass it on.
+            bus.receive(source, destination_router_id, message);
+
+            ++irouter;
           }
 
           break;
@@ -310,10 +294,52 @@ namespace etl
       return router_list.size();
     }
 
+    //*******************************************
+    void clear()
+    {
+      return router_list.clear();
+    }
+
   private:
 
-    typedef etl::vector<etl::imessage_router*, MAX_ROUTERS_> router_list_t;
-    router_list_t router_list;
+    //*******************************************
+    // How to compare routers to router ids.
+    //*******************************************
+    struct compare_router_id
+    {
+      bool operator()(etl::imessage_router* prouter, etl::message_router_id_t id) const
+      {
+        return prouter->get_message_router_id() < id;
+      }
+
+      bool operator()(etl::message_router_id_t id, etl::imessage_router* prouter) const
+      {
+        return id < prouter->get_message_router_id();
+      }
+    };
+
+    router_list_t& router_list;
+  };
+
+  //***************************************************************************
+  /// The message bus
+  //***************************************************************************
+  template <uint_least8_t MAX_ROUTERS_>
+  class message_bus : public etl::imessage_bus
+  {
+  public:
+
+    //*******************************************
+    /// Constructor.
+    //*******************************************
+    message_bus()
+      : imessage_bus(router_list)
+    {
+    }
+
+  private:
+
+    etl::vector<etl::imessage_router*, MAX_ROUTERS_> router_list;
   };
 }
 

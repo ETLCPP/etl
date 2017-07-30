@@ -66,6 +66,32 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
+  /// Base exception class for message router
+  //***************************************************************************
+  class message_router_exception : public etl::exception
+  {
+  public:
+
+    message_router_exception(string_type what, string_type file_name, numeric_type line_number)
+      : etl::exception(what, file_name, line_number)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// Router id is out of the legal range.
+  //***************************************************************************
+  class message_router_illegal_id : public etl::message_router_exception
+  {
+  public:
+
+    message_router_illegal_id(string_type file_name, numeric_type line_number)
+      : message_router_exception(ETL_ERROR_TEXT("message router:illegal id", ETL_FILE"A"), file_name, line_number)
+    {
+    }
+  };
+
+  //***************************************************************************
   class imessage_router
   {
   public:
@@ -74,7 +100,7 @@ namespace etl
     virtual void receive(const etl::imessage& message) = 0;
     virtual void receive(imessage_router& source, const etl::imessage& message) = 0;
     virtual bool accepts(etl::message_id_t id) const = 0;
-    
+
     //********************************************
     bool accepts(const etl::imessage& msg) const
     {
@@ -90,6 +116,7 @@ namespace etl
     static const message_router_id_t NULL_MESSAGE_ROUTER = 255;
     static const message_router_id_t MESSAGE_BUS         = 254;
     static const message_router_id_t ALL_MESSAGE_ROUTERS = 253;
+    static const message_router_id_t MAX_MESSAGE_ROUTER  = 252;
 
   protected:
 
@@ -254,6 +281,7 @@ namespace etl
     message_router(etl::message_router_id_t id)
       : imessage_router(id)
     {
+      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -394,6 +422,7 @@ namespace etl
     message_router(etl::message_router_id_t id)
       : imessage_router(id)
     {
+      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -532,6 +561,7 @@ namespace etl
     message_router(etl::message_router_id_t id)
       : imessage_router(id)
     {
+      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -668,6 +698,7 @@ namespace etl
     message_router(etl::message_router_id_t id)
       : imessage_router(id)
     {
+      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -801,6 +832,7 @@ namespace etl
     message_router(etl::message_router_id_t id)
       : imessage_router(id)
     {
+      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -932,6 +964,7 @@ namespace etl
     message_router(etl::message_router_id_t id)
       : imessage_router(id)
     {
+      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -1061,6 +1094,7 @@ namespace etl
     message_router(etl::message_router_id_t id)
       : imessage_router(id)
     {
+      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -1188,6 +1222,7 @@ namespace etl
     message_router(etl::message_router_id_t id)
       : imessage_router(id)
     {
+      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -1312,6 +1347,7 @@ namespace etl
     message_router(etl::message_router_id_t id)
       : imessage_router(id)
     {
+      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -1434,6 +1470,7 @@ namespace etl
     message_router(etl::message_router_id_t id)
       : imessage_router(id)
     {
+      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -1553,6 +1590,7 @@ namespace etl
     message_router(etl::message_router_id_t id)
       : imessage_router(id)
     {
+      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -1670,6 +1708,7 @@ namespace etl
     message_router(etl::message_router_id_t id)
       : imessage_router(id)
     {
+      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -1784,6 +1823,7 @@ namespace etl
     message_router(etl::message_router_id_t id)
       : imessage_router(id)
     {
+      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -1896,6 +1936,7 @@ namespace etl
     message_router(etl::message_router_id_t id)
       : imessage_router(id)
     {
+      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -2006,6 +2047,7 @@ namespace etl
     message_router(etl::message_router_id_t id)
       : imessage_router(id)
     {
+      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -2114,6 +2156,7 @@ namespace etl
     message_router(etl::message_router_id_t id)
       : imessage_router(id)
     {
+      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************

@@ -85,6 +85,8 @@ namespace
   Message4 message4;
   Message5 message5;
 
+  int call_order;
+
   //***************************************************************************
   // Router that handles messages 1, 2, 3, 4, 5.
   //***************************************************************************
@@ -108,6 +110,8 @@ namespace
     {
       ++message1_count;
       etl::send_message(sender, message5);
+
+      order = call_order++;
     }
 
     void on_receive(etl::imessage_router& sender, const Message2& msg)
@@ -144,6 +148,7 @@ namespace
     int message4_count;
     int message5_count;
     int message_unknown_count;
+    int order;
   };
 
   //***************************************************************************
@@ -238,6 +243,35 @@ namespace
 
       // Erase router from empty list.
       bus1.unsubscribe(router2);
+      CHECK_EQUAL(0, bus1.size());
+    }
+
+    //=========================================================================
+    TEST(message_bus_subscribe_unsubscribe_sub_bus)
+    {
+      etl::message_bus<4> bus1;
+      etl::message_bus<2> bus2;
+      etl::message_bus<3> bus3;
+
+      RouterA router1(ROUTER1);
+      RouterA router2(ROUTER2);
+      RouterA router3(ROUTER3);
+      RouterA router4(ROUTER4);
+
+      bus1.subscribe(router1);
+      bus1.subscribe(router2);
+      bus1.subscribe(bus2);
+      bus1.subscribe(bus3);
+
+      bus2.subscribe(router3);
+      bus3.subscribe(router4);
+
+      CHECK_EQUAL(4, bus1.size());
+
+      bus1.unsubscribe(etl::imessage_bus::MESSAGE_BUS);
+      CHECK_EQUAL(2, bus1.size());
+
+      bus1.unsubscribe(etl::imessage_bus::ALL_MESSAGE_ROUTERS);
       CHECK_EQUAL(0, bus1.size());
     }
 
@@ -544,7 +578,7 @@ namespace
     }
 
     //=========================================================================
-    TEST(message_bus_broad_cast_addressed_sub_bus)
+    TEST(message_bus_broadcast_addressed_sub_bus)
     {
       etl::message_bus<3> bus1;
       etl::message_bus<2> bus2;
@@ -652,6 +686,38 @@ namespace
       CHECK_EQUAL(0, router4.message_unknown_count);
 
       CHECK_EQUAL(6, sender.message5_count);
+    }
+
+    //=========================================================================
+    TEST(message_bus_broadcast_order)
+    {
+      etl::message_bus<4> bus1;
+      etl::message_bus<2> bus2;
+      etl::message_bus<2> bus3;
+
+      RouterA router1(ROUTER1);
+      RouterA router2(ROUTER2);
+      RouterA router3(ROUTER3);
+      RouterA router4(ROUTER4);
+
+      RouterA sender(ROUTER5);
+
+      bus1.subscribe(router1);
+      bus1.subscribe(bus3);
+      bus1.subscribe(bus2);
+      bus1.subscribe(router2);
+
+      bus2.subscribe(router3);
+      bus3.subscribe(router4);
+
+      call_order = 0;
+
+      bus1.receive(sender, message1);
+
+      CHECK_EQUAL(0, router1.order);
+      CHECK_EQUAL(1, router2.order);
+      CHECK_EQUAL(2, router4.order);
+      CHECK_EQUAL(3, router3.order);
     }
   };
 }
