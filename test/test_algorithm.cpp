@@ -42,6 +42,39 @@ namespace
   typedef std::vector<int> Data;
   Data data = { 2, 1, 4, 3, 6, 5, 8, 7, 10, 9 };
 
+  struct StructData
+  {
+    int a;
+    int b;
+  };
+
+  bool operator ==(const StructData& lhs, const StructData& rhs)
+  {
+    return (lhs.a == rhs.a) && (lhs.b == rhs.b);
+  }
+
+  struct StructDataPredicate
+  {
+    bool operator ()(const StructData& lhs, const StructData& rhs) const
+    {
+      return lhs.a < rhs.a;
+    }
+  };
+
+  struct StructDataEquality
+  {
+    bool operator ()(const StructData& lhs, const StructData& rhs) const
+    {
+      return lhs.a == rhs.a;
+    }
+  };
+
+  std::ostream& operator << (std::ostream& os, const StructData& data)
+  {
+    os << data.a << "," << data.b;
+    return os;
+  }
+
   SUITE(test_algorithm)
   {
     //=========================================================================
@@ -543,8 +576,38 @@ namespace
       int data1[] = { 1, 2, 3, 5, 6, 7, 8 };
 
       // Find the element not less than 4.
-      int* p = std::find_if_not(std::begin(data1), std::end(data1), std::bind2nd(std::less<int>(), 4));
+      int* p = etl::find_if_not(std::begin(data1), std::end(data1), std::bind2nd(std::less<int>(), 4));
       CHECK_EQUAL(5, *p);
+    }
+
+    //=========================================================================
+    TEST(binary_find)
+    {
+      int data1[] = { 1, 2, 3, 5, 6, 7, 8 };
+
+      // Find the element of value 5.
+      int* p = etl::binary_find(std::begin(data1), std::end(data1), 5);
+      CHECK_EQUAL(5, *p);
+
+      // Find the element of value 4.
+      p = etl::binary_find(std::begin(data1), std::end(data1), 4);
+      CHECK_EQUAL(std::end(data1), p);
+    }
+
+    //=========================================================================
+    TEST(binary_find_StructDataPredicate_StructDataEquality)
+    {
+      StructData data1[] = { { 1, 8 }, { 2, 7 }, { 3, 6 },{ 4, 5 },{ 5, 4 },{ 6, 3 },{ 7, 2 },{ 8, 1 } };
+      StructData test1   = { 4, 5 };
+      StructData test2   = { 9, 0 };
+
+      // Find the element of value 5.
+      StructData* p = etl::binary_find(std::begin(data1), std::end(data1), test1, StructDataPredicate(), StructDataEquality());
+      CHECK_EQUAL(test1, *p);
+
+      // Find the element of value 4.
+      p = etl::binary_find(std::begin(data1), std::end(data1), test2, StructDataPredicate(), StructDataEquality());
+      CHECK_EQUAL(std::end(data1), p);
     }
 
     //=========================================================================
