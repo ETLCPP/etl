@@ -698,7 +698,8 @@ namespace
       RouterA router1(ROUTER1);
       RouterA router2(ROUTER2);
       RouterA router3(ROUTER3);
-      RouterA router4(ROUTER4);
+      RouterA router4a(ROUTER4);
+      RouterA router4b(ROUTER4);
 
       RouterA sender(ROUTER5);
 
@@ -708,7 +709,8 @@ namespace
       bus1.subscribe(router2);
 
       bus2.subscribe(router3);
-      bus3.subscribe(router4);
+      bus3.subscribe(router4b);
+      bus3.subscribe(router4a);
 
       call_order = 0;
 
@@ -716,8 +718,9 @@ namespace
 
       CHECK_EQUAL(0, router1.order);
       CHECK_EQUAL(1, router2.order);
-      CHECK_EQUAL(2, router4.order);
-      CHECK_EQUAL(3, router3.order);
+      CHECK_EQUAL(2, router4b.order);
+      CHECK_EQUAL(3, router4a.order);
+      CHECK_EQUAL(4, router3.order);
     }
   };
 }

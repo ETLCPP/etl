@@ -118,7 +118,7 @@ namespace etl
           else
           {
             // Routers get added in id order.
-            router_list_t::iterator irouter = std::lower_bound(router_list.begin(),
+            router_list_t::iterator irouter = std::upper_bound(router_list.begin(),
                                                                router_list.end(),
                                                                router.get_message_router_id(),
                                                                compare_router_id());
@@ -173,7 +173,7 @@ namespace etl
 
     //*******************************************
     void receive(etl::message_router_id_t destination_router_id,
-      const etl::imessage&     message)
+                 const etl::imessage&     message)
     {
       etl::null_message_router nmr;
       receive(nmr, destination_router_id, message);
@@ -181,23 +181,22 @@ namespace etl
 
     //*******************************************
     void receive(etl::imessage_router& source,
-      const etl::imessage&  message)
+                 const etl::imessage&  message)
     {
       receive(source, etl::imessage_router::ALL_MESSAGE_ROUTERS, message);
     }
 
     //*******************************************
     void receive(etl::imessage_router&    source,
-      etl::message_router_id_t destination_router_id,
-      const etl::imessage&     message)
+                 etl::message_router_id_t destination_router_id,
+                 const etl::imessage&     message)
     {
       switch (destination_router_id)
       {
         //*****************************
-        // Null message router. Should never get here as these routers can never be subscribed.
+        // Null message router. These routers can never be subscribed.
         case etl::imessage_router::NULL_MESSAGE_ROUTER:
         {
-
           break;
         }
 
@@ -237,7 +236,7 @@ namespace etl
         {
           router_list_t::iterator irouter = router_list.begin();
 
-          // See if routers with the id exist.
+          // Find routers with the id.
           std::pair<router_list_t::iterator, router_list_t::iterator> range = std::equal_range(router_list.begin(),
                                                                                                router_list.end(),
                                                                                                destination_router_id,
