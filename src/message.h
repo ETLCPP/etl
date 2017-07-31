@@ -69,16 +69,7 @@ namespace etl
 
     //********************************************
     virtual ~imessage() {}
-
-    const etl::message_id_t message_id;
-
-  protected:
-
-    //********************************************
-    imessage(etl::message_id_t id)
-      : message_id(id)
-    {
-    }
+    virtual etl::message_id_t get_message_id() const = 0;
   };
 
   //***************************************************************************
@@ -93,9 +84,9 @@ namespace etl
     };
 
     //********************************************
-    message()
-      : imessage(ID_)
+    etl::message_id_t get_message_id() const
     {
+      return ID;
     }
   };
 }

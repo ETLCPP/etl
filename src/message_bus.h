@@ -219,7 +219,7 @@ namespace etl
               // So pass it on.
               bus.receive(source, destination_router_id, message);
             }
-            else if (router.accepts(message.message_id))
+            else if (router.accepts(message.get_message_id()))
             {
               router.receive(source, message);
             }
@@ -245,7 +245,7 @@ namespace etl
           // Call all of them.
           while (range.first != range.second)
           {
-            if ((*(range.first))->accepts(message.message_id))
+            if ((*(range.first))->accepts(message.get_message_id()))
             {
               (*(range.first))->receive(source, message);
             }
@@ -253,7 +253,7 @@ namespace etl
             ++range.first;
           }
 
-          // Do any message busses.
+          // Do any message buses.
           // These are always at the end of the list.
           irouter = std::lower_bound(router_list.begin(),
                                      router_list.end(),
@@ -306,12 +306,12 @@ namespace etl
     //*******************************************
     struct compare_router_id
     {
-      bool operator()(etl::imessage_router* prouter, etl::message_router_id_t id) const
+      bool operator()(const etl::imessage_router* prouter, etl::message_router_id_t id) const
       {
         return prouter->get_message_router_id() < id;
       }
 
-      bool operator()(etl::message_router_id_t id, etl::imessage_router* prouter) const
+      bool operator()(etl::message_router_id_t id, const etl::imessage_router* prouter) const
       {
         return id < prouter->get_message_router_id();
       }

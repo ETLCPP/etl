@@ -335,19 +335,19 @@ namespace
       Router2 r2;
 
       CHECK(r2.accepts(message1));
-      CHECK(r2.accepts(message1.message_id));
+      CHECK(r2.accepts(message1.get_message_id()));
 
       CHECK(r2.accepts(message2));
-      CHECK(r2.accepts(message2.message_id));
+      CHECK(r2.accepts(message2.get_message_id()));
 
       CHECK(!r2.accepts(message3));
-      CHECK(!r2.accepts(message3.message_id));
+      CHECK(!r2.accepts(message3.get_message_id()));
 
       CHECK(r2.accepts(message4));
-      CHECK(r2.accepts(message4.message_id));
+      CHECK(r2.accepts(message4.get_message_id()));
 
       CHECK(r2.accepts(message5));
-      CHECK(r2.accepts(message5.message_id));
+      CHECK(r2.accepts(message5.get_message_id()));
     }
 
     //=========================================================================

@@ -104,7 +104,7 @@ namespace etl
     //********************************************
     bool accepts(const etl::imessage& msg) const
     {
-      return accepts(msg.message_id);
+      return accepts(msg.get_message_id());
     }
 
     //********************************************
@@ -214,7 +214,7 @@ namespace etl
       //********************************************
       explicit message_packet(const etl::imessage& msg)
       {
-        const size_t id = msg.message_id;
+        const size_t id = msg.get_message_id();
 
         void* p = data;
 
@@ -295,7 +295,7 @@ namespace etl
     //**********************************************
     void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
-      const etl::message_id_t id = msg.message_id;
+      const etl::message_id_t id = msg.get_message_id();
 
       switch (id)
       {
@@ -356,7 +356,7 @@ namespace etl
       //********************************************
       explicit message_packet(const etl::imessage& msg)
       {
-        const size_t id = msg.message_id;
+        const size_t id = msg.get_message_id();
 
         void* p = data;
 
@@ -436,7 +436,7 @@ namespace etl
     //**********************************************
     void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
 
       switch (id)
       {
@@ -496,7 +496,7 @@ namespace etl
       //********************************************
       explicit message_packet(const etl::imessage& msg)
       {
-        const size_t id = msg.message_id;
+        const size_t id = msg.get_message_id();
 
         void* p = data;
 
@@ -575,7 +575,7 @@ namespace etl
     //**********************************************
     void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
 
       switch (id)
       {
@@ -634,7 +634,7 @@ namespace etl
       //********************************************
       explicit message_packet(const etl::imessage& msg)
       {
-        const size_t id = msg.message_id;
+        const size_t id = msg.get_message_id();
 
         void* p = data;
 
@@ -712,7 +712,7 @@ namespace etl
     //**********************************************
     void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
 
       switch (id)
       {
@@ -769,7 +769,7 @@ namespace etl
       //********************************************
       explicit message_packet(const etl::imessage& msg)
       {
-        const size_t id = msg.message_id;
+        const size_t id = msg.get_message_id();
 
         void* p = data;
 
@@ -846,7 +846,7 @@ namespace etl
     //**********************************************
     void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
 
       switch (id)
       {
@@ -902,7 +902,7 @@ namespace etl
       //********************************************
       explicit message_packet(const etl::imessage& msg)
       {
-        const size_t id = msg.message_id;
+        const size_t id = msg.get_message_id();
 
         void* p = data;
 
@@ -978,7 +978,7 @@ namespace etl
     //**********************************************
     void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
 
       switch (id)
       {
@@ -1033,7 +1033,7 @@ namespace etl
       //********************************************
       explicit message_packet(const etl::imessage& msg)
       {
-        const size_t id = msg.message_id;
+        const size_t id = msg.get_message_id();
 
         void* p = data;
 
@@ -1108,7 +1108,7 @@ namespace etl
     //**********************************************
     void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
 
       switch (id)
       {
@@ -1162,7 +1162,7 @@ namespace etl
       //********************************************
       explicit message_packet(const etl::imessage& msg)
       {
-        const size_t id = msg.message_id;
+        const size_t id = msg.get_message_id();
 
         void* p = data;
 
@@ -1236,7 +1236,7 @@ namespace etl
     //**********************************************
     void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
 
       switch (id)
       {
@@ -1288,7 +1288,7 @@ namespace etl
       //********************************************
       explicit message_packet(const etl::imessage& msg)
       {
-        const size_t id = msg.message_id;
+        const size_t id = msg.get_message_id();
 
         void* p = data;
 
@@ -1361,7 +1361,7 @@ namespace etl
     //**********************************************
     void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
 
       switch (id)
       {
@@ -1412,7 +1412,7 @@ namespace etl
       //********************************************
       explicit message_packet(const etl::imessage& msg)
       {
-        const size_t id = msg.message_id;
+        const size_t id = msg.get_message_id();
 
         void* p = data;
 
@@ -1484,7 +1484,7 @@ namespace etl
     //**********************************************
     void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
 
       switch (id)
       {
@@ -1533,7 +1533,7 @@ namespace etl
       //********************************************
       explicit message_packet(const etl::imessage& msg)
       {
-        const size_t id = msg.message_id;
+        const size_t id = msg.get_message_id();
 
         void* p = data;
 
@@ -1604,7 +1604,7 @@ namespace etl
     //**********************************************
     void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
 
       switch (id)
       {
@@ -1652,7 +1652,7 @@ namespace etl
       //********************************************
       explicit message_packet(const etl::imessage& msg)
       {
-        const size_t id = msg.message_id;
+        const size_t id = msg.get_message_id();
 
         void* p = data;
 
@@ -1722,7 +1722,7 @@ namespace etl
     //**********************************************
     void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
 
       switch (id)
       {
@@ -1768,7 +1768,7 @@ namespace etl
       //********************************************
       explicit message_packet(const etl::imessage& msg)
       {
-        const size_t id = msg.message_id;
+        const size_t id = msg.get_message_id();
 
         void* p = data;
 
@@ -1837,7 +1837,7 @@ namespace etl
     //**********************************************
     void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
 
       switch (id)
       {
@@ -1882,7 +1882,7 @@ namespace etl
       //********************************************
       explicit message_packet(const etl::imessage& msg)
       {
-        const size_t id = msg.message_id;
+        const size_t id = msg.get_message_id();
 
         void* p = data;
 
@@ -1950,7 +1950,7 @@ namespace etl
     //**********************************************
     void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
 
       switch (id)
       {
@@ -1994,7 +1994,7 @@ namespace etl
       //********************************************
       explicit message_packet(const etl::imessage& msg)
       {
-        const size_t id = msg.message_id;
+        const size_t id = msg.get_message_id();
 
         void* p = data;
 
@@ -2061,7 +2061,7 @@ namespace etl
     //**********************************************
     void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
 
       switch (id)
       {
@@ -2104,7 +2104,7 @@ namespace etl
       //********************************************
       explicit message_packet(const etl::imessage& msg)
       {
-        const size_t id = msg.message_id;
+        const size_t id = msg.get_message_id();
 
         void* p = data;
 
@@ -2170,7 +2170,7 @@ namespace etl
     //**********************************************
     void receive(etl::imessage_router& source, const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
 
       switch (id)
       {

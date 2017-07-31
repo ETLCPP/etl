@@ -116,7 +116,7 @@ namespace etl
     //********************************************
     bool accepts(const etl::imessage& msg) const
     {
-      return accepts(msg.message_id);
+      return accepts(msg.get_message_id());
     }
 
     //********************************************
@@ -236,7 +236,7 @@ namespace etl
       cog.outl("    //********************************************")
       cog.outl("    explicit message_packet(const etl::imessage& msg)")
       cog.outl("    {")
-      cog.outl("      const size_t id = msg.message_id;")
+      cog.outl("      const size_t id = msg.get_message_id();")
       cog.outl("")
       cog.outl("      void* p = data;")
       cog.outl("")
@@ -315,7 +315,7 @@ namespace etl
       cog.outl("  //**********************************************")
       cog.outl("  void receive(etl::imessage_router& source, const etl::imessage& msg)")
       cog.outl("  {")
-      cog.outl("    const etl::message_id_t id = msg.message_id;")
+      cog.outl("    const etl::message_id_t id = msg.get_message_id();")
       cog.outl("")
       cog.outl("    switch (id)")
       cog.outl("    {")
@@ -392,7 +392,7 @@ namespace etl
           cog.outl("    //********************************************")
           cog.outl("    explicit message_packet(const etl::imessage& msg)")
           cog.outl("    {")
-          cog.outl("      const size_t id = msg.message_id;")
+          cog.outl("      const size_t id = msg.get_message_id();")
           cog.outl("")
           cog.outl("      void* p = data;")
           cog.outl("")
@@ -471,7 +471,7 @@ namespace etl
           cog.outl("  //**********************************************")
           cog.outl("  void receive(etl::imessage_router& source, const etl::imessage& msg)")
           cog.outl("  {")
-          cog.outl("    const size_t id = msg.message_id;")
+          cog.outl("    const size_t id = msg.get_message_id();")
           cog.outl("")
           cog.outl("    switch (id)")
           cog.outl("    {")
