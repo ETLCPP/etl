@@ -338,7 +338,8 @@ namespace
 
       CHECK_EQUAL(5, sender.message5_count);
 
-      bus1.receive(sender, message4);
+      // Use global function.
+      etl::send_message(sender, bus1, message4);
 
       CHECK_EQUAL(1, router1.message1_count);
       CHECK_EQUAL(1, router1.message2_count);
@@ -422,7 +423,8 @@ namespace
 
       CHECK_EQUAL(5, sender.message5_count);
 
-      irouter.receive(sender, message4);
+      // Use global function.
+      etl::send_message(sender, irouter, message4);
 
       CHECK_EQUAL(1, router1.message1_count);
       CHECK_EQUAL(1, router1.message2_count);
@@ -503,7 +505,8 @@ namespace
 
       CHECK_EQUAL(3, sender.message5_count);
 
-      bus1.receive(sender, ROUTER2, message4);
+      // Use global function.
+      etl::send_message(sender, bus1, ROUTER2, message4);
 
       CHECK_EQUAL(1, router1.message1_count);
       CHECK_EQUAL(0, router1.message2_count);

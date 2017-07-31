@@ -392,7 +392,7 @@ namespace etl
   cog.outl("//***************************************************************************")
   cog.outl("// The definition for all %s message types." % Handlers)
   cog.outl("//***************************************************************************")
-  cog.outl("template <typename TState, const etl::fsm_state_id_t STATE_ID_, ")
+  cog.outl("template <typename TDerived, const etl::fsm_state_id_t STATE_ID_, ")
   cog.out("          ")
   for n in range(1, int(Handlers)):
       cog.out("typename T%s = void, " % n)
@@ -425,10 +425,10 @@ namespace etl
   cog.outl("    {")
   for n in range(1, int(Handlers) + 1):
       cog.out("      case T%d::ID:" % n)
-      cog.out(" new_state_id = static_cast<TState*>(this)->on_event(source, static_cast<const T%d&>(message));" % n)
+      cog.out(" new_state_id = static_cast<TDerived*>(this)->on_event(source, static_cast<const T%d&>(message));" % n)
       cog.outl(" break;")
   cog.out("      default:")
-  cog.out(" new_state_id = static_cast<TState*>(this)->on_event_unknown(source, message);")
+  cog.out(" new_state_id = static_cast<TDerived*>(this)->on_event_unknown(source, message);")
   cog.outl(" break;")
   cog.outl("    }")
   cog.outl("")
@@ -447,7 +447,7 @@ namespace etl
       else:
           cog.outl("// Specialisation for %d message types." % n)
       cog.outl("//***************************************************************************")
-      cog.outl("template <typename TState, const etl::fsm_state_id_t STATE_ID_, ")
+      cog.outl("template <typename TDerived, const etl::fsm_state_id_t STATE_ID_, ")
       cog.out("          ")
       for t in range(1, n):
           cog.out("typename T%d, " % t)
@@ -455,7 +455,7 @@ namespace etl
               cog.outl("")
               cog.out("          ")
       cog.outl("typename T%d>" % n)
-      cog.out("class fsm_state<TState, STATE_ID_, ")
+      cog.out("class fsm_state<TDerived, STATE_ID_, ")
       for t in range(1, n + 1):
           cog.out("T%d, " % t)
       if t % 16 == 0:
@@ -491,10 +491,10 @@ namespace etl
       cog.outl("    {")
       for n in range(1, n + 1):
           cog.out("      case T%d::ID:" % n)
-          cog.out(" new_state_id = static_cast<TState*>(this)->on_event(source, static_cast<const T%d&>(message));" % n)
+          cog.out(" new_state_id = static_cast<TDerived*>(this)->on_event(source, static_cast<const T%d&>(message));" % n)
           cog.outl(" break;")
       cog.out("      default:")
-      cog.out(" new_state_id = static_cast<TState*>(this)->on_event_unknown(source, message);")
+      cog.out(" new_state_id = static_cast<TDerived*>(this)->on_event_unknown(source, message);")
       cog.outl(" break;")
       cog.outl("    }")
       cog.outl("")
@@ -508,8 +508,8 @@ namespace etl
   cog.outl("//***************************************************************************")
   cog.outl("// Specialisation for 0 message types.")
   cog.outl("//***************************************************************************")
-  cog.outl("template <typename TState, const etl::fsm_state_id_t STATE_ID_>")
-  cog.out("class fsm_state<TState, STATE_ID_, ")
+  cog.outl("template <typename TDerived, const etl::fsm_state_id_t STATE_ID_>")
+  cog.out("class fsm_state<TDerived, STATE_ID_, ")
   for t in range(1, int(Handlers)):
       cog.out("void, ")
   if t % 16 == 0:
@@ -533,7 +533,7 @@ namespace etl
   cog.outl("")
   cog.outl("  etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)")
   cog.outl("  {")
-  cog.outl("    return static_cast<TState*>(this)->on_event_unknown(source, message);")
+  cog.outl("    return static_cast<TDerived*>(this)->on_event_unknown(source, message);")
   cog.outl("  }")
   cog.outl("};")
   ]]]*/

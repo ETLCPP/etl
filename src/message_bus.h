@@ -340,6 +340,36 @@ namespace etl
 
     etl::vector<etl::imessage_router*, MAX_ROUTERS_> router_list;
   };
+
+  //***************************************************************************
+  /// Send a message to a bus.
+  //***************************************************************************
+  inline static void send_message(etl::imessage_bus&   bus,
+                                  const etl::imessage& message)
+  {
+    bus.receive(message);
+  }
+
+  //***************************************************************************
+  /// Send a message to a bus.
+  //***************************************************************************
+  inline static void send_message(etl::imessage_router& source,
+                                  etl::imessage_bus&    bus,
+                                  const etl::imessage&  message)
+  {
+    bus.receive(source, message);
+  }
+
+  //***************************************************************************
+  /// Send a message to a bus.
+  //***************************************************************************
+  inline static void send_message(etl::imessage_router&    source,
+                                  etl::imessage_bus&       bus,
+                                  etl::message_router_id_t id,
+                                  const etl::imessage&     message)
+  {
+    bus.receive(source, id, message);
+  }
 }
 
 #undef ETL_FILE

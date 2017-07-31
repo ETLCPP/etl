@@ -205,14 +205,13 @@ namespace etl
   
   /*[[[cog
       import cog
-      cog.outl("")
       ################################################
       # The first definition for all of the messages.
       ################################################
       cog.outl("//***************************************************************************")
       cog.outl("// The definition for all %s message types." % Handlers)
       cog.outl("//***************************************************************************")
-      cog.outl("template <typename TProcessor,")
+      cog.outl("template <typename TDerived,")
       cog.out("          ")
       cog.out("typename T1, ")
       for n in range(2, int(Handlers)):
@@ -319,10 +318,10 @@ namespace etl
       cog.outl("    {")
       for n in range(1, int(Handlers) + 1):
           cog.out("      case T%d::ID:" % n)
-          cog.out(" static_cast<TProcessor*>(this)->on_receive(source, static_cast<const T%d&>(msg));" % n)
+          cog.out(" static_cast<TDerived*>(this)->on_receive(source, static_cast<const T%d&>(msg));" % n)
           cog.outl(" break;")
       cog.out("      default:")
-      cog.out("  static_cast<TProcessor*>(this)->on_receive_unknown(source, msg);")
+      cog.out("  static_cast<TDerived*>(this)->on_receive_unknown(source, msg);")
       cog.outl(" break;")
       cog.outl("    }")
       cog.outl("  }")
@@ -358,7 +357,7 @@ namespace etl
           else:
               cog.outl("// Specialisation for %d message types." % n)
           cog.outl("//***************************************************************************")
-          cog.outl("template <typename TProcessor, ")
+          cog.outl("template <typename TDerived, ")
           cog.out("          ")
           for t in range(1, n):
               cog.out("typename T%d, " % t)
@@ -366,7 +365,7 @@ namespace etl
                   cog.outl("")
                   cog.out("          ")
           cog.outl("typename T%d>" % n)
-          cog.out("class message_router<TProcessor, ")
+          cog.out("class message_router<TDerived, ")
           for t in range(1, n + 1):
               cog.out("T%d, " % t)
               if t % 16 == 0:
@@ -475,10 +474,10 @@ namespace etl
           cog.outl("    {")
           for t in range(1, n + 1):
               cog.out("      case T%d::ID:" % t)
-              cog.out(" static_cast<TProcessor*>(this)->on_receive(source, static_cast<const T%d&>(msg));" % t)
+              cog.out(" static_cast<TDerived*>(this)->on_receive(source, static_cast<const T%d&>(msg));" % t)
               cog.outl(" break;")
           cog.out("      default:")
-          cog.out(" static_cast<TProcessor*>(this)->on_receive_unknown(source, msg);")
+          cog.out(" static_cast<TDerived*>(this)->on_receive_unknown(source, msg);")
           cog.outl(" break;")
           cog.outl("    }")
           cog.outl("  }")
