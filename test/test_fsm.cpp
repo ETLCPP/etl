@@ -320,7 +320,7 @@ namespace
   //***********************************
   // The motor control FSM.
   //***********************************
-  class MotorControl : public etl::fsm<EventId::SET_SPEED, EventId::START, EventId::STOP, EventId::STOPPED>
+  class MotorControl : public etl::fsm
   {
   public:
 
@@ -547,13 +547,13 @@ namespace
       CHECK(motorControl.accepts(EventId::START));
       CHECK(motorControl.accepts(EventId::STOP));
       CHECK(motorControl.accepts(EventId::STOPPED));
-      CHECK(!motorControl.accepts(EventId::UNSUPPORTED));
+      CHECK(motorControl.accepts(EventId::UNSUPPORTED));
 
       CHECK(motorControl.accepts(SetSpeed(0)));
       CHECK(motorControl.accepts(Start()));
       CHECK(motorControl.accepts(Stop()));
       CHECK(motorControl.accepts(Stopped()));
-      CHECK(!motorControl.accepts(Unsupported()));
+      CHECK(motorControl.accepts(Unsupported()));
     }
   };
 }

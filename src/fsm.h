@@ -205,22 +205,6 @@ namespace etl
     }
   };
 
-  template <const fsm_internal_id_t ID1 = etl::integral_limits<fsm_internal_id_t>::max - 0, 
-            const fsm_internal_id_t ID2 = etl::integral_limits<fsm_internal_id_t>::max - 1, 
-            const fsm_internal_id_t ID3 = etl::integral_limits<fsm_internal_id_t>::max - 2, 
-            const fsm_internal_id_t ID4 = etl::integral_limits<fsm_internal_id_t>::max - 3, 
-            const fsm_internal_id_t ID5 = etl::integral_limits<fsm_internal_id_t>::max - 4, 
-            const fsm_internal_id_t ID6 = etl::integral_limits<fsm_internal_id_t>::max - 5, 
-            const fsm_internal_id_t ID7 = etl::integral_limits<fsm_internal_id_t>::max - 6, 
-            const fsm_internal_id_t ID8 = etl::integral_limits<fsm_internal_id_t>::max - 7, 
-            const fsm_internal_id_t ID9 = etl::integral_limits<fsm_internal_id_t>::max - 8, 
-            const fsm_internal_id_t ID10 = etl::integral_limits<fsm_internal_id_t>::max - 9, 
-            const fsm_internal_id_t ID11 = etl::integral_limits<fsm_internal_id_t>::max - 10, 
-            const fsm_internal_id_t ID12 = etl::integral_limits<fsm_internal_id_t>::max - 11, 
-            const fsm_internal_id_t ID13 = etl::integral_limits<fsm_internal_id_t>::max - 12, 
-            const fsm_internal_id_t ID14 = etl::integral_limits<fsm_internal_id_t>::max - 13, 
-            const fsm_internal_id_t ID15 = etl::integral_limits<fsm_internal_id_t>::max - 14, 
-            const fsm_internal_id_t ID16 = etl::integral_limits<fsm_internal_id_t>::max - 15>
   class fsm : public etl::imessage_router, protected etl::fsm_helper
   {
   public:
@@ -306,17 +290,11 @@ namespace etl
 
     //*******************************************
     /// Does this FSM accept the message id?
+    /// Yes, it accepts everything!
     //*******************************************
     bool accepts(etl::message_id_t id) const
     {
-      switch (fsm_internal_id_t(id))
-      {
-        case ID1: case ID2: case ID3: case ID4: case ID5: case ID6: case ID7: case ID8: 
-        case ID9: case ID10: case ID11: case ID12: case ID13: case ID14: case ID15: case ID16: 
-          return true; break;
-        default:
-          return false; break;
-      }
+      return true;
     }
 
     //*******************************************

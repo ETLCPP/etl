@@ -217,16 +217,6 @@ namespace etl
     }
   };
 
-  /*[[[cog
-  import cog
-  cog.out("template <")
-  for n in range(1, int(Handlers)):
-      cog.outl("const fsm_internal_id_t ID%d = etl::integral_limits<fsm_internal_id_t>::max - %d, " % (n, n - 1))
-      cog.out("          ")
-  cog.out("const fsm_internal_id_t ID%d = etl::integral_limits<fsm_internal_id_t>::max - %d" % (int(Handlers), int(Handlers) - 1))
-  cog.outl(">")
-  ]]]*/
-  /*[[[end]]]*/
   class fsm : public etl::imessage_router, protected etl::fsm_helper
   {
   public:
@@ -312,25 +302,11 @@ namespace etl
 
     //*******************************************
     /// Does this FSM accept the message id?
+    /// Yes, it accepts everything!
     //*******************************************
     bool accepts(etl::message_id_t id) const
     {
-      /*[[[cog
-      import cog
-      cog.outl("switch (fsm_internal_id_t(id))")
-      cog.outl("{")
-      cog.out("  ")
-      for n in range(1, int(Handlers) + 1):
-          cog.out("case ID%d: " % n)
-          if n % 8 == 0:
-              cog.outl("")
-              cog.out("  ")
-      cog.outl("  return true; break;")
-      cog.outl("  default:")
-      cog.outl("    return false; break;")
-      cog.outl("}")
-      ]]]*/
-      /*[[[end]]]*/
+      return true;
     }
 
     //*******************************************
