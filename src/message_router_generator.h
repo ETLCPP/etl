@@ -125,10 +125,13 @@ namespace etl
       return message_router_id;
     }
 
-    static const message_router_id_t NULL_MESSAGE_ROUTER = 255;
-    static const message_router_id_t MESSAGE_BUS         = 254;
-    static const message_router_id_t ALL_MESSAGE_ROUTERS = 253;
-    static const message_router_id_t MAX_MESSAGE_ROUTER  = 252;
+    enum
+    {
+      NULL_MESSAGE_ROUTER = 255,
+      MESSAGE_BUS         = 254,
+      ALL_MESSAGE_ROUTERS = 253,
+      MAX_MESSAGE_ROUTER  = 252
+    };
 
   protected:
 
