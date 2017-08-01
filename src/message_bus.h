@@ -83,15 +83,6 @@ namespace etl
 
   public:
 
-    //*******************************************
-    /// Constructor.
-    //*******************************************
-    imessage_bus(router_list_t& list)
-      : imessage_router(etl::imessage_router::MESSAGE_BUS),
-        router_list(list)
-    {
-    }
-
     using etl::imessage_router::receive;
 
     //*******************************************
@@ -297,6 +288,17 @@ namespace etl
     void clear()
     {
       return router_list.clear();
+    }
+
+  protected:
+
+    //*******************************************
+    /// Constructor.
+    //*******************************************
+    imessage_bus(router_list_t& list)
+      : imessage_router(etl::imessage_router::MESSAGE_BUS),
+        router_list(list)
+    {
     }
 
   private:
