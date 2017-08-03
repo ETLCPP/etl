@@ -419,6 +419,52 @@ namespace etl
   }
 
   //***************************************************************************
+  /// binary_find
+  ///\ingroup algorithm
+  /// Deoas a binary search and returns an iterator to the value or end if not found.
+  //***************************************************************************
+  template <typename TIterator,
+            typename TValue>
+    TIterator binary_find(TIterator     begin,
+                          TIterator     end,
+                          const TValue& value)
+  {
+    TIterator it = std::lower_bound(begin, end, value);
+
+    if ((it == end) || (*it != value))
+    {
+      it = end;
+    }
+
+    return it;
+  }
+
+  //***************************************************************************
+  /// binary_find
+  ///\ingroup algorithm
+  /// Deoas a binary search and returns an iterator to the value or end if not found.
+  //***************************************************************************
+  template <typename TIterator,
+            typename TValue,
+            typename TBinaryPredicate,
+            typename TBinaryEquality>
+    TIterator binary_find(TIterator        begin,
+                          TIterator        end,
+                          const TValue&    value,
+                          TBinaryPredicate predicate,
+                          TBinaryEquality  equality)
+  {
+    TIterator it = std::lower_bound(begin, end, value, predicate);
+
+    if ((it == end) || !equality(*it, value))
+    {
+      it = end;
+    }
+
+    return it;
+  }
+
+  //***************************************************************************
   /// find_if_not
   ///\ingroup algorithm
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/find"></a>

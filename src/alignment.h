@@ -113,7 +113,7 @@ namespace etl
       template <typename T>
       operator T& ()
       {
-        STATIC_ASSERT(ALIGNMENT % etl::alignment_of<T>::value == 0, "Incompatible alignment");
+        STATIC_ASSERT((etl::is_same<T*, void*>:: value || ((ALIGNMENT % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
         return reinterpret_cast<T&>(*data);
       }
 
@@ -121,7 +121,7 @@ namespace etl
       template <typename T>
       operator const T& () const
       {
-        STATIC_ASSERT(ALIGNMENT % etl::alignment_of<T>::value == 0, "Incompatible alignment");
+        STATIC_ASSERT((etl::is_same<T*, void*>:: value || ((ALIGNMENT % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
         return reinterpret_cast<const T&>(*data);
       }
 
@@ -129,7 +129,7 @@ namespace etl
       template <typename T>
       operator T* ()
       {
-        STATIC_ASSERT(ALIGNMENT % etl::alignment_of<T>::value == 0, "Incompatible alignment");
+        STATIC_ASSERT((etl::is_same<T*, void*>:: value || ((ALIGNMENT % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
         return reinterpret_cast<T*>(data);
       }
 
@@ -137,7 +137,7 @@ namespace etl
       template <typename T>
       operator const T* () const
       {
-        STATIC_ASSERT(ALIGNMENT % etl::alignment_of<T>::value == 0, "Incompatible alignment");
+        STATIC_ASSERT((etl::is_same<T*, void*>:: value || ((ALIGNMENT % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
         return reinterpret_cast<const T*>(data);
       }
 
@@ -145,7 +145,7 @@ namespace etl
       template <typename T>
       T& get_reference()
       {
-        STATIC_ASSERT(ALIGNMENT % etl::alignment_of<T>::value == 0, "Incompatible alignment");
+        STATIC_ASSERT((etl::is_same<T*, void*>:: value || ((ALIGNMENT % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
         return reinterpret_cast<T&>(*data);
       }
 
@@ -153,7 +153,7 @@ namespace etl
       template <typename T>
       const T& get_reference() const
       {
-        STATIC_ASSERT(ALIGNMENT % etl::alignment_of<T>::value == 0, "Incompatible alignment");
+        STATIC_ASSERT((etl::is_same<T*, void*>:: value || ((ALIGNMENT % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
         return reinterpret_cast<const T&>(*data);
       }
 
@@ -161,7 +161,7 @@ namespace etl
       template <typename T>
       T* get_address()
       {
-        STATIC_ASSERT(ALIGNMENT % etl::alignment_of<T>::value == 0, "Incompatible alignment");
+        STATIC_ASSERT((etl::is_same<T*, void*>:: value || ((ALIGNMENT % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
         return reinterpret_cast<T*>(data);
       }
 
@@ -169,7 +169,7 @@ namespace etl
       template <typename T>
       const T* get_address() const
       {
-        STATIC_ASSERT(ALIGNMENT % etl::alignment_of<T>::value == 0, "Incompatible alignment");
+        STATIC_ASSERT((etl::is_same<T*, void*>:: value || ((ALIGNMENT % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
         return reinterpret_cast<const T*>(data);
       }
 

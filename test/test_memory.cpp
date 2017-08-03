@@ -445,5 +445,31 @@ namespace
       etl::destroy(p, p + SIZE, count);
       CHECK_EQUAL(0U, count);
     }
+
+    //*************************************************************************
+    TEST(test_create_copy)
+    {
+      struct Test : etl::create_copy<Test>
+      {
+        std::string text;
+      };
+
+      char buffer[sizeof(Test)];
+
+      Test test1;
+      test1.text = "12345678";
+      test1.create_copy_at(buffer);
+      test1.text = "87654321";
+
+      Test& test2 = *reinterpret_cast<Test*>(buffer);
+
+      CHECK_EQUAL(std::string("87654321"), test1.text);
+      CHECK_EQUAL(std::string("12345678"), test2.text);
+
+      int count = 0;
+      test1.create_copy_at(buffer, count);
+
+      CHECK_EQUAL(1, count);
+    }
   };
 }

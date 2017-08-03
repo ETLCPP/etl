@@ -38,7 +38,13 @@
       <UniqueIdentifier>{7028012c-30c4-4993-b2d9-3b1521a610ae}</UniqueIdentifier>
     </Filter>
     <Filter Include="ETL\Frameworks">
-      <UniqueIdentifier>{5de50c3d-4679-4eb3-9b76-e43e1aad6a66}</UniqueIdentifier>
+      <UniqueIdentifier>{6be3bc76-e17c-4be0-8b0b-d1053e1a1761}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Frameworks\Generators">
+      <UniqueIdentifier>{c1264f38-22fa-4fcb-8cab-f254b1290eab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Utilities\Generators">
+      <UniqueIdentifier>{39015d44-a7cb-47f0-a7dd-27714f852363}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -261,12 +267,6 @@
     <ClInclude Include="..\..\src\icache.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\mru_cache.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\rr_cache.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\intrusive_links.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
@@ -437,6 +437,45 @@
     </ClInclude>
     <ClInclude Include="..\..\unittest-cpp\UnitTest++\XmlTestReporter.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\fsm.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\message_router.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\packet.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\fsm_generator.h">
+      <Filter>ETL\Frameworks\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\message_router_generator.h">
+      <Filter>ETL\Frameworks\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\largest_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\type_traits_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\smallest_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\message.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\message_bus.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\message_types.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\scheduler.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\task.h">
+      <Filter>ETL\Frameworks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -761,6 +800,24 @@
     <ClCompile Include="..\..\unittest-cpp\UnitTest++\XmlTestReporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_fsm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_message_router.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_packet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_task_scheduler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_message_bus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_user_type.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Doxyfile">
@@ -769,8 +826,14 @@
     <None Include="..\..\library.properties">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\..\src\CreateMessageProcessor.bat">
-      <Filter>Source Files</Filter>
+    <None Include="..\..\src\generate.bat">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\src\generate_message_router.bat">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\src\generate_fsm.bat">
+      <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
