@@ -137,7 +137,9 @@
     <ClInclude Include="..\..\src\message_router.h" />
     <ClInclude Include="..\..\src\message_router_generator.h" />
     <ClInclude Include="..\..\src\packet.h" />
+    <ClInclude Include="..\..\src\scheduler.h" />
     <ClInclude Include="..\..\src\smallest_generator.h" />
+    <ClInclude Include="..\..\src\task.h" />
     <ClInclude Include="..\..\src\type_traits_generator.h" />
     <ClInclude Include="..\..\unittest-cpp\UnitTest++\AssertException.h" />
     <ClInclude Include="..\..\unittest-cpp\UnitTest++\CheckMacros.h" />
@@ -413,6 +415,7 @@
     <ClCompile Include="..\test_unordered_multimap.cpp" />
     <ClCompile Include="..\test_unordered_multiset.cpp" />
     <ClCompile Include="..\test_unordered_set.cpp" />
+    <ClCompile Include="..\test_user_type.cpp" />
     <ClCompile Include="..\test_utility.cpp" />
     <ClCompile Include="..\test_variant.cpp" />
     <ClCompile Include="..\test_vector.cpp" />

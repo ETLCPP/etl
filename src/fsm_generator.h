@@ -83,6 +83,8 @@ cog.outl("//********************************************************************
 
 namespace etl
 {
+  class fsm;
+
   /// Allow alternative type for state id.
 #if !defined(ETL_FSM_STATE_ID_TYPE)
     typedef uint_least8_t fsm_state_id_t;
@@ -169,8 +171,15 @@ namespace etl
     /// Constructor.
     //*******************************************
     ifsm_state(etl::fsm_state_id_t state_id_)
-      : state_id(state_id_)
+      : state_id(state_id_),
+        p_context(nullptr)
     {
+    }
+
+    //*******************************************
+    inline etl::fsm& get_fsm_context() const
+    {
+      return *p_context;
     }
 
   private:
@@ -180,8 +189,17 @@ namespace etl
     virtual fsm_state_id_t on_enter_state() { return state_id; } // By default, do nothing.
     virtual void on_exit_state() {}  // By default, do nothing.
 
+    //*******************************************
+    void set_fsm_context(etl::fsm& context)
+    {
+      p_context = &context;
+    }
+
     // The state id.
     const etl::fsm_state_id_t state_id;
+
+    // A pointer to the FSM context.
+    etl::fsm* p_context;
 
     // Disabled.
     ifsm_state(const ifsm_state&);
@@ -195,6 +213,13 @@ namespace etl
   class fsm_helper
   {
   public:
+
+    //*******************************************
+    inline void set_fsm_context(etl::ifsm_state& state,
+                                etl::fsm&        context)
+    {
+      state.set_fsm_context(context);
+    }
 
     //*******************************************
     inline fsm_state_id_t process_event(etl::ifsm_state&      state,
@@ -217,6 +242,9 @@ namespace etl
     }
   };
 
+  //***************************************************************************
+  /// The FSM class.
+  //***************************************************************************
   class fsm : public etl::imessage_router, protected etl::fsm_helper
   {
   public:
@@ -244,6 +272,7 @@ namespace etl
       for (etl::fsm_state_id_t i = 0; i < size; ++i)
       {
         ETL_ASSERT((state_list[i] != nullptr), ETL_ERROR(etl::fsm_null_state_exception));
+        fsm_helper::set_fsm_context(*state_list[i], *this);
       }
     }
 
@@ -265,7 +294,7 @@ namespace etl
     }
 
     //*******************************************
-    /// Top level message handlers for the FSM.
+    /// Top level message handler for the FSM.
     //*******************************************
     void receive(const etl::imessage& message)
     {
@@ -273,6 +302,8 @@ namespace etl
       receive(nmr, message);
     }
 
+    //*******************************************
+    /// Top level message handler for the FSM.
     //*******************************************
     void receive(etl::imessage_router& source, const etl::imessage& message)
     {
@@ -368,7 +399,7 @@ namespace etl
   cog.outl("//***************************************************************************")
   cog.outl("// The definition for all %s message types." % Handlers)
   cog.outl("//***************************************************************************")
-  cog.outl("template <typename TDerived, const etl::fsm_state_id_t STATE_ID_, ")
+  cog.outl("template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, ")
   cog.out("          ")
   for n in range(1, int(Handlers)):
       cog.out("typename T%s = void, " % n)
@@ -388,6 +419,11 @@ namespace etl
   cog.outl("  fsm_state()")
   cog.outl("    : ifsm_state(STATE_ID)")
   cog.outl("  {")
+  cog.outl("  }")
+  cog.outl("")
+  cog.outl("  inline TContext& get_fsm_context() const")
+  cog.outl("  {")
+  cog.outl("    return static_cast<TContext&>(ifsm_state::get_fsm_context());")
   cog.outl("  }")
   cog.outl("")
   cog.outl("private:")
@@ -423,7 +459,7 @@ namespace etl
       else:
           cog.outl("// Specialisation for %d message types." % n)
       cog.outl("//***************************************************************************")
-      cog.outl("template <typename TDerived, const etl::fsm_state_id_t STATE_ID_, ")
+      cog.outl("template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, ")
       cog.out("          ")
       for t in range(1, n):
           cog.out("typename T%d, " % t)
@@ -431,7 +467,7 @@ namespace etl
               cog.outl("")
               cog.out("          ")
       cog.outl("typename T%d>" % n)
-      cog.out("class fsm_state<TDerived, STATE_ID_, ")
+      cog.out("class fsm_state<TContext, TDerived, STATE_ID_, ")
       for t in range(1, n + 1):
           cog.out("T%d, " % t)
       if t % 16 == 0:
@@ -456,6 +492,10 @@ namespace etl
       cog.outl("  {")
       cog.outl("  }")
       cog.outl("")
+      cog.outl("  inline TContext& get_fsm_context() const")
+      cog.outl("  {")
+      cog.outl("    return static_cast<TContext&>(ifsm_state::get_fsm_context());")
+      cog.outl("  }")
       cog.outl("private:")
       cog.outl("")
       cog.outl("  etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)")
@@ -484,8 +524,8 @@ namespace etl
   cog.outl("//***************************************************************************")
   cog.outl("// Specialisation for 0 message types.")
   cog.outl("//***************************************************************************")
-  cog.outl("template <typename TDerived, const etl::fsm_state_id_t STATE_ID_>")
-  cog.out("class fsm_state<TDerived, STATE_ID_, ")
+  cog.outl("template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_>")
+  cog.out("class fsm_state<TContext, TDerived, STATE_ID_, ")
   for t in range(1, int(Handlers)):
       cog.out("void, ")
   if t % 16 == 0:
@@ -505,6 +545,10 @@ namespace etl
   cog.outl("  {")
   cog.outl("  }")
   cog.outl("")
+  cog.outl("  inline TContext& get_fsm_context() const")
+  cog.outl("  {")
+  cog.outl("    return static_cast<TContext&>(ifsm_state::get_fsm_context());")
+  cog.outl("  }")
   cog.outl("private:")
   cog.outl("")
   cog.outl("  etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)")

@@ -71,6 +71,8 @@ SOFTWARE.
 
 namespace etl
 {
+  class fsm;
+
   /// Allow alternative type for state id.
 #if !defined(ETL_FSM_STATE_ID_TYPE)
     typedef uint_least8_t fsm_state_id_t;
@@ -157,8 +159,15 @@ namespace etl
     /// Constructor.
     //*******************************************
     ifsm_state(etl::fsm_state_id_t state_id_)
-      : state_id(state_id_)
+      : state_id(state_id_),
+        p_context(nullptr)
     {
+    }
+
+    //*******************************************
+    inline etl::fsm& get_fsm_context() const
+    {
+      return *p_context;
     }
 
   private:
@@ -168,8 +177,17 @@ namespace etl
     virtual fsm_state_id_t on_enter_state() { return state_id; } // By default, do nothing.
     virtual void on_exit_state() {}  // By default, do nothing.
 
+    //*******************************************
+    void set_fsm_context(etl::fsm& context)
+    {
+      p_context = &context;
+    }
+
     // The state id.
     const etl::fsm_state_id_t state_id;
+
+    // A pointer to the FSM context.
+    etl::fsm* p_context;
 
     // Disabled.
     ifsm_state(const ifsm_state&);
@@ -183,6 +201,13 @@ namespace etl
   class fsm_helper
   {
   public:
+
+    //*******************************************
+    inline void set_fsm_context(etl::ifsm_state& state,
+                                etl::fsm&        context)
+    {
+      state.set_fsm_context(context);
+    }
 
     //*******************************************
     inline fsm_state_id_t process_event(etl::ifsm_state&      state,
@@ -205,6 +230,9 @@ namespace etl
     }
   };
 
+  //***************************************************************************
+  /// The FSM class.
+  //***************************************************************************
   class fsm : public etl::imessage_router, protected etl::fsm_helper
   {
   public:
@@ -232,6 +260,7 @@ namespace etl
       for (etl::fsm_state_id_t i = 0; i < size; ++i)
       {
         ETL_ASSERT((state_list[i] != nullptr), ETL_ERROR(etl::fsm_null_state_exception));
+        fsm_helper::set_fsm_context(*state_list[i], *this);
       }
     }
 
@@ -253,7 +282,7 @@ namespace etl
     }
 
     //*******************************************
-    /// Top level message handlers for the FSM.
+    /// Top level message handler for the FSM.
     //*******************************************
     void receive(const etl::imessage& message)
     {
@@ -261,6 +290,8 @@ namespace etl
       receive(nmr, message);
     }
 
+    //*******************************************
+    /// Top level message handler for the FSM.
     //*******************************************
     void receive(etl::imessage_router& source, const etl::imessage& message)
     {
@@ -351,7 +382,7 @@ namespace etl
   //***************************************************************************
   // The definition for all 16 message types.
   //***************************************************************************
-  template <typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
             typename T1 = void, typename T2 = void, typename T3 = void, typename T4 = void, 
             typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void, 
             typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void, 
@@ -368,6 +399,11 @@ namespace etl
     fsm_state()
       : ifsm_state(STATE_ID)
     {
+    }
+
+    inline TContext& get_fsm_context() const
+    {
+      return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
 
   private:
@@ -405,12 +441,12 @@ namespace etl
   //***************************************************************************
   // Specialisation for 15 message types.
   //***************************************************************************
-  template <typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3, typename T4, 
             typename T5, typename T6, typename T7, typename T8, 
             typename T9, typename T10, typename T11, typename T12, 
             typename T13, typename T14, typename T15>
-  class fsm_state<TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, void> : public ifsm_state
+  class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, void> : public ifsm_state
   {
   public:
 
@@ -424,6 +460,10 @@ namespace etl
     {
     }
 
+    inline TContext& get_fsm_context() const
+    {
+      return static_cast<TContext&>(ifsm_state::get_fsm_context());
+    }
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -458,12 +498,12 @@ namespace etl
   //***************************************************************************
   // Specialisation for 14 message types.
   //***************************************************************************
-  template <typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3, typename T4, 
             typename T5, typename T6, typename T7, typename T8, 
             typename T9, typename T10, typename T11, typename T12, 
             typename T13, typename T14>
-  class fsm_state<TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, void, void> : public ifsm_state
+  class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, void, void> : public ifsm_state
   {
   public:
 
@@ -477,6 +517,10 @@ namespace etl
     {
     }
 
+    inline TContext& get_fsm_context() const
+    {
+      return static_cast<TContext&>(ifsm_state::get_fsm_context());
+    }
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -510,12 +554,12 @@ namespace etl
   //***************************************************************************
   // Specialisation for 13 message types.
   //***************************************************************************
-  template <typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3, typename T4, 
             typename T5, typename T6, typename T7, typename T8, 
             typename T9, typename T10, typename T11, typename T12, 
             typename T13>
-  class fsm_state<TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, void, void, void> : public ifsm_state
+  class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, void, void, void> : public ifsm_state
   {
   public:
 
@@ -529,6 +573,10 @@ namespace etl
     {
     }
 
+    inline TContext& get_fsm_context() const
+    {
+      return static_cast<TContext&>(ifsm_state::get_fsm_context());
+    }
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -561,11 +609,11 @@ namespace etl
   //***************************************************************************
   // Specialisation for 12 message types.
   //***************************************************************************
-  template <typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3, typename T4, 
             typename T5, typename T6, typename T7, typename T8, 
             typename T9, typename T10, typename T11, typename T12>
-  class fsm_state<TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, void, void, void, void> : public ifsm_state
+  class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, void, void, void, void> : public ifsm_state
   {
   public:
 
@@ -579,6 +627,10 @@ namespace etl
     {
     }
 
+    inline TContext& get_fsm_context() const
+    {
+      return static_cast<TContext&>(ifsm_state::get_fsm_context());
+    }
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -610,11 +662,11 @@ namespace etl
   //***************************************************************************
   // Specialisation for 11 message types.
   //***************************************************************************
-  template <typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3, typename T4, 
             typename T5, typename T6, typename T7, typename T8, 
             typename T9, typename T10, typename T11>
-  class fsm_state<TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, void, void, void, void, void> : public ifsm_state
+  class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, void, void, void, void, void> : public ifsm_state
   {
   public:
 
@@ -628,6 +680,10 @@ namespace etl
     {
     }
 
+    inline TContext& get_fsm_context() const
+    {
+      return static_cast<TContext&>(ifsm_state::get_fsm_context());
+    }
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -658,11 +714,11 @@ namespace etl
   //***************************************************************************
   // Specialisation for 10 message types.
   //***************************************************************************
-  template <typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3, typename T4, 
             typename T5, typename T6, typename T7, typename T8, 
             typename T9, typename T10>
-  class fsm_state<TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, void, void, void, void, void, void> : public ifsm_state
+  class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, void, void, void, void, void, void> : public ifsm_state
   {
   public:
 
@@ -676,6 +732,10 @@ namespace etl
     {
     }
 
+    inline TContext& get_fsm_context() const
+    {
+      return static_cast<TContext&>(ifsm_state::get_fsm_context());
+    }
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -705,11 +765,11 @@ namespace etl
   //***************************************************************************
   // Specialisation for 9 message types.
   //***************************************************************************
-  template <typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3, typename T4, 
             typename T5, typename T6, typename T7, typename T8, 
             typename T9>
-  class fsm_state<TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, void, void, void, void, void, void, void> : public ifsm_state
+  class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, void, void, void, void, void, void, void> : public ifsm_state
   {
   public:
 
@@ -723,6 +783,10 @@ namespace etl
     {
     }
 
+    inline TContext& get_fsm_context() const
+    {
+      return static_cast<TContext&>(ifsm_state::get_fsm_context());
+    }
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -751,10 +815,10 @@ namespace etl
   //***************************************************************************
   // Specialisation for 8 message types.
   //***************************************************************************
-  template <typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3, typename T4, 
             typename T5, typename T6, typename T7, typename T8>
-  class fsm_state<TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, void, void, void, void, void, void, void, void> : public ifsm_state
+  class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, void, void, void, void, void, void, void, void> : public ifsm_state
   {
   public:
 
@@ -768,6 +832,10 @@ namespace etl
     {
     }
 
+    inline TContext& get_fsm_context() const
+    {
+      return static_cast<TContext&>(ifsm_state::get_fsm_context());
+    }
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -795,10 +863,10 @@ namespace etl
   //***************************************************************************
   // Specialisation for 7 message types.
   //***************************************************************************
-  template <typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3, typename T4, 
             typename T5, typename T6, typename T7>
-  class fsm_state<TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, void, void, void, void, void, void, void, void, void> : public ifsm_state
+  class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
   public:
 
@@ -812,6 +880,10 @@ namespace etl
     {
     }
 
+    inline TContext& get_fsm_context() const
+    {
+      return static_cast<TContext&>(ifsm_state::get_fsm_context());
+    }
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -838,10 +910,10 @@ namespace etl
   //***************************************************************************
   // Specialisation for 6 message types.
   //***************************************************************************
-  template <typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3, typename T4, 
             typename T5, typename T6>
-  class fsm_state<TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
+  class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
   public:
 
@@ -855,6 +927,10 @@ namespace etl
     {
     }
 
+    inline TContext& get_fsm_context() const
+    {
+      return static_cast<TContext&>(ifsm_state::get_fsm_context());
+    }
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -880,10 +956,10 @@ namespace etl
   //***************************************************************************
   // Specialisation for 5 message types.
   //***************************************************************************
-  template <typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3, typename T4, 
             typename T5>
-  class fsm_state<TDerived, STATE_ID_, T1, T2, T3, T4, T5, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
+  class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
   public:
 
@@ -897,6 +973,10 @@ namespace etl
     {
     }
 
+    inline TContext& get_fsm_context() const
+    {
+      return static_cast<TContext&>(ifsm_state::get_fsm_context());
+    }
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -921,9 +1001,9 @@ namespace etl
   //***************************************************************************
   // Specialisation for 4 message types.
   //***************************************************************************
-  template <typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3, typename T4>
-  class fsm_state<TDerived, STATE_ID_, T1, T2, T3, T4, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
+  class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
   public:
 
@@ -937,6 +1017,10 @@ namespace etl
     {
     }
 
+    inline TContext& get_fsm_context() const
+    {
+      return static_cast<TContext&>(ifsm_state::get_fsm_context());
+    }
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -960,9 +1044,9 @@ namespace etl
   //***************************************************************************
   // Specialisation for 3 message types.
   //***************************************************************************
-  template <typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3>
-  class fsm_state<TDerived, STATE_ID_, T1, T2, T3, void, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
+  class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, void, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
   public:
 
@@ -976,6 +1060,10 @@ namespace etl
     {
     }
 
+    inline TContext& get_fsm_context() const
+    {
+      return static_cast<TContext&>(ifsm_state::get_fsm_context());
+    }
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -998,9 +1086,9 @@ namespace etl
   //***************************************************************************
   // Specialisation for 2 message types.
   //***************************************************************************
-  template <typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2>
-  class fsm_state<TDerived, STATE_ID_, T1, T2, void, void, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
+  class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, void, void, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
   public:
 
@@ -1014,6 +1102,10 @@ namespace etl
     {
     }
 
+    inline TContext& get_fsm_context() const
+    {
+      return static_cast<TContext&>(ifsm_state::get_fsm_context());
+    }
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -1035,9 +1127,9 @@ namespace etl
   //***************************************************************************
   // Specialisation for 1 message type.
   //***************************************************************************
-  template <typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
             typename T1>
-  class fsm_state<TDerived, STATE_ID_, T1, void, void, void, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
+  class fsm_state<TContext, TDerived, STATE_ID_, T1, void, void, void, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
   public:
 
@@ -1051,6 +1143,10 @@ namespace etl
     {
     }
 
+    inline TContext& get_fsm_context() const
+    {
+      return static_cast<TContext&>(ifsm_state::get_fsm_context());
+    }
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -1071,8 +1167,8 @@ namespace etl
   //***************************************************************************
   // Specialisation for 0 message types.
   //***************************************************************************
-  template <typename TDerived, const etl::fsm_state_id_t STATE_ID_>
-  class fsm_state<TDerived, STATE_ID_, void, void, void, void, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
+  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_>
+  class fsm_state<TContext, TDerived, STATE_ID_, void, void, void, void, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
   public:
 
@@ -1086,6 +1182,10 @@ namespace etl
     {
     }
 
+    inline TContext& get_fsm_context() const
+    {
+      return static_cast<TContext&>(ifsm_state::get_fsm_context());
+    }
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)

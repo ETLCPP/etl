@@ -118,31 +118,30 @@ namespace
     ETL_END_ENUM_TYPE
   };
 
-  class MotorControl;
-
   //***********************************
-  // Common functionality
+  // The motor control FSM.
   //***********************************
-  class Common
+  class MotorControl : public etl::fsm
   {
   public:
 
-    //***********************************
-    Common()
+    MotorControl(etl::ifsm_state** p_states, size_t size)
+      : fsm(MOTOR_CONTROL)
     {
+      set_states(p_states, size);
       ClearStatistics();
     }
 
     //***********************************
     void ClearStatistics()
     {
-      startCount    = 0;
-      stopCount     = 0;
+      startCount = 0;
+      stopCount = 0;
       setSpeedCount = 0;
-      unknownCount  = 0;
-      stoppedCount  = 0;
-      isLampOn      = false;
-      speed         = 0;
+      unknownCount = 0;
+      stoppedCount = 0;
+      isLampOn = false;
+      speed = 0;
     }
 
     //***********************************
@@ -171,62 +170,47 @@ namespace
     bool isLampOn;
     int speed;
   };
-
+  
   //***********************************
   // The idle state.
   //***********************************
-  class Idle : public etl::fsm_state<Idle, StateId::IDLE, Start>
+  class Idle : public etl::fsm_state<MotorControl, Idle, StateId::IDLE, Start>
   {
   public:
 
     //***********************************
-    Idle(Common& common)
-      : common(common)
-    {
-    }
-
-    //***********************************
     etl::fsm_state_id_t on_event(etl::imessage_router& sender, const Start& event)
     {
-      ++common.startCount;
+      ++get_fsm_context().startCount;
       return StateId::RUNNING;
     }
 
     //***********************************
     etl::fsm_state_id_t on_event_unknown(etl::imessage_router& sender, const etl::imessage& event)
     {
-      ++common.unknownCount;
+      ++get_fsm_context().unknownCount;
       return STATE_ID;
     }
 
     //***********************************
     etl::fsm_state_id_t on_enter_state()
     {
-      common.TurnRunningLampOff();
-
+      get_fsm_context().TurnRunningLampOff();
       return StateId::LOCKED;
     }
-
-    Common& common;
   };
 
   //***********************************
   // The running state.
   //***********************************
-  class Running : public etl::fsm_state<Running, StateId::RUNNING, Stop, SetSpeed>
+  class Running : public etl::fsm_state<MotorControl, Running, StateId::RUNNING, Stop, SetSpeed>
   {
   public:
 
     //***********************************
-    Running(Common& common)
-      : common(common)
-    {
-    }
-
-    //***********************************
     etl::fsm_state_id_t on_event(etl::imessage_router& sender, const Stop& event)
     {
-      ++common.stopCount;
+      ++get_fsm_context().stopCount;
 
       if (event.isEmergencyStop)
       {
@@ -241,116 +225,76 @@ namespace
     //***********************************
     etl::fsm_state_id_t on_event(etl::imessage_router& sender, const SetSpeed& event)
     {
-      ++common.setSpeedCount;
-      common.SetSpeed(event.speed);
+      ++get_fsm_context().setSpeedCount;
+      get_fsm_context().SetSpeed(event.speed);
       return STATE_ID;
     }
 
     //***********************************
     etl::fsm_state_id_t on_event_unknown(etl::imessage_router& sender, const etl::imessage& event)
     {
-      ++common.unknownCount;
+      ++get_fsm_context().unknownCount;
       return STATE_ID;
     }
 
     //***********************************
     etl::fsm_state_id_t on_enter_state()
     {
-      common.TurnRunningLampOn();
+      get_fsm_context().TurnRunningLampOn();
 
       return STATE_ID;
     }
-
-    Common& common;
   };
 
   //***********************************
   // The winding down state.
   //***********************************
-  class WindingDown : public etl::fsm_state<WindingDown, StateId::WINDING_DOWN, Stopped>
+  class WindingDown : public etl::fsm_state<MotorControl, WindingDown, StateId::WINDING_DOWN, Stopped>
   {
   public:
 
     //***********************************
-    WindingDown(Common& common)
-      : common(common)
-    {
-    }
-
-    //***********************************
     etl::fsm_state_id_t on_event(etl::imessage_router& source, const Stopped& event)
     {
-      ++common.stoppedCount;
+      ++get_fsm_context().stoppedCount;
       return StateId::IDLE;
     }
 
     //***********************************
     etl::fsm_state_id_t on_event_unknown(etl::imessage_router& source, const etl::imessage& event)
     {
-      ++common.unknownCount;
+      ++get_fsm_context().unknownCount;
       return STATE_ID;
     }
-
-    Common& common;
   };
 
   //***********************************
   // The locked state.
   //***********************************
-  class Locked : public etl::fsm_state<Locked, StateId::LOCKED>
+  class Locked : public etl::fsm_state<MotorControl, Locked, StateId::LOCKED>
   {
   public:
-
-    //***********************************
-    Locked(Common& common)
-      : common(common)
-    {
-    }
 
     //***********************************
     etl::fsm_state_id_t on_event_unknown(etl::imessage_router& source, const etl::imessage& event)
     {
-      ++common.unknownCount;
+      ++get_fsm_context().unknownCount;
       return STATE_ID;
     }
-
-    Common& common;
   };
 
-  //***********************************
-  // The motor control FSM.
-  //***********************************
-  class MotorControl : public etl::fsm
+  // The states.
+  Idle        idle;
+  Running     running;
+  WindingDown windingDown;
+  Locked      locked;
+
+  etl::ifsm_state* stateList[StateId::NUMBER_OF_STATES] =
   {
-  public:
-
-    MotorControl()
-      : fsm(MOTOR_CONTROL),
-        idle(common),
-        running(common),
-        windingDown(common),
-        locked(common)
-    {
-      set_states(stateList, etl::size(stateList));
-    }
-
-    Common common;
-
-  private:
-
-    // The states.
-    Idle        idle;
-    Running     running;
-    WindingDown windingDown;
-    Locked      locked;
-
-    etl::ifsm_state* stateList[StateId::NUMBER_OF_STATES] =
-    {
-      &idle, &running, &windingDown, &locked
-    };
+    &idle, &running, &windingDown, &locked
   };
 
-  MotorControl motorControl;
+  MotorControl motorControl(stateList, etl::size(stateList));
 
   SUITE(test_map)
   {
@@ -360,7 +304,7 @@ namespace
       etl::null_message_router nmr;
 
       motorControl.reset();
-      motorControl.common.ClearStatistics();
+      motorControl.ClearStatistics();
 
       CHECK(!motorControl.is_started());
 
@@ -373,13 +317,13 @@ namespace
       CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
       CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state().get_state_id()));
 
-      CHECK_EQUAL(false, motorControl.common.isLampOn);
-      CHECK_EQUAL(0, motorControl.common.setSpeedCount);
-      CHECK_EQUAL(0, motorControl.common.speed);
-      CHECK_EQUAL(0, motorControl.common.startCount);
-      CHECK_EQUAL(0, motorControl.common.stopCount);
-      CHECK_EQUAL(0, motorControl.common.stoppedCount);
-      CHECK_EQUAL(0, motorControl.common.unknownCount);
+      CHECK_EQUAL(false, motorControl.isLampOn);
+      CHECK_EQUAL(0, motorControl.setSpeedCount);
+      CHECK_EQUAL(0, motorControl.speed);
+      CHECK_EQUAL(0, motorControl.startCount);
+      CHECK_EQUAL(0, motorControl.stopCount);
+      CHECK_EQUAL(0, motorControl.stoppedCount);
+      CHECK_EQUAL(0, motorControl.unknownCount);
 
       // Send unhandled events.
       motorControl.receive(nmr, Stop());
@@ -389,13 +333,13 @@ namespace
       CHECK_EQUAL(StateId::IDLE, motorControl.get_state_id());
       CHECK_EQUAL(StateId::IDLE, motorControl.get_state().get_state_id());
 
-      CHECK_EQUAL(false, motorControl.common.isLampOn);
-      CHECK_EQUAL(0, motorControl.common.setSpeedCount);
-      CHECK_EQUAL(0, motorControl.common.speed);
-      CHECK_EQUAL(0, motorControl.common.startCount);
-      CHECK_EQUAL(0, motorControl.common.stopCount);
-      CHECK_EQUAL(0, motorControl.common.stoppedCount);
-      CHECK_EQUAL(3, motorControl.common.unknownCount);
+      CHECK_EQUAL(false, motorControl.isLampOn);
+      CHECK_EQUAL(0, motorControl.setSpeedCount);
+      CHECK_EQUAL(0, motorControl.speed);
+      CHECK_EQUAL(0, motorControl.startCount);
+      CHECK_EQUAL(0, motorControl.stopCount);
+      CHECK_EQUAL(0, motorControl.stoppedCount);
+      CHECK_EQUAL(3, motorControl.unknownCount);
 
       // Send Start event.
       motorControl.receive(nmr, Start());
@@ -405,13 +349,13 @@ namespace
       CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state_id()));
       CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state().get_state_id()));
 
-      CHECK_EQUAL(true, motorControl.common.isLampOn);
-      CHECK_EQUAL(0, motorControl.common.setSpeedCount);
-      CHECK_EQUAL(0, motorControl.common.speed);
-      CHECK_EQUAL(1, motorControl.common.startCount);
-      CHECK_EQUAL(0, motorControl.common.stopCount);
-      CHECK_EQUAL(0, motorControl.common.stoppedCount);
-      CHECK_EQUAL(3, motorControl.common.unknownCount);
+      CHECK_EQUAL(true, motorControl.isLampOn);
+      CHECK_EQUAL(0, motorControl.setSpeedCount);
+      CHECK_EQUAL(0, motorControl.speed);
+      CHECK_EQUAL(1, motorControl.startCount);
+      CHECK_EQUAL(0, motorControl.stopCount);
+      CHECK_EQUAL(0, motorControl.stoppedCount);
+      CHECK_EQUAL(3, motorControl.unknownCount);
 
       // Send unhandled events.
       motorControl.receive(nmr, Start());
@@ -420,13 +364,13 @@ namespace
       CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state_id()));
       CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state().get_state_id()));
 
-      CHECK_EQUAL(true, motorControl.common.isLampOn);
-      CHECK_EQUAL(0, motorControl.common.setSpeedCount);
-      CHECK_EQUAL(0, motorControl.common.speed);
-      CHECK_EQUAL(1, motorControl.common.startCount);
-      CHECK_EQUAL(0, motorControl.common.stopCount);
-      CHECK_EQUAL(0, motorControl.common.stoppedCount);
-      CHECK_EQUAL(5, motorControl.common.unknownCount);
+      CHECK_EQUAL(true, motorControl.isLampOn);
+      CHECK_EQUAL(0, motorControl.setSpeedCount);
+      CHECK_EQUAL(0, motorControl.speed);
+      CHECK_EQUAL(1, motorControl.startCount);
+      CHECK_EQUAL(0, motorControl.stopCount);
+      CHECK_EQUAL(0, motorControl.stoppedCount);
+      CHECK_EQUAL(5, motorControl.unknownCount);
 
       // Send SetSpeed event.
       motorControl.receive(nmr, SetSpeed(100));
@@ -436,13 +380,13 @@ namespace
       CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state_id()));
       CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state().get_state_id()));
 
-      CHECK_EQUAL(true, motorControl.common.isLampOn);
-      CHECK_EQUAL(1, motorControl.common.setSpeedCount);
-      CHECK_EQUAL(100, motorControl.common.speed);
-      CHECK_EQUAL(1, motorControl.common.startCount);
-      CHECK_EQUAL(0, motorControl.common.stopCount);
-      CHECK_EQUAL(0, motorControl.common.stoppedCount);
-      CHECK_EQUAL(5, motorControl.common.unknownCount);
+      CHECK_EQUAL(true, motorControl.isLampOn);
+      CHECK_EQUAL(1, motorControl.setSpeedCount);
+      CHECK_EQUAL(100, motorControl.speed);
+      CHECK_EQUAL(1, motorControl.startCount);
+      CHECK_EQUAL(0, motorControl.stopCount);
+      CHECK_EQUAL(0, motorControl.stoppedCount);
+      CHECK_EQUAL(5, motorControl.unknownCount);
 
       // Send Stop event.
       motorControl.receive(nmr, Stop());
@@ -452,13 +396,13 @@ namespace
       CHECK_EQUAL(StateId::WINDING_DOWN, int(motorControl.get_state_id()));
       CHECK_EQUAL(StateId::WINDING_DOWN, int(motorControl.get_state().get_state_id()));
 
-      CHECK_EQUAL(true, motorControl.common.isLampOn);
-      CHECK_EQUAL(1, motorControl.common.setSpeedCount);
-      CHECK_EQUAL(100, motorControl.common.speed);
-      CHECK_EQUAL(1, motorControl.common.startCount);
-      CHECK_EQUAL(1, motorControl.common.stopCount);
-      CHECK_EQUAL(0, motorControl.common.stoppedCount);
-      CHECK_EQUAL(5, motorControl.common.unknownCount);
+      CHECK_EQUAL(true, motorControl.isLampOn);
+      CHECK_EQUAL(1, motorControl.setSpeedCount);
+      CHECK_EQUAL(100, motorControl.speed);
+      CHECK_EQUAL(1, motorControl.startCount);
+      CHECK_EQUAL(1, motorControl.stopCount);
+      CHECK_EQUAL(0, motorControl.stoppedCount);
+      CHECK_EQUAL(5, motorControl.unknownCount);
 
       // Send unhandled events.
       motorControl.receive(nmr, Start());
@@ -468,13 +412,13 @@ namespace
       CHECK_EQUAL(StateId::WINDING_DOWN, int(motorControl.get_state_id()));
       CHECK_EQUAL(StateId::WINDING_DOWN, int(motorControl.get_state().get_state_id()));
 
-      CHECK_EQUAL(true, motorControl.common.isLampOn);
-      CHECK_EQUAL(1, motorControl.common.setSpeedCount);
-      CHECK_EQUAL(100, motorControl.common.speed);
-      CHECK_EQUAL(1, motorControl.common.startCount);
-      CHECK_EQUAL(1, motorControl.common.stopCount);
-      CHECK_EQUAL(0, motorControl.common.stoppedCount);
-      CHECK_EQUAL(8, motorControl.common.unknownCount);
+      CHECK_EQUAL(true, motorControl.isLampOn);
+      CHECK_EQUAL(1, motorControl.setSpeedCount);
+      CHECK_EQUAL(100, motorControl.speed);
+      CHECK_EQUAL(1, motorControl.startCount);
+      CHECK_EQUAL(1, motorControl.stopCount);
+      CHECK_EQUAL(0, motorControl.stoppedCount);
+      CHECK_EQUAL(8, motorControl.unknownCount);
 
       // Send Stopped event.
       motorControl.receive(nmr, Stopped());
@@ -483,13 +427,13 @@ namespace
       CHECK_EQUAL(StateId::LOCKED, int(motorControl.get_state_id()));
       CHECK_EQUAL(StateId::LOCKED, int(motorControl.get_state().get_state_id()));
 
-      CHECK_EQUAL(false, motorControl.common.isLampOn);
-      CHECK_EQUAL(1, motorControl.common.setSpeedCount);
-      CHECK_EQUAL(100, motorControl.common.speed);
-      CHECK_EQUAL(1, motorControl.common.startCount);
-      CHECK_EQUAL(1, motorControl.common.stopCount);
-      CHECK_EQUAL(1, motorControl.common.stoppedCount);
-      CHECK_EQUAL(8, motorControl.common.unknownCount);
+      CHECK_EQUAL(false, motorControl.isLampOn);
+      CHECK_EQUAL(1, motorControl.setSpeedCount);
+      CHECK_EQUAL(100, motorControl.speed);
+      CHECK_EQUAL(1, motorControl.startCount);
+      CHECK_EQUAL(1, motorControl.stopCount);
+      CHECK_EQUAL(1, motorControl.stoppedCount);
+      CHECK_EQUAL(8, motorControl.unknownCount);
     }
 
     //*************************************************************************
@@ -498,7 +442,7 @@ namespace
       etl::null_message_router nmr;
 
       motorControl.reset();
-      motorControl.common.ClearStatistics();
+      motorControl.ClearStatistics();
 
       CHECK(!motorControl.is_started());
 
@@ -516,13 +460,13 @@ namespace
       CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state_id()));
       CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state().get_state_id()));
 
-      CHECK_EQUAL(true, motorControl.common.isLampOn);
-      CHECK_EQUAL(0, motorControl.common.setSpeedCount);
-      CHECK_EQUAL(0, motorControl.common.speed);
-      CHECK_EQUAL(1, motorControl.common.startCount);
-      CHECK_EQUAL(0, motorControl.common.stopCount);
-      CHECK_EQUAL(0, motorControl.common.stoppedCount);
-      CHECK_EQUAL(0, motorControl.common.unknownCount);
+      CHECK_EQUAL(true, motorControl.isLampOn);
+      CHECK_EQUAL(0, motorControl.setSpeedCount);
+      CHECK_EQUAL(0, motorControl.speed);
+      CHECK_EQUAL(1, motorControl.startCount);
+      CHECK_EQUAL(0, motorControl.stopCount);
+      CHECK_EQUAL(0, motorControl.stoppedCount);
+      CHECK_EQUAL(0, motorControl.unknownCount);
 
       // Send emergency Stop event.
       motorControl.receive(nmr, Stop(true));
@@ -531,13 +475,13 @@ namespace
       CHECK_EQUAL(StateId::LOCKED, int(motorControl.get_state_id()));
       CHECK_EQUAL(StateId::LOCKED, int(motorControl.get_state().get_state_id()));
 
-      CHECK_EQUAL(false, motorControl.common.isLampOn);
-      CHECK_EQUAL(0, motorControl.common.setSpeedCount);
-      CHECK_EQUAL(0, motorControl.common.speed);
-      CHECK_EQUAL(1, motorControl.common.startCount);
-      CHECK_EQUAL(1, motorControl.common.stopCount);
-      CHECK_EQUAL(0, motorControl.common.stoppedCount);
-      CHECK_EQUAL(0, motorControl.common.unknownCount);
+      CHECK_EQUAL(false, motorControl.isLampOn);
+      CHECK_EQUAL(0, motorControl.setSpeedCount);
+      CHECK_EQUAL(0, motorControl.speed);
+      CHECK_EQUAL(1, motorControl.startCount);
+      CHECK_EQUAL(1, motorControl.stopCount);
+      CHECK_EQUAL(0, motorControl.stoppedCount);
+      CHECK_EQUAL(0, motorControl.unknownCount);
     }
 
     //*************************************************************************

@@ -43,7 +43,9 @@ struct Common
 {
   //*********************************************
   Common()
-    : callback(*this, &Common::IdleCallback)
+    : idle_callback(*this, &Common::IdleCallback),
+      watchdog_callback(*this, &Common::WatchdogCallback),
+      watchdog_called(false)
   {
   }
 
@@ -59,9 +61,17 @@ struct Common
     pScheduler->exit_scheduler();
   }
 
+  //*********************************************
+  void WatchdogCallback()
+  {
+    watchdog_called = true;
+  }
+
   WorkList_t workList;
-  etl::function<Common, void> callback;
+  etl::function<Common, void> idle_callback;
+  etl::function<Common, void> watchdog_callback;
   etl::ischeduler* pScheduler;
+  bool watchdog_called;
 };
 
 //*****************************************************************************
@@ -101,7 +111,7 @@ public:
   }
 
   //*********************************************
-  uint_least8_t task_request_work() const
+  uint32_t task_request_work() const
   {
     return uint_least8_t(work.size() - workIndex);
   }
@@ -164,13 +174,15 @@ namespace
       common.Clear();
       common.pScheduler = &s;
 
-      s.set_idle_callback(common.callback);
+      s.set_idle_callback(common.idle_callback);
+      s.set_watchdog_callback(common.watchdog_callback);
       s.add_task_list(taskList, etl::size(taskList));
       s.start(); // If 'start' returns then the idle callback was sucessfully called.
 
       WorkList_t expected = { "T3W1", "T2W1", "T1W1", "T3W2", "T2W2", "T1W2", "T3W3", "T2W3", "T1W3", "T2W4" };
 
       CHECK(expected == common.workList);
+      CHECK(common.watchdog_called);
     }
 
     //=========================================================================
@@ -187,13 +199,15 @@ namespace
       common.Clear();
       common.pScheduler = &s;
 
-      s.set_idle_callback(common.callback);
+      s.set_idle_callback(common.idle_callback);
+      s.set_watchdog_callback(common.watchdog_callback);
       s.add_task_list(taskList, etl::size(taskList));
       s.start(); // If 'start' returns then the idle callback was sucessfully called.
 
       WorkList_t expected = { "T3W1", "T3W2", "T2W1", "T2W2", "T2W3", "T2W4", "T1W1", "T1W2", "T1W3", "T3W3" };
 
       CHECK(expected == common.workList);
+      CHECK(common.watchdog_called);
     }
 
     //=========================================================================
@@ -210,13 +224,15 @@ namespace
       common.Clear();
       common.pScheduler = &s;
 
-      s.set_idle_callback(common.callback);
+      s.set_idle_callback(common.idle_callback);
+      s.set_watchdog_callback(common.watchdog_callback);
       s.add_task_list(taskList, etl::size(taskList));
       s.start(); // If 'start' returns then the idle callback was sucessfully called.
 
       WorkList_t expected = { "T3W1", "T3W2", "T2W1", "T2W2", "T3W3", "T2W3", "T2W4", "T1W1", "T1W2", "T1W3" };
 
       CHECK(expected == common.workList);
+      CHECK(common.watchdog_called);
     }
 
     //=========================================================================
@@ -233,13 +249,15 @@ namespace
       common.Clear();
       common.pScheduler = &s;
 
-      s.set_idle_callback(common.callback);
+      s.set_idle_callback(common.idle_callback);
+      s.set_watchdog_callback(common.watchdog_callback);
       s.add_task_list(taskList, etl::size(taskList));
       s.start(); // If 'start' returns then the idle callback was sucessfully called.
 
       WorkList_t expected = { "T2W1", "T2W2", "T1W1", "T3W1", "T2W3", "T3W2", "T1W2", "T3W3", "T2W4", "T1W3" };
 
       CHECK(expected == common.workList);
+      CHECK(common.watchdog_called);
     }
   };
 }

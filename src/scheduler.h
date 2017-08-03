@@ -84,6 +84,19 @@ namespace etl
   };
 
   //***************************************************************************
+  /// 'Too many tasks' exception.
+  //***************************************************************************
+  class scheduler_too_many_tasks_exception : public etl::scheduler_exception
+  {
+  public:
+
+    scheduler_too_many_tasks_exception(string_type file_name, numeric_type line_number)
+      : etl::scheduler_exception(ETL_ERROR_TEXT("scheduler:too many tasks", ETL_FILE"C"), file_name, line_number)
+    {
+    }
+  };
+
+  //***************************************************************************
   /// Sequencial Single.
   /// A policy the scheduler can use to decide what to do next.
   /// Only calls the task to process work once, if it has work to do.
@@ -134,7 +147,7 @@ namespace etl
       return idle;
     }
   };
-  
+
   //***************************************************************************
   /// Highest Priority.
   /// A policy the scheduler can use to decide what to do next.
@@ -155,7 +168,7 @@ namespace etl
         {
           task.task_process_work();
           idle = false;
-          index = 0; // Restart from the top of the list.
+          break;
         }
         else
         {
@@ -213,12 +226,11 @@ namespace etl
   public:
 
     //*******************************************
-    /// Constructor.
+    // Virtuals.
     //*******************************************
-    ischeduler()
-      : scheduler_running(false),
-        scheduler_exit(false),
-        p_idle_callback(nullptr)
+    virtual void start() = 0;
+
+    virtual ~ischeduler()
     {
     }
 
@@ -228,6 +240,14 @@ namespace etl
     void set_idle_callback(etl::ifunction<void>& callback)
     {
       p_idle_callback = &callback;
+    }
+
+    //*******************************************
+    /// Set the watchdog callback.
+    //*******************************************
+    void set_watchdog_callback(etl::ifunction<void>& callback)
+    {
+      p_watchdog_callback = &callback;
     }
 
     //*******************************************
@@ -254,38 +274,23 @@ namespace etl
       scheduler_exit = true;
     }
 
-  protected:
-
-    bool scheduler_running;
-    bool scheduler_exit;
-    etl::ifunction<void>* p_idle_callback;
-  };
-
-  //***************************************************************************
-  /// Scheduler.
-  //***************************************************************************
-  template <typename TSchedulerPolicy, size_t MAX_TASKS_>
-  class scheduler : public etl::ischeduler, protected TSchedulerPolicy
-  {
-  public:
-
-    enum
-    {
-      MAX_TASKS = MAX_TASKS_,
-    };
-
     //*******************************************
     /// Add a task.
     /// Add to the task list in priority order.
     //*******************************************
     void add_task(etl::task& task)
     {
-      typename task_list_t::iterator itask = std::lower_bound(task_list.begin(),
-                                                              task_list.end(),
-                                                              task.get_task_priority(),
-                                                              compare_priority());
+      ETL_ASSERT(!task_list.full(), ETL_ERROR(etl::scheduler_too_many_tasks_exception))
 
-      task_list.insert(itask, &task);
+      if (!task_list.full())
+      {
+        typename task_list_t::iterator itask = std::upper_bound(task_list.begin(),
+                                                                task_list.end(),
+                                                                task.get_task_priority(),
+                                                                compare_priority());
+
+        task_list.insert(itask, &task);
+      }
     }
 
     //*******************************************
@@ -301,6 +306,65 @@ namespace etl
         ETL_ASSERT((p_tasks[i] != nullptr), ETL_ERROR(etl::scheduler_null_task_exception));
         add_task(*(p_tasks[i]));
       }
+    }
+
+  protected:
+
+    //*******************************************
+    /// Constructor.
+    //*******************************************
+    ischeduler(etl::ivector<etl::task*>& task_list_)
+      : scheduler_running(false),
+        scheduler_exit(false),
+        p_idle_callback(nullptr),
+        p_watchdog_callback(nullptr),
+        task_list(task_list_)
+    {
+    }
+
+    bool scheduler_running;
+    bool scheduler_exit;
+    etl::ifunction<void>* p_idle_callback;
+    etl::ifunction<void>* p_watchdog_callback;
+
+  private:
+
+    //*******************************************
+    // Used to order tasks in descending priority.
+    //*******************************************
+    struct compare_priority
+    {
+      bool operator()(etl::task* ptask, etl::task_priority_t priority) const
+      {
+        return ptask->get_task_priority() > priority;
+      }
+
+      bool operator()(etl::task_priority_t priority, etl::task* ptask) const
+      {
+        return priority > ptask->get_task_priority();
+      }
+    };
+
+    typedef etl::ivector<etl::task*> task_list_t;
+    task_list_t& task_list;
+  };
+
+  //***************************************************************************
+  /// Scheduler.
+  //***************************************************************************
+  template <typename TSchedulerPolicy, size_t MAX_TASKS_>
+  class scheduler : public etl::ischeduler, protected TSchedulerPolicy
+  {
+  public:
+
+    enum
+    {
+      MAX_TASKS = MAX_TASKS_,
+    };
+
+    scheduler()
+      : ischeduler(task_list)
+    {
     }
 
     //*******************************************
@@ -321,6 +385,11 @@ namespace etl
         {
           bool idle = TSchedulerPolicy::schedule_tasks(task_list);
 
+          if (p_watchdog_callback)
+          {
+            (*p_watchdog_callback)();
+          }
+
           if (idle && p_idle_callback)
           {
             (*p_idle_callback)();
@@ -330,17 +399,6 @@ namespace etl
     }
 
   private:
-
-    //*******************************************
-    // Used to order tasks in descending priority.
-    //*******************************************
-    struct compare_priority
-    {
-      bool operator()(etl::task* ptask, etl::task_priority_t priority) const
-      {
-        return ptask->get_task_priority() > priority;
-      }
-    };
 
     typedef etl::vector<etl::task*, MAX_TASKS> task_list_t;
     task_list_t task_list;

@@ -471,6 +471,12 @@
     <ClInclude Include="..\..\src\message_types.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\scheduler.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\task.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -807,6 +813,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_message_bus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_user_type.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

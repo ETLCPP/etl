@@ -81,7 +81,7 @@ namespace etl
     /// Called to check if the task has work.
     /// Returns a score as to the amount of work it has to do.
     //*******************************************
-    virtual uint_least8_t task_request_work() const = 0;
+    virtual uint32_t task_request_work() const = 0;
 
     //*******************************************
     /// Called to get the task to do work.
