@@ -89,43 +89,16 @@ SOFTWARE.
     TypeName operator ++(int) { TypeName temp(*this); TypeName::operator ++(); return temp; } \
     TypeName& operator --() { --value; return *this; } \
     TypeName operator --(int) { TypeName temp(*this); TypeName::operator --(); return temp; } \
-    TypeName& operator +=(const TypeName& rhs) { value += rhs.value; return *this; } \
-    TypeName& operator -=(const TypeName& rhs) { value -= rhs.value; return *this; } \
-    TypeName& operator *=(const TypeName& rhs) { value *= rhs.value; return *this; } \
-    TypeName& operator /=(const TypeName& rhs) { value /= rhs.value; return *this; } \
-    TypeName& operator %=(const TypeName& rhs) { value %= rhs.value; return *this; } \
-    TypeName& operator &=(const TypeName& rhs) { value &= rhs.value; return *this; } \
-    TypeName& operator &=(ValueType mask) { value &= mask; return *this; } \
-    TypeName& operator |=(const TypeName& rhs) { value |= rhs.value; return *this; } \
-    TypeName& operator |=(ValueType mask) { value &= mask; return *this; } \
-    TypeName& operator ^=(const TypeName& rhs) { value ^= rhs.value; return *this; } \
-    TypeName& operator ^=(ValueType mask) { value ^= mask; return *this; } \
+    TypeName& operator +=(const ValueType& rhs) { value += rhs; return *this; } \
+    TypeName& operator -=(const ValueType& rhs) { value -= rhs; return *this; } \
+    TypeName& operator *=(const ValueType& rhs) { value *= rhs; return *this; } \
+    TypeName& operator /=(const ValueType& rhs) { value /= rhs; return *this; } \
+    TypeName& operator %=(const ValueType& rhs) { value %= rhs; return *this; } \
+    TypeName& operator &=(const ValueType& rhs) { value &= rhs; return *this; } \
+    TypeName& operator |=(const ValueType& rhs) { value |= rhs; return *this; } \
+    TypeName& operator ^=(const ValueType& rhs) { value ^= rhs; return *this; } \
     TypeName& operator <<=(ValueType distance) { value <<= distance; return *this; } \
     TypeName& operator >>=(ValueType distance) { value >>= distance; return *this; } \
-    \
-    /* Volatile definitions.*/ \
-    TypeName(const volatile TypeName &other) : value(other.value) {} \
-    void operator=(const volatile TypeName &other) volatile { value = other.value; } \
-    operator ValueType() volatile const { return value; } \
-    volatile ValueType& get() volatile { return value; } \
-    const volatile ValueType& get() volatile const { return value; } \
-    void operator ++() volatile { ++value; } \
-    volatile TypeName operator ++(int) volatile { volatile TypeName temp(*this); TypeName::operator ++(); return temp; } \
-    void operator --() volatile { --value; } \
-    volatile TypeName operator --(int) volatile { volatile TypeName temp(*this); TypeName::operator --(); return temp; } \
-    void operator +=(const volatile TypeName& rhs) volatile { value += rhs.value; } \
-    void operator -=(const volatile TypeName& rhs) volatile { value -= rhs.value; } \
-    void operator *=(const volatile TypeName& rhs) volatile { value *= rhs.value; } \
-    void operator /=(const volatile TypeName& rhs) volatile { value /= rhs.value; } \
-    void operator %=(const volatile TypeName& rhs) volatile { value %= rhs.value; } \
-    void operator &=(const volatile TypeName& rhs) volatile { value &= rhs.value; } \
-    void operator &=(ValueType mask) volatile { value &= mask; } \
-    void operator |=(const volatile TypeName& rhs) volatile { value |= rhs.value; } \
-    void operator |=(ValueType mask) volatile { value &= mask; } \
-    void operator ^=(const volatile TypeName& rhs) volatile { value ^= rhs.value; } \
-    void operator ^=(ValueType mask) volatile { value ^= mask; } \
-    void operator <<=(ValueType distance) volatile { value <<= distance; } \
-    void operator >>=(ValueType distance) volatile { value >>= distance; } \
   private: \
     ValueType value; \
   public: \

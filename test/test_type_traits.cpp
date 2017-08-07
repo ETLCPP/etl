@@ -41,14 +41,20 @@ namespace std
 #include "type_traits.h"
 #include <type_traits>
 
-// A class to test non-fundamental types.
-struct Test
-{
-  int a;
-};
-
 namespace
 {
+  // A class to test non-fundamental types.
+  struct Test
+  {
+    int a;
+  };
+
+  // A class to test etl::is_one_of
+  template <const int I>
+  struct Type
+  {
+  };
+
   SUITE(test_type_traits)
   {
     //*************************************************************************
@@ -524,6 +530,56 @@ namespace
       CHECK(std::alignment_of<float>::value              == etl::alignment_of<float>::value);
       CHECK(std::alignment_of<double>::value             == etl::alignment_of<double>::value);
       CHECK(std::alignment_of<Test>::value               == etl::alignment_of<Test>::value);
+    }
+
+    //*************************************************************************
+    TEST(test_is_one_of)
+    {
+      typedef Type<0> T0;
+      typedef Type<1> T1;
+      typedef Type<2> T2;
+      typedef Type<3> T3;
+      typedef Type<4> T4;
+
+      CHECK(bool(etl::is_one_of<char, char>::value));
+      CHECK(!(etl::is_one_of<char, T0>::value));
+
+      CHECK(bool(etl::is_one_of<char, T0, char>::value));
+      CHECK(!(etl::is_one_of<char, T0, T1>::value));
+
+      CHECK(bool(etl::is_one_of<char, T0, T1, char>::value));
+      CHECK(!(etl::is_one_of<char, T0, T1, T2>::value));
+
+      CHECK(bool(etl::is_one_of<char, T0, T1, T2, char>::value));
+      CHECK(!(etl::is_one_of<char, T0, T1, T2, T3>::value));
+
+      CHECK(bool(etl::is_one_of<char, T0, T1, T2, char>::value));
+      CHECK(!(etl::is_one_of<char, T0, T1, T2, T3>::value));
+
+      CHECK(bool(etl::is_one_of<char, char, T0, T1, T2, T3>::value));
+      CHECK(bool(etl::is_one_of<char, T0, char, T1, T2, T3>::value));
+      CHECK(bool(etl::is_one_of<char, T0, T1, char, T2, T3>::value));
+      CHECK(bool(etl::is_one_of<char, T0, T1, T2, char, T3>::value));
+      CHECK(bool(etl::is_one_of<char, T0, T1, T2, T3, char>::value));
+      CHECK(!(etl::is_one_of<char, T0, T1, T2, T3, T4>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_is_base_of)
+    {
+      struct A { };
+      struct B : public A { };
+      struct C { };
+
+      CHECK((std::is_base_of<A, A>::value) == (etl::is_base_of<A, A>::value));
+      CHECK((std::is_base_of<A, B>::value) == (etl::is_base_of<A, B>::value));
+      CHECK((std::is_base_of<A, C>::value) == (etl::is_base_of<A, C>::value));
+      CHECK((std::is_base_of<B, A>::value) == (etl::is_base_of<B, A>::value));
+      CHECK((std::is_base_of<B, B>::value) == (etl::is_base_of<B, B>::value));
+      CHECK((std::is_base_of<B, C>::value) == (etl::is_base_of<B, C>::value));
+      CHECK((std::is_base_of<C, A>::value) == (etl::is_base_of<C, A>::value));
+      CHECK((std::is_base_of<C, B>::value) == (etl::is_base_of<C, B>::value));
+      CHECK((std::is_base_of<C, C>::value) == (etl::is_base_of<C, C>::value));
     }
   };
 }

@@ -662,6 +662,27 @@ namespace etl
 
     return i_begin;
   }
+
+  //*****************************************************************************
+  /// Copy constructs a derived class to an address.
+  ///\tparam T The derived type.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  struct create_copy
+  {
+    void create_copy_at(void* p)
+    {
+      new (p) T(static_cast<const T&>(*this));
+    }
+
+    template <typename TCounter>
+    void create_copy_at(void* p, TCounter& count)
+    {
+      new (p) T(static_cast<const T&>(*this));
+      ++count;
+    }
+  };
 }
 
 #endif
