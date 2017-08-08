@@ -256,7 +256,7 @@ namespace
     TEST(test_random_fast_sequence)
     {
       std::vector<uint32_t> out1(10000);
-      etl::random_multiply_with_carry r;
+      etl::random_mwc r;
 
       struct generator
       {
@@ -275,7 +275,7 @@ namespace
 
       std::generate(out1.begin(), out1.end(), generator(r));
 
-      std::ofstream file("random_multiply_with_carry.csv");
+      std::ofstream file("random_mwc.csv");
 
       if (!file.fail())
       {
@@ -291,7 +291,7 @@ namespace
     //=========================================================================
     TEST(test_random_fast_range)
     {
-      etl::random_multiply_with_carry r;
+      etl::random_mwc r;
 
       uint32_t low = 1234;
       uint32_t high = 9876;

@@ -421,7 +421,7 @@ namespace etl
   //***************************************************************************
   /// binary_find
   ///\ingroup algorithm
-  /// Deoas a binary search and returns an iterator to the value or end if not found.
+  /// Does a binary search and returns an iterator to the value or end if not found.
   //***************************************************************************
   template <typename TIterator,
             typename TValue>
@@ -442,7 +442,7 @@ namespace etl
   //***************************************************************************
   /// binary_find
   ///\ingroup algorithm
-  /// Deoas a binary search and returns an iterator to the value or end if not found.
+  /// Does a binary search and returns an iterator to the value or end if not found.
   //***************************************************************************
   template <typename TIterator,
             typename TValue,
