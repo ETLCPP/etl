@@ -238,9 +238,62 @@ namespace
     //=========================================================================
     TEST(test_random_lfsr_range)
     {
-      etl::random_lsfr r(7);
+      etl::random_lsfr r;
 
       uint32_t low  = 1234;
+      uint32_t high = 9876;
+
+      for (int i = 0; i < 100000; ++i)
+      {
+        uint32_t n = r.range(low, high);
+
+        CHECK(n >= low);
+        CHECK(n <= high);
+      }
+    }
+
+    //=========================================================================
+    TEST(test_random_fast_sequence)
+    {
+      std::vector<uint32_t> out1(10000);
+      etl::random_multiply_with_carry r;
+
+      struct generator
+      {
+        generator(etl::random& r_)
+          : r(r_)
+        {
+        }
+
+        uint32_t operator()()
+        {
+          return r();
+        }
+
+        etl::random& r;
+      };
+
+      std::generate(out1.begin(), out1.end(), generator(r));
+
+      std::ofstream file("random_multiply_with_carry.csv");
+
+      if (!file.fail())
+      {
+        for (size_t i = 0; i < out1.size(); i += 2)
+        {
+          file << out1[i] << "," << out1[i + 1] << "\n";
+        }
+      }
+
+      file.close();
+    }
+
+    //=========================================================================
+    TEST(test_random_fast_range)
+    {
+      etl::random_multiply_with_carry r;
+
+      uint32_t low = 1234;
       uint32_t high = 9876;
 
       for (int i = 0; i < 100000; ++i)

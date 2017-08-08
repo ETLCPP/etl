@@ -324,9 +324,6 @@
     <ClInclude Include="..\..\src\unordered_multimap.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\random.h">
-      <Filter>ETL\Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\user_type.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
@@ -476,6 +473,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\task.h">
       <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\random.h">
+      <Filter>ETL\Maths</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -707,9 +707,6 @@
     <ClCompile Include="..\test_intrusive_queue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\random.cpp">
-      <Filter>ETL\Utilities</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_random.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -817,6 +814,9 @@
     </ClCompile>
     <ClCompile Include="..\test_user_type.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\random.cpp">
+      <Filter>ETL\Maths</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
