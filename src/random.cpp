@@ -288,4 +288,64 @@ namespace etl
 
     return n;
   }
+
+  //***************************************************************************
+  // Multiply with carry random number generator.
+  //***************************************************************************
+
+  //***************************************************************************
+  /// Default constructor.
+  /// Attempts to come up with a unique non-zero seed.
+  //***************************************************************************
+  random_multiply_with_carry::random_multiply_with_carry()
+  {
+    // An attempt to come up with a unique non-zero seed,
+    // based on the address of the instance.
+    uintptr_t n = reinterpret_cast<uintptr_t>(this);
+    uint32_t  seed = static_cast<uint32_t>(n);
+    initialise(seed);
+  }
+
+  //***************************************************************************
+  /// Constructor with seed value.
+  ///\param seed The new seed value.
+  //***************************************************************************
+  random_multiply_with_carry::random_multiply_with_carry(uint32_t seed)
+  {
+    initialise(seed);
+  }
+
+  //***************************************************************************
+  /// Initialises the sequence with a new seed value.
+  ///\param seed The new seed value.
+  //***************************************************************************
+  void random_multiply_with_carry::initialise(uint32_t seed)
+  {
+    value1 = seed;
+    value2 = seed;
+  }
+
+  //***************************************************************************
+  /// Get the next random_lsfr number.
+  //***************************************************************************
+  uint32_t random_multiply_with_carry::operator()()
+  {
+    value1 = 36969 * (value1 & 0xFFFF) + (value1 >> 16);
+    value2 = 18000 * (value2 & 0xFFFF) + (value2 >> 16);
+
+    return (value1 << 16) + value2;
+  }
+
+  //***************************************************************************
+  /// Get the next random_lsfr number in a specified inclusive range.
+  //***************************************************************************
+  uint32_t random_multiply_with_carry::range(uint32_t low, uint32_t high)
+  {
+    uint32_t r = high - low + 1;
+    uint32_t n = operator()();
+    n %= r;
+    n += low;
+
+    return n;
+  }
 }

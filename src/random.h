@@ -124,8 +124,6 @@ namespace etl
   //***************************************************************************
   /// A 32 bit random number generator.
   /// Uses a linear shift feedback register.
-  /// Set ITERATIONS_ to control the number of times that the lfsr is iterated on each call.
-  /// Default = 1
   /// https://en.wikipedia.org/wiki/Linear-feedback_shift_register
   //***************************************************************************
   class random_lsfr : public random
@@ -141,6 +139,26 @@ namespace etl
     private:
 
       uint32_t value;
+  };
+
+  //***************************************************************************
+  /// A 32 bit random number generator.
+  /// Uses a multiply with carry calculation.
+  //***************************************************************************
+  class random_multiply_with_carry : public random
+  {
+  public:
+
+    random_multiply_with_carry();
+    explicit random_multiply_with_carry(uint32_t seed);
+    void initialise(uint32_t seed);
+    uint32_t operator()();
+    uint32_t range(uint32_t low, uint32_t high);
+
+  private:
+
+    uint32_t value1;
+    uint32_t value2;
   };
 }
 
