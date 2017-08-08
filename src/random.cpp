@@ -297,7 +297,7 @@ namespace etl
   /// Default constructor.
   /// Attempts to come up with a unique non-zero seed.
   //***************************************************************************
-  random_multiply_with_carry::random_multiply_with_carry()
+  random_mwc::random_mwc()
   {
     // An attempt to come up with a unique non-zero seed,
     // based on the address of the instance.
@@ -310,7 +310,7 @@ namespace etl
   /// Constructor with seed value.
   ///\param seed The new seed value.
   //***************************************************************************
-  random_multiply_with_carry::random_multiply_with_carry(uint32_t seed)
+  random_mwc::random_mwc(uint32_t seed)
   {
     initialise(seed);
   }
@@ -319,7 +319,7 @@ namespace etl
   /// Initialises the sequence with a new seed value.
   ///\param seed The new seed value.
   //***************************************************************************
-  void random_multiply_with_carry::initialise(uint32_t seed)
+  void random_mwc::initialise(uint32_t seed)
   {
     value1 = seed;
     value2 = seed;
@@ -328,7 +328,7 @@ namespace etl
   //***************************************************************************
   /// Get the next random_lsfr number.
   //***************************************************************************
-  uint32_t random_multiply_with_carry::operator()()
+  uint32_t random_mwc::operator()()
   {
     value1 = 36969 * (value1 & 0xFFFF) + (value1 >> 16);
     value2 = 18000 * (value2 & 0xFFFF) + (value2 >> 16);
@@ -339,7 +339,7 @@ namespace etl
   //***************************************************************************
   /// Get the next random_lsfr number in a specified inclusive range.
   //***************************************************************************
-  uint32_t random_multiply_with_carry::range(uint32_t low, uint32_t high)
+  uint32_t random_mwc::range(uint32_t low, uint32_t high)
   {
     uint32_t r = high - low + 1;
     uint32_t n = operator()();

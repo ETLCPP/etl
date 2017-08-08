@@ -145,12 +145,12 @@ namespace etl
   /// A 32 bit random number generator.
   /// Uses a multiply with carry calculation.
   //***************************************************************************
-  class random_multiply_with_carry : public random
+  class random_mwc : public random
   {
   public:
 
-    random_multiply_with_carry();
-    explicit random_multiply_with_carry(uint32_t seed);
+    random_mwc();
+    explicit random_mwc(uint32_t seed);
     void initialise(uint32_t seed);
     uint32_t operator()();
     uint32_t range(uint32_t low, uint32_t high);
