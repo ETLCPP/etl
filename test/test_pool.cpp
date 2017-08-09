@@ -233,6 +233,37 @@ namespace
       CHECK(pool.is_in_pool(p1));
       CHECK(!pool.is_in_pool(&not_in_pool));
     }
+
+    //*************************************************************************
+    TEST(test_generic_storage)
+    {
+      union Storage
+      {
+        uint64_t dummy; // For alignment purposes.
+        char buffer[1000];
+      };
+
+      etl::pool<Storage, 4> pool;
+
+      Test_Data* pdata = pool.allocate<Test_Data>();
+      new (pdata) Test_Data("ABC", 3);
+
+      etl::array<int, 10>* parray = pool.allocate<etl::array<int, 10>>();
+      new (parray) etl::array<int, 10>();
+      parray->fill(0x12345678);
+
+      etl::array<int, 10> compare;
+      compare.fill(0x12345678);
+
+      CHECK(pdata->value == "ABC");
+      CHECK(pdata->index == 3);
+      CHECK(*parray == compare);
+
+      pool.release(parray);
+      pool.release(pdata);
+
+      CHECK_EQUAL(4U, pool.available());
+    }
   };
 }
 

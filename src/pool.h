@@ -39,6 +39,7 @@ SOFTWARE.
 #include "nullptr.h"
 #include "alignment.h"
 #include "error_handler.h"
+#include "static_assert.h"
 
 #include <iterator>
 #include <algorithm>
@@ -326,6 +327,20 @@ namespace etl
     ~pool()
     {
 
+    }
+
+    //*************************************************************************
+    /// Allocate an object from the pool.
+    /// Uses the default constructor.
+    /// If asserts or exceptions are enabled and there are no more free items an
+    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
+    /// Static asserts if the specified type is too large for the pool.
+    //*************************************************************************
+    template <typename U>
+    U* allocate()
+    {
+      STATIC_ASSERT(sizeof(U) <= ELEMENT_SIZE, "Type too large for pool");
+      return ipool::allocate<U>();
     }
 
   private:
