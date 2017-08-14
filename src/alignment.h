@@ -73,6 +73,8 @@ namespace etl
     class type_with_alignment_matcher <false, ALIGNMENT, void, void, void, void, void, void, void, void>
     {
     public:
+
+      typedef char type;
     };
 
     //***************************************************************************

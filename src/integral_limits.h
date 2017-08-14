@@ -99,7 +99,7 @@ namespace etl
   struct integral_limits<char>
   {
     static const char min       = (etl::is_signed<char>::value) ? SCHAR_MIN : 0;
-    static const char max       = (etl::is_signed<char>::value) ? SCHAR_MAX : UCHAR_MAX;
+    static const char max       = (etl::is_signed<char>::value) ? SCHAR_MAX : char(UCHAR_MAX);
     static const int bits       = CHAR_BIT;
     static const bool is_signed = etl::is_signed<char>::value;
   };

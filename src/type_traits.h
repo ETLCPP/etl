@@ -58,7 +58,7 @@ SOFTWARE.
 #include "platform.h"
 #include "nullptr.h"
 
-#if defined(ETL_C11_TYPE_TRAITS_SUPPORTED)
+#if (ETL_CPP11_SUPPORTED)
   #include <type_traits>
 #endif
 
@@ -260,7 +260,7 @@ namespace etl
   /// is_pod
   /// For C++03, only fundamental and pointers types are recognised.
   ///\ingroup type_traits
-#if defined(ETL_C11_TYPE_TRAITS_SUPPORTED)// && !defined(ETL_IN_UNIT_TEST)
+#if (ETL_CPP11_SUPPORTED)// && !defined(ETL_IN_UNIT_TEST)
   // For compilers that support C++11
   template <typename T> struct is_pod : std::is_pod<T> {};
 #else
@@ -269,7 +269,7 @@ namespace etl
     etl::is_pointer<T>::value> {};
 #endif
 
-#if defined(ETL_C11_TYPE_TRAITS_SUPPORTED) && defined(ETL_C11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED)// && !defined(ETL_IN_UNIT_TEST)
+#if (ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED)// && !defined(ETL_IN_UNIT_TEST)
   /// is_trivially_constructible
   /// For C++03, only POD types are recognised.
   ///\ingroup type_traits
@@ -437,22 +437,13 @@ namespace etl
   ///\ingroup type_traits
 #ifdef ETL_COMPILER_MICROSOFT
   template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof(T))> {};
-#endif
 
-#ifdef ETL_COMPILER_GCC
-  template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof__(T))> {};
-#endif
-
-#ifdef ETL_COMPILER_KEIL
-  template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof__(T))> {};
-#endif
-
-#ifdef ETL_COMPILER_IAR
+#elif defined(ETL_COMPILER_IAR) || defined(ETL_COMPILER_TI)
   template <typename T> struct alignment_of : integral_constant<size_t, size_t(__ALIGNOF__(T))> {};
-#endif
 
-#ifdef ETL_COMPILER_TI
-  template <typename T> struct alignment_of : integral_constant<size_t, size_t(__ALIGNOF__(T))> {};
+#else
+  template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof__(T))> {};
+
 #endif
 
   /// Specialisation of 'alignment_of' for 'void'.
@@ -463,14 +454,15 @@ namespace etl
   /// Template to determine if a type is one of a specified list.
   ///\ingroup types
   //***************************************************************************
+
   template <typename T,
-            typename T1, typename T2 = void, typename T3 = void, typename T4 = void, 
-            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void, 
-            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void, 
+            typename T1, typename T2 = void, typename T3 = void, typename T4 = void,
+            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void,
+            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void,
             typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void>
   struct is_one_of
   {
-    static const bool value = 
+    static const bool value =
         etl::is_same<T, T1>::value ||
         etl::is_same<T, T2>::value ||
         etl::is_same<T, T3>::value ||

@@ -21,6 +21,8 @@
 
 #include <algorithm>
 
+#include "stm32f4xx.h"
+
 #if defined(COMPILER_KEIL)
   #pragma diag_suppress 550
   #pragma diag_suppress 177
