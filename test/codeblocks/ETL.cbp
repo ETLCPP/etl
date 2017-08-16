@@ -62,70 +62,6 @@
 			<Add directory="../../unittest-cpp/UnitTest++/" />
 			<Add directory="../../src" />
 		</Compiler>
-		<Unit filename="../../../unittest-cpp/UnitTest++/AssertException.cpp" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/AssertException.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/CheckMacros.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/Checks.cpp" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/Checks.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/CompositeTestReporter.cpp" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/CompositeTestReporter.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/Config.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/CurrentTest.cpp" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/CurrentTest.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/DeferredTestReporter.cpp" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/DeferredTestReporter.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/DeferredTestResult.cpp" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/DeferredTestResult.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/ExceptionMacros.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/ExecuteTest.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/HelperMacros.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/MemoryOutStream.cpp" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/MemoryOutStream.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/Posix/SignalTranslator.cpp">
-			<Option target="Linux" />
-		</Unit>
-		<Unit filename="../../../unittest-cpp/UnitTest++/Posix/SignalTranslator.h">
-			<Option target="Linux" />
-		</Unit>
-		<Unit filename="../../../unittest-cpp/UnitTest++/Posix/TimeHelpers.cpp">
-			<Option target="Linux" />
-		</Unit>
-		<Unit filename="../../../unittest-cpp/UnitTest++/Posix/TimeHelpers.h">
-			<Option target="Linux" />
-		</Unit>
-		<Unit filename="../../../unittest-cpp/UnitTest++/ReportAssert.cpp" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/ReportAssert.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/ReportAssertImpl.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/RequiredCheckException.cpp" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/RequiredCheckTestReporter.cpp" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/Test.cpp" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/Test.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/TestDetails.cpp" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/TestDetails.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/TestList.cpp" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/TestList.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/TestMacros.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/TestReporter.cpp" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/TestReporter.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/TestReporterStdout.cpp" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/TestReporterStdout.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/TestResults.cpp" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/TestResults.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/TestRunner.cpp" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/TestRunner.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/TestSuite.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/ThrowingTestReporter.cpp" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/TimeConstraint.cpp" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/TimeConstraint.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/TimeHelpers.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/UnitTest++.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/UnitTestPP.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/Win32/TimeHelpers.cpp">
-			<Option target="Windows" />
-		</Unit>
-		<Unit filename="../../../unittest-cpp/UnitTest++/Win32/TimeHelpers.h" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/XmlTestReporter.cpp" />
-		<Unit filename="../../../unittest-cpp/UnitTest++/XmlTestReporter.h" />
 		<Unit filename="../../src/algorithm.h" />
 		<Unit filename="../../src/alignment.h" />
 		<Unit filename="../../src/array.h" />
@@ -156,7 +92,7 @@
 		<Unit filename="../../src/debug_count.h" />
 		<Unit filename="../../src/deque.h" />
 		<Unit filename="../../src/doxygen.h" />
-		<Unit filename="../../src/endian.h" />
+		<Unit filename="../../src/endianness.h" />
 		<Unit filename="../../src/enum_type.h" />
 		<Unit filename="../../src/error_handler.cpp" />
 		<Unit filename="../../src/error_handler.h" />
@@ -256,6 +192,74 @@
 		<Unit filename="../../src/vector.h" />
 		<Unit filename="../../src/visitor.h" />
 		<Unit filename="../../src/wstring.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/AssertException.cpp" />
+		<Unit filename="../../unittest-cpp/UnitTest++/AssertException.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/CheckMacros.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/Checks.cpp" />
+		<Unit filename="../../unittest-cpp/UnitTest++/Checks.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/CompositeTestReporter.cpp" />
+		<Unit filename="../../unittest-cpp/UnitTest++/CompositeTestReporter.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/Config.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/CurrentTest.cpp" />
+		<Unit filename="../../unittest-cpp/UnitTest++/CurrentTest.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/DeferredTestReporter.cpp" />
+		<Unit filename="../../unittest-cpp/UnitTest++/DeferredTestReporter.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/DeferredTestResult.cpp" />
+		<Unit filename="../../unittest-cpp/UnitTest++/DeferredTestResult.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/ExceptionMacros.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/ExecuteTest.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/HelperMacros.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/MemoryOutStream.cpp" />
+		<Unit filename="../../unittest-cpp/UnitTest++/MemoryOutStream.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/Posix/SignalTranslator.cpp">
+			<Option target="Linux" />
+		</Unit>
+		<Unit filename="../../unittest-cpp/UnitTest++/Posix/SignalTranslator.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/Posix/TimeHelpers.cpp">
+			<Option target="Linux" />
+		</Unit>
+		<Unit filename="../../unittest-cpp/UnitTest++/Posix/TimeHelpers.h">
+			<Option target="Linux" />
+		</Unit>
+		<Unit filename="../../unittest-cpp/UnitTest++/ReportAssert.cpp" />
+		<Unit filename="../../unittest-cpp/UnitTest++/ReportAssert.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/ReportAssertImpl.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/RequireMacros.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/RequiredCheckException.cpp" />
+		<Unit filename="../../unittest-cpp/UnitTest++/RequiredCheckException.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/RequiredCheckTestReporter.cpp" />
+		<Unit filename="../../unittest-cpp/UnitTest++/RequiredCheckTestReporter.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/Test.cpp" />
+		<Unit filename="../../unittest-cpp/UnitTest++/Test.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/TestDetails.cpp" />
+		<Unit filename="../../unittest-cpp/UnitTest++/TestDetails.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/TestList.cpp" />
+		<Unit filename="../../unittest-cpp/UnitTest++/TestList.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/TestMacros.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/TestReporter.cpp" />
+		<Unit filename="../../unittest-cpp/UnitTest++/TestReporter.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/TestReporterStdout.cpp" />
+		<Unit filename="../../unittest-cpp/UnitTest++/TestReporterStdout.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/TestResults.cpp" />
+		<Unit filename="../../unittest-cpp/UnitTest++/TestResults.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/TestRunner.cpp" />
+		<Unit filename="../../unittest-cpp/UnitTest++/TestRunner.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/TestSuite.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/ThrowingTestReporter.cpp" />
+		<Unit filename="../../unittest-cpp/UnitTest++/ThrowingTestReporter.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/TimeConstraint.cpp" />
+		<Unit filename="../../unittest-cpp/UnitTest++/TimeConstraint.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/TimeHelpers.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/UnitTest++.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/UnitTestPP.h" />
+		<Unit filename="../../unittest-cpp/UnitTest++/Win32/TimeHelpers.cpp">
+			<Option target="Windows" />
+		</Unit>
+		<Unit filename="../../unittest-cpp/UnitTest++/Win32/TimeHelpers.h">
+			<Option target="Windows" />
+		</Unit>
+		<Unit filename="../../unittest-cpp/UnitTest++/XmlTestReporter.cpp" />
+		<Unit filename="../../unittest-cpp/UnitTest++/XmlTestReporter.h" />
 		<Unit filename="../ExtraCheckMacros.h" />
 		<Unit filename="../data.h" />
 		<Unit filename="../main.cpp" />
@@ -326,7 +330,6 @@
 		<Unit filename="../test_smallest.cpp" />
 		<Unit filename="../test_stack.cpp" />
 		<Unit filename="../test_string_char.cpp" />
-		<Unit filename="../test_string_char.cpp.bak" />
 		<Unit filename="../test_string_u16.cpp" />
 		<Unit filename="../test_string_u32.cpp" />
 		<Unit filename="../test_string_wchar_t.cpp" />
@@ -346,7 +349,9 @@
 		<Unit filename="../test_visitor.cpp" />
 		<Unit filename="../test_xor_checksum.cpp" />
 		<Extensions>
-			<code_completion />
+			<code_completion>
+				<search_path add="../../unittest-cpp" />
+			</code_completion>
 			<debugger />
 			<envvars />
 		</Extensions>
