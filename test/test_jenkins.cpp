@@ -34,7 +34,6 @@ SOFTWARE.
 #include <stdint.h>
 
 #include "jenkins.h"
-#include "endian.h"
 
 template <typename TIterator>
 uint32_t jenkins(TIterator begin, TIterator end)

@@ -34,7 +34,6 @@ SOFTWARE.
 #include <stdint.h>
 
 #include "checksum.h"
-#include "endian.h"
 
 namespace
 {		

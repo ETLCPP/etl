@@ -36,7 +36,6 @@ SOFTWARE.
 #include "platform.h"
 #include "static_assert.h"
 #include "type_traits.h"
-#include "endian.h"
 #include "ihash.h"
 #include "array.h"
 #include "container.h"
