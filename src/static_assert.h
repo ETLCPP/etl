@@ -31,7 +31,7 @@ SOFTWARE.
 
 #include "platform.h"
 
-#if defined(ETL_STATIC_ASSERT_SUPPORTED)
+#if (ETL_CPP11_SUPPORTED)
   #define STATIC_ASSERT(Condition, Message) static_assert(Condition, Message)
 #else
   template <bool Condition>

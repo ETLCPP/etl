@@ -37,7 +37,7 @@ SOFTWARE.
 /// A definition of nullptr for compilers that don't support it as standard.
 ///\ingroup utilities
 
-#if defined(ETL_NO_NULLPTR_SUPPORT)
+#if (ETL_NO_NULLPTR_SUPPORT)
 namespace std
 {
   //*****************************************************************************

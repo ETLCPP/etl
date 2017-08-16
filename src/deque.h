@@ -2047,7 +2047,7 @@ namespace etl
     //*************************************************************************
     void repair()
     {
-#ifdef ETL_C11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
+#if ETL_C11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
       ETL_ASSERT(std::is_trivially_copyable<T>::value, ETL_ERROR(etl::deque_incompatible_type));
 #endif
 

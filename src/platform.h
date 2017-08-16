@@ -66,44 +66,38 @@ SOFTWARE.
   #define ETL_COMPILER_GENERIC
 #endif
 
-// Check to see if the compiler supports nullptr and large character types.
-#if (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER < 1600)) || \
-     (defined(ETL_COMPILER_ARM) && (__ARMCC_VERSION < 600000L)) || \
-     (defined(ETL_COMPILER_KEIL) && (__ARMCC_VERSION < 600000L)) || \
-     defined(ETL_COMPILER_TI) || \
-     (defined(ETL_COMPILER_IAR) && (VER < 800)) || \
-     (defined(ETL_COMPILER_GCC) && (__cplusplus < 201103L))
-  #define ETL_NO_NULLPTR_SUPPORT
-  #define ETL_NO_LARGE_CHAR_SUPPORT
+#if (__cplusplus >= 201103L) || (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER >= 1600))
+  #define ETL_CPP11_SUPPORTED 1
+#else
+  #define ETL_CPP11_SUPPORTED 0
 #endif
 
-// Check to see if the compiler supports static_assert.
-#if (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER >= 1600)) || \
-    (defined(ETL_COMPILER_GCC) && (__cplusplus >= 201103L))
-  #define ETL_STATIC_ASSERT_SUPPORTED
+#if (__cplusplus >= 201402L) || (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER >= 1900))
+  #define ETL_CPP14_SUPPORTED 1
+#else
+  #define ETL_CPP14_SUPPORTED 0
 #endif
 
-// Check to see if the compiler supports C++11 type traits.
-#if (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER >= 1600)) || \
-    (defined(ETL_COMPILER_GCC) && (__cplusplus >= 201103L))
-  #define ETL_C11_TYPE_TRAITS_SUPPORTED
+#if (ETL_CPP11_SUPPORTED)
+  #define ETL_NO_NULLPTR_SUPPORT    0
+  #define ETL_NO_LARGE_CHAR_SUPPORT 0
+#else
+  #define ETL_NO_NULLPTR_SUPPORT    1
+  #define ETL_NO_LARGE_CHAR_SUPPORT 1
 #endif
 
 // Check to see if the compiler supports C++11 'is_trivially_xxx' traits.
-#if (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER >= 1600)) || \
-    (defined(ETL_COMPILER_GCC) && (__cplusplus >= 201402L))
-  #define ETL_C11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
-#endif
-
-// Check to see if the compiler supports C++11 'alignof'.
-#if (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER >= 1600)) || \
-    (defined(ETL_COMPILER_GCC) && (__cplusplus >= 201103L))
-  #define ETL_C11_ALIGNOF_SUPPORTED
+#if (ETL_CPP14_SUPPORTED)
+  #define ETL_C11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED 1
+#else
+  #define ETL_C11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED 0
 #endif
 
 // Some targets do not support 8bit types.
 #define ETL_8BIT_SUPPORT (CHAR_BIT == 8)
 
 #if defined(_DEBUG) || defined(DEBUG)
-  #define ETL_DEBUG
+  #define ETL_DEBUG 1
+#else
+  #define ETL_DEBUG 0
 #endif

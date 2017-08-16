@@ -150,9 +150,6 @@
     <ClInclude Include="..\..\src\crc16_kermit.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\endian.h">
-      <Filter>ETL\Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\parameter_type.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
@@ -476,6 +473,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\random.h">
       <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\endianness.h">
+      <Filter>ETL\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

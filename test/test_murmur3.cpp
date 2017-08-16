@@ -36,7 +36,6 @@ SOFTWARE.
 #include <stdint.h>
 
 #include "murmur3.h"
-#include "endian.h"
 
 namespace
 {		

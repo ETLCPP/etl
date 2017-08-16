@@ -33,8 +33,8 @@ SOFTWARE.
 
 #define __ETL_IN_VECTOR_H__
 
-#ifdef ETL_C11_TYPE_TRAITS_SUPPORTED
-#include <type_traits>
+#if ETL_CPP11_SUPPORTED
+  #include <type_traits>
 #endif
 
 #include <stddef.h>
@@ -223,43 +223,7 @@ namespace etl
     ///\param new_size The new size.
     ///\param value   The value to fill new elements with. Default = default constructed value.
     //*********************************************************************
-    template <typename U = T>
-    typename etl::enable_if<etl::is_trivially_constructible<U>::value, void>::type
-      resize(size_t new_size, T value)
-    {
-      ETL_ASSERT(new_size <= CAPACITY, ETL_ERROR(vector_full));
-
-      const size_t current_size = size();
-      size_t delta = (current_size < new_size) ? new_size - current_size : current_size - new_size;
-
-      if (current_size < new_size)
-      {
-        std::fill_n(p_end, delta, value);
-#if defined(ETL_DEBUG)
-        construct_count += delta;
-#endif
-      }
-      else
-      {
-        p_end -= delta;
-#if defined(ETL_DEBUG)
-        construct_count -= delta;
-#endif
-      }
-
-      p_end = p_buffer + new_size;
-    }
-
-    //*********************************************************************
-    /// Resizes the vector.
-    /// If asserts or exceptions are enabled and the new size is larger than the
-    /// maximum then a vector_full is thrown.
-    ///\param new_size The new size.
-    ///\param value   The value to fill new elements with. Default = default constructed value.
-    //*********************************************************************
-    template <typename U = T>
-    typename etl::enable_if<!etl::is_trivially_constructible<U>::value, void>::type
-      resize(size_t new_size, T value)
+    void resize(size_t new_size, T value)
     {
       ETL_ASSERT(new_size <= CAPACITY, ETL_ERROR(vector_full));
 
@@ -687,29 +651,7 @@ namespace etl
     ///\param n        The number of elements to add.
     ///\param value    The value to insert.
     //*********************************************************************
-    template <typename U = T>
-    typename etl::enable_if<etl::is_trivially_constructible<U>::value, void>::type
-      insert(iterator position, size_t n, parameter_t value)
-    {
-      ETL_ASSERT((size() + n) <= CAPACITY, ETL_ERROR(vector_full));
-
-      std::copy_backward(position, p_end, p_end + n);
-      std::fill_n(position, n, value);
-
-      construct_count += n;
-      p_end += n;
-    }
-
-    //*********************************************************************
-    /// Inserts 'n' values to the vector.
-    /// If asserts or exceptions are enabled, emits vector_full if the vector does not have enough free space.
-    ///\param position The position to insert before.
-    ///\param n        The number of elements to add.
-    ///\param value    The value to insert.
-    //*********************************************************************
-    template <typename U = T>
-    typename etl::enable_if<!etl::is_trivially_constructible<U>::value, void>::type
-      insert(iterator position, size_t n, parameter_t value)
+    void insert(iterator position, size_t n, parameter_t value)
     {
       ETL_ASSERT((size() + n) <= CAPACITY, ETL_ERROR(vector_full));
 
@@ -775,39 +717,8 @@ namespace etl
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.
     //*********************************************************************
-    template <class TIterator, typename U = T>
-    typename etl::enable_if<etl::is_trivially_constructible<U>::value, void>::type
-      insert(iterator position, TIterator first, TIterator last)
-    {
-      size_t count = std::distance(first, last);
-
-      ETL_ASSERT((size() + count) <= CAPACITY, ETL_ERROR(vector_full));
-
-      construct_count += count;
-
-      if (position == end())
-      {
-        p_end = std::copy(first, last, p_end);
-      }
-      else
-      {
-        std::copy_backward(position, p_end, p_end + count);
-        std::copy(first, last, position);
-        p_end += count;
-      }
-    }
-
-    //*********************************************************************
-    /// Inserts a range of values to the vector.
-    /// If asserts or exceptions are enabled, emits vector_full if the vector does not have enough free space.
-    /// For fundamental and pointer types.
-    ///\param position The position to insert before.
-    ///\param first    The first element to add.
-    ///\param last     The last + 1 element to add.
-    //*********************************************************************
-    template <class TIterator, typename U = T>
-    typename etl::enable_if<!etl::is_trivially_constructible<U>::value, void>::type
-      insert(iterator position, TIterator first, TIterator last)
+    template <class TIterator>
+    void insert(iterator position, TIterator first, TIterator last)
     {
       size_t count = std::distance(first, last);
 
@@ -888,36 +799,7 @@ namespace etl
     ///\param last  Iterator to the last element.
     ///\return An iterator pointing to the element that followed the erased element.
     //*********************************************************************
-    template <typename U = T>
-    typename etl::enable_if<etl::is_trivially_constructible<U>::value, iterator>::type
-      erase(iterator first, iterator last)
-    {
-      if (first == begin() && last == end())
-      {
-        clear();
-      }
-      else
-      {
-        std::copy(last, end(), first);
-        size_t n_delete = std::distance(first, last);
-        construct_count -= n_delete;
-        p_end -= n_delete;
-      }
-
-      return first;
-    }
-
-    //*********************************************************************
-    /// Erases a range of elements.
-    /// The range includes all the elements between first and last, including the
-    /// element pointed by first, but not the one pointed by last.
-    ///\param first Iterator to the first element.
-    ///\param last  Iterator to the last element.
-    ///\return An iterator pointing to the element that followed the erased element.
-    //*********************************************************************
-    template <typename U = T>
-    typename etl::enable_if<!etl::is_trivially_constructible<U>::value, iterator>::type
-      erase(iterator first, iterator last)
+    iterator erase(iterator first, iterator last)
     {
       if (first == begin() && last == end())
       {
@@ -1252,7 +1134,7 @@ namespace etl
     //*************************************************************************
     void repair()
     {
-      #ifdef ETL_C11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
+      #if ETL_C11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
       ETL_ASSERT(std::is_trivially_copyable<T>::value, ETL_ERROR(etl::vector_incompatible_type));
       #endif
 
