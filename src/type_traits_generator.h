@@ -246,7 +246,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_fundamental : integral_constant<bool, is_arithmetic<T>::value ||
                                                                         is_void<T>::value  ||
-                                                                        is_same<std::nullptr_t,
+                                                                        is_same<nullptr_t,
                                                                   typename remove_cv<T>::type>::value> {};
 
   /// is_compound
@@ -272,7 +272,7 @@ namespace etl
   /// is_pod
   /// For C++03, only fundamental and pointers types are recognised.
   ///\ingroup type_traits
-#if (ETL_CPP11_SUPPORTED)// && !defined(ETL_IN_UNIT_TEST)
+#if (ETL_CPP11_SUPPORTED && !defined(ARDUINO))// && !defined(ETL_IN_UNIT_TEST)
   // For compilers that support C++11
   template <typename T> struct is_pod : std::is_pod<T> {};
 #else

@@ -33,8 +33,8 @@ SOFTWARE.
 
 #define __ETL_IN_VECTOR_H__
 
-#ifdef ETL_CPP11_SUPPORTED
-#include <type_traits>
+#if ETL_CPP11_SUPPORTED
+  #include <type_traits>
 #endif
 
 #include <stddef.h>

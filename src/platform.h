@@ -73,9 +73,9 @@ SOFTWARE.
 #endif
 
 #if (__cplusplus >= 201402L) || (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER >= 1900))
-#define ETL_CPP14_SUPPORTED 1
+  #define ETL_CPP14_SUPPORTED 1
 #else
-#define ETL_CPP14_SUPPORTED 0
+  #define ETL_CPP14_SUPPORTED 0
 #endif
 
 #if (ETL_CPP11_SUPPORTED)
