@@ -191,7 +191,7 @@
     <ClInclude Include="..\..\src\debug_count.h" />
     <ClInclude Include="..\..\src\deque.h" />
     <ClInclude Include="..\..\src\doxygen.h" />
-    <ClInclude Include="..\..\src\endian.h" />
+    <ClInclude Include="..\..\src\endianness.h" />
     <ClInclude Include="..\..\src\enum_type.h" />
     <ClInclude Include="..\..\src\error_handler.h" />
     <ClInclude Include="..\..\src\exception.h" />
