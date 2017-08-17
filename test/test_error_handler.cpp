@@ -27,7 +27,7 @@ SOFTWARE.
 ******************************************************************************/
 
 #include "UnitTest++.h"
-#if defined(ETL_PLATFORM_WINDOWS)
+  #if defined(_WINDOWS)
 #include <Windows.h>
 #endif
 #include <sstream>
@@ -61,7 +61,7 @@ void receive_error(const etl::exception& e)
   std::ostringstream oss;
   oss << "Error '" << e.what() << "' in " << e.file_name() << " at line " << e.line_number() << "\n";
 
-#if defined(ETL_PLATFORM_WINDOWS) && defined(ETL_COMPILER_MICROSOFT)
+#if defined(_WINDOWS) && defined(ETL_COMPILER_MICROSOFT)
   std::string stext = oss.str();
 
   WCHAR text[200];
@@ -86,7 +86,7 @@ public:
     std::ostringstream oss;
     oss << "Error '" << e.what() << "' in " << e.file_name() << " at line " << e.line_number() << "\n";
 
-#if defined(ETL_PLATFORM_WINDOWS) && defined(ETL_COMPILER_MICROSOFT)
+#if defined(_WINDOWS) && defined(ETL_COMPILER_MICROSOFT)
     std::string stext = oss.str();
 
     WCHAR text[200];
