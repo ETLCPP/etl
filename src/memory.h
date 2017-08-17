@@ -426,6 +426,75 @@ namespace etl
   }
 
   //*****************************************************************************
+  /// Construct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  inline T& make_default_at(T* p)
+  {
+    ::new (p) T();
+    return *reinterpret_cast<T*>(p);
+  }
+
+  //*****************************************************************************
+  /// Construct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T, typename TCounter>
+  inline T& make_default_at(T* p, TCounter& count)
+  {
+    ::new (p) T();
+    ++count;
+    return *reinterpret_cast<T*>(p);
+  }
+
+  //*****************************************************************************
+  /// Construct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  inline T& make_copy_at(T* p, const T& other)
+  {
+    ::new (p) T(other);
+    return *reinterpret_cast<T*>(p);
+  }
+
+  //*****************************************************************************
+  /// Construct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T, typename TCounter>
+  inline T& make_copy_at(T* p, const T& other, TCounter& count)
+  {
+    ::new (p) T(other);
+    ++count;
+    return *reinterpret_cast<T*>(p);
+  }
+
+  //*****************************************************************************
+  /// Construct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T, typename TParameter>
+  inline T& make_value_at(T* p, const TParameter& value)
+  {
+    ::new (p) T(value);
+    return *reinterpret_cast<T*>(p);
+  }
+
+  //*****************************************************************************
+  /// Construct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T, typename TParameter, typename TCounter>
+  inline T& make_value_at(T* p, const TParameter& value, TCounter& count)
+  {
+    ::new (p) T(value);
+    ++count;
+    return *reinterpret_cast<T*>(p);
+  }
+
+  //*****************************************************************************
   /// Default initialises a range of objects to uninitialised memory.
   ///\ingroup memory
   //*****************************************************************************
@@ -681,6 +750,20 @@ namespace etl
     {
       new (p) T(static_cast<const T&>(*this));
       ++count;
+    }
+
+    T& make_copy_at(void* p)
+    {
+      new (p) T(static_cast<const T&>(*this));
+      return *reinterpret_cast<T*>(p);
+    }
+
+    template <typename TCounter>
+    T& make_copy_at(void* p, TCounter& count)
+    {
+      new (p) T(static_cast<const T&>(*this));
+      ++count;
+      return *reinterpret_cast<T*>(p);
     }
   };
 }
