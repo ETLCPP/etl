@@ -210,7 +210,7 @@ namespace etl
               // So pass it on.
               bus.receive(source, destination_router_id, message);
             }
-            else if (router.accepts(message.get_message_id()))
+            else if (router.accepts(message.message_id))
             {
               router.receive(source, message);
             }
@@ -236,7 +236,7 @@ namespace etl
           // Call all of them.
           while (range.first != range.second)
           {
-            if ((*(range.first))->accepts(message.get_message_id()))
+            if ((*(range.first))->accepts(message.message_id))
             {
               (*(range.first))->receive(source, message);
             }

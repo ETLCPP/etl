@@ -67,9 +67,18 @@ namespace etl
   {
   public:
 
-    //********************************************
-    virtual ~imessage() {}
-    virtual etl::message_id_t get_message_id() const = 0;
+#ifdef ETL_MESSAGES_ARE_VIRTUAL
+    virtual ~imessage()
+    {
+    }
+#endif
+
+    imessage(etl::message_id_t id) 
+      : message_id(id)
+    {
+    }
+
+    const etl::message_id_t message_id;
   };
 
   //***************************************************************************
@@ -78,16 +87,15 @@ namespace etl
   {
   public:
 
+    message()
+      : imessage(ID_)
+    {
+    }
+
     enum
     {
       ID = ID_
     };
-
-    //********************************************
-    etl::message_id_t get_message_id() const
-    {
-      return ID;
-    }
   };
 }
 

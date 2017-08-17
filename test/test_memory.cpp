@@ -471,5 +471,62 @@ namespace
 
       CHECK_EQUAL(1, count);
     }
+
+    //*************************************************************************
+    TEST(test_create_make_copy)
+    {
+      struct Test : etl::create_copy<Test>
+      {
+        std::string text;
+      };
+
+      char buffer[sizeof(Test)];
+
+      Test test1;
+      test1.text = "12345678";
+      Test& test2 = test1.make_copy_at(buffer);
+      test1.text = "87654321";
+
+      CHECK_EQUAL(std::string("87654321"), test1.text);
+      CHECK_EQUAL(std::string("12345678"), test2.text);
+
+      int count = 0;
+      test1.make_copy_at(buffer, count);
+
+      CHECK_EQUAL(1, count);
+    }
+
+    //*************************************************************************
+    TEST(test_make_trivial)
+    {
+      char n[sizeof(trivial_t)];
+      trivial_t* pn = reinterpret_cast<trivial_t*>(n);
+
+      // Non count.
+      std::fill(std::begin(n), std::end(n), 0xFF);
+      CHECK_EQUAL(0x00000000U, etl::make_default_at(pn));
+
+      std::fill(std::begin(n), std::end(n), 0x00);      
+      CHECK_EQUAL(0xFFFFFFFFU, etl::make_value_at(pn, 0xFFFFFFFFU));
+
+      std::fill(std::begin(n), std::end(n), 0xFF);
+      etl::make_copy_at(pn, test_item_trivial);
+      CHECK_EQUAL(test_item_trivial, etl::make_copy_at(pn, test_item_trivial));
+
+      // Count.
+      size_t count = 0;
+
+      std::fill(std::begin(n), std::end(n), 0xFF);
+      CHECK_EQUAL(0x00000000U, etl::make_default_at(pn, count));
+      CHECK_EQUAL(1U, count);
+
+      std::fill(std::begin(n), std::end(n), 0x00);
+      CHECK_EQUAL(0xFFFFFFFFU, etl::make_value_at(pn, 0xFFFFFFFFU, count));
+      CHECK_EQUAL(2U, count);
+
+      std::fill(std::begin(n), std::end(n), 0xFF);
+      CHECK_EQUAL(test_item_trivial, etl::make_copy_at(pn, test_item_trivial, count));
+      CHECK_EQUAL(3U, count);
+    }
   };
 }
