@@ -47,6 +47,9 @@ namespace etl
 
     static const T value = VALUE;
   };
+
+  template <typename T, const T VALUE>
+  const T constant<T, VALUE>::value;
 }
 
 #endif
