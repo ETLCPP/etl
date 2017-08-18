@@ -477,6 +477,12 @@
     <ClInclude Include="..\..\src\endianness.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\constant.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\sqrt.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -817,6 +823,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\random.cpp">
       <Filter>ETL\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_constant.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -128,6 +128,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\constant.h" />
     <ClInclude Include="..\..\src\fsm.h" />
     <ClInclude Include="..\..\src\fsm_generator.h" />
     <ClInclude Include="..\..\src\largest_generator.h" />
@@ -139,6 +140,7 @@
     <ClInclude Include="..\..\src\packet.h" />
     <ClInclude Include="..\..\src\scheduler.h" />
     <ClInclude Include="..\..\src\smallest_generator.h" />
+    <ClInclude Include="..\..\src\sqrt.h" />
     <ClInclude Include="..\..\src\task.h" />
     <ClInclude Include="..\..\src\type_traits_generator.h" />
     <ClInclude Include="..\..\unittest-cpp\UnitTest++\AssertException.h" />
@@ -314,6 +316,7 @@
     <ClCompile Include="..\test_bloom_filter.cpp" />
     <ClCompile Include="..\test_bsd_checksum.cpp" />
     <ClCompile Include="..\test_checksum.cpp" />
+    <ClCompile Include="..\test_constant.cpp" />
     <ClCompile Include="..\test_container.cpp" />
     <ClCompile Include="..\test_crc.cpp" />
     <ClCompile Include="..\test_cyclic_value.cpp" />
