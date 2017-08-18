@@ -1015,6 +1015,11 @@
               <FileType>5</FileType>
               <FilePath>..\..\src\endianness.h</FilePath>
             </File>
+            <File>
+              <FileName>constant.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\src\constant.h</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

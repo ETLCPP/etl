@@ -18,6 +18,8 @@
 #include "variant.h"
 #include "list.h"
 #include "map.h"
+#include "integral_limits.h"
+#include "constant.h"
 
 #include <algorithm>
 
@@ -391,6 +393,19 @@ void test_integral_limits()
 {
   static unsigned int imax = etl::integral_limits<unsigned int>::max;
   static unsigned int cmin = etl::integral_limits<char>::min;
+}
+
+//*****************************************************************************
+// constant
+//*****************************************************************************
+void test_constant()
+{
+  typedef etl::constant<unsigned int, 0x12345678> C1;
+  
+  unsigned int i1 = C1::value;
+  
+  C1 c1;
+  unsigned int i2 = c1.value;
 }
 
 //*****************************************************************************
