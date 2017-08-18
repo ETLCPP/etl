@@ -32,9 +32,27 @@ SOFTWARE.
 #include "power.h"
 #include "fibonacci.h"
 #include "factorial.h"
+#include "sqrt.h"
 
 namespace
 {
+  int sqrt(int v)
+  {
+    int i = 1;
+
+    while (i < v)
+    {
+      if ((i * i) > v)
+      {
+        return i - 1;
+      }
+
+      ++i;
+    }
+
+    return 1;
+  }
+
   SUITE(test_maths)
   {
     //*************************************************************************
@@ -346,6 +364,21 @@ namespace
       CHECK_EQUAL(3628800U,   (size_t)etl::factorial<10>::value);
       CHECK_EQUAL(39916800U,  (size_t)etl::factorial<11>::value);
       CHECK_EQUAL(479001600U, (size_t)etl::factorial<12>::value);
+    }
+
+    //*************************************************************************
+    TEST(test_sqrt)
+    {
+      CHECK_EQUAL(sqrt(1),  etl::sqrt<1>::value);
+      CHECK_EQUAL(sqrt(2),  etl::sqrt<2>::value);
+      CHECK_EQUAL(sqrt(3),  etl::sqrt<3>::value);
+      CHECK_EQUAL(sqrt(4),  etl::sqrt<4>::value);
+      CHECK_EQUAL(sqrt(5),  etl::sqrt<5>::value);
+      CHECK_EQUAL(sqrt(6),  etl::sqrt<6>::value);
+      CHECK_EQUAL(sqrt(7),  etl::sqrt<7>::value);
+      CHECK_EQUAL(sqrt(8),  etl::sqrt<8>::value);
+      CHECK_EQUAL(sqrt(9),  etl::sqrt<9>::value);
+      CHECK_EQUAL(sqrt(10), etl::sqrt<10>::value);
     }
   };
 }
