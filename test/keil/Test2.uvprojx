@@ -546,11 +546,6 @@
               <FilePath>..\..\src\doxygen.h</FilePath>
             </File>
             <File>
-              <FileName>endian.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\src\endian.h</FilePath>
-            </File>
-            <File>
               <FileName>enum_type.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\src\enum_type.h</FilePath>
@@ -1014,6 +1009,11 @@
               <FileName>wstring.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\src\wstring.h</FilePath>
+            </File>
+            <File>
+              <FileName>endianness.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\src\endianness.h</FilePath>
             </File>
           </Files>
         </Group>
