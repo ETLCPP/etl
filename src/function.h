@@ -218,6 +218,147 @@ namespace etl
 
     void (*p_function)(); ///< Pointer to the function.
   };
+  
+  //***************************************************************************
+  ///\ingroup function
+  /// A derived function template that takes an object type and parameter type.
+  ///\tparam TObject    The object type that contains the member function.
+  ///\tparam TParameter The parameter type accepted by the member function.
+  //***************************************************************************
+  template <typename TObject, typename TParameter, void (TObject::*Function)(TParameter)>
+  class function_mp : public ifunction<TParameter>
+  {
+  public:
+
+    typedef TObject    object_type;    ///< The type of object.
+    typedef TParameter parameter_type; ///< The type of parameter sent to the function.
+
+    //*************************************************************************
+    /// Constructor.
+    ///\param object    Reference to the object
+    //*************************************************************************
+    function_mp(TObject& object)
+      : p_object(&object)
+    {
+    }
+
+    //*************************************************************************
+    /// The function operator that calls the destination function.
+    ///\param data The data to pass to the function.
+    //*************************************************************************
+    virtual void operator ()(TParameter data)
+    {
+      // Call the object's member function with the data.
+      (p_object->*Function)(data);
+    }
+
+  private:
+
+    TObject* p_object; ///< Pointer to the object that contains the function.
+  };
+
+  //***************************************************************************
+  ///\ingroup function
+  /// A derived function template that takes an object type and parameter type.
+  ///\tparam TObject    The object type that contains the member function.
+  ///\tparam TParameter The parameter type accepted by the member function.
+  //***************************************************************************
+  template <typename TObject, void (TObject::*Function)(void)>
+  class function_mv : public ifunction<void>
+  {
+  public:
+
+    typedef TObject object_type;    ///< The type of object.
+    typedef void    parameter_type; ///< The type of parameter sent to the function.
+
+    //*************************************************************************
+    /// Constructor.
+    ///\param object    Reference to the object
+    //*************************************************************************
+    function_mv(TObject& object)
+      : p_object(&object)
+    {
+    }
+
+    //*************************************************************************
+    /// The function operator that calls the destination function.
+    ///\param data The data to pass to the function.
+    //*************************************************************************
+    virtual void operator ()()
+    {
+      // Call the object's member function.
+      (p_object->*Function)();
+    }
+
+  private:
+
+    TObject* p_object; ///< Pointer to the object that contains the function.
+  };
+
+  //***************************************************************************
+  ///\ingroup function
+  /// A derived function template that takes a parameter type.
+  ///\tparam TParameter The parameter type accepted by the member function.
+  //***************************************************************************
+  template <typename TParameter, void (*Function)(TParameter)>
+  class function_fp : public ifunction<TParameter>
+  {
+  public:
+
+    typedef TParameter parameter_type; ///< The type of parameter sent to the function.
+
+    //*************************************************************************
+    /// Constructor.
+    ///\param object    Reference to the object
+    ///\param p_function Pointer to the member function
+    //*************************************************************************
+    function_fp()
+    {
+    }
+
+    //*************************************************************************
+    /// The function operator that calls the destination function.
+    ///\param data The data to pass to the function.
+    //*************************************************************************
+    virtual void operator ()(TParameter data)
+    {
+      // Call the object's member function with the data.
+      (*Function)(data);
+    }
+  };
+
+  //***************************************************************************
+  ///\ingroup function
+  /// A derived function template that takes a parameter type.
+  ///\tparam TParameter The parameter type accepted by the member function.
+  //***************************************************************************
+  template <void(*Function)(void)>
+  class function_fv : public ifunction<void>
+  {
+  public:
+
+    typedef void parameter_type; ///< The type of parameter sent to the function.
+
+    //*************************************************************************
+    /// Constructor.
+    ///\param object    Reference to the object
+    ///\param p_function Pointer to the member function
+    //*************************************************************************
+    function_fv()
+    {
+    }
+
+    //*************************************************************************
+    /// The function operator that calls the destination function.
+    ///\param data The data to pass to the function.
+    //*************************************************************************
+    virtual void operator ()()
+    {
+      // Call the function.
+      (*Function)();
+    }
+  };
+
 }
 
 #endif

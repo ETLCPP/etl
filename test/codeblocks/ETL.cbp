@@ -273,6 +273,7 @@
 		<Unit filename="../test_bloom_filter.cpp" />
 		<Unit filename="../test_bsd_checksum.cpp" />
 		<Unit filename="../test_checksum.cpp" />
+		<Unit filename="../test_constant.cpp" />
 		<Unit filename="../test_container.cpp" />
 		<Unit filename="../test_crc.cpp" />
 		<Unit filename="../test_cyclic_value.cpp" />

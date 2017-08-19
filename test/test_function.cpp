@@ -169,6 +169,38 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_free_void_compile_time)
+    {
+      etl::function_fv<free_void> function;
+
+      call(function);
+
+      CHECK(function_called);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_free_int_compile_time)
+    {
+      etl::function_fp<int, free_int> function;
+
+      call(function);
+
+      CHECK(function_called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_free_reference_compile_time)
+    {
+      etl::function_fp<const Data&, free_reference> function;
+
+      call(function);
+
+      CHECK(function_called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_void)
     {
       Test test;
@@ -196,6 +228,41 @@ namespace
     {
       Test test;
       etl::function<Test, const Data&> function(test, &Test::member_reference);
+
+      call(function);
+
+      CHECK(function_called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_member_void_compile_time)
+    {
+      Test test;
+      etl::function_mv<Test, &Test::member_void> function(test);
+
+      call(function);
+
+      CHECK(function_called);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_member_int_compile_time)
+    {
+      Test test;
+      etl::function_mp<Test, int, &Test::member_int> function(test);
+
+      call(function);
+
+      CHECK(function_called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_member_reference_compile_time)
+    {
+      Test test;
+      etl::function_mp<Test, const Data&, &Test::member_reference> function(test);
 
       call(function);
 
