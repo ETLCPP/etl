@@ -287,7 +287,7 @@ namespace etl
 
   protected:
 
-    typedef typename etl::parameter_type<T, etl::is_fundamental<T>::value || etl::is_pointer<T>::value>::type parameter_t;
+    typedef typename etl::parameter_type<T>::type parameter_t;
 
     //*************************************************************************
     /// The data node element in the forward_list.

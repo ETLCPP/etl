@@ -1,5 +1,3 @@
-///\file
-
 /******************************************************************************
 The MIT License(MIT)
 
@@ -7,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 http://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2015 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,24 +26,58 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_PARAMETER__
-#define __ETL_PARAMETER__
+#include "UnitTest++.h"
 
-#include "type_traits.h"
+#include <string>
+#include <ostream>
 
-namespace etl
+#include "parameter_type.h"
+
+namespace
 {
-  //*************************************************************************
-  /// Determine how to pass parameters.
-  //*************************************************************************
-  template <typename T>
-  struct parameter_type
+  class Test
   {
-    /// By default fundamental and pointer types are passed by value.
-    typedef typename etl::conditional<is_fundamental<T>::value || is_pointer<T>::value,
-                                      T,
-                                      const T&>::type type;
+  public:
+
+    Test()
+      : p(new int())
+    {
+      *p = 4;
+    }
+
+    ~Test()
+    {
+      delete p;
+    }
+
+    int* p;
+  };
+
+  class Test2 : public Test
+  {
   };
 }
 
-#endif
+namespace etl
+{
+  // Test2 is a value parameter type.
+  template <>
+  struct parameter_type<Test2>
+  {
+    typedef Test2 type;
+  };
+}
+
+namespace
+{
+  SUITE(test_parameter_type)
+  {
+    //*************************************************************************
+    TEST(test_parameters)
+    {
+      CHECK(!etl::is_reference<etl::parameter_type<int>::type>::value);
+      CHECK(etl::is_reference<etl::parameter_type<Test>::type>::value);
+      CHECK(!etl::is_reference<etl::parameter_type<Test2>::type>::value);
+    }
+  };
+}
