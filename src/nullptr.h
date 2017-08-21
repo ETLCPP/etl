@@ -111,6 +111,7 @@ const nullptr_t nullptr = {};
 
 #else
     #include <cstddef>
+    typedef std::nullptr_t nullptr_t;
 #endif
 #endif
 
