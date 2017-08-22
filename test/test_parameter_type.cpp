@@ -75,9 +75,16 @@ namespace
     //*************************************************************************
     TEST(test_parameters)
     {
-      CHECK(!etl::is_reference<etl::parameter_type<int>::type>::value);
-      CHECK(etl::is_reference<etl::parameter_type<Test>::type>::value);
-      CHECK(!etl::is_reference<etl::parameter_type<Test2>::type>::value);
+      bool b;
+
+      b = !etl::is_reference<etl::parameter_type<int>::type>::value;
+      CHECK(b);
+
+      b = etl::is_reference<etl::parameter_type<Test>::type>::value;
+      CHECK(b);
+
+      b = !etl::is_reference<etl::parameter_type<Test2>::type>::value;
+      CHECK(b);
     }
   };
 }
