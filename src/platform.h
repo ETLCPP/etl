@@ -66,13 +66,13 @@ SOFTWARE.
   #define ETL_COMPILER_GENERIC
 #endif
 
-#if (__cplusplus >= 201103L) || (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER >= 1600))
+#if (__cplusplus >= 201103L) || (!defined(ARDUINO) && (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER >= 1600)))
   #define ETL_CPP11_SUPPORTED 1
 #else
   #define ETL_CPP11_SUPPORTED 0
 #endif
 
-#if (__cplusplus >= 201402L) || (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER >= 1900))
+#if (__cplusplus >= 201402L) || (!defined(ARDUINO) && (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER >= 1900)))
   #define ETL_CPP14_SUPPORTED 1
 #else
   #define ETL_CPP14_SUPPORTED 0

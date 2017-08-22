@@ -37,7 +37,7 @@ SOFTWARE.
 /// A definition of nullptr for compilers that don't support it as standard.
 ///\ingroup utilities
 
-#if (ETL_NO_NULLPTR_SUPPORT)
+#if (ETL_NO_NULLPTR_SUPPORT && !defined(ARDUINO))
 namespace std
 {
   //*****************************************************************************
@@ -76,41 +76,21 @@ namespace std
 }
 
 //*****************************************************************************
-/// A null pointer type.
-///\ingroup nullptr
-//*****************************************************************************
-class nullptr_t
-{
-public:
-
-  // Convertible to any type of null non-member pointer.
-  template<typename T>
-  operator T*() const
-  {
-    return 0;
-  }
-
-  // Or any type of null member pointer.
-  template<typename ANYCLASS, typename T>
-  operator T ANYCLASS::*() const
-  {
-    return 0;
-  }
-
-private:
-
-  // Can't take address of nullptr.
-  void operator&() const;
-};
-
-//*****************************************************************************
 /// A null pointer.
 ///\ingroup nullptr
 //*****************************************************************************
-const nullptr_t nullptr = {};
+const std::nullptr_t nullptr = {};
 
 #else
     #include <cstddef>
 #endif
+
+#if defined(ARDUINO)
+namespace std
+{
+  typedef ::nullptr_t nullptr_t;
+}
+#endif
+
 #endif
 

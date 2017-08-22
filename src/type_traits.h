@@ -234,7 +234,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_fundamental : integral_constant<bool, is_arithmetic<T>::value ||
                                                                         is_void<T>::value  ||
-                                                                        is_same<nullptr_t,
+                                                                        is_same<std::nullptr_t,
                                                                   typename remove_cv<T>::type>::value> {};
 
   /// is_compound
