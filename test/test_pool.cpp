@@ -264,6 +264,16 @@ namespace
 
       CHECK_EQUAL(4U, pool.available());
     }
+
+    //*************************************************************************
+    TEST(test_type_error)
+    {
+      etl::pool<uint32_t, 4> pool;
+
+      etl::ipool& ip = pool;
+
+      CHECK_THROW(ip.allocate<double>(), etl::pool_element_size);
+    }
   };
 }
 

@@ -90,7 +90,20 @@ namespace etl
   public:
 
     pool_object_not_in_pool(string_type file_name, numeric_type line_number)
-      : pool_exception(ETL_ERROR_TEXT("pool:notinpool", ETL_FILE"B"), file_name, line_number)
+      : pool_exception(ETL_ERROR_TEXT("pool:not in pool", ETL_FILE"B"), file_name, line_number)
+    {}
+  };
+
+  //***************************************************************************
+  /// The exception thrown when an the type requested is larger than the element size.
+  ///\ingroup pool
+  //***************************************************************************
+  class pool_element_size : public pool_exception
+  {
+  public:
+
+    pool_element_size(string_type file_name, numeric_type line_number)
+      : pool_exception(ETL_ERROR_TEXT("pool:element size", ETL_FILE"C"), file_name, line_number)
     {}
   };
 
@@ -112,6 +125,11 @@ namespace etl
     template <typename T>
     T* allocate()
     {
+      if (sizeof(T) > ITEM_SIZE)
+      {
+        ETL_ASSERT(false, ETL_ERROR(etl::pool_element_size));
+      }
+
       return reinterpret_cast<T*>(allocate_item());
     }
 
