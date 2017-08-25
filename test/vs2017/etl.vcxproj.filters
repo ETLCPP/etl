@@ -847,6 +847,15 @@
     <None Include="..\..\src\generate_fsm.bat">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\..\src\generate_largest.bat">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\src\generate_smallest.bat">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\src\generate_type_traits.bat">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\src\file_error_numbers.txt">
