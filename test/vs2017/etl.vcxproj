@@ -434,7 +434,10 @@
     <None Include="..\..\library.properties" />
     <None Include="..\..\src\generate.bat" />
     <None Include="..\..\src\generate_fsm.bat" />
+    <None Include="..\..\src\generate_largest.bat" />
     <None Include="..\..\src\generate_message_router.bat" />
+    <None Include="..\..\src\generate_smallest.bat" />
+    <None Include="..\..\src\generate_type_traits.bat" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\src\file_error_numbers.txt" />
