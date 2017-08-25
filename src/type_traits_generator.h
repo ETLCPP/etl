@@ -115,6 +115,13 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct remove_pointer { typedef T type; };
   template <typename T> struct remove_pointer<T*> { typedef T type; };
+  template <typename T> struct remove_pointer<const T*> { typedef const T type; };
+  template <typename T> struct remove_pointer<volatile T*> { typedef volatile T type; };
+  template <typename T> struct remove_pointer<const volatile T*> { typedef const volatile T type; };
+  template <typename T> struct remove_pointer<T* const> { typedef T type; };
+  template <typename T> struct remove_pointer<const T* const> { typedef const T type; };
+  template <typename T> struct remove_pointer<volatile T* const> { typedef volatile T type; };
+  template <typename T> struct remove_pointer<const volatile T* const> { typedef const volatile T type; };
 
   /// add_pointer
   ///\ingroup type_traits
@@ -479,6 +486,81 @@ namespace etl
   cog.outl("};")
   ]]]*/
   /*[[[end]]]*/
+
+  //***************************************************************************
+  // A set of templates to allow related types to be derived.
+  //***************************************************************************
+  // Default.
+  template <typename T>
+  struct types
+  {
+  private:
+
+    typedef typename etl::remove_cv<T>::type type_t;
+
+  public:
+
+    typedef type_t              type;
+    typedef type_t&             reference;
+    typedef const type_t&       const_reference;
+    typedef type_t*             pointer;
+    typedef const type_t*       const_pointer;
+    typedef const type_t* const const_pointer_const;
+  };
+
+  // Pointers.
+  template <typename T>
+  struct types<T*>
+  {
+  private:
+
+    typedef typename etl::remove_cv<T>::type type_t;
+
+  public:
+
+    typedef type_t              type;
+    typedef type_t&             reference;
+    typedef const type_t&       const_reference;
+    typedef type_t*             pointer;
+    typedef const type_t*       const_pointer;
+    typedef const type_t* const const_pointer_const;
+  };
+
+  // Pointers.
+  template <typename T>
+  struct types<T* const>
+  {
+  private:
+
+    typedef typename etl::remove_cv<T>::type type_t;
+
+  public:
+
+    typedef type_t              type;
+    typedef type_t&             reference;
+    typedef const type_t&       const_reference;
+    typedef type_t*             pointer;
+    typedef const type_t* const_pointer;
+    typedef const type_t* const const_pointer_const;
+  };
+
+  // References.
+  template <typename T>
+  struct types<T&>
+  {
+  private:
+
+    typedef typename etl::remove_cv<T>::type type_t;
+
+  public:
+
+    typedef type_t              type;
+    typedef type_t&             reference;
+    typedef const type_t&       const_reference;
+    typedef type_t*             pointer;
+    typedef const type_t*       const_pointer;
+    typedef const type_t* const const_pointer_const;
+  };
 }
 
 #endif
