@@ -483,6 +483,9 @@
     <ClInclude Include="..\..\src\sqrt.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\factory.h">
+      <Filter>ETL\Patterns</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -828,6 +831,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_parameter_type.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_factory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
