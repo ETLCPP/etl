@@ -130,6 +130,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\constant.h" />
+    <ClInclude Include="..\..\src\factory.h" />
     <ClInclude Include="..\..\src\fsm.h" />
     <ClInclude Include="..\..\src\fsm_generator.h" />
     <ClInclude Include="..\..\src\largest_generator.h" />
@@ -331,6 +332,7 @@
     <ClCompile Include="..\test_enum_type.cpp" />
     <ClCompile Include="..\test_error_handler.cpp" />
     <ClCompile Include="..\test_exception.cpp" />
+    <ClCompile Include="..\test_factory.cpp" />
     <ClCompile Include="..\test_fixed_iterator.cpp" />
     <ClCompile Include="..\test_flat_multimap.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>

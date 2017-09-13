@@ -168,9 +168,9 @@ namespace etl
     //*************************************************************************
     /// Returns the maximum number of items in the pool.
     //*************************************************************************
-    size_t max_items() const
+    size_t max_size() const
     {
-      return MAX_ITEMS;
+      return MAX_SIZE;
     }
 
     //*************************************************************************
@@ -178,7 +178,7 @@ namespace etl
     //*************************************************************************
     size_t available() const
     {
-      return MAX_ITEMS - items_allocated;
+      return MAX_SIZE - items_allocated;
     }
 
     //*************************************************************************
@@ -204,7 +204,7 @@ namespace etl
     //*************************************************************************
     bool full() const
     {
-      return items_allocated == MAX_ITEMS;
+      return items_allocated == MAX_SIZE;
     }
 
   protected:
@@ -212,13 +212,13 @@ namespace etl
     //*************************************************************************
     /// Constructor
     //*************************************************************************
-    ipool(char* p_buffer_, uint32_t item_size, uint32_t max_items)
+    ipool(char* p_buffer_, uint32_t item_size, uint32_t max_size)
       : p_buffer(p_buffer_),
         p_next(p_buffer_),
         items_allocated(0),
         items_initialised(0),
         ITEM_SIZE(item_size),
-        MAX_ITEMS(max_items)
+        MAX_SIZE(max_size)
     {
     }
 
@@ -232,10 +232,10 @@ namespace etl
       char* p_value = nullptr;
 
       // Any free space left?
-      if (items_allocated < MAX_ITEMS)
+      if (items_allocated < MAX_SIZE)
       {
         // Initialise another one if necessary.
-        if (items_initialised < MAX_ITEMS)
+        if (items_initialised < MAX_SIZE)
         {
           uintptr_t p = reinterpret_cast<uintptr_t>(p_buffer + (items_initialised * ITEM_SIZE));
           *reinterpret_cast<uintptr_t*>(p) = p + ITEM_SIZE;
@@ -246,7 +246,7 @@ namespace etl
         p_value = p_next;
 
         ++items_allocated;
-        if (items_allocated != MAX_ITEMS)
+        if (items_allocated != MAX_SIZE)
         {
           // Set up the pointer to the next free item
           p_next = *reinterpret_cast<char**>(p_next);
@@ -296,7 +296,7 @@ namespace etl
     {
       // Within the range of the buffer?
       intptr_t distance = p - p_buffer;
-      bool is_within_range = (distance >= 0) && (distance <= intptr_t((ITEM_SIZE * MAX_ITEMS) - ITEM_SIZE));
+      bool is_within_range = (distance >= 0) && (distance <= intptr_t((ITEM_SIZE * MAX_SIZE) - ITEM_SIZE));
 
       // Modulus and division can be slow on some architectures, so only do this in debug.
 #if defined(ETL_DEBUG)
@@ -320,7 +320,7 @@ namespace etl
     uint32_t  items_initialised; ///< The number of items initialised.
 
     const uint32_t ITEM_SIZE;    ///< The size of allocated items.
-    const uint32_t MAX_ITEMS;    ///< The maximum number of objects that can be allocated.
+    const uint32_t MAX_SIZE;    ///< The maximum number of objects that can be allocated.
   };
 
   //*************************************************************************
