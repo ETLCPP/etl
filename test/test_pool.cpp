@@ -172,7 +172,7 @@ namespace
     {
       etl::pool<Test_Data, 4> pool;
 
-      CHECK(pool.max_items() == 4U);
+      CHECK(pool.max_size() == 4U);
     }
 
     //*************************************************************************
