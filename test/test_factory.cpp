@@ -154,9 +154,9 @@ namespace
     {
       Factory factory;
 
-      size_t ms = Factory::MAX_ITEMS;
+      size_t ms = Factory::MAX_SIZE;
       CHECK_EQUAL(4U, ms);
-      CHECK_EQUAL(4U, factory.max_items());
+      CHECK_EQUAL(4U, factory.max_size());
       CHECK_EQUAL(4U, factory.available());
       CHECK_EQUAL(0U, factory.size());
       CHECK(factory.empty());
@@ -211,6 +211,19 @@ namespace
       CHECK_EQUAL("set", pd3->s);
       factory.destroy(p);
       CHECK(destructor);
+    }
+
+    //*************************************************************************
+    TEST(test_create_release_const)
+    {
+      Factory factory;
+
+      const Derived1& d = *factory.create<Derived1>();
+
+      CHECK_EQUAL(0, d.i);
+      factory.destroy(&d);
+      CHECK(destructor);
+
     }
 
     //*************************************************************************

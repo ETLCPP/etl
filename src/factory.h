@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2017 jwellbelove
 
@@ -78,7 +78,7 @@ namespace etl
   };
 
   //***************************************************************************
-  template <const size_t MAX_ITEMS_,
+  template <const size_t MAX_SIZE_,
             typename TBase,
             typename T1,         typename T2  = void, typename T3  = void, typename T4  = void,
             typename T5  = void, typename T6  = void, typename T7  = void, typename T8  = void,
@@ -88,7 +88,7 @@ namespace etl
   {
   public:
 
-    static const size_t MAX_ITEMS = MAX_ITEMS_;
+    static const size_t MAX_SIZE = MAX_SIZE_;
 
     //*************************************************************************
     /// Creates the object. Default constructor.
@@ -98,10 +98,17 @@ namespace etl
     {
       STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
 
-      ETL_ASSERT(!full(), ETL_ERROR(etl::factory_cannot_create));
+      T* p = nullptr;
 
-      T* p = pool.template allocate<T>();
-      new (p) T();
+      if (!full())
+      {
+        p = pool.template allocate<T>();
+        new (p) T();
+      }
+      else
+      {
+        ETL_ASSERT(false, ETL_ERROR(etl::factory_cannot_create));
+      }
 
       return p;
     }
@@ -114,10 +121,17 @@ namespace etl
     {
       STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
 
-      ETL_ASSERT(!full(), ETL_ERROR(etl::factory_cannot_create));
+      T* p = nullptr;
 
-      T* p = pool.template allocate<T>();
-      new (p) T(p1);
+      if (!full())
+      {
+        p = pool.template allocate<T>();
+        new (p) T(p1);
+      }
+      else
+      {
+        ETL_ASSERT(false, ETL_ERROR(etl::factory_cannot_create));
+      }
 
       return p;
     }
@@ -130,10 +144,17 @@ namespace etl
     {
       STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
 
-      ETL_ASSERT(!full(), ETL_ERROR(etl::factory_cannot_create));
+      T* p = nullptr;
 
-      T* p = pool.template allocate<T>();
-      new (p) T(p1, p2);
+      if (!full())
+      {
+        p = pool.template allocate<T>();
+        new (p) T(p1, p2);
+      }
+      else
+      {
+        ETL_ASSERT(false, ETL_ERROR(etl::factory_cannot_create));
+      }
 
       return p;
     }
@@ -146,10 +167,17 @@ namespace etl
     {
       STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
 
-      ETL_ASSERT(!full(), ETL_ERROR(etl::factory_cannot_create));
+      T* p = nullptr;
 
-      T* p = pool.template allocate<T>();
-      new (p) T(p1, p2, p3);
+      if (!full())
+      {
+        p = pool.template allocate<T>();
+        new (p) T(p1, p2, p3);
+      }
+      else
+      {
+        ETL_ASSERT(false, ETL_ERROR(etl::factory_cannot_create));
+      }
 
       return p;
     }
@@ -162,10 +190,17 @@ namespace etl
     {
       STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
 
-      ETL_ASSERT(!full(), ETL_ERROR(etl::factory_cannot_create));
+      T* p = nullptr;
 
-      T* p = pool.template allocate<T>();
-      new (p) T(p1, p2, p3, p4);
+      if (!full())
+      {
+        p = pool.template allocate<T>();
+        new (p) T(p1, p2, p3, p4);
+      }
+      else
+      {
+        ETL_ASSERT(false, ETL_ERROR(etl::factory_cannot_create));
+      }
 
       return p;
     }
@@ -173,28 +208,45 @@ namespace etl
     //*************************************************************************
     /// Destroys the object.
     //*************************************************************************
-    template <typename T>
-    void destroy(T* p)
+    bool destroy(TBase* p)
     {
-      STATIC_ASSERT((etl::is_one_of<T, TBase, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
-
-      if (pool.is_in_pool(p))
+      if (!empty() && pool.is_in_pool(p))
       {
-        p->~T();
+        p->~TBase();
         pool.release(p);
+        return true;
       }
       else
       {
         ETL_ASSERT(false, ETL_ERROR(etl::factory_did_not_create));
+        return false;
+      }
+    }
+
+    //*************************************************************************
+    /// Destroys the object.
+    //*************************************************************************
+    bool destroy(const TBase * const p)
+    {
+      if (!empty() && pool.is_in_pool(p))
+      {
+        p->~TBase();
+        pool.release(p);
+        return true;
+      }
+      else
+      {
+        ETL_ASSERT(false, ETL_ERROR(etl::factory_did_not_create));
+        return false;
       }
     }
 
     //*************************************************************************
     /// Returns the maximum number of items in the factory.
     //*************************************************************************
-    size_t max_items() const
+    size_t max_size() const
     {
-      return pool.max_items();
+      return pool.max_size();
     }
 
     //*************************************************************************
@@ -236,11 +288,11 @@ namespace etl
     // The pool element.
     union element
     {
-      char     value[etl::largest<T1, T2, T3, T4, T5, T6, T7, T8>::size]; ///< Storage for value type.
-      typename etl::type_with_alignment<etl::largest<T1, T2, T3, T4, T5, T6, T7, T8>::alignment>::type dummy; ///< Dummy item to get correct alignment.
+      char     value[etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::size]; ///< Storage for value type.
+      typename etl::type_with_alignment<etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::alignment>::type dummy; ///< Dummy item to get correct alignment.
     };
 
-    etl::pool<element, MAX_ITEMS_> pool;
+    etl::pool<element, MAX_SIZE_> pool;
   };
 }
 
