@@ -224,6 +224,31 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_pop_into)
+    {
+      etl::stack<int, 4> stack;
+
+      int i;
+
+      stack.push(1);
+      stack.push(2);
+      stack.push(3);
+      stack.push(4);
+
+      stack.pop_into(i);
+      CHECK_EQUAL(4U, i);
+
+      stack.pop_into(i);
+      CHECK_EQUAL(3U, i);
+
+      stack.pop_into(i);
+      CHECK_EQUAL(2U, i);
+
+      stack.pop_into(i);
+      CHECK_EQUAL(1U, i);
+    }
+
+    //*************************************************************************
     TEST(test_pop_excess)
     {
       etl::stack<int, 4> stack;

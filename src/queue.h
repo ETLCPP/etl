@@ -361,6 +361,7 @@ namespace etl
     //*************************************************************************
     /// Removes the oldest value from the back of the queue.
     /// Does nothing if the queue is already empty.
+    /// If asserts or exceptions are enabled, throws an etl::queue_empty if the queue is empty.
     //*************************************************************************
     void pop()
     {
@@ -371,6 +372,16 @@ namespace etl
       out = (out == (CAPACITY - 1)) ? 0 : out + 1;
       --current_size;
       --construct_count;
+    }
+
+    //*************************************************************************
+    /// Gets the oldest value and removes it from the front of the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_empty if the queue is empty.
+    //*************************************************************************
+    void pop_into(reference destination)
+    {
+      destination = front();
+      pop();
     }
 
     //*************************************************************************

@@ -330,7 +330,6 @@ namespace etl
 
     //*************************************************************************
     /// Removes the oldest item from the top of the stack.
-    /// Does nothing if the stack is already empty.
     //*************************************************************************
     void pop()
     {
@@ -341,6 +340,15 @@ namespace etl
       --top_index;
       --current_size;
       --construct_count;
+    }
+
+    //*************************************************************************
+    /// Removes the oldest item from the top of the stack and puts it in the destination.
+    //*************************************************************************
+    void pop_into(reference destination)
+    {
+      destination = top();
+      pop();
     }
 
     //*************************************************************************

@@ -378,6 +378,31 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_pop_into)
+    {
+      etl::priority_queue<int, SIZE> priority_queue;
+
+      priority_queue.push(1);
+      priority_queue.push(3);
+      priority_queue.push(4);
+      priority_queue.push(2);
+
+      int i;
+
+      priority_queue.pop_into(i);
+      CHECK_EQUAL(4, i);
+
+      priority_queue.pop_into(i);
+      CHECK_EQUAL(3, i);
+
+      priority_queue.pop_into(i);
+      CHECK_EQUAL(2, i);
+
+      priority_queue.pop_into(i);
+      CHECK_EQUAL(1, i);
+    }
+
+    //*************************************************************************
     TEST(test_assignment)
     {
       etl::priority_queue<int, SIZE> priority_queue;

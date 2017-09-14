@@ -270,6 +270,16 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Gets the highest priority value in the priority queue
+    /// and assigns it to destination and removes it from the queue.
+    //*************************************************************************
+    void pop_into(reference destination)
+    {
+      destination = top();
+      pop();
+    }
+
+    //*************************************************************************
     /// Returns the current number of items in the priority queue.
     //*************************************************************************
     size_type size() const
