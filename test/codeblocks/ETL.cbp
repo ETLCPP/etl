@@ -180,6 +180,7 @@
 		<Unit filename="../../src/task.h" />
 		<Unit filename="../../src/type_def.h" />
 		<Unit filename="../../src/type_lookup.h" />
+		<Unit filename="../../src/type_lookup_generator.h" />
 		<Unit filename="../../src/type_traits.h" />
 		<Unit filename="../../src/type_traits_generator.h" />
 		<Unit filename="../../src/u16string.h" />

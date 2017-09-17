@@ -194,10 +194,8 @@ namespace etl
             typename etl::conditional<ID == T13::ID,  typename T13::type,
             typename etl::conditional<ID == T14::ID,  typename T14::type,
             typename etl::conditional<ID == T15::ID,  typename T15::type,
-            void>::type>::type>::type>::type>
-                 ::type>::type>::type>::type>
-                 ::type>::type>::type>::type>
-                 ::type>::type>::type type;
+            void>::type>::type>::type>::type>::type>::type>::type>::type>
+                 ::type>::type>::type>::type>::type>::type>::type type;
     };
 
     //************************************
@@ -273,10 +271,8 @@ namespace etl
             typename etl::conditional<ID == T12::ID,  typename T12::type,
             typename etl::conditional<ID == T13::ID,  typename T13::type,
             typename etl::conditional<ID == T14::ID,  typename T14::type,
-            void>::type>::type>::type>::type>
-                 ::type>::type>::type>::type>
-                 ::type>::type>::type>::type>
-                 ::type>::type type;
+            void>::type>::type>::type>::type>::type>::type>::type>::type>
+                 ::type>::type>::type>::type>::type>::type type;
     };
 
     //************************************
@@ -349,10 +345,8 @@ namespace etl
             typename etl::conditional<ID == T11::ID,  typename T11::type,
             typename etl::conditional<ID == T12::ID,  typename T12::type,
             typename etl::conditional<ID == T13::ID,  typename T13::type,
-            void>::type>::type>::type>::type>
-                 ::type>::type>::type>::type>
-                 ::type>::type>::type>::type>
-                 ::type type;
+            void>::type>::type>::type>::type>::type>::type>::type>::type>
+                 ::type>::type>::type>::type>::type type;
     };
 
     //************************************
@@ -423,11 +417,9 @@ namespace etl
             typename etl::conditional<ID == T10::ID,  typename T10::type,
             typename etl::conditional<ID == T11::ID,  typename T11::type,
             typename etl::conditional<ID == T12::ID,  typename T12::type,
-            void>::type>::type>::type>::type>
-                 ::type>::type>::type>::type>
+            void>::type>::type>::type>::type>::type>::type>::type>::type>
                  ::type>::type>::type>::type type;
-
-                   };
+    };
 
     //************************************
     enum
@@ -493,8 +485,7 @@ namespace etl
             typename etl::conditional<ID == T9::ID,  typename T9::type,
             typename etl::conditional<ID == T10::ID,  typename T10::type,
             typename etl::conditional<ID == T11::ID,  typename T11::type,
-            void>::type>::type>::type>::type>
-                 ::type>::type>::type>::type>
+            void>::type>::type>::type>::type>::type>::type>::type>::type>
                  ::type>::type>::type type;
     };
 
@@ -559,8 +550,7 @@ namespace etl
             typename etl::conditional<ID == T8::ID,  typename T8::type,
             typename etl::conditional<ID == T9::ID,  typename T9::type,
             typename etl::conditional<ID == T10::ID,  typename T10::type,
-            void>::type>::type>::type>::type>
-                 ::type>::type>::type>::type>
+            void>::type>::type>::type>::type>::type>::type>::type>::type>
                  ::type>::type type;
     };
 
@@ -622,8 +612,7 @@ namespace etl
             typename etl::conditional<ID == T7::ID,  typename T7::type,
             typename etl::conditional<ID == T8::ID,  typename T8::type,
             typename etl::conditional<ID == T9::ID,  typename T9::type,
-            void>::type>::type>::type>::type>
-                 ::type>::type>::type>::type>
+            void>::type>::type>::type>::type>::type>::type>::type>::type>
                  ::type type;
     };
 
@@ -683,8 +672,7 @@ namespace etl
             typename etl::conditional<ID == T6::ID,  typename T6::type,
             typename etl::conditional<ID == T7::ID,  typename T7::type,
             typename etl::conditional<ID == T8::ID,  typename T8::type,
-            void>::type>::type>::type>::type>
-                 ::type>::type>::type>::type type;
+            void>::type>::type>::type>::type>::type>::type>::type>::type type;
 
                    };
 
@@ -740,8 +728,7 @@ namespace etl
             typename etl::conditional<ID == T5::ID,  typename T5::type,
             typename etl::conditional<ID == T6::ID,  typename T6::type,
             typename etl::conditional<ID == T7::ID,  typename T7::type,
-            void>::type>::type>::type>::type>
-                 ::type>::type>::type type;
+            void>::type>::type>::type>::type>::type>::type>::type type;
     };
 
     //************************************
@@ -793,8 +780,7 @@ namespace etl
             typename etl::conditional<ID == T4::ID,  typename T4::type,
             typename etl::conditional<ID == T5::ID,  typename T5::type,
             typename etl::conditional<ID == T6::ID,  typename T6::type,
-            void>::type>::type>::type>::type>
-                 ::type>::type type;
+            void>::type>::type>::type>::type>::type>::type type;
     };
 
     //************************************
@@ -843,8 +829,7 @@ namespace etl
             typename etl::conditional<ID == T3::ID,  typename T3::type,
             typename etl::conditional<ID == T4::ID,  typename T4::type,
             typename etl::conditional<ID == T5::ID,  typename T5::type,
-            void>::type>::type>::type>::type>
-                 ::type type;
+            void>::type>::type>::type>::type>::type type;
     };
 
     //************************************
@@ -892,8 +877,7 @@ namespace etl
             typename etl::conditional<ID == T3::ID,  typename T3::type,
             typename etl::conditional<ID == T4::ID,  typename T4::type,
             void>::type>::type>::type>::type type;
-
-                   };
+    };
 
     //************************************
     enum
@@ -1074,10 +1058,8 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T14::type1>::value, typename T14::type2,
             typename etl::conditional<etl::is_same<T, typename T15::type1>::value, typename T15::type2,
             typename etl::conditional<etl::is_same<T, typename T16::type1>::value, typename T16::type2,
-            void>::type>::type>::type>::type>
-                 ::type>::type>::type>::type>
-                 ::type>::type>::type>::type>
-                 ::type>::type>::type>::type type;
+            void>::type>::type>::type>::type>::type>::type>::type>::type>
+                 ::type>::type>::type>::type>::type>::type>::type>::type type;
     };
   };
 
@@ -1124,10 +1106,8 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T13::type1>::value, typename T13::type2,
             typename etl::conditional<etl::is_same<T, typename T14::type1>::value, typename T14::type2,
             typename etl::conditional<etl::is_same<T, typename T15::type1>::value, typename T15::type2,
-            void>::type>::type>::type>::type>
-                 ::type>::type>::type>::type>
-                 ::type>::type>::type>::type>
-                 ::type>::type>::type type;
+            void>::type>::type>::type>::type>::type>::type>::type>::type>
+                 ::type>::type>::type>::type>::type>::type>::type type;
     };
   };
 
@@ -1172,10 +1152,8 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T12::type1>::value, typename T12::type2,
             typename etl::conditional<etl::is_same<T, typename T13::type1>::value, typename T13::type2,
             typename etl::conditional<etl::is_same<T, typename T14::type1>::value, typename T14::type2,
-            void>::type>::type>::type>::type>
-                 ::type>::type>::type>::type>
-                 ::type>::type>::type>::type>
-                 ::type>::type type;
+            void>::type>::type>::type>::type>::type>::type>::type>::type>
+                 ::type>::type>::type>::type>::type>::type type;
     };
   };
 
@@ -1218,10 +1196,8 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T11::type1>::value, typename T11::type2,
             typename etl::conditional<etl::is_same<T, typename T12::type1>::value, typename T12::type2,
             typename etl::conditional<etl::is_same<T, typename T13::type1>::value, typename T13::type2,
-            void>::type>::type>::type>::type>
-                 ::type>::type>::type>::type>
-                 ::type>::type>::type>::type>
-                 ::type type;
+            void>::type>::type>::type>::type>::type>::type>::type>::type>
+                 ::type>::type>::type>::type>::type type;
     };
   };
 
@@ -1263,11 +1239,9 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T10::type1>::value, typename T10::type2,
             typename etl::conditional<etl::is_same<T, typename T11::type1>::value, typename T11::type2,
             typename etl::conditional<etl::is_same<T, typename T12::type1>::value, typename T12::type2,
-            void>::type>::type>::type>::type>
-                 ::type>::type>::type>::type>
+            void>::type>::type>::type>::type>::type>::type>::type>::type>
                  ::type>::type>::type>::type type;
-
-                   };
+    };
   };
 
   //***************************************************************************
@@ -1305,8 +1279,7 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T9::type1>::value, typename T9::type2,
             typename etl::conditional<etl::is_same<T, typename T10::type1>::value, typename T10::type2,
             typename etl::conditional<etl::is_same<T, typename T11::type1>::value, typename T11::type2,
-            void>::type>::type>::type>::type>
-                 ::type>::type>::type>::type>
+            void>::type>::type>::type>::type>::type>::type>::type>::type>
                  ::type>::type>::type type;
     };
   };
@@ -1344,8 +1317,7 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T8::type1>::value, typename T8::type2,
             typename etl::conditional<etl::is_same<T, typename T9::type1>::value, typename T9::type2,
             typename etl::conditional<etl::is_same<T, typename T10::type1>::value, typename T10::type2,
-            void>::type>::type>::type>::type>
-                 ::type>::type>::type>::type>
+            void>::type>::type>::type>::type>::type>::type>::type>::type>
                  ::type>::type type;
     };
   };
@@ -1381,8 +1353,7 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T7::type1>::value, typename T7::type2,
             typename etl::conditional<etl::is_same<T, typename T8::type1>::value, typename T8::type2,
             typename etl::conditional<etl::is_same<T, typename T9::type1>::value, typename T9::type2,
-            void>::type>::type>::type>::type>
-                 ::type>::type>::type>::type>
+            void>::type>::type>::type>::type>::type>::type>::type>::type>
                  ::type type;
     };
   };
@@ -1417,10 +1388,8 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T6::type1>::value, typename T6::type2,
             typename etl::conditional<etl::is_same<T, typename T7::type1>::value, typename T7::type2,
             typename etl::conditional<etl::is_same<T, typename T8::type1>::value, typename T8::type2,
-            void>::type>::type>::type>::type>
-                 ::type>::type>::type>::type type;
-
-                   };
+            void>::type>::type>::type>::type>::type>::type>::type>::type type;
+    };
   };
 
   //***************************************************************************
@@ -1450,8 +1419,7 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T5::type1>::value, typename T5::type2,
             typename etl::conditional<etl::is_same<T, typename T6::type1>::value, typename T6::type2,
             typename etl::conditional<etl::is_same<T, typename T7::type1>::value, typename T7::type2,
-            void>::type>::type>::type>::type>
-                 ::type>::type>::type type;
+            void>::type>::type>::type>::type>::type>::type>::type type;
     };
   };
 
@@ -1480,8 +1448,7 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T4::type1>::value, typename T4::type2,
             typename etl::conditional<etl::is_same<T, typename T5::type1>::value, typename T5::type2,
             typename etl::conditional<etl::is_same<T, typename T6::type1>::value, typename T6::type2,
-            void>::type>::type>::type>::type>
-                 ::type>::type type;
+            void>::type>::type>::type>::type>::type>::type type;
     };
   };
 
@@ -1508,8 +1475,7 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T3::type1>::value, typename T3::type2,
             typename etl::conditional<etl::is_same<T, typename T4::type1>::value, typename T4::type2,
             typename etl::conditional<etl::is_same<T, typename T5::type1>::value, typename T5::type2,
-            void>::type>::type>::type>::type>
-                 ::type type;
+            void>::type>::type>::type>::type>::type type;
     };
   };
 
@@ -1536,8 +1502,7 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T3::type1>::value, typename T3::type2,
             typename etl::conditional<etl::is_same<T, typename T4::type1>::value, typename T4::type2,
             void>::type>::type>::type>::type type;
-
-                   };
+    };
   };
 
   //***************************************************************************

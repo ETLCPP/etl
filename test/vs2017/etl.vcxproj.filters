@@ -489,6 +489,9 @@
     <ClInclude Include="..\..\src\type_lookup.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\type_lookup_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
