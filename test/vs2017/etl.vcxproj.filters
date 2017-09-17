@@ -484,7 +484,10 @@
       <Filter>ETL\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\factory.h">
-      <Filter>ETL\Patterns</Filter>
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\type_lookup.h">
+      <Filter>ETL\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -836,6 +839,9 @@
     <ClCompile Include="..\test_factory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_type_lookup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Doxyfile">
@@ -860,6 +866,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\..\src\generate_type_traits.bat">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\src\generate_type_lookup.bat">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
