@@ -340,6 +340,31 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_pop_into)
+    {
+      etl::queue<int, 4> queue;
+
+      int i;
+
+      queue.push(1);
+      queue.push(2);
+      queue.push(3);
+      queue.push(4);
+
+      queue.pop_into(i);
+      CHECK_EQUAL(1, i);
+
+      queue.pop_into(i);
+      CHECK_EQUAL(2, i);
+
+      queue.pop_into(i);
+      CHECK_EQUAL(3, i);
+
+      queue.pop_into(i);
+      CHECK_EQUAL(4, i);
+    }
+
+    //*************************************************************************
     TEST(test_pop_exception)
     {
       etl::queue<int, 4> queue;

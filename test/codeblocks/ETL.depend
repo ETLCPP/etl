@@ -4187,7 +4187,7 @@
 	"exception.h"
 	"error_handler.h"
 
-1502551636 source:d:\users\john\documents\programming\github\etl\test\test_queue.cpp
+1505405998 source:d:\users\john\documents\programming\github\etl\test\test_queue.cpp
 	"UnitTest++.h"
 	<queue>
 	"queue.h"
@@ -4216,7 +4216,7 @@
 	"smallest.h"
 	<type_traits>
 
-1502551636 source:d:\users\john\documents\programming\github\etl\test\test_stack.cpp
+1505397202 source:d:\users\john\documents\programming\github\etl\test\test_stack.cpp
 	"UnitTest++.h"
 	<stack>
 	"data.h"
@@ -4360,7 +4360,7 @@
 	"exception.h"
 	"error_handler.h"
 
-1505152931 source:d:\users\john\documents\programming\github\etl\test\test_pool.cpp
+1505309892 source:d:\users\john\documents\programming\github\etl\test\test_pool.cpp
 	"UnitTest++.h"
 	"ExtraCheckMacros.h"
 	"data.h"
@@ -5574,7 +5574,7 @@
 	"iterator.h"
 	"type_traits.h"
 
-1505160601 d:\users\john\documents\programming\github\etl\src\type_traits.h
+1505309892 d:\users\john\documents\programming\github\etl\src\type_traits.h
 	<stddef.h>
 	"platform.h"
 	"nullptr.h"
@@ -5884,7 +5884,7 @@
 	"type_traits.h"
 	"parameter_type.h"
 
-1505152930 d:\users\john\documents\programming\github\etl\src\pool.h
+1505309892 d:\users\john\documents\programming\github\etl\src\pool.h
 	"alignment.h"
 	"array.h"
 	"container.h"
@@ -6060,7 +6060,7 @@
 	"exception.h"
 	"error_handler.h"
 
-1502551636 d:\users\john\documents\programming\github\etl\src\queue.h
+1505385026 d:\users\john\documents\programming\github\etl\src\queue.h
 	<stddef.h>
 	<stdint.h>
 	"container.h"
@@ -6117,7 +6117,7 @@
 	"../exception.h"
 	"../error_handler.h"
 
-1502551636 d:\users\john\documents\programming\github\etl\src\stack.h
+1505396581 d:\users\john\documents\programming\github\etl\src\stack.h
 	<stddef.h>
 	<stdint.h>
 	<algorithm>
@@ -6159,7 +6159,7 @@
 
 1482624915 ordered_map.h"
 
-1497306512 d:\users\john\documents\programming\github\etl\src\unordered_map.h
+1505309892 d:\users\john\documents\programming\github\etl\src\unordered_map.h
 	<stddef.h>
 	<iterator>
 	<functional>
@@ -6491,7 +6491,7 @@
 	"array.h"
 	"container.h"
 
-1500667550 source:d:\users\john\documents\programming\github\etl\test\test_priority_queue.cpp
+1505406358 source:d:\users\john\documents\programming\github\etl\test\test_priority_queue.cpp
 	"UnitTest++.h"
 	<queue>
 	"priority_queue.h"
@@ -6500,7 +6500,7 @@
 
 1482624474 iority_queue.h"
 
-1501066696 d:\users\john\documents\programming\github\etl\src\priority_queue.h
+1505385701 d:\users\john\documents\programming\github\etl\src\priority_queue.h
 	<stddef.h>
 	<functional>
 	<algorithm>
@@ -6537,7 +6537,7 @@
 
 1482625301 ordered_multimap.h"
 
-1501066686 d:\users\john\documents\programming\github\etl\src\unordered_multimap.h
+1505309892 d:\users\john\documents\programming\github\etl\src\unordered_multimap.h
 	<stddef.h>
 	<iterator>
 	<functional>
@@ -6589,7 +6589,7 @@
 	"unordered_multiset.h"
 	"checksum.h"
 
-1497306512 d:\users\john\documents\programming\github\etl\src\unordered_multiset.h
+1505309892 d:\users\john\documents\programming\github\etl\src\unordered_multiset.h
 	<stddef.h>
 	<iterator>
 	<functional>
@@ -6639,7 +6639,7 @@
 	"unordered_set.h"
 	"checksum.h"
 
-1497306512 d:\users\john\documents\programming\github\etl\src\unordered_set.h
+1505309892 d:\users\john\documents\programming\github\etl\src\unordered_set.h
 	<stddef.h>
 	<iterator>
 	<functional>
@@ -10335,25 +10335,36 @@
 	<stdint.h>
 	<type_traits>
 
-1503314321 source:d:\users\john\documents\programming\github\etl\test\test_parameter_type.cpp
+1505152931 source:d:\users\john\documents\programming\github\etl\test\test_parameter_type.cpp
 	"UnitTest++.h"
 	<string>
 	<ostream>
 	"parameter_type.h"
 
-1505164199 source:d:\users\john\documents\programming\github\etl\test\test_factory.cpp
+1505641343 source:d:\users\john\documents\programming\github\etl\test\test_factory.cpp
 	"UnitTest++.h"
 	"ExtraCheckMacros.h"
 	"factory.h"
 	<string>
+	<type_traits>
 
-1505163782 d:\users\john\documents\programming\github\etl\src\factory.h
+1505641718 d:\users\john\documents\programming\github\etl\src\factory.h
 	<stdint.h>
 	"error_handler.h"
 	"exception.h"
 	"largest.h"
-	"pool.h"
 	"type_traits.h"
 	"alignment.h"
 	"static_assert.h"
+	"type_lookup.h"
+
+1505651269 d:\users\john\documents\programming\github\etl\src\type_lookup.h
+	<limits.h>
+	"type_traits.h"
+
+1505651059 source:d:\users\john\documents\programming\github\etl\test\test_type_lookup.cpp
+	"UnitTest++.h"
+	"ExtraCheckMacros.h"
+	"type_lookup.h"
+	<type_traits>
 

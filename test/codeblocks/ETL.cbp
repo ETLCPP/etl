@@ -99,6 +99,7 @@
 		<Unit filename="../../src/etl_arduino.h" />
 		<Unit filename="../../src/exception.h" />
 		<Unit filename="../../src/factorial.h" />
+		<Unit filename="../../src/factory.h" />
 		<Unit filename="../../src/fibonacci.h" />
 		<Unit filename="../../src/fixed_iterator.h" />
 		<Unit filename="../../src/flat_map.h" />
@@ -283,6 +284,7 @@
 		<Unit filename="../test_enum_type.cpp" />
 		<Unit filename="../test_error_handler.cpp" />
 		<Unit filename="../test_exception.cpp" />
+		<Unit filename="../test_factory.cpp" />
 		<Unit filename="../test_fixed_iterator.cpp" />
 		<Unit filename="../test_flat_map.cpp" />
 		<Unit filename="../test_flat_multimap.cpp" />
@@ -318,6 +320,7 @@
 		<Unit filename="../test_observer.cpp" />
 		<Unit filename="../test_optional.cpp" />
 		<Unit filename="../test_packet.cpp" />
+		<Unit filename="../test_parameter_type.cpp" />
 		<Unit filename="../test_pearson.cpp" />
 		<Unit filename="../test_pool.cpp" />
 		<Unit filename="../test_priority_queue.cpp" />
