@@ -179,6 +179,8 @@
 		<Unit filename="../../src/static_assert.h" />
 		<Unit filename="../../src/task.h" />
 		<Unit filename="../../src/type_def.h" />
+		<Unit filename="../../src/type_lookup.h" />
+		<Unit filename="../../src/type_lookup_generator.h" />
 		<Unit filename="../../src/type_traits.h" />
 		<Unit filename="../../src/type_traits_generator.h" />
 		<Unit filename="../../src/u16string.h" />
@@ -339,6 +341,7 @@
 		<Unit filename="../test_string_wchar_t.cpp" />
 		<Unit filename="../test_task_scheduler.cpp" />
 		<Unit filename="../test_type_def.cpp" />
+		<Unit filename="../test_type_lookup.cpp" />
 		<Unit filename="../test_type_traits.cpp" />
 		<Unit filename="../test_unordered_map.cpp" />
 		<Unit filename="../test_unordered_multimap.cpp" />

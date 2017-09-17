@@ -145,6 +145,7 @@
     <ClInclude Include="..\..\src\sqrt.h" />
     <ClInclude Include="..\..\src\task.h" />
     <ClInclude Include="..\..\src\type_lookup.h" />
+    <ClInclude Include="..\..\src\type_lookup_generator.h" />
     <ClInclude Include="..\..\src\type_traits_generator.h" />
     <ClInclude Include="..\..\unittest-cpp\UnitTest++\AssertException.h" />
     <ClInclude Include="..\..\unittest-cpp\UnitTest++\CheckMacros.h" />

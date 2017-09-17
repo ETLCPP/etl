@@ -172,7 +172,7 @@ namespace etl
               cog.outl("::type type;")
           else:
               cog.out("::type>")
-          if t % 4 == 0:
+          if t % 8 == 0:
               cog.outl("")
               cog.out("               ")
       cog.outl("  };")
@@ -217,7 +217,7 @@ namespace etl
           cog.outl("::type type;")
       else:
           cog.out("::type>")
-      if n % 4 == 0:
+      if n % 8 == 0:
           if n != int(NTypes):
               cog.outl("")
               cog.out("               ")
@@ -265,9 +265,9 @@ namespace etl
             cog.outl("::type type;")
         else:
             cog.out("::type>")
-        if t % 4 == 0:
-            cog.outl("")
-            cog.out("               ")
+            if t % 8 == 0:
+                cog.outl("")
+                cog.out("               ")
     cog.outl("  };")
     cog.outl("};")
   ]]]*/
