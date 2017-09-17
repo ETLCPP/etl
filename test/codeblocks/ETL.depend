@@ -4187,7 +4187,7 @@
 	"exception.h"
 	"error_handler.h"
 
-1505405998 source:d:\users\john\documents\programming\github\etl\test\test_queue.cpp
+1505653044 source:d:\users\john\documents\programming\github\etl\test\test_queue.cpp
 	"UnitTest++.h"
 	<queue>
 	"queue.h"
@@ -4216,7 +4216,7 @@
 	"smallest.h"
 	<type_traits>
 
-1505397202 source:d:\users\john\documents\programming\github\etl\test\test_stack.cpp
+1505653044 source:d:\users\john\documents\programming\github\etl\test\test_stack.cpp
 	"UnitTest++.h"
 	<stack>
 	"data.h"
@@ -6117,7 +6117,7 @@
 	"../exception.h"
 	"../error_handler.h"
 
-1505396581 d:\users\john\documents\programming\github\etl\src\stack.h
+1505653044 d:\users\john\documents\programming\github\etl\src\stack.h
 	<stddef.h>
 	<stdint.h>
 	<algorithm>
@@ -6491,7 +6491,7 @@
 	"array.h"
 	"container.h"
 
-1505406358 source:d:\users\john\documents\programming\github\etl\test\test_priority_queue.cpp
+1505653044 source:d:\users\john\documents\programming\github\etl\test\test_priority_queue.cpp
 	"UnitTest++.h"
 	<queue>
 	"priority_queue.h"
@@ -6500,7 +6500,7 @@
 
 1482624474 iority_queue.h"
 
-1505385701 d:\users\john\documents\programming\github\etl\src\priority_queue.h
+1505653044 d:\users\john\documents\programming\github\etl\src\priority_queue.h
 	<stddef.h>
 	<functional>
 	<algorithm>
@@ -10358,11 +10358,11 @@
 	"static_assert.h"
 	"type_lookup.h"
 
-1505651269 d:\users\john\documents\programming\github\etl\src\type_lookup.h
+1505653044 d:\users\john\documents\programming\github\etl\src\type_lookup.h
 	<limits.h>
 	"type_traits.h"
 
-1505651059 source:d:\users\john\documents\programming\github\etl\test\test_type_lookup.cpp
+1505653044 source:d:\users\john\documents\programming\github\etl\test\test_type_lookup.cpp
 	"UnitTest++.h"
 	"ExtraCheckMacros.h"
 	"type_lookup.h"
