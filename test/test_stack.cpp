@@ -236,16 +236,16 @@ namespace
       stack.push(4);
 
       stack.pop_into(i);
-      CHECK_EQUAL(4U, i);
+      CHECK_EQUAL(4, i);
 
       stack.pop_into(i);
-      CHECK_EQUAL(3U, i);
+      CHECK_EQUAL(3, i);
 
       stack.pop_into(i);
-      CHECK_EQUAL(2U, i);
+      CHECK_EQUAL(2, i);
 
       stack.pop_into(i);
-      CHECK_EQUAL(1U, i);
+      CHECK_EQUAL(1, i);
     }
 
     //*************************************************************************

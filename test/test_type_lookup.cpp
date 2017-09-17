@@ -186,7 +186,7 @@ namespace
     //*************************************************************************
     TEST(test_id_from_type_8)
     {
-      CHECK_EQUAL((unsigned int)Type1::ID,  (unsigned int) Type_Id_Lookup8::id_from_type<Type1>::value);
+      CHECK_EQUAL((unsigned int) Type1::ID,  (unsigned int) Type_Id_Lookup8::id_from_type<Type1>::value);
       CHECK_EQUAL((unsigned int) Type2::ID,  (unsigned int) Type_Id_Lookup8::id_from_type<Type2>::value);
       CHECK_EQUAL((unsigned int) Type3::ID,  (unsigned int) Type_Id_Lookup8::id_from_type<Type3>::value);
       CHECK_EQUAL((unsigned int) Type4::ID,  (unsigned int) Type_Id_Lookup8::id_from_type<Type4>::value);
