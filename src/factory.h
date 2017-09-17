@@ -230,51 +230,51 @@ namespace etl
     /// Creates the object from an index. Default constructor.
     //*************************************************************************
     template <size_t ID>
-    TBase* create_from_id()
+    typename lookup_t::template type_from_id<ID>::type* create_from_id()
     {
       typedef typename lookup_t::template type_from_id<ID>::type type;
       STATIC_ASSERT((!etl::is_same<void, type>::value), "Invalid index");
-      return reinterpret_cast<TBase*>(create_from_type<type>());
+      return create_from_type<type>();
     }
 
     //*************************************************************************
     /// Creates the object from an index. One parameter constructor.
     //*************************************************************************
     template <size_t ID, typename TP1>
-    TBase* create_from_id(const TP1& p1)
+    typename lookup_t::template type_from_id<ID>::type* create_from_id(const TP1& p1)
     {
       typedef typename lookup_t::template type_from_id<ID>::type type;
       STATIC_ASSERT((!etl::is_same<void, type>::value), "Invalid index");
-      return reinterpret_cast<TBase*>(create_from_type<type>(p1));
+      return create_from_type<type>(p1);
     }
 
     //*************************************************************************
     /// Creates the object from an index. Two parameter constructor.
     //*************************************************************************
     template <size_t ID, typename TP1, typename TP2>
-    TBase* create_from_id(const TP1& p1, const TP2& p2)
+    typename lookup_t::template type_from_id<ID>::type* create_from_id(const TP1& p1, const TP2& p2)
     {
       typedef typename lookup_t::template type_from_id<ID>::type type;
       STATIC_ASSERT((!etl::is_same<void, type>::value), "Invalid index");
-      return reinterpret_cast<TBase*>(create_from_type<type>(p1, p2));
+      return create_from_type<type>(p1, p2);
     }
 
     //*************************************************************************
     /// Creates the object from an index. Three parameter constructor.
     //*************************************************************************
     template <size_t ID, typename TP1, typename TP2, typename TP3>
-    TBase* create_from_id(const TP1& p1, const TP2& p2, const TP3& p3)
+    typename lookup_t::template type_from_id<ID>::type* create_from_id(const TP1& p1, const TP2& p2, const TP3& p3)
     {
       typedef typename lookup_t::template type_from_id<ID>::type type;
       STATIC_ASSERT((!etl::is_same<void, type>::value), "Invalid index");
-      return reinterpret_cast<TBase*>(create_from_type<type>(p1, p2, p3));
+      return create_from_type<type>(p1, p2, p3);
     }
 
     //*************************************************************************
     /// Creates the object from an index. Three parameter constructor.
     //*************************************************************************
     template <size_t ID, typename TP1, typename TP2, typename TP3, typename TP4>
-    TBase* create_from_id(const TP1& p1, const TP2& p2, const TP3& p3, const TP4& p4)
+    typename lookup_t::template type_from_id<ID>::type* create_from_id(const TP1& p1, const TP2& p2, const TP3& p3, const TP4& p4)
     {
       typedef typename lookup_t::template type_from_id<ID>::type type;
       STATIC_ASSERT((!etl::is_same<void, type>::value), "Invalid index");

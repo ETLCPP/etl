@@ -286,25 +286,25 @@ namespace
     TEST(test_create_from_index)
     {
       Factory factory;
-      Base* p;
+      Derived1* p1;
+      Derived2* p2;
       Derived3* p3;
 
-      CHECK_NO_THROW(p = factory.create_from_id<DERIVED1>());
-      CHECK(dynamic_cast<Derived1*>(p) != 0);
-      factory.destroy(p);
+      CHECK_NO_THROW(p1 = factory.create_from_id<DERIVED1>());
+      CHECK_EQUAL(0, p1->i);
+      factory.destroy(p1);
       
-      CHECK_NO_THROW(p = factory.create_from_id<DERIVED2>());
-      CHECK(dynamic_cast<Derived2*>(p) != 0);
-      factory.destroy(p);
+      CHECK_NO_THROW(p2 = factory.create_from_id<DERIVED2>());
+      CHECK_EQUAL(0.0, p2->d);
+      factory.destroy(p2);
 
-      CHECK_NO_THROW(p = factory.create_from_id<DERIVED3>());
-      CHECK(dynamic_cast<Derived3*>(p) != 0);
-      factory.destroy(p);
+      CHECK_NO_THROW(p3 = factory.create_from_id<DERIVED3>());
+      CHECK_EQUAL("constructed", p3->s);
+      factory.destroy(p3);
 
-      CHECK_NO_THROW(p = factory.create_from_id<DERIVED3>("1"));
-      p3 = static_cast<Derived3*>(p);
+      CHECK_NO_THROW(p3 = factory.create_from_id<DERIVED3>("1"));
       CHECK_EQUAL("constructed1", p3->s);
-      factory.destroy(p);
+      factory.destroy(p3);
     }
   };
 }
