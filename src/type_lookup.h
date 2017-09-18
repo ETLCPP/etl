@@ -32,6 +32,7 @@ SOFTWARE.
 #include <limits.h>
 
 #include "type_traits.h"
+#include "static_assert.h"
 
 #undef ETL_FILE
 #define ETL_FILE "41"
@@ -46,10 +47,15 @@ SOFTWARE.
 
 namespace etl
 {
+  namespace __private_type_lookup__
+  {
+    struct null_type {};
+  }
+
   //***************************************************************************
   /// The type/id pair type to use for type/id lookup template parameters.
   //***************************************************************************
-  template <typename T = void, size_t ID_ = 0>
+  template <typename T = __private_type_lookup__::null_type, size_t ID_ = 0>
   struct type_id_pair
   {
     typedef T type;
@@ -63,7 +69,7 @@ namespace etl
   //***************************************************************************
   /// The type/type pair type to use for type/type lookup template parameters.
   //***************************************************************************
-  template <typename T1 = void, typename T2 = void>
+  template <typename T1 = __private_type_lookup__::null_type, typename T2 = __private_type_lookup__::null_type>
   struct type_type_pair
   {
     typedef T1 type1;
@@ -91,31 +97,39 @@ namespace etl
             typename T16 = etl::type_id_pair<> >
   struct type_id_lookup
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <size_t ID>
     struct type_from_id
     {
       typedef 
-            typename etl::conditional<ID == T1::ID,  typename T1::type,
-            typename etl::conditional<ID == T2::ID,  typename T2::type,
-            typename etl::conditional<ID == T3::ID,  typename T3::type,
-            typename etl::conditional<ID == T4::ID,  typename T4::type,
-            typename etl::conditional<ID == T5::ID,  typename T5::type,
-            typename etl::conditional<ID == T6::ID,  typename T6::type,
-            typename etl::conditional<ID == T7::ID,  typename T7::type,
-            typename etl::conditional<ID == T8::ID,  typename T8::type,
-            typename etl::conditional<ID == T9::ID,  typename T9::type,
-            typename etl::conditional<ID == T10::ID,  typename T10::type,
-            typename etl::conditional<ID == T11::ID,  typename T11::type,
-            typename etl::conditional<ID == T12::ID,  typename T12::type,
-            typename etl::conditional<ID == T13::ID,  typename T13::type,
-            typename etl::conditional<ID == T14::ID,  typename T14::type,
-            typename etl::conditional<ID == T15::ID,  typename T15::type,
-            typename etl::conditional<ID == T16::ID,  typename T16::type,
-            void>::type>::type>::type>::type>
-                 ::type>::type>::type>::type>
-                 ::type>::type>::type>::type>
-                 ::type>::type>::type>::type type;
+            typename etl::conditional<ID == T1::ID, typename T1::type,
+            typename etl::conditional<ID == T2::ID, typename T2::type,
+            typename etl::conditional<ID == T3::ID, typename T3::type,
+            typename etl::conditional<ID == T4::ID, typename T4::type,
+            typename etl::conditional<ID == T5::ID, typename T5::type,
+            typename etl::conditional<ID == T6::ID, typename T6::type,
+            typename etl::conditional<ID == T7::ID, typename T7::type,
+            typename etl::conditional<ID == T8::ID, typename T8::type,
+            typename etl::conditional<ID == T9::ID, typename T9::type,
+            typename etl::conditional<ID == T10::ID, typename T10::type,
+            typename etl::conditional<ID == T11::ID, typename T11::type,
+            typename etl::conditional<ID == T12::ID, typename T12::type,
+            typename etl::conditional<ID == T13::ID, typename T13::type,
+            typename etl::conditional<ID == T14::ID, typename T14::type,
+            typename etl::conditional<ID == T15::ID, typename T15::type,
+            typename etl::conditional<ID == T16::ID, typename T16::type,
+            null_type>::type>::type>::type>::type>
+                      ::type>::type>::type>::type>
+                      ::type>::type>::type>::type>
+                      ::type>::type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid id");
     };
 
     //************************************
@@ -148,6 +162,8 @@ namespace etl
           (unsigned int) etl::is_same<T, typename T16::type>::value ? T16::ID :
           (unsigned int) UNKNOWN
       };
+
+      STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
   };
 
@@ -174,28 +190,36 @@ namespace etl
                         T9, T10, T11, T12, 
                         T13, T14, T15, etl::type_id_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <size_t ID>
     struct type_from_id
     {
       typedef 
-            typename etl::conditional<ID == T1::ID,  typename T1::type,
-            typename etl::conditional<ID == T2::ID,  typename T2::type,
-            typename etl::conditional<ID == T3::ID,  typename T3::type,
-            typename etl::conditional<ID == T4::ID,  typename T4::type,
-            typename etl::conditional<ID == T5::ID,  typename T5::type,
-            typename etl::conditional<ID == T6::ID,  typename T6::type,
-            typename etl::conditional<ID == T7::ID,  typename T7::type,
-            typename etl::conditional<ID == T8::ID,  typename T8::type,
-            typename etl::conditional<ID == T9::ID,  typename T9::type,
-            typename etl::conditional<ID == T10::ID,  typename T10::type,
-            typename etl::conditional<ID == T11::ID,  typename T11::type,
-            typename etl::conditional<ID == T12::ID,  typename T12::type,
-            typename etl::conditional<ID == T13::ID,  typename T13::type,
-            typename etl::conditional<ID == T14::ID,  typename T14::type,
-            typename etl::conditional<ID == T15::ID,  typename T15::type,
-            void>::type>::type>::type>::type>::type>::type>::type>::type>
-                 ::type>::type>::type>::type>::type>::type>::type type;
+            typename etl::conditional<ID == T1::ID, typename T1::type,
+            typename etl::conditional<ID == T2::ID, typename T2::type,
+            typename etl::conditional<ID == T3::ID, typename T3::type,
+            typename etl::conditional<ID == T4::ID, typename T4::type,
+            typename etl::conditional<ID == T5::ID, typename T5::type,
+            typename etl::conditional<ID == T6::ID, typename T6::type,
+            typename etl::conditional<ID == T7::ID, typename T7::type,
+            typename etl::conditional<ID == T8::ID, typename T8::type,
+            typename etl::conditional<ID == T9::ID, typename T9::type,
+            typename etl::conditional<ID == T10::ID, typename T10::type,
+            typename etl::conditional<ID == T11::ID, typename T11::type,
+            typename etl::conditional<ID == T12::ID, typename T12::type,
+            typename etl::conditional<ID == T13::ID, typename T13::type,
+            typename etl::conditional<ID == T14::ID, typename T14::type,
+            typename etl::conditional<ID == T15::ID, typename T15::type,
+            null_type>::type>::type>::type>::type>::type>::type>::type>::type>
+                      ::type>::type>::type>::type>::type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid id");
     };
 
     //************************************
@@ -227,6 +251,8 @@ namespace etl
           (unsigned int) etl::is_same<T, typename T15::type>::value ? T15::ID :
           (unsigned int) UNKNOWN
       };
+
+      STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
   };
 
@@ -252,27 +278,35 @@ namespace etl
                         T9, T10, T11, T12, 
                         T13, T14, etl::type_id_pair<>, etl::type_id_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <size_t ID>
     struct type_from_id
     {
       typedef 
-            typename etl::conditional<ID == T1::ID,  typename T1::type,
-            typename etl::conditional<ID == T2::ID,  typename T2::type,
-            typename etl::conditional<ID == T3::ID,  typename T3::type,
-            typename etl::conditional<ID == T4::ID,  typename T4::type,
-            typename etl::conditional<ID == T5::ID,  typename T5::type,
-            typename etl::conditional<ID == T6::ID,  typename T6::type,
-            typename etl::conditional<ID == T7::ID,  typename T7::type,
-            typename etl::conditional<ID == T8::ID,  typename T8::type,
-            typename etl::conditional<ID == T9::ID,  typename T9::type,
-            typename etl::conditional<ID == T10::ID,  typename T10::type,
-            typename etl::conditional<ID == T11::ID,  typename T11::type,
-            typename etl::conditional<ID == T12::ID,  typename T12::type,
-            typename etl::conditional<ID == T13::ID,  typename T13::type,
-            typename etl::conditional<ID == T14::ID,  typename T14::type,
-            void>::type>::type>::type>::type>::type>::type>::type>::type>
-                 ::type>::type>::type>::type>::type>::type type;
+            typename etl::conditional<ID == T1::ID, typename T1::type,
+            typename etl::conditional<ID == T2::ID, typename T2::type,
+            typename etl::conditional<ID == T3::ID, typename T3::type,
+            typename etl::conditional<ID == T4::ID, typename T4::type,
+            typename etl::conditional<ID == T5::ID, typename T5::type,
+            typename etl::conditional<ID == T6::ID, typename T6::type,
+            typename etl::conditional<ID == T7::ID, typename T7::type,
+            typename etl::conditional<ID == T8::ID, typename T8::type,
+            typename etl::conditional<ID == T9::ID, typename T9::type,
+            typename etl::conditional<ID == T10::ID, typename T10::type,
+            typename etl::conditional<ID == T11::ID, typename T11::type,
+            typename etl::conditional<ID == T12::ID, typename T12::type,
+            typename etl::conditional<ID == T13::ID, typename T13::type,
+            typename etl::conditional<ID == T14::ID, typename T14::type,
+            null_type>::type>::type>::type>::type>::type>::type>::type>::type>
+                      ::type>::type>::type>::type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid id");
     };
 
     //************************************
@@ -303,6 +337,8 @@ namespace etl
           (unsigned int) etl::is_same<T, typename T14::type>::value ? T14::ID :
           (unsigned int) UNKNOWN
       };
+
+      STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
   };
 
@@ -327,26 +363,34 @@ namespace etl
                         T9, T10, T11, T12, 
                         T13, etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <size_t ID>
     struct type_from_id
     {
       typedef 
-            typename etl::conditional<ID == T1::ID,  typename T1::type,
-            typename etl::conditional<ID == T2::ID,  typename T2::type,
-            typename etl::conditional<ID == T3::ID,  typename T3::type,
-            typename etl::conditional<ID == T4::ID,  typename T4::type,
-            typename etl::conditional<ID == T5::ID,  typename T5::type,
-            typename etl::conditional<ID == T6::ID,  typename T6::type,
-            typename etl::conditional<ID == T7::ID,  typename T7::type,
-            typename etl::conditional<ID == T8::ID,  typename T8::type,
-            typename etl::conditional<ID == T9::ID,  typename T9::type,
-            typename etl::conditional<ID == T10::ID,  typename T10::type,
-            typename etl::conditional<ID == T11::ID,  typename T11::type,
-            typename etl::conditional<ID == T12::ID,  typename T12::type,
-            typename etl::conditional<ID == T13::ID,  typename T13::type,
-            void>::type>::type>::type>::type>::type>::type>::type>::type>
-                 ::type>::type>::type>::type>::type type;
+            typename etl::conditional<ID == T1::ID, typename T1::type,
+            typename etl::conditional<ID == T2::ID, typename T2::type,
+            typename etl::conditional<ID == T3::ID, typename T3::type,
+            typename etl::conditional<ID == T4::ID, typename T4::type,
+            typename etl::conditional<ID == T5::ID, typename T5::type,
+            typename etl::conditional<ID == T6::ID, typename T6::type,
+            typename etl::conditional<ID == T7::ID, typename T7::type,
+            typename etl::conditional<ID == T8::ID, typename T8::type,
+            typename etl::conditional<ID == T9::ID, typename T9::type,
+            typename etl::conditional<ID == T10::ID, typename T10::type,
+            typename etl::conditional<ID == T11::ID, typename T11::type,
+            typename etl::conditional<ID == T12::ID, typename T12::type,
+            typename etl::conditional<ID == T13::ID, typename T13::type,
+            null_type>::type>::type>::type>::type>::type>::type>::type>::type>
+                      ::type>::type>::type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid id");
     };
 
     //************************************
@@ -376,6 +420,8 @@ namespace etl
           (unsigned int) etl::is_same<T, typename T13::type>::value ? T13::ID :
           (unsigned int) UNKNOWN
       };
+
+      STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
   };
 
@@ -400,25 +446,33 @@ namespace etl
                         etl::type_id_pair<>, 
                         etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <size_t ID>
     struct type_from_id
     {
       typedef 
-            typename etl::conditional<ID == T1::ID,  typename T1::type,
-            typename etl::conditional<ID == T2::ID,  typename T2::type,
-            typename etl::conditional<ID == T3::ID,  typename T3::type,
-            typename etl::conditional<ID == T4::ID,  typename T4::type,
-            typename etl::conditional<ID == T5::ID,  typename T5::type,
-            typename etl::conditional<ID == T6::ID,  typename T6::type,
-            typename etl::conditional<ID == T7::ID,  typename T7::type,
-            typename etl::conditional<ID == T8::ID,  typename T8::type,
-            typename etl::conditional<ID == T9::ID,  typename T9::type,
-            typename etl::conditional<ID == T10::ID,  typename T10::type,
-            typename etl::conditional<ID == T11::ID,  typename T11::type,
-            typename etl::conditional<ID == T12::ID,  typename T12::type,
-            void>::type>::type>::type>::type>::type>::type>::type>::type>
-                 ::type>::type>::type>::type type;
+            typename etl::conditional<ID == T1::ID, typename T1::type,
+            typename etl::conditional<ID == T2::ID, typename T2::type,
+            typename etl::conditional<ID == T3::ID, typename T3::type,
+            typename etl::conditional<ID == T4::ID, typename T4::type,
+            typename etl::conditional<ID == T5::ID, typename T5::type,
+            typename etl::conditional<ID == T6::ID, typename T6::type,
+            typename etl::conditional<ID == T7::ID, typename T7::type,
+            typename etl::conditional<ID == T8::ID, typename T8::type,
+            typename etl::conditional<ID == T9::ID, typename T9::type,
+            typename etl::conditional<ID == T10::ID, typename T10::type,
+            typename etl::conditional<ID == T11::ID, typename T11::type,
+            typename etl::conditional<ID == T12::ID, typename T12::type,
+            null_type>::type>::type>::type>::type>::type>::type>::type>::type>
+                      ::type>::type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid id");
     };
 
     //************************************
@@ -447,6 +501,8 @@ namespace etl
           (unsigned int) etl::is_same<T, typename T12::type>::value ? T12::ID :
           (unsigned int) UNKNOWN
       };
+
+      STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
   };
 
@@ -469,24 +525,32 @@ namespace etl
                         T9, T10, T11, etl::type_id_pair<>, etl::type_id_pair<>, 
                         etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <size_t ID>
     struct type_from_id
     {
       typedef 
-            typename etl::conditional<ID == T1::ID,  typename T1::type,
-            typename etl::conditional<ID == T2::ID,  typename T2::type,
-            typename etl::conditional<ID == T3::ID,  typename T3::type,
-            typename etl::conditional<ID == T4::ID,  typename T4::type,
-            typename etl::conditional<ID == T5::ID,  typename T5::type,
-            typename etl::conditional<ID == T6::ID,  typename T6::type,
-            typename etl::conditional<ID == T7::ID,  typename T7::type,
-            typename etl::conditional<ID == T8::ID,  typename T8::type,
-            typename etl::conditional<ID == T9::ID,  typename T9::type,
-            typename etl::conditional<ID == T10::ID,  typename T10::type,
-            typename etl::conditional<ID == T11::ID,  typename T11::type,
-            void>::type>::type>::type>::type>::type>::type>::type>::type>
-                 ::type>::type>::type type;
+            typename etl::conditional<ID == T1::ID, typename T1::type,
+            typename etl::conditional<ID == T2::ID, typename T2::type,
+            typename etl::conditional<ID == T3::ID, typename T3::type,
+            typename etl::conditional<ID == T4::ID, typename T4::type,
+            typename etl::conditional<ID == T5::ID, typename T5::type,
+            typename etl::conditional<ID == T6::ID, typename T6::type,
+            typename etl::conditional<ID == T7::ID, typename T7::type,
+            typename etl::conditional<ID == T8::ID, typename T8::type,
+            typename etl::conditional<ID == T9::ID, typename T9::type,
+            typename etl::conditional<ID == T10::ID, typename T10::type,
+            typename etl::conditional<ID == T11::ID, typename T11::type,
+            null_type>::type>::type>::type>::type>::type>::type>::type>::type>
+                      ::type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid id");
     };
 
     //************************************
@@ -514,6 +578,8 @@ namespace etl
           (unsigned int) etl::is_same<T, typename T11::type>::value ? T11::ID :
           (unsigned int) UNKNOWN
       };
+
+      STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
   };
 
@@ -535,23 +601,31 @@ namespace etl
                         T9, T10, etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<>, 
                         etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <size_t ID>
     struct type_from_id
     {
       typedef 
-            typename etl::conditional<ID == T1::ID,  typename T1::type,
-            typename etl::conditional<ID == T2::ID,  typename T2::type,
-            typename etl::conditional<ID == T3::ID,  typename T3::type,
-            typename etl::conditional<ID == T4::ID,  typename T4::type,
-            typename etl::conditional<ID == T5::ID,  typename T5::type,
-            typename etl::conditional<ID == T6::ID,  typename T6::type,
-            typename etl::conditional<ID == T7::ID,  typename T7::type,
-            typename etl::conditional<ID == T8::ID,  typename T8::type,
-            typename etl::conditional<ID == T9::ID,  typename T9::type,
-            typename etl::conditional<ID == T10::ID,  typename T10::type,
-            void>::type>::type>::type>::type>::type>::type>::type>::type>
-                 ::type>::type type;
+            typename etl::conditional<ID == T1::ID, typename T1::type,
+            typename etl::conditional<ID == T2::ID, typename T2::type,
+            typename etl::conditional<ID == T3::ID, typename T3::type,
+            typename etl::conditional<ID == T4::ID, typename T4::type,
+            typename etl::conditional<ID == T5::ID, typename T5::type,
+            typename etl::conditional<ID == T6::ID, typename T6::type,
+            typename etl::conditional<ID == T7::ID, typename T7::type,
+            typename etl::conditional<ID == T8::ID, typename T8::type,
+            typename etl::conditional<ID == T9::ID, typename T9::type,
+            typename etl::conditional<ID == T10::ID, typename T10::type,
+            null_type>::type>::type>::type>::type>::type>::type>::type>::type>
+                      ::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid id");
     };
 
     //************************************
@@ -578,6 +652,8 @@ namespace etl
           (unsigned int) etl::is_same<T, typename T10::type>::value ? T10::ID :
           (unsigned int) UNKNOWN
       };
+
+      STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
   };
 
@@ -598,22 +674,30 @@ namespace etl
                         T9, etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<>, 
                         etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <size_t ID>
     struct type_from_id
     {
       typedef 
-            typename etl::conditional<ID == T1::ID,  typename T1::type,
-            typename etl::conditional<ID == T2::ID,  typename T2::type,
-            typename etl::conditional<ID == T3::ID,  typename T3::type,
-            typename etl::conditional<ID == T4::ID,  typename T4::type,
-            typename etl::conditional<ID == T5::ID,  typename T5::type,
-            typename etl::conditional<ID == T6::ID,  typename T6::type,
-            typename etl::conditional<ID == T7::ID,  typename T7::type,
-            typename etl::conditional<ID == T8::ID,  typename T8::type,
-            typename etl::conditional<ID == T9::ID,  typename T9::type,
-            void>::type>::type>::type>::type>::type>::type>::type>::type>
-                 ::type type;
+            typename etl::conditional<ID == T1::ID, typename T1::type,
+            typename etl::conditional<ID == T2::ID, typename T2::type,
+            typename etl::conditional<ID == T3::ID, typename T3::type,
+            typename etl::conditional<ID == T4::ID, typename T4::type,
+            typename etl::conditional<ID == T5::ID, typename T5::type,
+            typename etl::conditional<ID == T6::ID, typename T6::type,
+            typename etl::conditional<ID == T7::ID, typename T7::type,
+            typename etl::conditional<ID == T8::ID, typename T8::type,
+            typename etl::conditional<ID == T9::ID, typename T9::type,
+            null_type>::type>::type>::type>::type>::type>::type>::type>::type>
+                      ::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid id");
     };
 
     //************************************
@@ -639,6 +723,8 @@ namespace etl
           (unsigned int) etl::is_same<T, typename T9::type>::value ? T9::ID :
           (unsigned int) UNKNOWN
       };
+
+      STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
   };
 
@@ -659,22 +745,30 @@ namespace etl
                         etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<>, 
                         etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <size_t ID>
     struct type_from_id
     {
       typedef 
-            typename etl::conditional<ID == T1::ID,  typename T1::type,
-            typename etl::conditional<ID == T2::ID,  typename T2::type,
-            typename etl::conditional<ID == T3::ID,  typename T3::type,
-            typename etl::conditional<ID == T4::ID,  typename T4::type,
-            typename etl::conditional<ID == T5::ID,  typename T5::type,
-            typename etl::conditional<ID == T6::ID,  typename T6::type,
-            typename etl::conditional<ID == T7::ID,  typename T7::type,
-            typename etl::conditional<ID == T8::ID,  typename T8::type,
-            void>::type>::type>::type>::type>::type>::type>::type>::type type;
+            typename etl::conditional<ID == T1::ID, typename T1::type,
+            typename etl::conditional<ID == T2::ID, typename T2::type,
+            typename etl::conditional<ID == T3::ID, typename T3::type,
+            typename etl::conditional<ID == T4::ID, typename T4::type,
+            typename etl::conditional<ID == T5::ID, typename T5::type,
+            typename etl::conditional<ID == T6::ID, typename T6::type,
+            typename etl::conditional<ID == T7::ID, typename T7::type,
+            typename etl::conditional<ID == T8::ID, typename T8::type,
+            null_type>::type>::type>::type>::type>::type>::type>::type>::type type;
 
-                   };
+                      
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid id");
+    };
 
     //************************************
     enum
@@ -698,6 +792,8 @@ namespace etl
           (unsigned int) etl::is_same<T, typename T8::type>::value ? T8::ID :
           (unsigned int) UNKNOWN
       };
+
+      STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
   };
 
@@ -716,19 +812,27 @@ namespace etl
                         etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<>, 
                         etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <size_t ID>
     struct type_from_id
     {
       typedef 
-            typename etl::conditional<ID == T1::ID,  typename T1::type,
-            typename etl::conditional<ID == T2::ID,  typename T2::type,
-            typename etl::conditional<ID == T3::ID,  typename T3::type,
-            typename etl::conditional<ID == T4::ID,  typename T4::type,
-            typename etl::conditional<ID == T5::ID,  typename T5::type,
-            typename etl::conditional<ID == T6::ID,  typename T6::type,
-            typename etl::conditional<ID == T7::ID,  typename T7::type,
-            void>::type>::type>::type>::type>::type>::type>::type type;
+            typename etl::conditional<ID == T1::ID, typename T1::type,
+            typename etl::conditional<ID == T2::ID, typename T2::type,
+            typename etl::conditional<ID == T3::ID, typename T3::type,
+            typename etl::conditional<ID == T4::ID, typename T4::type,
+            typename etl::conditional<ID == T5::ID, typename T5::type,
+            typename etl::conditional<ID == T6::ID, typename T6::type,
+            typename etl::conditional<ID == T7::ID, typename T7::type,
+            null_type>::type>::type>::type>::type>::type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid id");
     };
 
     //************************************
@@ -752,6 +856,8 @@ namespace etl
           (unsigned int) etl::is_same<T, typename T7::type>::value ? T7::ID :
           (unsigned int) UNKNOWN
       };
+
+      STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
   };
 
@@ -769,18 +875,26 @@ namespace etl
                         etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<>, 
                         etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <size_t ID>
     struct type_from_id
     {
       typedef 
-            typename etl::conditional<ID == T1::ID,  typename T1::type,
-            typename etl::conditional<ID == T2::ID,  typename T2::type,
-            typename etl::conditional<ID == T3::ID,  typename T3::type,
-            typename etl::conditional<ID == T4::ID,  typename T4::type,
-            typename etl::conditional<ID == T5::ID,  typename T5::type,
-            typename etl::conditional<ID == T6::ID,  typename T6::type,
-            void>::type>::type>::type>::type>::type>::type type;
+            typename etl::conditional<ID == T1::ID, typename T1::type,
+            typename etl::conditional<ID == T2::ID, typename T2::type,
+            typename etl::conditional<ID == T3::ID, typename T3::type,
+            typename etl::conditional<ID == T4::ID, typename T4::type,
+            typename etl::conditional<ID == T5::ID, typename T5::type,
+            typename etl::conditional<ID == T6::ID, typename T6::type,
+            null_type>::type>::type>::type>::type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid id");
     };
 
     //************************************
@@ -803,6 +917,8 @@ namespace etl
           (unsigned int) etl::is_same<T, typename T6::type>::value ? T6::ID :
           (unsigned int) UNKNOWN
       };
+
+      STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
   };
 
@@ -819,17 +935,25 @@ namespace etl
                         etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<>, 
                         etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <size_t ID>
     struct type_from_id
     {
       typedef 
-            typename etl::conditional<ID == T1::ID,  typename T1::type,
-            typename etl::conditional<ID == T2::ID,  typename T2::type,
-            typename etl::conditional<ID == T3::ID,  typename T3::type,
-            typename etl::conditional<ID == T4::ID,  typename T4::type,
-            typename etl::conditional<ID == T5::ID,  typename T5::type,
-            void>::type>::type>::type>::type>::type type;
+            typename etl::conditional<ID == T1::ID, typename T1::type,
+            typename etl::conditional<ID == T2::ID, typename T2::type,
+            typename etl::conditional<ID == T3::ID, typename T3::type,
+            typename etl::conditional<ID == T4::ID, typename T4::type,
+            typename etl::conditional<ID == T5::ID, typename T5::type,
+            null_type>::type>::type>::type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid id");
     };
 
     //************************************
@@ -851,6 +975,8 @@ namespace etl
           (unsigned int) etl::is_same<T, typename T5::type>::value ? T5::ID :
           (unsigned int) UNKNOWN
       };
+
+      STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
   };
 
@@ -867,16 +993,24 @@ namespace etl
                         etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<>, 
                         etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <size_t ID>
     struct type_from_id
     {
       typedef 
-            typename etl::conditional<ID == T1::ID,  typename T1::type,
-            typename etl::conditional<ID == T2::ID,  typename T2::type,
-            typename etl::conditional<ID == T3::ID,  typename T3::type,
-            typename etl::conditional<ID == T4::ID,  typename T4::type,
-            void>::type>::type>::type>::type type;
+            typename etl::conditional<ID == T1::ID, typename T1::type,
+            typename etl::conditional<ID == T2::ID, typename T2::type,
+            typename etl::conditional<ID == T3::ID, typename T3::type,
+            typename etl::conditional<ID == T4::ID, typename T4::type,
+            null_type>::type>::type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid id");
     };
 
     //************************************
@@ -897,6 +1031,8 @@ namespace etl
           (unsigned int) etl::is_same<T, typename T4::type>::value ? T4::ID :
           (unsigned int) UNKNOWN
       };
+
+      STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
   };
 
@@ -911,15 +1047,23 @@ namespace etl
                         etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<>, 
                         etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <size_t ID>
     struct type_from_id
     {
       typedef 
-            typename etl::conditional<ID == T1::ID,  typename T1::type,
-            typename etl::conditional<ID == T2::ID,  typename T2::type,
-            typename etl::conditional<ID == T3::ID,  typename T3::type,
-            void>::type>::type>::type type;
+            typename etl::conditional<ID == T1::ID, typename T1::type,
+            typename etl::conditional<ID == T2::ID, typename T2::type,
+            typename etl::conditional<ID == T3::ID, typename T3::type,
+            null_type>::type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid id");
     };
 
     //************************************
@@ -939,6 +1083,8 @@ namespace etl
           (unsigned int) etl::is_same<T, typename T3::type>::value ? T3::ID :
           (unsigned int) UNKNOWN
       };
+
+      STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
   };
 
@@ -952,14 +1098,22 @@ namespace etl
                         etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<>, 
                         etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <size_t ID>
     struct type_from_id
     {
       typedef 
-            typename etl::conditional<ID == T1::ID,  typename T1::type,
-            typename etl::conditional<ID == T2::ID,  typename T2::type,
-            void>::type>::type type;
+            typename etl::conditional<ID == T1::ID, typename T1::type,
+            typename etl::conditional<ID == T2::ID, typename T2::type,
+            null_type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid id");
     };
 
     //************************************
@@ -978,6 +1132,8 @@ namespace etl
           (unsigned int) etl::is_same<T, typename T2::type>::value ? T2::ID :
           (unsigned int) UNKNOWN
       };
+
+      STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
   };
 
@@ -990,13 +1146,21 @@ namespace etl
                         etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<>, 
                         etl::type_id_pair<>, etl::type_id_pair<>, etl::type_id_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <size_t ID>
     struct type_from_id
     {
       typedef 
-            typename etl::conditional<ID == T1::ID,  typename T1::type,
-            void>::type type;
+            typename etl::conditional<ID == T1::ID, typename T1::type,
+            null_type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid id");
     };
 
     //************************************
@@ -1014,6 +1178,8 @@ namespace etl
           (unsigned int) etl::is_same<T, typename T1::type>::value ? T1::ID :
           (unsigned int) UNKNOWN
       };
+
+      STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
   };
   //***************************************************************************
@@ -1037,6 +1203,12 @@ namespace etl
             typename T16 = etl::type_type_pair<> >
   struct type_type_lookup
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <typename T>
     struct type_from_type
@@ -1058,8 +1230,10 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T14::type1>::value, typename T14::type2,
             typename etl::conditional<etl::is_same<T, typename T15::type1>::value, typename T15::type2,
             typename etl::conditional<etl::is_same<T, typename T16::type1>::value, typename T16::type2,
-            void>::type>::type>::type>::type>::type>::type>::type>::type>
-                 ::type>::type>::type>::type>::type>::type>::type>::type type;
+            null_type>::type>::type>::type>::type>::type>::type>::type>::type>
+                      ::type>::type>::type>::type>::type>::type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid type");
     };
   };
 
@@ -1086,6 +1260,12 @@ namespace etl
                           T9, T10, T11, T12, 
                           T13, T14, T15, etl::type_type_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <typename T>
     struct type_from_type
@@ -1106,8 +1286,10 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T13::type1>::value, typename T13::type2,
             typename etl::conditional<etl::is_same<T, typename T14::type1>::value, typename T14::type2,
             typename etl::conditional<etl::is_same<T, typename T15::type1>::value, typename T15::type2,
-            void>::type>::type>::type>::type>::type>::type>::type>::type>
-                 ::type>::type>::type>::type>::type>::type>::type type;
+            null_type>::type>::type>::type>::type>::type>::type>::type>::type>
+                      ::type>::type>::type>::type>::type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid type");
     };
   };
 
@@ -1133,6 +1315,12 @@ namespace etl
                           T9, T10, T11, T12, 
                           T13, T14, etl::type_type_pair<>, etl::type_type_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <typename T>
     struct type_from_type
@@ -1152,8 +1340,10 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T12::type1>::value, typename T12::type2,
             typename etl::conditional<etl::is_same<T, typename T13::type1>::value, typename T13::type2,
             typename etl::conditional<etl::is_same<T, typename T14::type1>::value, typename T14::type2,
-            void>::type>::type>::type>::type>::type>::type>::type>::type>
-                 ::type>::type>::type>::type>::type>::type type;
+            null_type>::type>::type>::type>::type>::type>::type>::type>::type>
+                      ::type>::type>::type>::type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid type");
     };
   };
 
@@ -1178,6 +1368,12 @@ namespace etl
                           T9, T10, T11, T12, 
                           T13, etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <typename T>
     struct type_from_type
@@ -1196,8 +1392,10 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T11::type1>::value, typename T11::type2,
             typename etl::conditional<etl::is_same<T, typename T12::type1>::value, typename T12::type2,
             typename etl::conditional<etl::is_same<T, typename T13::type1>::value, typename T13::type2,
-            void>::type>::type>::type>::type>::type>::type>::type>::type>
-                 ::type>::type>::type>::type>::type type;
+            null_type>::type>::type>::type>::type>::type>::type>::type>::type>
+                      ::type>::type>::type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid type");
     };
   };
 
@@ -1222,6 +1420,12 @@ namespace etl
                           etl::type_type_pair<>, 
                           etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <typename T>
     struct type_from_type
@@ -1239,8 +1443,10 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T10::type1>::value, typename T10::type2,
             typename etl::conditional<etl::is_same<T, typename T11::type1>::value, typename T11::type2,
             typename etl::conditional<etl::is_same<T, typename T12::type1>::value, typename T12::type2,
-            void>::type>::type>::type>::type>::type>::type>::type>::type>
-                 ::type>::type>::type>::type type;
+            null_type>::type>::type>::type>::type>::type>::type>::type>::type>
+                      ::type>::type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid type");
     };
   };
 
@@ -1263,6 +1469,12 @@ namespace etl
                           T9, T10, T11, etl::type_type_pair<>, etl::type_type_pair<>, 
                           etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <typename T>
     struct type_from_type
@@ -1279,8 +1491,10 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T9::type1>::value, typename T9::type2,
             typename etl::conditional<etl::is_same<T, typename T10::type1>::value, typename T10::type2,
             typename etl::conditional<etl::is_same<T, typename T11::type1>::value, typename T11::type2,
-            void>::type>::type>::type>::type>::type>::type>::type>::type>
-                 ::type>::type>::type type;
+            null_type>::type>::type>::type>::type>::type>::type>::type>::type>
+                      ::type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid type");
     };
   };
 
@@ -1302,6 +1516,12 @@ namespace etl
                           T9, T10, etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<>, 
                           etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <typename T>
     struct type_from_type
@@ -1317,8 +1537,10 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T8::type1>::value, typename T8::type2,
             typename etl::conditional<etl::is_same<T, typename T9::type1>::value, typename T9::type2,
             typename etl::conditional<etl::is_same<T, typename T10::type1>::value, typename T10::type2,
-            void>::type>::type>::type>::type>::type>::type>::type>::type>
-                 ::type>::type type;
+            null_type>::type>::type>::type>::type>::type>::type>::type>::type>
+                      ::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid type");
     };
   };
 
@@ -1339,6 +1561,12 @@ namespace etl
                           T9, etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<>, 
                           etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <typename T>
     struct type_from_type
@@ -1353,8 +1581,10 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T7::type1>::value, typename T7::type2,
             typename etl::conditional<etl::is_same<T, typename T8::type1>::value, typename T8::type2,
             typename etl::conditional<etl::is_same<T, typename T9::type1>::value, typename T9::type2,
-            void>::type>::type>::type>::type>::type>::type>::type>::type>
-                 ::type type;
+            null_type>::type>::type>::type>::type>::type>::type>::type>::type>
+                      ::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid type");
     };
   };
 
@@ -1375,6 +1605,12 @@ namespace etl
                           etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<>, 
                           etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <typename T>
     struct type_from_type
@@ -1388,7 +1624,9 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T6::type1>::value, typename T6::type2,
             typename etl::conditional<etl::is_same<T, typename T7::type1>::value, typename T7::type2,
             typename etl::conditional<etl::is_same<T, typename T8::type1>::value, typename T8::type2,
-            void>::type>::type>::type>::type>::type>::type>::type>::type type;
+            null_type>::type>::type>::type>::type>::type>::type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid type");
     };
   };
 
@@ -1407,6 +1645,12 @@ namespace etl
                           etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<>, 
                           etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <typename T>
     struct type_from_type
@@ -1419,7 +1663,9 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T5::type1>::value, typename T5::type2,
             typename etl::conditional<etl::is_same<T, typename T6::type1>::value, typename T6::type2,
             typename etl::conditional<etl::is_same<T, typename T7::type1>::value, typename T7::type2,
-            void>::type>::type>::type>::type>::type>::type>::type type;
+            null_type>::type>::type>::type>::type>::type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid type");
     };
   };
 
@@ -1437,6 +1683,12 @@ namespace etl
                           etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<>, 
                           etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <typename T>
     struct type_from_type
@@ -1448,7 +1700,9 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T4::type1>::value, typename T4::type2,
             typename etl::conditional<etl::is_same<T, typename T5::type1>::value, typename T5::type2,
             typename etl::conditional<etl::is_same<T, typename T6::type1>::value, typename T6::type2,
-            void>::type>::type>::type>::type>::type>::type type;
+            null_type>::type>::type>::type>::type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid type");
     };
   };
 
@@ -1465,6 +1719,12 @@ namespace etl
                           etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<>, 
                           etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <typename T>
     struct type_from_type
@@ -1475,7 +1735,9 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T3::type1>::value, typename T3::type2,
             typename etl::conditional<etl::is_same<T, typename T4::type1>::value, typename T4::type2,
             typename etl::conditional<etl::is_same<T, typename T5::type1>::value, typename T5::type2,
-            void>::type>::type>::type>::type>::type type;
+            null_type>::type>::type>::type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid type");
     };
   };
 
@@ -1492,6 +1754,12 @@ namespace etl
                           etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<>, 
                           etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <typename T>
     struct type_from_type
@@ -1501,7 +1769,9 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T2::type1>::value, typename T2::type2,
             typename etl::conditional<etl::is_same<T, typename T3::type1>::value, typename T3::type2,
             typename etl::conditional<etl::is_same<T, typename T4::type1>::value, typename T4::type2,
-            void>::type>::type>::type>::type type;
+            null_type>::type>::type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid type");
     };
   };
 
@@ -1516,6 +1786,12 @@ namespace etl
                           etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<>, 
                           etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <typename T>
     struct type_from_type
@@ -1524,7 +1800,9 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T1::type1>::value, typename T1::type2,
             typename etl::conditional<etl::is_same<T, typename T2::type1>::value, typename T2::type2,
             typename etl::conditional<etl::is_same<T, typename T3::type1>::value, typename T3::type2,
-            void>::type>::type>::type type;
+            null_type>::type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid type");
     };
   };
 
@@ -1538,6 +1816,12 @@ namespace etl
                           etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<>, 
                           etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <typename T>
     struct type_from_type
@@ -1545,7 +1829,9 @@ namespace etl
       typedef 
             typename etl::conditional<etl::is_same<T, typename T1::type1>::value, typename T1::type2,
             typename etl::conditional<etl::is_same<T, typename T2::type1>::value, typename T2::type2,
-            void>::type>::type type;
+            null_type>::type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid type");
     };
   };
 
@@ -1558,13 +1844,21 @@ namespace etl
                           etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<>, 
                           etl::type_type_pair<>, etl::type_type_pair<>, etl::type_type_pair<> >
   {
+  private:
+
+    typedef __private_type_lookup__::null_type null_type;
+
+  public:
+
     //************************************
     template <typename T>
     struct type_from_type
     {
       typedef 
             typename etl::conditional<etl::is_same<T, typename T1::type1>::value, typename T1::type2,
-            void>::type type;
+            null_type>::type type;
+
+      STATIC_ASSERT(!(etl::is_same<null_type, type>::value), "Invalid type");
     };
   };
 }

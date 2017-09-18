@@ -133,8 +133,6 @@ namespace
       CHECK((std::is_same<Type14, typename Type_Id_Lookup16::type_from_id<Type14::ID>::type>::value));
       CHECK((std::is_same<Type15, typename Type_Id_Lookup16::type_from_id<Type15::ID>::type>::value));
       CHECK((std::is_same<Type16, typename Type_Id_Lookup16::type_from_id<Type16::ID>::type>::value));
-
-      CHECK((std::is_same<void, typename Type_Id_Lookup16::type_from_id<TypeUnknown::ID>::type>::value));
     }
 
     //*************************************************************************
@@ -148,16 +146,12 @@ namespace
       CHECK((std::is_same<Type14, typename Type_Id_Lookup8::type_from_id<Type14::ID>::type>::value));
       CHECK((std::is_same<Type15, typename Type_Id_Lookup8::type_from_id<Type15::ID>::type>::value));
       CHECK((std::is_same<Type16, typename Type_Id_Lookup8::type_from_id<Type16::ID>::type>::value));
-
-      CHECK((std::is_same<void, typename Type_Id_Lookup8::type_from_id<TypeUnknown::ID>::type>::value));
     }
 
     //*************************************************************************
     TEST(test_type_from_id_1)
     {
       CHECK((std::is_same<Type16, typename Type_Id_Lookup1::type_from_id<Type16::ID>::type>::value));
-
-      CHECK((std::is_same<void, typename Type_Id_Lookup1::type_from_id<TypeUnknown::ID>::type>::value));
     }
 
     //*************************************************************************
@@ -180,7 +174,7 @@ namespace
       CHECK_EQUAL((unsigned int) Type15::ID, (unsigned int) Type_Id_Lookup16::id_from_type<Type15>::value);
       CHECK_EQUAL((unsigned int) Type16::ID, (unsigned int) Type_Id_Lookup16::id_from_type<Type16>::value);
 
-      CHECK_EQUAL((unsigned int) Type_Id_Lookup16::UNKNOWN, (unsigned int) Type_Id_Lookup16::id_from_type<TypeUnknown>::value);
+//      CHECK_EQUAL((unsigned int) Type_Id_Lookup16::UNKNOWN, (unsigned int) Type_Id_Lookup16::id_from_type<TypeUnknown>::value);
     }
 
     //*************************************************************************
@@ -195,7 +189,7 @@ namespace
       CHECK_EQUAL((unsigned int) Type15::ID, (unsigned int) Type_Id_Lookup8::id_from_type<Type15>::value);
       CHECK_EQUAL((unsigned int) Type16::ID, (unsigned int) Type_Id_Lookup8::id_from_type<Type16>::value);
 
-      CHECK_EQUAL((unsigned int) Type_Id_Lookup8::UNKNOWN, (unsigned int) Type_Id_Lookup8::id_from_type<TypeUnknown>::value);
+//      CHECK_EQUAL((unsigned int) Type_Id_Lookup8::UNKNOWN, (unsigned int) Type_Id_Lookup8::id_from_type<TypeUnknown>::value);
     }
 
     //*************************************************************************
@@ -203,7 +197,7 @@ namespace
     {
       CHECK_EQUAL((unsigned int) Type16::ID, (unsigned int) Type_Id_Lookup1::id_from_type<Type16>::value);
 
-      CHECK_EQUAL((unsigned int) Type_Id_Lookup1::UNKNOWN, (unsigned int) Type_Id_Lookup1::id_from_type<TypeUnknown>::value);
+//      CHECK_EQUAL((unsigned int) Type_Id_Lookup1::UNKNOWN, (unsigned int) Type_Id_Lookup1::id_from_type<TypeUnknown>::value);
     }
 
     //*************************************************************************
