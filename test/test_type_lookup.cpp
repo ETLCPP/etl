@@ -174,7 +174,38 @@ namespace
       CHECK_EQUAL((unsigned int) Type15::ID, (unsigned int) Type_Id_Lookup16::id_from_type<Type15>::value);
       CHECK_EQUAL((unsigned int) Type16::ID, (unsigned int) Type_Id_Lookup16::id_from_type<Type16>::value);
 
-//      CHECK_EQUAL((unsigned int) Type_Id_Lookup16::UNKNOWN, (unsigned int) Type_Id_Lookup16::id_from_type<TypeUnknown>::value);
+      CHECK_EQUAL((unsigned int)Type1::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type<Type1>());
+      CHECK_EQUAL((unsigned int)Type1::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type(Type1()));
+      CHECK_EQUAL((unsigned int)Type2::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type<Type2>());
+      CHECK_EQUAL((unsigned int)Type2::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type(Type2()));      
+      CHECK_EQUAL((unsigned int)Type3::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type<Type3>());
+      CHECK_EQUAL((unsigned int)Type3::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type(Type3()));
+      CHECK_EQUAL((unsigned int)Type4::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type<Type4>());
+      CHECK_EQUAL((unsigned int)Type4::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type(Type4()));
+      CHECK_EQUAL((unsigned int)Type5::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type<Type5>());
+      CHECK_EQUAL((unsigned int)Type5::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type(Type5()));
+      CHECK_EQUAL((unsigned int)Type6::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type<Type6>());
+      CHECK_EQUAL((unsigned int)Type6::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type(Type6()));
+      CHECK_EQUAL((unsigned int)Type7::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type<Type7>());
+      CHECK_EQUAL((unsigned int)Type7::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type(Type7()));
+      CHECK_EQUAL((unsigned int)Type8::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type<Type8>());
+      CHECK_EQUAL((unsigned int)Type8::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type(Type8()));
+      CHECK_EQUAL((unsigned int)Type9::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type<Type9>());
+      CHECK_EQUAL((unsigned int)Type9::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type(Type9()));
+      CHECK_EQUAL((unsigned int)Type10::ID, (unsigned int)Type_Id_Lookup16::get_id_from_type<Type10>());
+      CHECK_EQUAL((unsigned int)Type10::ID, (unsigned int)Type_Id_Lookup16::get_id_from_type(Type10()));
+      CHECK_EQUAL((unsigned int)Type11::ID, (unsigned int)Type_Id_Lookup16::get_id_from_type<Type11>());
+      CHECK_EQUAL((unsigned int)Type11::ID, (unsigned int)Type_Id_Lookup16::get_id_from_type(Type11()));
+      CHECK_EQUAL((unsigned int)Type12::ID, (unsigned int)Type_Id_Lookup16::get_id_from_type<Type12>());
+      CHECK_EQUAL((unsigned int)Type12::ID, (unsigned int)Type_Id_Lookup16::get_id_from_type(Type12()));
+      CHECK_EQUAL((unsigned int)Type13::ID, (unsigned int)Type_Id_Lookup16::get_id_from_type<Type13>());
+      CHECK_EQUAL((unsigned int)Type13::ID, (unsigned int)Type_Id_Lookup16::get_id_from_type(Type13()));
+      CHECK_EQUAL((unsigned int)Type14::ID, (unsigned int)Type_Id_Lookup16::get_id_from_type<Type14>());
+      CHECK_EQUAL((unsigned int)Type14::ID, (unsigned int)Type_Id_Lookup16::get_id_from_type(Type14()));
+      CHECK_EQUAL((unsigned int)Type15::ID, (unsigned int)Type_Id_Lookup16::get_id_from_type<Type15>());
+      CHECK_EQUAL((unsigned int)Type15::ID, (unsigned int)Type_Id_Lookup16::get_id_from_type(Type15()));
+      CHECK_EQUAL((unsigned int)Type16::ID, (unsigned int)Type_Id_Lookup16::get_id_from_type<Type16>());
+      CHECK_EQUAL((unsigned int)Type16::ID, (unsigned int)Type_Id_Lookup16::get_id_from_type(Type16()));
     }
 
     //*************************************************************************
@@ -189,7 +220,23 @@ namespace
       CHECK_EQUAL((unsigned int) Type15::ID, (unsigned int) Type_Id_Lookup8::id_from_type<Type15>::value);
       CHECK_EQUAL((unsigned int) Type16::ID, (unsigned int) Type_Id_Lookup8::id_from_type<Type16>::value);
 
-//      CHECK_EQUAL((unsigned int) Type_Id_Lookup8::UNKNOWN, (unsigned int) Type_Id_Lookup8::id_from_type<TypeUnknown>::value);
+      CHECK_EQUAL((unsigned int)Type1::ID,  (unsigned int)Type_Id_Lookup8::get_id_from_type<Type1>());
+      CHECK_EQUAL((unsigned int)Type1::ID,  (unsigned int)Type_Id_Lookup8::get_id_from_type(Type1()));
+      CHECK_EQUAL((unsigned int)Type2::ID,  (unsigned int)Type_Id_Lookup8::get_id_from_type<Type2>());
+      CHECK_EQUAL((unsigned int)Type2::ID,  (unsigned int)Type_Id_Lookup8::get_id_from_type(Type2()));
+      CHECK_EQUAL((unsigned int)Type3::ID,  (unsigned int)Type_Id_Lookup8::get_id_from_type<Type3>());
+      CHECK_EQUAL((unsigned int)Type3::ID,  (unsigned int)Type_Id_Lookup8::get_id_from_type(Type3()));
+      CHECK_EQUAL((unsigned int)Type4::ID,  (unsigned int)Type_Id_Lookup8::get_id_from_type<Type4>());
+      CHECK_EQUAL((unsigned int)Type4::ID,  (unsigned int)Type_Id_Lookup8::get_id_from_type(Type4()));
+      CHECK_EQUAL((unsigned int)Type13::ID, (unsigned int)Type_Id_Lookup8::get_id_from_type<Type13>());
+      CHECK_EQUAL((unsigned int)Type13::ID, (unsigned int)Type_Id_Lookup8::get_id_from_type(Type13()));
+      CHECK_EQUAL((unsigned int)Type14::ID, (unsigned int)Type_Id_Lookup8::get_id_from_type<Type14>());
+      CHECK_EQUAL((unsigned int)Type14::ID, (unsigned int)Type_Id_Lookup8::get_id_from_type(Type14()));
+      CHECK_EQUAL((unsigned int)Type15::ID, (unsigned int)Type_Id_Lookup8::get_id_from_type<Type15>());
+      CHECK_EQUAL((unsigned int)Type15::ID, (unsigned int)Type_Id_Lookup8::get_id_from_type(Type15()));
+      CHECK_EQUAL((unsigned int)Type16::ID, (unsigned int)Type_Id_Lookup8::get_id_from_type<Type16>());
+      CHECK_EQUAL((unsigned int)Type16::ID, (unsigned int)Type_Id_Lookup8::get_id_from_type(Type16()));
+
     }
 
     //*************************************************************************
@@ -197,7 +244,8 @@ namespace
     {
       CHECK_EQUAL((unsigned int) Type16::ID, (unsigned int) Type_Id_Lookup1::id_from_type<Type16>::value);
 
-//      CHECK_EQUAL((unsigned int) Type_Id_Lookup1::UNKNOWN, (unsigned int) Type_Id_Lookup1::id_from_type<TypeUnknown>::value);
+      CHECK_EQUAL((unsigned int)Type16::ID, (unsigned int)Type_Id_Lookup1::get_id_from_type<Type16>());
+      CHECK_EQUAL((unsigned int)Type16::ID, (unsigned int)Type_Id_Lookup1::get_id_from_type(Type16()));
     }
 
     //*************************************************************************
