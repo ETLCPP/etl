@@ -228,24 +228,70 @@ namespace
     {
       etl::stack<int, 4> stack;
 
-      int i;
-
       stack.push(1);
       stack.push(2);
       stack.push(3);
       stack.push(4);
 
+      int i;
+
       stack.pop_into(i);
       CHECK_EQUAL(4, i);
+      CHECK_EQUAL(3U, stack.size());
 
       stack.pop_into(i);
       CHECK_EQUAL(3, i);
+      CHECK_EQUAL(2U, stack.size());
 
       stack.pop_into(i);
       CHECK_EQUAL(2, i);
+      CHECK_EQUAL(1U, stack.size());
 
       stack.pop_into(i);
       CHECK_EQUAL(1, i);
+      CHECK_EQUAL(0U, stack.size());
+    }
+
+    //*************************************************************************
+    TEST(test_pop_into_stack)
+    {
+      etl::stack<int, 4> stack1;
+      etl::stack<int, 4> stack2;
+
+      stack1.push(1);
+      stack1.push(2);
+      stack1.push(3);
+      stack1.push(4);
+
+      stack1.pop_into(stack2);
+      CHECK_EQUAL(1U, stack2.size());
+      CHECK_EQUAL(4, stack2.top());
+
+      stack1.pop_into(stack2);
+      CHECK_EQUAL(2U, stack2.size());
+      CHECK_EQUAL(3, stack2.top());
+
+      stack1.pop_into(stack2);
+      CHECK_EQUAL(3U, stack2.size());
+      CHECK_EQUAL(2, stack2.top());
+
+      stack1.pop_into(stack2);
+      CHECK_EQUAL(4U, stack2.size());
+      CHECK_EQUAL(1, stack2.top());
+
+      int i;
+
+      stack2.pop_into(i);
+      CHECK_EQUAL(1, i);
+
+      stack2.pop_into(i);
+      CHECK_EQUAL(2, i);
+
+      stack2.pop_into(i);
+      CHECK_EQUAL(3, i);
+
+      stack2.pop_into(i);
+      CHECK_EQUAL(4, i);
     }
 
     //*************************************************************************
@@ -446,6 +492,33 @@ namespace
 
       CHECK_EQUAL(1, stack.top());
       stack.pop();
+    }
+
+    //*************************************************************************
+    TEST(test_reverse)
+    {
+      etl::stack<int, 4> stack;
+
+      stack.push(1);
+      stack.push(2);
+      stack.push(3);
+      stack.push(4);
+
+      stack.reverse();
+
+      int i;
+
+      stack.pop_into(i);
+      CHECK_EQUAL(1, i);
+
+      stack.pop_into(i);
+      CHECK_EQUAL(2, i);
+
+      stack.pop_into(i);
+      CHECK_EQUAL(3, i);
+
+      stack.pop_into(i);
+      CHECK_EQUAL(4, i);
     }
   };
 }

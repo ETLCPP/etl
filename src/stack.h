@@ -361,6 +361,25 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Removes the oldest item from the top of the stack and pushes it to the 
+    /// top of the destination stack.
+    /// NOTE: This reverses the stack order.
+    //*************************************************************************
+    void pop_into(istack& destination)
+    {
+      destination.push(top());
+      pop();
+    }
+
+    //*************************************************************************
+    /// Reverses the stack.
+    //*************************************************************************
+    void reverse()
+    {
+      std::reverse(p_buffer, p_buffer + current_size);
+    }
+
+    //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
     istack& operator = (const istack& rhs)

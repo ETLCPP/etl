@@ -396,6 +396,17 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Gets the oldest value and removes it from the front of the queue and 
+    /// pushes it to the destination queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_empty if the queue is empty.
+    //*************************************************************************
+    void pop_into(iqueue& destination)
+    {
+      destination.push(front());
+      pop();
+    }
+    
+    //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
     iqueue& operator = (const iqueue& rhs)
