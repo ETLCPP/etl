@@ -165,6 +165,20 @@ namespace etl
 
       STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type(const T&)
+    {
+      return get_id_from_type<T>();
+    }
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type()
+    {
+      return id_from_type<T>::value;
+    }
   };
 
   //***************************************************************************
@@ -254,6 +268,20 @@ namespace etl
 
       STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type(const T&)
+    {
+      return get_id_from_type<T>();
+    }
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type()
+    {
+      return id_from_type<T>::value;
+    }
   };
 
   //***************************************************************************
@@ -340,6 +368,20 @@ namespace etl
 
       STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type(const T&)
+    {
+      return get_id_from_type<T>();
+    }
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type()
+    {
+      return id_from_type<T>::value;
+    }
   };
 
   //***************************************************************************
@@ -423,6 +465,20 @@ namespace etl
 
       STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type(const T&)
+    {
+      return get_id_from_type<T>();
+    }
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type()
+    {
+      return id_from_type<T>::value;
+    }
   };
 
   //***************************************************************************
@@ -504,6 +560,20 @@ namespace etl
 
       STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type(const T&)
+    {
+      return get_id_from_type<T>();
+    }
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type()
+    {
+      return id_from_type<T>::value;
+    }
   };
 
   //***************************************************************************
@@ -581,6 +651,20 @@ namespace etl
 
       STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type(const T&)
+    {
+      return get_id_from_type<T>();
+    }
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type()
+    {
+      return id_from_type<T>::value;
+    }
   };
 
   //***************************************************************************
@@ -655,6 +739,20 @@ namespace etl
 
       STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type(const T&)
+    {
+      return get_id_from_type<T>();
+    }
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type()
+    {
+      return id_from_type<T>::value;
+    }
   };
 
   //***************************************************************************
@@ -726,6 +824,20 @@ namespace etl
 
       STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type(const T&)
+    {
+      return get_id_from_type<T>();
+    }
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type()
+    {
+      return id_from_type<T>::value;
+    }
   };
 
   //***************************************************************************
@@ -795,6 +907,20 @@ namespace etl
 
       STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type(const T&)
+    {
+      return get_id_from_type<T>();
+    }
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type()
+    {
+      return id_from_type<T>::value;
+    }
   };
 
   //***************************************************************************
@@ -859,6 +985,20 @@ namespace etl
 
       STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type(const T&)
+    {
+      return get_id_from_type<T>();
+    }
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type()
+    {
+      return id_from_type<T>::value;
+    }
   };
 
   //***************************************************************************
@@ -920,6 +1060,20 @@ namespace etl
 
       STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type(const T&)
+    {
+      return get_id_from_type<T>();
+    }
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type()
+    {
+      return id_from_type<T>::value;
+    }
   };
 
   //***************************************************************************
@@ -978,6 +1132,20 @@ namespace etl
 
       STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type(const T&)
+    {
+      return get_id_from_type<T>();
+    }
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type()
+    {
+      return id_from_type<T>::value;
+    }
   };
 
   //***************************************************************************
@@ -1034,6 +1202,20 @@ namespace etl
 
       STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type(const T&)
+    {
+      return get_id_from_type<T>();
+    }
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type()
+    {
+      return id_from_type<T>::value;
+    }
   };
 
   //***************************************************************************
@@ -1086,6 +1268,20 @@ namespace etl
 
       STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type(const T&)
+    {
+      return get_id_from_type<T>();
+    }
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type()
+    {
+      return id_from_type<T>::value;
+    }
   };
 
   //***************************************************************************
@@ -1135,6 +1331,20 @@ namespace etl
 
       STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type(const T&)
+    {
+      return get_id_from_type<T>();
+    }
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type()
+    {
+      return id_from_type<T>::value;
+    }
   };
 
   //***************************************************************************
@@ -1181,6 +1391,20 @@ namespace etl
 
       STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type(const T&)
+    {
+      return get_id_from_type<T>();
+    }
+
+    //************************************
+    template <typename T>
+    static unsigned int get_id_from_type()
+    {
+      return id_from_type<T>::value;
+    }
   };
   //***************************************************************************
   // Default for 16 types.
