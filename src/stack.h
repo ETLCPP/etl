@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 http://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 jwellbelove, Mark Kitson
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -163,6 +163,25 @@ namespace etl
     {
     }
 
+    //*************************************************************************
+    /// Increments the indexes value to record a stack addition.
+    //*************************************************************************
+    void add_in()
+    {
+      top_index = current_size++;
+      ++construct_count;
+    }
+
+    //*************************************************************************
+    /// Decrements the indexes value to record a queue deletion.
+    //*************************************************************************
+    void del_out()
+    {
+      --top_index;
+      --current_size;
+      --construct_count;
+    }
+
     size_type top_index;              ///< The index of the top of the stack.
     size_type current_size;           ///< The number of items in the stack.
     const size_type CAPACITY;         ///< The maximum number of items in the stack.
@@ -174,8 +193,8 @@ namespace etl
   ///\brief This is the base for all stacks that contain a particular type.
   ///\details Normally a reference to this type will be taken from a derived stack.
   ///\code
-  /// etl::stack<int, 10> myQueue;
-  /// etl::istack<int>& iQueue = myQueue;
+  /// etl::stack<int, 10> myStack;
+  /// etl::istack<int>& iStack = myStack;
   ///\endcode
   /// \warning This stack cannot be used for concurrent access from multiple threads.
   /// \tparam T The type of value that the stack holds.
@@ -195,6 +214,7 @@ namespace etl
   private:
 
     typedef typename etl::parameter_type<T>::type parameter_t;
+    typedef typename etl::stack_base              base_t;
 
   public:
 
@@ -217,9 +237,8 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(stack_full));
 #endif
-      top_index = current_size++;
+      base_t::add_in();
       ::new (&p_buffer[top_index]) T(value);
-      ++construct_count;
     }
 
     //*************************************************************************
@@ -233,9 +252,8 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(stack_full));
 #endif
-      top_index = current_size++;
+      base_t::add_in();
       ::new (&p_buffer[top_index]) T(value1);
-      ++construct_count;
     }
 
     //*************************************************************************
@@ -249,9 +267,8 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(stack_full));
 #endif
-      top_index = current_size++;
+      base_t::add_in();
       ::new (&p_buffer[top_index]) T(value1, value2);
-      ++construct_count;
     }
 
     //*************************************************************************
@@ -265,9 +282,8 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(stack_full));
 #endif
-      top_index = current_size++;
+      base_t::add_in();
       ::new (&p_buffer[top_index]) T(value1, value2, value3);
-      ++construct_count;
     }
 
     //*************************************************************************
@@ -281,9 +297,8 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(stack_full));
 #endif
-      top_index = current_size++;
+      base_t::add_in();
       ::new (&p_buffer[top_index]) T(value1, value2, value3, value4);
-      ++construct_count;
     }
 
     //*************************************************************************
@@ -298,9 +313,7 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(stack_full));
 #endif
-      top_index = current_size++;
-      ::new (&p_buffer[top_index]) T();
-      ++construct_count;
+      base_t::add_in();
 
       return p_buffer[top_index];
     }
@@ -322,9 +335,7 @@ namespace etl
       while (current_size > 0)
       {
         p_buffer[top_index].~T();
-        --top_index;
-        --current_size;
-        --construct_count;
+        base_t::del_out();
       }
     }
 
@@ -337,9 +348,7 @@ namespace etl
       ETL_ASSERT(!empty(), ETL_ERROR(stack_empty));
 #endif
       p_buffer[top_index].~T();
-      --top_index;
-      --current_size;
-      --construct_count;
+      base_t::del_out();
     }
 
     //*************************************************************************
@@ -358,6 +367,7 @@ namespace etl
     {
       if (&rhs != this)
       {
+        clear();
         clone(rhs);
       }
 
