@@ -41,61 +41,65 @@ SOFTWARE.
 
 #include "static_assert.h"
 #include "exception.h"
+#include "static_assert.h"
+#include "type_traits.h"
 
 namespace etl
 {
-	//***************************************************************************
-	/// Provides a value that cycles between two limits.
+  //***************************************************************************
+  /// Provides a value that cycles between two limits.
   /// Supports incrementing and decrementing.
-	///\tparam T     The type of the variable.
-	///\tparam FIRST The first value of the range.
-	///\tparam LAST  The last value of the range.
+  ///\tparam T     The type of the variable.
+  ///\tparam FIRST The first value of the range.
+  ///\tparam LAST  The last value of the range.
   ///\ingroup cyclic_value
-	//***************************************************************************
-	template <typename T, const T FIRST = T(), const T LAST = T()>
-	class cyclic_value
-	{
-	public:
+  //***************************************************************************
+  template <typename T, const T FIRST = T(), const T LAST = T()>
+  class cyclic_value
+  {
+  public:
+
+    STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
 
     template <typename U, const U OTHER_FIRST, const U OTHER_LAST> friend class cyclic_value;
 
-		//*************************************************************************
-		/// Constructor.
-		/// Sets 'first' and 'last' to the template parameter values.
+    //*************************************************************************
+    /// Constructor.
+    /// Sets 'first' and 'last' to the template parameter values.
     /// The initial value is set to the first value.
-		//*************************************************************************
-		cyclic_value()
-			: value(FIRST),
+    //*************************************************************************
+    cyclic_value()
+      : value(FIRST),
         first_value(FIRST),
-			  last_value(LAST)
-		{
-		}
+        last_value(LAST)
+    {
+    }
 
-		//*************************************************************************
-		/// Constructor.
+    //*************************************************************************
+    /// Constructor.
     /// Sets the value to the first of the range.
     ///\param first The first value in the range.
-		///\param last  The last value in the range.
-		//*************************************************************************
-		cyclic_value(const T& first_, const T& last_)
-			: value(first_),
+    ///\param last  The last value in the range.
+    //*************************************************************************
+    cyclic_value(const T& first_, const T& last_)
+      : value(first_),
         first_value(first_),
-			  last_value(last_)
-		{
-		}
+        last_value(last_)
+    {
+    }
 
-		//*************************************************************************
-		/// Sets the range.
-		/// Sets the value to the first of the range.
+    //*************************************************************************
+    /// Sets the range.
+    /// Sets the value to the first of the range.
     ///\param first The first value in the range.
-		///\param last  The last value in the range.
-  	//*************************************************************************
-		void set(const T& first_, const T& last_)
-		{
-			first_value = first_;
-			last_value  = last_;
-			value       = first_;
-		}
+    ///\param last  The last value in the range.
+    //*************************************************************************
+    void set(const T& first_, const T& last_)
+    {
+      first_value = first_;
+      last_value  = last_;
+      value       = first_;
+    }
 
     //*************************************************************************
     /// Resets the value to the first in the range.
@@ -119,6 +123,10 @@ namespace etl
     //*************************************************************************
     void advance(int n)
     {
+      T range = last_value - first_value + T(1);
+
+      n = n % range;
+
       if (n > 0)
       {
         for (int i = 0; i < n; ++i)
@@ -135,91 +143,91 @@ namespace etl
       }
     }
 
-		//*************************************************************************
-		/// Conversion operator.
+    //*************************************************************************
+    /// Conversion operator.
     /// \return The value of the underlying type.
-		//*************************************************************************
-		operator T()
-		{
-			return value;
-		}
+    //*************************************************************************
+    operator T()
+    {
+      return value;
+    }
 
-		//*************************************************************************
-		/// Const conversion operator.
-		/// \return The value of the underlying type.
-		//*************************************************************************
-		operator const T() const
-		{
-			return value;
-		}
+    //*************************************************************************
+    /// Const conversion operator.
+    /// \return The value of the underlying type.
+    //*************************************************************************
+    operator const T() const
+    {
+      return value;
+    }
 
-		//*************************************************************************
-		/// ++ operator.
-		//*************************************************************************
-		cyclic_value& operator ++()
-		{
-			if (value == last_value)
-			{
-				value = first_value;
-			}
-			else
-			{
+    //*************************************************************************
+    /// ++ operator.
+    //*************************************************************************
+    cyclic_value& operator ++()
+    {
+      if (value == last_value)
+      {
+        value = first_value;
+      }
+      else
+      {
         ++value;
-			}
+      }
 
-			return *this;
-		}
+      return *this;
+    }
 
-		//*************************************************************************
-		/// ++ operator.
-		//*************************************************************************
-		cyclic_value operator ++(int)
-		{
-			cyclic_value temp(*this);
+    //*************************************************************************
+    /// ++ operator.
+    //*************************************************************************
+    cyclic_value operator ++(int)
+    {
+      cyclic_value temp(*this);
 
-			operator++();
+      operator++();
 
-			return temp;
-		}
+      return temp;
+    }
 
-		//*************************************************************************
-		/// -- operator.
-		//*************************************************************************
-		cyclic_value& operator --()
-		{
-			if (value == first_value)
-			{
-				value = last_value;
-			}
-			else
-			{
-				--value;
-			}
+    //*************************************************************************
+    /// -- operator.
+    //*************************************************************************
+    cyclic_value& operator --()
+    {
+      if (value == first_value)
+      {
+        value = last_value;
+      }
+      else
+      {
+        --value;
+      }
 
-			return *this;
-		}
+      return *this;
+    }
 
-		//*************************************************************************
-		/// -- operator.
-		//*************************************************************************
-		cyclic_value operator --(int)
-		{
-			cyclic_value temp(*this);
+    //*************************************************************************
+    /// -- operator.
+    //*************************************************************************
+    cyclic_value operator --(int)
+    {
+      cyclic_value temp(*this);
 
-			operator--();
+      operator--();
 
-			return temp;
-		}
+      return temp;
+    }
 
-		//*************************************************************************
-		/// = operator.
-		//*************************************************************************
-		cyclic_value& operator =(T t)
-		{
-			value = t;
-			return *this;
-		}	
-	
+    //*************************************************************************
+    /// = operator.
+    //*************************************************************************
+    cyclic_value& operator =(T t)
+    {
+      value = t;
+      return *this;
+    }	
+  
     //*************************************************************************
     /// = operator.
     //*************************************************************************
@@ -233,16 +241,16 @@ namespace etl
     }
 
     //*************************************************************************
-		/// Gets the first value.
-		//*************************************************************************
+    /// Gets the first value.
+    //*************************************************************************
     const T& first() const
     {
       return first_value;
     }
 
-  	//*************************************************************************
-		/// Gets the last value.
-		//*************************************************************************
+    //*************************************************************************
+    /// Gets the last value.
+    //*************************************************************************
     const T& last() const
     {
       return last_value;
@@ -259,12 +267,12 @@ namespace etl
       std::swap(value,       other.value);
     }
 
-	private:
+  private:
 
     T value;       ///< The current value.
     T first_value; ///< The first value in the range.
-		T last_value;  ///< The last value in the range.
-	};
+    T last_value;  ///< The last value in the range.
+  };
 
   //*************************************************************************
   /// Swaps the values.

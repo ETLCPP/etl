@@ -174,12 +174,33 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_advance_positive_large)
+    {
+      etl::cyclic_value<int, 2, 7> value;
+
+      value.advance(14);
+
+      CHECK_EQUAL(4, value);
+    }
+
+    //*************************************************************************
     TEST(test_advance_negative)
     {
       etl::cyclic_value<int, 2, 7> value;
 
       value.to_last();
-      value.advance(-2);
+      value.advance(-14);
+
+      CHECK_EQUAL(5, value);
+    }
+
+    //*************************************************************************
+    TEST(test_advance_negative_large)
+    {
+      etl::cyclic_value<int, 2, 7> value;
+
+      value.to_last();
+      value.advance(-14);
 
       CHECK_EQUAL(5, value);
     }
