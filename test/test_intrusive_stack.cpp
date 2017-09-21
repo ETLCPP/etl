@@ -203,6 +203,41 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_pop_into)
+    {
+      Data data1(1);
+      Data data2(2);
+      Data data3(3);
+
+      etl::intrusive_stack<Data, link0> stack1;
+      etl::intrusive_stack<Data, link0> stack2;
+
+      stack1.push(data1);
+      stack1.push(data2);
+      stack1.push(data3);
+
+      stack1.pop_into(stack2);
+      CHECK_EQUAL(2U, stack1.size());
+      CHECK_EQUAL(data2, stack1.top());
+
+      CHECK_EQUAL(1U, stack2.size());
+      CHECK_EQUAL(data3, stack2.top());
+
+      stack1.pop_into(stack2);
+      CHECK_EQUAL(1U, stack1.size());
+      CHECK_EQUAL(data1, stack1.top());
+
+      CHECK_EQUAL(2U, stack2.size());
+      CHECK_EQUAL(data2, stack2.top());
+
+      stack1.pop_into(stack2);
+      CHECK_EQUAL(0U, stack1.size());
+
+      CHECK_EQUAL(3U, stack2.size());
+      CHECK_EQUAL(data1, stack2.top());
+    }
+
+    //*************************************************************************
     TEST(test_top_const)
     {
       Data data1(1);
@@ -221,6 +256,57 @@ namespace
       CHECK_EQUAL(stackD.top(), stackDR.top());
       stackD.pop();
       CHECK_EQUAL(stackD.top(), stackDR.top());
+    }
+
+    //*************************************************************************
+    TEST(test_reverse1)
+    {
+      Data data1(1);
+
+      etl::intrusive_stack<Data, link0> stack;
+
+      stack.push(data1);
+
+      stack.reverse();
+
+      CHECK_EQUAL(1U, stack.size());
+      CHECK_EQUAL(stack.top(), data1);
+    }
+
+    //*************************************************************************
+    TEST(test_reverse5)
+    {
+      Data data1(1);
+      Data data2(2);
+      Data data3(3);
+      Data data4(4);
+      Data data5(5);
+
+      etl::intrusive_stack<Data, link0> stack;
+
+      stack.push(data1);
+      stack.push(data2);
+      stack.push(data3);
+      stack.push(data4);
+      stack.push(data5);
+
+      stack.reverse();
+
+      CHECK_EQUAL(5U, stack.size());
+
+      CHECK_EQUAL(stack.top(), data1);
+      stack.pop();
+
+      CHECK_EQUAL(stack.top(), data2);
+      stack.pop();
+
+      CHECK_EQUAL(stack.top(), data3);
+      stack.pop();
+
+      CHECK_EQUAL(stack.top(), data4);
+      stack.pop();
+
+      CHECK_EQUAL(stack.top(), data5);
     }
   };
 }

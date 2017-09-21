@@ -115,6 +115,39 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Removes the oldest item from the queue and pushes it to the destination.
+    /// Undefined behaviour if the queue is already empty.
+    /// NOTE: The destination must be an intrusize container that supports a push(TLink) member function.
+    //*************************************************************************
+    template <typename TContainer>
+    void pop_into(TContainer& destination)
+    {
+      link_type* p_link = p_top;
+      pop();
+      destination.push(*p_link);
+    }
+
+    //*************************************************************************
+    /// Reverses the stack order.
+    //*************************************************************************
+    void reverse()
+    {
+      link_type* previous = nullptr;
+      link_type* current = p_top;
+      link_type* next;
+
+      while (current != nullptr)
+      {
+        next = current->etl_next;
+        current->etl_next = previous;
+        previous = current;
+        current = next;
+      }
+
+      p_top = previous;
+    }
+
+    //*************************************************************************
     /// Clears the stack to the empty state.
     //*************************************************************************
     void clear()
