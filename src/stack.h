@@ -362,10 +362,11 @@ namespace etl
 
     //*************************************************************************
     /// Removes the oldest item from the top of the stack and pushes it to the 
-    /// top of the destination stack.
-    /// NOTE: This reverses the stack order.
+    /// destination container.
+    /// NOTE: The destination must support a push(T) member function.
     //*************************************************************************
-    void pop_into(istack& destination)
+    template <typename TContainer>
+    void pop_into(TContainer& destination)
     {
       destination.push(top());
       pop();

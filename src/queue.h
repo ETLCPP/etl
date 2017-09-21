@@ -397,10 +397,12 @@ namespace etl
 
     //*************************************************************************
     /// Gets the oldest value and removes it from the front of the queue and 
-    /// pushes it to the destination queue.
+    /// pushes it to the destination container.
     /// If asserts or exceptions are enabled, throws an etl::queue_empty if the queue is empty.
+    /// NOTE: The destination must support a push(T) member function.
     //*************************************************************************
-    void pop_into(iqueue& destination)
+    template <typename TContainer>
+    void pop_into(TContainer& destination)
     {
       destination.push(front());
       pop();
