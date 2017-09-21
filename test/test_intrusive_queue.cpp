@@ -214,6 +214,44 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_pop_into)
+    {
+      Data data1(1);
+      Data data2(2);
+      Data data3(3);
+
+      etl::intrusive_queue<Data, link0> queue1;
+      etl::intrusive_queue<Data, link0> queue2;
+
+      queue1.push(data1);
+      queue1.push(data2);
+      queue1.push(data3);
+
+      queue1.pop_into(queue2);
+      CHECK_EQUAL(2U, queue1.size());
+      CHECK_EQUAL(data2, queue1.front());
+
+      CHECK_EQUAL(1U, queue2.size());
+      CHECK_EQUAL(data1, queue2.front());
+      CHECK_EQUAL(data1, queue2.back());
+
+      queue1.pop_into(queue2);
+      CHECK_EQUAL(1U, queue1.size());
+      CHECK_EQUAL(data3, queue1.front());
+
+      CHECK_EQUAL(2U, queue2.size());
+      CHECK_EQUAL(data1, queue2.front());
+      CHECK_EQUAL(data2, queue2.back());
+
+      queue1.pop_into(queue2);
+      CHECK_EQUAL(0U, queue1.size());
+      
+      CHECK_EQUAL(3U, queue2.size());
+      CHECK_EQUAL(data1, queue2.front());
+      CHECK_EQUAL(data3, queue2.back());
+    }
+
+    //*************************************************************************
     TEST(test_front_const)
     {
       Data data1(1);

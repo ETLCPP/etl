@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 http://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 jwellbelove, Mark Kitson
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -157,10 +157,37 @@ namespace etl
     //*************************************************************************
     queue_base(size_type max_size)
       : in(0),
-      out(0),
-      current_size(0),
-      CAPACITY(max_size)
+        out(0),
+        current_size(0),
+        CAPACITY(max_size)
     {
+    }
+
+    //*************************************************************************
+    /// Increments (and wraps) the 'in' index value to record a queue addition.
+    //*************************************************************************
+    void add_in()
+    {
+      if (++in == CAPACITY)
+      {
+        in = 0;
+      }
+
+      ++current_size;
+      ++construct_count;
+    }
+
+    //*************************************************************************
+    /// Decrements (and wraps) the 'out' index value to record a queue deletion.
+    //*************************************************************************
+    void del_out()
+    {
+      if (++out == CAPACITY)
+      {
+        out = 0;
+      }
+      --current_size;
+      --construct_count;
     }
 
     size_type in;                     ///< Where to input new data.
@@ -196,6 +223,7 @@ namespace etl
   private:
 
     typedef typename etl::parameter_type<T>::type parameter_t;
+    typedef typename etl::queue_base              base_t;
 
   public:
 
@@ -246,9 +274,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
 #endif
       ::new (&p_buffer[in]) T(value);
-      in = (in == (CAPACITY - 1)) ? 0 : in + 1;
-      ++current_size;
-      ++construct_count;
+      base_t::add_in();
     }
 
     //*************************************************************************
@@ -265,10 +291,7 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
 #endif
-      ::new (&p_buffer[in]) T();
-      in = (in == (CAPACITY - 1)) ? 0 : in + 1;
-      ++current_size;
-      ++construct_count;
+      base_t::add_in();
 
       return p_buffer[next];
     }
@@ -285,9 +308,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
 #endif
       ::new (&p_buffer[in]) T(value1);
-      in = (in == (CAPACITY - 1)) ? 0 : in + 1;
-      ++current_size;
-      ++construct_count;
+      base_t::add_in();
     }
 
     //*************************************************************************
@@ -302,9 +323,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
 #endif
       ::new (&p_buffer[in]) T(value1, value2);
-      in = (in == (CAPACITY - 1)) ? 0 : in + 1;
-      ++current_size;
-      ++construct_count;
+      base_t::add_in();
     }
 
     //*************************************************************************
@@ -319,9 +338,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
 #endif
       ::new (&p_buffer[in]) T(value1, value2, value3);
-      in = (in == (CAPACITY - 1)) ? 0 : in + 1;
-      ++current_size;
-      ++construct_count;
+      base_t::add_in();
     }
 
     //*************************************************************************
@@ -336,9 +353,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
 #endif
       ::new (&p_buffer[in]) T(value1, value2, value3, value4);
-      in = (in == (CAPACITY - 1)) ? 0 : in + 1;
-      ++current_size;
-      ++construct_count;
+      base_t::add_in();
     }
 
     //*************************************************************************
@@ -349,9 +364,7 @@ namespace etl
       while (current_size > 0)
       {
         p_buffer[out].~T();
-        out = (out == (CAPACITY - 1)) ? 0 : out + 1;
-        --current_size;
-        --construct_count;
+        base_t::del_out();
       }
 
       in = 0;
@@ -369,9 +382,7 @@ namespace etl
       ETL_ASSERT(!empty(), ETL_ERROR(queue_empty));
 #endif
       p_buffer[out].~T();
-      out = (out == (CAPACITY - 1)) ? 0 : out + 1;
-      --current_size;
-      --construct_count;
+      base_t::del_out();
     }
 
     //*************************************************************************
@@ -385,12 +396,26 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Gets the oldest value and removes it from the front of the queue and 
+    /// pushes it to the destination container.
+    /// If asserts or exceptions are enabled, throws an etl::queue_empty if the queue is empty.
+    /// NOTE: The destination must support a push(T) member function.
+    //*************************************************************************
+    template <typename TContainer>
+    void pop_into(TContainer& destination)
+    {
+      destination.push(front());
+      pop();
+    }
+    
+    //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
     iqueue& operator = (const iqueue& rhs)
     {
       if (&rhs != this)
       {
+        clear();
         clone(rhs);
       }
 
@@ -404,6 +429,8 @@ namespace etl
     //*************************************************************************
     void clone(const iqueue& other)
     {
+      clear();
+
       size_t index = other.out;
 
       for (size_t i = 0; i < other.size(); ++i)

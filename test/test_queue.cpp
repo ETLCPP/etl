@@ -353,14 +353,64 @@ namespace
 
       queue.pop_into(i);
       CHECK_EQUAL(1, i);
+      CHECK_EQUAL(3U, queue.size());
 
       queue.pop_into(i);
       CHECK_EQUAL(2, i);
+      CHECK_EQUAL(2U, queue.size());
 
       queue.pop_into(i);
       CHECK_EQUAL(3, i);
+      CHECK_EQUAL(1U, queue.size());
 
       queue.pop_into(i);
+      CHECK_EQUAL(4, i);
+      CHECK_EQUAL(0U, queue.size());
+    }
+
+    //*************************************************************************
+    TEST(test_pop_into_queue)
+    {
+      etl::queue<int, 4> queue1;
+      etl::queue<int, 4> queue2;
+
+      queue1.push(1);
+      queue1.push(2);
+      queue1.push(3);
+      queue1.push(4);
+
+      queue1.pop_into(queue2);
+      CHECK_EQUAL(1U, queue2.size());
+      CHECK_EQUAL(1, queue2.front());
+      CHECK_EQUAL(1, queue2.back());
+
+      queue1.pop_into(queue2);
+      CHECK_EQUAL(2U, queue2.size());
+      CHECK_EQUAL(1, queue2.front());
+      CHECK_EQUAL(2, queue2.back());
+
+      queue1.pop_into(queue2);
+      CHECK_EQUAL(3U, queue2.size());
+      CHECK_EQUAL(1, queue2.front());
+      CHECK_EQUAL(3, queue2.back());
+
+      queue1.pop_into(queue2);
+      CHECK_EQUAL(4U, queue2.size());
+      CHECK_EQUAL(1, queue2.front());
+      CHECK_EQUAL(4, queue2.back());
+
+      int i;
+
+      queue2.pop_into(i);
+      CHECK_EQUAL(1, i);
+
+      queue2.pop_into(i);
+      CHECK_EQUAL(2, i);
+
+      queue2.pop_into(i);
+      CHECK_EQUAL(3, i);
+
+      queue2.pop_into(i);
       CHECK_EQUAL(4, i);
     }
 
