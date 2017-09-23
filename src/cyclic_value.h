@@ -59,8 +59,6 @@ namespace etl
   {
   public:
 
-    STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
-
     template <typename U, const U OTHER_FIRST, const U OTHER_LAST> friend class cyclic_value;
 
     //*************************************************************************
@@ -166,7 +164,7 @@ namespace etl
     //*************************************************************************
     cyclic_value& operator ++()
     {
-      if (value == last_value)
+      if (value >= last_value)
       {
         value = first_value;
       }
@@ -195,7 +193,7 @@ namespace etl
     //*************************************************************************
     cyclic_value& operator --()
     {
-      if (value == first_value)
+      if (value <= first_value)
       {
         value = last_value;
       }
