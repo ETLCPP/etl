@@ -146,18 +146,42 @@ namespace
     }
   };
 
+  //***********************************
+  struct NonDerived
+  {
+    NonDerived()
+      : s("constructed")
+    {
+    }
+
+    ~NonDerived()
+    {
+      destructor = true;
+    }
+
+    void Set()
+    {
+      s = "set";
+    }
+
+    std::string s;
+  };
+
   enum
   {
     DERIVED1,
     DERIVED2,
-    DERIVED3
+    DERIVED3,
+    NONDERIVED
   };
 
-  typedef etl::type_id_pair<Derived1, DERIVED1> D1_Type;
-  typedef etl::type_id_pair<Derived2, DERIVED2> D2_Type;
-  typedef etl::type_id_pair<Derived3, DERIVED3> D3_Type;
+  typedef etl::type_id_pair<Derived1,   DERIVED1> D1_Type;
+  typedef etl::type_id_pair<Derived2,   DERIVED2> D2_Type;
+  typedef etl::type_id_pair<Derived3,   DERIVED3> D3_Type;
+  typedef etl::type_id_pair<NonDerived, NONDERIVED> ND_Type;
 
-  typedef etl::factory<4, Base, D1_Type, D2_Type, D3_Type> Factory;
+  // Notice that the type declaration order is not important.
+  typedef etl::factory<4, D1_Type, ND_Type, D3_Type, D2_Type> Factory;
 
   SUITE(test_factory)
   {
@@ -198,6 +222,7 @@ namespace
 
       Base* p;
 
+      // Derived 1
       p = factory.create_from_type<Derived1>();
       Derived1* pd1 = static_cast<Derived1*>(p);
       CHECK_EQUAL(0, pd1->i);
@@ -206,6 +231,7 @@ namespace
       factory.destroy(p);
       CHECK(destructor);
 
+      // Derived 2
       destructor = false;
       p = factory.create_from_type<Derived2>();
       Derived2* pd2 = static_cast<Derived2*>(p);
@@ -215,6 +241,7 @@ namespace
       factory.destroy(p);
       CHECK(destructor);
 
+      // Derived 3
       destructor = false;
       p = factory.create_from_type<Derived3>();
       Derived3* pd3 = static_cast<Derived3*>(p);
@@ -222,6 +249,15 @@ namespace
       p->Set();
       CHECK_EQUAL("set", pd3->s);
       factory.destroy(p);
+      CHECK(destructor);
+
+      // Non Derived
+      destructor = false;
+      NonDerived* pnd = factory.create_from_type<NonDerived>();
+      CHECK_EQUAL("constructed", pnd->s);
+      pnd->Set();
+      CHECK_EQUAL("set", pnd->s);
+      factory.destroy(pnd);
       CHECK(destructor);
     }
 
