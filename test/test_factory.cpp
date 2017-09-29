@@ -172,16 +172,20 @@ namespace
     DERIVED1,
     DERIVED2,
     DERIVED3,
-    NONDERIVED
+    NONDERIVED,
+    INTEGRAL
   };
 
-  typedef etl::type_id_pair<Derived1,   DERIVED1> D1_Type;
-  typedef etl::type_id_pair<Derived2,   DERIVED2> D2_Type;
-  typedef etl::type_id_pair<Derived3,   DERIVED3> D3_Type;
+  typedef etl::type_id_pair<Derived1,   DERIVED1>   D1_Type;
+  typedef etl::type_id_pair<Derived2,   DERIVED2>   D2_Type;
+  typedef etl::type_id_pair<Derived3,   DERIVED3>   D3_Type;
   typedef etl::type_id_pair<NonDerived, NONDERIVED> ND_Type;
+  typedef etl::type_id_pair<int,        INTEGRAL>   I_Type;
+
+  const size_t SIZE = 5;
 
   // Notice that the type declaration order is not important.
-  typedef etl::factory<4, D1_Type, ND_Type, D3_Type, D2_Type> Factory;
+  typedef etl::factory<SIZE, D1_Type, ND_Type, D3_Type, D2_Type, I_Type> Factory;
 
   SUITE(test_factory)
   {
@@ -191,15 +195,15 @@ namespace
       Factory factory;
 
       size_t ms = Factory::MAX_SIZE;
-      CHECK_EQUAL(4U, ms);
-      CHECK_EQUAL(4U, factory.max_size());
-      CHECK_EQUAL(4U, factory.available());
+      CHECK_EQUAL(SIZE, ms);
+      CHECK_EQUAL(SIZE, factory.max_size());
+      CHECK_EQUAL(SIZE, factory.available());
       CHECK_EQUAL(0U, factory.size());
       CHECK(factory.empty());
       CHECK(!factory.full());
 
       factory.create_from_type<Derived1>();
-      CHECK_EQUAL(3U, factory.available());
+      CHECK_EQUAL(SIZE - 1U, factory.available());
       CHECK_EQUAL(1U, factory.size());
       CHECK(!factory.empty());
       CHECK(!factory.full());
@@ -207,8 +211,9 @@ namespace
       factory.create_from_type<Derived1>();
       factory.create_from_type<Derived1>();
       factory.create_from_type<Derived1>();
+      factory.create_from_type<Derived1>();
       CHECK_EQUAL(0U, factory.available());
-      CHECK_EQUAL(4U, factory.size());
+      CHECK_EQUAL(SIZE, factory.size());
       CHECK(!factory.empty());
       CHECK(factory.full());
 
@@ -259,6 +264,10 @@ namespace
       CHECK_EQUAL("set", pnd->s);
       factory.destroy(pnd);
       CHECK(destructor);
+
+      // Integral
+      int* pi = factory.create_from_type<int>();
+      factory.destroy(pi);
     }
 
     //*************************************************************************
@@ -329,7 +338,7 @@ namespace
       CHECK_NO_THROW(p1 = factory.create_from_id<DERIVED1>());
       CHECK_EQUAL(0, p1->i);
       factory.destroy(p1);
-      
+
       CHECK_NO_THROW(p2 = factory.create_from_id<DERIVED2>());
       CHECK_EQUAL(0.0, p2->d);
       factory.destroy(p2);

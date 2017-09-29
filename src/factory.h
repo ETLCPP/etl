@@ -284,7 +284,8 @@ namespace etl
     template <typename T>
     bool destroy(const T* const p)
     {
-      STATIC_ASSERT((etl::is_base_of<T, TT1>::value  || 
+      STATIC_ASSERT((etl::is_one_of<T, TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, TT13, TT14, TT15, TT16>::value ||
+                     etl::is_base_of<T, TT1>::value  || 
                      etl::is_base_of<T, TT2>::value  || 
                      etl::is_base_of<T, TT3>::value  || 
                      etl::is_base_of<T, TT4>::value  ||
@@ -300,7 +301,7 @@ namespace etl
                      etl::is_base_of<T, TT14>::value || 
                      etl::is_base_of<T, TT15>::value || 
                      etl::is_base_of<T, TT16>::value), "Invalid type");
- 
+  
       p->~T();
 
       return release_item(reinterpret_cast<char*>(const_cast<T*>(p)));

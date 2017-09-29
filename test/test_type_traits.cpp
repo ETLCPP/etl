@@ -594,6 +594,10 @@ namespace
       CHECK((std::is_base_of<C, A>::value) == (etl::is_base_of<C, A>::value));
       CHECK((std::is_base_of<C, B>::value) == (etl::is_base_of<C, B>::value));
       CHECK((std::is_base_of<C, C>::value) == (etl::is_base_of<C, C>::value));
+
+      CHECK((std::is_base_of<char, char>::value) == (etl::is_base_of<char, char>::value));
+      CHECK((std::is_base_of<char, int>::value)  == (etl::is_base_of<char, int>::value));
+      CHECK((std::is_base_of<int,  char>::value) == (etl::is_base_of<int,  char>::value));
     }
 
     //*************************************************************************
