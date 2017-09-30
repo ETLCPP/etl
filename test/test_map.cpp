@@ -38,15 +38,15 @@ SOFTWARE.
 
 #include "map.h"
 
-static const size_t SIZE = 10;
+static const size_t MAX_SIZE = 10;
 
 #define TEST_GREATER_THAN
 #ifdef TEST_GREATER_THAN
-typedef etl::map<std::string, int, SIZE, std::greater<std::string> >  Data;
+typedef etl::map<std::string, int, MAX_SIZE, std::greater<std::string> >  Data;
 typedef etl::imap<std::string, int, std::greater<std::string> >        IData;
 typedef std::map<std::string, int, std::greater<std::string> >        Compare_Data;
 #else
-typedef etl::map<std::string, int, SIZE, std::less<std::string> >  Data;
+typedef etl::map<std::string, int, MAX_SIZE, std::less<std::string> >  Data;
 typedef etl::imap<std::string, int, std::less<std::string> >       IData;
 typedef std::map<std::string, int, std::less<std::string> >        Compare_Data;
 #endif
@@ -179,8 +179,8 @@ namespace
 
       CHECK_EQUAL(data.size(), size_t(0));
       CHECK(data.empty());
-      CHECK_EQUAL(data.capacity(), SIZE);
-      CHECK_EQUAL(data.max_size(), SIZE);
+      CHECK_EQUAL(data.capacity(), MAX_SIZE);
+      CHECK_EQUAL(data.max_size(), MAX_SIZE);
     }
 
     //*************************************************************************
@@ -192,8 +192,8 @@ namespace
 
       size_t d = std::distance(data.begin(), data.end());
 
-      CHECK(d == SIZE);
-      CHECK(data.size() == SIZE);
+      CHECK(d == MAX_SIZE);
+      CHECK(data.size() == MAX_SIZE);
       CHECK(!data.empty());
     }
 
