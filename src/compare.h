@@ -45,7 +45,7 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  /// Defines <, <=, >, >= interms of <
+  /// Defines <=, >, >= interms of <
   /// Default 
   //***************************************************************************
   template <typename T, typename TLess = std::less<T> >

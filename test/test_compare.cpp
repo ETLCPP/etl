@@ -87,15 +87,21 @@ namespace
     TEST(test_lt)
     { 
       CHECK_EQUAL(a < b,   (CompareInt::lt(a, b)));
+      CHECK_EQUAL(b < a,   (CompareInt::lt(b, a)));
+      CHECK_EQUAL(a < a,   (CompareInt::lt(a, a)));
       CHECK_EQUAL(ta < tb, (CompareTest::lt(ta, tb)));
+      CHECK_EQUAL(tb < ta, (CompareTest::lt(tb, ta)));
+      CHECK_EQUAL(ta < ta, (CompareTest::lt(ta, ta)));
     }
 
     //*************************************************************************
     TEST(test_lte)
     {
       CHECK_EQUAL(a <= b,   (CompareInt::lte(a, b)));
+      CHECK_EQUAL(b <= a,   (CompareInt::lte(b, a)));
       CHECK_EQUAL(a <= a,   (CompareInt::lte(a, a)));
       CHECK_EQUAL(ta <= tb, (CompareTest::lte(ta, tb)));
+      CHECK_EQUAL(tb <= ta, (CompareTest::lte(tb, ta)));
       CHECK_EQUAL(ta <= ta, (CompareTest::lte(ta, ta)));
     }
 
@@ -103,15 +109,21 @@ namespace
     TEST(test_gt)
     {
       CHECK_EQUAL(a > b,   (CompareInt::gt(a, b)));
+      CHECK_EQUAL(b > a,   (CompareInt::gt(b, a)));
+      CHECK_EQUAL(a > a,   (CompareInt::gt(a, a)));
       CHECK_EQUAL(ta > tb, (CompareTest::gt(ta, tb)));
+      CHECK_EQUAL(tb > ta, (CompareTest::gt(tb, ta)));
+      CHECK_EQUAL(ta > ta, (CompareTest::gt(ta, ta)));
     }
 
     //*************************************************************************
     TEST(test_gte)
     {
       CHECK_EQUAL(a >= b,   (CompareInt::gte(a, b)));
+      CHECK_EQUAL(b >= a,   (CompareInt::gte(b, a)));
       CHECK_EQUAL(a >= a,   (CompareInt::gte(a, a)));
       CHECK_EQUAL(ta >= tb, (CompareTest::gte(ta, tb)));
+      CHECK_EQUAL(tb >= ta, (CompareTest::gte(tb, ta)));
       CHECK_EQUAL(ta >= ta, (CompareTest::gte(ta, ta)));
     }
   };
