@@ -79,7 +79,6 @@ namespace etl
 
   //***************************************************************************
   template <const size_t MAX_SIZE_,
-            typename TBase,
             typename T1,
             typename T2  = etl::type_id_pair<>, 
             typename T3  = etl::type_id_pair<>, 
@@ -123,8 +122,6 @@ namespace etl
   public:
 
     static const size_t MAX_SIZE = MAX_SIZE_;
-
-    typedef TBase base_t;
 
     //*************************************************************************
     /// Constructor
@@ -278,17 +275,36 @@ namespace etl
     {
       typedef typename lookup_t::template type_from_id<ID>::type type;
       STATIC_ASSERT((!etl::is_same<void, type>::value), "Invalid index");
-      return reinterpret_cast<TBase*>(create_from_type<type>(p1, p2, p3, p4));
+      return create_from_type<type>(p1, p2, p3, p4);
     }
 
     //*************************************************************************
     /// Destroys the object.
     //*************************************************************************
-    bool destroy(const TBase* const p)
+    template <typename T>
+    bool destroy(const T* const p)
     {
-      p->~TBase();
+      STATIC_ASSERT((etl::is_one_of<T, TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, TT13, TT14, TT15, TT16>::value ||
+                     etl::is_base_of<T, TT1>::value  || 
+                     etl::is_base_of<T, TT2>::value  || 
+                     etl::is_base_of<T, TT3>::value  || 
+                     etl::is_base_of<T, TT4>::value  ||
+                     etl::is_base_of<T, TT5>::value  || 
+                     etl::is_base_of<T, TT6>::value  || 
+                     etl::is_base_of<T, TT7>::value  || 
+                     etl::is_base_of<T, TT8>::value  || 
+                     etl::is_base_of<T, TT9>::value  || 
+                     etl::is_base_of<T, TT10>::value || 
+                     etl::is_base_of<T, TT11>::value || 
+                     etl::is_base_of<T, TT12>::value || 
+                     etl::is_base_of<T, TT13>::value || 
+                     etl::is_base_of<T, TT14>::value || 
+                     etl::is_base_of<T, TT15>::value || 
+                     etl::is_base_of<T, TT16>::value), "Invalid type");
+  
+      p->~T();
 
-      return release_item(reinterpret_cast<char*>(const_cast<TBase*>(p)));
+      return release_item(reinterpret_cast<char*>(const_cast<T*>(p)));
     }
 
     //*************************************************************************

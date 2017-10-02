@@ -33,7 +33,7 @@ SOFTWARE.
 #include "cyclic_value.h"
 
 namespace
-{		
+{
   SUITE(test_cyclic_value)
   {
     //*************************************************************************
@@ -57,30 +57,70 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_copy_constructor)
+    TEST(test_copy_constructor_compile_time)
+    {
+      etl::cyclic_value<int, 2, 7> value;
+      etl::cyclic_value<int, 2, 7> value2(value);
+      CHECK(value == value2);
+    }
+
+    //*************************************************************************
+    TEST(test_copy_constructor_run_time)
     {
       etl::cyclic_value<int> value(2, 7);
       etl::cyclic_value<int> value2(value);
       CHECK(value == value2);
-
-      value2.set(3, 6);
-      CHECK(value != value2);
     }
 
     //*************************************************************************
-    TEST(test_set)
+    TEST(test_set_compile_time)
+    {
+      etl::cyclic_value<int, 2, 7> value;
+
+      value.set(5);
+      CHECK_EQUAL(5, value.get());
+
+      value.set(1);
+      CHECK_EQUAL(value.first(), value.get());
+
+      value.set(8);
+      CHECK_EQUAL(value.last(), value.get());
+    }
+
+    //*************************************************************************
+    TEST(test_set_run_time)
     {
       etl::cyclic_value<int> value;
 
       value.set(2, 7);
 
-      CHECK_EQUAL(2, value);
+      CHECK_EQUAL(2, value.get());
       CHECK_EQUAL(2, value.first());
       CHECK_EQUAL(7, value.last());
+
+      value.set(5);
+      CHECK_EQUAL(5, value.get());
+
+      value.set(1);
+      CHECK_EQUAL(value.first(), value.get());
+
+      value.set(8);
+      CHECK_EQUAL(value.last(), value.get());
     }
 
     //*************************************************************************
-    TEST(test_to_first)
+    TEST(test_to_first_compile_time)
+    {
+      etl::cyclic_value<int, 2, 7> value;
+
+      ++value;
+      value.to_first();
+
+      CHECK_EQUAL(value.first(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_to_first_run_time)
     {
       etl::cyclic_value<int> value;
 
@@ -92,7 +132,17 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_to_last)
+    TEST(test_to_last_compile_time)
+    {
+      etl::cyclic_value<int, 2, 7> value;
+
+      value.to_last();
+
+      CHECK_EQUAL(value.last(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_to_last_run_time)
     {
       etl::cyclic_value<int> value;
 
@@ -103,7 +153,19 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_increment)
+    TEST(test_increment_compile_time)
+    {
+      etl::cyclic_value<int, 2, 7> value;
+
+      for (int i = value.first(); i <= value.last(); ++i)
+      {
+        CHECK_EQUAL(i, value);
+        ++value;
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_increment_run_time)
     {
       etl::cyclic_value<int> value;
 
@@ -117,7 +179,21 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_decrement)
+    TEST(test_decrement_compile_time)
+    {
+      etl::cyclic_value<int, 2, 7> value;
+
+      value.to_last();
+
+      for (int i = value.last(); i >= value.first(); --i)
+      {
+        CHECK_EQUAL(i, value);
+        --value;
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_decrement_run_time)
     {
       etl::cyclic_value<int> value;
 
@@ -132,7 +208,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_increment_wrap)
+    TEST(test_increment_wrap_run_time)
     {
       etl::cyclic_value<int> value;
 
@@ -148,7 +224,35 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_decrement_wrap)
+    TEST(test_increment_wrap_compile_time)
+    {
+      etl::cyclic_value<int, 2, 7> value;
+
+      int expected[8] = { 2, 3, 4, 5, 6, 7, 2, 3 };
+
+      for (int i = 0; i < 8; ++i)
+      {
+        CHECK_EQUAL(expected[i], value);
+        ++value;
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_decrement_wrap_compile_time)
+    {
+      etl::cyclic_value<int, 2, 7> value;
+
+      int expected[8] = { 2, 7, 6, 5, 4, 3, 2, 7 };
+
+      for (int i = 0; i > 8; ++i)
+      {
+        CHECK_EQUAL(expected[i], value);
+        --value;
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_decrement_wrap_run_time)
     {
       etl::cyclic_value<int> value;
 
@@ -164,7 +268,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_advance_positive)
+    TEST(test_advance_positive_compile_time)
     {
       etl::cyclic_value<int, 2, 7> value;
 
@@ -174,7 +278,18 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_advance_positive_large)
+    TEST(test_advance_positive_run_time)
+    {
+      etl::cyclic_value<int> value;
+
+      value.set(2, 7);
+      value.advance(2);
+
+      CHECK_EQUAL(4, value);
+    }
+
+    //*************************************************************************
+    TEST(test_advance_positive_large_compile_time)
     {
       etl::cyclic_value<int, 2, 7> value;
 
@@ -184,7 +299,18 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_advance_negative)
+    TEST(test_advance_positive_large_run_time)
+    {
+      etl::cyclic_value<int> value;
+
+      value.set(2, 7);
+      value.advance(14);
+
+      CHECK_EQUAL(4, value);
+    }
+
+    //*************************************************************************
+    TEST(test_advance_negative_compile_time)
     {
       etl::cyclic_value<int, 2, 7> value;
 
@@ -195,7 +321,19 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_advance_negative_large)
+    TEST(test_advance_negative_run_time)
+    {
+      etl::cyclic_value<int> value;
+
+      value.set(2, 7);
+      value.to_last();
+      value.advance(-14);
+
+      CHECK_EQUAL(5, value);
+    }
+
+    //*************************************************************************
+    TEST(test_advance_negative_large_compile_time)
     {
       etl::cyclic_value<int, 2, 7> value;
 
@@ -206,10 +344,24 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_assignment)
+    TEST(test_advance_negative_large_run_time)
+    {
+      etl::cyclic_value<int> value;
+
+      value.set(2, 7);
+      value.to_last();
+      value.advance(-14);
+
+      CHECK_EQUAL(5, value);
+    }
+
+    //*************************************************************************
+    TEST(test_assignment_compile_time)
     {
       etl::cyclic_value<int, 2, 7> value1;
-      etl::cyclic_value<int, 3, 8> value2;
+      etl::cyclic_value<int, 2, 7> value2;
+
+      ++value1;
 
       value1 = value2;
       CHECK((int)value1 == (int)value2);
@@ -219,7 +371,22 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_equality)
+    TEST(test_assignment_run_time)
+    {
+      etl::cyclic_value<int> value1(2, 7);
+      etl::cyclic_value<int> value2(3, 8);
+
+      value1 = value2;
+      CHECK(value1.get()   == value2.get());
+      CHECK(value1.first() == value2.first());
+      CHECK(value1.last()  == value2.last());
+
+      value1 = 4;
+      CHECK((int)value1 == 4);
+    }
+
+    //*************************************************************************
+    TEST(test_equality_compile_time)
     {
       etl::cyclic_value<int, 2, 7> value1;
       etl::cyclic_value<int, 3, 8> value2;
@@ -230,7 +397,33 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_swap)
+    TEST(test_equality_run_time)
+    {
+      etl::cyclic_value<int> value1(2, 7);
+      etl::cyclic_value<int> value2(3, 8);
+      etl::cyclic_value<int> value3(3, 8);
+
+      CHECK(value1 != value2);
+      CHECK(value2 == value3);
+    }
+
+    //*************************************************************************
+    TEST(test_swap_compile_time)
+    {
+      etl::cyclic_value<int, 2, 7> compare1;
+      etl::cyclic_value<int, 2, 7> compare2;
+
+      etl::cyclic_value<int, 2, 7> data1(compare1);
+      etl::cyclic_value<int, 2, 7> data2(compare2);
+
+      swap(data1, data2);
+
+      CHECK(data1 == compare2);
+      CHECK(data2 == compare1);
+    }
+
+    //*************************************************************************
+    TEST(test_swap_run_time)
     {
       etl::cyclic_value<int> compare1;
       etl::cyclic_value<int> compare2;

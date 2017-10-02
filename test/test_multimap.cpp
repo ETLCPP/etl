@@ -37,15 +37,15 @@ SOFTWARE.
 
 #include "multimap.h"
 
-static const size_t SIZE = 10;
+static const size_t MAX_SIZE = 10;
 
 #define TEST_GREATER_THAN
 #ifdef TEST_GREATER_THAN
-typedef etl::multimap<std::string, int, SIZE, std::greater<std::string> >  Data;
+typedef etl::multimap<std::string, int, MAX_SIZE, std::greater<std::string> >  Data;
 typedef etl::imultimap<std::string, int, std::greater<std::string> >       IData;
 typedef std::multimap<std::string, int, std::greater<std::string> >        Compare_Data;
 #else
-typedef etl::multimap<std::string, int, SIZE, std::less<std::string> >  Data;
+typedef etl::multimap<std::string, int, MAX_SIZE, std::less<std::string> >  Data;
 typedef etl::imultimap<std::string, int, std::less<std::string> >       IData;
 typedef std::multimap<std::string, int, std::less<std::string> >        Compare_Data;
 #endif
@@ -179,8 +179,8 @@ namespace
 
       CHECK_EQUAL(data.size(), size_t(0));
       CHECK(data.empty());
-      CHECK_EQUAL(data.capacity(), SIZE);
-      CHECK_EQUAL(data.max_size(), SIZE);
+      CHECK_EQUAL(data.capacity(), MAX_SIZE);
+      CHECK_EQUAL(data.max_size(), MAX_SIZE);
     }
 
     //*************************************************************************
@@ -190,7 +190,7 @@ namespace
 
       Data data(compare_data.begin(), compare_data.end());
 
-      CHECK(data.size() == SIZE);
+      CHECK(data.size() == MAX_SIZE);
       CHECK(!data.empty());
     }
 
