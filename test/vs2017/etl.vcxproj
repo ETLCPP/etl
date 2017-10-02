@@ -74,7 +74,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;ETL_IVECTOR_REPAIR_ENABLE;ETL_ISTRING_REPAIR_ENABLE;ETL_IDEQUE_REPAIR_ENABLE;ETL_IN_UNIT_TEST;ETL_THROW_EXCEPTIONS;ETL_VERBOSE_ERRORS;ETL_CHECK_PUSH_POP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../unittest-cpp/UnitTest++/;../../src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../unittest-cpp/UnitTest++/;../../src;../../test</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
     </ClCompile>
@@ -129,6 +129,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\compare.h" />
     <ClInclude Include="..\..\src\constant.h" />
     <ClInclude Include="..\..\src\factory.h" />
     <ClInclude Include="..\..\src\fsm.h" />
@@ -320,6 +321,7 @@
     <ClCompile Include="..\test_bloom_filter.cpp" />
     <ClCompile Include="..\test_bsd_checksum.cpp" />
     <ClCompile Include="..\test_checksum.cpp" />
+    <ClCompile Include="..\test_compare.cpp" />
     <ClCompile Include="..\test_constant.cpp" />
     <ClCompile Include="..\test_container.cpp" />
     <ClCompile Include="..\test_crc.cpp" />

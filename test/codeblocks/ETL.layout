@@ -2,39 +2,9 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Windows" />
-	<File name="..\..\unittest-cpp\UnitTest++\Win32\TimeHelpers.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\..\src\flat_map.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="775" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\unittest-cpp\UnitTest++\Checks.cpp" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\src\memory.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2221" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\src\flat_multimap.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="87" />
-		</Cursor>
-	</File>
-	<File name="..\..\src\type_traits.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="12237" topLine="260" />
-		</Cursor>
-	</File>
-	<File name="..\test_endian.cpp" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1392" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\unittest-cpp\UnitTest++\Checks.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="119" topLine="0" />
+			<Cursor1 position="2722" topLine="43" />
 		</Cursor>
 	</File>
 	<File name="..\..\unittest-cpp\UnitTest++\MemoryOutStream.h" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -42,29 +12,9 @@
 			<Cursor1 position="178" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="..\..\src\message_bus.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\..\src\vector.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="11907" topLine="330" />
-		</Cursor>
-	</File>
-	<File name="..\..\src\error_handler.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="4288" topLine="74" />
-		</Cursor>
-	</File>
-	<File name="..\..\unittest-cpp\UnitTest++\HelperMacros.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="35" />
-		</Cursor>
-	</File>
-	<File name="..\..\src\flat_map.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2722" topLine="43" />
-		</Cursor>
-	</File>
-	<File name="..\..\src\deque.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="67574" topLine="2022" />
+			<Cursor1 position="41462" topLine="1108" />
 		</Cursor>
 	</File>
 	<File name="..\test_map.cpp" open="0" top="0" tabpos="19" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -72,64 +22,14 @@
 			<Cursor1 position="6368" topLine="164" />
 		</Cursor>
 	</File>
-	<File name="..\..\src\queue.h" open="0" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\..\src\message_bus.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="11193" topLine="229" />
+			<Cursor1 position="11907" topLine="330" />
 		</Cursor>
 	</File>
-	<File name="..\..\src\platform.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\test_endian.cpp" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2119" topLine="36" />
-		</Cursor>
-	</File>
-	<File name="..\..\unittest-cpp\UnitTest++\Config.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="67" />
-		</Cursor>
-	</File>
-	<File name="..\..\unittest-cpp\UnitTest++\Posix\SignalTranslator.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1062" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\src\static_assert.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1460" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\main.cpp" open="0" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="141" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\src\vector.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="41462" topLine="1108" />
-		</Cursor>
-	</File>
-	<File name="..\..\src\intrusive_flat_map.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="4065" topLine="242" />
-		</Cursor>
-	</File>
-	<File name="..\test_pearson.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1707" topLine="29" />
-		</Cursor>
-	</File>
-	<File name="..\test_forward_list.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="16670" topLine="442" />
-		</Cursor>
-	</File>
-	<File name="..\..\src\intrusive_flat_set.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="7487" topLine="243" />
-		</Cursor>
-	</File>
-	<File name="..\test_checksum.cpp" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="218" topLine="0" />
+			<Cursor1 position="1392" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="..\..\src\pearson.h" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -137,14 +37,29 @@
 			<Cursor1 position="1510" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="..\test_flat_multimap.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\..\src\type_traits.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3425" topLine="85" />
+			<Cursor1 position="12237" topLine="260" />
 		</Cursor>
 	</File>
-	<File name="..\test_type_traits.cpp" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\..\unittest-cpp\UnitTest++\Posix\SignalTranslator.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="37662" topLine="472" />
+			<Cursor1 position="1062" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\test_forward_list.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="16670" topLine="442" />
+		</Cursor>
+	</File>
+	<File name="..\..\src\intrusive_flat_map.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4065" topLine="242" />
+		</Cursor>
+	</File>
+	<File name="..\..\unittest-cpp\UnitTest++\HelperMacros.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="35" />
 		</Cursor>
 	</File>
 	<File name="..\..\src\factory.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -152,9 +67,104 @@
 			<Cursor1 position="6413" topLine="131" />
 		</Cursor>
 	</File>
-	<File name="..\test_factory.cpp" open="1" top="1" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\..\src\cyclic_value.h" open="1" top="1" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3108" topLine="101" />
+			<Cursor1 position="7371" topLine="187" />
+		</Cursor>
+	</File>
+	<File name="..\test_pearson.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1707" topLine="29" />
+		</Cursor>
+	</File>
+	<File name="..\test_factory.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="6003" topLine="241" />
+		</Cursor>
+	</File>
+	<File name="..\main.cpp" open="0" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="141" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\src\queue.h" open="0" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="11193" topLine="229" />
+		</Cursor>
+	</File>
+	<File name="..\..\unittest-cpp\UnitTest++\Checks.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="119" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\unittest-cpp\UnitTest++\Checks.cpp" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\src\intrusive_flat_set.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="7487" topLine="243" />
+		</Cursor>
+	</File>
+	<File name="..\test_type_traits.cpp" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="37662" topLine="472" />
+		</Cursor>
+	</File>
+	<File name="..\..\src\deque.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="67574" topLine="2022" />
+		</Cursor>
+	</File>
+	<File name="..\..\src\platform.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3000" topLine="56" />
+		</Cursor>
+	</File>
+	<File name="..\..\unittest-cpp\UnitTest++\Config.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="67" />
+		</Cursor>
+	</File>
+	<File name="..\..\src\flat_multimap.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="87" />
+		</Cursor>
+	</File>
+	<File name="..\test_checksum.cpp" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="218" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\test_cyclic_value.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="10743" topLine="347" />
+		</Cursor>
+	</File>
+	<File name="..\..\src\static_assert.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1460" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\src\memory.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2221" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\test_flat_multimap.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3425" topLine="85" />
+		</Cursor>
+	</File>
+	<File name="..\..\unittest-cpp\UnitTest++\Win32\TimeHelpers.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="775" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\src\error_handler.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4288" topLine="74" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

@@ -492,6 +492,9 @@
     <ClInclude Include="..\..\src\type_lookup_generator.h">
       <Filter>ETL\Utilities\Generators</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\compare.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -843,6 +846,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_type_lookup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_compare.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

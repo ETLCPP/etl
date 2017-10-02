@@ -54,12 +54,256 @@ namespace etl
   ///\tparam LAST  The last value of the range.
   ///\ingroup cyclic_value
   //***************************************************************************
-  template <typename T, const T FIRST = T(), const T LAST = T()>
+  template <typename T, T FIRST = 0, T LAST = 0, typename = void>
   class cyclic_value
   {
   public:
 
-    template <typename U, const U OTHER_FIRST, const U OTHER_LAST> friend class cyclic_value;
+    //*************************************************************************
+    /// Constructor.
+    /// The initial value is set to the first value.
+    //*************************************************************************
+    cyclic_value()
+      : value(FIRST)
+    {
+    }
+
+    //*************************************************************************
+    /// Copy constructor.
+    //*************************************************************************
+    cyclic_value(const cyclic_value<T, FIRST, LAST>& other)
+      : value(other.value)
+    {
+    }
+
+    //*************************************************************************
+    /// Sets the value.
+    ///\param value The value.
+    //*************************************************************************
+    void set(T value_)
+    {
+      if (value_ > LAST)
+      {
+        value_ = LAST;
+      }
+      else if (value_ < FIRST)
+      {
+        value_ = FIRST;
+      }
+
+      value = value_;
+    }
+
+    //*************************************************************************
+    /// Resets the value to the first in the range.
+    //*************************************************************************
+    void to_first()
+    {
+      value = FIRST;
+    }
+
+    //*************************************************************************
+    /// Resets the value to the last in the range.
+    //*************************************************************************
+    void to_last()
+    {
+      value = LAST;
+    }
+
+    //*************************************************************************
+    /// Advances to value by a number of steps.
+    ///\param n The number of steps to advance.
+    //*************************************************************************
+    void advance(int n)
+    {
+      T range = LAST - FIRST + T(1);
+
+      n = n % range;
+
+      if (n > 0)
+      {
+        for (int i = 0; i < n; ++i)
+        {
+          operator ++();
+        }
+      }
+      else
+      {
+        for (int i = 0; i < -n; ++i)
+        {
+          operator --();
+        }
+      }
+    }
+
+    //*************************************************************************
+    /// Conversion operator.
+    /// \return The value of the underlying type.
+    //*************************************************************************
+    operator T()
+    {
+      return value;
+    }
+
+    //*************************************************************************
+    /// Const conversion operator.
+    /// \return The value of the underlying type.
+    //*************************************************************************
+    operator const T() const
+    {
+      return value;
+    }
+
+    //*************************************************************************
+    /// ++ operator.
+    //*************************************************************************
+    cyclic_value& operator ++()
+    {
+      if (value >= LAST)
+      {
+        value = FIRST;
+      }
+      else
+      {
+        ++value;
+      }
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// ++ operator.
+    //*************************************************************************
+    cyclic_value operator ++(int)
+    {
+      cyclic_value temp(*this);
+
+      operator++();
+
+      return temp;
+    }
+
+    //*************************************************************************
+    /// -- operator.
+    //*************************************************************************
+    cyclic_value& operator --()
+    {
+      if (value <= FIRST)
+      {
+        value = LAST;
+      }
+      else
+      {
+        --value;
+      }
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// -- operator.
+    //*************************************************************************
+    cyclic_value operator --(int)
+    {
+      cyclic_value temp(*this);
+
+      operator--();
+
+      return temp;
+    }
+
+    //*************************************************************************
+    /// = operator.
+    //*************************************************************************
+    cyclic_value& operator =(T t)
+    {
+      set(t);
+      return *this;
+    }
+
+    //*************************************************************************
+    /// = operator.
+    //*************************************************************************
+    template <const T FIRST2, const T LAST2>
+    cyclic_value& operator =(const cyclic_value<T, FIRST2, LAST2>& other)
+    {
+      set(other.get());
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Gets the value.
+    //*************************************************************************
+    T get() const
+    {
+      return value;
+    }
+
+    //*************************************************************************
+    /// Gets the first value.
+    //*************************************************************************
+    const T first() const
+    {
+      return FIRST;
+    }
+
+    //*************************************************************************
+    /// Gets the last value.
+    //*************************************************************************
+    const T last() const
+    {
+      return LAST;
+    }
+
+    //*************************************************************************
+    /// Swaps the values.
+    //*************************************************************************
+    void swap(cyclic_value<T, FIRST, LAST>& other)
+    {
+      std::swap(value, other.value);
+    }
+
+    //*************************************************************************
+    /// Swaps the values.
+    //*************************************************************************
+    friend void swap(cyclic_value<T, FIRST, LAST>& lhs, cyclic_value<T, FIRST, LAST>& rhs)
+    {
+      lhs.swap(rhs);
+    }
+
+    //*************************************************************************
+    /// Operator ==.
+    //*************************************************************************
+    friend bool operator == (const cyclic_value<T, FIRST, LAST>& lhs, const cyclic_value<T, FIRST, LAST>& rhs)
+    {
+      return lhs.value == rhs.value;
+    }
+
+    //*************************************************************************
+    /// Operator !=.
+    //*************************************************************************
+    friend bool operator != (const cyclic_value<T, FIRST, LAST>& lhs, const cyclic_value<T, FIRST, LAST>& rhs)
+    {
+      return !(lhs == rhs);
+    }
+
+  private:
+
+    T value; ///< The current value.
+  };
+
+  //***************************************************************************
+  /// Provides a value that cycles between two limits.
+  /// Supports incrementing and decrementing.
+  ///\tparam T     The type of the variable.
+  ///\tparam FIRST The first value of the range.
+  ///\tparam LAST  The last value of the range.
+  ///\ingroup cyclic_value
+  //***************************************************************************
+  template <typename T, const T FIRST, const T LAST>
+  class cyclic_value<T, FIRST, LAST, typename etl::enable_if<(FIRST == 0) && (LAST == 0)>::type>
+  {
+  public:
 
     //*************************************************************************
     /// Constructor.
@@ -79,10 +323,20 @@ namespace etl
     ///\param first The first value in the range.
     ///\param last  The last value in the range.
     //*************************************************************************
-    cyclic_value(const T& first_, const T& last_)
+    cyclic_value(T first_, T last_)
       : value(first_),
         first_value(first_),
         last_value(last_)
+    {
+    }
+
+    //*************************************************************************
+    /// Copy constructor.
+    //*************************************************************************
+    cyclic_value(const cyclic_value& other)
+      : value(other.value),
+        first_value(other.first_value),
+        last_value(other.last_value)
     {
     }
 
@@ -92,11 +346,29 @@ namespace etl
     ///\param first The first value in the range.
     ///\param last  The last value in the range.
     //*************************************************************************
-    void set(const T& first_, const T& last_)
+    void set(T first_, T last_)
     {
       first_value = first_;
       last_value  = last_;
       value       = first_;
+    }
+
+    //*************************************************************************
+    /// Sets the value.
+    ///\param value The value.
+    //*************************************************************************
+    void set(T value_)
+    {
+      if (value_ > last_value)
+      {
+        value_ = last_value;
+      }
+      else if (value_ < first_value)
+      {
+        value_ = first_value;
+      }
+
+      value = value_;
     }
 
     //*************************************************************************
@@ -222,15 +494,14 @@ namespace etl
     //*************************************************************************
     cyclic_value& operator =(T t)
     {
-      value = t;
+      set(t);
       return *this;
-    }	
-  
+    }
+
     //*************************************************************************
     /// = operator.
     //*************************************************************************
-    template <const T OTHER_FIRST, const T OTHER_LAST>
-    cyclic_value& operator =(const cyclic_value<T, OTHER_FIRST, OTHER_LAST>& other)
+    cyclic_value& operator =(const cyclic_value& other)
     {
       value       = other.value;
       first_value = other.first_value;
@@ -239,9 +510,17 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Gets the value.
+    //*************************************************************************
+    T get() const
+    {
+      return value;
+    }
+
+    //*************************************************************************
     /// Gets the first value.
     //*************************************************************************
-    const T& first() const
+    T first() const
     {
       return first_value;
     }
@@ -249,7 +528,7 @@ namespace etl
     //*************************************************************************
     /// Gets the last value.
     //*************************************************************************
-    const T& last() const
+    T last() const
     {
       return last_value;
     }
@@ -257,12 +536,37 @@ namespace etl
     //*************************************************************************
     /// Swaps the values.
     //*************************************************************************
-    template <const T OTHER_FIRST, const T OTHER_LAST>
-    void swap(cyclic_value<T, OTHER_FIRST, OTHER_LAST>& other)
+    void swap(cyclic_value<T, FIRST, LAST>& other)
     {
       std::swap(first_value, other.first_value);
-      std::swap(last_value,  other.last_value);
-      std::swap(value,       other.value);
+      std::swap(last_value, other.last_value);
+      std::swap(value, other.value);
+    }
+
+    //*************************************************************************
+    /// Swaps the values.
+    //*************************************************************************
+    friend void swap(cyclic_value<T, FIRST, LAST>& lhs, cyclic_value<T, FIRST, LAST>& rhs)
+    {
+      lhs.swap(rhs);
+    }
+
+    //*************************************************************************
+    /// Operator ==.
+    //*************************************************************************
+    friend bool operator == (const cyclic_value<T, FIRST, LAST>& lhs, const cyclic_value<T, FIRST, LAST>& rhs)
+    {
+      return (lhs.value       == rhs.value) &&
+             (lhs.first_value == rhs.first_value) &&
+             (lhs.last_value  == rhs.last_value);
+    }
+
+    //*************************************************************************
+    /// Operator !=.
+    //*************************************************************************
+    friend bool operator != (const cyclic_value<T, FIRST, LAST>& lhs, const cyclic_value<T, FIRST, LAST>& rhs)
+    {
+      return !(lhs == rhs);
     }
 
   private:
@@ -271,36 +575,6 @@ namespace etl
     T first_value; ///< The first value in the range.
     T last_value;  ///< The last value in the range.
   };
-
-  //*************************************************************************
-  /// Swaps the values.
-  //*************************************************************************
-  template <typename T, const T LHS_FIRST, const T LHS_LAST, const T RHS_FIRST, const T RHS_LAST>
-  void swap(cyclic_value<T, LHS_FIRST, LHS_LAST>& lhs,
-            cyclic_value<T, RHS_FIRST, RHS_LAST>& rhs)
-  {
-    lhs.swap(rhs);
-  }
-
-  //*************************************************************************
-  /// Equality operator.
-  //*************************************************************************
-  template <typename T, const T LHS_FIRST, const T LHS_LAST, const T RHS_FIRST, const T RHS_LAST>
-  bool operator == (const cyclic_value<T, LHS_FIRST, LHS_LAST>& lhs,
-                    const cyclic_value<T, RHS_FIRST, RHS_LAST>& rhs)
-  {
-    return static_cast<T>(lhs) == static_cast<T>(rhs);
-  }
-
-  //*************************************************************************
-  /// Inequality operator.
-  //*************************************************************************
-  template <typename T, const T LHS_FIRST, const T LHS_LAST, const T RHS_FIRST, const T RHS_LAST>
-  bool operator != (const cyclic_value<T, LHS_FIRST, RHS_LAST>& lhs,
-                    const cyclic_value<T, RHS_FIRST, RHS_LAST>& rhs)
-  {
-    return !(lhs == rhs);
-  }
 }
 
 #endif
