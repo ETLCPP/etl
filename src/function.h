@@ -297,6 +297,61 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup function
+  /// A derived function template that takes an object type and parameter type.
+  ///\tparam TObject    The object type that contains the member function.
+  ///\tparam TParameter The parameter type accepted by the member function.
+  //***************************************************************************
+  template <typename TObject, typename TParameter, TObject& Instance, void (TObject::*Function)(TParameter)>
+  class function_imp : public ifunction<TParameter>
+  {
+  public:
+
+    typedef TObject    object_type;    ///< The type of object.
+    typedef TParameter parameter_type; ///< The type of parameter sent to the function.
+
+    //*************************************************************************
+    /// The function operator that calls the destination function.
+    ///\param data The data to pass to the function.
+    //*************************************************************************
+    virtual void operator ()(TParameter data)
+    {
+      // Call the object's member function with the data.
+      (Instance.*Function)(data);
+    }
+  };
+
+  //***************************************************************************
+  ///\ingroup function
+  /// A derived function template that takes an object type and parameter type.
+  ///\tparam TObject    The object type that contains the member function.
+  ///\tparam TParameter The parameter type accepted by the member function.
+  //***************************************************************************
+  template <typename TObject, TObject& Instance, void (TObject::*Function)(void)>
+  class function_imv : public ifunction<void>
+  {
+  public:
+
+    typedef TObject object_type;    ///< The type of object.
+    typedef void    parameter_type; ///< The type of parameter sent to the function.
+
+    //*************************************************************************
+    /// Constructor.
+    ///\param object    Reference to the object
+    //*************************************************************************
+
+    //*************************************************************************
+    /// The function operator that calls the destination function.
+    ///\param data The data to pass to the function.
+    //*************************************************************************
+    virtual void operator ()()
+    {
+      // Call the object's member function.
+      (Instance.*Function)();
+    }
+  };
+
+  //***************************************************************************
+  ///\ingroup function
   /// A derived function template that takes a parameter type.
   ///\tparam TParameter The parameter type accepted by the member function.
   //***************************************************************************
