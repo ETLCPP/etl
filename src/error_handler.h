@@ -38,6 +38,7 @@ SOFTWARE.
 
 #include <assert.h>
 
+#include "platform.h"
 #include "exception.h"
 #include "function.h"
 

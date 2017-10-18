@@ -33,6 +33,8 @@ SOFTWARE.
 
 #include <stddef.h>
 
+#include "platform.h"
+
 ///\defgroup log log
 /// log<N, BASE> : Calculates logs to any base, rounded down to the nearest integer.<br>
 /// log2<N>      : Calculates logs to base 2, rounded down to the nearest integer.<br>

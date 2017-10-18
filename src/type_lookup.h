@@ -31,6 +31,7 @@ SOFTWARE.
 
 #include <limits.h>
 
+#include "platform.h"
 #include "type_traits.h"
 #include "static_assert.h"
 

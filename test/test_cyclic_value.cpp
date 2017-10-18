@@ -33,7 +33,7 @@ SOFTWARE.
 #include "cyclic_value.h"
 
 namespace
-{		
+{
   SUITE(test_cyclic_value)
   {
     //*************************************************************************
@@ -163,7 +163,7 @@ namespace
         ++value;
       }
     }
-    
+
     //*************************************************************************
     TEST(test_increment_run_time)
     {

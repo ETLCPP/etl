@@ -31,6 +31,8 @@ SOFTWARE.
 #ifndef __ETL_VISITOR__
 #define __ETL_VISITOR__
 
+#include "platform.h"
+
 //*****************************************************************************
 ///\defgroup visitor visitor
 /// A set of template classes for easy implementation of the visitor pattern.<br>

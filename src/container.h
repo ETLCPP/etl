@@ -34,6 +34,8 @@ SOFTWARE.
 #include <stddef.h>
 #include <iterator>
 
+#include "platform.h"
+
 ///\defgroup container container
 ///\ingroup utilities
 

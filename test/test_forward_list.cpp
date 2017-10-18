@@ -914,8 +914,6 @@ namespace
 
       while (ditr != data.end())
       {
-        const ItemNDC& v = *ditr;
-
         CHECK_EQUAL(citr->index, ditr->index);
 
         ++citr;

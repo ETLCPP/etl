@@ -38,6 +38,7 @@ SOFTWARE.
 #include <stdint.h>
 #include <iterator>
 
+#include "platform.h"
 #include "nullptr.h"
 #include "parameter_type.h"
 

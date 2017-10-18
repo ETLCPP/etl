@@ -31,6 +31,7 @@ SOFTWARE.
 
 #include <stdint.h>
 
+#include "platform.h"
 #include "error_handler.h"
 #include "exception.h"
 

@@ -33,6 +33,8 @@ SOFTWARE.
 
 #include <stddef.h>
 
+#include "platform.h"
+
 ///\defgroup fibonacci fibonacci
 /// fibonacci<N> : Calculates the Nth Fibonacci value.
 ///\ingroup maths

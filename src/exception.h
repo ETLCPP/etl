@@ -31,6 +31,8 @@ SOFTWARE.
 #ifndef __ETL_EXCEPTION__
 #define __ETL_EXCEPTION__
 
+#include "platform.h"
+
 ///\defgroup exception exception
 /// The base class for all ETL exceptions.
 ///\ingroup utilities

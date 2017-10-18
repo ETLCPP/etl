@@ -31,6 +31,8 @@ SOFTWARE.
 #ifndef __ETL_NUMERIC__
 #define __ETL_NUMERIC__
 
+#include "platform.h"
+
 ///\defgroup numeric numeric
 ///\ingroup utilities
 

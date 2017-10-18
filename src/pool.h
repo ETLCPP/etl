@@ -31,11 +31,11 @@ SOFTWARE.
 #ifndef __ETL_POOL__
 #define __ETL_POOL__
 
+#include "platform.h"
 #include "alignment.h"
 #include "array.h"
 #include "container.h"
 #include "integral_limits.h"
-#include "platform.h"
 #include "nullptr.h"
 #include "alignment.h"
 #include "error_handler.h"

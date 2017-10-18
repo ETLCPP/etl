@@ -73,7 +73,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;ETL_IVECTOR_REPAIR_ENABLE;ETL_ISTRING_REPAIR_ENABLE;ETL_IDEQUE_REPAIR_ENABLE;ETL_IN_UNIT_TEST;ETL_THROW_EXCEPTIONS;ETL_VERBOSE_ERRORS;ETL_CHECK_PUSH_POP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../../unittest-cpp/UnitTest++/;../../src;../../test</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
@@ -92,8 +92,8 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;ETL_IVECTOR_REPAIR_ENABLE;ETL_ISTRING_REPAIR_ENABLE;ETL_IDEQUE_REPAIR_ENABLE;ETL_IN_UNIT_TEST;ETL_THROW_EXCEPTIONS;ETL_VERBOSE_ERRORS;ETL_CHECK_PUSH_POP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../unittest-cpp/UnitTest++/;../../src</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../../unittest-cpp/UnitTest++/;../../src;../../test</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
     </ClCompile>
@@ -114,7 +114,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;ETL_THROW_EXCEPTIONS;ETL_VERBOSE_ERRORS;ETL_CHECK_PUSH_POP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../../unittest-cpp/UnitTest++/;../../src</AdditionalIncludeDirectories>
       <BufferSecurityCheck>false</BufferSecurityCheck>
     </ClCompile>
@@ -129,6 +129,11 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\atomic.h" />
+    <ClInclude Include="..\..\src\atomic\atomic_arm.h" />
+    <ClInclude Include="..\..\src\atomic\atomic_gcc.h" />
+    <ClInclude Include="..\..\src\atomic\atomic_windows.h" />
+    <ClInclude Include="..\..\src\callback_timer.h" />
     <ClInclude Include="..\..\src\compare.h" />
     <ClInclude Include="..\..\src\constant.h" />
     <ClInclude Include="..\..\src\factory.h" />
@@ -137,14 +142,27 @@
     <ClInclude Include="..\..\src\largest_generator.h" />
     <ClInclude Include="..\..\src\message.h" />
     <ClInclude Include="..\..\src\message_bus.h" />
+    <ClInclude Include="..\..\src\message_timer.h" />
     <ClInclude Include="..\..\src\message_types.h" />
     <ClInclude Include="..\..\src\message_router.h" />
     <ClInclude Include="..\..\src\message_router_generator.h" />
     <ClInclude Include="..\..\src\packet.h" />
+    <ClInclude Include="..\..\src\profiles\arduino_arm.h" />
+    <ClInclude Include="..\..\src\profiles\armv5.h" />
+    <ClInclude Include="..\..\src\profiles\armv6.h" />
+    <ClInclude Include="..\..\src\profiles\cpp03.h" />
+    <ClInclude Include="..\..\src\profiles\cpp11.h" />
+    <ClInclude Include="..\..\src\profiles\cpp14.h" />
+    <ClInclude Include="..\..\src\profiles\gcc_generic.h" />
+    <ClInclude Include="..\..\src\profiles\gcc_linux_x86.h" />
+    <ClInclude Include="..\..\src\profiles\gcc_windows_x86.h" />
+    <ClInclude Include="..\..\src\profiles\msvc_x86.h" />
+    <ClInclude Include="..\..\src\profiles\ticc.h" />
     <ClInclude Include="..\..\src\scheduler.h" />
     <ClInclude Include="..\..\src\smallest_generator.h" />
     <ClInclude Include="..\..\src\sqrt.h" />
     <ClInclude Include="..\..\src\task.h" />
+    <ClInclude Include="..\..\src\timer.h" />
     <ClInclude Include="..\..\src\type_lookup.h" />
     <ClInclude Include="..\..\src\type_lookup_generator.h" />
     <ClInclude Include="..\..\src\type_traits_generator.h" />
@@ -213,7 +231,6 @@
     <ClInclude Include="..\..\src\function.h" />
     <ClInclude Include="..\..\src\functional.h" />
     <ClInclude Include="..\..\src\hash.h" />
-    <ClInclude Include="..\..\src\icache.h" />
     <ClInclude Include="..\..\src\ihash.h" />
     <ClInclude Include="..\..\src\instance_count.h" />
     <ClInclude Include="..\..\src\integral_limits.h" />
@@ -234,7 +251,6 @@
     <ClInclude Include="..\..\src\memory.h" />
     <ClInclude Include="..\..\src\multimap.h" />
     <ClInclude Include="..\..\src\multiset.h" />
-    <ClInclude Include="..\..\src\multi_array.h" />
     <ClInclude Include="..\..\src\murmur3.h" />
     <ClInclude Include="..\..\src\nullptr.h" />
     <ClInclude Include="..\..\src\numeric.h" />
@@ -276,6 +292,7 @@
     <ClInclude Include="..\..\src\visitor.h" />
     <ClInclude Include="..\..\src\wstring.h" />
     <ClInclude Include="..\data.h" />
+    <ClInclude Include="..\etl_profile.h" />
     <ClInclude Include="..\ExtraCheckMacros.h" />
     <ClInclude Include="..\murmurhash3.h" />
   </ItemGroup>
@@ -320,6 +337,7 @@
     <ClCompile Include="..\test_bitset.cpp" />
     <ClCompile Include="..\test_bloom_filter.cpp" />
     <ClCompile Include="..\test_bsd_checksum.cpp" />
+    <ClCompile Include="..\test_callback_timer.cpp" />
     <ClCompile Include="..\test_checksum.cpp" />
     <ClCompile Include="..\test_compare.cpp" />
     <ClCompile Include="..\test_constant.cpp" />
@@ -388,6 +406,7 @@
     <ClCompile Include="..\test_memory.cpp" />
     <ClCompile Include="..\test_message_bus.cpp" />
     <ClCompile Include="..\test_message_router.cpp" />
+    <ClCompile Include="..\test_message_timer.cpp" />
     <ClCompile Include="..\test_multimap.cpp" />
     <ClCompile Include="..\test_multiset.cpp" />
     <ClCompile Include="..\test_murmur3.cpp" />

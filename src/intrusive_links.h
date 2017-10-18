@@ -34,6 +34,7 @@ SOFTWARE.
 #include <assert.h>
 #include <utility>
 
+#include "platform.h"
 #include "nullptr.h"
 #include "type_traits.h"
 #include "exception.h"

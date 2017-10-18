@@ -36,6 +36,7 @@ SOFTWARE.
 #include <algorithm>
 #include <stddef.h>
 
+#include "platform.h"
 #include "exception.h"
 #include "type_traits.h"
 #include "parameter_type.h"

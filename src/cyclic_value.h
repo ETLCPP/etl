@@ -39,6 +39,7 @@ SOFTWARE.
 
 #include <algorithm>
 
+#include "platform.h"
 #include "static_assert.h"
 #include "exception.h"
 #include "static_assert.h"

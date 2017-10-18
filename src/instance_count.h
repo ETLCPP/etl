@@ -31,6 +31,8 @@ SOFTWARE.
 #ifndef __ETL_INSTANCE_COUNT__
 #define __ETL_INSTANCE_COUNT__
 
+#include "platform.h"
+
 ///\defgroup instance_count instance count
 ///\ingroup utilities
 

@@ -35,6 +35,7 @@ SOFTWARE.
 #ifndef __ETL_ICACHE__
 #define __ETL_ICACHE__
 
+#include "platform.h"
 #include "function.h"
 #include "nullptr.h"
 

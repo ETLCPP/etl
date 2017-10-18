@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include <stdint.h>
 
+#include "platform.h"
 #include "static_assert.h"
 
 namespace etl

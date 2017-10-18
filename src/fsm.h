@@ -53,6 +53,7 @@ SOFTWARE.
 
 #include <stdint.h>
 
+#include "platform.h"
 #include "array.h"
 #include "nullptr.h"
 #include "error_handler.h"

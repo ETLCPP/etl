@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2016 jwellbelove
 
@@ -28,70 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <stdint.h>
-#include <limits.h>
-
-// Define the compiler.
-#if defined(__IAR_SYSTEMS_ICC__)
-  #define ETL_COMPILER_IAR
-#elif defined(__KEIL__) && !defined(__GNUC__)
-  #define ETL_COMPILER_KEIL
-#elif defined(__ghs__)
-  #define ETL_COMPILER_GREEN_HILLS
-#elif defined(__INTEL_COMPILER)
-  #define ETL_COMPILER_INTEL
-#elif defined(_MSC_VER)
-  #define ETL_COMPILER_MICROSOFT
-#elif defined(__GNUC__)
-  #define ETL_COMPILER_GCC
-#elif defined(__TI_COMPILER_VERSION__)
-  #define ETL_COMPILER_TI
-#elif defined(_MRI)
-  #define ETL_COMPILER_MICROTEC
-#elif defined(__HIGHC__)
-  #define ETL_COMPILER_METAWARE_HIGH
-#elif defined(__llvm__)
-  #define ETL_COMPILER_LLVM
-#elif defined(__KCC_VERSION)
-  #define ETL_COMPILER_KAI
-#elif defined(_COMO__)
-  #define ETL_COMPILER_COMEAU
-#elif defined(__BORLANDC__)
-  #define ETL_COMPILER_BORLAND
-#elif defined(__CC_ARM)
-  #define ETL_COMPILER_ARM
-#elif defined(__MRC__)
-  #define ETL_COMPILER_MPW
-#else
-  #define ETL_COMPILER_GENERIC
-#endif
-
-#if (__cplusplus >= 201103L) || (!defined(ARDUINO) && (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER >= 1600)))
-  #define ETL_CPP11_SUPPORTED 1
-#else
-  #define ETL_CPP11_SUPPORTED 0
-#endif
-
-#if (__cplusplus >= 201402L) || (!defined(ARDUINO) && (defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER >= 1900)))
-  #define ETL_CPP14_SUPPORTED 1
-#else
-  #define ETL_CPP14_SUPPORTED 0
-#endif
-
-#if (ETL_CPP11_SUPPORTED)
-  #define ETL_NO_NULLPTR_SUPPORT    0
-  #define ETL_NO_LARGE_CHAR_SUPPORT 0
-#else
-  #define ETL_NO_NULLPTR_SUPPORT    1
-  #define ETL_NO_LARGE_CHAR_SUPPORT 1
-#endif
-
-// Check to see if the compiler supports C++11 'is_trivially_xxx' traits.
-#if (ETL_CPP14_SUPPORTED)
-  #define ETL_C11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED 1
-#else
-  #define ETL_C11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED 0
-#endif
+#ifndef __ETL_PLATFORM__
+#define __ETL_PLATFORM__
 
 // Some targets do not support 8bit types.
 #define ETL_8BIT_SUPPORT (CHAR_BIT == 8)
@@ -100,4 +38,8 @@ SOFTWARE.
   #define ETL_DEBUG 1
 #else
   #define ETL_DEBUG 0
+#endif
+
+#include "etl_profile.h"
+
 #endif

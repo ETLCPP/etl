@@ -31,6 +31,8 @@ SOFTWARE.
 #ifndef __ETL_FUNCTIONAL__
 #define __ETL_FUNCTIONAL__
 
+#include "platform.h"
+
 ///\defgroup functional functional
 ///\ingroup utilities
 

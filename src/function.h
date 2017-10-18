@@ -31,6 +31,8 @@ SOFTWARE.
 #ifndef __ETL_FUNCTION__
 #define __ETL_FUNCTION__
 
+#include "platform.h"
+
 //*****************************************************************************
 ///\defgroup function function
 /// A set of wrapper templates to allow a member or static function to be called

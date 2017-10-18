@@ -36,6 +36,7 @@ SOFTWARE.
 #include <functional>
 #include <stddef.h>
 
+#include "platform.h"
 #include "pool.h"
 #include "container.h"
 #include "exception.h"

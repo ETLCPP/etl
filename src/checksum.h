@@ -29,6 +29,7 @@ SOFTWARE.
 
 #include <stdint.h>
 
+#include "platform.h"
 #include "binary.h"
 #include "frame_check_sequence.h"
 
