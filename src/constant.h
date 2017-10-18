@@ -31,6 +31,8 @@ SOFTWARE.
 #ifndef __ETL_CONSTANT__
 #define __ETL_CONSTANT__
 
+#include "platform.h"
+
 //*****************************************************************************
 ///\defgroup constant constant
 ///\ingroup utilities

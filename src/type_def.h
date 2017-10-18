@@ -31,6 +31,8 @@ SOFTWARE.
 #ifndef __ETL_TYPE_DEF__
 #define __ETL_TYPE_DEF__
 
+#include "platform.h"
+
 namespace etl
 {
     #define ETL_TYPEDEF(T, name) class name##_tag; typedef etl::type_def<name##_tag, T> name

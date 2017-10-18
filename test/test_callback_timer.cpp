@@ -1,0 +1,508 @@
+/******************************************************************************
+The MIT License(MIT)
+
+Embedded Template Library.
+https://github.com/ETLCPP/etl
+http://www.etlcpp.com
+
+Copyright(c) 2017 jwellbelove
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files(the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions :
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+******************************************************************************/
+
+#include "UnitTest++.h"
+#include "ExtraCheckMacros.h"
+
+#include "callback_timer.h"
+#include "function.h"
+
+#include <iostream>
+#include <vector>
+#include <thread>
+#include <chrono>
+
+#if defined(ETL_COMPILER_MICROSOFT)
+#include <Windows.h>
+#endif
+
+#define REALTIME_TEST 0
+
+namespace
+{
+  uint64_t ticks = 0;
+
+  //***************************************************************************
+  // Class callback via etl::function
+  //***************************************************************************
+  class Test
+  {
+  public:
+
+    Test()
+    {
+    }
+
+    void callback()
+    {
+      tick_list.push_back(ticks);
+    }
+
+    std::vector<uint64_t> tick_list;
+  };
+  
+  Test test;
+  etl::function_mv<Test, &Test::callback> member_callback(test);
+
+  //***************************************************************************
+  // Free function callback via etl::function
+  //***************************************************************************
+  std::vector<uint64_t> free_tick_list1;
+
+  void free_callback1()
+  {
+    free_tick_list1.push_back(ticks);
+  }
+
+  etl::function_fv<free_callback1> free_function_callback;
+
+  //***************************************************************************
+  // Free function callback via function pointer
+  //***************************************************************************
+  std::vector<uint64_t> free_tick_list2;
+
+  void free_callback2()
+  {
+    free_tick_list2.push_back(ticks);
+  }
+
+  SUITE(test_callback_timer)
+  {
+    //=========================================================================
+    TEST(callback_timer_too_many_timers)
+    {
+      etl::callback_timer<2> timer_controller;
+
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,        37, etl::timer::mode::SINGLE_SHOT);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::SINGLE_SHOT);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2,         11, etl::timer::mode::SINGLE_SHOT);
+
+      CHECK(id1 != etl::timer::id::NO_TIMER);
+      CHECK(id2 != etl::timer::id::NO_TIMER);
+      CHECK(id3 == etl::timer::id::NO_TIMER);
+
+      timer_controller.clear();
+      id3 = timer_controller.register_timer(free_callback2, 11, etl::timer::mode::SINGLE_SHOT);
+      CHECK(id3 != etl::timer::id::NO_TIMER);
+    }
+
+    //=========================================================================
+    TEST(callback_timer_one_shot)
+    {
+      etl::callback_timer<3> timer_controller;
+
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,        37, etl::timer::mode::SINGLE_SHOT);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::SINGLE_SHOT);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2,         11, etl::timer::mode::SINGLE_SHOT);
+
+      test.tick_list.clear();
+      free_tick_list1.clear();
+      free_tick_list2.clear();
+
+      timer_controller.start(id1);
+      timer_controller.start(id3);
+      timer_controller.start(id2);
+
+      timer_controller.enable(true);
+
+      ticks = 0;
+      
+      const uint32_t step = 1;
+
+      while (ticks <= 100U)
+      {
+        ticks += step;
+        timer_controller.tick(step);
+      }
+
+      std::vector<uint64_t> compare1 = { 37 };
+      std::vector<uint64_t> compare2 = { 23 };
+      std::vector<uint64_t> compare3 = { 11 };
+
+      CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
+      CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
+      CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
+    }
+
+    //=========================================================================
+    TEST(callback_timer_repeating)
+    {
+      etl::callback_timer<3> timer_controller;
+
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,        37, etl::timer::mode::REPEATING);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::REPEATING);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2,         11, etl::timer::mode::REPEATING);
+
+      test.tick_list.clear();
+      free_tick_list1.clear();
+      free_tick_list2.clear();
+
+      timer_controller.start(id1);
+      timer_controller.start(id3);
+      timer_controller.start(id2);
+
+      timer_controller.enable(true);
+
+      ticks = 0;
+
+      const uint32_t step = 1;
+
+      while (ticks <= 100U)
+      {
+        ticks += step;
+        timer_controller.tick(step);
+      }
+
+      std::vector<uint64_t> compare1 = { 37, 74 };
+      std::vector<uint64_t> compare2 = { 23, 46, 69, 92 };
+      std::vector<uint64_t> compare3 = { 11, 22, 33, 44, 55, 66, 77, 88, 99 };
+
+      CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
+      CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
+      CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
+    }
+
+    //=========================================================================
+    TEST(callback_timer_repeating_bigger_step)
+    {
+      etl::callback_timer<3> timer_controller;
+
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,        37, etl::timer::mode::REPEATING);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::REPEATING);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2,         11, etl::timer::mode::REPEATING);
+
+      test.tick_list.clear();
+      free_tick_list1.clear();
+      free_tick_list2.clear();
+
+      timer_controller.start(id1);
+      timer_controller.start(id3);
+      timer_controller.start(id2);
+
+      CHECK(!timer_controller.is_running());
+
+      timer_controller.enable(true);
+
+      CHECK(timer_controller.is_running());
+
+      ticks = 0;
+
+      const uint32_t step = 5;
+
+      while (ticks <= 100U)
+      {
+        ticks += step;
+        timer_controller.tick(step);
+      }
+
+      std::vector<uint64_t> compare1 = { 40, 75 };
+      std::vector<uint64_t> compare2 = { 25, 50, 70, 95 };
+      std::vector<uint64_t> compare3 = { 15, 25, 35, 45, 55, 70, 80, 90, 100 };
+
+      CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
+      CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
+      CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
+    }
+
+    //=========================================================================
+    TEST(callback_timer_repeating_stop_start)
+    {
+      etl::callback_timer<3> timer_controller;
+
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,        37, etl::timer::mode::REPEATING);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::REPEATING);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2,         11, etl::timer::mode::REPEATING);
+
+      test.tick_list.clear();
+      free_tick_list1.clear();
+      free_tick_list2.clear();
+
+      timer_controller.start(id3);
+      timer_controller.start(id2);
+
+      timer_controller.enable(true);
+
+      ticks = 0;
+
+      const uint32_t step = 1;
+
+      while (ticks <= 100U)
+      {
+        if (ticks == 40)
+        {
+          timer_controller.start(id1);
+          timer_controller.stop(id2);
+        }
+
+        if (ticks == 80)
+        {
+          timer_controller.stop(id1);
+          timer_controller.start(id2);
+        }
+
+        ticks += step;
+        timer_controller.tick(step);
+      }
+
+      std::vector<uint64_t> compare1 = { 77 };
+      std::vector<uint64_t> compare2 = { 23 };
+      std::vector<uint64_t> compare3 = { 11, 22, 33, 44, 55, 66, 77, 88, 99 };
+
+      CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
+      CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
+      CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
+    }
+
+    //=========================================================================
+    TEST(callback_timer_repeating_register_unregister)
+    {
+      etl::callback_timer<3> timer_controller;
+
+      etl::timer::id::type id1;
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::REPEATING);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2,         11, etl::timer::mode::REPEATING);
+
+      test.tick_list.clear();
+      free_tick_list1.clear();
+      free_tick_list2.clear();
+      
+      timer_controller.start(id3);
+      timer_controller.start(id2);
+
+      timer_controller.enable(true);
+
+      ticks = 0;
+
+      const uint32_t step = 1;
+
+      while (ticks <= 100U)
+      {
+        if (ticks == 40)
+        {         
+          timer_controller.unregister_timer(id2);
+
+          id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::REPEATING);
+          timer_controller.start(id1);
+        }
+
+        ticks += step;
+        timer_controller.tick(step);
+      }
+
+      std::vector<uint64_t> compare1 = { 77 };
+      std::vector<uint64_t> compare2 = { 23 };
+      std::vector<uint64_t> compare3 = { 11, 22, 33, 44, 55, 66, 77, 88, 99 };
+
+      CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
+      CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
+      CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
+    }
+
+    //=========================================================================
+    TEST(callback_timer_repeating_clear)
+    {
+      etl::callback_timer<3> timer_controller;
+
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,        37, etl::timer::mode::REPEATING);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::REPEATING);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2,         11, etl::timer::mode::REPEATING);
+
+      test.tick_list.clear();
+      free_tick_list1.clear();
+      free_tick_list2.clear();
+
+      timer_controller.start(id1);
+      timer_controller.start(id3);
+      timer_controller.start(id2);
+
+      timer_controller.enable(true);
+
+      ticks = 0;
+
+      const uint32_t step = 1;
+
+      while (ticks <= 100U)
+      {
+        ticks += step;
+
+        if (ticks == 40)
+        {
+          timer_controller.clear();
+        }
+
+        timer_controller.tick(step);
+      }
+
+      std::vector<uint64_t> compare1 = { 37 };
+      std::vector<uint64_t> compare2 = { 23 };
+      std::vector<uint64_t> compare3 = { 11, 22, 33 };
+
+      CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
+      CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
+      CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
+    }
+
+    //=========================================================================
+    TEST(callback_timer_delayed_immediate)
+    {
+      etl::callback_timer<3> timer_controller;
+
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,        37, etl::timer::mode::REPEATING);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::REPEATING);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2,         11, etl::timer::mode::REPEATING);
+
+      test.tick_list.clear();
+      free_tick_list1.clear();
+      free_tick_list2.clear();
+
+      timer_controller.enable(true);
+
+      ticks = 5;
+      timer_controller.tick(uint32_t(ticks));
+
+      timer_controller.start(id1, etl::timer::start::IMMEDIATE);
+      timer_controller.start(id2, etl::timer::start::IMMEDIATE);
+      timer_controller.start(id3, etl::timer::start::DELAYED);
+
+      const uint32_t step = 1;
+
+      while (ticks <= 100U)
+      {
+        ticks += step;
+        timer_controller.tick(step);
+      }
+
+      std::vector<uint64_t> compare1 = { 6, 42, 79 };
+      std::vector<uint64_t> compare2 = { 6, 28, 51, 74, 97 };
+      std::vector<uint64_t> compare3 = { 16, 27, 38, 49, 60, 71, 82, 93 };
+
+      CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
+      CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
+      CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
+    }
+
+    //=========================================================================
+    TEST(callback_timer_one_shot_big_step_short_delay_insert)
+    {
+      etl::callback_timer<3> timer_controller;
+
+      etl::timer::id::type id1 = timer_controller.register_timer(free_callback1, 15, etl::timer::mode::SINGLE_SHOT);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_callback2, 5,  etl::timer::mode::REPEATING);
+
+      free_tick_list1.clear();
+      free_tick_list2.clear();
+
+      timer_controller.start(id1);
+      timer_controller.start(id2);
+
+      timer_controller.enable(true);
+
+      ticks = 0;
+
+      const uint32_t step = 11;
+
+      ticks += step;
+      timer_controller.tick(step);
+
+      ticks += step;
+      timer_controller.tick(step);
+
+      std::vector<uint64_t> compare1 = { 22 };
+      std::vector<uint64_t> compare2 = { 11, 11, 22, 22 };
+
+      CHECK_ARRAY_EQUAL(compare1.data(), free_tick_list1.data(), compare1.size());
+      CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list2.data(), compare2.size());
+    }
+
+    //=========================================================================
+#if REALTIME_TEST
+    etl::callback_timer<3> controller;
+
+    void timer_event()
+    {
+      ticks = 1;
+
+      while (ticks <= 1000)
+      {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        controller.tick(1);
+        ++ticks;
+      }
+    }
+
+    TEST(callback_timer_threads)
+    {
+      etl::timer::id::type id1 = controller.register_timer(member_callback,        400,  etl::timer::mode::SINGLE_SHOT);
+      etl::timer::id::type id2 = controller.register_timer(free_function_callback, 100,  etl::timer::mode::REPEATING);
+      etl::timer::id::type id3 = controller.register_timer(free_callback2,         10,   etl::timer::mode::REPEATING);
+
+      test.tick_list.clear();
+      free_tick_list1.clear();
+      free_tick_list2.clear();
+
+      controller.start(id1);
+      controller.start(id2);
+      controller.start(id3);
+      
+      controller.enable(true);
+
+      std::thread t1(timer_event);
+      
+      bool restart_1 = true;
+
+      while (ticks < 1000U)
+      {
+        if ((ticks > 200U) && (ticks < 500U))
+        {
+          controller.stop(id3);
+        }
+
+        if ((ticks > 600U) && (ticks < 800U))
+        {
+          controller.start(id3);
+        }
+
+        if ((ticks > 500U) && restart_1)
+        {
+          controller.start(id1);
+          restart_1 = false;
+        }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+      }
+
+      //Join the thread with the main thread
+      t1.join();
+
+      CHECK_EQUAL(2U,  test.tick_list.size());
+      CHECK_EQUAL(10U, free_tick_list1.size());
+      CHECK(free_tick_list2.size() < 65U);
+    }
+#endif
+  };
+}

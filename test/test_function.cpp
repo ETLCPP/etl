@@ -120,6 +120,8 @@ public:
   }
 };
 
+Test test_static;
+
 //*****************************************************************************
 // Initialises the test results.
 //*****************************************************************************
@@ -268,6 +270,42 @@ namespace
 
       CHECK(function_called);
       CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_instance_member_void_compile_time)
+    {
+      function_called = false;
+
+      etl::function_imv<Test, test_static, &Test::member_void> function;
+
+      call(function);
+
+      CHECK(function_called);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_instance_member_parameter_compile_time)
+    {
+      function_called = false;
+
+      etl::function_imp<Test, int, test_static, &Test::member_int> function;
+
+      call(function);
+
+      CHECK(function_called);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_instance_member_reference_compile_time)
+    {
+      function_called = false;
+
+      etl::function_imp<Test, const Data&, test_static, &Test::member_reference> function;
+
+      call(function);
+
+      CHECK(function_called);
     }
   };
 }

@@ -31,6 +31,8 @@ SOFTWARE.
 #ifndef __ETL_USER_TYPE__
 #define __ETL_USER_TYPE__
 
+#include "platform.h"
+
 ///\defgroup user_type user_type
 /// Smart enumerations.<br>
 /// A method of declaring a user type that also contains a set of constants,

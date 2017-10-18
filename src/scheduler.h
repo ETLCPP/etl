@@ -31,6 +31,7 @@ SOFTWARE.
 
 #include <stdint.h>
 
+#include "platform.h"
 #include "vector.h"
 #include "nullptr.h"
 #include "error_handler.h"

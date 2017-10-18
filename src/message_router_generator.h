@@ -65,6 +65,7 @@ cog.outl("//********************************************************************
 
 #include <stdint.h>
 
+#include "platform.h"
 #include "message.h"
 #include "message_types.h"
 #include "alignment.h"

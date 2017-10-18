@@ -31,6 +31,7 @@ SOFTWARE.
 #ifndef __ETL_UTILITY__
 #define __ETL_UTILITY__
 
+#include "platform.h"
 #include "type_traits.h"
 
 ///\defgroup utility utility

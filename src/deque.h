@@ -36,6 +36,7 @@ SOFTWARE.
 #include <iterator>
 #include <algorithm>
 
+#include "platform.h"
 #include "container.h"
 #include "alignment.h"
 #include "array.h"

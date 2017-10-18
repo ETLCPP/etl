@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include <iterator>
 
+#include "platform.h"
 #include "type_traits.h"
 
 ///\defgroup iterator iterator

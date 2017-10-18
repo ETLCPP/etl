@@ -32,6 +32,8 @@ SOFTWARE.
 #define __ETL_SQRT__
 
 #include <stddef.h>
+
+#include "platform.h"
 #include "type_traits.h"
 #include "constant.h"
 

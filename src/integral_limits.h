@@ -34,8 +34,8 @@ SOFTWARE.
 #include <limits.h>
 #include <stddef.h>
 
-#include "type_traits.h"
 #include "platform.h"
+#include "type_traits.h"
 
 #ifdef ETL_COMPILER_MICROSOFT
 #undef min

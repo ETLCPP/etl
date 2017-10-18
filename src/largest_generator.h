@@ -68,6 +68,7 @@ cog.outl("//********************************************************************
 ///\defgroup largest largest
 ///\ingroup utilities
 
+#include "platform.h"
 #include "type_traits.h"
 #include "smallest.h"
 #include "static_assert.h"

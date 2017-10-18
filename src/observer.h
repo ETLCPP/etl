@@ -52,6 +52,8 @@ SOFTWARE.
 //*****************************************************************************
 
 #include <algorithm>
+
+#include "platform.h"
 #include "vector.h"
 #include "exception.h"
 #include "error_handler.h"

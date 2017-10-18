@@ -38,6 +38,7 @@ SOFTWARE.
 #include <limits>
 #include <assert.h>
 
+#include "platform.h"
 #include "type_traits.h"
 #include "integral_limits.h"
 #include "static_assert.h"

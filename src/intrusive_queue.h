@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include <stddef.h>
 
+#include "platform.h"
 #include "type_traits.h"
 #include "error_handler.h"
 #include "intrusive_links.h"

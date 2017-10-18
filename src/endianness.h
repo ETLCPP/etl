@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include <stdint.h>
 
+#include "platform.h"
 #include "enum_type.h"
 
 ///\defgroup endian endian

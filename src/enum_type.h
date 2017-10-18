@@ -31,6 +31,8 @@ SOFTWARE.
 #ifndef __ETL_ENUM_TYPE__
 #define __ETL_ENUM_TYPE__
 
+#include "platform.h"
+
 ///\defgroup enum_type enum_type
 /// Smart enumerations.<br>
 /// A method of declaring enumerations that allow grouping within a structure.

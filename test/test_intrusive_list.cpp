@@ -803,8 +803,6 @@ namespace
 
       while (ditr != data.end())
       {
-        const ItemNDC& v = ditr->data;
-
         CHECK_EQUAL(citr->data.index, ditr->data.index);
 
         ++citr;

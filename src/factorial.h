@@ -33,6 +33,8 @@ SOFTWARE.
 
 #include <stddef.h>
 
+#include "platform.h"
+
 ///\defgroup factorial factorial
 /// fibonacci<N> : Calculates the Nth factorial value.
 ///\ingroup maths

@@ -31,6 +31,7 @@ SOFTWARE.
 #ifndef __ETL_PARAMETER__
 #define __ETL_PARAMETER__
 
+#include "platform.h"
 #include "type_traits.h"
 
 namespace etl

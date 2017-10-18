@@ -37,6 +37,7 @@ SOFTWARE.
 
 #include <stddef.h>
 
+#include "../platform.h"
 #include "../exception.h"
 #include "../error_handler.h"
 #include "../debug_count.h"

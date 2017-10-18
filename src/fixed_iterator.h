@@ -33,6 +33,8 @@ SOFTWARE.
 
 #include <iterator>
 
+#include "platform.h"
+
 ///\defgroup iterator Iterator types
 
 namespace etl

@@ -16,9 +16,6 @@
 					<Add option="-m32" />
 					<Add option="-g" />
 					<Add option="-D_DEBUG" />
-					<Add option="-DETL_THROW_EXCEPTIONS" />
-					<Add option="-DETL_VERBOSE_ERRORS" />
-					<Add option="-DETL_CHECK_PUSH_POP" />
 					<Add directory="../../src" />
 				</Compiler>
 				<Linker>
@@ -37,9 +34,6 @@
 					<Add option="-std=c++11" />
 					<Add option="-g" />
 					<Add option="-D_DEBUG" />
-					<Add option="-DETL_THROW_EXCEPTIONS" />
-					<Add option="-DETL_VERBOSE_ERRORS" />
-					<Add option="-DETL_CHECK_PUSH_POP" />
 				</Compiler>
 				<ExtraCommands>
 					<Add after="${TARGET_OUTPUT_DIR}${TARGET_OUTPUT_BASENAME}" />
@@ -52,12 +46,6 @@
 			<Add option="-std=c++11" />
 			<Add option="-g" />
 			<Add option="-fexceptions" />
-			<Add option="-DETL_IVECTOR_REPAIR_ENABLE" />
-			<Add option="-DETL_ISTRING_REPAIR_ENABLE" />
-			<Add option="-DETL_IDEQUE_REPAIR_ENABLE" />
-			<Add option="-DETL_THROW_EXCEPTIONS" />
-			<Add option="-DETL_VERBOSE_ERRORS" />
-			<Add option="-DETL_CHECK_PUSH_POP" />
 			<Add option="-D_DEBUG" />
 			<Add directory="../../unittest-cpp/UnitTest++/" />
 			<Add directory="../../src" />
@@ -71,6 +59,7 @@
 		<Unit filename="../../src/bitset.h" />
 		<Unit filename="../../src/bloom_filter.h" />
 		<Unit filename="../../src/callback.h" />
+		<Unit filename="../../src/callback_timer.h" />
 		<Unit filename="../../src/char_traits.h" />
 		<Unit filename="../../src/checksum.h" />
 		<Unit filename="../../src/compare.h" />
@@ -144,6 +133,7 @@
 		<Unit filename="../../src/message_processor_generator.h" />
 		<Unit filename="../../src/message_router.h" />
 		<Unit filename="../../src/message_router_generator.h" />
+		<Unit filename="../../src/message_timer.h" />
 		<Unit filename="../../src/message_types.h" />
 		<Unit filename="../../src/multimap.h" />
 		<Unit filename="../../src/multiset.h" />
@@ -180,6 +170,7 @@
 		<Unit filename="../../src/stack.h" />
 		<Unit filename="../../src/static_assert.h" />
 		<Unit filename="../../src/task.h" />
+		<Unit filename="../../src/timer.h" />
 		<Unit filename="../../src/type_def.h" />
 		<Unit filename="../../src/type_lookup.h" />
 		<Unit filename="../../src/type_lookup_generator.h" />
@@ -267,7 +258,7 @@
 		<Unit filename="../../unittest-cpp/UnitTest++/XmlTestReporter.h" />
 		<Unit filename="../ExtraCheckMacros.h" />
 		<Unit filename="../data.h" />
-		<Unit filename="../etl_user.h" />
+		<Unit filename="../etl_profile.h" />
 		<Unit filename="../main.cpp" />
 		<Unit filename="../murmurhash3.cpp" />
 		<Unit filename="../murmurhash3.h" />
@@ -278,6 +269,7 @@
 		<Unit filename="../test_bitset.cpp" />
 		<Unit filename="../test_bloom_filter.cpp" />
 		<Unit filename="../test_bsd_checksum.cpp" />
+		<Unit filename="../test_callback_timer.cpp" />
 		<Unit filename="../test_checksum.cpp" />
 		<Unit filename="../test_compare.cpp" />
 		<Unit filename="../test_constant.cpp" />
@@ -319,6 +311,7 @@
 		<Unit filename="../test_memory.cpp" />
 		<Unit filename="../test_message_bus.cpp" />
 		<Unit filename="../test_message_router.cpp" />
+		<Unit filename="../test_message_timer.cpp" />
 		<Unit filename="../test_multimap.cpp" />
 		<Unit filename="../test_multiset.cpp" />
 		<Unit filename="../test_murmur3.cpp" />
@@ -365,6 +358,7 @@
 			</code_completion>
 			<debugger />
 			<envvars />
+			<editor_config active="1" use_tabs="0" tab_indents="1" tab_width="2" indent="2" eol_mode="0" />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

@@ -31,6 +31,7 @@ SOFTWARE.
 #ifndef __ETL_BLOOM_FILTER__
 #define __ETL_BLOOM_FILTER__
 
+#include "platform.h"
 #include "parameter_type.h"
 #include "bitset.h"
 #include "type_traits.h"

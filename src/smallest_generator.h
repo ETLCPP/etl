@@ -67,6 +67,7 @@ cog.outl("//********************************************************************
 
 #include <stdint.h>
 
+#include "platform.h"
 #include "integral_limits.h"
 
 ///\defgroup smallest smallest

@@ -43,6 +43,7 @@ SOFTWARE.
 #include <iterator>
 #include <stdint.h>
 
+#include "platform.h"
 #include "iterator.h"
 #include "type_traits.h"
 

@@ -31,6 +31,8 @@ SOFTWARE.
 
 #include <stdint.h>
 
+#include "platform.h"
+
 namespace etl
 {
   /// Allow alternative type for message id.

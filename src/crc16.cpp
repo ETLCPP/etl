@@ -30,6 +30,8 @@ SOFTWARE.
 
 #include <stdint.h>
 
+#include "platform.h"
+
 namespace etl
 {
   //***************************************************************************

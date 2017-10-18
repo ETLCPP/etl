@@ -33,6 +33,8 @@ SOFTWARE.
 
 #include <stddef.h>
 #include <stdint.h>
+
+#include "platform.h"
 #include "log.h"
 
 ///\defgroup power power

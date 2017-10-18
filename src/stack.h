@@ -35,6 +35,7 @@ SOFTWARE.
 #include <stdint.h>
 #include <algorithm>
 
+#include "platform.h"
 #include "container.h"
 #include "alignment.h"
 #include "array.h"

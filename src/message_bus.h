@@ -32,6 +32,7 @@ SOFTWARE.
 #include <stdint.h>
 #include <algorithm>
 
+#include "platform.h"
 #include "algorithm.h"
 #include "vector.h"
 #include "nullptr.h"

@@ -34,6 +34,8 @@ SOFTWARE.
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "platform.h"
+
 // The default hash calculation.
 #include "fnv_1.h"
 #include "type_traits.h"

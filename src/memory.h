@@ -34,6 +34,7 @@ SOFTWARE.
 #include <iterator>
 #include <algorithm>
 
+#include "platform.h"
 #include "type_traits.h"
 
 ///\defgroup memory memory
