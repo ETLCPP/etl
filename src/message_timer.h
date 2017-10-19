@@ -424,8 +424,9 @@ namespace etl
 
     //*******************************************
     // Called by the timer service to indicate the
-    // amount of time that has elapsed since the
-    // last call to 'tick'.
+    // amount of time that has elapsed since the last successful call to 'tick'.
+    // Returns true if the tick was processed,
+    // false if not.
     //*******************************************
     bool tick(uint32_t count)
     {
@@ -467,11 +468,13 @@ namespace etl
                 }
               }
             }
+
+            return true;
           }
         }
       }
 
-      return enabled;
+      return false;
     }
 
     //*******************************************
