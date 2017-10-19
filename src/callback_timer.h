@@ -467,34 +467,37 @@ namespace etl
     {
       if (enabled)
       {
-        tick_count += count;
-
         if (process_semaphore == 0)
         {
           // We have something to do?
-          while (!active_list.empty() && (tick_count >= active_list.front().delta))
+          if (!active_list.empty())
           {
-            etl::callback_timer_data& timer = active_list.front();
+            tick_count += count;
 
-            tick_count -= timer.delta;
-
-            active_list.remove(timer.id, true);           
-
-            if (timer.repeating)
+            while (!active_list.empty() && (tick_count >= active_list.front().delta))
             {
-              timer.delta = timer.period;
-              active_list.insert(timer.id);
-            }
-            
-            if (timer.p_callback != nullptr)
-            {
-              if (timer.is_c_callback)
+              etl::callback_timer_data& timer = active_list.front();
+
+              tick_count -= timer.delta;
+
+              active_list.remove(timer.id, true);
+
+              if (timer.repeating)
               {
-                reinterpret_cast<void (*)()>(timer.p_callback)();
+                timer.delta = timer.period;
+                active_list.insert(timer.id);
               }
-              else
+
+              if (timer.p_callback != nullptr)
               {
-                (*reinterpret_cast<etl::ifunction<void>*>(timer.p_callback))();
+                if (timer.is_c_callback)
+                {
+                  reinterpret_cast<void(*)()>(timer.p_callback)();
+                }
+                else
+                {
+                  (*reinterpret_cast<etl::ifunction<void>*>(timer.p_callback))();
+                }
               }
             }
           }
@@ -529,6 +532,7 @@ namespace etl
               active_list.remove(timer.id, false);
             }
 
+            // Compensate for current tick count.
             timer.delta = tick_count;
 
             if (!immediate_)
