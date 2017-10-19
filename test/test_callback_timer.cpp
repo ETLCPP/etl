@@ -440,26 +440,75 @@ namespace
     }
 
     //=========================================================================
+    TEST(callback_timer_one_shot_empty_list_huge_tick_before_insert)
+    {
+      etl::callback_timer<3> timer_controller;
+
+      etl::timer::id::type id1 = timer_controller.register_timer(free_callback1, 5, etl::timer::mode::SINGLE_SHOT);
+
+      free_tick_list1.clear();
+
+      timer_controller.start(id1);
+
+      timer_controller.enable(true);
+
+      ticks = 0;
+
+      const uint32_t step = 5;
+
+      for (uint32_t i = 0; i < step; ++i)
+      {
+        ++ticks;
+        timer_controller.tick(1);
+      }
+
+      // Huge tick count.
+      timer_controller.tick(UINT32_MAX - step + 1);
+
+      timer_controller.start(id1);
+
+      for (uint32_t i = 0; i < step; ++i)
+      {
+        ++ticks;
+        timer_controller.tick(1);
+      }
+      std::vector<uint64_t> compare1 = { 5, 10 };
+
+      CHECK_ARRAY_EQUAL(compare1.data(), free_tick_list1.data(), compare1.size());
+    }
+
+    //=========================================================================
 #if REALTIME_TEST
     etl::callback_timer<3> controller;
 
     void timer_event()
     {
+      const uint32_t TICK = 1;
+      uint32_t tick = TICK;
       ticks = 1;
 
       while (ticks <= 1000)
       {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
-        controller.tick(1);
+        
+        if (controller.tick(tick))
+        {
+          tick = TICK;
+        }
+        else
+        {
+          tick += TICK;
+        }
+
         ++ticks;
       }
     }
 
     TEST(callback_timer_threads)
     {
-      etl::timer::id::type id1 = controller.register_timer(member_callback,        400,  etl::timer::mode::SINGLE_SHOT);
-      etl::timer::id::type id2 = controller.register_timer(free_function_callback, 100,  etl::timer::mode::REPEATING);
-      etl::timer::id::type id3 = controller.register_timer(free_callback2,         10,   etl::timer::mode::REPEATING);
+      etl::timer::id::type id1 = controller.register_timer(member_callback,        400, etl::timer::mode::SINGLE_SHOT);
+      etl::timer::id::type id2 = controller.register_timer(free_function_callback, 100, etl::timer::mode::REPEATING);
+      etl::timer::id::type id3 = controller.register_timer(free_callback2,         10,  etl::timer::mode::REPEATING);
 
       test.tick_list.clear();
       free_tick_list1.clear();
