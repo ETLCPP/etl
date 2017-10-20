@@ -57,7 +57,7 @@ namespace etl
         previous(etl::timer::id::NO_TIMER),
         next(etl::timer::id::NO_TIMER),
         repeating(true),
-        is_c_callback(true)
+        has_c_callback(true)
     {
     }
 
@@ -75,7 +75,7 @@ namespace etl
         previous(etl::timer::id::NO_TIMER),
         next(etl::timer::id::NO_TIMER),
         repeating(repeating_),
-        is_c_callback(true)
+        has_c_callback(true)
     {
     }
 
@@ -93,7 +93,7 @@ namespace etl
         previous(etl::timer::id::NO_TIMER),
         next(etl::timer::id::NO_TIMER),
         repeating(repeating_),
-        is_c_callback(false)
+        has_c_callback(false)
     {
     }
 
@@ -120,7 +120,7 @@ namespace etl
     uint_least8_t         previous;
     uint_least8_t         next;
     bool                  repeating;
-    bool                  is_c_callback;
+    bool                  has_c_callback;
 
   private:
 
@@ -453,7 +453,6 @@ namespace etl
       }
 
       registered_timers = 0;
-      tick_count = 0;
 
       enable_timer_updates();
     }
@@ -468,42 +467,53 @@ namespace etl
     {
       if (enabled)
       {
-        if (process_semaphore == 0)
+        if (process_semaphore.load() == 0)
         {
           // We have something to do?
-          if (!active_list.empty())
-          {
-            tick_count += count;
+          bool has_active = !active_list.empty();
 
-            while (!active_list.empty() && (tick_count >= active_list.front().delta))
+          if (has_active)
+          {
+            while (has_active && (count >= active_list.front().delta))
             {
               etl::callback_timer_data& timer = active_list.front();
 
-              tick_count -= timer.delta;
+              count -= timer.delta;
 
               active_list.remove(timer.id, true);
 
               if (timer.repeating)
               {
+                // Reinsert the timer.
                 timer.delta = timer.period;
                 active_list.insert(timer.id);
               }
 
               if (timer.p_callback != nullptr)
               {
-                if (timer.is_c_callback)
+                if (timer.has_c_callback)
                 {
+                  // Call the C callback.
                   reinterpret_cast<void(*)()>(timer.p_callback)();
                 }
                 else
                 {
+                  // Call the function wrapper callback.
                   (*reinterpret_cast<etl::ifunction<void>*>(timer.p_callback))();
                 }
               }
+
+              has_active = !active_list.empty();
             }
 
-            return true;
+            if (has_active)
+            {
+              // Subtract any remainder from the next due timeout.
+              active_list.front().delta -= count;
+            }
           }
+
+          return true;
         }
       }
 
@@ -515,9 +525,9 @@ namespace etl
     //*******************************************
     bool start(etl::timer::id::type id_, bool immediate_ = false)
     {
-      bool result = false;
-
       disable_timer_updates();
+
+      bool result = false;
 
       // Valid timer id?
       if (id_ != etl::timer::id::NO_TIMER)
@@ -526,7 +536,7 @@ namespace etl
 
         // Registered timer?
         if (timer.id != etl::timer::id::NO_TIMER)
-        {
+        {         
           // Has a valid period.
           if (timer.period != etl::timer::state::INACTIVE)
           {
@@ -535,17 +545,11 @@ namespace etl
               active_list.remove(timer.id, false);
             }
 
-            // Compensate for current tick count.
-            timer.delta = tick_count;
-
-            if (!immediate_)
-            {
-              timer.delta += timer.period;
-            }
-
+            timer.delta = immediate_ ? 0 : timer.period;
             active_list.insert(timer.id);
+
             result = true;
-          }
+          }                
         }
       }
 
@@ -559,9 +563,9 @@ namespace etl
     //*******************************************
     bool stop(etl::timer::id::type id_)
     {
-      bool result = false;
-
       disable_timer_updates();
+
+      bool result = false;
 
       // Valid timer id?
       if (id_ != etl::timer::id::NO_TIMER)
@@ -622,7 +626,6 @@ namespace etl
         active_list(timer_array_),
         enabled(false),
         process_semaphore(0),
-        tick_count(0),
         registered_timers(0),
         MAX_TIMERS(MAX_TIMERS_)
     {
@@ -654,7 +657,6 @@ namespace etl
 
     volatile bool enabled;
     volatile etl::timer_semaphore_t process_semaphore;
-    volatile uint32_t tick_count;
     volatile uint_least8_t registered_timers;
 
   public:

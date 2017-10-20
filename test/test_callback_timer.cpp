@@ -63,11 +63,27 @@ namespace
       tick_list.push_back(ticks);
     }
 
+    void callback2()
+    {
+      tick_list.push_back(ticks);
+
+      p_controller->start(2);
+      p_controller->start(1);
+    }
+
+    void set_controller(etl::callback_timer<3>& controller)
+    {
+      p_controller = &controller;
+    }
+
     std::vector<uint64_t> tick_list;
+
+    etl::callback_timer<3>* p_controller;
   };
   
   Test test;
-  etl::function_mv<Test, &Test::callback> member_callback(test);
+  etl::function_imv<Test, test, &Test::callback>  member_callback;
+  etl::function_imv<Test, test, &Test::callback2> member_callback2;
 
   //***************************************************************************
   // Free function callback via etl::function
@@ -144,6 +160,10 @@ namespace
       std::vector<uint64_t> compare2 = { 23 };
       std::vector<uint64_t> compare3 = { 11 };
 
+      CHECK(test.tick_list.size() != 0);
+      CHECK(free_tick_list1.size() != 0);
+      CHECK(free_tick_list2.size() != 0);
+
       CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
@@ -181,6 +201,10 @@ namespace
       std::vector<uint64_t> compare1 = { 37, 74 };
       std::vector<uint64_t> compare2 = { 23, 46, 69, 92 };
       std::vector<uint64_t> compare3 = { 11, 22, 33, 44, 55, 66, 77, 88, 99 };
+
+      CHECK(test.tick_list.size() != 0);
+      CHECK(free_tick_list1.size() != 0);
+      CHECK(free_tick_list2.size() != 0);
 
       CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
@@ -223,6 +247,10 @@ namespace
       std::vector<uint64_t> compare1 = { 40, 75 };
       std::vector<uint64_t> compare2 = { 25, 50, 70, 95 };
       std::vector<uint64_t> compare3 = { 15, 25, 35, 45, 55, 70, 80, 90, 100 };
+
+      CHECK(test.tick_list.size() != 0);
+      CHECK(free_tick_list1.size() != 0);
+      CHECK(free_tick_list2.size() != 0);
 
       CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
@@ -272,10 +300,82 @@ namespace
       std::vector<uint64_t> compare1 = { 77 };
       std::vector<uint64_t> compare2 = { 23 };
       std::vector<uint64_t> compare3 = { 11, 22, 33, 44, 55, 66, 77, 88, 99 };
+            
+      CHECK(test.tick_list.size() != 0);
+      CHECK(free_tick_list1.size() != 0);
+      CHECK(free_tick_list2.size() != 0);
 
       CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
+    }
+
+    //=========================================================================
+    TEST(callback_timer_timer_starts_timer_small_step)
+    {
+      etl::callback_timer<3> timer_controller;
+
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback2, 100, etl::timer::mode::SINGLE_SHOT);
+      etl::timer::id::type id2 = timer_controller.register_timer(member_callback, 10, etl::timer::mode::SINGLE_SHOT);
+      etl::timer::id::type id3 = timer_controller.register_timer(member_callback, 22, etl::timer::mode::SINGLE_SHOT);
+
+      test.set_controller(timer_controller);
+
+      test.tick_list.clear();
+
+      timer_controller.start(id1);
+
+      timer_controller.enable(true);
+
+      ticks = 0;
+
+      const uint32_t step = 1;
+
+      while (ticks <= 200U)
+      {
+        ticks += step;
+        timer_controller.tick(step);
+      }
+
+      std::vector<uint64_t> compare1 = { 100, 110, 122 };
+
+      CHECK(test.tick_list.size() != 0);
+
+      CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(), compare1.size());
+    }
+
+    //=========================================================================
+    TEST(callback_timer_timer_starts_timer_big_step)
+    {
+      etl::callback_timer<3> timer_controller;
+
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback2, 100, etl::timer::mode::SINGLE_SHOT);
+      etl::timer::id::type id2 = timer_controller.register_timer(member_callback,   10, etl::timer::mode::SINGLE_SHOT);
+      etl::timer::id::type id3 = timer_controller.register_timer(member_callback,   22, etl::timer::mode::SINGLE_SHOT);
+
+      test.set_controller(timer_controller);
+
+      test.tick_list.clear();
+
+      timer_controller.start(id1);
+
+      timer_controller.enable(true);
+
+      ticks = 0;
+
+      const uint32_t step = 3;
+
+      while (ticks <= 200U)
+      {
+        ticks += step;
+        timer_controller.tick(step);
+      }
+
+      std::vector<uint64_t> compare1 = { 102, 111, 123 };
+
+      CHECK(test.tick_list.size() != 0);
+
+      CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
     }
 
     //=========================================================================
@@ -317,6 +417,10 @@ namespace
       std::vector<uint64_t> compare1 = { 77 };
       std::vector<uint64_t> compare2 = { 23 };
       std::vector<uint64_t> compare3 = { 11, 22, 33, 44, 55, 66, 77, 88, 99 };
+
+      CHECK(test.tick_list.size() != 0);
+      CHECK(free_tick_list1.size() != 0);
+      CHECK(free_tick_list2.size() != 0);
 
       CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
@@ -362,6 +466,10 @@ namespace
       std::vector<uint64_t> compare2 = { 23 };
       std::vector<uint64_t> compare3 = { 11, 22, 33 };
 
+      CHECK(test.tick_list.size() != 0);
+      CHECK(free_tick_list1.size() != 0);
+      CHECK(free_tick_list2.size() != 0);
+
       CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
@@ -401,6 +509,10 @@ namespace
       std::vector<uint64_t> compare2 = { 6, 28, 51, 74, 97 };
       std::vector<uint64_t> compare3 = { 16, 27, 38, 49, 60, 71, 82, 93 };
 
+      CHECK(test.tick_list.size() != 0);
+      CHECK(free_tick_list1.size() != 0);
+      CHECK(free_tick_list2.size() != 0);
+
       CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
@@ -434,6 +546,9 @@ namespace
 
       std::vector<uint64_t> compare1 = { 22 };
       std::vector<uint64_t> compare2 = { 11, 11, 22, 22 };
+
+      CHECK(free_tick_list1.size() != 0);
+      CHECK(free_tick_list2.size() != 0);
 
       CHECK_ARRAY_EQUAL(compare1.data(), free_tick_list1.data(), compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list2.data(), compare2.size());
@@ -474,11 +589,21 @@ namespace
       }
       std::vector<uint64_t> compare1 = { 5, 10 };
 
+      CHECK(free_tick_list1.size() != 0);
+
       CHECK_ARRAY_EQUAL(compare1.data(), free_tick_list1.data(), compare1.size());
     }
 
     //=========================================================================
 #if REALTIME_TEST
+
+  #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported
+    #define RAISE_THREAD_PRIORITY  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST)
+    #define FIX_PROCESSOR_AFFINITY SetThreadAffinityMask(GetCurrentThread(), 1);
+  #else
+    #error No thread priority modifier defined
+  #endif
+
     etl::callback_timer<3> controller;
 
     void timer_event()
@@ -487,6 +612,9 @@ namespace
       uint32_t tick = TICK;
       ticks = 1;
 
+      RAISE_THREAD_PRIORITY;
+      FIX_PROCESSOR_AFFINITY;
+      
       while (ticks <= 1000)
       {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -506,9 +634,11 @@ namespace
 
     TEST(callback_timer_threads)
     {
+      FIX_PROCESSOR_AFFINITY;
+
       etl::timer::id::type id1 = controller.register_timer(member_callback,        400, etl::timer::mode::SINGLE_SHOT);
       etl::timer::id::type id2 = controller.register_timer(free_function_callback, 100, etl::timer::mode::REPEATING);
-      etl::timer::id::type id3 = controller.register_timer(free_callback2,         10,  etl::timer::mode::REPEATING);
+      etl::timer::id::type id3 = controller.register_timer(free_callback2,          10, etl::timer::mode::REPEATING);
 
       test.tick_list.clear();
       free_tick_list1.clear();
@@ -516,7 +646,7 @@ namespace
 
       controller.start(id1);
       controller.start(id2);
-      controller.start(id3);
+      //controller.start(id3);
       
       controller.enable(true);
 
@@ -524,7 +654,7 @@ namespace
       
       bool restart_1 = true;
 
-      while (ticks < 1000U)
+      while (ticks <= 1000U)
       {
         if ((ticks > 200U) && (ticks < 500U))
         {
@@ -551,6 +681,16 @@ namespace
       CHECK_EQUAL(2U,  test.tick_list.size());
       CHECK_EQUAL(10U, free_tick_list1.size());
       CHECK(free_tick_list2.size() < 65U);
+
+      //std::vector<uint64_t> compare1 = { 400, 900 };
+      //std::vector<uint64_t> compare2 = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 };
+
+      CHECK(test.tick_list.size()  != 0);
+      CHECK(free_tick_list1.size() != 0);
+      CHECK(free_tick_list2.size() != 0);
+
+      //CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  min(compare1.size(), test.tick_list.size()));
+      //CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), min(compare2.size(), free_tick_list1.size()));
     }
 #endif
   };

@@ -40,6 +40,7 @@ SOFTWARE.
 #include "message_bus.h"
 #include "static_assert.h"
 #include "timer.h"
+#include "atomic.h"
 
 #undef ETL_FILE
 #define ETL_FILE "41"
@@ -417,7 +418,6 @@ namespace etl
       }
 
       registered_timers = 0;
-      tick_count = 0;
 
       enable_timer_updates();
     }
@@ -432,18 +432,18 @@ namespace etl
     {
       if (enabled)
       {
-        if (process_semaphore == 0)
+        if (process_semaphore.load() == 0)
         {
           // We have something to do?
-          if (!active_list.empty())
-          {
-            tick_count += count;
+          bool has_active = !active_list.empty();
 
-            while (!active_list.empty() && (tick_count >= active_list.front().delta))
+          if (has_active)
+          {
+            while (has_active && (count >= active_list.front().delta))
             {
               etl::message_timer_data& timer = active_list.front();
 
-              tick_count -= timer.delta;
+              count -= timer.delta;
 
               active_list.remove(timer.id, true);
 
@@ -467,10 +467,18 @@ namespace etl
                   timer.p_router->receive(*(timer.p_message));
                 }
               }
+
+              has_active = !active_list.empty();
             }
 
-            return true;
+            if (has_active)
+            {
+              // Subtract any remainder from the next due timeout.
+              active_list.front().delta -= count;
+            }
           }
+
+          return true;
         }
       }
 
@@ -502,15 +510,9 @@ namespace etl
               active_list.remove(timer.id, false);
             }
 
-            // Compensate for current tick count.
-            timer.delta = tick_count;
-
-            if (!immediate_)
-            {
-              timer.delta += timer.period;
-            }
-
+            timer.delta = immediate_ ? 0 : timer.period;
             active_list.insert(timer.id);
+
             result = true;
           }
         }
@@ -589,7 +591,6 @@ namespace etl
         active_list(timer_array_),
         enabled(false),
         process_semaphore(0),
-        tick_count(0),
         registered_timers(0),
         MAX_TIMERS(MAX_TIMERS_)
     {
@@ -621,7 +622,6 @@ namespace etl
 
     volatile bool enabled;
     volatile etl::timer_semaphore_t process_semaphore;
-    volatile uint32_t tick_count;
     volatile uint_least8_t registered_timers;
 
   public:
