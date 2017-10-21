@@ -258,11 +258,7 @@
 		<Unit filename="../../unittest-cpp/UnitTest++/XmlTestReporter.h" />
 		<Unit filename="../ExtraCheckMacros.h" />
 		<Unit filename="../data.h" />
-<<<<<<< HEAD
-		<Unit filename="../etl_user.h" />
-=======
 		<Unit filename="../etl_profile.h" />
->>>>>>> origin/feature/Timer_triggered_messages
 		<Unit filename="../main.cpp" />
 		<Unit filename="../murmurhash3.cpp" />
 		<Unit filename="../murmurhash3.h" />

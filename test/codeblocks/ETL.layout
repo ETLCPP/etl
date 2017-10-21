@@ -22,9 +22,9 @@
 			<Cursor1 position="11907" topLine="330" />
 		</Cursor>
 	</File>
-	<File name="..\test_map.cpp" open="0" top="0" tabpos="19" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\..\src\type_traits.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="6368" topLine="164" />
+			<Cursor1 position="12237" topLine="260" />
 		</Cursor>
 	</File>
 	<File name="..\test_factory.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">

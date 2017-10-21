@@ -42,7 +42,7 @@ SOFTWARE.
 #include <Windows.h>
 #endif
 
-#define REALTIME_TEST 1
+#define REALTIME_TEST 0
 
 //***************************************************************************
 // The set of messages.
@@ -595,21 +595,21 @@ namespace
 
       while (ticks < 1000U)
       {
-        //if ((ticks > 200U) && (ticks < 500U))
-        //{
-        //  controller.stop(id3);
-        //}
+        if ((ticks > 200U) && (ticks < 500U))
+        {
+          controller.stop(id3);
+        }
 
-        //if ((ticks > 600U) && (ticks < 800U))
-        //{
-        //  controller.start(id3);
-        //}
+        if ((ticks > 600U) && (ticks < 800U))
+        {
+          controller.start(id3);
+        }
 
-        //if ((ticks > 500U) && restart_1)
-        //{
-        //  controller.start(id1);
-        //  restart_1 = false;
-        //}
+        if ((ticks > 500U) && restart_1)
+        {
+          controller.start(id1);
+          restart_1 = false;
+        }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
       }
@@ -617,9 +617,9 @@ namespace
       //Join the thread with the main thread
       t1.join();
 
-      //CHECK_EQUAL(2U,  router1.message1.size());
+      CHECK_EQUAL(2U,  router1.message1.size());
       CHECK_EQUAL(10U, router1.message2.size());
-      //CHECK(router1.message2.size() < 65U);
+      CHECK(router1.message2.size() < 65U);
     }
 #endif
   };
