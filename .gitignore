@@ -9,6 +9,9 @@ test/keil/Debug
 test/keil/Release
 test/keil/Objects
 test/keil/Listings
+examples/ArmTimerCallbacks/Listings
+examples/ArmTimerCallbacks/Objects
+examples/ArmTimerCallbacks/DebugConfig
 
 #################
 ## Eclipse
@@ -27,6 +30,7 @@ local.properties
 .classpath
 .settings/
 .loadpath
+*.uvguix.John
 
 # External tool builders
 .externalToolBuilders/
