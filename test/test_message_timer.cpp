@@ -550,6 +550,14 @@ namespace
 
     //=========================================================================
 #if REALTIME_TEST
+
+  #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported
+    #define RAISE_THREAD_PRIORITY  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST)
+    #define FIX_PROCESSOR_AFFINITY SetThreadAffinityMask(GetCurrentThread(), 1);
+  #else
+    #error No thread priority modifier defined
+  #endif
+
     etl::message_timer<3> controller;
 
     void timer_event()
@@ -557,6 +565,9 @@ namespace
       const uint32_t TICK = 1;
       uint32_t tick = TICK;
       ticks = 1;
+
+      RAISE_THREAD_PRIORITY;
+      FIX_PROCESSOR_AFFINITY;
 
       while (ticks <= 1000)
       {
@@ -577,6 +588,8 @@ namespace
 
     TEST(message_timer_threads)
     {
+      FIX_PROCESSOR_AFFINITY;
+
       etl::timer::id::type id1 = controller.register_timer(message1, router1, 400,  etl::timer::mode::SINGLE_SHOT);
       etl::timer::id::type id2 = controller.register_timer(message2, router1, 100,  etl::timer::mode::REPEATING);
       etl::timer::id::type id3 = controller.register_timer(message3, router1, 10,   etl::timer::mode::REPEATING);
