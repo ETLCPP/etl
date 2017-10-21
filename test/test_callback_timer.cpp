@@ -319,6 +319,9 @@ namespace
       etl::timer::id::type id2 = timer_controller.register_timer(member_callback, 10, etl::timer::mode::SINGLE_SHOT);
       etl::timer::id::type id3 = timer_controller.register_timer(member_callback, 22, etl::timer::mode::SINGLE_SHOT);
 
+      (void)id2;
+      (void)id3;
+
       test.set_controller(timer_controller);
 
       test.tick_list.clear();
@@ -352,6 +355,9 @@ namespace
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback2, 100, etl::timer::mode::SINGLE_SHOT);
       etl::timer::id::type id2 = timer_controller.register_timer(member_callback,   10, etl::timer::mode::SINGLE_SHOT);
       etl::timer::id::type id3 = timer_controller.register_timer(member_callback,   22, etl::timer::mode::SINGLE_SHOT);
+
+      (void)id2;
+      (void)id3;
 
       test.set_controller(timer_controller);
 
