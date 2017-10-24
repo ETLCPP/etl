@@ -50,6 +50,7 @@
 			<Add directory="../../unittest-cpp/UnitTest++/" />
 			<Add directory="../../src" />
 			<Add directory="../" />
+			<Add directory="../../src/c" />
 		</Compiler>
 		<Unit filename="../../src/algorithm.h" />
 		<Unit filename="../../src/alignment.h" />
@@ -58,6 +59,14 @@
 		<Unit filename="../../src/binary.h" />
 		<Unit filename="../../src/bitset.h" />
 		<Unit filename="../../src/bloom_filter.h" />
+		<Unit filename="../../src/c/ecl_timer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/c/ecl_timer.h" />
+		<Unit filename="../../src/c/ecl_timer_list.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/c/ecl_timer_list.h" />
 		<Unit filename="../../src/callback.h" />
 		<Unit filename="../../src/callback_timer.h" />
 		<Unit filename="../../src/char_traits.h" />
@@ -258,6 +267,7 @@
 		<Unit filename="../../unittest-cpp/UnitTest++/XmlTestReporter.h" />
 		<Unit filename="../ExtraCheckMacros.h" />
 		<Unit filename="../data.h" />
+		<Unit filename="../ecl_user.h" />
 		<Unit filename="../etl_profile.h" />
 		<Unit filename="../main.cpp" />
 		<Unit filename="../murmurhash3.cpp" />
@@ -269,6 +279,7 @@
 		<Unit filename="../test_bitset.cpp" />
 		<Unit filename="../test_bloom_filter.cpp" />
 		<Unit filename="../test_bsd_checksum.cpp" />
+		<Unit filename="../test_c_timer_framework.cpp" />
 		<Unit filename="../test_callback_timer.cpp" />
 		<Unit filename="../test_checksum.cpp" />
 		<Unit filename="../test_compare.cpp" />
