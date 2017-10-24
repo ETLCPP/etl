@@ -74,7 +74,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../unittest-cpp/UnitTest++/;../../src;../../test</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../unittest-cpp/UnitTest++/;../../src;../../src/c;../../test</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
     </ClCompile>
@@ -93,7 +93,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../unittest-cpp/UnitTest++/;../../src;../../test</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../unittest-cpp/UnitTest++/;../../src;../../src/c;../../test</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
     </ClCompile>
@@ -136,6 +136,8 @@
     <ClInclude Include="..\..\src\callback_timer.h" />
     <ClInclude Include="..\..\src\compare.h" />
     <ClInclude Include="..\..\src\constant.h" />
+    <ClInclude Include="..\..\src\c\ecl_timer.h" />
+    <ClInclude Include="..\..\src\c\ecl_timer_list.h" />
     <ClInclude Include="..\..\src\factory.h" />
     <ClInclude Include="..\..\src\fsm.h" />
     <ClInclude Include="..\..\src\fsm_generator.h" />
@@ -291,12 +293,15 @@
     <ClInclude Include="..\..\src\vector.h" />
     <ClInclude Include="..\..\src\visitor.h" />
     <ClInclude Include="..\..\src\wstring.h" />
+    <ClInclude Include="..\ecl_user.h" />
     <ClInclude Include="..\data.h" />
     <ClInclude Include="..\etl_profile.h" />
     <ClInclude Include="..\ExtraCheckMacros.h" />
     <ClInclude Include="..\murmurhash3.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\c\ecl_timer.c" />
+    <ClCompile Include="..\..\src\c\ecl_timer_list.c" />
     <ClCompile Include="..\..\unittest-cpp\UnitTest++\AssertException.cpp" />
     <ClCompile Include="..\..\unittest-cpp\UnitTest++\Checks.cpp" />
     <ClCompile Include="..\..\unittest-cpp\UnitTest++\CompositeTestReporter.cpp" />
@@ -344,6 +349,7 @@
     <ClCompile Include="..\test_container.cpp" />
     <ClCompile Include="..\test_crc.cpp" />
     <ClCompile Include="..\test_cyclic_value.cpp" />
+    <ClCompile Include="..\test_c_timer_framework.cpp" />
     <ClCompile Include="..\test_debounce.cpp" />
     <ClCompile Include="..\test_deque.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>

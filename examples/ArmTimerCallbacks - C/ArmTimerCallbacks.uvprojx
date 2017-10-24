@@ -336,7 +336,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\src;..\ArmTimerCallbacks</IncludePath>
+              <IncludePath>..\..\src;../../src/c;..\ArmTimerCallbacks - C</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -381,14 +381,34 @@
           <GroupName>Source Group 1</GroupName>
           <Files>
             <File>
-              <FileName>main.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\main.cpp</FilePath>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\main.c</FilePath>
             </File>
             <File>
-              <FileName>etl_profile.h</FileName>
+              <FileName>ecl_timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\src\c\ecl_timer.c</FilePath>
+            </File>
+            <File>
+              <FileName>ecl_timer_list.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\src\c\ecl_timer_list.c</FilePath>
+            </File>
+            <File>
+              <FileName>ecl_timer.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\etl_profile.h</FilePath>
+              <FilePath>..\..\src\c\ecl_timer.h</FilePath>
+            </File>
+            <File>
+              <FileName>ecl_timer_list.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\src\c\ecl_timer_list.h</FilePath>
+            </File>
+            <File>
+              <FileName>ecl_user.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\ecl_user.h</FilePath>
             </File>
           </Files>
         </Group>

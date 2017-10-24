@@ -52,6 +52,12 @@
     <Filter Include="ETL\Profiles">
       <UniqueIdentifier>{0a77d88b-f9f0-456a-be4b-c0a0ce6b437b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\ECL">
+      <UniqueIdentifier>{1fdf39d9-079e-4404-a24a-6d5cb30def6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ECL">
+      <UniqueIdentifier>{4ac80fd1-3eca-4775-8695-eb1ea39c93f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\doxygen.h">
@@ -552,6 +558,15 @@
     <ClInclude Include="..\..\src\atomic\atomic_gcc.h">
       <Filter>ETL\Utilities\Atomic</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\c\ecl_timer.h">
+      <Filter>ECL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\ecl_timer_list.h">
+      <Filter>ECL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ecl_user.h">
+      <Filter>Source Files\ECL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -916,6 +931,15 @@
     </ClCompile>
     <ClCompile Include="..\test_compare.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\ecl_timer.c">
+      <Filter>ECL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\ecl_timer_list.c">
+      <Filter>ECL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_c_timer_framework.cpp">
+      <Filter>Source Files\ECL</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
