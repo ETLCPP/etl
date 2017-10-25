@@ -132,7 +132,6 @@
     <ClInclude Include="..\..\src\atomic.h" />
     <ClInclude Include="..\..\src\atomic\atomic_arm.h" />
     <ClInclude Include="..\..\src\atomic\atomic_gcc.h" />
-    <ClInclude Include="..\..\src\atomic\atomic_windows.h" />
     <ClInclude Include="..\..\src\callback_timer.h" />
     <ClInclude Include="..\..\src\compare.h" />
     <ClInclude Include="..\..\src\constant.h" />
