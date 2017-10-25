@@ -64,7 +64,7 @@ namespace etl
     T operator =(T v)
     {
       __sync_lock_test_and_set(&value, v);
-      
+
       return v;
     }
 
@@ -77,7 +77,7 @@ namespace etl
 
     // Pre-increment
     T operator ++()
-    {     
+    {
       return fetch_add(1) + 1;
     }
 
@@ -118,7 +118,7 @@ namespace etl
     {
       return fetch_sub(1);
     }
-    
+
     // Add
     T operator +=(T v)
     {
@@ -287,12 +287,32 @@ namespace etl
     // Compare exchange weak
     bool compare_exchange_weak(T& expected, T desired)
     {
-      return __sync_bool_compare_and_swap(&value, expected, desired);
+      T old = __sync_val_compare_and_swap(&value, expected, desired);
+
+      if (old == expected)
+      {
+        return true;
+      }
+      else
+      {
+        expected = old;
+        return false;
+      }
     }
 
     bool compare_exchange_weak(T& expected, T desired) volatile
     {
-      return __sync_bool_compare_and_swap(&value, expected, desired);
+      T old = __sync_val_compare_and_swap(&value, expected, desired);
+
+      if (old == expected)
+      {
+        return true;
+      }
+      else
+      {
+        expected = old;
+        return false;
+      }
     }
 
     // Compare exchange strong
@@ -302,7 +322,7 @@ namespace etl
 
       while (!compare_exchange_weak(old, desired))
       {
-        if (memcmp(&old, &expected, sizeof(T))) 
+        if (memcmp(&old, &expected, sizeof(T)))
         {
           expected = old;
           return false;
