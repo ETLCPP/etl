@@ -35,6 +35,7 @@ SOFTWARE.
 #include <vector>
 
 #include "pool.h"
+#include "largest.h"
 
 #if defined(ETL_COMPILER_GCC)
   #pragma GCC diagnostic push
@@ -273,6 +274,24 @@ namespace
       etl::ipool& ip = pool;
 
       CHECK_THROW(ip.allocate<double>(), etl::pool_element_size);
+    }
+
+    //*************************************************************************
+    TEST(test_generic_allocate)
+    {
+      typedef etl::largest<uint8_t, uint32_t, double, Test_Data> largest;
+
+      etl::generic_pool<largest::size, largest::alignment, 4> pool;
+
+      uint8_t*   p1 = nullptr;
+      uint32_t*  p2 = nullptr;
+      double*    p3 = nullptr;
+      Test_Data* p4 = nullptr;
+
+      CHECK_NO_THROW(p1 = pool.allocate<uint8_t>());
+      CHECK_NO_THROW(p2 = pool.allocate<uint32_t>());
+      CHECK_NO_THROW(p3 = pool.allocate<double>());
+      CHECK_NO_THROW(p4 = pool.allocate<Test_Data>());
     }
   };
 }
