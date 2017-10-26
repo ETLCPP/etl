@@ -342,11 +342,6 @@ namespace etl
     {
     }
 
-    ~pool()
-    {
-
-    }
-
     //*************************************************************************
     /// Allocate an object from the pool.
     /// Uses the default constructor.
@@ -379,6 +374,62 @@ namespace etl
     // Should not be copied.
     pool(const pool&);
     pool& operator =(const pool&);
+  };
+
+  //*************************************************************************
+  /// A templated abstract pool implementation that uses a fixed size pool.
+  ///\ingroup pool
+  //*************************************************************************
+  template <const size_t TYPE_SIZE_, const size_t ALIGNMENT_, const size_t SIZE_>
+  class generic_pool : public etl::ipool
+  {
+  public:
+
+    static const size_t SIZE      = SIZE_;
+    static const size_t ALIGNMENT = ALIGNMENT_;
+    static const size_t TYPE_SIZE = TYPE_SIZE_;
+
+    //*************************************************************************
+    /// Constructor
+    //*************************************************************************
+    generic_pool()
+      : etl::ipool(reinterpret_cast<char*>(&buffer[0]), ELEMENT_SIZE, SIZE)
+    {
+    }
+
+    //*************************************************************************
+    /// Allocate an object from the pool.
+    /// Uses the default constructor.
+    /// If asserts or exceptions are enabled and there are no more free items an
+    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
+    /// Static asserts if the specified type is too large for the pool.
+    //*************************************************************************
+    template <typename U>
+    U* allocate()
+    {
+      STATIC_ASSERT(alignof(U) <= ALIGNMENT_,   "Type has incompatible alignment");
+      STATIC_ASSERT(sizeof(U)  <= ELEMENT_SIZE, "Type too large for pool");
+      return ipool::allocate<U>();
+    }
+
+  private:
+
+    // The pool element.
+    union Element
+    {
+      uintptr_t next;              ///< Pointer to the next free element.
+      char      value[TYPE_SIZE_]; ///< Storage for value type.
+      typename  etl::type_with_alignment<ALIGNMENT_>::type dummy; ///< Dummy item to get correct alignment.
+    };
+
+    ///< The memory for the pool of objects.
+    typename etl::aligned_storage<sizeof(Element), etl::alignment_of<Element>::value>::type buffer[SIZE];
+
+    static const uint32_t ELEMENT_SIZE = sizeof(Element);
+
+    // Should not be copied.
+    generic_pool(const generic_pool&);
+    generic_pool& operator =(const generic_pool&);
   };
 }
 
