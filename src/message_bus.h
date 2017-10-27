@@ -94,7 +94,7 @@ namespace etl
       bool ok = true;
 
       // There's no point actually adding null routers.
-      if (router.get_message_router_id() != etl::imessage_router::NULL_MESSAGE_ROUTER)
+      if (!router.is_null_router())
       {
         ok = !router_list.full();
 
@@ -102,7 +102,7 @@ namespace etl
 
         if (ok)
         {
-          if (router.get_message_router_id() == etl::imessage_router::MESSAGE_BUS)
+          if (router.is_bus())
           {
             // Message busses get added to the end.
             router_list.push_back(&router);
@@ -203,7 +203,7 @@ namespace etl
           {
             etl::imessage_router& router = **irouter;
 
-            if (router.get_message_router_id() == etl::imessage_router::MESSAGE_BUS)
+            if (router.is_bus())
             {
               // The router is actually a bus.
               etl::imessage_bus& bus = static_cast<etl::imessage_bus&>(router);

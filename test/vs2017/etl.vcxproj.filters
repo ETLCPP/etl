@@ -558,9 +558,6 @@
     <ClInclude Include="..\..\src\c\ecl_timer.h">
       <Filter>ECL</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\c\ecl_timer_list.h">
-      <Filter>ECL</Filter>
-    </ClInclude>
     <ClInclude Include="..\ecl_user.h">
       <Filter>Source Files\ECL</Filter>
     </ClInclude>
@@ -930,9 +927,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\c\ecl_timer.c">
-      <Filter>ECL</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\c\ecl_timer_list.c">
       <Filter>ECL</Filter>
     </ClCompile>
     <ClCompile Include="..\test_c_timer_framework.cpp">

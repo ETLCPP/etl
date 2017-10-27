@@ -63,10 +63,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../../src/c/ecl_timer.h" />
-		<Unit filename="../../src/c/ecl_timer_list.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../../src/c/ecl_timer_list.h" />
 		<Unit filename="../../src/callback.h" />
 		<Unit filename="../../src/callback_timer.h" />
 		<Unit filename="../../src/char_traits.h" />

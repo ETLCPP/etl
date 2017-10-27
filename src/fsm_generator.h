@@ -318,8 +318,8 @@ namespace etl
       {
         do
         {
-          p_state = p_next_state;
           fsm_helper::on_exit_state(*p_state);
+          p_state = p_next_state;
 
           next_state_id = fsm_helper::on_enter_state(*p_state);
           ETL_ASSERT(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
