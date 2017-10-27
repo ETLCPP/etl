@@ -428,8 +428,10 @@ namespace etl
 
   /// is_base_of
   ///\ingroup type_traits
-  template<class TBase, class TDerived>
-  struct is_base_of
+  template<typename TBase,
+    typename TDerived,
+    const bool IsFundamental = (etl::is_fundamental<TBase>::value || etl::is_fundamental<TDerived>::value)>
+    struct is_base_of
   {
   private:
 
@@ -442,6 +444,13 @@ namespace etl
   public:
 
     static const bool value = (sizeof(check((internal*)0)) == sizeof(TBase*));
+  };
+
+  // For when TBase or TDerived is a fundamental type.
+  template<typename TBase, typename TDerived>
+  struct is_base_of<TBase, TDerived, true>
+  {
+    static const bool value = false;
   };
 
   /// Alignment templates.
