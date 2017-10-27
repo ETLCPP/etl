@@ -81,7 +81,7 @@ namespace etl
         next(etl::timer::id::NO_TIMER),
         repeating(repeating_)
     {
-      if (irouter_.get_message_router_id() == etl::imessage_router::MESSAGE_BUS)
+      if (irouter_.is_bus())
       {
         destination_router_id = destination_router_id_;
       }
@@ -330,7 +330,7 @@ namespace etl
       if (is_space)
       {
         // There's no point adding null message routers.
-        if (router_.get_message_router_id() != etl::imessage_router::NULL_MESSAGE_ROUTER)
+        if (!router_.is_null_router())
         {
           // Search for the free space.
           for (uint_least8_t i = 0; i < MAX_TIMERS; ++i)
@@ -455,7 +455,7 @@ namespace etl
 
               if (timer.p_router != nullptr)
               {
-                if (timer.p_router->get_message_router_id() == etl::imessage_router::MESSAGE_BUS)
+                if (timer.p_router->is_bus())
                 {
                   // Send to a message bus.
                   etl::imessage_bus& bus = static_cast<etl::imessage_bus&>(*(timer.p_router));

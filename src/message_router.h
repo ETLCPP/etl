@@ -114,6 +114,18 @@ namespace etl
       return message_router_id;
     }
 
+    //********************************************
+    bool is_null_router() const
+    {
+      return (message_router_id == NULL_MESSAGE_ROUTER);
+    }
+
+    //********************************************
+    bool is_bus() const
+    {
+      return (message_router_id == MESSAGE_BUS);
+    }
+
     enum
     {
       NULL_MESSAGE_ROUTER = 255,
