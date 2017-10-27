@@ -10,8 +10,8 @@
       <TargetName>Target 1</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060528::V5.06 update 5 (build 528)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>6070000::V6.7::.\ARMCLANG</pCCUsed>
+      <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32F401RETx</Device>
@@ -320,7 +320,7 @@
             <PlainCh>1</PlainCh>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
-            <wLevel>2</wLevel>
+            <wLevel>3</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>1</uC99>
@@ -391,19 +391,9 @@
               <FilePath>..\..\src\c\ecl_timer.c</FilePath>
             </File>
             <File>
-              <FileName>ecl_timer_list.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\src\c\ecl_timer_list.c</FilePath>
-            </File>
-            <File>
               <FileName>ecl_timer.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\src\c\ecl_timer.h</FilePath>
-            </File>
-            <File>
-              <FileName>ecl_timer_list.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\src\c\ecl_timer_list.h</FilePath>
             </File>
             <File>
               <FileName>ecl_user.h</FileName>
