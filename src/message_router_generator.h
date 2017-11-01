@@ -85,8 +85,8 @@ namespace etl
   {
   public:
 
-    message_router_exception(string_type what, string_type file_name, numeric_type line_number)
-      : etl::exception(what, file_name, line_number)
+    message_router_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : etl::exception(reason_, file_name_, line_number_)
     {
     }
   };
@@ -98,8 +98,8 @@ namespace etl
   {
   public:
 
-    message_router_illegal_id(string_type file_name, numeric_type line_number)
-      : message_router_exception(ETL_ERROR_TEXT("message router:illegal id", ETL_FILE"A"), file_name, line_number)
+    message_router_illegal_id(string_type file_name_, numeric_type line_number_)
+      : message_router_exception(ETL_ERROR_TEXT("message router:illegal id", ETL_FILE"A"), file_name_, line_number_)
     {
     }
   };

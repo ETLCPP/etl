@@ -86,9 +86,9 @@ SOFTWARE.
   typedef ValueType value_type; \
 	TypeName() {} \
 	TypeName(const TypeName &other) : value(other.value) {} \
-	TypeName(enum_type value) : value(value) {} \
+	TypeName(enum_type value_) : value(value_) {} \
   TypeName& operator=(const TypeName &other) {value = other.value; return *this;} \
-  explicit TypeName(value_type value) : value(static_cast<enum_type>(value)) {} \
+  explicit TypeName(value_type value_) : value(static_cast<enum_type>(value_)) {} \
 	operator value_type() const {return static_cast<value_type>(value);} \
   value_type get_value() const {return static_cast<value_type>(value);} \
   enum_type get_enum() const {return value;} \

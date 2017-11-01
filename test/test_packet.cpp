@@ -64,8 +64,8 @@ namespace
 
   struct derived_1 : public base
   {
-    derived_1(int value)
-      : base(value)
+    derived_1(int value_)
+      : base(value_)
     {
     }
 
@@ -79,8 +79,8 @@ namespace
 
   struct derived_2 : public base
   {
-    derived_2(int value)
-      : base(value)
+    derived_2(int value_)
+      : base(value_)
     {
     }
 
@@ -143,14 +143,14 @@ namespace
       derived_2 db(2);
       derived_1 dc(3);
       derived_2 dd(4);
-      
+
       etl::queue<packet1_t, 4> queue;
 
       queue.emplace(da);
       queue.emplace(db);
       queue.emplace(dc);
       queue.emplace(dd);
-      
+
       CHECK_EQUAL(da.value(), queue.front().get().value());
       queue.pop();
 

@@ -88,8 +88,8 @@ namespace etl
   {
   public:
 
-    string_exception(string_type what, string_type file_name, numeric_type line_number)
-      : exception(what, file_name, line_number)
+    string_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
     {
     }
   };
@@ -102,8 +102,8 @@ namespace etl
   {
   public:
 
-    string_empty(string_type file_name, numeric_type line_number)
-      : string_exception(ETL_ERROR_TEXT("string:empty", ETL_FILE"A"), file_name, line_number)
+    string_empty(string_type file_name_, numeric_type line_number_)
+      : string_exception(ETL_ERROR_TEXT("string:empty", ETL_FILE"A"), file_name_, line_number_)
     {
     }
   };
@@ -116,8 +116,8 @@ namespace etl
   {
   public:
 
-    string_out_of_bounds(string_type file_name, numeric_type line_number)
-      : string_exception(ETL_ERROR_TEXT("string:bounds", ETL_FILE"B"), file_name, line_number)
+    string_out_of_bounds(string_type file_name_, numeric_type line_number_)
+      : string_exception(ETL_ERROR_TEXT("string:bounds", ETL_FILE"B"), file_name_, line_number_)
     {
     }
   };
@@ -130,8 +130,8 @@ namespace etl
   {
   public:
 
-    string_iterator(string_type file_name, numeric_type line_number)
-      : string_exception(ETL_ERROR_TEXT("string:iterator", ETL_FILE"C"), file_name, line_number)
+    string_iterator(string_type file_name_, numeric_type line_number_)
+      : string_exception(ETL_ERROR_TEXT("string:iterator", ETL_FILE"C"), file_name_, line_number_)
     {
     }
   };
@@ -228,10 +228,10 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    string_base(size_t max_size)
+    string_base(size_t max_size_)
       : is_truncated(false),
         current_size(0),
-        CAPACITY(max_size)
+        CAPACITY(max_size_)
     {
     }
 
@@ -505,8 +505,8 @@ namespace etl
     //*********************************************************************
     void assign(const etl::ibasic_string<T>& other)
     {
-      size_t length = std::min(CAPACITY, other.size());
-      assign(other.begin(), other.begin() + length);
+      size_t len = std::min(CAPACITY, other.size());
+      assign(other.begin(), other.begin() + len);
     }
 
     //*********************************************************************
@@ -553,15 +553,15 @@ namespace etl
     ///\param other The other string.
     ///\param length The length to copy.
     //*********************************************************************
-    void assign(const_pointer other, size_t length)
+    void assign(const_pointer other, size_t length_)
     {
-      length = std::min(length, CAPACITY);
+      length_ = std::min(length_, CAPACITY);
 
       initialise();
 
-      etl::copy_n(other, length, begin());
+      etl::copy_n(other, length_, begin());
 
-      current_size = length;
+      current_size = length_;
       p_buffer[current_size] = 0;
     }
 
@@ -576,8 +576,8 @@ namespace etl
     void assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      difference_type count = std::distance(first, last);
-      ETL_ASSERT(count >= 0, ETL_ERROR(string_iterator));
+      difference_type d = std::distance(first, last);
+      ETL_ASSERT(d >= 0, ETL_ERROR(string_iterator));
 #endif
 
       initialise();
@@ -969,12 +969,12 @@ namespace etl
     ///\param length   Number of characters.
     ///\return A refernce to this string.
     //*********************************************************************
-    etl::ibasic_string<T>& erase(size_t position, size_t length = npos)
+    etl::ibasic_string<T>& erase(size_t position, size_t length_ = npos)
     {
       // Limit the length.
-      length = std::min(length, size() - position);
+      length_ = std::min(length_, size() - position);
 
-      erase(begin() + position, begin() + position + length);
+      erase(begin() + position, begin() + position + length_);
 
       return *this;
     }
@@ -1171,9 +1171,9 @@ namespace etl
     //*********************************************************************
     size_t rfind(const_pointer s, size_t position = npos) const
     {
-      size_t length = etl::strlen(s);
+      size_t len = etl::strlen(s);
 
-      if (length > size())
+      if (len > size())
       {
         return npos;
       }
@@ -1185,7 +1185,7 @@ namespace etl
 
       position = size() - position;
 
-      const_reverse_iterator srbegin(s + length);
+      const_reverse_iterator srbegin(s + len);
       const_reverse_iterator srend(s);
 
       const_reverse_iterator iposition = std::search(rbegin() + position, rend(), srbegin, srend);
@@ -1196,7 +1196,7 @@ namespace etl
       }
       else
       {
-        return size() - length - std::distance(rbegin(), iposition);
+        return size() - len - std::distance(rbegin(), iposition);
       }
     }
 
@@ -1205,9 +1205,9 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_t rfind(const_pointer s, size_t position, size_t length) const
+    size_t rfind(const_pointer s, size_t position, size_t length_) const
     {
-      if (length > size())
+      if (length_ > size())
       {
         return npos;
       }
@@ -1219,7 +1219,7 @@ namespace etl
 
       position = size() - position;
 
-      const_reverse_iterator srbegin(s + length);
+      const_reverse_iterator srbegin(s + length_);
       const_reverse_iterator srend(s);
 
       const_reverse_iterator iposition = std::search(rbegin() + position, rend(), srbegin, srend);
@@ -1230,7 +1230,7 @@ namespace etl
       }
       else
       {
-        return size() - length - std::distance(rbegin(), iposition);
+        return size() - length_ - std::distance(rbegin(), iposition);
       }
     }
 
@@ -1266,15 +1266,15 @@ namespace etl
     ///\param length   The number of characters to replace.
     ///\param str      The string to replace it with.
     //*********************************************************************
-    ibasic_string& replace(size_t position, size_t length, const ibasic_string& str)
+    ibasic_string& replace(size_t position, size_t length_, const ibasic_string& str)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
       // Limit the length.
-      length = std::min(length, size() - position);
+      length_ = std::min(length_, size() - position);
 
       // Erase the bit we want to replace.
-      erase(position, length);
+      erase(position, length_);
 
       // Insert the new stuff.
       insert(position, str);
@@ -1306,17 +1306,17 @@ namespace etl
     //*********************************************************************
     /// Replace characters from 'position' of 'length' with 'str' from 'subpsotion' of 'sublength'.
     //*********************************************************************
-    ibasic_string& replace(size_t position, size_t length, const ibasic_string& str, size_t subposition, size_t sublength)
+    ibasic_string& replace(size_t position, size_t length_, const ibasic_string& str, size_t subposition, size_t sublength)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
       ETL_ASSERT(subposition <= str.size(), ETL_ERROR(string_out_of_bounds));
 
       // Limit the lengths.
-      length = std::min(length, size() - position);
+      length_ = std::min(length_, size() - position);
       sublength = std::min(sublength, str.size() - subposition);
 
       // Erase the bit we want to replace.
-      erase(position, length);
+      erase(position, length_);
 
       // Insert the new stuff.
       insert(position, str, subposition, sublength);
@@ -1327,15 +1327,15 @@ namespace etl
     //*********************************************************************
     /// Replace characters from 'position' of 'length' with pointed to string.
     //*********************************************************************
-    ibasic_string& replace(size_t position, size_t length, const_pointer s)
+    ibasic_string& replace(size_t position, size_t length_, const_pointer s)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
       // Limit the length.
-      length = std::min(length, size() - position);
+      length_ = std::min(length_, size() - position);
 
       // Erase the bit we want to replace.
-      erase(position, length);
+      erase(position, length_);
 
       // Insert the new stuff.
       insert(position, s, etl::strlen(s));
@@ -1364,15 +1364,15 @@ namespace etl
     //*********************************************************************
     /// Replace characters from 'position' of 'length' with 'n' characters from pointed to string.
     //*********************************************************************
-    ibasic_string& replace(size_t position, size_t length, const_pointer s, size_t n)
+    ibasic_string& replace(size_t position, size_t length_, const_pointer s, size_t n)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
       // Limit the length.
-      length = std::min(length, size() - position);
+      length_ = std::min(length_, size() - position);
 
       // Erase the bit we want to replace.
-      erase(position, length);
+      erase(position, length_);
 
       // Insert the new stuff.
       insert(position, s, n);
@@ -1401,15 +1401,15 @@ namespace etl
     //*********************************************************************
     /// Replace characters from 'position' of 'length' with 'n' copies of 'c'.
     //*********************************************************************
-    ibasic_string& replace(size_t position, size_t length, size_t n, value_type c)
+    ibasic_string& replace(size_t position, size_t length_, size_t n, value_type c)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
       // Limit the length.
-      length = std::min(length, size() - position);
+      length_ = std::min(length_, size() - position);
 
       // Erase the bit we want to replace.
-      erase(position, length);
+      erase(position, length_);
 
       // Insert the new stuff.
       insert(position, n, c);
@@ -1468,15 +1468,15 @@ namespace etl
     //*************************************************************************
     /// Compare position / length with string.
     //*************************************************************************
-    int compare(size_t position, size_t length, const ibasic_string& str) const
+    int compare(size_t position, size_t length_, const ibasic_string& str) const
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
       // Limit the length.
-      length = std::min(length, size() - position);
+      length_ = std::min(length_, size() - position);
 
       return compare(p_buffer + position,
-        p_buffer + position + length,
+        p_buffer + position + length_,
         str.p_buffer,
         str.p_buffer + str.size());
     }
@@ -1484,17 +1484,17 @@ namespace etl
     //*************************************************************************
     /// Compare position / length with string / subposition / sublength.
     //*************************************************************************
-    int compare(size_t position, size_t length, const ibasic_string& str, size_t subposition, size_t sublength) const
+    int compare(size_t position, size_t length_, const ibasic_string& str, size_t subposition, size_t sublength) const
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
       ETL_ASSERT(subposition <= str.size(), ETL_ERROR(string_out_of_bounds));
 
       // Limit the lengths.
-      length = std::min(length, size() - position);
+      length_ = std::min(length_, size() - position);
       sublength = std::min(sublength, str.size() - subposition);
 
       return compare(p_buffer + position,
-        p_buffer + position + length,
+        p_buffer + position + length_,
         str.p_buffer + subposition,
         str.p_buffer + subposition + sublength);
     }
@@ -1513,10 +1513,10 @@ namespace etl
     //*************************************************************************
     /// Compare position / length with C string.
     //*************************************************************************
-    int compare(size_t position, size_t length, const_pointer s) const
+    int compare(size_t position, size_t length_, const_pointer s) const
     {
       return compare(p_buffer + position,
-        p_buffer + position + length,
+        p_buffer + position + length_,
         s,
         s + etl::strlen(s));
     }
@@ -1524,10 +1524,10 @@ namespace etl
     //*************************************************************************
     /// Compare position / length with C string / n.
     //*************************************************************************
-    int compare(size_t position, size_t length, const_pointer s, size_t n) const
+    int compare(size_t position, size_t length_, const_pointer s, size_t n) const
     {
       return compare(p_buffer + position,
-        p_buffer + position + length,
+        p_buffer + position + length_,
         s,
         s + n);;
     }
@@ -1817,7 +1817,7 @@ namespace etl
     }
 
     //*********************************************************************
-    // 
+    //
     //*********************************************************************
     size_t find_last_not_of(value_type c, size_t position = npos) const
     {
@@ -1902,9 +1902,9 @@ namespace etl
     //*********************************************************************
     /// Constructor.
     //*********************************************************************
-    ibasic_string(T* p_buffer, size_t MAX_SIZE)
-      : string_base(MAX_SIZE),
-      p_buffer(p_buffer)
+    ibasic_string(T* p_buffer_, size_t MAX_SIZE_)
+      : string_base(MAX_SIZE_),
+        p_buffer(p_buffer_)
     {
     }
 

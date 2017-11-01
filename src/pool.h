@@ -63,8 +63,8 @@ namespace etl
   {
   public:
 
-    pool_exception(string_type what, string_type file_name, numeric_type line_number)
-      : exception(what, file_name, line_number)
+    pool_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
     {}
   };
 
@@ -76,8 +76,8 @@ namespace etl
   {
   public:
 
-    explicit pool_no_allocation(string_type file_name, numeric_type line_number)
-      : pool_exception(ETL_ERROR_TEXT("pool:allocation", ETL_FILE"A"), file_name, line_number)
+    explicit pool_no_allocation(string_type file_name_, numeric_type line_number_)
+      : pool_exception(ETL_ERROR_TEXT("pool:allocation", ETL_FILE"A"), file_name_, line_number_)
     {}
   };
 
@@ -89,8 +89,8 @@ namespace etl
   {
   public:
 
-    pool_object_not_in_pool(string_type file_name, numeric_type line_number)
-      : pool_exception(ETL_ERROR_TEXT("pool:not in pool", ETL_FILE"B"), file_name, line_number)
+    pool_object_not_in_pool(string_type file_name_, numeric_type line_number_)
+      : pool_exception(ETL_ERROR_TEXT("pool:not in pool", ETL_FILE"B"), file_name_, line_number_)
     {}
   };
 
@@ -102,8 +102,8 @@ namespace etl
   {
   public:
 
-    pool_element_size(string_type file_name, numeric_type line_number)
-      : pool_exception(ETL_ERROR_TEXT("pool:element size", ETL_FILE"C"), file_name, line_number)
+    pool_element_size(string_type file_name_, numeric_type line_number_)
+      : pool_exception(ETL_ERROR_TEXT("pool:element size", ETL_FILE"C"), file_name_, line_number_)
     {}
   };
 
@@ -212,13 +212,13 @@ namespace etl
     //*************************************************************************
     /// Constructor
     //*************************************************************************
-    ipool(char* p_buffer_, uint32_t item_size, uint32_t max_size)
+    ipool(char* p_buffer_, uint32_t item_size_, uint32_t max_size_)
       : p_buffer(p_buffer_),
         p_next(p_buffer_),
         items_allocated(0),
         items_initialised(0),
-        ITEM_SIZE(item_size),
-        MAX_SIZE(max_size)
+        ITEM_SIZE(item_size_),
+        MAX_SIZE(max_size_)
     {
     }
 

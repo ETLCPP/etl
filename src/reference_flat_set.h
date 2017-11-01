@@ -57,8 +57,8 @@ namespace etl
   {
   public:
 
-    flat_set_exception(string_type what, string_type file_name, numeric_type line_number)
-      : exception(what, file_name, line_number)
+    flat_set_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
     {
     }
   };
@@ -71,8 +71,8 @@ namespace etl
   {
   public:
 
-    flat_set_full(string_type file_name, numeric_type line_number)
-      : flat_set_exception(ETL_ERROR_TEXT("flat_set:full", ETL_FILE"A"), file_name, line_number)
+    flat_set_full(string_type file_name_, numeric_type line_number_)
+      : flat_set_exception(ETL_ERROR_TEXT("flat_set:full", ETL_FILE"A"), file_name_, line_number_)
     {
     }
   };
@@ -85,8 +85,8 @@ namespace etl
   {
   public:
 
-    flat_set_iterator(string_type file_name, numeric_type line_number)
-      : flat_set_exception(ETL_ERROR_TEXT("flat_set:iterator", ETL_FILE"C"), file_name, line_number)
+    flat_set_iterator(string_type file_name_, numeric_type line_number_)
+      : flat_set_exception(ETL_ERROR_TEXT("flat_set:iterator", ETL_FILE"C"), file_name_, line_number_)
     {
     }
   };
@@ -127,8 +127,8 @@ namespace etl
       {
       }
 
-      iterator(typename lookup_t::iterator ilookup)
-        : ilookup(ilookup)
+      iterator(typename lookup_t::iterator ilookup_)
+        : ilookup(ilookup_)
       {
       }
 
@@ -225,8 +225,8 @@ namespace etl
       {
       }
 
-      const_iterator(typename lookup_t::const_iterator ilookup)
-        : ilookup(ilookup)
+      const_iterator(typename lookup_t::const_iterator ilookup_)
+        : ilookup(ilookup_)
       {
       }
 
@@ -437,8 +437,8 @@ namespace etl
     void assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      difference_type count = std::distance(first, last);
-      ETL_ASSERT(count <= difference_type(capacity()), ETL_ERROR(flat_set_full));
+      difference_type d = std::distance(first, last);
+      ETL_ASSERT(d <= difference_type(capacity()), ETL_ERROR(flat_set_full));
 #endif
 
       clear();

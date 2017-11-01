@@ -69,9 +69,9 @@ namespace
     }
   };
 
-  std::ostream& operator << (std::ostream& os, const StructData& data)
+  std::ostream& operator << (std::ostream& os, const StructData& data_)
   {
-    os << data.a << "," << data.b;
+    os << data_.a << "," << data_.b;
     return os;
   }
 

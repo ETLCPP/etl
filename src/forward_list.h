@@ -69,8 +69,8 @@ namespace etl
   {
   public:
 
-    forward_list_exception(string_type what, string_type file_name, numeric_type line_number)
-      : exception(what, file_name, line_number)
+    forward_list_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
     {
     }
   };
@@ -83,8 +83,8 @@ namespace etl
   {
   public:
 
-    forward_list_full(string_type file_name, numeric_type line_number)
-      : etl::forward_list_exception(ETL_ERROR_TEXT("forward_list:full", ETL_FILE"A"), file_name, line_number)
+    forward_list_full(string_type file_name_, numeric_type line_number_)
+      : etl::forward_list_exception(ETL_ERROR_TEXT("forward_list:full", ETL_FILE"A"), file_name_, line_number_)
     {
     }
   };
@@ -97,8 +97,8 @@ namespace etl
   {
   public:
 
-    forward_list_empty(string_type file_name, numeric_type line_number)
-      : etl::forward_list_exception(ETL_ERROR_TEXT("forward_list:empty", ETL_FILE"B"), file_name, line_number)
+    forward_list_empty(string_type file_name_, numeric_type line_number_)
+      : etl::forward_list_exception(ETL_ERROR_TEXT("forward_list:empty", ETL_FILE"B"), file_name_, line_number_)
     {
     }
   };
@@ -111,8 +111,8 @@ namespace etl
   {
   public:
 
-    forward_list_iterator(string_type file_name, numeric_type line_number)
-      : etl::forward_list_exception(ETL_ERROR_TEXT("forward_list:iterator", ETL_FILE"C"), file_name, line_number)
+    forward_list_iterator(string_type file_name_, numeric_type line_number_)
+      : etl::forward_list_exception(ETL_ERROR_TEXT("forward_list:iterator", ETL_FILE"C"), file_name_, line_number_)
     {
     }
   };
@@ -216,9 +216,9 @@ namespace etl
     //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
-    forward_list_base(etl::ipool& node_pool, size_type max_size)
-      : p_node_pool(&node_pool),
-      MAX_SIZE(max_size)
+    forward_list_base(etl::ipool& node_pool_, size_type max_size_)
+      : p_node_pool(&node_pool_),
+        MAX_SIZE(max_size_)
     {
     }
 
@@ -295,8 +295,8 @@ namespace etl
     //*************************************************************************
     struct data_node_t : public node_t
     {
-      explicit data_node_t(parameter_t value)
-        : value(value)
+      explicit data_node_t(parameter_t value_)
+        : value(value_)
       {}
 
       T value;
@@ -574,8 +574,8 @@ namespace etl
     void assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      difference_type count = std::distance(first, last);
-      ETL_ASSERT(count >= 0, ETL_ERROR(forward_list_iterator));
+      difference_type d = std::distance(first, last);
+      ETL_ASSERT(d >= 0, ETL_ERROR(forward_list_iterator));
 #endif
 
       initialise();
@@ -851,8 +851,8 @@ namespace etl
     void insert_after(iterator position, TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      difference_type count = std::distance(first, last);
-      ETL_ASSERT((count + size()) <= MAX_SIZE, ETL_ERROR(forward_list_full));
+      difference_type d = std::distance(first, last);
+      ETL_ASSERT((d + size()) <= MAX_SIZE, ETL_ERROR(forward_list_full));
 #endif
 
       while (first != last)

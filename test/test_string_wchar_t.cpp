@@ -40,7 +40,7 @@ SOFTWARE.
 #define STR(x) L##x
 
 namespace
-{		
+{
   SUITE(test_string_wchar_t)
   {
     static const size_t SIZE = 11;
@@ -702,9 +702,6 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_n_value)
     {
-      Compare_Text compare_text;
-      Text text;
-
       const size_t INITIAL_SIZE = 5;
       const size_t INSERT_SIZE = 3;
       const value_t INITIAL_VALUE = STR('A');
@@ -1902,7 +1899,7 @@ namespace
       CHECK((initial < initial) == (initial_text < initial_text));
       CHECK((initial < initial) == (initial_text < initial_text));
 
-      // String-Pointer Pointer-String 
+      // String-Pointer Pointer-String
       CHECK((less          < pinitial_text) == (less_text     < pinitial_text));
       CHECK((pinitial_text < less) == (pinitial_text < less_text));
 
@@ -1937,7 +1934,7 @@ namespace
       CHECK((initial <= initial) == (initial_text <= initial_text));
       CHECK((initial <= initial) == (initial_text <= initial_text));
 
-      // String-Pointer Pointer-String 
+      // String-Pointer Pointer-String
       CHECK((less <= pinitial_text) == (less_text <= pinitial_text));
       CHECK((pinitial_text <= less) == (pinitial_text <= less_text));
 
@@ -1972,7 +1969,7 @@ namespace
       CHECK((initial > initial) == (initial_text > initial_text));
       CHECK((initial > initial) == (initial_text > initial_text));
 
-      // String-Pointer Pointer-String 
+      // String-Pointer Pointer-String
       CHECK((less          > pinitial_text) == (less_text     > pinitial_text));
       CHECK((pinitial_text > less) == (pinitial_text > less_text));
 
@@ -2007,7 +2004,7 @@ namespace
       CHECK((initial >= initial) == (initial_text >= initial_text));
       CHECK((initial >= initial) == (initial_text >= initial_text));
 
-      // String-Pointer Pointer-String 
+      // String-Pointer Pointer-String
       CHECK((less >= pinitial_text) == (less_text >= pinitial_text));
       CHECK((pinitial_text >= less) == (pinitial_text >= less_text));
 

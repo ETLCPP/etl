@@ -83,7 +83,7 @@ SOFTWARE.
     TypeName() {} \
     TypeName(const TypeName &other) : value(other.value) {} \
     TypeName& operator=(const TypeName &other) { value = other.value; return *this; } \
-    explicit TypeName(ValueType value) : value(value) {} \
+    explicit TypeName(ValueType value_) : value(value_) {} \
     operator ValueType() const { return value; } \
     ValueType& get() { return value; } \
     const ValueType& get() const { return value; } \
@@ -118,7 +118,7 @@ SOFTWARE.
 //*****************************************************************************
 #define ETL_END_USER_TYPE(TypeName) \
     }; \
-    TypeName(enum_type value) : value(static_cast<value_type>(value)) {} \
+    TypeName(enum_type value_) : value(static_cast<value_type>(value_)) {} \
   };
 
 

@@ -74,8 +74,8 @@ namespace etl
   {
   public:
 
-    optional_exception(string_type what, string_type file_name, numeric_type line_number)
-      : exception(what, file_name, line_number)
+    optional_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
     {
     }
   };
@@ -88,8 +88,8 @@ namespace etl
   {
   public:
 
-    optional_invalid(string_type file_name, numeric_type line_number)
-      : optional_exception("optional: invalid", file_name, line_number)
+    optional_invalid(string_type file_name_, numeric_type line_number_)
+      : optional_exception("optional: invalid", file_name_, line_number_)
     {
     }
   };
@@ -136,9 +136,9 @@ namespace etl
     //***************************************************************************
     /// Constructor from value type.
     //***************************************************************************
-    optional(const T& value)
+    optional(const T& value_)
     {
-     ::new (storage.template get_address<T>()) T(value);
+     ::new (storage.template get_address<T>()) T(value_);
       valid = true;
     }
 
@@ -199,15 +199,15 @@ namespace etl
     //***************************************************************************
     /// Assignment operator from value type.
     //***************************************************************************
-    optional& operator =(const T& value)
+    optional& operator =(const T& value_)
     {
       if (valid)
       {
-        storage.template get_reference<T>() = value;
+        storage.template get_reference<T>() = value_;
       }
       else
       {
-       ::new (storage.template get_address<T>()) T(value);
+       ::new (storage.template get_address<T>()) T(value_);
         valid = true;
       }
 

@@ -47,8 +47,8 @@ namespace etl
   {
   public:
 
-    task_exception(string_type what, string_type file_name, numeric_type line_number)
-      : etl::exception(what, file_name, line_number)
+    task_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : etl::exception(reason_, file_name_, line_number_)
     {
     }
   };

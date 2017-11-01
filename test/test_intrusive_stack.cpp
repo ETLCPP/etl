@@ -40,8 +40,8 @@ namespace
 
   struct Data : public link0, public link1
   {
-    Data(int i)
-      : i(i)
+    Data(int i_)
+      : i(i_)
     {
 
     }

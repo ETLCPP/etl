@@ -64,8 +64,8 @@ namespace etl
   {
   public:
 
-    queue_exception(string_type what, string_type file_name, numeric_type line_number)
-      : exception(what, file_name, line_number)
+    queue_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
     {
     }
   };
@@ -78,8 +78,8 @@ namespace etl
   {
   public:
 
-    queue_full(string_type file_name, numeric_type line_number)
-      : queue_exception(ETL_ERROR_TEXT("queue:full", ETL_FILE"A"), file_name, line_number)
+    queue_full(string_type file_name_, numeric_type line_number_)
+      : queue_exception(ETL_ERROR_TEXT("queue:full", ETL_FILE"A"), file_name_, line_number_)
     {
     }
   };
@@ -92,8 +92,8 @@ namespace etl
   {
   public:
 
-    queue_empty(string_type file_name, numeric_type line_number)
-      : queue_exception(ETL_ERROR_TEXT("queue:empty", ETL_FILE"B"), file_name, line_number)
+    queue_empty(string_type file_name_, numeric_type line_number_)
+      : queue_exception(ETL_ERROR_TEXT("queue:empty", ETL_FILE"B"), file_name_, line_number_)
     {
     }
   };
@@ -156,11 +156,11 @@ namespace etl
     //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
-    queue_base(size_type max_size)
+    queue_base(size_type max_size_)
       : in(0),
         out(0),
         current_size(0),
-        CAPACITY(max_size)
+        CAPACITY(max_size_)
     {
     }
 
@@ -397,7 +397,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the oldest value and removes it from the front of the queue and 
+    /// Gets the oldest value and removes it from the front of the queue and
     /// pushes it to the destination container.
     /// If asserts or exceptions are enabled, throws an etl::queue_empty if the queue is empty.
     /// NOTE: The destination must support a push(T) member function.
@@ -408,7 +408,7 @@ namespace etl
       destination.push(front());
       pop();
     }
-    
+
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
@@ -444,9 +444,9 @@ namespace etl
     //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
-    iqueue(T* p_buffer, size_type max_size)
-      : queue_base(max_size),
-      p_buffer(p_buffer)
+    iqueue(T* p_buffer_, size_type max_size_)
+      : queue_base(max_size_),
+        p_buffer(p_buffer_)
     {
     }
 

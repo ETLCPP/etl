@@ -57,8 +57,8 @@ namespace etl
     //*************************************************************************
     struct free_function : public etl::function<void, const etl::exception&>
     {
-      free_function(void (*p_function)(const etl::exception&))
-        : etl::function<void, const etl::exception&>(p_function)
+      free_function(void (*p_function_)(const etl::exception&))
+        : etl::function<void, const etl::exception&>(p_function_)
       {
       }
     };
@@ -69,8 +69,8 @@ namespace etl
     template <typename TObject>
     struct member_function : public etl::function<TObject, const etl::exception&>
     {
-      member_function(TObject& object, void(TObject::*p_function)(const etl::exception&))
-        : etl::function<TObject, const etl::exception&>(object, p_function)
+      member_function(TObject& object_, void(TObject::*p_function_)(const etl::exception&))
+        : etl::function<TObject, const etl::exception&>(object_, p_function_)
       {
       }
     };

@@ -63,8 +63,8 @@ namespace etl
   {
   public:
 
-    intrusive_forward_list_exception(string_type what, string_type file_name, numeric_type line_number)
-      : exception(what, file_name, line_number)
+    intrusive_forward_list_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
     {
     }
   };
@@ -77,8 +77,8 @@ namespace etl
   {
   public:
 
-    intrusive_forward_list_empty(string_type file_name, numeric_type line_number)
-      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:empty", ETL_FILE"A"), file_name, line_number)
+    intrusive_forward_list_empty(string_type file_name_, numeric_type line_number_)
+      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:empty", ETL_FILE"A"), file_name_, line_number_)
     {
     }
   };
@@ -91,8 +91,8 @@ namespace etl
   {
   public:
 
-    intrusive_forward_list_iterator_exception(string_type file_name, numeric_type line_number)
-      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:iterator", ETL_FILE"B"), file_name, line_number)
+    intrusive_forward_list_iterator_exception(string_type file_name_, numeric_type line_number_)
+      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:iterator", ETL_FILE"B"), file_name_, line_number_)
     {
     }
   };
@@ -105,8 +105,8 @@ namespace etl
   {
   public:
 
-    intrusive_forward_list_index_exception(string_type file_name, numeric_type line_number)
-      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:bounds", ETL_FILE"C"), file_name, line_number)
+    intrusive_forward_list_index_exception(string_type file_name_, numeric_type line_number_)
+      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:bounds", ETL_FILE"C"), file_name_, line_number_)
     {
     }
   };
@@ -119,8 +119,8 @@ namespace etl
   {
   public:
 
-    intrusive_forward_list_unsorted(string_type file_name, numeric_type line_number)
-      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:unsorted", ETL_FILE"D"), file_name, line_number)
+    intrusive_forward_list_unsorted(string_type file_name_, numeric_type line_number_)
+      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:unsorted", ETL_FILE"D"), file_name_, line_number_)
     {
     }
   };
@@ -153,8 +153,8 @@ namespace etl
     void assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      intmax_t count = std::distance(first, last);
-      ETL_ASSERT(count >= 0, ETL_ERROR(intrusive_forward_list_iterator_exception));
+      intmax_t d = std::distance(first, last);
+      ETL_ASSERT(d >= 0, ETL_ERROR(intrusive_forward_list_iterator_exception));
 #endif
 
       initialise();

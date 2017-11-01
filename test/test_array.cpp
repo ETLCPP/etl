@@ -211,7 +211,7 @@ namespace
 
       CHECK_EQUAL(data.cend(), &data[SIZE]);
     }
-    
+
     //*************************************************************************
     TEST(test_rbegin)
     {
@@ -243,7 +243,7 @@ namespace
 
       CHECK(data.crend() == Data::const_reverse_iterator(&data[0]));
     }
-    
+
     //*************************************************************************
     TEST(test_iterator)
     {
@@ -315,14 +315,14 @@ namespace
       Data data;
       data.fill(1);
 
-      Compare_Data compare_data;
-      compare_data.fill(1);
+      Compare_Data compare;
+      compare.fill(1);
 
-      bool isEqual = std::equal(data.begin(), data.end(), compare_data.begin());
+      bool isEqual = std::equal(data.begin(), data.end(), compare.begin());
 
       CHECK(isEqual);
     }
-    
+
     //*************************************************************************
     TEST(test_swap)
     {
@@ -352,7 +352,7 @@ namespace
     TEST(test_assign)
     {
       int initial[] = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
-      int source[]  = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };     
+      int source[]  = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
       int check1[]  = { 0, 1, 2, 3, 4, -1, -1, -1, -1, -1 };
       int check2[]  = { 0, 1, 2, 3, 4, 99, 99, 99, 99, 99 };
       int check3[]  = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };

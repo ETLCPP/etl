@@ -82,7 +82,7 @@ namespace
   {
   public:
 
-    SetSpeed(int speed) : speed(speed) {}
+    SetSpeed(int speed_) : speed(speed_) {}
 
     const int speed;
   };
@@ -170,7 +170,7 @@ namespace
     bool isLampOn;
     int speed;
   };
-  
+
   //***********************************
   // The idle state.
   //***********************************
@@ -179,14 +179,14 @@ namespace
   public:
 
     //***********************************
-    etl::fsm_state_id_t on_event(etl::imessage_router& sender, const Start& event)
+    etl::fsm_state_id_t on_event(etl::imessage_router&, const Start&)
     {
       ++get_fsm_context().startCount;
       return StateId::RUNNING;
     }
 
     //***********************************
-    etl::fsm_state_id_t on_event_unknown(etl::imessage_router& sender, const etl::imessage& event)
+    etl::fsm_state_id_t on_event_unknown(etl::imessage_router&, const etl::imessage&)
     {
       ++get_fsm_context().unknownCount;
       return STATE_ID;
@@ -208,7 +208,7 @@ namespace
   public:
 
     //***********************************
-    etl::fsm_state_id_t on_event(etl::imessage_router& sender, const Stop& event)
+    etl::fsm_state_id_t on_event(etl::imessage_router&, const Stop& event)
     {
       ++get_fsm_context().stopCount;
 
@@ -223,7 +223,7 @@ namespace
     }
 
     //***********************************
-    etl::fsm_state_id_t on_event(etl::imessage_router& sender, const SetSpeed& event)
+    etl::fsm_state_id_t on_event(etl::imessage_router&, const SetSpeed& event)
     {
       ++get_fsm_context().setSpeedCount;
       get_fsm_context().SetSpeed(event.speed);
@@ -231,7 +231,7 @@ namespace
     }
 
     //***********************************
-    etl::fsm_state_id_t on_event_unknown(etl::imessage_router& sender, const etl::imessage& event)
+    etl::fsm_state_id_t on_event_unknown(etl::imessage_router&, const etl::imessage&)
     {
       ++get_fsm_context().unknownCount;
       return STATE_ID;
@@ -254,14 +254,14 @@ namespace
   public:
 
     //***********************************
-    etl::fsm_state_id_t on_event(etl::imessage_router& source, const Stopped& event)
+    etl::fsm_state_id_t on_event(etl::imessage_router&, const Stopped&)
     {
       ++get_fsm_context().stoppedCount;
       return StateId::IDLE;
     }
 
     //***********************************
-    etl::fsm_state_id_t on_event_unknown(etl::imessage_router& source, const etl::imessage& event)
+    etl::fsm_state_id_t on_event_unknown(etl::imessage_router&, const etl::imessage&)
     {
       ++get_fsm_context().unknownCount;
       return STATE_ID;
@@ -276,7 +276,7 @@ namespace
   public:
 
     //***********************************
-    etl::fsm_state_id_t on_event_unknown(etl::imessage_router& source, const etl::imessage& event)
+    etl::fsm_state_id_t on_event_unknown(etl::imessage_router&, const etl::imessage&)
     {
       ++get_fsm_context().unknownCount;
       return STATE_ID;

@@ -63,8 +63,8 @@ namespace etl
   {
   public:
 
-    link_exception(string_type what, string_type file_name, numeric_type line_number)
-      : exception(what, file_name, line_number)
+    link_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
     {
     }
   };
@@ -76,8 +76,8 @@ namespace etl
   {
   public:
 
-    not_unlinked_exception(string_type file_name, numeric_type line_number)
-      : link_exception(ETL_ERROR_TEXT("link:still linked", ETL_FILE"A"), file_name, line_number)
+    not_unlinked_exception(string_type file_name_, numeric_type line_number_)
+      : link_exception(ETL_ERROR_TEXT("link:still linked", ETL_FILE"A"), file_name_, line_number_)
     {
     }
   };

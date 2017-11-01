@@ -65,8 +65,8 @@ namespace etl
     /// Default constructor.
     /// \param seed The seed value. Default = 0.
     //*************************************************************************
-    murmur3(value_type seed = 0)
-      : seed(seed)
+    murmur3(value_type seed_ = 0)
+      : seed(seed_)
     {
       reset();
     }
@@ -78,8 +78,8 @@ namespace etl
     /// \param seed  The seed value. Default = 0.
     //*************************************************************************
     template<typename TIterator>
-    murmur3(TIterator begin, const TIterator end, value_type seed = 0)
-      : seed(seed)
+    murmur3(TIterator begin, const TIterator end, value_type seed_ = 0)
+      : seed(seed_)
     {
       STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
 
@@ -142,12 +142,12 @@ namespace etl
     /// If the hash has already been finalised then a 'hash_finalised' error will be emitted.
     /// \param value The char to add to the hash.
     //*************************************************************************
-    void add(uint8_t value)
+    void add(uint8_t value_)
     {
       // We can't add to a finalised hash!
       ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised));
 
-      block |= value << (block_fill_count * 8);
+      block |= value_ << (block_fill_count * 8);
 
       if (++block_fill_count == FULL_BLOCK)
       {

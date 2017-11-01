@@ -120,13 +120,13 @@ namespace etl
     //*************************************************************************
     /// \param value The char to add to the hash.
     //*************************************************************************
-    void add(uint8_t value)
+    void add(uint8_t value_)
     {
       if (first)
       {
         for (size_t i = 0; i < HASH_LENGTH; ++i)
         {
-          hash[i] = PEARSON_LOOKUP[(uint32_t(value) + i) % 256];
+          hash[i] = PEARSON_LOOKUP[(uint32_t(value_) + i) % 256];
         }
 
         first = false;
@@ -135,7 +135,7 @@ namespace etl
       {
         for (size_t i = 0; i < HASH_LENGTH; ++i)
         {
-          hash[i] = PEARSON_LOOKUP[hash[i] ^ value];
+          hash[i] = PEARSON_LOOKUP[hash[i] ^ value_];
         }
       }
     }

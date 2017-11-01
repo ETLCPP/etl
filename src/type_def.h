@@ -64,8 +64,8 @@ namespace etl
         }
 
         //*********************************************************************
-        explicit type_def(TValue value)
-            : value(value)
+        explicit type_def(TValue value_)
+            : value(value_)
         {
         }
 

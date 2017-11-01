@@ -70,8 +70,8 @@ namespace etl
   {
   public:
 
-    unordered_multiset_exception(string_type what, string_type file_name, numeric_type line_number)
-      : etl::exception(what, file_name, line_number)
+    unordered_multiset_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : etl::exception(reason_, file_name_, line_number_)
     {
     }
   };
@@ -84,8 +84,8 @@ namespace etl
   {
   public:
 
-    unordered_multiset_full(string_type file_name, numeric_type line_number)
-      : etl::unordered_multiset_exception(ETL_ERROR_TEXT("unordered_multiset:full", ETL_FILE"A"), file_name, line_number)
+    unordered_multiset_full(string_type file_name_, numeric_type line_number_)
+      : etl::unordered_multiset_exception(ETL_ERROR_TEXT("unordered_multiset:full", ETL_FILE"A"), file_name_, line_number_)
     {
     }
   };
@@ -98,8 +98,8 @@ namespace etl
   {
   public:
 
-    unordered_multiset_out_of_range(string_type file_name, numeric_type line_number)
-      : etl::unordered_multiset_exception(ETL_ERROR_TEXT("unordered_multiset:range", ETL_FILE"B"), file_name, line_number)
+    unordered_multiset_out_of_range(string_type file_name_, numeric_type line_number_)
+      : etl::unordered_multiset_exception(ETL_ERROR_TEXT("unordered_multiset:range", ETL_FILE"B"), file_name_, line_number_)
     {}
   };
 
@@ -111,8 +111,8 @@ namespace etl
   {
   public:
 
-    unordered_multiset_iterator(string_type file_name, numeric_type line_number)
-      : etl::unordered_multiset_exception(ETL_ERROR_TEXT("unordered_multiset:iterator", ETL_FILE"C"), file_name, line_number)
+    unordered_multiset_iterator(string_type file_name_, numeric_type line_number_)
+      : etl::unordered_multiset_exception(ETL_ERROR_TEXT("unordered_multiset:iterator", ETL_FILE"C"), file_name_, line_number_)
     {
     }
   };
@@ -144,8 +144,8 @@ namespace etl
     // The nodes that store the elements.
     struct node_t : public link_t
     {
-      node_t(const value_type& key)
-        : key(key)
+      node_t(const value_type& key_)
+        : key(key_)
       {
       }
 
@@ -286,10 +286,10 @@ namespace etl
     private:
 
       //*********************************
-      iterator(bucket_t* pbuckets_end, bucket_t* pbucket, local_iterator inode)
-        : pbuckets_end(pbuckets_end),
-        pbucket(pbucket),
-        inode(inode)
+      iterator(bucket_t* pbuckets_end_, bucket_t* pbucket_, local_iterator inode_)
+        : pbuckets_end(pbuckets_end_),
+          pbucket(pbucket_),
+          inode(inode_)
       {
       }
 
@@ -437,10 +437,10 @@ namespace etl
     private:
 
       //*********************************
-      const_iterator(bucket_t* pbuckets_end, bucket_t* pbucket, local_iterator inode)
-        : pbuckets_end(pbuckets_end),
-        pbucket(pbucket),
-        inode(inode)
+      const_iterator(bucket_t* pbuckets_end_, bucket_t* pbucket_, local_iterator inode_)
+        : pbuckets_end(pbuckets_end_),
+          pbucket(pbucket_),
+          inode(inode_)
       {
       }
 
@@ -587,7 +587,7 @@ namespace etl
     /// Returns the bucket index for the key.
     ///\return The bucket index for the key.
     //*********************************************************************
-    size_type bucket(key_parameter_t key) const
+    size_type get_bucket_index(key_parameter_t key) const
     {
       return key_hash_function(key) % number_of_buckets;
     }
@@ -629,19 +629,19 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
     template <typename TIterator>
-    void assign(TIterator first, TIterator last)
+    void assign(TIterator first_, TIterator last_)
     {
 #if defined(ETL_DEBUG)
-      difference_type count = std::distance(first, last);
-      ETL_ASSERT(count >= 0, ETL_ERROR(unordered_multiset_iterator));
-      ETL_ASSERT(size_t(count) <= max_size(), ETL_ERROR(unordered_multiset_full));
+      difference_type d = std::distance(first_, last_);
+      ETL_ASSERT(d >= 0, ETL_ERROR(unordered_multiset_iterator));
+      ETL_ASSERT(size_t(d) <= max_size(), ETL_ERROR(unordered_multiset_full));
 #endif
 
       clear();
 
-      while (first != last)
+      while (first_ != last_)
       {
-        insert(*first++);
+        insert(*first_++);
       }
     }
 
@@ -657,7 +657,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(unordered_multiset_full));
 
       // Get the hash index.
-      size_t index = bucket(key);
+      size_t index = get_bucket_index(key);
 
       // Get the bucket & bucket iterator.
       bucket_t* pbucket = pbuckets + index;
@@ -732,11 +732,11 @@ namespace etl
     ///\param last     The last + 1 element to add.
     //*********************************************************************
     template <class TIterator>
-    void insert(TIterator first, TIterator last)
+    void insert(TIterator first_, TIterator last_)
     {
-      while (first != last)
+      while (first_ != last_)
       {
-        insert(*first++);
+        insert(*first_++);
       }
     }
 
@@ -747,8 +747,8 @@ namespace etl
     //*********************************************************************
     size_t erase(key_parameter_t key)
     {
-      size_t count = 0;
-      size_t bucket_id = bucket(key);
+      size_t n = 0;
+      size_t bucket_id = get_bucket_index(key);
 
       bucket_t& bucket = pbuckets[bucket_id];
 
@@ -762,7 +762,7 @@ namespace etl
           bucket.erase_after(iprevious);  // Unlink from the bucket.
           icurrent->key.~value_type();    // Destroy the value.
           pnodepool->release(&*icurrent); // Release it back to the pool.
-          ++count;
+          ++n;
           icurrent = iprevious;
           --construct_count;
         }
@@ -774,7 +774,7 @@ namespace etl
         ++icurrent;
       }
 
-      return count;
+      return n;
     }
 
     //*********************************************************************
@@ -812,16 +812,16 @@ namespace etl
     ///\param first Iterator to the first element.
     ///\param last  Iterator to the last element.
     //*********************************************************************
-    iterator erase(const_iterator first, const_iterator last)
+    iterator erase(const_iterator first_, const_iterator last_)
     {
       // Make a note of the last.
-      iterator result((pbuckets + number_of_buckets), last.get_bucket_list_iterator(), last.get_local_iterator());
+      iterator result((pbuckets + number_of_buckets), last_.get_bucket_list_iterator(), last_.get_local_iterator());
 
       // Get the starting point.
-      bucket_t*      pbucket = first.get_bucket_list_iterator();
+      bucket_t*      pbucket   = first_.get_bucket_list_iterator();
       local_iterator iprevious = pbucket->before_begin();
-      local_iterator icurrent = first.get_local_iterator();
-      local_iterator iend = last.get_local_iterator(); // Note: May not be in the same bucket as icurrent.
+      local_iterator icurrent  = first_.get_local_iterator();
+      local_iterator iend      = last_.get_local_iterator(); // Note: May not be in the same bucket as icurrent.
 
                                                        // Find the node previous to the first one.
       while (iprevious->etl_next != &*icurrent)
@@ -876,17 +876,17 @@ namespace etl
     size_t count(key_parameter_t key) const
     {
       size_t n = 0;
-      const_iterator first = find(key);
-      const_iterator last = first;
+      const_iterator f = find(key);
+      const_iterator l = f;
 
-      if (last != end())
+      if (l != end())
       {
-        ++last;
+        ++l;
         ++n;
 
-        while ((last != end()) && (key == *last))
+        while ((l != end()) && (key == *l))
         {
-          ++last;
+          ++l;
           ++n;
         }
       }
@@ -901,7 +901,7 @@ namespace etl
     //*********************************************************************
     iterator find(key_parameter_t key)
     {
-      size_t index = bucket(key);
+      size_t index = get_bucket_index(key);
 
       bucket_t* pbucket = pbuckets + index;
       bucket_t& bucket = *pbucket;
@@ -935,7 +935,7 @@ namespace etl
     //*********************************************************************
     const_iterator find(key_parameter_t key) const
     {
-      size_t index = bucket(key);
+      size_t index = get_bucket_index(key);
 
       bucket_t* pbucket = pbuckets + index;
       bucket_t& bucket = *pbucket;
@@ -972,20 +972,20 @@ namespace etl
     //*********************************************************************
     std::pair<iterator, iterator> equal_range(key_parameter_t key)
     {
-      iterator first = find(key);
-      iterator last = first;
+      iterator f = find(key);
+      iterator l = f;
 
-      if (last != end())
+      if (l != end())
       {
-        ++last;
+        ++l;
 
-        while ((last != end()) && (key == *last))
+        while ((l != end()) && (key == *l))
         {
-          ++last;
+          ++l;
         }
       }
 
-      return std::pair<iterator, iterator>(first, last);
+      return std::pair<iterator, iterator>(f, l);
     }
 
     //*********************************************************************
@@ -998,20 +998,20 @@ namespace etl
     //*********************************************************************
     std::pair<const_iterator, const_iterator> equal_range(key_parameter_t key) const
     {
-      const_iterator first = find(key);
-      const_iterator last = first;
+      const_iterator f = find(key);
+      const_iterator l = f;
 
-      if (last != end())
+      if (l != end())
       {
-        ++last;
+        ++l;
 
-        while ((last != end()) && (key == *last))
+        while ((l != end()) && (key == *l))
         {
-          ++last;
+          ++l;
         }
       }
 
-      return std::pair<const_iterator, const_iterator>(first, last);
+      return std::pair<const_iterator, const_iterator>(f, l);
     }
 
     //*************************************************************************
@@ -1101,10 +1101,10 @@ namespace etl
     //*********************************************************************
     /// Constructor.
     //*********************************************************************
-    iunordered_multiset(pool_t& node_pool, bucket_t* pbuckets_, size_t number_of_buckets)
-      : pnodepool(&node_pool),
-      pbuckets(pbuckets_),
-      number_of_buckets(number_of_buckets)
+    iunordered_multiset(pool_t& node_pool_, bucket_t* pbuckets_, size_t number_of_buckets_)
+      : pnodepool(&node_pool_),
+        pbuckets(pbuckets_),
+        number_of_buckets(number_of_buckets_)
     {
     }
 
@@ -1256,10 +1256,10 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    unordered_multiset(TIterator first, TIterator last)
+    unordered_multiset(TIterator first_, TIterator last_)
       : base(node_pool, buckets, MAX_BUCKETS)
     {
-      base::assign(first, last);
+      base::assign(first_, last_);
     }
 
     //*************************************************************************

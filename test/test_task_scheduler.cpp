@@ -80,10 +80,10 @@ class Task : public etl::task
 public:
 
   //*********************************************
-  Task(etl::task_priority_t priority, WorkList_t& work, Common& common)
-    : task(priority),
-      work(work),
-      common(common),
+  Task(etl::task_priority_t priority_, WorkList_t& work_, Common& common_)
+    : task(priority_),
+      work(work_),
+      common(common_),
       workIndex(0),
       addAtIndex(0),
       workToAdd(""),
