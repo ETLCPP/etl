@@ -65,10 +65,10 @@ namespace etl
     /// Constructor.
     //*************************************************************************
     exception(string_type reason_, string_type file_, numeric_type line_)
-      : reason_text(reason),
+      : reason_text(reason_),
         line(line_)
     {
-    (void)file_text;
+    (void)file_;
     }
 #endif
 
