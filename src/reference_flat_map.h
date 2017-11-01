@@ -63,8 +63,8 @@ namespace etl
   {
   public:
 
-    flat_map_exception(string_type what, string_type file_name, numeric_type line_number)
-      : exception(what, file_name, line_number)
+    flat_map_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
     {
     }
   };
@@ -77,8 +77,8 @@ namespace etl
   {
   public:
 
-    flat_map_full(string_type file_name, numeric_type line_number)
-      : flat_map_exception(ETL_ERROR_TEXT("flat_map: full", ETL_FILE"A"), file_name, line_number)
+    flat_map_full(string_type file_name_, numeric_type line_number_)
+      : flat_map_exception(ETL_ERROR_TEXT("flat_map: full", ETL_FILE"A"), file_name_, line_number_)
     {
     }
   };
@@ -91,8 +91,8 @@ namespace etl
   {
   public:
 
-    flat_map_out_of_bounds(string_type file_name, numeric_type line_number)
-      : flat_map_exception(ETL_ERROR_TEXT("flat_map:bounds", ETL_FILE"B"), file_name, line_number)
+    flat_map_out_of_bounds(string_type file_name_, numeric_type line_number_)
+      : flat_map_exception(ETL_ERROR_TEXT("flat_map:bounds", ETL_FILE"B"), file_name_, line_number_)
     {
     }
   };
@@ -135,8 +135,8 @@ namespace etl
       {
       }
 
-      iterator(typename lookup_t::iterator ilookup)
-        : ilookup(ilookup)
+      iterator(typename lookup_t::iterator ilookup_)
+        : ilookup(ilookup_)
       {
       }
 
@@ -233,8 +233,8 @@ namespace etl
       {
       }
 
-      const_iterator(typename lookup_t::const_iterator ilookup)
-        : ilookup(ilookup)
+      const_iterator(typename lookup_t::const_iterator ilookup_)
+        : ilookup(ilookup_)
       {
       }
 
@@ -525,8 +525,8 @@ namespace etl
       STATIC_ASSERT((etl::is_same<value_type, typename std::iterator_traits<TIterator>::value_type>::value), "Incompatible data for assign");
 
 #if defined(ETL_DEBUG)
-      difference_type count = std::distance(first, last);
-      ETL_ASSERT(count <= difference_type(capacity()), ETL_ERROR(flat_map_full));
+      difference_type d = std::distance(first, last);
+      ETL_ASSERT(d <= difference_type(capacity()), ETL_ERROR(flat_map_full));
 #endif
 
       clear();

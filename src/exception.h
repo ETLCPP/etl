@@ -54,21 +54,21 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    exception(string_type reason, string_type file, numeric_type line)
-      : reason(reason),
-        file(file),
-        line(line)
+    exception(string_type reason_, string_type file_, numeric_type line_)
+      : reason_text(reason_),
+        file_text(file_),
+        line(line_)
     {
     }
 #else
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    exception(string_type reason, string_type file, numeric_type line)
-      : reason(reason),
-        line(line)
+    exception(string_type reason_, string_type file_, numeric_type line_)
+      : reason_text(reason),
+        line(line_)
     {
-    (void)file;
+    (void)file_text;
     }
 #endif
 
@@ -78,7 +78,7 @@ namespace etl
     //***************************************************************************
     string_type what() const
     {
-      return reason;
+      return reason_text;
     }
 
 
@@ -89,7 +89,7 @@ namespace etl
     string_type file_name() const
     {
 #if defined(ETL_VERBOSE_ERRORS)
-      return file;
+      return file_text;
 #else
       return "";
 #endif
@@ -106,9 +106,9 @@ namespace etl
 
   private:
 
-    string_type  reason; ///< The reason for the exception.
+    string_type  reason_text; ///< The reason for the exception.
 #if defined(ETL_VERBOSE_ERRORS)
-    string_type  file;   ///< The file for the exception.
+    string_type  file_text;   ///< The file for the exception.
 #endif
     numeric_type line;   ///< The line for the exception.
   };

@@ -33,10 +33,6 @@ SOFTWARE.
 
 #define __ETL_IN_VECTOR_H__
 
-#if ETL_CPP11_SUPPORTED
-  #include <type_traits>
-#endif
-
 #include <stddef.h>
 #include <stdint.h>
 #include <iterator>
@@ -366,8 +362,8 @@ namespace etl
       STATIC_ASSERT((etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename std::iterator_traits<TIterator>::value_type>::type>::value), "Iterator type does not match container type");
 
 #if defined(ETL_DEBUG)
-      difference_type count = std::distance(first, last);
-      ETL_ASSERT(static_cast<size_t>(count) <= CAPACITY, ETL_ERROR(vector_full));
+      difference_type d = std::distance(first, last);
+      ETL_ASSERT(static_cast<size_t>(d) <= CAPACITY, ETL_ERROR(vector_full));
 #endif
 
       initialise();
@@ -1134,7 +1130,7 @@ namespace etl
     //*************************************************************************
     void repair()
     {
-      #if ETL_C11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
+      #if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
       ETL_ASSERT(std::is_trivially_copyable<T>::value, ETL_ERROR(etl::vector_incompatible_type));
       #endif
 

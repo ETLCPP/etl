@@ -42,6 +42,10 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-Wunused-parameter" />
+			<Add option="-Wstrict-aliasing" />
+			<Add option="-Wshadow" />
+			<Add option="-Wundef" />
 			<Add option="-Wall" />
 			<Add option="-std=c++11" />
 			<Add option="-g" />
@@ -159,6 +163,17 @@
 		<Unit filename="../../src/private/pvoidvector.cpp" />
 		<Unit filename="../../src/private/pvoidvector.h" />
 		<Unit filename="../../src/private/vector_base.h" />
+		<Unit filename="../../src/profiles/arduino_arm.h" />
+		<Unit filename="../../src/profiles/armv5.h" />
+		<Unit filename="../../src/profiles/armv6.h" />
+		<Unit filename="../../src/profiles/cpp03.h" />
+		<Unit filename="../../src/profiles/cpp11.h" />
+		<Unit filename="../../src/profiles/cpp14.h" />
+		<Unit filename="../../src/profiles/gcc_generic.h" />
+		<Unit filename="../../src/profiles/gcc_linux_x86.h" />
+		<Unit filename="../../src/profiles/gcc_windows_x86.h" />
+		<Unit filename="../../src/profiles/msvc_x86.h" />
+		<Unit filename="../../src/profiles/ticc.h" />
 		<Unit filename="../../src/queue.h" />
 		<Unit filename="../../src/radix.h" />
 		<Unit filename="../../src/random.cpp" />

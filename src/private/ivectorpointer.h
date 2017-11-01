@@ -440,8 +440,8 @@ namespace etl
     //*********************************************************************
     /// Constructor.
     //*********************************************************************
-    ivector(T** p_buffer, size_t MAX_SIZE)
-      : pvoidvector(reinterpret_cast<void**>(p_buffer), MAX_SIZE)
+    ivector(T** p_buffer_, size_t MAX_SIZE_)
+      : pvoidvector(reinterpret_cast<void**>(p_buffer_), MAX_SIZE_)
     {
     }
   };

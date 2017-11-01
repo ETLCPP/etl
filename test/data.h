@@ -45,9 +45,9 @@ public:
   {
   }
 
-  explicit TestDataDC(const T& value, int index = 0)
-    : value(value),
-      index(index)
+  explicit TestDataDC(const T& value_, int index_ = 0)
+    : value(value_),
+      index(index_)
   {
   }
 
@@ -92,9 +92,9 @@ class TestDataNDC
 {
 public:
 
-  explicit TestDataNDC(const T& value, int index = 0)
-    : value(value),
-      index(index)
+  explicit TestDataNDC(const T& value_, int index_ = 0)
+    : value(value_),
+      index(index_)
   {}
 
   bool operator < (const TestDataNDC& other) const

@@ -127,9 +127,9 @@ namespace etl
     }
 
     /// Write.
-    io_port_rw& operator =(parameter_t value)
+    io_port_rw& operator =(parameter_t value_)
     {
-      *reinterpret_cast<pointer_t>(ADDRESS) = value;
+      *reinterpret_cast<pointer_t>(ADDRESS) = value_;
       return *this;
     }
 
@@ -409,9 +409,9 @@ namespace etl
     }
 
     /// Write.
-    io_port_wos& operator =(parameter_t value)
+    io_port_wos& operator =(parameter_t value_)
     {
-      shadow_value = value;
+      shadow_value = value_;
       *reinterpret_cast<pointer_t>(ADDRESS) = shadow_value;
       return *this;
     }
@@ -548,9 +548,9 @@ namespace etl
     }
 
     /// Write.
-    io_port_rw& operator =(parameter_t value)
+    io_port_rw& operator =(parameter_t value_)
     {
-      *address = value;
+      *address = value_;
       return *this;
     }
 
@@ -900,9 +900,9 @@ namespace etl
     }
 
     /// Write.
-    io_port_wos& operator =(parameter_t value)
+    io_port_wos& operator =(parameter_t value_)
     {
-      shadow_value = value;
+      shadow_value = value_;
       *address     = shadow_value;
       return *this;
     }

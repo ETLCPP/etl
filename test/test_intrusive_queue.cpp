@@ -40,8 +40,8 @@ namespace
 
   struct Data : public link0, public link1
   {
-    Data(int i)
-      : i(i)
+    Data(int i_)
+      : i(i_)
     {
 
     }
@@ -245,7 +245,7 @@ namespace
 
       queue1.pop_into(queue2);
       CHECK_EQUAL(0U, queue1.size());
-      
+
       CHECK_EQUAL(3U, queue2.size());
       CHECK_EQUAL(data1, queue2.front());
       CHECK_EQUAL(data3, queue2.back());

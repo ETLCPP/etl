@@ -41,7 +41,7 @@ SOFTWARE.
 #define STR(x) x
 
 namespace
-{		
+{
   SUITE(test_string_char)
   {
     static const size_t SIZE = 11;
@@ -142,7 +142,7 @@ namespace
 
         CHECK(!text.empty());
 
-        bool is_equal = Equal(compare_text, text);        
+        bool is_equal = Equal(compare_text, text);
         CHECK(is_equal);
     }
 
@@ -167,7 +167,7 @@ namespace
         Text text(initial_text.c_str(), initial_text.size() / 2);
 
         CHECK(!text.empty());
- 
+
         bool is_equal = Equal(compare_text, text);
         CHECK(is_equal);
     }
@@ -448,7 +448,7 @@ namespace
     {
       Compare_Text compare_text(initial_text.c_str());
       Text text(initial_text.c_str());
-        
+
       CHECK(text.back() == compare_text.back());
     }
 
@@ -559,7 +559,7 @@ namespace
 
       CHECK(is_equal);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_size_value_excess)
     {
@@ -673,9 +673,9 @@ namespace
       text.insert(text.begin() + offset, INITIAL_VALUE);
       compare_text.insert(compare_text.begin() + offset, INITIAL_VALUE);
       compare_text.erase(compare_text.end() - 1);
-      
+
       CHECK(text.truncated());
-      
+
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
 
@@ -709,12 +709,9 @@ namespace
       const size_t INITIAL_SIZE     = 5;
       const size_t INSERT_SIZE      = 3;
       const value_t INITIAL_VALUE      = STR('A');
-      
+
       for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
       {
-        Compare_Text compare_text;
-        Text text;
-
         text.assign(initial_text.begin(), initial_text.begin() + INITIAL_SIZE);
         compare_text.assign(initial_text.begin(), initial_text.begin() + INITIAL_SIZE);
         text.insert(text.begin() + offset, INSERT_SIZE, INITIAL_VALUE);
@@ -874,7 +871,7 @@ namespace
         text.insert(offset, insert);
         compare_text.insert(offset, insert_text);
         compare_text.resize(std::min(compare_text.size(), SIZE));
-        
+
         bool is_equal = Equal(compare_text, text);
         CHECK(is_equal);
       }
@@ -1672,7 +1669,7 @@ namespace
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_replace_first_last_n_c)
     {
@@ -1798,7 +1795,7 @@ namespace
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_clear)
     {
@@ -1903,7 +1900,7 @@ namespace
       CHECK((initial < initial) == (initial_text < initial_text));
       CHECK((initial < initial) == (initial_text < initial_text));
 
-      // String-Pointer Pointer-String 
+      // String-Pointer Pointer-String
       CHECK((less          < pinitial_text) == (less_text     < pinitial_text));
       CHECK((pinitial_text < less)          == (pinitial_text < less_text));
 
@@ -1938,7 +1935,7 @@ namespace
       CHECK((initial <= initial) == (initial_text <= initial_text));
       CHECK((initial <= initial) == (initial_text <= initial_text));
 
-      // String-Pointer Pointer-String 
+      // String-Pointer Pointer-String
       CHECK((less          <= pinitial_text) == (less_text     <= pinitial_text));
       CHECK((pinitial_text <= less)          == (pinitial_text <= less_text));
 
@@ -1973,7 +1970,7 @@ namespace
       CHECK((initial > initial) == (initial_text > initial_text));
       CHECK((initial > initial) == (initial_text > initial_text));
 
-      // String-Pointer Pointer-String 
+      // String-Pointer Pointer-String
       CHECK((less          > pinitial_text) == (less_text     > pinitial_text));
       CHECK((pinitial_text > less)          == (pinitial_text > less_text));
 
@@ -2008,7 +2005,7 @@ namespace
       CHECK((initial >= initial) == (initial_text >= initial_text));
       CHECK((initial >= initial) == (initial_text >= initial_text));
 
-      // String-Pointer Pointer-String 
+      // String-Pointer Pointer-String
       CHECK((less          >= pinitial_text) == (less_text     >= pinitial_text));
       CHECK((pinitial_text >= less)          == (pinitial_text >= less_text));
 
@@ -2049,7 +2046,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_find_string)
     {
       const value_t* the_haystack = STR("A haystack with a needle and another needle");
-      
+
       std::string compare_needle(STR("needle"));
       etl::string<50> needle(STR("needle"));
 
@@ -2062,7 +2059,7 @@ namespace
       position1 = compare_haystack.find(compare_needle, position1);
       position2 = haystack.find(needle, position2);
       CHECK_EQUAL(position1, position2);
-      
+
       position1 = compare_haystack.find(compare_needle, position1 + 1);
       position2 = haystack.find(needle, position2 + 1);
       CHECK_EQUAL(position1, position2);

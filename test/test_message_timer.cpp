@@ -92,22 +92,22 @@ namespace
 
     }
 
-    void on_receive(etl::imessage_router& sender, const Message1& msg)
+    void on_receive(etl::imessage_router&, const Message1&)
     {
       message1.push_back(ticks);
     }
 
-    void on_receive(etl::imessage_router& sender, const Message2& msg)
+    void on_receive(etl::imessage_router&, const Message2&)
     {
       message2.push_back(ticks);
     }
 
-    void on_receive(etl::imessage_router& sender, const Message3& msg)
+    void on_receive(etl::imessage_router&, const Message3&)
     {
       message3.push_back(ticks);
     }
 
-    void on_receive_unknown(etl::imessage_router& sender, const etl::imessage& msg)
+    void on_receive_unknown(etl::imessage_router&, const etl::imessage&)
     {
     }
 
@@ -516,7 +516,7 @@ namespace
       etl::message_timer<3> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 5, etl::timer::mode::SINGLE_SHOT);
-      
+
       router1.clear();
 
       timer_controller.start(id1);

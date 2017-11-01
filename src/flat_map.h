@@ -272,8 +272,8 @@ namespace etl
     void assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      difference_type count = std::distance(first, last);
-      ETL_ASSERT(count <= difference_type(capacity()), ETL_ERROR(flat_map_full));
+      difference_type d = std::distance(first, last);
+      ETL_ASSERT(d <= difference_type(capacity()), ETL_ERROR(flat_map_full));
 #endif
 
       clear();

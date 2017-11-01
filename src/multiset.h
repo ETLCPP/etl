@@ -69,8 +69,8 @@ namespace etl
   {
   public:
 
-    multiset_exception(string_type what, string_type file_name, numeric_type line_number)
-      : etl::exception(what, file_name, line_number)
+    multiset_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : etl::exception(reason_, file_name_, line_number_)
     {
     }
   };
@@ -83,8 +83,8 @@ namespace etl
   {
   public:
 
-    multiset_full(string_type file_name, numeric_type line_number)
-      : etl::multiset_exception(ETL_ERROR_TEXT("multiset:full", ETL_FILE"A"), file_name, line_number)
+    multiset_full(string_type file_name_, numeric_type line_number_)
+      : etl::multiset_exception(ETL_ERROR_TEXT("multiset:full", ETL_FILE"A"), file_name_, line_number_)
     {
     }
   };
@@ -97,8 +97,8 @@ namespace etl
   {
   public:
 
-    multiset_out_of_bounds(string_type file_name, numeric_type line_number)
-      : etl::multiset_exception(ETL_ERROR_TEXT("multiset:bounds", ETL_FILE"B"), file_name, line_number)
+    multiset_out_of_bounds(string_type file_name_, numeric_type line_number_)
+      : etl::multiset_exception(ETL_ERROR_TEXT("multiset:bounds", ETL_FILE"B"), file_name_, line_number_)
     {
     }
   };
@@ -111,8 +111,8 @@ namespace etl
   {
   public:
 
-    multiset_iterator(string_type file_name, numeric_type line_number)
-      : etl::multiset_exception(ETL_ERROR_TEXT("multiset:iterator", ETL_FILE"C"), file_name, line_number)
+    multiset_iterator(string_type file_name_, numeric_type line_number_)
+      : etl::multiset_exception(ETL_ERROR_TEXT("multiset:iterator", ETL_FILE"C"), file_name_, line_number_)
     {
     }
   };
@@ -218,9 +218,9 @@ namespace etl
     //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
-    multiset_base(size_type max_size)
+    multiset_base(size_type max_size_)
       : current_size(0)
-      , CAPACITY(max_size)
+      , CAPACITY(max_size_)
       , root_node(nullptr)
     {
     }
@@ -645,8 +645,8 @@ namespace etl
     //*************************************************************************
     struct Data_Node : public Node
     {
-      explicit Data_Node(value_type value)
-        : value(value)
+      explicit Data_Node(value_type value_)
+        : value(value_)
       {
       }
 
@@ -1114,19 +1114,19 @@ namespace etl
     size_type erase(key_parameter_t key_value)
     {
       // Number of nodes removed
-      size_type count = 0;
+      size_type d = 0;
       const_iterator lower(*this, find_lower_node(root_node, key_value));
       const_iterator upper(*this, find_upper_node(root_node, key_value));
       while (lower != upper)
       {
         // Increment count for each node removed
-        ++count;
+        ++d;
         // Remove node using the other erase method
         (void)erase(lower++);
       }
 
       // Return the total count erased
-      return count;
+      return d;
     }
 
     //*************************************************************************

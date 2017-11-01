@@ -50,8 +50,8 @@ namespace etl
   {
   public:
 
-    intrusive_stack_exception(string_type what, string_type file_name, numeric_type line_number)
-      : exception(what, file_name, line_number)
+    intrusive_stack_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
     {
     }
   };
@@ -64,8 +64,8 @@ namespace etl
   {
   public:
 
-    intrusive_stack_empty(string_type file_name, numeric_type line_number)
-      : intrusive_stack_exception(ETL_ERROR_TEXT("intrusive_stack:empty", ETL_FILE"A"), file_name, line_number)
+    intrusive_stack_empty(string_type file_name_, numeric_type line_number_)
+      : intrusive_stack_exception(ETL_ERROR_TEXT("intrusive_stack:empty", ETL_FILE"A"), file_name_, line_number_)
     {
     }
   };

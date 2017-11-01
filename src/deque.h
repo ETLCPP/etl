@@ -71,8 +71,8 @@ namespace etl
   {
   public:
 
-    deque_exception(string_type what, string_type file_name, numeric_type line_number)
-      : exception(what, file_name, line_number)
+    deque_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
     {
     }
   };
@@ -85,8 +85,8 @@ namespace etl
   {
   public:
 
-    deque_full(string_type file_name, numeric_type line_number)
-      : etl::deque_exception(ETL_ERROR_TEXT("deque:full", ETL_FILE"A"), file_name, line_number)
+    deque_full(string_type file_name_, numeric_type line_number_)
+      : etl::deque_exception(ETL_ERROR_TEXT("deque:full", ETL_FILE"A"), file_name_, line_number_)
     {
     }
   };
@@ -99,8 +99,8 @@ namespace etl
   {
   public:
 
-    deque_empty(string_type file_name, numeric_type line_number)
-      : etl::deque_exception(ETL_ERROR_TEXT("deque:empty", ETL_FILE"B"), file_name, line_number)
+    deque_empty(string_type file_name_, numeric_type line_number_)
+      : etl::deque_exception(ETL_ERROR_TEXT("deque:empty", ETL_FILE"B"), file_name_, line_number_)
     {
     }
   };
@@ -113,8 +113,8 @@ namespace etl
   {
   public:
 
-    deque_out_of_bounds(string_type file_name, numeric_type line_number)
-      : etl::deque_exception(ETL_ERROR_TEXT("deque:bounds", ETL_FILE"C"), file_name, line_number)
+    deque_out_of_bounds(string_type file_name_, numeric_type line_number_)
+      : etl::deque_exception(ETL_ERROR_TEXT("deque:bounds", ETL_FILE"C"), file_name_, line_number_)
     {
     }
   };
@@ -127,8 +127,8 @@ namespace etl
   {
   public:
 
-    deque_incompatible_type(string_type file_name, numeric_type line_number)
-      : deque_exception(ETL_ERROR_TEXT("deque:type", ETL_FILE"D"), file_name, line_number)
+    deque_incompatible_type(string_type file_name_, numeric_type line_number_)
+      : deque_exception(ETL_ERROR_TEXT("deque:type", ETL_FILE"D"), file_name_, line_number_)
     {
     }
   };
@@ -193,10 +193,10 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    deque_base(size_t max_size, size_t buffer_size)
+    deque_base(size_t max_size_, size_t buffer_size_)
       : current_size(0),
-        CAPACITY(max_size),
-        BUFFER_SIZE(buffer_size)
+        CAPACITY(max_size_),
+        BUFFER_SIZE(buffer_size_)
     {
     }
 
@@ -412,10 +412,10 @@ namespace etl
     private:
 
       //***************************************************
-      iterator(difference_type index, ideque& the_deque, pointer p_buffer)
-        : index(index),
-        p_deque(&the_deque),
-        p_buffer(p_buffer)
+      iterator(difference_type index_, ideque& the_deque, pointer p_buffer_)
+        : index(index_),
+          p_deque(&the_deque),
+          p_buffer(p_buffer_)
       {
       }
 
@@ -594,23 +594,23 @@ namespace etl
     private:
 
       //***************************************************
-      difference_type distance(difference_type firstIndex, difference_type index)
+      difference_type distance(difference_type firstIndex, difference_type index_)
       {
-        if (index < firstIndex)
+        if (index_ < firstIndex)
         {
-          return p_deque->BUFFER_SIZE + index - firstIndex;
+          return p_deque->BUFFER_SIZE + index_ - firstIndex;
         }
         else
         {
-          return index - firstIndex;
+          return index_ - firstIndex;
         }
       }
 
       //***************************************************
-      const_iterator(difference_type index, ideque& the_deque, pointer p_buffer)
-        : index(index),
-        p_deque(&the_deque),
-        p_buffer(p_buffer)
+      const_iterator(difference_type index_, ideque& the_deque, pointer p_buffer_)
+        : index(index_),
+          p_deque(&the_deque),
+          p_buffer(p_buffer_)
       {
       }
 
@@ -1786,9 +1786,9 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    ideque(pointer p_buffer, size_t max_size, size_t buffer_size)
-      : deque_base(max_size, buffer_size),
-      p_buffer(p_buffer)
+    ideque(pointer p_buffer_, size_t max_size_, size_t buffer_size_)
+      : deque_base(max_size_, buffer_size_),
+        p_buffer(p_buffer_)
     {
     }
 
@@ -2019,10 +2019,10 @@ namespace etl
     /// Assigns data to the deque.
     //*************************************************************************
     template <typename TIterator>
-    deque(TIterator begin, TIterator end)
+    deque(TIterator begin_, TIterator end_)
       : etl::ideque<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, BUFFER_SIZE)
     {
-      etl::ideque<T>::assign(begin, end);
+      etl::ideque<T>::assign(begin_, end_);
     }
 
     //*************************************************************************
@@ -2052,7 +2052,7 @@ namespace etl
     //*************************************************************************
     void repair()
     {
-#if ETL_C11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
+#if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
       ETL_ASSERT(std::is_trivially_copyable<T>::value, ETL_ERROR(etl::deque_incompatible_type));
 #endif
 

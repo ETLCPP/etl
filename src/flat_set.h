@@ -205,8 +205,8 @@ namespace etl
     void assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      difference_type count = std::distance(first, last);
-      ETL_ASSERT(count <= difference_type(capacity()), ETL_ERROR(flat_set_full));
+      difference_type d = std::distance(first, last);
+      ETL_ASSERT(d <= difference_type(capacity()), ETL_ERROR(flat_set_full));
 #endif
 
       clear();
@@ -496,9 +496,9 @@ namespace etl
     //*********************************************************************
     /// Constructor.
     //*********************************************************************
-    iflat_set(lookup_t& lookup_, storage_t& storage)
+    iflat_set(lookup_t& lookup_, storage_t& storage_)
       : refset_t(lookup_),
-        storage(storage)
+        storage(storage_)
     {
     }
 

@@ -83,16 +83,16 @@ namespace etl
     ///\param position The position of the first character.
     ///\param length   The number of characters. Default = npos.
     //*************************************************************************
-    u32string(const etl::u32string<MAX_SIZE_>& other, size_t position, size_t length = npos)
+    u32string(const etl::u32string<MAX_SIZE_>& other, size_t position, size_t length_ = npos)
       : iu32string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
       ETL_ASSERT(position < other.size(), ETL_ERROR(string_out_of_bounds));
 
       // Set the length to the exact amount.
-      length = (length > MAX_SIZE_) ? MAX_SIZE_ : length;
+      length_ = (length_ > MAX_SIZE_) ? MAX_SIZE_ : length_;
 
       iu32string::initialise();
-      iu32string::assign(other.begin() + position, other.begin() + position + length);
+      iu32string::assign(other.begin() + position, other.begin() + position + length_);
     }
 
     //*************************************************************************
@@ -148,7 +148,7 @@ namespace etl
     ///\param position The position of the first character. Default = 0.
     ///\param length   The number of characters. Default = npos.
     //*************************************************************************
-    etl::u32string<MAX_SIZE_> substr(size_t position = 0, size_t length = npos) const
+    etl::u32string<MAX_SIZE_> substr(size_t position = 0, size_t length_ = npos) const
     {
       etl::u32string<MAX_SIZE_> new_string;
 
@@ -156,9 +156,9 @@ namespace etl
       {
         ETL_ASSERT(position < size(), ETL_ERROR(string_out_of_bounds));
 
-        length = std::min(length, size() - position);
+        length_ = std::min(length_, size() - position);
 
-        new_string.assign(buffer + position, buffer + position + length);
+        new_string.assign(buffer + position, buffer + position + length_);
       }
 
       return new_string;

@@ -63,8 +63,8 @@ namespace etl
   {
   public:
 
-    priority_queue_exception(string_type what, string_type file_name, numeric_type line_number)
-      : exception(what, file_name, line_number)
+    priority_queue_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
     {
     }
   };
@@ -77,8 +77,8 @@ namespace etl
   {
   public:
 
-    priority_queue_full(string_type file_name, numeric_type line_number)
-      : priority_queue_exception(ETL_ERROR_TEXT("priority_queue:full", ETL_FILE"A"), file_name, line_number)
+    priority_queue_full(string_type file_name_, numeric_type line_number_)
+      : priority_queue_exception(ETL_ERROR_TEXT("priority_queue:full", ETL_FILE"A"), file_name_, line_number_)
     {
     }
   };
@@ -91,8 +91,8 @@ namespace etl
   {
   public:
 
-    priority_queue_iterator(string_type file_name, numeric_type line_number)
-      : priority_queue_exception(ETL_ERROR_TEXT("priority_queue:iterator", ETL_FILE"B"), file_name, line_number)
+    priority_queue_iterator(string_type file_name_, numeric_type line_number_)
+      : priority_queue_exception(ETL_ERROR_TEXT("priority_queue:iterator", ETL_FILE"B"), file_name_, line_number_)
     {
     }
   };
@@ -247,9 +247,9 @@ namespace etl
     void assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      difference_type count = std::distance(first, last);
-      ETL_ASSERT(count >= 0, ETL_ERROR(etl::priority_queue_iterator));
-      ETL_ASSERT(static_cast<size_t>(count) <= max_size(), ETL_ERROR(etl::priority_queue_full));
+      difference_type d = std::distance(first, last);
+      ETL_ASSERT(d >= 0, ETL_ERROR(etl::priority_queue_iterator));
+      ETL_ASSERT(static_cast<size_t>(d) <= max_size(), ETL_ERROR(etl::priority_queue_full));
 #endif
 
       clear();

@@ -69,8 +69,8 @@ namespace etl
   {
   public:
 
-    multimap_exception(string_type what, string_type file_name, numeric_type line_number)
-      : exception(what, file_name, line_number)
+    multimap_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
     {
     }
   };
@@ -83,8 +83,8 @@ namespace etl
   {
   public:
 
-    multimap_full(string_type file_name, numeric_type line_number)
-      : etl::multimap_exception("multimap:full", file_name, line_number)
+    multimap_full(string_type file_name_, numeric_type line_number_)
+      : etl::multimap_exception("multimap:full", file_name_, line_number_)
     {
     }
   };
@@ -97,8 +97,8 @@ namespace etl
   {
   public:
 
-    multimap_out_of_bounds(string_type file_name, numeric_type line_number)
-      : etl::multimap_exception("multimap:bounds", file_name, line_number)
+    multimap_out_of_bounds(string_type file_name_, numeric_type line_number_)
+      : etl::multimap_exception("multimap:bounds", file_name_, line_number_)
     {
     }
   };
@@ -111,8 +111,8 @@ namespace etl
   {
   public:
 
-    multimap_iterator(string_type file_name, numeric_type line_number)
-      : etl::multimap_exception("multimap:iterator", file_name, line_number)
+    multimap_iterator(string_type file_name_, numeric_type line_number_)
+      : etl::multimap_exception("multimap:iterator", file_name_, line_number_)
     {
     }
   };
@@ -218,9 +218,9 @@ namespace etl
     //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
-    multimap_base(size_type max_size)
+    multimap_base(size_type max_size_)
       : current_size(0)
-      , CAPACITY(max_size)
+      , CAPACITY(max_size_)
       , root_node(nullptr)
 
     {
@@ -648,8 +648,8 @@ namespace etl
     //*************************************************************************
     struct Data_Node : public Node
     {
-      explicit Data_Node(value_type value)
-        : value(value)
+      explicit Data_Node(value_type value_)
+        : value(value_)
       {
       }
 
@@ -1134,19 +1134,19 @@ namespace etl
     size_type erase(key_parameter_t key)
     {
       // Number of nodes removed
-      size_type count = 0;
+      size_type d = 0;
       const_iterator lower(*this, find_lower_node(root_node, key));
       const_iterator upper(*this, find_upper_node(root_node, key));
       while (lower != upper)
       {
         // Increment count for each node removed
-        ++count;
+        ++d;
         // Remove node using the other erase method
         (void)erase(lower++);
       }
 
       // Return the total count erased
-      return count;
+      return d;
     }
 
     //*************************************************************************

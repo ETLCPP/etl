@@ -72,8 +72,8 @@ namespace etl
   {
   public:
 
-    bitset_exception(string_type what, string_type file_name, numeric_type line_number)
-      : exception(what, file_name, line_number)
+    bitset_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
     {
     }
   };
@@ -86,8 +86,8 @@ namespace etl
   {
   public:
 
-    bitset_nullptr(string_type file_name, numeric_type line_number)
-      : bitset_exception("bitset: nullptr", file_name, line_number)
+    bitset_nullptr(string_type file_name_, numeric_type line_number_)
+      : bitset_exception("bitset: nullptr", file_name_, line_number_)
     {
     }
   };
@@ -185,9 +185,9 @@ namespace etl
       //*******************************
       /// Constructor.
       //*******************************
-      bit_reference(ibitset& r_bitset, size_t position)
+      bit_reference(ibitset& r_bitset, size_t position_)
         : p_bitset(&r_bitset),
-        position(position)
+        position(position_)
       {
       }
 
@@ -690,10 +690,10 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    ibitset(size_t nbits, size_t size, element_t* pdata)
-      : NBITS(nbits),
-      SIZE(size),
-      pdata(pdata)
+    ibitset(size_t nbits_, size_t size_, element_t* pdata_)
+      : NBITS(nbits_),
+        SIZE(size_),
+        pdata(pdata_)
     {
       size_t allocated_bits = SIZE * BITS_PER_ELEMENT;
       size_t top_mask_shift = ((BITS_PER_ELEMENT - (allocated_bits - NBITS)) % BITS_PER_ELEMENT);

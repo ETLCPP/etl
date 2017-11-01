@@ -328,8 +328,8 @@ namespace etl
     void assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      difference_type count = std::distance(first, last);
-      ETL_ASSERT(static_cast<size_t>(count) <= CAPACITY, ETL_ERROR(vector_full));
+      difference_type d = std::distance(first, last);
+      ETL_ASSERT(static_cast<size_t>(d) <= CAPACITY, ETL_ERROR(vector_full));
 #endif
 
       initialise();

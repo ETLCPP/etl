@@ -45,8 +45,8 @@ class test_exception : public etl::exception
 {
 public:
 
-  test_exception(string_type file_name, numeric_type line_number)
-    : exception(ETL_ERROR_TEXT("test_exception", "123"), file_name, line_number)
+  test_exception(string_type file_name_, numeric_type line_number_)
+    : exception(ETL_ERROR_TEXT("test_exception", "123"), file_name_, line_number_)
   {
     error_received = false;
   }

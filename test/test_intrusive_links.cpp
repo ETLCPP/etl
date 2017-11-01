@@ -43,8 +43,8 @@ namespace
 
   struct FData : public FLink0, public FLink1
   {
-    FData(int value)
-      : value(value)
+    FData(int value_)
+      : value(value_)
     {
     }
 
@@ -59,8 +59,8 @@ namespace
 
   struct BData : public BLink0, public BLink1
   {
-    BData(int value)
-      : value(value)
+    BData(int value_)
+      : value(value_)
     {
     }
 
@@ -76,8 +76,8 @@ namespace
 
   struct TData : public TLink0, public TLink1
   {
-    TData(int value)
-      : value(value)
+    TData(int value_)
+      : value(value_)
     {
     }
 
@@ -89,8 +89,8 @@ namespace
   //*******************************************************
   struct MData : public FLink0, public BLink1, public TLink2
   {
-    MData(int value)
-      : value(value)
+    MData(int value_)
+      : value(value_)
     {
     }
 

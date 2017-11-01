@@ -70,8 +70,8 @@ namespace etl
   {
   public:
 
-    map_exception(string_type what, string_type file_name, numeric_type line_number)
-      : exception(what, file_name, line_number)
+    map_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
     {
     }
   };
@@ -84,8 +84,8 @@ namespace etl
   {
   public:
 
-    map_full(string_type file_name, numeric_type line_number)
-      : etl::map_exception("map:full", file_name, line_number)
+    map_full(string_type file_name_, numeric_type line_number_)
+      : etl::map_exception("map:full", file_name_, line_number_)
     {
     }
   };
@@ -98,8 +98,8 @@ namespace etl
   {
   public:
 
-    map_out_of_bounds(string_type file_name, numeric_type line_number)
-      : etl::map_exception("map:bounds", file_name, line_number)
+    map_out_of_bounds(string_type file_name_, numeric_type line_number_)
+      : etl::map_exception("map:bounds", file_name_, line_number_)
     {
     }
   };
@@ -112,8 +112,8 @@ namespace etl
   {
   public:
 
-    map_iterator(string_type file_name, numeric_type line_number)
-      : etl::map_exception("map:iterator", file_name, line_number)
+    map_iterator(string_type file_name_, numeric_type line_number_)
+      : etl::map_exception("map:iterator", file_name_, line_number_)
     {
     }
   };
@@ -225,9 +225,9 @@ namespace etl
     //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
-    map_base(size_type max_size)
+    map_base(size_type max_size_)
       : current_size(0)
-      , CAPACITY(max_size)
+      , CAPACITY(max_size_)
       , root_node(nullptr)
 
     {
@@ -493,8 +493,8 @@ namespace etl
     //*************************************************************************
     struct Data_Node : public Node
     {
-      explicit Data_Node(value_type value)
-        : value(value)
+      explicit Data_Node(value_type value_)
+        : value(value_)
       {
       }
 

@@ -64,8 +64,8 @@ namespace etl
   {
   public:
 
-    intrusive_list_exception(string_type what, string_type file_name, numeric_type line_number)
-      : exception(what, file_name, line_number)
+    intrusive_list_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
     {
     }
   };
@@ -78,8 +78,8 @@ namespace etl
   {
   public:
 
-    intrusive_list_empty(string_type file_name, numeric_type line_number)
-      : intrusive_list_exception(ETL_ERROR_TEXT("intrusive_list:empty", ETL_FILE"A"), file_name, line_number)
+    intrusive_list_empty(string_type file_name_, numeric_type line_number_)
+      : intrusive_list_exception(ETL_ERROR_TEXT("intrusive_list:empty", ETL_FILE"A"), file_name_, line_number_)
     {
     }
   };
@@ -92,8 +92,8 @@ namespace etl
   {
   public:
 
-    intrusive_list_iterator_exception(string_type file_name, numeric_type line_number)
-      : intrusive_list_exception(ETL_ERROR_TEXT("intrusive_list:iterator", ETL_FILE"B"), file_name, line_number)
+    intrusive_list_iterator_exception(string_type file_name_, numeric_type line_number_)
+      : intrusive_list_exception(ETL_ERROR_TEXT("intrusive_list:iterator", ETL_FILE"B"), file_name_, line_number_)
     {
     }
   };
@@ -106,8 +106,8 @@ namespace etl
   {
   public:
 
-    intrusive_list_unsorted(string_type file_name, numeric_type line_number)
-      : intrusive_list_exception(ETL_ERROR_TEXT("intrusive_list:unsorted", ETL_FILE"C"), file_name, line_number)
+    intrusive_list_unsorted(string_type file_name_, numeric_type line_number_)
+      : intrusive_list_exception(ETL_ERROR_TEXT("intrusive_list:unsorted", ETL_FILE"C"), file_name_, line_number_)
     {
     }
   };
@@ -133,8 +133,8 @@ namespace etl
     void assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      intmax_t count = std::distance(first, last);
-      ETL_ASSERT(count >= 0, ETL_ERROR(intrusive_list_iterator_exception));
+      intmax_t d = std::distance(first, last);
+      ETL_ASSERT(d >= 0, ETL_ERROR(intrusive_list_iterator_exception));
 #endif
 
       initialise();
@@ -1028,31 +1028,31 @@ namespace etl
         value_type* other_begin = static_cast<value_type*>(other.get_head());
         value_type* other_end   = static_cast<value_type*>(&other.terminal_link);
 
-        value_type* begin = static_cast<value_type*>(this->get_head());
-        value_type* end   = static_cast<value_type*>(&this->terminal_link);
+        value_type* this_begin = static_cast<value_type*>(this->get_head());
+        value_type* this_end   = static_cast<value_type*>(&this->terminal_link);
 
-        while ((begin != end) && (other_begin != other_end))
+        while ((this_begin != this_end) && (other_begin != other_end))
         {
           // Find the place to insert.
-          while ((begin != end) && !(compare(*other_begin, *begin)))
+          while ((this_begin != this_end) && !(compare(*other_begin, *this_begin)))
           {
-            begin = static_cast<value_type*>(begin->link_type::etl_next);
+            this_begin = static_cast<value_type*>(this_begin->link_type::etl_next);
           }
 
           // Insert.
-          if (begin != end)
+          if (this_begin != this_end)
           {
-            while ((other_begin != other_end) && (compare(*other_begin, *begin)))
+            while ((other_begin != other_end) && (compare(*other_begin, *this_begin)))
             {
               value_type* value = other_begin;
               other_begin = static_cast<value_type*>(other_begin->link_type::etl_next);
-              etl::link_splice<link_type>(*begin->link_type::etl_previous, *value);
+              etl::link_splice<link_type>(*this_begin->link_type::etl_previous, *value);
             }
           }
         }
 
         // Any left over?
-        if ((begin == end) && (other_begin != other_end))
+        if ((this_begin == this_end) && (other_begin != other_end))
         {
           etl::link_splice<link_type>(*this->get_tail(), *other_begin, *other_end->link_type::etl_previous);
         }

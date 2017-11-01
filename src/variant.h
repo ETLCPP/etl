@@ -78,8 +78,8 @@ namespace etl
   class variant_exception : public exception
   {
   public:
-    variant_exception(string_type what, string_type file_name, numeric_type line_number)
-      : exception(what, file_name, line_number)
+    variant_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
     {
     }
   };
@@ -91,8 +91,8 @@ namespace etl
   class variant_incorrect_type_exception : public variant_exception
   {
   public:
-    variant_incorrect_type_exception(string_type file_name, numeric_type line_number)
-      : variant_exception(ETL_ERROR_TEXT("variant: unsupported type", ETL_FILE"A"), file_name, line_number)
+    variant_incorrect_type_exception(string_type file_name_, numeric_type line_number_)
+      : variant_exception(ETL_ERROR_TEXT("variant: unsupported type", ETL_FILE"A"), file_name_, line_number_)
     {
     }
   };
@@ -764,22 +764,22 @@ namespace etl
     template <typename U1, typename U2, typename U3, typename U4, typename U5, typename U6, typename U7, typename U8>
     bool is_same_type(const variant<U1, U2, U3, U4, U5, U6, U7, U8>& other) const
     {
-      bool is_same_type = false;
+      bool is_same = false;
 
       switch (other.type_id)
       {
-        case 0: is_same_type = type_id == Type_Id_Lookup<U1>::type_id; break;
-        case 1: is_same_type = type_id == Type_Id_Lookup<U2>::type_id; break;
-        case 2: is_same_type = type_id == Type_Id_Lookup<U3>::type_id; break;
-        case 3: is_same_type = type_id == Type_Id_Lookup<U4>::type_id; break;
-        case 4: is_same_type = type_id == Type_Id_Lookup<U5>::type_id; break;
-        case 5: is_same_type = type_id == Type_Id_Lookup<U6>::type_id; break;
-        case 6: is_same_type = type_id == Type_Id_Lookup<U7>::type_id; break;
-        case 7: is_same_type = type_id == Type_Id_Lookup<U8>::type_id; break;
+        case 0: is_same = (type_id == Type_Id_Lookup<U1>::type_id); break;
+        case 1: is_same = (type_id == Type_Id_Lookup<U2>::type_id); break;
+        case 2: is_same = (type_id == Type_Id_Lookup<U3>::type_id); break;
+        case 3: is_same = (type_id == Type_Id_Lookup<U4>::type_id); break;
+        case 4: is_same = (type_id == Type_Id_Lookup<U5>::type_id); break;
+        case 5: is_same = (type_id == Type_Id_Lookup<U6>::type_id); break;
+        case 6: is_same = (type_id == Type_Id_Lookup<U7>::type_id); break;
+        case 7: is_same = (type_id == Type_Id_Lookup<U8>::type_id); break;
         default: break;
       }
 
-      return is_same_type;
+      return is_same;
     }
 
     //***************************************************************************

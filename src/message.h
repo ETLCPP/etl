@@ -46,8 +46,8 @@ namespace etl
   {
   public:
 
-    message_exception(string_type what, string_type file_name, numeric_type line_number)
-      : exception(what, file_name, line_number)
+    message_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
     {
     }
   };
@@ -57,8 +57,8 @@ namespace etl
   {
   public:
 
-    unhandled_message_exception(string_type file_name, numeric_type line_number)
-      : message_exception(ETL_ERROR_TEXT("message:unknown", ETL_FILE"A"), file_name, line_number)
+    unhandled_message_exception(string_type file_name_, numeric_type line_number_)
+      : message_exception(ETL_ERROR_TEXT("message:unknown", ETL_FILE"A"), file_name_, line_number_)
     {
     }
   };

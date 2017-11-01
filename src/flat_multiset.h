@@ -205,8 +205,8 @@ namespace etl
     void assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      difference_type count = std::distance(first, last);
-      ETL_ASSERT(count <= difference_type(capacity()), ETL_ERROR(flat_multiset_full));
+      difference_type d = std::distance(first, last);
+      ETL_ASSERT(d <= difference_type(capacity()), ETL_ERROR(flat_multiset_full));
 #endif
 
       clear();
@@ -282,9 +282,9 @@ namespace etl
       }
       else
       {
-        size_t count = std::distance(range.first, range.second);
+        size_t d = std::distance(range.first, range.second);
         erase(range.first, range.second);
-        return count;
+        return d;
       }
     }
 

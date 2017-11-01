@@ -98,9 +98,9 @@ namespace etl
     ///\param object    Reference to the object
     ///\param p_function Pointer to the member function
     //*************************************************************************
-    function(TObject& object, void(TObject::* p_function)(TParameter))
-      : p_object(&object),
-        p_function(p_function)
+    function(TObject& object_, void(TObject::* p_function_)(TParameter))
+      : p_object(&object_),
+        p_function(p_function_)
     {
     }
 
@@ -135,9 +135,9 @@ namespace etl
     ///\param object   Reference to the object
     ///\param p_function Pointer to the member function
     //*************************************************************************
-    function(TObject& object, void(TObject::* p_function)(void))
-      : p_object(&object),
-        p_function(p_function)
+    function(TObject& object_, void(TObject::* p_function_)(void))
+      : p_object(&object_),
+        p_function(p_function_)
     {
     }
 
@@ -169,8 +169,8 @@ namespace etl
     /// Constructor.
     ///\param p_function Pointer to the function
     //*************************************************************************
-    function(void(*p_function)(TParameter))
-      : p_function(p_function)
+    function(void(*p_function_)(TParameter))
+      : p_function(p_function_)
     {
     }
 
@@ -220,7 +220,7 @@ namespace etl
 
     void (*p_function)(); ///< Pointer to the function.
   };
-  
+
   //***************************************************************************
   ///\ingroup function
   /// A derived function template that takes an object type and parameter type.
@@ -239,8 +239,8 @@ namespace etl
     /// Constructor.
     ///\param object    Reference to the object
     //*************************************************************************
-    function_mp(TObject& object)
-      : p_object(&object)
+    function_mp(TObject& object_)
+      : p_object(&object_)
     {
     }
 
@@ -277,8 +277,8 @@ namespace etl
     /// Constructor.
     ///\param object    Reference to the object
     //*************************************************************************
-    function_mv(TObject& object)
-      : p_object(&object)
+    function_mv(TObject& object_)
+      : p_object(&object_)
     {
     }
 

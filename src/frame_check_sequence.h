@@ -105,9 +105,9 @@ namespace etl
     //*************************************************************************
     /// \param value The uint8_t to add to the FCS.
     //*************************************************************************
-    void add(uint8_t value)
+    void add(uint8_t value_)
     {
-      frame_check = policy.add(frame_check, value);
+      frame_check = policy.add(frame_check, value_);
     }
 
     //*************************************************************************

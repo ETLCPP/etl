@@ -50,8 +50,8 @@ namespace etl
   {
   public:
 
-    factory_exception(string_type what, string_type file_name, numeric_type line_number)
-      : exception(what, file_name, line_number)
+    factory_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
     {
     }
   };
@@ -61,8 +61,8 @@ namespace etl
   {
   public:
 
-    factory_cannot_create(string_type file_name, numeric_type line_number)
-      : factory_exception(ETL_ERROR_TEXT("factory:cannot create", ETL_FILE"A"), file_name, line_number)
+    factory_cannot_create(string_type file_name_, numeric_type line_number_)
+      : factory_exception(ETL_ERROR_TEXT("factory:cannot create", ETL_FILE"A"), file_name_, line_number_)
     {
     }
   };
@@ -72,8 +72,8 @@ namespace etl
   {
   public:
 
-    factory_did_not_create(string_type file_name, numeric_type line_number)
-      : factory_exception(ETL_ERROR_TEXT("factory:did not create", ETL_FILE"B"), file_name, line_number)
+    factory_did_not_create(string_type file_name_, numeric_type line_number_)
+      : factory_exception(ETL_ERROR_TEXT("factory:did not create", ETL_FILE"B"), file_name_, line_number_)
     {
     }
   };
