@@ -129,13 +129,13 @@ namespace etl
     //********************************************
     bool is_null_router() const
     {
-      return (message_router_id != NULL_MESSAGE_ROUTER);
+      return (message_router_id == NULL_MESSAGE_ROUTER);
     }
 
     //********************************************
     bool is_bus() const
     {
-      return (message_router_id != MESSAGE_BUS);
+      return (message_router_id == MESSAGE_BUS);
     }
 
     enum
@@ -176,17 +176,17 @@ namespace etl
     }
 
     //********************************************
-    void receive(const etl::imessage& message)
+    void receive(const etl::imessage&)
     {
     }
 
     //********************************************
-    void receive(etl::imessage_router& source, const etl::imessage& message)
+    void receive(etl::imessage_router&, const etl::imessage&)
     {
     }
 
     //********************************************
-    bool accepts(etl::message_id_t id) const
+    bool accepts(etl::message_id_t) const
     {
       return false;
     }
