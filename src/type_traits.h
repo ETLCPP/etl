@@ -54,6 +54,7 @@ SOFTWARE.
 #define __ETL_TYPE_TRAITS__
 
 #include <stddef.h>
+#include <stdint.h>
 
 #include "platform.h"
 #include "nullptr.h"
