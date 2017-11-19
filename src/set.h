@@ -33,7 +33,6 @@ SOFTWARE.
 
 #include <stddef.h>
 #include <iterator>
-#include <functional>
 #include <algorithm>
 #include <functional>
 
