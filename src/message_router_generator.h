@@ -72,6 +72,7 @@ cog.outl("//********************************************************************
 #include "error_handler.h"
 #include "exception.h"
 #include "largest.h"
+#include "nullptr.h"
 
 #undef ETL_FILE
 #define ETL_FILE "35"
@@ -138,6 +139,12 @@ namespace etl
       return (message_router_id == MESSAGE_BUS);
     }
 
+    //********************************************
+    void set_successor(imessage_router& successor_)
+    {
+      successor = &successor_;
+    }
+
     enum
     {
       NULL_MESSAGE_ROUTER = 255,
@@ -148,10 +155,20 @@ namespace etl
 
   protected:
 
-    imessage_router(etl::message_router_id_t id)
-      : message_router_id(id)
+    imessage_router(etl::message_router_id_t id_)
+      : successor(nullptr),
+        message_router_id(id_)
     {
     }
+
+    imessage_router(etl::message_router_id_t id_, 
+                    imessage_router&         successor_)
+      : successor(&successor_),
+        message_router_id(id_)        
+    {
+    }
+
+    etl::imessage_router* successor;
 
   private:
 
@@ -313,10 +330,17 @@ namespace etl
       cog.outl("  };")
       cog.outl("")
       cog.outl("  //**********************************************")
-      cog.outl("  message_router(etl::message_router_id_t id)")
-      cog.outl("    : imessage_router(id)")
+      cog.outl("  message_router(etl::message_router_id_t id_)")
+      cog.outl("    : imessage_router(id_)")
       cog.outl("  {")
-      cog.outl("    ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));")
+      cog.outl("    ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));")
+      cog.outl("  }")
+      cog.outl("")
+      cog.outl("  //**********************************************")
+      cog.outl("  message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)")
+      cog.outl("    : imessage_router(id_, successor_)")
+      cog.outl("  {")
+      cog.outl("    ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));")
       cog.outl("  }")
       cog.outl("")
       cog.outl("  //**********************************************")
@@ -336,9 +360,18 @@ namespace etl
           cog.out("      case T%d::ID:" % n)
           cog.out(" static_cast<TDerived*>(this)->on_receive(source, static_cast<const T%d&>(msg));" % n)
           cog.outl(" break;")
-      cog.out("      default:")
-      cog.out("  static_cast<TDerived*>(this)->on_receive_unknown(source, msg);")
-      cog.outl(" break;")
+      cog.outl("      default:")
+      cog.outl("      {")
+      cog.outl("         if (successor != nullptr)")
+      cog.outl("         {")
+      cog.outl("           successor->receive(source, msg);")
+      cog.outl("         }")
+      cog.outl("         else")
+      cog.outl("         {")
+      cog.outl("           static_cast<TDerived*>(this)->on_receive_unknown(source, msg);")
+      cog.outl("         }")
+      cog.outl("         break;")
+      cog.outl("      }")
       cog.outl("    }")
       cog.outl("  }")
       cog.outl("")
@@ -469,10 +502,17 @@ namespace etl
           cog.outl("  };")
           cog.outl("")
           cog.outl("  //**********************************************")
-          cog.outl("  message_router(etl::message_router_id_t id)")
-          cog.outl("    : imessage_router(id)")
+          cog.outl("  message_router(etl::message_router_id_t id_)")
+          cog.outl("    : imessage_router(id_)")
           cog.outl("  {")
-          cog.outl("    ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));")
+          cog.outl("    ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));")
+          cog.outl("  }")
+          cog.outl("")
+          cog.outl("  //**********************************************")
+          cog.outl("  message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)")
+          cog.outl("    : imessage_router(id_, successor_)")
+          cog.outl("  {")
+          cog.outl("    ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));")
           cog.outl("  }")
           cog.outl("")
           cog.outl("  //**********************************************")
@@ -492,9 +532,18 @@ namespace etl
               cog.out("      case T%d::ID:" % t)
               cog.out(" static_cast<TDerived*>(this)->on_receive(source, static_cast<const T%d&>(msg));" % t)
               cog.outl(" break;")
-          cog.out("      default:")
-          cog.out(" static_cast<TDerived*>(this)->on_receive_unknown(source, msg);")
-          cog.outl(" break;")
+          cog.outl("      default:")
+          cog.outl("      {")
+          cog.outl("         if (successor != nullptr)")
+          cog.outl("         {")
+          cog.outl("           successor->receive(source, msg);")
+          cog.outl("         }")
+          cog.outl("         else")
+          cog.outl("         {")
+          cog.outl("           static_cast<TDerived*>(this)->on_receive_unknown(source, msg);")
+          cog.outl("         }")
+          cog.outl("         break;")
+          cog.outl("      }")
           cog.outl("    }")
           cog.outl("  }")
           cog.outl("")

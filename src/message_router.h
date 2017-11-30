@@ -38,12 +38,12 @@ SOFTWARE.
 // To generate to header file, run this at the command line.
 // Note: You will need Python and COG installed.
 //
-// python -m cogapp -d -e -omessage_router.h -DHandlers=<n> message_router_generator.h
+// python -m cogapp -d -e -omessage_router.h -DHandlers=<n> message_router_generator.h 
 // Where <n> is the number of messages to support.
 //
 // e.g.
 // To generate handlers for up to 16 messages...
-// python -m cogapp -d -e -omessage_router.h -DHandlers=16 message_router_generator.h
+// python -m cogapp -d -e -omessage_router.h -DHandlers=16 message_router_generator.h 
 //
 // See generate.bat
 //***************************************************************************
@@ -60,6 +60,7 @@ SOFTWARE.
 #include "error_handler.h"
 #include "exception.h"
 #include "largest.h"
+#include "nullptr.h"
 
 #undef ETL_FILE
 #define ETL_FILE "35"
@@ -126,6 +127,12 @@ namespace etl
       return (message_router_id == MESSAGE_BUS);
     }
 
+    //********************************************
+    void set_successor(imessage_router& successor_)
+    {
+      successor = &successor_;
+    }
+
     enum
     {
       NULL_MESSAGE_ROUTER = 255,
@@ -136,10 +143,20 @@ namespace etl
 
   protected:
 
-    imessage_router(etl::message_router_id_t id)
-      : message_router_id(id)
+    imessage_router(etl::message_router_id_t id_)
+      : successor(nullptr),
+        message_router_id(id_)
     {
     }
+
+    imessage_router(etl::message_router_id_t id_, 
+                    imessage_router&         successor_)
+      : successor(&successor_),
+        message_router_id(id_)        
+    {
+    }
+
+    etl::imessage_router* successor;
 
   private:
 
@@ -191,7 +208,7 @@ namespace etl
   /// Send a message to a router.
   /// Sets the 'sender' to etl::null_message_router type.
   //***************************************************************************
-  inline static void send_message(etl::imessage_router& destination,
+  inline static void send_message(etl::imessage_router& destination, 
                                   const etl::imessage&  message)
   {
     destination.receive(message);
@@ -200,20 +217,20 @@ namespace etl
   //***************************************************************************
   /// Send a message to a router.
   //***************************************************************************
-  inline static void send_message(etl::imessage_router& source,
-                                  etl::imessage_router& destination,
+  inline static void send_message(etl::imessage_router& source, 
+                                  etl::imessage_router& destination, 
                                   const etl::imessage&  message)
   {
     destination.receive(source, message);
   }
-
+  
   //***************************************************************************
   // The definition for all 16 message types.
   //***************************************************************************
   template <typename TDerived,
-            typename T1, typename T2 = void, typename T3 = void, typename T4 = void,
-            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void,
-            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void,
+            typename T1, typename T2 = void, typename T3 = void, typename T4 = void, 
+            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void, 
+            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void, 
             typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void>
   class message_router  : public imessage_router
   {
@@ -293,10 +310,17 @@ namespace etl
     };
 
     //**********************************************
-    message_router(etl::message_router_id_t id)
-      : imessage_router(id)
+    message_router(etl::message_router_id_t id_)
+      : imessage_router(id_)
     {
-      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //**********************************************
+    message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)
+      : imessage_router(id_, successor_)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -328,7 +352,18 @@ namespace etl
         case T14::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T14&>(msg)); break;
         case T15::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T15&>(msg)); break;
         case T16::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T16&>(msg)); break;
-        default:  static_cast<TDerived*>(this)->on_receive_unknown(source, msg); break;
+        default:
+        {
+           if (successor != nullptr)
+           {
+             successor->receive(source, msg);
+           }
+           else
+           {
+             static_cast<TDerived*>(this)->on_receive_unknown(source, msg);
+           }
+           break;
+        }
       }
     }
 
@@ -339,8 +374,8 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
-        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: case T15::ID: case T16::ID:
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
+        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: case T15::ID: case T16::ID: 
           return true; break;
         default:
           return false; break;
@@ -351,10 +386,10 @@ namespace etl
   //***************************************************************************
   // Specialisation for 15 message types.
   //***************************************************************************
-  template <typename TDerived,
-            typename T1, typename T2, typename T3, typename T4,
-            typename T5, typename T6, typename T7, typename T8,
-            typename T9, typename T10, typename T11, typename T12,
+  template <typename TDerived, 
+            typename T1, typename T2, typename T3, typename T4, 
+            typename T5, typename T6, typename T7, typename T8, 
+            typename T9, typename T10, typename T11, typename T12, 
             typename T13, typename T14, typename T15>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, void>
    : public imessage_router
@@ -434,10 +469,17 @@ namespace etl
     };
 
     //**********************************************
-    message_router(etl::message_router_id_t id)
-      : imessage_router(id)
+    message_router(etl::message_router_id_t id_)
+      : imessage_router(id_)
     {
-      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //**********************************************
+    message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)
+      : imessage_router(id_, successor_)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -468,7 +510,18 @@ namespace etl
         case T13::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T13&>(msg)); break;
         case T14::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T14&>(msg)); break;
         case T15::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T15&>(msg)); break;
-        default: static_cast<TDerived*>(this)->on_receive_unknown(source, msg); break;
+        default:
+        {
+           if (successor != nullptr)
+           {
+             successor->receive(source, msg);
+           }
+           else
+           {
+             static_cast<TDerived*>(this)->on_receive_unknown(source, msg);
+           }
+           break;
+        }
       }
     }
 
@@ -479,8 +532,8 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
-        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: case T15::ID:
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
+        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: case T15::ID: 
           return true; break;
         default:
           return false; break;
@@ -491,10 +544,10 @@ namespace etl
   //***************************************************************************
   // Specialisation for 14 message types.
   //***************************************************************************
-  template <typename TDerived,
-            typename T1, typename T2, typename T3, typename T4,
-            typename T5, typename T6, typename T7, typename T8,
-            typename T9, typename T10, typename T11, typename T12,
+  template <typename TDerived, 
+            typename T1, typename T2, typename T3, typename T4, 
+            typename T5, typename T6, typename T7, typename T8, 
+            typename T9, typename T10, typename T11, typename T12, 
             typename T13, typename T14>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, void, void>
    : public imessage_router
@@ -573,10 +626,17 @@ namespace etl
     };
 
     //**********************************************
-    message_router(etl::message_router_id_t id)
-      : imessage_router(id)
+    message_router(etl::message_router_id_t id_)
+      : imessage_router(id_)
     {
-      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //**********************************************
+    message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)
+      : imessage_router(id_, successor_)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -606,7 +666,18 @@ namespace etl
         case T12::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T12&>(msg)); break;
         case T13::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T13&>(msg)); break;
         case T14::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T14&>(msg)); break;
-        default: static_cast<TDerived*>(this)->on_receive_unknown(source, msg); break;
+        default:
+        {
+           if (successor != nullptr)
+           {
+             successor->receive(source, msg);
+           }
+           else
+           {
+             static_cast<TDerived*>(this)->on_receive_unknown(source, msg);
+           }
+           break;
+        }
       }
     }
 
@@ -617,8 +688,8 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
-        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID:
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
+        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: 
           return true; break;
         default:
           return false; break;
@@ -629,10 +700,10 @@ namespace etl
   //***************************************************************************
   // Specialisation for 13 message types.
   //***************************************************************************
-  template <typename TDerived,
-            typename T1, typename T2, typename T3, typename T4,
-            typename T5, typename T6, typename T7, typename T8,
-            typename T9, typename T10, typename T11, typename T12,
+  template <typename TDerived, 
+            typename T1, typename T2, typename T3, typename T4, 
+            typename T5, typename T6, typename T7, typename T8, 
+            typename T9, typename T10, typename T11, typename T12, 
             typename T13>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, void, void, void>
    : public imessage_router
@@ -710,10 +781,17 @@ namespace etl
     };
 
     //**********************************************
-    message_router(etl::message_router_id_t id)
-      : imessage_router(id)
+    message_router(etl::message_router_id_t id_)
+      : imessage_router(id_)
     {
-      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //**********************************************
+    message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)
+      : imessage_router(id_, successor_)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -742,7 +820,18 @@ namespace etl
         case T11::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T11&>(msg)); break;
         case T12::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T12&>(msg)); break;
         case T13::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T13&>(msg)); break;
-        default: static_cast<TDerived*>(this)->on_receive_unknown(source, msg); break;
+        default:
+        {
+           if (successor != nullptr)
+           {
+             successor->receive(source, msg);
+           }
+           else
+           {
+             static_cast<TDerived*>(this)->on_receive_unknown(source, msg);
+           }
+           break;
+        }
       }
     }
 
@@ -753,8 +842,8 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
-        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID:
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
+        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: 
           return true; break;
         default:
           return false; break;
@@ -765,9 +854,9 @@ namespace etl
   //***************************************************************************
   // Specialisation for 12 message types.
   //***************************************************************************
-  template <typename TDerived,
-            typename T1, typename T2, typename T3, typename T4,
-            typename T5, typename T6, typename T7, typename T8,
+  template <typename TDerived, 
+            typename T1, typename T2, typename T3, typename T4, 
+            typename T5, typename T6, typename T7, typename T8, 
             typename T9, typename T10, typename T11, typename T12>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, void, void, void, void>
    : public imessage_router
@@ -844,10 +933,17 @@ namespace etl
     };
 
     //**********************************************
-    message_router(etl::message_router_id_t id)
-      : imessage_router(id)
+    message_router(etl::message_router_id_t id_)
+      : imessage_router(id_)
     {
-      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //**********************************************
+    message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)
+      : imessage_router(id_, successor_)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -875,7 +971,18 @@ namespace etl
         case T10::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T10&>(msg)); break;
         case T11::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T11&>(msg)); break;
         case T12::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T12&>(msg)); break;
-        default: static_cast<TDerived*>(this)->on_receive_unknown(source, msg); break;
+        default:
+        {
+           if (successor != nullptr)
+           {
+             successor->receive(source, msg);
+           }
+           else
+           {
+             static_cast<TDerived*>(this)->on_receive_unknown(source, msg);
+           }
+           break;
+        }
       }
     }
 
@@ -886,8 +993,8 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
-        case T9::ID: case T10::ID: case T11::ID: case T12::ID:
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
+        case T9::ID: case T10::ID: case T11::ID: case T12::ID: 
           return true; break;
         default:
           return false; break;
@@ -898,9 +1005,9 @@ namespace etl
   //***************************************************************************
   // Specialisation for 11 message types.
   //***************************************************************************
-  template <typename TDerived,
-            typename T1, typename T2, typename T3, typename T4,
-            typename T5, typename T6, typename T7, typename T8,
+  template <typename TDerived, 
+            typename T1, typename T2, typename T3, typename T4, 
+            typename T5, typename T6, typename T7, typename T8, 
             typename T9, typename T10, typename T11>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, void, void, void, void, void>
    : public imessage_router
@@ -976,10 +1083,17 @@ namespace etl
     };
 
     //**********************************************
-    message_router(etl::message_router_id_t id)
-      : imessage_router(id)
+    message_router(etl::message_router_id_t id_)
+      : imessage_router(id_)
     {
-      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //**********************************************
+    message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)
+      : imessage_router(id_, successor_)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -1006,7 +1120,18 @@ namespace etl
         case T9::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T9&>(msg)); break;
         case T10::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T10&>(msg)); break;
         case T11::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T11&>(msg)); break;
-        default: static_cast<TDerived*>(this)->on_receive_unknown(source, msg); break;
+        default:
+        {
+           if (successor != nullptr)
+           {
+             successor->receive(source, msg);
+           }
+           else
+           {
+             static_cast<TDerived*>(this)->on_receive_unknown(source, msg);
+           }
+           break;
+        }
       }
     }
 
@@ -1017,8 +1142,8 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
-        case T9::ID: case T10::ID: case T11::ID:
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
+        case T9::ID: case T10::ID: case T11::ID: 
           return true; break;
         default:
           return false; break;
@@ -1029,9 +1154,9 @@ namespace etl
   //***************************************************************************
   // Specialisation for 10 message types.
   //***************************************************************************
-  template <typename TDerived,
-            typename T1, typename T2, typename T3, typename T4,
-            typename T5, typename T6, typename T7, typename T8,
+  template <typename TDerived, 
+            typename T1, typename T2, typename T3, typename T4, 
+            typename T5, typename T6, typename T7, typename T8, 
             typename T9, typename T10>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, void, void, void, void, void, void>
    : public imessage_router
@@ -1106,10 +1231,17 @@ namespace etl
     };
 
     //**********************************************
-    message_router(etl::message_router_id_t id)
-      : imessage_router(id)
+    message_router(etl::message_router_id_t id_)
+      : imessage_router(id_)
     {
-      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //**********************************************
+    message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)
+      : imessage_router(id_, successor_)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -1135,7 +1267,18 @@ namespace etl
         case T8::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T8&>(msg)); break;
         case T9::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T9&>(msg)); break;
         case T10::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T10&>(msg)); break;
-        default: static_cast<TDerived*>(this)->on_receive_unknown(source, msg); break;
+        default:
+        {
+           if (successor != nullptr)
+           {
+             successor->receive(source, msg);
+           }
+           else
+           {
+             static_cast<TDerived*>(this)->on_receive_unknown(source, msg);
+           }
+           break;
+        }
       }
     }
 
@@ -1146,8 +1289,8 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
-        case T9::ID: case T10::ID:
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
+        case T9::ID: case T10::ID: 
           return true; break;
         default:
           return false; break;
@@ -1158,9 +1301,9 @@ namespace etl
   //***************************************************************************
   // Specialisation for 9 message types.
   //***************************************************************************
-  template <typename TDerived,
-            typename T1, typename T2, typename T3, typename T4,
-            typename T5, typename T6, typename T7, typename T8,
+  template <typename TDerived, 
+            typename T1, typename T2, typename T3, typename T4, 
+            typename T5, typename T6, typename T7, typename T8, 
             typename T9>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, T8, T9, void, void, void, void, void, void, void>
    : public imessage_router
@@ -1234,10 +1377,17 @@ namespace etl
     };
 
     //**********************************************
-    message_router(etl::message_router_id_t id)
-      : imessage_router(id)
+    message_router(etl::message_router_id_t id_)
+      : imessage_router(id_)
     {
-      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //**********************************************
+    message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)
+      : imessage_router(id_, successor_)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -1262,7 +1412,18 @@ namespace etl
         case T7::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T7&>(msg)); break;
         case T8::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T8&>(msg)); break;
         case T9::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T9&>(msg)); break;
-        default: static_cast<TDerived*>(this)->on_receive_unknown(source, msg); break;
+        default:
+        {
+           if (successor != nullptr)
+           {
+             successor->receive(source, msg);
+           }
+           else
+           {
+             static_cast<TDerived*>(this)->on_receive_unknown(source, msg);
+           }
+           break;
+        }
       }
     }
 
@@ -1273,8 +1434,8 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
-        case T9::ID:
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
+        case T9::ID: 
           return true; break;
         default:
           return false; break;
@@ -1285,8 +1446,8 @@ namespace etl
   //***************************************************************************
   // Specialisation for 8 message types.
   //***************************************************************************
-  template <typename TDerived,
-            typename T1, typename T2, typename T3, typename T4,
+  template <typename TDerived, 
+            typename T1, typename T2, typename T3, typename T4, 
             typename T5, typename T6, typename T7, typename T8>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, T8, void, void, void, void, void, void, void, void>
    : public imessage_router
@@ -1359,10 +1520,17 @@ namespace etl
     };
 
     //**********************************************
-    message_router(etl::message_router_id_t id)
-      : imessage_router(id)
+    message_router(etl::message_router_id_t id_)
+      : imessage_router(id_)
     {
-      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //**********************************************
+    message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)
+      : imessage_router(id_, successor_)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -1386,7 +1554,18 @@ namespace etl
         case T6::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T6&>(msg)); break;
         case T7::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T7&>(msg)); break;
         case T8::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T8&>(msg)); break;
-        default: static_cast<TDerived*>(this)->on_receive_unknown(source, msg); break;
+        default:
+        {
+           if (successor != nullptr)
+           {
+             successor->receive(source, msg);
+           }
+           else
+           {
+             static_cast<TDerived*>(this)->on_receive_unknown(source, msg);
+           }
+           break;
+        }
       }
     }
 
@@ -1397,8 +1576,8 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
-
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
+        
           return true; break;
         default:
           return false; break;
@@ -1409,8 +1588,8 @@ namespace etl
   //***************************************************************************
   // Specialisation for 7 message types.
   //***************************************************************************
-  template <typename TDerived,
-            typename T1, typename T2, typename T3, typename T4,
+  template <typename TDerived, 
+            typename T1, typename T2, typename T3, typename T4, 
             typename T5, typename T6, typename T7>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, void, void, void, void, void, void, void, void, void>
    : public imessage_router
@@ -1482,10 +1661,17 @@ namespace etl
     };
 
     //**********************************************
-    message_router(etl::message_router_id_t id)
-      : imessage_router(id)
+    message_router(etl::message_router_id_t id_)
+      : imessage_router(id_)
     {
-      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //**********************************************
+    message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)
+      : imessage_router(id_, successor_)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -1508,7 +1694,18 @@ namespace etl
         case T5::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T5&>(msg)); break;
         case T6::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T6&>(msg)); break;
         case T7::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T7&>(msg)); break;
-        default: static_cast<TDerived*>(this)->on_receive_unknown(source, msg); break;
+        default:
+        {
+           if (successor != nullptr)
+           {
+             successor->receive(source, msg);
+           }
+           else
+           {
+             static_cast<TDerived*>(this)->on_receive_unknown(source, msg);
+           }
+           break;
+        }
       }
     }
 
@@ -1519,7 +1716,7 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID:
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: 
           return true; break;
         default:
           return false; break;
@@ -1530,8 +1727,8 @@ namespace etl
   //***************************************************************************
   // Specialisation for 6 message types.
   //***************************************************************************
-  template <typename TDerived,
-            typename T1, typename T2, typename T3, typename T4,
+  template <typename TDerived, 
+            typename T1, typename T2, typename T3, typename T4, 
             typename T5, typename T6>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, void, void, void, void, void, void, void, void, void, void>
    : public imessage_router
@@ -1602,10 +1799,17 @@ namespace etl
     };
 
     //**********************************************
-    message_router(etl::message_router_id_t id)
-      : imessage_router(id)
+    message_router(etl::message_router_id_t id_)
+      : imessage_router(id_)
     {
-      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //**********************************************
+    message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)
+      : imessage_router(id_, successor_)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -1627,7 +1831,18 @@ namespace etl
         case T4::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T4&>(msg)); break;
         case T5::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T5&>(msg)); break;
         case T6::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T6&>(msg)); break;
-        default: static_cast<TDerived*>(this)->on_receive_unknown(source, msg); break;
+        default:
+        {
+           if (successor != nullptr)
+           {
+             successor->receive(source, msg);
+           }
+           else
+           {
+             static_cast<TDerived*>(this)->on_receive_unknown(source, msg);
+           }
+           break;
+        }
       }
     }
 
@@ -1638,7 +1853,7 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID:
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: 
           return true; break;
         default:
           return false; break;
@@ -1649,8 +1864,8 @@ namespace etl
   //***************************************************************************
   // Specialisation for 5 message types.
   //***************************************************************************
-  template <typename TDerived,
-            typename T1, typename T2, typename T3, typename T4,
+  template <typename TDerived, 
+            typename T1, typename T2, typename T3, typename T4, 
             typename T5>
   class message_router<TDerived, T1, T2, T3, T4, T5, void, void, void, void, void, void, void, void, void, void, void>
    : public imessage_router
@@ -1720,10 +1935,17 @@ namespace etl
     };
 
     //**********************************************
-    message_router(etl::message_router_id_t id)
-      : imessage_router(id)
+    message_router(etl::message_router_id_t id_)
+      : imessage_router(id_)
     {
-      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //**********************************************
+    message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)
+      : imessage_router(id_, successor_)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -1744,7 +1966,18 @@ namespace etl
         case T3::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T3&>(msg)); break;
         case T4::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T4&>(msg)); break;
         case T5::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T5&>(msg)); break;
-        default: static_cast<TDerived*>(this)->on_receive_unknown(source, msg); break;
+        default:
+        {
+           if (successor != nullptr)
+           {
+             successor->receive(source, msg);
+           }
+           else
+           {
+             static_cast<TDerived*>(this)->on_receive_unknown(source, msg);
+           }
+           break;
+        }
       }
     }
 
@@ -1755,7 +1988,7 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID:
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: 
           return true; break;
         default:
           return false; break;
@@ -1766,7 +1999,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 4 message types.
   //***************************************************************************
-  template <typename TDerived,
+  template <typename TDerived, 
             typename T1, typename T2, typename T3, typename T4>
   class message_router<TDerived, T1, T2, T3, T4, void, void, void, void, void, void, void, void, void, void, void, void>
    : public imessage_router
@@ -1835,10 +2068,17 @@ namespace etl
     };
 
     //**********************************************
-    message_router(etl::message_router_id_t id)
-      : imessage_router(id)
+    message_router(etl::message_router_id_t id_)
+      : imessage_router(id_)
     {
-      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //**********************************************
+    message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)
+      : imessage_router(id_, successor_)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -1858,7 +2098,18 @@ namespace etl
         case T2::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T2&>(msg)); break;
         case T3::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T3&>(msg)); break;
         case T4::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T4&>(msg)); break;
-        default: static_cast<TDerived*>(this)->on_receive_unknown(source, msg); break;
+        default:
+        {
+           if (successor != nullptr)
+           {
+             successor->receive(source, msg);
+           }
+           else
+           {
+             static_cast<TDerived*>(this)->on_receive_unknown(source, msg);
+           }
+           break;
+        }
       }
     }
 
@@ -1869,7 +2120,7 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID:
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: 
           return true; break;
         default:
           return false; break;
@@ -1880,7 +2131,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 3 message types.
   //***************************************************************************
-  template <typename TDerived,
+  template <typename TDerived, 
             typename T1, typename T2, typename T3>
   class message_router<TDerived, T1, T2, T3, void, void, void, void, void, void, void, void, void, void, void, void, void>
    : public imessage_router
@@ -1948,10 +2199,17 @@ namespace etl
     };
 
     //**********************************************
-    message_router(etl::message_router_id_t id)
-      : imessage_router(id)
+    message_router(etl::message_router_id_t id_)
+      : imessage_router(id_)
     {
-      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //**********************************************
+    message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)
+      : imessage_router(id_, successor_)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -1970,7 +2228,18 @@ namespace etl
         case T1::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T1&>(msg)); break;
         case T2::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T2&>(msg)); break;
         case T3::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T3&>(msg)); break;
-        default: static_cast<TDerived*>(this)->on_receive_unknown(source, msg); break;
+        default:
+        {
+           if (successor != nullptr)
+           {
+             successor->receive(source, msg);
+           }
+           else
+           {
+             static_cast<TDerived*>(this)->on_receive_unknown(source, msg);
+           }
+           break;
+        }
       }
     }
 
@@ -1981,7 +2250,7 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID:
+        case T1::ID: case T2::ID: case T3::ID: 
           return true; break;
         default:
           return false; break;
@@ -1992,7 +2261,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 2 message types.
   //***************************************************************************
-  template <typename TDerived,
+  template <typename TDerived, 
             typename T1, typename T2>
   class message_router<TDerived, T1, T2, void, void, void, void, void, void, void, void, void, void, void, void, void, void>
    : public imessage_router
@@ -2059,10 +2328,17 @@ namespace etl
     };
 
     //**********************************************
-    message_router(etl::message_router_id_t id)
-      : imessage_router(id)
+    message_router(etl::message_router_id_t id_)
+      : imessage_router(id_)
     {
-      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //**********************************************
+    message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)
+      : imessage_router(id_, successor_)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -2080,7 +2356,18 @@ namespace etl
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T1&>(msg)); break;
         case T2::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T2&>(msg)); break;
-        default: static_cast<TDerived*>(this)->on_receive_unknown(source, msg); break;
+        default:
+        {
+           if (successor != nullptr)
+           {
+             successor->receive(source, msg);
+           }
+           else
+           {
+             static_cast<TDerived*>(this)->on_receive_unknown(source, msg);
+           }
+           break;
+        }
       }
     }
 
@@ -2091,7 +2378,7 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID:
+        case T1::ID: case T2::ID: 
           return true; break;
         default:
           return false; break;
@@ -2102,7 +2389,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 1 message type.
   //***************************************************************************
-  template <typename TDerived,
+  template <typename TDerived, 
             typename T1>
   class message_router<TDerived, T1, void, void, void, void, void, void, void, void, void, void, void, void, void, void, void>
    : public imessage_router
@@ -2168,10 +2455,17 @@ namespace etl
     };
 
     //**********************************************
-    message_router(etl::message_router_id_t id)
-      : imessage_router(id)
+    message_router(etl::message_router_id_t id_)
+      : imessage_router(id_)
     {
-      ETL_ASSERT(id <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //**********************************************
+    message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)
+      : imessage_router(id_, successor_)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //**********************************************
@@ -2188,7 +2482,18 @@ namespace etl
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T1&>(msg)); break;
-        default: static_cast<TDerived*>(this)->on_receive_unknown(source, msg); break;
+        default:
+        {
+           if (successor != nullptr)
+           {
+             successor->receive(source, msg);
+           }
+           else
+           {
+             static_cast<TDerived*>(this)->on_receive_unknown(source, msg);
+           }
+           break;
+        }
       }
     }
 
@@ -2199,7 +2504,7 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID:
+        case T1::ID: 
           return true; break;
         default:
           return false; break;
