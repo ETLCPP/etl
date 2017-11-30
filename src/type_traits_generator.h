@@ -69,6 +69,7 @@ cog.outl("//********************************************************************
 
 #include "platform.h"
 #include "nullptr.h"
+#include "static_assert.h"
 
 #if (ETL_CPP11_SUPPORTED)
   #include <type_traits>
@@ -328,6 +329,22 @@ namespace etl
   ///\ingroup type_traits
   template <bool B, typename T, typename F>  struct conditional { typedef T type; };
   template <typename T, typename F> struct conditional<false, T, F> { typedef F type; };
+
+  /// conditional_integral_constant
+  ///\ingroup type_traits
+  template <bool B, typename T, T TRUE_VALUE, T FALSE_VALUE>
+  struct conditional_integral_constant
+  {
+    STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
+    static const T value = TRUE_VALUE;
+  };
+
+  template <typename T, T TRUE_VALUE, T FALSE_VALUE>
+  struct conditional_integral_constant<false, T, TRUE_VALUE, FALSE_VALUE>
+  {
+    STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
+    static const T value = FALSE_VALUE; 
+  };
 
   /// make_signed
   ///\ingroup type_traits

@@ -76,39 +76,15 @@ namespace etl
             typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void>
   struct largest_type
   {
-  private:
-
-    // Declaration.
-    template <const bool Boolean, typename TrueType, typename FalseType>
-    struct choose_type;
-
-    // Specialisation for 'true'.
-    // Defines 'type' as 'TrueType'.
-    template <typename TrueType, typename FalseType>
-    struct choose_type<true, TrueType, FalseType>
-    {
-      typedef TrueType type;
-    };
-
-    // Specialisation for 'false'. 
-    // Defines 'type' as 'FalseType'.
-    template <typename TrueType, typename FalseType>
-    struct choose_type<false, TrueType, FalseType>
-    {
-      typedef FalseType type;
-    };
-
-  public:
-
     // Define 'largest_other' as 'largest_type' with all but the first parameter. 
     typedef typename largest_type<T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::type largest_other;
 
     // Set 'type' to be the largest of the first parameter and any of the others.
     // This is recursive.
-    typedef typename choose_type<(sizeof(T1) > sizeof(largest_other)), // Boolean
-                                  T1,                                  // TrueType
-                                  largest_other>                       // FalseType
-                                  ::type type;                         // The largest type of the two.
+    typedef typename etl::conditional<(sizeof(T1) > sizeof(largest_other)), // Boolean
+                                       T1,                                  // TrueType
+                                       largest_other>                       // FalseType
+                                       ::type type;                         // The largest type of the two.
 
     // The size of the largest type.
     enum
@@ -139,53 +115,40 @@ namespace etl
   ///\ingroup largest
   //***************************************************************************
   template <typename T1, typename T2 = void, typename T3 = void, typename T4 = void, 
-              typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void, 
-              typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void, 
-              typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void>
+            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void, 
+            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void, 
+            typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void>
   struct largest_alignment
   {
-  private:
+    // Define 'largest_other' as 'largest_type' with all but the first parameter. 
+    typedef typename largest_alignment<T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::type largest_other;
 
-    // Determine the largest size.
-    template <const size_t size1, const size_t size2>
-    struct max_size
-    {
-      enum
-      {
-        value = (size1 > size2) ? size1 : size2
-      };
-    };
+    // Set 'type' to be the largest of the first parameter and any of the others.
+    // This is recursive.
+    typedef typename etl::conditional<(etl::alignment_of<T1>::value > etl::alignment_of<largest_other>::value), // Boolean
+                                       T1,                                                                      // TrueType
+                                       largest_other>                                                           // FalseType
+                                       ::type type;                                                             // The largest type of the two.
 
-    // All of the alignments.
+    // The largest alignment.
     enum
     {
-      t1 = etl::alignment_of<T1>::value,
-      t2 = etl::alignment_of<T2>::value,
-      t3 = etl::alignment_of<T3>::value,
-      t4 = etl::alignment_of<T4>::value,
-      t5 = etl::alignment_of<T5>::value,
-      t6 = etl::alignment_of<T6>::value,
-      t7 = etl::alignment_of<T7>::value,
-      t8 = etl::alignment_of<T8>::value,
-      t9 = etl::alignment_of<T9>::value,
-      t10 = etl::alignment_of<T10>::value,
-      t11 = etl::alignment_of<T11>::value,
-      t12 = etl::alignment_of<T12>::value,
-      t13 = etl::alignment_of<T13>::value,
-      t14 = etl::alignment_of<T14>::value,
-      t15 = etl::alignment_of<T15>::value,
-      t16 = etl::alignment_of<T16>::value
+      value = etl::alignment_of<type>::value
     };
+  };
 
-  public:
+  //***************************************************************************
+  // Specialisation for one template parameter.
+  //***************************************************************************
+  template <typename T1>
+  struct largest_alignment<T1,   void, void, void, void, void, void, void, 
+                           void, void, void, void, void, void, void, void>
+  {
+    typedef T1 type;
 
-    // The largest of all of them.
     enum
     {
-      value = max_size<t1, max_size<t2, max_size<t3, max_size<t4, max_size<t5, max_size<t6, max_size<t7, max_size<t8, 
-              max_size<t9, max_size<t10, max_size<t11, max_size<t12, max_size<t13, max_size<t14, max_size<t15, t16>
-              ::value>::value>::value>::value>::value>::value>::value>::value>
-              ::value>::value>::value>::value>::value>::value>::value
+      value = etl::alignment_of<type>::value
     };
   };
 
