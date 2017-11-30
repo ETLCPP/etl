@@ -271,7 +271,7 @@ namespace etl
     }
 
     /// Read.
-    T value() const
+    T read() const
     {
       return shadow_value;
     }
