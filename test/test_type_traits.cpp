@@ -716,4 +716,14 @@ namespace
       CHECK((std::is_same<const int* const, etl::types<const volatile int&>::const_pointer_const>::value));
     }
   };
+
+  //*************************************************************************
+  TEST(conditional_integral_constant)
+  {
+    int v1 = etl::conditional_integral_constant<true,  int, 1, 2>::value;
+    int v2 = etl::conditional_integral_constant<false, int, 1, 2>::value;
+
+    CHECK_EQUAL(1, v1);
+    CHECK_EQUAL(2, v2);
+  }
 }

@@ -54,10 +54,10 @@ SOFTWARE.
 #define __ETL_TYPE_TRAITS__
 
 #include <stddef.h>
-#include <stdint.h>
 
 #include "platform.h"
 #include "nullptr.h"
+#include "static_assert.h"
 
 #if (ETL_CPP11_SUPPORTED)
   #include <type_traits>
@@ -318,6 +318,25 @@ namespace etl
   template <bool B, typename T, typename F>  struct conditional { typedef T type; };
   template <typename T, typename F> struct conditional<false, T, F> { typedef F type; };
 
+  /// conditional_integral_constant
+  ///\ingroup type_traits
+  template <bool B, typename T, T TRUE_VALUE, T FALSE_VALUE>
+  struct conditional_integral_constant;
+
+  template <typename T, T TRUE_VALUE, T FALSE_VALUE>
+  struct conditional_integral_constant<true, T, TRUE_VALUE, FALSE_VALUE>
+  {
+    STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
+    static const T value = TRUE_VALUE;
+  };
+
+  template <typename T, T TRUE_VALUE, T FALSE_VALUE>
+  struct conditional_integral_constant<false, T, TRUE_VALUE, FALSE_VALUE>
+  {
+    STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
+    static const T value = FALSE_VALUE;
+  };
+
   /// make_signed
   ///\ingroup type_traits
   template <typename T> struct make_signed { typedef  T type; };
@@ -417,10 +436,10 @@ namespace etl
 
   /// is_base_of
   ///\ingroup type_traits
-  template<typename TBase, 
-           typename TDerived, 
-           const bool IsFundamental = (etl::is_fundamental<TBase>::value || etl::is_fundamental<TDerived>::value)>
-  struct is_base_of
+  template<typename TBase,
+    typename TDerived,
+    const bool IsFundamental = (etl::is_fundamental<TBase>::value || etl::is_fundamental<TDerived>::value)>
+    struct is_base_of
   {
   private:
 
@@ -441,7 +460,7 @@ namespace etl
   {
     static const bool value = false;
   };
-  
+
   /// Alignment templates.
   /// These require compiler specific intrinsics.
   ///\ingroup type_traits
@@ -465,14 +484,14 @@ namespace etl
   ///\ingroup types
   //***************************************************************************
   template <typename T,
-            typename T1, typename T2 = void, typename T3 = void, typename T4 = void, 
-            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void, 
-            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void, 
-            typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void, 
+            typename T1, typename T2 = void, typename T3 = void, typename T4 = void,
+            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void,
+            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void,
+            typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void,
             typename T17 = void>
   struct is_one_of
   {
-    static const bool value = 
+    static const bool value =
         etl::is_same<T, T1>::value ||
         etl::is_same<T, T2>::value ||
         etl::is_same<T, T3>::value ||
