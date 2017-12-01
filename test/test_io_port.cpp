@@ -127,7 +127,7 @@ namespace
       CHECK_EQUAL(0xDE, control2);
       CHECK_EQUAL(0xDE, port.control2);
 
-      port.control2.set_address(0x1000);
+      port.control2.set_address((void*)0x1000);
       volatile uint8_t* address = port.control2.get_address();
       CHECK_EQUAL(reinterpret_cast<volatile uint8_t*>(0x1000), address);
     }
@@ -140,10 +140,10 @@ namespace
       uint8_t memory_wo  = 0x56;
       uint8_t memory_wos = 0x78;
 
-      iop_rw.set_address(uintptr_t(&memory_rw));
-      iop_ro.set_address(uintptr_t(&memory_ro));
-      iop_wo.set_address(uintptr_t(&memory_wo));
-      iop_wos.set_address(uintptr_t(&memory_wos));
+      iop_rw.set_address(&memory_rw);
+      iop_ro.set_address(&memory_ro);
+      iop_wo.set_address(&memory_wo);
+      iop_wos.set_address(&memory_wos);
 
       std::array<uint8_t, 10> compare;
       std::array<uint8_t, 10> result;

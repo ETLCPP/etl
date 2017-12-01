@@ -350,7 +350,7 @@ namespace etl
     }
 
     /// Constructor.
-    io_port_rw(uint8_t* address_)
+    io_port_rw(void* address_)
       : address(reinterpret_cast<pointer>(address_))
     {
     }
@@ -369,7 +369,7 @@ namespace etl
     }
 
     /// Set the IO port address.
-    void set_address(uintptr_t address_)
+    void set_address(void* address_)
     {
       address = reinterpret_cast<pointer>(address_);
     }
@@ -393,7 +393,7 @@ namespace etl
     }
 
     /// Read.
-    T value() const
+    T read() const
     {
       return *address;
     }
@@ -480,7 +480,7 @@ namespace etl
     }
 
     /// Set the IO port address.
-    void set_address(uintptr_t address_)
+    void set_address(void* address_)
     {
       address = reinterpret_cast<pointer>(address_);
     }
@@ -498,7 +498,7 @@ namespace etl
     }
 
     /// Read.
-    T value() const
+    T read() const
     {
       return *address;
     }
@@ -569,7 +569,7 @@ namespace etl
     }
 
     /// Set the IO port address.
-    void set_address(uintptr_t address_)
+    void set_address(void* address_)
     {
       address = reinterpret_cast<pointer>(address_);
     }
@@ -723,7 +723,7 @@ namespace etl
     }
 
     /// Set the IO port address.
-    void set_address(uintptr_t address_)
+    void set_address(void* address_)
     {
       address = reinterpret_cast<pointer>(address_);
     }
@@ -753,7 +753,7 @@ namespace etl
     }
 
     /// Read.
-    T value() const
+    T read() const
     {
       return shadow_value;
     }
