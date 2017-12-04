@@ -337,11 +337,6 @@ namespace etl
     typedef void    parameter_type; ///< The type of parameter sent to the function.
 
     //*************************************************************************
-    /// Constructor.
-    ///\param object    Reference to the object
-    //*************************************************************************
-
-    //*************************************************************************
     /// The function operator that calls the destination function.
     ///\param data The data to pass to the function.
     //*************************************************************************
