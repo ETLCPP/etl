@@ -145,6 +145,18 @@ namespace etl
       successor = &successor_;
     }
 
+    //********************************************
+    imessage_router& get_successor() const
+    {
+      return *successor;
+    }
+
+    //********************************************
+    bool has_successor() const
+    {
+      return (has_successor());
+    }
+
     enum
     {
       NULL_MESSAGE_ROUTER = 255,
@@ -168,13 +180,13 @@ namespace etl
     {
     }
 
-    etl::imessage_router* successor;
-
   private:
 
     // Disabled.
     imessage_router(const imessage_router&);
     imessage_router& operator =(const imessage_router&);
+
+    etl::imessage_router* successor;
 
     etl::message_router_id_t  message_router_id;
   };
@@ -362,9 +374,9 @@ namespace etl
           cog.outl(" break;")
       cog.outl("      default:")
       cog.outl("      {")
-      cog.outl("         if (successor != nullptr)")
+      cog.outl("         if (has_successor())")
       cog.outl("         {")
-      cog.outl("           successor->receive(source, msg);")
+      cog.outl("           get_successor().receive(source, msg);")
       cog.outl("         }")
       cog.outl("         else")
       cog.outl("         {")
@@ -534,9 +546,9 @@ namespace etl
               cog.outl(" break;")
           cog.outl("      default:")
           cog.outl("      {")
-          cog.outl("         if (successor != nullptr)")
+          cog.outl("         if (has_successor())")
           cog.outl("         {")
-          cog.outl("           successor->receive(source, msg);")
+          cog.outl("           get_successor().receive(source, msg);")
           cog.outl("         }")
           cog.outl("         else")
           cog.outl("         {")
