@@ -52,34 +52,12 @@ namespace etl
   //***************************************************************************
   /// Maximum value that can be contained in N bits.
   //***************************************************************************
-  namespace __private_binary__
-  {
-    /// Helper definition for non-zero NBITS.
-    template <const size_t NBITS>
-    struct max_value_for_nbits_helper
-    {
-      typedef typename etl::smallest_uint_for_bits<NBITS>::type value_type;
-      static const value_type value = (uint64_t(1) << (NBITS - 1)) | max_value_for_nbits_helper<NBITS - 1>::value;
-    };
-
-    /// Specialisation for when NBITS == 0.
-    template <>
-    struct max_value_for_nbits_helper<0>
-    {
-      typedef etl::smallest_uint_for_bits<0>::type value_type;
-      static const value_type value = 1;
-    };
-
-    template <const size_t NBITS>
-    const typename max_value_for_nbits_helper<NBITS>::value_type max_value_for_nbits_helper<NBITS>::value;
-  }
-
   /// Definition for non-zero NBITS.
   template <const size_t NBITS>
   struct max_value_for_nbits
   {
     typedef typename etl::smallest_uint_for_bits<NBITS>::type value_type;
-    static const value_type value = __private_binary__::max_value_for_nbits_helper<NBITS>::value;
+    static const value_type value = (value_type(1) << (NBITS - 1)) | max_value_for_nbits<NBITS - 1>::value;
   };
 
   /// Specialisation for when NBITS == 0.
@@ -172,108 +150,33 @@ namespace etl
     return result;
   }
 
+  //***************************************************************************
+  /// Reverse bits.
+  //***************************************************************************
 #if ETL_8BIT_SUPPORT
-  //***************************************************************************
-  /// Reverse 8 bits.
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint8_t>::value, T>::type
-  reverse_bits(T value)
-  {
-    value = ((value & 0xAA) >> 1) | ((value & 0x55) << 1);
-    value = ((value & 0xCC) >> 2) | ((value & 0x33) << 2);
-    value = (value >> 4) | (value << 4);
-
-    return value;
-  }
+  uint8_t reverse_bits(uint8_t value);
+  inline int8_t reverse_bits(int8_t value) { return int8_t(reverse_bits(uint8_t(value))); }
 #endif
+  uint16_t reverse_bits(uint16_t value);
+  inline int16_t reverse_bits(int16_t value) { return int16_t(reverse_bits(uint16_t(value))); }
+  uint32_t reverse_bits(uint32_t value);
+  inline int32_t reverse_bits(int32_t value) { return int32_t(reverse_bits(uint32_t(value))); }
+  uint64_t reverse_bits(uint64_t value);
+  inline int64_t reverse_bits(int64_t value) { return int64_t(reverse_bits(uint64_t(value))); }
 
   //***************************************************************************
-  /// Reverse 16 bits.
+  /// Reverse bytes.
   //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint16_t>::value, T>::type
-  reverse_bits(T value)
-  {
-    value = ((value & 0xAAAA) >> 1) | ((value & 0x5555) << 1);
-    value = ((value & 0xCCCC) >> 2) | ((value & 0x3333) << 2);
-    value = ((value & 0xF0F0) >> 4) | ((value & 0x0F0F) << 4);
-    value = (value >> 8) | (value << 8);
-
-    return value;
-  }
-
-  //***************************************************************************
-  /// Reverse 32 bits.
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint32_t>::value, T>::type
-  reverse_bits(T value)
-  {
-    value = ((value & 0xAAAAAAAA) >>  1) | ((value & 0x55555555) <<  1);
-    value = ((value & 0xCCCCCCCC) >>  2) | ((value & 0x33333333) <<  2);
-    value = ((value & 0xF0F0F0F0) >>  4) | ((value & 0x0F0F0F0F) <<  4);
-    value = ((value & 0xFF00FF00) >>  8) | ((value & 0x00FF00FF) <<  8);
-    value = (value >> 16) | (value << 16);
-
-    return value;
-  }
-
-  //***************************************************************************
-  /// Reverse 64 bits.
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint64_t>::value, T>::type
-  reverse_bits(T value)
-  {
-    value = ((value & 0xAAAAAAAAAAAAAAAA) >>  1) | ((value & 0x5555555555555555) <<  1);
-    value = ((value & 0xCCCCCCCCCCCCCCCC) >>  2) | ((value & 0x3333333333333333) <<  2);
-    value = ((value & 0xF0F0F0F0F0F0F0F0) >>  4) | ((value & 0x0F0F0F0F0F0F0F0F) <<  4);
-    value = ((value & 0xFF00FF00FF00FF00) >>  8) | ((value & 0x00FF00FF00FF00FF) <<  8);
-    value = ((value & 0xFFFF0000FFFF0000) >> 16) | ((value & 0x0000FFFF0000FFFF) << 16);
-    value = (value >> 32) | (value << 32);
-
-    return value;
-  }
-
-  //***************************************************************************
-  /// Reverse bytes 16 bit.
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint16_t>::value, T>::type
-  reverse_bytes(T value)
-  {
-    value = (value >> 8) | (value << 8);
-
-    return value;
-  }
-
-  //***************************************************************************
-  /// Reverse bytes 32 bit.
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint32_t>::value, T>::type
-  reverse_bytes(T value)
-  {
-    value = ((value & 0xFF00FF00) >> 8) | ((value & 0x00FF00FF) << 8);
-    value = (value >> 16) | (value << 16);
-
-    return value;
-  }
-
-  //***************************************************************************
-  /// Reverse bytes 64 bit.
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint64_t>::value, T>::type
-  reverse_bytes(T value)
-  {
-    value = ((value & 0xFF00FF00FF00FF00) >> 8)  | ((value & 0x00FF00FF00FF00FF) << 8);
-    value = ((value & 0xFFFF0000FFFF0000) >> 16) | ((value & 0x0000FFFF0000FFFF) << 16);
-    value = (value >> 32) | (value << 32);
-
-    return value;
-  }
+#if ETL_8BIT_SUPPORT
+  inline uint8_t reverse_bytes(uint8_t value) { return value; }
+  inline int8_t reverse_bytes(int8_t value) { return value; }
+#endif
+  uint16_t reverse_bytes(uint16_t value);
+  inline int16_t reverse_bytes(int16_t value) { return int16_t(reverse_bytes(uint16_t(value))); }
+  uint32_t reverse_bytes(uint32_t value);
+  inline int32_t reverse_bytes(int32_t value) { return int32_t(reverse_bytes(uint32_t(value))); }
+  uint64_t reverse_bytes(uint64_t value);
+  inline int64_t reverse_bytes(int64_t value) { return int64_t(reverse_bytes(uint64_t(value))); }
 
   //***************************************************************************
   /// Converts binary to Gray code.
@@ -286,201 +189,47 @@ namespace etl
     return (value >> 1) ^ value;
   }
 
+  //***************************************************************************
+  /// Converts Gray code to binary.
+  //***************************************************************************
 #if ETL_8BIT_SUPPORT
-  //***************************************************************************
-  /// Converts Gray code to binary.
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint8_t>::value, T>::type
-  gray_to_binary(T value)
-  {
-    value ^= (value >> 4);
-    value ^= (value >> 2);
-    value ^= (value >> 1);
-
-    return value;
-  }
+  uint8_t gray_to_binary(uint8_t value);
+  inline int8_t gray_to_binary(int8_t value) { return int8_t(gray_to_binary(uint8_t(value))); }
 #endif
+  uint16_t gray_to_binary(uint16_t value);
+  inline int16_t gray_to_binary(int16_t value) { return int16_t(gray_to_binary(uint16_t(value))); }
+  uint32_t gray_to_binary(uint32_t value);
+  inline int32_t gray_to_binary(int32_t value) { return int32_t(gray_to_binary(uint32_t(value))); }
+  uint64_t gray_to_binary(uint64_t value);
+  inline int64_t gray_to_binary(int64_t value) { return int64_t(gray_to_binary(uint64_t(value))); }
 
   //***************************************************************************
-  /// Converts Gray code to binary.
+  /// Count set bits.
   //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint16_t>::value, T>::type
-  gray_to_binary(T value)
-  {
-    value ^= (value >> 8);
-    value ^= (value >> 4);
-    value ^= (value >> 2);
-    value ^= (value >> 1);
-
-    return value;
-  }
-
-  //***************************************************************************
-  /// Converts Gray code to binary.
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint32_t>::value, T>::type
-  gray_to_binary(T value)
-  {
-    value ^= (value >> 16);
-    value ^= (value >> 8);
-    value ^= (value >> 4);
-    value ^= (value >> 2);
-    value ^= (value >> 1);
-
-    return value;
-  }
-
-  //***************************************************************************
-  /// Converts Gray code to binary.
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint64_t>::value, T>::type
-  gray_to_binary(T value)
-  {
-    value ^= (value >> 32);
-    value ^= (value >> 16);
-    value ^= (value >> 8);
-    value ^= (value >> 4);
-    value ^= (value >> 2);
-    value ^= (value >> 1);
-
-    return value;
-  }
-
 #if ETL_8BIT_SUPPORT
-  //***************************************************************************
-  /// Count set bits. 8 bits.
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint8_t>::value, size_t>::type
-  count_bits(T value)
-  {
-    uint32_t count;
-    static const int S[] = { 1, 2, 4 };
-    static const uint8_t B[] = { 0x55, 0x33, 0x0F };
-
-    count = value - ((value >> 1) & B[0]);
-    count = ((count >> S[1]) & B[1]) + (count & B[1]);
-    count = ((count >> S[2]) + count) & B[2];
-
-    return count;
-  }
+  uint_least8_t count_bits(uint8_t value);
+  inline uint_least8_t count_bits(int8_t value) { return count_bits(uint8_t(value)); }
 #endif
+  uint_least8_t count_bits(uint16_t value);
+  inline uint_least8_t count_bits(int16_t value) { return count_bits(uint16_t(value)); }
+  uint_least8_t count_bits(uint32_t value);
+  inline uint_least8_t count_bits(int32_t value) { return count_bits(uint32_t(value)); }
+  uint_least8_t count_bits(uint64_t value);
+  inline uint_least8_t count_bits(int64_t value) { return count_bits(uint64_t(value)); }
 
   //***************************************************************************
-  /// Count set bits. 16 bits.
+  /// Parity. 0 = even, 1 = odd
   //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint16_t>::value, size_t>::type
-  count_bits(T value)
-  {
-    uint32_t count;
-    static const int S[] = { 1, 2, 4, 8 };
-    static const uint16_t B[] = { 0x5555, 0x3333, 0x0F0F, 0x00FF };
-
-    count = value - ((value >> 1) & B[0]);
-    count = ((count >> S[1]) & B[1]) + (count & B[1]);
-    count = ((count >> S[2]) + count) & B[2];
-    count = ((count >> S[3]) + count) & B[3];
-
-    return count;
-  }
-
-  //***************************************************************************
-  /// Count set bits. 32 bits.
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint32_t>::value, size_t>::type
-  count_bits(T value)
-  {
-    uint32_t count;
-
-    value = value - ((value >> 1) & 0x55555555);
-    value = (value & 0x33333333) + ((value >> 2) & 0x33333333);
-    count = (((value + (value >> 4)) & 0xF0F0F0F) * 0x1010101) >> 24;
-
-    return count;
-  }
-
-  //***************************************************************************
-  /// Count set bits. 64 bits.
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint64_t>::value, size_t>::type
-  count_bits(T value)
-  {
-    uint64_t count;
-    static const int S[] = { 1, 2, 4, 8, 16, 32 };
-    static const uint64_t B[] = { 0x5555555555555555, 0x3333333333333333, 0x0F0F0F0F0F0F0F0F, 0x00FF00FF00FF00FF, 0x0000FFFF0000FFFF, 0x00000000FFFFFFFF };
-
-    count = value - ((value >> 1) & B[0]);
-    count = ((count >> S[1]) & B[1]) + (count & B[1]);
-    count = ((count >> S[2]) + count) & B[2];
-    count = ((count >> S[3]) + count) & B[3];
-    count = ((count >> S[4]) + count) & B[4];
-    count = ((count >> S[5]) + count) & B[5];
-
-    return size_t(count);
-  }
-
 #if ETL_8BIT_SUPPORT
-  //***************************************************************************
-  /// Parity. 8bits. 0 = even, 1 = odd
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint8_t>::value, size_t>::type
-  parity(T value)
-  {
-    value ^= value >> 4;
-    value &= 0x0F;
-    return (0x6996 >> value) & 1;
-  }
+  uint_least8_t parity(uint8_t value);
+  inline uint_least8_t parity(int8_t value) { return parity(uint8_t(value)); }
 #endif
-
-  //***************************************************************************
-  /// Parity. 16bits. 0 = even, 1 = odd
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint16_t>::value, size_t>::type
-  parity(T value)
-  {
-    value ^= value >> 8;
-    value ^= value >> 4;
-    value &= 0x0F;
-    return (0x6996 >> value) & 1;
-  }
-
-  //***************************************************************************
-  /// Parity. 32bits. 0 = even, 1 = odd
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint32_t>::value, size_t>::type
-  parity(T value)
-  {
-    value ^= value >> 16;
-    value ^= value >> 8;
-    value ^= value >> 4;
-    value &= 0x0F;
-    return (0x6996 >> value) & 1;
-  }
-
-  //***************************************************************************
-  /// Parity. 64bits. 0 = even, 1 = odd
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint64_t>::value, size_t>::type
-  parity(T value)
-  {
-    value ^= value >> 32;
-    value ^= value >> 16;
-    value ^= value >> 8;
-    value ^= value >> 4;
-    value &= 0x0F;
-    return (0x69966996 >> value) & 1;
-  }
+  uint_least8_t parity(uint16_t value);
+  inline uint_least8_t parity(int16_t value) { return parity(uint16_t(value)); }
+  uint_least8_t parity(uint32_t value);
+  inline uint_least8_t parity(int32_t value) { return parity(uint32_t(value)); }
+  uint_least8_t parity(uint64_t value);
+  inline uint_least8_t parity(int64_t value) { return parity(uint64_t(value)); }
 
   //***************************************************************************
   /// Fold a binary number down to a set number of bits using XOR.
@@ -521,14 +270,12 @@ namespace etl
     STATIC_ASSERT(etl::is_signed<TReturn>::value,   "TReturn not a signed type");
     STATIC_ASSERT(NBITS <= std::numeric_limits<TReturn>::digits, "NBITS too large for return type");
 
-    typedef typename etl::make_unsigned<TReturn>::type mask_t;
-
-    mask_t negative = (1 << (NBITS - 1));
+    const TReturn negative = (TReturn(1) << (NBITS - 1));
     TReturn signed_value = value;
 
     if ((signed_value & negative) != 0)
     {
-      mask_t sign_bits = ~((1 << NBITS) - 1);
+      const TReturn sign_bits = ~((TReturn(1) << NBITS) - 1);
       signed_value = value | sign_bits;
     }
 
@@ -547,201 +294,32 @@ namespace etl
     STATIC_ASSERT(etl::is_signed<TReturn>::value,   "TReturn not a signed type");
     assert(NBITS <= std::numeric_limits<TReturn>::digits);
 
-    typedef typename etl::make_unsigned<TReturn>::type mask_t;
-
-    mask_t negative = (TReturn(1) << (NBITS - 1));
+    const TReturn negative = (TReturn(1) << (NBITS - 1));
     TReturn signed_value = value;
 
     if ((signed_value & negative) != 0)
     {
-      mask_t sign_bits = ~((1 << NBITS) - 1);
+      const TReturn sign_bits = ~((TReturn(1) << NBITS) - 1);
       signed_value = value | sign_bits;
     }
 
     return signed_value;
   }
 
-#if ETL_8BIT_SUPPORT
   //***************************************************************************
   /// Count trailing zeros. bit.
   /// Uses a binary search.
   //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint8_t>::value, uint_least8_t>::type
-  count_trailing_zeros(T value)
-  {
-      uint_least8_t count;
-
-      if (value & 0x1)
-      {
-        count = 0;
-      }
-      else
-      {
-        count = 1;
-
-        if ((value & 0xF) == 0)
-        {
-          value >>= 4;
-          count += 4;
-        }
-
-        if ((value & 0x3) == 0)
-        {
-          value >>= 2;
-          count += 2;
-        }
-
-        count -= value & 0x1;
-      }
-
-      return count;
-  }
+#if ETL_8BIT_SUPPORT
+  uint_least8_t count_trailing_zeros(uint8_t value);
+  inline uint_least8_t count_trailing_zeros(int8_t value) { return count_trailing_zeros(uint8_t(value)); }
 #endif
-
-  //***************************************************************************
-  /// Count trailing zeros. 16bit.
-  /// Uses a binary search.
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint16_t>::value, uint_least8_t>::type
-   count_trailing_zeros(T value)
-  {
-      uint_least8_t count;
-
-      if (value & 0x1)
-      {
-        count = 0;
-      }
-      else
-      {
-        count = 1;
-
-        if ((value & 0xFF) == 0)
-        {
-          value >>= 8;
-          count += 8;
-        }
-
-        if ((value & 0xF) == 0)
-        {
-          value >>= 4;
-          count += 4;
-        }
-
-        if ((value & 0x3) == 0)
-        {
-          value >>= 2;
-          count += 2;
-        }
-
-        count -= value & 0x1;
-      }
-
-      return count;
-  }
-
-  //***************************************************************************
-  /// Count trailing zeros. 32bit.
-  /// Uses a binary search.
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint32_t>::value, uint_least8_t>::type
-   count_trailing_zeros(T value)
-  {
-      uint_least8_t count;
-
-      if (value & 0x1)
-      {
-        count = 0;
-      }
-      else
-      {
-        count = 1;
-
-        if ((value & 0xFFFF) == 0)
-        {
-          value >>= 16;
-          count += 16;
-        }
-
-        if ((value & 0xFF) == 0)
-        {
-          value >>= 8;
-          count += 8;
-        }
-
-        if ((value & 0xF) == 0)
-        {
-          value >>= 4;
-          count += 4;
-        }
-
-        if ((value & 0x3) == 0)
-        {
-          value >>= 2;
-          count += 2;
-        }
-
-        count -= value & 0x1;
-      }
-
-      return count;
-  }
-
-  //***************************************************************************
-  /// Count trailing zeros. 64bit.
-  /// Uses a binary search.
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_same<typename etl::make_unsigned<T>::type, uint64_t>::value, uint_least8_t>::type
-   count_trailing_zeros(T value)
-  {
-      uint_least8_t count;
-
-      if (value & 0x1)
-      {
-        count = 0;
-      }
-      else
-      {
-        count = 1;
-
-        if ((value & 0xFFFFFFFF) == 0)
-        {
-          value >>= 32;
-          count += 32;
-        }
-
-        if ((value & 0xFFFF) == 0)
-        {
-          value >>= 16;
-          count += 16;
-        }
-
-        if ((value & 0xFF) == 0)
-        {
-          value >>= 8;
-          count += 8;
-        }
-
-        if ((value & 0xF) == 0)
-        {
-          value >>= 4;
-          count += 4;
-        }
-
-        if ((value & 0x3) == 0)
-        {
-          value >>= 2;
-          count += 2;
-        }
-
-        count -= value & 0x1;
-      }
-
-      return count;
-  }
+  uint_least8_t count_trailing_zeros(uint16_t value);
+  inline uint_least8_t count_trailing_zeros(int16_t value) { return count_trailing_zeros(uint16_t(value)); }
+  uint_least8_t count_trailing_zeros(uint32_t value);
+  inline uint_least8_t count_trailing_zeros(int32_t value) { return count_trailing_zeros(uint32_t(value)); }
+  uint_least8_t count_trailing_zeros(uint64_t value);
+  inline uint_least8_t count_trailing_zeros(int64_t value) { return count_trailing_zeros(uint64_t(value)); }
 
   //***************************************************************************
   /// Find the position of the first set bit.
@@ -750,7 +328,7 @@ namespace etl
   template <typename T>
   uint_least8_t first_set_bit_position(T value)
   {
-      return count_trailing_zeros(value);
+    return count_trailing_zeros(value);
   }
 
   //***************************************************************************
@@ -760,8 +338,8 @@ namespace etl
   template <typename T>
   uint_least8_t first_clear_bit_position(T value)
   {
-      value = ~value;
-      return count_trailing_zeros(value);
+    value = ~value;
+    return count_trailing_zeros(value);
   }
 
   //***************************************************************************
@@ -771,13 +349,27 @@ namespace etl
   template <typename T>
   uint_least8_t first_bit_position(bool state, T value)
   {
-      if (!state)
-      {
-        value = ~value;
-      }
+    if (!state)
+    {
+      value = ~value;
+    }
 
-      return count_trailing_zeros(value);
+    return count_trailing_zeros(value);
   }
+
+  //***************************************************************************
+  /// Gets the value of the bit at POSITION
+  /// Starts from LSB.
+  //***************************************************************************
+  template <const size_t POSITION>
+  struct bit
+  {
+    typedef typename etl::smallest_uint_for_bits<POSITION + 1>::type value_type;
+    static const value_type value = value_type(1) << POSITION;
+  };
+
+  template <const size_t POSITION>
+  const typename bit<POSITION>::value_type bit<POSITION>::value;
 
   //***************************************************************************
   /// 8 bit binary constants.
@@ -1040,6 +632,42 @@ namespace etl
     b11111101 = 253,
     b11111110 = 254,
     b11111111 = 255
+  };
+
+  enum bit_constant
+  {
+    b0  = 0x1,
+    b1  = 0x2,
+    b2  = 0x4,
+    b3  = 0x8,
+    b4  = 0x10,
+    b5  = 0x20,
+    b6  = 0x40,
+    b7  = 0x80,
+    b8  = 0x100,
+    b9  = 0x200,
+    b10 = 0x400,
+    b11 = 0x800,
+    b12 = 0x1000,
+    b13 = 0x2000,
+    b14 = 0x4000,
+    b15 = 0x8000,
+    b16 = 0x10000,
+    b17 = 0x20000,
+    b18 = 0x40000,
+    b19 = 0x80000,
+    b20 = 0x100000,
+    b21 = 0x200000,
+    b22 = 0x400000,
+    b23 = 0x800000,
+    b24 = 0x1000000,
+    b25 = 0x2000000,
+    b26 = 0x4000000,
+    b27 = 0x8000000,
+    b28 = 0x10000000,
+    b29 = 0x20000000,
+    b30 = 0x40000000,
+    b31 = 0x80000000
   };
 }
 
