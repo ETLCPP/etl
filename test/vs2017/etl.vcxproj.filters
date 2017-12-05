@@ -932,6 +932,9 @@
     <ClCompile Include="..\test_c_timer_framework.cpp">
       <Filter>Source Files\ECL</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\binary.cpp">
+      <Filter>ETL\Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Doxyfile">

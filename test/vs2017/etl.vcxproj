@@ -298,6 +298,7 @@
     <ClInclude Include="..\murmurhash3.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\binary.cpp" />
     <ClCompile Include="..\..\src\c\ecl_timer.c" />
     <ClCompile Include="..\..\unittest-cpp\UnitTest++\AssertException.cpp" />
     <ClCompile Include="..\..\unittest-cpp\UnitTest++\Checks.cpp" />
