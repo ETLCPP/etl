@@ -66,6 +66,7 @@ cog.outl("//********************************************************************
 #define __ETL_TYPE_TRAITS__
 
 #include <stddef.h>
+#include <stdint.h>
 
 #include "platform.h"
 #include "nullptr.h"
@@ -333,7 +334,10 @@ namespace etl
   /// conditional_integral_constant
   ///\ingroup type_traits
   template <bool B, typename T, T TRUE_VALUE, T FALSE_VALUE>
-  struct conditional_integral_constant
+  struct conditional_integral_constant;
+
+  template <typename T, T TRUE_VALUE, T FALSE_VALUE>
+  struct conditional_integral_constant<true, T, TRUE_VALUE, FALSE_VALUE>
   {
     STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
     static const T value = TRUE_VALUE;
