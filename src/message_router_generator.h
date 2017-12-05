@@ -154,7 +154,7 @@ namespace etl
     //********************************************
     bool has_successor() const
     {
-      return (has_successor());
+      return (successor != nullptr);
     }
 
     enum
