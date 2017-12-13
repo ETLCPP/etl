@@ -81,21 +81,21 @@ namespace etl
   //***************************************************************************
   template <const size_t MAX_SIZE_,
             typename T1,
-            typename T2  = etl::type_id_pair<>, 
-            typename T3  = etl::type_id_pair<>, 
-            typename T4  = etl::type_id_pair<>,
-            typename T5  = etl::type_id_pair<>,
-            typename T6  = etl::type_id_pair<>,
-            typename T7  = etl::type_id_pair<>,
-            typename T8  = etl::type_id_pair<>,
-            typename T9  = etl::type_id_pair<>,
-            typename T10 = etl::type_id_pair<>,
-            typename T11 = etl::type_id_pair<>,
-            typename T12 = etl::type_id_pair<>,
-            typename T13 = etl::type_id_pair<>,
-            typename T14 = etl::type_id_pair<>,
-            typename T15 = etl::type_id_pair<>,
-            typename T16 = etl::type_id_pair<>>
+            typename T2  = etl::type_id_pair<etl::null_type, -2>,
+            typename T3  = etl::type_id_pair<etl::null_type, -3>,
+            typename T4  = etl::type_id_pair<etl::null_type, -4>,
+            typename T5  = etl::type_id_pair<etl::null_type, -5>,
+            typename T6  = etl::type_id_pair<etl::null_type, -6>,
+            typename T7  = etl::type_id_pair<etl::null_type, -7>,
+            typename T8  = etl::type_id_pair<etl::null_type, -8>,
+            typename T9  = etl::type_id_pair<etl::null_type, -9>,
+            typename T10 = etl::type_id_pair<etl::null_type, -10>,
+            typename T11 = etl::type_id_pair<etl::null_type, -11>,
+            typename T12 = etl::type_id_pair<etl::null_type, -12>,
+            typename T13 = etl::type_id_pair<etl::null_type, -13>,
+            typename T14 = etl::type_id_pair<etl::null_type, -14>,
+            typename T15 = etl::type_id_pair<etl::null_type, -15>,
+            typename T16 = etl::type_id_pair<etl::null_type, -16> >
   class factory
   {
   private:
