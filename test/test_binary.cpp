@@ -1054,6 +1054,57 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_sign_extend_template1b)
+    {
+      uint8_t value8     = 0x2A;
+      uint8_t value8mask = 0x3F;
+      
+      const uint32_t value_initial = 0x55555555;
+
+      uint32_t value;
+      
+      // Shift 0
+      value = value_initial;
+      value &= ~value8mask;
+      value |= value8;
+
+      CHECK_EQUAL(-22, (etl::sign_extend<int32_t, 6, 0>(value)));
+      CHECK_EQUAL(-22, (etl::sign_extend<int64_t, 6, 0>(value)));
+
+      // Shift 3
+      value = value_initial;
+      value &= ~(value8mask << 3);
+      value |= (value8 << 3);
+
+      CHECK_EQUAL(-22, (etl::sign_extend<int32_t, 6, 3>(value)));
+      CHECK_EQUAL(-22, (etl::sign_extend<int64_t, 6, 3>(value)));
+
+      // Shift 6
+      value = value_initial;
+      value &= ~(value8mask << 6);
+      value |= (value8 << 6);
+
+      CHECK_EQUAL(-22, (etl::sign_extend<int32_t, 6, 6>(value)));
+      CHECK_EQUAL(-22, (etl::sign_extend<int64_t, 6, 6>(value)));
+
+      // Shift 12
+      value = value_initial;
+      value &= ~(value8mask << 12);
+      value |= (value8 << 12);
+
+      CHECK_EQUAL(-22, (etl::sign_extend<int32_t, 6, 12>(value)));
+      CHECK_EQUAL(-22, (etl::sign_extend<int64_t, 6, 12>(value)));
+
+      // Shift 26
+      value = value_initial;
+      value &= ~(value8mask << 26);
+      value |= (value8 << 26);
+
+      CHECK_EQUAL(-22, (etl::sign_extend<int32_t, 6, 26>(value)));
+      CHECK_EQUAL(-22, (etl::sign_extend<int64_t, 6, 26>(value)));
+    }
+
+    //*************************************************************************
     TEST(test_sign_extend_template2)
     {
       uint8_t value8 = 0x2A;
@@ -1097,6 +1148,57 @@ namespace
 
       CHECK_EQUAL(178956970, (etl::sign_extend<int32_t>(value32, 30)));
       CHECK_EQUAL(178956970, (etl::sign_extend<int64_t>(value32, 30)));
+    }
+
+    //*************************************************************************
+    TEST(test_sign_extend_template2b)
+    {
+      uint8_t value8 = 0x2A;
+      uint8_t value8mask = 0x3F;
+
+      const uint32_t value_initial = 0x55555555;
+
+      uint32_t value;
+
+      // Shift 0
+      value = value_initial;
+      value &= ~value8mask;
+      value |= value8;
+
+      CHECK_EQUAL(-22, (etl::sign_extend<int32_t>(value, 6, 0)));
+      CHECK_EQUAL(-22, (etl::sign_extend<int64_t>(value, 6, 0)));
+
+      // Shift 3
+      value = value_initial;
+      value &= ~(value8mask << 3);
+      value |= (value8 << 3);
+
+      CHECK_EQUAL(-22, (etl::sign_extend<int32_t>(value, 6, 3)));
+      CHECK_EQUAL(-22, (etl::sign_extend<int64_t>(value, 6, 3)));
+
+      // Shift 6
+      value = value_initial;
+      value &= ~(value8mask << 6);
+      value |= (value8 << 6);
+
+      CHECK_EQUAL(-22, (etl::sign_extend<int32_t>(value, 6, 6)));
+      CHECK_EQUAL(-22, (etl::sign_extend<int64_t>(value, 6, 6)));
+
+      // Shift 12
+      value = value_initial;
+      value &= ~(value8mask << 12);
+      value |= (value8 << 12);
+
+      CHECK_EQUAL(-22, (etl::sign_extend<int32_t>(value, 6, 12)));
+      CHECK_EQUAL(-22, (etl::sign_extend<int64_t>(value, 6, 12)));
+
+      // Shift 26
+      value = value_initial;
+      value &= ~(value8mask << 26);
+      value |= (value8 << 26);
+
+      CHECK_EQUAL(-22, (etl::sign_extend<int32_t>(value, 6, 26)));
+      CHECK_EQUAL(-22, (etl::sign_extend<int64_t>(value, 6, 26)));
     }
 
     //*************************************************************************

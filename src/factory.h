@@ -148,7 +148,7 @@ namespace etl
       }
       else
       {
-        p = pool.allocate<T>();
+        p = pool.template allocate<T>();
 
         if (p != nullptr)
         {
@@ -175,7 +175,7 @@ namespace etl
       }
       else
       {
-        p = pool.allocate<T>();
+        p = pool.template allocate<T>();
 
         if (p != nullptr)
         {
@@ -202,7 +202,7 @@ namespace etl
       }
       else
       {
-        p = pool.allocate<T>();
+        p = pool.template allocate<T>();
 
         if (p != nullptr)
         {
@@ -229,7 +229,7 @@ namespace etl
       }
       else
       {
-        p = pool.allocate<T>();
+        p = pool.template allocate<T>();
 
         if (p != nullptr)
         {
@@ -256,7 +256,7 @@ namespace etl
       }
       else
       {
-        p = pool.allocate<T>();
+        p = pool.template allocate<T>();
 
         if (p != nullptr)
         {
@@ -329,23 +329,23 @@ namespace etl
     bool destroy(const T* const p)
     {
       STATIC_ASSERT((etl::is_one_of<T, TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, TT13, TT14, TT15, TT16>::value ||
-                     etl::is_base_of<T, TT1>::value  || 
-                     etl::is_base_of<T, TT2>::value  || 
-                     etl::is_base_of<T, TT3>::value  || 
+                     etl::is_base_of<T, TT1>::value  ||
+                     etl::is_base_of<T, TT2>::value  ||
+                     etl::is_base_of<T, TT3>::value  ||
                      etl::is_base_of<T, TT4>::value  ||
-                     etl::is_base_of<T, TT5>::value  || 
-                     etl::is_base_of<T, TT6>::value  || 
-                     etl::is_base_of<T, TT7>::value  || 
-                     etl::is_base_of<T, TT8>::value  || 
-                     etl::is_base_of<T, TT9>::value  || 
-                     etl::is_base_of<T, TT10>::value || 
-                     etl::is_base_of<T, TT11>::value || 
-                     etl::is_base_of<T, TT12>::value || 
-                     etl::is_base_of<T, TT13>::value || 
-                     etl::is_base_of<T, TT14>::value || 
-                     etl::is_base_of<T, TT15>::value || 
+                     etl::is_base_of<T, TT5>::value  ||
+                     etl::is_base_of<T, TT6>::value  ||
+                     etl::is_base_of<T, TT7>::value  ||
+                     etl::is_base_of<T, TT8>::value  ||
+                     etl::is_base_of<T, TT9>::value  ||
+                     etl::is_base_of<T, TT10>::value ||
+                     etl::is_base_of<T, TT11>::value ||
+                     etl::is_base_of<T, TT12>::value ||
+                     etl::is_base_of<T, TT13>::value ||
+                     etl::is_base_of<T, TT14>::value ||
+                     etl::is_base_of<T, TT15>::value ||
                      etl::is_base_of<T, TT16>::value), "Invalid type");
-  
+
       p->~T();
 
       void* vp = reinterpret_cast<char*>(const_cast<T*>(p));

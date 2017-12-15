@@ -271,12 +271,38 @@ namespace etl
     STATIC_ASSERT(NBITS <= std::numeric_limits<TReturn>::digits, "NBITS too large for return type");
 
     const TReturn negative = (TReturn(1) << (NBITS - 1));
-    TReturn signed_value = value;
+    TReturn signed_value = value & ((1 << NBITS) - 1);
 
     if ((signed_value & negative) != 0)
     {
       const TReturn sign_bits = ~((TReturn(1) << NBITS) - 1);
-      signed_value = value | sign_bits;
+      signed_value |= sign_bits;
+    }
+
+    return signed_value;
+  }
+
+  //***************************************************************************
+  /// Sign extend.
+  /// Converts an N bit binary number, where bit N-1 is the sign bit, and SHIFT
+  /// is the right shift amount, to a signed integral type.
+  //***************************************************************************
+  template <typename TReturn, const size_t NBITS, const size_t SHIFT, typename TValue>
+  TReturn sign_extend(TValue value)
+  {
+    STATIC_ASSERT(etl::is_integral<TValue>::value, "TValue not an integral type");
+    STATIC_ASSERT(etl::is_integral<TReturn>::value, "TReturn not an integral type");
+    STATIC_ASSERT(etl::is_signed<TReturn>::value, "TReturn not a signed type");
+    STATIC_ASSERT(NBITS <= std::numeric_limits<TReturn>::digits, "NBITS too large for return type");
+    STATIC_ASSERT(SHIFT <= std::numeric_limits<TReturn>::digits, "SHIFT too large");
+
+    const TReturn negative = (TReturn(1) << (NBITS - 1));
+    TReturn signed_value = (value >> SHIFT) & ((1 << NBITS) - 1);
+
+    if ((signed_value & negative) != 0)
+    {
+      const TReturn sign_bits = ~((TReturn(1) << NBITS) - 1);
+      signed_value |= sign_bits;
     }
 
     return signed_value;
@@ -295,12 +321,37 @@ namespace etl
     assert(NBITS <= std::numeric_limits<TReturn>::digits);
 
     const TReturn negative = (TReturn(1) << (NBITS - 1));
-    TReturn signed_value = value;
+    TReturn signed_value = value & ((1 << NBITS) - 1);
 
     if ((signed_value & negative) != 0)
     {
       const TReturn sign_bits = ~((TReturn(1) << NBITS) - 1);
-      signed_value = value | sign_bits;
+      signed_value |= sign_bits;
+    }
+
+    return signed_value;
+  }
+
+  //***************************************************************************
+  /// Sign extend.
+  /// Converts an N bit binary number, where bit N-1 is the sign bit, and SHIFT
+  /// is the right shift amount, to a signed integral type.
+  //***************************************************************************
+  template <typename TReturn, typename TValue>
+  TReturn sign_extend(TValue value, const size_t NBITS, const size_t SHIFT)
+  {
+    STATIC_ASSERT(etl::is_integral<TValue>::value, "TValue not an integral type");
+    STATIC_ASSERT(etl::is_integral<TReturn>::value, "TReturn not an integral type");
+    STATIC_ASSERT(etl::is_signed<TReturn>::value, "TReturn not a signed type");
+    assert(NBITS <= std::numeric_limits<TReturn>::digits);
+
+    const TReturn negative = (TReturn(1) << (NBITS - 1));
+    TReturn signed_value = (value >> SHIFT) & ((1 << NBITS) - 1);
+
+    if ((signed_value & negative) != 0)
+    {
+      const TReturn sign_bits = ~((TReturn(1) << NBITS) - 1);
+      signed_value |= sign_bits;
     }
 
     return signed_value;
