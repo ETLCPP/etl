@@ -30,6 +30,7 @@ SOFTWARE.
 #define __ETL_FACTORY__
 
 #include <stdint.h>
+#include <utility>
 
 #include "platform.h"
 #include "error_handler.h"
@@ -132,6 +133,7 @@ namespace etl
     {
     }
 
+#if !ETL_CPP11_SUPPORTED
     //*************************************************************************
     /// Creates the object. Default constructor.
     //*************************************************************************
@@ -321,6 +323,45 @@ namespace etl
       STATIC_ASSERT((!etl::is_same<void, type>::value), "Invalid index");
       return create_from_type<type>(p1, p2, p3, p4);
     }
+#else
+    //*************************************************************************
+    /// Creates the object from a type. Variadic parameter constructor.
+    //*************************************************************************
+    template <typename T, typename... Args>
+    T* create_from_type(Args&&... args)
+    {
+      STATIC_ASSERT((etl::is_one_of<T, TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, TT13, TT14, TT15, TT16>::value), "Unsupported type");
+
+      T* p = nullptr;
+
+      if (pool.full())
+      {
+        ETL_ASSERT(false, ETL_ERROR(etl::factory_cannot_create));
+      }
+      else
+      {
+        p = pool.template allocate<T>();
+
+        if (p != nullptr)
+        {
+          new (p) T(std::forward<Args>(args)...);
+        }
+      }
+
+      return p;
+    }
+
+    //*************************************************************************
+    /// Creates the object from an index. Variadic parameter constructor.
+    //*************************************************************************
+    template <size_t ID, typename... Args>
+    typename lookup_t::template type_from_id<ID>::type* create_from_id(Args&&... args)
+    {
+      typedef typename lookup_t::template type_from_id<ID>::type type;
+      STATIC_ASSERT((!etl::is_same<void, type>::value), "Invalid index");
+      return create_from_type<type>(std::forward<Args>(args)...);
+    }
+#endif
 
     //*************************************************************************
     /// Destroys the object.
@@ -352,7 +393,7 @@ namespace etl
 
       if (pool.is_in_pool(vp))
       {
-        pool.release(reinterpret_cast<char*>(const_cast<T*>(p)));
+        pool.release(vp);
         return true;
       }
       else
