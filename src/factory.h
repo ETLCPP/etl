@@ -42,6 +42,12 @@ SOFTWARE.
 #include "type_lookup.h"
 #include <pool.h>
 
+#if defined(ETL_COMPILER_GCC)
+  #warning THIS CLASS IS DEPRECATED!USE VARIANT_POOL INSTEAD.
+#elif defined(ETL_COMPILER_MICROSOFT)
+  #pragma message ("THIS CLASS IS DEPRECATED! USE VARIANT_POOL INSTEAD.")
+#endif
+
 #undef ETL_FILE
 #define ETL_FILE "40"
 
