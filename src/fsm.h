@@ -402,6 +402,8 @@ namespace etl
     {
     }
 
+  protected:
+
     inline TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
@@ -461,10 +463,13 @@ namespace etl
     {
     }
 
+  protected:
+
     inline TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
+
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -518,10 +523,13 @@ namespace etl
     {
     }
 
+  protected:
+
     inline TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
+
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -574,10 +582,13 @@ namespace etl
     {
     }
 
+  protected:
+
     inline TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
+
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -628,10 +639,13 @@ namespace etl
     {
     }
 
+  protected:
+
     inline TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
+
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -681,10 +695,13 @@ namespace etl
     {
     }
 
+  protected:
+
     inline TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
+
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -733,10 +750,13 @@ namespace etl
     {
     }
 
+  protected:
+
     inline TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
+
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -784,10 +804,13 @@ namespace etl
     {
     }
 
+  protected:
+
     inline TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
+
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -833,10 +856,13 @@ namespace etl
     {
     }
 
+  protected:
+
     inline TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
+
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -881,10 +907,13 @@ namespace etl
     {
     }
 
+  protected:
+
     inline TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
+
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -928,10 +957,13 @@ namespace etl
     {
     }
 
+  protected:
+
     inline TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
+
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -974,10 +1006,13 @@ namespace etl
     {
     }
 
+  protected:
+
     inline TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
+
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -1018,10 +1053,13 @@ namespace etl
     {
     }
 
+  protected:
+
     inline TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
+
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -1061,10 +1099,13 @@ namespace etl
     {
     }
 
+  protected:
+
     inline TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
+
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -1103,10 +1144,13 @@ namespace etl
     {
     }
 
+  protected:
+
     inline TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
+
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
@@ -1144,10 +1188,13 @@ namespace etl
     {
     }
 
+  protected:
+
     inline TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
+
   private:
 
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
