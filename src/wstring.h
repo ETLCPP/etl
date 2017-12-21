@@ -200,8 +200,8 @@ namespace etl
   {
     size_t operator()(const etl::iwstring& text) const
     {
-      return etl::__private_hash__::generic_hash<>(reinterpret_cast<const uint8_t*>(&text[0]),
-                                                   reinterpret_cast<const uint8_t*>(&text[text.size()]));
+      return etl::__private_hash__::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
+                                                         reinterpret_cast<const uint8_t*>(&text[text.size()]));
     }
   };
 
@@ -210,8 +210,8 @@ namespace etl
   {
     size_t operator()(const etl::wstring<SIZE>& text) const
     {
-      return etl::__private_hash__::generic_hash<>(reinterpret_cast<const uint8_t*>(&text[0]),
-                                                   reinterpret_cast<const uint8_t*>(&text[text.size()]));
+      return etl::__private_hash__::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
+                                                         reinterpret_cast<const uint8_t*>(&text[text.size()]));
     }
   };
 #endif

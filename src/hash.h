@@ -52,7 +52,7 @@ namespace etl
     /// Hash to use when size_t is 16 bits.
     /// T is always expected to be size_t.
     //*************************************************************************
-    template <typename T = size_t>
+    template <typename T>
     typename enable_if<sizeof(T) == sizeof(uint16_t), size_t>::type
     generic_hash(const uint8_t* begin, const uint8_t* end)
     {
@@ -65,7 +65,7 @@ namespace etl
     /// Hash to use when size_t is 32 bits.
     /// T is always expected to be size_t.
     //*************************************************************************
-    template <typename T = size_t>
+    template <typename T>
     typename enable_if<sizeof(T) == sizeof(uint32_t), size_t>::type
     generic_hash(const uint8_t* begin, const uint8_t* end)
     {
@@ -76,7 +76,7 @@ namespace etl
     /// Hash to use when size_t is 64 bits.
     /// T is always expected to be size_t.
     //*************************************************************************
-    template <typename T = size_t>
+    template <typename T>
     typename enable_if<sizeof(T) == sizeof(uint64_t), size_t>::type
     generic_hash(const uint8_t* begin, const uint8_t* end)
     {
