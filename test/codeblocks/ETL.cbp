@@ -60,6 +60,7 @@
 		<Unit filename="../../src/alignment.h" />
 		<Unit filename="../../src/array.h" />
 		<Unit filename="../../src/basic_string.h" />
+		<Unit filename="../../src/binary.cpp" />
 		<Unit filename="../../src/binary.h" />
 		<Unit filename="../../src/bitset.h" />
 		<Unit filename="../../src/bloom_filter.h" />
@@ -99,7 +100,6 @@
 		<Unit filename="../../src/etl_arduino.h" />
 		<Unit filename="../../src/exception.h" />
 		<Unit filename="../../src/factorial.h" />
-		<Unit filename="../../src/factory.h" />
 		<Unit filename="../../src/fibonacci.h" />
 		<Unit filename="../../src/fixed_iterator.h" />
 		<Unit filename="../../src/flat_map.h" />
@@ -205,6 +205,7 @@
 		<Unit filename="../../src/user_type.h" />
 		<Unit filename="../../src/utility.h" />
 		<Unit filename="../../src/variant.h" />
+		<Unit filename="../../src/variant_pool.h" />
 		<Unit filename="../../src/vector.h" />
 		<Unit filename="../../src/visitor.h" />
 		<Unit filename="../../src/wstring.h" />
@@ -304,7 +305,6 @@
 		<Unit filename="../test_enum_type.cpp" />
 		<Unit filename="../test_error_handler.cpp" />
 		<Unit filename="../test_exception.cpp" />
-		<Unit filename="../test_factory.cpp" />
 		<Unit filename="../test_fixed_iterator.cpp" />
 		<Unit filename="../test_flat_map.cpp" />
 		<Unit filename="../test_flat_multimap.cpp" />
@@ -369,6 +369,7 @@
 		<Unit filename="../test_user_type.cpp" />
 		<Unit filename="../test_utility.cpp" />
 		<Unit filename="../test_variant.cpp" />
+		<Unit filename="../test_variant_pool.cpp" />
 		<Unit filename="../test_vector.cpp" />
 		<Unit filename="../test_vector_non_trivial.cpp" />
 		<Unit filename="../test_vector_pointer.cpp" />

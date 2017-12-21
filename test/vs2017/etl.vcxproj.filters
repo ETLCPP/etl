@@ -489,9 +489,6 @@
     <ClInclude Include="..\..\src\sqrt.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\factory.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\type_lookup.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
@@ -560,6 +557,9 @@
     </ClInclude>
     <ClInclude Include="..\ecl_user.h">
       <Filter>Source Files\ECL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\variant_pool.h">
+      <Filter>ETL\Containers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -854,9 +854,6 @@
     <ClCompile Include="..\test_parameter_type.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_factory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_type_lookup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -934,6 +931,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\binary.cpp">
       <Filter>ETL\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_variant_pool.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
