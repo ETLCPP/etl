@@ -40,7 +40,7 @@ SOFTWARE.
 namespace etl 
 {
   //***************************************************************************
-  /// Calculates the smallest value that, when squared, will be greater than or equal to VALUE.
+  /// Calculates the smallest value that, when squared, will be not greater than VALUE.
   //***************************************************************************
   template <const size_t VALUE, const size_t I = 1>
   struct sqrt

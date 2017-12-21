@@ -64,7 +64,7 @@ namespace etl
         }
 
         //*********************************************************************
-        explicit type_def(TValue value_)
+        type_def(TValue value_)
             : value(value_)
         {
         }
@@ -238,10 +238,17 @@ namespace etl
         }
 
         //*********************************************************************
+        type_def& operator =(TValue rhs)
+        {
+            value = rhs;
+            return *this;
+        }
+
+        //*********************************************************************
         type_def& operator =(const type_def& rhs)
         {
-            value = rhs.value;
-            return *this;
+          value = rhs.value;
+          return *this;
         }
 
         //*********************************************************************

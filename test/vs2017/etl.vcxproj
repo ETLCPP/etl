@@ -136,7 +136,6 @@
     <ClInclude Include="..\..\src\compare.h" />
     <ClInclude Include="..\..\src\constant.h" />
     <ClInclude Include="..\..\src\c\ecl_timer.h" />
-    <ClInclude Include="..\..\src\factory.h" />
     <ClInclude Include="..\..\src\fsm.h" />
     <ClInclude Include="..\..\src\fsm_generator.h" />
     <ClInclude Include="..\..\src\largest_generator.h" />
@@ -166,6 +165,7 @@
     <ClInclude Include="..\..\src\type_lookup.h" />
     <ClInclude Include="..\..\src\type_lookup_generator.h" />
     <ClInclude Include="..\..\src\type_traits_generator.h" />
+    <ClInclude Include="..\..\src\variant_pool.h" />
     <ClInclude Include="..\..\unittest-cpp\UnitTest++\AssertException.h" />
     <ClInclude Include="..\..\unittest-cpp\UnitTest++\CheckMacros.h" />
     <ClInclude Include="..\..\unittest-cpp\UnitTest++\Checks.h" />
@@ -298,6 +298,7 @@
     <ClInclude Include="..\murmurhash3.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\binary.cpp" />
     <ClCompile Include="..\..\src\c\ecl_timer.c" />
     <ClCompile Include="..\..\unittest-cpp\UnitTest++\AssertException.cpp" />
     <ClCompile Include="..\..\unittest-cpp\UnitTest++\Checks.cpp" />
@@ -357,7 +358,6 @@
     <ClCompile Include="..\test_enum_type.cpp" />
     <ClCompile Include="..\test_error_handler.cpp" />
     <ClCompile Include="..\test_exception.cpp" />
-    <ClCompile Include="..\test_factory.cpp" />
     <ClCompile Include="..\test_fixed_iterator.cpp" />
     <ClCompile Include="..\test_flat_multimap.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -452,6 +452,7 @@
     <ClCompile Include="..\test_user_type.cpp" />
     <ClCompile Include="..\test_utility.cpp" />
     <ClCompile Include="..\test_variant.cpp" />
+    <ClCompile Include="..\test_variant_pool.cpp" />
     <ClCompile Include="..\test_vector.cpp" />
     <ClCompile Include="..\test_vector_non_trivial.cpp" />
     <ClCompile Include="..\test_vector_pointer.cpp" />

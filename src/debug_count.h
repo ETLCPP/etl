@@ -93,6 +93,11 @@ namespace etl
       return count;
     }
 
+    inline void clear()
+    {
+      count = 0;
+    }
+
   private:
 
     int32_t count;
@@ -129,6 +134,11 @@ namespace etl
     {
       return 0;
     }
+
+    inline void clear()
+    {
+    }
+
 #endif
   };
 }

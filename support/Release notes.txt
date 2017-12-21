@@ -1,0 +1,41 @@
+10.8.0
+
+Added etl::variant_pool as a replacement for etl::factory.
+Deprecated etl::factory
+
+etl::forward_list
+  Renamed include guard to avoid clash with list.
+
+Removed factory from unit tests.
+
+multimap & multiset
+  Changed static const to enum.
+
+hash & strings
+  Removed default function template parameter value.
+
+FSM
+  Moved get_fsm_context() from public to protected in etl::state
+
+Binary
+  Added sign_extend functions with shift parameter.
+  Added new binary.cpp for non-template functions.
+  Added bit<> template constant
+  Added bit enumerations
+
+Debug count
+  Added clear()
+
+Type lookup
+  Simplified codebase
+
+Message router
+  Added 'successor' member to allow implementation 'Chain Of Responsibility' pattern.
+
+IO Ports
+  Changes value() to read().
+  Rewrite of classes to improve efficiency by removing iterator indirection step.
+  Fixed inconsistencies in the dynamic IO port API.
+
+Type traits
+  Added 'conditional_integral_constant' to complement 'conditional'

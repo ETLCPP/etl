@@ -133,6 +133,18 @@ namespace etl
       successor = &successor_;
     }
 
+    //********************************************
+    imessage_router& get_successor() const
+    {
+      return *successor;
+    }
+
+    //********************************************
+    bool has_successor() const
+    {
+      return (successor != nullptr);
+    }
+
     enum
     {
       NULL_MESSAGE_ROUTER = 255,
@@ -156,13 +168,13 @@ namespace etl
     {
     }
 
-    etl::imessage_router* successor;
-
   private:
 
     // Disabled.
     imessage_router(const imessage_router&);
     imessage_router& operator =(const imessage_router&);
+
+    etl::imessage_router* successor;
 
     etl::message_router_id_t  message_router_id;
   };
@@ -354,9 +366,9 @@ namespace etl
         case T16::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T16&>(msg)); break;
         default:
         {
-           if (successor != nullptr)
+           if (has_successor())
            {
-             successor->receive(source, msg);
+             get_successor().receive(source, msg);
            }
            else
            {
@@ -512,9 +524,9 @@ namespace etl
         case T15::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T15&>(msg)); break;
         default:
         {
-           if (successor != nullptr)
+           if (has_successor())
            {
-             successor->receive(source, msg);
+             get_successor().receive(source, msg);
            }
            else
            {
@@ -668,9 +680,9 @@ namespace etl
         case T14::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T14&>(msg)); break;
         default:
         {
-           if (successor != nullptr)
+           if (has_successor())
            {
-             successor->receive(source, msg);
+             get_successor().receive(source, msg);
            }
            else
            {
@@ -822,9 +834,9 @@ namespace etl
         case T13::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T13&>(msg)); break;
         default:
         {
-           if (successor != nullptr)
+           if (has_successor())
            {
-             successor->receive(source, msg);
+             get_successor().receive(source, msg);
            }
            else
            {
@@ -973,9 +985,9 @@ namespace etl
         case T12::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T12&>(msg)); break;
         default:
         {
-           if (successor != nullptr)
+           if (has_successor())
            {
-             successor->receive(source, msg);
+             get_successor().receive(source, msg);
            }
            else
            {
@@ -1122,9 +1134,9 @@ namespace etl
         case T11::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T11&>(msg)); break;
         default:
         {
-           if (successor != nullptr)
+           if (has_successor())
            {
-             successor->receive(source, msg);
+             get_successor().receive(source, msg);
            }
            else
            {
@@ -1269,9 +1281,9 @@ namespace etl
         case T10::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T10&>(msg)); break;
         default:
         {
-           if (successor != nullptr)
+           if (has_successor())
            {
-             successor->receive(source, msg);
+             get_successor().receive(source, msg);
            }
            else
            {
@@ -1414,9 +1426,9 @@ namespace etl
         case T9::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T9&>(msg)); break;
         default:
         {
-           if (successor != nullptr)
+           if (has_successor())
            {
-             successor->receive(source, msg);
+             get_successor().receive(source, msg);
            }
            else
            {
@@ -1556,9 +1568,9 @@ namespace etl
         case T8::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T8&>(msg)); break;
         default:
         {
-           if (successor != nullptr)
+           if (has_successor())
            {
-             successor->receive(source, msg);
+             get_successor().receive(source, msg);
            }
            else
            {
@@ -1696,9 +1708,9 @@ namespace etl
         case T7::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T7&>(msg)); break;
         default:
         {
-           if (successor != nullptr)
+           if (has_successor())
            {
-             successor->receive(source, msg);
+             get_successor().receive(source, msg);
            }
            else
            {
@@ -1833,9 +1845,9 @@ namespace etl
         case T6::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T6&>(msg)); break;
         default:
         {
-           if (successor != nullptr)
+           if (has_successor())
            {
-             successor->receive(source, msg);
+             get_successor().receive(source, msg);
            }
            else
            {
@@ -1968,9 +1980,9 @@ namespace etl
         case T5::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T5&>(msg)); break;
         default:
         {
-           if (successor != nullptr)
+           if (has_successor())
            {
-             successor->receive(source, msg);
+             get_successor().receive(source, msg);
            }
            else
            {
@@ -2100,9 +2112,9 @@ namespace etl
         case T4::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T4&>(msg)); break;
         default:
         {
-           if (successor != nullptr)
+           if (has_successor())
            {
-             successor->receive(source, msg);
+             get_successor().receive(source, msg);
            }
            else
            {
@@ -2230,9 +2242,9 @@ namespace etl
         case T3::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T3&>(msg)); break;
         default:
         {
-           if (successor != nullptr)
+           if (has_successor())
            {
-             successor->receive(source, msg);
+             get_successor().receive(source, msg);
            }
            else
            {
@@ -2358,9 +2370,9 @@ namespace etl
         case T2::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T2&>(msg)); break;
         default:
         {
-           if (successor != nullptr)
+           if (has_successor())
            {
-             successor->receive(source, msg);
+             get_successor().receive(source, msg);
            }
            else
            {
@@ -2484,9 +2496,9 @@ namespace etl
         case T1::ID: static_cast<TDerived*>(this)->on_receive(source, static_cast<const T1&>(msg)); break;
         default:
         {
-           if (successor != nullptr)
+           if (has_successor())
            {
-             successor->receive(source, msg);
+             get_successor().receive(source, msg);
            }
            else
            {
