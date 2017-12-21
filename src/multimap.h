@@ -178,9 +178,12 @@ namespace etl
 
   protected:
 
-    static const uint_least8_t kLeft = 0;
-    static const uint_least8_t kRight = 1;
-    static const uint_least8_t kNeither = 2;
+    enum
+    {
+      kLeft,
+      kRight,
+      kNeither
+    };
 
     //*************************************************************************
     /// The node element in the multimap.
