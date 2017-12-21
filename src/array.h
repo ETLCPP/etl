@@ -452,7 +452,7 @@ namespace etl
 
     //*************************************************************************
     /// Erases a value from the array.
-    /// The after erase, the last value in the array will be unmodified.
+    /// After erase, the last value in the array will be unmodified.
     ///\param position The index of the position to erase at.
     //*************************************************************************
     inline iterator erase_at(size_t position)
@@ -461,8 +461,8 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Inserts a value into the array.
-    /// The after erase, the last value in the array will be unmodified.
+    /// Erases a value from the array.
+    /// After erase, the last value in the array will be unmodified.
     ///\param position The iterator to the position to erase at.
     //*************************************************************************
     iterator erase(const_iterator position)
@@ -475,7 +475,7 @@ namespace etl
 
     //*************************************************************************
     /// Erases a range of values from the array.
-    /// The after erase, the last values in the array will be unmodified.
+    /// After erase, the last values in the array will be unmodified.
     ///\param first The first item to erase.
     ///\param last  The one past the last item to erase.
     //*************************************************************************
@@ -486,7 +486,7 @@ namespace etl
 
     //*************************************************************************
     /// Erases a range of values from the array.
-    /// The after erase, the last values in the array will be unmodified.
+    /// After erase, the last values in the array will be unmodified.
     ///\param first The first item to erase.
     ///\param last  The one past the last item to erase.
     //*************************************************************************
@@ -508,7 +508,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Inserts a value into the array.
+    /// Erases a value from the array.
     ///\param position The iterator to the position to erase at.
     ///\param value    The value to use to overwrite the last element in the array.
     //*************************************************************************
