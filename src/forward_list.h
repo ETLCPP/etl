@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_LIST__
-#define __ETL_LIST__
+#ifndef __ETL_FORWARD_LIST__
+#define __ETL_FORWARD_LIST__
 
 #include <iterator>
 #include <algorithm>
