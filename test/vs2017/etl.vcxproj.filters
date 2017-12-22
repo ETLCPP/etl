@@ -969,5 +969,8 @@
     <Text Include="..\..\src\file_error_numbers.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="..\..\support\Release notes.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>
