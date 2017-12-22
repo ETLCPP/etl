@@ -472,6 +472,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\src\file_error_numbers.txt" />
+    <Text Include="..\..\support\Release notes.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
