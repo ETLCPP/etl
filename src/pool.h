@@ -407,7 +407,7 @@ namespace etl
     template <typename U>
     U* allocate()
     {
-      STATIC_ASSERT(alignof(U) <= ALIGNMENT_,   "Type has incompatible alignment");
+      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
       STATIC_ASSERT(sizeof(U)  <= ELEMENT_SIZE, "Type too large for pool");
       return ipool::allocate<U>();
     }
