@@ -156,7 +156,7 @@ namespace etl
   public:
 
     /// Allows ifsm_state functions to be private.
-    friend class fsm_helper;
+    friend class etl::fsm;
 
     //*******************************************
     /// Gets the id for this state.
@@ -208,45 +208,9 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Helper class for FSM.
-  /// Allows ifsm_state functions to be private.
-  //***************************************************************************
-  class fsm_helper
-  {
-  public:
-
-    //*******************************************
-    inline void set_fsm_context(etl::ifsm_state& state,
-                                etl::fsm&        context)
-    {
-      state.set_fsm_context(context);
-    }
-
-    //*******************************************
-    inline fsm_state_id_t process_event(etl::ifsm_state&      state,
-                                        etl::imessage_router& source,
-                                        const etl::imessage&  message)
-    {
-      return state.process_event(source, message);
-    }
-
-    //*******************************************
-    inline fsm_state_id_t on_enter_state(etl::ifsm_state& state)
-    {
-      return state.on_enter_state();
-    }
-
-    //*******************************************
-    inline void on_exit_state(etl::ifsm_state& state)
-    {
-      state.on_exit_state();
-    }
-  };
-
-  //***************************************************************************
   /// The FSM class.
   //***************************************************************************
-  class fsm : public etl::imessage_router, protected etl::fsm_helper
+  class fsm : public etl::imessage_router
   {
   public:
 
@@ -273,7 +237,7 @@ namespace etl
       for (etl::fsm_state_id_t i = 0; i < size; ++i)
       {
         ETL_ASSERT((state_list[i] != nullptr), ETL_ERROR(etl::fsm_null_state_exception));
-        fsm_helper::set_fsm_context(*state_list[i], *this);
+        state_list[i]->set_fsm_context(*this);
       }
     }
 
@@ -290,7 +254,7 @@ namespace etl
         p_state = state_list[0];
         ETL_ASSERT(p_state != nullptr, ETL_ERROR(etl::fsm_null_state_exception));
 
-        fsm_helper::on_enter_state(*p_state);
+        p_state->on_enter_state();
       }
     }
 
@@ -308,7 +272,7 @@ namespace etl
     //*******************************************
     void receive(etl::imessage_router& source, const etl::imessage& message)
     {
-      etl::fsm_state_id_t next_state_id = fsm_helper::process_event(*p_state, source, message);
+      etl::fsm_state_id_t next_state_id = p_state->process_event(source, message);
       ETL_ASSERT(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
 
       etl::ifsm_state* p_next_state = state_list[next_state_id];
@@ -318,10 +282,10 @@ namespace etl
       {
         do
         {
-          fsm_helper::on_exit_state(*p_state);
+          p_state->on_exit_state();
           p_state = p_next_state;
 
-          next_state_id = fsm_helper::on_enter_state(*p_state);
+          next_state_id = p_state->on_enter_state();
           ETL_ASSERT(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
 
           p_next_state = state_list[next_state_id];
@@ -393,7 +357,6 @@ namespace etl
 
   /*[[[cog
   import cog
-  cog.outl("")
   ################################################
   # The first definition for all of the events.
   ################################################
