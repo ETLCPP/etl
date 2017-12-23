@@ -1797,17 +1797,9 @@ namespace etl
     //*********************************************************************
     void initialise()
     {
-      if (etl::is_trivially_destructible<T>::value)
+      while (current_size > 0)
       {
-        current_size    = 0;
-        construct_count.clear();
-      }
-      else
-      {
-        while (current_size > 0)
-        {
-          destroy_element_back();
-        }
+        destroy_element_back();
       }
 
       _begin = iterator(0, *this, p_buffer);
