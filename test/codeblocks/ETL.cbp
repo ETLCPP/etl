@@ -59,6 +59,7 @@
 		<Unit filename="../../src/algorithm.h" />
 		<Unit filename="../../src/alignment.h" />
 		<Unit filename="../../src/array.h" />
+		<Unit filename="../../src/array_view.h" />
 		<Unit filename="../../src/basic_string.h" />
 		<Unit filename="../../src/binary.cpp" />
 		<Unit filename="../../src/binary.h" />
@@ -287,6 +288,7 @@
 		<Unit filename="../test_algorithm.cpp" />
 		<Unit filename="../test_alignment.cpp" />
 		<Unit filename="../test_array.cpp" />
+		<Unit filename="../test_array_view.cpp" />
 		<Unit filename="../test_binary.cpp" />
 		<Unit filename="../test_bitset.cpp" />
 		<Unit filename="../test_bloom_filter.cpp" />
