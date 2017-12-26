@@ -561,6 +561,9 @@
     <ClInclude Include="..\..\src\variant_pool.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\array_view.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -933,6 +936,9 @@
       <Filter>ETL\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="..\test_variant_pool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_array_view.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
