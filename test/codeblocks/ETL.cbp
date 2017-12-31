@@ -190,6 +190,7 @@
 		<Unit filename="../../src/smallest_generator.h" />
 		<Unit filename="../../src/stack.h" />
 		<Unit filename="../../src/static_assert.h" />
+		<Unit filename="../../src/string_view.h" />
 		<Unit filename="../../src/task.h" />
 		<Unit filename="../../src/timer.h" />
 		<Unit filename="../../src/type_def.h" />
@@ -359,6 +360,7 @@
 		<Unit filename="../test_string_char.cpp" />
 		<Unit filename="../test_string_u16.cpp" />
 		<Unit filename="../test_string_u32.cpp" />
+		<Unit filename="../test_string_view.cpp" />
 		<Unit filename="../test_string_wchar_t.cpp" />
 		<Unit filename="../test_task_scheduler.cpp" />
 		<Unit filename="../test_type_def.cpp" />
