@@ -78,6 +78,8 @@
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <LanguageStandard>
+      </LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -162,6 +164,7 @@
     <ClInclude Include="..\..\src\scheduler.h" />
     <ClInclude Include="..\..\src\smallest_generator.h" />
     <ClInclude Include="..\..\src\sqrt.h" />
+    <ClInclude Include="..\..\src\string_view.h" />
     <ClInclude Include="..\..\src\task.h" />
     <ClInclude Include="..\..\src\timer.h" />
     <ClInclude Include="..\..\src\type_lookup.h" />
@@ -443,6 +446,7 @@
     <ClCompile Include="..\test_string_char.cpp" />
     <ClCompile Include="..\test_string_u16.cpp" />
     <ClCompile Include="..\test_string_u32.cpp" />
+    <ClCompile Include="..\test_string_view.cpp" />
     <ClCompile Include="..\test_string_wchar_t.cpp" />
     <ClCompile Include="..\test_task_scheduler.cpp" />
     <ClCompile Include="..\test_type_def.cpp" />

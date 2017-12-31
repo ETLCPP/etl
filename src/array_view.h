@@ -36,6 +36,7 @@ SOFTWARE.
 #include "iterator.h"
 #include "error_handler.h"
 #include "exception.h"
+#include "nullptr.h"
 #include "hash.h"
 
 #include <algorithm>
@@ -64,7 +65,7 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup stack
-  /// The exception thrown when the stack is full.
+  /// The exception thrown when the index is out of bounds.
   //***************************************************************************
   class array_view_bounds : public array_view_exception
   {
@@ -72,6 +73,20 @@ namespace etl
 
     array_view_bounds(string_type file_name_, numeric_type line_number_)
       : array_view_exception(ETL_ERROR_TEXT("array_view:bounds", ETL_FILE"A"), file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  ///\ingroup stack
+  /// The exception thrown when the view is uninitialised.
+  //***************************************************************************
+  class array_view_uninitialised : public array_view_exception
+  {
+  public:
+
+    array_view_uninitialised(string_type file_name_, numeric_type line_number_)
+      : array_view_exception(ETL_ERROR_TEXT("array_view:uninitialised", ETL_FILE"B"), file_name_, line_number_)
     {
     }
   };
@@ -96,12 +111,21 @@ namespace etl
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
     //*************************************************************************
+    /// Default constructor.
+    //*************************************************************************
+    array_view()
+      : mbegin(nullptr),
+        mend(nullptr)
+    {
+    }
+
+    //*************************************************************************
     /// Construct from std::array or etl::array or other type that supports
     /// data() and size() member functions.
     //*************************************************************************
     template <typename TArray, 
               typename TDummy = typename etl::enable_if<!etl::is_same<T, TArray>::value, void>::type>
-    array_view(TArray& a)
+    explicit array_view(TArray& a)
       : mbegin(a.data()),
         mend(a.data() + a.size())
     {
@@ -134,7 +158,7 @@ namespace etl
     /// Construct from C array
     //*************************************************************************
     template<const size_t ARRAY_SIZE>
-    array_view(T(&begin_)[ARRAY_SIZE])
+    explicit array_view(T(&begin_)[ARRAY_SIZE])
       : mbegin(begin_),
         mend(begin_ + ARRAY_SIZE)
     {
@@ -294,10 +318,6 @@ namespace etl
     }
 
     //*************************************************************************
-    // Capacity
-    //*************************************************************************
-
-    //*************************************************************************
     /// Returns <b>true</b> if the array size is zero.
     //*************************************************************************
     bool empty() const
@@ -322,6 +342,39 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Assign from a view.
+    //*************************************************************************
+    array_view& operator=(const array_view& other)
+    {
+      mbegin = other.mbegin;
+      mend   = other.mend;
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Assign from iterators
+    //*************************************************************************
+    template <typename TIterator,
+              typename TDummy = typename etl::enable_if<etl::is_random_iterator<TIterator>::value, void>::type>
+    void assign(TIterator begin_, TIterator end_)
+    {
+      mbegin = etl::addressof(*begin_);
+      mend = etl::addressof(*begin_) + std::distance(begin_, end_);
+    }
+
+    //*************************************************************************
+    /// Assign from iterator and size.
+    //*************************************************************************
+    template <typename TIterator,
+              typename TSize,
+              typename TDummy = typename etl::enable_if<etl::is_random_iterator<TIterator>::value, void>::type>
+    void assign(TIterator begin_, TSize size_)
+    {
+      mbegin = etl::addressof(*begin_);
+      mend = etl::addressof(*begin_) + size_;
+    }
+
+    //*************************************************************************
     /// Returns a reference to the indexed value.
     //*************************************************************************
     reference operator[](size_t i)
@@ -342,6 +395,7 @@ namespace etl
     //*************************************************************************
     reference at(size_t i)
     {
+      ETL_ASSERT((mbegin != nullptr && mend != nullptr), ETL_ERROR(array_view_uninitialised));
       ETL_ASSERT(i < size(), ETL_ERROR(array_view_bounds));
       return mbegin[i];
     }
@@ -351,8 +405,34 @@ namespace etl
     //*************************************************************************
     const_reference at(size_t i) const
     {
+      ETL_ASSERT((mbegin != nullptr && mend != nullptr), ETL_ERROR(array_view_uninitialised));
       ETL_ASSERT(i < size(), ETL_ERROR(array_view_bounds));
       return mbegin[i];
+    }
+
+    //*************************************************************************
+    /// Swaps with another array_view.
+    //*************************************************************************
+    void swap(array_view& other)
+    {
+      std::swap(mbegin, other.mbegin);
+      std::swap(mend, other.mend);
+    }
+
+    //*************************************************************************          
+    /// Shrinks the view by moving its start forward.
+    //*************************************************************************          
+    void remove_prefix(size_type n)
+    {
+      mbegin += n;
+    }
+
+    //*************************************************************************          
+    /// Shrinks the view by moving its end backward.
+    //*************************************************************************          
+    void remove_suffix(size_type n)
+    {
+      mend -= n;
     }
 
     //*************************************************************************
@@ -406,9 +486,6 @@ namespace etl
 
   private:
 
-    // Disabled.
-    array_view();
-
     T* mbegin;
     T* mend;
   };
@@ -429,12 +506,21 @@ namespace etl
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
     //*************************************************************************
+    /// Default constructor.
+    //*************************************************************************
+    const_array_view()
+      : mbegin(nullptr),
+        mend(nullptr)
+    {
+    }
+
+    //*************************************************************************
     /// Construct from std::array or etl::array or other type that supports
     /// data() and size() member functions.
     //*************************************************************************
     template <typename TArray, 
               typename TDummy = typename etl::enable_if<!etl::is_same<T, TArray>::value, void>::type>
-    const_array_view(TArray& a)
+    explicit const_array_view(TArray& a)
       : mbegin(a.data()),
         mend(a.data() + a.size())
     {
@@ -466,9 +552,18 @@ namespace etl
     /// Construct from C array
     //*************************************************************************
     template<const size_t ARRAY_SIZE>
-    const_array_view(const T(&begin_)[ARRAY_SIZE])
+    explicit const_array_view(const T(&begin_)[ARRAY_SIZE])
       : mbegin(begin_),
         mend(begin_ + ARRAY_SIZE)
+    {
+    }
+
+    //*************************************************************************
+    /// Copy constructor
+    //*************************************************************************
+    const_array_view(const array_view<T>& other)
+      : mbegin(other.begin()),
+        mend(other.end())
     {
     }
 
@@ -598,6 +693,39 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Assign from a view.
+    //*************************************************************************
+    const_array_view<T>& operator=(const const_array_view<T>& other)
+    {
+      mbegin = other.mbegin;
+      mend   = other.mend;
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Assign from iterators
+    //*************************************************************************
+    template <typename TIterator,
+      typename TDummy = typename etl::enable_if<etl::is_random_iterator<TIterator>::value, void>::type>
+    void assign(TIterator begin_, TIterator end_)
+    {
+      mbegin = etl::addressof(*begin_);
+      mend   = etl::addressof(*begin_) + std::distance(begin_, end_);
+    }
+
+    //*************************************************************************
+    /// Assign from iterator and size.
+    //*************************************************************************
+    template <typename TIterator,
+              typename TSize,
+              typename TDummy = typename etl::enable_if<etl::is_random_iterator<TIterator>::value, void>::type>
+    void assign(TIterator begin_, TSize size_)
+    {
+      mbegin = etl::addressof(*begin_);
+      mend   = etl::addressof(*begin_) + size_;
+    }
+
+    //*************************************************************************
     /// Returns a const reference to the indexed value.
     //*************************************************************************
     const_reference operator[](size_t i) const
@@ -610,8 +738,34 @@ namespace etl
     //*************************************************************************
     const_reference at(size_t i) const
     {
+      ETL_ASSERT((mbegin != nullptr && mend != nullptr), ETL_ERROR(array_view_uninitialised));
       ETL_ASSERT(i < size(), ETL_ERROR(array_view_bounds));
       return mbegin[i];
+    }
+
+    //*************************************************************************
+    /// Swaps with another array_view.
+    //*************************************************************************
+    void swap(const_array_view& other)
+    {
+      std::swap(mbegin, other.mbegin);
+      std::swap(mend, other.mend);
+    }
+
+    //*************************************************************************          
+    /// Shrinks the view by moving its start forward.
+    //*************************************************************************          
+    void remove_prefix(size_type n)
+    {
+      mbegin += n;
+    }
+
+    //*************************************************************************          
+    /// Shrinks the view by moving its end backward.
+    //*************************************************************************          
+    void remove_suffix(size_type n)
+    {
+      mend -= n;
     }
 
     //*************************************************************************
@@ -664,13 +818,53 @@ namespace etl
     }
 
   private:
-    
-    // Disabled.
-    const_array_view();
 
     const T* mbegin;
     const T* mend;
   };
+
+  //*************************************************************************
+  /// Hash function.
+  //*************************************************************************
+#if ETL_8BIT_SUPPORT
+  template <typename T>
+  struct hash<etl::array_view<T> >
+  {
+    size_t operator()(const etl::array_view<T>& view) const
+    {
+      return etl::__private_hash__::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&view[0]),
+                                                         reinterpret_cast<const uint8_t*>(&view[view.size()]));
+    }
+  };
+ 
+  template <typename T>
+  struct hash<etl::const_array_view<T> >
+  {
+    size_t operator()(const etl::const_array_view<T>& view) const
+    {
+      return etl::__private_hash__::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&view[0]),
+                                                         reinterpret_cast<const uint8_t*>(&view[view.size()]));
+    }
+  };
+#endif
+}
+
+//*************************************************************************
+/// Swaps the values.
+//*************************************************************************
+template <typename T>
+void swap(etl::array_view<T>& lhs, etl::array_view<T>& rhs)
+{
+  lhs.swap(rhs);
+}
+
+//*************************************************************************
+/// Swaps the values.
+//*************************************************************************
+template <typename T>
+void swap(etl::const_array_view<T>& lhs, etl::const_array_view<T>& rhs)
+{
+  lhs.swap(rhs);
 }
 
 #undef ETL_FILE

@@ -564,6 +564,9 @@
     <ClInclude Include="..\..\src\array_view.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\string_view.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -939,6 +942,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_array_view.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_view.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
