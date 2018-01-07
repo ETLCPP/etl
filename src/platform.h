@@ -35,9 +35,7 @@ SOFTWARE.
 #define ETL_8BIT_SUPPORT (CHAR_BIT == 8)
 
 #if defined(_DEBUG) || defined(DEBUG)
-  #define ETL_DEBUG 1
-#else
-  #define ETL_DEBUG 0
+  #define ETL_DEBUG
 #endif
 
 #include "etl_profile.h"
