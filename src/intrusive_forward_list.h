@@ -147,7 +147,7 @@ namespace etl
 
     //*************************************************************************
     /// Assigns a range of values to the intrusive_forward_list.
-    /// If ETL_THROW_EXCEPTIONS & _DEBUG are defined throws forward_list_iterator if the iterators are reversed.
+    /// If ETL_THROW_EXCEPTIONS & ETL_DEBUG are defined throws forward_list_iterator if the iterators are reversed.
     //*************************************************************************
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
@@ -971,7 +971,7 @@ namespace etl
     {
       if (!other.empty())
       {
-#if _DEBUG
+#if defined(ETL_DEBUG)
         ETL_ASSERT(etl::is_sorted(other.begin(), other.end(), compare), ETL_ERROR(intrusive_forward_list_unsorted));
         ETL_ASSERT(etl::is_sorted(begin(), end(), compare), ETL_ERROR(intrusive_forward_list_unsorted));
 #endif
