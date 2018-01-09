@@ -568,7 +568,7 @@ namespace etl
     //*************************************************************************
     /// Assigns a range of values to the forward_list.
     /// If asserts or exceptions are enabled throws etl::forward_list_full if the forward_list does not have enough free space.
-    /// If ETL_THROW_EXCEPTIONS & _DEBUG are defined throws forward_list_iterator if the iterators are reversed.
+    /// If ETL_THROW_EXCEPTIONS & ETL_DEBUG are defined throws forward_list_iterator if the iterators are reversed.
     //*************************************************************************
     template <typename TIterator>
     void assign(TIterator first, TIterator last)

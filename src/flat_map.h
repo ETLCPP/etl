@@ -263,8 +263,8 @@ namespace etl
 
     //*********************************************************************
     /// Assigns values to the flat_map.
-    /// If ETL_THROW_EXCEPTIONS & _DEBUG are defined, emits flat_map_full if the flat_map does not have enough free space.
-    /// If ETL_THROW_EXCEPTIONS & _DEBUG are defined, emits flat_map_iterator if the iterators are reversed.
+    /// If ETL_THROW_EXCEPTIONS & ETL_DEBUG are defined, emits flat_map_full if the flat_map does not have enough free space.
+    /// If ETL_THROW_EXCEPTIONS & ETL_DEBUG are defined, emits flat_map_iterator if the iterators are reversed.
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
