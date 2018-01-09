@@ -706,7 +706,7 @@ namespace etl
     //*************************************************************************
     /// Assigns a range of values to the list.
     /// If asserts or exceptions are enabled throws etl::list_full if the list does not have enough free space.
-    /// If ETL_THROW_EXCEPTIONS & _DEBUG are defined throws list_iterator if the iterators are reversed.
+    /// If ETL_THROW_EXCEPTIONS & ETL_DEBUG are defined throws list_iterator if the iterators are reversed.
     //*************************************************************************
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
@@ -1250,7 +1250,7 @@ namespace etl
     {
       if (!other.empty())
       {
-#if _DEBUG
+#if defined(ETL_DEBUG)
         ETL_ASSERT(etl::is_sorted(other.begin(), other.end(), compare), ETL_ERROR(list_unsorted));
         ETL_ASSERT(etl::is_sorted(begin(), end(), compare), ETL_ERROR(list_unsorted));
 #endif
