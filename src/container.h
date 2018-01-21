@@ -295,5 +295,7 @@ namespace etl
   char(&array_size(T(&array)[ARRAY_SIZE]))[ARRAY_SIZE];
 }
 
+#define ETL_ARRAY_SIZE(a) sizeof(etl::array_size(a))
+
 #endif
 
