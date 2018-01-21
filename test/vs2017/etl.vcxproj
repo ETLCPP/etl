@@ -133,6 +133,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\array_view.h" />
+    <ClInclude Include="..\..\src\array_wrapper.h" />
     <ClInclude Include="..\..\src\atomic.h" />
     <ClInclude Include="..\..\src\atomic\atomic_arm.h" />
     <ClInclude Include="..\..\src\atomic\atomic_gcc.h" />
@@ -342,6 +343,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\test_array_view.cpp" />
+    <ClCompile Include="..\test_array_wrapper.cpp" />
     <ClCompile Include="..\test_binary.cpp" />
     <ClCompile Include="..\test_bitset.cpp" />
     <ClCompile Include="..\test_bloom_filter.cpp" />
