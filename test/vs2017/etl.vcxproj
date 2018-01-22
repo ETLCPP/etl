@@ -467,6 +467,7 @@
     <ClCompile Include="..\test_vector_pointer.cpp" />
     <ClCompile Include="..\test_visitor.cpp" />
     <ClCompile Include="..\test_xor_checksum.cpp" />
+    <ClCompile Include="..\test_xor_shift_checksum.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Doxyfile" />
