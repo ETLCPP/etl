@@ -29,22 +29,20 @@ SOFTWARE.
 #ifndef __ECL_USER__
 #define __ECL_USER__
 
-#include "platform.h"
-
 #include <stdint.h>
 
-#if defined(ETL_COMPILER_GCC)
-  #define ECL_TIMER_TIMER_SEMAPHORE       uint32_t
-  #define ECL_TIMER_DISABLE_PROCESSING(x) __sync_fetch_and_add(&x, 1)
-  #define ECL_TIMER_ENABLE_PROCESSING(x)  __sync_fetch_and_sub(&x, 1)
-  #define ECL_TIMER_PROCESSING_ENABLED(x) (__sync_fetch_and_add(&x, 0) == 0)
-#else
+#if defined(_MSC_VER)
   #include <Windows.h>
 
   #define ECL_TIMER_TIMER_SEMAPHORE       uint32_t
   #define ECL_TIMER_DISABLE_PROCESSING(x) InterlockedIncrement((volatile long*)&x)
   #define ECL_TIMER_ENABLE_PROCESSING(x)  InterlockedDecrement((volatile long*)&x)
   #define ECL_TIMER_PROCESSING_ENABLED(x) (InterlockedAdd((volatile long*)&x, 0) == 0)
+#else
+  #define ECL_TIMER_TIMER_SEMAPHORE       uint32_t
+  #define ECL_TIMER_DISABLE_PROCESSING(x) __sync_fetch_and_add(&x, 1)
+  #define ECL_TIMER_ENABLE_PROCESSING(x)  __sync_fetch_and_sub(&x, 1)
+  #define ECL_TIMER_PROCESSING_ENABLED(x) (__sync_fetch_and_add(&x, 0) == 0)
 #endif
 
 #endif
