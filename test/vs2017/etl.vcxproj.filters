@@ -953,7 +953,7 @@
     <ClCompile Include="..\test_array_wrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_xor_shift_checksum.cpp">
+    <ClCompile Include="..\test_xor_rotate_checksum.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

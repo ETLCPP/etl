@@ -111,10 +111,10 @@ namespace etl
   };
 
   //***************************************************************************
-  /// XOR-shift checksum policy.
+  /// XOR-rotate checksum policy.
   //***************************************************************************
   template <typename T>
-  struct checksum_policy_xor_shift
+  struct checksum_policy_xor_rotate
   {
     typedef T value_type;
 
@@ -225,14 +225,14 @@ namespace etl
   /// XOR-shift Checksum.
   //*************************************************************************
   template <typename T>
-  class xor_shift_checksum : public etl::frame_check_sequence<etl::checksum_policy_xor_shift<T> >
+  class xor_rotate_checksum : public etl::frame_check_sequence<etl::checksum_policy_xor_rotate<T> >
   {
   public:
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    xor_shift_checksum()
+    xor_rotate_checksum()
     {
       this->reset();
     }
@@ -243,7 +243,7 @@ namespace etl
     /// \param end   End of the range.
     //*************************************************************************
     template<typename TIterator>
-    xor_shift_checksum(TIterator begin, const TIterator end)
+    xor_rotate_checksum(TIterator begin, const TIterator end)
     {
       this->reset();
       this->add(begin, end);
