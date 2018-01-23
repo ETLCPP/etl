@@ -38,8 +38,14 @@ SOFTWARE.
   #define ETL_DEBUG
 #endif
 
-#include "etl_profile.h"
+#undef ETL_CPP11_SUPPORTED
+#undef ETL_CPP14_SUPPORTED
+#undef ETL_NO_NULLPTR_SUPPORT
+#undef ETL_NO_LARGE_CHAR_SUPPORT
+#undef ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
+#undef ETL_ATOMIC_SUPPORTED
 
+#include "etl_profile.h"
 
 #if ETL_CPP11_SUPPORTED
   #define ETL_CONSTEXPR constexpr
