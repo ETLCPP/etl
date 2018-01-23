@@ -240,13 +240,13 @@ namespace etl
   {
     return std::reverse_iterator<const TValue*>(&data[0]);
   }
-  
+
   //*****************************************************************************
 	/// Get the next iterator.
   ///\ingroup container
 	//*****************************************************************************
   template<class TIterator>
-  ETL_CONSTEXPR TIterator next(TIterator iterator, ptrdiff_t n = 1)
+  TIterator next(TIterator iterator, ptrdiff_t n = 1)
   {
       std::advance(iterator, n);
       return iterator;
@@ -257,7 +257,7 @@ namespace etl
   ///\ingroup container
 	//*****************************************************************************
   template<class TIterator>
-  ETL_CONSTEXPR TIterator prev(TIterator iterator, ptrdiff_t n = 1)
+  TIterator prev(TIterator iterator, ptrdiff_t n = 1)
   {
       std::advance(iterator, -n);
       return iterator;
@@ -295,11 +295,11 @@ namespace etl
   char(&array_size(T(&array)[ARRAY_SIZE]))[ARRAY_SIZE];
 }
 
-#if ETL_CPP11_SUPPORTED
-  #define ETL_ARRAY_SIZE(a) (etl::size(a))
-#else
+//#if ETL_CPP11_SUPPORTED
+//  #define ETL_ARRAY_SIZE(a) (etl::size(a))
+//#else
   #define ETL_ARRAY_SIZE(a) sizeof(etl::array_size(a))
-#endif
+//#endif
 
 #endif
 

@@ -114,7 +114,7 @@ namespace etl
     //*************************************************************************
     /// Returns a reference to the first element.
     //*************************************************************************
-    ETL_CONSTEXPR reference front()
+    reference front()
     {
       return *&ARRAY_[FRONT];
     }
@@ -130,7 +130,7 @@ namespace etl
     //*************************************************************************
     /// Returns a reference to the last element.
     //*************************************************************************
-    ETL_CONSTEXPR reference back()
+    reference back()
     {
       return *&ARRAY_[BACK];
     }
@@ -146,7 +146,7 @@ namespace etl
     //*************************************************************************
     /// Returns a pointer to the first element of the internal storage.
     //*************************************************************************
-    ETL_CONSTEXPR pointer data()
+    pointer data()
     {
       return &ARRAY_[BEGIN];
     }
@@ -162,7 +162,7 @@ namespace etl
     //*************************************************************************
     /// Returns an iterator to the beginning of the array.
     //*************************************************************************
-    ETL_CONSTEXPR iterator begin()
+    iterator begin()
     {
       return &ARRAY_[BEGIN];
     }
@@ -186,7 +186,7 @@ namespace etl
     //*************************************************************************
     /// Returns an iterator to the end of the array.
     //*************************************************************************
-    ETL_CONSTEXPR iterator end()
+    iterator end()
     {
       return &ARRAY_[END];
     }
@@ -210,7 +210,7 @@ namespace etl
     //*************************************************************************
     // Returns an reverse iterator to the reverse beginning of the array.
     //*************************************************************************
-    ETL_CONSTEXPR reverse_iterator rbegin()
+    reverse_iterator rbegin()
     {
       return reverse_iterator(&ARRAY_[END]);
     }
@@ -234,7 +234,7 @@ namespace etl
     //*************************************************************************
     /// Returns a reverse iterator to the end of the array.
     //*************************************************************************
-    ETL_CONSTEXPR reverse_iterator rend()
+    reverse_iterator rend()
     {
       return reverse_iterator(&ARRAY_[BEGIN]);
     }
@@ -274,7 +274,7 @@ namespace etl
     //*************************************************************************
     /// Returns a reference to the indexed value.
     //*************************************************************************
-    ETL_CONSTEXPR reference operator[](size_t i)
+    reference operator[](size_t i)
     {
       return ARRAY_[i];
     }
@@ -290,7 +290,7 @@ namespace etl
     //*************************************************************************
     /// Returns a reference to the indexed value.
     //*************************************************************************
-    ETL_CONSTEXPR reference at(size_t i)
+    reference at(size_t i)
     {
       ETL_ASSERT(i < SIZE, ETL_ERROR(etl::array_wrapper_bounds));
       return ARRAY_[i];
@@ -299,7 +299,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reference to the indexed value.
     //*************************************************************************
-    ETL_CONSTEXPR const_reference at(size_t i) const
+    const_reference at(size_t i) const
     {
       ETL_ASSERT(i < SIZE, ETL_ERROR(etl::array_wrapper_bounds));
       return ARRAY_[i];
@@ -316,8 +316,9 @@ namespace etl
     //*************************************************************************
     /// Swaps the contents of arrays.
     //*************************************************************************
-    template <typename T, T(&ARRAYOTHER)[SIZE_]>
-    void swap(etl::array_wrapper<T, SIZE_, ARRAYOTHER>& other)
+    template <typename U, U(&ARRAYOTHER)[SIZE_]>
+    typename etl::enable_if<etl::is_same<T, U>::value, void>::type
+     swap(etl::array_wrapper<U, SIZE_, ARRAYOTHER>& other)
     {
       for (size_t i = 0; i < SIZE; ++i)
       {
@@ -345,7 +346,7 @@ namespace etl
   {
     return !(lhs == rhs);
   }
-  
+
   //*************************************************************************
   /// Less-than for array wrapper.
   //*************************************************************************

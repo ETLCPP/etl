@@ -40,6 +40,7 @@ SOFTWARE.
 
 #include "etl_profile.h"
 
+
 #if ETL_CPP11_SUPPORTED
   #define ETL_CONSTEXPR constexpr
 #else

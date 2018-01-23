@@ -84,7 +84,7 @@ namespace
     //*************************************************************************
     TEST(test_indexes)
     {
-      CHECK_EQUAL(5,                Data5::SIZE);
+      CHECK_EQUAL(5 ,               Data5::SIZE);
       CHECK_EQUAL(Data5::SIZE,      Data5::MAX_SIZE);
       CHECK_EQUAL(0,                Data5::FRONT);
       CHECK_EQUAL(Data5::SIZE - 1,  Data5::BACK);
@@ -357,32 +357,32 @@ namespace
     TEST(test_size)
     {
       Data5 aw5;
-      CHECK_EQUAL(5, aw5.SIZE);
-      CHECK_EQUAL(5, aw5.size());
+      CHECK_EQUAL(5 , aw5.SIZE);
+      CHECK_EQUAL(5U, aw5.size());
 
       const Data5 caw5a;
-      CHECK_EQUAL(5, caw5a.SIZE);
-      CHECK_EQUAL(5, caw5a.size());
+      CHECK_EQUAL(5 , caw5a.SIZE);
+      CHECK_EQUAL(5U, caw5a.size());
 
       CData5 caw5b;
-      CHECK_EQUAL(5, caw5b.SIZE);
-      CHECK_EQUAL(5, caw5b.size());
+      CHECK_EQUAL(5 , caw5b.SIZE);
+      CHECK_EQUAL(5U, caw5b.size());
     }
 
     //*************************************************************************
     TEST(test_max_size)
     {
       Data5 aw5;
-      CHECK_EQUAL(5, aw5.MAX_SIZE);
-      CHECK_EQUAL(5, aw5.max_size());
+      CHECK_EQUAL(5 , aw5.MAX_SIZE);
+      CHECK_EQUAL(5U, aw5.max_size());
 
       const Data5 caw5a;
-      CHECK_EQUAL(5, caw5a.MAX_SIZE);
-      CHECK_EQUAL(5, caw5a.max_size());
+      CHECK_EQUAL(5 , caw5a.MAX_SIZE);
+      CHECK_EQUAL(5U, caw5a.max_size());
 
       CData5 caw5b;
-      CHECK_EQUAL(5, caw5b.MAX_SIZE);
-      CHECK_EQUAL(5, caw5b.max_size());
+      CHECK_EQUAL(5 , caw5b.MAX_SIZE);
+      CHECK_EQUAL(5U, caw5b.max_size());
     }
 
     //*************************************************************************
