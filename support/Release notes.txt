@@ -1,4 +1,12 @@
+===============================================================================
+Added ETL_CONSTEXPR macro and applied to various functions.
+Allows C++11 and above compilers to set functions as constexpr.
 
+===============================================================================
+10.10.0
+Added array_wrapper
+
+===============================================================================
 10.9.0
 
 Array view

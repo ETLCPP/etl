@@ -80,6 +80,7 @@ namespace
       CHECK(data.empty());
       CHECK_EQUAL(data.capacity(), SIZE);
       CHECK_EQUAL(data.max_size(), SIZE);
+      CHECK(data.begin() == data.end());
     }
 
     //*************************************************************************

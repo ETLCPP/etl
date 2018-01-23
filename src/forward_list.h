@@ -585,7 +585,7 @@ namespace etl
       // Add all of the elements.
       while (first != last)
       {
-        ETL_ASSERT(!full(), ETL_ERROR(forward_list_iterator));
+        ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 
         data_node_t& data_node = allocate_data_node(*first++);
         join(p_last_node, &data_node);
