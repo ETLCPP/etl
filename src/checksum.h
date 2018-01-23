@@ -110,6 +110,30 @@ namespace etl
     }
   };
 
+  //***************************************************************************
+  /// XOR-rotate checksum policy.
+  //***************************************************************************
+  template <typename T>
+  struct checksum_policy_xor_rotate
+  {
+    typedef T value_type;
+
+    inline T initial() const
+    {
+      return 0;
+    }
+
+    inline T add(T sum, uint8_t value) const
+    {
+      return etl::rotate_left(sum) ^ value;
+    }
+
+    inline T final(T sum) const
+    {
+      return sum;
+    }
+  };
+
   //*************************************************************************
   /// Standard Checksum.
   //*************************************************************************
@@ -191,6 +215,35 @@ namespace etl
     //*************************************************************************
     template<typename TIterator>
     xor_checksum(TIterator begin, const TIterator end)
+    {
+      this->reset();
+      this->add(begin, end);
+    }
+  };
+
+  //*************************************************************************
+  /// XOR-shift Checksum.
+  //*************************************************************************
+  template <typename T>
+  class xor_rotate_checksum : public etl::frame_check_sequence<etl::checksum_policy_xor_rotate<T> >
+  {
+  public:
+
+    //*************************************************************************
+    /// Default constructor.
+    //*************************************************************************
+    xor_rotate_checksum()
+    {
+      this->reset();
+    }
+
+    //*************************************************************************
+    /// Constructor from range.
+    /// \param begin Start of the range.
+    /// \param end   End of the range.
+    //*************************************************************************
+    template<typename TIterator>
+    xor_rotate_checksum(TIterator begin, const TIterator end)
     {
       this->reset();
       this->add(begin, end);
