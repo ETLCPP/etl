@@ -398,7 +398,24 @@ namespace etl
     //*************************************************************************
     void clear()
     {
-      erase(begin(), end());
+      if ETL_IF_CONSTEXPR(etl::is_trivially_destructible<value_type>::value)
+      {
+        storage.release_all();
+      }
+      else
+      {
+        iterator itr = begin();
+
+        while (itr != end())
+        {
+          itr->~value_type();
+          storage.release(etl::addressof(*itr));
+          ++itr;
+        }
+      }
+
+      construct_count.clear();
+      refmap_t::clear();
     }
 
     //*********************************************************************

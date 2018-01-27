@@ -35,11 +35,12 @@ SOFTWARE.
 #define ETL_8BIT_SUPPORT (CHAR_BIT == 8)
 
 #if defined(_DEBUG) || defined(DEBUG)
-  #define ETL_DEBUG
+#define ETL_DEBUG
 #endif
 
 #undef ETL_CPP11_SUPPORTED
 #undef ETL_CPP14_SUPPORTED
+#undef ETL_CPP17_SUPPORTED
 #undef ETL_NO_NULLPTR_SUPPORT
 #undef ETL_NO_LARGE_CHAR_SUPPORT
 #undef ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
@@ -47,10 +48,21 @@ SOFTWARE.
 
 #include "etl_profile.h"
 
+#if defined(ETL_COMPILER_MICROSOFT)
+  // Disable warning of deprecated std::iterator.
+  #pragma warning(disable : 4996)
+#endif
+
 #if ETL_CPP11_SUPPORTED
   #define ETL_CONSTEXPR constexpr
 #else
   #define ETL_CONSTEXPR
+#endif
+
+#if ETL_CPP17_SUPPORTED
+  #define ETL_IF_CONSTEXPR constexpr
+#else
+  #define ETL_IF_CONSTEXPR
 #endif
 
 #endif

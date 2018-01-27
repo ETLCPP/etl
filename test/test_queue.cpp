@@ -53,6 +53,26 @@ namespace
     return (lhs.c == rhs.c) && (lhs.i == rhs.i) && (lhs.d == rhs.d);
   }
 
+  struct ItemNTD
+  {
+    ItemNTD()
+    {
+      p = new char;
+    }
+
+    ItemNTD(const ItemNTD&)
+      : p(new char)
+    {
+    }
+
+    ~ItemNTD()
+    {
+      delete p;
+    }
+
+    char* p;
+  };
+
   SUITE(test_queue)
   {
     //*************************************************************************
@@ -96,6 +116,31 @@ namespace
 
       queue.push(1);
       queue.push(2);
+      queue.clear();
+      CHECK_EQUAL(0U, queue.size());
+
+      // Do it again to check that clear() didn't screw up the internals.
+      queue.push(1);
+      queue.push(2);
+      CHECK_EQUAL(2U, queue.size());
+      queue.clear();
+      CHECK_EQUAL(0U, queue.size());
+    }
+
+    //*************************************************************************
+    TEST(test_clear_non_pod)
+    {
+      etl::queue<ItemNTD, 4> queue;
+
+      queue.push(ItemNTD());
+      queue.push(ItemNTD());
+      queue.clear();
+      CHECK_EQUAL(0U, queue.size());
+
+      // Do it again to check that clear() didn't screw up the internals.
+      queue.push(ItemNTD());
+      queue.push(ItemNTD());
+      CHECK_EQUAL(2U, queue.size());
       queue.clear();
       CHECK_EQUAL(0U, queue.size());
     }

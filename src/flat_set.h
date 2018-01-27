@@ -284,7 +284,7 @@ namespace etl
       }
       else
       {
-        i_element->~value_type();
+        etl::destroy_at(etl::addressof(*i_element));
         storage.release(etl::addressof(*i_element));
         refset_t::erase(i_element);
         --construct_count;
@@ -298,7 +298,7 @@ namespace etl
     //*********************************************************************
     void erase(iterator i_element)
     {
-      i_element->~value_type();
+      etl::destroy_at(etl::addressof(*i_element));
       storage.release(etl::addressof(*i_element));
       refset_t::erase(i_element);
       --construct_count;
@@ -317,7 +317,7 @@ namespace etl
 
       while (itr != last)
       {
-        itr->~value_type();
+        etl::destroy_at(etl::addressof(*itr));
         storage.release(etl::addressof(*itr));
         ++itr;
         --construct_count;
@@ -331,7 +331,25 @@ namespace etl
     //*************************************************************************
     void clear()
     {
-      erase(begin(), end());
+      if ETL_IF_CONSTEXPR(etl::is_trivially_destructible<value_type>::value)
+      {
+        storage.release_all();
+      }
+      else
+      {
+        iterator itr = begin();
+
+        while (itr != end())
+        {
+          etl::destroy_at(etl::addressof(*itr));
+          storage.release(etl::addressof(*itr));
+          ++itr;
+          --construct_count;
+        }
+      }
+
+      construct_count.clear();
+      refset_t::clear();
     }
 
     //*********************************************************************
