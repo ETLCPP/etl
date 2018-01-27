@@ -728,26 +728,33 @@ namespace etl
       iterator i_node = begin();
       iterator i_last_node;
 
-      // Find where we're currently at.
-      while ((i < n) && (i_node != end()))
+      if (empty())
       {
-        ++i;
-        i_last_node = i_node;
-        ++i_node;
+        assign(n, value);
       }
-
-      if (i_node != end())
+      else
       {
-        // Reduce.
-        erase_after(i_last_node, end());
-      }
-      else if (i_node == end())
-      {
-        // Increase.
-        while (i < n)
+        // Find where we're currently at.
+        while ((i < n) && (i_node != end()))
         {
-          i_last_node = insert_after(i_last_node, value);
           ++i;
+          i_last_node = i_node;
+          ++i_node;
+        }
+
+        if (i_node != end())
+        {
+          // Reduce.
+          erase_after(i_last_node, end());
+        }
+        else if (i_node == end())
+        {
+          // Increase.
+          while (i < n)
+          {
+            i_last_node = insert_after(i_last_node, value);
+            ++i;
+          }
         }
       }
     }
@@ -1226,15 +1233,23 @@ namespace etl
     {
       if (!empty())
       {
-        node_t* p_first = start_node.next;
-        node_t* p_next;
-
-        // Erase the ones in between.
-        while (p_first != nullptr)
+        if ETL_IF_CONSTEXPR(etl::is_trivially_destructible<T>::value)
         {
-          p_next = p_first->next;                                 // Remember the next node.
-          destroy_data_node(static_cast<data_node_t&>(*p_first)); // Destroy the pool object.
-          p_first = p_next;                                       // Move to the next node.
+          p_node_pool->release_all();
+          construct_count.clear();
+        }
+        else
+        {
+          node_t* p_first = start_node.next;
+          node_t* p_next;
+
+          // Erase the ones in between.
+          while (p_first != nullptr)
+          {
+            p_next = p_first->next;                                 // Remember the next node.
+            destroy_data_node(static_cast<data_node_t&>(*p_first)); // Destroy the pool object.
+            p_first = p_next;                                       // Move to the next node.
+          }
         }
       }
 

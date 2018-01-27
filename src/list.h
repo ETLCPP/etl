@@ -1442,13 +1442,21 @@ namespace etl
     {
       if (!empty())
       {
-        node_t* p_first = terminal_node.next;
-        node_t* p_last = &terminal_node;
-
-        while (p_first != p_last)
+        if ETL_IF_CONSTEXPR(etl::is_trivially_destructible<T>::value)
         {
-          destroy_data_node(static_cast<data_node_t&>(*p_first)); // Destroy the current node.
-          p_first = p_first->next;                                // Move to the next node.
+          p_node_pool->release_all();
+          construct_count.clear();
+        }
+        else
+        {
+          node_t* p_first = terminal_node.next;
+          node_t* p_last = &terminal_node;
+
+          while (p_first != p_last)
+          {
+            destroy_data_node(static_cast<data_node_t&>(*p_first)); // Destroy the current node.
+            p_first = p_first->next;                                // Move to the next node.
+          }
         }
       }
 

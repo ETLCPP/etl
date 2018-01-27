@@ -51,6 +51,8 @@ namespace
   typedef etl::flat_multiset<NDC, SIZE> DataNDC;
   typedef etl::iflat_multiset<NDC>      IDataNDC;
 
+  typedef etl::flat_multiset<int, SIZE> DataInt;
+
   typedef std::multiset<DC>  Compare_DataDC;
   typedef std::multiset<NDC> Compare_DataNDC;
 
@@ -101,6 +103,8 @@ namespace
     std::vector<NDC> different_data;
     std::vector<NDC> multi_data;
 
+    std::vector<int> int_data;
+
     //*************************************************************************
     struct SetupFixture
     {
@@ -126,10 +130,16 @@ namespace
           N0, N0, N1, N2, N3, N1, N3, N3, N4, N2
         };
 
+        int n5[] =
+        {
+          10, 11, 12, 13, 14, 15, 16, 17, 18, 19
+        };
+
         initial_data.assign(std::begin(n), std::end(n));
         excess_data.assign(std::begin(n2), std::end(n2));
         different_data.assign(std::begin(n3), std::end(n3));
         multi_data.assign(std::begin(n4), std::end(n4));
+        int_data.assign(std::begin(n5), std::end(n5));
       }
     };
 
@@ -432,8 +442,8 @@ namespace
       data.erase(i_data, i_data_end);
 
       bool isEqual = std::equal(data.begin(),
-                                 data.end(),
-                                 compare_data.begin());
+                                data.end(),
+                                compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -445,7 +455,27 @@ namespace
 
       DataNDC data(compare_data.begin(), compare_data.end());
       data.clear();
+      CHECK_EQUAL(data.size(), size_t(0));
 
+      // Do it again to check that clear() didn't screw up the internals.
+      data.assign(compare_data.begin(), compare_data.end());
+      CHECK_EQUAL(data.size(), compare_data.size());
+      data.clear();
+      CHECK_EQUAL(data.size(), size_t(0));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_clear_pod)
+    {
+      DataInt data(int_data.begin(), int_data.end());
+
+      data.clear();
+      CHECK_EQUAL(data.size(), size_t(0));
+
+      // Do it again to check that clear() didn't screw up the internals.
+      data.assign(int_data.begin(), int_data.end());
+      CHECK_EQUAL(data.size(), int_data.size());
+      data.clear();
       CHECK_EQUAL(data.size(), size_t(0));
     }
 

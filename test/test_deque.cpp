@@ -608,6 +608,27 @@ namespace
       data.resize(SIZE);
       data.clear();
       CHECK(data.empty());
+
+      // Do it again to check that clear() didn't screw up the internals.
+      data.resize(SIZE);
+      CHECK_EQUAL(SIZE, data.size());
+      data.clear();
+      CHECK(data.empty());
+    }
+
+    //*************************************************************************
+    TEST(test_clear_pod)
+    {
+      DataInt data;
+
+      data.resize(SIZE);
+      data.clear();
+      CHECK(data.empty());
+
+      // Do it again to check that clear() didn't screw up the internals.
+      data.resize(SIZE);
+      data.clear();
+      CHECK(data.empty());
     }
 
     //*************************************************************************

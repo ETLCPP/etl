@@ -44,6 +44,7 @@ SOFTWARE.
 #include "debug_count.h"
 #include "type_traits.h"
 #include "parameter_type.h"
+#include "type_traits.h"
 
 #define ETL_FILE "15"
 
@@ -181,6 +182,16 @@ namespace etl
       --top_index;
       --current_size;
       --construct_count;
+    }
+
+    //*************************************************************************
+    /// Clears all of the indexes.
+    //*************************************************************************
+    void index_clear()
+    {
+      top_index = 0;
+      current_size = 0;
+      construct_count.clear();
     }
 
     size_type top_index;              ///< The index of the top of the stack.
@@ -333,10 +344,17 @@ namespace etl
     //*************************************************************************
     void clear()
     {
-      while (current_size > 0)
+      if ETL_IF_CONSTEXPR(etl::is_trivially_destructible<T>::value)
       {
-        p_buffer[top_index].~T();
-        base_t::del_out();
+        base_t::index_clear();
+      }
+      else
+      {
+        while (current_size > 0)
+        {
+          p_buffer[top_index].~T();
+          base_t::del_out();
+        }
       }
     }
 
