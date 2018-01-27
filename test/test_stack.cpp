@@ -55,6 +55,26 @@ namespace
     return (lhs.c == rhs.c) && (lhs.i == rhs.i) && (lhs.d == rhs.d);
   }
 
+  struct ItemNTD
+  {
+    ItemNTD()
+    {
+      p = new char;
+    }
+
+    ItemNTD(const ItemNTD&)
+      : p(new char)
+    {
+    }
+
+    ~ItemNTD()
+    {
+      delete p;
+    }
+
+    char* p;
+  };
+
   SUITE(test_stack)
   {
     typedef TestDataDC<std::string>  ItemDC;
@@ -136,6 +156,31 @@ namespace
 
       stack.push(1);
       stack.push(2);
+      stack.clear();
+      CHECK_EQUAL(0U, stack.size());
+
+      // Do it again to check that clear() didn't screw up the internals.
+      stack.push(1);
+      stack.push(2);
+      CHECK_EQUAL(2U, stack.size());
+      stack.clear();
+      CHECK_EQUAL(0U, stack.size());
+    }
+
+    //*************************************************************************
+    TEST(test_clear_non_pod)
+    {
+      etl::stack<ItemNTD, 4> stack;
+
+      stack.push(ItemNTD());
+      stack.push(ItemNTD());
+      stack.clear();
+      CHECK_EQUAL(0U, stack.size());
+
+      // Do it again to check that clear() didn't screw up the internals.
+      stack.push(ItemNTD());
+      stack.push(ItemNTD());
+      CHECK_EQUAL(2U, stack.size());
       stack.clear();
       CHECK_EQUAL(0U, stack.size());
     }

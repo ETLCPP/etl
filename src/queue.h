@@ -191,6 +191,17 @@ namespace etl
       --construct_count;
     }
 
+    //*************************************************************************
+    /// Clears the indexes.
+    //*************************************************************************
+    void index_clear()
+    {
+      in = 0;
+      out = 0;
+      current_size = 0;
+      construct_count.clear();
+    }
+
     size_type in;                     ///< Where to input new data.
     size_type out;                    ///< Where to get the oldest data.
     size_type current_size;           ///< The number of items in the queue.
@@ -362,14 +373,21 @@ namespace etl
     //*************************************************************************
     void clear()
     {
-      while (current_size > 0)
+      if ETL_IF_CONSTEXPR(etl::is_trivially_destructible<T>::value)
       {
-        p_buffer[out].~T();
-        base_t::del_out();
+        base_t::index_clear();
       }
+      else
+      {
+        while (current_size > 0)
+        {
+          p_buffer[out].~T();
+          base_t::del_out();
+        }
 
-      in = 0;
-      out = 0;
+        in = 0;
+        out = 0;
+      }
     }
 
     //*************************************************************************

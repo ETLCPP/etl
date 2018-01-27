@@ -51,6 +51,8 @@ namespace
   typedef etl::flat_set<NDC, SIZE> DataNDC;
   typedef etl::iflat_set<NDC>      IDataNDC;
 
+  typedef etl::flat_set<int, SIZE>  DataInt;
+
   typedef std::set<DC>  Compare_DataDC;
   typedef std::set<NDC> Compare_DataNDC;
 
@@ -99,6 +101,8 @@ namespace
     std::vector<NDC> initial_data;
     std::vector<NDC> excess_data;
     std::vector<NDC> different_data;
+    
+    std::vector<int> int_data;
 
     //*************************************************************************
     struct SetupFixture
@@ -120,9 +124,15 @@ namespace
           N10, N11, N12, N13, N14, N15, N16, N17, N18, N19
         };
 
+        int n4[] =
+        {
+          10, 11, 12, 13, 14, 15, 16, 17, 18, 19
+        };
+
         initial_data.assign(std::begin(n), std::end(n));
         excess_data.assign(std::begin(n2), std::end(n2));
         different_data.assign(std::begin(n3), std::end(n3));
+        int_data.assign(std::begin(n4), std::end(n4));
       }
     };
 
@@ -434,7 +444,26 @@ namespace
 
       DataNDC data(compare_data.begin(), compare_data.end());
       data.clear();
+      CHECK_EQUAL(data.size(), size_t(0));
 
+      // Do it again to check that clear() didn't screw up the internals.
+      data.assign(compare_data.begin(), compare_data.end());
+      CHECK_EQUAL(data.size(), compare_data.size());
+      data.clear();
+      CHECK_EQUAL(data.size(), size_t(0));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_clear_pod)
+    {
+      DataInt data(int_data.begin(), int_data.end());
+      data.clear();
+      CHECK_EQUAL(data.size(), size_t(0));
+
+      // Do it again to check that clear() didn't screw up the internals.
+      data.assign(int_data.begin(), int_data.end());
+      CHECK_EQUAL(data.size(), int_data.size());
+      data.clear();
       CHECK_EQUAL(data.size(), size_t(0));
     }
 

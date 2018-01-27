@@ -53,6 +53,8 @@ namespace
     typedef etl::forward_list<ItemNDC, SIZE> DataNDC;
     typedef etl::iforward_list<ItemNDC>      IDataNDC;
 
+    typedef etl::forward_list<int, SIZE> DataInt;
+
     typedef std::forward_list<ItemDC> CompareDataDC;
     typedef std::forward_list<ItemNDC> CompareDataNDC;
     typedef std::vector<ItemNDC> InitialDataNDC;
@@ -249,8 +251,28 @@ namespace
     {
       DataNDC data(sorted_data.begin(), sorted_data.end());
       data.clear();
-
       CHECK(data.empty());
+
+      // Do it again to check that clear() didn't screw up the internals.
+      data.assign(sorted_data.begin(), sorted_data.end());
+      CHECK_EQUAL(SIZE, data.size());
+      data.clear();
+      CHECK_EQUAL(size_t(0), data.size());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_clear_pod)
+    {
+      DataInt data(SIZE, 1);
+
+      data.clear();
+      CHECK(data.empty());
+
+      // Do it again to check that clear() didn't screw up the internals.
+      data.resize(SIZE);
+      CHECK_EQUAL(SIZE, data.size());
+      data.clear();
+      CHECK_EQUAL(size_t(0), data.size());
     }
 
     //*************************************************************************

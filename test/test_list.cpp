@@ -52,6 +52,8 @@ namespace
     typedef etl::list<ItemNDC, 2 * SIZE> DataNDC2;
     typedef etl::ilist<ItemNDC>          IDataNDC;
 
+    typedef etl::list<int, SIZE> DataInt;
+
     typedef std::list<ItemNDC>   CompareData;
     typedef std::vector<ItemNDC> InitialData;
 
@@ -272,9 +274,30 @@ namespace
     TEST_FIXTURE(SetupFixture, test_clear)
     {
       DataNDC data(sorted_data.begin(), sorted_data.end());
-      data.clear();
 
+      data.clear();
       CHECK_EQUAL(0U, data.size());
+
+      // Do it again to check that clear() didn't screw up the internals.
+      data.assign(sorted_data.begin(), sorted_data.end());
+      CHECK_EQUAL(SIZE, data.size());
+      data.clear();
+      CHECK_EQUAL(size_t(0), data.size());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_clear_pod)
+    {
+      DataInt data(SIZE, 1);
+
+      data.clear();
+      CHECK(data.empty());
+
+      // Do it again to check that clear() didn't screw up the internals.
+      data.resize(SIZE);
+      CHECK_EQUAL(SIZE, data.size());
+      data.clear();
+      CHECK_EQUAL(size_t(0), data.size());
     }
 
     //*************************************************************************

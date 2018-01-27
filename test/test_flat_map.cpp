@@ -52,10 +52,14 @@ namespace
   typedef std::pair<int, DC>  ElementDC;
   typedef std::pair<int, NDC> ElementNDC;
 
+  typedef std::pair<int, int>  ElementInt;
+
   typedef etl::flat_map<int, DC, SIZE>  DataDC;
   typedef etl::flat_map<int, NDC, SIZE> DataNDC;
   typedef etl::iflat_map<int, DC>       IDataDC;
   typedef etl::iflat_map<int, NDC>      IDataNDC;
+
+  typedef etl::flat_map<int, int, SIZE>  DataInt;
 
   typedef std::map<int, DC>  Compare_DataDC;
   typedef std::map<int, NDC> Compare_DataNDC;
@@ -159,6 +163,8 @@ namespace
     std::vector<ElementNDC> excess_data;
     std::vector<ElementNDC> different_data;
 
+    std::vector<ElementInt> int_data;
+
     //*************************************************************************
     template <typename T1, typename T2>
     bool Check_Equal(T1 begin1, T1 end1, T2 begin2)
@@ -207,10 +213,17 @@ namespace
           ElementDC(5, M5), ElementDC(6, M6), ElementDC(7, M7), ElementDC(8, M8), ElementDC(9, M9)
         };
 
+        ElementInt n5[] =
+        {
+          ElementInt(0, 0), ElementInt(1, 1), ElementInt(2, 2), ElementInt(3, 3), ElementInt(4, 4),
+          ElementInt(5, 5), ElementInt(6, 6), ElementInt(7, 7), ElementInt(8, 8), ElementInt(9, 9)
+        };
+
         initial_data.assign(std::begin(n), std::end(n));
         excess_data.assign(std::begin(n2), std::end(n2));
         different_data.assign(std::begin(n3), std::end(n3));
         initial_data_dc.assign(std::begin(n4), std::end(n4));
+        int_data.assign(std::begin(n5), std::end(n5));
       }
     };
 
@@ -655,7 +668,26 @@ namespace
 
       DataNDC data(compare_data.begin(), compare_data.end());
       data.clear();
+      CHECK_EQUAL(data.size(), size_t(0));
 
+      // Do it again to check that clear() didn't screw up the internals.
+      data.assign(compare_data.begin(), compare_data.end());
+      CHECK_EQUAL(data.size(), compare_data.size());
+      data.clear();
+      CHECK_EQUAL(data.size(), size_t(0));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_clear_pod)
+    {
+      DataInt data(int_data.begin(), int_data.end());
+      data.clear();
+      CHECK_EQUAL(data.size(), size_t(0));
+
+      // Do it again to check that clear() didn't screw up the internals.
+      data.assign(int_data.begin(), int_data.end());
+      CHECK_EQUAL(data.size(), int_data.size());
+      data.clear();
       CHECK_EQUAL(data.size(), size_t(0));
     }
 
