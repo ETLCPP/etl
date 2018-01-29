@@ -31,6 +31,8 @@ SOFTWARE.
 #ifndef __ETL_INSTANCE_COUNT__
 #define __ETL_INSTANCE_COUNT__
 
+#include <stdint.h>
+
 #include "platform.h"
 
 ///\defgroup instance_count instance count
@@ -52,33 +54,52 @@ namespace etl
     //*************************************************************************
     instance_count()
     {
-      ++how_many;
+      ++how_many();
+    }
+
+    //*************************************************************************
+    /// Copy construct and add 1.
+    //*************************************************************************
+    instance_count(const instance_count&)
+    {
+      ++how_many();
     }
 
     //*************************************************************************
     /// Destruct and subtract 1.
     //*************************************************************************
-    virtual ~instance_count()
+    ~instance_count()
     {
-      --how_many;
+      --how_many();
     }
 
     //*************************************************************************
     /// Get how many instances we have.
     //*************************************************************************
-    inline static size_t get_instance_count()
+    inline static int32_t get_instance_count()
     {
-      return how_many;
+      return how_many();
+    }
+
+    //*************************************************************************
+    /// Get how many instances we have.
+    //*************************************************************************
+    inline static void reset_instance_count()
+    {
+      how_many() = 0;
     }
 
   private:
 
-    /// The count for this type.
-    static size_t how_many;
+    //*************************************************************************
+    /// Get a referenceto the count.
+    //*************************************************************************
+    inline static int32_t& how_many()
+    {
+      static int32_t count = 0;
+      return count;
+    }
   };
-
-  /// Initialisation.
-  template <typename T> size_t instance_count<T>::how_many = 0;
 }
 
 #endif
