@@ -103,6 +103,21 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_delete_via_istack)
+    {
+      etl::stack<int, 4>* pstack = new etl::stack<int, 4>;
+
+      etl::istack<int>* pistack = pstack;
+
+      pistack->push(1);
+      pistack->push(2);
+      pistack->push(3);
+      pistack->push(4);
+
+      delete pistack;
+    }
+
+    //*************************************************************************
     TEST(test_empty)
     {
       etl::stack<ItemNDC, 4> stack;

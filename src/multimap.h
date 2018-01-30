@@ -952,6 +952,16 @@ namespace etl
     typedef std::reverse_iterator<iterator>       reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~imultimap()
+    {
+      if (!empty())
+      {
+        clear();
+      }
+    }
 
     //*************************************************************************
     /// Gets the beginning of the multimap.

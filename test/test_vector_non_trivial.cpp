@@ -36,13 +36,15 @@
 #include "data.h"
 
 namespace
-{		
+{
   SUITE(test_vector_non_trivial)
   {
     static const size_t SIZE = 10;
 
     typedef TestDataNDC<std::string> NDC;
     typedef TestDataDC<std::string>  DC;
+
+    static NDC ndc("NDC");
 
     typedef etl::vector<NDC, SIZE> DataNDC;
     typedef etl::ivector<NDC>      IDataNDC;
@@ -51,7 +53,7 @@ namespace
     typedef etl::vector<DC, SIZE> DataDC;
     typedef etl::ivector<DC>      IDataDC;
     typedef std::vector<DC>       CompareDataDC;
-    
+
     CompareDataNDC initial_data;
     CompareDataNDC less_data;
     CompareDataNDC greater_data;
@@ -87,6 +89,22 @@ namespace
       CHECK(data.empty());
       CHECK_EQUAL(data.capacity(), SIZE);
       CHECK_EQUAL(data.max_size(), SIZE);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_destruct_via_ivector)
+    {
+      const size_t INITIAL_SIZE = 5;
+      const NDC INITIAL_VALUE("1");
+
+      int current_count = NDC::get_instance_count();
+
+      DataNDC* pdata = new DataNDC(INITIAL_SIZE, INITIAL_VALUE);
+      CHECK_EQUAL(int(current_count + INITIAL_SIZE), NDC::get_instance_count());
+
+      IDataNDC* pidata = pdata;
+      delete pidata;
+      CHECK_EQUAL(current_count, NDC::get_instance_count());
     }
 
     //*************************************************************************
@@ -152,7 +170,7 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
       DataNDC data2(data);
       CHECK(data2 == data);
-      
+
       data2[2] = NDC("X");
       CHECK(data2 != data);
     }
@@ -400,7 +418,7 @@ namespace
 
       CHECK(data.back() == compare_data.back());
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_data)
     {
@@ -676,7 +694,7 @@ namespace
       const size_t INITIAL_SIZE     = 5;
       const size_t INSERT_SIZE      = 3;
       const NDC INITIAL_VALUE("1");
-      
+
       for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
       {
         CompareDataNDC compare_data;
@@ -770,7 +788,7 @@ namespace
       offset = 4;
 
       CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full);
-      
+
       offset = data.size();
 
       CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full);
@@ -813,7 +831,7 @@ namespace
 
       CHECK(is_equal);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_clear)
     {

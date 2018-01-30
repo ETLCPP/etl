@@ -93,6 +93,17 @@ namespace etl
 
   public:
 
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~ivector()
+    {
+      if (!empty())
+      {
+        clear();
+      }
+    }
+
     //*********************************************************************
     /// Returns an iterator to the beginning of the vector.
     ///\return An iterator to the beginning of the vector.

@@ -228,6 +228,17 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_destruct_via_ireference_flat_map)
+    {
+      int current_count = NDC::get_instance_count();
+
+      DataNDC* pdata = new DataNDC(initial_data.begin(), initial_data.end());
+
+      IDataNDC* pidata = pdata;
+      delete pidata;
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_begin)
     {
       DataNDC data(initial_data.begin(), initial_data.end());

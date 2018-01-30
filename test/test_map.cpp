@@ -184,6 +184,15 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_destruct_via_imap)
+    {
+      Data* pdata = new Data(initial_data.begin(), initial_data.end());
+
+      IData* pidata = pdata;
+      delete pidata;
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_range)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());

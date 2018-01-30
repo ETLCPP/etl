@@ -31,11 +31,13 @@ SOFTWARE.
 
 #include <ostream>
 
+#include "instance_count.h"
+
 //*****************************************************************************
 // Default constructor.
 //*****************************************************************************
 template <typename T>
-class TestDataDC
+class TestDataDC : public etl::instance_count<TestDataDC<T>>
 {
 public:
 
@@ -88,7 +90,7 @@ std::ostream& operator << (std::ostream& s, const TestDataDC<T>& rhs)
 // No default constructor.
 //*****************************************************************************
 template <typename T>
-class TestDataNDC
+class TestDataNDC : public etl::instance_count<TestDataNDC<T>>
 {
 public:
 

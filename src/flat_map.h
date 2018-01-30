@@ -108,6 +108,17 @@ namespace etl
 
   public:
 
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~iflat_map()
+    {
+      if (!empty())
+      {
+        clear();
+      }
+    }
+
     //*********************************************************************
     /// Returns an iterator to the beginning of the flat_map.
     ///\return An iterator to the beginning of the flat_map.

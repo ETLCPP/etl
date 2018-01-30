@@ -98,6 +98,21 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_delete_via_iqueue)
+    {
+      etl::queue<int, 4>* pqueue = new etl::queue<int, 4>;
+
+      etl::iqueue<int>* piqueue = pqueue;
+
+      piqueue->push(1);
+      piqueue->push(2);
+      piqueue->push(3);
+      piqueue->push(4);
+
+      delete piqueue;
+    }
+
+    //*************************************************************************
     TEST(test_size)
     {
       etl::queue<int, 4> queue;

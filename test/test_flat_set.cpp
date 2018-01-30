@@ -101,7 +101,7 @@ namespace
     std::vector<NDC> initial_data;
     std::vector<NDC> excess_data;
     std::vector<NDC> different_data;
-    
+
     std::vector<int> int_data;
 
     //*************************************************************************
@@ -145,6 +145,19 @@ namespace
       CHECK(data.empty());
       CHECK_EQUAL(data.capacity(), SIZE);
       CHECK_EQUAL(data.max_size(), SIZE);
+    }
+
+    //*************************************************************************
+    TEST(test_destruct_via_iflat_set)
+    {
+      int current_count = NDC::get_instance_count();
+
+      DataNDC* pdata = new DataNDC(initial_data.begin(), initial_data.end());
+      CHECK_EQUAL(int(current_count + initial_data.size()), NDC::get_instance_count());
+
+      IDataNDC* pidata = pdata;
+      delete pidata;
+      CHECK_EQUAL(current_count, NDC::get_instance_count());
     }
 
     //*************************************************************************
