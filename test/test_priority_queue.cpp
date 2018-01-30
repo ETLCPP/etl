@@ -79,6 +79,23 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_delete_via_ipriority_queue)
+    {
+      typedef etl::priority_queue<int, 4> priority_queue_t;
+
+      priority_queue_t* ppriority_queue = new etl::priority_queue<int, 4>;
+      
+      etl::ipriority_queue<int, priority_queue_t::container_type, priority_queue_t::compare_type>* pipriority_queue = ppriority_queue;
+
+      pipriority_queue->push(1);
+      pipriority_queue->push(2);
+      pipriority_queue->push(3);
+      pipriority_queue->push(4);
+
+      delete pipriority_queue;
+    }
+
+    //*************************************************************************
     TEST(test_copy_constructor)
     {
       etl::priority_queue<int, SIZE> priority_queue;

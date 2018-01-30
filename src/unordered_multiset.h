@@ -475,6 +475,17 @@ namespace etl
 
     typedef typename std::iterator_traits<iterator>::difference_type difference_type;
 
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~iunordered_multiset()
+    {
+      if (!empty())
+      {
+        clear();
+      }
+    }
+
     //*********************************************************************
     /// Returns an iterator to the beginning of the unordered_multiset.
     ///\return An iterator to the beginning of the unordered_multiset.

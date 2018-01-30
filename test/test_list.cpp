@@ -101,6 +101,19 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_destruct_via_ilist)
+    {
+      int current_count = ItemNDC::get_instance_count();
+
+      DataNDC* pdata = new DataNDC(sorted_data.begin(), sorted_data.end());
+      CHECK_EQUAL(int(current_count + sorted_data.size()), ItemNDC::get_instance_count());
+
+      IDataNDC* pidata = pdata;
+      delete pidata;
+      CHECK_EQUAL(current_count, ItemNDC::get_instance_count());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_size)
     {
       const size_t INITIAL_SIZE = 4;

@@ -86,6 +86,17 @@ namespace etl
 
   public:
 
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~iflat_set()
+    {
+      if (!empty())
+      {
+        clear();
+      }
+    }
+
     //*********************************************************************
     /// Returns an iterator to the beginning of the flat_set.
     ///\return An iterator to the beginning of the flat_set.

@@ -110,6 +110,17 @@ namespace etl
 
   public:
 
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~iflat_multimap()
+    {
+      if (!empty())
+      {
+        clear();
+      }
+    }
+
     //*********************************************************************
     /// Returns an iterator to the beginning of the flat_multimap.
     ///\return An iterator to the beginning of the flat_multimap.

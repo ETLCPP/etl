@@ -86,6 +86,17 @@ namespace etl
 
   public:
 
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~iflat_multiset()
+    {
+      if (!empty())
+      {
+        clear();
+      }
+    }
+
     //*********************************************************************
     /// Returns an iterator to the beginning of the flat_multiset.
     ///\return An iterator to the beginning of the flat_multiset.

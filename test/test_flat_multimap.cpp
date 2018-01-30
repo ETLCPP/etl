@@ -198,6 +198,19 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_destruct_via_iflat_multimap)
+    {
+      int current_count = NDC::get_instance_count();
+
+      DataNDC* pdata = new DataNDC(initial_data.begin(), initial_data.end());
+      CHECK_EQUAL(int(current_count + initial_data.size()), NDC::get_instance_count());
+
+      IDataNDC* pidata = pdata;
+      delete pidata;
+      CHECK_EQUAL(current_count, NDC::get_instance_count());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_range)
     {
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
@@ -499,7 +512,7 @@ namespace
       DataNDC data(compare_data.begin(), compare_data.end());
       data.clear();
       CHECK_EQUAL(data.size(), size_t(0));
-      
+
       // Do it again to check that clear() didn't screw up the internals.
       data.assign(compare_data.begin(), compare_data.end());
       CHECK_EQUAL(data.size(), compare_data.size());

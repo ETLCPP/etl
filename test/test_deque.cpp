@@ -108,6 +108,19 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_destruct_via_ideque)
+    {
+      int current_count = NDC::get_instance_count();
+
+      DataNDC* pdata = new DataNDC(SIZE, N999);
+      CHECK_EQUAL(int(current_count + SIZE), NDC::get_instance_count());
+
+      IDataNDC* pidata = pdata;
+      delete pidata;
+      CHECK_EQUAL(current_count, NDC::get_instance_count());
+    }
+
+    //*************************************************************************
     TEST(test_constructor_fill_excess)
     {
       CHECK_THROW(DataNDC(SIZE + 1, N999), etl::deque_full);
