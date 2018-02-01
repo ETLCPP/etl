@@ -171,6 +171,7 @@
     <ClInclude Include="..\..\src\type_lookup_generator.h" />
     <ClInclude Include="..\..\src\type_traits_generator.h" />
     <ClInclude Include="..\..\src\variant_pool.h" />
+    <ClInclude Include="..\..\src\variant_pool_generator.h" />
     <ClInclude Include="..\..\unittest-cpp\UnitTest++\AssertException.h" />
     <ClInclude Include="..\..\unittest-cpp\UnitTest++\CheckMacros.h" />
     <ClInclude Include="..\..\unittest-cpp\UnitTest++\Checks.h" />
@@ -478,6 +479,7 @@
     <None Include="..\..\src\generate_smallest.bat" />
     <None Include="..\..\src\generate_type_lookup.bat" />
     <None Include="..\..\src\generate_type_traits.bat" />
+    <None Include="..\..\src\generate_variant_pool.bat" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\src\file_error_numbers.txt" />
