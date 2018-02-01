@@ -58,6 +58,9 @@
     <Filter Include="ECL">
       <UniqueIdentifier>{4ac80fd1-3eca-4775-8695-eb1ea39c93f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ETL\Containers\Generators">
+      <UniqueIdentifier>{e4a699ae-e7f3-418e-bf9f-211c21f7f4b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\doxygen.h">
@@ -570,6 +573,9 @@
     <ClInclude Include="..\..\src\array_wrapper.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\variant_pool_generator.h">
+      <Filter>ETL\Containers\Generators</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -983,6 +989,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\..\src\generate_type_lookup.bat">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\src\generate_variant_pool.bat">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
