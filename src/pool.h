@@ -321,6 +321,21 @@ namespace etl
 
     const uint32_t ITEM_SIZE;    ///< The size of allocated items.
     const uint32_t MAX_SIZE;    ///< The maximum number of objects that can be allocated.
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+#if defined(ETL_POLYMORPHIC_POOL) || defined(ETL_POLYMORPHIC_CONTAINERS)
+  public:
+    virtual ~ipool()
+    {
+    }
+#else
+  protected:
+    ~ipool()
+    {
+    }
+#endif
   };
 
   //*************************************************************************

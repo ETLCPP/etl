@@ -99,7 +99,14 @@ namespace etl
       //*************************************************************************
       debounce_base(bool initial_state = false)
         : state(initial_state ? (CURRENT | LAST) : 0),
-          count(START_COUNT)
+        count(START_COUNT)
+      {
+      }
+
+      //*************************************************************************
+      /// Destructor.
+      //*************************************************************************
+      ~debounce_base()
       {
       }
 

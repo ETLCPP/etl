@@ -165,6 +165,13 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~queue_base()
+    {
+    }
+
+    //*************************************************************************
     /// Increments (and wraps) the 'in' index value to record a queue addition.
     //*************************************************************************
     void add_in()
@@ -207,6 +214,7 @@ namespace etl
     size_type current_size;           ///< The number of items in the queue.
     const size_type CAPACITY;         ///< The maximum number of items in the queue.
     etl::debug_count construct_count; ///< For internal debugging purposes.
+
   };
 
   //***************************************************************************
@@ -238,17 +246,6 @@ namespace etl
     typedef typename etl::queue_base              base_t;
 
   public:
-
-    //*************************************************************************
-    /// Destructor.
-    //*************************************************************************
-    ~iqueue()
-    {
-      if (!empty())
-      {
-        clear();
-      }
-    }
 
     //*************************************************************************
     /// Gets a reference to the value at the front of the queue.<br>
@@ -485,6 +482,21 @@ namespace etl
     iqueue(const iqueue&);
 
     T* p_buffer; ///< The internal buffer.
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+#if defined(ETL_POLYMORPHIC_QUEUE) || defined(ETL_POLYMORPHIC_CONTAINERS)
+  public:
+    virtual ~iqueue()
+    {
+    }
+#else
+  protected:
+    ~iqueue()
+    {
+    }
+#endif
   };
 
   //***************************************************************************

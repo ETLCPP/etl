@@ -780,6 +780,21 @@ namespace etl
     ireference_flat_multiset& operator =(const ireference_flat_multiset&);
 
     lookup_t& lookup;
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+#if defined(ETL_POLYMORPHIC_REFERENCE_FLAT_MULTISET) || defined(ETL_POLYMORPHIC_CONTAINERS)
+  public:
+    virtual ~ireference_flat_multiset()
+    {
+    }
+#else
+  protected:
+    ~ireference_flat_multiset()
+    {
+    }
+#endif
   };
 
   //***************************************************************************

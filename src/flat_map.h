@@ -108,17 +108,6 @@ namespace etl
 
   public:
 
-    //*************************************************************************
-    /// Destructor.
-    //*************************************************************************
-    ~iflat_map()
-    {
-      if (!empty())
-      {
-        clear();
-      }
-    }
-
     //*********************************************************************
     /// Returns an iterator to the beginning of the flat_map.
     ///\return An iterator to the beginning of the flat_map.
@@ -606,6 +595,21 @@ namespace etl
 
     /// Internal debugging.
     etl::debug_count construct_count;
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+#if defined(ETL_POLYMORPHIC_FLAT_MAP) || defined(ETL_POLYMORPHIC_CONTAINERS)
+  public:
+    virtual ~iflat_map()
+    {
+    }
+#else
+  protected:
+    ~iflat_map()
+    {
+    }
+#endif
   };
 
   //***************************************************************************

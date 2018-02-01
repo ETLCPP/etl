@@ -181,6 +181,13 @@ namespace etl
     {
     }
 
+    //*************************************************************************
+    /// Destructor
+    //*************************************************************************
+    ~intrusive_queue_base()
+    {
+    }
+
     link_type* p_front; ///< The current front of the queue.
     link_type* p_back;  ///< The current back of the queue.
 

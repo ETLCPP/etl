@@ -223,6 +223,13 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~forward_list_base()
+    {
+    }
+
+    //*************************************************************************
     /// Get the head node.
     //*************************************************************************
     node_t& get_head()
@@ -476,17 +483,6 @@ namespace etl
     };
 
     typedef typename std::iterator_traits<iterator>::difference_type difference_type;
-
-    //*************************************************************************
-    /// Destructor.
-    //*************************************************************************
-    ~iforward_list()
-    {
-      if (!empty())
-      {
-        clear();
-      }
-    }
 
     //*************************************************************************
     /// Gets the beginning of the forward_list.
@@ -1343,6 +1339,21 @@ namespace etl
 
     // Disable copy construction.
     iforward_list(const iforward_list&);
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+#if defined(ETL_POLYMORPHIC_FORWARD_LIST) || defined(ETL_POLYMORPHIC_CONTAINERS)
+  public:
+    virtual ~iforward_list()
+    {
+    }
+#else
+  protected:
+    ~iforward_list()
+    {
+    }
+#endif
   };
 
   //*************************************************************************

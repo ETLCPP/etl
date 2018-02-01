@@ -99,6 +99,9 @@ namespace
 
       int current_count = NDC::get_instance_count();
 
+      DataNDC* p = new DataNDC(INITIAL_SIZE, INITIAL_VALUE);
+      delete p;
+
       DataNDC* pdata = new DataNDC(INITIAL_SIZE, INITIAL_VALUE);
       CHECK_EQUAL(int(current_count + INITIAL_SIZE), NDC::get_instance_count());
 

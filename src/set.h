@@ -228,6 +228,13 @@ namespace etl
     }
 
     //*************************************************************************
+    /// The constructor that is called from derived classes.
+    //*************************************************************************
+    ~set_base()
+    {
+    }
+
+    //*************************************************************************
     /// Attach the provided node to the position provided
     //*************************************************************************
     void attach_node(Node*& position, Node& node)
@@ -437,6 +444,7 @@ namespace etl
     const size_type CAPACITY; ///< The maximum size of the set.
     Node* root_node;          ///< The node that acts as the set root.
     etl::debug_count construct_count;
+
   };
 
   //***************************************************************************
@@ -771,8 +779,7 @@ namespace etl
 
     typedef std::reverse_iterator<iterator>       reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-
-
+    
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
@@ -784,17 +791,6 @@ namespace etl
       }
 
       return *this;
-    }
-
-    //*************************************************************************
-    /// Destructor.
-    //*************************************************************************
-    ~iset()
-    {
-      if (!empty())
-      {
-        clear();
-      }
     }
 
     //*************************************************************************
@@ -1930,6 +1926,21 @@ namespace etl
 
     // Disable copy construction.
     iset(const iset&);
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+#if defined(ETL_POLYMORPHIC_SET) || defined(ETL_POLYMORPHIC_CONTAINERS)
+  public:
+    virtual ~iset()
+    {
+    }
+#else
+  protected:
+    ~iset()
+    {
+    }
+#endif
   };
 
   //*************************************************************************
