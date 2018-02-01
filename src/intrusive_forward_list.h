@@ -238,6 +238,13 @@ namespace etl
     size_t current_size; ///< Counts the number of elements in the list.
 
     //*************************************************************************
+    /// Destructor
+    //*************************************************************************
+    ~intrusive_forward_list_base()
+    {
+    }
+
+    //*************************************************************************
     /// Is the intrusive_forward_list a trivial length?
     //*************************************************************************
     bool is_trivial_list() const

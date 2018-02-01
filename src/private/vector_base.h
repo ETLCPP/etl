@@ -154,6 +154,13 @@ namespace etl
     {
     }
 
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~vector_base()
+    {
+    }
+
     const size_type CAPACITY;         ///<The maximum number of elements in the vector.
     etl::debug_count construct_count; ///< Internal debugging.
   };

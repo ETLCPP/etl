@@ -767,6 +767,21 @@ namespace etl
     ireference_flat_multimap& operator = (const ireference_flat_multimap&);
 
     lookup_t&  lookup;
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+#if defined(ETL_POLYMORPHIC_REFERENCE_FLAT_MULTIMAP) || defined(ETL_POLYMORPHIC_CONTAINERS)
+  public:
+    virtual ~ireference_flat_multimap()
+    {
+    }
+#else
+  protected:
+    ~ireference_flat_multimap()
+    {
+    }
+#endif
   };
 
   //***************************************************************************
