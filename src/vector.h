@@ -93,17 +93,6 @@ namespace etl
 
   public:
 
-    //*************************************************************************
-    /// Destructor.
-    //*************************************************************************
-    ~ivector()
-    {
-      if (!empty())
-      {
-        clear();
-      }
-    }
-
     //*********************************************************************
     /// Returns an iterator to the beginning of the vector.
     ///\return An iterator to the beginning of the vector.
@@ -968,6 +957,21 @@ namespace etl
 
     // Disable copy construction.
     ivector(const ivector&);
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+#if defined(ETL_POLYMORPHIC_VECTOR) || defined(ETL_POLYMORPHIC_CONTAINERS)
+  public:
+    virtual ~ivector()
+    {
+    }
+#else
+  protected:
+    ~ivector()
+    {
+    }
+#endif
   };
 
   //***************************************************************************

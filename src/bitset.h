@@ -718,6 +718,21 @@ namespace etl
     const size_t NBITS;
     const size_t SIZE;
     element_t*   pdata;
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+#if defined(ETL_POLYMORPHIC_BITSET) || defined(ETL_POLYMORPHIC_CONTAINERS)
+  public:
+    virtual ~ibitset()
+    {
+    }
+#else
+  protected:
+    ~ibitset()
+    {
+    }
+#endif
   };
 
   //*************************************************************************

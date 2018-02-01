@@ -86,17 +86,6 @@ namespace etl
 
   public:
 
-    //*************************************************************************
-    /// Destructor.
-    //*************************************************************************
-    ~iflat_multiset()
-    {
-      if (!empty())
-      {
-        clear();
-      }
-    }
-
     //*********************************************************************
     /// Returns an iterator to the beginning of the flat_multiset.
     ///\return An iterator to the beginning of the flat_multiset.
@@ -535,6 +524,21 @@ namespace etl
 
     /// Internal debugging.
     etl::debug_count construct_count;
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+#if defined(ETL_POLYMORPHIC_FLAT_MULTISET) || defined(ETL_POLYMORPHIC_CONTAINERS)
+  public:
+    virtual ~iflat_multiset()
+    {
+    }
+#else
+  protected:
+    ~iflat_multiset()
+    {
+    }
+#endif
   };
 
   //***************************************************************************

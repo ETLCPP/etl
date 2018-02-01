@@ -235,6 +235,13 @@ namespace etl
     {
     }
 
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~string_base()
+    {
+    }
+
     bool            is_truncated; ///< Set to true if the operation truncated the string.
     size_type       current_size; ///< The current number of elements in the string.
     const size_type CAPACITY;     ///< The maximum number of elements in the string.
@@ -1970,6 +1977,21 @@ namespace etl
     ibasic_string(const ibasic_string&);
 
     T* p_buffer;
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+#if defined(ETL_POLYMORPHIC_STRINGS) || defined(ETL_POLYMORPHIC_CONTAINERS)
+  public:
+    virtual ~ibasic_string()
+    {
+    }
+#else
+  protected:
+    ~ibasic_string()
+    {
+    }
+#endif
   };
 
   //***************************************************************************

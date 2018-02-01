@@ -200,6 +200,13 @@ namespace etl
     {
     }
 
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~deque_base()
+    {
+    }
+
     size_type       current_size;     ///< The current number of elements in the deque.
     const size_type CAPACITY;         ///< The maximum number of elements in the deque.
     const size_type BUFFER_SIZE;      ///< The number of elements in the buffer.
@@ -621,17 +628,6 @@ namespace etl
 
     typedef std::reverse_iterator<iterator>       reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-
-    //*************************************************************************
-    /// Destructor.
-    //*************************************************************************
-    ~ideque()
-    {
-      if (!empty())
-      {
-        initialise();
-      }
-    }
 
     //*************************************************************************
     /// Assigns a range to the deque.
@@ -1975,6 +1971,21 @@ namespace etl
 
     // Disable copy construction.
     ideque(const ideque&);
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+#if defined(ETL_POLYMORPHIC_DEQUE) || defined(ETL_POLYMORPHIC_CONTAINERS)
+  public:
+    virtual ~ideque()
+    {
+    }
+#else
+  protected:
+    ~ideque()
+    {
+    }
+#endif
   };
 
   //***************************************************************************

@@ -110,17 +110,6 @@ namespace etl
 
   public:
 
-    //*************************************************************************
-    /// Destructor.
-    //*************************************************************************
-    ~iflat_multimap()
-    {
-      if (!empty())
-      {
-        clear();
-      }
-    }
-
     //*********************************************************************
     /// Returns an iterator to the beginning of the flat_multimap.
     ///\return An iterator to the beginning of the flat_multimap.
@@ -557,6 +546,21 @@ namespace etl
 
     /// Internal debugging.
     etl::debug_count construct_count;
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+#if defined(ETL_POLYMORPHIC_FLAT_MULTIMAP) || defined(ETL_POLYMORPHIC_CONTAINERS)
+  public:
+    virtual ~iflat_multimap()
+    {
+    }
+#else
+  protected:
+    ~iflat_multimap()
+    {
+    }
+#endif
   };
 
   //***************************************************************************

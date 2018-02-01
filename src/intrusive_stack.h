@@ -188,6 +188,13 @@ namespace etl
     {
     }
 
+    //*************************************************************************
+    /// Destructor
+    //*************************************************************************
+    ~intrusive_stack_base()
+    {
+    }
+
     link_type* p_top; ///< The current top of the stack.
 
     size_t current_size; ///< Counts the number of elements in the list.

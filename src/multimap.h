@@ -224,7 +224,13 @@ namespace etl
       : current_size(0)
       , CAPACITY(max_size_)
       , root_node(nullptr)
-
+    {
+    }
+   
+    //*************************************************************************
+    /// The constructor that is called from derived classes.
+    //*************************************************************************
+    ~multimap_base()
     {
     }
 
@@ -951,17 +957,6 @@ namespace etl
 
     typedef std::reverse_iterator<iterator>       reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-
-    //*************************************************************************
-    /// Destructor.
-    //*************************************************************************
-    ~imultimap()
-    {
-      if (!empty())
-      {
-        clear();
-      }
-    }
 
     //*************************************************************************
     /// Gets the beginning of the multimap.
@@ -1892,6 +1887,22 @@ namespace etl
 
     // Disable copy construction.
     imultimap(const imultimap&);
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+#if defined(ETL_POLYMORPHIC_MULTIMAP) || defined(ETL_POLYMORPHIC_CONTAINERS)
+  public:
+    virtual ~imultimap()
+    {
+    }
+#else
+  protected:
+    ~imultimap()
+    {
+    }
+#endif
+
   };
 
   //*************************************************************************

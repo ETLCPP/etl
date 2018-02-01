@@ -306,6 +306,13 @@ namespace etl
     {
     }
 
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~list_base()
+    {
+    }
+
     etl::ipool*      p_node_pool;     ///< The pool of data nodes used in the list.
     node_t           terminal_node;   ///< The node that acts as the list start and end.
     const size_type  MAX_SIZE;        ///< The maximum size of the list.
@@ -582,17 +589,6 @@ namespace etl
 
     typedef std::reverse_iterator<iterator>       reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-
-    //*************************************************************************
-    /// Destructor.
-    //*************************************************************************
-    ~ilist()
-    {
-      if (!empty())
-      {
-        initialise();
-      }
-    }
 
     //*************************************************************************
     /// Gets the beginning of the list.
@@ -1566,6 +1562,18 @@ namespace etl
 
     // Disable copy construction.
     ilist(const ilist&);
+
+#if defined(ETL_POLYMORPHIC_LIST) || defined(ETL_POLYMORPHIC_CONTAINERS)
+  public:
+    virtual ~ilist()
+    {
+    }
+#else
+  protected:
+    ~ilist()
+    {
+    }
+#endif
   };
 
   //*************************************************************************

@@ -234,6 +234,13 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Destructor
+    //*************************************************************************
+    ~map_base()
+    {
+    }
+
+    //*************************************************************************
     /// Balance the critical node at the position provided as needed
     //*************************************************************************
     void balance_node(Node*& critical_node)
@@ -800,17 +807,6 @@ namespace etl
 
     typedef std::reverse_iterator<iterator>       reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-
-    //*************************************************************************
-    /// Destructor.
-    //*************************************************************************
-    ~imap()
-    {
-      if (!empty())
-      {
-        clear();
-      }
-    }
 
     //*************************************************************************
     /// Gets the beginning of the map.
@@ -2007,6 +2003,21 @@ namespace etl
 
     // Disable copy construction.
     imap(const imap&);
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+#if defined(ETL_POLYMORPHIC_MAP) || defined(ETL_POLYMORPHIC_CONTAINERS)
+  public:
+    virtual ~imap()
+    {
+    }
+#else
+  protected:
+    ~imap()
+    {
+    }
+#endif
   };
 
   //*************************************************************************

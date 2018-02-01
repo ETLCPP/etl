@@ -226,7 +226,14 @@ namespace etl
       , root_node(nullptr)
     {
     }
-
+     
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~multiset_base()
+    {
+    }
+    
     //*************************************************************************
     /// Attach the provided node to the position provided
     //*************************************************************************
@@ -931,17 +938,6 @@ namespace etl
 
     typedef std::reverse_iterator<iterator>       reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-
-    //*************************************************************************
-    /// Destructor.
-    //*************************************************************************
-    ~imultiset()
-    {
-      if (!empty())
-      {
-        clear();
-      }
-    }
 
     //*************************************************************************
     /// Gets the beginning of the multiset.
@@ -1872,6 +1868,21 @@ namespace etl
 
     // Disable copy construction.
     imultiset(const imultiset&);
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+#if defined(ETL_POLYMORPHIC_MULTISET) || defined(ETL_POLYMORPHIC_CONTAINERS)
+  public:
+    virtual ~imultiset()
+    {
+    }
+#else
+  protected:
+    ~imultiset()
+    {
+    }
+#endif
   };
 
   //*************************************************************************

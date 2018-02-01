@@ -480,17 +480,6 @@ namespace etl
 
     typedef typename std::iterator_traits<iterator>::difference_type difference_type;
 
-    //*************************************************************************
-    /// Destructor.
-    //*************************************************************************
-    ~iunordered_map()
-    {
-      if (!empty())
-      {
-        clear();
-      }
-    }
-
     //*********************************************************************
     /// Returns an iterator to the beginning of the unordered_map.
     ///\return An iterator to the beginning of the unordered_map.
@@ -1294,6 +1283,21 @@ namespace etl
 
     /// For library debugging purposes only.
     etl::debug_count construct_count;
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+#if defined(ETL_POLYMORPHIC_UNORDERED_MAP) || defined(ETL_POLYMORPHIC_CONTAINERS)
+  public:
+    virtual ~iunordered_map()
+    {
+    }
+#else
+  protected:
+    ~iunordered_map()
+    {
+    }
+#endif
   };
 
   //***************************************************************************

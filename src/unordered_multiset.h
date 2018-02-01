@@ -475,17 +475,6 @@ namespace etl
 
     typedef typename std::iterator_traits<iterator>::difference_type difference_type;
 
-    //*************************************************************************
-    /// Destructor.
-    //*************************************************************************
-    ~iunordered_multiset()
-    {
-      if (!empty())
-      {
-        clear();
-      }
-    }
-
     //*********************************************************************
     /// Returns an iterator to the beginning of the unordered_multiset.
     ///\return An iterator to the beginning of the unordered_multiset.
@@ -1198,6 +1187,21 @@ namespace etl
 
     /// For library debugging purposes only.
     etl::debug_count construct_count;
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+#if defined(ETL_POLYMORPHIC_UNORDERED_MULTISET) || defined(ETL_POLYMORPHIC_CONTAINERS)
+  public:
+    virtual ~iunordered_multiset()
+    {
+    }
+#else
+  protected:
+    ~iunordered_multiset()
+    {
+    }
+#endif
   };
 
   //***************************************************************************
