@@ -295,7 +295,34 @@ namespace etl
       //********************************************
       ~message_packet()
       {
-        static_cast<etl::imessage*>(data)->~imessage();
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
+
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->message_id;
+
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
+          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
+          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
+          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
+          case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
+          case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
+          case T11::ID: static_cast<T11*>(pmsg)->~T11(); break;
+          case T12::ID: static_cast<T12*>(pmsg)->~T12(); break;
+          case T13::ID: static_cast<T13*>(pmsg)->~T13(); break;
+          case T14::ID: static_cast<T14*>(pmsg)->~T14(); break;
+          case T15::ID: static_cast<T15*>(pmsg)->~T15(); break;
+          case T16::ID: static_cast<T16*>(pmsg)->~T16(); break;
+          default: assert(false); break;
+        }
+  #endif
       }
 
       //********************************************
@@ -454,7 +481,33 @@ namespace etl
       //********************************************
       ~message_packet()
       {
-        static_cast<etl::imessage*>(data)->~imessage();
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
+
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->message_id;
+
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
+          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
+          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
+          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
+          case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
+          case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
+          case T11::ID: static_cast<T11*>(pmsg)->~T11(); break;
+          case T12::ID: static_cast<T12*>(pmsg)->~T12(); break;
+          case T13::ID: static_cast<T13*>(pmsg)->~T13(); break;
+          case T14::ID: static_cast<T14*>(pmsg)->~T14(); break;
+          case T15::ID: static_cast<T15*>(pmsg)->~T15(); break;
+          default: assert(false); break;
+        }
+  #endif
       }
 
       //********************************************
@@ -611,7 +664,32 @@ namespace etl
       //********************************************
       ~message_packet()
       {
-        static_cast<etl::imessage*>(data)->~imessage();
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
+
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->message_id;
+
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
+          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
+          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
+          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
+          case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
+          case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
+          case T11::ID: static_cast<T11*>(pmsg)->~T11(); break;
+          case T12::ID: static_cast<T12*>(pmsg)->~T12(); break;
+          case T13::ID: static_cast<T13*>(pmsg)->~T13(); break;
+          case T14::ID: static_cast<T14*>(pmsg)->~T14(); break;
+          default: assert(false); break;
+        }
+  #endif
       }
 
       //********************************************
@@ -766,7 +844,31 @@ namespace etl
       //********************************************
       ~message_packet()
       {
-        static_cast<etl::imessage*>(data)->~imessage();
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
+
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->message_id;
+
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
+          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
+          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
+          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
+          case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
+          case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
+          case T11::ID: static_cast<T11*>(pmsg)->~T11(); break;
+          case T12::ID: static_cast<T12*>(pmsg)->~T12(); break;
+          case T13::ID: static_cast<T13*>(pmsg)->~T13(); break;
+          default: assert(false); break;
+        }
+  #endif
       }
 
       //********************************************
@@ -918,7 +1020,30 @@ namespace etl
       //********************************************
       ~message_packet()
       {
-        static_cast<etl::imessage*>(data)->~imessage();
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
+
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->message_id;
+
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
+          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
+          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
+          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
+          case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
+          case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
+          case T11::ID: static_cast<T11*>(pmsg)->~T11(); break;
+          case T12::ID: static_cast<T12*>(pmsg)->~T12(); break;
+          default: assert(false); break;
+        }
+  #endif
       }
 
       //********************************************
@@ -1068,7 +1193,29 @@ namespace etl
       //********************************************
       ~message_packet()
       {
-        static_cast<etl::imessage*>(data)->~imessage();
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
+
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->message_id;
+
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
+          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
+          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
+          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
+          case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
+          case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
+          case T11::ID: static_cast<T11*>(pmsg)->~T11(); break;
+          default: assert(false); break;
+        }
+  #endif
       }
 
       //********************************************
@@ -1216,7 +1363,28 @@ namespace etl
       //********************************************
       ~message_packet()
       {
-        static_cast<etl::imessage*>(data)->~imessage();
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
+
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->message_id;
+
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
+          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
+          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
+          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
+          case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
+          case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
+          default: assert(false); break;
+        }
+  #endif
       }
 
       //********************************************
@@ -1362,7 +1530,27 @@ namespace etl
       //********************************************
       ~message_packet()
       {
-        static_cast<etl::imessage*>(data)->~imessage();
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
+
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->message_id;
+
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
+          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
+          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
+          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
+          case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
+          default: assert(false); break;
+        }
+  #endif
       }
 
       //********************************************
@@ -1505,7 +1693,26 @@ namespace etl
       //********************************************
       ~message_packet()
       {
-        static_cast<etl::imessage*>(data)->~imessage();
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
+
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->message_id;
+
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
+          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
+          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
+          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
+          default: assert(false); break;
+        }
+  #endif
       }
 
       //********************************************
@@ -1646,7 +1853,25 @@ namespace etl
       //********************************************
       ~message_packet()
       {
-        static_cast<etl::imessage*>(data)->~imessage();
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
+
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->message_id;
+
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
+          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
+          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
+          default: assert(false); break;
+        }
+  #endif
       }
 
       //********************************************
@@ -1784,7 +2009,24 @@ namespace etl
       //********************************************
       ~message_packet()
       {
-        static_cast<etl::imessage*>(data)->~imessage();
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
+
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->message_id;
+
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
+          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
+          default: assert(false); break;
+        }
+  #endif
       }
 
       //********************************************
@@ -1920,7 +2162,23 @@ namespace etl
       //********************************************
       ~message_packet()
       {
-        static_cast<etl::imessage*>(data)->~imessage();
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
+
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->message_id;
+
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
+          default: assert(false); break;
+        }
+  #endif
       }
 
       //********************************************
@@ -2053,7 +2311,22 @@ namespace etl
       //********************************************
       ~message_packet()
       {
-        static_cast<etl::imessage*>(data)->~imessage();
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
+
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->message_id;
+
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          default: assert(false); break;
+        }
+  #endif
       }
 
       //********************************************
@@ -2184,7 +2457,21 @@ namespace etl
       //********************************************
       ~message_packet()
       {
-        static_cast<etl::imessage*>(data)->~imessage();
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
+
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->message_id;
+
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          default: assert(false); break;
+        }
+  #endif
       }
 
       //********************************************
@@ -2313,7 +2600,20 @@ namespace etl
       //********************************************
       ~message_packet()
       {
-        static_cast<etl::imessage*>(data)->~imessage();
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
+
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->message_id;
+
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          default: assert(false); break;
+        }
+  #endif
       }
 
       //********************************************
@@ -2440,7 +2740,19 @@ namespace etl
       //********************************************
       ~message_packet()
       {
-        static_cast<etl::imessage*>(data)->~imessage();
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
+
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->message_id;
+
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          default: assert(false); break;
+        }
+  #endif
       }
 
       //********************************************

@@ -67,6 +67,9 @@ SOFTWARE.
 
 //#define ETL_POLYMORPHIC_CONTAINERS
 
+//#define ETL_MESSAGES_ARE_VIRTUAL
+//#define ETL_POLYMORPHIC_MESSAGES
+
 #ifdef _MSC_VER
   #include "profiles/msvc_x86.h"
 #else
