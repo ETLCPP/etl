@@ -178,6 +178,13 @@ namespace etl
     }
 
     //*******************************************
+    /// Destructor.
+    //*******************************************
+    ~ifsm_state()
+    {
+    }
+
+    //*******************************************
     inline etl::fsm& get_fsm_context() const
     {
       return *p_context;
@@ -300,7 +307,7 @@ namespace etl
     /// Does this FSM accept the message id?
     /// Yes, it accepts everything!
     //*******************************************
-    bool accepts(etl::message_id_t id) const
+    bool accepts(etl::message_id_t) const
     {
       return true;
     }

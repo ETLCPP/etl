@@ -68,18 +68,24 @@ namespace etl
   {
   public:
 
-#ifdef ETL_MESSAGES_ARE_VIRTUAL
-    virtual ~imessage()
-    {
-    }
-#endif
-
     imessage(etl::message_id_t id) 
       : message_id(id)
     {
     }
 
     const etl::message_id_t message_id;
+
+#if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+  public:
+    virtual ~imessage()
+    {
+    }
+#else
+  protected:
+    ~imessage()
+    {
+    }
+#endif
   };
 
   //***************************************************************************
