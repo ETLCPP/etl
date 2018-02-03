@@ -64,6 +64,113 @@ namespace
   typedef std::map<int, DC>  Compare_DataDC;
   typedef std::map<int, NDC> Compare_DataNDC;
 
+  struct D1
+  {
+    D1(const std::string& a_)
+      : a(a_)
+    {
+    }
+
+    std::string a;
+  };
+
+  struct D2
+  {
+    D2(const std::string& a_, const std::string& b_)
+      : a(a_),
+        b(b_)
+    {
+    }
+
+    std::string a;
+    std::string b;
+  };
+
+  struct D3
+  {
+    D3(const std::string& a_, const std::string& b_, const std::string& c_)
+      : a(a_),
+        b(b_),
+        c(c_)
+    {
+    }
+
+    std::string a;
+    std::string b;
+    std::string c;
+  };
+
+  struct D4
+  {
+    D4(const std::string& a_, const std::string& b_, const std::string& c_, const std::string& d_)
+      : a(a_),
+        b(b_),
+        c(c_),
+        d(d_)
+    {
+    }
+
+    std::string a;
+    std::string b;
+    std::string c;
+    std::string d;
+  };
+
+  bool operator == (const D1& lhs, const D1& rhs)
+  {
+    return (lhs.a == rhs.a);
+  }
+
+  bool operator == (const D2& lhs, const D2& rhs)
+  {
+    return (lhs.a == rhs.a) && (lhs.b == rhs.b);
+  }
+
+  bool operator == (const D3& lhs, const D3& rhs)
+  {
+    return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c);
+  }
+
+  bool operator == (const D4& lhs, const D4& rhs)
+  {
+    return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
+  }
+
+  bool operator != (const D1& lhs, const D1& rhs)
+  {
+    return !(lhs == rhs);
+  }
+
+  bool operator != (const D2& lhs, const D2& rhs)
+  {
+    return !(lhs == rhs);
+  }
+
+  bool operator != (const D3& lhs, const D3& rhs)
+  {
+    return !(lhs == rhs);
+  }
+
+  bool operator != (const D4& lhs, const D4& rhs)
+  {
+    return !(lhs == rhs);
+  }
+
+  typedef std::pair<const int, D1> Element1;
+  typedef std::pair<const int, D2> Element2;
+  typedef std::pair<const int, D3> Element3;
+  typedef std::pair<const int, D4> Element4;
+
+  typedef etl::flat_map<int, D1, SIZE> Data1;
+  typedef etl::flat_map<int, D2, SIZE> Data2;
+  typedef etl::flat_map<int, D3, SIZE> Data3;
+  typedef etl::flat_map<int, D4, SIZE> Data4;
+
+  typedef std::map<int, D1> Compare1;
+  typedef std::map<int, D2> Compare2;
+  typedef std::map<int, D3> Compare3;
+  typedef std::map<int, D4> Compare4;
+
   //*************************************************************************
   template <typename T1, typename T2>
   bool Check_Equal(T1 begin1, T1 end1, T2 begin2)
@@ -164,24 +271,6 @@ namespace
     std::vector<ElementNDC> different_data;
 
     std::vector<ElementInt> int_data;
-
-    //*************************************************************************
-    template <typename T1, typename T2>
-    bool Check_Equal(T1 begin1, T1 end1, T2 begin2)
-    {
-      while (begin1 != end1)
-      {
-        if ((begin1->first != begin2->first) || (begin1->second != begin2->second))
-        {
-          return false;
-        }
-
-        ++begin1;
-        ++begin2;
-      }
-
-      return true;
-    }
 
     //*************************************************************************
     struct SetupFixture
@@ -604,6 +693,186 @@ namespace
       DataNDC data;
 
       CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::flat_map_full);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_value1)
+    {
+      Compare1 compare;
+      Data1    data;
+
+      std::pair<Data1::iterator, bool> result;
+
+      result = data.emplace(0, "0");
+      compare.emplace(0, D1("0"));
+
+      bool isEqual = Check_Equal(data.begin(),
+                                 data.end(),
+                                 compare.begin());
+
+      CHECK(isEqual);
+      CHECK(result.second);
+      CHECK(*result.first == Element1(0, D1("0")));
+
+      result = data.emplace(std::make_pair(2, D1("2")));
+      compare.emplace(std::make_pair(2, D1("2")));
+
+      isEqual = Check_Equal(data.begin(),
+                            data.end(),
+                            compare.begin());
+
+      CHECK(isEqual);
+      CHECK(result.second);
+      CHECK(*result.first == Element1(2, D1("2")));
+
+      result = data.emplace(1, "1");
+      compare.emplace(1, D1("1"));
+
+      isEqual = Check_Equal(data.begin(),
+                            data.end(),
+                            compare.begin());
+
+      CHECK(isEqual);
+      CHECK(result.second);
+      CHECK(*result.first == Element1(1, D1("1")));
+
+      result = data.emplace(1, D1("1"));
+      CHECK(!result.second);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_value2)
+    {
+      Compare2 compare;
+      Data2    data;
+
+      std::pair<Data2::iterator, bool> result;
+
+      result = data.emplace(0, "0", "1");
+      compare.emplace(0, D2("0", "1"));
+
+      bool isEqual = Check_Equal(data.begin(),
+                                 data.end(),
+                                 compare.begin());
+
+      CHECK(isEqual);
+      CHECK(result.second);
+      CHECK(*result.first == Element2(0, D2("0", "1")));
+
+      result = data.emplace(std::make_pair(2, D2("2", "3")));
+      compare.emplace(std::make_pair(2, D2("2", "3")));
+
+      isEqual = Check_Equal(data.begin(),
+                            data.end(),
+                            compare.begin());
+
+      CHECK(isEqual);
+      CHECK(result.second);
+      CHECK(*result.first == Element2(2, D2("2", "3")));
+
+      result = data.emplace(1, D2("1", "2"));
+      compare.emplace(1, D2("1", "2"));
+
+      isEqual = Check_Equal(data.begin(),
+                            data.end(),
+                            compare.begin());
+
+      CHECK(isEqual);
+      CHECK(result.second);
+      CHECK(*result.first == Element2(1, D2("1", "2")));
+
+      result = data.emplace(1, D2("1", "2"));
+      CHECK(!result.second);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_value3)
+    {
+      Compare3 compare;
+      Data3    data;
+
+      std::pair<Data3::iterator, bool> result;
+
+      result = data.emplace(0, "0", "1", "2");
+      compare.emplace(0, D3("0", "1", "2"));
+
+      bool isEqual = Check_Equal(data.begin(),
+                                 data.end(),
+                                 compare.begin());
+
+      CHECK(isEqual);
+      CHECK(result.second);
+      CHECK(*result.first == Element3(0, D3("0", "1", "2")));
+
+      result = data.emplace(std::make_pair(2, D3("2", "3", "4")));
+      compare.emplace(std::make_pair(2, D3("2", "3", "4")));
+
+      isEqual = Check_Equal(data.begin(),
+        data.end(),
+        compare.begin());
+
+      CHECK(isEqual);
+      CHECK(result.second);
+      CHECK(*result.first == Element3(2, D3("2", "3", "4")));
+
+      result = data.emplace(1, D3("1", "2", "3"));
+      compare.emplace(1, D3("1", "2", "3"));
+
+      isEqual = Check_Equal(data.begin(),
+        data.end(),
+        compare.begin());
+
+      CHECK(isEqual);
+      CHECK(result.second);
+      CHECK(*result.first == Element3(1, D3("1", "2", "3")));
+
+      result = data.emplace(1, D3("1", "2", "3"));
+      CHECK(!result.second);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_value4)
+    {
+      Compare4 compare;
+      Data4    data;
+
+      std::pair<Data4::iterator, bool> result;
+
+      result = data.emplace(0, "0", "1", "2", "3");
+      compare.emplace(0, D4("0", "1", "2", "3"));
+
+      bool isEqual = Check_Equal(data.begin(),
+                                 data.end(),
+                                 compare.begin());
+
+      CHECK(isEqual);
+      CHECK(result.second);
+      CHECK(*result.first == Element4(0, D4("0", "1", "2", "3")));
+
+      result = data.emplace(std::make_pair(2, D4("2", "3", "4", "5")));
+      compare.emplace(std::make_pair(2, D4("2", "3", "4", "5")));
+
+      isEqual = Check_Equal(data.begin(),
+                            data.end(),
+                            compare.begin());
+
+      CHECK(isEqual);
+      CHECK(result.second);
+      CHECK(*result.first == Element4(2, D4("2", "3", "4", "5")));
+
+      result = data.emplace(1, D4("1", "2", "3", "4"));
+      compare.emplace(1, D4("1", "2", "3", "4"));
+
+      isEqual = Check_Equal(data.begin(),
+                            data.end(),
+                            compare.begin());
+
+      CHECK(isEqual);
+      CHECK(result.second);
+      CHECK(*result.first == Element4(1, D4("1", "2", "3", "4")));
+
+      result = data.emplace(1, D4("1", "2", "3", "4"));
+      CHECK(!result.second);
     }
 
     //*************************************************************************
