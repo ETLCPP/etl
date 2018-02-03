@@ -461,6 +461,49 @@ namespace
       CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::set_full);
     }
 
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_value)
+    {
+      //Compare_Data compare_data;
+      //Data data;
+
+      //std::pair<Data::iterator, bool> data_result = data.emplace(0);
+      //std::pair<Compare_Data::iterator, bool> compare_result = compare_data.emplace(0);
+
+      //// Check that both return successful return results
+      //CHECK_EQUAL(*data_result.first, *compare_result.first);
+
+      //// Try adding a duplicate (should return iterator pointing to duplicate)
+      //data_result = data.insert(0);
+      //compare_result = compare_data.insert(0);
+
+      //// Check that both return successful return results
+      //CHECK_EQUAL(*data_result.first, *compare_result.first);
+
+      //// Check that elements in set are the same
+      //bool isEqual = Check_Equal(data.begin(),
+      //  data.end(),
+      //  compare_data.begin());
+      //CHECK(isEqual);
+
+      //data.insert(2);
+      //compare_data.insert(2);
+
+      //isEqual = Check_Equal(data.begin(),
+      //  data.end(),
+      //  compare_data.begin());
+
+      //CHECK(isEqual);
+
+      //data.insert(1);
+      //compare_data.insert(1);
+
+      //isEqual = Check_Equal(data.begin(),
+      //  data.end(),
+      //  compare_data.begin());
+
+      //CHECK(isEqual);
+    }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_equal_range)

@@ -90,6 +90,113 @@ namespace
 
   std::vector<ElementInt> int_data;
 
+  struct D1
+  {
+    D1(const std::string& a_)
+      : a(a_)
+    {
+    }
+
+    std::string a;
+  };
+
+  struct D2
+  {
+    D2(const std::string& a_, const std::string& b_)
+      : a(a_),
+        b(b_)
+    {
+    }
+
+    std::string a;
+    std::string b;
+  };
+
+  struct D3
+  {
+    D3(const std::string& a_, const std::string& b_, const std::string& c_)
+      : a(a_),
+        b(b_),
+        c(c_)
+    {
+    }
+
+    std::string a;
+    std::string b;
+    std::string c;
+  };
+
+  struct D4
+  {
+    D4(const std::string& a_, const std::string& b_, const std::string& c_, const std::string& d_)
+      : a(a_),
+        b(b_),
+        c(c_),
+        d(d_)
+    {
+    }
+
+    std::string a;
+    std::string b;
+    std::string c;
+    std::string d;
+  };
+
+  bool operator == (const D1& lhs, const D1& rhs)
+  {
+    return (lhs.a == rhs.a);
+  }
+
+  bool operator == (const D2& lhs, const D2& rhs)
+  {
+    return (lhs.a == rhs.a) && (lhs.b == rhs.b);
+  }
+
+  bool operator == (const D3& lhs, const D3& rhs)
+  {
+    return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c);
+  }
+
+  bool operator == (const D4& lhs, const D4& rhs)
+  {
+    return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
+  }
+
+  bool operator != (const D1& lhs, const D1& rhs)
+  {
+    return !(lhs == rhs);
+  }
+
+  bool operator != (const D2& lhs, const D2& rhs)
+  {
+    return !(lhs == rhs);
+  }
+
+  bool operator != (const D3& lhs, const D3& rhs)
+  {
+    return !(lhs == rhs);
+  }
+
+  bool operator != (const D4& lhs, const D4& rhs)
+  {
+    return !(lhs == rhs);
+  }
+
+  typedef std::pair<const int, D1> Element1;
+  typedef std::pair<const int, D2> Element2;
+  typedef std::pair<const int, D3> Element3;
+  typedef std::pair<const int, D4> Element4;
+
+  typedef etl::flat_multimap<int, D1, SIZE> Data1;
+  typedef etl::flat_multimap<int, D2, SIZE> Data2;
+  typedef etl::flat_multimap<int, D3, SIZE> Data3;
+  typedef etl::flat_multimap<int, D4, SIZE> Data4;
+
+  typedef std::multimap<int, D1> Compare1;
+  typedef std::multimap<int, D2> Compare2;
+  typedef std::multimap<int, D3> Compare3;
+  typedef std::multimap<int, D4> Compare4;
+
   //*************************************************************************
   template <typename T1, typename T2>
   bool Check_Equal(T1 begin1, T1 end1, T2 begin2)
@@ -434,6 +541,142 @@ namespace
       CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::flat_multimap_full);
 
       CHECK(std::is_sorted(data.begin(), data.end()));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_value1)
+    {
+      Compare1 compare;
+      Data1 data;
+
+      data.emplace(0, "0");
+      compare.emplace(0, D1("0"));
+
+      data.emplace(1, D1("1"));
+      compare.emplace(1, D1("1"));
+
+      data.emplace(std::make_pair(2, D1("2")));
+      compare.emplace(std::make_pair(2, D1("2")));
+
+      // Do it again.
+      data.emplace(0, "0");
+      compare.emplace(0, D1("0"));
+
+      data.emplace(1, D1("1"));
+      compare.emplace(1, D1("1"));
+
+      data.emplace(std::make_pair(2, D1("2")));
+      compare.emplace(std::make_pair(2, D1("2")));
+
+      CHECK_EQUAL(compare.size(), data.size());
+
+      bool isEqual = Check_Equal(data.begin(),
+                                 data.end(),
+                                 compare.begin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_value2)
+    {
+      Compare2 compare;
+      Data2 data;
+
+      data.emplace(0, "0", "1");
+      compare.emplace(0, D2("0", "1"));
+
+      data.emplace(1, D2("1", "2"));
+      compare.emplace(1, D2("1", "2"));
+
+      data.emplace(std::make_pair(2, D2("2", "3")));
+      compare.emplace(std::make_pair(2, D2("2", "3")));
+
+      // Do it again.
+      data.emplace(0, "0", "1");
+      compare.emplace(0, D2("0", "1"));
+
+      data.emplace(1, D2("1", "2"));
+      compare.emplace(1, D2("1", "2"));
+
+      data.emplace(std::make_pair(2, D2("2", "3")));
+      compare.emplace(std::make_pair(2, D2("2", "3")));
+
+      CHECK_EQUAL(compare.size(), data.size());
+
+      bool isEqual = Check_Equal(data.begin(),
+                                 data.end(),
+                                 compare.begin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_value3)
+    {
+      Compare3 compare;
+      Data3 data;
+
+      data.emplace(0, "0", "1", "2");
+      compare.emplace(0, D3("0", "1", "2"));
+
+      data.emplace(1, D3("1", "2", "3"));
+      compare.emplace(1, D3("1", "2", "3"));
+
+      data.emplace(std::make_pair(2, D3("2", "3", "4")));
+      compare.emplace(std::make_pair(2, D3("2", "3", "4")));
+
+      // Do it again.
+      data.emplace(0, "0", "1", "2");
+      compare.emplace(0, D3("0", "1", "2"));
+
+      data.emplace(1, D3("1", "2", "3"));
+      compare.emplace(1, D3("1", "2", "3"));
+
+      data.emplace(std::make_pair(2, D3("2", "3", "4")));
+      compare.emplace(std::make_pair(2, D3("2", "3", "4")));
+
+      CHECK_EQUAL(compare.size(), data.size());
+
+      bool isEqual = Check_Equal(data.begin(),
+                                 data.end(),
+                                 compare.begin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_value4)
+    {
+      Compare4 compare;
+      Data4 data;
+
+      data.emplace(0, "0", "1", "2", "3");
+      compare.emplace(0, D4("0", "1", "2", "3"));
+
+      data.emplace(1, D4("1", "2", "3", "4"));
+      compare.emplace(1, D4("1", "2", "3", "4"));
+
+      data.emplace(std::make_pair(2, D4("2", "3", "4", "5")));
+      compare.emplace(std::make_pair(2, D4("2", "3", "4", "5")));
+
+      // Do it again.
+      data.emplace(0, "0", "1", "2", "3");
+      compare.emplace(0, D4("0", "1", "2", "3"));
+
+      data.emplace(1, D4("1", "2", "3", "4"));
+      compare.emplace(1, D4("1", "2", "3", "4"));
+
+      data.emplace(std::make_pair(2, D4("2", "3", "4", "5")));
+      compare.emplace(std::make_pair(2, D4("2", "3", "4", "5")));
+
+      CHECK_EQUAL(compare.size(), data.size());
+
+      bool isEqual = Check_Equal(data.begin(),
+                                 data.end(),
+                                 compare.begin());
+
+      CHECK(isEqual);
     }
 
     //*************************************************************************

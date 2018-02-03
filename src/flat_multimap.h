@@ -264,7 +264,7 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the flast_multi.
-    /// If asserts or exceptions are enabled, emits flat_map_full if the flat_map is already full.
+    /// If asserts or exceptions are enabled, emits flat_multimap_full if the flat_map is already full.
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -287,6 +287,110 @@ namespace etl
       {
         insert(*first++);
       }
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the map.
+    //*************************************************************************
+    std::pair<iterator, bool> emplace(const value_type& value)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(flat_multimap_full));
+
+      // Create it.
+      value_type* pvalue = storage.allocate<value_type>();
+      ::new (pvalue) value_type(value);
+      iterator i_element = lower_bound(value.first);
+      ++construct_count;
+
+      return refmap_t::insert_at(i_element, *pvalue);
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the map.
+    //*************************************************************************
+    std::pair<iterator, bool> emplace(const key_type& key, const mapped_type& value)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(flat_multimap_full));
+
+      // Create it.
+      value_type* pvalue = storage.allocate<value_type>();
+      ::new (pvalue) value_type(key, value);
+      iterator i_element = lower_bound(key);
+      ++construct_count;
+
+      return refmap_t::insert_at(i_element, *pvalue);
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the map.
+    //*************************************************************************
+    template <typename T1>
+    std::pair<iterator, bool> emplace(const key_type& key, const T1& value1)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(flat_multimap_full));
+
+      // Create it.
+      value_type* pvalue = storage.allocate<value_type>();
+      ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
+      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1);
+      iterator i_element = lower_bound(key);
+      ++construct_count;
+
+      return refmap_t::insert_at(i_element, *pvalue);
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the map.
+    //*************************************************************************
+    template <typename T1, typename T2>
+    std::pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(flat_multimap_full));
+
+      // Create it.
+      value_type* pvalue = storage.allocate<value_type>();
+      ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
+      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1, value2);
+      iterator i_element = lower_bound(key);
+      ++construct_count;
+
+      return refmap_t::insert_at(i_element, *pvalue);
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the map.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3>
+    std::pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(flat_multimap_full));
+
+      // Create it.
+      value_type* pvalue = storage.allocate<value_type>();
+      ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
+      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1, value2, value3);
+      iterator i_element = lower_bound(key);
+      ++construct_count;
+
+      return refmap_t::insert_at(i_element, *pvalue);
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the map.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    std::pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(flat_multimap_full));
+
+      // Create it.
+      value_type* pvalue = storage.allocate<value_type>();
+      ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
+      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1, value2, value3, value4);
+      iterator i_element = lower_bound(key);
+      ++construct_count;
+
+      return refmap_t::insert_at(i_element, *pvalue);
     }
 
     //*********************************************************************
