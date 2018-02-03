@@ -336,6 +336,194 @@ namespace etl
       }
     }
 
+    //*************************************************************************
+    /// Emplaces a value to the map.
+    //*************************************************************************
+    std::pair<iterator, bool> emplace(const value_type& value)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
+
+      // Create it.
+      value_type* pvalue = storage.allocate<value_type>();
+      ::new (pvalue) value_type(value);
+
+      iterator i_element = lower_bound(value.first);
+
+      std::pair<iterator, bool> result(i_element, false);
+
+      // Doesn't already exist?
+      if ((i_element == end() || (i_element->first != value.first)))
+      {
+        ++construct_count;
+        result = refmap_t::insert_at(i_element, *pvalue);
+      }
+      else
+      {
+        pvalue->~value_type();
+        storage.release(pvalue);
+      }
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the map.
+    //*************************************************************************
+    std::pair<iterator, bool> emplace(const key_type& key, const mapped_type& value)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
+
+      // Create it.
+      value_type* pvalue = storage.allocate<value_type>();
+      ::new (pvalue) value_type(key, value);
+
+      iterator i_element = lower_bound(key);
+
+      std::pair<iterator, bool> result(i_element, false);
+
+      // Doesn't already exist?
+      if ((i_element == end() || (i_element->first != key)))
+      {
+        ++construct_count;
+        result = refmap_t::insert_at(i_element, *pvalue);
+      }
+      else
+      {
+        pvalue->~value_type();
+        storage.release(pvalue);
+      }
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the map.
+    //*************************************************************************
+    template <typename T1>
+    std::pair<iterator, bool> emplace(const key_type& key, const T1& value1)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
+
+      // Create it.
+      value_type* pvalue = storage.allocate<value_type>();
+      ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
+      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1);
+
+      iterator i_element = lower_bound(key);
+
+      std::pair<iterator, bool> result(i_element, false);
+
+      // Doesn't already exist?
+      if ((i_element == end() || (i_element->first != key)))
+      {
+        ++construct_count;
+        result = refmap_t::insert_at(i_element, *pvalue);
+      }
+      else
+      {
+        pvalue->~value_type();
+        storage.release(pvalue);
+      }
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the map.
+    //*************************************************************************
+    template <typename T1, typename T2>
+    std::pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
+
+      // Create it.
+      value_type* pvalue = storage.allocate<value_type>();
+      ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
+      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1, value2);
+
+      iterator i_element = lower_bound(key);
+
+      std::pair<iterator, bool> result(i_element, false);
+
+      // Doesn't already exist?
+      if ((i_element == end() || (i_element->first != key)))
+      {
+        ++construct_count;
+        result = refmap_t::insert_at(i_element, *pvalue);
+      }
+      else
+      {
+        pvalue->~value_type();
+        storage.release(pvalue);
+      }
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the map.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3>
+    std::pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
+
+      // Create it.
+      value_type* pvalue = storage.allocate<value_type>();
+      ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
+      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1, value2, value3);
+
+      iterator i_element = lower_bound(key);
+
+      std::pair<iterator, bool> result(i_element, false);
+
+      // Doesn't already exist?
+      if ((i_element == end() || (i_element->first != key)))
+      {
+        ++construct_count;
+        result = refmap_t::insert_at(i_element, *pvalue);
+      }
+      else
+      {
+        pvalue->~value_type();
+        storage.release(pvalue);
+      }
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the map.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    std::pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
+
+      // Create it.
+      value_type* pvalue = storage.allocate<value_type>();
+      ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
+      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1, value2, value3, value4);
+
+      iterator i_element = lower_bound(key);
+
+      std::pair<iterator, bool> result(i_element, false);
+
+      // Doesn't already exist?
+      if ((i_element == end() || (i_element->first != key)))
+      {
+        ++construct_count;
+        result = refmap_t::insert_at(i_element, *pvalue);
+      }
+      else
+      {
+        pvalue->~value_type();
+        storage.release(pvalue);
+      }
+
+      return result;
+    }
+
     //*********************************************************************
     /// Erases an element.
     ///\param key The key to erase.
