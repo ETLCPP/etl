@@ -271,16 +271,7 @@ namespace etl
     template <typename T1>
     std::pair<iterator, bool> emplace(parameter_t value)
     {
-      ETL_ASSERT(!full(), ETL_ERROR(flat_multiset_full));
-
-      // Create it.
-      value_type* pvalue = storage.allocate<value_type>();
-      ::new (pvalue) value_type(value);
-
-      iterator i_element = lower_bound(*pvalue);
-
-      ++construct_count;
-      return std::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
+      return insert(value);
     }
 
     //*************************************************************************

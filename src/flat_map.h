@@ -341,29 +341,7 @@ namespace etl
     //*************************************************************************
     std::pair<iterator, bool> emplace(const value_type& value)
     {
-      ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
-
-      // Create it.
-      value_type* pvalue = storage.allocate<value_type>();
-      ::new (pvalue) value_type(value);
-
-      iterator i_element = lower_bound(value.first);
-
-      std::pair<iterator, bool> result(i_element, false);
-
-      // Doesn't already exist?
-      if ((i_element == end() || (i_element->first != value.first)))
-      {
-        ++construct_count;
-        result = refmap_t::insert_at(i_element, *pvalue);
-      }
-      else
-      {
-        pvalue->~value_type();
-        storage.release(pvalue);
-      }
-
-      return result;
+      return insert(value);
     }
 
     //*************************************************************************
@@ -375,7 +353,8 @@ namespace etl
 
       // Create it.
       value_type* pvalue = storage.allocate<value_type>();
-      ::new (pvalue) value_type(key, value);
+      ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
+      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value);
 
       iterator i_element = lower_bound(key);
 
