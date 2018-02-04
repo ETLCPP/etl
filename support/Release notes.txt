@@ -1,4 +1,8 @@
 ===============================================================================
+10.16.1
+Improved performance of emplace for value_type parameters.
+
+===============================================================================
 10.16.0
 Added emplace member functions to flat_map, flat_multimap, flat_set and flat_multiset
 

@@ -274,31 +274,7 @@ namespace etl
     //*************************************************************************
     std::pair<iterator, bool> emplace(parameter_t value)
     {
-      ETL_ASSERT(!full(), ETL_ERROR(flat_set_full));
-
-      std::pair<iterator, bool> result;
-
-      // Create it.
-      value_type* pvalue = storage.allocate<value_type>();
-      ::new (pvalue) value_type(value);
-
-      iterator i_element = lower_bound(*pvalue);
-
-      // Doesn't already exist?
-      if ((i_element == end() || (*i_element != *pvalue)))
-      {
-        ++construct_count;
-        result = refset_t::insert_at(i_element, *pvalue);
-      }
-      else
-      {
-        // Destroy it.
-        pvalue->~value_type();
-        storage.release(pvalue);
-        result = std::pair<iterator, bool>(end(), false);
-      }
-
-      return result;
+      return insert(value);
     }
 
     //*************************************************************************
