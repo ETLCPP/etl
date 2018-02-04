@@ -172,26 +172,6 @@ namespace
     return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
   }
 
-  bool operator != (const D1& lhs, const D1& rhs)
-  {
-    return !(lhs == rhs);
-  }
-
-  bool operator != (const D2& lhs, const D2& rhs)
-  {
-    return !(lhs == rhs);
-  }
-
-  bool operator != (const D3& lhs, const D3& rhs)
-  {
-    return !(lhs == rhs);
-  }
-
-  bool operator != (const D4& lhs, const D4& rhs)
-  {
-    return !(lhs == rhs);
-  }
-
   std::ostream& operator <<(std::ostream& os, const D1& d1)
   {
     os << d1.a;
@@ -802,7 +782,7 @@ namespace
       variant.emplace<D2>("1", "2");
       CHECK(variant.is_type<D2>());
       CHECK_EQUAL(D2("1", "2"), variant.get<D2>());
-      
+
       variant.emplace<D3>("1", "2", "3");
       CHECK(variant.is_type<D3>());
       CHECK_EQUAL(D3("1", "2", "3"), variant.get<D3>());
