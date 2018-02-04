@@ -112,6 +112,18 @@ namespace etl
             typename T8 = __private_variant__::no_type<8> >
   class variant
   {
+  public:
+
+    //***************************************************************************
+    /// The type used for ids.
+    //***************************************************************************
+    typedef uint_least8_t type_id_t;
+
+    //***************************************************************************
+    /// The id a unsupported types.
+    //***************************************************************************
+    static const type_id_t UNSUPPORTED_TYPE_ID = integral_limits<type_id_t>::max;
+
   private:
 
     // All types of variant are friends.
@@ -132,16 +144,6 @@ namespace etl
     /// The largest alignment.
     //***************************************************************************
     static const size_t ALIGNMENT = etl::largest_alignment<T1, T2, T3, T4, T5, T6, T7, T8>::value;
-
-    //***************************************************************************
-    /// The type used for ids.
-    //***************************************************************************
-    typedef uint_least8_t type_id_t;
-
-    //***************************************************************************
-    /// The id a unsupported types.
-    //***************************************************************************
-    static const type_id_t UNSUPPORTED_TYPE_ID = integral_limits<type_id_t>::max;
 
     //***************************************************************************
     /// Short form of no_type placeholders.
@@ -701,6 +703,84 @@ namespace etl
       type_id = other.type_id;
     }
 
+#if !ETL_CPP11_SUPPORTED
+    //***************************************************************************
+    /// Emplace with one constructor parameter.
+    //***************************************************************************
+    template <typename T, typename TP1>
+    T& emplace(const TP1& value1)
+    {
+      STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+
+      destruct_current();
+      ::new (static_cast<T*>(data)) T(value1);
+      type_id = Type_Id_Lookup<T>::type_id;
+
+      return *static_cast<T*>(data);
+    }
+
+    //***************************************************************************
+    /// Emplace with two constructor parameters.
+    //***************************************************************************
+    template <typename T, typename TP1, typename TP2>
+    T& emplace(const TP1& value1, const TP2& value2)
+    {
+      STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+
+      destruct_current();
+      ::new (static_cast<T*>(data)) T(value1, value2);
+      type_id = Type_Id_Lookup<T>::type_id;
+
+      return *static_cast<T*>(data);
+    }
+
+    //***************************************************************************
+    /// Emplace with three constructor parameters.
+    //***************************************************************************
+    template <typename T, typename TP1, typename TP2, typename TP3>
+    T& emplace(const TP1& value1, const TP2& value2, const TP3& value3)
+    {
+      STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+
+      destruct_current();
+      ::new (static_cast<T*>(data)) T(value1, value2, value3);
+      type_id = Type_Id_Lookup<T>::type_id;
+
+      return *static_cast<T*>(data);
+    }
+
+    //***************************************************************************
+    /// Emplace with four constructor parameters.
+    //***************************************************************************
+    template <typename T, typename TP1, typename TP2, typename TP3, typename TP4>
+    T& emplace(const TP1& value1, const TP2& value2, const TP3& value3, const TP4& value4)
+    {
+      STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+
+      destruct_current();
+      ::new (static_cast<T*>(data)) T(value1, value2, value3, value4);
+      type_id = Type_Id_Lookup<T>::type_id;
+
+      return *static_cast<T*>(data);
+    }
+
+#else
+    //*************************************************************************
+    /// Emplace with variadic constructor parameters.
+    //*************************************************************************
+    template <typename T, typename... Args>
+    T& emplace(Args&&... args)
+    {
+      STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+
+      destruct_current();
+      ::new (static_cast<T*>(data)) T(std::forward<Args>(args)...);
+      type_id = Type_Id_Lookup<T>::type_id;
+
+      return *static_cast<T*>(data);
+    }
+#endif
+
     //***************************************************************************
     /// Assignment operator for T1 type.
     ///\param value The value to assign.
@@ -819,6 +899,14 @@ namespace etl
     bool is_type() const
     {
       return type_id == Type_Id_Lookup<T>::type_id;
+    }
+
+    //***************************************************************************
+    /// Gets the index of the type currently stored or UNSUPPORTED_TYPE_ID
+    //***************************************************************************
+    ETL_CONSTEXPR size_t index() const
+    {
+      return type_id;
     }
 
     //***************************************************************************

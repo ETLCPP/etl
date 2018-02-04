@@ -34,6 +34,7 @@ SOFTWARE.
 #include <array>
 #include <vector>
 #include <algorithm>
+#include <string>
 
 namespace
 {
@@ -98,6 +99,128 @@ namespace
 
   // This line should compile with no errors.
   test_variant_max_types variant_max;
+
+  struct D1
+  {
+    D1(const std::string& a_)
+      : a(a_)
+    {
+    }
+
+    std::string a;
+  };
+
+  struct D2
+  {
+    D2(const std::string& a_, const std::string& b_)
+      : a(a_),
+      b(b_)
+    {
+    }
+
+    std::string a;
+    std::string b;
+  };
+
+  struct D3
+  {
+    D3(const std::string& a_, const std::string& b_, const std::string& c_)
+      : a(a_),
+      b(b_),
+      c(c_)
+    {
+    }
+
+    std::string a;
+    std::string b;
+    std::string c;
+  };
+
+  struct D4
+  {
+    D4(const std::string& a_, const std::string& b_, const std::string& c_, const std::string& d_)
+      : a(a_),
+      b(b_),
+      c(c_),
+      d(d_)
+    {
+    }
+
+    std::string a;
+    std::string b;
+    std::string c;
+    std::string d;
+  };
+
+  bool operator == (const D1& lhs, const D1& rhs)
+  {
+    return (lhs.a == rhs.a);
+  }
+
+  bool operator == (const D2& lhs, const D2& rhs)
+  {
+    return (lhs.a == rhs.a) && (lhs.b == rhs.b);
+  }
+
+  bool operator == (const D3& lhs, const D3& rhs)
+  {
+    return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c);
+  }
+
+  bool operator == (const D4& lhs, const D4& rhs)
+  {
+    return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
+  }
+
+  bool operator != (const D1& lhs, const D1& rhs)
+  {
+    return !(lhs == rhs);
+  }
+
+  bool operator != (const D2& lhs, const D2& rhs)
+  {
+    return !(lhs == rhs);
+  }
+
+  bool operator != (const D3& lhs, const D3& rhs)
+  {
+    return !(lhs == rhs);
+  }
+
+  bool operator != (const D4& lhs, const D4& rhs)
+  {
+    return !(lhs == rhs);
+  }
+
+  std::ostream& operator <<(std::ostream& os, const D1& d1)
+  {
+    os << d1.a;
+
+    return os;
+  }
+
+  std::ostream& operator <<(std::ostream& os, const D2& d2)
+  {
+    os << d2.a << " " << d2.b;
+
+    return os;
+  }
+
+  std::ostream& operator <<(std::ostream& os, const D3& d3)
+  {
+    os << d3.a << " " << d3.b << " " << d3.c;
+
+    return os;
+  }
+
+  std::ostream& operator <<(std::ostream& os, const D4& d4)
+  {
+    os << d4.a << " " << d4.b << " " << d4.c << " " << d4.d;
+
+    return os;
+  }
+
+  typedef etl::variant<D1, D2, D3, D4> test_variant_emplace;
 
   SUITE(test_variant)
   {
@@ -665,6 +788,28 @@ namespace
       variant = derived_2();
       variant.upcast<base>().set();
       CHECK_EQUAL(2, variant.get<derived_2>().value);
+    }
+
+    //*************************************************************************
+    TEST(TestEmplace)
+    {
+      test_variant_emplace variant;
+
+      variant.emplace<D1>("1");
+      CHECK(variant.is_type<D1>());
+      CHECK_EQUAL(D1("1"), variant.get<D1>());
+
+      variant.emplace<D2>("1", "2");
+      CHECK(variant.is_type<D2>());
+      CHECK_EQUAL(D2("1", "2"), variant.get<D2>());
+      
+      variant.emplace<D3>("1", "2", "3");
+      CHECK(variant.is_type<D3>());
+      CHECK_EQUAL(D3("1", "2", "3"), variant.get<D3>());
+
+      variant.emplace<D4>("1", "2", "3", "4");
+      CHECK(variant.is_type<D4>());
+      CHECK_EQUAL(D4("1", "2", "3", "4"), variant.get<D4>());
     }
   };
 }
