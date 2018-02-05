@@ -31,18 +31,18 @@ SOFTWARE.
 
 #include <stdint.h>
 
+extern uint32_t timer_semaphore;
+
 #if defined(_MSC_VER)
   #include <Windows.h>
 
-  #define ECL_TIMER_TIMER_SEMAPHORE       uint32_t
-  #define ECL_TIMER_DISABLE_PROCESSING(x) InterlockedIncrement((volatile long*)&x)
-  #define ECL_TIMER_ENABLE_PROCESSING(x)  InterlockedDecrement((volatile long*)&x)
-  #define ECL_TIMER_PROCESSING_ENABLED(x) (InterlockedAdd((volatile long*)&x, 0) == 0)
+  #define ECL_TIMER_DISABLE_PROCESSING InterlockedIncrement((volatile long*)&timer_semaphore)
+  #define ECL_TIMER_ENABLE_PROCESSING  InterlockedDecrement((volatile long*)&timer_semaphore)
+  #define ECL_TIMER_PROCESSING_ENABLED (InterlockedAdd((volatile long*)&timer_semaphore, 0) == 0)
 #else
-  #define ECL_TIMER_TIMER_SEMAPHORE       uint32_t
-  #define ECL_TIMER_DISABLE_PROCESSING(x) __sync_fetch_and_add(&x, 1)
-  #define ECL_TIMER_ENABLE_PROCESSING(x)  __sync_fetch_and_sub(&x, 1)
-  #define ECL_TIMER_PROCESSING_ENABLED(x) (__sync_fetch_and_add(&x, 0) == 0)
+  #define ECL_TIMER_DISABLE_PROCESSING __sync_fetch_and_add(&timer_semaphore, 1)
+  #define ECL_TIMER_ENABLE_PROCESSING  __sync_fetch_and_sub(&timer_semaphore, 1)
+  #define ECL_TIMER_PROCESSING_ENABLED (__sync_fetch_and_add(&timer_semaphore, 0) == 0)
 #endif
 
 #endif

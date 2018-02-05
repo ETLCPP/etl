@@ -261,7 +261,6 @@ struct ecl_time_config
   struct ecl_timer_config* ptimers;
   uint_least8_t max_timers;
   volatile ecl_timer_enable_t enabled;
-  ECL_TIMER_TIMER_SEMAPHORE process_semaphore;
   volatile uint_least8_t registered_timers;
 };
 
@@ -274,7 +273,6 @@ void ecl_timer_init(struct ecl_timer_config* ptimers_, uint_least8_t max_timers_
   ecl.ptimers           = ptimers_;
   ecl.max_timers        = max_timers_;
   ecl.enabled           = 0;
-  ecl.process_semaphore = 0;
   ecl.registered_timers = 0;
 
   int i;
@@ -298,7 +296,7 @@ ecl_timer_id_t ecl_timer_register(void             (*pcallback_)(),
 
   ecl_timer_id_t id = ECL_TIMER_NO_TIMER;
 
-  ECL_TIMER_DISABLE_PROCESSING(ecl.process_semaphore);
+  ECL_TIMER_DISABLE_PROCESSING;
 
   int is_space = (ecl.registered_timers < ecl.max_timers);
 
@@ -321,7 +319,7 @@ ecl_timer_id_t ecl_timer_register(void             (*pcallback_)(),
     }
   }
 
-  ECL_TIMER_ENABLE_PROCESSING(ecl.process_semaphore);
+  ECL_TIMER_ENABLE_PROCESSING;
 
   return id;
 }
@@ -337,7 +335,7 @@ ecl_timer_result_t ecl_timer_unregister(ecl_timer_id_t id_)
 
   if (id_ != ECL_TIMER_NO_TIMER)
   {
-    ECL_TIMER_DISABLE_PROCESSING(ecl.process_semaphore);
+    ECL_TIMER_DISABLE_PROCESSING;
 
     struct ecl_timer_config* ptimer = &ecl.ptimers[id_];
 
@@ -355,7 +353,7 @@ ecl_timer_result_t ecl_timer_unregister(ecl_timer_id_t id_)
       }
     }
 
-    ECL_TIMER_ENABLE_PROCESSING(ecl.process_semaphore);
+    ECL_TIMER_ENABLE_PROCESSING;
   }
 
   return result;
@@ -385,7 +383,7 @@ ecl_timer_result_t ecl_timer_is_running()
 //*******************************************
 void ecl_timer_clear()
 { 
-  ECL_TIMER_DISABLE_PROCESSING(ecl.process_semaphore);
+  ECL_TIMER_DISABLE_PROCESSING;
 
   ecl_timer_list_clear();
 
@@ -397,7 +395,7 @@ void ecl_timer_clear()
 
   ecl.registered_timers = 0;
 
-  ECL_TIMER_ENABLE_PROCESSING(ecl.process_semaphore);
+  ECL_TIMER_ENABLE_PROCESSING;
 }
 
 //*******************************************
@@ -411,7 +409,7 @@ ecl_timer_result_t ecl_timer_tick(uint32_t count)
   
   if (ecl.enabled)
   {
-    if (ECL_TIMER_PROCESSING_ENABLED(ecl.process_semaphore))
+    if (ECL_TIMER_PROCESSING_ENABLED)
     {
       // We have something to do?
       int has_active = !ecl_timer_list_empty();
@@ -463,8 +461,6 @@ ecl_timer_result_t ecl_timer_start(ecl_timer_id_t id_, ecl_timer_start_t immedia
 {
   assert(ecl.ptimers != 0);
   
-  ECL_TIMER_DISABLE_PROCESSING(ecl.process_semaphore);
-
   ecl_timer_result_t result = ECL_TIMER_FAIL;
 
   // Valid timer id?
@@ -478,6 +474,7 @@ ecl_timer_result_t ecl_timer_start(ecl_timer_id_t id_, ecl_timer_start_t immedia
       // Has a valid period.
       if (ptimer->period != ECL_TIMER_INACTIVE)
       {
+        ECL_TIMER_DISABLE_PROCESSING;
         if (ecl_timer_is_active(ptimer))
         {
           ecl_timer_list_remove(ptimer->id, 0);
@@ -485,13 +482,12 @@ ecl_timer_result_t ecl_timer_start(ecl_timer_id_t id_, ecl_timer_start_t immedia
 
         ptimer->delta = immediate_ ? 0 : ptimer->period;
         ecl_timer_list_insert(ptimer->id);
+        ECL_TIMER_ENABLE_PROCESSING;
 
         result = ECL_TIMER_PASS;
       }
     }
   }
-
-  ECL_TIMER_ENABLE_PROCESSING(ecl.process_semaphore);
 
   return result;
 }
@@ -503,8 +499,6 @@ ecl_timer_result_t ecl_timer_stop(ecl_timer_id_t id_)
 {
   assert(ecl.ptimers != 0);
   
-  ECL_TIMER_DISABLE_PROCESSING(ecl.process_semaphore);
-
   ecl_timer_result_t result = ECL_TIMER_FAIL;
 
   // Valid timer id?
@@ -517,13 +511,13 @@ ecl_timer_result_t ecl_timer_stop(ecl_timer_id_t id_)
     {
       if (ecl_timer_is_active(ptimer))
       {
+        ECL_TIMER_DISABLE_PROCESSING;
         ecl_timer_list_remove(ptimer->id, 0);
+        ECL_TIMER_ENABLE_PROCESSING;
         result = ECL_TIMER_PASS;
       }
     }
   }
-
-  ECL_TIMER_ENABLE_PROCESSING(ecl.process_semaphore);
 
   return result;
 }
