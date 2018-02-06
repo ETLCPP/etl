@@ -1,7 +1,11 @@
 ===============================================================================
+10.18.1
+Reduced disable/enable time during function calls.
+
+===============================================================================
 10.18.0
 Improvements to message and callback timer frameworks.
-Reduced disable/enable time dur function calls.
+Reduced disable/enable time during function calls.
 Added the option to use either atomic semaphores or interrupt enables to control access.
 
 ===============================================================================
