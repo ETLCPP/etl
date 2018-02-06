@@ -350,8 +350,6 @@ namespace etl
     {
       etl::timer::id::type id = etl::timer::id::NO_TIMER;
 
-      ETL_DISABLE_TIMER_UPDATES;
-
       bool is_space = (registered_timers < MAX_TIMERS);
 
       if (is_space)
@@ -372,8 +370,6 @@ namespace etl
         }
       }
 
-      ETL_ENABLE_TIMER_UPDATES;
-
       return id;
     }
 
@@ -385,8 +381,6 @@ namespace etl
                                         bool                  repeating_)
     {
       etl::timer::id::type id = etl::timer::id::NO_TIMER;
-
-      ETL_DISABLE_TIMER_UPDATES;
 
       bool is_space = (registered_timers < MAX_TIMERS);
 
@@ -408,8 +402,6 @@ namespace etl
         }
       }
 
-      ETL_ENABLE_TIMER_UPDATES;
-
       return id;
     }
 
@@ -422,15 +414,15 @@ namespace etl
 
       if (id_ != etl::timer::id::NO_TIMER)
       {
-        ETL_DISABLE_TIMER_UPDATES;
-
         etl::callback_timer_data& timer = timer_array[id_];
 
         if (timer.id != etl::timer::id::NO_TIMER)
         {
           if (timer.is_active())
           {
+            ETL_DISABLE_TIMER_UPDATES;
             active_list.remove(timer.id, false);
+            ETL_ENABLE_TIMER_UPDATES;
 
             // Reset in-place.
             new (&timer) callback_timer_data();
@@ -439,8 +431,6 @@ namespace etl
             result = true;
           }
         }
-
-        ETL_ENABLE_TIMER_UPDATES;
       }
 
       return result;
@@ -468,8 +458,8 @@ namespace etl
     void clear()
     {
       ETL_DISABLE_TIMER_UPDATES;
-
       active_list.clear();
+      ETL_ENABLE_TIMER_UPDATES;
 
       for (int i = 0; i < MAX_TIMERS; ++i)
       {
@@ -477,8 +467,6 @@ namespace etl
       }
 
       registered_timers = 0;
-
-      ETL_ENABLE_TIMER_UPDATES;
     }
 
     //*******************************************
