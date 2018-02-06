@@ -33,6 +33,8 @@ SOFTWARE.
 
 extern "C"
 {
+  uint32_t timer_semaphore;
+
   #include "ecl_timer.h"
 }
 

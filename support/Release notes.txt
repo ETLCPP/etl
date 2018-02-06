@@ -1,4 +1,10 @@
 ===============================================================================
+10.18.0
+Improvements to message and callback timer frameworks.
+Reduced disable/enable time dur function calls.
+Added the option to use either atomic semaphores or interrupt enables to control access.
+
+===============================================================================
 10.17.0
 Added emplace functions to etl::variant.
 

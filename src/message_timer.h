@@ -45,6 +45,30 @@ SOFTWARE.
 #undef ETL_FILE
 #define ETL_FILE "41"
 
+#if !defined(ETL_MESSAGE_TIMER_USE_ATOMIC_LOCK) && !defined(ETL_MESSAGE_TIMER_USE_INTERRUPT_LOCK)
+  #error ETL_MESSAGE_TIMER_USE_ATOMIC_LOCK or ETL_MESSAGE_TIMER_USE_INTERRUPT_LOCK not defined
+#endif
+
+#if defined(ETL_MESSAGE_TIMER_USE_ATOMIC_LOCK) && defined(ETL_MESSAGE_TIMER_USE_INTERRUPT_LOCK)
+  #error Only define one of ETL_MESSAGE_TIMER_USE_ATOMIC_LOCK or ETL_MESSAGE_TIMER_USE_INTERRUPT_LOCK
+#endif
+
+#if defined(ETL_MESSAGE_TIMER_USE_ATOMIC_LOCK)
+  #define ETL_DISABLE_TIMER_UPDATES (++process_semaphore)
+  #define ETL_ENABLE_TIMER_UPDATES  (--process_semaphore)
+  #define ETL_TIMER_UPDATES_ENABLED (process_semaphore.load() == 0)
+#endif
+
+#if defined(ETL_MESSAGE_TIMER_USE_INTERRUPT_LOCK)
+  #if !defined(ETL_MESSAGE_TIMER_DISABLE_INTERRUPTS) || !defined(ETL_MESSAGE_TIMER_ENABLE_INTERRUPTS)
+    #error ETL_MESSAGE_TIMER_DISABLE_INTERRUPTS and/or ETL_MESSAGE_TIMER_ENABLE_INTERRUPTS not defined
+  #endif
+  
+  #define ETL_DISABLE_TIMER_UPDATES (ETL_MESSAGE_TIMER_DISABLE_INTERRUPTS)
+  #define ETL_ENABLE_TIMER_UPDATES  (ETL_MESSAGE_TIMER_ENABLE_INTERRUPTS)
+  #define ETL_TIMER_UPDATES_ENABLED true
+#endif
+
 namespace etl
 {
   //*************************************************************************
@@ -323,7 +347,7 @@ namespace etl
     {
       etl::timer::id::type id = etl::timer::id::NO_TIMER;
 
-      disable_timer_updates();
+      ETL_DISABLE_TIMER_UPDATES;
 
       bool is_space = (registered_timers < MAX_TIMERS);
 
@@ -349,7 +373,7 @@ namespace etl
         }
       }
 
-      enable_timer_updates();
+      ETL_ENABLE_TIMER_UPDATES;
 
       return id;
     }
@@ -363,7 +387,7 @@ namespace etl
 
       if (id_ != etl::timer::id::NO_TIMER)
       {
-        disable_timer_updates();
+        ETL_DISABLE_TIMER_UPDATES;
 
         etl::message_timer_data& timer = timer_array[id_];
 
@@ -381,7 +405,7 @@ namespace etl
           }
         }
 
-        enable_timer_updates();
+        ETL_ENABLE_TIMER_UPDATES;
       }
 
       return result;
@@ -408,7 +432,7 @@ namespace etl
     //*******************************************
     void clear()
     {
-      disable_timer_updates();
+      ETL_DISABLE_TIMER_UPDATES;
 
       active_list.clear();
 
@@ -419,7 +443,7 @@ namespace etl
 
       registered_timers = 0;
 
-      enable_timer_updates();
+      ETL_ENABLE_TIMER_UPDATES;
     }
 
     //*******************************************
@@ -432,7 +456,7 @@ namespace etl
     {
       if (enabled)
       {
-        if (process_semaphore.load() == 0)
+        if ETL_IF_CONSTEXPR(ETL_TIMER_UPDATES_ENABLED)
         {
           // We have something to do?
           bool has_active = !active_list.empty();
@@ -492,8 +516,6 @@ namespace etl
     {
       bool result = false;
 
-      disable_timer_updates();
-
       // Valid timer id?
       if (id_ != etl::timer::id::NO_TIMER)
       {
@@ -505,6 +527,7 @@ namespace etl
           // Has a valid period.
           if (timer.period != etl::timer::state::INACTIVE)
           {
+            ETL_DISABLE_TIMER_UPDATES;
             if (timer.is_active())
             {
               active_list.remove(timer.id, false);
@@ -512,13 +535,12 @@ namespace etl
 
             timer.delta = immediate_ ? 0 : timer.period;
             active_list.insert(timer.id);
+            ETL_ENABLE_TIMER_UPDATES;
 
             result = true;
           }
         }
       }
-
-      enable_timer_updates();
 
       return result;
     }
@@ -530,8 +552,6 @@ namespace etl
     {
       bool result = false;
 
-      disable_timer_updates();
-
       // Valid timer id?
       if (id_ != etl::timer::id::NO_TIMER)
       {
@@ -542,13 +562,13 @@ namespace etl
         {
           if (timer.is_active())
           {
+            ETL_DISABLE_TIMER_UPDATES;
             active_list.remove(timer.id, false);
+            ETL_ENABLE_TIMER_UPDATES;
             result = true;
           }
         }
       }
-
-      enable_timer_updates();
 
       return result;
     }
@@ -590,7 +610,9 @@ namespace etl
       : timer_array(timer_array_),
         active_list(timer_array_),
         enabled(false),
+#if defined(ETL_MESSAGE_TIMER_USE_ATOMIC_LOCK)
         process_semaphore(0),
+#endif
         registered_timers(0),
         MAX_TIMERS(MAX_TIMERS_)
     {
@@ -605,22 +627,6 @@ namespace etl
 
   private:
 
-    //*******************************************
-    /// Enable timer callback events.
-    //*******************************************
-    void enable_timer_updates()
-    {
-      --process_semaphore;
-    }
-
-    //*******************************************
-    /// Disable timer callback events.
-    //*******************************************
-    void disable_timer_updates()
-    {
-      ++process_semaphore;
-    }
-
     // The array of timer data structures.
     message_timer_data* const timer_array;
 
@@ -628,7 +634,10 @@ namespace etl
     __private_message_timer__::list active_list;
 
     volatile bool enabled;
+    
+#if defined(ETL_MESSAGE_TIMER_USE_ATOMIC_LOCK)
     volatile etl::timer_semaphore_t process_semaphore;
+#endif
     volatile uint_least8_t registered_timers;
 
   public:
@@ -659,6 +668,10 @@ namespace etl
     message_timer_data timer_array[MAX_TIMERS_];
   };
 }
+
+#undef ETL_DISABLE_TIMER_UPDATES
+#undef ETL_ENABLE_TIMER_UPDATES
+#undef ETL_TIMER_UPDATES_ENABLED
 
 #undef ETL_FILE
 
