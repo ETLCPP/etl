@@ -1,4 +1,11 @@
 ===============================================================================
+10.19.0
+Added 'create' and 'destroy' functions to pools.
+Modified class heirarchy.
+etl::generic_pool is derived from on etl::ipool.
+etl::pool is derived from etl::generic_pool.
+
+===============================================================================
 10.18.1
 Reduced disable/enable time during function calls.
 

@@ -68,6 +68,35 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_aligned_storage_conversion_operators)
+    {
+      typedef etl::aligned_storage<sizeof(uint32_t), etl::alignment_of<uint32_t>::value>::type storage32_t;
+      static storage32_t data;
+
+      void* pdata = &data.data;
+
+      uint32_t& ref        = data;
+      const uint32_t& cref = data;
+      CHECK(&ref  == pdata);
+      CHECK(&cref == pdata);
+
+      uint32_t* ptr        = data;
+      const uint32_t* cptr = data;
+      CHECK(ptr  == pdata);
+      CHECK(cptr == pdata);
+
+      uint32_t& ref2        = data.get_reference<uint32_t>();
+      const uint32_t& cref2 = data.get_reference<const uint32_t>();
+      CHECK(&ref2  == pdata);
+      CHECK(&cref2 == pdata);
+      
+      uint32_t* ptr2        = data.get_address<uint32_t>();
+      const uint32_t* cptr2 = data.get_address<const uint32_t>();
+      CHECK(ptr2  == pdata);
+      CHECK(cptr2 == pdata);
+    }
+
+    //*************************************************************************
     TEST(test_aligned_storage_as)
     {
       size_t alignment;
