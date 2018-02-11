@@ -32,13 +32,13 @@ SOFTWARE.
 #define __ETL_POOL__
 
 #include "platform.h"
+#include "error_handler.h"
 #include "alignment.h"
 #include "array.h"
 #include "container.h"
 #include "integral_limits.h"
 #include "nullptr.h"
 #include "alignment.h"
-#include "error_handler.h"
 #include "static_assert.h"
 
 #include <iterator>
@@ -46,6 +46,8 @@ SOFTWARE.
 
 #undef ETL_FILE
 #define ETL_FILE "11"
+
+#define ETL_POOL_CPP03_CODE 0
 
 //*****************************************************************************
 ///\defgroup pool pool
@@ -117,8 +119,7 @@ namespace etl
     typedef size_t size_type;
 
     //*************************************************************************
-    /// Allocate an object from the pool.
-    /// Uses the default constructor.
+    /// Allocate storage for an object from the pool.
     /// If asserts or exceptions are enabled and there are no more free items an
     /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
     //*************************************************************************
@@ -133,13 +134,138 @@ namespace etl
       return reinterpret_cast<T*>(allocate_item());
     }
 
+#if !ETL_CPP11_SUPPORTED || ETL_POOL_CPP03_CODE
+    //*************************************************************************
+    /// Allocate storage for an object from the pool and create default.
+    /// If asserts or exceptions are enabled and there are no more free items an
+    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
+    //*************************************************************************
+    template <typename T>
+    T* create()
+    {
+      T* p = allocate<T>();
+
+      if (p)
+      {
+        ::new (p) T();
+      }
+
+      return p;
+    }
+
+    //*************************************************************************
+    /// Allocate storage for an object from the pool and create with 1 parameter.
+    /// If asserts or exceptions are enabled and there are no more free items an
+    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
+    //*************************************************************************
+    template <typename T, typename T1>
+    T* create(const T1& value1)
+    {
+      T* p = allocate<T>();
+
+      if (p)
+      {
+        ::new (p) T(value1);
+      }
+
+      return p;
+    }
+
+    //*************************************************************************
+    /// Allocate storage for an object from the pool and create with 2 parameters.
+    /// If asserts or exceptions are enabled and there are no more free items an
+    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
+    //*************************************************************************
+    template <typename T, typename T1, typename T2>
+    T* create(const T1& value1, const T2& value2)
+    {
+      T* p = allocate<T>();
+
+      if (p)
+      {
+        ::new (p) T(value1, value2);
+      }
+
+      return p;
+    }
+
+    //*************************************************************************
+    /// Allocate storage for an object from the pool and create with 3 parameters.
+    /// If asserts or exceptions are enabled and there are no more free items an
+    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
+    //*************************************************************************
+    template <typename T, typename T1, typename T2, typename T3>
+    T* create(const T1& value1, const T2& value2, const T3& value3)
+    {
+      T* p = allocate<T>();
+
+      if (p)
+      {
+        ::new (p) T(value1, value2, value3);
+      }
+
+      return p;
+    }
+
+    //*************************************************************************
+    /// Allocate storage for an object from the pool and create with 4 parameters.
+    /// If asserts or exceptions are enabled and there are no more free items an
+    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
+    //*************************************************************************
+    template <typename T, typename T1, typename T2, typename T3, typename T4>
+    T* create(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+      T* p = allocate<T>();
+
+      if (p)
+      {
+        ::new (p) T(value1, value2, value3, value4);
+      }
+
+      return p;
+    }
+#else
+    //*************************************************************************
+    /// Emplace with variadic constructor parameters.
+    //*************************************************************************
+    template <typename T, typename... Args>
+    T* create(Args&&... args)
+    {
+      T* p = allocate<T>();
+
+      if (p)
+      {
+        ::new (p) T(std::forward<Args>(args)...);
+      }
+
+      return p;
+    }
+#endif
+
+    //*************************************************************************
+    /// Destroys the object.
+    /// Undefined behaviour if the pool does not contain a 'T'.
+    /// \param p_object A pointer to the object to be destroyed.
+    //*************************************************************************
+    template <typename T>
+    void destroy(const void* const p_object)
+    {
+      if (sizeof(T) > ITEM_SIZE)
+      {
+        ETL_ASSERT(false, ETL_ERROR(etl::pool_element_size));
+      }
+
+      reinterpret_cast<T*>((const_cast<void*>(p_object)))->~T();
+      release(p_object);
+    }
+
     //*************************************************************************
     /// Release an object in the pool.
     /// If asserts or exceptions are enabled and the object does not belong to this
     /// pool then an etl::pool_object_not_in_pool is thrown.
     /// \param p_object A pointer to the object to be released.
     //*************************************************************************
-    void release(const void* p_object)
+    void release(const void* const p_object)
     {
       release_item((char*)p_object);
     }
@@ -259,7 +385,7 @@ namespace etl
       }
       else
       {
-        ETL_ASSERT(false, ETL_ERROR(etl::pool_no_allocation));
+        ETL_ASSERT(false, ETL_ERROR(pool_no_allocation));
       }
 
       return p_value;
@@ -339,59 +465,6 @@ namespace etl
   };
 
   //*************************************************************************
-  /// A templated pool implementation that uses a fixed size pool.
-  ///\ingroup pool
-  //*************************************************************************
-  template <typename T, const size_t SIZE_>
-  class pool : public etl::ipool
-  {
-  public:
-
-    static const size_t SIZE = SIZE_;
-
-    //*************************************************************************
-    /// Constructor
-    //*************************************************************************
-    pool()
-      : etl::ipool(reinterpret_cast<char*>(&buffer[0]), ELEMENT_SIZE, SIZE)
-    {
-    }
-
-    //*************************************************************************
-    /// Allocate an object from the pool.
-    /// Uses the default constructor.
-    /// If asserts or exceptions are enabled and there are no more free items an
-    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
-    /// Static asserts if the specified type is too large for the pool.
-    //*************************************************************************
-    template <typename U>
-    U* allocate()
-    {
-      STATIC_ASSERT(sizeof(U) <= ELEMENT_SIZE, "Type too large for pool");
-      return ipool::allocate<U>();
-    }
-
-  private:
-
-    // The pool element.
-    union Element
-    {
-      uintptr_t next;             ///< Pointer to the next free element.
-      char      value[sizeof(T)]; ///< Storage for value type.
-      typename  etl::type_with_alignment<etl::alignment_of<T>::value>::type dummy; ///< Dummy item to get correct alignment.
-    };
-
-    ///< The memory for the pool of objects.
-    typename etl::aligned_storage<sizeof(Element), etl::alignment_of<Element>::value>::type buffer[SIZE];
-
-    static const uint32_t ELEMENT_SIZE = sizeof(Element);
-
-    // Should not be copied.
-    pool(const pool&);
-    pool& operator =(const pool&);
-  };
-
-  //*************************************************************************
   /// A templated abstract pool implementation that uses a fixed size pool.
   ///\ingroup pool
   //*************************************************************************
@@ -422,8 +495,100 @@ namespace etl
     U* allocate()
     {
       STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
-      STATIC_ASSERT(sizeof(U)  <= ELEMENT_SIZE, "Type too large for pool");
+      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
       return ipool::allocate<U>();
+    }
+
+#if !ETL_CPP11_SUPPORTED || ETL_POOL_CPP03_CODE
+    //*************************************************************************
+    /// Allocate storage for an object from the pool and create with default.
+    /// If asserts or exceptions are enabled and there are no more free items an
+    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
+    //*************************************************************************
+    template <typename U>
+    U* create()
+    {
+      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
+      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      return ipool::create<U>();
+    }
+
+    //*************************************************************************
+    /// Allocate storage for an object from the pool and create with 1 parameter.
+    /// If asserts or exceptions are enabled and there are no more free items an
+    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
+    //*************************************************************************
+    template <typename U, typename T1>
+    U* create(const T1& value1)
+    {
+      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
+      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      return ipool::create<U>(value1);
+    }
+
+    //*************************************************************************
+    /// Allocate storage for an object from the pool and create with 2 parameters.
+    /// If asserts or exceptions are enabled and there are no more free items an
+    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
+    //*************************************************************************
+    template <typename U, typename T1, typename T2>
+    U* create(const T1& value1, const T2& value2)
+    {
+      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
+      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      return ipool::create<U>(value1, value2);
+    }
+
+    //*************************************************************************
+    /// Allocate storage for an object from the pool and create with 3 parameters.
+    /// If asserts or exceptions are enabled and there are no more free items an
+    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
+    //*************************************************************************
+    template <typename U, typename T1, typename T2, typename T3>
+    U* create(const T1& value1, const T2& value2, const T3& value3)
+    {
+      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
+      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      return ipool::create<U>(value1, value2, value3);
+    }
+
+    //*************************************************************************
+    /// Allocate storage for an object from the pool and create with 4 parameters.
+    /// If asserts or exceptions are enabled and there are no more free items an
+    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
+    //*************************************************************************
+    template <typename U, typename T1, typename T2, typename T3, typename T4>
+    U* create(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
+      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      return ipool::create<U>(value1, value2, value3, value4);
+    }
+#else
+    //*************************************************************************
+    /// Emplace with variadic constructor parameters.
+    //*************************************************************************
+    template <typename U, typename... Args>
+    U* create(Args&&... args)
+    {
+      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
+      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      return ipool::create<U>(std::forward<Args>(args)...);
+    }
+#endif
+
+    //*************************************************************************
+    /// Destroys the object.
+    /// Undefined behaviour if the pool does not contain a 'U'.
+    /// \param p_object A pointer to the object to be destroyed.
+    //*************************************************************************
+    template <typename U>
+    void destroy(const void* const p_object)
+    {
+      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
+      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      reinterpret_cast<U*>((const_cast<void*>(p_object)))->~U();
+      ipool::release(p_object);
     }
 
   private:
@@ -444,6 +609,146 @@ namespace etl
     // Should not be copied.
     generic_pool(const generic_pool&);
     generic_pool& operator =(const generic_pool&);
+  };
+
+  //*************************************************************************
+  /// A templated pool implementation that uses a fixed size pool.
+  ///\ingroup pool
+  //*************************************************************************
+  template <typename T, const size_t SIZE_>
+  class pool : public etl::generic_pool<sizeof(T), etl::alignment_of<T>::value, SIZE_>
+  {
+  private:
+
+    typedef etl::generic_pool<sizeof(T), etl::alignment_of<T>::value, SIZE_> base_t;
+
+  public:
+
+    static const size_t SIZE      = base_t::SIZE;
+    static const size_t ALIGNMENT = base_t::ALIGNMENT;
+    static const size_t TYPE_SIZE = base_t::TYPE_SIZE;
+
+    //*************************************************************************
+    /// Constructor
+    //*************************************************************************
+    pool()
+    {
+    }
+
+    //*************************************************************************
+    /// Allocate an object from the pool.
+    /// Uses the default constructor.
+    /// If asserts or exceptions are enabled and there are no more free items an
+    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
+    /// Static asserts if the specified type is too large for the pool.
+    //*************************************************************************
+    template <typename U>
+    U* allocate()
+    {
+      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
+      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      return base_t::template allocate<U>();
+    }
+
+#if !ETL_CPP11_SUPPORTED || ETL_POOL_CPP03_CODE
+    //*************************************************************************
+    /// Allocate storage for an object from the pool and create with default.
+    /// If asserts or exceptions are enabled and there are no more free items an
+    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
+    //*************************************************************************
+    template <typename U>
+    U* create()
+    {
+      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
+      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      return base_t::template create<U>();
+    }
+
+    //*************************************************************************
+    /// Allocate storage for an object from the pool and create with 1 parameter.
+    /// If asserts or exceptions are enabled and there are no more free items an
+    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
+    //*************************************************************************
+    template <typename U, typename T1>
+    U* create(const T1& value1)
+    {
+      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
+      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      return base_t::template create<U>(value1);
+    }
+
+    //*************************************************************************
+    /// Allocate storage for an object from the pool and create with 2 parameters.
+    /// If asserts or exceptions are enabled and there are no more free items an
+    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
+    //*************************************************************************
+    template <typename U, typename T1, typename T2>
+    U* create(const T1& value1, const T2& value2)
+    {
+      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
+      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      return base_t::template create<U>(value1, value2);
+    }
+
+    //*************************************************************************
+    /// Allocate storage for an object from the pool and create with 3 parameters.
+    /// If asserts or exceptions are enabled and there are no more free items an
+    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
+    //*************************************************************************
+    template <typename U, typename T1, typename T2, typename T3>
+    U* create(const T1& value1, const T2& value2, const T3& value3)
+    {
+      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
+      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      return base_t::template create<U>(value1, value2, value3);
+    }
+
+    //*************************************************************************
+    /// Allocate storage for an object from the pool and create with 4 parameters.
+    /// If asserts or exceptions are enabled and there are no more free items an
+    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
+    //*************************************************************************
+    template <typename U, typename T1, typename T2, typename T3, typename T4>
+    U* create(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
+      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      return base_t::template create<U>(value1, value2, value3, value4);
+    }
+#else
+    //*************************************************************************
+    /// Allocate storage for an object from the pool and create with variadic parameters.
+    /// If asserts or exceptions are enabled and there are no more free items an
+    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
+    //*************************************************************************
+    template <typename U, typename... Args>
+    U* create(Args&&... args)
+    {
+      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
+      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      return base_t::template create<U>(std::forward<Args>(args)...);
+    }
+#endif
+
+    //*************************************************************************
+    /// Destroys the object.
+    /// Undefined behaviour if the pool does not contain a 'U'.
+    /// \param p_object A pointer to the object to be destroyed.
+    //*************************************************************************
+    template <typename U>
+    void destroy(const void* const p_object)
+    {
+      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
+      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      reinterpret_cast<U*>((const_cast<void*>(p_object)))->~U();
+      base_t::release(p_object);
+    }
+
+  private:
+
+    // Should not be copied.
+    pool(const pool&);
+    pool& operator =(const pool&);
   };
 }
 
