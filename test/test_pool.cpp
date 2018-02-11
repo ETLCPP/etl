@@ -107,7 +107,7 @@ namespace
     std::string d;
   };
 
-  bool operator == (const D0& lhs, const D0& rhs)
+  bool operator == (const D0&, const D0&)
   {
     return true;
   }

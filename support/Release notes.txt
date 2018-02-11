@@ -1,4 +1,8 @@
 ===============================================================================
+10.19.1
+Fixed strict aliasing warnings for aligned storage.
+
+===============================================================================
 10.19.0
 Added 'create' and 'destroy' functions to pools.
 Modified class heirarchy.

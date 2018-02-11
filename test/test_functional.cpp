@@ -88,7 +88,7 @@ namespace
 
       std::list<int>::const_iterator itest = test.begin();
       std::list<int>::const_iterator icompare = compare.begin();
-      std::vector<etl::reference_wrapper<int>>::const_iterator ivector = test_ref.begin();
+      //std::vector<etl::reference_wrapper<int>>::const_iterator ivector = test_ref.begin();
 
       while (icompare != compare.end())
       {
