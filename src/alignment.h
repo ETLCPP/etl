@@ -117,7 +117,8 @@ namespace etl
       operator T& ()
       {
         STATIC_ASSERT((etl::is_same<T*, void*>:: value || ((ALIGNMENT % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
-        return reinterpret_cast<T&>(*data);
+        T* t = *this;
+        return *t;
       }
 
       /// Convert to const T reference.
@@ -125,7 +126,8 @@ namespace etl
       operator const T& () const
       {
         STATIC_ASSERT((etl::is_same<T*, void*>:: value || ((ALIGNMENT % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
-        return reinterpret_cast<const T&>(*data);
+        const T* t = *this;
+        return *t;
       }
 
       /// Convert to T pointer.
@@ -149,7 +151,8 @@ namespace etl
       T& get_reference()
       {
         STATIC_ASSERT((etl::is_same<T*, void*>:: value || ((ALIGNMENT % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
-        return reinterpret_cast<T&>(*data);
+        T* t = *this;
+        return *t;
       }
 
       /// Get address as const T reference.
@@ -157,7 +160,8 @@ namespace etl
       const T& get_reference() const
       {
         STATIC_ASSERT((etl::is_same<T*, void*>:: value || ((ALIGNMENT % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
-        return reinterpret_cast<const T&>(*data);
+        const T* t = *this;
+        return *t;
       }
 
       /// Get address as T pointer.
