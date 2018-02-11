@@ -753,7 +753,7 @@ namespace
       CompareDataNDC::iterator i_compare_data = compare_data.begin();
       std::advance(i_compare_data, 4);
 
-      CompareDataNDC::iterator i_compare_result = compare_data.erase_after(i_compare_data, compare_data.end());
+      compare_data.erase_after(i_compare_data, compare_data.end());
 
       DataNDC::iterator i_result = data.erase_after(i_data, data.end());
 

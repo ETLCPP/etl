@@ -48,9 +48,7 @@
 			<Add option="-Wundef" />
 			<Add option="-Wall" />
 			<Add option="-std=c++11" />
-			<Add option="-g" />
 			<Add option="-fexceptions" />
-			<Add option="-D_DEBUG" />
 			<Add directory="../../unittest-cpp/UnitTest++/" />
 			<Add directory="../../src" />
 			<Add directory="../" />
