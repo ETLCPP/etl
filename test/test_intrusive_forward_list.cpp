@@ -612,7 +612,7 @@ namespace
       std::forward_list<ItemNDCNode>::iterator i_compare_data = compare_data.begin();
       std::advance(i_compare_data, 4);
 
-      std::forward_list<ItemNDCNode>::iterator i_compare_result = compare_data.erase_after(i_compare_data, compare_data.end());
+      compare_data.erase_after(i_compare_data, compare_data.end());
 
       DataNDC0::iterator i_result = data0.erase_after(i_data, data0.end());
 
