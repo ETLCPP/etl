@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include <set>
 #include <vector>
+#include <string>
 
 #include "pool.h"
 #include "largest.h"
@@ -47,6 +48,119 @@ typedef TestDataNDC<std::string> Test_Data2;
 
 namespace
 {
+  struct D0
+  {
+    D0()
+    {
+    }
+  };
+
+  struct D1
+  {
+    D1(const std::string& a_)
+      : a(a_)
+    {
+    }
+
+    std::string a;
+  };
+
+  struct D2
+  {
+    D2(const std::string& a_, const std::string& b_)
+      : a(a_),
+      b(b_)
+    {
+    }
+
+    std::string a;
+    std::string b;
+  };
+
+  struct D3
+  {
+    D3(const std::string& a_, const std::string& b_, const std::string& c_)
+      : a(a_),
+      b(b_),
+      c(c_)
+    {
+    }
+
+    std::string a;
+    std::string b;
+    std::string c;
+  };
+
+  struct D4
+  {
+    D4(const std::string& a_, const std::string& b_, const std::string& c_, const std::string& d_)
+      : a(a_),
+      b(b_),
+      c(c_),
+      d(d_)
+    {
+    }
+
+    std::string a;
+    std::string b;
+    std::string c;
+    std::string d;
+  };
+
+  bool operator == (const D0& lhs, const D0& rhs)
+  {
+    return true;
+  }
+
+  bool operator == (const D1& lhs, const D1& rhs)
+  {
+    return (lhs.a == rhs.a);
+  }
+
+  bool operator == (const D2& lhs, const D2& rhs)
+  {
+    return (lhs.a == rhs.a) && (lhs.b == rhs.b);
+  }
+
+  bool operator == (const D3& lhs, const D3& rhs)
+  {
+    return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c);
+  }
+
+  bool operator == (const D4& lhs, const D4& rhs)
+  {
+    return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
+  }
+
+  std::ostream& operator <<(std::ostream& os, const D0& d)
+  {
+     return os;
+  }
+
+  std::ostream& operator <<(std::ostream& os, const D1& d)
+  {
+    os << d.a;
+    return os;
+  }
+
+  std::ostream& operator <<(std::ostream& os, const D2& d)
+  {
+    os << d.a << " " << d.b;
+    return os;
+  }
+
+  std::ostream& operator <<(std::ostream& os, const D3& d)
+  {
+    os << d.a << " " << d.b << " " << d.c;
+    return os;
+  }
+
+  std::ostream& operator <<(std::ostream& os, const D4& d)
+  {
+    os << d.a << " " << d.b << " " << d.c << " " << d.d;
+    return os;
+  }
+
   SUITE(test_pool)
   {
     //*************************************************************************
@@ -294,6 +408,64 @@ namespace
       CHECK_NO_THROW(p4 = pool.allocate<Test_Data>());
     }
   };
+
+  //*************************************************************************
+  TEST(test_create_destroy)
+  {
+    etl::pool<D0, 4> pool0;
+    etl::pool<D1, 4> pool1;
+    etl::pool<D2, 4> pool2;
+    etl::pool<D3, 4> pool3;
+    etl::pool<D4, 4> pool4;
+
+    D0* p0 = pool0.create<D0>();
+    D1* p1 = pool1.create<D1>("1");
+    D2* p2 = pool2.create<D2>("1", "2");
+    D3* p3 = pool3.create<D3>("1", "2", "3");
+    D4* p4 = pool4.create<D4>("1", "2", "3", "4");
+
+    CHECK_EQUAL(pool0.max_size() - 1, pool0.available());
+    CHECK_EQUAL(1, pool0.size());
+
+    CHECK_EQUAL(pool1.max_size() - 1, pool1.available());
+    CHECK_EQUAL(1, pool1.size());
+
+    CHECK_EQUAL(pool2.max_size() - 1, pool2.available());
+    CHECK_EQUAL(1, pool2.size());
+
+    CHECK_EQUAL(pool3.max_size() - 1, pool3.available());
+    CHECK_EQUAL(1, pool3.size());
+
+    CHECK_EQUAL(pool4.max_size() - 1, pool4.available());
+    CHECK_EQUAL(1, pool4.size());
+
+    CHECK_EQUAL(D0(), *p0);
+    CHECK_EQUAL(D1("1"), *p1);
+    CHECK_EQUAL(D2("1", "2"), *p2);
+    CHECK_EQUAL(D3("1", "2", "3"), *p3);
+    CHECK_EQUAL(D4("1", "2", "3", "4"), *p4);
+
+    pool0.destroy<D0>(p0);
+    pool1.destroy<D1>(p1);
+    pool2.destroy<D2>(p2);
+    pool3.destroy<D3>(p3);
+    pool4.destroy<D4>(p4);
+
+    CHECK_EQUAL(pool0.max_size(), pool0.available());
+    CHECK_EQUAL(0, pool0.size());
+
+    CHECK_EQUAL(pool1.max_size(), pool1.available());
+    CHECK_EQUAL(0, pool1.size());
+
+    CHECK_EQUAL(pool2.max_size(), pool2.available());
+    CHECK_EQUAL(0, pool2.size());
+
+    CHECK_EQUAL(pool3.max_size(), pool3.available());
+    CHECK_EQUAL(0, pool3.size());
+
+    CHECK_EQUAL(pool4.max_size(), pool4.available());
+    CHECK_EQUAL(0, pool4.size());
+  }
 }
 
 #if defined(ETL_COMPILER_GCC)
