@@ -296,8 +296,6 @@ ecl_timer_id_t ecl_timer_register(void             (*pcallback_)(),
 
   ecl_timer_id_t id = ECL_TIMER_NO_TIMER;
 
-  ECL_TIMER_DISABLE_PROCESSING;
-
   int is_space = (ecl.registered_timers < ecl.max_timers);
 
   if (is_space)
@@ -319,8 +317,6 @@ ecl_timer_id_t ecl_timer_register(void             (*pcallback_)(),
     }
   }
 
-  ECL_TIMER_ENABLE_PROCESSING;
-
   return id;
 }
 
@@ -335,15 +331,15 @@ ecl_timer_result_t ecl_timer_unregister(ecl_timer_id_t id_)
 
   if (id_ != ECL_TIMER_NO_TIMER)
   {
-    ECL_TIMER_DISABLE_PROCESSING;
-
     struct ecl_timer_config* ptimer = &ecl.ptimers[id_];
 
     if (ptimer->id != ECL_TIMER_NO_TIMER)
     {
       if (ecl_timer_is_active(ptimer))
       {
+        ECL_TIMER_DISABLE_PROCESSING;
         ecl_timer_list_remove(ptimer->id, 0);
+        ECL_TIMER_ENABLE_PROCESSING;
 
         // Reset in-place.
         ecl_timer_data_init_default(ptimer);
@@ -352,8 +348,6 @@ ecl_timer_result_t ecl_timer_unregister(ecl_timer_id_t id_)
         result = ECL_TIMER_PASS;
       }
     }
-
-    ECL_TIMER_ENABLE_PROCESSING;
   }
 
   return result;
@@ -383,19 +377,17 @@ ecl_timer_result_t ecl_timer_is_running()
 //*******************************************
 void ecl_timer_clear()
 { 
-  ECL_TIMER_DISABLE_PROCESSING;
-
   ecl_timer_list_clear();
 
   int i;
   for (i = 0; i < ecl.max_timers; ++i)
   {
+    ECL_TIMER_DISABLE_PROCESSING;
     ecl_timer_data_init_default(&ecl.ptimers[i]);
+    ECL_TIMER_ENABLE_PROCESSING;
   }
 
   ecl.registered_timers = 0;
-
-  ECL_TIMER_ENABLE_PROCESSING;
 }
 
 //*******************************************
