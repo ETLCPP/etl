@@ -68,24 +68,38 @@ namespace etl
   //***************************************************************************
   struct endianness
   {
-    endianness()
-      : ETL_ENDIAN_TEST(0x0011223344556677)
+    etl::endian operator ()() const
     {
+      return etl::endian(*this);
     }
 
-    endian operator ()() const
+    operator etl::endian() const
     {
-      return endian(*this);
+      return get();
     }
 
-    operator endian() const
+    static etl::endian value()
     {
-      return (*reinterpret_cast<const uint32_t*>(&ETL_ENDIAN_TEST) == 0x44556677) ? endian::little : endian::big;
+      return get();
     }
 
   private:
 
-    const uint64_t ETL_ENDIAN_TEST;
+    static etl::endian get()
+    {
+      static const union U
+      {
+        U()
+          : ui32(0x12345678)
+        {
+        }
+
+        uint32_t ui32;
+        uint16_t ui16[2];
+      } u;
+
+      return (u.ui16[0] == 0x5678) ? etl::endian::little : etl::endian::big;
+    }
   };
 }
 
