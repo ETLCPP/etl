@@ -36,7 +36,7 @@ namespace
   {
     TEST(test_debounce_default_4_0_0_nonbounce)
     {
-      etl::debounce<4, 8, 0> key_state;
+      etl::debounce<4, 0, 0> key_state;
 
       CHECK(!key_state.is_set());
       CHECK(!key_state.is_held());
@@ -473,6 +473,28 @@ namespace
       CHECK(!key_state.is_repeating());
 
       //*******************************
+      // No transition to hold or repeat.
+      CHECK(!key_state.add(true));
+      CHECK(key_state.is_set());
+      CHECK(!key_state.is_held());
+      CHECK(!key_state.is_repeating());
+
+      CHECK(!key_state.add(true));
+      CHECK(key_state.is_set());
+      CHECK(!key_state.is_held());
+      CHECK(!key_state.is_repeating());
+
+      CHECK(!key_state.add(true));
+      CHECK(key_state.is_set());
+      CHECK(!key_state.is_held());
+      CHECK(!key_state.is_repeating());
+
+      CHECK(!key_state.add(true));
+      CHECK(key_state.is_set());
+      CHECK(!key_state.is_held());
+      CHECK(!key_state.is_repeating());
+
+      //*******************************
       // Transition to clear.
       CHECK(!key_state.add(false));
       CHECK(key_state.is_set());
@@ -518,13 +540,13 @@ namespace
       CHECK(!key_state.is_set());
       CHECK(!key_state.is_held());
       CHECK(!key_state.is_repeating());
-
-      // Valid set.
+            
       CHECK(!key_state.add(true));
       CHECK(!key_state.is_set());
       CHECK(!key_state.is_held());
       CHECK(!key_state.is_repeating());
-
+      
+      // Valid set.
       CHECK(key_state.add(true));
       CHECK(key_state.is_set());
       CHECK(!key_state.is_held());

@@ -44,15 +44,24 @@ namespace etl
     {
     public:
 
-      void add(bool sample)
-      {
-        state &= ~CHANGED;
+      typedef uint_least8_t flags_t;
+      typedef uint16_t      count_t;
 
+      //*************************************************************************
+      /// Adds the new sample and clears the state change flag.
+      /// If the sample has changed then the counter is reset.
+      /// The last sample state is stored as a bit in the flags.
+      //*************************************************************************
+      void add_sample(bool sample)
+      {
         // Changed from last time?
-        if (sample != bool((state & LAST) != 0))
+        if (sample != bool((flags & SAMPLE) != 0))
         {
-          count = START_COUNT;
+          count = 0;
+          flags = (flags & ~SAMPLE) | (sample ? SAMPLE : 0);
         }
+
+        flags &= ~CHANGE;
       }
 
       //*************************************************************************
@@ -61,7 +70,7 @@ namespace etl
       //*************************************************************************
       bool has_changed() const
       {
-        return (state & CHANGED) != 0;
+        return (flags & CHANGE) != 0;
       }
 
       //*************************************************************************
@@ -70,7 +79,7 @@ namespace etl
       //*************************************************************************
       bool is_set() const
       {
-        return (state & CURRENT) != 0;
+        return ((flags & STATE) > OFF);
       }
 
       //*************************************************************************
@@ -79,7 +88,7 @@ namespace etl
       //*************************************************************************
       bool is_held() const
       {
-        return (state & HELD) != 0;
+        return (flags & STATE) > ON;
       }
 
       //*************************************************************************
@@ -88,18 +97,28 @@ namespace etl
       //*************************************************************************
       bool is_repeating() const
       {
-        return (state & REPEATING) != 0;
+        return ((flags & STATE) == REPEATING);
       }
+
+      enum states
+      {
+        OFF       = 0,
+        ON        = 1,
+        HELD      = 2,
+        REPEATING = 3,
+        STATE     = 0x03,
+        SAMPLE    = 4,
+        CHANGE    = 8
+      };
 
     protected:
 
       //*************************************************************************
       /// Constructor.
-      ///\param initial_state The initial state. Default = false.
       //*************************************************************************
-      debounce_base(bool initial_state = false)
-        : state(initial_state ? (CURRENT | LAST) : 0),
-        count(START_COUNT)
+      debounce_base(bool initial_state)
+        : flags(initial_state ? ON : OFF),
+          count(0)
       {
       }
 
@@ -110,142 +129,346 @@ namespace etl
       {
       }
 
-      enum
+      //*************************************************************************
+      /// Gets the next state based on the inputs.
+      //*************************************************************************
+      void get_next(bool sample, bool condition_set, bool condition_clear, uint_least8_t state_table[][2])
       {
-        START_COUNT = 0
-      };
+        int index1 = ((flags & STATE) * 2) + (sample ? 1 : 0);
+        int index2 = (sample ? (condition_set ? 0 : 1) : (condition_clear ? 0 : 1));
 
-      enum
+        flags_t next = flags;
+
+        next &= ~STATE;
+        next |= state_table[index1][index2];
+
+        if (next != flags)
+        {
+          next |= CHANGE;
+        }
+        else
+        {
+          next &= ~CHANGE;
+        }
+
+        flags = next;
+      }
+
+      flags_t flags;
+      count_t count;
+    };
+
+    //***************************************************************************
+    /// State change logic for 2 state debounce.
+    //***************************************************************************
+    class debounce2 : public debounce_base
+    {
+    protected:
+
+      debounce2(bool initial_state)
+        : debounce_base(initial_state)
       {
-        CURRENT   = 1,
-        LAST      = 2,
-        HELD      = 4,
-        CHANGED   = 8,
-        REPEATING = 16
-      };
+      }
 
-      uint_least8_t state;
+      //*************************************************************************
+      /// Destructor.
+      //*************************************************************************
+      ~debounce2()
+      {
+      }
 
-      /// The state count.
-      uint16_t count;
+      //*************************************************************************
+      ///
+      //*************************************************************************
+      void set_state(bool sample, bool condition_set, bool condition_clear)
+      {
+        static uint_least8_t state_table[4][2] =
+        {
+          /* OFF 0 */{ debounce_base::OFF, debounce_base::OFF },
+          /* OFF 1 */{ debounce_base::ON,  debounce_base::OFF },
+          /* ON  0 */{ debounce_base::OFF, debounce_base::ON },
+          /* ON  1 */{ debounce_base::ON,  debounce_base::ON },
+        };
+
+        get_next(sample, condition_set, condition_clear, state_table);
+      }
+
+      //*************************************************************************
+      ///
+      //*************************************************************************
+      bool process(bool sample, count_t valid_count)
+      {
+        add_sample(sample);
+
+        if (count < UINT16_MAX)
+        {
+          ++count;
+
+          bool valid = (count == valid_count);
+
+          switch (flags & STATE)
+          {
+            case OFF:
+            {
+              set_state(sample, valid, valid);
+              break;
+            }
+
+            case ON:
+            {
+              set_state(sample, valid, valid);
+              break;
+            }
+
+            default:
+            {
+              break;
+            }
+          }
+        }
+
+        if (flags & CHANGE)
+        {
+          count = 0;
+        }
+
+        return (flags & CHANGE);
+      }
+    };
+
+    //***************************************************************************
+    /// State change logic for 3 state debounce.
+    //***************************************************************************
+    class debounce3 : public debounce_base
+    {
+    protected:
+
+      debounce3(bool initial_state)
+        : debounce_base(initial_state)
+      {
+      }
+
+      //*************************************************************************
+      /// Destructor.
+      //*************************************************************************
+      ~debounce3()
+      {
+      }
+
+      //*************************************************************************
+      ///
+      //*************************************************************************
+      void set_state(bool sample, bool condition_set, bool condition_clear)
+      {
+        static uint_least8_t state_table[6][2] =
+        {
+          /* OFF  0 */{ debounce_base::OFF,  debounce_base::OFF },
+          /* OFF  1 */{ debounce_base::ON,   debounce_base::OFF },
+          /* ON   0 */{ debounce_base::OFF,  debounce_base::ON },
+          /* ON   1 */{ debounce_base::HELD, debounce_base::ON },
+          /* HELD 0 */{ debounce_base::OFF,  debounce_base::HELD },
+          /* HELD 1 */{ debounce_base::HELD, debounce_base::HELD }
+        };
+
+        get_next(sample, condition_set, condition_clear, state_table);
+      }
+
+      //*************************************************************************
+      ///
+      //*************************************************************************
+      bool process(bool sample, count_t valid_count, count_t hold_count)
+      {
+        add_sample(sample);
+
+        if (count < UINT16_MAX)
+        {
+          ++count;
+
+          bool valid = (count == valid_count);
+          bool hold  = (count == hold_count);
+
+          switch (flags & STATE)
+          {
+            case OFF:
+            {
+              set_state(sample, valid, valid);
+              break;
+            }
+
+            case ON:
+            {
+              set_state(sample, hold, valid);
+              break;
+            }
+
+            case HELD:
+            {
+              set_state(sample, hold, valid);
+              break;
+            }
+
+            default:
+            {
+              break;
+            }
+          }
+        }
+
+        if (flags & CHANGE)
+        {
+          count = 0;
+        }
+
+        return (flags & CHANGE);
+      }
+    };
+
+    //***************************************************************************
+    /// State change logic for 4 state debounce.
+    //***************************************************************************
+    class debounce4 : public debounce_base
+    {
+    protected:
+
+      debounce4(bool initial_state)
+        : debounce_base(initial_state)
+      {
+      }
+
+      //*************************************************************************
+      /// Destructor.
+      //*************************************************************************
+      ~debounce4()
+      {
+      }
+
+      //*************************************************************************
+      ///
+      //*************************************************************************
+      void set_state(bool sample, bool condition_set, bool condition_clear)
+      {
+        static uint_least8_t state_table[8][2] =
+        {
+          /* OFF       0 */{ debounce_base::OFF,       debounce_base::OFF },
+          /* OFF       1 */{ debounce_base::ON,        debounce_base::OFF },
+          /* ON        0 */{ debounce_base::OFF,       debounce_base::ON },
+          /* ON        1 */{ debounce_base::HELD,      debounce_base::ON },
+          /* HELD      0 */{ debounce_base::OFF,       debounce_base::HELD },
+          /* HELD      1 */{ debounce_base::REPEATING, debounce_base::HELD },
+          /* REPEATING 0 */{ debounce_base::OFF,       debounce_base::REPEATING },
+          /* REPEATING 1 */{ debounce_base::REPEATING, debounce_base::REPEATING }
+        };
+
+        get_next(sample, condition_set, condition_clear, state_table);
+      }
+
+      //*************************************************************************
+      ///
+      //*************************************************************************
+      bool process(bool sample, count_t valid_count, count_t hold_count, count_t repeat_count)
+      {
+        add_sample(sample);
+
+        if (count < UINT16_MAX)
+        {
+          ++count;
+
+          bool valid  = (count == valid_count);
+          bool hold   = (count == hold_count);
+          bool repeat = (count == repeat_count);
+
+          switch (flags & STATE)
+          {
+            case OFF:
+            {
+              set_state(sample, valid, valid);
+              break;
+            }
+
+            case ON:
+            {
+              set_state(sample, hold, valid);
+              break;
+            }
+
+            case HELD:
+            {
+              set_state(sample, repeat, valid);
+              break;
+            }
+
+            case REPEATING:
+            {
+              set_state(sample, repeat, valid);
+
+              if (sample && repeat)
+              {
+                count = 0;
+                flags |= CHANGE;
+              }
+              break;
+            }
+
+            default:
+            {
+              break;
+            }
+          }
+        }
+
+        if (flags & CHANGE)
+        {
+          count = 0;
+        }
+
+        return (flags & CHANGE);
+      }
     };
   }
 
   //***************************************************************************
   /// A class to debounce signals.
-  /// The state is decided over N samples, defined by the VALID_COUNT value.
-  /// If the samples are consistent for VALID_COUNT times then the debouncer state is defined.
-  /// If the samples change then the debouncer will change state after VALID_COUNT samples.
-  /// If the samples are true for a count of HOLD_COUNT then the debouncer input is 'held'.
-  /// The debouncer may be constructed in either state.
+  /// Fixed Valid/Hold/Repeating values.
   //***************************************************************************
   template <const uint16_t VALID_COUNT = 0, const uint16_t HOLD_COUNT = 0, const uint16_t REPEAT_COUNT = 0>
-  class debounce : public __private_debounce__::debounce_base
+  class debounce : public __private_debounce__::debounce4
   {
-  private:
-
-      enum
-      {
-        VALID_THRESHOLD  = VALID_COUNT,
-        HOLD_THRESHOLD   = VALID_THRESHOLD + HOLD_COUNT,
-        REPEAT_THRESHOLD = HOLD_THRESHOLD + REPEAT_COUNT
-      };
-
-      using debounce_base::add;
-
   public:
 
     //*************************************************************************
     /// Constructor.
-    ///\param initial_state The initial state. Default = false.
     //*************************************************************************
     debounce(bool initial_state = false)
-      : debounce_base(initial_state)
+      : debounce4(initial_state)
     {
     }
 
     //*************************************************************************
     /// Adds a new sample.
-    /// Returns 'true' if the debouncer changes state from...
-    /// 1. Clear to Set.
-    /// 2. Set to Clear.
-    /// 3. Not Held to Held.
-    /// 4. Key repeats.
+    /// Returns 'true' if the debouncer changes state.
     ///\param sample The new sample.
     ///\return 'true' if the debouncer changed state.
     //*************************************************************************
     bool add(bool sample)
     {
-      debounce_base::add(sample);
-
-      if (count < REPEAT_THRESHOLD)
-      {
-        ++count;
-
-        if (sample)
-        {
-          if (count == VALID_THRESHOLD)
-          {
-            // Set.
-            state |= CHANGED;
-            state |= CURRENT;
-          }
-          else if (count == HOLD_THRESHOLD)
-          {
-            // Held.
-            state |= CHANGED;
-            state |= HELD;
-          }
-          else if (count == REPEAT_THRESHOLD)
-          {
-            // Repeat.
-            state |= CHANGED;
-            state |= REPEATING;
-            count = HOLD_THRESHOLD;
-          }
-
-          state |= LAST;        
-        }
-        else
-        {
-          if (count == VALID_THRESHOLD)
-          {
-            // Clear.
-            state |= CHANGED;
-            state &= ~CURRENT;
-            state &= ~HELD;
-            state &= ~REPEATING;
-          }
-
-          state &= ~LAST;
-        }
-      }
-
-      return (state & CHANGED) != 0;
+      return process(sample, VALID_COUNT, HOLD_COUNT, REPEAT_COUNT);
     }
   };
-  
+
+  //***************************************************************************
+  /// A class to debounce signals.
+  /// Fixed Valid/Hold values.
+  //***************************************************************************
   template <const uint16_t VALID_COUNT, const uint16_t HOLD_COUNT>
-  class debounce<VALID_COUNT, HOLD_COUNT, 0> : public __private_debounce__::debounce_base
+  class debounce<VALID_COUNT, HOLD_COUNT, 0> : public __private_debounce__::debounce3
   {
-  private:
-
-    enum
-    {
-      VALID_THRESHOLD = VALID_COUNT,
-      HOLD_THRESHOLD  = VALID_THRESHOLD + HOLD_COUNT
-    };
-
-    using debounce_base::add;
-
-  public:   
+  public:
 
     //*************************************************************************
     /// Constructor.
-    ///\param initial_state The initial state. Default = false.
     //*************************************************************************
     debounce(bool initial_state = false)
-      : debounce_base(initial_state)
+      : debounce3(initial_state)
     {
     }
 
@@ -260,68 +483,24 @@ namespace etl
     //*************************************************************************
     bool add(bool sample)
     {
-      debounce_base::add(sample);
-
-      if (count < HOLD_THRESHOLD)
-      {
-        ++count;
-
-        if (sample)
-        {
-          if (count == VALID_THRESHOLD)
-          {
-            // Set.
-            state |= CHANGED;
-            state |= CURRENT;
-          }
-          else if (count == HOLD_THRESHOLD)
-          {
-            // Held.
-            state |= CHANGED;
-            state |= HELD;
-          }
-
-          state |= LAST;
-        }
-        else
-        {
-          if (count == VALID_THRESHOLD)
-          {
-            // Clear.
-            state |= CHANGED;
-            state &= ~CURRENT;
-            state &= ~HELD;
-            state &= ~REPEATING;
-          }
-
-          state &= ~LAST;
-        }
-      }
-
-      return (state & CHANGED) != 0;
+      return process(sample, VALID_COUNT, HOLD_COUNT);
     }
   };
 
+  //***************************************************************************
+  /// A class to debounce signals.
+  /// Fixed Valid value.
+  //***************************************************************************
   template <const uint16_t VALID_COUNT>
-  class debounce<VALID_COUNT, 0, 0> : public __private_debounce__::debounce_base
+  class debounce<VALID_COUNT, 0, 0> : public __private_debounce__::debounce2
   {
-  private:
-
-    enum
-    {
-      VALID_THRESHOLD = VALID_COUNT
-    };
-    
-    using debounce_base::add;
-
   public:
 
     //*************************************************************************
     /// Constructor.
-    ///\param initial_state The initial state. Default = false.
     //*************************************************************************
     debounce(bool initial_state = false)
-      : debounce_base(initial_state)
+      : debounce2(initial_state)
     {
     }
 
@@ -335,83 +514,51 @@ namespace etl
     //*************************************************************************
     bool add(bool sample)
     {
-      debounce_base::add(sample);
-
-      if (count < VALID_THRESHOLD)
-      {
-        ++count;
-
-        if (sample)
-        {
-          if (count == VALID_THRESHOLD)
-          {
-            // Set.
-            state |= CHANGED;
-            state |= CURRENT;
-          }
-
-          state |= LAST;
-        }
-        else
-        {
-          if (count == VALID_THRESHOLD)
-          {
-            // Clear.
-            state |= CHANGED;
-            state &= ~CURRENT;
-            state &= ~HELD;
-            state &= ~REPEATING;
-          }
-
-          state &= ~LAST;
-        }
-      }
-
-      return (state & CHANGED) != 0;
+      return process(sample, VALID_COUNT);
     }
   };
 
+  //***************************************************************************
+  /// A class to debounce signals.
+  /// Variable Valid/Hold/Repeating values.
+  //***************************************************************************
   template <>
-  class debounce<0, 0, 0> : public __private_debounce__::debounce_base
+  class debounce<0, 0, 0> : public __private_debounce__::debounce4
   {
   public:
-
-    using debounce_base::add;
 
     //*************************************************************************
     /// Constructor.
     ///\param initial_state The initial state. Default = false.
     //*************************************************************************
-    debounce()
-      : debounce_base(false),
-        valid_threshold(1),
-        hold_threshold(0),
-        repeat_threshold(0)
+    debounce(bool initial_state = false)
+      : debounce4(initial_state),
+        valid_count(1),
+        hold_count(0),
+        repeat_count(0)
     {
     }
 
     //*************************************************************************
     /// Constructor.
-    ///\param initial_state The initial state.
-    ///\param valid_count   The count for a valid state. Default = 1.
+    ///\param valid_count   The count for a valid state..
     ///\param hold_count    The count after valid_count for a hold state. Default = 0.
     ///\param repeat_count  The count after hold_count for a key repeat. Default = 0.
     //*************************************************************************
-    debounce(bool initial_state, uint16_t valid_count = 1, uint16_t hold_count = 0, uint16_t repeat_count = 0)
-      : debounce_base(initial_state)
+    debounce(count_t valid, count_t hold = 0, count_t repeat = 0)
+      : debounce4(false)
     {
-      set(valid_count, hold_count, repeat_count);
+      set(valid, hold, repeat);
     }
 
     //*************************************************************************
     /// Constructor.
-    ///\param initial_state The initial state. Default = false.
     //*************************************************************************
-    void set(uint16_t valid_count, uint16_t hold_count = 0, uint16_t repeat_count = 0)
+    void set(count_t valid, count_t hold = 0, count_t repeat = 0)
     {
-      valid_threshold  = valid_count;
-      hold_threshold   = valid_threshold + hold_count;
-      repeat_threshold = hold_threshold + repeat_count;
+      valid_count  = valid;
+      hold_count   = hold;
+      repeat_count = repeat;
     }
 
     //*************************************************************************
@@ -426,70 +573,14 @@ namespace etl
     //*************************************************************************
     bool add(bool sample)
     {
-      debounce_base::add(sample);
-
-      if (count < repeat_threshold)
-      {
-        ++count;
-
-        if (sample)
-        {
-          if (count == valid_threshold)
-          {
-            if (sample)
-            {
-              // Set.
-              state |= CHANGED;
-              state |= CURRENT;
-            }
-          }
-
-          if (hold_threshold != valid_threshold)
-          {
-            if ((count == hold_threshold) && sample)
-            {
-              // Held.
-              state |= CHANGED;
-              state |= HELD;
-            }
-          }
-
-          if (repeat_threshold != hold_threshold)
-          {
-            if ((count == repeat_threshold) && sample)
-            {
-              // Repeat.
-              state |= CHANGED;
-              state |= REPEATING;
-              count = hold_threshold;
-            }
-          }
-
-          state |= LAST;
-        }
-        else
-        {
-          if (count == valid_threshold)
-          {
-            // Clear.
-            state |= CHANGED;
-            state &= ~CURRENT;
-            state &= ~HELD;
-            state &= ~REPEATING;
-          }
-
-          state &= ~LAST;
-        }
-      }
-
-      return (state & CHANGED) != 0;
+      return process(sample, valid_count, hold_count, repeat_count);
     }
 
   private:
 
-    uint16_t valid_threshold;
-    uint16_t hold_threshold;
-    uint16_t repeat_threshold;
+    count_t valid_count;
+    count_t hold_count;
+    count_t repeat_count;
   };
 }
 
