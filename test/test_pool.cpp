@@ -425,19 +425,19 @@ namespace
     D4* p4 = pool4.create<D4>("1", "2", "3", "4");
 
     CHECK_EQUAL(pool0.max_size() - 1, pool0.available());
-    CHECK_EQUAL(1, pool0.size());
+    CHECK_EQUAL(1U, pool0.size());
 
     CHECK_EQUAL(pool1.max_size() - 1, pool1.available());
-    CHECK_EQUAL(1, pool1.size());
+    CHECK_EQUAL(1U, pool1.size());
 
     CHECK_EQUAL(pool2.max_size() - 1, pool2.available());
-    CHECK_EQUAL(1, pool2.size());
+    CHECK_EQUAL(1U, pool2.size());
 
     CHECK_EQUAL(pool3.max_size() - 1, pool3.available());
-    CHECK_EQUAL(1, pool3.size());
+    CHECK_EQUAL(1U, pool3.size());
 
     CHECK_EQUAL(pool4.max_size() - 1, pool4.available());
-    CHECK_EQUAL(1, pool4.size());
+    CHECK_EQUAL(1U, pool4.size());
 
     CHECK_EQUAL(D0(), *p0);
     CHECK_EQUAL(D1("1"), *p1);
@@ -452,19 +452,19 @@ namespace
     pool4.destroy<D4>(p4);
 
     CHECK_EQUAL(pool0.max_size(), pool0.available());
-    CHECK_EQUAL(0, pool0.size());
+    CHECK_EQUAL(0U, pool0.size());
 
     CHECK_EQUAL(pool1.max_size(), pool1.available());
-    CHECK_EQUAL(0, pool1.size());
+    CHECK_EQUAL(0U, pool1.size());
 
     CHECK_EQUAL(pool2.max_size(), pool2.available());
-    CHECK_EQUAL(0, pool2.size());
+    CHECK_EQUAL(0U, pool2.size());
 
     CHECK_EQUAL(pool3.max_size(), pool3.available());
-    CHECK_EQUAL(0, pool3.size());
+    CHECK_EQUAL(0U, pool3.size());
 
     CHECK_EQUAL(pool4.max_size(), pool4.available());
-    CHECK_EQUAL(0, pool4.size());
+    CHECK_EQUAL(0U, pool4.size());
   }
 }
 
