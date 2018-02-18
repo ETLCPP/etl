@@ -101,7 +101,7 @@ namespace
     std::vector<NDC> initial_data;
     std::vector<NDC> excess_data;
     std::vector<NDC> different_data;
-
+    
     std::vector<int> int_data;
 
     struct D1
