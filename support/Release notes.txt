@@ -1,4 +1,14 @@
 ===============================================================================
+10.20.0
+Rewrite of debounce code to factor out commonality.
+Made interrupt locks in C timer framework to match that of C++ version.
+Improved etl::endianness. Added static functions.
+
+===============================================================================
+10.19.2
+Fixed strict aliasing warnings for endianess.
+
+===============================================================================
 10.19.1
 Fixed strict aliasing warnings for aligned storage.
 
