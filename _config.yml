@@ -1,0 +1,8 @@
+title: Etl
+description: Embedded Template Library
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-hacker
+
+gems:
+  - jekyll-mentions
