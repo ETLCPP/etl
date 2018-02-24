@@ -31,6 +31,12 @@ SOFTWARE.
 #ifndef __ETL_OPTIONAL__
 #define __ETL_OPTIONAL__
 
+#ifdef __GNUC__
+  #define ATTR_UNUSED __attribute__((unused))
+#else
+  #define ATTR_UNUSED
+#endif
+
 #include "platform.h"
 #include "alignment.h"
 #include "type_traits.h"
@@ -381,7 +387,7 @@ bool operator ==(const etl::optional<T>& lhs, etl::nullopt_t)
 /// Equality operator.
 //***************************************************************************
 template <typename T>
-bool operator ==(etl::nullopt_t, const etl::optional<T>& rhs)
+bool operator ==(etl::nullopt_t, ATTR_UNUSED const etl::optional<T>& rhs)
 {
   return false;
 }
