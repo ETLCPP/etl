@@ -194,8 +194,8 @@ namespace etl
       /// Constructor
       //***********************************************************************
       Node() :
-        weight(kNeither),
-        dir(kNeither)
+        weight((uint_least8_t) kNeither),
+        dir((uint_least8_t) kNeither)
       {
       }
 
@@ -204,8 +204,8 @@ namespace etl
       //***********************************************************************
       void mark_as_leaf()
       {
-        weight = kNeither;
-        dir = kNeither;
+        weight = (uint_least8_t) kNeither;
+        dir = (uint_least8_t) kNeither;
         parent = nullptr;
         children[0] = nullptr;
         children[1] = nullptr;
@@ -245,13 +245,13 @@ namespace etl
       Node* weight_node = critical_node->children[critical_node->dir];
       while (weight_node)
       {
-        // Keep going until we reach a terminal node (dir == kNeither)
-        if (kNeither != weight_node->dir)
+        // Keep going until we reach a terminal node (dir == (uint_least8_t) kNeither)
+        if ((uint_least8_t) kNeither != weight_node->dir)
         {
           // Does this insert balance the previous weight factor value?
           if (weight_node->weight == 1 - weight_node->dir)
           {
-            weight_node->weight = kNeither;
+            weight_node->weight = (uint_least8_t) kNeither;
           }
           else
           {
@@ -269,14 +269,14 @@ namespace etl
       } // while(weight_node)
 
         // Step 2: Update weight for critical_node or rotate tree to balance node
-      if (kNeither == critical_node->weight)
+      if ((uint_least8_t) kNeither == critical_node->weight)
       {
         critical_node->weight = critical_node->dir;
       }
       // If direction is different than weight, then it will now be balanced
       else if (critical_node->dir != critical_node->weight)
       {
-        critical_node->weight = kNeither;
+        critical_node->weight = (uint_least8_t) kNeither;
       }
       // Rotate is required to balance the tree at the critical node
       else
@@ -330,12 +330,12 @@ namespace etl
       new_root->dir = 1 - dir;
 
       // Clear weight factor from current position
-      position->weight = kNeither;
+      position->weight = (uint_least8_t) kNeither;
       // Position's parent becomes new_root
       position->parent = new_root;
       position = new_root;
       // Clear weight factor from new root
-      position->weight = kNeither;
+      position->weight = (uint_least8_t) kNeither;
     }
 
     //*************************************************************************
@@ -358,7 +358,7 @@ namespace etl
       // Capture new root (either E or D depending on dir)
       Node* new_root = position->children[dir]->children[1 - dir];
       // Set weight factor for B or C based on F or G existing and being a different than dir
-      position->children[dir]->weight = third != kNeither && third != dir ? dir : kNeither;
+      position->children[dir]->weight = third != (uint_least8_t) kNeither && third != dir ? dir : (uint_least8_t) kNeither;
 
       // Detach new root from its tree (replace with new roots child)
       position->children[dir]->children[1 - dir] = new_root->children[dir];
@@ -373,7 +373,7 @@ namespace etl
       position->children[dir]->parent = new_root;
 
       // Set weight factor for A based on F or G
-      position->weight = third != kNeither && third == dir ? 1 - dir : kNeither;
+      position->weight = third != (uint_least8_t) kNeither && third == dir ? 1 - dir : (uint_least8_t) kNeither;
 
       // Move new root's right tree to current roots left tree
       position->children[dir] = new_root->children[1 - dir];
@@ -391,7 +391,7 @@ namespace etl
       position->parent = new_root;
       position = new_root;
       // Clear weight factor for new current position
-      position->weight = kNeither;
+      position->weight = (uint_least8_t) kNeither;
     }
 
     //*************************************************************************
@@ -402,10 +402,10 @@ namespace etl
       if (position)
       {
         // Is there a tree on the right? then find the minimum of that tree
-        if (position->children[kRight])
+        if (position->children[(uint_least8_t) kRight])
         {
           // Return minimum node found
-          position = find_limit_node(position->children[kRight], kLeft);
+          position = find_limit_node(position->children[(uint_least8_t) kRight], kLeft);
         }
         // Otherwise find the parent of this node
         else
@@ -418,7 +418,7 @@ namespace etl
             // Find parent of current position
             parent = position->parent; // find_parent_node(root_node, position);
                                        // Repeat while previous position was on right side of parent tree
-          } while (parent && parent->children[kRight] == position);
+          } while (parent && parent->children[(uint_least8_t) kRight] == position);
 
           // Set parent node as the next position
           position = parent;
@@ -434,10 +434,10 @@ namespace etl
       if (position)
       {
         // Is there a tree on the right? then find the minimum of that tree
-        if (position->children[kRight])
+        if (position->children[(uint_least8_t) kRight])
         {
           // Return minimum node found
-          position = find_limit_node(position->children[kRight], kLeft);
+          position = find_limit_node(position->children[(uint_least8_t) kRight], kLeft);
         }
         // Otherwise find the parent of this node
         else
@@ -450,7 +450,7 @@ namespace etl
             // Find parent of current position
             parent = position->parent;
             // Repeat while previous position was on right side of parent tree
-          } while (parent && parent->children[kRight] == position);
+          } while (parent && parent->children[(uint_least8_t) kRight] == position);
 
           // Set parent node as the next position
           position = parent;
@@ -472,10 +472,10 @@ namespace etl
       else
       {
         // Is there a tree on the left? then find the maximum of that tree
-        if (position->children[kLeft])
+        if (position->children[(uint_least8_t) kLeft])
         {
           // Return maximum node found
-          position = find_limit_node(position->children[kLeft], kRight);
+          position = find_limit_node(position->children[(uint_least8_t) kLeft], kRight);
         }
         // Otherwise find the parent of this node
         else
@@ -488,7 +488,7 @@ namespace etl
             // Find parent of current position
             parent = position->parent;
             // Repeat while previous position was on left side of parent tree
-          } while (parent && parent->children[kLeft] == position);
+          } while (parent && parent->children[(uint_least8_t) kLeft] == position);
 
           // Set parent node as the next position
           position = parent;
@@ -510,10 +510,10 @@ namespace etl
       else
       {
         // Is there a tree on the left? then find the maximum of that tree
-        if (position->children[kLeft])
+        if (position->children[(uint_least8_t) kLeft])
         {
           // Return maximum node found
-          position = find_limit_node(position->children[kLeft], kRight);
+          position = find_limit_node(position->children[(uint_least8_t) kLeft], kRight);
         }
         // Otherwise find the parent of this node
         else
@@ -526,7 +526,7 @@ namespace etl
             // Find parent of current position
             parent = position->parent;
             // Repeat while previous position was on left side of parent tree
-          } while (parent && parent->children[kLeft] == position);
+          } while (parent && parent->children[(uint_least8_t) kLeft] == position);
 
           // Set parent node as the next position
           position = parent;
@@ -589,15 +589,15 @@ namespace etl
 
       // Point swap node to detached node's parent, children and weight
       swap->parent = detached->parent;
-      swap->children[kLeft] = detached->children[kLeft];
-      swap->children[kRight] = detached->children[kRight];
-      if (swap->children[kLeft])
+      swap->children[(uint_least8_t) kLeft] = detached->children[(uint_least8_t) kLeft];
+      swap->children[(uint_least8_t) kRight] = detached->children[(uint_least8_t) kRight];
+      if (swap->children[(uint_least8_t) kLeft])
       {
-        swap->children[kLeft]->parent = swap;
+        swap->children[(uint_least8_t) kLeft]->parent = swap;
       }
-      if (swap->children[kRight])
+      if (swap->children[(uint_least8_t) kRight])
       {
-        swap->children[kRight]->parent = swap;
+        swap->children[(uint_least8_t) kRight]->parent = swap;
       }
       swap->weight = detached->weight;
     }
@@ -1412,18 +1412,18 @@ namespace etl
         if (node_comp(key, data_node))
         {
           // Keep searching for the node on the left
-          position = position->children[kLeft];
+          position = position->children[(uint_least8_t) kLeft];
         }
         else if (node_comp(data_node, key))
         {
           // Keep searching for the node on the right
-          position = position->children[kRight];
+          position = position->children[(uint_least8_t) kRight];
         }
         else
         {
           // We found one, keep looking for more on the left
           found = position;
-          position = position->children[kLeft];
+          position = position->children[(uint_least8_t) kLeft];
         }
       }
 
@@ -1445,18 +1445,18 @@ namespace etl
         if (node_comp(key, data_node))
         {
           // Keep searching for the node on the left
-          position = position->children[kLeft];
+          position = position->children[(uint_least8_t) kLeft];
         }
         else if (node_comp(data_node, key))
         {
           // Keep searching for the node on the right
-          position = position->children[kRight];
+          position = position->children[(uint_least8_t) kRight];
         }
         else
         {
           // We found one, keep looking for more on the left
           found = position;
-          position = position->children[kLeft];
+          position = position->children[(uint_least8_t) kLeft];
         }
       }
 
@@ -1479,9 +1479,9 @@ namespace etl
         if (node_comp(key, data_node))
         {
           lower_node = position;
-          if (position->children[kLeft])
+          if (position->children[(uint_least8_t) kLeft])
           {
-            position = position->children[kLeft];
+            position = position->children[(uint_least8_t) kLeft];
           }
           else
           {
@@ -1491,13 +1491,13 @@ namespace etl
         }
         else if (node_comp(data_node, key))
         {
-          position = position->children[kRight];
+          position = position->children[(uint_least8_t) kRight];
         }
         else
         {
           // Make note of current position, but keep looking to left for more
           lower_node = position;
-          position = position->children[kLeft];
+          position = position->children[(uint_least8_t) kLeft];
         }
       }
 
@@ -1521,15 +1521,15 @@ namespace etl
         // Compare the key value to the current upper node key value
         if (node_comp(data_node, key))
         {
-          position = position->children[kRight];
+          position = position->children[(uint_least8_t) kRight];
         }
         else if (node_comp(key, data_node))
         {
           upper_node = position;
           // If a node equal to key hasn't been found go left
-          if (!found && position->children[kLeft])
+          if (!found && position->children[(uint_least8_t) kLeft])
           {
-            position = position->children[kLeft];
+            position = position->children[(uint_least8_t) kLeft];
           }
           else
           {
@@ -1566,8 +1566,8 @@ namespace etl
         while (found)
         {
           // Search for critical weight node (all nodes whose weight factor
-          // is set to kNeither (balanced)
-          if (kNeither != found->weight)
+          // is set to (uint_least8_t) kNeither (balanced)
+          if ((uint_least8_t) kNeither != found->weight)
           {
             critical_node = found;
           }
@@ -1579,27 +1579,27 @@ namespace etl
           if (node_comp(node, found_data_node))
           {
             // Update direction taken to insert new node in parent node
-            found->dir = kLeft;
+            found->dir = (uint_least8_t) kLeft;
           }
           // Is the node provided to the right of the current position?
           else if (node_comp(found_data_node, node))
           {
             // Update direction taken to insert new node in parent node
-            found->dir = kRight;
+            found->dir = (uint_least8_t) kRight;
           }
           else
           {
             // Update direction taken to insert new node in parent (and
             // duplicate) node to the right.
-            found->dir = kRight;
+            found->dir = (uint_least8_t) kRight;
           }
 
           // Is there a child of this parent node?
           if (found->children[found->dir])
           {
             // Will this node be the parent of the next critical node whose
-            // weight factor is set to kNeither (balanced)?
-            if (kNeither != found->children[found->dir]->weight)
+            // weight factor is set to (uint_least8_t) kNeither (balanced)?
+            if ((uint_least8_t) kNeither != found->children[found->dir]->weight)
             {
               critical_parent_node = found;
             }
@@ -1675,7 +1675,7 @@ namespace etl
           {
             // Which direction does parent use to get to this node?
             node->parent->dir =
-              node->parent->children[kLeft] == node ? kLeft : kRight;
+              node->parent->children[(uint_least8_t) kLeft] == node ? (uint_least8_t) kLeft : (uint_least8_t) kRight;
 
             // Make this nodes parent the next node
             node = node->parent;
@@ -1697,20 +1697,20 @@ namespace etl
           if (node == found)
           {
             // Update the direction towards a replacement node at the found node
-            node->dir = node->children[kLeft] ? kLeft : kRight;
+            node->dir = node->children[(uint_least8_t) kLeft] ? (uint_least8_t) kLeft : (uint_least8_t) kRight;
 
             // Exit loop and proceed with step 3
             break;
           }
           else
           {
-            // If this nodes weight is kNeither or we are taking the shorter path
+            // If this nodes weight is (uint_least8_t) kNeither or we are taking the shorter path
             // to the next node and our sibling (on longer path) is balanced then
             // we need to update the balance node to this node but all our
             // ancestors will not require rebalancing
-            if ((node->weight == kNeither) ||
+            if ((node->weight == (uint_least8_t) kNeither) ||
               (node->weight == (1 - node->dir) &&
-                node->children[1 - node->dir]->weight == kNeither))
+                node->children[1 - node->dir]->weight == (uint_least8_t) kNeither))
             {
               // Update balance node to this node
               balance = node;
@@ -1737,13 +1737,13 @@ namespace etl
             break;
           }
 
-          // If this nodes weight is kNeither or we are taking the shorter path
+          // If this nodes weight is (uint_least8_t) kNeither or we are taking the shorter path
           // to the next node and our sibling (on longer path) is balanced then
           // we need to update the balance node to this node but all our
           // ancestors will not require rebalancing
-          if ((node->weight == kNeither) ||
+          if ((node->weight == (uint_least8_t) kNeither) ||
             (node->weight == (1 - node->dir) &&
-              node->children[1 - node->dir]->weight == kNeither))
+              node->children[1 - node->dir]->weight == (uint_least8_t) kNeither))
           {
             // Update balance node to this node
             balance = node;
@@ -1759,17 +1759,17 @@ namespace etl
           if (node_comp(data_node, replace_data_node))
           {
             // Update the direction to the replace node
-            node->dir = kLeft;
+            node->dir = (uint_least8_t) kLeft;
           }
           else if (node_comp(replace_data_node, data_node))
           {
             // Update the direction to the replace node
-            node->dir = kRight;
+            node->dir = (uint_least8_t) kRight;
           }
           else
           {
             // Update the direction to the replace node
-            node->dir = node->children[kLeft] ? kLeft : kRight;
+            node->dir = node->children[(uint_least8_t) kLeft] ? (uint_least8_t) kLeft : (uint_least8_t) kRight;
           }
         } // while(node)
 
@@ -1783,9 +1783,9 @@ namespace etl
             break;
           }
 
-          // If balance node is balanced already (kNeither) then just imbalance
+          // If balance node is balanced already ((uint_least8_t) kNeither) then just imbalance
           // the node in the opposite direction of the node being removed
-          if (balance->weight == kNeither)
+          if (balance->weight == (uint_least8_t) kNeither)
           {
             balance->weight = 1 - balance->dir;
           }
@@ -1793,7 +1793,7 @@ namespace etl
           // node being removed then the node now becomes balanced
           else if (balance->weight == balance->dir)
           {
-            balance->weight = kNeither;
+            balance->weight = (uint_least8_t) kNeither;
           }
           // Otherwise a rotation is required at this node
           else
@@ -1816,7 +1816,7 @@ namespace etl
             }
             // Already balanced, rebalance and make it heavy in opposite
             // direction of the node being removed
-            else if (weight == kNeither)
+            else if (weight == (uint_least8_t) kNeither)
             {
               // Is the root node being rebalanced (no parent)
               if (balance->parent == nullptr)
