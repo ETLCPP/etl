@@ -7,7 +7,11 @@
 // compile and run any of them on any platform, but your performance with the
 // non-native version will be less than optimal.
 
-#pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
+#include "platform.h"
+
+#ifdef ETL_COMPILER_GCC
+  #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
+#endif
 
 #include "murmurhash3.h"
 
