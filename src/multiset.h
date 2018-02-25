@@ -566,7 +566,7 @@ namespace etl
       // Capture new root (either E or D depending on dir)
       Node* new_root = position->children[dir]->children[1 - dir];
       // Set weight factor for B or C based on F or G existing and being a different than dir
-      position->children[dir]->weight = third != kNeither && third != dir ? dir : kNeither;
+      position->children[dir]->weight = third != kNeither && third != dir ? dir : uint_least8_t(kNeither);
 
       // Detach new root from its tree (replace with new roots child)
       position->children[dir]->children[1 - dir] = new_root->children[dir];
