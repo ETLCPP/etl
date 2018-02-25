@@ -1,4 +1,9 @@
 ===============================================================================
+10.21.0
+Completion of operator set for etl::optional
+Removal of more GCC warnings when using -Wextra.
+
+===============================================================================
 10.20.0
 Rewrite of debounce code to factor out commonality.
 Made interrupt locks in C timer framework to match that of C++ version.
