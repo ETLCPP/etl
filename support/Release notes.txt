@@ -1,4 +1,8 @@
 ===============================================================================
+10.21.1
+Removal of GCC warnings from variant.h.
+
+===============================================================================
 10.21.0
 Completion of operator set for etl::optional
 Removal of more GCC warnings when using -Wextra.
