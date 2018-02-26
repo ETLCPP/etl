@@ -643,14 +643,22 @@ namespace etl
     {
     public:
 
-      TBase& operator()(uint_least8_t* p_data)
+      TBase& operator()(uint_least8_t* p_data, uint_least8_t typeId)
       {
-        return reinterpret_cast<U1&>(*p_data);
+        switch (typeId)
+        {
+          case 0: return reinterpret_cast<U1&>(*p_data);
+          default: return reinterpret_cast<TBase&>(*reinterpret_cast<TBase*>(0));
+        }
       }
 
-      const TBase& operator()(uint_least8_t* p_data) const
+      const TBase& operator()(uint_least8_t* p_data, uint_least8_t typeId) const
       {
-        return reinterpret_cast<const U1&>(*p_data);
+        switch (typeId)
+        {
+          case 0: return reinterpret_cast<const U1&>(*p_data);
+          default: return reinterpret_cast<const TBase&>(*reinterpret_cast<const TBase*>(0));
+        }
       }
     };
 
