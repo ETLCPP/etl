@@ -643,12 +643,12 @@ namespace etl
     {
     public:
 
-      TBase& operator()(uint_least8_t* p_data, uint_least8_t typeId)
+      TBase& operator()(uint_least8_t* p_data)
       {
         return reinterpret_cast<U1&>(*p_data);
       }
 
-      const TBase& operator()(uint_least8_t* p_data, uint_least8_t typeId) const
+      const TBase& operator()(uint_least8_t* p_data) const
       {
         return reinterpret_cast<const U1&>(*p_data);
       }
