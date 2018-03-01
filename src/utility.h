@@ -40,17 +40,6 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  /// exchange
-  //***************************************************************************
-  template <typename T, typename U = T>
-  T exchange(T& object, U& new_value)
-  {
-    T old_value = object;
-    object = new_value;
-    return old_value;
-  }
-
-  //***************************************************************************
   /// exchange (const)
   //***************************************************************************
   template <typename T, typename U = T>
