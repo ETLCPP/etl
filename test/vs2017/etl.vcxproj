@@ -172,6 +172,7 @@
     <ClInclude Include="..\..\src\type_traits_generator.h" />
     <ClInclude Include="..\..\src\variant_pool.h" />
     <ClInclude Include="..\..\src\variant_pool_generator.h" />
+    <ClInclude Include="..\..\src\version.h" />
     <ClInclude Include="..\..\unittest-cpp\UnitTest++\AssertException.h" />
     <ClInclude Include="..\..\unittest-cpp\UnitTest++\CheckMacros.h" />
     <ClInclude Include="..\..\unittest-cpp\UnitTest++\Checks.h" />

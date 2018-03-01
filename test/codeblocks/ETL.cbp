@@ -208,6 +208,7 @@
 		<Unit filename="../../src/variant.h" />
 		<Unit filename="../../src/variant_pool.h" />
 		<Unit filename="../../src/vector.h" />
+		<Unit filename="../../src/version.h" />
 		<Unit filename="../../src/visitor.h" />
 		<Unit filename="../../src/wstring.h" />
 		<Unit filename="../../unittest-cpp/UnitTest++/AssertException.cpp" />
