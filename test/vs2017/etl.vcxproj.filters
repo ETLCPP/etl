@@ -576,6 +576,9 @@
     <ClInclude Include="..\..\src\variant_pool_generator.h">
       <Filter>ETL\Containers\Generators</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\version.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
