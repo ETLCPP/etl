@@ -132,7 +132,7 @@ namespace
     return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
   }
 
-  std::ostream& operator <<(std::ostream& os, const D0& d)
+  std::ostream& operator <<(std::ostream& os, const D0&)
   {
      return os;
   }
