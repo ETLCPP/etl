@@ -25,3 +25,9 @@ target_include_directories(etl
   PRIVATE
   src/private
   )
+
+target_compile_definitions(etl
+  PUBLIC
+  PROFILE_GCC_GENERIC
+  )
+
