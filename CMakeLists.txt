@@ -13,6 +13,8 @@ project(etl)
 set(ETL_PROFILE "DEFAULT" CACHE STRING "Defines what profile header to include.  See https://www.etlcpp.com/setup.html"
 )
 
+option(BUILD_TESTS "Build unit tests" ON)
+
 add_library(etl
   src/binary.cpp
   src/crc16_ccitt.cpp
@@ -36,19 +38,19 @@ target_include_directories(etl
   )
 
 if (${ETL_PROFILE} STREQUAL DEFAULT)
-  if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+  if (${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
     set(ETL_PROFILE "PROFILE_GCC_GENERIC")
 
-  elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  elseif (${CMAKE_CXX_COMPILER_ID} MATCHES "MSVC")
     set(ETL_PROFILE "PROFILE_MSVC")
  
-  elseif (CMAKE_CXX_COMPILER_ID MATCHES "ARMCC")
-    if (CXX_STANDARD EQUAL 11)
+  elseif (${CMAKE_CXX_COMPILER_ID} MATCHES "ARMCC")
+    if (${CXX_STANDARD} EQUAL 11)
       set(ETL_PROFILE "PROFILE_ARMV6")
     else ()
       set(ETL_PROFILE "PROFILE_ARMV5")
     endif()
-  elseif (CMAKE_CXX_COMPILER_ID MATCHES "TI")
+  elseif (${CMAKE_CXX_COMPILER_ID} MATCHES "TI")
     set(ETL_PROFILE "PROFILE_TICC")
 
   else()
@@ -63,3 +65,9 @@ target_compile_definitions(etl
   ${ETL_PROFILE} 
   )
 
+
+
+if (BUILD_TESTS)
+  enable_testing()
+  add_subdirectory(test) 
+endif()
