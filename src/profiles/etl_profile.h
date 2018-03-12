@@ -34,9 +34,9 @@ SOFTWARE.
 #elif PROFILE_GCC_GENERIC
   #include "gcc_generic.h"
 #elif PROFILE_GCC_LINUX_X86
-  #include "gcc_linux_x86"
+  #include "gcc_linux_x86.h"
 #elif PROFILE_GCC_WINDOWS_X86
-  #include "gcc_windows_x86"
+  #include "gcc_windows_x86.h"
 #elif PROFILE_ARM_V5_GENERIC
   #include "armv5.h"
 #elif PROFILE_ARM_V6_GENERIC
