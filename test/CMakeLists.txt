@@ -8,9 +8,9 @@ if(NOT UnitTest++_FOUND)
   # Add unittest-cpp as an ExternalProject  
   include(cmake/unit-test_external_project.cmake)
   add_unittest_cpp()
-else()
-  include_directories(${UTPP_INCLUDE_DIRS})
 endif()
+
+include_directories(${UTPP_INCLUDE_DIRS})
 
 
 
