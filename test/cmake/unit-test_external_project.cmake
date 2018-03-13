@@ -15,4 +15,9 @@ function (add_unittest_cpp)
   )
   
   set(UTPP_INCLUDE_DIRS "${UTPP_INSATLL_DIR}/include/UnitTest++" PARENT_SCOPE)
+  add_library(UnitTest++ STATIC IMPORTED)
+  # TODO this lib name is platform specific 
+  set_target_properties(UnitTest++ PROPERTIES IMPORTED_LOCATION "${UTPP_INSATLL_DIR}/lib/libUnitTest++.a" )
+  add_dependencies(UnitTest++ unittest-cpp)
+
 endfunction(add_unittest_cpp)
