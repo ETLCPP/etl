@@ -472,6 +472,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Doxyfile" />
+    <None Include="..\..\etl.pspimage" />
+    <None Include="..\..\etl.xar" />
     <None Include="..\..\library.properties" />
     <None Include="..\..\include\etl\generate.bat" />
     <None Include="..\..\include\etl\generate_fsm.bat" />
@@ -483,8 +485,17 @@
     <None Include="..\..\include\etl\generate_variant_pool.bat" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="..\..\CMakeLists.txt" />
     <Text Include="..\..\include\etl\file_error_numbers.txt" />
     <Text Include="..\..\support\Release notes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\etl.ico" />
+    <Image Include="..\..\etl.png" />
+    <Image Include="..\..\etl16.png" />
+    <Image Include="..\..\etl32.png" />
+    <Image Include="..\..\etl48.png" />
+    <Image Include="..\..\favicon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

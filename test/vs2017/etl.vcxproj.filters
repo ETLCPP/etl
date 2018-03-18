@@ -61,6 +61,15 @@
     <Filter Include="ETL\Containers\Generators">
       <UniqueIdentifier>{e4a699ae-e7f3-418e-bf9f-211c21f7f4b2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Generators">
+      <UniqueIdentifier>{7371282e-fddc-4269-891b-e909f74ff8e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Make">
+      <UniqueIdentifier>{3353062c-e8dc-4095-b7cf-d11fc952263e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Images">
+      <UniqueIdentifier>{4d08353c-b393-47c7-a9eb-c9f2f8c25887}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\doxygen.h">
@@ -974,28 +983,34 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\..\include\etl\generate.bat">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\..\include\etl\generate_message_router.bat">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Generators</Filter>
     </None>
     <None Include="..\..\include\etl\generate_fsm.bat">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Generators</Filter>
     </None>
     <None Include="..\..\include\etl\generate_largest.bat">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generate_message_router.bat">
+      <Filter>Resource Files\Generators</Filter>
     </None>
     <None Include="..\..\include\etl\generate_smallest.bat">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\..\include\etl\generate_type_traits.bat">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Generators</Filter>
     </None>
     <None Include="..\..\include\etl\generate_type_lookup.bat">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generate_type_traits.bat">
+      <Filter>Resource Files\Generators</Filter>
     </None>
     <None Include="..\..\include\etl\generate_variant_pool.bat">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\etl.pspimage">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="..\..\etl.xar">
+      <Filter>Resource Files\Images</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -1005,5 +1020,28 @@
     <Text Include="..\..\support\Release notes.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="..\..\CMakeLists.txt">
+      <Filter>Resource Files\Make</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\etl.ico">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\etl.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\etl16.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\etl32.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\etl48.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\favicon.ico">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
   </ItemGroup>
 </Project>
