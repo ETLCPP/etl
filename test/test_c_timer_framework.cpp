@@ -35,7 +35,7 @@ extern "C"
 {
   uint32_t timer_semaphore;
 
-  #include "ecl_timer.h"
+  #include "../include/etl/c/ecl_timer.h"
 }
 
 #include <iostream>

@@ -39,3 +39,7 @@
 39 message_bus
 40 factory / variant_pool
 41 array_view
+42 string_view
+43 callback_timer
+44 message_timer
+45 type_lookup

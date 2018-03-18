@@ -29,7 +29,7 @@ SOFTWARE.
 #include <stdint.h>
 #include <assert.h>
 
-#include "ecl_timer.h"
+#include "../../include/etl/c/ecl_timer.h"
 
 //*****************************************************************************
 // Internal timer list
@@ -326,7 +326,7 @@ ecl_timer_id_t ecl_timer_register(void             (*pcallback_)(),
 ecl_timer_result_t ecl_timer_unregister(ecl_timer_id_t id_)
 {
   assert(ecl.ptimers != 0);
-  
+
   ecl_timer_result_t result = ECL_TIMER_FAIL;
 
   if (id_ != ECL_TIMER_NO_TIMER)
@@ -376,7 +376,7 @@ ecl_timer_result_t ecl_timer_is_running()
 /// Clears the timer of data.
 //*******************************************
 void ecl_timer_clear()
-{ 
+{
   ecl_timer_list_clear();
 
   int i;
@@ -398,7 +398,7 @@ void ecl_timer_clear()
 ecl_timer_result_t ecl_timer_tick(uint32_t count)
 {
   assert(ecl.ptimers != 0);
-  
+
   if (ecl.enabled)
   {
     if (ECL_TIMER_PROCESSING_ENABLED)
@@ -452,7 +452,7 @@ ecl_timer_result_t ecl_timer_tick(uint32_t count)
 ecl_timer_result_t ecl_timer_start(ecl_timer_id_t id_, ecl_timer_start_t immediate_)
 {
   assert(ecl.ptimers != 0);
-  
+
   ecl_timer_result_t result = ECL_TIMER_FAIL;
 
   // Valid timer id?
@@ -490,7 +490,7 @@ ecl_timer_result_t ecl_timer_start(ecl_timer_id_t id_, ecl_timer_start_t immedia
 ecl_timer_result_t ecl_timer_stop(ecl_timer_id_t id_)
 {
   assert(ecl.ptimers != 0);
-  
+
   ecl_timer_result_t result = ECL_TIMER_FAIL;
 
   // Valid timer id?
@@ -520,7 +520,7 @@ ecl_timer_result_t ecl_timer_stop(ecl_timer_id_t id_)
 ecl_timer_result_t ecl_timer_set_period(ecl_timer_id_t id_, ecl_timer_time_t period_)
 {
   assert(ecl.ptimers != 0);
-  
+
   if (ecl_timer_stop(id_))
   {
     ecl.ptimers[id_].period = period_;
@@ -536,7 +536,7 @@ ecl_timer_result_t ecl_timer_set_period(ecl_timer_id_t id_, ecl_timer_time_t per
 ecl_timer_result_t ecl_timer_set_mode(ecl_timer_id_t id_, ecl_timer_mode_t repeating_)
 {
   assert(ecl.ptimers != 0);
-  
+
   if (ecl_timer_stop(id_))
   {
     ecl.ptimers[id_].repeating = repeating_;
