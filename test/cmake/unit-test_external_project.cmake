@@ -7,13 +7,10 @@ function (add_unittest_cpp)
 
   set(UTPP_INSATLL_DIR "${CMAKE_CURRENT_BINARY_DIR}/unittest++/install")
   if (WIN32)
-    set(UTPP_LIB_PREFIX "")
-    set(UTPP_LIB_SUFFIX ".lib")
+    set(UTPP_LIB_NAME "UnitTest++.lib")
   else()
-    set(UTPP_LIB_PREFIX "lib")
-    set(UTPP_LIB_SUFFIX ".a")
+    set(UTPP_LIB_NAME "libUnitTest++.a")
   endif()
-  set(UTPP_LIB_NAME ${UTPP_LIB_PREFIX}Unittest++${UTPP_LIB_SUFFIX})
 
 
   ExternalProject_Add(unittest-cpp
@@ -27,7 +24,6 @@ function (add_unittest_cpp)
   
   set(UTPP_INCLUDE_DIRS "${UTPP_INSATLL_DIR}/include/UnitTest++" PARENT_SCOPE)
   add_library(UnitTest++ STATIC IMPORTED)
-  # TODO this lib name is platform specific 
   set_target_properties(UnitTest++ PROPERTIES IMPORTED_LOCATION "${UTPP_INSATLL_DIR}/lib/${UTPP_LIB_NAME}" )
   add_dependencies(UnitTest++ unittest-cpp)
 
