@@ -1,13 +1,11 @@
-///\file
-
 /******************************************************************************
 The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
-Copyright(c) 2016 jwellbelove
+Copyright(c) 2017 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,48 +26,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_UTILITY__
-#define __ETL_UTILITY__
+#ifndef __ETL_ATOMIC__
+#define __ETL_ATOMIC__
 
 #include "platform.h"
-#include "type_traits.h"
 
-///\defgroup utility utility
-///\ingroup utilities
+#if ETL_ATOMIC_SUPPORTED == 1
+  #include <atomic>
 
-namespace etl
-{
-  //***************************************************************************
-  /// exchange
-  //***************************************************************************
-  template <typename T, typename U = T>
-  T exchange(T& object, U& new_value)
+  namespace etl
   {
-    T old_value = object;
-    object = new_value;
-    return old_value;
+    typedef std::atomic<uint32_t> atomic_uint32_t;
   }
-
-  //***************************************************************************
-  /// exchange (const)
-  //***************************************************************************
-  template <typename T, typename U = T>
-  T exchange(T& object, const U& new_value)
-  {
-    T old_value = object;
-    object = new_value;
-    return old_value;
-  }
-
-  //***************************************************************************
-  /// as_const
-  //***************************************************************************
-  template <typename T>
-  typename etl::add_const<T>::type& as_const(T& t)
-  {
-    return t;
-  }
-}
-
+  #define ETL_CPP11_ATOMIC_AVAILABLE 1
+#elif defined(ETL_COMPILER_ARM)
+  #include "atomic/atomic_arm.h"
+  #define ETL_ETL_ATOMIC_AVAILABLE 1
+#elif defined(ETL_COMPILER_GCC)
+  #include "atomic/atomic_gcc.h"
+  #define ETL_ATOMIC_AVAILABLE 1
+#elif defined(ETL_COMPILER_MSVC)
+  #include "atomic/atomic_windows.h"
+  #define ETL_ATOMIC_AVAILABLE 1
+#else
+  #warning NO ATOMIC SUPPORT DEFINED!
+  #define ETL_ATOMIC_AVAILABLE 0
 #endif
 
+#endif

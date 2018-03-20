@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "../platform.h"
-#include "pvoidvector.h"
+#include "../../include/etl/platform.h"
+#include "../../include/etl/private/pvoidvector.h"
 
 namespace etl
 {
