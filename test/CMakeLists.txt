@@ -35,7 +35,6 @@ add_executable(etl_tests
   test_cyclic_value.cpp
   test_debounce.cpp
   test_deque.cpp
-  #test_embedded_compile.cpp
   test_endian.cpp
   test_enum_type.cpp
   test_error_handler.cpp
@@ -113,6 +112,7 @@ add_executable(etl_tests
   test_xor_checksum.cpp
   test_xor_rotate_checksum.cpp
 
+  # Compile the source level ecl_timer here as test has provided a ecl_user.h file
   ${CMAKE_SOURCE_DIR}/src/c/ecl_timer.c
   )
 target_link_libraries(etl_tests etl UnitTest++)
@@ -123,3 +123,12 @@ target_include_directories(etl_tests
 
 # Enable the 'make test' CMake target using the executable defined above
 add_test(etl_unit_tests etl_tests)
+
+# Since ctest will only show you the results of the single executable
+# define a target that will output all of the failing or passing tests
+# as they appear from UnitTest++
+add_custom_target(test_verbose COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
+
+
+# TODO: Enable embedded compile target testing
+#test_embedded_compile.cpp
