@@ -18,10 +18,9 @@ else()
   # Therefore we update the provide UTPP_INCLUDE_DIRS here
   set(UTPP_INCLUDE_DIRS "${UTPP_INCLUDE_DIRS}/UnitTest++")
 endif()
-
 include_directories(${UTPP_INCLUDE_DIRS})
 
-add_executable(etl_tests 
+set(TEST_SOURCE_FILES
   main.cpp
   murmurhash3.cpp
   test_algorithm.cpp
@@ -29,7 +28,6 @@ add_executable(etl_tests
   test_array.cpp
   test_array_view.cpp
   test_array_wrapper.cpp
-  test_atomic_gcc.cpp
   test_binary.cpp
   test_bitset.cpp
   test_bloom_filter.cpp
@@ -124,6 +122,21 @@ add_executable(etl_tests
   # Compile the source level ecl_timer here as test has provided a ecl_user.h file
   ${CMAKE_SOURCE_DIR}/src/c/ecl_timer.c
   )
+
+if (WIN32)
+  # test_error_handler.cpp uses windows APIs that assume the microsoft project
+  # is setup for unicode support.  Note: This may have adverse effects on client
+  # projects and the tests should be updated to be independent of project setup 
+  ADD_DEFINITIONS(-DUNICODE)
+  ADD_DEFINITIONS(-D_UNICODE)
+endif()
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU") 
+  list(APPEND TEST_SOURCE_FILES "test_atomic_gcc.cpp")
+endif()
+add_executable(etl_tests 
+  ${TEST_SOURCE_FILES}
+  )
 target_link_libraries(etl_tests etl UnitTest++)
 target_include_directories(etl_tests
   PUBLIC 
@@ -139,5 +152,6 @@ add_test(etl_unit_tests etl_tests)
 add_custom_target(test_verbose COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
 
 
-# TODO: Enable embedded compile target testing
-#test_embedded_compile.cpp
+# Remaining Tests to be implemented: 
+#1. Enable embedded compile target testing
+#   - test_embedded_compile.cpp
