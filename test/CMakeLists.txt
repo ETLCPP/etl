@@ -12,10 +12,9 @@ endif()
 
 include_directories(${UTPP_INCLUDE_DIRS})
 
-
-
 add_executable(etl_tests 
   main.cpp
+  murmurhash3.cpp
   test_algorithm.cpp
   test_alignment.cpp
   test_array.cpp
@@ -36,7 +35,7 @@ add_executable(etl_tests
   test_cyclic_value.cpp
   test_debounce.cpp
   test_deque.cpp
-  test_embedded_compile.cpp
+  #test_embedded_compile.cpp
   test_endian.cpp
   test_enum_type.cpp
   test_error_handler.cpp
@@ -113,6 +112,14 @@ add_executable(etl_tests
   test_visitor.cpp
   test_xor_checksum.cpp
   test_xor_rotate_checksum.cpp
+
+  ${CMAKE_SOURCE_DIR}/src/c/ecl_timer.c
   )
 target_link_libraries(etl_tests etl UnitTest++)
-add_test(etl_test_target etl_tests)
+target_include_directories(etl_tests
+  PUBLIC 
+  ${CMAKE_CURRENT_LIST_DIR} 
+  )
+
+# Enable the 'make test' CMake target using the executable defined above
+add_test(etl_unit_tests etl_tests)
