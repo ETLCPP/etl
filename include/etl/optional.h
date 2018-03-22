@@ -313,6 +313,18 @@ namespace etl
       other = temp;
     }
 
+    //***************************************************************************
+    /// Reset back to invalid.
+    //***************************************************************************
+    void reset()
+    {
+      if (valid)
+      {
+        storage.template get_reference<T>().~T();
+        valid = false;
+      }
+    }
+
   private:
 
     typename etl::aligned_storage_as<sizeof(T), T>::type storage;

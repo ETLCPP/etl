@@ -396,5 +396,15 @@ namespace
       CHECK_EQUAL(data1, original2);
       CHECK_EQUAL(data2, original1);
     }
+
+    //*************************************************************************
+    TEST(test_reset)
+    {
+      etl::optional<Data> data(Data("1"));
+      CHECK(bool(data));
+
+      data.reset();
+      CHECK(!bool(data));
+    }
   };
 }
