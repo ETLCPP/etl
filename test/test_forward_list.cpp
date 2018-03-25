@@ -124,9 +124,26 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_range)
     {
+      CompareDataNDC compare(sorted_data.begin(), sorted_data.end());
       DataNDC data(sorted_data.begin(), sorted_data.end());
 
       CHECK(!data.empty());
+
+      are_equal = std::equal(data.begin(), data.end(), compare.begin());
+
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
+    {
+      CompareDataNDC compare = { ItemNDC("0"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3") };
+      DataNDC data = { ItemNDC("0"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3") };
+
+      CHECK(!data.empty());
+
+      are_equal = std::equal(data.begin(), data.end(), compare.begin());
+      CHECK(are_equal);
     }
 
     //*************************************************************************

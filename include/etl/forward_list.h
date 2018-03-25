@@ -46,6 +46,10 @@ SOFTWARE.
 #include "type_traits.h"
 #include "parameter_type.h"
 
+#if ETL_CPP11_SUPPORTED
+  #include <initializer_list>
+#endif
+
 #ifdef ETL_COMPILER_MICROSOFT
 #undef min
 #endif
@@ -1382,7 +1386,7 @@ namespace etl
     forward_list()
       : etl::iforward_list<T>(node_pool, MAX_SIZE)
     {
-      etl::iforward_list<T>::initialise();
+      this->initialise();
     }
 
     //*************************************************************************
@@ -1391,7 +1395,7 @@ namespace etl
     explicit forward_list(size_t initial_size, typename etl::iforward_list<T>::parameter_t value = T())
       : etl::iforward_list<T>(node_pool, MAX_SIZE)
     {
-      etl::iforward_list<T>::assign(initial_size, value);
+      this->assign(initial_size, value);
     }
 
     //*************************************************************************
@@ -1400,7 +1404,7 @@ namespace etl
     forward_list(const forward_list& other)
       : etl::iforward_list<T>(node_pool, MAX_SIZE)
     {
-      etl::iforward_list<T>::assign(other.cbegin(), other.cend());
+      this->assign(other.cbegin(), other.cend());
     }
 
     //*************************************************************************
@@ -1410,15 +1414,26 @@ namespace etl
     forward_list(TIterator first, TIterator last)
       : etl::iforward_list<T>(node_pool, MAX_SIZE)
     {
-      etl::iforward_list<T>::assign(first, last);
+      this->assign(first, last);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Construct from initializer_list.
+    //*************************************************************************
+    forward_list(std::initializer_list<T> init)
+      : etl::iforward_list<T>(node_pool, MAX_SIZE)
+    {
+      this->assign(init.begin(), init.end());
+    }
+#endif
 
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
     ~forward_list()
     {
-      etl::iforward_list<T>::initialise();
+      this->initialise();
     }
 
     //*************************************************************************
@@ -1428,7 +1443,7 @@ namespace etl
     {
       if (&rhs != this)
       {
-        etl::iforward_list<T>::assign(rhs.cbegin(), rhs.cend());
+        this->assign(rhs.cbegin(), rhs.cend());
       }
 
       return *this;

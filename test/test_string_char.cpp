@@ -218,6 +218,16 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_construct_initializer_list)
+    {
+      Compare_Text compare_text = { STR('H'), STR('e'), STR('l') , STR('l') , STR('o') };
+      Text text = { STR('H'), STR('e'), STR('l') , STR('l') , STR('o') };
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assignment)
     {
       Text text(initial_text.begin(), initial_text.end());

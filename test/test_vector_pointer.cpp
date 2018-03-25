@@ -152,6 +152,22 @@ namespace
 
       CHECK(data.size() == SIZE);
       CHECK(!data.empty());
+      CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_constructor_initializer_list)
+    {
+      int a = 0;
+      int b = 1;
+      int c = 3;
+      int d = 4;
+
+      Compare_Data compare_data = { &a, &b, &c, &d };
+      Data data = { &a, &b, &c, &d };
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+      CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
     }
 
     //*************************************************************************

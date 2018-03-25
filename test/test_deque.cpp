@@ -137,6 +137,16 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_constructor_initializer_list)
+    {
+      Compare_Data compare_data = { N0, N1, N2, N3 };
+      DataNDC data = { N0, N1, N2, N3 };
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+      CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
+    }
+    
+    //*************************************************************************
     TEST(test_copy_constructor)
     {
       DataNDC deque1(initial_data.begin(), initial_data.end());

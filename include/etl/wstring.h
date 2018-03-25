@@ -35,6 +35,10 @@ SOFTWARE.
 #include "basic_string.h"
 #include "hash.h"
 
+#if ETL_CPP11_SUPPORTED
+  #include <initializer_list>
+#endif
+
 #if defined(ETL_COMPILER_MICROSOFT)
   #undef min
 #endif
@@ -63,7 +67,7 @@ namespace etl
     wstring()
       : iwstring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      iwstring::initialise();
+      this->initialise();
     }
 
     //*************************************************************************
@@ -92,8 +96,8 @@ namespace etl
       // Set the length to the exact amount.
       length_ = (length_ > MAX_SIZE_) ? MAX_SIZE_ : length_;
 
-      iwstring::initialise();
-      iwstring::assign(other.begin() + position, other.begin() + position + length_);
+      this->initialise();
+      this->assign(other.begin() + position, other.begin() + position + length_);
     }
 
     //*************************************************************************
@@ -103,8 +107,8 @@ namespace etl
     wstring(const value_type* text)
       : iwstring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      iwstring::initialise();
-      iwstring::assign(text, text + etl::char_traits<value_type>::length(text));
+      this->initialise();
+      this->assign(text, text + etl::char_traits<value_type>::length(text));
     }
 
     //*************************************************************************
@@ -115,8 +119,8 @@ namespace etl
     wstring(const value_type* text, size_t count)
       : iwstring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      iwstring::initialise();
-      iwstring::assign(text, text + count);
+      this->initialise();
+      this->assign(text, text + count);
     }
 
     //*************************************************************************
@@ -127,8 +131,8 @@ namespace etl
     wstring(size_t count, value_type c)
       : iwstring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      iwstring::initialise();
-      iwstring::resize(count, c);
+      this->initialise();
+      this->resize(count, c);
     }
 
     //*************************************************************************
@@ -141,8 +145,19 @@ namespace etl
     wstring(TIterator first, TIterator last)
       : iwstring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      iwstring::assign(first, last);
+      this->assign(first, last);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Construct from initializer_list.
+    //*************************************************************************
+    wstring(std::initializer_list<value_type> init)
+      : iwstring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
+    {
+      this->assign(init.begin(), init.end());
+    }
+#endif
 
     //*************************************************************************
     /// Returns a sub-string.
@@ -172,7 +187,7 @@ namespace etl
     {
       if (&rhs != this)
       {
-        iwstring::assign(rhs.cbegin(), rhs.cend());
+        this->assign(rhs.cbegin(), rhs.cend());
       }
 
       return *this;

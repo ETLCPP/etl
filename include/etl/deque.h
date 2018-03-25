@@ -48,8 +48,12 @@ SOFTWARE.
 #include "type_traits.h"
 #include "parameter_type.h"
 
+#if ETL_CPP11_SUPPORTED
+  #include <initializer_list>
+#endif
+
 #ifdef ETL_COMPILER_MICROSOFT
-#undef min
+  #undef min
 #endif
 
 #undef ETL_FILE
@@ -2022,7 +2026,7 @@ namespace etl
     deque()
       : etl::ideque<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, BUFFER_SIZE)
     {
-      etl::ideque<T>::initialise();
+      this->initialise();
     }
 
     //*************************************************************************
@@ -2030,7 +2034,7 @@ namespace etl
     //*************************************************************************
     ~deque()
     {
-      etl::ideque<T>::initialise();
+      this->initialise();
     }
 
     //*************************************************************************
@@ -2041,7 +2045,7 @@ namespace etl
     {
       if (this != &other)
       {
-        etl::ideque<T>::assign(other.begin(), other.end());
+        this->assign(other.begin(), other.end());
       }
     }
 
@@ -2052,7 +2056,7 @@ namespace etl
     deque(TIterator begin_, TIterator end_)
       : etl::ideque<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, BUFFER_SIZE)
     {
-      etl::ideque<T>::assign(begin_, end_);
+      this->assign(begin_, end_);
     }
 
     //*************************************************************************
@@ -2061,8 +2065,19 @@ namespace etl
     explicit deque(size_t n, typename etl::ideque<T>::parameter_t value = value_type())
       : etl::ideque<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, BUFFER_SIZE)
     {
-      etl::ideque<T>::assign(n, value);
+      this->assign(n, value);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Construct from initializer_list.
+    //*************************************************************************
+    deque(std::initializer_list<T> init)
+      : ideque<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, BUFFER_SIZE)
+    {
+      this->assign(init.begin(), init.end());
+    }
+#endif
 
     //*************************************************************************
     /// Assignment operator.
@@ -2071,7 +2086,7 @@ namespace etl
     {
       if (&rhs != this)
       {
-        etl::ideque<T>::assign(rhs.begin(), rhs.end());
+        this->assign(rhs.begin(), rhs.end());
       }
 
       return *this;
