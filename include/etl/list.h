@@ -47,8 +47,12 @@ SOFTWARE.
 #include "parameter_type.h"
 #include "algorithm.h"
 
+#if ETL_CPP11_SUPPORTED
+  #include <initializer_list>
+#endif
+
 #ifdef ETL_COMPILER_MICROSOFT
-#undef min
+  #undef min
 #endif
 
 #undef ETL_FILE
@@ -1602,7 +1606,7 @@ namespace etl
     list()
       : etl::ilist<T>(node_pool, MAX_SIZE)
     {
-      etl::ilist<T>::initialise();
+      this->initialise();
     }
 
     //*************************************************************************
@@ -1610,7 +1614,7 @@ namespace etl
     //*************************************************************************
     ~list()
     {
-      etl::ilist<T>::initialise();
+      this->initialise();
     }
 
     //*************************************************************************
@@ -1619,7 +1623,7 @@ namespace etl
     explicit list(size_t initial_size)
       : etl::ilist<T>(node_pool, MAX_SIZE)
     {
-      etl::ilist<T>::assign(initial_size, T());
+      this->assign(initial_size, T());
     }
 
     //*************************************************************************
@@ -1628,7 +1632,7 @@ namespace etl
     list(size_t initial_size, typename ilist<T>::parameter_t value)
       : etl::ilist<T>(node_pool, MAX_SIZE)
     {
-      etl::ilist<T>::assign(initial_size, value);
+      this->assign(initial_size, value);
     }
 
     //*************************************************************************
@@ -1639,7 +1643,7 @@ namespace etl
     {
       if (this != &other)
       {
-        etl::ilist<T>::assign(other.cbegin(), other.cend());
+        this->assign(other.cbegin(), other.cend());
       }
     }
 
@@ -1650,8 +1654,19 @@ namespace etl
     list(TIterator first, TIterator last)
       : ilist<T>(node_pool, MAX_SIZE)
     {
-      etl::ilist<T>::assign(first, last);
+      this->assign(first, last);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Construct from initializer_list.
+    //*************************************************************************
+    list(std::initializer_list<T> init)
+      : ilist<T>(node_pool, MAX_SIZE)
+    {
+      this->assign(init.begin(), init.end());
+    }
+#endif
 
     //*************************************************************************
     /// Assignment operator.
@@ -1660,7 +1675,7 @@ namespace etl
     {
       if (&rhs != this)
       {
-        etl::ilist<T>::assign(rhs.cbegin(), rhs.cend());
+        this->assign(rhs.cbegin(), rhs.cend());
       }
 
       return *this;

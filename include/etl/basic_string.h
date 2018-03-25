@@ -1466,9 +1466,9 @@ namespace etl
     int compare(const ibasic_string& str) const
     {
       return compare(p_buffer,
-        p_buffer + size(),
-        str.p_buffer,
-        str.p_buffer + str.size());
+                     p_buffer + size(),
+                     str.p_buffer,
+                     str.p_buffer + str.size());
     }
 
     //*************************************************************************
@@ -1482,9 +1482,9 @@ namespace etl
       length_ = std::min(length_, size() - position);
 
       return compare(p_buffer + position,
-        p_buffer + position + length_,
-        str.p_buffer,
-        str.p_buffer + str.size());
+                     p_buffer + position + length_,
+                     str.p_buffer,
+                     str.p_buffer + str.size());
     }
 
     //*************************************************************************
@@ -1500,9 +1500,9 @@ namespace etl
       sublength = std::min(sublength, str.size() - subposition);
 
       return compare(p_buffer + position,
-        p_buffer + position + length_,
-        str.p_buffer + subposition,
-        str.p_buffer + subposition + sublength);
+                     p_buffer + position + length_,
+                     str.p_buffer + subposition,
+                     str.p_buffer + subposition + sublength);
     }
 
     //*************************************************************************
@@ -1511,9 +1511,9 @@ namespace etl
     int compare(const value_type* s) const
     {
       return compare(p_buffer,
-        p_buffer + size(),
-        s,
-        s + etl::strlen(s));
+                     p_buffer + size(),
+                     s,
+                     s + etl::strlen(s));
     }
 
     //*************************************************************************
@@ -1522,9 +1522,9 @@ namespace etl
     int compare(size_t position, size_t length_, const_pointer s) const
     {
       return compare(p_buffer + position,
-        p_buffer + position + length_,
-        s,
-        s + etl::strlen(s));
+                     p_buffer + position + length_,
+                     s,
+                     s + etl::strlen(s));
     }
 
     //*************************************************************************
@@ -1533,9 +1533,9 @@ namespace etl
     int compare(size_t position, size_t length_, const_pointer s, size_t n) const
     {
       return compare(p_buffer + position,
-        p_buffer + position + length_,
-        s,
-        s + n);;
+                     p_buffer + position + length_,
+                     s,
+                     s + n);
     }
 
     //*********************************************************************

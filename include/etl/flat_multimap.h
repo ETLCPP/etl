@@ -35,6 +35,10 @@ SOFTWARE.
 #include "reference_flat_multimap.h"
 #include "pool.h"
 
+#if ETL_CPP11_SUPPORTED
+  #include <initializer_list>
+#endif
+
 #undef ETL_FILE
 #define ETL_FILE "3"
 
@@ -715,7 +719,7 @@ namespace etl
     flat_multimap(const flat_multimap& other)
       : etl::iflat_multimap<TKey, TValue, TCompare>(lookup, storage)
     {
-      etl::iflat_multimap<TKey, TValue, TCompare>::assign(other.cbegin(), other.cend());
+      this->assign(other.cbegin(), other.cend());
     }
 
     //*************************************************************************
@@ -728,15 +732,26 @@ namespace etl
     flat_multimap(TIterator first, TIterator last)
       : etl::iflat_multimap<TKey, TValue, TCompare>(lookup, storage)
     {
-      etl::iflat_multimap<TKey, TValue, TCompare>::assign(first, last);
+      this->assign(first, last);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Construct from initializer_list.
+    //*************************************************************************
+    flat_multimap(std::initializer_list<typename etl::iflat_multimap<TKey, TValue, TCompare>::value_type> init)
+      : etl::iflat_multimap<TKey, TValue, TCompare>(lookup, storage)
+    {
+      this->assign(init.begin(), init.end());
+    }
+#endif
 
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
     ~flat_multimap()
     {
-      etl::iflat_multimap<TKey, TValue, TCompare>::clear();
+      this->clear();
     }
 
     //*************************************************************************
@@ -746,7 +761,7 @@ namespace etl
     {
       if (&rhs != this)
       {
-        etl::iflat_multimap<TKey, TValue, TCompare>::assign(rhs.cbegin(), rhs.cend());
+        this->assign(rhs.cbegin(), rhs.cend());
       }
 
       return *this;

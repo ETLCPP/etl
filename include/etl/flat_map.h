@@ -35,6 +35,10 @@ SOFTWARE.
 #include "reference_flat_map.h"
 #include "pool.h"
 
+#if ETL_CPP11_SUPPORTED
+  #include <initializer_list>
+#endif
+
 #undef ETL_FILE
 #define ETL_FILE "2"
 
@@ -834,7 +838,7 @@ namespace etl
     flat_map(const flat_map& other)
       : etl::iflat_map<TKey, TValue, TCompare>(lookup, storage)
     {
-      etl::iflat_map<TKey, TValue, TCompare>::assign(other.cbegin(), other.cend());
+      this->assign(other.cbegin(), other.cend());
     }
 
     //*************************************************************************
@@ -847,15 +851,26 @@ namespace etl
     flat_map(TIterator first, TIterator last)
       : etl::iflat_map<TKey, TValue, TCompare>(lookup, storage)
     {
-      etl::iflat_map<TKey, TValue, TCompare>::assign(first, last);
+      this->assign(first, last);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Construct from initializer_list.
+    //*************************************************************************
+    flat_map(std::initializer_list<typename etl::iflat_map<TKey, TValue, TCompare>::value_type> init)
+      : etl::iflat_map<TKey, TValue, TCompare>(lookup, storage)
+    {
+      this->assign(init.begin(), init.end());
+    }
+#endif
 
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
     ~flat_map()
     {
-      etl::iflat_map<TKey, TValue, TCompare>::clear();
+      this->clear();
     }
 
     //*************************************************************************
@@ -865,7 +880,7 @@ namespace etl
     {
       if (&rhs != this)
       {
-        etl::iflat_map<TKey, TValue, TCompare>::assign(rhs.cbegin(), rhs.cend());
+        this->assign(rhs.cbegin(), rhs.cend());
       }
 
       return *this;

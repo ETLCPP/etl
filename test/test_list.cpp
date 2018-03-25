@@ -163,6 +163,21 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
+    {
+      DataNDC data = { ItemNDC("0"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3") };
+
+      CHECK_EQUAL(4U, data.size());
+
+      DataNDC::const_iterator i_item = data.begin();
+
+      CHECK_EQUAL(ItemNDC("0"), *i_item++);
+      CHECK_EQUAL(ItemNDC("1"), *i_item++);
+      CHECK_EQUAL(ItemNDC("2"), *i_item++);
+      CHECK_EQUAL(ItemNDC("3"), *i_item++);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_copy_constructor)
     {
       CompareData compare_data(sorted_data.begin(), sorted_data.end());

@@ -35,6 +35,10 @@ SOFTWARE.
 #include "basic_string.h"
 #include "hash.h"
 
+#if ETL_CPP11_SUPPORTED
+  #include <initializer_list>
+#endif
+
 #if defined(ETL_COMPILER_MICROSOFT)
 #undef min
 #endif
@@ -63,7 +67,7 @@ namespace etl
     string()
       : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      istring::initialise();
+      this->initialise();
     }
 
     //*************************************************************************
@@ -73,7 +77,7 @@ namespace etl
     string(const etl::string<MAX_SIZE_>& other)
       : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      istring::assign(other.begin(), other.end());
+      this->assign(other.begin(), other.end());
     }
 
     //*************************************************************************
@@ -90,7 +94,7 @@ namespace etl
       // Set the length to the exact amount.
       length_ = (length_ > MAX_SIZE_) ? MAX_SIZE_ : length_;
 
-      istring::assign(other.begin() + position, other.begin() + position + length_);
+      this->assign(other.begin() + position, other.begin() + position + length_);
     }
 
     //*************************************************************************
@@ -100,7 +104,7 @@ namespace etl
     string(const value_type* text)
       : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      istring::assign(text, text + etl::char_traits<value_type>::length(text));
+      this->assign(text, text + etl::char_traits<value_type>::length(text));
     }
 
     //*************************************************************************
@@ -111,7 +115,7 @@ namespace etl
     string(const value_type* text, size_t count)
       : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      istring::assign(text, text + count);
+      this->assign(text, text + count);
     }
 
     //*************************************************************************
@@ -122,8 +126,8 @@ namespace etl
     string(size_t count, value_type c)
       : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      istring::initialise();
-      istring::resize(count, c);
+      this->initialise();
+      this->resize(count, c);
     }
 
     //*************************************************************************
@@ -136,8 +140,19 @@ namespace etl
     string(TIterator first, TIterator last)
       : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      istring::assign(first, last);
+      this->assign(first, last);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Construct from initializer_list.
+    //*************************************************************************
+    string(std::initializer_list<value_type> init)
+      : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
+    {
+      this->assign(init.begin(), init.end());
+    }
+#endif
 
     //*************************************************************************
     /// Returns a sub-string.
@@ -167,7 +182,7 @@ namespace etl
     {
       if (&rhs != this)
       {
-        istring::assign(rhs.cbegin(), rhs.cend());
+        this->assign(rhs.cbegin(), rhs.cend());
       }
 
       return *this;

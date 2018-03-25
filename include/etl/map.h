@@ -47,8 +47,12 @@ SOFTWARE.
 #include "type_traits.h"
 #include "parameter_type.h"
 
+#if ETL_CPP11_SUPPORTED
+  #include <initializer_list>
+#endif
+
 #ifdef ETL_COMPILER_MICROSOFT
-#undef min
+  #undef min
 #endif
 
 #undef ETL_FILE
@@ -2036,7 +2040,7 @@ namespace etl
     map()
       : etl::imap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
     {
-      etl::imap<TKey, TValue, TCompare>::initialise();
+      this->initialise();
     }
 
     //*************************************************************************
@@ -2045,7 +2049,7 @@ namespace etl
     map(const map& other)
       : etl::imap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
     {
-      etl::imap<TKey, TValue, TCompare>::assign(other.cbegin(), other.cend());
+      this->assign(other.cbegin(), other.cend());
     }
 
     //*************************************************************************
@@ -2058,15 +2062,26 @@ namespace etl
     map(TIterator first, TIterator last)
       : etl::imap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
     {
-      etl::imap<TKey, TValue, TCompare>::assign(first, last);
+      this->assign(first, last);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Constructor, from an initializer_list.
+    //*************************************************************************
+    map(std::initializer_list<typename etl::imap<TKey, TValue, TCompare>::value_type> init)
+      : etl::imap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
+    {
+      this->assign(init.begin(), init.end());
+    }
+#endif
 
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
     ~map()
     {
-      etl::imap<TKey, TValue, TCompare>::initialise();
+      this->initialise();
     }
 
     //*************************************************************************
@@ -2077,7 +2092,7 @@ namespace etl
       // Skip if doing self assignment
       if (this != &rhs)
       {
-        etl::imap<TKey, TValue, TCompare>::assign(rhs.cbegin(), rhs.cend());
+        this->assign(rhs.cbegin(), rhs.cend());
       }
 
       return *this;

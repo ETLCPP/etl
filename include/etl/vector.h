@@ -53,8 +53,12 @@ SOFTWARE.
 #include "debug_count.h"
 #include "private/vector_base.h"
 
+#if ETL_CPP11_SUPPORTED
+  #include <initializer_list>
+#endif
+
 #ifdef ETL_COMPILER_GCC
-#pragma GCC diagnostic ignored "-Wunused-variable"
+  #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
 //*****************************************************************************
@@ -1071,7 +1075,7 @@ namespace etl
     vector()
       : etl::ivector<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
-      etl::ivector<T>::initialise();
+      this->initialise();
     }
 
     //*************************************************************************
@@ -1081,8 +1085,8 @@ namespace etl
     explicit vector(size_t initial_size)
       : etl::ivector<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
-      etl::ivector<T>::initialise();
-      etl::ivector<T>::resize(initial_size);
+      this->initialise();
+      this->resize(initial_size);
     }
 
     //*************************************************************************
@@ -1093,8 +1097,8 @@ namespace etl
     vector(size_t initial_size, typename etl::ivector<T>::parameter_t value)
       : etl::ivector<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
-      etl::ivector<T>::initialise();
-      etl::ivector<T>::resize(initial_size, value);
+      this->initialise();
+      this->resize(initial_size, value);
     }
 
     //*************************************************************************
@@ -1107,8 +1111,19 @@ namespace etl
     vector(TIterator first, TIterator last)
       : etl::ivector<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
-      etl::ivector<T>::assign(first, last);
+      this->assign(first, last);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Constructor, from an initializer_list.
+    //*************************************************************************
+    vector(std::initializer_list<T> init)
+      : etl::ivector<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
+    {
+      this->assign(init.begin(), init.end());
+    }
+#endif
 
     //*************************************************************************
     /// Copy constructor.
@@ -1116,7 +1131,7 @@ namespace etl
     vector(const vector& other)
       : etl::ivector<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
-      etl::ivector<T>::assign(other.begin(), other.end());
+      this->assign(other.begin(), other.end());
     }
 
     //*************************************************************************
@@ -1124,7 +1139,7 @@ namespace etl
     //*************************************************************************
     ~vector()
     {
-      etl::ivector<T>::clear();
+      this->clear();
     }
 
     //*************************************************************************
@@ -1134,7 +1149,7 @@ namespace etl
     {
       if (&rhs != this)
       {
-        etl::ivector<T>::assign(rhs.cbegin(), rhs.cend());
+        this->assign(rhs.cbegin(), rhs.cend());
       }
 
       return *this;
@@ -1176,7 +1191,7 @@ namespace etl
     vector()
       : etl::ivector<T*>(reinterpret_cast<T**>(&buffer), MAX_SIZE)
     {
-      etl::ivector<T*>::initialise();
+      this->initialise();
     }
 
     //*************************************************************************
@@ -1186,8 +1201,8 @@ namespace etl
     explicit vector(size_t initial_size)
       : etl::ivector<T*>(reinterpret_cast<T**>(&buffer), MAX_SIZE)
     {
-      etl::ivector<T*>::initialise();
-      etl::ivector<T*>::resize(initial_size);
+      this->initialise();
+      this->resize(initial_size);
     }
 
     //*************************************************************************
@@ -1198,8 +1213,8 @@ namespace etl
     vector(size_t initial_size, typename etl::ivector<T*>::parameter_t value)
       : etl::ivector<T*>(reinterpret_cast<T**>(&buffer), MAX_SIZE)
     {
-      etl::ivector<T*>::initialise();
-      etl::ivector<T*>::resize(initial_size, value);
+      this->initialise();
+      this->resize(initial_size, value);
     }
 
     //*************************************************************************
@@ -1212,8 +1227,19 @@ namespace etl
     vector(TIterator first, TIterator last)
       : etl::ivector<T*>(reinterpret_cast<T**>(&buffer), MAX_SIZE)
     {
-      etl::ivector<T*>::assign(first, last);
+      this->assign(first, last);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Constructor, from an initializer_list.
+    //*************************************************************************
+    vector(std::initializer_list<T*> init)
+      : etl::ivector<T*>(reinterpret_cast<T**>(&buffer), MAX_SIZE)
+    {
+      this->assign(init.begin(), init.end());
+    }
+#endif
 
     //*************************************************************************
     /// Copy constructor.
@@ -1221,7 +1247,7 @@ namespace etl
     vector(const vector& other)
       : etl::ivector<T*>(reinterpret_cast<T**>(&buffer), MAX_SIZE)
     {
-      etl::ivector<T*>::assign(other.begin(), other.end());
+      this->assign(other.begin(), other.end());
     }
 
     //*************************************************************************
@@ -1231,7 +1257,7 @@ namespace etl
     {
       if (&rhs != this)
       {
-        etl::ivector<T*>::assign(rhs.cbegin(), rhs.cend());
+        this->assign(rhs.cbegin(), rhs.cend());
       }
 
       return *this;

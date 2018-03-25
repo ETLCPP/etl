@@ -168,6 +168,16 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_constructor_initializer_list)
+    {
+      CompareDataNDC compare_data = { NDC("0"), NDC("1"), NDC("2"), NDC("3") };
+      DataNDC data = { NDC("0"), NDC("1"), NDC("2"), NDC("3") };
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+      CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_copy_constructor)
     {
       DataNDC data(initial_data.begin(), initial_data.end());
