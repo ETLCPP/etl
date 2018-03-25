@@ -1,9 +1,13 @@
 ===============================================================================
-11.00.1
+11.2.0
+Added std::initializer_list constructors to containers, if ETL_CPP11_SUPPORTED is set to 1
+
+===============================================================================
+11.0.1
 Added reset() to etl::optional
 
 ===============================================================================
-11.00.0
+11.0.0
 New directory structure.
 C & CPP files in src/
 H files in include/etl/
