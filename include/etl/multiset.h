@@ -46,6 +46,10 @@ SOFTWARE.
 #include "nullptr.h"
 #include "type_traits.h"
 
+#if ETL_CPP11_SUPPORTED
+  #include <initializer_list>
+#endif
+
 #ifdef ETL_COMPILER_MICROSOFT
 #undef min
 #endif
@@ -1901,7 +1905,7 @@ namespace etl
     multiset()
       : etl::imultiset<T, TCompare>(node_pool, MAX_SIZE)
     {
-      etl::imultiset<T, TCompare>::initialise();
+      this->initialise();
     }
 
     //*************************************************************************
@@ -1910,7 +1914,7 @@ namespace etl
     multiset(const multiset& other)
       : etl::imultiset<T, TCompare>(node_pool, MAX_SIZE)
     {
-      etl::imultiset<T, TCompare>::assign(other.cbegin(), other.cend());
+      this->assign(other.cbegin(), other.cend());
     }
 
     //*************************************************************************
@@ -1923,15 +1927,26 @@ namespace etl
     multiset(TIterator first, TIterator last)
       : etl::imultiset<T, TCompare>(node_pool, MAX_SIZE)
     {
-      etl::imultiset<T, TCompare>::assign(first, last);
+      this->assign(first, last);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Constructor, from an initializer_list.
+    //*************************************************************************
+    multiset(std::initializer_list<typename etl::imultiset<T, TCompare>::value_type> init)
+      : etl::imultiset<T, TCompare>(node_pool, MAX_SIZE)
+    {
+      this->assign(init.begin(), init.end());
+    }
+#endif
 
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
     ~multiset()
     {
-      etl::imultiset<T, TCompare>::initialise();
+      this->initialise();
     }
 
     //*************************************************************************
@@ -1942,7 +1957,7 @@ namespace etl
       // Skip if doing self assignment
       if (this != &rhs)
       {
-        etl::imultiset<T, TCompare>::assign(rhs.cbegin(), rhs.cend());
+        this->assign(rhs.cbegin(), rhs.cend());
       }
 
       return *this;

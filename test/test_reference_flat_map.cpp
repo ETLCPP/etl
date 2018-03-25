@@ -79,22 +79,6 @@ namespace
   }
 
   //*************************************************************************
-//  std::ostream& operator <<(std::ostream& os, const DataDC::iterator& itr)
-//  {
-//    os << itr->first;
-
-//    return os;
-//  }
-
-  //*************************************************************************
-//  std::ostream& operator <<(std::ostream& os, const DataDC::const_iterator& itr)
-//  {
-//    os << itr->first;
-
-//    return os;
-//  }
-
-  //*************************************************************************
   std::ostream& operator <<(std::ostream& os, const DataNDC::iterator& itr)
   {
     os << itr->first;

@@ -143,6 +143,16 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_constructor_initializer_list)
+    {
+      Compare_Data compare_data = { 0, 1, 2, 3 };
+      Data data = { 0, 1, 2, 3 };
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+      CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_copy_constructor)
     {
       Data data(initial_data.begin(), initial_data.end());

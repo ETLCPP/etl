@@ -35,6 +35,10 @@ SOFTWARE.
 #include "reference_flat_multiset.h"
 #include "pool.h"
 
+#if ETL_CPP11_SUPPORTED
+  #include <initializer_list>
+#endif
+
 #undef ETL_FILE
 #define ETL_FILE "4"
 
@@ -674,7 +678,7 @@ namespace etl
     flat_multiset(const flat_multiset& other)
       : iflat_multiset<T, TCompare>(lookup, storage)
     {
-      etl::iflat_multiset<T, TCompare>::assign(other.cbegin(), other.cend());
+      this->assign(other.cbegin(), other.cend());
     }
 
     //*************************************************************************
@@ -687,15 +691,26 @@ namespace etl
     flat_multiset(TIterator first, TIterator last)
       : iflat_multiset<T, TCompare>(lookup, storage)
     {
-      etl::iflat_multiset<T, TCompare>::assign(first, last);
+      this->assign(first, last);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Construct from initializer_list.
+    //*************************************************************************
+    flat_multiset(std::initializer_list<T> init)
+      : iflat_multiset<T, TCompare>(lookup, storage)
+    {
+      this->assign(init.begin(), init.end());
+    }
+#endif
 
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
     ~flat_multiset()
     {
-      etl::iflat_multiset<T, TCompare>::clear();
+      this->clear();
     }
 
     //*************************************************************************
@@ -705,7 +720,7 @@ namespace etl
     {
       if (&rhs != this)
       {
-        etl::iflat_multiset<T, TCompare>::assign(rhs.cbegin(), rhs.cend());
+        this->assign(rhs.cbegin(), rhs.cend());
       }
 
       return *this;

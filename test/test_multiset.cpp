@@ -196,6 +196,20 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
+    {
+      Compare_Data compare_data = { 0, 1, 1, 3, 4, 4, 6, 7, 7, 9 };
+
+      Data data = { 0, 1, 1, 3, 4, 4, 6, 7, 7, 9 };
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+      CHECK(!data.empty());
+
+      bool isEqual = std::equal(data.begin(), data.end(), compare_data.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assignment)
     {
       Data data(initial_data.begin(), initial_data.end());

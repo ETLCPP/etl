@@ -84,22 +84,6 @@ namespace
   std::vector<NDC> multi_data;
 
   //*************************************************************************
-//  std::ostream& operator <<(std::ostream& os, const DataDC::iterator& itr)
-//  {
-//    os << itr->value;
-//
-//    return os;
-//  }
-
-  //*************************************************************************
-//  std::ostream& operator <<(std::ostream& os, const DataDC::const_iterator& itr)
-//  {
-//    os << itr->value;
-//
-//    return os;
-//  }
-
-  //*************************************************************************
   std::ostream& operator <<(std::ostream& os, const DataNDC::iterator& itr)
   {
     os << itr->value;

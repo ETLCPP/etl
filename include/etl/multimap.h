@@ -46,6 +46,10 @@ SOFTWARE.
 #include "type_traits.h"
 #include "parameter_type.h"
 
+#if ETL_CPP11_SUPPORTED
+  #include <initializer_list>
+#endif
+
 #ifdef ETL_COMPILER_MICROSOFT
 #undef min
 #endif
@@ -1921,7 +1925,7 @@ namespace etl
     multimap()
       : etl::imultimap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
     {
-      etl::imultimap<TKey, TValue, TCompare>::initialise();
+      this->initialise();
     }
 
     //*************************************************************************
@@ -1930,7 +1934,7 @@ namespace etl
     multimap(const multimap& other)
       : etl::imultimap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
     {
-      etl::imultimap<TKey, TValue, TCompare>::assign(other.cbegin(), other.cend());
+      this->assign(other.cbegin(), other.cend());
     }
 
     //*************************************************************************
@@ -1943,15 +1947,26 @@ namespace etl
     multimap(TIterator first, TIterator last)
       : etl::imultimap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
     {
-      etl::imultimap<TKey, TValue, TCompare>::assign(first, last);
+      this->assign(first, last);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Constructor, from an initializer_list.
+    //*************************************************************************
+    multimap(std::initializer_list<typename etl::imultimap<TKey, TValue, TCompare>::value_type> init)
+      : etl::imultimap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
+    {
+      this->assign(init.begin(), init.end());
+    }
+#endif
 
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
     ~multimap()
     {
-      etl::imultimap<TKey, TValue, TCompare>::initialise();
+      this->initialise();
     }
 
     //*************************************************************************
@@ -1962,7 +1977,7 @@ namespace etl
       // Skip if doing self assignment
       if (this != &rhs)
       {
-        etl::imultimap<TKey, TValue, TCompare>::assign(rhs.cbegin(), rhs.cend());
+        this->assign(rhs.cbegin(), rhs.cend());
       }
 
       return *this;

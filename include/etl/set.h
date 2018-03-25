@@ -46,6 +46,10 @@ SOFTWARE.
 #include "type_traits.h"
 #include "parameter_type.h"
 
+#if ETL_CPP11_SUPPORTED
+  #include <initializer_list>
+#endif
+
 #ifdef ETL_COMPILER_MICROSOFT
 #undef min
 #endif
@@ -1959,7 +1963,7 @@ namespace etl
     set()
       : etl::iset<T, TCompare>(node_pool, MAX_SIZE)
     {
-      etl::iset<T, TCompare>::initialise();
+      this->initialise();
     }
 
     //*************************************************************************
@@ -1968,7 +1972,7 @@ namespace etl
     set(const set& other)
       : etl::iset<T, TCompare>(node_pool, MAX_SIZE)
     {
-      etl::iset<T, TCompare>::assign(other.cbegin(), other.cend());
+      this->assign(other.cbegin(), other.cend());
     }
 
     //*************************************************************************
@@ -1981,15 +1985,26 @@ namespace etl
     set(TIterator first, TIterator last)
       : etl::iset<T, TCompare>(node_pool, MAX_SIZE)
     {
-      etl::iset<T, TCompare>::assign(first, last);
+      this->assign(first, last);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Constructor, from an initializer_list.
+    //*************************************************************************
+    set(std::initializer_list<typename etl::iset<T, TCompare>::value_type> init)
+      : etl::iset<T, TCompare>(node_pool, MAX_SIZE)
+    {
+      this->assign(init.begin(), init.end());
+    }
+#endif
 
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
     ~set()
     {
-      etl::iset<T, TCompare>::initialise();
+      this->initialise();
     }
 
     //*************************************************************************
@@ -2000,7 +2015,7 @@ namespace etl
       // Skip if doing self assignment
       if (this != &rhs)
       {
-        etl::iset<T, TCompare>::assign(rhs.cbegin(), rhs.cend());
+        this->assign(rhs.cbegin(), rhs.cend());
       }
 
       return *this;

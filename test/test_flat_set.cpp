@@ -294,6 +294,22 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
+    {
+      Compare_DataNDC compare_data = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
+
+      DataNDC data = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+      CHECK(!data.empty());
+
+      bool isEqual = std::equal(data.begin(),
+                                data.end(),
+                                compare_data.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assignment)
     {
       DataNDC data(initial_data.begin(), initial_data.end());

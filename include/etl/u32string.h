@@ -35,6 +35,10 @@ SOFTWARE.
 #include "basic_string.h"
 #include "hash.h"
 
+#if ETL_CPP11_SUPPORTED
+  #include <initializer_list>
+#endif
+
 #if defined(ETL_COMPILER_MICROSOFT)
   #undef min
 #endif
@@ -63,7 +67,7 @@ namespace etl
     u32string()
       : iu32string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      iu32string::initialise();
+      this->initialise();
     }
 
     //*************************************************************************
@@ -73,8 +77,8 @@ namespace etl
     u32string(const etl::u32string<MAX_SIZE_>& other)
       : iu32string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      iu32string::initialise();
-      iu32string::assign(other.begin(), other.end());
+      this->initialise();
+      this->assign(other.begin(), other.end());
     }
 
     //*************************************************************************
@@ -91,8 +95,8 @@ namespace etl
       // Set the length to the exact amount.
       length_ = (length_ > MAX_SIZE_) ? MAX_SIZE_ : length_;
 
-      iu32string::initialise();
-      iu32string::assign(other.begin() + position, other.begin() + position + length_);
+      this->initialise();
+      this->assign(other.begin() + position, other.begin() + position + length_);
     }
 
     //*************************************************************************
@@ -102,8 +106,8 @@ namespace etl
     u32string(const value_type* text)
       : iu32string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      iu32string::initialise();
-      iu32string::assign(text, text + etl::char_traits<value_type>::length(text));
+      this->initialise();
+      this->assign(text, text + etl::char_traits<value_type>::length(text));
     }
 
     //*************************************************************************
@@ -114,8 +118,8 @@ namespace etl
     u32string(const value_type* text, size_t count)
       : iu32string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      iu32string::initialise();
-      iu32string::assign(text, text + count);
+      this->initialise();
+      this->assign(text, text + count);
     }
 
     //*************************************************************************
@@ -126,8 +130,8 @@ namespace etl
     u32string(size_t count, value_type c)
       : iu32string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      iu32string::initialise();
-      iu32string::resize(count, c);
+      this->initialise();
+      this->resize(count, c);
     }
 
     //*************************************************************************
@@ -140,8 +144,19 @@ namespace etl
     u32string(TIterator first, TIterator last)
       : iu32string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      iu32string::assign(first, last);
+      this->assign(first, last);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Construct from initializer_list.
+    //*************************************************************************
+    u32string(std::initializer_list<value_type> init)
+      : iu32string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
+    {
+      this->assign(init.begin(), init.end());
+    }
+#endif
 
     //*************************************************************************
     /// Returns a sub-string.
@@ -171,7 +186,7 @@ namespace etl
     {
       if (&rhs != this)
       {
-        iu32string::assign(rhs.cbegin(), rhs.cend());
+        this->assign(rhs.cbegin(), rhs.cend());
       }
 
       return *this;
