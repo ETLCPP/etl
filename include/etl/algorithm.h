@@ -552,9 +552,9 @@ namespace etl
       {
         if (i == std::find(begin1, i, *i))
         {
-          int32_t n = std::count(begin2, end2, *i);
+          size_t n = std::count(begin2, end2, *i);
 
-          if (n == 0 || std::count(i, end1, *i) != n)
+          if (n == 0 || size_t(std::count(i, end1, *i)) != n)
           {
             return false;
           }
@@ -583,9 +583,9 @@ namespace etl
       {
         if (i == std::find(begin1, i, *i))
         {
-          int32_t n = std::count(begin2, end2, *i);
+          size_t n = std::count(begin2, end2, *i);
 
-          if (n == 0 || std::count(i, end1, *i) != n)
+          if (n == 0 || size_t(std::count(i, end1, *i)) != n)
           {
             return false;
           }
@@ -619,9 +619,9 @@ namespace etl
       {
         if (i == std::find_if(begin1, i, std::bind1st(predicate, *i)))
         {
-          int32_t n = std::count(begin2, end2, *i);
+          size_t n = std::count(begin2, end2, *i);
 
-          if (n == 0 || std::count(i, end1, *i) != n)
+          if (n == 0 || size_t(std::count(i, end1, *i)) != n)
           {
             return false;
           }
@@ -652,9 +652,9 @@ namespace etl
       {
         if (i == std::find_if(begin1, i, std::bind1st(predicate, *i)))
         {
-          int32_t n = std::count(begin2, end2, *i);
+          size_t n = std::count(begin2, end2, *i);
 
-          if (n == 0 || std::count(i, end1, *i) != n)
+          if (n == 0 || size_t(std::count(i, end1, *i)) != n)
           {
             return false;
           }

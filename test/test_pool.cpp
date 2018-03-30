@@ -383,11 +383,17 @@ namespace
     //*************************************************************************
     TEST(test_type_error)
     {
+      struct Test
+      {
+        uint64_t a;
+        uint64_t b;
+      };
+
       etl::pool<uint32_t, 4> pool;
 
       etl::ipool& ip = pool;
 
-      CHECK_THROW(ip.allocate<double>(), etl::pool_element_size);
+      CHECK_THROW(ip.allocate<Test>(), etl::pool_element_size);
     }
 
     //*************************************************************************

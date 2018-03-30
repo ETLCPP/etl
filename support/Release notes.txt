@@ -1,4 +1,8 @@
 ===============================================================================
+11.3.0
+Improved compatibility with 64 bit pltforms.
+
+===============================================================================
 11.2.0
 Added std::initializer_list constructors to containers, if ETL_CPP11_SUPPORTED is set to 1
 
