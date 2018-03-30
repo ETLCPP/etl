@@ -28,16 +28,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
+#include <stdint.h>
+
 #ifndef __ETL_PLATFORM__
 #define __ETL_PLATFORM__
 
 // Some targets do not support 8bit types.
 #define ETL_8BIT_SUPPORT (CHAR_BIT == 8)
 
+// Define a debug macro
 #if defined(_DEBUG) || defined(DEBUG)
 #define ETL_DEBUG
 #endif
 
+// Undefine all of the macros.
+#undef ETL_PLATFORM_16BIT 
+#undef ETL_PLATFORM_32BIT
+#undef ETL_PLATFORM_64BIT
 #undef ETL_CPP11_SUPPORTED
 #undef ETL_CPP14_SUPPORTED
 #undef ETL_CPP17_SUPPORTED
@@ -46,7 +53,14 @@ SOFTWARE.
 #undef ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
 #undef ETL_ATOMIC_SUPPORTED
 
+// Determine the bit width of the platform.
+#define ETL_PLATFORM_16BIT (UINT16_MAX == UINTPTR_MAX)
+#define ETL_PLATFORM_32BIT (UINT32_MAX == UINTPTR_MAX)
+#define ETL_PLATFORM_64BIT (UINT64_MAX == UINTPTR_MAX)
+
 #include "etl_profile.h"
+
+// The macros below are dependent on the profile.
 
 #if defined(ETL_COMPILER_MICROSOFT)
   // Disable warning of deprecated std::iterator.

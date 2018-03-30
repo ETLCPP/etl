@@ -126,10 +126,15 @@ namespace
     {
       size_t hash = etl::hash<long long>()((long long)(0x5AA555AA3CC333CC));
 
-      if (sizeof(size_t) == sizeof(long long))
-        CHECK_EQUAL(0x5AA555AA3CC333CCU, hash);
-      else
+      if (ETL_PLATFORM_32BIT)
+      {
         CHECK_EQUAL(0xEC6A8D69U, hash);
+      }
+
+      if (ETL_PLATFORM_64BIT)
+      {
+        CHECK_EQUAL(0x5AA555AA3CC333CCU, hash);
+      }
     }
 
     //*************************************************************************
@@ -137,10 +142,15 @@ namespace
     {
       size_t hash = etl::hash<unsigned long long>()((unsigned long long)(0x5AA555AA3CC333CC));
 
-      if (sizeof(size_t) == sizeof(unsigned long long))
-        CHECK_EQUAL(0x5AA555AA3CC333CCU, hash);
-      else
+      if (ETL_PLATFORM_32BIT)
+      {
         CHECK_EQUAL(0xEC6A8D69U, hash);
+      }
+
+      if (ETL_PLATFORM_64BIT)
+      {
+        CHECK_EQUAL(0x5AA555AA3CC333CCU, hash);
+      }
     }
 
     //*************************************************************************
@@ -148,18 +158,31 @@ namespace
     {
       size_t hash = etl::hash<float>()((float)(1.2345));
 
-      CHECK_EQUAL(0X3F9E0419U, hash);
+      if (ETL_PLATFORM_32BIT)
+      {
+        CHECK_EQUAL(0X3F9E0419U, hash);
+      }
+
+      if (ETL_PLATFORM_64BIT)
+      {
+        CHECK_EQUAL(9821047038287739023U, hash);
+      }
     }
 
     //*************************************************************************
     TEST(test_hash_double)
     {
       size_t hash = etl::hash<double>()((double)(1.2345));
-
-      if (sizeof(size_t) == sizeof(double))
-        CHECK_EQUAL(0X3FF3C083126E978DU, hash);
-      else
+     
+      if (ETL_PLATFORM_32BIT)
+      {
         CHECK_EQUAL(0x86FBF224U, hash);
+      }
+
+      if (ETL_PLATFORM_64BIT)
+      {
+        CHECK_EQUAL(0x3FF3C083126E978DU, hash);
+      }
     }
 
     //*************************************************************************
