@@ -495,12 +495,12 @@ namespace
       Compare_Data compare_data;
       Data data;
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (int i = 0; i < int(SIZE); ++i)
       {
         compare_data.push_back(i);
       }
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (int i = 0; i < int(SIZE); ++i)
       {
         data.push_back(i);
       }
@@ -539,7 +539,7 @@ namespace
     {
       Data data;
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (int i = 0; i < int(SIZE); ++i)
       {
         data.push_back(i);
       }

@@ -92,7 +92,7 @@ namespace etl
   typename etl::enable_if<etl::is_trivially_constructible<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
    uninitialized_fill(TOutputIterator o_begin, TOutputIterator o_end, const T& value, TCounter& count)
   {
-    count += std::distance(o_begin, o_end);
+    count += int32_t(std::distance(o_begin, o_end));
 
     std::fill(o_begin, o_end, value);
     
@@ -108,7 +108,7 @@ namespace etl
   typename etl::enable_if<!etl::is_trivially_constructible<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
    uninitialized_fill(TOutputIterator o_begin, TOutputIterator o_end, const T& value, TCounter& count)
   {
-    count += std::distance(o_begin, o_end);
+    count += int32_t(std::distance(o_begin, o_end));
 
     etl::uninitialized_fill(o_begin, o_end, value);
 
@@ -181,7 +181,7 @@ namespace etl
    uninitialized_copy(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin, TCounter& count)
   {
     TOutputIterator o_end = std::copy(i_begin, i_end, o_begin);
-    count += std::distance(o_begin, o_end);
+    count += int32_t(std::distance(o_begin, o_end));
 
     return o_end;
   }
@@ -197,7 +197,7 @@ namespace etl
   {
     TOutputIterator o_end = etl::uninitialized_copy(i_begin, i_end, o_begin);
 
-    count += std::distance(o_begin, o_end);
+    count += int32_t(std::distance(o_begin, o_end));
 
     return o_end;
   }
@@ -305,7 +305,7 @@ namespace etl
   typename etl::enable_if<etl::is_trivially_constructible<typename std::iterator_traits<TOutputIterator>::value_type>::value, void>::type
    uninitialized_default_construct(TOutputIterator o_begin, TOutputIterator o_end, TCounter& count)
   {
-    count = std::distance(o_begin, o_end);
+    count = int32_t(std::distance(o_begin, o_end));
   }
 
   //*****************************************************************************
@@ -317,7 +317,7 @@ namespace etl
   typename etl::enable_if<!etl::is_trivially_constructible<typename std::iterator_traits<TOutputIterator>::value_type>::value, void>::type
    uninitialized_default_construct(TOutputIterator o_begin, TOutputIterator o_end, TCounter& count)
   {
-    count += std::distance(o_begin, o_end);
+    count += int32_t(std::distance(o_begin, o_end));
 
     etl::uninitialized_default_construct(o_begin, o_end);
   }
@@ -533,7 +533,7 @@ namespace etl
   template <typename TOutputIterator, typename TCounter>
   void uninitialized_value_construct(TOutputIterator o_begin, TOutputIterator o_end, TCounter& count)
   {
-    count += std::distance(o_begin, o_end);
+    count += int32_t(std::distance(o_begin, o_end));
 
     etl::uninitialized_value_construct(o_begin, o_end);
   }
@@ -649,7 +649,7 @@ namespace etl
   typename etl::enable_if<etl::is_trivially_destructible<typename std::iterator_traits<TIterator>::value_type>::value, void>::type
    destroy(TIterator i_begin, TIterator i_end, TCounter& count)
   {
-    count -= std::distance(i_begin, i_end);
+    count -= int32_t(std::distance(i_begin, i_end));
   }
 
   //*****************************************************************************
@@ -661,7 +661,7 @@ namespace etl
   typename etl::enable_if<!etl::is_trivially_destructible<typename std::iterator_traits<TIterator>::value_type>::value, void>::type
    destroy(TIterator i_begin, TIterator i_end, TCounter& count)
   {
-    count -= std::distance(i_begin, i_end);
+    count -= int32_t(std::distance(i_begin, i_end));
 
     while (i_begin != i_end)
     {
