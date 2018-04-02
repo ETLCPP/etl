@@ -561,9 +561,6 @@
     <ClInclude Include="..\..\include\etl\atomic\atomic_arm.h">
       <Filter>ETL\Utilities\Atomic</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\atomic\atomic_gcc.h">
-      <Filter>ETL\Utilities\Atomic</Filter>
-    </ClInclude>
     <ClInclude Include="..\ecl_user.h">
       <Filter>Source Files\ECL</Filter>
     </ClInclude>
@@ -587,6 +584,24 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\c\ecl_timer.h">
       <Filter>ECL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\atomic\atomic_std.h">
+      <Filter>ETL\Utilities\Atomic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\atomic\atomic_gcc_sync.h">
+      <Filter>ETL\Utilities\Atomic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\spsc_queue.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\spsc_queue_atomic.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\spsc_queue_freertos.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\spsc_queue_isr.h">
+      <Filter>ETL\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -972,6 +987,9 @@
       <Filter>ECL</Filter>
     </ClCompile>
     <ClCompile Include="..\test_c_timer_framework.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_atomic_std.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

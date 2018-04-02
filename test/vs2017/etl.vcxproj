@@ -135,7 +135,8 @@
     <ClInclude Include="..\..\include\etl\array_wrapper.h" />
     <ClInclude Include="..\..\include\etl\atomic.h" />
     <ClInclude Include="..\..\include\etl\atomic\atomic_arm.h" />
-    <ClInclude Include="..\..\include\etl\atomic\atomic_gcc.h" />
+    <ClInclude Include="..\..\include\etl\atomic\atomic_gcc_sync.h" />
+    <ClInclude Include="..\..\include\etl\atomic\atomic_std.h" />
     <ClInclude Include="..\..\include\etl\callback_timer.h" />
     <ClInclude Include="..\..\include\etl\compare.h" />
     <ClInclude Include="..\..\include\etl\constant.h" />
@@ -150,6 +151,9 @@
     <ClInclude Include="..\..\include\etl\message_router.h" />
     <ClInclude Include="..\..\include\etl\message_router_generator.h" />
     <ClInclude Include="..\..\include\etl\packet.h" />
+    <ClInclude Include="..\..\include\etl\private\spsc_queue_atomic.h" />
+    <ClInclude Include="..\..\include\etl\private\spsc_queue_freertos.h" />
+    <ClInclude Include="..\..\include\etl\private\spsc_queue_isr.h" />
     <ClInclude Include="..\..\include\etl\profiles\arduino_arm.h" />
     <ClInclude Include="..\..\include\etl\profiles\armv5.h" />
     <ClInclude Include="..\..\include\etl\profiles\armv6.h" />
@@ -163,6 +167,7 @@
     <ClInclude Include="..\..\include\etl\profiles\ticc.h" />
     <ClInclude Include="..\..\include\etl\scheduler.h" />
     <ClInclude Include="..\..\include\etl\smallest_generator.h" />
+    <ClInclude Include="..\..\include\etl\spsc_queue.h" />
     <ClInclude Include="..\..\include\etl\sqrt.h" />
     <ClInclude Include="..\..\include\etl\string_view.h" />
     <ClInclude Include="..\..\include\etl\task.h" />
@@ -345,6 +350,7 @@
     </ClCompile>
     <ClCompile Include="..\test_array_view.cpp" />
     <ClCompile Include="..\test_array_wrapper.cpp" />
+    <ClCompile Include="..\test_atomic_std.cpp" />
     <ClCompile Include="..\test_binary.cpp" />
     <ClCompile Include="..\test_bitset.cpp" />
     <ClCompile Include="..\test_bloom_filter.cpp" />

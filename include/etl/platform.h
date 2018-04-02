@@ -44,13 +44,17 @@ SOFTWARE.
 #undef ETL_NO_NULLPTR_SUPPORT
 #undef ETL_NO_LARGE_CHAR_SUPPORT
 #undef ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
-#undef ETL_ATOMIC_SUPPORTED
+#undef ETL_STD_ATOMIC_SUPPORTED
 
 #include "etl_profile.h"
 
 #if defined(ETL_COMPILER_MICROSOFT)
   // Disable warning of deprecated std::iterator.
   #pragma warning(disable : 4996)
+#endif
+
+#if defined(ETL_COMPILER_GCC)
+  #define GCC_VERSION ((__GNUC__ * 10000) + (__GNUC_MINOR__ * 100) + __GNUC_PATCHLEVEL__)
 #endif
 
 #if ETL_CPP11_SUPPORTED
