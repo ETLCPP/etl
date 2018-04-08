@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_SPSC_QUEUE_ISR__
-#define __ETL_SPSC_QUEUE_ISR__
+#ifndef __ETL_MPMC_QUEUE_MUTEX__
+#define __ETL_MPMC_QUEUE_MUTEX__
 
 #include <stddef.h>
 #include <stdint.h>
@@ -37,27 +37,94 @@ SOFTWARE.
 #include "platform.h"
 #include "alignment.h"
 #include "parameter_type.h"
+#include "mutex.h"
 
 #undef ETL_FILE
-#define ETL_FILE "46"
+#define ETL_FILE "48"
 
 namespace etl
 {
+  class queue_mpmc_mutex_base
+  {
+  public:
+
+    //*************************************************************************
+    /// How many items can the queue hold.
+    //*************************************************************************
+    size_t capacity() const
+    {
+      return MAX_SIZE;
+    }
+
+    //*************************************************************************
+    /// How many items can the queue hold.
+    //*************************************************************************
+    size_t max_size() const
+    {
+      return MAX_SIZE;
+    }
+
+  protected:
+
+    queue_mpmc_mutex_base(size_t max_size_)
+      : write_index(0),
+        read_index(0),
+        current_size(0),
+        MAX_SIZE(max_size_)
+    {
+    }
+
+    //*************************************************************************
+    /// Calculate the next index.
+    //*************************************************************************
+    static size_t get_next_index(size_t index, size_t maximum)
+    {
+      ++index;
+
+      if (index == maximum)
+      {
+        index = 0;
+      }
+
+      return index;
+    }
+
+    size_t write_index;    ///< Where to input new data.
+    size_t read_index;     ///< Where to get the oldest data.
+    size_t current_size;   ///< The current size of the queue.
+    const size_t MAX_SIZE; ///< The maximum number of items in the queue.
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+#if defined(ETL_POLYMORPHIC_MPMC_QUEUE_MUTEX) || defined(ETL_POLYMORPHIC_CONTAINERS)
+  public:
+    virtual ~queue_mpmc_mutex_base()
+    {
+    }
+#else
+  protected:
+    ~queue_mpmc_mutex_base()
+    {
+    }
+#endif
+  };
+
   //***************************************************************************
-  ///\ingroup spsc_queue
-  ///\brief This is the base for all spsc_queue_isrs that contain a particular type.
-  ///\details Normally a reference to this type will be taken from a derived spsc_queue_isr.
+  ///\ingroup queue_mpmc
+  ///\brief This is the base for all queue_mpmc_mutexs that contain a particular type.
+  ///\details Normally a reference to this type will be taken from a derived queue_mpmc_mutex.
   ///\code
-  /// etl::spsc_queue_isr_isr<int, 10> myQueue;
-  /// etl::iqueue_isr<int>& iQueue = myQueue;
+  /// etl::queue_mpmc_mutex<int, 10> myQueue;
+  /// etl::iqueue_mpmc_mutex<int>& iQueue = myQueue;
   ///\endcode
   /// This queue supports concurrent access by one producer and one consumer.
-  /// \tparam T The type of value that the spsc_queue_isr holds.
+  /// \tparam T The type of value that the queue_mpmc_mutex holds.
   //***************************************************************************
-  template <typename T, typename TAccess>
-  class ispsc_queue_isr
+  template <typename T>
+  class iqueue_mpmc_mutex : public queue_mpmc_mutex_base
   {
-  private:
+  protected:
 
     typedef typename etl::parameter_type<T>::type parameter_t;
 
@@ -73,33 +140,25 @@ namespace etl
     //*************************************************************************
     bool push(parameter_t value)
     {
-      access.disable();
+      access.lock();
 
       bool result = push_implementation(value);
 
-      access.restore();
+      access.unlock();
 
       return result;
-    }
-
-    //*************************************************************************
-    /// Push a value to the queue from an ISR.
-    //*************************************************************************
-    bool push_from_isr(parameter_t value)
-    {
-      return push_implementation(value);
     }
 
     //*************************************************************************
     /// Pop a value from the queue.
     //*************************************************************************
     bool pop(reference value)
-    {     
-      access.disable();
+    {
+      access.lock();
 
       bool result = pop_implementation(value);
 
-      access.restore();
+      access.unlock();
 
       return result;
     }
@@ -109,29 +168,13 @@ namespace etl
     //*************************************************************************
     bool pop()
     {
-      access.disable();
+      access.lock();
 
       bool result = pop_implementation();
 
-      access.restore();
+      access.unlock();
 
       return result;
-    }
-
-    //*************************************************************************
-    /// Pop a value from the queue from an ISR
-    //*************************************************************************
-    bool pop_from_isr(reference value)
-    {
-      return pop_implementation(value);
-    }
-
-    //*************************************************************************
-    /// Pop a value from the queue from an ISR, and discard.
-    //*************************************************************************
-    bool pop_from_isr()
-    {
-      return pop_implementation();
     }
 
     //*************************************************************************
@@ -139,79 +182,70 @@ namespace etl
     //*************************************************************************
     void clear()
     {
-      access.disable();
+      access.lock();
 
       while (pop_implementation())
       {
         // Do nothing.
       }
 
-      access.restore();
-    }
-
-    //*************************************************************************
-    /// Clear the queue from the ISR.
-    //*************************************************************************
-    void clear_from_isr()
-    {
-      while (pop_implementation())
-      {
-        // Do nothing.
-      }
+      access.unlock();
     }
 
     //*************************************************************************
     /// Is the queue empty?
-    /// Accurate from the 'pop' thread.
-    /// 'Not empty' is a guess from the 'push' thread.
     //*************************************************************************
     bool empty() const
     {
-      return (current_size == 0);
+      access.lock();
+
+      size_t result = (current_size == 0);
+
+      access.unlock();
+
+      return result;
     }
 
     //*************************************************************************
     /// Is the queue full?
-    /// Accurate from the 'push' thread.
-    /// 'Not full' is a guess from the 'pop' thread.
     //*************************************************************************
     bool full() const
     {
-      return (current_size = MAX_SIZE);
+      access.lock();
+
+      size_t result = (current_size == MAX_SIZE);
+
+      access.unlock();
+
+      return result;
     }
 
     //*************************************************************************
     /// How many items in the queue?
-    /// Due to concurrency, this is a guess.
     //*************************************************************************
     size_t size() const
     {
-      return current_size;
+      access.lock();
+
+      size_t result = current_size;
+
+      access.unlock();
+
+      return result;
     }
 
     //*************************************************************************
     /// How much free space available in the queue.
-    /// Due to concurrency, this is a guess.
     //*************************************************************************
     size_t available() const
     {
-      return MAX_SIZE - size() - 1;
-    }
+      access.lock();
 
-    //*************************************************************************
-    /// How many items can the queue hold.
-    //*************************************************************************
-    size_t capacity() const
-    {
-      return MAX_SIZE - 1;
-    }
+      size_t result = MAX_SIZE - current_size;
 
-    //*************************************************************************
-    /// How many items can the queue hold.
-    //*************************************************************************
-    size_t max_size() const
-    {
-      return MAX_SIZE - 1;
+      access.unlock();
+
+      return result;
     }
 
   protected:
@@ -219,48 +253,51 @@ namespace etl
     //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
-    ispsc_queue_isr(T* p_buffer_, size_type max_size_, TAccess& access_)
-      : p_buffer(p_buffer_),
-        write(0),
-        read(0),
-        current_size(0),
-        MAX_SIZE(max_size_),
-        access(&access_)
+    iqueue_mpmc_mutex(T* p_buffer_, size_type max_size_)
+      : queue_mpmc_mutex_base(max_size_),
+        p_buffer(p_buffer_)
     {
     }
 
   private:
 
-    // Disable copy construction and assignment.
-    ispsc_queue_isr(const ispsc_queue_isr&);
-    ispsc_queue_isr& operator =(const ispsc_queue_isr&);
+    //*************************************************************************
+    /// Push a value to the queue.
+    //*************************************************************************
+    bool push_implementation(parameter_t value)
+    {
+      if (current_size != MAX_SIZE)
+      {
+        ::new (&p_buffer[write_index]) T(value);
 
-    T* p_buffer;              ///< The internal buffer.
-    size_type write;          ///< Where to input new data.
-    size_type read;           ///< Where to get the oldest data.
-    size_type current_size;   ///< The current size of the queue.
-    const size_type MAX_SIZE; ///< The maximum number of items in the queue.
-    TAccess& access;          ///< The object that enables/disables interrupts.
+        write_index = get_next_index(write_index, MAX_SIZE);
+
+        ++current_size;
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
 
     //*************************************************************************
     /// Pop a value from the queue.
     //*************************************************************************
     bool pop_implementation(reference value)
     {
-      size_t read_index = read;
-
-      if (read_index == write)
+      if (current_size == 0)
       {
         // Queue is empty
         return false;
       }
 
-      size_t next_index = get_next_index(read_index, MAX_SIZE);
+      value = p_buffer[read_index];
+      p_buffer[read_index].~T();
 
-      value = buffer[read_index];
-      buffer[read_index].~T();
+      read_index = get_next_index(read_index, MAX_SIZE);;
 
-      read = next_index;
+      --current_size;
 
       return true;
     }
@@ -270,66 +307,41 @@ namespace etl
     //*************************************************************************
     bool pop_implementation()
     {
-      size_t read_index = read;
-
-      if (read_index == write)
+      if (current_size == 0)
       {
         // Queue is empty
         return false;
       }
 
-      size_t next_index = get_next_index(read_index, MAX_SIZE);
-
       p_buffer[read_index].~T();
 
-      read = next_index;
+      read_index = get_next_index(read_index, MAX_SIZE);
+
+      --current_size;
 
       return true;
     }
 
-    //*************************************************************************
-    /// Calculate the next index.
-    //*************************************************************************
-    static size_t get_next_index(size_t index, size_t maximum)
-    {
-      ++index;
-      
-      if (index == maximum)
-      {
-        index = 0;
-      }
+    // Disable copy construction and assignment.
+    iqueue_mpmc_mutex(const iqueue_mpmc_mutex&);
+    iqueue_mpmc_mutex& operator =(const iqueue_mpmc_mutex&);
 
-      return index;
-    }
+    T* p_buffer; ///< The internal buffer.
 
-    //*************************************************************************
-    /// Destructor.
-    //*************************************************************************
-#if defined(ETL_POLYMORPHIC_SPSC_QUEUE) || defined(ETL_POLYMORPHIC_CONTAINERS)
-  public:
-    virtual ~ispsc_queue_isr()
-    {
-    }
-#else
-  protected:
-    ~ispsc_queue_isr()
-    {
-    }
-#endif
+    mutable etl::mutex access; ///< The object that locks/unlocks access.
   };
 
   //***************************************************************************
-  ///\ingroup spsc_queue
-  /// A fixed capacity spsc queue.
+  ///\ingroup queue_mpmc
+  /// A fixed capacity mpmc queue.
   /// This queue supports concurrent access by one producer and one consumer.
-  /// \tparam T       The type this queue should support.
-  /// \tparam SIZE    The maximum capacity of the queue.
-  /// \tparam TAccess The type that will be passed to the queue to disable and restore interrupts.
+  /// \tparam T      The type this queue should support.
+  /// \tparam SIZE   The maximum capacity of the queue.
   //***************************************************************************
-  template <typename T, size_t SIZE, typename TAccess>
-  class spsc_queue_isr<T, SIZE, etl::spsc_queue_isr_isr_tag> : public etl::ispsc_queue_isr<T, etl::spsc_queue_isr_isr_tag, TAccessPolicy>
+  template <typename T, size_t SIZE>
+  class queue_mpmc_mutex : public etl::iqueue_mpmc_mutex<T>
   {
-    typedef etl::ispsc_queue_isr<T, TAccess> base_t;
+    typedef etl::iqueue_mpmc_mutex<T> base_t;
 
   public:
 
@@ -338,22 +350,25 @@ namespace etl
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    spsc_queue_isr(TAccess& access)
-      : base_t(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, access)
+    queue_mpmc_mutex()
+      : base_t(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE)
     {
     }
 
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
-    ~spsc_queue_isr()
+    ~queue_mpmc_mutex()
     {
       base_t::clear();
     }
 
   private:
 
-    /// The uninitialised buffer of T used in the spsc_queue_isr.
+    queue_mpmc_mutex(const queue_mpmc_mutex&);
+    queue_mpmc_mutex& operator = (const queue_mpmc_mutex&);
+
+    /// The uninitialised buffer of T used in the queue_mpmc_mutex.
     typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[MAX_SIZE];
   };
 };

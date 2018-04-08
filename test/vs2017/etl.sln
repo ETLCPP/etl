@@ -7,11 +7,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "etl", "etl.vcxproj", "{C21D
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug 2|Win32 = Debug 2|Win32
 		Debug No Unit Tests|Win32 = Debug No Unit Tests|Win32
 		Debug|Win32 = Debug|Win32
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug 2|Win32.ActiveCfg = Debug 2|Win32
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug 2|Win32.Build.0 = Debug 2|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug No Unit Tests|Win32.ActiveCfg = Debug No Unit Tests|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug No Unit Tests|Win32.Build.0 = Debug No Unit Tests|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug|Win32.ActiveCfg = Debug|Win32
@@ -21,5 +24,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2A2A8449-D561-4A9F-87F9-70DFB22EA291}
 	EndGlobalSection
 EndGlobal

@@ -70,6 +70,9 @@
     <Filter Include="Resource Files\Images">
       <UniqueIdentifier>{4d08353c-b393-47c7-a9eb-c9f2f8c25887}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ETL\Utilities\Mutex">
+      <UniqueIdentifier>{0bcdf7f9-8e2b-4f70-932b-bde56404f421}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\doxygen.h">
@@ -591,16 +594,25 @@
     <ClInclude Include="..\..\include\etl\atomic\atomic_gcc_sync.h">
       <Filter>ETL\Utilities\Atomic</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\spsc_queue.h">
+    <ClInclude Include="..\..\include\etl\queue_mpmc_mutex.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\spsc_queue_atomic.h">
-      <Filter>ETL\Utilities</Filter>
+    <ClInclude Include="..\..\include\etl\queue_spsc_isr.h">
+      <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\spsc_queue_freertos.h">
-      <Filter>ETL\Utilities</Filter>
+    <ClInclude Include="..\..\include\etl\queue_spsc_atomic.h">
+      <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\spsc_queue_isr.h">
+    <ClInclude Include="..\..\include\etl\mutex\mutex_gcc_sync.h">
+      <Filter>ETL\Utilities\Mutex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\mutex\mutex_std.h">
+      <Filter>ETL\Utilities\Mutex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\mutex\mutex_arm.h">
+      <Filter>ETL\Utilities\Mutex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\mutex.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
@@ -990,6 +1002,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_atomic_std.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue_mpmc_mutex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue_spsc_atomic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue_spsc_isr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
