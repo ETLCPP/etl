@@ -1,4 +1,10 @@
 ===============================================================================
+11.4.0
+Added improved atomics.
+Added mutex
+Added SPSC & MPPC queues
+
+===============================================================================
 11.3.0
 Improved compatibility with 64 bit pltforms.
 

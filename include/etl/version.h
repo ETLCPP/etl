@@ -37,9 +37,9 @@ SOFTWARE.
 /// Definitions of the ETL version
 ///\ingroup utilities
 
-#define ETL_VERSION "11.3.0"
+#define ETL_VERSION "11.4.0"
 #define ETL_VERSION_MAJOR 11
-#define ETL_VERSION_MINOR  3
+#define ETL_VERSION_MINOR  4
 #define ETL_VERSION_PATCH  0
 
 #endif
