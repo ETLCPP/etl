@@ -429,7 +429,7 @@ namespace etl
     atomic& operator =(const atomic&);
     atomic& operator =(const atomic&) volatile;
 
-    T value;
+    volatile T value;
   };
 
   template <typename T>
@@ -736,7 +736,7 @@ namespace etl
     atomic& operator =(const atomic&);
     atomic& operator =(const atomic&) volatile;
 
-    T* value;
+    volatile T* value;
   };
 
   typedef etl::atomic<char>                atomic_char;
