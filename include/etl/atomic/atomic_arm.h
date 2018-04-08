@@ -29,6 +29,6 @@ SOFTWARE.
 #ifndef __ETL_ATOMIC_ARM__
 #define __ETL_ATOMIC_ARM__
 
-#include "atomic_gcc.h"
+#include "atomic_gcc_sync.h"
 
 #endif

@@ -1,5 +1,3 @@
-///\file
-
 /******************************************************************************
 The MIT License(MIT)
 
@@ -28,23 +26,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_TICC__
-#define __ETL_TICC__
+#ifndef __ETL_MUTEX_ARM__
+#define __ETL_MUTEX_ARM__
 
-//*****************************************************************************
-// Texas Instruments Code Composer
-//*****************************************************************************
-
-#include <limits.h>
-
-#define ETL_TARGET_DEVICE_GENERIC
-#define ETL_TARGET_OS_NONE
-#define ETL_COMPILER_TI
-#define ETL_CPP11_SUPPORTED 0
-#define ETL_CPP14_SUPPORTED 0
-#define ETL_CPP17_SUPPORTED 0
-#define ETL_NO_NULLPTR_SUPPORT    1
-#define ETL_NO_LARGE_CHAR_SUPPORT 1
-#define ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED 0
+#include "mutex_gcc_sync.h"
 
 #endif
