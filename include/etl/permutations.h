@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2018 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,23 +28,36 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_TICC__
-#define __ETL_TICC__
+#ifndef __ETL_PERMUTATIONS__
+#define __ETL_PERMUTATIONS__
 
-//*****************************************************************************
-// Texas Instruments Code Composer
-//*****************************************************************************
+#include "platform.h"
 
-#include <limits.h>
+///\defgroup permutations permutations
+/// permutations<N, K> : Calculates K permutations from N.
+///\ingroup maths
 
-#define ETL_TARGET_DEVICE_GENERIC
-#define ETL_TARGET_OS_NONE
-#define ETL_COMPILER_TI
-#define ETL_CPP11_SUPPORTED 0
-#define ETL_CPP14_SUPPORTED 0
-#define ETL_CPP17_SUPPORTED 0
-#define ETL_NO_NULLPTR_SUPPORT    1
-#define ETL_NO_LARGE_CHAR_SUPPORT 1
-#define ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED 0
+namespace etl 
+{
+  //***************************************************************************
+  ///\ingroup permutations
+  /// Calculates permutaions.
+  //***************************************************************************
+  template <const size_t NV, const size_t KV>
+  struct permutations
+  {
+    static const size_t value = NV * permutations<NV - 1, KV - 1>::value;
+  };
+
+  //***************************************************************************
+  /// Calculates permutations.
+  /// Specialisation for KV == 0.
+  //***************************************************************************
+  template <const size_t NV>
+  struct permutations<NV, 0>
+  {
+    static const size_t value = 1;
+  };
+}
 
 #endif

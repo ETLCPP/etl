@@ -1,4 +1,8 @@
 ===============================================================================
+11.5.0
+Added etl::permutations and etl::combinations constant templates.
+
+===============================================================================
 11.4.0
 Added improved atomics.
 Added mutex

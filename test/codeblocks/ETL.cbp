@@ -81,8 +81,8 @@
 		<Unit filename="../../include/etl/array_wrapper.h" />
 		<Unit filename="../../include/etl/atomic.h" />
 		<Unit filename="../../include/etl/atomic/atomic_arm.h" />
-		<Unit filename="../../include/etl/atomic/atomic_gcc.h" />
-		<Unit filename="../../include/etl/atomic/atomic_windows.h" />
+		<Unit filename="../../include/etl/atomic/atomic_gcc_sync.h" />
+		<Unit filename="../../include/etl/atomic/atomic_std.h" />
 		<Unit filename="../../include/etl/basic_string.h" />
 		<Unit filename="../../include/etl/binary.h" />
 		<Unit filename="../../include/etl/bitset.h" />
@@ -92,6 +92,7 @@
 		<Unit filename="../../include/etl/callback_timer.h" />
 		<Unit filename="../../include/etl/char_traits.h" />
 		<Unit filename="../../include/etl/checksum.h" />
+		<Unit filename="../../include/etl/combinations.h" />
 		<Unit filename="../../include/etl/compare.h" />
 		<Unit filename="../../include/etl/constant.h" />
 		<Unit filename="../../include/etl/container.h" />
@@ -163,6 +164,7 @@
 		<Unit filename="../../include/etl/packet.h" />
 		<Unit filename="../../include/etl/parameter_type.h" />
 		<Unit filename="../../include/etl/pearson.h" />
+		<Unit filename="../../include/etl/permutations.h" />
 		<Unit filename="../../include/etl/platform.h" />
 		<Unit filename="../../include/etl/pool.h" />
 		<Unit filename="../../include/etl/power.h" />
@@ -183,6 +185,9 @@
 		<Unit filename="../../include/etl/profiles/msvc_x86.h" />
 		<Unit filename="../../include/etl/profiles/ticc.h" />
 		<Unit filename="../../include/etl/queue.h" />
+		<Unit filename="../../include/etl/queue_mpmc_mutex.h" />
+		<Unit filename="../../include/etl/queue_spsc_atomic.h" />
+		<Unit filename="../../include/etl/queue_spsc_isr.h" />
 		<Unit filename="../../include/etl/radix.h" />
 		<Unit filename="../../include/etl/random.h" />
 		<Unit filename="../../include/etl/ratio.h" />
@@ -194,6 +199,10 @@
 		<Unit filename="../../include/etl/set.h" />
 		<Unit filename="../../include/etl/smallest.h" />
 		<Unit filename="../../include/etl/smallest_generator.h" />
+		<Unit filename="../../include/etl/spsc_queue.h" />
+		<Unit filename="../../include/etl/spsc_queue_atomic.h" />
+		<Unit filename="../../include/etl/spsc_queue_isr.h" />
+		<Unit filename="../../include/etl/spsc_queue_mutex.h" />
 		<Unit filename="../../include/etl/sqrt.h" />
 		<Unit filename="../../include/etl/stack.h" />
 		<Unit filename="../../include/etl/static_assert.h" />
@@ -317,6 +326,8 @@
 		<Unit filename="../test_array.cpp" />
 		<Unit filename="../test_array_view.cpp" />
 		<Unit filename="../test_array_wrapper.cpp" />
+		<Unit filename="../test_atomic_gcc_sync.cpp" />
+		<Unit filename="../test_atomic_std.cpp" />
 		<Unit filename="../test_binary.cpp" />
 		<Unit filename="../test_bitset.cpp" />
 		<Unit filename="../test_bloom_filter.cpp" />
@@ -376,6 +387,9 @@
 		<Unit filename="../test_pool.cpp" />
 		<Unit filename="../test_priority_queue.cpp" />
 		<Unit filename="../test_queue.cpp" />
+		<Unit filename="../test_queue_mpmc_mutex.cpp" />
+		<Unit filename="../test_queue_spsc_atomic.cpp" />
+		<Unit filename="../test_queue_spsc_isr.cpp" />
 		<Unit filename="../test_random.cpp" />
 		<Unit filename="../test_reference_flat_map.cpp" />
 		<Unit filename="../test_reference_flat_multimap.cpp" />

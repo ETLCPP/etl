@@ -43,3 +43,6 @@
 43 callback_timer
 44 message_timer
 45 type_lookup
+46 queue_spsc_isr
+47 queue_spsc_atomic
+48 queue_mpmc_mutex

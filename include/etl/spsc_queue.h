@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2018 jwellbelove, Mark Kitson
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,23 +28,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_TICC__
-#define __ETL_TICC__
+#ifndef __ETL_SPSC_QUEUE__
+#define __ETL_SPSC_QUEUE__
 
-//*****************************************************************************
-// Texas Instruments Code Composer
-//*****************************************************************************
+#include "platform.h"
+#include "atomic.h"
 
-#include <limits.h>
+#if ETL_HAS_ATOMIC
+  #include "spsc_queue_atomic.h"
+#endif
 
-#define ETL_TARGET_DEVICE_GENERIC
-#define ETL_TARGET_OS_NONE
-#define ETL_COMPILER_TI
-#define ETL_CPP11_SUPPORTED 0
-#define ETL_CPP14_SUPPORTED 0
-#define ETL_CPP17_SUPPORTED 0
-#define ETL_NO_NULLPTR_SUPPORT    1
-#define ETL_NO_LARGE_CHAR_SUPPORT 1
-#define ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED 0
+#if defined(ETL_OS_FREERTOS)
+  #include "spsc_queue_freertos.h"
+#endif
+
+#include "spsc_queue_isr.h"
 
 #endif

@@ -1,5 +1,3 @@
-///\file
-
 /******************************************************************************
 The MIT License(MIT)
 
@@ -7,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2018 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,23 +26,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_TICC__
-#define __ETL_TICC__
+#ifndef __ETL_MUTEX__
+#define __ETL_MUTEX__
 
-//*****************************************************************************
-// Texas Instruments Code Composer
-//*****************************************************************************
+#include "platform.h"
 
-#include <limits.h>
-
-#define ETL_TARGET_DEVICE_GENERIC
-#define ETL_TARGET_OS_NONE
-#define ETL_COMPILER_TI
-#define ETL_CPP11_SUPPORTED 0
-#define ETL_CPP14_SUPPORTED 0
-#define ETL_CPP17_SUPPORTED 0
-#define ETL_NO_NULLPTR_SUPPORT    1
-#define ETL_NO_LARGE_CHAR_SUPPORT 1
-#define ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED 0
+#if ETL_CPP11_SUPPORTED == 1
+  #include "mutex/mutex_std.h"
+  #define ETL_HAS_MUTEX 1
+#elif defined(ETL_COMPILER_ARM)
+  #include "mutex/mutex_arm.h"
+  #define ETL_HAS_MUTEX 1
+#elif defined(ETL_COMPILER_GCC)
+  #include "mutex/mutex_gcc_sync.h"
+  #define ETL_HAS_MUTEX 1
+#else
+  #define ETL_HAS_MUTEX 0
+#endif
 
 #endif

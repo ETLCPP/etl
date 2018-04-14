@@ -31,21 +31,17 @@ SOFTWARE.
 
 #include "platform.h"
 
-#if ETL_ATOMIC_SUPPORTED == 1
-  #include <atomic>
-
-  namespace etl
-  {
-    typedef std::atomic<uint32_t> atomic_uint32_t;
-  }
+#if ETL_CPP11_SUPPORTED == 1
+  #include "atomic/atomic_std.h"
+  #define ETL_HAS_ATOMIC 1
 #elif defined(ETL_COMPILER_ARM)
   #include "atomic/atomic_arm.h"
+  #define ETL_HAS_ATOMIC 1
 #elif defined(ETL_COMPILER_GCC)
-  #include "atomic/atomic_gcc.h"
-#elif defined(ETL_COMPILER_MSVC)
-  #include "atomic/atomic_windows.h"
+  #include "atomic/atomic_gcc_sync.h"
+  #define ETL_HAS_ATOMIC 1
 #else
-  #warning NO ATOMIC SUPPORT DEFINED!
+  #define ETL_HAS_ATOMIC 0
 #endif
 
 #endif

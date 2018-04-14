@@ -1,5 +1,3 @@
-///\file
-
 /******************************************************************************
 The MIT License(MIT)
 
@@ -28,23 +26,52 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_TICC__
-#define __ETL_TICC__
+#ifndef __ETL_MUTEX_GCC_SYNC__
+#define __ETL_MUTEX_GCC_SYNC__
 
-//*****************************************************************************
-// Texas Instruments Code Composer
-//*****************************************************************************
+#include "../platform.h"
 
-#include <limits.h>
+#include <stdint.h>
 
-#define ETL_TARGET_DEVICE_GENERIC
-#define ETL_TARGET_OS_NONE
-#define ETL_COMPILER_TI
-#define ETL_CPP11_SUPPORTED 0
-#define ETL_CPP14_SUPPORTED 0
-#define ETL_CPP17_SUPPORTED 0
-#define ETL_NO_NULLPTR_SUPPORT    1
-#define ETL_NO_LARGE_CHAR_SUPPORT 1
-#define ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED 0
+namespace etl
+{
+  //***************************************************************************
+  ///\ingroup mutex
+  ///\brief This mutex class is implemented using GCC's __sync functions.
+  //***************************************************************************
+  class mutex
+  {
+  public:
+
+    mutex()
+      : flag(0)
+    {
+      __sync_lock_release(flag);
+    }
+
+    void lock()
+    {
+      while (__sync_lock_test_and_set(&flag, 1U))
+      {
+        while (flag)
+        {
+        }
+    }
+
+    bool try_lock()
+    {
+      return (__sync_lock_test_and_set(&flag, 1U) == 1U);
+    }
+
+    void unlock()
+    {
+      __sync_lock_release(flag);
+    }
+
+  private:
+
+    volatile uint32_t flag;
+  };
+}
 
 #endif

@@ -26,78 +26,46 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_ATOMIC_WINDOWS__
-#define __ETL_ATOMIC_WINDOWS__
+#ifndef __ETL_MUTEX_STD__
+#define __ETL_MUTEX_STD__
 
 #include "../platform.h"
 
-#include <stdint.h>
-#include <Windows.h>
+#include <mutex>
 
 namespace etl
 {
-  class atomic_uint32_t
+  //***************************************************************************
+  ///\ingroup mutex
+  ///\brief This mutex class is implemented using std::mutex.
+  //***************************************************************************
+  class mutex
   {
   public:
 
-    atomic_uint32_t()
+    mutex()
+      : access()
     {
-      InterlockedExchange(&value, 0);
     }
 
-    atomic_uint32_t(uint32_t v)
+    void lock()
     {
-      InterlockedExchange(&value, v);
+      access.lock();
     }
 
-    atomic_uint32_t& operator =(uint32_t v)
+    bool try_lock()
     {
-      InterlockedExchange(&value, v);
-
-      return *this;
+      return access.try_lock();
     }
 
-    atomic_uint32_t& operator ++()
+    void unlock()
     {
-      InterlockedIncrement(&value);
-
-      return *this;
-    }
-
-    volatile atomic_uint32_t& operator ++() volatile
-    {
-      InterlockedIncrement(&value);
-
-      return *this;
-    }
-
-    atomic_uint32_t& operator --()
-    {
-      InterlockedDecrement(&value);
-
-      return *this;
-    }
-
-    volatile atomic_uint32_t& operator --() volatile
-    {
-      InterlockedDecrement(&value);
-
-      return *this;
-    }
-
-    operator uint32_t () const
-    {
-      return InterlockedAdd((volatile long*)&value, 0);
-    }
-
-    operator uint32_t() volatile const
-    {
-      return InterlockedAdd((volatile long*)&value, 0);
+      access.unlock();
     }
 
   private:
 
-    uint32_t value;
+    std::mutex access;
   };
 }
 
