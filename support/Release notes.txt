@@ -1,3 +1,7 @@
+11.6.0
+Added capacity() to etl::queue
+Prefixed max_size() and capacity() with ETL_CONSTEXPR in all queue types.
+
 ===============================================================================
 11.5.0
 Added etl::permutations and etl::combinations constant templates.
