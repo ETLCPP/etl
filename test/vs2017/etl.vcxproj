@@ -330,6 +330,7 @@
     <ClInclude Include="..\..\include\etl\atomic\atomic_gcc_sync.h" />
     <ClInclude Include="..\..\include\etl\atomic\atomic_std.h" />
     <ClInclude Include="..\..\include\etl\callback_timer.h" />
+    <ClInclude Include="..\..\include\etl\combinations.h" />
     <ClInclude Include="..\..\include\etl\compare.h" />
     <ClInclude Include="..\..\include\etl\constant.h" />
     <ClInclude Include="..\..\include\etl\c\ecl_timer.h" />
@@ -347,6 +348,7 @@
     <ClInclude Include="..\..\include\etl\mutex\mutex_gcc_sync.h" />
     <ClInclude Include="..\..\include\etl\mutex\mutex_std.h" />
     <ClInclude Include="..\..\include\etl\packet.h" />
+    <ClInclude Include="..\..\include\etl\permutations.h" />
     <ClInclude Include="..\..\include\etl\profiles\arduino_arm.h" />
     <ClInclude Include="..\..\include\etl\profiles\armv5.h" />
     <ClInclude Include="..\..\include\etl\profiles\armv6.h" />

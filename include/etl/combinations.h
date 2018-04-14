@@ -28,19 +28,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_VERSION__
-#define __ETL_VERSION__
+#ifndef __ETL_COMBINATIONS__
+#define __ETL_COMBINATIONS__
 
-#include <stdint.h>
+#include "platform.h"
+#include "permutations.h"
+#include "factorial.h"
 
-///\defgroup version version
-/// Definitions of the ETL version
-///\ingroup utilities
+///\defgroup combinations combinations
+/// combinations<N, K> : Calculates K combinations from N.
+///\ingroup maths
 
-#define ETL_VERSION "11.5.0"
-#define ETL_VERSION_MAJOR 11
-#define ETL_VERSION_MINOR  5
-#define ETL_VERSION_PATCH  0
+namespace etl
+{
+  //***************************************************************************
+  ///\ingroup combinations
+  /// Calculates combinations.
+  //***************************************************************************
+  template <const size_t NV, const size_t KV>
+  struct combinations
+  {
+    static const size_t value = etl::permutations<NV, KV>::value / etl::factorial<KV>::value;
+  };
+}
 
 #endif
-

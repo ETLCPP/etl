@@ -92,6 +92,7 @@
 		<Unit filename="../../include/etl/callback_timer.h" />
 		<Unit filename="../../include/etl/char_traits.h" />
 		<Unit filename="../../include/etl/checksum.h" />
+		<Unit filename="../../include/etl/combinations.h" />
 		<Unit filename="../../include/etl/compare.h" />
 		<Unit filename="../../include/etl/constant.h" />
 		<Unit filename="../../include/etl/container.h" />
@@ -163,6 +164,7 @@
 		<Unit filename="../../include/etl/packet.h" />
 		<Unit filename="../../include/etl/parameter_type.h" />
 		<Unit filename="../../include/etl/pearson.h" />
+		<Unit filename="../../include/etl/permutations.h" />
 		<Unit filename="../../include/etl/platform.h" />
 		<Unit filename="../../include/etl/pool.h" />
 		<Unit filename="../../include/etl/power.h" />

@@ -28,19 +28,36 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_VERSION__
-#define __ETL_VERSION__
+#ifndef __ETL_PERMUTATIONS__
+#define __ETL_PERMUTATIONS__
 
-#include <stdint.h>
+#include "platform.h"
 
-///\defgroup version version
-/// Definitions of the ETL version
-///\ingroup utilities
+///\defgroup permutations permutations
+/// permutations<N, K> : Calculates K permutations from N.
+///\ingroup maths
 
-#define ETL_VERSION "11.5.0"
-#define ETL_VERSION_MAJOR 11
-#define ETL_VERSION_MINOR  5
-#define ETL_VERSION_PATCH  0
+namespace etl 
+{
+  //***************************************************************************
+  ///\ingroup permutations
+  /// Calculates permutaions.
+  //***************************************************************************
+  template <const size_t NV, const size_t KV>
+  struct permutations
+  {
+    static const size_t value = NV * permutations<NV - 1, KV - 1>::value;
+  };
+
+  //***************************************************************************
+  /// Calculates permutations.
+  /// Specialisation for KV == 0.
+  //***************************************************************************
+  template <const size_t NV>
+  struct permutations<NV, 0>
+  {
+    static const size_t value = 1;
+  };
+}
 
 #endif
-
