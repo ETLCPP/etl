@@ -270,16 +270,12 @@ namespace etl
     STATIC_ASSERT(etl::is_signed<TReturn>::value,   "TReturn not a signed type");
     STATIC_ASSERT(NBITS <= std::numeric_limits<TReturn>::digits, "NBITS too large for return type");
 
-    const TReturn negative = (TReturn(1) << (NBITS - 1));
-    TReturn signed_value = value & ((1 << NBITS) - 1);
-
-    if ((signed_value & negative) != 0)
+    struct S
     {
-      const TReturn sign_bits = ~((TReturn(1) << NBITS) - 1);
-      signed_value |= sign_bits;
-    }
+      signed value : NBITS;
+    } s;
 
-    return signed_value;
+    return (s.value = value);
   }
 
   //***************************************************************************
@@ -290,22 +286,18 @@ namespace etl
   template <typename TReturn, const size_t NBITS, const size_t SHIFT, typename TValue>
   TReturn sign_extend(TValue value)
   {
-    STATIC_ASSERT(etl::is_integral<TValue>::value, "TValue not an integral type");
+    STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
     STATIC_ASSERT(etl::is_integral<TReturn>::value, "TReturn not an integral type");
-    STATIC_ASSERT(etl::is_signed<TReturn>::value, "TReturn not a signed type");
+    STATIC_ASSERT(etl::is_signed<TReturn>::value,   "TReturn not a signed type");
     STATIC_ASSERT(NBITS <= std::numeric_limits<TReturn>::digits, "NBITS too large for return type");
     STATIC_ASSERT(SHIFT <= std::numeric_limits<TReturn>::digits, "SHIFT too large");
 
-    const TReturn negative = (TReturn(1) << (NBITS - 1));
-    TReturn signed_value = (value >> SHIFT) & ((1 << NBITS) - 1);
-
-    if ((signed_value & negative) != 0)
+    struct S
     {
-      const TReturn sign_bits = ~((TReturn(1) << NBITS) - 1);
-      signed_value |= sign_bits;
-    }
+      signed value : NBITS;
+    } s;
 
-    return signed_value;
+    return (s.value = (value >> SHIFT));
   }
 
   //***************************************************************************
@@ -320,16 +312,10 @@ namespace etl
     STATIC_ASSERT(etl::is_signed<TReturn>::value,   "TReturn not a signed type");
     assert(NBITS <= std::numeric_limits<TReturn>::digits);
 
-    const TReturn negative = (TReturn(1) << (NBITS - 1));
-    TReturn signed_value = value & ((1 << NBITS) - 1);
+    TReturn mask = TReturn(1U) << (NBITS - 1);
+    value = value & ((1U << NBITS) - 1);
 
-    if ((signed_value & negative) != 0)
-    {
-      const TReturn sign_bits = ~((TReturn(1) << NBITS) - 1);
-      signed_value |= sign_bits;
-    }
-
-    return signed_value;
+    return TReturn((value ^ mask) - mask);
   }
 
   //***************************************************************************
@@ -340,21 +326,15 @@ namespace etl
   template <typename TReturn, typename TValue>
   TReturn sign_extend(TValue value, const size_t NBITS, const size_t SHIFT)
   {
-    STATIC_ASSERT(etl::is_integral<TValue>::value, "TValue not an integral type");
+    STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
     STATIC_ASSERT(etl::is_integral<TReturn>::value, "TReturn not an integral type");
-    STATIC_ASSERT(etl::is_signed<TReturn>::value, "TReturn not a signed type");
+    STATIC_ASSERT(etl::is_signed<TReturn>::value,   "TReturn not a signed type");
     assert(NBITS <= std::numeric_limits<TReturn>::digits);
 
-    const TReturn negative = (TReturn(1) << (NBITS - 1));
-    TReturn signed_value = (value >> SHIFT) & ((1 << NBITS) - 1);
+    TReturn mask = TReturn(1U) << (NBITS - 1);
+    value = (value >> SHIFT) & ((1U << NBITS) - 1);
 
-    if ((signed_value & negative) != 0)
-    {
-      const TReturn sign_bits = ~((TReturn(1) << NBITS) - 1);
-      signed_value |= sign_bits;
-    }
-
-    return signed_value;
+    return TReturn((value ^ mask) - mask);
   }
 
   //***************************************************************************
