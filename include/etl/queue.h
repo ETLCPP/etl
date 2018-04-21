@@ -119,7 +119,7 @@ namespace etl
     //*************************************************************************
     /// Returns the maximum number of items that can be queued.
     //*************************************************************************
-    ETL_CONSTEXPR size_type max_size() const
+    size_type max_size() const
     {
       return CAPACITY;
     }
@@ -127,7 +127,7 @@ namespace etl
     //*************************************************************************
     /// Returns the maximum number of items that can be queued.
     //*************************************************************************
-    ETL_CONSTEXPR size_type capacity() const
+    size_type capacity() const
     {
       return CAPACITY;
     }

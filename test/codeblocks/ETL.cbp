@@ -157,6 +157,7 @@
 		<Unit filename="../../include/etl/multimap.h" />
 		<Unit filename="../../include/etl/multiset.h" />
 		<Unit filename="../../include/etl/murmur3.h" />
+		<Unit filename="../../include/etl/null_type.h" />
 		<Unit filename="../../include/etl/nullptr.h" />
 		<Unit filename="../../include/etl/numeric.h" />
 		<Unit filename="../../include/etl/observer.h" />

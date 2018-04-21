@@ -105,7 +105,7 @@ namespace etl
     //*************************************************************************
     /// How many items can the queue hold.
     //*************************************************************************
-    ETL_CONSTEXPR size_t capacity() const
+    size_t capacity() const
     {
       return RESERVED - 1;
     }
@@ -113,7 +113,7 @@ namespace etl
     //*************************************************************************
     /// How many items can the queue hold.
     //*************************************************************************
-    ETL_CONSTEXPR size_t max_size() const
+    size_t max_size() const
     {
       return RESERVED - 1;
     }

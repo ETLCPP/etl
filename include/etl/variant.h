@@ -912,7 +912,7 @@ namespace etl
     //***************************************************************************
     /// Gets the index of the type currently stored or UNSUPPORTED_TYPE_ID
     //***************************************************************************
-    ETL_CONSTEXPR size_t index() const
+    size_t index() const
     {
       return type_id;
     }
