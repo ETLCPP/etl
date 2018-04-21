@@ -371,6 +371,8 @@
     <ClInclude Include="..\..\include\etl\timer.h" />
     <ClInclude Include="..\..\include\etl\type_lookup.h" />
     <ClInclude Include="..\..\include\etl\type_lookup_generator.h" />
+    <ClInclude Include="..\..\include\etl\type_select.h" />
+    <ClInclude Include="..\..\include\etl\type_select_generator.h" />
     <ClInclude Include="..\..\include\etl\type_traits_generator.h" />
     <ClInclude Include="..\..\include\etl\variant_pool.h" />
     <ClInclude Include="..\..\include\etl\variant_pool_generator.h" />
@@ -702,6 +704,7 @@
     <ClCompile Include="..\test_task_scheduler.cpp" />
     <ClCompile Include="..\test_type_def.cpp" />
     <ClCompile Include="..\test_type_lookup.cpp" />
+    <ClCompile Include="..\test_type_select.cpp" />
     <ClCompile Include="..\test_type_traits.cpp" />
     <ClCompile Include="..\test_unordered_map.cpp" />
     <ClCompile Include="..\test_unordered_multimap.cpp" />
@@ -722,6 +725,7 @@
     <None Include="..\..\Doxyfile" />
     <None Include="..\..\etl.pspimage" />
     <None Include="..\..\etl.xar" />
+    <None Include="..\..\include\etl\generate_type_select.bat" />
     <None Include="..\..\library.properties" />
     <None Include="..\..\include\etl\generate.bat" />
     <None Include="..\..\include\etl\generate_fsm.bat" />

@@ -621,6 +621,12 @@
     <ClInclude Include="..\..\include\etl\permutations.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\type_select.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\type_select_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1019,6 +1025,9 @@
     <ClCompile Include="..\test_queue_spsc_isr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_type_select.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Doxyfile">
@@ -1056,6 +1065,9 @@
     </None>
     <None Include="..\..\etl.xar">
       <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="..\..\include\etl\generate_type_select.bat">
+      <Filter>Resource Files\Generators</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

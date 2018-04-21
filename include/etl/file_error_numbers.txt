@@ -46,3 +46,4 @@
 46 queue_spsc_isr
 47 queue_spsc_atomic
 48 queue_mpmc_mutex
+49 type_select

@@ -213,6 +213,7 @@
 		<Unit filename="../../include/etl/type_def.h" />
 		<Unit filename="../../include/etl/type_lookup.h" />
 		<Unit filename="../../include/etl/type_lookup_generator.h" />
+		<Unit filename="../../include/etl/type_select.h" />
 		<Unit filename="../../include/etl/type_traits.h" />
 		<Unit filename="../../include/etl/type_traits_generator.h" />
 		<Unit filename="../../include/etl/u16string.h" />
@@ -406,6 +407,7 @@
 		<Unit filename="../test_task_scheduler.cpp" />
 		<Unit filename="../test_type_def.cpp" />
 		<Unit filename="../test_type_lookup.cpp" />
+		<Unit filename="../test_type_select.cpp" />
 		<Unit filename="../test_type_traits.cpp" />
 		<Unit filename="../test_unordered_map.cpp" />
 		<Unit filename="../test_unordered_multimap.cpp" />
