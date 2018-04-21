@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_IO_PORT__
-#define __ETL_IO_PORT__
+#ifndef ETL_IO_PORT_INCLUDED
+#define ETL_IO_PORT_INCLUDED
 
 ///\defgroup io_port io port
 /// IO port access

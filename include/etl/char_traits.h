@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_CHAR_TRAITS__
-#define __ETL_CHAR_TRAITS__
+#ifndef ETL_CHAR_TRAITS_INCLUDED
+#define ETL_CHAR_TRAITS_INCLUDED
 
 #include <algorithm>
 

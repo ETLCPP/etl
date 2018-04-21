@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_PEARSON__
-#define __ETL_PEARSON__
+#ifndef ETL_PEARSON_INCLUDED
+#define ETL_PEARSON_INCLUDED
 
 #include <stdint.h>
 

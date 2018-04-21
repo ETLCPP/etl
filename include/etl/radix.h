@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_RADIX__
-#define __ETL_RADIX__
+#ifndef ETL_RADIX_INCLUDED
+#define ETL_RADIX_INCLUDED
 
 #include <stdint.h>
 

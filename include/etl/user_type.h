@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_USER_TYPE__
-#define __ETL_USER_TYPE__
+#ifndef ETL_USER_TYPE_INCLUDED
+#define ETL_USER_TYPE_INCLUDED
 
 #include "platform.h"
 

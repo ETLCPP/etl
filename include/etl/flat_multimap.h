@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_FLAT_MULTMAP__
-#define __ETL_FLAT_MULTMAP__
+#ifndef ETL_FLAT_MULTMAP_INCLUDED
+#define ETL_FLAT_MULTMAP_INCLUDED
 
 #include "platform.h"
 #include "reference_flat_multimap.h"

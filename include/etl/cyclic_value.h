@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_CYCLIC_VALUE__
-#define __ETL_CYCLIC_VALUE__
+#ifndef ETL_CYCLIC_VALUE_INCLUDED
+#define ETL_CYCLIC_VALUE_INCLUDED
 
 #include <stddef.h>
 

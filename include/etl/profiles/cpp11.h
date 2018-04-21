@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_CPP11__
-#define __ETL_CPP11__
+#ifndef ETL_CPP11_INCLUDED
+#define ETL_CPP11_INCLUDED
 
 //*****************************************************************************
 // Generic C++11

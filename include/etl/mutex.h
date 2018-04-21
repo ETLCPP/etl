@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_MUTEX__
-#define __ETL_MUTEX__
+#ifndef ETL_MUTEX_INCLUDED
+#define ETL_MUTEX_INCLUDED
 
 #include "platform.h"
 

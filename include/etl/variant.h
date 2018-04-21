@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_VARIANT__
-#define __ETL_VARIANT__
+#ifndef ETL_VARIANT_INCLUDED
+#define ETL_VARIANT_INCLUDED
 
 #include <stdint.h>
 
@@ -59,7 +59,7 @@ SOFTWARE.
 
 namespace etl
 {
-  namespace __private_variant__
+  namespace private_variant
   {
     //*************************************************************************
     /// Placeholder for unused template parameters.
@@ -103,13 +103,13 @@ namespace etl
   ///\ingroup variant
   //***************************************************************************
   template <typename T1,
-            typename T2 = __private_variant__::no_type<2>,
-            typename T3 = __private_variant__::no_type<3>,
-            typename T4 = __private_variant__::no_type<4>,
-            typename T5 = __private_variant__::no_type<5>,
-            typename T6 = __private_variant__::no_type<6>,
-            typename T7 = __private_variant__::no_type<7>,
-            typename T8 = __private_variant__::no_type<8> >
+            typename T2 = private_variant::no_type<2>,
+            typename T3 = private_variant::no_type<3>,
+            typename T4 = private_variant::no_type<4>,
+            typename T5 = private_variant::no_type<5>,
+            typename T6 = private_variant::no_type<6>,
+            typename T7 = private_variant::no_type<7>,
+            typename T8 = private_variant::no_type<8> >
   class variant
   {
   public:
@@ -148,13 +148,13 @@ namespace etl
     //***************************************************************************
     /// Short form of no_type placeholders.
     //***************************************************************************
-    typedef __private_variant__::no_type<2> no_type2;
-    typedef __private_variant__::no_type<3> no_type3;
-    typedef __private_variant__::no_type<4> no_type4;
-    typedef __private_variant__::no_type<5> no_type5;
-    typedef __private_variant__::no_type<6> no_type6;
-    typedef __private_variant__::no_type<7> no_type7;
-    typedef __private_variant__::no_type<8> no_type8;
+    typedef private_variant::no_type<2> no_type2;
+    typedef private_variant::no_type<3> no_type3;
+    typedef private_variant::no_type<4> no_type4;
+    typedef private_variant::no_type<5> no_type5;
+    typedef private_variant::no_type<6> no_type6;
+    typedef private_variant::no_type<7> no_type7;
+    typedef private_variant::no_type<8> no_type8;
 
     //***************************************************************************
     /// Lookup the id of type.

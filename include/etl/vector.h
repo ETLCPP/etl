@@ -28,10 +28,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_VECTOR__
-#define __ETL_VECTOR__
+#ifndef ETL_VECTOR_INCLUDED
+#define ETL_VECTOR_INCLUDED
 
-#define __ETL_IN_VECTOR_H__
+#define ETL_IN_VECTOR_H
 
 #include <stddef.h>
 #include <stdint.h>

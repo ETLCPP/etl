@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_ALIGNEMENT__
-#define __ETL_ALIGNEMENT__
+#ifndef ETL_ALIGNEMENT_INCLUDED
+#define ETL_ALIGNEMENT_INCLUDED
 
 #include <stdint.h>
 
@@ -43,7 +43,7 @@ SOFTWARE.
 
 namespace etl
 {
-  namespace __private_alignment__
+  namespace private_alignment
   {
     //***************************************************************************
     // Matcher.
@@ -99,7 +99,7 @@ namespace etl
   {
   public:
 
-    typedef typename __private_alignment__::type_with_alignment_helper<ALIGNMENT, int_least8_t, int_least16_t, int32_t, int64_t, float, double, void*>::type type;
+    typedef typename private_alignment::type_with_alignment_helper<ALIGNMENT, int_least8_t, int_least16_t, int32_t, int64_t, float, double, void*>::type type;
   };
 
   //***************************************************************************
@@ -183,7 +183,7 @@ namespace etl
       union
       {
         char data[LENGTH];
-        typename etl::type_with_alignment<ALIGNMENT>::type __etl_alignment_type__; // A POD type that has the same alignment as ALIGNMENT.
+        typename etl::type_with_alignment<ALIGNMENT>::type etl_alignment_type; // A POD type that has the same alignment as ALIGNMENT.
       };
     };
   };

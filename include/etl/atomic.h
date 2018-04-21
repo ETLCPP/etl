@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_ATOMIC__
-#define __ETL_ATOMIC__
+#ifndef ETL_ATOMIC_INCLUDED
+#define ETL_ATOMIC_INCLUDED
 
 #include "platform.h"
 

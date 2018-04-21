@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_JENKINS__
-#define __ETL_JENKINS__
+#ifndef ETL_JENKINS_INCLUDED
+#define ETL_JENKINS_INCLUDED
 
 #include <stdint.h>
 #include <iterator>

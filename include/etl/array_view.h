@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_ARRAY_VIEW__
-#define __ETL_ARRAY_VIEW__
+#ifndef ETL_ARRAY_VIEW_INCLUDED
+#define ETL_ARRAY_VIEW_INCLUDED
 
 #include "platform.h"
 #include "memory.h"
@@ -832,7 +832,7 @@ namespace etl
   {
     size_t operator()(const etl::array_view<T>& view) const
     {
-      return etl::__private_hash__::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&view[0]),
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&view[0]),
                                                          reinterpret_cast<const uint8_t*>(&view[view.size()]));
     }
   };
@@ -842,7 +842,7 @@ namespace etl
   {
     size_t operator()(const etl::const_array_view<T>& view) const
     {
-      return etl::__private_hash__::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&view[0]),
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&view[0]),
                                                          reinterpret_cast<const uint8_t*>(&view[view.size()]));
     }
   };

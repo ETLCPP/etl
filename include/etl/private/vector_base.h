@@ -28,12 +28,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#if !defined(__ETL_IN_VECTOR_H__) && !defined(__ETL_IN_PVOIDVECTOR__)
+#if !defined(ETL_IN_VECTOR_H) && !defined(ETL_IN_PVOIDVECTOR)
 #error This header is a private element of etl::vector & etl::pvoidvector
 #endif
 
-#ifndef __ETL_VECTOR_BASE__
-#define __ETL_VECTOR_BASE__
+#ifndef ETL_VECTOR_BASE_INCLUDED
+#define ETL_VECTOR_BASE_INCLUDED
 
 #include <stddef.h>
 

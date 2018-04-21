@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_MPMC_QUEUE_MUTEX__
-#define __ETL_MPMC_QUEUE_MUTEX__
+#ifndef ETL_MPMC_QUEUE_MUTEX_INCLUDED
+#define ETL_MPMC_QUEUE_MUTEX_INCLUDED
 
 #include <stddef.h>
 #include <stdint.h>

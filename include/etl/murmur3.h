@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_MURMUR3__
-#define __ETL_MURMUR3__
+#ifndef ETL_MURMUR3_INCLUDED
+#define ETL_MURMUR3_INCLUDED
 
 #include <stdint.h>
 

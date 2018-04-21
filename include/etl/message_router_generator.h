@@ -60,8 +60,8 @@ cog.outl("//********************************************************************
 // See generate.bat
 //***************************************************************************
 
-#ifndef __ETL_MESSAGE_ROUTER__
-#define __ETL_MESSAGE_ROUTER__
+#ifndef ETL_MESSAGE_ROUTER_INCLUDED
+#define ETL_MESSAGE_ROUTER_INCLUDED
 
 #include <stdint.h>
 

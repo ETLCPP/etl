@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_ARDUINO__
-#define __ETL_ARDUINO__
+#ifndef ETL_ARDUINO_INCLUDED
+#define ETL_ARDUINO_INCLUDED
 
 //*****************************************************************************
 // Arduino

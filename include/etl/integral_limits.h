@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_INTEGRAL_LIMITS__
-#define __ETL_INTEGRAL_LIMITS__
+#ifndef ETL_INTEGRAL_LIMITS_INCLUDED
+#define ETL_INTEGRAL_LIMITS_INCLUDED
 
 #include <limits.h>
 #include <stddef.h>

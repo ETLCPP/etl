@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_VERSION__
-#define __ETL_VERSION__
+#ifndef ETL_VERSION_INCLUDED
+#define ETL_VERSION_INCLUDED
 
 #include <stdint.h>
 

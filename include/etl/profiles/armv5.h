@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_ARMV5__
-#define __ETL_ARMV5__
+#ifndef ETL_ARMV5_INCLUDED
+#define ETL_ARMV5_INCLUDED
 
 //*****************************************************************************
 // ARM Compiler Version 5

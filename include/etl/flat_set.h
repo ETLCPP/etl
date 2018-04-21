@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_FLAT_SET__
-#define __ETL_FLAT_SET__
+#ifndef ETL_FLAT_SET_INCLUDED
+#define ETL_FLAT_SET_INCLUDED
 
 #include "platform.h"
 #include "reference_flat_set.h"

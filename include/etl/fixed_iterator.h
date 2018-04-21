@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_FIXED_ITERATOR__
-#define __ETL_FIXED_ITERATOR__
+#ifndef ETL_FIXED_ITERATOR_INCLUDED
+#define ETL_FIXED_ITERATOR_INCLUDED
 
 #include <iterator>
 

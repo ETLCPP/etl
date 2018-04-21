@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_POW__
-#define __ETL_POW__
+#ifndef ETL_POW_INCLUDED
+#define ETL_POW_INCLUDED
 
 #include <stddef.h>
 #include <stdint.h>

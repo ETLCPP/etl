@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_FACTORIAL__
-#define __ETL_FACTORIAL__
+#ifndef ETL_FACTORIAL_INCLUDED
+#define ETL_FACTORIAL_INCLUDED
 
 #include <stddef.h>
 

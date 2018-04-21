@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_BITSET__
-#define __ETL_BITSET__
+#ifndef ETL_BITSET_INCLUDED
+#define ETL_BITSET_INCLUDED
 
 #include <algorithm>
 #include <iterator>

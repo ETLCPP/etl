@@ -60,8 +60,8 @@ cog.outl("//********************************************************************
 // See generate.bat
 //***************************************************************************
 
-#ifndef __ETL_FSM__
-#define __ETL_FSM__
+#ifndef ETL_FSM_INCLUDED
+#define ETL_FSM_INCLUDED
 
 #include <stdint.h>
 

@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_INTRUSIVE_FORWARD_LIST__
-#define __ETL_INTRUSIVE_FORWARD_LIST__
+#ifndef ETL_INTRUSIVE_FORWARD_LIST_INCLUDED
+#define ETL_INTRUSIVE_FORWARD_LIST_INCLUDED
 
 #include "platform.h"
 

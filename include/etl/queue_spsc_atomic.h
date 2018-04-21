@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_SPSC_QUEUE_ATOMIC__
-#define __ETL_SPSC_QUEUE_ATOMIC__
+#ifndef ETL_SPSC_QUEUE_ATOMIC_INCLUDED
+#define ETL_SPSC_QUEUE_ATOMIC_INCLUDED
 
 #include <stddef.h>
 #include <stdint.h>

@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_QUEUE__
-#define __ETL_QUEUE__
+#ifndef ETL_QUEUE_INCLUDED
+#define ETL_QUEUE_INCLUDED
 
 #include <stddef.h>
 #include <stdint.h>

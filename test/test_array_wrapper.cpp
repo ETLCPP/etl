@@ -559,7 +559,7 @@ namespace
       size_t hash = etl::hash<Data5>()(aw5);
 
 
-      size_t compare_hash = etl::__private_hash__::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&data5[0]), reinterpret_cast<const uint8_t*>(&data5[5]));
+      size_t compare_hash = etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&data5[0]), reinterpret_cast<const uint8_t*>(&data5[5]));
       
       
       CHECK_EQUAL(compare_hash, hash);

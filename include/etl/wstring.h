@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_WSTRING__
-#define __ETL_WSTRING__
+#ifndef ETL_WSTRING_INCLUDED
+#define ETL_WSTRING_INCLUDED
 
 #include "platform.h"
 #include "basic_string.h"
@@ -215,7 +215,7 @@ namespace etl
   {
     size_t operator()(const etl::iwstring& text) const
     {
-      return etl::__private_hash__::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
                                                          reinterpret_cast<const uint8_t*>(&text[text.size()]));
     }
   };
@@ -225,7 +225,7 @@ namespace etl
   {
     size_t operator()(const etl::wstring<SIZE>& text) const
     {
-      return etl::__private_hash__::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
                                                          reinterpret_cast<const uint8_t*>(&text[text.size()]));
     }
   };

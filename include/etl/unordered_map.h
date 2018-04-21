@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_UNORDERED_MAP__
-#define __ETL_UNORDERED_MAP__
+#ifndef ETL_UNORDERED_MAP_INCLUDED
+#define ETL_UNORDERED_MAP_INCLUDED
 
 #include <stddef.h>
 #include <iterator>

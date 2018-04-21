@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_CRC8_CCITT__
-#define __ETL_CRC8_CCITT__
+#ifndef ETL_CRC8_CCITT_INCLUDED
+#define ETL_CRC8_CCITT_INCLUDED
 
 #include <stdint.h>
 #include <iterator>

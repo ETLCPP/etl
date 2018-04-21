@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_TIMER__
-#define __ETL_TIMER__
+#ifndef ETL_TIMER_INCLUDED
+#define ETL_TIMER_INCLUDED
 
 #include <stdint.h>
 

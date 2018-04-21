@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_BINARY__
-#define __ETL_BINARY__
+#ifndef ETL_BINARY_INCLUDED
+#define ETL_BINARY_INCLUDED
 
 ///\defgroup binary binary
 /// Binary utilities

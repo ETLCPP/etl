@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_OBSERVER__
-#define __ETL_OBSERVER__
+#ifndef ETL_OBSERVER_INCLUDED
+#define ETL_OBSERVER_INCLUDED
 
 //*****************************************************************************
 ///\defgroup observer observer

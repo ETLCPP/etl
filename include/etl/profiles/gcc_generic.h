@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_GCC__
-#define __ETL_GCC__
+#ifndef ETL_GCC_INCLUDED
+#define ETL_GCC_INCLUDED
 
 //*****************************************************************************
 // GCC

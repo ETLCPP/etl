@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __test_data__
-#define __test_data__
+#ifndef ETL_TEST_DATA_INCLUDED
+#define ETL_TEST_DATA_INCLUDED
 
 #include <ostream>
 

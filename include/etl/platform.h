@@ -30,8 +30,8 @@ SOFTWARE.
 
 #include <stdint.h>
 
-#ifndef __ETL_PLATFORM__
-#define __ETL_PLATFORM__
+#ifndef ETL_PLATFORM_INCLUDED
+#define ETL_PLATFORM_INCLUDED
 
 // Some targets do not support 8bit types.
 #define ETL_8BIT_SUPPORT (CHAR_BIT == 8)

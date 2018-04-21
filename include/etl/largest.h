@@ -50,8 +50,8 @@ SOFTWARE.
 // See generate.bat
 //***************************************************************************
 
-#ifndef __ETL_LARGEST__
-#define __ETL_LARGEST__
+#ifndef ETL_LARGEST_INCLUDED
+#define ETL_LARGEST_INCLUDED
 
 ///\defgroup largest largest
 ///\ingroup utilities

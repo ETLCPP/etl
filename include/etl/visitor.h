@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_VISITOR__
-#define __ETL_VISITOR__
+#ifndef ETL_VISITOR_INCLUDED
+#define ETL_VISITOR_INCLUDED
 
 #include "platform.h"
 

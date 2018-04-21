@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_DEBUG_COUNT__
-#define __ETL_DEBUG_COUNT__
+#ifndef ETL_DEBUG_COUNT_INCLUDED
+#define ETL_DEBUG_COUNT_INCLUDED
 
 #include <stdint.h>
 #include <assert.h>

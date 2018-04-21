@@ -28,10 +28,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_IVECTOR_POINTER__
-#define __ETL_IVECTOR_POINTER__
+#ifndef ETL_IVECTOR_POINTER_INCLUDED
+#define ETL_IVECTOR_POINTER_INCLUDED
 
-#ifndef __ETL_IN_VECTOR_H__
+#ifndef ETL_IN_VECTOR_H
 #error  This header is a private element of etl::ivector
 #endif
 

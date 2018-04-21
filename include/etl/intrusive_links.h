@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_INTRUSIVE_LINKS__
-#define __ETL_INTRUSIVE_LINKS__
+#ifndef ETL_INTRUSIVE_LINKS_INCLUDED
+#define ETL_INTRUSIVE_LINKS_INCLUDED
 
 #include <assert.h>
 #include <utility>

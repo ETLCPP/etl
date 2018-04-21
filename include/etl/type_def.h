@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_TYPE_DEF__
-#define __ETL_TYPE_DEF__
+#ifndef ETL_TYPE_DEF_INCLUDED
+#define ETL_TYPE_DEF_INCLUDED
 
 #include "platform.h"
 

@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_ARRAY__
-#define __ETL_ARRAY__
+#ifndef ETL_ARRAY_INCLUDED
+#define ETL_ARRAY_INCLUDED
 
 #include <iterator>
 #include <functional>

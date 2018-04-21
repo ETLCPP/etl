@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_PROFILE_H__
-#define __ETL_PROFILE_H__
+#ifndef ETL_PROFILE_H_INCLUDED
+#define ETL_PROFILE_H_INCLUDED
 
 #define ETL_THROW_EXCEPTIONS
 #define ETL_VERBOSE_ERRORS

@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_PERMUTATIONS__
-#define __ETL_PERMUTATIONS__
+#ifndef ETL_PERMUTATIONS_INCLUDED
+#define ETL_PERMUTATIONS_INCLUDED
 
 #include "platform.h"
 

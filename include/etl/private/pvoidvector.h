@@ -28,10 +28,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_PVOIDVECTOR__
-#define __ETL_PVOIDVECTOR__
+#ifndef ETL_PVOIDVECTOR_INCLUDED
+#define ETL_PVOIDVECTOR_INCLUDED
 
-#define __ETL_IN_PVOIDVECTOR__
+#define ETL_IN_PVOIDVECTOR
 
 #include <iterator>
 #include <algorithm>
@@ -598,6 +598,6 @@ namespace etl
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 #endif
 
-#undef __ETL_IN_PVOIDVECTOR__
+#undef ETL_IN_PVOIDVECTOR
 
 #endif

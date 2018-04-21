@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_TICC__
-#define __ETL_TICC__
+#ifndef ETL_TICC_INCLUDED
+#define ETL_TICC_INCLUDED
 
 //*****************************************************************************
 // Texas Instruments Code Composer

@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_MEMORY__
-#define __ETL_MEMORY__
+#ifndef ETL_MEMORY_INCLUDED
+#define ETL_MEMORY_INCLUDED
 
 #include <iterator>
 #include <algorithm>

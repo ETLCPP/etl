@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_MULTISET__
-#define __ETL_MULTISET__
+#ifndef ETL_MULTISET_INCLUDED
+#define ETL_MULTISET_INCLUDED
 
 #include <stddef.h>
 #include <iterator>
@@ -555,7 +555,7 @@ namespace etl
     //*************************************************************************
     void rotate_3node(Node*& position, uint_least8_t dir, uint_least8_t third)
     {
-      //        __A__             __E__            __A__             __D__
+      //        --A--             --E--            --A--             --D--
       //      _B_    C    ->     B     A    OR    B    _C_   ->     A     C
       //     D   E              D F   G C             D   E        B F   G E
       //        F G                                  F G

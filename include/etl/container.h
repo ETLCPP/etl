@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_CONTAINER__
-#define __ETL_CONTAINER__
+#ifndef ETL_CONTAINER_INCLUDED
+#define ETL_CONTAINER_INCLUDED
 
 #include <stddef.h>
 #include <iterator>

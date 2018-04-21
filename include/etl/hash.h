@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_HASH__
-#define __ETL_HASH__
+#ifndef ETL_HASH_INCLUDED
+#define ETL_HASH_INCLUDED
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -46,7 +46,7 @@ SOFTWARE.
 
 namespace etl
 {
-  namespace __private_hash__
+  namespace private_hash
   {
     //*************************************************************************
     /// Hash to use when size_t is 16 bits.
@@ -242,7 +242,7 @@ namespace etl
       else
       {
         uint8_t* p = reinterpret_cast<uint8_t*>(&v);
-        return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
+        return private_hash::generic_hash<size_t>(p, p + sizeof(v));
       }
     }
   };
@@ -264,7 +264,7 @@ namespace etl
       else
       {
         uint8_t* p = reinterpret_cast<uint8_t*>(&v);
-        return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
+        return private_hash::generic_hash<size_t>(p, p + sizeof(v));
       }
     }
   };
@@ -286,7 +286,7 @@ namespace etl
       else
       {
         uint8_t* p = reinterpret_cast<uint8_t*>(&v);
-        return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
+        return private_hash::generic_hash<size_t>(p, p + sizeof(v));
       }
     }
   };
@@ -308,7 +308,7 @@ namespace etl
       else
       {
         uint8_t* p = reinterpret_cast<uint8_t*>(&v);
-        return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
+        return private_hash::generic_hash<size_t>(p, p + sizeof(v));
       }
     }
   };
@@ -338,7 +338,7 @@ namespace etl
       else
       {
         uint8_t* p = reinterpret_cast<uint8_t*>(&v);
-        return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
+        return private_hash::generic_hash<size_t>(p, p + sizeof(v));
       }
     }
   };
@@ -368,7 +368,7 @@ namespace etl
       else
       {
         uint8_t* p = reinterpret_cast<uint8_t*>(&v);
-        return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
+        return private_hash::generic_hash<size_t>(p, p + sizeof(v));
       }
     }
   };
@@ -398,7 +398,7 @@ namespace etl
       else
       {
         uint8_t* p = reinterpret_cast<uint8_t*>(&v);
-        return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
+        return private_hash::generic_hash<size_t>(p, p + sizeof(v));
       }
     }
   };
@@ -428,7 +428,7 @@ namespace etl
       else
       {
         uint8_t* p = reinterpret_cast<uint8_t*>(&v);
-        return __private_hash__::generic_hash<size_t>(p, p + sizeof(v));
+        return private_hash::generic_hash<size_t>(p, p + sizeof(v));
       }
     }
   };
