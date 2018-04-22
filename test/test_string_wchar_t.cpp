@@ -34,8 +34,6 @@ SOFTWARE.
 
 #include "wstring.h"
 
-#undef min
-
 #undef STR
 #define STR(x) L##x
 

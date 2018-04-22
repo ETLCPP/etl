@@ -39,9 +39,7 @@ SOFTWARE.
   #include <initializer_list>
 #endif
 
-#if defined(ETL_COMPILER_MICROSOFT)
-  #undef min
-#endif
+#include "private/minmax_push.h"
 
 namespace etl
 {
@@ -232,8 +230,6 @@ namespace etl
 #endif
 }
 
-#if defined(ETL_COMPILER_MICROSOFT)
-  #define min(a,b) (((a) < (b)) ? (a) : (b))
-#endif
+#include "private/minmax_pop.h"
 
 #endif

@@ -1,3 +1,5 @@
+///\file
+
 /******************************************************************************
 The MIT License(MIT)
 
@@ -5,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2018 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -26,40 +28,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+/*
+ * The header include guard has been intentionally omitted.
+ * This file is intended to evaluated multiple times by design.
+ */
 
-#include "constant.h"
-#include "integral_limits.h"
-
-#include <stdint.h>
-#include <type_traits>
-
-namespace
-{
-  SUITE(test_constant)
-  {
-    //*************************************************************************
-    TEST(test_constants)
-    {
-      typedef etl::constant<char,   etl::integral_limits<char>::max>   C1;
-      typedef etl::constant<uint32_t, etl::integral_limits<uint32_t>::max> C2;
-      typedef etl::constant<int64_t,  etl::integral_limits<int64_t>::max>  C3;
-
-      C1 c1;
-      C2 c2;
-      C3 c3;
-
-      CHECK_EQUAL((char)etl::integral_limits<char>::max, c1.value);
-      CHECK_EQUAL((char)etl::integral_limits<char>::max, C1::value);
-      CHECK((std::is_same<char, C1::value_type>::value));
-
-      CHECK_EQUAL((uint32_t)etl::integral_limits<uint32_t>::max, c2.value);
-      CHECK_EQUAL((uint32_t)etl::integral_limits<uint32_t>::max, C2::value);
-      CHECK((std::is_same<uint32_t, C2::value_type>::value));
-
-      CHECK_EQUAL((int64_t)etl::integral_limits<int64_t>::max, c3.value);
-      CHECK_EQUAL((int64_t)etl::integral_limits<int64_t>::max, C3::value);
-      CHECK((std::is_same<int64_t, C3::value_type>::value));
-    }
-  };
-}
+#ifdef ETL_COMPILER_MICROSOFT
+#pragma push_macro("min")
+#pragma push_macro("max")
+#undef min
+#undef max
+#endif

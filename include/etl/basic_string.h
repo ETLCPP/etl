@@ -55,13 +55,7 @@ SOFTWARE.
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
-#ifdef ETL_COMPILER_MICROSOFT
-#undef min
-#endif
-
-#ifdef ETL_COMPILER_MICROSOFT
-#undef max
-#endif
+#include "private/minmax_push.h"
 
 //*****************************************************************************
 ///\defgroup basic_string basic_string
@@ -2234,13 +2228,7 @@ namespace etl
   }
 }
 
-#ifdef ETL_COMPILER_MICROSOFT
-#define min(a,b) (((a) < (b)) ? (a) : (b))
-#endif
-
-#ifdef ETL_COMPILER_MICROSOFT
-#define max(a,b) (((a) > (b)) ? (a) : (b))
-#endif
+#include "private/minmax_pop.h"
 
 #undef ETL_FILE
 

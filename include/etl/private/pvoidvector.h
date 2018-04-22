@@ -48,9 +48,7 @@ SOFTWARE.
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
-#ifdef ETL_COMPILER_MICROSOFT
-#undef min
-#endif
+#include "minmax_push.h"
 
 namespace etl
 {
@@ -594,9 +592,7 @@ namespace etl
   bool operator >=(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
 }
 
-#ifdef ETL_COMPILER_MICROSOFT
-#define min(a,b) (((a) < (b)) ? (a) : (b))
-#endif
+#include "minmax_pop.h"
 
 #undef __ETL_IN_PVOIDVECTOR__
 

@@ -34,8 +34,6 @@ SOFTWARE.
 
 #include "u32string.h"
 
-#undef min
-
 #undef STR
 #define STR(x) U##x
 

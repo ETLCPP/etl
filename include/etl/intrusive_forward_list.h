@@ -33,9 +33,7 @@ SOFTWARE.
 
 #include "platform.h"
 
-#ifdef ETL_COMPILER_MICROSOFT
-#undef min
-#endif
+#include "private/minmax_push.h"
 
 #include <iterator>
 #include <algorithm>
@@ -1046,9 +1044,7 @@ namespace etl
   };
 }
 
-#ifdef ETL_COMPILER_MICROSOFT
-#define min(a,b) (((a) < (b)) ? (a) : (b))
-#endif
+#include "private/minmax_pop.h"
 
 #undef ETL_FILE
 
