@@ -34,8 +34,6 @@ SOFTWARE.
 
 #include "u16string.h"
 
-#undef min
-
 #undef STR
 #define STR(x) u##x
 

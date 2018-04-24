@@ -50,9 +50,7 @@ SOFTWARE.
   #include <initializer_list>
 #endif
 
-#ifdef ETL_COMPILER_MICROSOFT
-#undef min
-#endif
+#include "private/minmax_push.h"
 
 #undef ETL_FILE
 #define ETL_FILE "6"
@@ -1536,9 +1534,7 @@ bool operator >=(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& 
   return !(lhs < rhs);
 }
 
-#ifdef ETL_COMPILER_MICROSOFT
-#define min(a,b) (((a) < (b)) ? (a) : (b))
-#endif
+#include "private/minmax_pop.h"
 
 #undef ETL_FILE
 

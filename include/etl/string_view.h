@@ -49,10 +49,7 @@ SOFTWARE.
 #undef ETL_FILE
 #define ETL_FILE "42"
 
-#ifdef ETL_COMPILER_MICROSOFT
-#undef min
-#undef max
-#endif
+#include "private/minmax_push.h"
 
 namespace etl
 {
@@ -864,10 +861,7 @@ void swap(etl::basic_string_view<T, TTraits>& lhs, etl::basic_string_view<T, TTr
   lhs.swap(rhs);
 }
 
-#ifdef ETL_COMPILER_MICROSOFT
-#define min(a,b) (((a) < (b)) ? (a) : (b))
-#define max(a,b) (((a) > (b)) ? (a) : (b))
-#endif
+#include "private/minmax_pop.h"
 
 #undef ETL_FILE
 

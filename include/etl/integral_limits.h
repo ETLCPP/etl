@@ -37,10 +37,7 @@ SOFTWARE.
 #include "platform.h"
 #include "type_traits.h"
 
-#ifdef ETL_COMPILER_MICROSOFT
-#undef min
-#undef max
-#endif
+#include "private/minmax_push.h"
 
 //*****************************************************************************
 ///\defgroup integral_limits integral_limits
@@ -213,9 +210,6 @@ namespace etl
   };
 }
 
-#ifdef ETL_COMPILER_MICROSOFT
-#define min(a,b) (((a) < (b)) ? (a) : (b))
-#define max(a,b) (((a) > (b)) ? (a) : (b))
-#endif
+#include "private/minmax_pop.h"
 
 #endif

@@ -28,9 +28,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_SPSC_QUEUE_FREERTOS__
-#define __ETL_SPSC_QUEUE_FREERTOS__
+/*
+ * The header include guard has been intentionally omitted.
+ * This file is intended to evaluated multiple times by design.
+ */
 
-
-
+#ifdef ETL_COMPILER_MICROSOFT
+#pragma push_macro("min")
+#pragma push_macro("max")
+#undef min
+#undef max
 #endif

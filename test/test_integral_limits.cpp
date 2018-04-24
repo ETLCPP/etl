@@ -34,9 +34,6 @@ SOFTWARE.
 
 #include "integral_limits.h"
 
-#undef min
-#undef max
-
 namespace
 {
   SUITE(test_integral_limits)
