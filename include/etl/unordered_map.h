@@ -658,7 +658,7 @@ namespace etl
       // Get a new node.
       node_t& node = *pnodepool->allocate<node_t>();
       ::new (&node.key_value_pair) value_type(key, T());
-      ++construct_count;
+      ETL_INCREMENT_DEBUG_COUNT;
 
       pbucket->insert_after(pbucket->before_begin(), node);
 
@@ -788,7 +788,7 @@ namespace etl
         // Get a new node.
         node_t& node = *pnodepool->allocate<node_t>();
         ::new (&node.key_value_pair) value_type(key_value_pair);
-        ++construct_count;
+        ETL_INCREMENT_DEBUG_COUNT;
 
         // Just add the pointer to the bucket;
         bucket.insert_after(bucket.before_begin(), node);
@@ -822,7 +822,7 @@ namespace etl
           // Get a new node.
           node_t& node = *pnodepool->allocate<node_t>();
           ::new (&node.key_value_pair) value_type(key_value_pair);
-          ++construct_count;
+          ETL_INCREMENT_DEBUG_COUNT;
 
           // Add the node to the end of the bucket;
           bucket.insert_after(inode_previous, node);
@@ -892,7 +892,7 @@ namespace etl
         icurrent->key_value_pair.~value_type(); // Destroy the value.
         pnodepool->release(&*icurrent);         // Release it back to the pool.
         n = 1;
-        --construct_count;
+        ETL_DECREMENT_DEBUG_COUNT;
       }
 
       return n;
@@ -921,7 +921,7 @@ namespace etl
       bucket.erase_after(iprevious);          // Unlink from the bucket.
       icurrent->key_value_pair.~value_type(); // Destroy the value.
       pnodepool->release(&*icurrent);         // Release it back to the pool.
-      --construct_count;
+      ETL_DECREMENT_DEBUG_COUNT;
 
       return inext;
     }
@@ -956,7 +956,7 @@ namespace etl
         local_iterator inext = pbucket->erase_after(iprevious); // Unlink from the bucket.
         icurrent->key_value_pair.~value_type(); // Destroy the value.
         pnodepool->release(&*icurrent);         // Release it back to the pool.
-        --construct_count;
+        ETL_DECREMENT_DEBUG_COUNT;
 
         icurrent = inext;
 
@@ -1224,7 +1224,7 @@ namespace etl
             {
               // Destroy the value contents.
               it->key_value_pair.~value_type();
-              --construct_count;
+              ETL_DECREMENT_DEBUG_COUNT;
 
               ++it;
             }
@@ -1282,7 +1282,7 @@ namespace etl
     key_equal key_equal_function;
 
     /// For library debugging purposes only.
-    etl::debug_count construct_count;
+    ETL_DECLARE_DEBUG_COUNT;
 
     //*************************************************************************
     /// Destructor.

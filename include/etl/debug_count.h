@@ -39,6 +39,15 @@ SOFTWARE.
 ///\defgroup debug_count debug count
 ///\ingroup utilities
 
+#if defined(ETL_DEBUG_COUNT)
+
+#define ETL_DECLARE_DEBUG_COUNT     etl::debug_count etl_debug_count
+#define ETL_INCREMENT_DEBUG_COUNT   ++etl_debug_count
+#define ETL_DECREMENT_DEBUG_COUNT   --etl_debug_count
+#define ETL_ADD_DEBUG_COUNT(n)      etl_debug_count += (n)
+#define ETL_SUBTRACT_DEBUG_COUNT(n) etl_debug_count -= (n)
+#define ETL_RESET_DEBUG_COUNT       etl_debug_count.clear()
+
 namespace etl
 {
   //***************************************************************************
@@ -51,8 +60,7 @@ namespace etl
   class debug_count
   {
   public:
-    
-#if defined(ETL_DEBUG)
+
     inline debug_count()
       : count(0)
     {
@@ -113,46 +121,16 @@ namespace etl
   private:
 
     int32_t count;
-#else
-    inline debug_count()
-    {
-    }
-
-    inline ~debug_count()
-    {
-    }
-
-    inline debug_count& operator ++()
-    {
-      return *this;
-    }
-
-    inline debug_count& operator --()
-    {
-      return *this;
-    }
-
-    inline debug_count& operator +=(int32_t /*n*/)
-    {
-      return *this;
-    }
-
-    inline debug_count& operator -=(int32_t /*n*/)
-    {
-      return *this;
-    }
-
-    inline operator int32_t()
-    {
-      return 0;
-    }
-
-    inline void clear()
-    {
-    }
-
-#endif
   };
+
+#else
+#define ETL_DECLARE_DEBUG_COUNT
+#define ETL_INCREMENT_DEBUG_COUNT
+#define ETL_DECREMENT_DEBUG_COUNT
+#define ETL_ADD_DEBUG_COUNT(n)
+#define ETL_SUBTRACT_DEBUG_COUNT(n)
+#define ETL_RESET_DEBUG_COUNT
+#endif // ETL_DEBUG_COUNT
 }
 
 #endif
