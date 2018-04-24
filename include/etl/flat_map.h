@@ -234,7 +234,7 @@ namespace etl
       {
         value_type* pvalue = storage.allocate<value_type>();
         ::new (pvalue) value_type();
-        ++construct_count;
+        ETL_INCREMENT_DEBUG_COUNT;
 
         std::pair<iterator, bool> result = refmap_t::insert_at(i_element, *pvalue);
         i_element->second = result.first->second;
@@ -306,7 +306,7 @@ namespace etl
 
         value_type* pvalue = storage.allocate<value_type>();
         ::new (pvalue) value_type(value);
-        ++construct_count;
+        ETL_INCREMENT_DEBUG_COUNT;
         result = refmap_t::insert_at(i_element, *pvalue);
       }
 
@@ -367,7 +367,7 @@ namespace etl
       // Doesn't already exist?
       if ((i_element == end() || (i_element->first != key)))
       {
-        ++construct_count;
+        ETL_INCREMENT_DEBUG_COUNT;
         result = refmap_t::insert_at(i_element, *pvalue);
       }
       else
@@ -399,7 +399,7 @@ namespace etl
       // Doesn't already exist?
       if ((i_element == end() || (i_element->first != key)))
       {
-        ++construct_count;
+        ETL_INCREMENT_DEBUG_COUNT;
         result = refmap_t::insert_at(i_element, *pvalue);
       }
       else
@@ -431,7 +431,7 @@ namespace etl
       // Doesn't already exist?
       if ((i_element == end() || (i_element->first != key)))
       {
-        ++construct_count;
+        ETL_INCREMENT_DEBUG_COUNT;
         result = refmap_t::insert_at(i_element, *pvalue);
       }
       else
@@ -463,7 +463,7 @@ namespace etl
       // Doesn't already exist?
       if ((i_element == end() || (i_element->first != key)))
       {
-        ++construct_count;
+        ETL_INCREMENT_DEBUG_COUNT;
         result = refmap_t::insert_at(i_element, *pvalue);
       }
       else
@@ -495,7 +495,7 @@ namespace etl
       // Doesn't already exist?
       if ((i_element == end() || (i_element->first != key)))
       {
-        ++construct_count;
+        ETL_INCREMENT_DEBUG_COUNT;
         result = refmap_t::insert_at(i_element, *pvalue);
       }
       else
@@ -525,7 +525,7 @@ namespace etl
         i_element->~value_type();
         storage.release(etl::addressof(*i_element));
         refmap_t::erase(i_element);
-        --construct_count;
+        ETL_DECREMENT_DEBUG_COUNT;
         return 1;
       }
     }
@@ -539,7 +539,7 @@ namespace etl
       i_element->~value_type();
       storage.release(etl::addressof(*i_element));
       refmap_t::erase(i_element);
-      --construct_count;
+      ETL_DECREMENT_DEBUG_COUNT;
     }
 
     //*********************************************************************
@@ -558,7 +558,7 @@ namespace etl
         itr->~value_type();
         storage.release(etl::addressof(*itr));
         ++itr;
-        --construct_count;
+        ETL_DECREMENT_DEBUG_COUNT;
       }
 
       refmap_t::erase(first, last);
@@ -585,7 +585,7 @@ namespace etl
         }
       }
 
-      construct_count.clear();
+      ETL_RESET_DEBUG_COUNT;
       refmap_t::clear();
     }
 
@@ -765,7 +765,7 @@ namespace etl
     storage_t& storage;
 
     /// Internal debugging.
-    etl::debug_count construct_count;
+    ETL_DECLARE_DEBUG_COUNT;
 
     //*************************************************************************
     /// Destructor.

@@ -453,7 +453,7 @@ namespace etl
     size_type current_size;   ///< The number of the used nodes.
     const size_type CAPACITY; ///< The maximum size of the map.
     Node* root_node;          ///< The node that acts as the map root.
-    etl::debug_count construct_count;
+    ETL_DECLARE_DEBUG_COUNT;
   };
 
   //***************************************************************************
@@ -1263,7 +1263,7 @@ namespace etl
     {
       Data_Node& node = *p_node_pool->allocate<Data_Node>();
       ::new (&node.value) const value_type(value);
-      ++construct_count;
+      ETL_INCREMENT_DEBUG_COUNT;
       return node;
     }
 
@@ -1274,7 +1274,7 @@ namespace etl
     {
       node.value.~value_type();
       p_node_pool->release(&node);
-      --construct_count;
+      ETL_DECREMENT_DEBUG_COUNT;
     }
 
     //*************************************************************************

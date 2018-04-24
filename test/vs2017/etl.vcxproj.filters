@@ -627,6 +627,9 @@
     <ClInclude Include="..\..\include\etl\type_select_generator.h">
       <Filter>ETL\Utilities\Generators</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\memory_model.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
