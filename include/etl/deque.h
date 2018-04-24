@@ -52,9 +52,7 @@ SOFTWARE.
   #include <initializer_list>
 #endif
 
-#ifdef ETL_COMPILER_MICROSOFT
-  #undef min
-#endif
+#include "private/minmax_push.h"
 
 #undef ETL_FILE
 #define ETL_FILE "1"
@@ -2194,8 +2192,6 @@ bool operator >=(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
 
 #undef ETL_FILE
 
-#ifdef ETL_COMPILER_MICROSOFT
-#define min(a,b) (((a) < (b)) ? (a) : (b))
-#endif
+#include "private/minmax_pop.h"
 
 #endif

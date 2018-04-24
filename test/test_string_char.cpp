@@ -35,8 +35,6 @@ SOFTWARE.
 #include "cstring.h"
 #include "fnv_1.h"
 
-#undef min
-
 #undef STR
 #define STR(x) x
 

@@ -78,9 +78,7 @@ cog.outl("//********************************************************************
 #undef ETL_FILE
 #define ETL_FILE "34"
 
-#ifdef ETL_COMPILER_MICROSOFT
-#undef max
-#endif
+#include "private/minmax_push.h"
 
 namespace etl
 {
@@ -538,8 +536,6 @@ namespace etl
 
 #undef ETL_FILE
 
-#ifdef ETL_COMPILER_MICROSOFT
-#define max(a,b) (((a) > (b)) ? (a) : (b))
-#endif
+#include "private/minmax_pop.h"
 
 #endif

@@ -36,8 +36,6 @@ SOFTWARE.
 #include "fnv_1.h"
 #include "integral_limits.h"
 
-#undef max
-
 // Count bits the easy way.
 template <typename T>
 size_t test_count(T value)
