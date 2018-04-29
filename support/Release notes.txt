@@ -1,4 +1,11 @@
 ===============================================================================
+11.8.0
+Added more binary utilities.
+binary_fill
+has_zero_byte
+has_byte_n
+
+===============================================================================
 11.7.0
 Modified header guards.
 Added etl::type_select

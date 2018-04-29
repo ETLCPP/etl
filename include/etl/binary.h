@@ -36,7 +36,6 @@ SOFTWARE.
 ///\ingroup utilities
 
 #include <limits>
-#include <assert.h>
 
 #include "platform.h"
 #include "type_traits.h"
@@ -45,10 +44,42 @@ SOFTWARE.
 #include "log.h"
 #include "power.h"
 #include "smallest.h"
-#include "platform.h"
+#include "exception.h"
+#include "error_handler.h"
+
+#undef ETL_FILE
+#define ETL_FILE "50"
 
 namespace etl
 {
+  //***************************************************************************
+  /// Exception for binary functions.
+  ///\ingroup binary
+  //***************************************************************************
+  class binary_exception : public etl::exception
+  {
+  public:
+
+    binary_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// Full exception 'for out of range' errors.
+  ///\ingroup binary
+  //***************************************************************************
+  class binary_out_of_range : public etl::binary_exception
+  {
+  public:
+
+    binary_out_of_range(string_type file_name_, numeric_type line_number_)
+      : etl::binary_exception(ETL_ERROR_TEXT("binary:out of range", ETL_FILE"A"), file_name_, line_number_)
+    {
+    }
+  };
+
   //***************************************************************************
   /// Maximum value that can be contained in N bits.
   //***************************************************************************
@@ -310,7 +341,8 @@ namespace etl
     STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
     STATIC_ASSERT(etl::is_integral<TReturn>::value, "TReturn not an integral type");
     STATIC_ASSERT(etl::is_signed<TReturn>::value,   "TReturn not a signed type");
-    assert(NBITS <= std::numeric_limits<TReturn>::digits);
+
+    ETL_ASSERT((NBITS <= std::numeric_limits<TReturn>::digits), ETL_ERROR(binary_out_of_range));
 
     TReturn mask = TReturn(1U) << (NBITS - 1);
     value = value & ((1U << NBITS) - 1);
@@ -329,7 +361,8 @@ namespace etl
     STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
     STATIC_ASSERT(etl::is_integral<TReturn>::value, "TReturn not an integral type");
     STATIC_ASSERT(etl::is_signed<TReturn>::value,   "TReturn not a signed type");
-    assert(NBITS <= std::numeric_limits<TReturn>::digits);
+
+    ETL_ASSERT((NBITS <= std::numeric_limits<TReturn>::digits), ETL_ERROR(binary_out_of_range));
 
     TReturn mask = TReturn(1U) << (NBITS - 1);
     value = (value >> SHIFT) & ((1U << NBITS) - 1);
@@ -401,6 +434,140 @@ namespace etl
 
   template <const size_t POSITION>
   const typename bit<POSITION>::value_type bit<POSITION>::value;
+
+  //***************************************************************************
+  /// Fills a value with a bit pattern. Compile time.
+  //***************************************************************************
+  template <typename TResult, typename TValue = void*, const TValue VALUE = (void*)0>
+  class binary_fill
+  {
+  private:
+
+    STATIC_ASSERT(sizeof(TResult) >= sizeof(TValue), "Result must be at least as large as the fill value");
+    STATIC_ASSERT(VALUE <= etl::integral_limits<typename etl::make_unsigned<TValue>::type>::max, "Value is too large for specified type");
+
+    typedef typename etl::make_unsigned<TResult>::type unsigned_r_t;
+    typedef typename etl::make_unsigned<TValue>::type  unsigned_v_t;
+
+  public:
+
+    static const TResult value = TResult(unsigned_v_t(VALUE) * (unsigned_r_t(~unsigned_r_t(0U)) / unsigned_v_t(~unsigned_v_t(0U))));
+  };
+
+  template <typename TResult, typename TValue, const TValue VALUE>
+  const TResult binary_fill<TResult, TValue, VALUE>::value;
+
+  //***************************************************************************
+  /// Fills a value with a bit pattern. Run time.
+  //***************************************************************************
+  template <typename TResult>
+  class binary_fill<TResult, void*, (void*)0>
+  {
+  private:
+
+    typedef typename etl::make_unsigned<TResult>::type unsigned_r_t;
+
+  public:
+
+    template <typename TValue>
+    static TResult value(TValue value)
+    {
+      STATIC_ASSERT(sizeof(TResult) >= sizeof(TValue), "Result must be at least as large as the fill value");
+
+      typedef typename etl::make_unsigned<TValue>::type unsigned_v_t;
+
+      return TResult(unsigned_v_t(value) * (unsigned_r_t(~unsigned_r_t(0U)) / unsigned_v_t(~unsigned_v_t(0U))));
+    }
+  };
+
+#if ETL_8BIT_SUPPORT
+  //***************************************************************************
+  /// Detects the presence of zero bytes. Compile time.
+  //***************************************************************************
+  template <typename TValue = void*, const TValue VALUE = (void*)0>
+  class has_zero_byte
+  {
+  private:
+
+    typedef typename etl::make_unsigned<TValue>::type unsigned_t;
+
+    static const unsigned_t mask = etl::binary_fill<TValue, uint8_t, 0x7FU>::value;
+
+  public:
+
+    static const bool test = unsigned_t(~((((unsigned_t(VALUE) & mask) + mask) | unsigned_t(VALUE)) | mask)) != 0U;
+  };
+
+  template <typename TValue, const TValue VALUE>
+  const typename etl::make_unsigned<TValue>::type has_zero_byte<TValue, VALUE>::mask;
+
+  template <typename TValue, const TValue VALUE>
+  const bool has_zero_byte<TValue, VALUE>::test;
+
+  //***************************************************************************
+  /// Detects the presence of zero bytes. Run time.
+  //***************************************************************************
+  template <>
+  class has_zero_byte<void*, (void*)0>
+  {
+  public:
+
+    template <typename TValue>
+    static bool test(TValue value)
+    {
+      typedef typename etl::make_unsigned<TValue>::type unsigned_t;
+      static const unsigned_t mask = etl::binary_fill<TValue, uint8_t, 0x7FU>::value;
+
+      const unsigned_t temp = unsigned_t(~((((unsigned_t(value) & mask) + mask) | unsigned_t(value)) | mask));
+
+      return (temp != 0U);
+    }
+  };
+
+  //***************************************************************************
+  /// Detects the presence of a byte of value N. Compile time.
+  //***************************************************************************
+  template <const uint8_t N = 0, typename TValue = void*, const TValue VALUE = (void*)0>
+  class has_byte_n
+  {
+  public:
+
+    static const bool test = etl::has_zero_byte<TValue, TValue(VALUE ^ etl::binary_fill<TValue, uint8_t, N>::value)>::test;
+  };
+
+  template <const uint8_t N, typename TValue, const TValue VALUE>
+  const bool has_byte_n<N, TValue, VALUE>::test;
+
+  //***************************************************************************
+  /// Detects the presence of a byte of value N. Partial run time.
+  //***************************************************************************
+  template <const uint8_t N>
+  class has_byte_n<N, void*, (void*)0>
+  {
+  public:
+
+    template <typename TValue>
+    static bool test(TValue value)
+    {
+      return etl::has_zero_byte<>::test(TValue(value ^ etl::binary_fill<TValue, uint8_t, N>::value));
+    }
+  };
+
+  //***************************************************************************
+  /// Detects the presence of a byte of value N. Run time.
+  //***************************************************************************
+  template <>
+  class has_byte_n<0, void*, (void*)0>
+  {
+  public:
+
+    template <typename TValue>
+    static bool test(TValue value, uint8_t n)
+    {
+      return etl::has_zero_byte<>::test(TValue(value ^ etl::binary_fill<TValue>::template value<uint8_t>(n)));
+    }
+  };
+#endif
 
   //***************************************************************************
   /// 8 bit binary constants.
@@ -701,5 +868,7 @@ namespace etl
     b31 = 0x80000000
   };
 }
+
+#undef ETL_FILE
 
 #endif
