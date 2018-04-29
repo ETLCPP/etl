@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_MESSAGE_TIMER__
-#define __ETL_MESSAGE_TIMER__
+#ifndef ETL_MESSAGE_TIMER_INCLUDED
+#define ETL_MESSAGE_TIMER_INCLUDED
 
 #include <stdint.h>
 #include <algorithm>
@@ -148,7 +148,7 @@ namespace etl
     message_timer_data& operator =(const message_timer_data& other);
   };
 
-  namespace __private_message_timer__
+  namespace private_message_timer
   {
     //*************************************************************************
     /// A specialised intrusive linked list for timer data.
@@ -623,7 +623,7 @@ namespace etl
     message_timer_data* const timer_array;
 
     // The list of active timers.
-    __private_message_timer__::list active_list;
+    private_message_timer::list active_list;
 
     volatile bool enabled;
     

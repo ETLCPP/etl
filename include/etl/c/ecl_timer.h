@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_C_TIMER_FRAMEWORK__
-#define __ETL_C_TIMER_FRAMEWORK__
+#ifndef ETL_C_TIMER_FRAMEWORK_INCLUDED
+#define ETL_C_TIMER_FRAMEWORK_INCLUDED
 
 #include <stdint.h>
 

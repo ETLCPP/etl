@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_BITSET__
-#define __ETL_BITSET__
+#ifndef ETL_BITSET_INCLUDED
+#define ETL_BITSET_INCLUDED
 
 #include <algorithm>
 #include <iterator>
@@ -46,9 +46,7 @@ SOFTWARE.
 #include "integral_limits.h"
 #include "binary.h"
 
-#ifdef ETL_COMPILER_MICROSOFT
-#undef min
-#endif
+#include "private/minmax_push.h"
 
 #include "error_handler.h"
 
@@ -1018,8 +1016,6 @@ void swap(etl::bitset<MAXN>& lhs, etl::bitset<MAXN>& rhs)
   lhs.swap(rhs);
 }
 
-#ifdef ETL_COMPILER_MICROSOFT
-#define min(a,b) (((a) < (b)) ? (a) : (b))
-#endif
+#include "private/minmax_pop.h"
 
 #endif

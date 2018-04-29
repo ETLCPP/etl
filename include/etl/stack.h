@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_STACK__
-#define __ETL_STACK__
+#ifndef ETL_STACK_INCLUDED
+#define ETL_STACK_INCLUDED
 
 #include <stddef.h>
 #include <stdint.h>
@@ -178,7 +178,7 @@ namespace etl
     void add_in()
     {
       top_index = current_size++;
-      ++construct_count;
+      ETL_INCREMENT_DEBUG_COUNT;
     }
 
     //*************************************************************************
@@ -188,7 +188,7 @@ namespace etl
     {
       --top_index;
       --current_size;
-      --construct_count;
+      ETL_DECREMENT_DEBUG_COUNT;
     }
 
     //*************************************************************************
@@ -198,13 +198,13 @@ namespace etl
     {
       top_index = 0;
       current_size = 0;
-      construct_count.clear();
+      ETL_RESET_DEBUG_COUNT;
     }
 
-    size_type top_index;              ///< The index of the top of the stack.
-    size_type current_size;           ///< The number of items in the stack.
-    const size_type CAPACITY;         ///< The maximum number of items in the stack.
-    etl::debug_count construct_count; ///< For internal debugging purposes.
+    size_type top_index;      ///< The index of the top of the stack.
+    size_type current_size;   ///< The number of items in the stack.
+    const size_type CAPACITY; ///< The maximum number of items in the stack.
+    ETL_DECLARE_DEBUG_COUNT;  ///< For internal debugging purposes.
   };
 
   //***************************************************************************

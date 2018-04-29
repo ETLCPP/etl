@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_SQRT__
-#define __ETL_SQRT__
+#ifndef ETL_SQRT_INCLUDED
+#define ETL_SQRT_INCLUDED
 
 #include <stddef.h>
 

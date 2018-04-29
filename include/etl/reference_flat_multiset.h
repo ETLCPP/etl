@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_REFERENCE_FLAT_MULTISET__
-#define __ETL_REFERENCE_FLAT_MULTISET__
+#ifndef ETL_REFERENCE_FLAT_MULTISET_INCLUDED
+#define ETL_REFERENCE_FLAT_MULTISET_INCLUDED
 
 #include <iterator>
 #include <algorithm>

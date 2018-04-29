@@ -29,8 +29,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_ERROR_HANDLER__
-#define __ETL_ERROR_HANDLER__
+#ifndef ETL_ERROR_HANDLER_INCLUDED
+#define ETL_ERROR_HANDLER_INCLUDED
 
 ///\defgroup error_handler error_handler
 /// Error handler for when throwing exceptions is not required.

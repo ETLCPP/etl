@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_BLOOM_FILTER__
-#define __ETL_BLOOM_FILTER__
+#ifndef ETL_BLOOM_FILTER_INCLUDED
+#define ETL_BLOOM_FILTER_INCLUDED
 
 #include "platform.h"
 #include "parameter_type.h"
@@ -45,7 +45,7 @@ SOFTWARE.
 
 namespace etl
 {
-  namespace __private_bloom_filter__
+  namespace private_bloom_filter
   {
     // Placeholder null hash for defaulted template parameters.
     struct null_hash
@@ -71,14 +71,14 @@ namespace etl
   //***************************************************************************
   template <const size_t DESIRED_WIDTH,
             typename     THash1,
-            typename     THash2 = __private_bloom_filter__::null_hash,
-            typename     THash3 = __private_bloom_filter__::null_hash>
+            typename     THash2 = private_bloom_filter::null_hash,
+            typename     THash3 = private_bloom_filter::null_hash>
   class bloom_filter
   {
   private:
 
     typedef typename etl::parameter_type<typename THash1::argument_type>::type parameter_t;
-    typedef __private_bloom_filter__::null_hash null_hash;
+    typedef private_bloom_filter::null_hash null_hash;
 
   public:
 

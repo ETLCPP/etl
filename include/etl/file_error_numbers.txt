@@ -1,4 +1,4 @@
- 1 
+ 1 deque
  2 flat_map
  3 flat_multimap
  4 flat_multiset
@@ -46,3 +46,5 @@
 46 queue_spsc_isr
 47 queue_spsc_atomic
 48 queue_mpmc_mutex
+49 type_select
+50 binary

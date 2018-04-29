@@ -28,14 +28,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_INTRUSIVE_FORWARD_LIST__
-#define __ETL_INTRUSIVE_FORWARD_LIST__
+#ifndef ETL_INTRUSIVE_FORWARD_LIST_INCLUDED
+#define ETL_INTRUSIVE_FORWARD_LIST_INCLUDED
 
 #include "platform.h"
 
-#ifdef ETL_COMPILER_MICROSOFT
-#undef min
-#endif
+#include "private/minmax_push.h"
 
 #include <iterator>
 #include <algorithm>
@@ -1046,9 +1044,7 @@ namespace etl
   };
 }
 
-#ifdef ETL_COMPILER_MICROSOFT
-#define min(a,b) (((a) < (b)) ? (a) : (b))
-#endif
+#include "private/minmax_pop.h"
 
 #undef ETL_FILE
 

@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_CRC64_ECMA__
-#define __ETL_CRC64_ECMA__
+#ifndef ETL_CRC64_ECMA_INCLUDED
+#define ETL_CRC64_ECMA_INCLUDED
 
 #include <stdint.h>
 #include <iterator>

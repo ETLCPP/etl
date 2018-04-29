@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_ARRAY_WRAPPER__
-#define __ETL_ARRAY_WRAPPER__
+#ifndef ETL_ARRAY_WRAPPER_INCLUDED
+#define ETL_ARRAY_WRAPPER_INCLUDED
 
 #include "platform.h"
 #include "iterator.h"
@@ -396,7 +396,7 @@ namespace etl
   {
     size_t operator()(const etl::array_wrapper<T, SIZE, ARRAY>& aw) const
     {
-      return etl::__private_hash__::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&aw[0]),
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&aw[0]),
                                                          reinterpret_cast<const uint8_t*>(&aw[aw.size()]));
     }
   };

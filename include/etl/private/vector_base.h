@@ -28,12 +28,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#if !defined(__ETL_IN_VECTOR_H__) && !defined(__ETL_IN_PVOIDVECTOR__)
+#if !defined(ETL_IN_VECTOR_H) && !defined(ETL_IN_PVOIDVECTOR)
 #error This header is a private element of etl::vector & etl::pvoidvector
 #endif
 
-#ifndef __ETL_VECTOR_BASE__
-#define __ETL_VECTOR_BASE__
+#ifndef ETL_VECTOR_BASE_INCLUDED
+#define ETL_VECTOR_BASE_INCLUDED
 
 #include <stddef.h>
 
@@ -161,8 +161,8 @@ namespace etl
     {
     }
 
-    const size_type CAPACITY;         ///<The maximum number of elements in the vector.
-    etl::debug_count construct_count; ///< Internal debugging.
+    const size_type CAPACITY; ///<The maximum number of elements in the vector.
+    ETL_DECLARE_DEBUG_COUNT;  ///< Internal debugging.
   };
 }
 

@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_VERSION__
-#define __ETL_VERSION__
+#ifndef ETL_VERSION_INCLUDED
+#define ETL_VERSION_INCLUDED
 
 #include <stdint.h>
 
@@ -37,9 +37,9 @@ SOFTWARE.
 /// Definitions of the ETL version
 ///\ingroup utilities
 
-#define ETL_VERSION "11.6.0"
+#define ETL_VERSION "11.8.0"
 #define ETL_VERSION_MAJOR 11
-#define ETL_VERSION_MINOR  6
+#define ETL_VERSION_MINOR  8
 #define ETL_VERSION_PATCH  0
 
 #endif

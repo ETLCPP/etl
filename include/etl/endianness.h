@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_ENDIAN__
-#define __ETL_ENDIAN__
+#ifndef ETL_ENDIAN_INCLUDED
+#define ETL_ENDIAN_INCLUDED
 
 #include <stdint.h>
 

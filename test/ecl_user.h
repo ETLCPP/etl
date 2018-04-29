@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ECL_USER__
-#define __ECL_USER__
+#ifndef ECL_USER_INCLUDED
+#define ECL_USER_INCLUDED
 
 #include <stdint.h>
 

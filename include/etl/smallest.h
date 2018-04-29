@@ -50,8 +50,8 @@ SOFTWARE.
 // See generate.bat
 //***************************************************************************
 
-#ifndef __ETL_SMALLEST__
-#define __ETL_SMALLEST__
+#ifndef ETL_SMALLEST_INCLUDED
+#define ETL_SMALLEST_INCLUDED
 
 #include <stdint.h>
 
@@ -132,7 +132,7 @@ namespace etl
     };
   };
   
-  namespace __private_smallest__
+  namespace private_smallest
   {
     //*************************************************************************
     // Determine the type to hold the number of bits based on the index.
@@ -237,7 +237,7 @@ namespace etl
 
   public:
 
-    typedef typename __private_smallest__::best_fit_uint_type<TYPE_INDEX>::type type;
+    typedef typename private_smallest::best_fit_uint_type<TYPE_INDEX>::type type;
   };
 
   //***************************************************************************
@@ -258,7 +258,7 @@ namespace etl
 
   public:
 
-    typedef typename __private_smallest__::best_fit_int_type<TYPE_INDEX>::type type;
+    typedef typename private_smallest::best_fit_int_type<TYPE_INDEX>::type type;
   };
 
   //***************************************************************************
@@ -279,7 +279,7 @@ namespace etl
 
   public:
 
-    typedef typename __private_smallest__::best_fit_uint_type<TYPE_INDEX>::type type;
+    typedef typename private_smallest::best_fit_uint_type<TYPE_INDEX>::type type;
   };
 
   //***************************************************************************
@@ -300,7 +300,7 @@ namespace etl
 
   public:
 
-    typedef typename __private_smallest__::best_fit_int_type<TYPE_INDEX>::type type;
+    typedef typename private_smallest::best_fit_int_type<TYPE_INDEX>::type type;
   };
 }
 

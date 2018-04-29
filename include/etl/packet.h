@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_PACKET__
-#define __ETL_PACKET__
+#ifndef ETL_PACKET_INCLUDED
+#define ETL_PACKET_INCLUDED
 
 #include "platform.h"
 #include "static_assert.h"

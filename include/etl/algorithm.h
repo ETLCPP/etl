@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_ALGORITHM__
-#define __ETL_ALGORITHM__
+#ifndef ETL_ALGORITHM_INCLUDED
+#define ETL_ALGORITHM_INCLUDED
 
 ///\defgroup algorithm algorithm
 /// Reverse engineered algorithms from C++ 0x11

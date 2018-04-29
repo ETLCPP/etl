@@ -28,10 +28,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_PVOIDVECTOR__
-#define __ETL_PVOIDVECTOR__
+#ifndef ETL_PVOIDVECTOR_INCLUDED
+#define ETL_PVOIDVECTOR_INCLUDED
 
-#define __ETL_IN_PVOIDVECTOR__
+#define ETL_IN_PVOIDVECTOR
 
 #include <iterator>
 #include <algorithm>
@@ -48,9 +48,7 @@ SOFTWARE.
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
-#ifdef ETL_COMPILER_MICROSOFT
-#undef min
-#endif
+#include "minmax_push.h"
 
 namespace etl
 {
@@ -594,10 +592,8 @@ namespace etl
   bool operator >=(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs);
 }
 
-#ifdef ETL_COMPILER_MICROSOFT
-#define min(a,b) (((a) < (b)) ? (a) : (b))
-#endif
+#include "minmax_pop.h"
 
-#undef __ETL_IN_PVOIDVECTOR__
+#undef ETL_IN_PVOIDVECTOR
 
 #endif

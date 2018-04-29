@@ -34,9 +34,6 @@ SOFTWARE.
 
 #include "bitset.h"
 
-#undef min
-#undef max
-
 namespace
 {
   SUITE(test_bitset)

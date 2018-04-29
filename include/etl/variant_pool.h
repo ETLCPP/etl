@@ -48,8 +48,8 @@ SOFTWARE.
 // See generate.bat
 //***************************************************************************
 
-#ifndef __ETL_VARIANT_POOL__
-#define __ETL_VARIANT_POOL__
+#ifndef ETL_VARIANT_POOL_INCLUDED
+#define ETL_VARIANT_POOL_INCLUDED
 
 #include <stdint.h>
 #include <utility>

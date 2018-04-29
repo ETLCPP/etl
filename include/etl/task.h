@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_TASK__
-#define __ETL_TASK__
+#ifndef ETL_TASK_INCLUDED
+#define ETL_TASK_INCLUDED
 
 #include <stdint.h>
 

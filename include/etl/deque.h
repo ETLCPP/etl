@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_DEQUE__
-#define __ETL_DEQUE__
+#ifndef ETL_DEQUE_INCLUDED
+#define ETL_DEQUE_INCLUDED
 
 #include <stddef.h>
 #include <stdint.h>
@@ -52,9 +52,7 @@ SOFTWARE.
   #include <initializer_list>
 #endif
 
-#ifdef ETL_COMPILER_MICROSOFT
-  #undef min
-#endif
+#include "private/minmax_push.h"
 
 #undef ETL_FILE
 #define ETL_FILE "1"
@@ -211,10 +209,10 @@ namespace etl
     {
     }
 
-    size_type       current_size;     ///< The current number of elements in the deque.
-    const size_type CAPACITY;         ///< The maximum number of elements in the deque.
-    const size_type BUFFER_SIZE;      ///< The number of elements in the buffer.
-    etl::debug_count construct_count; ///< Internal debugging.
+    size_type       current_size; ///< The current number of elements in the deque.
+    const size_type CAPACITY;     ///< The maximum number of elements in the deque.
+    const size_type BUFFER_SIZE;  ///< The number of elements in the buffer.
+    ETL_DECLARE_DEBUG_COUNT;      ///< Internal debugging.
   };
 
   //***************************************************************************
@@ -935,7 +933,7 @@ namespace etl
         --_begin;
         p = etl::addressof(*_begin);
         ++current_size;
-        ++construct_count;
+        ETL_INCREMENT_DEBUG_COUNT;
         position = _begin;
       }
       else if (insert_position == end())
@@ -943,7 +941,7 @@ namespace etl
         p = etl::addressof(*_end);
         ++_end;
         ++current_size;
-        ++construct_count;
+        ETL_INCREMENT_DEBUG_COUNT;
         position = _end - 1;
       }
       else
@@ -1000,7 +998,7 @@ namespace etl
         --_begin;
         p = etl::addressof(*_begin);
         ++current_size;
-        ++construct_count;
+        ETL_INCREMENT_DEBUG_COUNT;
         position = _begin;
       }
       else if (insert_position == end())
@@ -1008,7 +1006,7 @@ namespace etl
         p = etl::addressof(*_end);
         ++_end;
         ++current_size;
-        ++construct_count;
+        ETL_INCREMENT_DEBUG_COUNT;
         position = _end - 1;
       }
       else
@@ -1065,7 +1063,7 @@ namespace etl
         --_begin;
         p = etl::addressof(*_begin);
         ++current_size;
-        ++construct_count;
+        ETL_INCREMENT_DEBUG_COUNT;
         position = _begin;
       }
       else if (insert_position == end())
@@ -1073,7 +1071,7 @@ namespace etl
         p = etl::addressof(*_end);
         ++_end;
         ++current_size;
-        ++construct_count;
+        ETL_INCREMENT_DEBUG_COUNT;
         position = _end - 1;
       }
       else
@@ -1130,7 +1128,7 @@ namespace etl
         --_begin;
         p = etl::addressof(*_begin);
         ++current_size;
-        ++construct_count;
+        ETL_INCREMENT_DEBUG_COUNT;
         position = _begin;
       }
       else if (insert_position == end())
@@ -1138,7 +1136,7 @@ namespace etl
         p = etl::addressof(*_end);
         ++_end;
         ++current_size;
-        ++construct_count;
+        ETL_INCREMENT_DEBUG_COUNT;
         position = _end - 1;
       }
       else
@@ -1538,7 +1536,7 @@ namespace etl
       ::new (&(*_end)) T(value1);
       ++_end;
       ++current_size;
-      ++construct_count;
+      ETL_INCREMENT_DEBUG_COUNT;
     }
 
     //*************************************************************************
@@ -1555,7 +1553,7 @@ namespace etl
       ::new (&(*_end)) T(value1, value2);
       ++_end;
       ++current_size;
-      ++construct_count;
+      ETL_INCREMENT_DEBUG_COUNT;
     }
 
     //*************************************************************************
@@ -1572,7 +1570,7 @@ namespace etl
       ::new (&(*_end)) T(value1, value2, value3);
       ++_end;
       ++current_size;
-      ++construct_count;
+      ETL_INCREMENT_DEBUG_COUNT;
     }
 
     //*************************************************************************
@@ -1589,7 +1587,7 @@ namespace etl
       ::new (&(*_end)) T(value1, value2, value3, value4);
       ++_end;
       ++current_size;
-      ++construct_count;
+      ETL_INCREMENT_DEBUG_COUNT;
     }
 
     //*************************************************************************
@@ -1645,7 +1643,7 @@ namespace etl
       --_begin;
       ::new (&(*_begin)) T(value1);
       ++current_size;
-      ++construct_count;
+      ETL_INCREMENT_DEBUG_COUNT;
     }
 
     //*************************************************************************
@@ -1662,7 +1660,7 @@ namespace etl
       --_begin;
       ::new (&(*_begin)) T(value1, value2);
       ++current_size;
-      ++construct_count;
+      ETL_INCREMENT_DEBUG_COUNT;
     }
 
     //*************************************************************************
@@ -1679,7 +1677,7 @@ namespace etl
       --_begin;
       ::new (&(*_begin)) T(value1, value2, value3);
       ++current_size;
-      ++construct_count;
+      ETL_INCREMENT_DEBUG_COUNT;
     }
 
     //*************************************************************************
@@ -1696,7 +1694,7 @@ namespace etl
       --_begin;
       ::new (&(*_begin)) T(value1, value2, value3, value4);
       ++current_size;
-      ++construct_count;
+      ETL_INCREMENT_DEBUG_COUNT;
     }
 
     //*************************************************************************
@@ -1811,7 +1809,7 @@ namespace etl
       if ETL_IF_CONSTEXPR(etl::is_trivially_destructible<T>::value)
       {
         current_size    = 0;
-        construct_count.clear();
+        ETL_RESET_DEBUG_COUNT;
       }
       else
       {
@@ -1850,7 +1848,7 @@ namespace etl
       --_begin;
       ::new (&(*_begin)) T();
       ++current_size;
-      ++construct_count;
+      ETL_INCREMENT_DEBUG_COUNT;
     }
 
     //*********************************************************************
@@ -1882,7 +1880,7 @@ namespace etl
         ::new (&(*item++)) T(*from);
         ++from;
         ++current_size;
-        ++construct_count;
+        ETL_INCREMENT_DEBUG_COUNT;
       } while (n-- != 0);
     }
 
@@ -1894,7 +1892,7 @@ namespace etl
       ::new (&(*_end)) T();
       ++_end;
       ++current_size;
-      ++construct_count;
+      ETL_INCREMENT_DEBUG_COUNT;
     }
 
     //*********************************************************************
@@ -1905,7 +1903,7 @@ namespace etl
       --_begin;
       ::new (&(*_begin)) T(value);
       ++current_size;
-      ++construct_count;
+      ETL_INCREMENT_DEBUG_COUNT;
     }
 
     //*********************************************************************
@@ -1916,7 +1914,7 @@ namespace etl
       ::new (&(*_end)) T(value);
       ++_end;
       ++current_size;
-      ++construct_count;
+      ETL_INCREMENT_DEBUG_COUNT;
     }
 
     //*********************************************************************
@@ -1926,7 +1924,7 @@ namespace etl
     {
       (*_begin).~T();
       --current_size;
-      --construct_count;
+      ETL_DECREMENT_DEBUG_COUNT;
       ++_begin;
     }
 
@@ -1938,7 +1936,7 @@ namespace etl
       --_end;
       (*_end).~T();
       --current_size;
-      --construct_count;
+      ETL_DECREMENT_DEBUG_COUNT;
     }
 
     //*************************************************************************
@@ -2194,8 +2192,6 @@ bool operator >=(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
 
 #undef ETL_FILE
 
-#ifdef ETL_COMPILER_MICROSOFT
-#define min(a,b) (((a) < (b)) ? (a) : (b))
-#endif
+#include "private/minmax_pop.h"
 
 #endif

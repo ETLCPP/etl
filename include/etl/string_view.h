@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_STRING_VIEW__
-#define __ETL_STRING_VIEW__
+#ifndef ETL_STRING_VIEW_INCLUDED
+#define ETL_STRING_VIEW_INCLUDED
 
 #include "platform.h"
 #include "memory.h"
@@ -49,10 +49,7 @@ SOFTWARE.
 #undef ETL_FILE
 #define ETL_FILE "42"
 
-#ifdef ETL_COMPILER_MICROSOFT
-#undef min
-#undef max
-#endif
+#include "private/minmax_push.h"
 
 namespace etl
 {
@@ -818,7 +815,7 @@ namespace etl
   {
     size_t operator()(const etl::string_view& text) const
     {
-      return etl::__private_hash__::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
                                                          reinterpret_cast<const uint8_t*>(&text[text.size()]));
     }
   };
@@ -828,7 +825,7 @@ namespace etl
   {
     size_t operator()(const etl::wstring_view& text) const
     {
-      return etl::__private_hash__::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
                                                          reinterpret_cast<const uint8_t*>(&text[text.size()]));
     }
   };
@@ -838,7 +835,7 @@ namespace etl
   {
     size_t operator()(const etl::u16string_view& text) const
     {
-      return etl::__private_hash__::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
                                                          reinterpret_cast<const uint8_t*>(&text[text.size()]));
     }
   };
@@ -848,7 +845,7 @@ namespace etl
   {
     size_t operator()(const etl::u32string_view& text) const
     {
-      return etl::__private_hash__::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
                                                          reinterpret_cast<const uint8_t*>(&text[text.size()]));
     }
   };
@@ -864,10 +861,7 @@ void swap(etl::basic_string_view<T, TTraits>& lhs, etl::basic_string_view<T, TTr
   lhs.swap(rhs);
 }
 
-#ifdef ETL_COMPILER_MICROSOFT
-#define min(a,b) (((a) < (b)) ? (a) : (b))
-#define max(a,b) (((a) > (b)) ? (a) : (b))
-#endif
+#include "private/minmax_pop.h"
 
 #undef ETL_FILE
 

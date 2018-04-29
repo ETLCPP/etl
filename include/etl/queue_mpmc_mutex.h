@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_MPMC_QUEUE_MUTEX__
-#define __ETL_MPMC_QUEUE_MUTEX__
+#ifndef ETL_MPMC_QUEUE_MUTEX_INCLUDED
+#define ETL_MPMC_QUEUE_MUTEX_INCLUDED
 
 #include <stddef.h>
 #include <stdint.h>
@@ -51,7 +51,7 @@ namespace etl
     //*************************************************************************
     /// How many items can the queue hold.
     //*************************************************************************
-    ETL_CONSTEXPR size_t capacity() const
+    size_t capacity() const
     {
       return MAX_SIZE;
     }
@@ -59,7 +59,7 @@ namespace etl
     //*************************************************************************
     /// How many items can the queue hold.
     //*************************************************************************
-    ETL_CONSTEXPR size_t max_size() const
+    size_t max_size() const
     {
       return MAX_SIZE;
     }

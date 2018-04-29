@@ -34,8 +34,6 @@ SOFTWARE.
 
 #include "u32string.h"
 
-#undef min
-
 #undef STR
 #define STR(x) U##x
 
@@ -3031,7 +3029,7 @@ namespace
       // Test with actual string type.
       Text text(STR("ABCDEFHIJKL"));
       size_t hash = etl::hash<Text>()(text);
-      size_t compare_hash = etl::__private_hash__::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]), reinterpret_cast<const uint8_t*>(&text[text.size()]));
+      size_t compare_hash = etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]), reinterpret_cast<const uint8_t*>(&text[text.size()]));
       CHECK_EQUAL(compare_hash, hash);
 
       // Test with interface string type.

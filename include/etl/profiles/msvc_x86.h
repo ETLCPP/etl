@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_MSVC__
-#define __ETL_MSVC__
+#ifndef ETL_MSVC_INCLUDED
+#define ETL_MSVC_INCLUDED
 
 //*****************************************************************************
 // Microsoft Visual Studio

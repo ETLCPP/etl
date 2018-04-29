@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_CALLBACK_TIMER__
-#define __ETL_CALLBACK_TIMER__
+#ifndef ETL_CALLBACK_TIMER_INCLUDED
+#define ETL_CALLBACK_TIMER_INCLUDED
 
 #include <stdint.h>
 #include <algorithm>
@@ -153,7 +153,7 @@ namespace etl
     callback_timer_data& operator =(const callback_timer_data& other);
   };
 
-  namespace __private_callback_timer__
+  namespace private_callback_timer
   {
     //*************************************************************************
     /// A specialised intrusive linked list for timer data.
@@ -647,7 +647,7 @@ namespace etl
     callback_timer_data* const timer_array;
 
     // The list of active timers.
-    __private_callback_timer__::list active_list;
+    private_callback_timer::list active_list;
 
     volatile bool enabled;
 #if defined(ETL_CALLBACK_TIMER_USE_ATOMIC_LOCK)

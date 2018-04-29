@@ -45,6 +45,42 @@ SOFTWARE.
 
 namespace
 {
+  struct Data
+  {
+    Data(int a_, int b_ = 2, int c_ = 3, int d_ = 4)
+      : a(a_),
+        b(b_),
+        c(c_),
+        d(d_)
+    {
+    }
+
+    Data()
+      : a(0),
+        b(0),
+        c(0),
+        d(0)
+    {
+    }
+
+    int a;
+    int b;
+    int c;
+    int d;
+  };
+
+  bool operator ==(const Data& lhs, const Data& rhs)
+  {
+    return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
+  }
+
+  std::ostream& operator <<(std::ostream& os, const Data& data)
+  {
+    os << data.a << " " << data.b << " " << data.c << " " << data.d;
+
+    return os;
+  }
+
   SUITE(test_queue_mpmc_mutex)
   {
     //*************************************************************************
@@ -371,7 +407,7 @@ namespace
       std::thread t2(push_thread2);
       std::thread t3(pop_thread1);
       std::thread t4(pop_thread2);
-    
+
       start.store(true);
 
       // Join the threads with the main thread

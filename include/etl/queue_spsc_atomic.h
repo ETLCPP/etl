@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_SPSC_QUEUE_ATOMIC__
-#define __ETL_SPSC_QUEUE_ATOMIC__
+#ifndef ETL_SPSC_QUEUE_ATOMIC_INCLUDED
+#define ETL_SPSC_QUEUE_ATOMIC_INCLUDED
 
 #include <stddef.h>
 #include <stdint.h>
@@ -105,7 +105,7 @@ namespace etl
     //*************************************************************************
     /// How many items can the queue hold.
     //*************************************************************************
-    ETL_CONSTEXPR size_t capacity() const
+    size_t capacity() const
     {
       return RESERVED - 1;
     }
@@ -113,7 +113,7 @@ namespace etl
     //*************************************************************************
     /// How many items can the queue hold.
     //*************************************************************************
-    ETL_CONSTEXPR size_t max_size() const
+    size_t max_size() const
     {
       return RESERVED - 1;
     }

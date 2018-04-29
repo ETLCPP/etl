@@ -28,8 +28,6 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
-#undef max
-
 #include "constant.h"
 #include "integral_limits.h"
 

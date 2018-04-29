@@ -50,8 +50,8 @@ SOFTWARE.
 // See generate.bat
 //***************************************************************************
 
-#ifndef __ETL_TYPE_TRAITS__
-#define __ETL_TYPE_TRAITS__
+#ifndef ETL_TYPE_TRAITS_INCLUDED
+#define ETL_TYPE_TRAITS_INCLUDED
 
 #include <stddef.h>
 #include <stdint.h>

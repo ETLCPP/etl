@@ -24,8 +24,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_CHECKSUM__
-#define __ETL_CHECKSUM__
+#ifndef ETL_CHECKSUM_INCLUDED
+#define ETL_CHECKSUM_INCLUDED
 
 #include <stdint.h>
 

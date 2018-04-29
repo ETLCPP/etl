@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_MUTEX_GCC_SYNC__
-#define __ETL_MUTEX_GCC_SYNC__
+#ifndef ETL_MUTEX_GCC_SYNC_INCLUDED
+#define ETL_MUTEX_GCC_SYNC_INCLUDED
 
 #include "../platform.h"
 

@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_NULLPTR__
-#define __ETL_NULLPTR__
+#ifndef ETL_NULLPTR_INCLUDED
+#define ETL_NULLPTR_INCLUDED
 
 #include "platform.h"
 

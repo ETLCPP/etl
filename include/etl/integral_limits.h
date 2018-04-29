@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_INTEGRAL_LIMITS__
-#define __ETL_INTEGRAL_LIMITS__
+#ifndef ETL_INTEGRAL_LIMITS_INCLUDED
+#define ETL_INTEGRAL_LIMITS_INCLUDED
 
 #include <limits.h>
 #include <stddef.h>
@@ -37,10 +37,7 @@ SOFTWARE.
 #include "platform.h"
 #include "type_traits.h"
 
-#ifdef ETL_COMPILER_MICROSOFT
-#undef min
-#undef max
-#endif
+#include "private/minmax_push.h"
 
 //*****************************************************************************
 ///\defgroup integral_limits integral_limits
@@ -213,9 +210,6 @@ namespace etl
   };
 }
 
-#ifdef ETL_COMPILER_MICROSOFT
-#define min(a,b) (((a) < (b)) ? (a) : (b))
-#define max(a,b) (((a) > (b)) ? (a) : (b))
-#endif
+#include "private/minmax_pop.h"
 
 #endif

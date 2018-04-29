@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_MAP__
-#define __ETL_MAP__
+#ifndef ETL_MAP_INCLUDED
+#define ETL_MAP_INCLUDED
 
 #include <stddef.h>
 #include <iterator>
@@ -51,9 +51,7 @@ SOFTWARE.
   #include <initializer_list>
 #endif
 
-#ifdef ETL_COMPILER_MICROSOFT
-  #undef min
-#endif
+#include "private/minmax_push.h"
 
 #undef ETL_FILE
 #define ETL_FILE "8"
@@ -342,7 +340,7 @@ namespace etl
     //*************************************************************************
     void rotate_3node(Node*& position, uint_least8_t dir, uint_least8_t third)
     {
-      //        __A__             __E__            __A__             __D__
+      //        --A--             --E--            --A--             --D--
       //      _B_    C    ->     B     A    OR    B    _C_   ->     A     C
       //     D   E              D F   G C             D   E        B F   G E
       //        F G                                  F G
@@ -453,7 +451,7 @@ namespace etl
     size_type current_size;   ///< The number of the used nodes.
     const size_type CAPACITY; ///< The maximum size of the map.
     Node* root_node;          ///< The node that acts as the map root.
-    etl::debug_count construct_count;
+    ETL_DECLARE_DEBUG_COUNT;
   };
 
   //***************************************************************************
@@ -1263,7 +1261,7 @@ namespace etl
     {
       Data_Node& node = *p_node_pool->allocate<Data_Node>();
       ::new (&node.value) const value_type(value);
-      ++construct_count;
+      ETL_INCREMENT_DEBUG_COUNT;
       return node;
     }
 
@@ -1274,7 +1272,7 @@ namespace etl
     {
       node.value.~value_type();
       p_node_pool->release(&node);
-      --construct_count;
+      ETL_DECREMENT_DEBUG_COUNT;
     }
 
     //*************************************************************************
@@ -2186,9 +2184,7 @@ bool operator >=(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::im
   return !(lhs < rhs);
 }
 
-#ifdef ETL_COMPILER_MICROSOFT
-#define min(a,b) (((a) < (b)) ? (a) : (b))
-#endif
+#include "private/minmax_pop.h"
 
 #undef ETL_FILE
 

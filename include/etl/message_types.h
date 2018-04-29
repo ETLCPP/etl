@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_MESSAGE_DEFS__
-#define __ETL_MESSAGE_DEFS__
+#ifndef ETL_MESSAGE_DEFS_INCLUDED
+#define ETL_MESSAGE_DEFS_INCLUDED
 
 #include <stdint.h>
 

@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_DEBOUNCE__
-#define __ETL_DEBOUNCE__
+#ifndef ETL_DEBOUNCE_INCLUDED
+#define ETL_DEBOUNCE_INCLUDED
 
 #include <stdint.h>
 
@@ -38,7 +38,7 @@ SOFTWARE.
 
 namespace etl
 {
-  namespace __private_debounce__
+  namespace private_debounce
   {
     class debounce_base
     {
@@ -431,7 +431,7 @@ namespace etl
   /// Fixed Valid/Hold/Repeating values.
   //***************************************************************************
   template <const uint16_t VALID_COUNT = 0, const uint16_t HOLD_COUNT = 0, const uint16_t REPEAT_COUNT = 0>
-  class debounce : public __private_debounce__::debounce4
+  class debounce : public private_debounce::debounce4
   {
   public:
 
@@ -460,7 +460,7 @@ namespace etl
   /// Fixed Valid/Hold values.
   //***************************************************************************
   template <const uint16_t VALID_COUNT, const uint16_t HOLD_COUNT>
-  class debounce<VALID_COUNT, HOLD_COUNT, 0> : public __private_debounce__::debounce3
+  class debounce<VALID_COUNT, HOLD_COUNT, 0> : public private_debounce::debounce3
   {
   public:
 
@@ -492,7 +492,7 @@ namespace etl
   /// Fixed Valid value.
   //***************************************************************************
   template <const uint16_t VALID_COUNT>
-  class debounce<VALID_COUNT, 0, 0> : public __private_debounce__::debounce2
+  class debounce<VALID_COUNT, 0, 0> : public private_debounce::debounce2
   {
   public:
 
@@ -523,7 +523,7 @@ namespace etl
   /// Variable Valid/Hold/Repeating values.
   //***************************************************************************
   template <>
-  class debounce<0, 0, 0> : public __private_debounce__::debounce4
+  class debounce<0, 0, 0> : public private_debounce::debounce4
   {
   public:
 

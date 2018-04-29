@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_OPTIONAL__
-#define __ETL_OPTIONAL__
+#ifndef ETL_OPTIONAL_INCLUDED
+#define ETL_OPTIONAL_INCLUDED
 
 #include "platform.h"
 #include "alignment.h"
