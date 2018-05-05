@@ -630,6 +630,9 @@
     <ClInclude Include="..\..\include\etl\memory_model.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc32_c.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1030,6 +1033,9 @@
     </ClCompile>
     <ClCompile Include="..\test_type_select.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\crc32_c.cpp">
+      <Filter>ETL\Maths</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

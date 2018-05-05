@@ -333,6 +333,7 @@
     <ClInclude Include="..\..\include\etl\combinations.h" />
     <ClInclude Include="..\..\include\etl\compare.h" />
     <ClInclude Include="..\..\include\etl\constant.h" />
+    <ClInclude Include="..\..\include\etl\crc32_c.h" />
     <ClInclude Include="..\..\include\etl\c\ecl_timer.h" />
     <ClInclude Include="..\..\include\etl\fsm.h" />
     <ClInclude Include="..\..\include\etl\fsm_generator.h" />
@@ -515,6 +516,7 @@
     <ClCompile Include="..\..\src\crc16_ccitt.cpp" />
     <ClCompile Include="..\..\src\crc16_kermit.cpp" />
     <ClCompile Include="..\..\src\crc32.cpp" />
+    <ClCompile Include="..\..\src\crc32_c.cpp" />
     <ClCompile Include="..\..\src\crc64_ecma.cpp" />
     <ClCompile Include="..\..\src\crc8_ccitt.cpp" />
     <ClCompile Include="..\..\src\c\ecl_timer.c" />

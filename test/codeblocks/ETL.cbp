@@ -100,6 +100,7 @@
 		<Unit filename="../../include/etl/crc16_ccitt.h" />
 		<Unit filename="../../include/etl/crc16_kermit.h" />
 		<Unit filename="../../include/etl/crc32.h" />
+		<Unit filename="../../include/etl/crc32_c.h" />
 		<Unit filename="../../include/etl/crc64_ecma.h" />
 		<Unit filename="../../include/etl/crc8_ccitt.h" />
 		<Unit filename="../../include/etl/cstring.h" />
@@ -240,6 +241,7 @@
 		<Unit filename="../../src/crc16_ccitt.cpp" />
 		<Unit filename="../../src/crc16_kermit.cpp" />
 		<Unit filename="../../src/crc32.cpp" />
+		<Unit filename="../../src/crc32_c.cpp" />
 		<Unit filename="../../src/crc64_ecma.cpp" />
 		<Unit filename="../../src/crc8_ccitt.cpp" />
 		<Unit filename="../../src/error_handler.cpp" />
