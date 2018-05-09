@@ -605,7 +605,7 @@ namespace etl
       if (stop(id_))
       {
         timer_array[id_].period = period_;
-        return start(id_);
+        return true;
       }
 
       return false;
@@ -619,7 +619,7 @@ namespace etl
       if (stop(id_))
       {
         timer_array[id_].repeating = repeating_;
-        return start(id_);
+        return true;
       }
 
       return false;

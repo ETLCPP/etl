@@ -525,7 +525,7 @@ ecl_timer_result_t ecl_timer_set_period(ecl_timer_id_t id_, ecl_timer_time_t per
   if (ecl_timer_stop(id_))
   {
     ecl.ptimers[id_].period = period_;
-    return ecl_timer_start(id_, 0);
+    return ECL_TIMER_PASS;
   }
 
   return ECL_TIMER_FAIL;
@@ -541,7 +541,7 @@ ecl_timer_result_t ecl_timer_set_mode(ecl_timer_id_t id_, ecl_timer_mode_t repea
   if (ecl_timer_stop(id_))
   {
     ecl.ptimers[id_].repeating = repeating_;
-    return ecl_timer_start(id_, 0);
+    return ECL_TIMER_PASS;
   }
 
   return ECL_TIMER_FAIL;

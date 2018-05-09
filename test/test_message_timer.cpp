@@ -215,6 +215,7 @@ namespace
       // Timer should have timed out.
 
       CHECK(timer_controller.set_period(id1, 50));
+      timer_controller.start(id1);
 
       router1.clear();
 

@@ -173,6 +173,7 @@ namespace
       // Timer should have timed out.
 
       CHECK(ecl_timer_set_period(id1, 50));
+      ecl_timer_start(id1, ECL_TIMER_START_DELAYED);
 
       callback_list1.clear();
 
