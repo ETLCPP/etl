@@ -170,6 +170,52 @@ namespace
     }
 
     //=========================================================================
+    TEST(message_timer_one_shot_after_timeout)
+    {
+      etl::callback_timer<1> timer_controller;
+
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::SINGLE_SHOT);
+      test.tick_list.clear();
+
+      timer_controller.start(id1);
+      timer_controller.enable(true);
+
+      ticks = 0;
+
+      const uint32_t step = 1;
+
+      while (ticks <= 100U)
+      {
+        ticks += step;
+        timer_controller.tick(step);
+      }
+
+      // Timer should have timed out.
+
+      CHECK(timer_controller.set_period(id1, 50));
+      timer_controller.start(id1);
+
+      test.tick_list.clear();
+
+      ticks = 0;
+
+      while (ticks <= 100U)
+      {
+        ticks += step;
+        timer_controller.tick(step);
+      }
+
+      // Timer should have timed out.
+
+      CHECK_EQUAL(50, *test.tick_list.data());
+
+      CHECK(timer_controller.unregister_timer(id1));
+      CHECK(!timer_controller.unregister_timer(id1));
+      CHECK(!timer_controller.start(id1));
+      CHECK(!timer_controller.stop(id1));
+    }
+
+    //=========================================================================
     TEST(callback_timer_repeating)
     {
       etl::callback_timer<3> timer_controller;
