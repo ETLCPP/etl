@@ -150,6 +150,51 @@ namespace
     }
 
     //=========================================================================
+    TEST(message_timer_one_shot_after_timeout)
+    {
+      ecl_timer_init(timers, NTIMERS);
+
+      ecl_timer_id_t id1 = ecl_timer_register(callback1, 37, ECL_TIMER_SINGLE_SHOT);
+      callback_list1.clear();
+
+      ecl_timer_enable(ECL_TIMER_ENABLED);
+      ecl_timer_start(id1, ECL_TIMER_START_DELAYED);
+
+      ticks = 0;
+
+      const uint32_t step = 1;
+
+      while (ticks <= 100U)
+      {
+        ticks += step;
+        ecl_timer_tick(step);
+      }
+
+      // Timer should have timed out.
+
+      CHECK(ecl_timer_set_period(id1, 50));
+
+      callback_list1.clear();
+
+      ticks = 0;
+
+      while (ticks <= 100U)
+      {
+        ticks += step;
+        ecl_timer_tick(step);
+      }
+
+      // Timer should have timed out.
+
+      CHECK_EQUAL(50, *callback_list1.data());
+
+      CHECK(ecl_timer_unregister(id1));
+      CHECK(!ecl_timer_unregister(id1));
+      CHECK(!ecl_timer_start(id1, ECL_TIMER_START_DELAYED));
+      CHECK(!ecl_timer_stop(id1));
+    }
+
+    //=========================================================================
     TEST(ecl_timer_repeating)
     {
       ecl_timer_init(timers, NTIMERS);

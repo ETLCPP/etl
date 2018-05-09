@@ -340,13 +340,13 @@ ecl_timer_result_t ecl_timer_unregister(ecl_timer_id_t id_)
         ECL_TIMER_DISABLE_PROCESSING;
         ecl_timer_list_remove(ptimer->id, 0);
         ECL_TIMER_ENABLE_PROCESSING;
-
-        // Reset in-place.
-        ecl_timer_data_init_default(ptimer);
-        --ecl.registered_timers;
-
-        result = ECL_TIMER_PASS;
       }
+
+      // Reset in-place.
+      ecl_timer_data_init_default(ptimer);
+      --ecl.registered_timers;
+
+      result = ECL_TIMER_PASS;
     }
   }
 
@@ -506,8 +506,9 @@ ecl_timer_result_t ecl_timer_stop(ecl_timer_id_t id_)
         ECL_TIMER_DISABLE_PROCESSING;
         ecl_timer_list_remove(ptimer->id, 0);
         ECL_TIMER_ENABLE_PROCESSING;
-        result = ECL_TIMER_PASS;
       }
+
+      result = ECL_TIMER_PASS;
     }
   }
 

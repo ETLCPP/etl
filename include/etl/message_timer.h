@@ -392,13 +392,13 @@ namespace etl
             ETL_DISABLE_TIMER_UPDATES;
             active_list.remove(timer.id, true);
             ETL_ENABLE_TIMER_UPDATES;
-
-            // Reset in-place.
-            new (&timer) message_timer_data();
-            --registered_timers;
-
-            result = true;
           }
+
+          // Reset in-place.
+          new (&timer) message_timer_data();
+          --registered_timers;
+
+          result = true;
         }
       }
 
@@ -557,8 +557,9 @@ namespace etl
             ETL_DISABLE_TIMER_UPDATES;
             active_list.remove(timer.id, false);
             ETL_ENABLE_TIMER_UPDATES;
-            result = true;
           }
+
+          result = true;
         }
       }
 
