@@ -229,7 +229,7 @@ namespace
 
       // Timer should have timed out.
 
-      CHECK_EQUAL(50, *router1.message1.data());
+      CHECK_EQUAL(50U, *router1.message1.data());
 
       CHECK(timer_controller.unregister_timer(id1));
       CHECK(!timer_controller.unregister_timer(id1));
