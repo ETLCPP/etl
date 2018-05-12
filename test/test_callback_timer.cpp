@@ -80,7 +80,7 @@ namespace
 
     etl::callback_timer<3>* p_controller;
   };
-  
+
   Test test;
   etl::function_imv<Test, test, &Test::callback>  member_callback;
   etl::function_imv<Test, test, &Test::callback2> member_callback2;
@@ -147,7 +147,7 @@ namespace
       timer_controller.enable(true);
 
       ticks = 0;
-      
+
       const uint32_t step = 1;
 
       while (ticks <= 100U)
@@ -207,7 +207,7 @@ namespace
 
       // Timer should have timed out.
 
-      CHECK_EQUAL(50, *test.tick_list.data());
+      CHECK_EQUAL(50U, *test.tick_list.data());
 
       CHECK(timer_controller.unregister_timer(id1));
       CHECK(!timer_controller.unregister_timer(id1));
@@ -346,7 +346,7 @@ namespace
       std::vector<uint64_t> compare1 = { 77 };
       std::vector<uint64_t> compare2 = { 23 };
       std::vector<uint64_t> compare3 = { 11, 22, 33, 44, 55, 66, 77, 88, 99 };
-            
+
       CHECK(test.tick_list.size() != 0);
       CHECK(free_tick_list1.size() != 0);
       CHECK(free_tick_list2.size() != 0);
@@ -442,7 +442,7 @@ namespace
       test.tick_list.clear();
       free_tick_list1.clear();
       free_tick_list2.clear();
-      
+
       timer_controller.start(id3);
       timer_controller.start(id2);
 
@@ -455,7 +455,7 @@ namespace
       while (ticks <= 100U)
       {
         if (ticks == 40)
-        {         
+        {
           timer_controller.unregister_timer(id2);
 
           id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::REPEATING);
@@ -666,11 +666,11 @@ namespace
 
       RAISE_THREAD_PRIORITY;
       FIX_PROCESSOR_AFFINITY;
-      
+
       while (ticks <= 1000)
       {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
-        
+
         if (controller.tick(tick))
         {
           tick = TICK;
@@ -699,11 +699,11 @@ namespace
       controller.start(id1);
       controller.start(id2);
       //controller.start(id3);
-      
+
       controller.enable(true);
 
       std::thread t1(timer_event);
-      
+
       bool restart_1 = true;
 
       while (ticks <= 1000U)

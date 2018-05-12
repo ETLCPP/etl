@@ -187,7 +187,7 @@ namespace
 
       // Timer should have timed out.
 
-      CHECK_EQUAL(50, *callback_list1.data());
+      CHECK_EQUAL(50U, *callback_list1.data());
 
       CHECK(ecl_timer_unregister(id1));
       CHECK(!ecl_timer_unregister(id1));

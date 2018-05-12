@@ -250,8 +250,9 @@ namespace etl
     /// Starts the FSM.
     /// Can only be called once.
     /// Subsequent calls will do nothing.
+    ///\param call_on_enter_state If true will call on_enter_state() for the first state. Default = true.
     //*******************************************
-    void start()
+    void start(bool call_on_enter_state = true)
     {
       // Can only be started once.
       if (p_state == nullptr)
@@ -259,7 +260,10 @@ namespace etl
         p_state = state_list[0];
         ETL_ASSERT(p_state != nullptr, ETL_ERROR(etl::fsm_null_state_exception));
 
-        p_state->on_enter_state();
+        if (call_on_enter_state)
+        {
+          p_state->on_enter_state();
+        }
       }
     }
 
@@ -347,9 +351,15 @@ namespace etl
 
     //*******************************************
     /// Reset the FSM to pre-started state.
+    ///\param call_on_exit_state If true will call on_exit_state() for the current state. Default = false.
     //*******************************************
-    void reset()
+    void reset(bool call_on_exit_state = false)
     {
+      if ((p_state != nullptr) && call_on_exit_state)
+      {
+        p_state->on_exit_state();
+      }
+
       p_state = nullptr;
     }
 
