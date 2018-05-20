@@ -467,4 +467,132 @@ namespace etl
 
       return count;
   }
+
+#if ETL_8BIT_SUPPORT
+  //*****************************************************************************
+  /// Binary interleave
+  //*****************************************************************************
+  uint16_t binary_interleave(uint8_t first, uint8_t second)
+  {
+	  static const uint16_t mask[] = { 0x5555, 0x3333, 0x0F0F };
+
+	  uint16_t f = first;
+	  uint16_t s = second;
+
+	  f = (f | (f << 4)) & mask[2];
+	  f = (f | (f << 2)) & mask[1];
+	  f = (f | (f << 1)) & mask[0];
+
+	  s = (s | (s << 4)) & mask[2];
+	  s = (s | (s << 2)) & mask[1];
+	  s = (s | (s << 1)) & mask[0];
+
+	  return (f | (s << 1));
+  }
+#endif
+
+  //*****************************************************************************
+  /// Binary interleave
+  //*****************************************************************************
+  uint32_t binary_interleave(uint16_t first, uint16_t second)
+  {
+	  static const uint32_t mask[] = { 0x55555555, 0x33333333, 0x0F0F0F0F, 0x00FF00FF };
+
+	  uint32_t f = first;
+	  uint32_t s = second;
+
+	  f = (f | (f << 8)) & mask[3];
+	  f = (f | (f << 4)) & mask[2];
+	  f = (f | (f << 2)) & mask[1];
+	  f = (f | (f << 1)) & mask[0];
+
+	  s = (s | (s << 8)) & mask[3];
+	  s = (s | (s << 4)) & mask[2];
+	  s = (s | (s << 2)) & mask[1];
+	  s = (s | (s << 1)) & mask[0];
+
+	  return (f | (s << 1));
+  }
+
+  //*****************************************************************************
+  /// Binary interleave
+  //*****************************************************************************
+  uint64_t binary_interleave(uint32_t first, uint32_t second)
+  {
+	  static const uint64_t mask[] = { 0x5555555555555555, 0x3333333333333333, 0x0F0F0F0F0F0F0F0F, 0x00FF00FF00FF00FF, 0x0000FFFF0000FFFF };
+
+	  uint64_t f = first;
+	  uint64_t s = second;
+
+	  f = (f | (f << 16)) & mask[4];
+	  f = (f | (f << 8))  & mask[3];
+	  f = (f | (f << 4))  & mask[2];
+	  f = (f | (f << 2))  & mask[1];
+	  f = (f | (f << 1))  & mask[0];
+
+	  s = (s | (s << 16)) & mask[4];
+	  s = (s | (s << 8))  & mask[3];
+	  s = (s | (s << 4))  & mask[2];
+	  s = (s | (s << 2))  & mask[1];
+	  s = (s | (s << 1))  & mask[0];
+
+	  return (f | (s << 1));
+  }
+
+  //***************************************************************************
+  /// Checks if odd.
+  //***************************************************************************
+  bool is_odd(const unsigned char value)
+  {
+	  return ((value & 1U) != 0U);
+  }
+
+  bool is_odd(const unsigned short value)
+  {
+	  return ((value & 1U) != 0U);
+  }
+
+  bool is_odd(const unsigned int value)
+  {
+	  return ((value & 1U) != 0U);
+  }
+
+  bool is_odd(const unsigned long value)
+  {
+	  return ((value & 1U) != 0U);
+  }
+
+  bool is_odd(const unsigned long long value)
+  {
+	  return ((value & 1U) != 0U);
+  }
+
+  //***************************************************************************
+  /// Checks if even.
+  //***************************************************************************
+  bool is_even(const unsigned char value)
+  {
+	  return ((value & 1U) == 0U);
+  }
+
+  bool is_even(const unsigned short value)
+  {
+	  return ((value & 1U) == 0U);
+  }
+
+  bool is_even(const unsigned int value)
+  {
+	  return ((value & 1U) == 0U);
+  }
+
+  bool is_even(const unsigned long value)
+  {
+	  return ((value & 1U) == 0U);
+  }
+
+  bool is_even(const unsigned long long value)
+  {
+	  return ((value & 1U) == 0U);
+  }
 }
+

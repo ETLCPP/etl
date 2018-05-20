@@ -570,6 +570,76 @@ namespace etl
 #endif
 
   //***************************************************************************
+  /// Merges two values according to a mask.
+  /// Ones in the mask select bits from 'first', zeros select bits from second.
+  /// Mask is a function parameter.
+  //***************************************************************************
+  template <typename T>
+  T binary_merge(const T first, const T second, const T mask)
+  {
+    return second ^ ((second ^ first) & mask);
+  }
+
+  //***************************************************************************
+  /// Merges two values according to a mask.
+  /// Ones in the mask select bits from 'first', zeros select bits from second.
+  /// Mask is a template parameter.
+  //***************************************************************************
+  template <typename T, const T MASK>
+  T binary_merge(const T first, const T second)
+  {
+    return second ^ ((second ^ first) & MASK);
+  }
+
+  //***************************************************************************
+  /// Binary interleave
+  //***************************************************************************
+#if ETL_8BIT_SUPPORT
+  uint16_t binary_interleave(uint8_t first, uint8_t second);
+  inline int16_t binary_interleave(int8_t first, int8_t second) { return int16_t(binary_interleave(uint8_t(first), uint8_t(second))); }
+#endif
+  uint32_t binary_interleave(uint16_t first, uint16_t second);
+  inline int32_t binary_interleave(int16_t first, int16_t second) { return int32_t(binary_interleave(uint16_t(first), uint16_t(second))); }
+  uint64_t binary_interleave(uint32_t first, uint32_t second);
+  inline int64_t binary_interleave(int32_t first, int32_t second) { return int64_t(binary_interleave(uint16_t(first), uint16_t(second))); }
+
+  //***************************************************************************
+  /// Checks if odd.
+  //***************************************************************************
+  bool is_odd(const unsigned char value);
+  inline bool is_odd(const char value) { return is_odd((unsigned char)value); }
+
+  bool is_odd(const unsigned short value);
+  inline bool is_odd(const short value) { return is_odd((unsigned short)value); }
+
+  bool is_odd(const unsigned int value);
+  inline bool is_odd(const int value) { return is_odd((unsigned int)value); }
+
+  bool is_odd(const unsigned long value);
+  inline bool is_odd(const long value) { return is_odd((unsigned long)value); }
+
+  bool is_odd(const unsigned long long value);
+  inline bool is_odd(const long long value) { return is_odd((unsigned long long)value); }
+
+  //***************************************************************************
+  /// Checks if even.
+  //***************************************************************************
+  bool is_even(const unsigned char value);
+  inline bool is_even(const char value) { return is_even((unsigned char)value); }
+
+  bool is_even(const unsigned short value);
+  inline bool is_even(const short value) { return is_even((unsigned short)value); }
+
+  bool is_even(const unsigned int value);
+  inline bool is_even(const int value) { return is_even((unsigned int)value); }
+
+  bool is_even(const unsigned long value);
+  inline bool is_even(const long value) { return is_even((unsigned long)value); }
+
+  bool is_even(const unsigned long long value);
+  inline bool is_even(const long long value) { return is_even((unsigned long long)value); }
+
+  //***************************************************************************
   /// 8 bit binary constants.
   //***************************************************************************
   enum binary_constant
