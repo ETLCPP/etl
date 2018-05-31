@@ -161,7 +161,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../unittest-cpp/UnitTest++/;../../include/etl;../../include/etl/c;../../test</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../unittest-cpp/UnitTest++/;../../include/etl;../../include/etl/c;../../test</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
@@ -203,7 +203,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../unittest-cpp/UnitTest++/;../../include/etl;../../include/etl/c;../../test</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../unittest-cpp\UnitTest++;../../include/etl;../../include/etl/c;../../test</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
@@ -245,7 +245,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../unittest-cpp/UnitTest++/;../../include/etl;../../include/etl/c;../../test</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../unittest-cpp/UnitTest++/;../../include/etl;../../include/etl/c;../../test</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
     </ClCompile>
@@ -323,6 +323,38 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\AssertException.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\CheckMacros.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\Checks.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\CompositeTestReporter.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\Config.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\CurrentTest.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\DeferredTestReporter.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\DeferredTestResult.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\ExceptionMacros.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\ExecuteTest.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\HelperMacros.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\MemoryOutStream.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\ReportAssert.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\ReportAssertImpl.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\RequiredCheckException.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\RequiredCheckTestReporter.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\RequireMacros.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\Test.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\TestDetails.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\TestList.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\TestMacros.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\TestReporter.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\TestReporterStdout.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\TestResults.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\TestRunner.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\TestSuite.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\ThrowingTestReporter.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\TimeConstraint.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\TimeHelpers.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\UnitTest++.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\UnitTestPP.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\XmlTestReporter.h" />
     <ClInclude Include="..\..\include\etl\array_view.h" />
     <ClInclude Include="..\..\include\etl\array_wrapper.h" />
     <ClInclude Include="..\..\include\etl\atomic.h" />
@@ -379,35 +411,6 @@
     <ClInclude Include="..\..\include\etl\variant_pool.h" />
     <ClInclude Include="..\..\include\etl\variant_pool_generator.h" />
     <ClInclude Include="..\..\include\etl\version.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\AssertException.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\CheckMacros.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\Checks.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\CompositeTestReporter.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\Config.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\CurrentTest.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\DeferredTestReporter.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\DeferredTestResult.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\ExceptionMacros.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\ExecuteTest.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\HelperMacros.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\MemoryOutStream.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\ReportAssert.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\ReportAssertImpl.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\Test.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\TestDetails.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\TestList.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\TestMacros.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\TestReporter.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\TestReporterStdout.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\TestResults.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\TestRunner.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\TestSuite.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\TimeConstraint.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\TimeHelpers.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\UnitTest++.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\UnitTestPP.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\Win32\TimeHelpers.h" />
-    <ClInclude Include="..\..\unittest-cpp\UnitTest++\XmlTestReporter.h" />
     <ClInclude Include="..\..\include\etl\algorithm.h" />
     <ClInclude Include="..\..\include\etl\alignment.h" />
     <ClInclude Include="..\..\include\etl\array.h" />
@@ -428,7 +431,6 @@
     <ClInclude Include="..\..\include\etl\debounce.h" />
     <ClInclude Include="..\..\include\etl\debug_count.h" />
     <ClInclude Include="..\..\include\etl\deque.h" />
-    <ClInclude Include="..\..\include\etl\doxygen.h" />
     <ClInclude Include="..\..\include\etl\endianness.h" />
     <ClInclude Include="..\..\include\etl\enum_type.h" />
     <ClInclude Include="..\..\include\etl\error_handler.h" />
@@ -488,8 +490,6 @@
     <ClInclude Include="..\..\include\etl\smallest.h" />
     <ClInclude Include="..\..\include\etl\stack.h" />
     <ClInclude Include="..\..\include\etl\static_assert.h" />
-    <ClInclude Include="..\..\include\etl\test1.h" />
-    <ClInclude Include="..\..\include\etl\test2.h" />
     <ClInclude Include="..\..\include\etl\type_def.h" />
     <ClInclude Include="..\..\include\etl\type_traits.h" />
     <ClInclude Include="..\..\include\etl\u16string.h" />
@@ -505,12 +505,31 @@
     <ClInclude Include="..\..\include\etl\visitor.h" />
     <ClInclude Include="..\..\include\etl\wstring.h" />
     <ClInclude Include="..\ecl_user.h" />
-    <ClInclude Include="..\data.h" />
     <ClInclude Include="..\etl_profile.h" />
-    <ClInclude Include="..\ExtraCheckMacros.h" />
     <ClInclude Include="..\murmurhash3.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\AssertException.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\Checks.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\CompositeTestReporter.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\CurrentTest.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\DeferredTestReporter.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\DeferredTestResult.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\MemoryOutStream.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\ReportAssert.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\RequiredCheckException.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\RequiredCheckTestReporter.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\Test.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\TestDetails.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\TestList.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\TestReporter.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\TestReporterStdout.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\TestResults.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\TestRunner.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\ThrowingTestReporter.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\TimeConstraint.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\Win32\TimeHelpers.cpp" />
+    <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\XmlTestReporter.cpp" />
     <ClCompile Include="..\..\src\binary.cpp" />
     <ClCompile Include="..\..\src\crc16.cpp" />
     <ClCompile Include="..\..\src\crc16_ccitt.cpp" />
@@ -524,24 +543,6 @@
     <ClCompile Include="..\..\src\pearson.cpp" />
     <ClCompile Include="..\..\src\private\pvoidvector.cpp" />
     <ClCompile Include="..\..\src\random.cpp" />
-    <ClCompile Include="..\..\unittest-cpp\UnitTest++\AssertException.cpp" />
-    <ClCompile Include="..\..\unittest-cpp\UnitTest++\Checks.cpp" />
-    <ClCompile Include="..\..\unittest-cpp\UnitTest++\CompositeTestReporter.cpp" />
-    <ClCompile Include="..\..\unittest-cpp\UnitTest++\CurrentTest.cpp" />
-    <ClCompile Include="..\..\unittest-cpp\UnitTest++\DeferredTestReporter.cpp" />
-    <ClCompile Include="..\..\unittest-cpp\UnitTest++\DeferredTestResult.cpp" />
-    <ClCompile Include="..\..\unittest-cpp\UnitTest++\MemoryOutStream.cpp" />
-    <ClCompile Include="..\..\unittest-cpp\UnitTest++\ReportAssert.cpp" />
-    <ClCompile Include="..\..\unittest-cpp\UnitTest++\Test.cpp" />
-    <ClCompile Include="..\..\unittest-cpp\UnitTest++\TestDetails.cpp" />
-    <ClCompile Include="..\..\unittest-cpp\UnitTest++\TestList.cpp" />
-    <ClCompile Include="..\..\unittest-cpp\UnitTest++\TestReporter.cpp" />
-    <ClCompile Include="..\..\unittest-cpp\UnitTest++\TestReporterStdout.cpp" />
-    <ClCompile Include="..\..\unittest-cpp\UnitTest++\TestResults.cpp" />
-    <ClCompile Include="..\..\unittest-cpp\UnitTest++\TestRunner.cpp" />
-    <ClCompile Include="..\..\unittest-cpp\UnitTest++\TimeConstraint.cpp" />
-    <ClCompile Include="..\..\unittest-cpp\UnitTest++\Win32\TimeHelpers.cpp" />
-    <ClCompile Include="..\..\unittest-cpp\UnitTest++\XmlTestReporter.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\murmurhash3.cpp" />
     <ClCompile Include="..\test_algorithm.cpp" />
@@ -725,7 +726,6 @@
     <ClCompile Include="..\test_xor_rotate_checksum.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Doxyfile" />
     <None Include="..\..\etl.pspimage" />
     <None Include="..\..\etl.xar" />
     <None Include="..\..\include\etl\generate_type_select.bat" />

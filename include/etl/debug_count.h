@@ -122,6 +122,7 @@ namespace etl
 
     int32_t count;
   };
+
 }
 
 #else
