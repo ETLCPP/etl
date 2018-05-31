@@ -13,8 +13,14 @@ project(etl)
 set(ETL_PROFILE "DEFAULT" CACHE STRING "Defines what profile header to include.  See https://www.etlcpp.com/setup.html"
 )
 
+option(BUILD_TESTS "Build unit tests" ON)
+
+
+# Note: this will not compile src/c/ecl_timer.c as that c file has a dependence
+#       on ecl_user.h which is provided by clients of this library 
 add_library(etl
   src/binary.cpp
+  src/crc16.cpp
   src/crc16_ccitt.cpp
   src/crc16_kermit.cpp
   src/crc32.cpp
@@ -28,7 +34,7 @@ add_library(etl
   )
 target_include_directories(etl
   PUBLIC
-  include/etl/
+  include/etl
   include/etl/atomic
   include/etl/profiles
   PRIVATE
@@ -63,3 +69,9 @@ target_compile_definitions(etl
   ${ETL_PROFILE} 
   )
 
+
+
+if (BUILD_TESTS)
+  enable_testing()
+  add_subdirectory(test) 
+endif()
