@@ -394,6 +394,7 @@
     <ClInclude Include="..\..\include\etl\profiles\gcc_windows_x86.h" />
     <ClInclude Include="..\..\include\etl\profiles\msvc_x86.h" />
     <ClInclude Include="..\..\include\etl\profiles\ticc.h" />
+    <ClInclude Include="..\..\include\etl\ratio.h" />
     <ClInclude Include="..\..\include\etl\scheduler.h" />
     <ClInclude Include="..\..\include\etl\smallest_generator.h" />
     <ClInclude Include="..\..\include\etl\queue_spsc_atomic.h" />

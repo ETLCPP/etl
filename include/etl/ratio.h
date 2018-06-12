@@ -28,13 +28,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_RATIO__
-#define __ETL_RATIO__
+#ifndef ETL_RATIO_INCLUDED
+#define ETL_RATIO_INCLUDED
 
 #include <stdint.h>
 
 ///\defgroup ratio ratio
-///\ingroup utilities
+///\ingroup maths
 
 namespace etl
 {
@@ -48,8 +48,8 @@ namespace etl
   #if INT_MAX > INT32_MAX
     typedef ratio<1, 1000000000000000000000000> yocto;
     typedef ratio<1, 1000000000000000000000>    zepto;
-    typedef ratio<1, 1000000000000000000>       atto
-    typedef ratio<1, 1000000000000000>          femto
+    typedef ratio<1, 1000000000000000000>       atto;
+    typedef ratio<1, 1000000000000000>          femto;
     typedef ratio<1, 1000000000000>             pico;
   #endif
 
@@ -63,8 +63,8 @@ namespace etl
     typedef ratio<1, 100>                       centi;
     typedef ratio<1, 10>                        deci;
     typedef ratio<10, 1>                        deca;
-    typedef ratio<100, 1>                       hecto
-    typedef ratio<1000, 1>                      kilo
+    typedef ratio<100, 1>                       hecto;
+    typedef ratio<1000, 1>                      kilo;
   #endif
 
   #if (INT_MAX >= INT32_MAX)

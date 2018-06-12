@@ -627,6 +627,9 @@
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\AssertException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\ratio.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
