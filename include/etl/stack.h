@@ -470,7 +470,7 @@ namespace etl
   //***************************************************************************
   ///\ingroup stack
   /// A fixed capacity stack.
-  /// This stack does not suppo7rt concurrent access by different threads.
+  /// This stack does not support concurrent access by different threads.
   /// \tparam T        The type this stack should support.
   /// \tparam MAX_SIZE The maximum capacity of the stack.
   //***************************************************************************
