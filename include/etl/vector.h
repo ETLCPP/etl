@@ -53,7 +53,7 @@ SOFTWARE.
 #include "debug_count.h"
 #include "private/vector_base.h"
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
   #include <initializer_list>
 #endif
 
@@ -1067,7 +1067,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
     //*************************************************************************
     /// Constructor, from an initializer_list.
     //*************************************************************************
@@ -1183,7 +1183,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
     //*************************************************************************
     /// Constructor, from an initializer_list.
     //*************************************************************************

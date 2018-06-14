@@ -46,7 +46,7 @@ SOFTWARE.
 #include "nullptr.h"
 #include "type_traits.h"
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
   #include <initializer_list>
 #endif
 
@@ -1928,7 +1928,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
     //*************************************************************************
     /// Constructor, from an initializer_list.
     //*************************************************************************

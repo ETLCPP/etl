@@ -35,7 +35,7 @@ SOFTWARE.
 #include "basic_string.h"
 #include "hash.h"
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
   #include <initializer_list>
 #endif
 
@@ -146,7 +146,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************

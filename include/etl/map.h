@@ -47,7 +47,7 @@ SOFTWARE.
 #include "type_traits.h"
 #include "parameter_type.h"
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
   #include <initializer_list>
 #endif
 
@@ -2063,7 +2063,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
     //*************************************************************************
     /// Constructor, from an initializer_list.
     //*************************************************************************
