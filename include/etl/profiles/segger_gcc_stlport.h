@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2018 jwellbelove
+Copyright(c) 2017 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,19 +28,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_VERSION_INCLUDED
-#define ETL_VERSION_INCLUDED
+#ifndef ETL_GCC_INCLUDED
+#define ETL_GCC_INCLUDED
 
-#include <stdint.h>
+//*****************************************************************************
+// GCC
+//*****************************************************************************
 
-///\defgroup version version
-/// Definitions of the ETL version
-///\ingroup utilities
+#include <limits.h>
 
-#define ETL_VERSION "11.11.0"
-#define ETL_VERSION_MAJOR 11
-#define ETL_VERSION_MINOR 11
-#define ETL_VERSION_PATCH  0
+#define ETL_TARGET_DEVICE_GENERIC
+#define ETL_TARGET_OS_NONE
+#define ETL_COMPILER_GCC
+#ifdef __cplusplus
+  #define ETL_CPP11_SUPPORTED                      (__cplusplus >= 201103L)
+  #define ETL_CPP14_SUPPORTED                      (__cplusplus >= 201402L)
+  #define ETL_CPP17_SUPPORTED                      0
+#else
+  #define ETL_CPP11_SUPPORTED                      0
+  #define ETL_CPP14_SUPPORTED                      0
+  #define ETL_CPP17_SUPPORTED                      0
+#endif
+#define ETL_NO_NULLPTR_SUPPORT                     1
+#define ETL_NO_LARGE_CHAR_SUPPORT                  !ETL_CPP11_SUPPORTED
+#define ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED 0
+#define ETL_STLPORT                                1
 
 #endif
-
