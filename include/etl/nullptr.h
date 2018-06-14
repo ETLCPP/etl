@@ -72,14 +72,18 @@ namespace std
   /// A null pointer.
   ///\ingroup nullptr
   //*****************************************************************************
-  const nullptr_t nullptr = {};
+  #if !defined(ETL_STLPORT)
+  const nullptr_t nullptr = { };
+  #endif
 }
 
 //*****************************************************************************
 /// A null pointer.
 ///\ingroup nullptr
 //*****************************************************************************
+#if !defined(ETL_STLPORT)
 const std::nullptr_t nullptr = {};
+#endif
 
 #else
     #include <cstddef>
