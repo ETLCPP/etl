@@ -133,7 +133,7 @@ namespace etl
     {
     }
 
-#if !ETL_CPP11_SUPPORTED
+#if !ETL_CPP11_SUPPORTED || defined(ETL_STLPORT)
     //*************************************************************************
     /// Creates the object. Default constructor.
     //*************************************************************************
