@@ -711,7 +711,7 @@ namespace etl
       type_id = other.type_id;
     }
 
-#if !ETL_CPP11_SUPPORTED
+#if !ETL_CPP11_SUPPORTED || defined(ETL_STLPORT)
     //***************************************************************************
     /// Emplace with one constructor parameter.
     //***************************************************************************
