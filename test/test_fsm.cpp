@@ -31,8 +31,11 @@ SOFTWARE.
 #include "fsm.h"
 #include "enum_type.h"
 #include "container.h"
+#include "packet.h"
+#include "queue.h"
 
 #include <iostream>
+
 
 namespace
 {
@@ -49,6 +52,7 @@ namespace
       STOP,
       STOPPED,
       SET_SPEED,
+      RECURSIVE,
       UNSUPPORTED
     };
 
@@ -57,6 +61,7 @@ namespace
     ETL_ENUM_TYPE(STOP,        "Stop")
     ETL_ENUM_TYPE(STOPPED,     "Stopped")
     ETL_ENUM_TYPE(SET_SPEED,   "Set Speed")
+    ETL_ENUM_TYPE(RECURSIVE,   "Recursive")
     ETL_ENUM_TYPE(UNSUPPORTED, "Unsupported")
     ETL_END_ENUM_TYPE
   };
@@ -89,6 +94,11 @@ namespace
 
   //***********************************
   class Stopped : public etl::message<EventId::STOPPED>
+  {
+  };
+
+  //***********************************
+  class Recursive : public etl::message<EventId::RECURSIVE>
   {
   };
 
@@ -145,7 +155,7 @@ namespace
     }
 
     //***********************************
-    void SetSpeed(int speed_)
+    void SetSpeedValue(int speed_)
     {
       speed = speed_;
     }
@@ -162,6 +172,19 @@ namespace
       isLampOn = false;
     }
 
+    //***********************************
+    template <typename T>
+    void queue_recursive_message(const T& message)
+    {
+      messageQueue.emplace(message);
+    }
+
+    typedef etl::largest<Start, Stop, SetSpeed, Stopped, Recursive> Largest_t;
+
+    typedef etl::packet<etl::imessage, Largest_t::size, Largest_t::alignment> Packet_t;
+   
+    etl::queue<Packet_t, 2> messageQueue;
+
     int startCount;
     int stopCount;
     int setSpeedCount;
@@ -174,7 +197,7 @@ namespace
   //***********************************
   // The idle state.
   //***********************************
-  class Idle : public etl::fsm_state<MotorControl, Idle, StateId::IDLE, Start>
+  class Idle : public etl::fsm_state<MotorControl, Idle, StateId::IDLE, Start, Recursive>
   {
   public:
 
@@ -183,6 +206,13 @@ namespace
     {
       ++get_fsm_context().startCount;
       return StateId::RUNNING;
+    }
+
+    //***********************************
+    etl::fsm_state_id_t on_event(etl::imessage_router&, const Recursive&)
+    {
+      get_fsm_context().queue_recursive_message(Start());
+      return StateId::IDLE;
     }
 
     //***********************************
@@ -226,7 +256,7 @@ namespace
     etl::fsm_state_id_t on_event(etl::imessage_router&, const SetSpeed& event)
     {
       ++get_fsm_context().setSpeedCount;
-      get_fsm_context().SetSpeed(event.speed);
+      get_fsm_context().SetSpeedValue(event.speed);
       return STATE_ID;
     }
 
@@ -309,7 +339,7 @@ namespace
       CHECK(!motorControl.is_started());
 
       // Start the FSM.
-      motorControl.start();
+      motorControl.start(false);
       CHECK(motorControl.is_started());
 
       // Now in Idle state.
@@ -447,7 +477,7 @@ namespace
       CHECK(!motorControl.is_started());
 
       // Start the FSM.
-      motorControl.start();
+      motorControl.start(false);
       CHECK(motorControl.is_started());
 
       // Now in Idle state.
@@ -480,6 +510,43 @@ namespace
       CHECK_EQUAL(0, motorControl.speed);
       CHECK_EQUAL(1, motorControl.startCount);
       CHECK_EQUAL(1, motorControl.stopCount);
+      CHECK_EQUAL(0, motorControl.stoppedCount);
+      CHECK_EQUAL(0, motorControl.unknownCount);
+    }
+
+    //*************************************************************************
+    TEST(test_fsm_recursive_event)
+    {
+      etl::null_message_router nmr;
+
+      motorControl.reset();
+      motorControl.ClearStatistics();
+
+      motorControl.messageQueue.clear();
+
+      // Start the FSM.
+      motorControl.start(false);
+
+      // Now in Idle state.
+      // Send Start event.
+      motorControl.receive(nmr, Recursive());
+
+      CHECK_EQUAL(1, motorControl.messageQueue.size());
+
+      // Send the queued message.
+      motorControl.receive(nmr, motorControl.messageQueue.front().get());
+      motorControl.messageQueue.pop();
+
+      // Now in Running state.
+
+      CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state().get_state_id()));
+
+      CHECK_EQUAL(true, motorControl.isLampOn);
+      CHECK_EQUAL(0, motorControl.setSpeedCount);
+      CHECK_EQUAL(0, motorControl.speed);
+      CHECK_EQUAL(1, motorControl.startCount);
+      CHECK_EQUAL(0, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
       CHECK_EQUAL(0, motorControl.unknownCount);
     }
