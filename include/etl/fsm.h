@@ -238,7 +238,7 @@ namespace etl
     /// Starts the FSM.
     /// Can only be called once.
     /// Subsequent calls will do nothing.
-    ///\param call_on_enter_state If true will call on_enter_state() for the first state. Default = true.
+    ///\param call_on_enter_state If will call on_enter_state() for the first state. Default = true.
     //*******************************************
     void start(bool call_on_enter_state = true)
     {
