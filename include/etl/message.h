@@ -76,12 +76,10 @@ namespace etl
     const etl::message_id_t message_id;
 
 #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-  public:
     virtual ~imessage()
     {
     }
 #else
-  protected:
     ~imessage()
     {
     }
