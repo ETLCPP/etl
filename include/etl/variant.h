@@ -678,12 +678,12 @@ namespace etl
 
     //***************************************************************************
     /// Constructor that catches any types that are not supported.
-    /// Forces a STATIC_ASSERT.
+    /// Forces a ETL_STATIC_ASSERT.
     //***************************************************************************
     template <typename T>
     variant(const T& value)
     {
-      STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
       ::new (static_cast<T*>(data)) T(value);
       type_id = Type_Id_Lookup<T>::type_id;
@@ -718,7 +718,7 @@ namespace etl
     template <typename T, typename TP1>
     T& emplace(const TP1& value1)
     {
-      STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
       destruct_current();
       ::new (static_cast<T*>(data)) T(value1);
@@ -733,7 +733,7 @@ namespace etl
     template <typename T, typename TP1, typename TP2>
     T& emplace(const TP1& value1, const TP2& value2)
     {
-      STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
       destruct_current();
       ::new (static_cast<T*>(data)) T(value1, value2);
@@ -748,7 +748,7 @@ namespace etl
     template <typename T, typename TP1, typename TP2, typename TP3>
     T& emplace(const TP1& value1, const TP2& value2, const TP3& value3)
     {
-      STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
       destruct_current();
       ::new (static_cast<T*>(data)) T(value1, value2, value3);
@@ -763,7 +763,7 @@ namespace etl
     template <typename T, typename TP1, typename TP2, typename TP3, typename TP4>
     T& emplace(const TP1& value1, const TP2& value2, const TP3& value3, const TP4& value4)
     {
-      STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
       destruct_current();
       ::new (static_cast<T*>(data)) T(value1, value2, value3, value4);
@@ -779,7 +779,7 @@ namespace etl
     template <typename T, typename... Args>
     T& emplace(Args&&... args)
     {
-      STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
       destruct_current();
       ::new (static_cast<T*>(data)) T(std::forward<Args>(args)...);
@@ -796,7 +796,7 @@ namespace etl
     template <typename T>
     variant& operator =(const T& value)
     {
-      STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
       destruct_current();
       ::new (static_cast<T*>(data)) T(value);
@@ -933,7 +933,7 @@ namespace etl
     template <typename T>
     T& get()
     {
-      STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
       ETL_ASSERT(is_type<T>(), ETL_ERROR(variant_incorrect_type_exception));
 
       return static_cast<T&>(data);
@@ -947,7 +947,7 @@ namespace etl
     template <typename T>
     const T& get() const
     {
-      STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
       ETL_ASSERT(is_type<T>(), ETL_ERROR(variant_incorrect_type_exception));
 
       return static_cast<const T&>(data);

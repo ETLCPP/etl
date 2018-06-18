@@ -122,7 +122,7 @@ namespace etl
                               ::type>::type>::type>::type>
                               ::type>::type>::type>::type type;
 
-      STATIC_ASSERT(!(etl::is_same<etl::null_type<0>, type>::value), "Invalid id");
+      ETL_STATIC_ASSERT(!(etl::is_same<etl::null_type<0>, type>::value), "Invalid id");
     };
 
     //************************************
@@ -156,7 +156,7 @@ namespace etl
           (unsigned int) UNKNOWN
       };
 
-      STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
+      ETL_STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
     };
 
     //************************************
@@ -221,7 +221,7 @@ namespace etl
             etl::null_type<0>>::type>::type>::type>::type>::type>::type>::type>::type>
                               ::type>::type>::type>::type>::type>::type>::type>::type type;
 
-      STATIC_ASSERT(!(etl::is_same<etl::null_type<0>, type>::value), "Invalid type");
+      ETL_STATIC_ASSERT(!(etl::is_same<etl::null_type<0>, type>::value), "Invalid type");
     };
   };
 }

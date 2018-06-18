@@ -294,7 +294,7 @@ namespace etl
       cog.outl("    template <typename T>")
       cog.outl("    explicit message_packet(const T& msg)")
       cog.outl("    {")
-      cog.out("      STATIC_ASSERT((etl::is_one_of<T, ")
+      cog.out("      ETL_STATIC_ASSERT((etl::is_one_of<T, ")
       for n in range(1, int(Handlers)):
           cog.out("T%s, " % n)
           if n % 16 == 0:
@@ -479,7 +479,7 @@ namespace etl
           cog.outl("    template <typename T>")
           cog.outl("    explicit message_packet(const T& msg)")
           cog.outl("    {")
-          cog.out("      STATIC_ASSERT((etl::is_one_of<T, ")
+          cog.out("      ETL_STATIC_ASSERT((etl::is_one_of<T, ")
           for t in range(1, n):
               cog.out("T%s, " % t)
               if t % 16 == 0:

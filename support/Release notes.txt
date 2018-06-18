@@ -1,4 +1,9 @@
 ===============================================================================
+11.12.0
+Renamed STATIC_ASSERT to ETL_STATIC_ASSERT
+Removed non-conforming std::nullptr
+
+===============================================================================
 11.11.1
 Compatibilty changes for Segger IDE, GCC & STLPort
 

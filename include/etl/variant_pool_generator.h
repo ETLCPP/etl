@@ -149,7 +149,7 @@ namespace etl
     {
       /*[[[cog
       import cog
-      cog.out("STATIC_ASSERT((etl::is_one_of<T, ")
+      cog.out("ETL_STATIC_ASSERT((etl::is_one_of<T, ")
       for n in range(1, int(NTypes)):
           cog.out("T%s, " % n)
           if n % 16 == 0:
@@ -186,7 +186,7 @@ namespace etl
     {
       /*[[[cog
       import cog
-      cog.out("STATIC_ASSERT((etl::is_one_of<T, ")
+      cog.out("ETL_STATIC_ASSERT((etl::is_one_of<T, ")
       for n in range(1, int(NTypes)):
           cog.out("T%s, " % n)
           if n % 16 == 0:
@@ -223,7 +223,7 @@ namespace etl
     {
       /*[[[cog
       import cog
-      cog.out("STATIC_ASSERT((etl::is_one_of<T, ")
+      cog.out("ETL_STATIC_ASSERT((etl::is_one_of<T, ")
       for n in range(1, int(NTypes)):
           cog.out("T%s, " % n)
           if n % 16 == 0:
@@ -260,7 +260,7 @@ namespace etl
     {
       /*[[[cog
       import cog
-      cog.out("STATIC_ASSERT((etl::is_one_of<T, ")
+      cog.out("ETL_STATIC_ASSERT((etl::is_one_of<T, ")
       for n in range(1, int(NTypes)):
           cog.out("T%s, " % n)
           if n % 16 == 0:
@@ -297,7 +297,7 @@ namespace etl
     {
       /*[[[cog
       import cog
-      cog.out("STATIC_ASSERT((etl::is_one_of<T, ")
+      cog.out("ETL_STATIC_ASSERT((etl::is_one_of<T, ")
       for n in range(1, int(NTypes)):
           cog.out("T%s, " % n)
           if n % 16 == 0:
@@ -334,7 +334,7 @@ namespace etl
     {
       /*[[[cog
       import cog
-      cog.out("STATIC_ASSERT((etl::is_one_of<T, ")
+      cog.out("ETL_STATIC_ASSERT((etl::is_one_of<T, ")
       for n in range(1, int(NTypes)):
           cog.out("T%s, " % n)
           if n % 16 == 0:
@@ -372,7 +372,7 @@ namespace etl
     {
       /*[[[cog
       import cog
-      cog.out("STATIC_ASSERT((etl::is_one_of<T, ")
+      cog.out("ETL_STATIC_ASSERT((etl::is_one_of<T, ")
       for n in range(1, int(NTypes)):
           cog.out("T%s, " % n)
           if n % 16 == 0:

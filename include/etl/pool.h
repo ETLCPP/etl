@@ -494,8 +494,8 @@ namespace etl
     template <typename U>
     U* allocate()
     {
-      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
-      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      ETL_STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
+      ETL_STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
       return ipool::allocate<U>();
     }
 
@@ -508,8 +508,8 @@ namespace etl
     template <typename U>
     U* create()
     {
-      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
-      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      ETL_STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
+      ETL_STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
       return ipool::create<U>();
     }
 
@@ -521,8 +521,8 @@ namespace etl
     template <typename U, typename T1>
     U* create(const T1& value1)
     {
-      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
-      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      ETL_STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
+      ETL_STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
       return ipool::create<U>(value1);
     }
 
@@ -534,8 +534,8 @@ namespace etl
     template <typename U, typename T1, typename T2>
     U* create(const T1& value1, const T2& value2)
     {
-      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
-      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      ETL_STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
+      ETL_STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
       return ipool::create<U>(value1, value2);
     }
 
@@ -547,8 +547,8 @@ namespace etl
     template <typename U, typename T1, typename T2, typename T3>
     U* create(const T1& value1, const T2& value2, const T3& value3)
     {
-      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
-      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      ETL_STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
+      ETL_STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
       return ipool::create<U>(value1, value2, value3);
     }
 
@@ -560,8 +560,8 @@ namespace etl
     template <typename U, typename T1, typename T2, typename T3, typename T4>
     U* create(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
-      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
-      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      ETL_STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
+      ETL_STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
       return ipool::create<U>(value1, value2, value3, value4);
     }
 #else
@@ -571,8 +571,8 @@ namespace etl
     template <typename U, typename... Args>
     U* create(Args&&... args)
     {
-      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
-      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      ETL_STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
+      ETL_STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
       return ipool::create<U>(std::forward<Args>(args)...);
     }
 #endif
@@ -585,8 +585,8 @@ namespace etl
     template <typename U>
     void destroy(const void* const p_object)
     {
-      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
-      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      ETL_STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
+      ETL_STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
       reinterpret_cast<U*>((const_cast<void*>(p_object)))->~U();
       ipool::release(p_object);
     }
@@ -645,8 +645,8 @@ namespace etl
     template <typename U>
     U* allocate()
     {
-      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
-      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      ETL_STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
+      ETL_STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
       return base_t::template allocate<U>();
     }
 
@@ -659,8 +659,8 @@ namespace etl
     template <typename U>
     U* create()
     {
-      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
-      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      ETL_STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
+      ETL_STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
       return base_t::template create<U>();
     }
 
@@ -672,8 +672,8 @@ namespace etl
     template <typename U, typename T1>
     U* create(const T1& value1)
     {
-      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
-      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      ETL_STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
+      ETL_STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
       return base_t::template create<U>(value1);
     }
 
@@ -685,8 +685,8 @@ namespace etl
     template <typename U, typename T1, typename T2>
     U* create(const T1& value1, const T2& value2)
     {
-      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
-      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      ETL_STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
+      ETL_STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
       return base_t::template create<U>(value1, value2);
     }
 
@@ -698,8 +698,8 @@ namespace etl
     template <typename U, typename T1, typename T2, typename T3>
     U* create(const T1& value1, const T2& value2, const T3& value3)
     {
-      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
-      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      ETL_STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
+      ETL_STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
       return base_t::template create<U>(value1, value2, value3);
     }
 
@@ -711,8 +711,8 @@ namespace etl
     template <typename U, typename T1, typename T2, typename T3, typename T4>
     U* create(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
-      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
-      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      ETL_STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
+      ETL_STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
       return base_t::template create<U>(value1, value2, value3, value4);
     }
 #else
@@ -724,8 +724,8 @@ namespace etl
     template <typename U, typename... Args>
     U* create(Args&&... args)
     {
-      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
-      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      ETL_STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
+      ETL_STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
       return base_t::template create<U>(std::forward<Args>(args)...);
     }
 #endif
@@ -738,8 +738,8 @@ namespace etl
     template <typename U>
     void destroy(const void* const p_object)
     {
-      STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
-      STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
+      ETL_STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
+      ETL_STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
       reinterpret_cast<U*>((const_cast<void*>(p_object)))->~U();
       base_t::release(p_object);
     }

@@ -649,7 +649,7 @@ namespace etl
   template <std::size_t I, typename T, std::size_t MAXN>
   inline T& get(array<T, MAXN>& a)
   {
-    STATIC_ASSERT(I < MAXN, "Index out of bounds");
+    ETL_STATIC_ASSERT(I < MAXN, "Index out of bounds");
     return a[I];
   }
 
@@ -664,7 +664,7 @@ namespace etl
   template <std::size_t I, typename T, std::size_t MAXN>
   inline const T& get(const array<T, MAXN>& a)
   {
-    STATIC_ASSERT(I < MAXN, "Index out of bounds");
+    ETL_STATIC_ASSERT(I < MAXN, "Index out of bounds");
     return a[I];
   }
 }

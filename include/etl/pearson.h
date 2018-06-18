@@ -40,7 +40,7 @@ SOFTWARE.
 #include "array.h"
 #include "container.h"
 
-STATIC_ASSERT(ETL_8BIT_SUPPORT, "This file does not currently support targets with no 8bit type");
+ETL_STATIC_ASSERT(ETL_8BIT_SUPPORT, "This file does not currently support targets with no 8bit type");
 
 #if defined(ETL_COMPILER_KEIL)
 #pragma diag_suppress 1300
@@ -87,7 +87,7 @@ namespace etl
     pearson(TIterator begin, const TIterator end)
       : first(true)
     {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
+      ETL_STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
 
       reset();
       add(begin, end);
@@ -109,7 +109,7 @@ namespace etl
     template<typename TIterator>
     void add(TIterator begin, const TIterator end)
     {
-      STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
+      ETL_STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
 
       while (begin != end)
       {
