@@ -87,7 +87,7 @@ namespace etl
           cog.out("            ")
   cog.outl("::type type;")
   cog.outl("");
-  cog.outl("    STATIC_ASSERT(ID < %s, \"Invalid ID\");" % int(NTypes));
+  cog.outl("    ETL_STATIC_ASSERT(ID < %s, \"Invalid ID\");" % int(NTypes));
   cog.outl("  };")
   cog.outl("};")
 
@@ -122,7 +122,7 @@ namespace etl
             cog.out("            ")
       cog.outl("::type type;")
       cog.outl("");
-      cog.outl("    STATIC_ASSERT(ID < %s, \"Invalid ID\");" % s);
+      cog.outl("    ETL_STATIC_ASSERT(ID < %s, \"Invalid ID\");" % s);
       cog.outl("  };")
       cog.outl("};")
   ]]]*/

@@ -26,26 +26,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_STATIC_ASSERT_INCLUDED
-#define ETL_STATIC_ASSERT_INCLUDED
+#ifndef ETL_ETL_STATIC_ASSERT_INCLUDED
+#define ETL_ETL_STATIC_ASSERT_INCLUDED
 
 #include "platform.h"
 
 #if (ETL_CPP11_SUPPORTED)
-  #define STATIC_ASSERT(Condition, Message) static_assert(Condition, Message)
+  #define ETL_STATIC_ASSERT(Condition, Message) static_assert(Condition, Message)
 #else
   template <bool Condition>
-  struct STATIC_ASSERT_FAILED;
+  struct ETL_ETL_STATIC_ASSERT_FAILED;
 
   template <>
-  struct STATIC_ASSERT_FAILED<true> {};
+  struct ETL_ETL_STATIC_ASSERT_FAILED<true> {};
 
   #define ETL_SA1(a,b) a##b
   #define ETL_SA2(a,b) ETL_SA1(a,b)
-  #define STATIC_ASSERT(Condition, Message) \
+  #define ETL_STATIC_ASSERT(Condition, Message) \
 		  enum \
 		  { \
-        ETL_SA2(dummy, __LINE__) = sizeof(STATIC_ASSERT_FAILED<(bool)(Condition)>) \
+        ETL_SA2(dummy, __LINE__) = sizeof(ETL_ETL_STATIC_ASSERT_FAILED<(bool)(Condition)>) \
 	    }
 #endif
 

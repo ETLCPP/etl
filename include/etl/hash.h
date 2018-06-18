@@ -97,7 +97,7 @@ namespace etl
   template <>
   struct hash <bool>
   {
-    STATIC_ASSERT(sizeof(size_t) >= sizeof(bool), "size_t smaller than type");
+    ETL_STATIC_ASSERT(sizeof(size_t) >= sizeof(bool), "size_t smaller than type");
 
     size_t operator ()(bool v) const
     {
@@ -112,7 +112,7 @@ namespace etl
   template <>
   struct hash<char>
   {
-    STATIC_ASSERT(sizeof(size_t) >= sizeof(char), "size_t smaller than type");
+    ETL_STATIC_ASSERT(sizeof(size_t) >= sizeof(char), "size_t smaller than type");
 
     size_t operator ()(char v) const
     {
@@ -127,7 +127,7 @@ namespace etl
   template<> struct
   hash<signed char>
   {
-    STATIC_ASSERT(sizeof(size_t) >= sizeof(signed char), "size_t smaller than type");
+    ETL_STATIC_ASSERT(sizeof(size_t) >= sizeof(signed char), "size_t smaller than type");
 
     size_t operator ()(signed char v) const
     {
@@ -142,7 +142,7 @@ namespace etl
   template<>
   struct hash<unsigned char>
   {
-    STATIC_ASSERT(sizeof(size_t) >= sizeof(unsigned char), "size_t smaller than type");
+    ETL_STATIC_ASSERT(sizeof(size_t) >= sizeof(unsigned char), "size_t smaller than type");
 
     size_t operator ()(unsigned char v) const
     {
@@ -157,7 +157,7 @@ namespace etl
   template<>
   struct hash<wchar_t>
   {
-    STATIC_ASSERT(sizeof(size_t) >= sizeof(wchar_t), "size_t smaller than type");
+    ETL_STATIC_ASSERT(sizeof(size_t) >= sizeof(wchar_t), "size_t smaller than type");
 
     size_t operator ()(wchar_t v) const
     {
@@ -172,7 +172,7 @@ namespace etl
   template<>
   struct hash<short>
   {
-    STATIC_ASSERT(sizeof(size_t) >= sizeof(short), "size_t smaller than type");
+    ETL_STATIC_ASSERT(sizeof(size_t) >= sizeof(short), "size_t smaller than type");
 
     size_t operator ()(short v) const
     {
@@ -187,7 +187,7 @@ namespace etl
   template<>
   struct hash<unsigned short>
   {
-    STATIC_ASSERT(sizeof(size_t) >= sizeof(unsigned short), "size_t smaller than type");
+    ETL_STATIC_ASSERT(sizeof(size_t) >= sizeof(unsigned short), "size_t smaller than type");
 
     size_t operator ()(unsigned short v) const
     {
@@ -202,7 +202,7 @@ namespace etl
   template<>
   struct hash<int>
   {
-    STATIC_ASSERT(sizeof(size_t) >= sizeof(int), "size_t smaller than type");
+    ETL_STATIC_ASSERT(sizeof(size_t) >= sizeof(int), "size_t smaller than type");
 
     size_t operator ()(int v) const
     {
@@ -217,7 +217,7 @@ namespace etl
   template<>
   struct hash<unsigned int>
   {
-    STATIC_ASSERT(sizeof(size_t) >= sizeof(unsigned int), "size_t smaller than type");
+    ETL_STATIC_ASSERT(sizeof(size_t) >= sizeof(unsigned int), "size_t smaller than type");
 
     size_t operator ()(unsigned int v) const
     {

@@ -160,7 +160,7 @@ namespace etl
   template <typename T>
   struct larger_int_type
   {
-    STATIC_ASSERT(etl::is_integral<T>::value, "Must be an integral type");
+    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Must be an integral type");
 
     typedef typename etl::smallest_int_for_bits<etl::integral_limits<typename etl::make_signed<T>::type>::bits + 1>::type type;
   };
@@ -173,7 +173,7 @@ namespace etl
   template <typename T>
   struct larger_uint_type
   {
-    STATIC_ASSERT(etl::is_integral<T>::value, "Must be an integral type");
+    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Must be an integral type");
 
     typedef typename etl::smallest_uint_for_bits<etl::integral_limits<typename etl::make_unsigned<T>::type>::bits + 1>::type type;
   };
@@ -190,7 +190,7 @@ namespace etl
   template <typename T>
   struct larger_type<T, false>
   {
-    STATIC_ASSERT(etl::is_integral<T>::value, "Must be an integral type");
+    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Must be an integral type");
 
     typedef typename etl::smallest_uint_for_bits<etl::integral_limits<T>::bits + 1>::type type;
   };
@@ -198,7 +198,7 @@ namespace etl
   template <typename T>
   struct larger_type<T, true>
   {
-    STATIC_ASSERT(etl::is_integral<T>::value, "Must be an integral type");
+    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Must be an integral type");
 
     typedef typename etl::smallest_int_for_bits<etl::integral_limits<T>::bits + 1>::type type;
   };

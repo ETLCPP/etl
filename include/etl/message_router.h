@@ -286,7 +286,7 @@ namespace etl
       template <typename T>
       explicit message_packet(const T& msg)
       {
-        STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type for this message packet");
+        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type for this message packet");
 
         void* p = data;
         ::new (p) T(static_cast<const T&>(msg));
@@ -472,7 +472,7 @@ namespace etl
       template <typename T>
       explicit message_packet(const T& msg)
       {
-        STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::value), "Unsupported type for this message packet");
+        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::value), "Unsupported type for this message packet");
 
         void* p = data;
         ::new (p) T(static_cast<const T&>(msg));
@@ -655,7 +655,7 @@ namespace etl
       template <typename T>
       explicit message_packet(const T& msg)
       {
-        STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::value), "Unsupported type for this message packet");
+        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::value), "Unsupported type for this message packet");
 
         void* p = data;
         ::new (p) T(static_cast<const T&>(msg));
@@ -835,7 +835,7 @@ namespace etl
       template <typename T>
       explicit message_packet(const T& msg)
       {
-        STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::value), "Unsupported type for this message packet");
+        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::value), "Unsupported type for this message packet");
 
         void* p = data;
         ::new (p) T(static_cast<const T&>(msg));
@@ -1011,7 +1011,7 @@ namespace etl
       template <typename T>
       explicit message_packet(const T& msg)
       {
-        STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::value), "Unsupported type for this message packet");
+        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::value), "Unsupported type for this message packet");
 
         void* p = data;
         ::new (p) T(static_cast<const T&>(msg));
@@ -1184,7 +1184,7 @@ namespace etl
       template <typename T>
       explicit message_packet(const T& msg)
       {
-        STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>::value), "Unsupported type for this message packet");
+        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>::value), "Unsupported type for this message packet");
 
         void* p = data;
         ::new (p) T(static_cast<const T&>(msg));
@@ -1354,7 +1354,7 @@ namespace etl
       template <typename T>
       explicit message_packet(const T& msg)
       {
-        STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>::value), "Unsupported type for this message packet");
+        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>::value), "Unsupported type for this message packet");
 
         void* p = data;
         ::new (p) T(static_cast<const T&>(msg));
@@ -1521,7 +1521,7 @@ namespace etl
       template <typename T>
       explicit message_packet(const T& msg)
       {
-        STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9>::value), "Unsupported type for this message packet");
+        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9>::value), "Unsupported type for this message packet");
 
         void* p = data;
         ::new (p) T(static_cast<const T&>(msg));
@@ -1684,7 +1684,7 @@ namespace etl
       template <typename T>
       explicit message_packet(const T& msg)
       {
-        STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8>::value), "Unsupported type for this message packet");
+        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8>::value), "Unsupported type for this message packet");
 
         void* p = data;
         ::new (p) T(static_cast<const T&>(msg));
@@ -1844,7 +1844,7 @@ namespace etl
       template <typename T>
       explicit message_packet(const T& msg)
       {
-        STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7>::value), "Unsupported type for this message packet");
+        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7>::value), "Unsupported type for this message packet");
 
         void* p = data;
         ::new (p) T(static_cast<const T&>(msg));
@@ -2000,7 +2000,7 @@ namespace etl
       template <typename T>
       explicit message_packet(const T& msg)
       {
-        STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6>::value), "Unsupported type for this message packet");
+        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6>::value), "Unsupported type for this message packet");
 
         void* p = data;
         ::new (p) T(static_cast<const T&>(msg));
@@ -2153,7 +2153,7 @@ namespace etl
       template <typename T>
       explicit message_packet(const T& msg)
       {
-        STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5>::value), "Unsupported type for this message packet");
+        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5>::value), "Unsupported type for this message packet");
 
         void* p = data;
         ::new (p) T(static_cast<const T&>(msg));
@@ -2302,7 +2302,7 @@ namespace etl
       template <typename T>
       explicit message_packet(const T& msg)
       {
-        STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4>::value), "Unsupported type for this message packet");
+        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4>::value), "Unsupported type for this message packet");
 
         void* p = data;
         ::new (p) T(static_cast<const T&>(msg));
@@ -2448,7 +2448,7 @@ namespace etl
       template <typename T>
       explicit message_packet(const T& msg)
       {
-        STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3>::value), "Unsupported type for this message packet");
+        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3>::value), "Unsupported type for this message packet");
 
         void* p = data;
         ::new (p) T(static_cast<const T&>(msg));
@@ -2591,7 +2591,7 @@ namespace etl
       template <typename T>
       explicit message_packet(const T& msg)
       {
-        STATIC_ASSERT((etl::is_one_of<T, T1, T2>::value), "Unsupported type for this message packet");
+        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2>::value), "Unsupported type for this message packet");
 
         void* p = data;
         ::new (p) T(static_cast<const T&>(msg));
@@ -2731,7 +2731,7 @@ namespace etl
       template <typename T>
       explicit message_packet(const T& msg)
       {
-        STATIC_ASSERT((etl::is_one_of<T, T1>::value), "Unsupported type for this message packet");
+        ETL_STATIC_ASSERT((etl::is_one_of<T, T1>::value), "Unsupported type for this message packet");
 
         void* p = data;
         ::new (p) T(static_cast<const T&>(msg));

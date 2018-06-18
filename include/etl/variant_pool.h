@@ -140,7 +140,7 @@ namespace etl
     template <typename T>
     T* create()
     {
-      STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
+      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
 
       T* p = nullptr;
 
@@ -167,7 +167,7 @@ namespace etl
     template <typename T, typename TP1>
     T* create(const TP1& p1)
     {
-      STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
+      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
 
       T* p = nullptr;
 
@@ -194,7 +194,7 @@ namespace etl
     template <typename T, typename TP1, typename TP2>
     T* create(const TP1& p1, const TP2& p2)
     {
-      STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
+      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
 
       T* p = nullptr;
 
@@ -221,7 +221,7 @@ namespace etl
     template <typename T, typename TP1, typename TP2, typename TP3>
     T* create(const TP1& p1, const TP2& p2, const TP3& p3)
     {
-      STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
+      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
 
       T* p = nullptr;
 
@@ -248,7 +248,7 @@ namespace etl
     template <typename T, typename TP1, typename TP2, typename TP3, typename TP4>
     T* create(const TP1& p1, const TP2& p2, const TP3& p3, const TP4& p4)
     {
-      STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
+      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
 
       T* p = nullptr;
 
@@ -275,7 +275,7 @@ namespace etl
     template <typename T, typename... Args>
     T* create(Args&&... args)
     {
-      STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
+      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
 
       T* p = nullptr;
 
@@ -303,7 +303,7 @@ namespace etl
     template <typename T>
     bool destroy(const T* const p)
     {
-      STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value ||
+      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value ||
                      etl::is_base_of<T, T1>::value ||
                      etl::is_base_of<T, T2>::value ||
                      etl::is_base_of<T, T3>::value ||

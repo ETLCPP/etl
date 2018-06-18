@@ -93,7 +93,7 @@ namespace etl
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type>::type>::type>::type>::type>::type>::type type;
 
-      STATIC_ASSERT(ID < 16, "Invalid ID");
+      ETL_STATIC_ASSERT(ID < 16, "Invalid ID");
     };
   };
 
@@ -140,7 +140,7 @@ namespace etl
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type>::type>::type>::type>::type>::type type;
 
-      STATIC_ASSERT(ID < 15, "Invalid ID");
+      ETL_STATIC_ASSERT(ID < 15, "Invalid ID");
     };
   };
 
@@ -185,7 +185,7 @@ namespace etl
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type>::type>::type>::type>::type type;
 
-      STATIC_ASSERT(ID < 14, "Invalid ID");
+      ETL_STATIC_ASSERT(ID < 14, "Invalid ID");
     };
   };
 
@@ -228,7 +228,7 @@ namespace etl
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type>::type>::type>::type type;
 
-      STATIC_ASSERT(ID < 13, "Invalid ID");
+      ETL_STATIC_ASSERT(ID < 13, "Invalid ID");
     };
   };
 
@@ -269,7 +269,7 @@ namespace etl
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type>::type>::type type;
 
-      STATIC_ASSERT(ID < 12, "Invalid ID");
+      ETL_STATIC_ASSERT(ID < 12, "Invalid ID");
     };
   };
 
@@ -308,7 +308,7 @@ namespace etl
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type>::type type;
 
-      STATIC_ASSERT(ID < 11, "Invalid ID");
+      ETL_STATIC_ASSERT(ID < 11, "Invalid ID");
     };
   };
 
@@ -345,7 +345,7 @@ namespace etl
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type type;
 
-      STATIC_ASSERT(ID < 10, "Invalid ID");
+      ETL_STATIC_ASSERT(ID < 10, "Invalid ID");
     };
   };
 
@@ -380,7 +380,7 @@ namespace etl
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type type;
 
-      STATIC_ASSERT(ID < 9, "Invalid ID");
+      ETL_STATIC_ASSERT(ID < 9, "Invalid ID");
     };
   };
 
@@ -412,7 +412,7 @@ namespace etl
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type type;
 
-      STATIC_ASSERT(ID < 8, "Invalid ID");
+      ETL_STATIC_ASSERT(ID < 8, "Invalid ID");
     };
   };
 
@@ -442,7 +442,7 @@ namespace etl
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type type;
 
-      STATIC_ASSERT(ID < 7, "Invalid ID");
+      ETL_STATIC_ASSERT(ID < 7, "Invalid ID");
     };
   };
 
@@ -470,7 +470,7 @@ namespace etl
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type type;
 
-      STATIC_ASSERT(ID < 6, "Invalid ID");
+      ETL_STATIC_ASSERT(ID < 6, "Invalid ID");
     };
   };
 
@@ -496,7 +496,7 @@ namespace etl
               etl::null_type<0> >
               ::type>::type>::type>::type>::type type;
 
-      STATIC_ASSERT(ID < 5, "Invalid ID");
+      ETL_STATIC_ASSERT(ID < 5, "Invalid ID");
     };
   };
 
@@ -520,7 +520,7 @@ namespace etl
               etl::null_type<0> >
               ::type>::type>::type>::type type;
 
-      STATIC_ASSERT(ID < 4, "Invalid ID");
+      ETL_STATIC_ASSERT(ID < 4, "Invalid ID");
     };
   };
 
@@ -542,7 +542,7 @@ namespace etl
               etl::null_type<0> >
               ::type>::type>::type type;
 
-      STATIC_ASSERT(ID < 3, "Invalid ID");
+      ETL_STATIC_ASSERT(ID < 3, "Invalid ID");
     };
   };
 
@@ -562,7 +562,7 @@ namespace etl
               etl::null_type<0> >
               ::type>::type type;
 
-      STATIC_ASSERT(ID < 2, "Invalid ID");
+      ETL_STATIC_ASSERT(ID < 2, "Invalid ID");
     };
   };
 
@@ -580,7 +580,7 @@ namespace etl
               etl::null_type<0> >
               ::type type;
 
-      STATIC_ASSERT(ID < 1, "Invalid ID");
+      ETL_STATIC_ASSERT(ID < 1, "Invalid ID");
     };
   };
 }

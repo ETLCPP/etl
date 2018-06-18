@@ -327,14 +327,14 @@ namespace etl
   template <typename T, T TRUE_VALUE, T FALSE_VALUE>
   struct conditional_integral_constant<true, T, TRUE_VALUE, FALSE_VALUE>
   {
-    STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
+    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
     static const T value = TRUE_VALUE;
   };
 
   template <typename T, T TRUE_VALUE, T FALSE_VALUE>
   struct conditional_integral_constant<false, T, TRUE_VALUE, FALSE_VALUE>
   {
-    STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
+    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
     static const T value = FALSE_VALUE; 
   };
 
