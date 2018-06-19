@@ -34,7 +34,7 @@ SOFTWARE.
 #define ETL_IN_PVOIDVECTOR
 
 #include <iterator>
-#include <algorithm>
+#include "algorithm.h"
 #include <functional>
 #include <stddef.h>
 

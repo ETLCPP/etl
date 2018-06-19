@@ -33,7 +33,7 @@ SOFTWARE.
 
 #include <stddef.h>
 #include <functional>
-#include <algorithm>
+#include "algorithm.h"
 
 #include "platform.h"
 #include "container.h"

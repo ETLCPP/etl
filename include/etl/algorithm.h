@@ -36,9 +36,11 @@ SOFTWARE.
 /// Additional new variants of certain algorithms.
 ///\ingroup utilities
 
-#include <algorithm>
+#include "private/stl_algorithm.h"
+#include "private/stl_utility.h"
+
 #include <iterator>
-#include <utility>
+
 #include <functional>
 #include <iterator>
 #include <stdint.h>

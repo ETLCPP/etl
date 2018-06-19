@@ -32,7 +32,7 @@ SOFTWARE.
 #define ETL_MEMORY_INCLUDED
 
 #include <iterator>
-#include <algorithm>
+#include "algorithm.h"
 
 #include "platform.h"
 #include "type_traits.h"

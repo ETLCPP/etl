@@ -42,7 +42,7 @@ SOFTWARE.
 #include "static_assert.h"
 
 #include <iterator>
-#include <algorithm>
+#include "algorithm.h"
 
 #undef ETL_FILE
 #define ETL_FILE "11"

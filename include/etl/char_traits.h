@@ -31,7 +31,7 @@ SOFTWARE.
 #ifndef ETL_CHAR_TRAITS_INCLUDED
 #define ETL_CHAR_TRAITS_INCLUDED
 
-#include <algorithm>
+#include "algorithm.h"
 
 #include "platform.h"
 #include "stdint.h"

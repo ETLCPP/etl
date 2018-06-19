@@ -34,7 +34,7 @@ SOFTWARE.
 #include <stddef.h>
 #include <stdint.h>
 #include <iterator>
-#include <algorithm>
+#include "algorithm.h"
 #include <functional>
 #include <string.h>
 

@@ -39,7 +39,7 @@ SOFTWARE.
 #include "container.h"
 #include "parameter_type.h"
 
-#include <algorithm>
+#include "algorithm.h"
 
 ///\defgroup array array
 /// A wrapper for arrays

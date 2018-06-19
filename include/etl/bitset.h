@@ -31,7 +31,7 @@ SOFTWARE.
 #ifndef ETL_BITSET_INCLUDED
 #define ETL_BITSET_INCLUDED
 
-#include <algorithm>
+
 #include <iterator>
 #include <string.h>
 #include <stddef.h>

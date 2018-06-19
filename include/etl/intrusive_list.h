@@ -36,7 +36,7 @@ SOFTWARE.
 #include "private/minmax_push.h"
 
 #include <iterator>
-#include <algorithm>
+#include "algorithm.h"
 #include <functional>
 #include <stddef.h>
 

@@ -40,7 +40,7 @@ SOFTWARE.
 #include "integral_limits.h"
 #include "hash.h"
 
-#include <algorithm>
+#include "algorithm.h"
 
 ///\defgroup array array
 /// A wrapper for arrays

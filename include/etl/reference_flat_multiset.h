@@ -32,7 +32,7 @@ SOFTWARE.
 #define ETL_REFERENCE_FLAT_MULTISET_INCLUDED
 
 #include <iterator>
-#include <algorithm>
+#include "algorithm.h"
 #include <functional>
 #include <utility>
 #include <stddef.h>

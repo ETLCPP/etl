@@ -60,7 +60,7 @@ SOFTWARE.
 #include "nullptr.h"
 #include "static_assert.h"
 
-#if (ETL_CPP11_SUPPORTED)
+#if (ETL_CPP11_SUPPORTED) && !defined(ETL_NO_STL)
   #include <type_traits>
 #endif
 

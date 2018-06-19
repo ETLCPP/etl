@@ -39,7 +39,7 @@ SOFTWARE.
 #include "nullptr.h"
 #include "hash.h"
 
-#include <algorithm>
+#include "algorithm.h"
 
 ///\defgroup array array
 /// A wrapper for arrays

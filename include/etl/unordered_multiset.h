@@ -35,7 +35,7 @@ SOFTWARE.
 #include <iterator>
 #include <functional>
 #include <iterator>
-#include <algorithm>
+#include "algorithm.h"
 #include <utility>
 
 #include "platform.h"

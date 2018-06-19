@@ -37,7 +37,7 @@ SOFTWARE.
 /// Provides a value that cycles between two limits.
 /// \ingroup utilities
 
-#include <algorithm>
+#include "algorithm.h"
 
 #include "platform.h"
 #include "static_assert.h"
