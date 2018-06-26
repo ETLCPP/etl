@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2017 jwellbelove
 
@@ -120,7 +120,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TOutputIterator, typename TSize, typename T>
-  inline TOutputIterator uninitialized_fill_n(TOutputIterator o_begin, TSize n, const T& value)
+   TOutputIterator uninitialized_fill_n(TOutputIterator o_begin, TSize n, const T& value)
   {
     return etl::uninitialized_fill(o_begin, o_begin + n, value);
   }
@@ -131,7 +131,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TOutputIterator, typename TSize, typename T, typename TCounter>
-  inline TOutputIterator uninitialized_fill_n(TOutputIterator o_begin, TSize n, const T& value, TCounter& count)
+   TOutputIterator uninitialized_fill_n(TOutputIterator o_begin, TSize n, const T& value, TCounter& count)
   {
     count += n;
 
@@ -207,7 +207,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TInputIterator, typename TSize, typename TOutputIterator>
-  inline TOutputIterator uninitialized_copy_n(TInputIterator i_begin, TSize n, TOutputIterator o_begin)
+   TOutputIterator uninitialized_copy_n(TInputIterator i_begin, TSize n, TOutputIterator o_begin)
   {
     return etl::uninitialized_copy(i_begin, i_begin + n, o_begin);
   }
@@ -218,7 +218,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TInputIterator, typename TSize, typename TOutputIterator, typename TCounter>
-  inline TOutputIterator uninitialized_copy_n(TInputIterator i_begin, TSize n, TOutputIterator o_begin, TCounter& count)
+   TOutputIterator uninitialized_copy_n(TInputIterator i_begin, TSize n, TOutputIterator o_begin, TCounter& count)
   {
     count += n;
 
@@ -389,7 +389,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-  inline void create_value_at(T* p)
+   void create_value_at(T* p)
   {
     ::new (p) T();
   }
@@ -399,7 +399,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T, typename TCounter>
-  inline void create_value_at(T* p, TCounter& count)
+   void create_value_at(T* p, TCounter& count)
   {
     ::new (p) T();
     ++count;
@@ -410,7 +410,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-  inline void create_copy_at(T* p, const T& value)
+   void create_copy_at(T* p, const T& value)
   {
     ::new (p) T(value);
   }
@@ -420,7 +420,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T, typename TCounter>
-  inline void create_copy_at(T* p, const T& value, TCounter& count)
+   void create_copy_at(T* p, const T& value, TCounter& count)
   {
     ::new (p) T(value);
     ++count;
@@ -431,7 +431,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-  inline T& make_default_at(T* p)
+   T& make_default_at(T* p)
   {
     ::new (p) T();
     return *reinterpret_cast<T*>(p);
@@ -442,7 +442,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T, typename TCounter>
-  inline T& make_default_at(T* p, TCounter& count)
+   T& make_default_at(T* p, TCounter& count)
   {
     ::new (p) T();
     ++count;
@@ -454,7 +454,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-  inline T& make_copy_at(T* p, const T& other)
+   T& make_copy_at(T* p, const T& other)
   {
     ::new (p) T(other);
     return *reinterpret_cast<T*>(p);
@@ -465,7 +465,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T, typename TCounter>
-  inline T& make_copy_at(T* p, const T& other, TCounter& count)
+   T& make_copy_at(T* p, const T& other, TCounter& count)
   {
     ::new (p) T(other);
     ++count;
@@ -477,7 +477,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T, typename TParameter>
-  inline T& make_value_at(T* p, const TParameter& value)
+   T& make_value_at(T* p, const TParameter& value)
   {
     ::new (p) T(value);
     return *reinterpret_cast<T*>(p);
@@ -488,7 +488,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T, typename TParameter, typename TCounter>
-  inline T& make_value_at(T* p, const TParameter& value, TCounter& count)
+   T& make_value_at(T* p, const TParameter& value, TCounter& count)
   {
     ::new (p) T(value);
     ++count;
@@ -766,6 +766,252 @@ namespace etl
       ++count;
       return *reinterpret_cast<T*>(p);
     }
+  };
+
+  //*****************************************************************************
+  /// Unique pointer.
+  ///\tparam T The pointed to type type.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  class unique_ptr 
+  {
+  public:
+
+      typedef T  element_type;
+      typedef T* pointer;
+      typedef T& reference;
+
+      ETL_CONSTEXPR unique_ptr()
+      	: p(nullptr)
+      {
+      }
+
+      ETL_CONSTEXPR explicit unique_ptr (pointer p_)
+        : p(p_)
+      {
+      }
+
+#if ETL_CPP11_SUPPORTED
+      unique_ptr (unique_ptr&& p_)
+        : p(p_.release())
+      {
+      }
+#endif
+      
+      ~unique_ptr()
+      {
+        delete p;
+      }
+
+      ETL_CONSTEXPR pointer	get() const
+      {
+        return p;
+      }
+      
+      pointer	release()
+      { 
+        pointer value = p;
+        p = nullptr;
+        
+        return value;
+      }
+
+      void reset(pointer p_ = pointer())
+      {
+        assert(p_ != p);
+
+        pointer value = p;
+        p = p_;
+        delete value;
+      }
+      
+      void swap(unique_ptr& value)
+      { 
+        std::swap(p, value.p);
+      }
+      
+      ETL_CONSTEXPR explicit	operator bool() const
+      {
+        return (p != nullptr);
+      }
+      
+      unique_ptr&	operator =(pointer p_)
+      {
+        reset(p_);
+        
+        return *this;
+      }
+
+#if ETL_CPP11_SUPPORTED
+      unique_ptr&	operator =(unique_ptr&& p_)
+      {
+        reset(p_.release());
+        
+        return *this; 
+      }
+#endif
+     
+      ETL_CONSTEXPR reference	operator *() const
+      {
+        return *get();
+      }
+      
+      ETL_CONSTEXPR pointer	operator ->() const
+      {
+        return get();
+      }
+      
+      ETL_CONSTEXPR reference	operator [](size_t i) const
+      {
+        return get()[i];
+      }
+      
+      ETL_CONSTEXPR bool operator== (const pointer p_) const
+      {
+        return p == p_;
+      }
+      
+      ETL_CONSTEXPR bool operator== (const unique_ptr& p_) const
+      {
+        return p == p_.p;
+      }
+      
+      ETL_CONSTEXPR bool operator< (const unique_ptr& p_) const
+      {
+        return p < p_.p;
+      }
+
+  private:
+
+    // Deleted.
+    unique_ptr(const unique_ptr&);
+    unique_ptr&	operator =(const unique_ptr&);
+
+    pointer	p;
+  };
+
+
+  //*****************************************************************************
+  /// Unique pointer for arrays.
+  ///\tparam T The pointed to type type.
+  ///\ingroup memory
+  //*****************************************************************************
+  template<typename T>
+  class unique_ptr<T[]> 
+  {
+  public:
+
+    typedef T  element_type;
+    typedef T* pointer;
+    typedef T& reference;
+  
+    ETL_CONSTEXPR		unique_ptr() 
+      : p(nullptr)
+    {
+    }
+
+    ETL_CONSTEXPR explicit unique_ptr(pointer p_)
+      : p(p_)
+    {
+    }
+    
+#if ETL_CPP11_SUPPORTED
+    unique_ptr(unique_ptr&& p_)
+      : p(p_.release())
+    {
+    }
+#endif
+    
+    ~unique_ptr() 
+    {
+      delete[] p;
+    }
+    
+    ETL_CONSTEXPR pointer	get() const
+    {
+      return p;
+    }
+    
+    pointer	release() 
+    {
+      pointer value = p;
+      p = nullptr;
+      return value;
+    }
+    
+    void reset(pointer p_)
+    {
+      assert(p_ != p);
+
+      pointer value = p; 
+      p = p_; 
+      delete[] value; 
+    }
+
+    void swap(unique_ptr& v)
+    {
+      std::swap(p, v.p); 
+    }
+
+    ETL_CONSTEXPR explicit operator bool() const
+    {
+      return (p != nullptr);
+    }
+
+    unique_ptr& operator =(pointer p_)
+    {
+      reset(p_);
+      
+      return *this; 
+    }
+
+#if ETL_CPP11_SUPPORTED
+    unique_ptr& operator =(unique_ptr&& p_)
+    {
+      reset(p_.release());
+
+      return *this; 
+    }
+#endif
+
+    ETL_CONSTEXPR reference	operator *() const
+    {
+      return *p; 
+    }
+
+    ETL_CONSTEXPR pointer	operator ->() const
+    {
+      return p; 
+    }
+
+    ETL_CONSTEXPR reference	operator [](size_t i) const
+    {
+      return p[i]; 
+    }
+
+    ETL_CONSTEXPR bool operator ==(const pointer p_) const
+    {
+      return (p == p_); 
+    }
+
+    ETL_CONSTEXPR bool operator ==(const unique_ptr& p_) const 
+    {
+      return (p == p_.p);
+    }
+
+    ETL_CONSTEXPR bool operator <(const unique_ptr& p_) const
+    {
+      return (p < p_.p);
+    }
+  
+  private:
+
+    // Deleted.
+    unique_ptr(const unique_ptr&);
+    unique_ptr&	operator =(const unique_ptr&);
+
+    pointer			p;
   };
 }
 

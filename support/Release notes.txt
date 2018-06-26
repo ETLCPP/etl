@@ -1,4 +1,8 @@
 ===============================================================================
+11.12.1
+Made atomic load const for non STL vesions
+
+===============================================================================
 11.12.0
 Renamed STATIC_ASSERT to ETL_STATIC_ASSERT
 Removed non-conforming std::nullptr
