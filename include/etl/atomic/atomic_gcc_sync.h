@@ -222,12 +222,12 @@ namespace etl
     }
 
     // Load
-    T load(etl::memory_order order = etl::memory_order_seq_cst)
+    T load(etl::memory_order order = etl::memory_order_seq_cst) const
     {
       return __sync_fetch_and_add(&value, 0);
     }
 
-    T load(etl::memory_order order = etl::memory_order_seq_cst) volatile
+    T load(etl::memory_order order = etl::memory_order_seq_cst) const volatile
     {
       return __sync_fetch_and_add(&value, 0);
     }
@@ -429,7 +429,7 @@ namespace etl
     atomic& operator =(const atomic&);
     atomic& operator =(const atomic&) volatile;
 
-    volatile T value;
+    mutable volatile T value;
   };
 
   template <typename T>
@@ -562,12 +562,12 @@ namespace etl
     }
 
     // Load
-    T* load(etl::memory_order order = etl::memory_order_seq_cst)
+    T* load(etl::memory_order order = etl::memory_order_seq_cst) const
     {
       return __sync_fetch_and_add(&value, 0);
     }
 
-    T* load(etl::memory_order order = etl::memory_order_seq_cst) volatile
+    T* load(etl::memory_order order = etl::memory_order_seq_cst) const volatile
     {
       return __sync_fetch_and_add(&value, 0);
     }
@@ -736,7 +736,7 @@ namespace etl
     atomic& operator =(const atomic&);
     atomic& operator =(const atomic&) volatile;
 
-    volatile T* value;
+    mutable volatile T* value;
   };
 
   typedef etl::atomic<char>                atomic_char;
