@@ -614,7 +614,7 @@ namespace etl
   /// A templated base for all etl::multiset types.
   ///\ingroup set
   //***************************************************************************
-  template <typename T, typename TCompare>
+  template <typename T, typename TCompare = std::less<T> >
   class imultiset : public etl::multiset_base
   {
   public:
