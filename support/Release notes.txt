@@ -1,4 +1,10 @@
 ===============================================================================
+11.12.2
+Remove SFINAE from array_view.
+Added default etl::less compare type appropriate map and set classes.
+Moved non-template code in pvoidvector to cpp file.
+
+===============================================================================
 11.12.1
 Made atomic load const for non STL vesions
 
