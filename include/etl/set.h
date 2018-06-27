@@ -453,7 +453,7 @@ namespace etl
   /// A templated base for all etl::set types.
   ///\ingroup set
   //***************************************************************************
-  template <typename T, typename TCompare>
+  template <typename T, typename TCompare = std::less<T> >
   class iset : public etl::set_base
   {
   public:

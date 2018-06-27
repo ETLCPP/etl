@@ -458,7 +458,7 @@ namespace etl
   /// A templated base for all etl::map types.
   ///\ingroup map
   //***************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare>
+  template <typename TKey, typename TMapped, typename TKeyCompare = std::less<TKey> >
   class imap : public etl::map_base
   {
   public:

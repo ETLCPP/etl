@@ -113,7 +113,7 @@ namespace etl
   /// \tparam TContainer to hold the T queue values
   /// \tparam TCompare to use in comparing T values
   //***************************************************************************
-  template <typename T, typename TContainer, typename TCompare>
+  template <typename T, typename TContainer, typename TCompare = std::less<T> >
   class ipriority_queue
   {
   public:
