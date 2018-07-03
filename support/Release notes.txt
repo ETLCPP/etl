@@ -1,4 +1,8 @@
 ===============================================================================
+11.13.0
+Added specialisation for vector<const T*>
+
+===============================================================================
 11.12.2
 Remove SFINAE from array_view.
 Added default etl::less compare type appropriate map and set classes.
