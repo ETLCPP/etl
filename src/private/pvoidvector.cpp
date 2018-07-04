@@ -181,7 +181,7 @@ void etl::pvoidvector::resize(size_t new_size, etl::pvoidvector::value_type valu
 //*********************************************************************
 etl::pvoidvector::reference etl::pvoidvector::operator [](size_t i)
 {
-  return p_buffer[i];
+  return reference(p_buffer[i]);
 }
 
 //*********************************************************************
@@ -203,7 +203,7 @@ etl::pvoidvector::const_reference etl::pvoidvector::operator [](size_t i) const
 etl::pvoidvector::reference etl::pvoidvector::at(size_t i)
 {
   ETL_ASSERT(i < size(), ETL_ERROR(vector_out_of_bounds));
-  return p_buffer[i];
+  return reference(p_buffer[i]);
 }
 
 //*********************************************************************
@@ -224,7 +224,7 @@ etl::pvoidvector::const_reference etl::pvoidvector::at(size_t i) const
 //*********************************************************************
 etl::pvoidvector::reference etl::pvoidvector::front()
 {
-  return p_buffer[0];
+  return reference(p_buffer[0]);
 }
 
 //*********************************************************************
@@ -242,7 +242,7 @@ etl::pvoidvector::const_reference etl::pvoidvector::front() const
 //*********************************************************************
 etl::pvoidvector::reference etl::pvoidvector::back()
 {
-  return *(p_end - 1);
+  return reference(*(p_end - 1));
 }
 
 //*********************************************************************
@@ -260,7 +260,7 @@ etl::pvoidvector::const_reference etl::pvoidvector::back() const
 //*********************************************************************
 etl::pvoidvector::pointer etl::pvoidvector::data()
 {
-  return p_buffer;
+  return pointer(p_buffer);
 }
 
 //*********************************************************************

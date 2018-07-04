@@ -50,12 +50,12 @@ namespace etl
   public:
 
     typedef T*                                    value_type;
-    typedef T*&                                   reference;
-    typedef const T* const &                      const_reference;
-    typedef T**                                   pointer;
-    typedef const T* const *                      const_pointer;
-    typedef T**                                   iterator;
-    typedef const T* const *                      const_iterator;
+    typedef value_type&                           reference;
+    typedef const value_type&                     const_reference;
+    typedef value_type*                           pointer;
+    typedef const value_type*                     const_pointer;
+    typedef value_type*                           iterator;
+    typedef const value_type*                     const_iterator;
     typedef std::reverse_iterator<iterator>       reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
     typedef size_t                                size_type;
@@ -452,12 +452,12 @@ namespace etl
   public:
 
     typedef const T*                              value_type;
-    typedef const T*&                             reference;
-    typedef const T* const &                      const_reference;
-    typedef const T**                             pointer;
-    typedef const T* const *                      const_pointer;
-    typedef const T**                             iterator;
-    typedef const T* const *                      const_iterator;
+    typedef value_type&                           reference;
+    typedef const value_type&                     const_reference;
+    typedef value_type*                           pointer;
+    typedef const value_type*                     const_pointer;
+    typedef value_type*                           iterator;
+    typedef const value_type*                     const_iterator;
     typedef std::reverse_iterator<iterator>       reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
     typedef size_t                                size_type;

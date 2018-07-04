@@ -61,12 +61,12 @@ namespace etl
   public:
 
     typedef void*                                 value_type;
-    typedef void*&                                reference;
-    typedef const void*&                          const_reference;
-    typedef void**                                pointer;
-    typedef const void**                          const_pointer;
-    typedef void**                                iterator;
-    typedef const void**                          const_iterator;
+    typedef value_type&                           reference;
+    typedef const value_type&                     const_reference;
+    typedef value_type*                           pointer;
+    typedef const value_type*                     const_pointer;
+    typedef value_type*                           iterator;
+    typedef const value_type*                     const_iterator;
     typedef std::reverse_iterator<iterator>       reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
     typedef size_t                                size_type;
