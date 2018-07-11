@@ -390,6 +390,8 @@ namespace etl
     }
 
   protected:
+      
+    ~fsm_state(){};
 
     inline TContext& get_fsm_context() const
     {
@@ -451,6 +453,8 @@ namespace etl
     }
 
   protected:
+      
+    ~fsm_state(){};
 
     inline TContext& get_fsm_context() const
     {
@@ -511,6 +515,8 @@ namespace etl
     }
 
   protected:
+      
+    ~fsm_state(){};
 
     inline TContext& get_fsm_context() const
     {
@@ -570,6 +576,8 @@ namespace etl
     }
 
   protected:
+      
+    ~fsm_state(){};
 
     inline TContext& get_fsm_context() const
     {
@@ -627,6 +635,8 @@ namespace etl
     }
 
   protected:
+      
+    ~fsm_state(){};
 
     inline TContext& get_fsm_context() const
     {
@@ -683,6 +693,8 @@ namespace etl
     }
 
   protected:
+      
+    ~fsm_state(){};
 
     inline TContext& get_fsm_context() const
     {
@@ -738,6 +750,8 @@ namespace etl
     }
 
   protected:
+      
+    ~fsm_state(){};
 
     inline TContext& get_fsm_context() const
     {
@@ -792,6 +806,8 @@ namespace etl
     }
 
   protected:
+      
+    ~fsm_state(){};
 
     inline TContext& get_fsm_context() const
     {
@@ -844,6 +860,8 @@ namespace etl
     }
 
   protected:
+      
+    ~fsm_state(){};
 
     inline TContext& get_fsm_context() const
     {
@@ -895,6 +913,8 @@ namespace etl
     }
 
   protected:
+      
+    ~fsm_state(){};
 
     inline TContext& get_fsm_context() const
     {
@@ -945,6 +965,8 @@ namespace etl
     }
 
   protected:
+      
+    ~fsm_state(){};
 
     inline TContext& get_fsm_context() const
     {
@@ -994,6 +1016,8 @@ namespace etl
     }
 
   protected:
+      
+    ~fsm_state(){};
 
     inline TContext& get_fsm_context() const
     {
@@ -1041,6 +1065,8 @@ namespace etl
     }
 
   protected:
+      
+    ~fsm_state(){};
 
     inline TContext& get_fsm_context() const
     {
@@ -1087,6 +1113,8 @@ namespace etl
     }
 
   protected:
+      
+    ~fsm_state(){};
 
     inline TContext& get_fsm_context() const
     {
@@ -1132,6 +1160,8 @@ namespace etl
     }
 
   protected:
+      
+    ~fsm_state(){};
 
     inline TContext& get_fsm_context() const
     {
@@ -1176,6 +1206,8 @@ namespace etl
     }
 
   protected:
+      
+    ~fsm_state(){};
 
     inline TContext& get_fsm_context() const
     {
@@ -1216,6 +1248,10 @@ namespace etl
       : ifsm_state(STATE_ID)
     {
     }
+  
+  protected:
+      
+    ~fsm_state(){};
 
     inline TContext& get_fsm_context() const
     {
