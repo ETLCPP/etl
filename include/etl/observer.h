@@ -179,15 +179,16 @@ namespace etl
       }
     }
 
+  protected:
+      
+    ~observable()
+    {
+    }
+	  
   private:
 
     /// The list of observers.
     Observer_List observer_list;
-    
-  protected:
-      
-    ~observable() = default;
-
   };
 
   //*********************************************************************
