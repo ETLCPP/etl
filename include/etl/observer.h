@@ -179,6 +179,12 @@ namespace etl
       }
     }
 
+  protected:
+      
+    ~observable()
+    {
+    }
+	  
   private:
 
     /// The list of observers.
