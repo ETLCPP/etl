@@ -1,4 +1,9 @@
 ===============================================================================
+11.13.2
+Protected destructor for some FSM classes.
+Observer's remove_observer returns bool.
+
+===============================================================================
 11.13.1
 Fixed vector of pointer typedefs
 
