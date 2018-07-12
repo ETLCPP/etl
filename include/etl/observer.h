@@ -133,8 +133,9 @@ namespace etl
     //*****************************************************************
     /// Remove a particular observer from the list.
     ///\param observer A reference to the observer.
+    ///\return <b>true</b> if the observer was removed, <b>false</b> if not.
     //*****************************************************************
-    void remove_observer(TObserver& observer)
+    bool remove_observer(TObserver& observer)
     {
       // See if we have it in our list.
       typename Observer_List::iterator i_observer = std::find(observer_list.begin(),
@@ -146,6 +147,11 @@ namespace etl
       {
         // Erase it.
         observer_list.erase(i_observer);
+        return true;
+      }
+      else
+      {
+        return false;
       }
     }
 
