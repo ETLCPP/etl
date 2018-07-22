@@ -40,7 +40,7 @@ SOFTWARE.
 #include "integral_limits.h"
 #include "hash.h"
 
-#include <algorithm>
+#include "algorithm.h"
 
 ///\defgroup array array
 /// A wrapper for arrays
@@ -104,7 +104,7 @@ namespace etl
 
     typedef T                                     value_type;
     typedef TTraits                               traits_type;
-    typedef std::size_t                           size_type;
+    typedef size_t                                size_type;
     typedef const T&                              const_reference;
     typedef const T*                              const_pointer;
     typedef const T*                              const_iterator;

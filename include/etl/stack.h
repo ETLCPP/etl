@@ -33,9 +33,11 @@ SOFTWARE.
 
 #include <stddef.h>
 #include <stdint.h>
-#include <algorithm>
 
 #include "platform.h"
+
+#include "stl/algorithm.h"
+
 #include "container.h"
 #include "alignment.h"
 #include "array.h"

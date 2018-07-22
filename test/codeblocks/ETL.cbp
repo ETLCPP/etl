@@ -279,6 +279,16 @@
 		<Unit filename="../../include/etl/sqrt.h" />
 		<Unit filename="../../include/etl/stack.h" />
 		<Unit filename="../../include/etl/static_assert.h" />
+		<Unit filename="../../include/etl/stl/algorithm.h" />
+		<Unit filename="../../include/etl/stl/alternate/algorithm.h" />
+		<Unit filename="../../include/etl/stl/alternate/functional.h" />
+		<Unit filename="../../include/etl/stl/alternate/iterator.h" />
+		<Unit filename="../../include/etl/stl/alternate/limits.h" />
+		<Unit filename="../../include/etl/stl/alternate/utility.h" />
+		<Unit filename="../../include/etl/stl/functional.h" />
+		<Unit filename="../../include/etl/stl/iterator.h" />
+		<Unit filename="../../include/etl/stl/limits.h" />
+		<Unit filename="../../include/etl/stl/utility.h" />
 		<Unit filename="../../include/etl/string_view.h" />
 		<Unit filename="../../include/etl/task.h" />
 		<Unit filename="../../include/etl/temp.h" />
@@ -383,6 +393,10 @@
 		<Unit filename="../test_multimap.cpp" />
 		<Unit filename="../test_multiset.cpp" />
 		<Unit filename="../test_murmur3.cpp" />
+		<Unit filename="../test_no_stl_algorithm.cpp" />
+		<Unit filename="../test_no_stl_functional.cpp" />
+		<Unit filename="../test_no_stl_limits.cpp" />
+		<Unit filename="../test_no_stl_utility.cpp" />
 		<Unit filename="../test_numeric.cpp" />
 		<Unit filename="../test_observer.cpp" />
 		<Unit filename="../test_optional.cpp" />

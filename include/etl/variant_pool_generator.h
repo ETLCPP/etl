@@ -64,7 +64,6 @@ cog.outl("//********************************************************************
 #define ETL_VARIANT_POOL_INCLUDED
 
 #include <stdint.h>
-#include <utility>
 
 #include "platform.h"
 #include "error_handler.h"
@@ -74,7 +73,9 @@ cog.outl("//********************************************************************
 #include "alignment.h"
 #include "static_assert.h"
 #include "type_lookup.h"
-#include <pool.h>
+#include "pool.h"
+
+#include "stl/utility.h"
 
 #undef ETL_FILE
 #define ETL_FILE "40"

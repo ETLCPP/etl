@@ -29,6 +29,7 @@ SOFTWARE.
 ******************************************************************************/
 
 #include <stdint.h>
+#include <limits.h>
 
 #ifndef ETL_PLATFORM_INCLUDED
 #define ETL_PLATFORM_INCLUDED

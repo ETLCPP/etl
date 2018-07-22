@@ -230,7 +230,7 @@ namespace
       std::atomic<int*> compare(&data[0]);
       etl::atomic<int*> test(&data[0]);
 
-      CHECK_EQUAL((int*)compare.fetch_add(std::ptrdiff_t(10)), (int*)test.fetch_add(std::ptrdiff_t(10)));
+      CHECK_EQUAL((int*)compare.fetch_add(ptrdiff_t(10)), (int*)test.fetch_add(ptrdiff_t(10)));
     }
 
     //=========================================================================
@@ -338,7 +338,7 @@ namespace
       std::atomic<int*> compare(&data[0]);
       etl::atomic<int*> test(&data[0]);
 
-      CHECK_EQUAL((int*)compare.fetch_add(std::ptrdiff_t(10)), (int*)test.fetch_add(std::ptrdiff_t(10)));
+      CHECK_EQUAL((int*)compare.fetch_add(ptrdiff_t(10)), (int*)test.fetch_add(ptrdiff_t(10)));
     }
 
     //=========================================================================

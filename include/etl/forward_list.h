@@ -31,12 +31,14 @@ SOFTWARE.
 #ifndef ETL_FORWARD_LIST_INCLUDED
 #define ETL_FORWARD_LIST_INCLUDED
 
-#include <iterator>
-#include <algorithm>
-#include <functional>
 #include <stddef.h>
 
 #include "platform.h"
+
+#include "stl/algorithm.h"
+#include "stl/iterator.h"
+#include "stl/functional.h"
+
 #include "pool.h"
 #include "container.h"
 #include "exception.h"
@@ -46,7 +48,7 @@ SOFTWARE.
 #include "type_traits.h"
 #include "parameter_type.h"
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
   #include <initializer_list>
 #endif
 
@@ -1415,7 +1417,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************

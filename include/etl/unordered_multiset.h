@@ -32,13 +32,14 @@ SOFTWARE.
 #define ETL_UNORDERED_MULTISET_INCLUDED
 
 #include <stddef.h>
-#include <iterator>
-#include <functional>
-#include <iterator>
-#include <algorithm>
-#include <utility>
 
 #include "platform.h"
+
+#include "stl/algorithm.h"
+#include "stl/iterator.h"
+#include "stl/functional.h"
+#include "stl/utility.h"
+
 #include "container.h"
 #include "pool.h"
 #include "vector.h"

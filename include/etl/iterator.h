@@ -31,9 +31,10 @@ SOFTWARE.
 #ifndef ETL_ITERATOR_INCLUDED
 #define ETL_ITERATOR_INCLUDED
 
-#include <iterator>
-
 #include "platform.h"
+
+#include "stl/iterator.h"
+
 #include "type_traits.h"
 
 ///\defgroup iterator iterator
