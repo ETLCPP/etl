@@ -32,7 +32,6 @@ SOFTWARE.
 #define ETL_JENKINS_INCLUDED
 
 #include <stdint.h>
-#include <iterator>
 
 #include "platform.h"
 #include "static_assert.h"
@@ -40,6 +39,8 @@ SOFTWARE.
 #include "error_handler.h"
 #include "ihash.h"
 #include "frame_check_sequence.h"
+
+#include "stl/iterator.h"
 
 #if defined(ETL_COMPILER_KEIL)
 #pragma diag_suppress 1300

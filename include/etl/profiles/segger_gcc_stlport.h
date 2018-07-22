@@ -28,14 +28,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_GCC_INCLUDED
-#define ETL_GCC_INCLUDED
+#ifndef ETL_SEGGER_GCC_INCLUDED
+#define ETL_SEGGER_GCC_INCLUDED
 
 //*****************************************************************************
 // GCC
 //*****************************************************************************
-
-#include <limits.h>
 
 #define ETL_TARGET_DEVICE_GENERIC
 #define ETL_TARGET_OS_NONE

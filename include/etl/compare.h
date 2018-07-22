@@ -31,10 +31,10 @@ SOFTWARE.
 #ifndef ETL_COMPARE_INCLUDED
 #define ETL_COMPARE_INCLUDED
 
-#include <functional>
-
 #include "platform.h"
 #include "parameter_type.h"
+
+#include "stl/functional.h"
 
 //*****************************************************************************
 ///\defgroup compare compare

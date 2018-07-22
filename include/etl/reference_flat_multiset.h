@@ -31,13 +31,15 @@ SOFTWARE.
 #ifndef ETL_REFERENCE_FLAT_MULTISET_INCLUDED
 #define ETL_REFERENCE_FLAT_MULTISET_INCLUDED
 
-#include <iterator>
-#include <algorithm>
-#include <functional>
-#include <utility>
 #include <stddef.h>
 
 #include "platform.h"
+
+#include "stl/algorithm.h"
+#include "stl/iterator.h"
+#include "stl/functional.h"
+#include "stl/utility.h"
+
 #include "type_traits.h"
 #include "vector.h"
 #include "pool.h"

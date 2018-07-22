@@ -32,13 +32,14 @@ SOFTWARE.
 #define ETL_INTRUSIVE_LINKS_INCLUDED
 
 #include <assert.h>
-#include <utility>
 
 #include "platform.h"
 #include "nullptr.h"
 #include "type_traits.h"
 #include "exception.h"
 #include "error_handler.h"
+
+#include "stl/utility.h"
 
 #undef ETL_FILE
 #define ETL_FILE "22"

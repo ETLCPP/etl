@@ -33,10 +33,12 @@ SOFTWARE.
 
 #include <stddef.h>
 #include <stdint.h>
-#include <iterator>
-#include <algorithm>
 
 #include "platform.h"
+
+#include "stl/algorithm.h"
+#include "stl/iterator.h"
+
 #include "container.h"
 #include "alignment.h"
 #include "array.h"
@@ -48,7 +50,7 @@ SOFTWARE.
 #include "type_traits.h"
 #include "parameter_type.h"
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
   #include <initializer_list>
 #endif
 
@@ -2066,7 +2068,7 @@ namespace etl
       this->assign(n, value);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************

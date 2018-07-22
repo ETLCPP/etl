@@ -52,9 +52,11 @@ SOFTWARE.
 #define ETL_VARIANT_POOL_INCLUDED
 
 #include <stdint.h>
-#include <utility>
 
 #include "platform.h"
+
+#include "stl/utility.h"
+
 #include "error_handler.h"
 #include "exception.h"
 #include "largest.h"
@@ -133,7 +135,7 @@ namespace etl
     {
     }
 
-#if !ETL_CPP11_SUPPORTED || defined(ETL_STLPORT)
+#if !ETL_CPP11_SUPPORTED || defined(ETL_STLPORT) || defined(ETL_NO_STL)
     //*************************************************************************
     /// Creates the object. Default constructor.
     //*************************************************************************

@@ -32,10 +32,12 @@ SOFTWARE.
 #define ETL_CRC8_CCITT_INCLUDED
 
 #include <stdint.h>
-#include <iterator>
 
 #include "platform.h"
 #include "frame_check_sequence.h"
+
+#include "stl/algorithm.h"
+#include "stl/iterator.h"
 
 #if defined(ETL_COMPILER_KEIL)
 #pragma diag_suppress 1300

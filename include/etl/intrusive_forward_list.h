@@ -33,11 +33,12 @@ SOFTWARE.
 
 #include "platform.h"
 
+#include "stl/algorithm.h"
+#include "stl/iterator.h"
+#include "stl/functional.h"
+
 #include "private/minmax_push.h"
 
-#include <iterator>
-#include <algorithm>
-#include <functional>
 #include <stddef.h>
 
 #include "platform.h"

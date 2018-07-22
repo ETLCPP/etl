@@ -28,14 +28,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_MSVC_INCLUDED
-#define ETL_MSVC_INCLUDED
+#ifndef ETL_MSVC_X86_INCLUDED
+#define ETL_MSVC_X86_INCLUDED
 
 //*****************************************************************************
 // Microsoft Visual Studio
 //*****************************************************************************
-
-#include <limits.h>
 
 #define ETL_TARGET_DEVICE_X86
 #define ETL_TARGET_OS_WINDOWS

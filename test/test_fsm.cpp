@@ -182,7 +182,7 @@ namespace
     typedef etl::largest<Start, Stop, SetSpeed, Stopped, Recursive> Largest_t;
 
     typedef etl::packet<etl::imessage, Largest_t::size, Largest_t::alignment> Packet_t;
-   
+
     etl::queue<Packet_t, 2> messageQueue;
 
     int startCount;
@@ -531,7 +531,7 @@ namespace
       // Send Start event.
       motorControl.receive(nmr, Recursive());
 
-      CHECK_EQUAL(1, motorControl.messageQueue.size());
+      CHECK_EQUAL(1U, motorControl.messageQueue.size());
 
       // Send the queued message.
       motorControl.receive(nmr, motorControl.messageQueue.front().get());

@@ -35,9 +35,6 @@ SOFTWARE.
 
 #include "private/minmax_push.h"
 
-#include <iterator>
-#include <algorithm>
-#include <functional>
 #include <stddef.h>
 
 #include "platform.h"
@@ -48,6 +45,10 @@ SOFTWARE.
 #include "intrusive_links.h"
 #include "static_assert.h"
 #include "algorithm.h"
+
+#include "stl/algorithm.h"
+#include "stl/iterator.h"
+#include "stl/functional.h"
 
 #undef ETL_FILE
 #define ETL_FILE "21"

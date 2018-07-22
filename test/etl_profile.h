@@ -74,6 +74,8 @@ SOFTWARE.
 //#define ETL_MESSAGES_ARE_VIRTUAL
 //#define ETL_POLYMORPHIC_MESSAGES
 
+//#define ETL_NO_STL
+
 #ifdef _MSC_VER
   #include "profiles/msvc_x86.h"
 #else

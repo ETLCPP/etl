@@ -132,7 +132,7 @@ if (WIN32)
 endif()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU") 
-  list(APPEND TEST_SOURCE_FILES "test_atomic_gcc.cpp")
+  list(APPEND TEST_SOURCE_FILES "test_atomic_gcc_sync.cpp")
 endif()
 add_executable(etl_tests 
   ${TEST_SOURCE_FILES}

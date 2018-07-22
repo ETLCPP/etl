@@ -51,7 +51,7 @@ SOFTWARE.
 ///\ingroup patterns
 //*****************************************************************************
 
-#include <algorithm>
+#include "algorithm.h"
 
 #include "platform.h"
 #include "vector.h"
