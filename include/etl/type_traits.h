@@ -269,14 +269,14 @@ namespace etl
   /// is_pod
   /// For C++03, only fundamental and pointers types are recognised.
   ///\ingroup type_traits
-#if (ETL_CPP11_SUPPORTED && !defined(ARDUINO) && !defined(ETL_STLPORT)) && !defined(ETL_IN_UNIT_TEST)
+#if (ETL_CPP11_SUPPORTED && !defined(ARDUINO) && !defined(ETL_STLPORT)) && !defined(ETL_IN_UNIT_TEST) && !defined(ETL_NO_STL)
   // For compilers that support C++11
   template <typename T> struct is_pod : std::is_pod<T> {};
 #else
   template <typename T> struct is_pod : etl::integral_constant<bool, etl::is_fundamental<T>::value || etl::is_pointer<T>::value> {};
 #endif
 
-#if (ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED) && !defined(ETL_STLPORT) && !defined(ETL_IN_UNIT_TEST)
+#if (ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED) && !defined(ETL_STLPORT) && !defined(ETL_IN_UNIT_TEST) && !defined(ETL_NO_STL)
   /// is_trivially_constructible
   ///\ingroup type_traits
   template <typename T> struct is_trivially_constructible : std::is_trivially_constructible<T> {};

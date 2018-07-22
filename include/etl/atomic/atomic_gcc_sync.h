@@ -507,23 +507,23 @@ namespace etl
     }
 
     // Add
-    T* operator +=(std::ptrdiff_t v)
+    T* operator +=(ptrdiff_t v)
     {
       return fetch_add(v) + v;
     }
 
-    T* operator +=(std::ptrdiff_t v) volatile
+    T* operator +=(ptrdiff_t v) volatile
     {
       return fetch_add(v) + v;
     }
 
     // Subtract
-    T* operator -=(std::ptrdiff_t v)
+    T* operator -=(ptrdiff_t v)
     {
       return fetch_sub(v) - v;
     }
 
-    T* operator -=(std::ptrdiff_t v) volatile
+    T* operator -=(ptrdiff_t v) volatile
     {
       return fetch_sub(v) - v;
     }
@@ -573,23 +573,23 @@ namespace etl
     }
 
     // Fetch add
-    T* fetch_add(std::ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst)
+    T* fetch_add(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst)
     {
       return __sync_fetch_and_add(&value, v);
     }
 
-    T* fetch_add(std::ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst) volatile
+    T* fetch_add(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
       return __sync_fetch_and_add(&value, v);
     }
 
     // Fetch subtract
-    T* fetch_sub(std::ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst)
+    T* fetch_sub(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst)
     {
       return __sync_fetch_and_sub(&value, v);
     }
 
-    T* fetch_sub(std::ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst) volatile
+    T* fetch_sub(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
       return __sync_fetch_and_sub(&value, v);
     }

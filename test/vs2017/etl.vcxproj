@@ -383,14 +383,17 @@
     <ClInclude Include="..\..\include\etl\mutex\mutex_std.h" />
     <ClInclude Include="..\..\include\etl\packet.h" />
     <ClInclude Include="..\..\include\etl\permutations.h" />
-    <ClInclude Include="..\..\include\etl\private\stl_algorithm.h" />
-    <ClInclude Include="..\..\include\etl\private\stl_utility.h" />
     <ClInclude Include="..\..\include\etl\profiles\arduino_arm.h" />
     <ClInclude Include="..\..\include\etl\profiles\armv5.h" />
+    <ClInclude Include="..\..\include\etl\profiles\armv5_no_stl.h" />
     <ClInclude Include="..\..\include\etl\profiles\armv6.h" />
+    <ClInclude Include="..\..\include\etl\profiles\armv6_no_stl.h" />
     <ClInclude Include="..\..\include\etl\profiles\cpp03.h" />
+    <ClInclude Include="..\..\include\etl\profiles\cpp03_no_stl.h" />
     <ClInclude Include="..\..\include\etl\profiles\cpp11.h" />
+    <ClInclude Include="..\..\include\etl\profiles\cpp11_no_stl.h" />
     <ClInclude Include="..\..\include\etl\profiles\cpp14.h" />
+    <ClInclude Include="..\..\include\etl\profiles\cpp14_no_stl.h" />
     <ClInclude Include="..\..\include\etl\profiles\gcc_generic.h" />
     <ClInclude Include="..\..\include\etl\profiles\gcc_linux_x86.h" />
     <ClInclude Include="..\..\include\etl\profiles\gcc_windows_x86.h" />
@@ -404,6 +407,16 @@
     <ClInclude Include="..\..\include\etl\queue_spsc_isr.h" />
     <ClInclude Include="..\..\include\etl\queue_mpmc_mutex.h" />
     <ClInclude Include="..\..\include\etl\sqrt.h" />
+    <ClInclude Include="..\..\include\etl\stl\algorithm.h" />
+    <ClInclude Include="..\..\include\etl\stl\alternate\algorithm.h" />
+    <ClInclude Include="..\..\include\etl\stl\alternate\functional.h" />
+    <ClInclude Include="..\..\include\etl\stl\alternate\iterator.h" />
+    <ClInclude Include="..\..\include\etl\stl\alternate\limits.h" />
+    <ClInclude Include="..\..\include\etl\stl\alternate\utility.h" />
+    <ClInclude Include="..\..\include\etl\stl\functional.h" />
+    <ClInclude Include="..\..\include\etl\stl\iterator.h" />
+    <ClInclude Include="..\..\include\etl\stl\limits.h" />
+    <ClInclude Include="..\..\include\etl\stl\utility.h" />
     <ClInclude Include="..\..\include\etl\string_view.h" />
     <ClInclude Include="..\..\include\etl\task.h" />
     <ClInclude Include="..\..\include\etl\timer.h" />
@@ -551,6 +564,7 @@
     <ClCompile Include="..\murmurhash3.cpp" />
     <ClCompile Include="..\test_algorithm.cpp" />
     <ClCompile Include="..\test_alignment.cpp" />
+    <ClCompile Include="..\test_no_stl_algorithm.cpp" />
     <ClCompile Include="..\test_array.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../unittest-cpp</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../../unittest-cpp</AdditionalIncludeDirectories>
@@ -671,6 +685,9 @@
     <ClCompile Include="..\test_multimap.cpp" />
     <ClCompile Include="..\test_multiset.cpp" />
     <ClCompile Include="..\test_murmur3.cpp" />
+    <ClCompile Include="..\test_no_stl_functional.cpp" />
+    <ClCompile Include="..\test_no_stl_limits.cpp" />
+    <ClCompile Include="..\test_no_stl_utility.cpp" />
     <ClCompile Include="..\test_numeric.cpp" />
     <ClCompile Include="..\test_observer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -747,6 +764,7 @@
     <Text Include="..\..\CMakeLists.txt" />
     <Text Include="..\..\include\etl\file_error_numbers.txt" />
     <Text Include="..\..\support\Release notes.txt" />
+    <Text Include="..\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\etl.ico" />

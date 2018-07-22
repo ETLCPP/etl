@@ -36,13 +36,11 @@ SOFTWARE.
 /// Additional new variants of certain algorithms.
 ///\ingroup utilities
 
-#include "private/stl_algorithm.h"
-#include "private/stl_utility.h"
+#include "stl/algorithm.h"
+#include "stl/utility.h"
+#include "stl/iterator.h"
+#include "stl/functional.h"
 
-#include <iterator>
-
-#include <functional>
-#include <iterator>
 #include <stdint.h>
 
 #include "platform.h"
@@ -1114,6 +1112,39 @@ namespace etl
     }
 
     return std::pair<TDestinationTrue, TDestinationFalse>(destination_true, destination_false);
+  }
+
+  //***************************************************************************
+  /// Sorts the elements using shell sort.
+  /// Uses users defined comparison.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename TCompare = std::less<typename std::iterator_traits<TIterator>::value_type> >
+  void sort(TIterator first, TIterator last, TCompare compare = TCompare())
+  {
+    typedef typename std::iterator_traits<TIterator>::difference_type difference_t;
+  
+    difference_t n = std::distance(first, last);
+
+    for (difference_t i = n / 2; i > 0; i /= 2) 
+    {
+      for (difference_t j = i; j < n; ++j) 
+      {
+        for (difference_t k = j - i; k >= 0; k -= i)
+        {
+          TIterator itr1 = first; 
+          TIterator itr2 = first;
+          
+          std::advance(itr1, k);
+          std::advance(itr2, k + i);
+          
+          if (compare(*itr2, *itr1))
+          {
+            std::iter_swap(itr1, itr2);
+          }
+        }
+      }
+    }
   }
 }
 

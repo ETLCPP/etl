@@ -31,9 +31,9 @@ SOFTWARE.
 #ifndef ETL_FIXED_ITERATOR_INCLUDED
 #define ETL_FIXED_ITERATOR_INCLUDED
 
-#include <iterator>
-
 #include "platform.h"
+
+#include "stl/iterator.h"
 
 ///\defgroup iterator Iterator types
 

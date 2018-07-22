@@ -31,12 +31,14 @@ SOFTWARE.
 #ifndef ETL_ARRAY_INCLUDED
 #define ETL_ARRAY_INCLUDED
 
-#include <iterator>
-#include <functional>
-#include "algorithm.h"
 #include <stddef.h>
 
 #include "platform.h"
+
+#include "stl/algorithm.h"
+#include "stl/iterator.h"
+#include "stl/functional.h"
+
 #include "exception.h"
 #include "type_traits.h"
 #include "parameter_type.h"
@@ -97,8 +99,8 @@ namespace etl
     };
 
     typedef T                                     value_type;
-    typedef std::size_t                           size_type;
-    typedef std::ptrdiff_t                        difference_type;
+    typedef size_t                                size_type;
+    typedef ptrdiff_t                             difference_type;
     typedef T&                                    reference;
     typedef const T&                              const_reference;
     typedef T*                                    pointer;
@@ -569,7 +571,7 @@ namespace etl
   ///\param rhs The second array.
   ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
   //*************************************************************************
-  template <typename T, std::size_t SIZE>
+  template <typename T, size_t SIZE>
   bool operator ==(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
     return std::equal(lhs.cbegin(), lhs.cend(), rhs.cbegin());
@@ -581,7 +583,7 @@ namespace etl
   ///\param rhs The second array.
   ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
   //*************************************************************************
-  template <typename T, std::size_t SIZE>
+  template <typename T, size_t SIZE>
   bool operator !=(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
     return !(lhs == rhs);
@@ -593,7 +595,7 @@ namespace etl
   ///\param rhs The second array.
   ///\return <b>true</b> if the first array is lexicographically less than the second, otherwise <b>false</b>
   //*************************************************************************
-  template <typename T, std::size_t SIZE>
+  template <typename T, size_t SIZE>
   bool operator <(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
     return std::lexicographical_compare(lhs.cbegin(),
@@ -608,7 +610,7 @@ namespace etl
   ///\param rhs The second array.
   ///\return <b>true</b> if the first array is lexicographically less than or equal to the second, otherwise <b>false</b>
   //*************************************************************************
-  template <typename T, std::size_t SIZE>
+  template <typename T, size_t SIZE>
   bool operator <=(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
     return !(lhs > rhs);
@@ -619,7 +621,7 @@ namespace etl
   ///\param lhs The first array.
   ///\param rhs The second array.
   ///\return <b>true</b> if the first array is lexicographically greater than the second, otherwise <b>false</b>
-  template <typename T, std::size_t SIZE>
+  template <typename T, size_t SIZE>
   //*************************************************************************
   bool operator >(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
@@ -632,7 +634,7 @@ namespace etl
   ///\param rhs The second array.
   ///\return <b>true</b> if the first array is lexicographically greater than or equal to the second, otherwise <b>false</b>
   //*************************************************************************
-  template <typename T, std::size_t SIZE>
+  template <typename T, size_t SIZE>
   bool operator >=(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
     return !(lhs < rhs);
@@ -646,7 +648,7 @@ namespace etl
   ///\param a The array.
   ///\return A reference to the element
   //*************************************************************************
-  template <std::size_t I, typename T, std::size_t MAXN>
+  template <size_t I, typename T, size_t MAXN>
   inline T& get(array<T, MAXN>& a)
   {
     ETL_STATIC_ASSERT(I < MAXN, "Index out of bounds");
@@ -661,7 +663,7 @@ namespace etl
   ///\param a The array.
   ///\return A const reference to the element
   //*************************************************************************
-  template <std::size_t I, typename T, std::size_t MAXN>
+  template <size_t I, typename T, size_t MAXN>
   inline const T& get(const array<T, MAXN>& a)
   {
     ETL_STATIC_ASSERT(I < MAXN, "Index out of bounds");

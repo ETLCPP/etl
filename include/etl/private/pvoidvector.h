@@ -33,9 +33,6 @@ SOFTWARE.
 
 #define ETL_IN_PVOIDVECTOR
 
-#include <iterator>
-#include "algorithm.h"
-#include <functional>
 #include <stddef.h>
 
 #include "../platform.h"
@@ -43,6 +40,9 @@ SOFTWARE.
 #include "vector_base.h"
 #include "../type_traits.h"
 #include "../error_handler.h"
+
+#include "../stl/functional.h"
+#include "../stl/iterator.h"
 
 #ifdef ETL_COMPILER_GCC
 #pragma GCC diagnostic ignored "-Wunused-variable"

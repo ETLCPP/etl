@@ -32,6 +32,10 @@ SOFTWARE.
 #define ETL_POOL_INCLUDED
 
 #include "platform.h"
+
+#include "stl/algorithm.h"
+#include "stl/iterator.h"
+
 #include "error_handler.h"
 #include "alignment.h"
 #include "array.h"
@@ -40,8 +44,6 @@ SOFTWARE.
 #include "nullptr.h"
 #include "alignment.h"
 #include "static_assert.h"
-
-#include <iterator>
 #include "algorithm.h"
 
 #undef ETL_FILE
@@ -134,7 +136,7 @@ namespace etl
       return reinterpret_cast<T*>(allocate_item());
     }
 
-#if !ETL_CPP11_SUPPORTED || ETL_POOL_CPP03_CODE || defined(ETL_STLPORT)
+#if !ETL_CPP11_SUPPORTED || ETL_POOL_CPP03_CODE || defined(ETL_STLPORT) || defined(ETL_NO_STL)
     //*************************************************************************
     /// Allocate storage for an object from the pool and create default.
     /// If asserts or exceptions are enabled and there are no more free items an
@@ -499,7 +501,7 @@ namespace etl
       return ipool::allocate<U>();
     }
 
-#if !ETL_CPP11_SUPPORTED || ETL_POOL_CPP03_CODE || defined(ETL_STLPORT)
+#if !ETL_CPP11_SUPPORTED || ETL_POOL_CPP03_CODE || defined(ETL_STLPORT) || defined(ETL_NO_STL)
     //*************************************************************************
     /// Allocate storage for an object from the pool and create with default.
     /// If asserts or exceptions are enabled and there are no more free items an
@@ -650,7 +652,7 @@ namespace etl
       return base_t::template allocate<U>();
     }
 
-#if !ETL_CPP11_SUPPORTED || ETL_POOL_CPP03_CODE || defined(ETL_STLPORT)
+#if !ETL_CPP11_SUPPORTED || ETL_POOL_CPP03_CODE || defined(ETL_STLPORT) || defined(ETL_NO_STL)
     //*************************************************************************
     /// Allocate storage for an object from the pool and create with default.
     /// If asserts or exceptions are enabled and there are no more free items an

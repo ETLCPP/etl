@@ -32,9 +32,10 @@ SOFTWARE.
 #define ETL_CONTAINER_INCLUDED
 
 #include <stddef.h>
-#include <iterator>
 
 #include "platform.h"
+
+#include "stl/iterator.h"
 
 ///\defgroup container container
 ///\ingroup utilities

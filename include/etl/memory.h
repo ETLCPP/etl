@@ -31,11 +31,12 @@ SOFTWARE.
 #ifndef ETL_MEMORY_INCLUDED
 #define ETL_MEMORY_INCLUDED
 
-#include <iterator>
 #include "algorithm.h"
 
 #include "platform.h"
 #include "type_traits.h"
+
+#include "stl/iterator.h"
 
 ///\defgroup memory memory
 ///\ingroup etl

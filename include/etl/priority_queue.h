@@ -32,10 +32,12 @@ SOFTWARE.
 #define ETL_PRIORITY_QUEUE_INCLUDED
 
 #include <stddef.h>
-#include <functional>
-#include "algorithm.h"
 
 #include "platform.h"
+
+#include "stl/algorithm.h"
+#include "stl/functional.h"
+
 #include "container.h"
 #include "vector.h"
 #include "type_traits.h"

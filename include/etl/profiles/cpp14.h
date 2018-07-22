@@ -35,8 +35,6 @@ SOFTWARE.
 // Generic C++14
 //*****************************************************************************
 
-#include <limits.h>
-
 #define ETL_TARGET_DEVICE_GENERIC
 #define ETL_TARGET_OS_NONE
 #define ETL_COMPILER_GENERIC

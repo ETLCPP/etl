@@ -31,13 +31,15 @@ SOFTWARE.
 #ifndef ETL_BITSET_INCLUDED
 #define ETL_BITSET_INCLUDED
 
-
-#include <iterator>
 #include <string.h>
 #include <stddef.h>
 #include <stdint.h>
 
 #include "platform.h"
+
+#include "stl/algorithm.h"
+#include "stl/iterator.h"
+
 #include "integral_limits.h"
 #include "algorithm.h"
 #include "nullptr.h"

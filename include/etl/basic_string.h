@@ -33,12 +33,14 @@ SOFTWARE.
 
 #include <stddef.h>
 #include <stdint.h>
-#include <iterator>
-#include "algorithm.h"
-#include <functional>
 #include <string.h>
 
 #include "platform.h"
+
+#include "stl/algorithm.h"
+#include "stl/iterator.h"
+#include "stl/functional.h"
+
 #include "char_traits.h"
 #include "container.h"
 #include "alignment.h"

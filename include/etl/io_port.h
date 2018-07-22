@@ -36,10 +36,11 @@ SOFTWARE.
 ///\ingroup utilities
 
 #include <stdint.h>
-#include <iterator>
 
 #include "platform.h"
 #include "nullptr.h"
+
+#include "stl/iterator.h"
 
 namespace etl
 {

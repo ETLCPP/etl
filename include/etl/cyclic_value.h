@@ -37,13 +37,13 @@ SOFTWARE.
 /// Provides a value that cycles between two limits.
 /// \ingroup utilities
 
-#include "algorithm.h"
-
 #include "platform.h"
 #include "static_assert.h"
 #include "exception.h"
 #include "static_assert.h"
 #include "type_traits.h"
+
+#include "stl/algorithm.h"
 
 namespace etl
 {

@@ -32,11 +32,13 @@ SOFTWARE.
 #define ETL_MULTISET_INCLUDED
 
 #include <stddef.h>
-#include <iterator>
-#include "algorithm.h"
-#include <functional>
 
 #include "platform.h"
+
+#include "stl/algorithm.h"
+#include "stl/iterator.h"
+#include "stl/functional.h"
+
 #include "parameter_type.h"
 #include "container.h"
 #include "pool.h"
@@ -46,7 +48,7 @@ SOFTWARE.
 #include "nullptr.h"
 #include "type_traits.h"
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
   #include <initializer_list>
 #endif
 
@@ -1928,7 +1930,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
     //*************************************************************************
     /// Constructor, from an initializer_list.
     //*************************************************************************

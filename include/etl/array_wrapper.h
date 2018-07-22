@@ -80,13 +80,13 @@ namespace etl
   //***************************************************************************
   /// Array wrapper.
   //***************************************************************************
-  template <typename T, std::size_t SIZE_, T(&ARRAY_)[SIZE_]>
+  template <typename T, size_t SIZE_, T(&ARRAY_)[SIZE_]>
   class array_wrapper
   {
   public:
 
     typedef T                                     value_type;
-    typedef std::size_t                           size_type;
+    typedef size_t                           size_type;
     typedef T&                                    reference;
     typedef const T&                              const_reference;
     typedef T*                                    pointer;
@@ -330,7 +330,7 @@ namespace etl
   //*************************************************************************
   /// Equality for array wrappers.
   //*************************************************************************
-  template <typename TL, typename TR, std::size_t SIZEL, std::size_t SIZER, TL(&ARRAYL)[SIZEL], TR(&ARRAYR)[SIZER]>
+  template <typename TL, typename TR, size_t SIZEL, size_t SIZER, TL(&ARRAYL)[SIZEL], TR(&ARRAYR)[SIZER]>
   bool operator == (const etl::array_wrapper<TL, SIZEL, ARRAYL>& lhs,
                     const etl::array_wrapper<TR, SIZER, ARRAYR>& rhs)
   {
@@ -340,7 +340,7 @@ namespace etl
   //*************************************************************************
   /// Inequality for array wrapper.
   //*************************************************************************
-  template <typename TL, typename TR, std::size_t SIZEL, std::size_t SIZER, TL(&ARRAYL)[SIZEL], TR(&ARRAYR)[SIZER]>
+  template <typename TL, typename TR, size_t SIZEL, size_t SIZER, TL(&ARRAYL)[SIZEL], TR(&ARRAYR)[SIZER]>
   bool operator != (const etl::array_wrapper<TL, SIZEL, ARRAYL>& lhs,
                     const etl::array_wrapper<TR, SIZER, ARRAYR>& rhs)
   {
@@ -350,7 +350,7 @@ namespace etl
   //*************************************************************************
   /// Less-than for array wrapper.
   //*************************************************************************
-  template <typename TL, typename TR, std::size_t SIZEL, std::size_t SIZER, TL(&ARRAYL)[SIZEL], TR(&ARRAYR)[SIZER]>
+  template <typename TL, typename TR, size_t SIZEL, size_t SIZER, TL(&ARRAYL)[SIZEL], TR(&ARRAYR)[SIZER]>
   bool operator < (const etl::array_wrapper<TL, SIZEL, ARRAYL>& lhs,
                    const etl::array_wrapper<TR, SIZER, ARRAYR>& rhs)
   {
@@ -360,7 +360,7 @@ namespace etl
   //*************************************************************************
   /// Greater-than for array wrapper.
   //*************************************************************************
-  template <typename TL, typename TR, std::size_t SIZEL, std::size_t SIZER, TL(&ARRAYL)[SIZEL], TR(&ARRAYR)[SIZER]>
+  template <typename TL, typename TR, size_t SIZEL, size_t SIZER, TL(&ARRAYL)[SIZEL], TR(&ARRAYR)[SIZER]>
   bool operator > (const etl::array_wrapper<TL, SIZEL, ARRAYL>& lhs,
                    const etl::array_wrapper<TR, SIZER, ARRAYR>& rhs)
   {
@@ -370,7 +370,7 @@ namespace etl
   //*************************************************************************
   /// Less-than-equal for array wrapper.
   //*************************************************************************
-  template <typename TL, typename TR, std::size_t SIZEL, std::size_t SIZER, TL(&ARRAYL)[SIZEL], TR(&ARRAYR)[SIZER]>
+  template <typename TL, typename TR, size_t SIZEL, size_t SIZER, TL(&ARRAYL)[SIZEL], TR(&ARRAYR)[SIZER]>
   bool operator <= (const etl::array_wrapper<TL, SIZEL, ARRAYL>& lhs,
                     const etl::array_wrapper<TR, SIZER, ARRAYR>& rhs)
   {
@@ -380,7 +380,7 @@ namespace etl
   //*************************************************************************
   /// Greater-than-equal for array wrapper.
   //*************************************************************************
-  template <typename TL, typename TR, std::size_t SIZEL, std::size_t SIZER, TL(&ARRAYL)[SIZEL], TR(&ARRAYR)[SIZER]>
+  template <typename TL, typename TR, size_t SIZEL, size_t SIZER, TL(&ARRAYL)[SIZEL], TR(&ARRAYR)[SIZER]>
   bool operator >= (const etl::array_wrapper<TL, SIZEL, ARRAYL>& lhs,
                     const etl::array_wrapper<TR, SIZER, ARRAYR>& rhs)
   {
@@ -391,7 +391,7 @@ namespace etl
   /// Hash function.
   //*************************************************************************
 #if ETL_8BIT_SUPPORT
-  template <typename T, std::size_t SIZE, T(&ARRAY)[SIZE]>
+  template <typename T, size_t SIZE, T(&ARRAY)[SIZE]>
   struct hash<etl::array_wrapper<T, SIZE, ARRAY> >
   {
     size_t operator()(const etl::array_wrapper<T, SIZE, ARRAY>& aw) const
@@ -406,7 +406,7 @@ namespace etl
 //*************************************************************************
 /// Swap.
 //*************************************************************************
-template <typename T, std::size_t SIZE, T(&ARRAYL)[SIZE], T(&ARRAYR)[SIZE]>
+template <typename T, size_t SIZE, T(&ARRAYL)[SIZE], T(&ARRAYR)[SIZE]>
 void swap(etl::array_wrapper<T, SIZE, ARRAYL>& lhs,
           etl::array_wrapper<T, SIZE, ARRAYR>& rhs)
 {

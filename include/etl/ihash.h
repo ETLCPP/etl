@@ -32,9 +32,11 @@ SOFTWARE.
 #define ETL_IHASH_INCLUDED
 
 #include <stdint.h>
-#include <utility>
 
 #include "platform.h"
+
+#include "stl/utility.h"
+
 #include "exception.h"
 #include "error_handler.h"
 

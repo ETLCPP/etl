@@ -32,9 +32,6 @@ SOFTWARE.
 #define ETL_SET_INCLUDED
 
 #include <stddef.h>
-#include <iterator>
-#include "algorithm.h"
-#include <functional>
 
 #include "platform.h"
 #include "container.h"
@@ -46,7 +43,11 @@ SOFTWARE.
 #include "type_traits.h"
 #include "parameter_type.h"
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
+#include "stl/algorithm.h"
+#include "stl/iterator.h"
+#include "stl/functional.h"
+
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
   #include <initializer_list>
 #endif
 
@@ -1986,7 +1987,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
     //*************************************************************************
     /// Constructor, from an initializer_list.
     //*************************************************************************

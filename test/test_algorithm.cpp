@@ -867,5 +867,47 @@ namespace
       is_same = std::equal(std::begin(output_false), std::end(output_false), std::begin(compare_false));
       CHECK(is_same);
     }
+
+    //=========================================================================
+    TEST(sort_default)
+    {
+      std::vector<int> data(100, 0);
+      std::iota(data.begin(), data.end(), 1);
+
+      for (int i = 0; i < 100; ++i)
+      {
+        std::random_shuffle(data.begin(), data.end());
+
+        std::vector<int> data1 = data;
+        std::vector<int> data2 = data;
+
+        std::sort(data1.begin(), data1.end());
+        etl::sort(data2.begin(), data2.end());
+
+        bool is_same = std::equal(data1.begin(), data1.end(), data2.begin());
+        CHECK(is_same);
+      }
+    }
+
+    //=========================================================================
+    TEST(sort_greater)
+    {
+      std::vector<int> data(100, 0);
+      std::iota(data.begin(), data.end(), 1);
+
+      for (int i = 0; i < 100; ++i)
+      {
+        std::random_shuffle(data.begin(), data.end());
+
+        std::vector<int> data1 = data;
+        std::vector<int> data2 = data;
+
+        std::sort(data1.begin(), data1.end(), std::greater<int>());
+        etl::sort(data2.begin(), data2.end(), std::greater<int>());
+
+        bool is_same = std::equal(data1.begin(), data1.end(), data2.begin());
+        CHECK(is_same);
+      }
+    }
   };
 }

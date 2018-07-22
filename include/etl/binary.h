@@ -35,8 +35,6 @@ SOFTWARE.
 /// Binary utilities
 ///\ingroup utilities
 
-#include <limits>
-
 #include "platform.h"
 #include "type_traits.h"
 #include "integral_limits.h"
@@ -46,6 +44,8 @@ SOFTWARE.
 #include "smallest.h"
 #include "exception.h"
 #include "error_handler.h"
+
+#include "stl/limits.h"
 
 #undef ETL_FILE
 #define ETL_FILE "50"

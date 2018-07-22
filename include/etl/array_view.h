@@ -38,8 +38,9 @@ SOFTWARE.
 #include "exception.h"
 #include "nullptr.h"
 #include "hash.h"
-
 #include "algorithm.h"
+
+#include "stl/algorithm.h"
 
 ///\defgroup array array
 /// A wrapper for arrays
@@ -100,7 +101,7 @@ namespace etl
   public:
 
     typedef T                                     value_type;
-    typedef std::size_t                           size_type;
+    typedef size_t                           size_type;
     typedef T&                                    reference;
     typedef const T&                              const_reference;
     typedef T*                                    pointer;
@@ -499,7 +500,7 @@ namespace etl
   public:
 
     typedef T                                     value_type;
-    typedef std::size_t                           size_type;
+    typedef size_t                           size_type;
     typedef const T&                              const_reference;
     typedef const T*                              const_pointer;
     typedef const T*                              const_iterator;

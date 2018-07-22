@@ -104,7 +104,7 @@ namespace etl
 
     typedef T                                     value_type;
     typedef TTraits                               traits_type;
-    typedef std::size_t                           size_type;
+    typedef size_t                                size_type;
     typedef const T&                              const_reference;
     typedef const T*                              const_pointer;
     typedef const T*                              const_iterator;
