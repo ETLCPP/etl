@@ -528,5 +528,47 @@ namespace
       CHECK_EQUAL(test_item_trivial, etl::make_copy_at(pn, test_item_trivial, count));
       CHECK_EQUAL(3U, count);
     }
+
+    //*************************************************************************
+    TEST(test_wipe_on_destruct)
+    {
+      struct Data : public etl::wipe_on_destruct<Data>
+      {
+        Data(int a_, char b_, double c_)
+          : a(a_),
+            b(b_),
+            c(c_)
+        {
+        }
+
+        bool operator ==(const Data& other) const
+        {
+          return (a == other.a) && (b == other.b) && (c == other.c);
+        }
+
+        int a;
+        char b;
+        double c;
+      };
+
+      std::array<char, sizeof(Data)> buffer;
+      buffer.fill(0);
+
+      // Construct in-place.
+      ::new (buffer.data()) Data(1, 'b', 3.4);
+
+      Data& other = *reinterpret_cast<Data*>(buffer.data());
+      CHECK(other == Data(1, 'b', 3.4));
+
+      // Cleared compare buffer.
+      std::array<char, sizeof(Data)> clear;
+      clear.fill(0);
+
+      // Destruct;
+      other.~Data();
+
+      // Storage should be wiped.
+      CHECK(buffer == clear);
+    }
   };
 }
