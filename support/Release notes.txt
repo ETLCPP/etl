@@ -1,4 +1,10 @@
 ===============================================================================
+11.14.0
+Added tests for limited support for self insert for strings.
+Added 'wipe_on_destruct' template class for secure wiping of objects on destruction.
+Updated unique_ptr API.
+
+===============================================================================
 11.13.2
 Protected destructor for some FSM classes.
 Observer's remove_observer returns bool.
