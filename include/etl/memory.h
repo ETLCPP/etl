@@ -31,12 +31,13 @@ SOFTWARE.
 #ifndef ETL_MEMORY_INCLUDED
 #define ETL_MEMORY_INCLUDED
 
-#include "algorithm.h"
-
 #include "platform.h"
+#include "algorithm.h"
 #include "type_traits.h"
 
 #include "stl/iterator.h"
+
+#include <string.h>
 
 ///\defgroup memory memory
 ///\ingroup etl
@@ -96,7 +97,7 @@ namespace etl
     count += int32_t(std::distance(o_begin, o_end));
 
     std::fill(o_begin, o_end, value);
-    
+
     return o_end;
   }
 
@@ -340,7 +341,7 @@ namespace etl
   /// Default initialises N objects to uninitialised memory.
   ///\ingroup memory
   //*****************************************************************************
-  template <typename TOutputIterator, typename TSize>  
+  template <typename TOutputIterator, typename TSize>
   typename etl::enable_if<!etl::is_trivially_constructible<typename std::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
    uninitialized_default_construct_n(TOutputIterator o_begin, TSize n)
   {
@@ -770,12 +771,41 @@ namespace etl
   };
 
   //*****************************************************************************
-  /// Unique pointer.
+  /// Default deleter.
   ///\tparam T The pointed to type type.
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-  class unique_ptr 
+  struct default_delete
+  {
+    void operator()(T* p) const
+    {
+      delete p;
+    }
+  };
+
+  //*****************************************************************************
+  /// Default deleter for arrays.
+  ///\tparam T The pointed to type type.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  struct default_delete<T[]>
+  {
+    template <class U>
+    void operator()(U* p) const
+    {
+      delete[] p;
+    }
+  };
+
+  //*****************************************************************************
+  /// Unique pointer.
+  ///\tparam T The pointed to type type.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T, typename TDeleter = etl::default_delete<T> >
+  class unique_ptr
   {
   public:
 
@@ -799,22 +829,32 @@ namespace etl
       {
       }
 #endif
-      
+
       ~unique_ptr()
       {
-        delete p;
+        deleter(p);
       }
 
       ETL_CONSTEXPR pointer	get() const
       {
         return p;
       }
-      
+
+      TDeleter& get_deleter()
+      {
+        return deleter;
+      }
+
+      const TDeleter& get_deleter() const
+      {
+        return deleter;
+      }
+
       pointer	release()
-      { 
+      {
         pointer value = p;
         p = nullptr;
-        
+
         return value;
       }
 
@@ -826,21 +866,21 @@ namespace etl
         p = p_;
         delete value;
       }
-      
+
       void swap(unique_ptr& value)
-      { 
+      {
         std::swap(p, value.p);
       }
-      
+
       ETL_CONSTEXPR explicit	operator bool() const
       {
         return (p != nullptr);
       }
-      
+
       unique_ptr&	operator =(pointer p_)
       {
         reset(p_);
-        
+
         return *this;
       }
 
@@ -848,36 +888,36 @@ namespace etl
       unique_ptr&	operator =(unique_ptr&& p_)
       {
         reset(p_.release());
-        
-        return *this; 
+
+        return *this;
       }
 #endif
-     
+
       ETL_CONSTEXPR reference	operator *() const
       {
         return *get();
       }
-      
+
       ETL_CONSTEXPR pointer	operator ->() const
       {
         return get();
       }
-      
+
       ETL_CONSTEXPR reference	operator [](size_t i) const
       {
         return get()[i];
       }
-      
+
       ETL_CONSTEXPR bool operator== (const pointer p_) const
       {
         return p == p_;
       }
-      
+
       ETL_CONSTEXPR bool operator== (const unique_ptr& p_) const
       {
         return p == p_.p;
       }
-      
+
       ETL_CONSTEXPR bool operator< (const unique_ptr& p_) const
       {
         return p < p_.p;
@@ -889,25 +929,26 @@ namespace etl
     unique_ptr(const unique_ptr&);
     unique_ptr&	operator =(const unique_ptr&);
 
+    TDeleter deleter;
+
     pointer	p;
   };
-
 
   //*****************************************************************************
   /// Unique pointer for arrays.
   ///\tparam T The pointed to type type.
   ///\ingroup memory
   //*****************************************************************************
-  template<typename T>
-  class unique_ptr<T[]> 
+  template<typename T, typename TDeleter>
+  class unique_ptr<T[], TDeleter>
   {
   public:
 
     typedef T  element_type;
     typedef T* pointer;
     typedef T& reference;
-  
-    ETL_CONSTEXPR		unique_ptr() 
+
+    ETL_CONSTEXPR		unique_ptr()
       : p(nullptr)
     {
     }
@@ -916,43 +957,53 @@ namespace etl
       : p(p_)
     {
     }
-    
+
 #if ETL_CPP11_SUPPORTED
     unique_ptr(unique_ptr&& p_)
       : p(p_.release())
     {
     }
 #endif
-    
-    ~unique_ptr() 
+
+    ~unique_ptr()
     {
-      delete[] p;
+      deleter(p);
     }
-    
+
     ETL_CONSTEXPR pointer	get() const
     {
       return p;
     }
-    
-    pointer	release() 
+
+    TDeleter& get_deleter()
+    {
+      return deleter;
+    }
+
+    const TDeleter& get_deleter() const
+    {
+      return deleter;
+    }
+
+    pointer	release()
     {
       pointer value = p;
       p = nullptr;
       return value;
     }
-    
+
     void reset(pointer p_)
     {
       assert(p_ != p);
 
-      pointer value = p; 
-      p = p_; 
-      delete[] value; 
+      pointer value = p;
+      p = p_;
+      delete[] value;
     }
 
     void swap(unique_ptr& v)
     {
-      std::swap(p, v.p); 
+      std::swap(p, v.p);
     }
 
     ETL_CONSTEXPR explicit operator bool() const
@@ -963,8 +1014,8 @@ namespace etl
     unique_ptr& operator =(pointer p_)
     {
       reset(p_);
-      
-      return *this; 
+
+      return *this;
     }
 
 #if ETL_CPP11_SUPPORTED
@@ -972,31 +1023,31 @@ namespace etl
     {
       reset(p_.release());
 
-      return *this; 
+      return *this;
     }
 #endif
 
     ETL_CONSTEXPR reference	operator *() const
     {
-      return *p; 
+      return *p;
     }
 
     ETL_CONSTEXPR pointer	operator ->() const
     {
-      return p; 
+      return p;
     }
 
     ETL_CONSTEXPR reference	operator [](size_t i) const
     {
-      return p[i]; 
+      return p[i];
     }
 
     ETL_CONSTEXPR bool operator ==(const pointer p_) const
     {
-      return (p == p_); 
+      return (p == p_);
     }
 
-    ETL_CONSTEXPR bool operator ==(const unique_ptr& p_) const 
+    ETL_CONSTEXPR bool operator ==(const unique_ptr& p_) const
     {
       return (p == p_.p);
     }
@@ -1005,14 +1056,33 @@ namespace etl
     {
       return (p < p_.p);
     }
-  
+
   private:
 
     // Deleted.
     unique_ptr(const unique_ptr&);
     unique_ptr&	operator =(const unique_ptr&);
 
-    pointer			p;
+    TDeleter deleter;
+
+    pointer	p;
+  };
+
+  //*****************************************************************************
+  /// Base class for objects that require their memory to be wiped after use.
+  /// Erases the object's memory to zero.
+  /// Note: This <b>must</b> be the last destructor called for the derived object.
+  ///\tparam T The derived type.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  struct wipe_on_destruct
+  {
+    ~wipe_on_destruct()
+    {
+      char* pobject = reinterpret_cast<char*>(static_cast<T*>(this));
+      memset(pobject, 0, sizeof(T));
+    }
   };
 }
 
