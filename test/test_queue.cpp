@@ -30,7 +30,7 @@ SOFTWARE.
 
 #include <queue>
 
-#include "queue.h"
+#include "etl/queue.h"
 
 namespace
 {

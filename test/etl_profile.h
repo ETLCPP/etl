@@ -77,9 +77,9 @@ SOFTWARE.
 //#define ETL_NO_STL
 
 #ifdef _MSC_VER
-  #include "profiles/msvc_x86.h"
+  #include "etl/profiles/msvc_x86.h"
 #else
-  #include "profiles/gcc_windows_x86.h"
+  #include "etl/profiles/gcc_windows_x86.h"
 #endif
 
 #endif

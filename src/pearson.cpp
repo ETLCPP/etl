@@ -30,8 +30,8 @@ SOFTWARE.
 
 #include <stdint.h>
 
-#include "platform.h"
-#include "static_assert.h"
+#include "etl/platform.h"
+#include "etl/static_assert.h"
 
 ETL_STATIC_ASSERT(ETL_8BIT_SUPPORT, "This file does not currently support targets with no 8bit type");
 

@@ -33,7 +33,7 @@ SOFTWARE.
 #include <algorithm>
 #include <cstring>
 
-#include "vector.h"
+#include "etl/vector.h"
 
 namespace
 {

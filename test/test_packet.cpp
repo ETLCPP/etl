@@ -29,10 +29,10 @@ SOFTWARE.
 #include "UnitTest++.h"
 #include "ExtraCheckMacros.h"
 
-#include "packet.h"
-#include "largest.h"
-#include "queue.h"
-#include "pool.h"
+#include "etl/packet.h"
+#include "etl/largest.h"
+#include "etl/queue.h"
+#include "etl/pool.h"
 
 namespace
 {

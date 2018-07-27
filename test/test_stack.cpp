@@ -32,7 +32,7 @@ SOFTWARE.
 
 #include "data.h"
 
-#include "stack.h"
+#include "etl/stack.h"
 
 namespace
 {

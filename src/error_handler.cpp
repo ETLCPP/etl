@@ -28,9 +28,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "platform.h"
-#include "error_handler.h"
-#include "nullptr.h"
+#include "etl/platform.h"
+#include "etl/error_handler.h"
+#include "etl/nullptr.h"
 
 //*****************************************************************************
 /// The error function callback pointer.

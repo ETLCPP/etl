@@ -28,12 +28,12 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
-#include "string_view.h"
-#include "cstring.h"
-#include "wstring.h"
-#include "u16string.h"
-#include "u32string.h"
-#include "hash.h"
+#include "etl/string_view.h"
+#include "etl/cstring.h"
+#include "etl/wstring.h"
+#include "etl/u16string.h"
+#include "etl/u32string.h"
+#include "etl/hash.h"
 
 #include <algorithm>
 #include <iterator>

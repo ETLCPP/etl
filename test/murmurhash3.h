@@ -10,7 +10,7 @@
 
 // Microsoft Visual Studio
 
-#include "platform.h"
+#include "etl/platform.h"
 
 #if defined(ETL_COMPILER_MICROSOFT) && (_MSC_VER < 1600)
 

@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
-#include "platform.h"
+#include "etl/platform.h"
 #include "atomic/atomic_std.h"
 
 #include <atomic>

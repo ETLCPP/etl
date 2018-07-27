@@ -32,7 +32,7 @@ SOFTWARE.
 #include <array>
 #include <algorithm>
 
-#include "wstring.h"
+#include "etl/wstring.h"
 
 #undef STR
 #define STR(x) L##x

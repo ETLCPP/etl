@@ -39,8 +39,8 @@ SOFTWARE.
 
 #include "data.h"
 
-#include "unordered_multiset.h"
-#include "checksum.h"
+#include "etl/unordered_multiset.h"
+#include "etl/checksum.h"
 
 namespace
 {

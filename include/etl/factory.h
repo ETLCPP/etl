@@ -40,7 +40,7 @@ SOFTWARE.
 #include "alignment.h"
 #include "static_assert.h"
 #include "type_lookup.h"
-#include <pool.h>
+#include "pool.h"
 
 #if defined(ETL_COMPILER_GCC)
   #warning THIS CLASS IS DEPRECATED!USE VARIANT_POOL INSTEAD.

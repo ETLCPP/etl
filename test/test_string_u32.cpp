@@ -32,7 +32,7 @@ SOFTWARE.
 #include <array>
 #include <algorithm>
 
-#include "u32string.h"
+#include "etl/u32string.h"
 
 #undef STR
 #define STR(x) U##x

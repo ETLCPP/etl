@@ -32,8 +32,8 @@ SOFTWARE.
 #include <array>
 #include <algorithm>
 
-#include "cstring.h"
-#include "fnv_1.h"
+#include "etl/cstring.h"
+#include "etl/fnv_1.h"
 
 #undef STR
 #define STR(x) x

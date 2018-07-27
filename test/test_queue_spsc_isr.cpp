@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
-#include "queue_spsc_isr.h"
+#include "etl/queue_spsc_isr.h"
 
 #include <thread>
 #include <mutex>

@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
-#include "debounce.h"
+#include "etl/debounce.h"
 
 namespace
 {

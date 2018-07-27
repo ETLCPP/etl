@@ -34,11 +34,8 @@ add_library(etl
   )
 target_include_directories(etl
   PUBLIC
-  include/etl
-  include/etl/atomic
+  include
   include/etl/profiles
-  PRIVATE
-  include/etl/private
   )
 
 if (${ETL_PROFILE} STREQUAL DEFAULT)
