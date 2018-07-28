@@ -1,4 +1,8 @@
 ===============================================================================
+11.14.2
+Removed reference_flat_set & reference_flat_map reliance on equality.
+
+===============================================================================
 11.14.1
 Removed flat_set & flat_map reliance on equality.
 
