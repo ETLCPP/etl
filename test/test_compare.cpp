@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
-#include "compare.h"
+#include "etl/compare.h"
 
 namespace
 {

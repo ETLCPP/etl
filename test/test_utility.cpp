@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
-#include "utility.h"
+#include "etl/utility.h"
 
 namespace
 {

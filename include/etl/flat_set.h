@@ -233,7 +233,7 @@ namespace etl
       std::pair<iterator, bool> result(i_element, false);
 
       // Doesn't already exist?
-      if ((i_element == end()) || TKeyCompare()(*i_element, value) || TKeyCompare()(value, *i_element))
+      if ((i_element == end()) || compare(*i_element, value) || compare(value, *i_element))
       {
         ETL_ASSERT(!refset_t::full(), ETL_ERROR(flat_set_full));
 
@@ -670,6 +670,8 @@ namespace etl
     iflat_set(const iflat_set&);
 
     storage_t& storage;
+
+    TKeyCompare compare;
 
     /// Internal debugging.
     ETL_DECLARE_DEBUG_COUNT;

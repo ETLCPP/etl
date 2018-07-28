@@ -29,7 +29,7 @@ SOFTWARE.
 #include "UnitTest++.h"
 #include "ExtraCheckMacros.h"
 
-#include "variant.h"
+#include "etl/variant.h"
 
 #include <array>
 #include <vector>

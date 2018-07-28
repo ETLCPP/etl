@@ -31,10 +31,10 @@ SOFTWARE.
 #include <cstdint>
 #include <type_traits>
 
-#include "binary.h"
-#include "bitset.h"
-#include "fnv_1.h"
-#include "integral_limits.h"
+#include "etl/binary.h"
+#include "etl/bitset.h"
+#include "etl/fnv_1.h"
+#include "etl/integral_limits.h"
 
 // Count bits the easy way.
 template <typename T>

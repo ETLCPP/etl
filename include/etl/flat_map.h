@@ -101,13 +101,15 @@ namespace etl
 
       bool operator ()(const value_type& element, key_type key) const
       {
-        return key_compare()(element.first, key);
+        return comp(element.first, key);
       }
 
       bool operator ()(key_type key, const value_type& element) const
       {
-        return key_compare()(key, element.first);
+        return comp(key, element.first);
       }
+
+      key_compare comp;
     };
 
   public:
@@ -300,7 +302,7 @@ namespace etl
       std::pair<iterator, bool> result(i_element, false);
 
       // Doesn't already exist?
-      if ((i_element == end()) || TKeyCompare()(i_element->first, value.first) || TKeyCompare()(value.first, i_element->first))
+      if ((i_element == end()) || compare(i_element->first, value.first) || compare(value.first, i_element->first))
       {
         ETL_ASSERT(!refmap_t::full(), ETL_ERROR(flat_map_full));
 
@@ -763,6 +765,8 @@ namespace etl
     iflat_map(const iflat_map&);
 
     storage_t& storage;
+
+    TKeyCompare compare;
 
     /// Internal debugging.
     ETL_DECLARE_DEBUG_COUNT;

@@ -36,7 +36,7 @@ SOFTWARE.
 #include <string>
 #include <vector>
 
-#include "map.h"
+#include "etl/map.h"
 
 static const size_t MAX_SIZE = 10;
 
@@ -181,6 +181,7 @@ namespace
       CHECK(data.empty());
       CHECK_EQUAL(data.capacity(), MAX_SIZE);
       CHECK_EQUAL(data.max_size(), MAX_SIZE);
+      CHECK(data.begin() == data.end());
     }
 
     //*************************************************************************

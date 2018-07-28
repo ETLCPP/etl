@@ -33,7 +33,7 @@ SOFTWARE.
 #include <vector>
 #include <stdint.h>
 
-#include "jenkins.h"
+#include "etl/jenkins.h"
 
 template <typename TIterator>
 uint32_t jenkins(TIterator begin, TIterator end)

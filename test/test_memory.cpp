@@ -28,8 +28,8 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
-#include "memory.h"
-#include "debug_count.h"
+#include "etl/memory.h"
+#include "etl/debug_count.h"
 
 #include <string>
 #include <array>

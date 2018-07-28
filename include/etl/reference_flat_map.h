@@ -329,19 +329,21 @@ namespace etl
     //*********************************************************************
     /// How to compare elements and keys.
     //*********************************************************************
-    class compare
+    class Compare
     {
     public:
 
       bool operator ()(const value_type& element, key_type key) const
       {
-        return key_compare()(element.first, key);
+        return comp(element.first, key);
       }
 
       bool operator ()(key_type key, const value_type& element) const
       {
-        return key_compare()(key, element.first);
+        return comp(key, element.first);
       }
+
+      key_compare comp;
     };
 
   public:
@@ -690,7 +692,7 @@ namespace etl
     //*********************************************************************
     iterator lower_bound(key_parameter_t key)
     {
-      return std::lower_bound(begin(), end(), key, compare());
+      return std::lower_bound(begin(), end(), key, compare);
     }
 
     //*********************************************************************
@@ -700,7 +702,7 @@ namespace etl
     //*********************************************************************
     const_iterator lower_bound(key_parameter_t key) const
     {
-      return std::lower_bound(cbegin(), cend(), key, compare());
+      return std::lower_bound(cbegin(), cend(), key, compare);
     }
 
     //*********************************************************************
@@ -710,7 +712,7 @@ namespace etl
     //*********************************************************************
     iterator upper_bound(key_parameter_t key)
     {
-      return std::upper_bound(begin(), end(), key, compare());
+      return std::upper_bound(begin(), end(), key, compare);
     }
 
     //*********************************************************************
@@ -720,7 +722,7 @@ namespace etl
     //*********************************************************************
     const_iterator upper_bound(key_parameter_t key) const
     {
-      return std::upper_bound(begin(), end(), key, compare());
+      return std::upper_bound(begin(), end(), key, compare);
     }
 
     //*********************************************************************
@@ -730,9 +732,9 @@ namespace etl
     //*********************************************************************
     std::pair<iterator, iterator> equal_range(key_parameter_t key)
     {
-      iterator i_lower = std::lower_bound(begin(), end(), key, compare());
+      iterator i_lower = std::lower_bound(begin(), end(), key, compare);
 
-      return std::make_pair(i_lower, std::upper_bound(i_lower, end(), key, compare()));
+      return std::make_pair(i_lower, std::upper_bound(i_lower, end(), key, compare));
     }
 
     //*********************************************************************
@@ -742,9 +744,9 @@ namespace etl
     //*********************************************************************
     std::pair<const_iterator, const_iterator> equal_range(key_parameter_t key) const
     {
-      const_iterator i_lower = std::lower_bound(cbegin(), cend(), key, compare());
+      const_iterator i_lower = std::lower_bound(cbegin(), cend(), key, compare);
 
-      return std::make_pair(i_lower, std::upper_bound(i_lower, cend(), key, compare()));
+      return std::make_pair(i_lower, std::upper_bound(i_lower, cend(), key, compare));
     }
 
     //*************************************************************************
@@ -854,6 +856,8 @@ namespace etl
     ireference_flat_map& operator = (const ireference_flat_map&);
 
     lookup_t& lookup;
+
+    Compare compare;
 
     //*************************************************************************
     /// Destructor.

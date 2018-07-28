@@ -29,7 +29,7 @@ SOFTWARE.
 #include "UnitTest++.h"
 #include "ExtraCheckMacros.h"
 
-#include "type_lookup.h"
+#include "etl/type_lookup.h"
 
 #include <type_traits>
 

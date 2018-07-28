@@ -29,8 +29,8 @@ SOFTWARE.
 #include "UnitTest++.h"
 #include "ExtraCheckMacros.h"
 
-#include "type_select.h"
-#include "null_type.h"
+#include "etl/type_select.h"
+#include "etl/null_type.h"
 
 #include <type_traits>
 

@@ -29,7 +29,7 @@ SOFTWARE.
 #include "UnitTest++.h"
 #include "ExtraCheckMacros.h"
 
-#include "factory.h"
+#include "etl/factory.h"
 
 #include <string>
 #include <type_traits>

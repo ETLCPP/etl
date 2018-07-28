@@ -636,7 +636,7 @@ namespace etl
     {
       bool operator ()(key_type& key1, key_type& key2) const
       {
-        return key_compare()(key1, key2);
+        return compare(key1, key2);
       }
     };
 
@@ -647,7 +647,7 @@ namespace etl
     {
       bool operator ()(value_type& value1, value_type& value2) const
       {
-        return value_compare()(value1, value2);
+        return compare(value1, value2);
       }
     };
 
@@ -674,21 +674,23 @@ namespace etl
     //*************************************************************************
     bool node_comp(const Data_Node& node1, const Data_Node& node2) const
     {
-      return key_compare()(node1.value, node2.value);
+      return compare(node1.value, node2.value);
     }
     bool node_comp(const Data_Node& node, key_parameter_t key) const
     {
-      return key_compare()(node.value, key);
+      return compare(node.value, key);
     }
     bool node_comp(key_parameter_t key, const Data_Node& node) const
     {
-      return key_compare()(key, node.value);
+      return compare(key, node.value);
     }
 
   private:
 
     /// The pool of data nodes used in the multiset.
     ipool* p_node_pool;
+
+    key_compare compare;
 
     //*************************************************************************
     /// Downcast a Node* to a Data_Node*

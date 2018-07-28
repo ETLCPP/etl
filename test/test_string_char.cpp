@@ -32,8 +32,8 @@ SOFTWARE.
 #include <array>
 #include <algorithm>
 
-#include "cstring.h"
-#include "fnv_1.h"
+#include "etl/cstring.h"
+#include "etl/fnv_1.h"
 
 #undef STR
 #define STR(x) x
@@ -94,6 +94,7 @@ namespace
       CHECK(text.empty());
       CHECK_EQUAL(text.capacity(), SIZE);
       CHECK_EQUAL(text.max_size(), SIZE);
+      CHECK(text.begin() == text.end());
     }
 
     //*************************************************************************

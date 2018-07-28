@@ -28,8 +28,8 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
-#include "array_view.h"
-#include "array.h"
+#include "etl/array_view.h"
+#include "etl/array.h"
 
 #include <array>
 #include <vector>

@@ -38,7 +38,7 @@ SOFTWARE.
 
 #include "data.h"
 
-#include "flat_multiset.h"
+#include "etl/flat_multiset.h"
 
 namespace
 {
@@ -255,6 +255,7 @@ namespace
       CHECK(data.empty());
       CHECK_EQUAL(data.capacity(), SIZE);
       CHECK_EQUAL(data.max_size(), SIZE);
+      CHECK(data.begin() == data.end());
     }
 
     //*************************************************************************

@@ -32,7 +32,7 @@ SOFTWARE.
 #include <type_traits>
 #include <bitset>
 
-#include "bitset.h"
+#include "etl/bitset.h"
 
 namespace
 {

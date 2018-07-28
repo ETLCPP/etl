@@ -35,7 +35,7 @@ SOFTWARE.
 #include <atomic>
 #include <algorithm>
 
-#include "queue_mpmc_mutex.h"
+#include "etl/queue_mpmc_mutex.h"
 
 #if defined(ETL_COMPILER_MICROSOFT)
   #include <Windows.h>

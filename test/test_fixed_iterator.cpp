@@ -30,7 +30,7 @@ SOFTWARE.
 #include <vector>
 #include <ostream>
 
-#include "fixed_iterator.h"
+#include "etl/fixed_iterator.h"
 
 template <typename TIterator>
 std::ostream& operator << (std::ostream& os, const etl::fixed_iterator<TIterator>& fi)
