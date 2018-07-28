@@ -103,13 +103,15 @@ namespace etl
 
       bool operator ()(const value_type& element, key_type key) const
       {
-        return key_compare()(element.first, key);
+        return comp(element.first, key);
       }
 
       bool operator ()(key_type key, const value_type& element) const
       {
-        return key_compare()(key, element.first);
+        return comp(key, element.first);
       }
+
+      key_compare comp;
     };
 
   public:

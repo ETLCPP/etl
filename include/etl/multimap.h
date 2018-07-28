@@ -638,7 +638,7 @@ namespace etl
     {
       bool operator ()(const key_type& key1, const key_type& key2) const
       {
-        return key_compare()(key1, key2);
+        return compare(key1, key2);
       }
     };
 
@@ -649,7 +649,7 @@ namespace etl
     {
       bool operator ()(const value_type& value1, const value_type& value2) const
       {
-        return key_compare()(value1.first, value2.first);
+        return compare(value1.first, value2.first);
       }
     };
 
@@ -676,23 +676,25 @@ namespace etl
     //*************************************************************************
     bool node_comp(const Data_Node& node1, const Data_Node& node2) const
     {
-      return key_compare()(node1.value.first, node2.value.first);
+      return compare(node1.value.first, node2.value.first);
     }
 
     bool node_comp(const Data_Node& node, key_parameter_t key) const
     {
-      return key_compare()(node.value.first, key);
+      return compare(node.value.first, key);
     }
 
     bool node_comp(key_parameter_t key, const Data_Node& node) const
     {
-      return key_compare()(key, node.value.first);
+      return compare(key, node.value.first);
     }
 
   private:
 
     /// The pool of data nodes used in the multimap.
     ipool* p_node_pool;
+
+    key_compare compare;
 
     //*************************************************************************
     /// Downcast a Node* to a Data_Node*

@@ -460,9 +460,9 @@ namespace etl
     {
       std::pair<iterator, bool> result(end(), false);
 
-      ETL_ASSERT(!lookup.full(), ETL_ERROR(flat_multiset_full));
+      ETL_ASSERT(!lookup.full(), ETL_ERROR(flat_multiset_full));      
 
-      iterator i_element = std::lower_bound(begin(), end(), value, TKeyCompare());
+      iterator i_element = std::lower_bound(begin(), end(), value, compare);
 
       if (i_element == end())
       {
@@ -566,7 +566,7 @@ namespace etl
     //*********************************************************************
     iterator find(parameter_t key)
     {
-      iterator itr = std::lower_bound(begin(), end(), key, TKeyCompare());
+      iterator itr = std::lower_bound(begin(), end(), key, compare);
 
       if (itr != end())
       {
@@ -590,7 +590,7 @@ namespace etl
     //*********************************************************************
     const_iterator find(parameter_t key) const
     {
-      const_iterator itr = std::lower_bound(begin(), end(), key, TKeyCompare());
+      const_iterator itr = std::lower_bound(begin(), end(), key, compare);
 
       if (itr != end())
       {
@@ -626,7 +626,7 @@ namespace etl
     //*********************************************************************
     iterator lower_bound(parameter_t key)
     {
-      return std::lower_bound(begin(), end(), key, TKeyCompare());
+      return std::lower_bound(begin(), end(), key, compare);
     }
 
     //*********************************************************************
@@ -636,7 +636,7 @@ namespace etl
     //*********************************************************************
     const_iterator lower_bound(parameter_t key) const
     {
-      return std::lower_bound(cbegin(), cend(), key, TKeyCompare());
+      return std::lower_bound(cbegin(), cend(), key, compare);
     }
 
     //*********************************************************************
@@ -646,7 +646,7 @@ namespace etl
     //*********************************************************************
     iterator upper_bound(parameter_t key)
     {
-      return std::upper_bound(begin(), end(), key, TKeyCompare());
+      return std::upper_bound(begin(), end(), key, compare);
     }
 
     //*********************************************************************
@@ -656,7 +656,7 @@ namespace etl
     //*********************************************************************
     const_iterator upper_bound(parameter_t key) const
     {
-      return std::upper_bound(cbegin(), cend(), key, TKeyCompare());
+      return std::upper_bound(cbegin(), cend(), key, compare);
     }
 
     //*********************************************************************
@@ -666,7 +666,7 @@ namespace etl
     //*********************************************************************
     std::pair<iterator, iterator> equal_range(parameter_t key)
     {
-      return std::equal_range(begin(), end(), key, TKeyCompare());
+      return std::equal_range(begin(), end(), key, compare);
     }
 
     //*********************************************************************
@@ -676,7 +676,7 @@ namespace etl
     //*********************************************************************
     std::pair<const_iterator, const_iterator> equal_range(parameter_t key) const
     {
-      return std::equal_range(begin(), end(), key, TKeyCompare());
+      return std::equal_range(begin(), end(), key, compare);
     }
 
     //*************************************************************************
@@ -782,6 +782,8 @@ namespace etl
     ireference_flat_multiset& operator =(const ireference_flat_multiset&);
 
     lookup_t& lookup;
+
+    TKeyCompare compare;
 
     //*************************************************************************
     /// Destructor.

@@ -165,7 +165,7 @@ namespace etl
       // Put element at end
       container.push_back(value);
       // Make elements in container into heap
-      std::push_heap(container.begin(), container.end(), TCompare());
+      std::push_heap(container.begin(), container.end(), compare);
     }
 
     //*************************************************************************
@@ -182,7 +182,7 @@ namespace etl
       // Put element at end
       container.emplace_back(value1);
       // Make elements in container into heap
-      std::push_heap(container.begin(), container.end(), TCompare());
+      std::push_heap(container.begin(), container.end(), compare);
     }
 
     //*************************************************************************
@@ -199,7 +199,7 @@ namespace etl
       // Put element at end
       container.emplace_back(value1, value2);
       // Make elements in container into heap
-      std::push_heap(container.begin(), container.end(), TCompare());
+      std::push_heap(container.begin(), container.end(), compare);
     }
 
     //*************************************************************************
@@ -216,7 +216,7 @@ namespace etl
       // Put element at end
       container.emplace_back(value1, value2, value3);
       // Make elements in container into heap
-      std::push_heap(container.begin(), container.end(), TCompare());
+      std::push_heap(container.begin(), container.end(), compare);
     }
 
     //*************************************************************************
@@ -233,7 +233,7 @@ namespace etl
       // Put element at end
       container.emplace_back(value1, value2, value3, value4);
       // Make elements in container into heap
-      std::push_heap(container.begin(), container.end(), TCompare());
+      std::push_heap(container.begin(), container.end(), compare);
     }
 
     //*************************************************************************
@@ -256,7 +256,7 @@ namespace etl
 
       clear();
       container.assign(first, last);
-      std::make_heap(container.begin(), container.end(), TCompare());
+      std::make_heap(container.begin(), container.end(), compare);
     }
 
     //*************************************************************************
@@ -266,7 +266,7 @@ namespace etl
     void pop()
     {
       // Move largest element to end
-      std::pop_heap(container.begin(), container.end(), TCompare());
+      std::pop_heap(container.begin(), container.end(), compare);
       // Actually remove largest element at end
       container.pop_back();
     }
@@ -356,6 +356,8 @@ namespace etl
 
     /// The container specified at instantiation of the priority_queue
     TContainer container;
+
+    TCompare compare;
   };
 
   //***************************************************************************

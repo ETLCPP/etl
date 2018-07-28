@@ -232,7 +232,7 @@ namespace etl
 
       ETL_ASSERT(!full(), ETL_ERROR(flat_multiset_full));
 
-      iterator i_element = std::lower_bound(begin(), end(), value, TKeyCompare());
+      iterator i_element = std::lower_bound(begin(), end(), value, compare);
 
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(value);
@@ -604,6 +604,8 @@ namespace etl
     iflat_multiset(const iflat_multiset&);
 
     storage_t& storage;
+
+    TKeyCompare compare;
 
     /// Internal debugging.
     ETL_DECLARE_DEBUG_COUNT;
