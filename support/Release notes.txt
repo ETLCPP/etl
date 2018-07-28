@@ -1,4 +1,8 @@
 ===============================================================================
+11.14.1
+Removed flat_set & flat_map reliance on equality.
+
+===============================================================================
 11.14.0
 Added tests for limited support for self insert for strings.
 Added 'wipe_on_destruct' template class for secure wiping of objects on destruction.

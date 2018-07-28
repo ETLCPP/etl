@@ -300,7 +300,7 @@ namespace etl
       std::pair<iterator, bool> result(i_element, false);
 
       // Doesn't already exist?
-      if ((i_element == end() || (i_element->first != value.first)))
+      if ((i_element == end()) || TKeyCompare()(i_element->first, value.first) || TKeyCompare()(value.first, i_element->first))
       {
         ETL_ASSERT(!refmap_t::full(), ETL_ERROR(flat_map_full));
 
