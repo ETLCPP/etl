@@ -33,12 +33,12 @@ SOFTWARE.
 #include <vector>
 #include <stdint.h>
 
-#include "crc8_ccitt.h"
-#include "crc16.h"
-#include "crc16_ccitt.h"
-#include "crc16_kermit.h"
-#include "crc32.h"
-#include "crc64_ecma.h"
+#include "etl/crc8_ccitt.h"
+#include "etl/crc16.h"
+#include "etl/crc16_ccitt.h"
+#include "etl/crc16_kermit.h"
+#include "etl/crc32.h"
+#include "etl/crc64_ecma.h"
 
 namespace
 {

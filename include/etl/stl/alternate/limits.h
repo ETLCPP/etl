@@ -34,6 +34,7 @@ SOFTWARE.
 #include "../../platform.h"
 #include "../../type_traits.h"
 #include "../../char_traits.h"
+#include "../../integral_limits.h"
 
 #include <limits.h>
 #include <stdint.h>

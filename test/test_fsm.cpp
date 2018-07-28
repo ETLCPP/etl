@@ -28,11 +28,11 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
-#include "fsm.h"
-#include "enum_type.h"
-#include "container.h"
-#include "packet.h"
-#include "queue.h"
+#include "etl/fsm.h"
+#include "etl/enum_type.h"
+#include "etl/container.h"
+#include "etl/packet.h"
+#include "etl/queue.h"
 
 #include <iostream>
 

@@ -236,17 +236,17 @@ namespace etl
     //*************************************************************************
     /// Get the head node.
     //*************************************************************************
-    node_t& get_head()
+    node_t* get_head()
     {
-      return *start_node.next;
+      return start_node.next;
     }
 
     //*************************************************************************
     /// Get the head node.
     //*************************************************************************
-    const node_t& get_head() const
+    const node_t* get_head() const
     {
-      return *start_node.next;
+      return start_node.next;
     }
 
     //*************************************************************************
@@ -329,8 +329,8 @@ namespace etl
       {
       }
 
-      iterator(node_t& node)
-        : p_node(&node)
+      iterator(node_t* node)
+        : p_node(node)
       {
       }
 
@@ -417,13 +417,13 @@ namespace etl
       {
       }
 
-      const_iterator(node_t& node)
-        : p_node(&node)
+      const_iterator(node_t* node)
+        : p_node(node)
       {
       }
 
-      const_iterator(const node_t& node)
-        : p_node(&node)
+      const_iterator(const node_t* node)
+        : p_node(node)
       {
       }
 
@@ -493,7 +493,7 @@ namespace etl
     //*************************************************************************
     iterator begin()
     {
-      return iterator(data_cast(get_head()));
+      return iterator(get_head());
     }
 
     //*************************************************************************
@@ -501,7 +501,7 @@ namespace etl
     //*************************************************************************
     const_iterator begin() const
     {
-      return const_iterator(data_cast(get_head()));
+      return const_iterator(get_head());
     }
 
     //*************************************************************************
@@ -509,7 +509,7 @@ namespace etl
     //*************************************************************************
     iterator before_begin()
     {
-      return iterator(static_cast<data_node_t&>(start_node));
+      return iterator(&start_node);
     }
 
     //*************************************************************************
@@ -517,7 +517,7 @@ namespace etl
     //*************************************************************************
     const_iterator before_begin() const
     {
-      return const_iterator(static_cast<const data_node_t&>(start_node));
+      return const_iterator(&start_node);
     }
 
     //*************************************************************************
@@ -565,7 +565,7 @@ namespace etl
     //*************************************************************************
     reference front()
     {
-      return data_cast(get_head()).value;
+      return data_cast(*get_head()).value;
     }
 
     //*************************************************************************
@@ -573,7 +573,7 @@ namespace etl
     //*************************************************************************
     const_reference front() const
     {
-      return data_cast(get_head()).value;
+      return data_cast(*get_head()).value;
     }
 
     //*************************************************************************
@@ -780,7 +780,7 @@ namespace etl
       data_node_t& data_node = allocate_data_node(value);
       insert_node_after(*position.p_node, data_node);
 
-      return iterator(data_node);
+      return iterator(&data_node);
     }
 
     //*************************************************************************
@@ -796,7 +796,7 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT;
       insert_node_after(*position.p_node, *p_data_node);
 
-      return iterator(*p_data_node);
+      return iterator(p_data_node);
     }
 
     //*************************************************************************
@@ -812,7 +812,7 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT;
       insert_node_after(*position.p_node, *p_data_node);
 
-      return iterator(*p_data_node);
+      return iterator(p_data_node);
     }
 
     //*************************************************************************
@@ -828,7 +828,7 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT;
       insert_node_after(*position.p_node, *p_data_node);
 
-      return iterator(*p_data_node);
+      return iterator(p_data_node);
     }
 
     //*************************************************************************
@@ -844,7 +844,7 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT;
       insert_node_after(*position.p_node, *p_data_node);
 
-      return iterator(*p_data_node);
+      return iterator(p_data_node);
     }
 
     //*************************************************************************
@@ -931,7 +931,7 @@ namespace etl
         }
         else
         {
-          return iterator(*p_last);
+          return iterator(p_last);
         }
       }
       else
@@ -1023,7 +1023,7 @@ namespace etl
         return;
       }
 
-      node_t* last = &get_head();
+      node_t* last = get_head();
       node_t* current = last->next;
 
       while (current != nullptr)

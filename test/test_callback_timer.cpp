@@ -29,8 +29,8 @@ SOFTWARE.
 #include "UnitTest++.h"
 #include "ExtraCheckMacros.h"
 
-#include "callback_timer.h"
-#include "function.h"
+#include "etl/callback_timer.h"
+#include "etl/function.h"
 
 #include <iostream>
 #include <vector>

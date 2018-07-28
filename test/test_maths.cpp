@@ -28,13 +28,13 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
-#include "log.h"
-#include "power.h"
-#include "fibonacci.h"
-#include "factorial.h"
-#include "sqrt.h"
-#include "permutations.h"
-#include "combinations.h"
+#include "etl/log.h"
+#include "etl/power.h"
+#include "etl/fibonacci.h"
+#include "etl/factorial.h"
+#include "etl/sqrt.h"
+#include "etl/permutations.h"
+#include "etl/combinations.h"
 
 namespace
 {

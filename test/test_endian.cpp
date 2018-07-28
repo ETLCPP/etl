@@ -29,7 +29,7 @@ SOFTWARE.
 #include "UnitTest++.h"
 #include <string>
 
-#include "endianness.h"
+#include "etl/endianness.h"
 
 namespace 
 {		

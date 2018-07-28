@@ -32,7 +32,7 @@ SOFTWARE.
 #include <array>
 #include <algorithm>
 
-#include "u16string.h"
+#include "etl/u16string.h"
 
 #undef STR
 #define STR(x) u##x
@@ -93,6 +93,7 @@ namespace
       CHECK(text.empty());
       CHECK_EQUAL(text.capacity(), SIZE);
       CHECK_EQUAL(text.max_size(), SIZE);
+      CHECK(text.begin() == text.end());
     }
 
     //*************************************************************************

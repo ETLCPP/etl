@@ -29,11 +29,11 @@ SOFTWARE.
 #include "UnitTest++.h"
 #include "ExtraCheckMacros.h"
 
-#include "message_router.h"
-#include "message_bus.h"
-#include "queue.h"
-#include "largest.h"
-#include "packet.h"
+#include "etl/message_router.h"
+#include "etl/message_bus.h"
+#include "etl/queue.h"
+#include "etl/largest.h"
+#include "etl/packet.h"
 
 //***************************************************************************
 // The set of messages.

@@ -61,18 +61,18 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-Wshadow" />
-			<Add option="-Wundef" />
-			<Add option="-std=c++11" />
-			<Add option="-Wall" />
 			<Add option="-Wunused-parameter" />
 			<Add option="-Wstrict-aliasing" />
+			<Add option="-Wshadow" />
+			<Add option="-Wundef" />
+			<Add option="-Wall" />
+			<Add option="-std=c++11" />
 			<Add option="-fexceptions" />
 			<Add directory="../../../unittest-cpp/UnitTest++/" />
 			<Add directory="../../src" />
 			<Add directory="../" />
 			<Add directory="../../src/c" />
-			<Add directory="../../include/etl" />
+			<Add directory="../../include" />
 		</Compiler>
 		<Unit filename="../../../unittest-cpp/UnitTest++/AssertException.cpp" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/AssertException.h" />

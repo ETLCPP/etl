@@ -29,7 +29,7 @@ SOFTWARE.
 #include "UnitTest++.h"
 #include "ExtraCheckMacros.h"
 
-#include "variant_pool.h"
+#include "etl/variant_pool.h"
 
 #include <string>
 #include <type_traits>

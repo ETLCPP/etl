@@ -32,7 +32,7 @@ SOFTWARE.
 #include <chrono>
 #include <vector>
 
-#include "queue_spsc_atomic.h"
+#include "etl/queue_spsc_atomic.h"
 
 #if defined(ETL_COMPILER_MICROSOFT)
   #include <Windows.h>

@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
-#include "visitor.h"
+#include "etl/visitor.h"
 
 //*****************************************************************************
 // Pre-declare the data types.

@@ -31,7 +31,7 @@ SOFTWARE.
 
 #include <ostream>
 
-#include "instance_count.h"
+#include "etl/instance_count.h"
 
 //*****************************************************************************
 // Default constructor.

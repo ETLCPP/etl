@@ -30,7 +30,7 @@ SOFTWARE.
 
 #include <stdint.h>
 
-#include "platform.h"
+#include "etl/platform.h"
 
 namespace etl
 {

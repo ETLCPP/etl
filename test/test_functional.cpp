@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
-#include "functional.h"
+#include "etl/functional.h"
 
 #include <list>
 #include <vector>

@@ -29,7 +29,7 @@ SOFTWARE.
 #include "UnitTest++.h"
 #include <string>
 
-#include "user_type.h"
+#include "etl/user_type.h"
 
 ETL_DECLARE_USER_TYPE(CompassDirection, int)
 ETL_USER_TYPE(North, 0)

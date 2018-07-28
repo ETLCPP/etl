@@ -29,9 +29,9 @@ SOFTWARE.
 #include "UnitTest++.h"
 #include "ExtraCheckMacros.h"
 
-#include "message_router.h"
-#include "message_bus.h"
-#include "message_timer.h"
+#include "etl/message_router.h"
+#include "etl/message_bus.h"
+#include "etl/message_timer.h"
 
 #include <iostream>
 #include <vector>
