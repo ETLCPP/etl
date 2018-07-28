@@ -745,7 +745,7 @@ namespace etl
         result.first = i_element;
 
         // Existing element?
-        if (value != *i_element)
+        if (TKeyCompare()(value, *i_element) || TKeyCompare()(*i_element, value))
         {
           // A new one.
           ETL_ASSERT(!lookup.full(), ETL_ERROR(flat_set_full));
