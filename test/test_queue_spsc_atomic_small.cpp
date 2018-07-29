@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2018 jwellbelove
 
@@ -31,62 +31,28 @@ SOFTWARE.
 #include <thread>
 #include <chrono>
 #include <vector>
-#include <mutex>
-#include <atomic>
-#include <algorithm>
 
-#include "etl/queue_mpmc_mutex.h"
+#include "etl/queue_spsc_atomic.h"
 
 #if defined(ETL_COMPILER_MICROSOFT)
   #include <Windows.h>
 #endif
 
-#define REALTIME_TEST 1
+#define REALTIME_TEST 0
 
 namespace
 {
-  struct Data
-  {
-    Data(int a_, int b_ = 2, int c_ = 3, int d_ = 4)
-      : a(a_),
-        b(b_),
-        c(c_),
-        d(d_)
-    {
-    }
+  typedef etl::queue_spsc_atomic<int, 4, etl::memory_model::MEMORY_MODEL_SMALL> QueueInt;
+  typedef etl::iqueue_spsc_atomic<int, etl::memory_model::MEMORY_MODEL_SMALL>   IQueueInt;
 
-    Data()
-      : a(0),
-        b(0),
-        c(0),
-        d(0)
-    {
-    }
+  typedef etl::queue_spsc_atomic<int, 254, etl::memory_model::MEMORY_MODEL_SMALL> QueueInt254;
 
-    int a;
-    int b;
-    int c;
-    int d;
-  };
-
-//  bool operator ==(const Data& lhs, const Data& rhs)
-//  {
-//    return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
-//  }
-
-//  std::ostream& operator <<(std::ostream& os, const Data& data)
-//  {
-//    os << data.a << " " << data.b << " " << data.c << " " << data.d;
-//
-//    return os;
-//  }
-
-  SUITE(test_queue_mpmc_mutex)
+  SUITE(test_queue_atomic)
   {
     //*************************************************************************
     TEST(test_constructor)
     {
-      etl::queue_mpmc_mutex<int, 4> queue;
+      QueueInt queue;
 
       CHECK_EQUAL(4U, queue.max_size());
       CHECK_EQUAL(4U, queue.capacity());
@@ -95,7 +61,7 @@ namespace
     //*************************************************************************
     TEST(test_size_push_pop)
     {
-      etl::queue_mpmc_mutex<int, 4> queue;
+      QueueInt queue;
 
       CHECK_EQUAL(0U, queue.size());
 
@@ -146,9 +112,9 @@ namespace
     //*************************************************************************
     TEST(test_size_push_pop_iqueue)
     {
-      etl::queue_mpmc_mutex<int, 4> queue;
+      QueueInt queue;
 
-      etl::iqueue_mpmc_mutex<int>& iqueue = queue;
+      IQueueInt& iqueue = queue;
 
       CHECK_EQUAL(0U, iqueue.size());
 
@@ -192,7 +158,7 @@ namespace
     //*************************************************************************
     TEST(test_size_push_pop_void)
     {
-      etl::queue_mpmc_mutex<int, 4> queue;
+      QueueInt queue;
 
       CHECK_EQUAL(0U, queue.size());
 
@@ -228,9 +194,22 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_push_254)
+    {
+      QueueInt254 queue;
+
+      for (int i = 0; i < 254; ++i)
+      {
+        queue.push(i);
+      }
+
+      CHECK_EQUAL(254U, queue.size());
+    }
+
+    //*************************************************************************
     TEST(test_clear)
     {
-      etl::queue_mpmc_mutex<int, 4> queue;
+      QueueInt queue;
 
       CHECK_EQUAL(0U, queue.size());
 
@@ -250,7 +229,7 @@ namespace
     //*************************************************************************
     TEST(test_empty)
     {
-      etl::queue_mpmc_mutex<int, 4> queue;
+      QueueInt queue;
       CHECK(queue.empty());
 
       queue.push(1);
@@ -266,7 +245,7 @@ namespace
     //*************************************************************************
     TEST(test_full)
     {
-      etl::queue_mpmc_mutex<int, 4> queue;
+      QueueInt queue;
       CHECK(!queue.full());
 
       queue.push(1);
@@ -288,153 +267,62 @@ namespace
     //=========================================================================
 #if REALTIME_TEST && defined(ETL_COMPILER_MICROSOFT)
     #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported
-      #define SET_THREAD_PRIORITY  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_NORMAL)
       #define FIX_PROCESSOR_AFFINITY1 SetThreadAffinityMask(GetCurrentThread(), 1);
       #define FIX_PROCESSOR_AFFINITY2 SetThreadAffinityMask(GetCurrentThread(), 2);
-      #define FIX_PROCESSOR_AFFINITY3 SetThreadAffinityMask(GetCurrentThread(), 4);
-      #define FIX_PROCESSOR_AFFINITY4 SetThreadAffinityMask(GetCurrentThread(), 8);
     #else
       #error No thread priority modifier defined
     #endif
 
-    etl::queue_mpmc_mutex<int, 10> queue;
+    size_t ticks = 0;
 
-    const size_t LENGTH = 100000;
+    etl::queue_spsc_atomic<int, 10> queue;
 
-    std::vector<int> push1;
-    std::vector<int> push2;
+    const size_t LENGTH = 1000000;
 
-    std::vector<int> pop1;
-    std::vector<int> pop2;
-
-    volatile std::atomic_bool start;
-
-    void push_thread1()
+    void timer_event()
     {
       FIX_PROCESSOR_AFFINITY1;
-      SET_THREAD_PRIORITY;
 
-      size_t count = 0;
-      int value = 0;
+      const size_t TICK = 1;
+      size_t tick = TICK;
+      ticks = 1;
 
-      while (!start.load());
-
-      while (count < (LENGTH / 2))
+      while (ticks <= LENGTH)
       {
-        if (queue.push(value))
+        if (queue.push(ticks))
         {
-          push1.push_back(value);
-          ++count;
-          ++value;
-        }
-      }
-    }
-
-    void push_thread2()
-    {
-      FIX_PROCESSOR_AFFINITY2;
-      SET_THREAD_PRIORITY;
-
-      size_t count = 0;
-      int value = LENGTH / 2;
-
-      while (!start.load());
-
-      while (count < (LENGTH / 2))
-      {
-        if (queue.push(value))
-        {
-          push2.push_back(value);
-          ++count;
-          ++value;
-        }
-      }
-    }
-
-    void pop_thread1()
-    {
-      FIX_PROCESSOR_AFFINITY3;
-      SET_THREAD_PRIORITY;
-
-      size_t count = 0;
-
-      while (!start.load());
-
-      while (count < (LENGTH / 2))
-      {
-        int i;
-
-        if (queue.pop(i))
-        {
-          pop1.push_back(i);
-          ++count;
-        }
-      }
-    }
-
-    void pop_thread2()
-    {
-      FIX_PROCESSOR_AFFINITY4;
-      SET_THREAD_PRIORITY;
-
-      size_t count = 0;
-
-      while (!start.load());
-
-      while (count < (LENGTH / 2))
-      {
-        int i;
-
-        if (queue.pop(i))
-        {
-          pop2.push_back(i);
-          ++count;
+          ++ticks;
         }
       }
     }
 
     TEST(queue_threads)
     {
-      push1.reserve(LENGTH / 2);
-      push2.reserve(LENGTH / 2);;
+      FIX_PROCESSOR_AFFINITY2;
 
-      pop1.reserve(LENGTH / 2);;
-      pop2.reserve(LENGTH / 2);;
+      std::vector<int> tick_list;
+      tick_list.reserve(LENGTH);
 
-      start = false;
+      std::thread t1(timer_event);
 
-      std::thread t1(push_thread1);
-      std::thread t2(push_thread2);
-      std::thread t3(pop_thread1);
-      std::thread t4(pop_thread2);
+      while (tick_list.size() < LENGTH)
+      {
+        int i;
 
-      start.store(true);
+        if (queue.pop(i))
+        {
+          tick_list.push_back(i);
+        }
+      }
 
-      // Join the threads with the main thread
+      // Join the thread with the main thread
       t1.join();
-      t2.join();
-      t3.join();
-      t4.join();
 
-      // Combine input vectors.
-      std::vector<int> push;
-      push.insert(push.end(), push1.begin(), push1.end());
-      push.insert(push.end(), push2.begin(), push2.end());
-      std::sort(push.begin(), push.end());
-
-      // Combine output vectors.
-      std::vector<int> pop;
-      pop.insert(pop.end(), pop1.begin(), pop1.end());
-      pop.insert(pop.end(), pop2.begin(), pop2.end());
-      std::sort(pop.begin(), pop.end());
-
-      CHECK_EQUAL(LENGTH, push.size());
-      CHECK_EQUAL(LENGTH, pop.size());
+      CHECK_EQUAL(LENGTH, tick_list.size());
 
       for (size_t i = 0; i < LENGTH; ++i)
       {
-        CHECK_EQUAL(push[i], pop[i]);
-        CHECK_EQUAL(i, pop[i]);
+        CHECK_EQUAL(i + 1, tick_list[i]);
       }
     }
 #endif

@@ -43,6 +43,8 @@ SOFTWARE.
 #include "debug_count.h"
 #include "type_traits.h"
 #include "parameter_type.h"
+#include "memory_model.h"
+#include "integral_limits.h"
 
 #undef ETL_FILE
 #define ETL_FILE "13"
@@ -102,11 +104,13 @@ namespace etl
   /// The base class for all queues.
   ///\ingroup queue
   //***************************************************************************
+  template <const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue_base
   {
   public:
 
-    typedef size_t size_type; ///< The type used for determining the size of queue.
+    /// The type used for determining the size of queue.
+    typedef typename etl::size_type_lookup<MEMORY_MODEL>::type size_type;
 
     //*************************************************************************
     /// Returns the current number of items in the queue.
@@ -154,7 +158,7 @@ namespace etl
     /// Returns the remaining capacity.
     ///\return The remaining capacity.
     //*************************************************************************
-    size_t available() const
+    size_type available() const
     {
       return max_size() - size();
     }
@@ -217,8 +221,8 @@ namespace etl
       ETL_RESET_DEBUG_COUNT;
     }
 
-    size_type in;             ///< Where to input new data.
-    size_type out;            ///< Where to get the oldest data.
+    size_type in;            ///< Where to input new data.
+    size_type out;           ///< Where to get the oldest data.
     size_type current_size;   ///< The number of items in the queue.
     const size_type CAPACITY; ///< The maximum number of items in the queue.
     ETL_DECLARE_DEBUG_COUNT;  ///< For internal debugging purposes.
@@ -236,24 +240,31 @@ namespace etl
   /// \warning This queue cannot be used for concurrent access from multiple threads.
   /// \tparam T The type of value that the queue holds.
   //***************************************************************************
-  template <typename T>
-  class iqueue : public etl::queue_base
+  template <typename T, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
+  class iqueue : public etl::queue_base<MEMORY_MODEL>
   {
-  public:
-
-    typedef T                     value_type;      ///< The type stored in the queue.
-    typedef T&                    reference;       ///< A reference to the type used in the queue.
-    typedef const T&              const_reference; ///< A const reference to the type used in the queue.
-    typedef T*                    pointer;         ///< A pointer to the type used in the queue.
-    typedef const T*              const_pointer;   ///< A const pointer to the type used in the queue.
-    typedef queue_base::size_type size_type;       ///< The type used for determining the size of the queue.
-
   private:
 
-    typedef typename etl::parameter_type<T>::type parameter_t;
-    typedef typename etl::queue_base              base_t;
+    typedef typename etl::parameter_type<T>::type  parameter_t;
+    typedef typename etl::queue_base<MEMORY_MODEL> base_t;
 
   public:
+
+    typedef T                          value_type;      ///< The type stored in the queue.
+    typedef T&                         reference;       ///< A reference to the type used in the queue.
+    typedef const T&                   const_reference; ///< A const reference to the type used in the queue.
+    typedef T*                         pointer;         ///< A pointer to the type used in the queue.
+    typedef const T*                   const_pointer;   ///< A const pointer to the type used in the queue.
+    typedef typename base_t::size_type size_type;       ///< The type used for determining the size of the queue.
+
+    using base_t::in;
+    using base_t::out;
+    using base_t::CAPACITY;
+    using base_t::current_size;
+    using base_t::full;
+    using base_t::empty;
+    using base_t::add_in;
+    using base_t::del_out;
 
     //*************************************************************************
     /// Gets a reference to the value at the front of the queue.<br>
@@ -302,7 +313,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
 #endif
       ::new (&p_buffer[in]) T(value);
-      base_t::add_in();
+      add_in();
     }
 
     //*************************************************************************
@@ -319,7 +330,7 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
 #endif
-      base_t::add_in();
+      add_in();
 
       return p_buffer[next];
     }
@@ -336,7 +347,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
 #endif
       ::new (&p_buffer[in]) T(value1);
-      base_t::add_in();
+      add_in();
     }
 
     //*************************************************************************
@@ -351,7 +362,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
 #endif
       ::new (&p_buffer[in]) T(value1, value2);
-      base_t::add_in();
+      add_in();
     }
 
     //*************************************************************************
@@ -366,7 +377,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
 #endif
       ::new (&p_buffer[in]) T(value1, value2, value3);
-      base_t::add_in();
+      add_in();
     }
 
     //*************************************************************************
@@ -381,7 +392,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
 #endif
       ::new (&p_buffer[in]) T(value1, value2, value3, value4);
-      base_t::add_in();
+      add_in();
     }
 
     //*************************************************************************
@@ -398,7 +409,7 @@ namespace etl
         while (current_size > 0)
         {
           p_buffer[out].~T();
-          base_t::del_out();
+          del_out();
         }
 
         in = 0;
@@ -417,7 +428,7 @@ namespace etl
       ETL_ASSERT(!empty(), ETL_ERROR(queue_empty));
 #endif
       p_buffer[out].~T();
-      base_t::del_out();
+      del_out();
     }
 
     //*************************************************************************
@@ -466,9 +477,9 @@ namespace etl
     {
       clear();
 
-      size_t index = other.out;
+      size_type index = other.out;
 
-      for (size_t i = 0; i < other.size(); ++i)
+      for (size_type i = 0; i < other.size(); ++i)
       {
         push(other.p_buffer[index]);
         index = (index == (CAPACITY - 1)) ? 0 : index + 1;
@@ -479,7 +490,7 @@ namespace etl
     /// The constructor that is called from derived classes.
     //*************************************************************************
     iqueue(T* p_buffer_, size_type max_size_)
-      : queue_base(max_size_),
+      : base_t(max_size_),
         p_buffer(p_buffer_)
     {
     }
@@ -511,21 +522,30 @@ namespace etl
   ///\ingroup queue
   /// A fixed capacity queue.
   /// This queue does not support concurrent access by different threads.
-  /// \tparam T    The type this queue should support.
-  /// \tparam SIZE The maximum capacity of the queue.
+  /// \tparam T            The type this queue should support.
+  /// \tparam SIZE         The maximum capacity of the queue.
+  /// \tparam MEMORY_MODEL The memory model for the queue. Determines the type of the internal counter variables.
   //***************************************************************************
-  template <typename T, const size_t SIZE>
-  class queue : public etl::iqueue<T>
+  template <typename T, const size_t SIZE, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
+  class queue : public etl::iqueue<T, MEMORY_MODEL>
   {
+  private:
+
+    typedef etl::iqueue<T, MEMORY_MODEL> base_t;
+
   public:
 
-    static const size_t MAX_SIZE = SIZE;
+    typedef typename base_t::size_type size_type;
+
+    ETL_STATIC_ASSERT((SIZE <= etl::integral_limits<size_type>::max), "Size too large for memory model");
+
+    static const size_type MAX_SIZE = size_type(SIZE);
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
     queue()
-      : etl::iqueue<T>(reinterpret_cast<T*>(&buffer[0]), SIZE)
+      : base_t(reinterpret_cast<T*>(&buffer[0]), SIZE)
     {
     }
 
@@ -533,9 +553,9 @@ namespace etl
     /// Copy constructor
     //*************************************************************************
     queue(const queue& rhs)
-      : etl::iqueue<T>(reinterpret_cast<T*>(&buffer[0]), SIZE)
+      : base_t(reinterpret_cast<T*>(&buffer[0]), SIZE)
     {
-      etl::iqueue<T>::clone(rhs);
+      base_t::clone(rhs);
     }
 
     //*************************************************************************
@@ -543,7 +563,7 @@ namespace etl
     //*************************************************************************
     ~queue()
     {
-      etl::iqueue<T>::clear();
+      base_t::clear();
     }
 
     //*************************************************************************
@@ -553,7 +573,7 @@ namespace etl
     {
       if (&rhs != this)
       {
-        etl::iqueue<T>::clone(rhs);
+        base_t::clone(rhs);
       }
 
       return *this;
