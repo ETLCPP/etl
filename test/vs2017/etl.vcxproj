@@ -704,9 +704,13 @@
     <ClCompile Include="..\test_pool.cpp" />
     <ClCompile Include="..\test_priority_queue.cpp" />
     <ClCompile Include="..\test_queue.cpp" />
+    <ClCompile Include="..\test_queue_memory_model_small.cpp" />
     <ClCompile Include="..\test_queue_mpmc_mutex.cpp" />
+    <ClCompile Include="..\test_queue_mpmc_mutex_small.cpp" />
     <ClCompile Include="..\test_queue_spsc_atomic.cpp" />
+    <ClCompile Include="..\test_queue_spsc_atomic_small.cpp" />
     <ClCompile Include="..\test_queue_spsc_isr.cpp" />
+    <ClCompile Include="..\test_queue_spsc_isr_small.cpp" />
     <ClCompile Include="..\test_random.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>

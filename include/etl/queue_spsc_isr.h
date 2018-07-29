@@ -37,13 +37,15 @@ SOFTWARE.
 #include "platform.h"
 #include "alignment.h"
 #include "parameter_type.h"
+#include "memory_model.h"
+#include "integral_limits.h"
 
 #undef ETL_FILE
 #define ETL_FILE "46"
 
 namespace etl
 {
-  template <typename T>
+  template <typename T, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue_spsc_isr_base
   {
   protected:
@@ -52,10 +54,12 @@ namespace etl
 
   public:
 
+    /// The type used for determining the size of queue.
+    typedef typename etl::size_type_lookup<MEMORY_MODEL>::type size_type;
+
     typedef T        value_type;      ///< The type stored in the queue.
     typedef T&       reference;       ///< A reference to the type used in the queue.
     typedef const T& const_reference; ///< A const reference to the type used in the queue.
-    typedef size_t   size_type;       ///< The type used for determining the size of the queue.
 
     //*************************************************************************
     /// Push a value to the queue from an ISR.
@@ -85,7 +89,7 @@ namespace etl
     /// How much free space available in the queue.
     /// Called from ISR.
     //*************************************************************************
-    size_t available_from_isr() const
+    size_type available_from_isr() const
     {
       return MAX_SIZE - current_size;
     }
@@ -123,7 +127,7 @@ namespace etl
     /// How many items in the queue?
     /// Called from ISR.
     //*************************************************************************
-    size_t size_from_isr() const
+    size_type size_from_isr() const
     {
       return current_size;
     }
@@ -131,7 +135,7 @@ namespace etl
     //*************************************************************************
     /// How many items can the queue hold.
     //*************************************************************************
-    size_t capacity() const
+    size_type capacity() const
     {
       return MAX_SIZE;
     }
@@ -139,7 +143,7 @@ namespace etl
     //*************************************************************************
     /// How many items can the queue hold.
     //*************************************************************************
-    size_t max_size() const
+    size_type max_size() const
     {
       return MAX_SIZE;
     }
@@ -219,7 +223,7 @@ namespace etl
     //*************************************************************************
     /// Calculate the next index.
     //*************************************************************************
-    static size_t get_next_index(size_t index, size_t maximum)
+    static size_type get_next_index(size_type index, size_type maximum)
     {
       ++index;
 
@@ -266,19 +270,20 @@ namespace etl
   /// This queue supports concurrent access by one producer and one consumer.
   /// \tparam T The type of value that the queue_spsc_isr holds.
   //***************************************************************************
-  template <typename T, typename TAccess>
-  class iqueue_spsc_isr : public queue_spsc_isr_base<T>
+  template <typename T, typename TAccess, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
+  class iqueue_spsc_isr : public queue_spsc_isr_base<T, MEMORY_MODEL>
   {
   private:
 
-    typedef typename queue_spsc_isr_base<T>::parameter_t parameter_t;
+    typedef queue_spsc_isr_base<T, MEMORY_MODEL> base_t;
+    typedef typename base_t::parameter_t parameter_t;
 
   public:
 
-    typedef typename queue_spsc_isr_base<T>::value_type      value_type;      ///< The type stored in the queue.
-    typedef typename queue_spsc_isr_base<T>::reference       reference;       ///< A reference to the type used in the queue.
-    typedef typename queue_spsc_isr_base<T>::const_reference const_reference; ///< A const reference to the type used in the queue.
-    typedef typename queue_spsc_isr_base<T>::size_type       size_type;       ///< The type used for determining the size of the queue.
+    typedef typename base_t::value_type      value_type;      ///< The type stored in the queue.
+    typedef typename base_t::reference       reference;       ///< A reference to the type used in the queue.
+    typedef typename base_t::const_reference const_reference; ///< A const reference to the type used in the queue.
+    typedef typename base_t::size_type       size_type;       ///< The type used for determining the size of the queue.
 
     //*************************************************************************
     /// Push a value to the queue.
@@ -344,7 +349,7 @@ namespace etl
     {
       TAccess::lock();
 
-      size_t result = (this->current_size == 0);
+      size_type result = (this->current_size == 0);
 
       TAccess::unlock();
 
@@ -358,7 +363,7 @@ namespace etl
     {
       TAccess::lock();
 
-      size_t result = (this->current_size == this->MAX_SIZE);
+      size_type result = (this->current_size == this->MAX_SIZE);
 
       TAccess::unlock();
 
@@ -368,11 +373,11 @@ namespace etl
     //*************************************************************************
     /// How many items in the queue?
     //*************************************************************************
-    size_t size() const
+    size_type size() const
     {
       TAccess::lock();
 
-      size_t result = this->current_size;
+      size_type result = this->current_size;
 
       TAccess::unlock();
 
@@ -382,11 +387,11 @@ namespace etl
     //*************************************************************************
     /// How much free space available in the queue.
     //*************************************************************************
-    size_t available() const
+    size_type available() const
     {
       TAccess::lock();
 
-      size_t result = this->MAX_SIZE - this->current_size;
+      size_type result = this->MAX_SIZE - this->current_size;
 
       TAccess::unlock();
 
@@ -399,7 +404,7 @@ namespace etl
     /// The constructor that is called from derived classes.
     //*************************************************************************
     iqueue_spsc_isr(T* p_buffer_, size_type max_size_)
-      : queue_spsc_isr_base<T>(p_buffer_, max_size_)
+      : base_t(p_buffer_, max_size_)
     {
     }
 
@@ -416,18 +421,25 @@ namespace etl
   ///\ingroup queue_spsc
   /// A fixed capacity spsc queue.
   /// This queue supports concurrent access by one producer and one consumer.
-  /// \tparam T       The type this queue should support.
-  /// \tparam SIZE    The maximum capacity of the queue.
-  /// \tparam TAccess The type that will lock and unlock interrupts.
+  /// \tparam T            The type this queue should support.
+  /// \tparam SIZE         The maximum capacity of the queue.
+  /// \tparam TAccess      The type that will lock and unlock interrupts.
+  /// \tparam MEMORY_MODEL The memory model for the queue. Determines the type of the internal counter variables.
   //***************************************************************************
-  template <typename T, size_t SIZE, typename TAccess>
-  class queue_spsc_isr : public etl::iqueue_spsc_isr<T, TAccess>
+  template <typename T, size_t SIZE, typename TAccess, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
+  class queue_spsc_isr : public etl::iqueue_spsc_isr<T, TAccess, MEMORY_MODEL>
   {
-    typedef etl::iqueue_spsc_isr<T, TAccess> base_t;
+  private:
+
+    typedef etl::iqueue_spsc_isr<T, TAccess, MEMORY_MODEL> base_t;
 
   public:
 
-    static const size_t MAX_SIZE = SIZE;
+    typedef typename base_t::size_type size_type;
+
+    ETL_STATIC_ASSERT((SIZE <= etl::integral_limits<size_type>::max), "Size too large for memory model");
+
+    static const size_type MAX_SIZE = size_type(SIZE);
 
     //*************************************************************************
     /// Default constructor.

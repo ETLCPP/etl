@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2018 jwellbelove
 
@@ -69,6 +69,11 @@ namespace
     int d;
   };
 
+  typedef etl::queue_mpmc_mutex<int, 4, etl::memory_model::MEMORY_MODEL_SMALL> QueueInt;
+  typedef etl::iqueue_mpmc_mutex<int, etl::memory_model::MEMORY_MODEL_SMALL>   IQueueInt;
+
+  typedef etl::queue_mpmc_mutex<int, 255, etl::memory_model::MEMORY_MODEL_SMALL> QueueInt255;
+
 //  bool operator ==(const Data& lhs, const Data& rhs)
 //  {
 //    return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
@@ -86,7 +91,7 @@ namespace
     //*************************************************************************
     TEST(test_constructor)
     {
-      etl::queue_mpmc_mutex<int, 4> queue;
+      QueueInt queue;
 
       CHECK_EQUAL(4U, queue.max_size());
       CHECK_EQUAL(4U, queue.capacity());
@@ -95,7 +100,7 @@ namespace
     //*************************************************************************
     TEST(test_size_push_pop)
     {
-      etl::queue_mpmc_mutex<int, 4> queue;
+      QueueInt queue;
 
       CHECK_EQUAL(0U, queue.size());
 
@@ -146,9 +151,9 @@ namespace
     //*************************************************************************
     TEST(test_size_push_pop_iqueue)
     {
-      etl::queue_mpmc_mutex<int, 4> queue;
+      QueueInt queue;
 
-      etl::iqueue_mpmc_mutex<int>& iqueue = queue;
+      IQueueInt& iqueue = queue;
 
       CHECK_EQUAL(0U, iqueue.size());
 
@@ -192,7 +197,7 @@ namespace
     //*************************************************************************
     TEST(test_size_push_pop_void)
     {
-      etl::queue_mpmc_mutex<int, 4> queue;
+      QueueInt queue;
 
       CHECK_EQUAL(0U, queue.size());
 
@@ -228,9 +233,22 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_push_255)
+    {
+      QueueInt255 queue;
+
+      for (int i = 0; i < 255; ++i)
+      {
+        queue.push(i);
+      }
+
+      CHECK_EQUAL(255U, queue.size());
+    }
+
+    //*************************************************************************
     TEST(test_clear)
     {
-      etl::queue_mpmc_mutex<int, 4> queue;
+      QueueInt queue;
 
       CHECK_EQUAL(0U, queue.size());
 
@@ -250,7 +268,7 @@ namespace
     //*************************************************************************
     TEST(test_empty)
     {
-      etl::queue_mpmc_mutex<int, 4> queue;
+      QueueInt queue;
       CHECK(queue.empty());
 
       queue.push(1);
@@ -266,7 +284,7 @@ namespace
     //*************************************************************************
     TEST(test_full)
     {
-      etl::queue_mpmc_mutex<int, 4> queue;
+      QueueInt queue;
       CHECK(!queue.full());
 
       queue.push(1);

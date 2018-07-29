@@ -319,7 +319,7 @@ namespace etl
     /// Returns the remaining capacity.
     ///\return The remaining capacity.
     //*************************************************************************
-    size_t available() const
+    size_type available() const
     {
       return container.max_size() - container.size();
     }
@@ -372,7 +372,9 @@ namespace etl
   {
   public:
 
-    static const size_t MAX_SIZE = SIZE;
+    typedef typename TContainer::size_type size_type;
+
+    static const size_type MAX_SIZE = size_type(SIZE);
 
     //*************************************************************************
     /// Default constructor.

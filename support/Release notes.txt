@@ -1,4 +1,16 @@
 ===============================================================================
+11.15.0
+Added 'memory model' selection for queues to allow more efficient implementations.
+
+Maximum queue sizes:
+MEMORY_MODEL_SMALL   255 (254 for queue_spsc_atomic)
+MEMORY_MODEL_MEDIUM  65535
+MEMORY_MODEL_LARGE   2147483647
+MEMORY_MODEL_HUGE    9223372036854775807
+
+Fixed syntax errors highlighted by GCC v8
+
+===============================================================================
 11.14.2
 Removed reference_flat_set & reference_flat_map reliance on equality.
 
