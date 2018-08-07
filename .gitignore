@@ -182,6 +182,9 @@ UpgradeLog*.htm
 App_Data/*.mdf
 App_Data/*.ldf
 
+
+
+
 #############
 ## Windows detritus
 #############
@@ -236,3 +239,14 @@ pip-log.txt
 *.session
 *.tags
 *.db
+
+#############
+## CLion
+#############
+
+.idea/
+
+# CMake
+cmake-build-*/
+
+unittest-cpp
