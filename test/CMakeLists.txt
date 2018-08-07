@@ -46,7 +46,7 @@ set(TEST_SOURCE_FILES
   test_enum_type.cpp
   test_error_handler.cpp
   test_exception.cpp
-  test_factory.cpp
+#  test_factory.cpp
   test_fixed_iterator.cpp
   test_flat_map.cpp
   test_flat_multimap.cpp
