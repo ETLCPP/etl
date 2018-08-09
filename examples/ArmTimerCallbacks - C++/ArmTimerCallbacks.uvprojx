@@ -336,7 +336,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\src;..\ArmTimerCallbacks - C++</IncludePath>
+              <IncludePath>..\..\include;..\ArmTimerCallbacks - C++</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
