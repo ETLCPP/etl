@@ -34,7 +34,7 @@ SOFTWARE.
 #include "../static_assert.h"
 #include "../nullptr.h"
 
-#include <stdatomic.h>
+//#include <stdatomic.h>
 #include <stdint.h>
 
 #pragma GCC diagnostic push

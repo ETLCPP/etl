@@ -9,13 +9,14 @@
 #define ETL_IVECTOR_REPAIR_ENABLE
 #define ETL_IDEQUE_REPAIR_ENABLE
 #define ETL_IN_UNIT_TEST
+#define ETL_CALLBACK_TIMER_USE_ATOMIC_LOCK
 
 #if (__CC_ARM == 1)
   // ARM5 compiler
-  #include "profiles/armv5.h"
+  #include "etl/profiles/armv5.h"
 #else
   // ARM6 compiler
-  #include "profiles/armv6.h"
+  #include "etl/profiles/armv6.h"
 #endif
 
 #endif

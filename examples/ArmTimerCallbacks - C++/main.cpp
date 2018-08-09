@@ -9,8 +9,23 @@ extern "C"
   #include "stm32f4xx.h"     // Device header
 }
 
-#include "function.h"
-#include "callback_timer.h"
+#include "etl/function.h"
+#include "etl/callback_timer.h"
+#include "etl/vector.h"
+
+struct FP
+{
+  void (*function)();
+};
+
+static etl::vector<FP, 10> power_callbacks;
+
+void register_poweroff_callback(void (*function)()) 
+{
+  FP fp = { function };
+  power_callbacks.push_back(fp);
+}
+
 
 const int N_TIMERS = 4;
 

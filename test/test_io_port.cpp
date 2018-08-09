@@ -95,7 +95,14 @@ namespace
     //*************************************************************************
     TEST(test_dynamic_io_port)
     {
-      uint8_t memory[7];
+      union U
+      {
+        uint16_t dummy;
+        uint8_t memory[7];
+      } u;
+
+      uint8_t* memory = &u.memory[0];
+
       memory[0] = 0x12;
       memory[1] = 0x00;
       memory[2] = 0x00;
@@ -104,7 +111,7 @@ namespace
       memory[5] = 0x9A;
       memory[6] = 0x00;
 
-      dynamic_serial_port port(memory);
+      dynamic_serial_port port(&u.memory[0]);
 
       uint8_t rxdata = port.rxdata;
       CHECK_EQUAL(memory[0], rxdata);
