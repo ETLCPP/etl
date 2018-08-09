@@ -1,4 +1,9 @@
 ===============================================================================
+11.15.1
+io_port_test Fixed unaligned access error.
+debug_count  Removed typed += & -= operators and replaced with templates.
+
+===============================================================================
 11.15.0
 Added 'memory model' selection for queues to allow more efficient implementations.
 
