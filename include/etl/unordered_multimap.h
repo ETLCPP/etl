@@ -726,7 +726,7 @@ namespace etl
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(const_iterator position, const value_type& key_value_pair)
+    iterator insert(const_iterator, const value_type& key_value_pair)
     {
       return insert(key_value_pair);
     }
