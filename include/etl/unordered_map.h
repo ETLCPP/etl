@@ -781,8 +781,6 @@ namespace etl
       bucket_t* pbucket = pbuckets + index;
       bucket_t& bucket = *pbucket;
 
-      size_t s = pbuckets->size();
-
       // The first one in the bucket?
       if (bucket.empty())
       {
