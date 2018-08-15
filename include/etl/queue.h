@@ -194,7 +194,7 @@ namespace etl
       }
 
       ++current_size;
-      ETL_INCREMENT_DEBUG_COUNT;
+      ETL_INCREMENT_DEBUG_COUNT
     }
 
     //*************************************************************************
@@ -207,7 +207,7 @@ namespace etl
         out = 0;
       }
       --current_size;
-      ETL_DECREMENT_DEBUG_COUNT;
+      ETL_DECREMENT_DEBUG_COUNT
     }
 
     //*************************************************************************
@@ -218,14 +218,14 @@ namespace etl
       in = 0;
       out = 0;
       current_size = 0;
-      ETL_RESET_DEBUG_COUNT;
+      ETL_RESET_DEBUG_COUNT
     }
 
     size_type in;            ///< Where to input new data.
     size_type out;           ///< Where to get the oldest data.
     size_type current_size;   ///< The number of items in the queue.
     const size_type CAPACITY; ///< The maximum number of items in the queue.
-    ETL_DECLARE_DEBUG_COUNT;  ///< For internal debugging purposes.
+    ETL_DECLARE_DEBUG_COUNT  ///< For internal debugging purposes.
 
   };
 

@@ -239,7 +239,7 @@ namespace etl
 
         value_type* pvalue = storage.allocate<value_type>();
         ::new (pvalue) value_type(value);
-        ETL_INCREMENT_DEBUG_COUNT;
+        ETL_INCREMENT_DEBUG_COUNT
         result = refset_t::insert_at(i_element, *pvalue);
       }
 
@@ -300,7 +300,7 @@ namespace etl
       // Doesn't already exist?
       if ((i_element == end() || (*i_element != *pvalue)))
       {
-        ETL_INCREMENT_DEBUG_COUNT;
+        ETL_INCREMENT_DEBUG_COUNT
         result = refset_t::insert_at(i_element, *pvalue);
       }
       else
@@ -333,7 +333,7 @@ namespace etl
       // Doesn't already exist?
       if ((i_element == end() || (*i_element != *pvalue)))
       {
-        ETL_INCREMENT_DEBUG_COUNT;
+        ETL_INCREMENT_DEBUG_COUNT
         result = refset_t::insert_at(i_element, *pvalue);
       }
       else
@@ -366,7 +366,7 @@ namespace etl
       // Doesn't already exist?
       if ((i_element == end() || (*i_element != *pvalue)))
       {
-        ETL_INCREMENT_DEBUG_COUNT;
+        ETL_INCREMENT_DEBUG_COUNT
         result = refset_t::insert_at(i_element, *pvalue);
       }
       else
@@ -399,7 +399,7 @@ namespace etl
       // Doesn't already exist?
       if ((i_element == end() || (*i_element != *pvalue)))
       {
-        ETL_INCREMENT_DEBUG_COUNT;
+        ETL_INCREMENT_DEBUG_COUNT
         result = refset_t::insert_at(i_element, *pvalue);
       }
       else
@@ -431,7 +431,7 @@ namespace etl
         etl::destroy_at(etl::addressof(*i_element));
         storage.release(etl::addressof(*i_element));
         refset_t::erase(i_element);
-        ETL_DECREMENT_DEBUG_COUNT;
+        ETL_DECREMENT_DEBUG_COUNT
         return 1;
       }
     }
@@ -445,7 +445,7 @@ namespace etl
       etl::destroy_at(etl::addressof(*i_element));
       storage.release(etl::addressof(*i_element));
       refset_t::erase(i_element);
-      ETL_DECREMENT_DEBUG_COUNT;
+      ETL_DECREMENT_DEBUG_COUNT
     }
 
     //*********************************************************************
@@ -464,7 +464,7 @@ namespace etl
         etl::destroy_at(etl::addressof(*itr));
         storage.release(etl::addressof(*itr));
         ++itr;
-        ETL_DECREMENT_DEBUG_COUNT;
+        ETL_DECREMENT_DEBUG_COUNT
       }
 
       refset_t::erase(first, last);
@@ -488,11 +488,11 @@ namespace etl
           etl::destroy_at(etl::addressof(*itr));
           storage.release(etl::addressof(*itr));
           ++itr;
-          ETL_DECREMENT_DEBUG_COUNT;
+          ETL_DECREMENT_DEBUG_COUNT
         }
       }
 
-      ETL_RESET_DEBUG_COUNT;
+      ETL_RESET_DEBUG_COUNT
       refset_t::clear();
     }
 
@@ -674,7 +674,7 @@ namespace etl
     TKeyCompare compare;
 
     /// Internal debugging.
-    ETL_DECLARE_DEBUG_COUNT;
+    ETL_DECLARE_DEBUG_COUNT
 
     //*************************************************************************
     /// Destructor.

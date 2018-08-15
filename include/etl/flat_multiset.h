@@ -236,7 +236,7 @@ namespace etl
 
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(value);
-      ETL_INCREMENT_DEBUG_COUNT;
+      ETL_INCREMENT_DEBUG_COUNT
       result = refset_t::insert_at(i_element, *pvalue);
 
       return result;
@@ -292,7 +292,7 @@ namespace etl
 
       iterator i_element = lower_bound(*pvalue);
 
-      ETL_INCREMENT_DEBUG_COUNT;
+      ETL_INCREMENT_DEBUG_COUNT
       return std::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
     }
 
@@ -310,7 +310,7 @@ namespace etl
 
       iterator i_element = lower_bound(*pvalue);
 
-      ETL_INCREMENT_DEBUG_COUNT;
+      ETL_INCREMENT_DEBUG_COUNT
       return std::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
     }
 
@@ -328,7 +328,7 @@ namespace etl
 
       iterator i_element = lower_bound(*pvalue);
 
-      ETL_INCREMENT_DEBUG_COUNT;
+      ETL_INCREMENT_DEBUG_COUNT
       return std::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
     }
 
@@ -346,7 +346,7 @@ namespace etl
 
       iterator i_element = lower_bound(*pvalue);
 
-      ETL_INCREMENT_DEBUG_COUNT;
+      ETL_INCREMENT_DEBUG_COUNT
       return std::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
     }
 
@@ -380,7 +380,7 @@ namespace etl
       etl::destroy_at(etl::addressof(*i_element));
       storage.release(etl::addressof(*i_element));
       refset_t::erase(i_element);
-      ETL_DECREMENT_DEBUG_COUNT;
+      ETL_DECREMENT_DEBUG_COUNT
     }
 
     //*********************************************************************
@@ -399,7 +399,7 @@ namespace etl
         etl::destroy_at(etl::addressof(*itr));
         storage.release(etl::addressof(*itr));
         ++itr;
-        ETL_DECREMENT_DEBUG_COUNT;
+        ETL_DECREMENT_DEBUG_COUNT
       }
 
       refset_t::erase(first, last);
@@ -426,7 +426,7 @@ namespace etl
         }
       }
 
-      ETL_RESET_DEBUG_COUNT;
+      ETL_RESET_DEBUG_COUNT
       refset_t::clear();
     }
 
@@ -608,7 +608,7 @@ namespace etl
     TKeyCompare compare;
 
     /// Internal debugging.
-    ETL_DECLARE_DEBUG_COUNT;
+    ETL_DECLARE_DEBUG_COUNT
 
     //*************************************************************************
     /// Destructor.

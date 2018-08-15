@@ -162,7 +162,7 @@ namespace etl
     }
 
     const size_type CAPACITY; ///<The maximum number of elements in the vector.
-    ETL_DECLARE_DEBUG_COUNT;  ///< Internal debugging.
+    ETL_DECLARE_DEBUG_COUNT   ///< Internal debugging.
   };
 }
 
