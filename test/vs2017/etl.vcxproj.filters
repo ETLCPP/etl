@@ -684,6 +684,9 @@
     <ClInclude Include="..\..\include\etl\stl\limits.h">
       <Filter>ETL\STL</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\math_constants.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">

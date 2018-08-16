@@ -370,6 +370,7 @@
     <ClInclude Include="..\..\include\etl\fsm.h" />
     <ClInclude Include="..\..\include\etl\fsm_generator.h" />
     <ClInclude Include="..\..\include\etl\largest_generator.h" />
+    <ClInclude Include="..\..\include\etl\math_constants.h" />
     <ClInclude Include="..\..\include\etl\memory_model.h" />
     <ClInclude Include="..\..\include\etl\message.h" />
     <ClInclude Include="..\..\include\etl\message_bus.h" />
