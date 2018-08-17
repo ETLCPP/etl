@@ -670,7 +670,7 @@ namespace etl
         // Get a new node.
         node_t& node = *pnodepool->allocate<node_t>();
         ::new (&node.key) value_type(key);
-        ETL_INCREMENT_DEBUG_COUNT;
+        ETL_INCREMENT_DEBUG_COUNT
 
         // Just add the pointer to the bucket;
         bucket.insert_after(bucket.before_begin(), node);
@@ -701,7 +701,7 @@ namespace etl
         // Get a new node.
         node_t& node = *pnodepool->allocate<node_t>();
         ::new (&node.key) value_type(key);
-        ETL_INCREMENT_DEBUG_COUNT;
+        ETL_INCREMENT_DEBUG_COUNT
 
         // Add the node to the end of the bucket;
         bucket.insert_after(inode_previous, node);
@@ -765,7 +765,7 @@ namespace etl
           pnodepool->release(&*icurrent); // Release it back to the pool.
           ++n;
           icurrent = iprevious;
-          ETL_DECREMENT_DEBUG_COUNT;
+          ETL_DECREMENT_DEBUG_COUNT
         }
         else
         {
@@ -801,7 +801,7 @@ namespace etl
       bucket.erase_after(iprevious);  // Unlink from the bucket.
       icurrent->key.~value_type();    // Destroy the value.
       pnodepool->release(&*icurrent); // Release it back to the pool.
-      ETL_DECREMENT_DEBUG_COUNT;
+      ETL_DECREMENT_DEBUG_COUNT
 
       return inext;
     }
@@ -836,7 +836,7 @@ namespace etl
         local_iterator inext = pbucket->erase_after(iprevious); // Unlink from the bucket.
         icurrent->key.~value_type();    // Destroy the value.
         pnodepool->release(&*icurrent); // Release it back to the pool.
-        ETL_DECREMENT_DEBUG_COUNT;
+        ETL_DECREMENT_DEBUG_COUNT
 
         icurrent = inext;
 
@@ -1131,7 +1131,7 @@ namespace etl
               // Destroy the value contents.
               it->key.~value_type();
               ++it;
-              ETL_DECREMENT_DEBUG_COUNT;
+              ETL_DECREMENT_DEBUG_COUNT
             }
 
             // Now it's safe to clear the bucket.
@@ -1187,7 +1187,7 @@ namespace etl
     key_equal key_equal_function;
 
     /// For library debugging purposes only.
-    ETL_DECLARE_DEBUG_COUNT;
+    ETL_DECLARE_DEBUG_COUNT
 
     //*************************************************************************
     /// Destructor.

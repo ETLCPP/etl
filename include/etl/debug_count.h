@@ -41,12 +41,12 @@ SOFTWARE.
 
 #if defined(ETL_DEBUG_COUNT)
 
-#define ETL_DECLARE_DEBUG_COUNT     etl::debug_count etl_debug_count
-#define ETL_INCREMENT_DEBUG_COUNT   ++etl_debug_count
-#define ETL_DECREMENT_DEBUG_COUNT   --etl_debug_count
-#define ETL_ADD_DEBUG_COUNT(n)      etl_debug_count += (n)
-#define ETL_SUBTRACT_DEBUG_COUNT(n) etl_debug_count -= (n)
-#define ETL_RESET_DEBUG_COUNT       etl_debug_count.clear()
+#define ETL_DECLARE_DEBUG_COUNT     etl::debug_count etl_debug_count;
+#define ETL_INCREMENT_DEBUG_COUNT   ++etl_debug_count;
+#define ETL_DECREMENT_DEBUG_COUNT   --etl_debug_count;
+#define ETL_ADD_DEBUG_COUNT(n)      etl_debug_count += (n);
+#define ETL_SUBTRACT_DEBUG_COUNT(n) etl_debug_count -= (n);
+#define ETL_RESET_DEBUG_COUNT       etl_debug_count.clear();
 
 namespace etl
 {
@@ -125,4 +125,3 @@ namespace etl
 #endif // ETL_DEBUG_COUNT
 
 #endif
-

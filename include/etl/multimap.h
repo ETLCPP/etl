@@ -609,7 +609,7 @@ namespace etl
     size_type current_size;   ///< The number of the used nodes.
     const size_type CAPACITY; ///< The maximum size of the map.
     Node* root_node;          ///< The node that acts as the multimap root.
-    ETL_DECLARE_DEBUG_COUNT;
+    ETL_DECLARE_DEBUG_COUNT
   };
 
   //***************************************************************************
@@ -1358,7 +1358,7 @@ namespace etl
     {
       Data_Node& node = *p_node_pool->allocate<Data_Node>();
       ::new (&node.value) const value_type(value);
-      ETL_INCREMENT_DEBUG_COUNT;
+      ETL_INCREMENT_DEBUG_COUNT
       return node;
     }
 
@@ -1369,7 +1369,7 @@ namespace etl
     {
       node.value.~value_type();
       p_node_pool->release(&node);
-      ETL_DECREMENT_DEBUG_COUNT;
+      ETL_DECREMENT_DEBUG_COUNT
     }
 
     //*************************************************************************
