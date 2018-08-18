@@ -41,6 +41,14 @@ namespace
     return TCompare()(a, b);
   }
   
+  struct test : std::binary_function<int, int, bool>
+  {
+    bool operator()(int a, int b) const
+    {
+      return a < b;
+    }
+  };
+
   SUITE(test_no_stl_functional)
   {
     //*************************************************************************
@@ -73,6 +81,20 @@ namespace
       CHECK(!(compare<etlstd::not_equal_to<int>>(1, 1)));
       CHECK((compare<etlstd::not_equal_to<int>>(1, 2)));
       CHECK((compare<etlstd::not_equal_to<int>>(2, 1)));
+    }
+
+    //*************************************************************************
+    TEST(test_bind1st)
+    {
+      CHECK((etlstd::bind1st(test(), 1)(2)));
+      CHECK(!(etlstd::bind1st(test(), 2)(1)));
+    }
+
+    //*************************************************************************
+    TEST(test_bind2nd)
+    {
+      CHECK(!(etlstd::bind2nd(test(), 1)(2)));
+      CHECK((etlstd::bind2nd(test(), 2)(1)));
     }
   };
 }
