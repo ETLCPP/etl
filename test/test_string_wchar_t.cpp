@@ -32,7 +32,7 @@ SOFTWARE.
 #include <array>
 #include <algorithm>
 
-#include "wstring.h"
+#include "etl/wstring.h"
 
 #undef STR
 #define STR(x) L##x
@@ -47,6 +47,7 @@ namespace
     typedef etl::iwstring      IText;
     typedef std::wstring       Compare_Text;
     typedef Text::value_type   value_t;
+    typedef etl::wstring<52>   TextL;
 
     Compare_Text initial_text;
     Compare_Text less_text;
@@ -92,6 +93,7 @@ namespace
       CHECK(text.empty());
       CHECK_EQUAL(text.capacity(), SIZE);
       CHECK_EQUAL(text.max_size(), SIZE);
+      CHECK(text.begin() == text.end());
     }
 
     //*************************************************************************
@@ -864,6 +866,24 @@ namespace
       CHECK_EQUAL(compare_text.size(), text.size());
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_position_range_self)
+    {
+      size_t length = TextL::MAX_SIZE / 2;
+
+      for (size_t offset = 10; offset < length; ++offset)
+      {
+        Compare_Text compare_text = STR("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        TextL text = STR("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+
+        text.insert(text.begin() + offset, text.begin() + 5, text.begin() + 10);
+        compare_text.insert(compare_text.begin() + offset, compare_text.begin() + 5, compare_text.begin() + 10);
+
+        bool is_equal = Equal(compare_text, text);
+        CHECK(is_equal);
+      }
     }
 
     //*************************************************************************

@@ -30,7 +30,7 @@ SOFTWARE.
 
 #include <stdint.h>
 
-#include "random.h"
+#include "etl/random.h"
 
 #include <vector>
 #include <algorithm>

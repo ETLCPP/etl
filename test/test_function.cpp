@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
-#include "function.h"
+#include "etl/function.h"
 
 //*****************************************************************************
 const int VALUE = 1;

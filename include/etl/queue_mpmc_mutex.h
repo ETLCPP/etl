@@ -38,20 +38,26 @@ SOFTWARE.
 #include "alignment.h"
 #include "parameter_type.h"
 #include "mutex.h"
+#include "memory_model.h"
+#include "integral_limits.h"
 
 #undef ETL_FILE
 #define ETL_FILE "48"
 
 namespace etl
 {
+  template <const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue_mpmc_mutex_base
   {
   public:
 
+    /// The type used for determining the size of queue.
+    typedef typename etl::size_type_lookup<MEMORY_MODEL>::type size_type;
+
     //*************************************************************************
     /// How many items can the queue hold.
     //*************************************************************************
-    size_t capacity() const
+    size_type capacity() const
     {
       return MAX_SIZE;
     }
@@ -59,14 +65,14 @@ namespace etl
     //*************************************************************************
     /// How many items can the queue hold.
     //*************************************************************************
-    size_t max_size() const
+    size_type max_size() const
     {
       return MAX_SIZE;
     }
 
   protected:
 
-    queue_mpmc_mutex_base(size_t max_size_)
+    queue_mpmc_mutex_base(size_type max_size_)
       : write_index(0),
         read_index(0),
         current_size(0),
@@ -77,7 +83,7 @@ namespace etl
     //*************************************************************************
     /// Calculate the next index.
     //*************************************************************************
-    static size_t get_next_index(size_t index, size_t maximum)
+    static size_type get_next_index(size_type index, size_type maximum)
     {
       ++index;
 
@@ -89,10 +95,10 @@ namespace etl
       return index;
     }
 
-    size_t write_index;    ///< Where to input new data.
-    size_t read_index;     ///< Where to get the oldest data.
-    size_t current_size;   ///< The current size of the queue.
-    const size_t MAX_SIZE; ///< The maximum number of items in the queue.
+    size_type write_index;    ///< Where to input new data.
+    size_type read_index;     ///< Where to get the oldest data.
+    size_type current_size;   ///< The current size of the queue.
+    const size_type MAX_SIZE; ///< The maximum number of items in the queue.
 
     //*************************************************************************
     /// Destructor.
@@ -121,19 +127,26 @@ namespace etl
   /// This queue supports concurrent access by one producer and one consumer.
   /// \tparam T The type of value that the queue_mpmc_mutex holds.
   //***************************************************************************
-  template <typename T>
-  class iqueue_mpmc_mutex : public queue_mpmc_mutex_base
+  template <typename T, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
+  class iqueue_mpmc_mutex : public queue_mpmc_mutex_base<MEMORY_MODEL>
   {
-  protected:
+  private:
 
-    typedef typename etl::parameter_type<T>::type parameter_t;
+    typedef typename etl::parameter_type<T>::type             parameter_t;
+    typedef etl::queue_mpmc_mutex_base<MEMORY_MODEL> base_t;
 
   public:
 
-    typedef T        value_type;      ///< The type stored in the queue.
-    typedef T&       reference;       ///< A reference to the type used in the queue.
-    typedef const T& const_reference; ///< A const reference to the type used in the queue.
-    typedef size_t   size_type;       ///< The type used for determining the size of the queue.
+    typedef T                          value_type;      ///< The type stored in the queue.
+    typedef T&                         reference;       ///< A reference to the type used in the queue.
+    typedef const T&                   const_reference; ///< A const reference to the type used in the queue.
+    typedef typename base_t::size_type size_type;       ///< The type used for determining the size of the queue.
+
+    using base_t::write_index;
+    using base_t::read_index;
+    using base_t::current_size;
+    using base_t::MAX_SIZE;
+    using base_t::get_next_index;
 
     //*************************************************************************
     /// Push a value to the queue.
@@ -199,7 +212,7 @@ namespace etl
     {
       access.lock();
 
-      size_t result = (current_size == 0);
+      size_type result = (current_size == 0);
 
       access.unlock();
 
@@ -213,7 +226,7 @@ namespace etl
     {
       access.lock();
 
-      size_t result = (current_size == MAX_SIZE);
+      size_type result = (current_size == MAX_SIZE);
 
       access.unlock();
 
@@ -223,11 +236,11 @@ namespace etl
     //*************************************************************************
     /// How many items in the queue?
     //*************************************************************************
-    size_t size() const
+    size_type size() const
     {
       access.lock();
 
-      size_t result = current_size;
+      size_type result = current_size;
 
       access.unlock();
 
@@ -237,11 +250,11 @@ namespace etl
     //*************************************************************************
     /// How much free space available in the queue.
     //*************************************************************************
-    size_t available() const
+    size_type available() const
     {
       access.lock();
 
-      size_t result = MAX_SIZE - current_size;
+      size_type result = MAX_SIZE - current_size;
 
       access.unlock();
 
@@ -254,7 +267,7 @@ namespace etl
     /// The constructor that is called from derived classes.
     //*************************************************************************
     iqueue_mpmc_mutex(T* p_buffer_, size_type max_size_)
-      : queue_mpmc_mutex_base(max_size_),
+      : base_t(max_size_),
         p_buffer(p_buffer_)
     {
     }
@@ -335,17 +348,24 @@ namespace etl
   ///\ingroup queue_mpmc
   /// A fixed capacity mpmc queue.
   /// This queue supports concurrent access by one producer and one consumer.
-  /// \tparam T      The type this queue should support.
-  /// \tparam SIZE   The maximum capacity of the queue.
+  /// \tparam T            The type this queue should support.
+  /// \tparam SIZE         The maximum capacity of the queue.
+  /// \tparam MEMORY_MODEL The memory model for the queue. Determines the type of the internal counter variables.
   //***************************************************************************
-  template <typename T, size_t SIZE>
-  class queue_mpmc_mutex : public etl::iqueue_mpmc_mutex<T>
+  template <typename T, size_t SIZE, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
+  class queue_mpmc_mutex : public etl::iqueue_mpmc_mutex<T, MEMORY_MODEL>
   {
-    typedef etl::iqueue_mpmc_mutex<T> base_t;
+  private:
+
+    typedef etl::iqueue_mpmc_mutex<T, MEMORY_MODEL> base_t;
 
   public:
 
-    static const size_t MAX_SIZE = SIZE;
+    typedef typename base_t::size_type size_type;
+
+    ETL_STATIC_ASSERT((SIZE <= etl::integral_limits<size_type>::max), "Size too large for memory model");
+
+    static const size_type MAX_SIZE = size_type(SIZE);
 
     //*************************************************************************
     /// Default constructor.

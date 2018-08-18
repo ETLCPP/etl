@@ -33,7 +33,7 @@ SOFTWARE.
 #include <algorithm>
 #include <cstring>
 
-#include "vector.h"
+#include "etl/vector.h"
 
 namespace
 {
@@ -1812,6 +1812,34 @@ namespace
       is_equal = std::equal(rdata.begin(), rdata.end(), data.begin());
 
       CHECK(!is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_const_ivector_of_pointer_to_pointer)
+    {
+      int i1 = 1;
+      etl::vector<int*, 10> consttest;
+      consttest.push_back(&i1);
+      const etl::ivector<int*>& ct = consttest;
+
+      int* i2 = ct[0];
+
+      CHECK(i1 == *i2);
+      CHECK(&i1 == i2);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_const_ivector_of_pointer_to_const_pointer)
+    {
+      int i1 = 1;
+      etl::vector<const int*, 10> consttest;
+      consttest.push_back(&i1);
+      const etl::ivector<const int*>& ct = consttest;
+
+      const int* i2 = ct[0];
+
+      CHECK(i1 == *i2);
+      CHECK(&i1 == i2);
     }
   };
 }

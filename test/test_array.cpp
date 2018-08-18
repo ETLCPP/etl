@@ -28,13 +28,13 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
-#include "array.h"
+#include "etl/array.h"
 
 #include <array>
 #include <algorithm>
 #include <iterator>
 
-#include "integral_limits.h"
+#include "etl/integral_limits.h"
 
 namespace
 {

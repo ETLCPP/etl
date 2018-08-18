@@ -234,12 +234,12 @@ namespace etl
       if (current_size < new_size)
       {
         etl::uninitialized_fill_n(p_end, delta, value);
-        ETL_ADD_DEBUG_COUNT(delta);
+        ETL_ADD_DEBUG_COUNT(delta)
       }
       else
       {
         etl::destroy_n(p_end - delta, delta);
-        ETL_SUBTRACT_DEBUG_COUNT(delta);
+        ETL_SUBTRACT_DEBUG_COUNT(delta)
       }
 
       p_end = p_buffer + new_size;
@@ -370,7 +370,7 @@ namespace etl
       initialise();
 
       p_end = etl::uninitialized_copy(first, last, p_buffer);
-      ETL_ADD_DEBUG_COUNT(uint32_t(std::distance(first, last)));
+      ETL_ADD_DEBUG_COUNT(uint32_t(std::distance(first, last)))
     }
 
     //*********************************************************************
@@ -386,7 +386,7 @@ namespace etl
       initialise();
 
       p_end = etl::uninitialized_fill_n(p_buffer, n, value);
-      ETL_ADD_DEBUG_COUNT(uint32_t(n));
+      ETL_ADD_DEBUG_COUNT(uint32_t(n))
     }
 
     //*************************************************************************
@@ -436,7 +436,7 @@ namespace etl
 #endif
       ::new (p_end) T(value1);
       ++p_end;
-      ETL_INCREMENT_DEBUG_COUNT;
+      ETL_INCREMENT_DEBUG_COUNT
     }
 
     //*********************************************************************
@@ -452,7 +452,7 @@ namespace etl
 #endif
       ::new (p_end) T(value1, value2);
       ++p_end;
-      ETL_INCREMENT_DEBUG_COUNT;
+      ETL_INCREMENT_DEBUG_COUNT
     }
 
     //*********************************************************************
@@ -468,7 +468,7 @@ namespace etl
 #endif
       ::new (p_end) T(value1, value2, value3);
       ++p_end;
-      ETL_INCREMENT_DEBUG_COUNT;
+      ETL_INCREMENT_DEBUG_COUNT
     }
 
     //*********************************************************************
@@ -484,7 +484,7 @@ namespace etl
 #endif
       ::new (p_end) T(value1, value2, value3, value4);
       ++p_end;
-      ETL_INCREMENT_DEBUG_COUNT;
+      ETL_INCREMENT_DEBUG_COUNT
     }
 
     //*************************************************************************
@@ -536,7 +536,7 @@ namespace etl
       if (position == end())
       {
         p = p_end++;
-        ETL_INCREMENT_DEBUG_COUNT;
+        ETL_INCREMENT_DEBUG_COUNT
       }
       else
       {
@@ -564,7 +564,7 @@ namespace etl
       if (position == end())
       {
         p = p_end++;
-        ETL_INCREMENT_DEBUG_COUNT;
+        ETL_INCREMENT_DEBUG_COUNT
       }
       else
       {
@@ -592,7 +592,7 @@ namespace etl
       if (position == end())
       {
         p = p_end++;
-        ETL_INCREMENT_DEBUG_COUNT;
+        ETL_INCREMENT_DEBUG_COUNT
       }
       else
       {
@@ -620,7 +620,7 @@ namespace etl
       if (position == end())
       {
         p = p_end++;
-        ETL_INCREMENT_DEBUG_COUNT;
+        ETL_INCREMENT_DEBUG_COUNT
       }
       else
       {
@@ -673,14 +673,14 @@ namespace etl
 
       // Construct old.
       etl::uninitialized_copy_n(p_end - construct_old_n, construct_old_n, p_construct_old);
-      ETL_ADD_DEBUG_COUNT(construct_old_n);
+      ETL_ADD_DEBUG_COUNT(construct_old_n)
 
       // Copy old.
       etl::copy_n(p_buffer + insert_begin, copy_old_n, p_buffer + insert_end);
 
       // Construct new.
       etl::uninitialized_fill_n(p_end, construct_new_n, value);
-      ETL_ADD_DEBUG_COUNT(construct_new_n);
+      ETL_ADD_DEBUG_COUNT(construct_new_n)
 
       // Copy new.
       std::fill_n(p_buffer + insert_begin, copy_new_n, value);
@@ -730,14 +730,14 @@ namespace etl
 
       // Construct old.
       etl::uninitialized_copy_n(p_end - construct_old_n, construct_old_n, p_construct_old);
-      ETL_ADD_DEBUG_COUNT(construct_old_n);
+      ETL_ADD_DEBUG_COUNT(construct_old_n)
 
       // Copy old.
       etl::copy_n(p_buffer + insert_begin, copy_old_n, p_buffer + insert_end);
 
       // Construct new.
       etl::uninitialized_copy_n(first + copy_new_n, construct_new_n, p_end);
-      ETL_ADD_DEBUG_COUNT(construct_new_n);
+      ETL_ADD_DEBUG_COUNT(construct_new_n)
 
       // Copy new.
       etl::copy_n(first, copy_new_n, p_buffer + insert_begin);
@@ -779,7 +779,7 @@ namespace etl
 
         // Destroy the elements left over at the end.
         etl::destroy(p_end - n_delete, p_end);
-        ETL_SUBTRACT_DEBUG_COUNT(n_delete);
+        ETL_SUBTRACT_DEBUG_COUNT(n_delete)
         p_end -= n_delete;
       }
 
@@ -860,7 +860,7 @@ namespace etl
     void initialise()
     {
       etl::destroy(p_buffer, p_end);
-      ETL_SUBTRACT_DEBUG_COUNT(int32_t(std::distance(p_buffer, p_end)));
+      ETL_SUBTRACT_DEBUG_COUNT(int32_t(std::distance(p_buffer, p_end)))
 
       p_end = p_buffer;
     }
@@ -886,7 +886,7 @@ namespace etl
     inline void create_back()
     {
       etl::create_value_at(p_end);
-      ETL_INCREMENT_DEBUG_COUNT;
+      ETL_INCREMENT_DEBUG_COUNT
 
       ++p_end;
     }
@@ -897,7 +897,7 @@ namespace etl
     inline void create_back(parameter_t value)
     {
       etl::create_copy_at(p_end, value);
-      ETL_INCREMENT_DEBUG_COUNT;
+      ETL_INCREMENT_DEBUG_COUNT
 
       ++p_end;
     }
@@ -910,7 +910,7 @@ namespace etl
       --p_end;
 
       etl::destroy_at(p_end);
-      ETL_DECREMENT_DEBUG_COUNT;
+      ETL_DECREMENT_DEBUG_COUNT
     }
 
     // Disable copy construction.

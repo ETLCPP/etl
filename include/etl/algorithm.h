@@ -617,7 +617,11 @@ namespace etl
 
       for (TIterator1 i = begin1; i != end1; ++i)
       {
+#if ETL_CPP11_SUPPORTED
+        if (i == std::find_if(begin1, i, std::bind(predicate, *i, std::placeholders::_1)))
+#else
         if (i == std::find_if(begin1, i, std::bind1st(predicate, *i)))
+#endif
         {
           size_t n = std::count(begin2, end2, *i);
 
@@ -650,7 +654,11 @@ namespace etl
     {
       for (TIterator1 i = begin1; i != end1; ++i)
       {
+#if ETL_CPP11_SUPPORTED
+        if (i == std::find_if(begin1, i, std::bind(predicate, *i, std::placeholders::_1)))
+#else
         if (i == std::find_if(begin1, i, std::bind1st(predicate, *i)))
+#endif
         {
           size_t n = std::count(begin2, end2, *i);
 

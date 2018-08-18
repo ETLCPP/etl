@@ -3,9 +3,9 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2018 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -73,19 +73,27 @@ namespace
     char* p;
   };
 
+  typedef etl::queue<int, 4, etl::memory_model::MEMORY_MODEL_SMALL> QueueInt;
+  typedef etl::iqueue<int, etl::memory_model::MEMORY_MODEL_SMALL>   IQueueInt;
+
+  typedef etl::queue<ItemNTD, 4, etl::memory_model::MEMORY_MODEL_SMALL> QueueItemNTD;
+  typedef etl::iqueue<ItemNTD, etl::memory_model::MEMORY_MODEL_SMALL> IQueueItemNTD;
+
+  typedef etl::queue<int, 255, etl::memory_model::MEMORY_MODEL_SMALL> QueueInt255;
+
   SUITE(test_queue)
   {
     //*************************************************************************
     TEST(test_copy_constructor)
     {
-      etl::queue<int, 4> queue;
+      QueueInt queue;
 
       queue.push(1);
       queue.push(2);
       queue.push(3);
       queue.push(4);
 
-      etl::queue<int, 4> queue2(queue);
+      QueueInt queue2(queue);
 
       CHECK(queue.size() == queue2.size());
 
@@ -100,9 +108,9 @@ namespace
     //*************************************************************************
     TEST(test_delete_via_iqueue)
     {
-      etl::queue<int, 4>* pqueue = new etl::queue<int, 4>;
+      QueueInt* pqueue = new QueueInt;
 
-      etl::iqueue<int>* piqueue = pqueue;
+      IQueueInt* piqueue = pqueue;
 
       piqueue->push(1);
       piqueue->push(2);
@@ -115,7 +123,7 @@ namespace
     //*************************************************************************
     TEST(test_size)
     {
-      etl::queue<int, 4> queue;
+      QueueInt queue;
 
       queue.push(1);
       queue.push(2);
@@ -127,7 +135,7 @@ namespace
     //*************************************************************************
     TEST(test_clear)
     {
-      etl::queue<int, 4> queue;
+      QueueInt queue;
 
       queue.push(1);
       queue.push(2);
@@ -145,7 +153,7 @@ namespace
     //*************************************************************************
     TEST(test_clear_non_pod)
     {
-      etl::queue<ItemNTD, 4> queue;
+      QueueItemNTD queue;
 
       queue.push(ItemNTD());
       queue.push(ItemNTD());
@@ -163,7 +171,7 @@ namespace
     //*************************************************************************
     TEST(test_empty)
     {
-      etl::queue<int, 4> queue;
+      QueueInt queue;
 
       CHECK(queue.empty());
 
@@ -175,7 +183,7 @@ namespace
     //*************************************************************************
     TEST(test_full)
     {
-      etl::queue<int, 4> queue;
+      QueueInt queue;
 
       CHECK(!queue.full());
 
@@ -190,7 +198,7 @@ namespace
     //*************************************************************************
     TEST(test_front)
     {
-      etl::queue<int, 4> queue;
+      QueueInt queue;
 
       queue.push(1);
       queue.push(2);
@@ -208,8 +216,8 @@ namespace
     //*************************************************************************
     TEST(test_front_const)
     {
-      etl::queue<int, 4> queue;
-      const etl::queue<int, 4>& constQueue = queue;
+      QueueInt queue;
+      const QueueInt& constQueue = queue;
 
       queue.push(1);
       queue.push(2);
@@ -227,7 +235,7 @@ namespace
     //*************************************************************************
     TEST(test_back)
     {
-      etl::queue<int, 4> queue;
+      QueueInt queue;
 
       queue.push(1);
       CHECK_EQUAL(1, queue.back());
@@ -242,8 +250,8 @@ namespace
     //*************************************************************************
     TEST(test_back_const)
     {
-      etl::queue<int, 4> queue;
-      const etl::queue<int, 4>& constQueue = queue;
+      QueueInt queue;
+      const QueueInt& constQueue = queue;
 
       queue.push(1);
       CHECK_EQUAL(1, constQueue.back());
@@ -258,7 +266,7 @@ namespace
     //*************************************************************************
     TEST(test_push)
     {
-      etl::queue<int, 4> queue;
+      QueueInt queue;
 
       queue.push(1);
       CHECK_EQUAL(1U, queue.size());
@@ -273,9 +281,22 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_push_255)
+    {
+      QueueInt255 queue;
+
+      for (int i = 0; i < 255; ++i)
+      {
+        queue.push(i);
+      }
+
+      CHECK_EQUAL(255U, queue.size());
+    }
+
+    //*************************************************************************
     TEST(test_push_void)
     {
-      etl::queue<int, 4> queue;
+      QueueInt queue;
 
       queue.push() = 1;
       CHECK_EQUAL(1U, queue.size());
@@ -292,7 +313,7 @@ namespace
     //*************************************************************************
     TEST(test_push_excess)
     {
-      etl::queue<int, 4> queue;
+      QueueInt queue;
 
       for (size_t i = 0; i < queue.max_size(); ++i)
       {
@@ -305,7 +326,7 @@ namespace
     //*************************************************************************
     TEST(test_multiple_push)
     {
-      etl::queue<int, 4> queue;
+      QueueInt queue;
 
       queue.push(1);
       queue.push(2);
@@ -358,7 +379,7 @@ namespace
     //*************************************************************************
     TEST(test_multiple_push_void)
     {
-      etl::queue<int, 4> queue;
+      QueueInt queue;
 
       queue.push() = 1;
       queue.push() = 2;
@@ -391,7 +412,7 @@ namespace
     //*************************************************************************
     TEST(test_pop)
     {
-      etl::queue<int, 4> queue;
+      QueueInt queue;
 
       queue.push(1);
       queue.push(2);
@@ -402,7 +423,7 @@ namespace
     //*************************************************************************
     TEST(test_pop_into)
     {
-      etl::queue<int, 4> queue;
+      QueueInt queue;
 
       int i;
 
@@ -431,8 +452,8 @@ namespace
     //*************************************************************************
     TEST(test_pop_into_queue)
     {
-      etl::queue<int, 4> queue1;
-      etl::queue<int, 4> queue2;
+      QueueInt queue1;
+      QueueInt queue2;
 
       queue1.push(1);
       queue1.push(2);
@@ -477,7 +498,7 @@ namespace
     //*************************************************************************
     TEST(test_pop_exception)
     {
-      etl::queue<int, 4> queue;
+      QueueInt queue;
 
       queue.push(1);
       queue.push(2);
@@ -490,14 +511,14 @@ namespace
     //*************************************************************************
     TEST(test_assignment)
     {
-      etl::queue<int, 4> queue;
+      QueueInt queue;
 
       queue.push(1);
       queue.push(2);
       queue.push(3);
       queue.push(4);
 
-      etl::queue<int, 4> queue2;
+      QueueInt queue2;
 
       queue2 = queue;
 
@@ -514,17 +535,17 @@ namespace
     //*************************************************************************
     TEST(test_assignment_interface)
     {
-      etl::queue<int, 4> queue1;
+      QueueInt queue1;
 
       queue1.push(1);
       queue1.push(2);
       queue1.push(3);
       queue1.push(4);
 
-      etl::queue<int, 4> queue2;
+      QueueInt queue2;
 
-      etl::iqueue<int>& iqueue1 = queue1;
-      etl::iqueue<int>& iqueue2 = queue2;
+      IQueueInt& iqueue1 = queue1;
+      IQueueInt& iqueue2 = queue2;
 
       iqueue2 = iqueue1;
 
@@ -541,7 +562,7 @@ namespace
     //*************************************************************************
     TEST(test_self_assignment)
     {
-      etl::queue<int, 4> queue;
+      QueueInt queue;
 
       queue.push(1);
       queue.push(2);

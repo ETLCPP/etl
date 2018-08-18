@@ -38,7 +38,7 @@ SOFTWARE.
 
 #include "data.h"
 
-#include "flat_multimap.h"
+#include "etl/flat_multimap.h"
 
 namespace
 {
@@ -286,6 +286,7 @@ namespace
       CHECK(data.empty());
       CHECK_EQUAL(data.capacity(), SIZE);
       CHECK_EQUAL(data.max_size(), SIZE);
+      CHECK(data.begin() == data.end());
     }
 
     //*************************************************************************

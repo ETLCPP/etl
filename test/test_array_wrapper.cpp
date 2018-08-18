@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
-#include "array_wrapper.h"
+#include "etl/array_wrapper.h"
 
 namespace
 {

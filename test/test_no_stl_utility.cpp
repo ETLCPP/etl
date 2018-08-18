@@ -31,7 +31,7 @@ SOFTWARE.
 #undef min
 #undef max
 
-#include "../include/etl/stl/alternate/utility.h"
+#include "etl/stl/alternate/utility.h"
 
 namespace
 {

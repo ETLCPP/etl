@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
-#include "../include/etl/stl/alternate/limits.h"
+#include "etl/stl/alternate/limits.h"
 
 #include <limits>
 

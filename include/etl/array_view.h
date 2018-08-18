@@ -124,8 +124,7 @@ namespace etl
     /// Construct from std::array or etl::array or other type that supports
     /// data() and size() member functions.
     //*************************************************************************
-    template <typename TArray, 
-              typename TDummy = typename etl::enable_if<!etl::is_same<T, TArray>::value, void>::type>
+    template <typename TArray>
     explicit array_view(TArray& a)
       : mbegin(a.data()),
         mend(a.data() + a.size())
@@ -135,8 +134,7 @@ namespace etl
     //*************************************************************************
     /// Construct from iterators
     //*************************************************************************
-    template <typename TIterator, 
-              typename TDummy = typename etl::enable_if<etl::is_random_iterator<TIterator>::value, void>::type>
+    template <typename TIterator>
     array_view(TIterator begin_, TIterator end_)
       : mbegin(etl::addressof(*begin_)),
         mend(etl::addressof(*begin_) + std::distance(begin_, end_))
@@ -147,8 +145,7 @@ namespace etl
     /// Construct from C array
     //*************************************************************************
     template <typename TIterator, 
-              typename TSize, 
-              typename TDummy = typename etl::enable_if<etl::is_random_iterator<TIterator>::value, void>::type>
+              typename TSize>
     array_view(TIterator begin_, TSize size_)
       : mbegin(etl::addressof(*begin_)),
         mend(etl::addressof(*begin_) + size_)
@@ -355,24 +352,22 @@ namespace etl
     //*************************************************************************
     /// Assign from iterators
     //*************************************************************************
-    template <typename TIterator,
-              typename TDummy = typename etl::enable_if<etl::is_random_iterator<TIterator>::value, void>::type>
+    template <typename TIterator>
     void assign(TIterator begin_, TIterator end_)
     {
       mbegin = etl::addressof(*begin_);
-      mend = etl::addressof(*begin_) + std::distance(begin_, end_);
+      mend   = etl::addressof(*begin_) + std::distance(begin_, end_);
     }
 
     //*************************************************************************
     /// Assign from iterator and size.
     //*************************************************************************
     template <typename TIterator,
-              typename TSize,
-              typename TDummy = typename etl::enable_if<etl::is_random_iterator<TIterator>::value, void>::type>
+              typename TSize>
     void assign(TIterator begin_, TSize size_)
     {
       mbegin = etl::addressof(*begin_);
-      mend = etl::addressof(*begin_) + size_;
+      mend   = etl::addressof(*begin_) + size_;
     }
 
     //*************************************************************************
@@ -519,8 +514,7 @@ namespace etl
     /// Construct from std::array or etl::array or other type that supports
     /// data() and size() member functions.
     //*************************************************************************
-    template <typename TArray, 
-              typename TDummy = typename etl::enable_if<!etl::is_same<T, TArray>::value, void>::type>
+    template <typename TArray>
     explicit const_array_view(TArray& a)
       : mbegin(a.data()),
         mend(a.data() + a.size())
@@ -530,8 +524,7 @@ namespace etl
     //*************************************************************************
     /// Construct from iterators
     //*************************************************************************
-    template <typename TIterator, 
-              typename TDummy = typename etl::enable_if<etl::is_random_iterator<TIterator>::value, void>::type>
+    template <typename TIterator>
     const_array_view(TIterator begin_, TIterator end_)
       : mbegin(etl::addressof(*begin_)),
         mend(etl::addressof(*begin_) + std::distance(begin_, end_))
@@ -542,7 +535,7 @@ namespace etl
     /// Construct from C array
     //*************************************************************************
     template <typename TIterator, 
-              typename TSize, typename TDummy = typename etl::enable_if<etl::is_random_iterator<TIterator>::value, void>::type>
+              typename TSize>
     const_array_view(TIterator begin_, TSize size_)
       : mbegin(etl::addressof(*begin_)),
         mend(etl::addressof(*begin_) + size_)
@@ -706,8 +699,7 @@ namespace etl
     //*************************************************************************
     /// Assign from iterators
     //*************************************************************************
-    template <typename TIterator,
-      typename TDummy = typename etl::enable_if<etl::is_random_iterator<TIterator>::value, void>::type>
+    template <typename TIterator>
     void assign(TIterator begin_, TIterator end_)
     {
       mbegin = etl::addressof(*begin_);
@@ -718,8 +710,7 @@ namespace etl
     /// Assign from iterator and size.
     //*************************************************************************
     template <typename TIterator,
-              typename TSize,
-              typename TDummy = typename etl::enable_if<etl::is_random_iterator<TIterator>::value, void>::type>
+              typename TSize>
     void assign(TIterator begin_, TSize size_)
     {
       mbegin = etl::addressof(*begin_);
@@ -834,7 +825,7 @@ namespace etl
     size_t operator()(const etl::array_view<T>& view) const
     {
       return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&view[0]),
-                                                         reinterpret_cast<const uint8_t*>(&view[view.size()]));
+                                                     reinterpret_cast<const uint8_t*>(&view[view.size()]));
     }
   };
  
@@ -844,7 +835,7 @@ namespace etl
     size_t operator()(const etl::const_array_view<T>& view) const
     {
       return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&view[0]),
-                                                         reinterpret_cast<const uint8_t*>(&view[view.size()]));
+                                                     reinterpret_cast<const uint8_t*>(&view[view.size()]));
     }
   };
 #endif

@@ -210,12 +210,12 @@ namespace etl
     }
 
     // Load
-    T load(etl::memory_order order = etl::memory_order_seq_cst)
+    T load(etl::memory_order order = etl::memory_order_seq_cst) const
     {
       return value.load(order);
     }
 
-    T load(etl::memory_order order = etl::memory_order_seq_cst) volatile
+    T load(etl::memory_order order = etl::memory_order_seq_cst) const volatile
     {
       return value.load(order);
     }

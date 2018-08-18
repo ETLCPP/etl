@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2018 jwellbelove
 
@@ -42,12 +42,17 @@ SOFTWARE.
 
 namespace
 {
+  typedef etl::queue_spsc_atomic<int, 4, etl::memory_model::MEMORY_MODEL_SMALL> QueueInt;
+  typedef etl::iqueue_spsc_atomic<int, etl::memory_model::MEMORY_MODEL_SMALL>   IQueueInt;
+
+  typedef etl::queue_spsc_atomic<int, 254, etl::memory_model::MEMORY_MODEL_SMALL> QueueInt254;
+
   SUITE(test_queue_atomic)
   {
     //*************************************************************************
     TEST(test_constructor)
     {
-      etl::queue_spsc_atomic<int, 4> queue;
+      QueueInt queue;
 
       CHECK_EQUAL(4U, queue.max_size());
       CHECK_EQUAL(4U, queue.capacity());
@@ -56,7 +61,7 @@ namespace
     //*************************************************************************
     TEST(test_size_push_pop)
     {
-      etl::queue_spsc_atomic<int, 4> queue;
+      QueueInt queue;
 
       CHECK_EQUAL(0U, queue.size());
 
@@ -107,9 +112,9 @@ namespace
     //*************************************************************************
     TEST(test_size_push_pop_iqueue)
     {
-      etl::queue_spsc_atomic<int, 4> queue;
+      QueueInt queue;
 
-      etl::iqueue_spsc_atomic<int>& iqueue = queue;
+      IQueueInt& iqueue = queue;
 
       CHECK_EQUAL(0U, iqueue.size());
 
@@ -153,7 +158,7 @@ namespace
     //*************************************************************************
     TEST(test_size_push_pop_void)
     {
-      etl::queue_spsc_atomic<int, 4> queue;
+      QueueInt queue;
 
       CHECK_EQUAL(0U, queue.size());
 
@@ -189,9 +194,22 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_push_254)
+    {
+      QueueInt254 queue;
+
+      for (int i = 0; i < 254; ++i)
+      {
+        queue.push(i);
+      }
+
+      CHECK_EQUAL(254U, queue.size());
+    }
+
+    //*************************************************************************
     TEST(test_clear)
     {
-      etl::queue_spsc_atomic<int, 4> queue;
+      QueueInt queue;
 
       CHECK_EQUAL(0U, queue.size());
 
@@ -211,7 +229,7 @@ namespace
     //*************************************************************************
     TEST(test_empty)
     {
-      etl::queue_spsc_atomic<int, 4> queue;
+      QueueInt queue;
       CHECK(queue.empty());
 
       queue.push(1);
@@ -227,7 +245,7 @@ namespace
     //*************************************************************************
     TEST(test_full)
     {
-      etl::queue_spsc_atomic<int, 4> queue;
+      QueueInt queue;
       CHECK(!queue.full());
 
       queue.push(1);

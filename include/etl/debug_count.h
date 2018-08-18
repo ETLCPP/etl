@@ -41,12 +41,12 @@ SOFTWARE.
 
 #if defined(ETL_DEBUG_COUNT)
 
-#define ETL_DECLARE_DEBUG_COUNT     etl::debug_count etl_debug_count
-#define ETL_INCREMENT_DEBUG_COUNT   ++etl_debug_count
-#define ETL_DECREMENT_DEBUG_COUNT   --etl_debug_count
-#define ETL_ADD_DEBUG_COUNT(n)      etl_debug_count += (n)
-#define ETL_SUBTRACT_DEBUG_COUNT(n) etl_debug_count -= (n)
-#define ETL_RESET_DEBUG_COUNT       etl_debug_count.clear()
+#define ETL_DECLARE_DEBUG_COUNT     etl::debug_count etl_debug_count;
+#define ETL_INCREMENT_DEBUG_COUNT   ++etl_debug_count;
+#define ETL_DECREMENT_DEBUG_COUNT   --etl_debug_count;
+#define ETL_ADD_DEBUG_COUNT(n)      etl_debug_count += (n);
+#define ETL_SUBTRACT_DEBUG_COUNT(n) etl_debug_count -= (n);
+#define ETL_RESET_DEBUG_COUNT       etl_debug_count.clear();
 
 namespace etl
 {
@@ -84,25 +84,15 @@ namespace etl
       return *this;
     }
 
-    inline debug_count& operator +=(int32_t n)
-    {
-      count += n;
-      return *this;
-    }
-
-    inline debug_count& operator -=(int32_t n)
-    {
-      count -= n;
-      return *this;
-    }
-
-    inline debug_count& operator +=(size_t n)
+    template <typename T>
+    inline debug_count& operator +=(T n)
     {
       count += int32_t(n);
       return *this;
     }
 
-    inline debug_count& operator -=(size_t n)
+    template <typename T>
+    inline debug_count& operator -=(T n)
     {
       count -= int32_t(n);
       return *this;
@@ -135,4 +125,3 @@ namespace etl
 #endif // ETL_DEBUG_COUNT
 
 #endif
-

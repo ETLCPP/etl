@@ -30,7 +30,7 @@ SOFTWARE.
 
 #include <stdint.h>
 
-#include "type_def.h"
+#include "etl/type_def.h"
 
 namespace
 {

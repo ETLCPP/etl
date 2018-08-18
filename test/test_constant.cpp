@@ -28,8 +28,8 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
-#include "constant.h"
-#include "integral_limits.h"
+#include "etl/constant.h"
+#include "etl/integral_limits.h"
 
 #include <stdint.h>
 #include <type_traits>

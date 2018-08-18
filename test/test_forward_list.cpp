@@ -31,7 +31,7 @@ SOFTWARE.
 
 #include "data.h"
 
-#include "forward_list.h"
+#include "etl/forward_list.h"
 
 #include <algorithm>
 #include <array>
@@ -87,6 +87,7 @@ namespace
 
       CHECK(data.empty());
       CHECK_EQUAL(data.max_size(), SIZE);
+      CHECK(data.begin() == data.end());
     }
 
     //*************************************************************************

@@ -3,19 +3,19 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2018 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
-copies of the Software, and to permit persons to whom the Software is
+coPIes of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions :
 
 The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+coPIes or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -26,40 +26,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
-#include <string>
+#ifndef ETL_MATH_CONSTANTS_INCLUDED
+#define ETL_MATH_CONSTANTS_INCLUDED
 
-#include "etl/exception.h"
+#include "platform.h"
 
-namespace 
-{		
-  SUITE(test_exception)
+namespace etl
+{
+  namespace math
   {
-    //*************************************************************************
-    TEST(test_constructor)
-    {
-      etl::exception e("An exception", "Some file", 123);
-
-      CHECK_EQUAL(std::string("An exception"), std::string(e.what()));
-      CHECK_EQUAL(std::string("Some file"), std::string(e.file_name()));
-      CHECK_EQUAL(123, e.line_number());
-    }
-
-    //*************************************************************************
-    TEST(test_exception)
-    {
-      etl::exception e("An exception", "Some file", 123);
-
-      try
-      {
-        throw e;
-      }
-      catch (etl::exception& c)
-      {
-        CHECK_EQUAL(std::string("An exception"), std::string(c.what()));
-        CHECK_EQUAL(std::string("Some file"), std::string(c.file_name()));
-        CHECK_EQUAL(123, c.line_number());
-      }     
-    }
+    const double pi               = 3.14159265358979;
+    const double pi_reciprocal    = 0.31830988618379;
+    const double pi_squared       = 9.86960440108936;
+    const double e                = 2.71828182845905;
+    const double e_reciprocal     = 0.36787944117144;
+    const double e_squared        = 7.38905609893065;
+    const double root2            = 1.41421356237310;
+    const double root2_reciprocal = 0.70710678118655;
+    const double euler            = 0.57721566490153;
+    const double golden_ratio     = 1.61803398874989;
   };
 }
+
+#endif

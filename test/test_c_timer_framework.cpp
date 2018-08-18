@@ -29,7 +29,7 @@ SOFTWARE.
 #include "UnitTest++.h"
 #include "ExtraCheckMacros.h"
 
-#include "platform.h"
+#include "etl/platform.h"
 
 extern "C"
 {

@@ -28,8 +28,8 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
-#include "intrusive_stack.h"
-#include "intrusive_links.h"
+#include "etl/intrusive_stack.h"
+#include "etl/intrusive_links.h"
 
 #include <vector>
 

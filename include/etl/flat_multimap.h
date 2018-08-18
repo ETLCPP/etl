@@ -103,13 +103,15 @@ namespace etl
 
       bool operator ()(const value_type& element, key_type key) const
       {
-        return key_compare()(element.first, key);
+        return comp(element.first, key);
       }
 
       bool operator ()(key_type key, const value_type& element) const
       {
-        return key_compare()(key, element.first);
+        return comp(key, element.first);
       }
+
+      key_compare comp;
     };
 
   public:
@@ -260,7 +262,7 @@ namespace etl
 
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(value);
-      ETL_INCREMENT_DEBUG_COUNT;
+      ETL_INCREMENT_DEBUG_COUNT
       result = refmap_t::insert_at(i_element, *pvalue);
 
       return result;
@@ -313,7 +315,7 @@ namespace etl
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value);
       iterator i_element = lower_bound(key);
-      ETL_INCREMENT_DEBUG_COUNT;
+      ETL_INCREMENT_DEBUG_COUNT
 
       return refmap_t::insert_at(i_element, *pvalue);
     }
@@ -331,7 +333,7 @@ namespace etl
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1);
       iterator i_element = lower_bound(key);
-      ETL_INCREMENT_DEBUG_COUNT;
+      ETL_INCREMENT_DEBUG_COUNT
 
       return refmap_t::insert_at(i_element, *pvalue);
     }
@@ -349,7 +351,7 @@ namespace etl
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1, value2);
       iterator i_element = lower_bound(key);
-      ETL_INCREMENT_DEBUG_COUNT;
+      ETL_INCREMENT_DEBUG_COUNT
 
       return refmap_t::insert_at(i_element, *pvalue);
     }
@@ -367,7 +369,7 @@ namespace etl
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1, value2, value3);
       iterator i_element = lower_bound(key);
-      ETL_INCREMENT_DEBUG_COUNT;
+      ETL_INCREMENT_DEBUG_COUNT
 
       return refmap_t::insert_at(i_element, *pvalue);
     }
@@ -385,7 +387,7 @@ namespace etl
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1, value2, value3, value4);
       iterator i_element = lower_bound(key);
-      ETL_INCREMENT_DEBUG_COUNT;
+      ETL_INCREMENT_DEBUG_COUNT
 
       return refmap_t::insert_at(i_element, *pvalue);
     }
@@ -420,7 +422,7 @@ namespace etl
       i_element->~value_type();
       storage.release(etl::addressof(*i_element));
       refmap_t::erase(i_element);
-      ETL_DECREMENT_DEBUG_COUNT;
+      ETL_DECREMENT_DEBUG_COUNT
     }
 
     //*********************************************************************
@@ -439,7 +441,7 @@ namespace etl
         itr->~value_type();
         storage.release(etl::addressof(*itr));
         ++itr;
-        ETL_DECREMENT_DEBUG_COUNT;
+        ETL_DECREMENT_DEBUG_COUNT
       }
 
       refmap_t::erase(first, last);
@@ -466,7 +468,7 @@ namespace etl
         }
       }
 
-      ETL_RESET_DEBUG_COUNT;
+      ETL_RESET_DEBUG_COUNT
       refmap_t::clear();
     }
 
@@ -646,7 +648,7 @@ namespace etl
     storage_t& storage;
 
     /// Internal debugging.
-    ETL_DECLARE_DEBUG_COUNT;
+    ETL_DECLARE_DEBUG_COUNT
 
     //*************************************************************************
     /// Destructor.

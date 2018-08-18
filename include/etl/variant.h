@@ -874,18 +874,18 @@ namespace etl
     /// Calls the supplied reader instance.
     /// The 'read' function appropriate to the current type is called with the stored value.
     //***************************************************************************
-    void call(reader& reader)
+    void call(reader& r)
     {
       switch (type_id)
       {
-        case 0: reader.read(static_cast<T1&>(data)); break;
-        case 1: reader.read(static_cast<T2&>(data)); break;
-        case 2: reader.read(static_cast<T3&>(data)); break;
-        case 3: reader.read(static_cast<T4&>(data)); break;
-        case 4: reader.read(static_cast<T5&>(data)); break;
-        case 5: reader.read(static_cast<T6&>(data)); break;
-        case 6: reader.read(static_cast<T7&>(data)); break;
-        case 7: reader.read(static_cast<T8&>(data)); break;
+        case 0: r.read(static_cast<T1&>(data)); break;
+        case 1: r.read(static_cast<T2&>(data)); break;
+        case 2: r.read(static_cast<T3&>(data)); break;
+        case 3: r.read(static_cast<T4&>(data)); break;
+        case 4: r.read(static_cast<T5&>(data)); break;
+        case 5: r.read(static_cast<T6&>(data)); break;
+        case 6: r.read(static_cast<T7&>(data)); break;
+        case 7: r.read(static_cast<T8&>(data)); break;
         default: break;
       }
     }

@@ -38,7 +38,7 @@ SOFTWARE.
 
 #include "data.h"
 
-#include "reference_flat_set.h"
+#include "etl/reference_flat_set.h"
 
 namespace
 {

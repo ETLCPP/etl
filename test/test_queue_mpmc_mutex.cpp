@@ -35,7 +35,7 @@ SOFTWARE.
 #include <atomic>
 #include <algorithm>
 
-#include "queue_mpmc_mutex.h"
+#include "etl/queue_mpmc_mutex.h"
 
 #if defined(ETL_COMPILER_MICROSOFT)
   #include <Windows.h>
@@ -69,17 +69,17 @@ namespace
     int d;
   };
 
-  bool operator ==(const Data& lhs, const Data& rhs)
-  {
-    return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
-  }
+//  bool operator ==(const Data& lhs, const Data& rhs)
+//  {
+//    return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
+//  }
 
-  std::ostream& operator <<(std::ostream& os, const Data& data)
-  {
-    os << data.a << " " << data.b << " " << data.c << " " << data.d;
-
-    return os;
-  }
+//  std::ostream& operator <<(std::ostream& os, const Data& data)
+//  {
+//    os << data.a << " " << data.b << " " << data.c << " " << data.d;
+//
+//    return os;
+//  }
 
   SUITE(test_queue_mpmc_mutex)
   {

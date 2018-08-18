@@ -7,7 +7,7 @@
 // compile and run any of them on any platform, but your performance with the
 // non-native version will be less than optimal.
 
-#include "platform.h"
+#include "etl/platform.h"
 
 #ifdef ETL_COMPILER_GCC
   #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"

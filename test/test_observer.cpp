@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
-#include "observer.h"
+#include "etl/observer.h"
 
 //*****************************************************************************
 // Notification1
@@ -424,7 +424,11 @@ namespace
 
       CHECK_THROW(observable.add_observer(observer5), etl::observer_list_full);
 
-      observable.remove_observer(observer3);
+      CHECK(observable.remove_observer(observer3));
+      CHECK_EQUAL(size_t(3), observable.number_of_observers());
+
+      // Try again.
+      CHECK(!observable.remove_observer(observer3));
       CHECK_EQUAL(size_t(3), observable.number_of_observers());
 
       observable.clear_observers();

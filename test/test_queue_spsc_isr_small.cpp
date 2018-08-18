@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2018 jwellbelove
 
@@ -69,6 +69,11 @@ namespace
   bool Access::called_lock;
   bool Access::called_unlock;
 
+  typedef etl::queue_spsc_isr<int, 4, Access, etl::memory_model::MEMORY_MODEL_SMALL> QueueInt;
+  typedef etl::iqueue_spsc_isr<int, Access, etl::memory_model::MEMORY_MODEL_SMALL>   IQueueInt;
+
+  typedef etl::queue_spsc_isr<int, 255, Access, etl::memory_model::MEMORY_MODEL_SMALL> QueueInt255;
+
   SUITE(test_queue_isr)
   {
     //*************************************************************************
@@ -76,7 +81,7 @@ namespace
     {
       Access::clear();
 
-      etl::queue_spsc_isr<int, 4, Access> queue;
+      QueueInt queue;
 
       CHECK_EQUAL(4U, queue.max_size());
       CHECK_EQUAL(4U, queue.capacity());
@@ -90,7 +95,7 @@ namespace
     {
       Access::clear();
 
-      etl::queue_spsc_isr<int, 4, Access> queue;
+      QueueInt queue;
 
       CHECK_EQUAL(0U, queue.size_from_isr());
 
@@ -199,9 +204,9 @@ namespace
     {
       Access::clear();
 
-      etl::queue_spsc_isr<int, 4, Access> queue;
+      QueueInt queue;
 
-      etl::iqueue_spsc_isr<int, Access>& iqueue = queue;
+      IQueueInt& iqueue = queue;
 
       CHECK_EQUAL(0U, iqueue.size_from_isr());
 
@@ -293,7 +298,7 @@ namespace
     {
       Access::clear();
 
-      etl::queue_spsc_isr<int, 4, Access> queue;
+      QueueInt queue;
 
       CHECK_EQUAL(0U, queue.size_from_isr());
 
@@ -375,11 +380,24 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_push_255)
+    {
+      QueueInt255 queue;
+
+      for (int i = 0; i < 255; ++i)
+      {
+        queue.push(i);
+      }
+
+      CHECK_EQUAL(255U, queue.size());
+    }
+
+    //*************************************************************************
     TEST(test_clear)
     {
       Access::clear();
 
-      etl::queue_spsc_isr<int, 4, Access> queue;
+      QueueInt queue;
 
       CHECK_EQUAL(0U, queue.size());
 
@@ -407,7 +425,7 @@ namespace
     {
       Access::clear();
 
-      etl::queue_spsc_isr<int, 4, Access> queue;
+      QueueInt queue;
 
       CHECK(queue.empty());
       CHECK(Access::called_lock);
@@ -442,7 +460,7 @@ namespace
     {
       Access::clear();
 
-      etl::queue_spsc_isr<int, 4, Access> queue;
+      QueueInt queue;
 
       CHECK(!queue.full());
       CHECK(Access::called_lock);

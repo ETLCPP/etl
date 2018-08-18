@@ -35,7 +35,7 @@ SOFTWARE.
 #include <vector>
 #include <stdint.h>
 
-#include "murmur3.h"
+#include "etl/murmur3.h"
 
 namespace
 {		

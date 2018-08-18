@@ -35,8 +35,8 @@ SOFTWARE.
 #include <vector>
 #include <string>
 
-#include "pool.h"
-#include "largest.h"
+#include "etl/pool.h"
+#include "etl/largest.h"
 
 #if defined(ETL_COMPILER_GCC)
   #pragma GCC diagnostic push

@@ -64,7 +64,7 @@ SOFTWARE.
 #include "alignment.h"
 #include "static_assert.h"
 #include "type_lookup.h"
-#include <pool.h>
+#include "pool.h"
 
 #undef ETL_FILE
 #define ETL_FILE "40"

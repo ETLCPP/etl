@@ -31,7 +31,7 @@ SOFTWARE.
 #undef min
 #undef max
 
-#include "../include/etl/stl/alternate/algorithm.h"
+#include "etl/stl/alternate/algorithm.h"
 
 #include <algorithm>
 #include <vector>

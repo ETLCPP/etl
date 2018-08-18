@@ -684,6 +684,9 @@
     <ClInclude Include="..\..\include\etl\stl\limits.h">
       <Filter>ETL\STL</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\math_constants.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1107,6 +1110,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_no_stl_limits.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue_memory_model_small.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue_mpmc_mutex_small.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue_spsc_atomic_small.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue_spsc_isr_small.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

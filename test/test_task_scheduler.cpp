@@ -32,9 +32,9 @@ SOFTWARE.
 #include <string>
 #include <vector>
 
-#include "task.h"
-#include "scheduler.h"
-#include "container.h"
+#include "etl/task.h"
+#include "etl/scheduler.h"
+#include "etl/container.h"
 
 typedef std::vector<std::string> WorkList_t;
 
