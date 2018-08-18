@@ -219,6 +219,7 @@
 		<Unit filename="../../include/etl/list.h" />
 		<Unit filename="../../include/etl/log.h" />
 		<Unit filename="../../include/etl/map.h" />
+		<Unit filename="../../include/etl/math_constants.h" />
 		<Unit filename="../../include/etl/memory.h" />
 		<Unit filename="../../include/etl/message.h" />
 		<Unit filename="../../include/etl/message_bus.h" />

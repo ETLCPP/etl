@@ -39,6 +39,13 @@ SOFTWARE.
 
 namespace
 {
+  bool compares_agree(int result1, int result2)
+  {
+    return ((result1 < 0)  && (result2 < 0)) ||
+           ((result1 == 0) && (result2 == 0)) ||
+           ((result1 > 0)  && (result2 > 0));
+  }
+
   SUITE(test_string_wchar_t)
   {
     static const size_t SIZE = 11;
@@ -2308,27 +2315,27 @@ namespace
       // Equal.
       compare_result = compare_text.compare(Compare_Text(STR("ABCDEF")));
       result = text.compare(Text(STR("ABCDEF")));
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
 
       // Less.
       compare_result = compare_text.compare(Compare_Text(STR("ABCDEE")));
       result = text.compare(Text(STR("ABCDEE")));
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
 
       // Greater.
       compare_result = compare_text.compare(Compare_Text(STR("ABCDEG")));
       result = text.compare(Text(STR("ABCDEG")));
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
 
       // Shorter.
       compare_result = compare_text.compare(Compare_Text(STR("ABCDE")));
       result = text.compare(Text(STR("ABCDE")));
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
 
       // Longer.
       compare_result = compare_text.compare(Compare_Text(STR("ABCDEFG")));
       result = text.compare(Text(STR("ABCDEFG")));
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
     }
 
     //*************************************************************************
@@ -2343,27 +2350,27 @@ namespace
       // Equal.
       compare_result = compare_text.compare(3, 6, Compare_Text(STR("ABCDEF")));
       result = text.compare(3, 6, Text(STR("ABCDEF")));
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
 
       // Less.
       compare_result = compare_text.compare(3, 6, Compare_Text(STR("ABCDEE")));
       result = text.compare(3, 6, Text(STR("ABCDEE")));
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
 
       // Greater.
       compare_result = compare_text.compare(3, 6, Compare_Text(STR("ABCDEG")));
       result = text.compare(3, 6, Text(STR("ABCDEG")));
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
 
       // Shorter.
       compare_result = compare_text.compare(3, 6, Compare_Text(STR("ABCDE")));
       result = text.compare(3, 6, Text(STR("ABCDE")));
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
 
       // Longer.
       compare_result = compare_text.compare(3, 6, Compare_Text(STR("ABCDEFG")));
       result = text.compare(3, 6, Text(STR("ABCDEFG")));
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
     }
 
     //*************************************************************************
@@ -2378,27 +2385,27 @@ namespace
       // Equal.
       compare_result = compare_text.compare(3, 6, Compare_Text(STR("aaABCDEFbb")), 2, 6);
       result = text.compare(3, 6, Text(STR("aaABCDEFbb")), 2, 6);
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
 
       // Less.
       compare_result = compare_text.compare(3, 6, Compare_Text(STR("aaABCDEEbb")), 2, 6);
       result = text.compare(3, 6, Text(STR("aaABCDEEbb")), 2, 6);
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
 
       // Greater.
       compare_result = compare_text.compare(3, 6, Compare_Text(STR("aaABCDEGbb")), 2, 6);
       result = text.compare(3, 6, Text(STR("aaABCDEGbb")), 2, 6);
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
 
       // Shorter.
       compare_result = compare_text.compare(3, 6, Compare_Text(STR("aaABCDEbb")), 2, 5);
       result = text.compare(3, 6, Text(STR("aaABCDEbb")), 2, 5);
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
 
       // Longer.
       compare_result = compare_text.compare(3, 6, Compare_Text(STR("aaABCDEFGbb")), 2, 7);
       result = text.compare(3, 6, Text(STR("aaABCDEFGbb")), 2, 7);
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
     }
 
     //*************************************************************************
@@ -2413,27 +2420,27 @@ namespace
       // Equal.
       compare_result = compare_text.compare(STR("ABCDEF"));
       result = text.compare(STR("ABCDEF"));
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
 
       // Less.
       compare_result = compare_text.compare(STR("ABCDEE"));
       result = text.compare(STR("ABCDEE"));
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
 
       // Greater.
       compare_result = compare_text.compare(STR("ABCDEG"));
       result = text.compare(STR("ABCDEG"));
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
 
       // Shorter.
       compare_result = compare_text.compare(STR("ABCDE"));
       result = text.compare(STR("ABCDE"));
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
 
       // Longer.
       compare_result = compare_text.compare(STR("ABCDEFG"));
       result = text.compare(STR("ABCDEFG"));
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
     }
 
     //*************************************************************************
@@ -2448,27 +2455,27 @@ namespace
       // Equal.
       compare_result = compare_text.compare(3, 6, STR("ABCDEF"));
       result = text.compare(3, 6, STR("ABCDEF"));
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
 
       // Less.
       compare_result = compare_text.compare(3, 6, STR("ABCDEE"));
       result = text.compare(3, 6, STR("ABCDEE"));
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
 
       // Greater.
       compare_result = compare_text.compare(3, 6, STR("ABCDEG"));
       result = text.compare(3, 6, STR("ABCDEG"));
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
 
       // Shorter.
       compare_result = compare_text.compare(3, 6, STR("ABCDE"));
       result = text.compare(3, 6, STR("ABCDE"));
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
 
       // Longer.
       compare_result = compare_text.compare(3, 6, STR("ABCDEFG"));
       result = text.compare(3, 6, STR("ABCDEFG"));
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
     }
 
     //*************************************************************************
@@ -2483,27 +2490,27 @@ namespace
       // Equal.
       compare_result = compare_text.compare(3, 6, STR("ABCDEFbb"), 6);
       result = text.compare(3, 6, STR("ABCDEFbb"), 6);
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
 
       // Less.
       compare_result = compare_text.compare(3, 6, STR("ABCDEEbb"), 6);
       result = text.compare(3, 6, STR("ABCDEEbb"), 6);
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
 
       // Greater.
       compare_result = compare_text.compare(3, 6, STR("ABCDEGbb"), 6);
       result = text.compare(3, 6, STR("ABCDEGbb"), 6);
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
 
       // Shorter.
       compare_result = compare_text.compare(3, 6, STR("ABCDEbb"), 5);
       result = text.compare(3, 6, STR("ABCDEbb"), 5);
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
 
       // Longer.
       compare_result = compare_text.compare(3, 6, STR("ABCDEFGbb"), 7);
       result = text.compare(3, 6, STR("ABCDEFGbb"), 7);
-      CHECK_EQUAL(compare_result, result);
+      CHECK(compares_agree(compare_result, result));
     }
 
     //*************************************************************************
