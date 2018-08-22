@@ -565,6 +565,7 @@
     <ClCompile Include="..\murmurhash3.cpp" />
     <ClCompile Include="..\test_algorithm.cpp" />
     <ClCompile Include="..\test_alignment.cpp" />
+    <ClCompile Include="..\test_list_shared_pool.cpp" />
     <ClCompile Include="..\test_no_stl_algorithm.cpp" />
     <ClCompile Include="..\test_array.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../unittest-cpp</AdditionalIncludeDirectories>

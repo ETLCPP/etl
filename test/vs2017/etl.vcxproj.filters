@@ -1124,6 +1124,9 @@
     <ClCompile Include="..\test_queue_spsc_isr_small.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_list_shared_pool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
