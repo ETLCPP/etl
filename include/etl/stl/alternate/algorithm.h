@@ -293,6 +293,27 @@ SOFTWARE.
   }
 
   //***************************************************************************
+  // fill_n
+  template<typename TIterator, typename TSize, typename TValue>
+  typename etl::enable_if<!(etl::is_same<char, TValue>::value || etl::is_same<unsigned char, TValue>::value) || !etl::is_pointer<TIterator>::value, TIterator>::type
+    fill_n(TIterator first, TSize count, const TValue& value)
+  {
+    for (TSize i = 0; i < count; ++i)
+    {
+      *first++ = value;
+    }
+    
+    return first;
+  }
+
+  template<typename TIterator, typename TSize, typename TValue>
+  typename etl::enable_if<(etl::is_same<char, TValue>::value || etl::is_same<unsigned char, TValue>::value) && etl::is_pointer<TIterator>::value, void>::type
+    fill_n(TIterator first, TSize count, const TValue& value)
+  {
+    memset(first, value, count);
+  }
+
+  //***************************************************************************
   // count
   template <typename TIterator, typename T>
   typename iterator_traits<TIterator>::difference_type count(TIterator first, TIterator last, const T& value)
@@ -445,6 +466,30 @@ SOFTWARE.
     typedef ETLSTD::less<T> compare;
 
     return ETLSTD::max(a, b, compare());
+  }
+
+  //***************************************************************************
+  // transform
+  template <typename TIteratorIn, typename TIteratorOut, typename TUnaryOperation>
+  TIteratorOut transform(TIteratorIn first1, TIteratorIn last1, TIteratorOut d_first, TUnaryOperation unary_operation)
+  {
+    while (first1 != last1) 
+    {
+      *d_first++ = unary_operation(*first1++);
+    }
+
+    return d_first;
+  }
+
+  template <typename TIteratorIn1, typename TIteratorIn2, typename TIteratorOut, typename TBinaryOperation>
+  TIteratorOut transform(TIteratorIn1 first1, TIteratorIn1 last1, TIteratorIn2 first2, TIteratorOut d_first, TBinaryOperation binary_operation)
+  {
+    while (first1 != last1)
+    {
+      *d_first++ = binary_operation(*first1++, *first2++);
+    }
+
+    return d_first;
   }
 
   //***************************************************************************
