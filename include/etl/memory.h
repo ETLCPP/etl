@@ -872,7 +872,7 @@ namespace etl
         std::swap(p, value.p);
       }
 
-      ETL_CONSTEXPR explicit	operator bool() const
+      ETL_CONSTEXPR operator bool() const
       {
         return (p != nullptr);
       }
@@ -1006,7 +1006,7 @@ namespace etl
       std::swap(p, v.p);
     }
 
-    ETL_CONSTEXPR explicit operator bool() const
+    ETL_CONSTEXPR operator bool() const
     {
       return (p != nullptr);
     }

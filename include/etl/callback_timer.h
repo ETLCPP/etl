@@ -30,9 +30,10 @@ SOFTWARE.
 #define ETL_CALLBACK_TIMER_INCLUDED
 
 #include <stdint.h>
-#include "algorithm.h"
+#include <new>
 
 #include "platform.h"
+#include "algorithm.h"
 #include "nullptr.h"
 #include "function.h"
 #include "static_assert.h"

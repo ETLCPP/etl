@@ -267,69 +267,69 @@ namespace std
       return current;
     }
 
-    ETL_CONSTEXPR reference operator *() const
+    reference operator *() const
     {
       TIterator temp = current;
       --temp;
       return *temp;
     }
 
-    ETL_CONSTEXPR pointer operator ->() const
+    pointer operator ->() const
     {
       TIterator temp = current;
       --temp;
       return &(*temp);
     }
 
-    ETL_CONSTEXPR reverse_iterator<TIterator>& operator ++()
+    reverse_iterator<TIterator>& operator ++()
     {
       --current;
       return *this;
     }
 
-    ETL_CONSTEXPR reverse_iterator<TIterator> operator ++(int)
+    reverse_iterator<TIterator> operator ++(int)
     {
       reverse_iterator<TIterator> temp = *this;
       --current;
       return temp;
     }
 
-    ETL_CONSTEXPR reverse_iterator<TIterator>& operator --()
+    reverse_iterator<TIterator>& operator --()
     {
       ++current;
       return *this;
     }
 
-    ETL_CONSTEXPR reverse_iterator<TIterator> operator --(int)
+    reverse_iterator<TIterator> operator --(int)
     {
       reverse_iterator<TIterator> temp = *this;
       ++current;
       return temp;
     }
 
-    ETL_CONSTEXPR reverse_iterator<TIterator> operator +(difference_type n) const
+    reverse_iterator<TIterator> operator +(difference_type n) const
     {
       return reverse_iterator<TIterator>(current - n);
     }
 
-    ETL_CONSTEXPR reverse_iterator<TIterator>& operator +=(difference_type n)
+    reverse_iterator<TIterator>& operator +=(difference_type n)
     {
       current -= n;
       return *this;
     }
 
-    ETL_CONSTEXPR reverse_iterator<TIterator> operator -(difference_type n) const
+    reverse_iterator<TIterator> operator -(difference_type n) const
     {
       return reverse_iterator<TIterator>(current + n);
     }
 
-    ETL_CONSTEXPR reverse_iterator<TIterator>& operator -=(difference_type n)
+    reverse_iterator<TIterator>& operator -=(difference_type n)
     {
       current += n;
       return *this;
     }
 
-    ETL_CONSTEXPR reference operator [](difference_type n) const
+    reference operator [](difference_type n) const
     {
       return *(*this + n);
     }
@@ -340,43 +340,43 @@ namespace std
   };
 
   template <class TIterator>
-  inline ETL_CONSTEXPR bool operator <(const reverse_iterator<TIterator>& lhs, const reverse_iterator<TIterator>& rhs)
+  inline bool operator <(const reverse_iterator<TIterator>& lhs, const reverse_iterator<TIterator>& rhs)
   {
     return rhs.base() < lhs.base();
   }
 
   template <class TIterator>
-  inline ETL_CONSTEXPR bool operator !=(const reverse_iterator<TIterator>& lhs, const reverse_iterator<TIterator>& rhs)
+  inline bool operator !=(const reverse_iterator<TIterator>& lhs, const reverse_iterator<TIterator>& rhs)
   {
     return !(lhs == rhs);
   }
 
   template <class TIterator>
-  inline ETL_CONSTEXPR bool operator >(const reverse_iterator<TIterator>& lhs, const reverse_iterator<TIterator>& rhs)
+  inline bool operator >(const reverse_iterator<TIterator>& lhs, const reverse_iterator<TIterator>& rhs)
   {
     return rhs < lhs;
   }
 
   template <class TIterator>
-  inline ETL_CONSTEXPR bool operator <=(const reverse_iterator<TIterator>& lhs, const reverse_iterator<TIterator>& rhs)
+  inline bool operator <=(const reverse_iterator<TIterator>& lhs, const reverse_iterator<TIterator>& rhs)
   {
     return !(rhs < lhs);
   }
 
   template <class TIterator>
-  inline ETL_CONSTEXPR bool operator >=(const reverse_iterator<TIterator>& lhs, const reverse_iterator<TIterator>& rhs)
+  inline bool operator >=(const reverse_iterator<TIterator>& lhs, const reverse_iterator<TIterator>& rhs)
   {
     return !(lhs < rhs);
   }
 
   template <class TIterator>
-  inline ETL_CONSTEXPR typename reverse_iterator<TIterator>::difference_type operator -(const reverse_iterator<TIterator>& lhs, const reverse_iterator<TIterator>& rhs)
+  inline typename reverse_iterator<TIterator>::difference_type operator -(const reverse_iterator<TIterator>& lhs, const reverse_iterator<TIterator>& rhs)
   {
     return rhs.base() - lhs.base();
   }
 
   template <class TIterator, class TDifference>
-  inline ETL_CONSTEXPR reverse_iterator<TIterator> operator +(TDifference n, const reverse_iterator<TIterator>& itr)
+  inline reverse_iterator<TIterator> operator +(TDifference n, const reverse_iterator<TIterator>& itr)
   {
     return itr.operator +(n);
   }

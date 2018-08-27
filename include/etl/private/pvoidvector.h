@@ -184,7 +184,7 @@ namespace etl
 
     void initialise();
 
-    void repair(void** p_buffer_);
+    void repair_buffer(void** p_buffer_);
 
     void** p_buffer;
     void** p_end;

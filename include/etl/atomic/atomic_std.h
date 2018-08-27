@@ -31,6 +31,7 @@ SOFTWARE.
 
 #include "../platform.h"
 #include "../nullptr.h"
+#include "../char_traits.h"
 
 #include <atomic>
 #include <stdint.h>
