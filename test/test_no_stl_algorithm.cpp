@@ -619,7 +619,7 @@ namespace
       };
 
       int* p1 = std::transform(std::begin(dataS), std::end(dataS), std::begin(dataD1), Function());
-      int* p2 = std::transform(std::begin(dataS), std::end(dataS), std::begin(dataD2), Function());
+      int* p2 = etlstd::transform(std::begin(dataS), std::end(dataS), std::begin(dataD2), Function());
 
       CHECK(p2 == std::end(dataD2));
 
@@ -639,7 +639,7 @@ namespace
       };
 
       int* p1 = std::transform(std::begin(dataS), std::end(dataS), std::begin(dataA), std::begin(dataD1), Function());
-      int* p2 = std::transform(std::begin(dataS), std::end(dataS), std::begin(dataA), std::begin(dataD2), Function());
+      int* p2 = etlstd::transform(std::begin(dataS), std::end(dataS), std::begin(dataA), std::begin(dataD2), Function());
 
       CHECK(p2 == std::end(dataD2));
 
