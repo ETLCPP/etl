@@ -690,6 +690,9 @@
     <ClInclude Include="..\no_stl_test_iterators.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\atomic\atomic_llvm_sync.h">
+      <Filter>ETL\Utilities\Atomic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">

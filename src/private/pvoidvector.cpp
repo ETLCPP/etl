@@ -479,7 +479,7 @@ void etl::pvoidvector::initialise()
 //*************************************************************************
 /// Fix the internal pointers after a low level memory copy.
 //*************************************************************************
-void etl::pvoidvector::repair(void** p_buffer_)
+void etl::pvoidvector::repair_buffer(void** p_buffer_)
 {
   uintptr_t length = p_end - p_buffer;
 

@@ -57,6 +57,9 @@ namespace
   typedef std::list<int> List;
   List dataL = { 2, 1, 4, 3, 6, 5, 8, 7, 10, 9 };
 
+  int dataD1[SIZE] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  int dataD2[SIZE] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
   class Data
   {
   public:
@@ -590,6 +593,58 @@ namespace
       size_t c2 = etlstd::count_if(std::begin(dataEQ), std::end(dataEQ), predicate());
 
       CHECK(c1 == c2);
+    }
+
+    //*************************************************************************
+    TEST(fill_n)
+    {
+      int* p1 = std::fill_n(std::begin(dataD1), SIZE, 5);
+      int* p2 = etlstd::fill_n(std::begin(dataD2), SIZE, 5);
+
+      CHECK(p2 == std::end(dataD2));
+
+      bool isEqual = std::equal(std::begin(dataD1), std::end(dataD1), std::begin(dataD2));
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(transform1)
+    {
+      struct Function
+      {
+        int operator()(int d) const
+        {
+          return d * 2;
+        }
+      };
+
+      int* p1 = std::transform(std::begin(dataS), std::end(dataS), std::begin(dataD1), Function());
+      int* p2 = std::transform(std::begin(dataS), std::end(dataS), std::begin(dataD2), Function());
+
+      CHECK(p2 == std::end(dataD2));
+
+      bool isEqual = std::equal(std::begin(dataD1), std::end(dataD1), std::begin(dataD2));
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(transform2)
+    {
+      struct Function
+      {
+        int operator()(int d1, int d2) const
+        {
+          return d1 + d2;
+        }
+      };
+
+      int* p1 = std::transform(std::begin(dataS), std::end(dataS), std::begin(dataA), std::begin(dataD1), Function());
+      int* p2 = std::transform(std::begin(dataS), std::end(dataS), std::begin(dataA), std::begin(dataD2), Function());
+
+      CHECK(p2 == std::end(dataD2));
+
+      bool isEqual = std::equal(std::begin(dataD1), std::end(dataD1), std::begin(dataD2));
+      CHECK(isEqual);
     }
   };
 }
