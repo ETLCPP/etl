@@ -43,11 +43,15 @@ SOFTWARE.
 #define ETL_LOG2(x) (((x) * 301) / 1000)
 
 #if defined(ETL_IN_UNIT_TEST)
-#define ETLSTD etlstd
-namespace etlstd
+  #if !defined(ETLSTD)
+    #define ETLSTD etlstd
+  #endif
+  namespace etlstd
 #else
-#define ETLSTD std
-namespace std
+  #if !defined(ETLSTD)
+    #define ETLSTD std
+  #endif
+  namespace std
 #endif
 {
   template<class T> class numeric_limits;

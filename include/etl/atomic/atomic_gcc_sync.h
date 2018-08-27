@@ -33,12 +33,14 @@ SOFTWARE.
 #include "../type_traits.h"
 #include "../static_assert.h"
 #include "../nullptr.h"
+#include "../char_traits.h"
 
-//#include <stdatomic.h>
 #include <stdint.h>
 
+#if defined(ETL_COMPILER_GCC)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
+#endif
 
 namespace etl
 {
@@ -785,6 +787,8 @@ namespace etl
   typedef etl::atomic<uintmax_t>           atomic_uintmax_t;
 }
 
+#if defined(ETL_COMPILER_GCC)
 #pragma GCC diagnostic pop
+#endif
 
 #endif

@@ -337,6 +337,7 @@
 		<Unit filename="../main.cpp" />
 		<Unit filename="../murmurhash3.cpp" />
 		<Unit filename="../murmurhash3.h" />
+		<Unit filename="../no_stl_test_iterators.h" />
 		<Unit filename="../test_algorithm.cpp" />
 		<Unit filename="../test_alignment.cpp" />
 		<Unit filename="../test_array.cpp" />

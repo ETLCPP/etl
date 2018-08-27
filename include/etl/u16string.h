@@ -193,9 +193,12 @@ namespace etl
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
+#ifdef ETL_ISTRING_REPAIR_ENABLE
+    virtual
+#endif
     void repair()
     {
-      etl::iu16string::repair(buffer);
+      etl::iu16string::repair_buffer(buffer);
     }
 
   private:

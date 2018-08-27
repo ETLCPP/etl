@@ -687,6 +687,12 @@
     <ClInclude Include="..\..\include\etl\math_constants.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
+    <ClInclude Include="..\no_stl_test_iterators.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\atomic\atomic_llvm_sync.h">
+      <Filter>ETL\Utilities\Atomic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1125,6 +1131,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_list_shared_pool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_no_stl_iterator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

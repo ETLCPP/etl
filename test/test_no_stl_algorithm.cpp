@@ -37,21 +37,28 @@ SOFTWARE.
 #include <vector>
 #include <list>
 
+#include "no_stl_test_iterators.h"
+
 namespace
 {
-  int dataEQ[10] = { 1, 1, 3, 3, 5, 5, 7, 7, 9, 9 };
+  const size_t SIZE = 10;
+
+  int dataEQ[SIZE] = { 1, 1, 3, 3, 5, 5, 7, 7, 9, 9 };
   std::list<int> dataEQL = { 1, 1, 3, 3, 5, 5, 7, 7, 9, 9 };
 
-  int dataS[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+  int dataS[SIZE] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
   std::list<int> dataSL = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
-  int dataA[10] = { 2, 1, 4, 3, 6, 5, 8, 7, 10, 9 };
+  int dataA[SIZE] = { 2, 1, 4, 3, 6, 5, 8, 7, 10, 9 };
 
   typedef std::vector<int> Vector;
   Vector dataV = { 2, 1, 4, 3, 6, 5, 8, 7, 10, 9 };
 
   typedef std::list<int> List;
   List dataL = { 2, 1, 4, 3, 6, 5, 8, 7, 10, 9 };
+
+  int dataD1[SIZE] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  int dataD2[SIZE] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
   class Data
   {
@@ -112,48 +119,6 @@ namespace
 
   SUITE(test_no_stl_algorithm)
   {
-    //*************************************************************************
-    TEST(distance_non_random)
-    {
-      ptrdiff_t d1 = std::distance(dataL.begin(), dataL.end());
-      ptrdiff_t d2 = etlstd::distance(dataL.begin(), dataL.end());
-
-      CHECK_EQUAL(d1, d2);
-    }
-
-    //*************************************************************************
-    TEST(distance_random)
-    {
-      ptrdiff_t d1 = std::distance(dataV.begin(), dataV.end());
-      ptrdiff_t d2 = etlstd::distance(dataV.begin(), dataV.end());
-
-      CHECK_EQUAL(d1, d2);
-    }
-
-    //*************************************************************************
-    TEST(advance_non_random)
-    {
-      List::const_iterator itr1 = dataL.begin();
-      List::const_iterator itr2 = dataL.begin();
-      
-      std::advance(itr1, 4);
-      std::advance(itr2, 4);
-
-      CHECK_EQUAL(*itr1, *itr2);
-    }
-
-    //*************************************************************************
-    TEST(advance_random)
-    {
-      Vector::const_iterator itr1 = dataV.begin();
-      Vector::const_iterator itr2 = dataV.begin();
-
-      std::advance(itr1, 4);
-      std::advance(itr2, 4);
-
-      CHECK_EQUAL(*itr1, *itr2);
-    }
-
     //*************************************************************************
     TEST(min)
     {
@@ -317,7 +282,7 @@ namespace
       for (int i = 0; i < 11; ++i)
       {
         int* lb1 = std::lower_bound(std::begin(dataS), std::end(dataS), i);
-        int* lb2 = etlstd::lower_bound(std::begin(dataS), std::end(dataS), i);
+        int* lb2 = etlstd::lower_bound(random_iterator<int>(std::begin(dataS)), random_iterator<int>(std::end(dataS)), i);
 
         CHECK_EQUAL(lb1, lb2);
       }
@@ -328,10 +293,10 @@ namespace
     {
       for (int i = 0; i < 11; ++i)
       {
-        std::list<int>::iterator lb1 = std::lower_bound(std::begin(dataSL), std::end(dataSL), i);
-        std::list<int>::iterator lb2 = etlstd::lower_bound(std::begin(dataSL), std::end(dataSL), i);
+        int* lb1 = std::lower_bound(std::begin(dataS), std::end(dataS), i);
+        int* lb2 = etlstd::lower_bound(non_random_iterator<int>(std::begin(dataS)), non_random_iterator<int>(std::end(dataS)), i);
 
-        CHECK_EQUAL(std::distance(std::begin(dataSL), lb1), std::distance(std::begin(dataSL), lb2));
+        CHECK_EQUAL(std::distance(std::begin(dataS), lb1), std::distance(std::begin(dataS), lb2));
       }
     }
 
@@ -341,7 +306,7 @@ namespace
       for (int i = 0; i < 11; ++i)
       {
         int* lb1 = std::upper_bound(std::begin(dataS), std::end(dataS), i);
-        int* lb2 = etlstd::upper_bound(std::begin(dataS), std::end(dataS), i);
+        int* lb2 = etlstd::upper_bound(random_iterator<int>(std::begin(dataS)), random_iterator<int>(std::end(dataS)), i);
 
         CHECK_EQUAL(std::distance(std::begin(dataS), lb1), std::distance(std::begin(dataS), lb2));
       }
@@ -352,10 +317,10 @@ namespace
     {
       for (int i = 0; i < 11; ++i)
       {
-        std::list<int>::iterator lb1 = std::upper_bound(std::begin(dataSL), std::end(dataSL), i);
-        std::list<int>::iterator lb2 = etlstd::upper_bound(std::begin(dataSL), std::end(dataSL), i);
+        int* lb1 = std::upper_bound(std::begin(dataS), std::end(dataS), i);
+        int* lb2 = etlstd::upper_bound(non_random_iterator<int>(std::begin(dataS)), non_random_iterator<int>(std::end(dataS)), i);
 
-        CHECK_EQUAL(std::distance(std::begin(dataSL), lb1), std::distance(std::begin(dataSL), lb2));
+        CHECK_EQUAL(std::distance(std::begin(dataS), lb1), std::distance(std::begin(dataS), lb2));
       }
     }
 
@@ -364,11 +329,11 @@ namespace
     {
       for (int i = 0; i < 11; ++i)
       {
-        std::pair<int*, int*> lb1 = std::equal_range(std::begin(dataEQ), std::end(dataEQ), i);
-        std::pair<int*, int*> lb2 = etlstd::equal_range(std::begin(dataEQ), std::end(dataEQ), i);
+        std::pair<int*, int*>    lb1 = std::equal_range(std::begin(dataEQ), std::end(dataEQ), i);
+        etlstd::pair<random_iterator<int>, random_iterator<int>> lb2 = etlstd::equal_range(random_iterator<int>(std::begin(dataEQ)), random_iterator<int>(std::end(dataEQ)), i);
 
-        CHECK_EQUAL(std::distance(std::begin(dataEQ), lb1.first), std::distance(std::begin(dataEQ), lb2.first));
-        CHECK_EQUAL(std::distance(lb1.first, lb1.second), std::distance(lb2.first, lb2.second));
+        CHECK_EQUAL(std::distance(std::begin(dataEQ), lb1.first), std::distance<int*>(std::begin(dataEQ), lb2.first));
+        CHECK_EQUAL(std::distance(lb1.first, lb1.second), std::distance<int*>(lb2.first, lb2.second));
       }
     }
 
@@ -377,11 +342,11 @@ namespace
     {
       for (int i = 0; i < 11; ++i)
       {
-        std::pair<std::list<int>::iterator, std::list<int>::iterator> lb1 = std::equal_range(std::begin(dataEQL), std::end(dataEQL), i);
-        std::pair<std::list<int>::iterator, std::list<int>::iterator> lb2 = etlstd::equal_range(std::begin(dataEQL), std::end(dataEQL), i);
+        std::pair<int*, int*>    lb1 = std::equal_range(std::begin(dataEQ), std::end(dataEQ), i);
+        etlstd::pair<non_random_iterator<int>, non_random_iterator<int>> lb2 = etlstd::equal_range(non_random_iterator<int>(std::begin(dataEQ)), non_random_iterator<int>(std::end(dataEQ)), i);
 
-        CHECK_EQUAL(std::distance(std::begin(dataEQL), lb1.first), std::distance(std::begin(dataEQL), lb2.first));
-        CHECK_EQUAL(std::distance(lb1.first, lb1.second), std::distance(lb2.first, lb2.second));
+        CHECK_EQUAL(std::distance(std::begin(dataEQ), lb1.first), std::distance<int*>(std::begin(dataEQ), lb2.first));
+        CHECK_EQUAL(std::distance(lb1.first, lb1.second), std::distance<int*>(lb2.first, lb2.second));
       }
     }
 
@@ -575,6 +540,110 @@ namespace
       CHECK(std::is_heap(data2.begin(), data2.end(), Greater()));
 
       isEqual = std::equal(std::begin(data1), std::end(data1), std::begin(data2));
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(find)
+    {
+      int* itr1 = std::find(std::begin(dataA), std::end(dataA), 5);
+      int* itr2 = etlstd::find(std::begin(dataA), std::end(dataA), 5);
+
+      CHECK(itr1 == itr2);
+    }
+
+    //*************************************************************************
+    TEST(find_if)
+    {
+      struct predicate
+      {
+        bool operator()(int i) const
+        {
+          return (i == 5);
+        }
+      };
+
+      int* itr1 = std::find_if(std::begin(dataA), std::end(dataA), predicate());
+      int* itr2 = etlstd::find_if(std::begin(dataA), std::end(dataA), predicate());
+
+      CHECK(itr1 == itr2);
+    }
+
+    //*************************************************************************
+    TEST(count)
+    {
+      size_t c1 = std::count(std::begin(dataEQ), std::end(dataEQ), 5);
+      size_t c2 = etlstd::count(std::begin(dataEQ), std::end(dataEQ), 5);
+
+      CHECK(c1 == c2);
+    }
+
+    //*************************************************************************
+    TEST(count_if)
+    {
+      struct predicate
+      {
+        bool operator()(int i) const
+        {
+          return (i == 5);
+        }
+      };
+
+      size_t c1 = std::count_if(std::begin(dataEQ), std::end(dataEQ), predicate());
+      size_t c2 = etlstd::count_if(std::begin(dataEQ), std::end(dataEQ), predicate());
+
+      CHECK(c1 == c2);
+    }
+
+    //*************************************************************************
+    TEST(fill_n)
+    {
+      int* p1 = std::fill_n(std::begin(dataD1), SIZE, 5);
+      int* p2 = etlstd::fill_n(std::begin(dataD2), SIZE, 5);
+
+      CHECK(p2 == std::end(dataD2));
+
+      bool isEqual = std::equal(std::begin(dataD1), std::end(dataD1), std::begin(dataD2));
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(transform1)
+    {
+      struct Function
+      {
+        int operator()(int d) const
+        {
+          return d * 2;
+        }
+      };
+
+      int* p1 = std::transform(std::begin(dataS), std::end(dataS), std::begin(dataD1), Function());
+      int* p2 = etlstd::transform(std::begin(dataS), std::end(dataS), std::begin(dataD2), Function());
+
+      CHECK(p2 == std::end(dataD2));
+
+      bool isEqual = std::equal(std::begin(dataD1), std::end(dataD1), std::begin(dataD2));
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(transform2)
+    {
+      struct Function
+      {
+        int operator()(int d1, int d2) const
+        {
+          return d1 + d2;
+        }
+      };
+
+      int* p1 = std::transform(std::begin(dataS), std::end(dataS), std::begin(dataA), std::begin(dataD1), Function());
+      int* p2 = etlstd::transform(std::begin(dataS), std::end(dataS), std::begin(dataA), std::begin(dataD2), Function());
+
+      CHECK(p2 == std::end(dataD2));
+
+      bool isEqual = std::equal(std::begin(dataD1), std::end(dataD1), std::begin(dataD2));
       CHECK(isEqual);
     }
   };

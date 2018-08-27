@@ -360,6 +360,7 @@
     <ClInclude Include="..\..\include\etl\atomic.h" />
     <ClInclude Include="..\..\include\etl\atomic\atomic_arm.h" />
     <ClInclude Include="..\..\include\etl\atomic\atomic_gcc_sync.h" />
+    <ClInclude Include="..\..\include\etl\atomic\atomic_llvm_sync.h" />
     <ClInclude Include="..\..\include\etl\atomic\atomic_std.h" />
     <ClInclude Include="..\..\include\etl\callback_timer.h" />
     <ClInclude Include="..\..\include\etl\combinations.h" />
@@ -525,6 +526,7 @@
     <ClInclude Include="..\ecl_user.h" />
     <ClInclude Include="..\etl_profile.h" />
     <ClInclude Include="..\murmurhash3.h" />
+    <ClInclude Include="..\no_stl_test_iterators.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\AssertException.cpp" />
@@ -688,6 +690,7 @@
     <ClCompile Include="..\test_multiset.cpp" />
     <ClCompile Include="..\test_murmur3.cpp" />
     <ClCompile Include="..\test_no_stl_functional.cpp" />
+    <ClCompile Include="..\test_no_stl_iterator.cpp" />
     <ClCompile Include="..\test_no_stl_limits.cpp" />
     <ClCompile Include="..\test_no_stl_utility.cpp" />
     <ClCompile Include="..\test_numeric.cpp" />

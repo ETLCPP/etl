@@ -39,70 +39,30 @@ SOFTWARE.
 
 #include "iterator.h"
 #include "functional.h"
+#include "utility.h"
 
 #if defined(ETL_IN_UNIT_TEST)
-#define ETLSTD etlstd
-namespace etlstd
+  #if !defined(ETLSTD)
+    #define ETLSTD etlstd
+  #endif
+  namespace etlstd
 #else
-#define ETLSTD std
-namespace std
+  #if !defined(ETLSTD)
+    #define ETLSTD std
+  #endif
+  namespace std
 #endif
 {
-  //***************************************************************************
-  // distance
-  template <typename TIterator>
-  typename etl::enable_if<!etl::is_same<typename std::iterator_traits<TIterator>::iterator_category, std::random_access_iterator_tag>::value,
-                          typename std::iterator_traits<TIterator>::difference_type>::type
-    distance(TIterator first, TIterator last)
-  {
-    typename std::iterator_traits<TIterator>::difference_type count = 0;
-
-    while (first != last)
-    {
-      ++count;
-      ++first;
-    }
-
-    return count;
-  }
-
-  template <typename TIterator>
-  typename etl::enable_if<etl::is_same<typename std::iterator_traits<TIterator>::iterator_category, std::random_access_iterator_tag>::value,
-                          typename std::iterator_traits<TIterator>::difference_type>::type
-    distance(TIterator first, TIterator last)
-  {
-    return last - first;
-  }
-
-  //***************************************************************************
-  // advance
-  template <typename TIterator, typename TDistance>
-  typename etl::enable_if<!etl::is_same<typename std::iterator_traits<TIterator>::iterator_tag, std::random_access_iterator_tag>::value, void>::type
-    advance(TIterator itr, TDistance distance)
-  {
-    while (distance-- != 0)
-    {
-      ++itr;
-    }
-  }
-
-  template <typename TIterator, typename TDistance>
-  typename etl::enable_if<etl::is_same<typename std::iterator_traits<TIterator>::iterator_tag, std::random_access_iterator_tag>::value, void>::type
-    advance(TIterator itr, TDistance distance)
-  {
-    return itr += distance;
-  }
-
   //***************************************************************************
   // copy
   // Pointer
   template <typename TIterator1, typename TIterator2>
   typename etl::enable_if<etl::is_pointer<TIterator1>::value &&
                           etl::is_pointer<TIterator2>::value &&
-                          etl::is_pod<typename std::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+                          etl::is_pod<typename ETLSTD::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
     copy(TIterator1 sb, TIterator1 se, TIterator2 db)
   {
-    typedef typename std::iterator_traits<TIterator1>::value_type value_t;
+    typedef typename ETLSTD::iterator_traits<TIterator1>::value_type value_t;
 
     return TIterator2(memcpy(db, sb, sizeof(value_t) * (se - sb)));
   }
@@ -111,7 +71,7 @@ namespace std
   template <typename TIterator1, typename TIterator2>
   typename etl::enable_if<!etl::is_pointer<TIterator1>::value ||
                           !etl::is_pointer<TIterator2>::value ||
-                          !etl::is_pod<typename std::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+                          !etl::is_pod<typename ETLSTD::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
     copy(TIterator1 sb, TIterator1 se, TIterator2 db)
   {
     while (sb != se)
@@ -128,10 +88,10 @@ namespace std
   template <typename TIterator1, typename TSize, typename TIterator2>
   typename etl::enable_if<etl::is_pointer<TIterator1>::value &&
                           etl::is_pointer<TIterator2>::value &&
-                          etl::is_pod<typename std::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+                          etl::is_pod<typename ETLSTD::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
     copy_n(TIterator1 sb, TSize count, TIterator2 db)
   {
-    typedef typename std::iterator_traits<TIterator1>::value_type value_t;
+    typedef typename ETLSTD::iterator_traits<TIterator1>::value_type value_t;
 
     return TIterator2(memcpy(db, sb, sizeof(value_t) * count));
   }
@@ -140,7 +100,7 @@ namespace std
   template <typename TIterator1, typename TSize, typename TIterator2>
   typename etl::enable_if<!etl::is_pointer<TIterator1>::value ||
                           !etl::is_pointer<TIterator2>::value ||
-                          !etl::is_pod<typename std::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+                          !etl::is_pod<typename ETLSTD::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
     copy_n(TIterator1 sb, TSize count, TIterator2 db)
   {
     while (count != 0)
@@ -158,10 +118,10 @@ namespace std
   template <typename TIterator1, typename TIterator2>
   typename etl::enable_if<etl::is_pointer<TIterator1>::value &&
                           etl::is_pointer<TIterator2>::value &&
-                          etl::is_pod<typename std::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+                          etl::is_pod<typename ETLSTD::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
     copy_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
   {
-    typedef typename std::iterator_traits<TIterator1>::value_type value_t;
+    typedef typename ETLSTD::iterator_traits<TIterator1>::value_type value_t;
 
     const size_t length = (se - sb);
 
@@ -172,7 +132,7 @@ namespace std
   template <typename TIterator1, typename TIterator2>
   typename etl::enable_if<!etl::is_pointer<TIterator1>::value ||
                           !etl::is_pointer<TIterator2>::value ||
-                          !etl::is_pod<typename std::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+                          !etl::is_pod<typename ETLSTD::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
     copy_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
   {
     while (se != sb)
@@ -188,16 +148,16 @@ namespace std
   template<typename TIterator, typename TValue, typename TCompare>
   TIterator lower_bound(TIterator first, TIterator last, const TValue& value, TCompare compare)
   {
-    typedef typename std::iterator_traits<TIterator>::difference_type difference_t;
+    typedef typename ETLSTD::iterator_traits<TIterator>::difference_type difference_t;
 
-    difference_t count = std::distance(first, last);
+    difference_t count = ETLSTD::distance(first, last);
 
     while (count > 0)
     {
       TIterator    itr = first;
       difference_t step = count / 2;
 
-      std::advance(itr, step);
+      ETLSTD::advance(itr, step);
 
       if (compare(*itr, value))
       {
@@ -216,7 +176,7 @@ namespace std
   template<typename TIterator, typename TValue>
   TIterator lower_bound(TIterator first, TIterator last, const TValue& value)
   {
-    typedef std::less<typename std::iterator_traits<TIterator>::value_type> compare;
+    typedef ETLSTD::less<typename ETLSTD::iterator_traits<TIterator>::value_type> compare;
 
     return ETLSTD::lower_bound(first, last, value, compare());
   }
@@ -226,16 +186,16 @@ namespace std
   template<typename TIterator, typename TValue, typename TCompare>
   TIterator upper_bound(TIterator first, TIterator last, const TValue& value, TCompare compare)
   {
-    typedef typename std::iterator_traits<TIterator>::difference_type difference_t;
+    typedef typename ETLSTD::iterator_traits<TIterator>::difference_type difference_t;
 
-    difference_t count = std::distance(first, last);
+    difference_t count = ETLSTD::distance(first, last);
 
     while (count > 0)
     {
       TIterator    itr = first;
       difference_t step = count / 2;
 
-      std::advance(itr, step);
+      ETLSTD::advance(itr, step);
 
       if (!compare(value, *itr))
       {
@@ -254,7 +214,7 @@ namespace std
   template<typename TIterator, typename TValue>
   TIterator upper_bound(TIterator first, TIterator last, const TValue& value)
   {
-    typedef std::less<typename std::iterator_traits<TIterator>::value_type> compare;
+    typedef ETLSTD::less<typename ETLSTD::iterator_traits<TIterator>::value_type> compare;
 
     return ETLSTD::upper_bound(first, last, value, compare());
   }
@@ -262,19 +222,55 @@ namespace std
   //***************************************************************************
   // equal_range
   template<typename TIterator, typename TValue, typename TCompare>
-  std::pair<TIterator, TIterator> equal_range(TIterator first, TIterator last, const TValue& value, TCompare compare)
+  ETLSTD::pair  <TIterator, TIterator> equal_range(TIterator first, TIterator last, const TValue& value, TCompare compare)
   {
-    return std::make_pair(ETLSTD::lower_bound(first, last, value, compare),
+    return ETLSTD::make_pair(ETLSTD::lower_bound(first, last, value, compare),
                           ETLSTD::upper_bound(first, last, value, compare));
   }
 
   template<typename TIterator, typename TValue>
-  std::pair<TIterator, TIterator> equal_range(TIterator first, TIterator last, const TValue& value)
+  ETLSTD::pair<TIterator, TIterator> equal_range(TIterator first, TIterator last, const TValue& value)
   {
-    typedef std::less<typename std::iterator_traits<TIterator>::value_type> compare;
+    typedef ETLSTD::less<typename ETLSTD::iterator_traits<TIterator>::value_type> compare;
 
-    return std::make_pair(ETLSTD::lower_bound(first, last, value, compare()),
-                          ETLSTD::upper_bound(first, last, value, compare()));
+    return ETLSTD::make_pair(ETLSTD::lower_bound(first, last, value, compare()),
+                             ETLSTD::upper_bound(first, last, value, compare()));
+  }
+
+  //***************************************************************************
+  // find_if
+  template <typename TIterator, typename TUnaryPredicate>
+  TIterator find_if(TIterator first, TIterator last, TUnaryPredicate predicate)
+  {
+    while (first != last) 
+    {
+      if (predicate(*first))
+      {
+        return first;
+      }
+
+      ++first;
+    }
+
+    return last;
+  }
+
+  //***************************************************************************
+  // find
+  template <typename TIterator, typename T>
+  TIterator find(TIterator first, TIterator last, const T& value)
+  {
+    while (first != last)
+    {
+      if (*first == value)
+      {
+        return first;
+      }
+
+      ++first;
+    }
+
+    return last;
   }
 
   //***************************************************************************
@@ -297,6 +293,67 @@ namespace std
   }
 
   //***************************************************************************
+  // fill_n
+  template<typename TIterator, typename TSize, typename TValue>
+  typename etl::enable_if<!(etl::is_same<char, TValue>::value || etl::is_same<unsigned char, TValue>::value) || !etl::is_pointer<TIterator>::value, TIterator>::type
+    fill_n(TIterator first, TSize count, const TValue& value)
+  {
+    for (TSize i = 0; i < count; ++i)
+    {
+      *first++ = value;
+    }
+    
+    return first;
+  }
+
+  template<typename TIterator, typename TSize, typename TValue>
+  typename etl::enable_if<(etl::is_same<char, TValue>::value || etl::is_same<unsigned char, TValue>::value) && etl::is_pointer<TIterator>::value, void>::type
+    fill_n(TIterator first, TSize count, const TValue& value)
+  {
+    memset(first, value, count);
+  }
+
+  //***************************************************************************
+  // count
+  template <typename TIterator, typename T>
+  typename iterator_traits<TIterator>::difference_type count(TIterator first, TIterator last, const T& value)
+  {
+    typename iterator_traits<TIterator>::difference_type n = 0;
+
+    while (first != last)
+    {
+      if (*first == value) 
+      {
+        ++n;
+      }
+
+      ++first;
+    }
+
+    return n;
+  }
+
+  //***************************************************************************
+  // count
+  template <typename TIterator, typename TUnaryPredicate>
+  typename iterator_traits<TIterator>::difference_type count_if(TIterator first, TIterator last, TUnaryPredicate predicate)
+  {
+    typename iterator_traits<TIterator>::difference_type n = 0;
+
+    while (first != last)
+    {
+      if (predicate(*first)) 
+      {
+        ++n;
+      }
+
+      ++first;
+    }
+
+    return n;
+  }
+
+  //***************************************************************************
   // swap
   template <typename T>
   void swap(T& a, T& b)
@@ -311,7 +368,7 @@ namespace std
   template <typename TIterator1, typename TIterator2>
   void iter_swap(TIterator1 a, TIterator2 b)
   {
-    typename std::iterator_traits<TIterator1>::value_type c = *a;
+    typename ETLSTD::iterator_traits<TIterator1>::value_type c = *a;
     *a = *b;
     *b = c;
   }
@@ -319,7 +376,7 @@ namespace std
   //***************************************************************************
   // equal
   template <typename TIterator1, typename TIterator2>
-  typename etl::enable_if<!etl::is_pointer<TIterator1>::value || !etl::is_pointer<TIterator2>::value || !etl::is_pod<typename std::iterator_traits<TIterator1>::value_type>::value, bool>::type
+  typename etl::enable_if<!etl::is_pointer<TIterator1>::value || !etl::is_pointer<TIterator2>::value || !etl::is_pod<typename ETLSTD::iterator_traits<TIterator1>::value_type>::value, bool>::type
     equal(TIterator1 first1, TIterator1 last1, TIterator2 first2)
   {
     while (first1 != last1)
@@ -334,10 +391,10 @@ namespace std
   }
 
   template <typename TIterator1, typename TIterator2>
-  typename etl::enable_if<etl::is_pointer<TIterator1>::value && etl::is_pointer<TIterator2>::value && etl::is_pod<typename std::iterator_traits<TIterator1>::value_type>::value, bool>::type
+  typename etl::enable_if<etl::is_pointer<TIterator1>::value && etl::is_pointer<TIterator2>::value && etl::is_pod<typename ETLSTD::iterator_traits<TIterator1>::value_type>::value, bool>::type
     equal(TIterator1 first1, TIterator1 last1, TIterator2 first2)
   {
-    typedef typename std::iterator_traits<TIterator1>::value_type value_t;
+    typedef typename ETLSTD::iterator_traits<TIterator1>::value_type value_t;
 
     return (memcmp(first1, first2, sizeof(value_t) * (last1 - last1)) == 0);
   }
@@ -374,7 +431,7 @@ namespace std
   bool lexicographical_compare(TIterator1 first1, TIterator1 last1,
                                TIterator2 first2, TIterator2 last2)
   {
-    typedef std::less<typename std::iterator_traits<TIterator1>::value_type> compare;
+    typedef ETLSTD::less<typename ETLSTD::iterator_traits<TIterator1>::value_type> compare;
 
      return ETLSTD::lexicographical_compare(first1, last1, first2, last2, compare());
   }
@@ -390,7 +447,7 @@ namespace std
   template <typename T>
   const T& min(const T& a, const T& b)
   {
-    typedef std::less<T> compare;
+    typedef ETLSTD::less<T> compare;
 
     return ETLSTD::min(a, b, compare());
   }
@@ -406,9 +463,33 @@ namespace std
   template <typename T>
   const T& max(const T& a, const T& b)
   {
-    typedef std::less<T> compare;
+    typedef ETLSTD::less<T> compare;
 
     return ETLSTD::max(a, b, compare());
+  }
+
+  //***************************************************************************
+  // transform
+  template <typename TIteratorIn, typename TIteratorOut, typename TUnaryOperation>
+  TIteratorOut transform(TIteratorIn first1, TIteratorIn last1, TIteratorOut d_first, TUnaryOperation unary_operation)
+  {
+    while (first1 != last1) 
+    {
+      *d_first++ = unary_operation(*first1++);
+    }
+
+    return d_first;
+  }
+
+  template <typename TIteratorIn1, typename TIteratorIn2, typename TIteratorOut, typename TBinaryOperation>
+  TIteratorOut transform(TIteratorIn1 first1, TIteratorIn1 last1, TIteratorIn2 first2, TIteratorOut d_first, TBinaryOperation binary_operation)
+  {
+    while (first1 != last1)
+    {
+      *d_first++ = binary_operation(*first1++, *first2++);
+    }
+
+    return d_first;
   }
 
   //***************************************************************************
@@ -486,8 +567,8 @@ namespace std
   template <typename TIterator, typename TCompare>
   void pop_heap(TIterator first, TIterator last, TCompare compare)
   {
-    typedef typename std::iterator_traits<TIterator>::value_type value_t;
-    typedef typename std::iterator_traits<TIterator>::difference_type distance_t;
+    typedef typename ETLSTD::iterator_traits<TIterator>::value_type value_t;
+    typedef typename ETLSTD::iterator_traits<TIterator>::difference_type distance_t;
 
     value_t value = last[-1];
     last[-1] = first[0];
@@ -499,7 +580,7 @@ namespace std
   template <typename TIterator>
   void pop_heap(TIterator first, TIterator last)
   {
-    typedef std::less<typename std::iterator_traits<TIterator>::value_type> compare;
+    typedef ETLSTD::less<typename ETLSTD::iterator_traits<TIterator>::value_type> compare;
 
     ETLSTD::pop_heap(first, last, compare());
   }
@@ -508,8 +589,8 @@ namespace std
   template <typename TIterator, typename TCompare>
   void push_heap(TIterator first, TIterator last, TCompare compare)
   {
-    typedef typename std::iterator_traits<TIterator>::difference_type difference_t;
-    typedef typename std::iterator_traits<TIterator>::value_type      value_t;
+    typedef typename ETLSTD::iterator_traits<TIterator>::difference_type difference_t;
+    typedef typename ETLSTD::iterator_traits<TIterator>::value_type      value_t;
 
     private_heap::push_heap(first, difference_t(last - first - 1), difference_t(0), value_t(*(last - 1)), compare);
   }
@@ -518,7 +599,7 @@ namespace std
   template <typename TIterator>
   void push_heap(TIterator first, TIterator last)
   {
-    typedef std::less<typename std::iterator_traits<TIterator>::value_type> compare;
+    typedef ETLSTD::less<typename ETLSTD::iterator_traits<TIterator>::value_type> compare;
 
     ETLSTD::push_heap(first, last, compare());
   }
@@ -527,7 +608,7 @@ namespace std
   template <typename TIterator, typename TCompare>
   void make_heap(TIterator first, TIterator last, TCompare compare)
   {
-    typedef typename std::iterator_traits<TIterator>::difference_type difference_t;
+    typedef typename ETLSTD::iterator_traits<TIterator>::difference_type difference_t;
 
     if ((last - first) < 2)
     {
@@ -554,7 +635,7 @@ namespace std
   template <typename TIterator>
   void make_heap(TIterator first, TIterator last)
   {
-    typedef std::less<typename std::iterator_traits<TIterator>::value_type> compare;
+    typedef ETLSTD::less<typename ETLSTD::iterator_traits<TIterator>::value_type> compare;
 
     ETLSTD::make_heap(first, last, compare());
   }
@@ -563,7 +644,7 @@ namespace std
   template <typename TIterator>
   bool is_heap(TIterator first, TIterator last)
   {
-    typedef std::less<typename std::iterator_traits<TIterator>::value_type> compare;
+    typedef ETLSTD::less<typename ETLSTD::iterator_traits<TIterator>::value_type> compare;
 
     return private_heap::is_heap(first, last - first, compare());
   }
@@ -615,7 +696,7 @@ namespace std
   template<typename TIterator1, class TIterator2>
   TIterator1 search(TIterator1 first, TIterator1 last, TIterator2 search_first, TIterator2 search_last)
   {
-    typedef std::equal_to<typename std::iterator_traits<TIterator1>::value_type> compare;
+    typedef ETLSTD::equal_to<typename ETLSTD::iterator_traits<TIterator1>::value_type> compare;
 
     return ETLSTD::search(first, last, search_first, search_last, compare());
   }

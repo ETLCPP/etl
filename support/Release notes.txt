@@ -1,4 +1,9 @@
 ===============================================================================
+11.16.3
+Fixed missing algorithms for No STL  option.
+Improved Keil compatibility.
+
+===============================================================================
 11.15.1
 io_port_test Fixed unaligned access error.
 debug_count  Removed typed += & -= operators and replaced with templates.

@@ -1828,7 +1828,7 @@ namespace etl
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
-    void repair(pointer p_buffer_)
+    void repair_buffer(pointer p_buffer_)
     {
       p_buffer = p_buffer_;
 
@@ -2095,13 +2095,16 @@ namespace etl
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
+#ifdef ETL_IDEQUE_REPAIR_ENABLE
+    virtual
+#endif
     void repair()
     {
 #if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
       ETL_ASSERT(std::is_trivially_copyable<T>::value, ETL_ERROR(etl::deque_incompatible_type));
 #endif
 
-      etl::ideque<T>::repair(reinterpret_cast<T*>(&buffer[0]));
+      etl::ideque<T>::repair_buffer(reinterpret_cast<T*>(&buffer[0]));
     }
 
   private:

@@ -1922,7 +1922,7 @@ namespace etl
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
-    void repair(T* p_buffer_)
+    void repair_buffer(T* p_buffer_)
     {
       p_buffer = p_buffer_;
     }
