@@ -32,14 +32,17 @@ SOFTWARE.
 #define ETL_STL_ALTERNATE_UTILITY_INCLUDED
 
 #include "../../platform.h"
-#include "algorithm.h"
 
 #if defined(ETL_IN_UNIT_TEST)
-#define ETLSTD etlstd
-namespace etlstd
+  #if !defined(ETLSTD)
+    #define ETLSTD etlstd
+  #endif
+  namespace etlstd
 #else
-#define ETLSTD std
-namespace std
+  #if !defined(ETLSTD)
+    #define ETLSTD std
+  #endif
+  namespace std
 #endif
 {
   //******************************************************************************
@@ -79,8 +82,12 @@ namespace std
 
     void swap(pair<T1, T2>& other)
     {
-      ETLSTD::swap(first,  other.first);
-      ETLSTD::swap(second, other.second);
+      T1 temp1 = first;
+      T2 temp2 = second;
+      first  = other.first;
+      second = other.second;
+      other.first  = temp1;
+      other.second = temp2;
     }
   };
 
