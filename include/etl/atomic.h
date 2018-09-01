@@ -34,9 +34,12 @@ SOFTWARE.
 #if ETL_CPP11_SUPPORTED == 1 && !defined(ETL_NO_STL)
   #include "atomic/atomic_std.h"
   #define ETL_HAS_ATOMIC 1
-#elif defined(ETL_COMPILER_ARM)
+#elif defined(ETL_COMPILER_ARM5)
   #include "atomic/atomic_arm.h"
   #define ETL_HAS_ATOMIC 1
+#elif defined(ETL_COMPILER_ARM6)
+#include "atomic/atomic_arm.h"
+#define ETL_HAS_ATOMIC 1
 #elif defined(ETL_COMPILER_GCC)
   #include "atomic/atomic_gcc_sync.h"
   #define ETL_HAS_ATOMIC 1
