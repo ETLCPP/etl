@@ -1,4 +1,8 @@
 ===============================================================================
+11.16.4
+Fixed nullptr compatibility for ARM5 compiler.
+
+===============================================================================
 11.16.3
 Fixed missing algorithms for No STL  option.
 Improved Keil compatibility.

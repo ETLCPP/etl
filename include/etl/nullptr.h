@@ -73,7 +73,7 @@ namespace std
 /// A null pointer.
 ///\ingroup nullptr
 //*****************************************************************************
-#if !defined(ETL_STLPORT)
+#if !defined(ETL_STLPORT) || !defined(ETL_COMPILER_ARM5)
 const std::nullptr_t nullptr = {};
 #endif
 
