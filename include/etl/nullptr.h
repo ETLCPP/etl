@@ -37,7 +37,7 @@ SOFTWARE.
 /// A definition of nullptr for compilers that don't support it as standard.
 ///\ingroup utilities
 
-#if (ETL_NO_NULLPTR_SUPPORT && !defined(ARDUINO))
+#if (ETL_NO_NULLPTR_SUPPORT && !defined(ARDUINO)) || defined(ETL_COMPILER_ARM5)
 namespace std
 {
   //*****************************************************************************
@@ -73,7 +73,7 @@ namespace std
 /// A null pointer.
 ///\ingroup nullptr
 //*****************************************************************************
-#if !defined(ETL_STLPORT) || !defined(ETL_COMPILER_ARM5)
+#if !defined(ETL_STLPORT) && (defined(ETL_COMPILER_ARM5) && (__cplusplus < 201103L))
 const std::nullptr_t nullptr = {};
 #endif
 

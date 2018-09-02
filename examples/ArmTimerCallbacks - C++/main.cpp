@@ -1,13 +1,17 @@
 
 #include <stdio.h>
 
+//#if (__cplusplus < 201103L)
 extern "C"
 {
-  #include "Board_LED.h"     // ::Board Support:LED
-  #include "Board_Buttons.h" // ::Board Support:Buttons
-
-  #include "stm32f4xx.h"     // Device header
+//#endif
+#include "Board_LED.h"     // ::Board Support:LED
+#include "Board_Buttons.h" // ::Board Support:Buttons
+//#if (__cplusplus < 201103L)
 }
+//#endif
+
+#include "stm32f4xx.h"     // Device header
 
 #include "etl/function.h"
 #include "etl/callback_timer.h"
@@ -124,6 +128,12 @@ int main()
   LED_Initialize();
   Buttons_Initialize();
 
+  long int v = __cplusplus;
+  
+  char16_t c16;
+  
+  int* p = nullptr;
+  
   // The LEDs will start flashing fast after 2 seconds.
   // After another 5 seconds they will start flashing slower.  
   short_toggle = callback_timer.register_timer(LedToggle,   50,  etl::timer::mode::REPEATING);
