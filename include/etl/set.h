@@ -474,7 +474,7 @@ namespace etl
     {
       bool operator ()(key_type& key1, key_type& key2) const
       {
-        return compare(key1, key2);
+        return this->compare(key1, key2);
       }
     };
 
@@ -485,7 +485,7 @@ namespace etl
     {
       bool operator ()(value_type& value1, value_type& value2) const
       {
-        return compare(value1, value2);
+        return this->compare(value1, value2);
       }
     };
 
@@ -784,7 +784,7 @@ namespace etl
 
     typedef std::reverse_iterator<iterator>       reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-    
+
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************

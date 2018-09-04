@@ -230,7 +230,7 @@ namespace etl
       , root_node(nullptr)
     {
     }
-   
+
     //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
@@ -638,7 +638,7 @@ namespace etl
     {
       bool operator ()(const key_type& key1, const key_type& key2) const
       {
-        return compare(key1, key2);
+        return this->compare(key1, key2);
       }
     };
 
@@ -649,7 +649,7 @@ namespace etl
     {
       bool operator ()(const value_type& value1, const value_type& value2) const
       {
-        return compare(value1.first, value2.first);
+        return this->compare(value1.first, value2.first);
       }
     };
 
