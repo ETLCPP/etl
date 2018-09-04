@@ -392,8 +392,8 @@ namespace etl
     etl::ipool* p_node_pool;     ///< The pool of data nodes used in the list.
     node_t      terminal_node;   ///< The node that acts as the list start and end.
     size_type   MAX_SIZE;        ///< The maximum size of the list.
-    bool        pool_is_shared; ///< If <b>true</b> then the pool is shared between lists.
-    ETL_DECLARE_DEBUG_COUNT;     ///< Internal debugging.
+    bool        pool_is_shared;  ///< If <b>true</b> then the pool is shared between lists.
+    ETL_DECLARE_DEBUG_COUNT      ///< Internal debugging.
   };
 
   //***************************************************************************
