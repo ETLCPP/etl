@@ -968,5 +968,42 @@ namespace
 #endif
     }
 
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_key_compare)
+    {
+      const Data data(initial_data.begin(), initial_data.end());
+
+      Data::key_compare compare = data.key_comp();
+
+      Data::key_type a(1);
+      Data::key_type b(2);
+
+#ifdef TEST_GREATER_THAN
+      CHECK(!compare(a, b));
+      CHECK(compare(b, a));
+#else
+      CHECK(compare(a, b));
+      CHECK(!compare(b, a));
+#endif
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_value_compare)
+    {
+      const Data data(initial_data.begin(), initial_data.end());
+
+      Data::value_compare compare = data.value_comp();
+
+      Data::value_type a(1);
+      Data::value_type b(2);
+
+#ifdef TEST_GREATER_THAN
+      CHECK(!compare(a, b));
+      CHECK(compare(b, a));
+#else
+      CHECK(compare(a, b));
+      CHECK(!compare(b, a));
+#endif
+    }
   };
 }

@@ -631,26 +631,18 @@ namespace etl
     typedef const value_type*              const_pointer;
     typedef size_t                         size_type;
 
-    //*************************************************************************
-    /// How to compare two key elements.
-    //*************************************************************************
-    struct key_comp
+    class value_compare
     {
-      bool operator ()(const key_type& key1, const key_type& key2) const
-      {
-        return compare(key1, key2);
-      }
-    };
+    public:
 
-    //*************************************************************************
-    /// How to compare two value elements.
-    //*************************************************************************
-    struct value_comp
-    {
-      bool operator ()(const value_type& value1, const value_type& value2) const
+      bool operator()(const value_type& lhs, const value_type& rhs) const
       {
-        return compare(value1.first, value2.first);
+        return (kcompare(lhs.first, rhs.first));
       }
+
+    private:
+
+      key_compare kcompare;
     };
 
   protected:
@@ -676,17 +668,17 @@ namespace etl
     //*************************************************************************
     bool node_comp(const Data_Node& node1, const Data_Node& node2) const
     {
-      return compare(node1.value.first, node2.value.first);
+      return kcompare(node1.value.first, node2.value.first);
     }
 
     bool node_comp(const Data_Node& node, key_parameter_t key) const
     {
-      return compare(node.value.first, key);
+      return kcompare(node.value.first, key);
     }
 
     bool node_comp(key_parameter_t key, const Data_Node& node) const
     {
-      return compare(key, node.value.first);
+      return kcompare(key, node.value.first);
     }
 
   private:
@@ -694,7 +686,8 @@ namespace etl
     /// The pool of data nodes used in the multimap.
     ipool* p_node_pool;
 
-    key_compare compare;
+    key_compare   kcompare;
+    value_compare vcompare;
 
     //*************************************************************************
     /// Downcast a Node* to a Data_Node*
@@ -1329,6 +1322,22 @@ namespace etl
 
       return *this;
     }
+
+    //*************************************************************************
+    /// How to compare two key elements.
+    //*************************************************************************
+    key_compare key_comp() const
+    {
+      return kcompare;
+    };
+
+    //*************************************************************************
+    /// How to compare two value elements.
+    //*************************************************************************
+    value_compare value_comp() const
+    {
+      return vcompare;
+    };
 
   protected:
 
