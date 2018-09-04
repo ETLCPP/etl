@@ -74,8 +74,8 @@ namespace etl
       return hash;
     }
 
-    static const uint64_t OFFSET_BASIS = 0xCBF29CE484222325;
-    static const uint64_t PRIME        = 0x00000100000001b3;
+    static const uint64_t OFFSET_BASIS = 0xCBF29CE484222325ull;
+    static const uint64_t PRIME        = 0x00000100000001b3ull;
   };
   
   //***************************************************************************
@@ -132,8 +132,8 @@ namespace etl
       return hash;
     }
 
-    static const uint64_t OFFSET_BASIS = 0xCBF29CE484222325;
-    static const uint64_t PRIME        = 0x00000100000001b3;
+    static const uint64_t OFFSET_BASIS = 0xCBF29CE484222325ull;
+    static const uint64_t PRIME        = 0x00000100000001b3ull;
   };
 
   //***************************************************************************

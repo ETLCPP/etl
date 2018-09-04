@@ -79,11 +79,11 @@ namespace etl
   //***************************************************************************
   uint64_t reverse_bits(uint64_t value)
   {
-    value = ((value & 0xAAAAAAAAAAAAAAAA) >>  1) | ((value & 0x5555555555555555) <<  1);
-    value = ((value & 0xCCCCCCCCCCCCCCCC) >>  2) | ((value & 0x3333333333333333) <<  2);
-    value = ((value & 0xF0F0F0F0F0F0F0F0) >>  4) | ((value & 0x0F0F0F0F0F0F0F0F) <<  4);
-    value = ((value & 0xFF00FF00FF00FF00) >>  8) | ((value & 0x00FF00FF00FF00FF) <<  8);
-    value = ((value & 0xFFFF0000FFFF0000) >> 16) | ((value & 0x0000FFFF0000FFFF) << 16);
+    value = ((value & 0xAAAAAAAAAAAAAAAAull) >>  1) | ((value & 0x5555555555555555ull) <<  1);
+    value = ((value & 0xCCCCCCCCCCCCCCCCull) >>  2) | ((value & 0x3333333333333333ull) <<  2);
+    value = ((value & 0xF0F0F0F0F0F0F0F0ull) >>  4) | ((value & 0x0F0F0F0F0F0F0F0Full) <<  4);
+    value = ((value & 0xFF00FF00FF00FF00ull) >>  8) | ((value & 0x00FF00FF00FF00FFull) <<  8);
+    value = ((value & 0xFFFF0000FFFF0000ull) >> 16) | ((value & 0x0000FFFF0000FFFFull) << 16);
     value = (value >> 32) | (value << 32);
 
     return value;
@@ -115,8 +115,8 @@ namespace etl
   //***************************************************************************
   uint64_t reverse_bytes(uint64_t value)
   {
-    value = ((value & 0xFF00FF00FF00FF00) >> 8)  | ((value & 0x00FF00FF00FF00FF) << 8);
-    value = ((value & 0xFFFF0000FFFF0000) >> 16) | ((value & 0x0000FFFF0000FFFF) << 16);
+    value = ((value & 0xFF00FF00FF00FF00ull) >> 8)  | ((value & 0x00FF00FF00FF00FFull) << 8);
+    value = ((value & 0xFFFF0000FFFF0000ull) >> 16) | ((value & 0x0000FFFF0000FFFFull) << 16);
     value = (value >> 32) | (value << 32);
 
     return value;
@@ -234,7 +234,7 @@ namespace etl
   {
     uint64_t count;
     static const int S[] = { 1, 2, 4, 8, 16, 32 };
-    static const uint64_t B[] = { 0x5555555555555555, 0x3333333333333333, 0x0F0F0F0F0F0F0F0F, 0x00FF00FF00FF00FF, 0x0000FFFF0000FFFF, 0x00000000FFFFFFFF };
+    static const uint64_t B[] = { 0x5555555555555555ull, 0x3333333333333333ull, 0x0F0F0F0F0F0F0F0Full, 0x00FF00FF00FF00FFull, 0x0000FFFF0000FFFFull, 0x00000000FFFFFFFFull };
 
     count = value - ((value >> 1) & B[0]);
     count = ((count >> S[1]) & B[1]) + (count & B[1]);
@@ -519,7 +519,7 @@ namespace etl
   //*****************************************************************************
   uint64_t binary_interleave(uint32_t first, uint32_t second)
   {
-	  static const uint64_t mask[] = { 0x5555555555555555, 0x3333333333333333, 0x0F0F0F0F0F0F0F0F, 0x00FF00FF00FF00FF, 0x0000FFFF0000FFFF };
+	  static const uint64_t mask[] = { 0x5555555555555555ull, 0x3333333333333333ull, 0x0F0F0F0F0F0F0F0Full, 0x00FF00FF00FF00FFull, 0x0000FFFF0000FFFFull };
 
 	  uint64_t f = first;
 	  uint64_t s = second;

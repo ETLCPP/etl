@@ -37,13 +37,13 @@ SOFTWARE.
 /// Definitions of the ETL version
 ///\ingroup utilities
 
-#define ETL_VERSION       "11.16.4"
-#define ETL_VERSION_W     L"11.16.4"
-#define ETL_VERSION_U16   u"11.16.4"
-#define ETL_VERSION_U32   U"11.16.4"
+#define ETL_VERSION       "11.16.5"
+#define ETL_VERSION_W     L"11.16.5"
+#define ETL_VERSION_U16   u"11.16.5"
+#define ETL_VERSION_U32   U"11.16.5"
 #define ETL_VERSION_MAJOR 11
 #define ETL_VERSION_MINOR 16
-#define ETL_VERSION_PATCH  4
+#define ETL_VERSION_PATCH  5
 #define ETL_VERSION_VALUE ((ETL_VERSION_MAJOR * 10000) + (ETL_VERSION_MINOR * 100) + ETL_VERSION_PATCH)
 
 #endif
