@@ -1010,5 +1010,42 @@ namespace
 #endif
     }
 
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_key_compare)
+    {
+      const Data data(initial_data.begin(), initial_data.end());
+
+      Data::key_compare compare = data.key_comp();
+
+      Data::key_type a("A");
+      Data::key_type b("B");
+
+#ifdef TEST_GREATER_THAN
+      CHECK(!compare(a, b));
+      CHECK(compare(b, a));
+#else
+      CHECK(compare(a, b));
+      CHECK(!compare(b, a));
+#endif
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_value_compare)
+    {
+      const Data data(initial_data.begin(), initial_data.end());
+
+      Data::value_compare compare = data.value_comp();
+
+      Data::value_type a(std::string("A"), 0);
+      Data::value_type b(std::string("B"), 1);
+
+#ifdef TEST_GREATER_THAN
+      CHECK(!compare(a, b));
+      CHECK(compare(b, a));
+#else
+      CHECK(compare(a, b));
+      CHECK(!compare(b, a));
+#endif
+    }
   };
 }

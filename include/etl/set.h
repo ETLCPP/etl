@@ -467,28 +467,6 @@ namespace etl
     typedef value_type* const_pointer;
     typedef size_t      size_type;
 
-    //*************************************************************************
-    /// How to compare two key elements.
-    //*************************************************************************
-    struct key_comp
-    {
-      bool operator ()(key_type& key1, key_type& key2) const
-      {
-        return compare(key1, key2);
-      }
-    };
-
-    //*************************************************************************
-    /// How to compare two value elements.
-    //*************************************************************************
-    struct value_comp
-    {
-      bool operator ()(value_type& value1, value_type& value2) const
-      {
-        return compare(value1, value2);
-      }
-    };
-
   protected:
 
     //*************************************************************************
@@ -1158,6 +1136,22 @@ namespace etl
     {
       return const_iterator(*this, find_upper_node(root_node, key));
     }
+
+    //*************************************************************************
+    /// How to compare two key elements.
+    //*************************************************************************
+    key_compare key_comp() const
+    {
+      return compare;
+    };
+
+    //*************************************************************************
+    /// How to compare two value elements.
+    //*************************************************************************
+    value_compare value_comp() const
+    {
+      return compare;
+    };
 
   protected:
 
