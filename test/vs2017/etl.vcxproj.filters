@@ -693,7 +693,7 @@
     <ClInclude Include="..\..\include\etl\atomic\atomic_llvm_sync.h">
       <Filter>ETL\Utilities\Atomic</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\state_machine.h">
+    <ClInclude Include="..\..\include\etl\sfsm.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
   </ItemGroup>
