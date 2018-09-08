@@ -693,6 +693,9 @@
     <ClInclude Include="..\..\include\etl\atomic\atomic_llvm_sync.h">
       <Filter>ETL\Utilities\Atomic</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\state_chart.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1136,6 +1139,9 @@
     <ClCompile Include="..\test_no_stl_iterator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_state_chart.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -1174,6 +1180,7 @@
     <None Include="..\..\include\etl\generate_type_select.bat">
       <Filter>Resource Files\Generators</Filter>
     </None>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\include\etl\file_error_numbers.txt">
