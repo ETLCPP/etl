@@ -279,6 +279,7 @@
 		<Unit filename="../../include/etl/spsc_queue_mutex.h" />
 		<Unit filename="../../include/etl/sqrt.h" />
 		<Unit filename="../../include/etl/stack.h" />
+		<Unit filename="../../include/etl/state_chart.h" />
 		<Unit filename="../../include/etl/static_assert.h" />
 		<Unit filename="../../include/etl/stl/algorithm.h" />
 		<Unit filename="../../include/etl/stl/alternate/algorithm.h" />
@@ -423,6 +424,7 @@
 		<Unit filename="../test_set.cpp" />
 		<Unit filename="../test_smallest.cpp" />
 		<Unit filename="../test_stack.cpp" />
+		<Unit filename="../test_state_chart.cpp" />
 		<Unit filename="../test_string_char.cpp" />
 		<Unit filename="../test_string_u16.cpp" />
 		<Unit filename="../test_string_u32.cpp" />

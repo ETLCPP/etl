@@ -69,7 +69,11 @@ SOFTWARE.
 #endif
 
 #if defined(ETL_COMPILER_GCC)
-  #define GCC_VERSION ((__GNUC__ * 10000) + (__GNUC_MINOR__ * 100) + __GNUC_PATCHLEVEL__)
+  #define ETL_COMPILER_VERSION      __GNUC__
+  #define ETL_COMPILER_FULL_VERSION ((__GNUC__ * 10000) + (__GNUC_MINOR__ * 100) + __GNUC_PATCHLEVEL__)
+#elif defined ETL_COMPILER_MICROSOFT
+  #define ETL_COMPILER_VERSION      _MSC_VER
+  #define ETL_COMPILER_FULL_VERSION _MSC_FULL_VER
 #endif
 
 #if ETL_CPP11_SUPPORTED
@@ -82,6 +86,12 @@ SOFTWARE.
   #define ETL_IF_CONSTEXPR constexpr
 #else
   #define ETL_IF_CONSTEXPR
+#endif
+
+#if ETL_CPP11_SUPPORTED
+  #define ETL_DELETE = delete
+#else
+  #define ETL_DELETE
 #endif
 
 #endif
