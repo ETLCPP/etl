@@ -48,12 +48,29 @@ namespace etl
     typedef uint32_t state_id_t;
     typedef uint32_t event_id_t;
 
-    virtual state_id_t get_state_id() const = 0;
     virtual void process_event(const event_id_t event_id) = 0;
+
+    //*************************************************************************
+    /// Gets the current state id.
+    /// \return The current state id.
+    //*************************************************************************
+    state_id_t get_state_id() const
+    {
+      return current_state_id;
+    }
 
     virtual ~istate_chart()
     {
     }
+
+  protected:
+
+    istate_chart(state_id_t current_state_id_)
+      : current_state_id(current_state_id_)
+    {
+    }
+
+    state_id_t current_state_id; ///< The current state id.
   };
 
   //***************************************************************************
@@ -75,7 +92,7 @@ namespace etl
                  void (TObject::* const action_)() = nullptr,
                  bool (TObject::* const guard_)()  = nullptr)
         : event_id(event_id_),
-        current_state_id(current_state_id_),
+          current_state_id(current_state_id_),
           next_state_id(next_state_id_),
           action(action_),
           guard(guard_)
@@ -119,8 +136,8 @@ namespace etl
     state_chart(TObject& object_,
                 const etl::array<transition, TRANSITION_TABLE_SIZE>& transition_table_,
                 const state_id_t state_id_)
-      : object(object_),
-        current_state_id(state_id_),
+      : istate_chart(state_id_),
+        object(object_),
         transition_table(transition_table_.begin(), transition_table_.end())
     {
     }
@@ -152,15 +169,6 @@ namespace etl
     const TObject& get_object() const
     {
       return object;
-    }
-
-    //*************************************************************************
-    /// Gets the current state id.
-    /// \return The current state id.
-    //*************************************************************************
-    state_id_t get_state_id() const
-    {
-      return current_state_id;
     }
 
     //*************************************************************************
@@ -280,7 +288,6 @@ namespace etl
     state_chart& operator =(const state_chart&) ETL_DELETE;
 
     TObject&                                object;           ///< The object that supplies guard and action member functions.
-    state_id_t                              current_state_id; ///< The current state id.
     const etl::array_view<const transition> transition_table; ///< The table of transitions.
     etl::array_view<const state>            state_table;      ///< The table of states.
   };
