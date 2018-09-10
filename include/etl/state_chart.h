@@ -138,7 +138,8 @@ namespace etl
                 const state_id_t state_id_)
       : istate_chart(state_id_),
         object(object_),
-        transition_table(transition_table_.begin(), transition_table_.end())
+        transition_table(transition_table_.begin(), transition_table_.end()),
+        started(false)
     {
     }
 
@@ -190,6 +191,29 @@ namespace etl
     }
 
     //*************************************************************************
+    /// 
+    //*************************************************************************
+    void start(const bool on_entry_initial = true)
+    {
+      if (!started)
+      {
+        if (on_entry_initial)
+        {
+          // See if we have a state item for the initial state.
+          const state* s = find_state(current_state_id);
+
+          // If the initial state has an 'on_entry' then call it.
+          if ((s != state_table.end()) && (s->on_entry != nullptr))
+          {
+            (object.*(s->on_entry))();
+          }
+        }
+
+        started = true;
+      }
+    }
+
+    //*************************************************************************
     /// Processes the specified event.
     /// The state machine will action the <b>first</b> item in the transition table
     /// that satisfies the conditions for executing the action.
@@ -197,52 +221,51 @@ namespace etl
     //*************************************************************************
     void process_event(const event_id_t event_id)
     {
-      // Scan the transition table.
-      const transition* t = std::find_if(transition_table.begin(),
-                                         transition_table.end(),
-                                         is_transition(event_id, current_state_id));
-
-      // Found an entry?
-      if (t != transition_table.end())
+      if (started)
       {
-        // Shall we execute the transition?
-        if ((t->guard == nullptr) || ((object.*t->guard)()))
+        // Scan the transition table.
+        const transition* t = std::find_if(transition_table.begin(),
+                                           transition_table.end(),
+                                           is_transition(event_id, current_state_id));
+
+        // Found an entry?
+        if (t != transition_table.end())
         {
-          const bool to_new_state = (current_state_id != t->next_state_id);
-
-          // Execute the state exit if necessary.
-          if (to_new_state)
+          // Shall we execute the transition?
+          if ((t->guard == nullptr) || ((object.*t->guard)()))
           {
-            // See if we have a state item for the current state.
-            const state* s = find_state(current_state_id);
-
-            // If the current state has an 'on_exit' then call it.
-            if ((s != state_table.end()) && (s->on_exit != nullptr))
+            // Shall we execute the action?
+            if (t->action != nullptr)
             {
-              (object.*(s->on_exit))();
+              (object.*t->action)();
             }
-          }
 
-          // Shall we execute the action?
-          if (t->action != nullptr)
-          {
-            (object.*t->action)();
-          }
-
-          // Execute the state entry if necessary.
-          if (to_new_state)
-          {
-            // See if we have a state item for the next state.
-            const state* s = find_state(t->next_state_id);
-
-            // If the new state has an 'on_entry' then call it.
-            if ((s != state_table.end()) && (s->on_entry != nullptr))
+            // Changing state?
+            if (current_state_id != t->next_state_id)
             {
-              (object.*(s->on_entry))();
-            }
-          }
+              const state* s;
 
-          current_state_id = t->next_state_id;
+              // See if we have a state item for the current state.
+              s = find_state(current_state_id);
+
+              // If the current state has an 'on_exit' then call it.
+              if ((s != state_table.end()) && (s->on_exit != nullptr))
+              {
+                (object.*(s->on_exit))();
+              }
+
+              // See if we have a state item for the next state.
+              s = find_state(t->next_state_id);
+
+              // If the new state has an 'on_entry' then call it.
+              if ((s != state_table.end()) && (s->on_entry != nullptr))
+              {
+                (object.*(s->on_entry))();
+              }
+            }
+
+            current_state_id = t->next_state_id;
+          }
         }
       }
     }
@@ -290,6 +313,7 @@ namespace etl
     TObject&                                object;           ///< The object that supplies guard and action member functions.
     const etl::array_view<const transition> transition_table; ///< The table of transitions.
     etl::array_view<const state>            state_table;      ///< The table of states.
+    bool                                    started;          ///< Set if the state chart has been started.
   };
 }
 
