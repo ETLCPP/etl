@@ -102,6 +102,7 @@ namespace
       isLampOn      = false;
       speed         = 0;
       windingDown   = 0;
+      entered_idle  = false;
     }
 
     //***********************************
@@ -133,6 +134,7 @@ namespace
     void OnEnterIdle()
     {
       TurnRunningLampOff();
+      entered_idle = true;
     }
 
     //***********************************
@@ -184,6 +186,7 @@ namespace
     bool isLampOn;
     int speed;
     int windingDown;
+    bool entered_idle;
 
     bool guard;
 
@@ -218,7 +221,7 @@ namespace
     {
       motorControl.ClearStatistics();
 
-      // Now in Idle state.
+      // In Idle state.
       CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
 
       CHECK_EQUAL(false, motorControl.isLampOn);
@@ -228,12 +231,13 @@ namespace
       CHECK_EQUAL(0, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
       CHECK_EQUAL(0, motorControl.windingDown);
+      CHECK_EQUAL(false, motorControl.entered_idle);
 
-      // Send unhandled events.
-      motorControl.process_event(EventId::STOP);
-      motorControl.process_event(EventId::STOPPED);
+      // Send Start event (state chart not started).
+      motorControl.guard = true;
+      motorControl.process_event(EventId::START);
 
-      CHECK_EQUAL(StateId::IDLE, motorControl.get_state_id());
+      CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
 
       CHECK_EQUAL(false, motorControl.isLampOn);
       CHECK_EQUAL(0, motorControl.setSpeedCount);
@@ -241,7 +245,29 @@ namespace
       CHECK_EQUAL(0, motorControl.startCount);
       CHECK_EQUAL(0, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
+      CHECK_EQUAL(0, motorControl.windingDown);
+      CHECK_EQUAL(false, motorControl.entered_idle);
 
+      // Start the state chart
+      motorControl.guard = true;
+      motorControl.start();
+
+      CHECK_EQUAL(true, motorControl.entered_idle);
+
+      // Send unhandled events.
+      motorControl.process_event(EventId::STOP);
+      motorControl.process_event(EventId::STOPPED);
+
+      CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
+
+      CHECK_EQUAL(false, motorControl.isLampOn);
+      CHECK_EQUAL(0, motorControl.setSpeedCount);
+      CHECK_EQUAL(0, motorControl.speed);
+      CHECK_EQUAL(0, motorControl.startCount);
+      CHECK_EQUAL(0, motorControl.stopCount);
+      CHECK_EQUAL(0, motorControl.stoppedCount);
+      CHECK_EQUAL(0, motorControl.windingDown);
+      
       // Send Start event.
       motorControl.guard = false;
       motorControl.process_event(EventId::START);
