@@ -103,6 +103,7 @@ namespace
       speed         = 0;
       windingDown   = 0;
       entered_idle  = false;
+      null          = 0;
     }
 
     //***********************************
@@ -168,6 +169,12 @@ namespace
     }
 
     //***********************************
+    bool NotGuard()
+    {
+      return !guard;
+    }
+
+    //***********************************
     void TurnRunningLampOn()
     {
       isLampOn = true;
@@ -179,6 +186,12 @@ namespace
       isLampOn = false;
     }
 
+    //***********************************
+    void Null()
+    {
+      ++null;
+    }
+
     int startCount;
     int stopCount;
     int setSpeedCount;
@@ -187,17 +200,19 @@ namespace
     int speed;
     int windingDown;
     bool entered_idle;
+    int null;
 
     bool guard;
 
-    static const etl::array<MotorControl::transition, 5> transitionTable;
+    static const etl::array<MotorControl::transition, 6> transitionTable;
     static const etl::array<MotorControl::state, 3>      stateTable;
   };
 
   //***************************************************************************
-  const etl::array<MotorControl::transition, 5> MotorControl::transitionTable =
+  const etl::array<MotorControl::transition, 6> MotorControl::transitionTable =
   {
     MotorControl::transition(EventId::START,          StateId::IDLE,         StateId::RUNNING,      &MotorControl::OnStart, &MotorControl::Guard),
+    MotorControl::transition(EventId::START,          StateId::IDLE,         StateId::IDLE,         &MotorControl::Null,    &MotorControl::NotGuard),
     MotorControl::transition(EventId::STOP,           StateId::RUNNING,      StateId::WINDING_DOWN, &MotorControl::OnStop),
     MotorControl::transition(EventId::STOPPED,        StateId::WINDING_DOWN, StateId::IDLE,         &MotorControl::OnStopped),
     MotorControl::transition(EventId::EMERGENCY_STOP, StateId::RUNNING,      StateId::IDLE,         &MotorControl::OnStop),
@@ -283,6 +298,7 @@ namespace
       CHECK_EQUAL(0, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
       CHECK_EQUAL(0, motorControl.windingDown);
+      CHECK_EQUAL(1, motorControl.null);
 
       // Send Start event.
       motorControl.guard = true;
@@ -299,6 +315,7 @@ namespace
       CHECK_EQUAL(0, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
       CHECK_EQUAL(0, motorControl.windingDown);
+      CHECK_EQUAL(1, motorControl.null);
 
       // Send unhandled events.
       motorControl.process_event(EventId::START);
@@ -313,6 +330,7 @@ namespace
       CHECK_EQUAL(0, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
       CHECK_EQUAL(0, motorControl.windingDown);
+      CHECK_EQUAL(1, motorControl.null);
 
       // Send SetSpeed event.
       motorControl.process_event(EventId::SET_SPEED);
@@ -328,6 +346,7 @@ namespace
       CHECK_EQUAL(0, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
       CHECK_EQUAL(0, motorControl.windingDown);
+      CHECK_EQUAL(1, motorControl.null);
 
       // Send Stop event.
       motorControl.process_event(EventId::STOP);
@@ -343,6 +362,7 @@ namespace
       CHECK_EQUAL(1, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
       CHECK_EQUAL(1, motorControl.windingDown);
+      CHECK_EQUAL(1, motorControl.null);
 
       // Send unhandled events.
       motorControl.process_event(EventId::START);
@@ -357,6 +377,7 @@ namespace
       CHECK_EQUAL(1, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
       CHECK_EQUAL(1, motorControl.windingDown);
+      CHECK_EQUAL(1, motorControl.null);
 
       // Send Stopped event.
       motorControl.process_event(EventId::STOPPED);
@@ -371,6 +392,7 @@ namespace
       CHECK_EQUAL(1, motorControl.stopCount);
       CHECK_EQUAL(1, motorControl.stoppedCount);
       CHECK_EQUAL(0, motorControl.windingDown);
+      CHECK_EQUAL(1, motorControl.null);
     }
 
     //*************************************************************************
