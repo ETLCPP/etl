@@ -223,48 +223,61 @@ namespace etl
     {
       if (started)
       {
-        // Scan the transition table.
-        const transition* t = std::find_if(transition_table.begin(),
-                                           transition_table.end(),
-                                           is_transition(event_id, current_state_id));
+        const transition* t = transition_table.begin();
 
-        // Found an entry?
-        if (t != transition_table.end())
+        // Keep looping until we execute a transition or reach the end of the table.
+        while (t != transition_table.end())
         {
-          // Shall we execute the transition?
-          if ((t->guard == nullptr) || ((object.*t->guard)()))
+          // Scan the transition table from the latest position.
+          t = std::find_if(t,
+                           transition_table.end(),
+                           is_transition(event_id, current_state_id));
+
+          // Found an entry?
+          if (t != transition_table.end())
           {
-            // Shall we execute the action?
-            if (t->action != nullptr)
+            // Shall we execute the transition?
+            if ((t->guard == nullptr) || ((object.*t->guard)()))
             {
-              (object.*t->action)();
-            }
-
-            // Changing state?
-            if (current_state_id != t->next_state_id)
-            {
-              const state* s;
-
-              // See if we have a state item for the current state.
-              s = find_state(current_state_id);
-
-              // If the current state has an 'on_exit' then call it.
-              if ((s != state_table.end()) && (s->on_exit != nullptr))
+              // Shall we execute the action?
+              if (t->action != nullptr)
               {
-                (object.*(s->on_exit))();
+                (object.*t->action)();
               }
 
-              // See if we have a state item for the next state.
-              s = find_state(t->next_state_id);
-
-              // If the new state has an 'on_entry' then call it.
-              if ((s != state_table.end()) && (s->on_entry != nullptr))
+              // Changing state?
+              if (current_state_id != t->next_state_id)
               {
-                (object.*(s->on_entry))();
-              }
-            }
+                const state* s;
 
-            current_state_id = t->next_state_id;
+                // See if we have a state item for the current state.
+                s = find_state(current_state_id);
+
+                // If the current state has an 'on_exit' then call it.
+                if ((s != state_table.end()) && (s->on_exit != nullptr))
+                {
+                  (object.*(s->on_exit))();
+                }
+
+                // See if we have a state item for the next state.
+                s = find_state(t->next_state_id);
+
+                // If the new state has an 'on_entry' then call it.
+                if ((s != state_table.end()) && (s->on_entry != nullptr))
+                {
+                  (object.*(s->on_entry))();
+                }
+
+                current_state_id = t->next_state_id;
+              }
+
+              t = transition_table.end();
+            }
+            else
+            {
+              // Start the search from the next item in the table.
+              ++t;
+            }
           }
         }
       }
