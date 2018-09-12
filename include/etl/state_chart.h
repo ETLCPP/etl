@@ -86,21 +86,21 @@ namespace etl
     //*************************************************************************
     struct transition
     {
-      transition(const event_id_t event_id_,
-                 const state_id_t current_state_id_,
+      transition(const state_id_t current_state_id_,
+                 const event_id_t event_id_,
                  const state_id_t next_state_id_,
                  void (TObject::* const action_)() = nullptr,
                  bool (TObject::* const guard_)()  = nullptr)
-        : event_id(event_id_),
-          current_state_id(current_state_id_),
+        : current_state_id(current_state_id_),
+          event_id(event_id_),
           next_state_id(next_state_id_),
           action(action_),
           guard(guard_)
       {
       }
 
-      const event_id_t event_id;
       const state_id_t current_state_id;
+      const event_id_t event_id;
       const state_id_t next_state_id;
       void (TObject::* const action)();
       bool (TObject::* const guard)();

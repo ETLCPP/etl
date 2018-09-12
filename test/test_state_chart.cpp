@@ -211,12 +211,12 @@ namespace
   //***************************************************************************
   const etl::array<MotorControl::transition, 6> MotorControl::transitionTable =
   {
-    MotorControl::transition(EventId::START,          StateId::IDLE,         StateId::RUNNING,      &MotorControl::OnStart, &MotorControl::Guard),
-    MotorControl::transition(EventId::START,          StateId::IDLE,         StateId::IDLE,         &MotorControl::Null,    &MotorControl::NotGuard),
-    MotorControl::transition(EventId::STOP,           StateId::RUNNING,      StateId::WINDING_DOWN, &MotorControl::OnStop),
-    MotorControl::transition(EventId::STOPPED,        StateId::WINDING_DOWN, StateId::IDLE,         &MotorControl::OnStopped),
-    MotorControl::transition(EventId::EMERGENCY_STOP, StateId::RUNNING,      StateId::IDLE,         &MotorControl::OnStop),
-    MotorControl::transition(EventId::SET_SPEED,      StateId::RUNNING,      StateId::RUNNING,      &MotorControl::OnSetSpeed)
+    MotorControl::transition(StateId::IDLE,         EventId::START,          StateId::RUNNING,      &MotorControl::OnStart, &MotorControl::Guard),
+    MotorControl::transition(StateId::IDLE,         EventId::START,          StateId::IDLE,         &MotorControl::Null,    &MotorControl::NotGuard),
+    MotorControl::transition(StateId::RUNNING,      EventId::STOP,           StateId::WINDING_DOWN, &MotorControl::OnStop),
+    MotorControl::transition(StateId::RUNNING,      EventId::EMERGENCY_STOP, StateId::IDLE,         &MotorControl::OnStop),
+    MotorControl::transition(StateId::RUNNING,      EventId::SET_SPEED,      StateId::RUNNING,      &MotorControl::OnSetSpeed),
+    MotorControl::transition(StateId::WINDING_DOWN, EventId::STOPPED,        StateId::IDLE,         &MotorControl::OnStopped)
   };
 
   //***************************************************************************
