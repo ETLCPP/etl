@@ -51,7 +51,7 @@ namespace etl
   /// CRC Kermit table
   /// \ingroup crc
   //***************************************************************************
-  extern const uint16_t CRC_KERMIT[];
+  extern const uint16_t ETL_CRC_KERMIT[];
 
   //***************************************************************************
   /// CRC16 Kermit policy.
@@ -68,7 +68,7 @@ namespace etl
 
     inline uint16_t add(uint16_t crc, uint8_t value) const
     {
-      return (crc >> 8) ^ CRC_KERMIT[(crc ^ value) & 0xFF];
+      return (crc >> 8) ^ ETL_CRC_KERMIT[(crc ^ value) & 0xFF];
     }
 
     inline uint16_t final(uint16_t crc) const

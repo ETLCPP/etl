@@ -51,7 +51,7 @@ namespace etl
   /// CRC-CCITT table
   /// \ingroup crc16_ccitt
   //***************************************************************************
-  extern const uint16_t CRC_CCITT[];
+  extern const uint16_t ETL_CRC_CCITT[];
 
   //***************************************************************************
   /// CRC16 CCITT policy.
@@ -68,7 +68,7 @@ namespace etl
 
     inline uint16_t add(uint16_t crc, uint8_t value) const
     {
-      return  (crc << 8) ^ CRC_CCITT[((crc >> 8) ^ value) & 0xFF];
+      return  (crc << 8) ^ ETL_CRC_CCITT[((crc >> 8) ^ value) & 0xFF];
     }
 
     inline uint16_t final(uint16_t crc) const
