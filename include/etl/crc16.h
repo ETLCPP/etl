@@ -51,7 +51,7 @@ namespace etl
   /// CRC16 table
   /// \ingroup crc16
   //***************************************************************************
-  extern const uint16_t CRC16[];
+  extern const uint16_t ETL_CRC16[];
 
   //***************************************************************************
   /// CRC16 policy.
@@ -68,7 +68,7 @@ namespace etl
 
     inline uint16_t add(uint16_t crc, uint8_t value) const
     {
-      return  (crc >> 8) ^ CRC16[(crc ^ value) & 0xFF];
+      return  (crc >> 8) ^ ETL_CRC16[(crc ^ value) & 0xFF];
     }
 
     inline uint16_t final(uint16_t crc) const

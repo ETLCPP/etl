@@ -696,6 +696,9 @@
     <ClInclude Include="..\..\include\etl\state_chart.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_modbus.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1141,6 +1144,9 @@
     </ClCompile>
     <ClCompile Include="..\test_state_chart.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\crc16_modbus.cpp">
+      <Filter>ETL\Maths</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
