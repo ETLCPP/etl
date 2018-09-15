@@ -323,6 +323,7 @@
 		<Unit filename="../../src/crc16.cpp" />
 		<Unit filename="../../src/crc16_ccitt.cpp" />
 		<Unit filename="../../src/crc16_kermit.cpp" />
+		<Unit filename="../../src/crc16_modbus.cpp" />
 		<Unit filename="../../src/crc32.cpp" />
 		<Unit filename="../../src/crc32_c.cpp" />
 		<Unit filename="../../src/crc64_ecma.cpp" />

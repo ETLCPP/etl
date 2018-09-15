@@ -86,9 +86,9 @@ namespace
   public:
 
     MotorControl()
-      : state_chart<MotorControl>(*this, transitionTable, StateId::IDLE)
+      : state_chart<MotorControl>(*this, transitionTable.begin(), transitionTable.end(), StateId::IDLE)
     {
-      this->set_state_table(stateTable);
+      this->set_state_table(stateTable.begin(), stateTable.end());
       ClearStatistics();
     }
 
