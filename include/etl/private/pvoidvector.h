@@ -137,7 +137,6 @@ namespace etl
 
     void clear();
 
-    void push_back();
     void push_back(value_type value);
 
     void pop_back();

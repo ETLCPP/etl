@@ -574,40 +574,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_push_front_null)
-    {
-      CompareDataDC compare_data;
-      DataDC data;
-
-      compare_data.push_front(ItemDC("1"));
-      compare_data.push_front(ItemDC("2"));
-      compare_data.push_front(ItemDC("3"));
-      compare_data.push_front(ItemDC("4"));
-      compare_data.push_front(ItemDC("5"));
-      compare_data.push_front(ItemDC("6"));
-
-      CHECK_NO_THROW(data.push_front());
-      data.front() = ItemDC("1");
-      CHECK_NO_THROW(data.push_front());
-      data.front() = ItemDC("2");
-      CHECK_NO_THROW(data.push_front());
-      data.front() = ItemDC("3");
-      CHECK_NO_THROW(data.push_front());
-      data.front() = ItemDC("4");
-      CHECK_NO_THROW(data.push_front());
-      data.front() = ItemDC("5");
-      CHECK_NO_THROW(data.push_front());
-      data.front() = ItemDC("6");
-
-      CHECK_EQUAL(6U, data.size());
-      CHECK_EQUAL(6, std::distance(data.begin(), data.end()));
-
-      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
-
-      CHECK(are_equal);
-    }
-
-    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_front_const)
     {
       const DataNDC data(sorted_data.begin(), sorted_data.end());

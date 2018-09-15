@@ -294,23 +294,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_push_void)
-    {
-      QueueInt queue;
-
-      queue.push() = 1;
-      CHECK_EQUAL(1U, queue.size());
-
-      queue.push() = 2;
-      CHECK_EQUAL(2U, queue.size());
-
-      CHECK_EQUAL(1, queue.front());
-
-      queue.pop();
-      CHECK_EQUAL(2, queue.front());
-    }
-
-    //*************************************************************************
     TEST(test_push_excess)
     {
       QueueInt queue;
@@ -374,39 +357,6 @@ namespace
       queue.pop();
       CHECK(queue.front() == Item('d', 4, 7.8));
       queue.pop();
-    }
-
-    //*************************************************************************
-    TEST(test_multiple_push_void)
-    {
-      QueueInt queue;
-
-      queue.push() = 1;
-      queue.push() = 2;
-      queue.push() = 3;
-
-      bool pass = true;
-
-      if (queue.front() != 1)
-      {
-        pass = false;
-      }
-
-      queue.pop();
-
-      if (queue.front() != 2)
-      {
-        pass = false;
-      }
-
-      queue.pop();
-
-      if (queue.front() != 3)
-      {
-        pass = false;
-      }
-
-      CHECK(pass);
     }
 
     //*************************************************************************

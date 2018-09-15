@@ -397,19 +397,6 @@ namespace etl
       initialise();
     }
 
-    //*************************************************************************
-    /// Increases the size of the vector by one, but does not initialise the new element.
-    /// If asserts or exceptions are enabled, throws a vector_full if the vector is already full.
-    //*************************************************************************
-    void push_back()
-    {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
-#endif
-
-      create_back();
-    }
-
     //*********************************************************************
     /// Inserts a value at the end of the vector.
     /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
