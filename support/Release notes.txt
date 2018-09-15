@@ -1,4 +1,8 @@
 ===============================================================================
+12.0.0
+Modified the API of etl::state_chart constructors.
+
+===============================================================================
 11.19.0
 Removed push(void) push_back(void) and push_front(void) function for containers.
 

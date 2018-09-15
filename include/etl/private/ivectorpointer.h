@@ -335,15 +335,6 @@ namespace etl
       base_t::clear();
     }
 
-    //*************************************************************************
-    /// Increases the size of the vector by one, but does not initialise the new element.
-    /// If asserts or exceptions are enabled, throws a vector_full if the vector is already full.
-    //*************************************************************************
-    void push_back()
-    {
-      base_t::push_back();
-    }
-
     //*********************************************************************
     /// Inserts a value at the end of the vector.
     /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
@@ -735,15 +726,6 @@ namespace etl
     void clear()
     {
       base_t::clear();
-    }
-
-    //*************************************************************************
-    /// Increases the size of the vector by one, but does not initialise the new element.
-    /// If asserts or exceptions are enabled, throws a vector_full if the vector is already full.
-    //*************************************************************************
-    void push_back()
-    {
-      base_t::push_back();
     }
 
     //*********************************************************************
