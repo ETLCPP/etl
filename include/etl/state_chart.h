@@ -127,31 +127,65 @@ namespace etl
 
     //*************************************************************************
     /// Constructor.
-    /// \tparam TRANSITION_TABLE_SIZE The transition table size.
-    /// \param object_           A reference to the implementation object.
-    /// \param transition_table_ The table of transitions.
-    /// \param state_id_         The initial state id.
+    /// \param object_                 A reference to the implementation object.
+    /// \param transition_table_begin_ The start of the table of transitions.
+    /// \param transition_table_end_   The end of the table of transitions.
+    /// \param state_id_               The initial state id.
     //*************************************************************************
-    template <const uint32_t TRANSITION_TABLE_SIZE>
     state_chart(TObject& object_,
-                const etl::array<transition, TRANSITION_TABLE_SIZE>& transition_table_,
+                const transition* transition_table_begin_,
+                const transition* transition_table_end_,
                 const state_id_t state_id_)
       : istate_chart(state_id_),
         object(object_),
-        transition_table(transition_table_.begin(), transition_table_.end()),
+        transition_table(transition_table_begin_, transition_table_end_),
         started(false)
     {
     }
 
     //*************************************************************************
-    /// Sets the state table.
-    /// \tparam STATE_TABLE_SIZE The state table size.
-    /// \param state_table_ A reference to the state table.
+    /// Constructor.
+    /// \param object_                 A reference to the implementation object.
+    /// \param transition_table_begin_ The start of the table of transitions.
+    /// \param transition_table_end_   The end of the table of transitions.
+    /// \param state_table_begin_      The start of the state table.
+    /// \param state_table_end_        The end of the state table.
+    /// \param state_id_               The initial state id.
     //*************************************************************************
-    template <const uint32_t STATE_TABLE_SIZE>
-    void set_state_table(const etl::array<state, STATE_TABLE_SIZE>& state_table_)
+    state_chart(TObject& object_,
+                const transition* transition_table_begin_,
+                const transition* transition_table_end_,
+                const state* state_table_begin_,
+                const state* state_table_end_,
+                const state_id_t state_id_)
+      : istate_chart(state_id_),
+        object(object_),
+        transition_table(transition_table_begin_, transition_table_end_),
+        state_table(state_table_begin_, state_table_end_),
+        started(false)
     {
-      state_table.assign(state_table_.begin(), state_table_.end());
+    }
+
+    //*************************************************************************
+    /// Sets the transition table.
+    /// \param state_table_begin_ The start of the state table.
+    /// \param state_table_end_   The end of the state table.
+    //*************************************************************************
+    void set_transition_table(const transition* transition_table_begin_,
+                              const transition* transition_table_end_)
+    {
+      transition_table.assign(transition_table_begin_, transition_table_end_);
+    }
+
+    //*************************************************************************
+    /// Sets the state table.
+    /// \param state_table_begin_ The start of the state table.
+    /// \param state_table_end_   The end of the state table.
+    //*************************************************************************
+    void set_state_table(const state* state_table_begin_,
+                         const state* state_table_end_)
+    {
+      state_table.assign(state_table_begin_, state_table_end_);
     }
 
     //*************************************************************************
