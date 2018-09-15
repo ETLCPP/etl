@@ -627,14 +627,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Adds a node to the front of the forward_list so a new value can be assigned to front().
-    //*************************************************************************
-    void push_front()
-    {
-      push_front(T());
-    }
-
-    //*************************************************************************
     /// Pushes a value to the front of the forward_list.
     //*************************************************************************
     void push_front(parameter_t value)

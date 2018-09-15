@@ -317,25 +317,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Allows a possibly more efficient 'push' by moving to the next input value
-    /// and returning a reference to it.
-    /// This may eliminate a copy by allowing direct construction in-place.<br>
-    /// If asserts or exceptions are enabled, throws an etl::queue_full is the queue is already full.
-    /// \return A reference to the position to 'push' to.
-    //*************************************************************************
-    reference push()
-    {
-      const size_type next = in;
-
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(queue_full));
-#endif
-      add_in();
-
-      return p_buffer[next];
-    }
-
-    //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
     ///\param value The value to use to construct the item to push to the queue.

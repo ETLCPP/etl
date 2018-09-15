@@ -1215,35 +1215,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_push_back_null)
-    {
-      Compare_DataDC compare_data = { DC("1"), DC("2"), DC("3"), DC("4"), DC("5") };
-      DataDC data;
-
-      CHECK_NO_THROW(data.push_back());
-      CHECK_NO_THROW(data.back() = DC("1"));
-      CHECK_EQUAL(size_t(1), data.size());
-
-      CHECK_NO_THROW(data.push_back());
-      CHECK_NO_THROW(data.back() = DC("2"));
-      CHECK_EQUAL(size_t(2), data.size());
-
-      CHECK_NO_THROW(data.push_back());
-      CHECK_NO_THROW(data.back() = DC("3"));
-      CHECK_EQUAL(size_t(3), data.size());
-
-      CHECK_NO_THROW(data.push_back());
-      CHECK_NO_THROW(data.back() = DC("4"));
-      CHECK_EQUAL(size_t(4), data.size());
-
-      CHECK_NO_THROW(data.push_back());
-      CHECK_NO_THROW(data.back() = DC("5"));
-      CHECK_EQUAL(size_t(5), data.size());
-
-      CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
-    }
-
-    //*************************************************************************
     TEST(test_push_back)
     {
       Compare_Data compare_data = { N1, N2, N3, N4, N5 };
@@ -1353,35 +1324,6 @@ namespace
       data.pop_back();
 
       CHECK_THROW(data.pop_back(), etl::deque_empty);
-    }
-
-    //*************************************************************************
-    TEST(test_push_front_null)
-    {
-      Compare_DataDC compare_data = { DC("5"), DC("4"), DC("3"), DC("2"), DC("1") };
-      DataDC data;
-
-      CHECK_NO_THROW(data.push_front());
-      CHECK_NO_THROW(data.front() = DC("1"));
-      CHECK_EQUAL(size_t(1), data.size());
-
-      CHECK_NO_THROW(data.push_front());
-      CHECK_NO_THROW(data.front() = DC("2"));
-      CHECK_EQUAL(size_t(2), data.size());
-
-      CHECK_NO_THROW(data.push_front());
-      CHECK_NO_THROW(data.front() = DC("3"));
-      CHECK_EQUAL(size_t(3), data.size());
-
-      CHECK_NO_THROW(data.push_front());
-      CHECK_NO_THROW(data.front() = DC("4"));
-      CHECK_EQUAL(size_t(4), data.size());
-
-      CHECK_NO_THROW(data.push_front());
-      CHECK_NO_THROW(data.front() = DC("5"));
-      CHECK_EQUAL(size_t(5), data.size());
-
-      CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
     }
 
     //*************************************************************************

@@ -243,23 +243,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_push_void)
-    {
-      etl::stack<int, 4> stack;
-
-      stack.push() = 1;
-      CHECK_EQUAL(1U, stack.size());
-
-      stack.push() = 2;
-      CHECK_EQUAL(2U, stack.size());
-
-      CHECK_EQUAL(2, stack.top());
-
-      stack.pop();
-      CHECK_EQUAL(1, stack.top());
-    }
-
-    //*************************************************************************
     TEST(test_push_excess)
     {
       etl::stack<int, 4> stack;
@@ -417,39 +400,6 @@ namespace
       stack.push(1);
       stack.push(2);
       stack.push(3);
-
-      bool pass = true;
-
-      if (stack.top() != 3)
-      {
-        pass = false;
-      }
-
-      stack.pop();
-
-      if (stack.top() != 2)
-      {
-        pass = false;
-      }
-
-      stack.pop();
-
-      if (stack.top() != 1)
-      {
-        pass = false;
-      }
-
-      CHECK(pass);
-    }
-
-    //*************************************************************************
-    TEST(test_multiple_push_void)
-    {
-      etl::stack<int, 4> stack;
-
-      stack.push() = 1;
-      stack.push() = 2;
-      stack.push() = 3;
 
       bool pass = true;
 

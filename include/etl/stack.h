@@ -323,23 +323,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Allows a possibly more efficient 'push' by moving to the next input value
-    /// and returning a reference to it.
-    /// This may eliminate a copy by allowing direct construction in-place.<br>
-    /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
-    /// \return A reference to the position to 'push' to.
-    //*************************************************************************
-    reference push()
-    {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(stack_full));
-#endif
-      base_t::add_in();
-
-      return p_buffer[top_index];
-    }
-
-    //*************************************************************************
     /// Gets a const reference to the value at the top of the stack.<br>
     /// \return A const reference to the value at the top of the stack.
     //*************************************************************************

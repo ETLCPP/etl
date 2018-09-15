@@ -1509,22 +1509,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Adds one to the front of the deque and returns a reference to the new element.
-    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
-    ///\return A reference to the item to assign to.
-    //*************************************************************************
-    reference push_back()
-    {
-      reference r = *_end;
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
-#endif
-      create_element_back();
-
-      return r;
-    }
-
-    //*************************************************************************
     /// Emplaces an item to the back of the deque.
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
     //*************************************************************************
@@ -1614,21 +1598,6 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(deque_full));
 #endif
       create_element_front(item);
-    }
-
-    //*************************************************************************
-    /// Adds one to the front of the deque and returns a reference to the new element.
-    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
-    ///\return A reference to the item to assign to.
-    //*************************************************************************
-    reference push_front()
-    {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
-#endif
-      create_element_front();
-
-      return *_begin;
     }
 
     //*************************************************************************

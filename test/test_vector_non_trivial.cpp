@@ -534,26 +534,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_push_back_null)
-    {
-      CompareDataDC compare_data;
-      DataDC data;
-
-      compare_data.push_back(DC("1"));
-
-      data.push_back();
-      data[0] = DC("1");
-
-      CHECK_EQUAL(compare_data.size(), data.size());
-
-      bool is_equal = std::equal(data.begin(),
-                                 data.end(),
-                                 compare_data.begin());
-
-      CHECK(is_equal);
-    }
-
-    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_back_excess)
     {
       DataNDC data;
