@@ -1,4 +1,9 @@
 ===============================================================================
+12.0.1
+Modified state_chart to accept recursive events.
+Made start() virtual.
+
+===============================================================================
 12.0.0
 Modified the API of etl::state_chart constructors.
 
