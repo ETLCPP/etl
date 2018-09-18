@@ -45,9 +45,10 @@ namespace etl
   {
   public:
 
-    typedef uint32_t state_id_t;
-    typedef uint32_t event_id_t;
+    typedef int state_id_t;
+    typedef int event_id_t;
 
+    virtual void start(const bool on_entry_initial = true) = 0;
     virtual void process_event(const event_id_t event_id) = 0;
 
     //*************************************************************************
@@ -71,6 +72,7 @@ namespace etl
     }
 
     state_id_t current_state_id; ///< The current state id.
+    state_id_t next_state_id;    ///< The next state id.
   };
 
   //***************************************************************************
@@ -273,6 +275,9 @@ namespace etl
             // Shall we execute the transition?
             if ((t->guard == nullptr) || ((object.*t->guard)()))
             {
+              // Remember the next state.
+              next_state_id = t->next_state_id;
+
               // Shall we execute the action?
               if (t->action != nullptr)
               {
@@ -280,7 +285,7 @@ namespace etl
               }
 
               // Changing state?
-              if (current_state_id != t->next_state_id)
+              if (current_state_id != next_state_id)
               {
                 const state* s;
 
@@ -294,7 +299,7 @@ namespace etl
                 }
 
                 // See if we have a state item for the next state.
-                s = find_state(t->next_state_id);
+                s = find_state(next_state_id);
 
                 // If the new state has an 'on_entry' then call it.
                 if ((s != state_table.end()) && (s->on_entry != nullptr))
@@ -302,7 +307,7 @@ namespace etl
                   (object.*(s->on_entry))();
                 }
 
-                current_state_id = t->next_state_id;
+                current_state_id = next_state_id;
               }
 
               t = transition_table.end();
