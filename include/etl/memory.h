@@ -864,7 +864,7 @@ namespace etl
 
         pointer value = p;
         p = p_;
-        delete value;
+        deleter(value);
       }
 
       void swap(unique_ptr& value)
