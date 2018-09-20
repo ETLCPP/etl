@@ -54,6 +54,7 @@ SOFTWARE.
 #define ETL_FILE "27"
 
 #ifdef ETL_COMPILER_GCC
+#pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
@@ -2231,6 +2232,10 @@ namespace etl
 }
 
 #include "private/minmax_pop.h"
+
+#ifdef ETL_COMPILER_GCC
+#pragma GCC diagnostic pop
+#endif
 
 #undef ETL_FILE
 

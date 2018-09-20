@@ -59,7 +59,8 @@ SOFTWARE.
 #endif
 
 #ifdef ETL_COMPILER_GCC
-  #pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
 //*****************************************************************************
@@ -1222,5 +1223,9 @@ namespace etl
 }
 
 #include "private/ivectorpointer.h"
+
+#ifdef ETL_COMPILER_GCC
+#pragma GCC diagnostic pop
+#endif
 
 #endif
