@@ -45,6 +45,7 @@ SOFTWARE.
 #include "../stl/iterator.h"
 
 #ifdef ETL_COMPILER_GCC
+#pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
@@ -203,6 +204,10 @@ namespace etl
 }
 
 #include "minmax_pop.h"
+
+#ifdef ETL_COMPILER_GCC
+#pragma GCC diagnostic pop
+#endif
 
 #undef ETL_IN_PVOIDVECTOR
 
