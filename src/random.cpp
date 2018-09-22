@@ -30,6 +30,7 @@ SOFTWARE.
 
 #include "etl/platform.h"
 #include "etl/random.h"
+#include "etl/binary.h"
 
 namespace etl
 {
@@ -341,6 +342,66 @@ namespace etl
   /// Get the next random_lsfr number in a specified inclusive range.
   //***************************************************************************
   uint32_t random_mwc::range(uint32_t low, uint32_t high)
+  {
+    uint32_t r = high - low + 1;
+    uint32_t n = operator()();
+    n %= r;
+    n += low;
+
+    return n;
+  }
+
+  //***************************************************************************
+  // Permuted congruential generator.
+  //***************************************************************************
+
+  //***************************************************************************
+  /// Default constructor.
+  /// Attempts to come up with a unique non-zero seed.
+  //***************************************************************************
+  random_pcg::random_pcg()
+  {
+    // An attempt to come up with a unique non-zero seed,
+    // based on the address of the instance.
+    uintptr_t n = reinterpret_cast<uintptr_t>(this);
+    value = static_cast<uint64_t>(n);
+  }
+
+  //***************************************************************************
+  /// Constructor with seed value.
+  ///\param seed The new seed value.
+  //***************************************************************************
+  random_pcg::random_pcg(uint32_t seed)
+  {
+    initialise(seed);
+  }
+
+  //***************************************************************************
+  /// Initialises the sequence with a new seed value.
+  ///\param seed The new seed value.
+  //***************************************************************************
+  void random_pcg::initialise(uint32_t seed)
+  {
+    value = uint64_t(seed) | (uint64_t(seed) << 32);
+  }
+
+  //***************************************************************************
+  /// Get the next random_lsfr number.
+  //***************************************************************************
+  uint32_t random_pcg::operator()()
+  {
+    uint64_t x = value;
+    unsigned count = (unsigned)(value >> 59);
+
+    value = (x * multiplier) + increment;
+    x ^= x >> 18;
+    return etl::rotate_right((uint32_t)(x >> 27), count);
+  }
+
+  //***************************************************************************
+  /// Get the next random_lsfr number in a specified inclusive range.
+  //***************************************************************************
+  uint32_t random_pcg::range(uint32_t low, uint32_t high)
   {
     uint32_t r = high - low + 1;
     uint32_t n = operator()();

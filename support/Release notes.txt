@@ -1,4 +1,8 @@
 ===============================================================================
+12.1.1
+Added random_pcg Permuted Congruential Generator
+
+===============================================================================
 12.0.1
 Modified state_chart to accept recursive events.
 Made start() virtual.

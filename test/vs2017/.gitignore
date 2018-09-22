@@ -3,3 +3,4 @@
 /random_lsfr.csv
 /random_mwc.csv
 /random_xorshift.csv
+/random_pcg.csv
