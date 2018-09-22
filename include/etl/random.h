@@ -162,6 +162,29 @@ namespace etl
     uint32_t value1;
     uint32_t value2;
   };
+
+  //***************************************************************************
+  /// A 32 bit random number generator.
+  /// Uses a permuted congruential generator calculation.
+  /// https://en.wikipedia.org/wiki/Permuted_congruential_generator
+  //***************************************************************************
+  class random_pcg : public random
+  {
+  public:
+
+    random_pcg();
+    explicit random_pcg(uint32_t seed);
+    void initialise(uint32_t seed);
+    uint32_t operator()();
+    uint32_t range(uint32_t low, uint32_t high);
+
+  private:
+
+    static const uint64_t multiplier = 6364136223846793005ULL;
+    static const uint64_t increment  = 1ULL;
+
+    uint64_t value;
+  };
 }
 
 #endif
