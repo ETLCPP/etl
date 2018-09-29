@@ -248,7 +248,7 @@ namespace etl
     //*************************************************************************
     bool is_trivial_list() const
     {
-      return (start_link.link_type::etl_next == nullptr) || (start_link.link_type::etl_next->etl_next == nullptr);;
+      return (start_link.link_type::etl_next == nullptr) || (start_link.link_type::etl_next->etl_next == nullptr);
     }
 
     //*************************************************************************
@@ -598,7 +598,7 @@ namespace etl
     //*************************************************************************
     const_reference front() const
     {
-      return static_cast<const value_type&>(*(this->get_head()));;
+      return static_cast<const value_type&>(*(this->get_head()));
     }
 
     //*************************************************************************

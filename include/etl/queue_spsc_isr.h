@@ -193,7 +193,7 @@ namespace etl
       value = p_buffer[read_index];
       p_buffer[read_index].~T();
 
-      read_index = get_next_index(read_index, MAX_SIZE);;
+      read_index = get_next_index(read_index, MAX_SIZE);
 
       --current_size;
 

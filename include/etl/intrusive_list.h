@@ -667,7 +667,7 @@ namespace etl
     //*************************************************************************
     const_reference front() const
     {
-      return *static_cast<const value_type*>(this->get_head());;
+      return *static_cast<const value_type*>(this->get_head());
     }
 
     //*************************************************************************
@@ -683,7 +683,7 @@ namespace etl
     //*************************************************************************
     const_reference back() const
     {
-      return *static_cast<const value_type*>(this->get_tail());;
+      return *static_cast<const value_type*>(this->get_tail());
     }
 
     //*************************************************************************
