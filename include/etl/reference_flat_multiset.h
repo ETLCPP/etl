@@ -548,7 +548,7 @@ namespace etl
     //*********************************************************************
     void erase(iterator first, iterator last)
     {
-      lookup.erase(first.ilookup, last.ilookup);;
+      lookup.erase(first.ilookup, last.ilookup);
     }
 
     //*************************************************************************

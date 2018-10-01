@@ -121,7 +121,7 @@ SOFTWARE.
 
   template <typename T> const bool etl_integral_type<T>::is_specialized = true;
   template <typename T> const int etl_integral_type<T>::digits = (CHAR_BIT * sizeof(T)) - (etl::is_signed<T>::value ? 1 : 0);
-  template <typename T> const int etl_integral_type<T>::digits10 = ETL_LOG2(digits);;
+  template <typename T> const int etl_integral_type<T>::digits10 = ETL_LOG2(digits);
   template <typename T> const int etl_integral_type<T>::max_digits10 = 0;
   template <typename T> const bool etl_integral_type<T>::is_signed = etl::is_signed<T>::value;
   template <typename T> const bool etl_integral_type<T>::is_integer = true;

@@ -499,7 +499,7 @@ namespace etl
     //*********************************************************************
     size_t count(key_parameter_t key) const
     {
-      return refmap_t::count(key);;
+      return refmap_t::count(key);
     }
 
     //*********************************************************************

@@ -630,17 +630,17 @@ namespace etl
 
     size_type find_last_of(T c, size_type position = npos) const
     {
-      return find_last_of(etl::basic_string_view<T, TTraits>(&c, 1), position);;
+      return find_last_of(etl::basic_string_view<T, TTraits>(&c, 1), position);
     }
 
     size_type find_last_of(const T* text, size_type position, size_type count) const
     {
-      return find_last_of(etl::basic_string_view<T, TTraits>(text, count), position);;
+      return find_last_of(etl::basic_string_view<T, TTraits>(text, count), position);
     }
 
     size_type find_last_of(const T* text, size_type position = npos) const
     {
-      return find_last_of(etl::basic_string_view<T, TTraits>(text), position);;
+      return find_last_of(etl::basic_string_view<T, TTraits>(text), position);
     }
 
     //*************************************************************************
@@ -733,17 +733,17 @@ namespace etl
 
     size_type find_last_not_of(T c, size_type position = npos) const
     {
-      return find_last_not_of(etl::basic_string_view<T, TTraits>(&c, 1), position);;
+      return find_last_not_of(etl::basic_string_view<T, TTraits>(&c, 1), position);
     }
 
     size_type find_last_not_of(const T* text, size_type position, size_type count) const
     {
-      return find_last_not_of(etl::basic_string_view<T, TTraits>(text, count), position);;
+      return find_last_not_of(etl::basic_string_view<T, TTraits>(text, count), position);
     }
 
     size_type find_last_not_of(const T* text, size_type position = npos) const
     {
-      return find_last_not_of(etl::basic_string_view<T, TTraits>(text), position);;
+      return find_last_not_of(etl::basic_string_view<T, TTraits>(text), position);
     }
 
     //*************************************************************************
