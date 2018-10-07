@@ -156,6 +156,7 @@
 		<Unit filename="../../include/etl/atomic/atomic_std.h" />
 		<Unit filename="../../include/etl/basic_string.h" />
 		<Unit filename="../../include/etl/binary.h" />
+		<Unit filename="../../include/etl/bit_stream.h" />
 		<Unit filename="../../include/etl/bitset.h" />
 		<Unit filename="../../include/etl/bloom_filter.h" />
 		<Unit filename="../../include/etl/c/ecl_timer.h" />
@@ -348,6 +349,7 @@
 		<Unit filename="../test_atomic_gcc_sync.cpp" />
 		<Unit filename="../test_atomic_std.cpp" />
 		<Unit filename="../test_binary.cpp" />
+		<Unit filename="../test_bit_stream.cpp" />
 		<Unit filename="../test_bitset.cpp" />
 		<Unit filename="../test_bloom_filter.cpp" />
 		<Unit filename="../test_bsd_checksum.cpp" />
@@ -388,6 +390,7 @@
 		<Unit filename="../test_jenkins.cpp" />
 		<Unit filename="../test_largest.cpp" />
 		<Unit filename="../test_list.cpp" />
+		<Unit filename="../test_list_shared_pool.cpp" />
 		<Unit filename="../test_map.cpp" />
 		<Unit filename="../test_maths.cpp" />
 		<Unit filename="../test_memory.cpp" />

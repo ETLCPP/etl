@@ -125,7 +125,7 @@ namespace
     DC M17 = DC("R");
     DC M18 = DC("S");
     DC M19 = DC("T");
-   
+
     const char* K0  = "FF"; // 0
     const char* K1  = "FG"; // 1
     const char* K2  = "FH"; // 2
@@ -240,6 +240,8 @@ namespace
 
       IDataNDC* pidata = pdata;
       delete pidata;
+
+      CHECK_EQUAL(current_count, NDC::get_instance_count());
     }
 
     //*************************************************************************
@@ -508,7 +510,7 @@ namespace
 
       DataNDC::iterator idata_end = data.begin();
       std::advance(idata_end, 5);
-      
+
       data.erase(idata, idata_end);
 
       CHECK_EQUAL(initial_data.size() - 3, data.size());

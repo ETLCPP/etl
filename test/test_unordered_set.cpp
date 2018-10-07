@@ -143,6 +143,8 @@ namespace
 
       IDataNDC* pidata = pdata;
       delete pidata;
+
+      CHECK_EQUAL(current_count, NDC::get_instance_count());
     }
 
     //*************************************************************************
@@ -377,7 +379,7 @@ namespace
 
       CHECK_EQUAL(data.size(), size_t(0));
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_count_key)
     {

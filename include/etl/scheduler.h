@@ -376,8 +376,6 @@ namespace etl
     {
       ETL_ASSERT(task_list.size() > 0, ETL_ERROR(etl::scheduler_no_tasks_exception));
 
-      const size_t task_list_size = task_list.size();
-
       scheduler_running = true;
 
       while (!scheduler_exit)

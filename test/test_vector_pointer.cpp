@@ -1198,7 +1198,6 @@ namespace
     TEST_FIXTURE(SetupFixture, test_insert_position_range)
     {
       const size_t INITIAL_SIZE = 5;
-      const int INITIAL_VALUE   = 1;
 
       for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
       {
@@ -1222,7 +1221,6 @@ namespace
     TEST_FIXTURE(SetupFixture, test_const_insert_position_range)
     {
       const size_t INITIAL_SIZE = 5;
-      const int INITIAL_VALUE = 1;
 
       for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
       {
@@ -1266,7 +1264,7 @@ namespace
 
       CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_insert_position_range_excess)
     {

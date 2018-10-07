@@ -104,7 +104,7 @@ namespace
     {
       DataNDC data;
 
-      CHECK_EQUAL(data.max_size(), 0);
+      CHECK_EQUAL(data.max_size(), 0U);
       CHECK(data.has_shared_pool());
     }
 
@@ -403,7 +403,7 @@ namespace
       CHECK_EQUAL(0U, data1.size());
       CHECK_EQUAL(half_data.size(), data2.size());
 
-      bool are_equal = std::equal(data2.begin(), data2.end(), half_data.begin());
+      are_equal = std::equal(data2.begin(), data2.end(), half_data.begin());
       CHECK(are_equal);
 
       // Do it again to check that clear() didn't screw up the internals.
@@ -696,7 +696,7 @@ namespace
       compare_data2.push_front(ItemNDC("7"));
       compare_data2.push_front(ItemNDC("8"));
       compare_data2.push_front(ItemNDC("9"));
-      
+
       CHECK_NO_THROW(data1.push_front(ItemNDC("0")));
       CHECK_NO_THROW(data1.push_front(ItemNDC("1")));
       CHECK_NO_THROW(data1.push_front(ItemNDC("2")));
