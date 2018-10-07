@@ -344,8 +344,8 @@ namespace etl
 
     ETL_ASSERT((NBITS <= std::numeric_limits<TReturn>::digits), ETL_ERROR(binary_out_of_range));
 
-    TReturn mask = TReturn(1U) << (NBITS - 1);
-    value = value & ((1U << NBITS) - 1);
+    TReturn mask = TReturn(1) << (NBITS - 1);
+    value = value & static_cast<TValue>((TReturn(1) << NBITS) - 1);
 
     return TReturn((value ^ mask) - mask);
   }
@@ -364,8 +364,8 @@ namespace etl
 
     ETL_ASSERT((NBITS <= std::numeric_limits<TReturn>::digits), ETL_ERROR(binary_out_of_range));
 
-    TReturn mask = TReturn(1U) << (NBITS - 1);
-    value = (value >> SHIFT) & ((1U << NBITS) - 1);
+    TReturn mask = TReturn(1) << (NBITS - 1);
+    value = (value >> SHIFT) & static_cast<TValue>((TReturn(1) << NBITS) - 1);
 
     return TReturn((value ^ mask) - mask);
   }

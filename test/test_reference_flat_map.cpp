@@ -220,6 +220,8 @@ namespace
 
       IDataNDC* pidata = pdata;
       delete pidata;
+
+      CHECK_EQUAL(current_count, NDC::get_instance_count());
     }
 
     //*************************************************************************
@@ -492,6 +494,8 @@ namespace
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),
                                  compare_data.begin());
+
+      CHECK(isEqual);
     }
 
     //*************************************************************************

@@ -693,6 +693,18 @@
     <ClInclude Include="..\..\include\etl\atomic\atomic_llvm_sync.h">
       <Filter>ETL\Utilities\Atomic</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\bit_stream.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\ivectorpointer.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\minmax_pop.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\minmax_push.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\include\etl\state_chart.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
@@ -1140,6 +1152,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_no_stl_iterator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bit_stream.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_state_chart.cpp">

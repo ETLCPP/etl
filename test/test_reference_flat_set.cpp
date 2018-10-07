@@ -176,6 +176,8 @@ namespace
 
       IDataNDC* pidata = pdata;
       delete pidata;
+
+      CHECK_EQUAL(current_count, NDC::get_instance_count());
     }
 
     //*************************************************************************

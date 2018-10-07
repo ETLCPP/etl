@@ -462,6 +462,7 @@ namespace
       CHECK((std::is_same<etl::make_signed<volatile int>::type,       std::make_signed<volatile int>::type>::value));
       CHECK((std::is_same<etl::make_signed<const int>::type,          std::make_signed<const int>::type>::value));
       CHECK((std::is_same<etl::make_signed<const volatile int>::type, std::make_signed<const volatile int>::type>::value));
+      CHECK((std::is_same<etl::make_signed<size_t>::type,             std::make_signed<size_t>::type>::value));
     }
 
     //*************************************************************************
@@ -487,6 +488,7 @@ namespace
       CHECK((std::is_same<etl::make_unsigned<volatile int>::type,       std::make_unsigned<volatile int>::type>::value));
       CHECK((std::is_same<etl::make_unsigned<const int>::type,          std::make_unsigned<const int>::type>::value));
       CHECK((std::is_same<etl::make_unsigned<const volatile int>::type, std::make_unsigned<const volatile int>::type>::value));
+      CHECK((std::is_same<etl::make_unsigned<size_t>::type,             std::make_unsigned<size_t>::type>::value));
     }
 
     //*************************************************************************

@@ -772,7 +772,6 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(unordered_map_full));
 
       const key_type&    key = key_value_pair.first;
-      const mapped_type& mapped = key_value_pair.second;
 
       // Get the hash index.
       size_t index = get_bucket_index(key);

@@ -803,7 +803,6 @@ namespace
     TEST_FIXTURE(SetupFixture, test_insert_position_range)
     {
       const size_t INITIAL_SIZE = 5;
-      const value_t INITIAL_VALUE = STR('A');
 
       for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
       {

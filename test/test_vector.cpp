@@ -593,7 +593,6 @@ namespace
     {
       const size_t INITIAL_SIZE     = SIZE;
       const int INITIAL_VALUE       = 1;
-      const int UNINITIALISED_VALUE = -1;
 
       Data data(INITIAL_SIZE, INITIAL_VALUE);
 
@@ -667,7 +666,6 @@ namespace
     TEST_FIXTURE(SetupFixture, test_insert_position_range)
     {
       const size_t INITIAL_SIZE = 5;
-      const int INITIAL_VALUE   = 1;
 
       for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
       {

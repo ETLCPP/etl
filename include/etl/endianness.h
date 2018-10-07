@@ -35,6 +35,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "enum_type.h"
+#include "binary.h"
 
 ///\defgroup endian endian
 /// Constants & utilities for endianess
@@ -101,6 +102,96 @@ namespace etl
       return (u.ui16[0] == 0x5678) ? etl::endian::little : etl::endian::big;
     }
   };
+
+  //***************************************************************************
+  inline uint8_t ntoh(const uint8_t network)
+  {
+    return network;
+  }
+
+  //***************************************************************************
+  inline uint16_t ntoh(const uint16_t network)
+  {
+    if (endianness::value() == endian::little)
+    {
+      return etl::reverse_bytes(network);
+    }
+    else
+    {
+      return network;
+    }
+  }
+
+  //***************************************************************************
+  inline uint32_t ntoh(const uint32_t network)
+  {
+    if (endianness::value() == endian::little)
+    {
+      return etl::reverse_bytes(network);
+    }
+    else
+    {
+      return network;
+    }
+  }
+
+  //***************************************************************************
+  inline uint64_t ntoh(const uint64_t network)
+  {
+    if (endianness::value() == endian::little)
+    {
+      return etl::reverse_bytes(network);
+    }
+    else
+    {
+      return network;
+    }
+  }
+
+  //***************************************************************************
+  inline uint8_t hton(const uint8_t host)
+  {
+    return host;
+  }
+
+  //***************************************************************************
+  inline uint16_t hton(const uint16_t host)
+  {
+    if (endianness::value() == endian::little)
+    {
+      return etl::reverse_bytes(host);
+    }
+    else
+    {
+      return host;
+    }
+  }
+
+  //***************************************************************************
+  inline uint32_t hton(const uint32_t host)
+  {
+    if (endianness::value() == endian::little)
+    {
+      return etl::reverse_bytes(host);
+    }
+    else
+    {
+      return host;
+    }
+  }
+
+  //***************************************************************************
+  inline uint64_t hton(const uint64_t host)
+  {
+    if (endianness::value() == endian::little)
+    {
+      return etl::reverse_bytes(host);
+    }
+    else
+    {
+      return host;
+    }
+  }
 }
 
 #endif
