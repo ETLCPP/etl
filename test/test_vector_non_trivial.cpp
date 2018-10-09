@@ -572,6 +572,106 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_back_multiple)
+    {
+      class Data
+      {
+      public:
+        std::string a;
+        size_t b;
+        double c;
+        const char *d;
+        Data(std::string w) : a(w){}
+        Data(std::string w, size_t x) : a(w), b(x){}
+        Data(std::string w, size_t x, double y) : a(w), b(x), c(y){}
+        Data(std::string w, size_t x, double y, const char *z) : a(w), b(x), c(y){}
+        bool operator == (const Data &other) const
+        {
+          return (a == other.a) && (b == other.b) && (c == other.c) && (d == other.d);
+        }
+      };
+
+      std::vector<Data> compare_data;
+      etl::vector<Data, SIZE * 3> data;
+
+      std::string s;
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        s += "x";
+
+        // 4 arguments
+        compare_data.emplace_back(s, i, static_cast<double>(i) + 0.1234, "emplace_back");
+        data.emplace_back(s, i, static_cast<double>(i) + 0.1234, "emplace_back");
+
+        // 3 arguments
+        compare_data.emplace_back(s, i, static_cast<double>(i) + 0.1234);
+        data.emplace_back(s, i, static_cast<double>(i) + 0.1234);
+
+        // 2 arguments
+        compare_data.emplace_back(s, i);
+        data.emplace_back(s, i);
+
+        // 1 argument
+        compare_data.emplace_back(s);
+        data.emplace_back(s);
+      }
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+
+      const bool is_equal = std::equal(data.begin(),
+                                       data.end(),
+                                       compare_data.begin());
+
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    // The C++11 variadic version uses non-const rvalue references so has the ability
+    // to emplace non-const reference members, the pre-C++11 const reference overloads
+    // does not have the ability to pass const reference parameters to non-const
+    // constructor parameters (like the members in Data below)
+    // So this is only tested on C++11 onwards
+    TEST_FIXTURE(SetupFixture, test_emplace_back_non_const_references)
+    {
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+      class Data
+      {
+      public:
+        std::string &a;
+        size_t &b;
+        double &c;
+        const char *d;
+        Data(std::string &w, size_t &x, double &y, const char *z) : a(w), b(x), c(y), d(z){}
+        bool operator == (const Data &other) const
+        {
+          return (a == other.a) && (b == other.b) && (c == other.c) && (d == other.d);
+        }
+      };
+
+      std::vector<Data> compare_data;
+      etl::vector<Data, SIZE * 3> data;
+
+      std::string a = "test_test_test";
+      size_t b = 9999;
+      double c = 123.456;
+      const char *d = "abcdefghijklmnopqrstuvwxyz";
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        data.emplace_back(a, b, c, d);
+        compare_data.emplace_back(a, b, c, d);
+      }
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+
+      const bool is_equal = std::equal(data.begin(),
+                                       data.end(),
+                                       compare_data.begin());
+
+      CHECK(is_equal);
+#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_pop_back)
     {
       CompareDataNDC compare_data(initial_data.begin(), initial_data.end());

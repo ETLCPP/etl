@@ -642,6 +642,19 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the front of the list..
     //*************************************************************************
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+    template <typename ... Args>
+    void emplace_front(Args && ... args)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
+#endif
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(std::forward<Args>(args)...);
+      ETL_INCREMENT_DEBUG_COUNT
+      insert_node_after(start_node, *p_data_node);
+    }
+#else
     template <typename T1>
     void emplace_front(const T1& value1)
     {
@@ -654,9 +667,6 @@ namespace etl
       insert_node_after(start_node, *p_data_node);
     }
 
-    //*************************************************************************
-    /// Emplaces a value to the front of the list..
-    //*************************************************************************
     template <typename T1, typename T2>
     void emplace_front(const T1& value1, const T2& value2)
     {
@@ -669,9 +679,6 @@ namespace etl
       insert_node_after(start_node, *p_data_node);
     }
 
-    //*************************************************************************
-    /// Emplaces a value to the front of the list..
-    //*************************************************************************
     template <typename T1, typename T2, typename T3>
     void emplace_front(const T1& value1, const T2& value2, const T3& value3)
     {
@@ -684,9 +691,6 @@ namespace etl
       insert_node_after(start_node, *p_data_node);
     }
 
-    //*************************************************************************
-    /// Emplaces a value to the front of the list..
-    //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
     void emplace_front(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
@@ -698,6 +702,7 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT
       insert_node_after(start_node, *p_data_node);
     }
+#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
 
     //*************************************************************************
     /// Removes a value from the front of the forward_list.
@@ -778,6 +783,20 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the forward_list after the specified position.
     //*************************************************************************
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+    template <typename ... Args>
+    iterator emplace_after(iterator position, Args && ... args)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
+
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(std::forward<Args>(args)...);
+      ETL_INCREMENT_DEBUG_COUNT
+      insert_node_after(*position.p_node, *p_data_node);
+
+      return iterator(p_data_node);
+    }
+#else
     template <typename T1>
     iterator emplace_after(iterator position, const T1& value1)
     {
@@ -791,9 +810,6 @@ namespace etl
       return iterator(p_data_node);
     }
 
-    //*************************************************************************
-    /// Emplaces a value to the forward_list after the specified position.
-    //*************************************************************************
     template <typename T1, typename T2>
     iterator emplace_after(iterator position, const T1& value1, const T2& value2)
     {
@@ -807,9 +823,6 @@ namespace etl
       return iterator(p_data_node);
     }
 
-    //*************************************************************************
-    /// Emplaces a value to the forward_list after the specified position.
-    //*************************************************************************
     template <typename T1, typename T2, typename T3>
     iterator emplace_after(iterator position, const T1& value1, const T2& value2, const T3& value3)
     {
@@ -823,9 +836,6 @@ namespace etl
       return iterator(p_data_node);
     }
 
-    //*************************************************************************
-    /// Emplaces a value to the forward_list after the specified position.
-    //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
     iterator emplace_after(iterator position, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
@@ -838,6 +848,7 @@ namespace etl
 
       return iterator(p_data_node);
     }
+#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
 
     //*************************************************************************
     /// Inserts 'n' copies of a value to the forward_list after the specified position.

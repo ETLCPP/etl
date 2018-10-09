@@ -321,6 +321,17 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
     ///\param value The value to use to construct the item to push to the queue.
     //*************************************************************************
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+    template <typename ... Args>
+    void emplace(Args && ... args)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(queue_full));
+#endif
+      ::new (&p_buffer[in]) T(std::forward<Args>(args)...);
+      add_in();
+    }
+#else
     template <typename T1>
     void emplace(const T1& value1)
     {
@@ -331,11 +342,6 @@ namespace etl
       add_in();
     }
 
-    //*************************************************************************
-    /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
-    ///\param value The value to use to construct the item to push to the queue.
-    //*************************************************************************
     template <typename T1, typename T2>
     void emplace(const T1& value1, const T2& value2)
     {
@@ -346,11 +352,6 @@ namespace etl
       add_in();
     }
 
-    //*************************************************************************
-    /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
-    ///\param value The value to use to construct the item to push to the queue.
-    //*************************************************************************
     template <typename T1, typename T2, typename T3>
     void emplace(const T1& value1, const T2& value2, const T3& value3)
     {
@@ -361,11 +362,6 @@ namespace etl
       add_in();
     }
 
-    //*************************************************************************
-    /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
-    ///\param value The value to use to construct the item to push to the queue.
-    //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
     void emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
@@ -375,6 +371,7 @@ namespace etl
       ::new (&p_buffer[in]) T(value1, value2, value3, value4);
       add_in();
     }
+#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
 
     //*************************************************************************
     /// Clears the queue to the empty state.
