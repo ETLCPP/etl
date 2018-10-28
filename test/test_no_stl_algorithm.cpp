@@ -103,11 +103,11 @@ namespace
     }
   };
 
-  std::ostream& operator << (std::ostream& os, const Data& data_)
-  {
-    os << data_.a << "," << data_.b;
-    return os;
-  }
+//  std::ostream& operator << (std::ostream& os, const Data& data_)
+//  {
+//    os << data_.a << "," << data_.b;
+//    return os;
+//  }
 
   struct Greater : public std::binary_function<int, int, bool>
   {
@@ -383,7 +383,7 @@ namespace
       int b = 2;
 
       etlstd::swap(a, b);
-      CHECK_EQUAL(2, a); 
+      CHECK_EQUAL(2, a);
       CHECK_EQUAL(1, b);
     }
 
@@ -437,7 +437,7 @@ namespace
 
       std::string::iterator itr1 = std::search(haystack.begin(), haystack.end(), needle.begin(), needle.begin());
       std::string::iterator itr2 = etlstd::search(haystack.begin(), haystack.end(), needle.begin(), needle.begin());
-      
+
       CHECK(itr1 == itr2);
     }
 
@@ -493,7 +493,7 @@ namespace
       etlstd::push_heap(data2.begin(), data2.end());
 
       CHECK(std::is_heap(data2.begin(), data2.end()));
-      
+
       isEqual = std::equal(std::begin(data1), std::end(data1), std::begin(data2));
       CHECK(isEqual);
     }
