@@ -43,16 +43,35 @@ SOFTWARE.
 
 #if defined(ETL_IN_UNIT_TEST)
   #if !defined(ETLSTD)
-    #define ETLSTD etlstd
+#define ETLSTD etlstd
   #endif
-  namespace etlstd
+namespace etlstd
 #else
   #if !defined(ETLSTD)
-    #define ETLSTD std
+#define ETLSTD std
   #endif
-  namespace std
+namespace std
 #endif
 {
+  //***************************************************************************
+  // advance
+  template <typename TIterator, typename TDistance>
+  typename etl::enable_if<!etl::is_same<typename ETLSTD::iterator_traits<TIterator>::iterator_tag, ETLSTD::random_access_iterator_tag>::value, void>::type
+    advance(TIterator itr, TDistance distance)
+  {
+    while (distance-- != 0)
+    {
+      ++itr;
+    }
+  }
+
+  template <typename TIterator, typename TDistance>
+  typename etl::enable_if<etl::is_same<typename ETLSTD::iterator_traits<TIterator>::iterator_tag, ETLSTD::random_access_iterator_tag>::value, void>::type
+    advance(TIterator itr, TDistance distance)
+  {
+    return itr += distance;
+  }
+
   //***************************************************************************
   // copy
   // Pointer
@@ -234,7 +253,7 @@ SOFTWARE.
     typedef ETLSTD::less<typename ETLSTD::iterator_traits<TIterator>::value_type> compare;
 
     return ETLSTD::make_pair(ETLSTD::lower_bound(first, last, value, compare()),
-                             ETLSTD::upper_bound(first, last, value, compare()));
+                          ETLSTD::upper_bound(first, last, value, compare()));
   }
 
   //***************************************************************************
@@ -242,7 +261,7 @@ SOFTWARE.
   template <typename TIterator, typename TUnaryPredicate>
   TIterator find_if(TIterator first, TIterator last, TUnaryPredicate predicate)
   {
-    while (first != last) 
+    while (first != last)
     {
       if (predicate(*first))
       {
@@ -302,7 +321,7 @@ SOFTWARE.
     {
       *first++ = value;
     }
-    
+
     return first;
   }
 
@@ -322,7 +341,7 @@ SOFTWARE.
 
     while (first != last)
     {
-      if (*first == value) 
+      if (*first == value)
       {
         ++n;
       }
@@ -342,7 +361,7 @@ SOFTWARE.
 
     while (first != last)
     {
-      if (predicate(*first)) 
+      if (predicate(*first))
       {
         ++n;
       }
@@ -473,7 +492,7 @@ SOFTWARE.
   template <typename TIteratorIn, typename TIteratorOut, typename TUnaryOperation>
   TIteratorOut transform(TIteratorIn first1, TIteratorIn last1, TIteratorOut d_first, TUnaryOperation unary_operation)
   {
-    while (first1 != last1) 
+    while (first1 != last1)
     {
       *d_first++ = unary_operation(*first1++);
     }
@@ -572,7 +591,7 @@ SOFTWARE.
 
     value_t value = last[-1];
     last[-1] = first[0];
-    
+
     private_heap::adjust_heap(first, distance_t(0), distance_t(last - first - 1), value, compare);
   }
 

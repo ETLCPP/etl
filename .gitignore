@@ -236,3 +236,14 @@ pip-log.txt
 *.session
 *.tags
 *.db
+
+#############
+## CLion
+#############
+
+.idea/
+
+# CMake
+cmake-build-*/
+
+unittest-cpp
