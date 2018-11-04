@@ -173,11 +173,6 @@ namespace etl
       return p;
     }
 
-    //*************************************************************************
-    /// Allocate storage for an object from the pool and create with 2 parameters.
-    /// If asserts or exceptions are enabled and there are no more free items an
-    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
-    //*************************************************************************
     template <typename T, typename T1, typename T2>
     T* create(const T1& value1, const T2& value2)
     {
@@ -191,11 +186,6 @@ namespace etl
       return p;
     }
 
-    //*************************************************************************
-    /// Allocate storage for an object from the pool and create with 3 parameters.
-    /// If asserts or exceptions are enabled and there are no more free items an
-    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
-    //*************************************************************************
     template <typename T, typename T1, typename T2, typename T3>
     T* create(const T1& value1, const T2& value2, const T3& value3)
     {
@@ -209,11 +199,6 @@ namespace etl
       return p;
     }
 
-    //*************************************************************************
-    /// Allocate storage for an object from the pool and create with 4 parameters.
-    /// If asserts or exceptions are enabled and there are no more free items an
-    /// etl::pool_no_allocation if thrown, otherwise a nullptr is returned.
-    //*************************************************************************
     template <typename T, typename T1, typename T2, typename T3, typename T4>
     T* create(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {

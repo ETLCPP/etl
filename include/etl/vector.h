@@ -416,6 +416,18 @@ namespace etl
     /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
     ///\param value The value to add.
     //*********************************************************************
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+    template <typename ... Args>
+    void emplace_back(Args && ... args)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
+#endif
+      ::new (p_end) T(std::forward<Args>(args)...);
+      ++p_end;
+      ETL_INCREMENT_DEBUG_COUNT
+    }
+#else
     template <typename T1>
     void emplace_back(const T1& value1)
     {
@@ -427,11 +439,6 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT
     }
 
-    //*********************************************************************
-    /// Constructs a value at the end of the vector.
-    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
-    ///\param value The value to add.
-    //*********************************************************************
     template <typename T1, typename T2>
     void emplace_back(const T1& value1, const T2& value2)
     {
@@ -443,11 +450,6 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT
     }
 
-    //*********************************************************************
-    /// Constructs a value at the end of the vector.
-    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
-    ///\param value The value to add.
-    //*********************************************************************
     template <typename T1, typename T2, typename T3>
     void emplace_back(const T1& value1, const T2& value2, const T3& value3)
     {
@@ -459,11 +461,6 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT
     }
 
-    //*********************************************************************
-    /// Constructs a value at the end of the vector.
-    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
-    ///\param value The value to add.
-    //*********************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
     void emplace_back(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
@@ -474,6 +471,7 @@ namespace etl
       ++p_end;
       ETL_INCREMENT_DEBUG_COUNT
     }
+#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
 
     //*************************************************************************
     /// Removes an element from the end of the vector.
@@ -514,6 +512,32 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the vextor at the specified position.
     //*************************************************************************
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+    template <typename ... Args>
+    iterator emplace(iterator position, Args && ... args)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(vector_full));
+
+      void* p;
+
+      if (position == end())
+      {
+        p = p_end++;
+        ETL_INCREMENT_DEBUG_COUNT
+      }
+      else
+      {
+        p = etl::addressof(*position);
+        create_back(back());
+        std::copy_backward(position, p_end - 1, p_end);
+        (*position).~T();
+      }
+
+      ::new (p) T(std::forward<Args>(args)...);
+
+      return position;
+    }
+#else
     template <typename T1>
     iterator emplace(iterator position, const T1& value1)
     {
@@ -539,9 +563,6 @@ namespace etl
       return position;
     }
 
-    //*************************************************************************
-    /// Emplaces a value to the vextor at the specified position.
-    //*************************************************************************
     template <typename T1, typename T2>
     iterator emplace(iterator position, const T1& value1, const T2& value2)
     {
@@ -567,9 +588,6 @@ namespace etl
       return position;
     }
 
-    //*************************************************************************
-    /// Emplaces a value to the vextor at the specified position.
-    //*************************************************************************
     template <typename T1, typename T2, typename T3>
     iterator emplace(iterator position, const T1& value1, const T2& value2, const T3& value3)
     {
@@ -595,9 +613,6 @@ namespace etl
       return position;
     }
 
-    //*************************************************************************
-    /// Emplaces a value to the vextor at the specified position.
-    //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
     iterator emplace(iterator position, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
@@ -622,6 +637,7 @@ namespace etl
 
       return position;
     }
+#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
 
     //*********************************************************************
     /// Inserts 'n' values to the vector.

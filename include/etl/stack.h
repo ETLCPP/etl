@@ -267,6 +267,17 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
     ///\param value The value to push to the stack.
     //*************************************************************************
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+    template <typename ... Args>
+    void emplace(Args && ... args)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(stack_full));
+#endif
+      base_t::add_in();
+      ::new (&p_buffer[top_index]) T(std::forward<Args>(args)...);
+    }
+#else
     template <typename T1>
     void emplace(const T1& value1)
     {
@@ -277,11 +288,6 @@ namespace etl
       ::new (&p_buffer[top_index]) T(value1);
     }
 
-    //*************************************************************************
-    /// Constructs a value in the stack place'.
-    /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
-    ///\param value The value to push to the stack.
-    //*************************************************************************
     template <typename T1, typename T2>
     void emplace(const T1& value1, const T2& value2)
     {
@@ -292,11 +298,6 @@ namespace etl
       ::new (&p_buffer[top_index]) T(value1, value2);
     }
 
-    //*************************************************************************
-    /// Constructs a value in the stack place'.
-    /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
-    ///\param value The value to push to the stack.
-    //*************************************************************************
     template <typename T1, typename T2, typename T3>
     void emplace(const T1& value1, const T2& value2, const T3& value3)
     {
@@ -307,11 +308,6 @@ namespace etl
       ::new (&p_buffer[top_index]) T(value1, value2, value3);
     }
 
-    //*************************************************************************
-    /// Constructs a value in the stack place'.
-    /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
-    ///\param value The value to push to the stack.
-    //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
     void emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
@@ -321,6 +317,7 @@ namespace etl
       base_t::add_in();
       ::new (&p_buffer[top_index]) T(value1, value2, value3, value4);
     }
+#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
 
     //*************************************************************************
     /// Gets a const reference to the value at the top of the stack.<br>

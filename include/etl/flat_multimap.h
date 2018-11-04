@@ -323,6 +323,22 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the map.
     //*************************************************************************
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+    template <typename ... Args>
+    std::pair<iterator, bool> emplace(const key_type& key, Args && ... args)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(flat_multimap_full));
+
+      // Create it.
+      value_type* pvalue = storage.allocate<value_type>();
+      ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
+      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(std::forward<Args>(args)...);
+      iterator i_element = lower_bound(key);
+      ETL_INCREMENT_DEBUG_COUNT
+
+      return refmap_t::insert_at(i_element, *pvalue);
+    }
+#else
     template <typename T1>
     std::pair<iterator, bool> emplace(const key_type& key, const T1& value1)
     {
@@ -338,9 +354,6 @@ namespace etl
       return refmap_t::insert_at(i_element, *pvalue);
     }
 
-    //*************************************************************************
-    /// Emplaces a value to the map.
-    //*************************************************************************
     template <typename T1, typename T2>
     std::pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2)
     {
@@ -356,9 +369,6 @@ namespace etl
       return refmap_t::insert_at(i_element, *pvalue);
     }
 
-    //*************************************************************************
-    /// Emplaces a value to the map.
-    //*************************************************************************
     template <typename T1, typename T2, typename T3>
     std::pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3)
     {
@@ -374,9 +384,6 @@ namespace etl
       return refmap_t::insert_at(i_element, *pvalue);
     }
 
-    //*************************************************************************
-    /// Emplaces a value to the map.
-    //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
     std::pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
@@ -391,6 +398,7 @@ namespace etl
 
       return refmap_t::insert_at(i_element, *pvalue);
     }
+#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
 
     //*********************************************************************
     /// Erases an element.

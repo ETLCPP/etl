@@ -174,6 +174,18 @@ namespace etl
     /// is the priority queue is already full.
     ///\param value The value to push to the queue.
     //*************************************************************************
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+    template <typename ... Args>
+    void emplace(Args && ... args)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(etl::priority_queue_full));
+
+      // Put element at end
+      container.emplace_back(std::forward<Args>(args)...);
+      // Make elements in container into heap
+      std::push_heap(container.begin(), container.end(), compare);
+    }
+#else
     template <typename T1>
     void emplace(const T1& value1)
     {
@@ -185,12 +197,6 @@ namespace etl
       std::push_heap(container.begin(), container.end(), compare);
     }
 
-    //*************************************************************************
-    /// Emplaces a value to the queue.
-    /// If asserts or exceptions are enabled, throws an etl::priority_queue_full
-    /// is the priority queue is already full.
-    ///\param value The value to push to the queue.
-    //*************************************************************************
     template <typename T1, typename T2>
     void emplace(const T1& value1, const T2& value2)
     {
@@ -202,12 +208,6 @@ namespace etl
       std::push_heap(container.begin(), container.end(), compare);
     }
 
-    //*************************************************************************
-    /// Emplaces a value to the queue.
-    /// If asserts or exceptions are enabled, throws an etl::priority_queue_full
-    /// is the priority queue is already full.
-    ///\param value The value to push to the queue.
-    //*************************************************************************
     template <typename T1, typename T2, typename T3>
     void emplace(const T1& value1, const T2& value2, const T3& value3)
     {
@@ -219,12 +219,6 @@ namespace etl
       std::push_heap(container.begin(), container.end(), compare);
     }
 
-    //*************************************************************************
-    /// Emplaces a value to the queue.
-    /// If asserts or exceptions are enabled, throws an etl::priority_queue_full
-    /// is the priority queue is already full.
-    ///\param value The value to push to the queue.
-    //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
     void emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
@@ -235,6 +229,7 @@ namespace etl
       // Make elements in container into heap
       std::push_heap(container.begin(), container.end(), compare);
     }
+#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
 
     //*************************************************************************
     /// Assigns values to the priority queue.
