@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.5.0)
 project(etl_unit_tests)
 
-# Bring in the UnitTest++ include directories and libraries
-find_package(UnitTest++)
+add_definitions(-DETL_DEBUG)
+
 
 if(NOT UnitTest++_FOUND)
-  # Add unittest-cpp as an ExternalProject  
+  # Add unittest-cpp as an ExternalProject
   include(cmake/unit-test_external_project.cmake)
   add_unittest_cpp()
 else()
@@ -46,7 +46,6 @@ set(TEST_SOURCE_FILES
   test_enum_type.cpp
   test_error_handler.cpp
   test_exception.cpp
-  # test_factory.cpp
   test_fixed_iterator.cpp
   test_flat_map.cpp
   test_flat_multimap.cpp
@@ -122,27 +121,31 @@ set(TEST_SOURCE_FILES
   ${CMAKE_SOURCE_DIR}/src/crc16_modbus.cpp
 
   # Compile the source level ecl_timer here as test has provided a ecl_user.h file
-  ${CMAKE_SOURCE_DIR}/src/c/ecl_timer.c
+  ${PROJECT_SOURCE_DIR}/../src/c/ecl_timer.c
   )
+
+
 
 if (WIN32)
   # test_error_handler.cpp uses windows APIs that assume the microsoft project
   # is setup for unicode support.  Note: This may have adverse effects on client
-  # projects and the tests should be updated to be independent of project setup 
+  # projects and the tests should be updated to be independent of project setup
   ADD_DEFINITIONS(-DUNICODE)
   ADD_DEFINITIONS(-D_UNICODE)
 endif()
 
-if (CMAKE_CXX_COMPILER_ID MATCHES "GNU") 
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   list(APPEND TEST_SOURCE_FILES "test_atomic_gcc_sync.cpp")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
 endif()
-add_executable(etl_tests 
+add_executable(etl_tests
   ${TEST_SOURCE_FILES}
   )
 target_link_libraries(etl_tests etl UnitTest++)
 target_include_directories(etl_tests
-  PUBLIC 
-  ${CMAKE_CURRENT_LIST_DIR} 
+  PUBLIC
+  ${CMAKE_CURRENT_LIST_DIR}
   )
 
 # Enable the 'make test' CMake target using the executable defined above
@@ -154,6 +157,6 @@ add_test(etl_unit_tests etl_tests)
 add_custom_target(test_verbose COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
 
 
-# Remaining Tests to be implemented: 
+# Remaining Tests to be implemented:
 #1. Enable embedded compile target testing
 #   - test_embedded_compile.cpp

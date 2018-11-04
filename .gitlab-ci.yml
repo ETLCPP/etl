@@ -1,0 +1,24 @@
+image: rikorose/gcc-cmake
+
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_STRATEGY: clone
+
+stages:
+  - build
+  - test
+
+Build ETL:
+  stage: build
+  script:
+    - cmake -DBUILD_TESTS=ON ./
+    - make
+  artifacts:
+    paths: 
+      - ./test/etl_tests
+
+Run ETL tests:
+  stage: test
+  dependencies:
+    - Build ETL
+  script: ./test/etl_tests

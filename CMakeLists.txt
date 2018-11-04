@@ -13,12 +13,12 @@ project(etl)
 set(ETL_PROFILE "DEFAULT" CACHE STRING "Defines what profile header to include.  See https://www.etlcpp.com/setup.html"
 )
 
-option(BUILD_TESTS "Build unit tests" ON)
+option(BUILD_TESTS "Build unit tests" OFF)
 
 
 # Note: this will not compile src/c/ecl_timer.c as that c file has a dependence
 #       on ecl_user.h which is provided by clients of this library 
-add_library(etl
+add_library(etl STATIC
   src/binary.cpp
   src/crc16.cpp
   src/crc16_ccitt.cpp
@@ -29,8 +29,6 @@ add_library(etl
   src/error_handler.cpp
   src/pearson.cpp
   src/random.cpp
-  src/private
-  src/private/pvoidvector.cpp
   )
 target_include_directories(etl
   PUBLIC

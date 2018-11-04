@@ -205,9 +205,6 @@ namespace
     int message_unknown_count;
   };
 
-  etl::imessage_router* p_router;
-  etl::imessage_bus*    p_bus;
-
   SUITE(test_message_router)
   {
     //=========================================================================
