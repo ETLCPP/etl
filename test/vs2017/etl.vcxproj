@@ -568,7 +568,6 @@
     <ClCompile Include="..\..\src\c\ecl_timer.c" />
     <ClCompile Include="..\..\src\error_handler.cpp" />
     <ClCompile Include="..\..\src\pearson.cpp" />
-    <ClCompile Include="..\..\src\private\pvoidvector.cpp" />
     <ClCompile Include="..\..\src\random.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\murmurhash3.cpp" />

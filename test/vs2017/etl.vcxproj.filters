@@ -1004,9 +1004,6 @@
     <ClCompile Include="..\test_xor_rotate_checksum.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\private\pvoidvector.cpp">
-      <Filter>ETL\Private</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\crc8_ccitt.cpp">
       <Filter>ETL\Maths</Filter>
     </ClCompile>
