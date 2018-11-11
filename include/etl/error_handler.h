@@ -44,6 +44,18 @@ SOFTWARE.
 
 namespace etl
 {
+  namespace private_error_handler
+  {
+    template <class dummy>
+    struct wrapper
+    {
+      static etl::ifunction<const etl::exception&>* p_ifunction;
+    };
+
+    template <class dummy>
+    etl::ifunction<const etl::exception&>* wrapper<dummy>::p_ifunction = nullptr;
+  }
+
   //***************************************************************************
   /// Error handler for when throwing exceptions is not required.
   ///\ingroup error_handler
@@ -75,12 +87,26 @@ namespace etl
       }
     };
 
-    static void set_callback(ifunction<const etl::exception&>& f);
-    static void error(const etl::exception& e);
+    //*****************************************************************************
+    /// Sets the error callback function.
+    ///\param f A reference to an etl::function object that will handler errors.
+    //*****************************************************************************
+    static void set_callback(ifunction<const etl::exception&>& f)
+    {
+      private_error_handler::wrapper<void>::p_ifunction = &f;
+    }
 
-  private:
-
-    static ifunction<const etl::exception&>* p_ifunction;
+    //*****************************************************************************
+    /// Sends the exception error to the user's handler function.
+    ///\param e The exception error.
+    //*****************************************************************************
+    static void error(const etl::exception& e)
+    {
+      if (private_error_handler::wrapper<void>::p_ifunction != nullptr)
+      {
+        (*private_error_handler::wrapper<void>::p_ifunction)(e);
+      }
+    }
   };
 }
 
@@ -95,12 +121,12 @@ namespace etl
 ///\ingroup error_handler
 //***************************************************************************
 #if defined(ETL_NO_CHECKS)
-  #define ETL_ASSERT(b, e)                                                             // Does nothing.
+  #define ETL_ASSERT(b, e)                                                               // Does nothing.
 #elif defined(ETL_THROW_EXCEPTIONS)
   #if defined(ETL_LOG_ERRORS)
-    #define ETL_ASSERT(b, e) {if (!(b)) {etl::error_handler::error((e)); throw((e);)}} // If the condition fails, calls the error handler then throws an exception.
+    #define ETL_ASSERT(b, e) {if (!(b)) {etl::error_handler::error((e)); throw((e);)}}   // If the condition fails, calls the error handler then throws an exception.
   #else
-    #define ETL_ASSERT(b, e) {if (!(b)) {throw((e));}}                                 // If the condition fails, throws an exception.
+    #define ETL_ASSERT(b, e) {if (!(b)) {throw((e));}}                                   // If the condition fails, throws an exception.
   #endif
 #else
   #if defined(ETL_LOG_ERRORS)
@@ -111,9 +137,9 @@ namespace etl
     #endif
   #else
     #if defined(NDEBUG)
-      #define ETL_ASSERT(b, e)                                                         // Does nothing.
+      #define ETL_ASSERT(b, e)                                                           // Does nothing.
     #else
-      #define ETL_ASSERT(b, e) assert((b))                                             // If the condition fails, asserts.
+      #define ETL_ASSERT(b, e) assert((b))                                               // If the condition fails, asserts.
     #endif
   #endif
 #endif
