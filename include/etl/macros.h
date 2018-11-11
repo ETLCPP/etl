@@ -5,9 +5,9 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2018 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,33 +28,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "etl/platform.h"
-#include "etl/error_handler.h"
-#include "etl/nullptr.h"
+#ifndef ETL_MACROS_INCLUDED
+#define ETL_MACROS_INCLUDED
 
-//*****************************************************************************
-/// The error function callback pointer.
-//*****************************************************************************
-etl::ifunction<const etl::exception&>* etl::error_handler::p_ifunction = nullptr;
+#define ETL_CONCAT2(X, Y) X##Y
+#define ETL_CONCAT(X, Y) ETL_CONCAT2(X, Y)
+#define ETL_STRINGIFY2(X) #X
+#define ETL_STRINGIFY(X) ETL_STRINGIFY2(X)
+#define ETL_WIDE_STRING(X) ETL_CONCAT(L, ETL_STRINGIFY(X))
+#define ETL_U16_STRING(X) ETL_CONCAT(u, ETL_STRINGIFY(X))
+#define ETL_U32_STRING(X) ETL_CONCAT(U, ETL_STRINGIFY(X))
 
-//*****************************************************************************
-/// Sets the error callback function.
-///\param f A reference to an etl::function object that will handler errors.
-//*****************************************************************************
-void etl::error_handler::set_callback(ifunction<const etl::exception&>& f)
-{
-  p_ifunction = &f;
-}
-
-//*****************************************************************************
-/// Sends the exception error to the user's handler function.
-///\param e The exception error.
-//*****************************************************************************
-void etl::error_handler::error(const etl::exception& e)
-{
-  if (p_ifunction != nullptr)
-  {
-    (*p_ifunction)(e);
-  }
-}
+#endif
 

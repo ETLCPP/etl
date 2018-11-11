@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2015 jwellbelove
 
@@ -82,6 +82,7 @@ namespace etl
 
   //***************************************************************************
   /// Maximum value that can be contained in N bits.
+  ///\ingroup binary
   //***************************************************************************
   /// Definition for non-zero NBITS.
   template <const size_t NBITS>
@@ -104,6 +105,7 @@ namespace etl
 
   //***************************************************************************
   /// Rotate left.
+  ///\ingroup binary
   //***************************************************************************
   template <typename T>
   T rotate_left(T value)
@@ -117,6 +119,7 @@ namespace etl
 
   //***************************************************************************
   /// Rotate left.
+  ///\ingroup binary
   //***************************************************************************
   template <typename T>
   T rotate_left(T value, size_t distance)
@@ -132,6 +135,7 @@ namespace etl
 
   //***************************************************************************
   /// Rotate right.
+  ///\ingroup binary
   //***************************************************************************
   template <typename T>
   T rotate_right(T value)
@@ -145,6 +149,7 @@ namespace etl
 
   //***************************************************************************
   /// Rotate right.
+  ///\ingroup binary
   //***************************************************************************
   template <typename T>
   T rotate_right(T value, size_t distance)
@@ -161,6 +166,7 @@ namespace etl
   //***************************************************************************
   /// Rotate.
   /// Positive is left, negative is right.
+  ///\ingroup binary
   //***************************************************************************
   template <typename T>
   T rotate(T value, typename etl::make_signed<size_t>::type distance)
@@ -182,35 +188,8 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Reverse bits.
-  //***************************************************************************
-#if ETL_8BIT_SUPPORT
-  uint8_t reverse_bits(uint8_t value);
-  inline int8_t reverse_bits(int8_t value) { return int8_t(reverse_bits(uint8_t(value))); }
-#endif
-  uint16_t reverse_bits(uint16_t value);
-  inline int16_t reverse_bits(int16_t value) { return int16_t(reverse_bits(uint16_t(value))); }
-  uint32_t reverse_bits(uint32_t value);
-  inline int32_t reverse_bits(int32_t value) { return int32_t(reverse_bits(uint32_t(value))); }
-  uint64_t reverse_bits(uint64_t value);
-  inline int64_t reverse_bits(int64_t value) { return int64_t(reverse_bits(uint64_t(value))); }
-
-  //***************************************************************************
-  /// Reverse bytes.
-  //***************************************************************************
-#if ETL_8BIT_SUPPORT
-  inline uint8_t reverse_bytes(uint8_t value) { return value; }
-  inline int8_t reverse_bytes(int8_t value) { return value; }
-#endif
-  uint16_t reverse_bytes(uint16_t value);
-  inline int16_t reverse_bytes(int16_t value) { return int16_t(reverse_bytes(uint16_t(value))); }
-  uint32_t reverse_bytes(uint32_t value);
-  inline int32_t reverse_bytes(int32_t value) { return int32_t(reverse_bytes(uint32_t(value))); }
-  uint64_t reverse_bytes(uint64_t value);
-  inline int64_t reverse_bytes(int64_t value) { return int64_t(reverse_bytes(uint64_t(value))); }
-
-  //***************************************************************************
   /// Converts binary to Gray code.
+  ///\ingroup binary
   //***************************************************************************
   template <typename T>
   T binary_to_gray(T value)
@@ -221,49 +200,8 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Converts Gray code to binary.
-  //***************************************************************************
-#if ETL_8BIT_SUPPORT
-  uint8_t gray_to_binary(uint8_t value);
-  inline int8_t gray_to_binary(int8_t value) { return int8_t(gray_to_binary(uint8_t(value))); }
-#endif
-  uint16_t gray_to_binary(uint16_t value);
-  inline int16_t gray_to_binary(int16_t value) { return int16_t(gray_to_binary(uint16_t(value))); }
-  uint32_t gray_to_binary(uint32_t value);
-  inline int32_t gray_to_binary(int32_t value) { return int32_t(gray_to_binary(uint32_t(value))); }
-  uint64_t gray_to_binary(uint64_t value);
-  inline int64_t gray_to_binary(int64_t value) { return int64_t(gray_to_binary(uint64_t(value))); }
-
-  //***************************************************************************
-  /// Count set bits.
-  //***************************************************************************
-#if ETL_8BIT_SUPPORT
-  uint_least8_t count_bits(uint8_t value);
-  inline uint_least8_t count_bits(int8_t value) { return count_bits(uint8_t(value)); }
-#endif
-  uint_least8_t count_bits(uint16_t value);
-  inline uint_least8_t count_bits(int16_t value) { return count_bits(uint16_t(value)); }
-  uint_least8_t count_bits(uint32_t value);
-  inline uint_least8_t count_bits(int32_t value) { return count_bits(uint32_t(value)); }
-  uint_least8_t count_bits(uint64_t value);
-  inline uint_least8_t count_bits(int64_t value) { return count_bits(uint64_t(value)); }
-
-  //***************************************************************************
-  /// Parity. 0 = even, 1 = odd
-  //***************************************************************************
-#if ETL_8BIT_SUPPORT
-  uint_least8_t parity(uint8_t value);
-  inline uint_least8_t parity(int8_t value) { return parity(uint8_t(value)); }
-#endif
-  uint_least8_t parity(uint16_t value);
-  inline uint_least8_t parity(int16_t value) { return parity(uint16_t(value)); }
-  uint_least8_t parity(uint32_t value);
-  inline uint_least8_t parity(int32_t value) { return parity(uint32_t(value)); }
-  uint_least8_t parity(uint64_t value);
-  inline uint_least8_t parity(int64_t value) { return parity(uint64_t(value)); }
-
-  //***************************************************************************
   /// Fold a binary number down to a set number of bits using XOR.
+  ///\ingroup binary
   //***************************************************************************
   template <typename TReturn, const size_t NBITS, typename TValue>
   TReturn fold_bits(TValue value)
@@ -292,6 +230,7 @@ namespace etl
   //***************************************************************************
   /// Sign extend.
   /// Converts an N bit binary number, where bit N-1 is the sign bit, to a signed integral type.
+  ///\ingroup binary
   //***************************************************************************
   template <typename TReturn, const size_t NBITS, typename TValue>
   TReturn sign_extend(TValue value)
@@ -313,6 +252,7 @@ namespace etl
   /// Sign extend.
   /// Converts an N bit binary number, where bit N-1 is the sign bit, and SHIFT
   /// is the right shift amount, to a signed integral type.
+  ///\ingroup binary
   //***************************************************************************
   template <typename TReturn, const size_t NBITS, const size_t SHIFT, typename TValue>
   TReturn sign_extend(TValue value)
@@ -334,6 +274,7 @@ namespace etl
   //***************************************************************************
   /// Sign extend.
   /// Converts an N bit binary number, where bit N-1 is the sign bit, to a signed integral type.
+  ///\ingroup binary
   //***************************************************************************
   template <typename TReturn, typename TValue>
   TReturn sign_extend(TValue value, const size_t NBITS)
@@ -354,6 +295,7 @@ namespace etl
   /// Sign extend.
   /// Converts an N bit binary number, where bit N-1 is the sign bit, and SHIFT
   /// is the right shift amount, to a signed integral type.
+  ///\ingroup binary
   //***************************************************************************
   template <typename TReturn, typename TValue>
   TReturn sign_extend(TValue value, const size_t NBITS, const size_t SHIFT)
@@ -370,24 +312,12 @@ namespace etl
     return TReturn((value ^ mask) - mask);
   }
 
-  //***************************************************************************
-  /// Count trailing zeros. bit.
-  /// Uses a binary search.
-  //***************************************************************************
-#if ETL_8BIT_SUPPORT
-  uint_least8_t count_trailing_zeros(uint8_t value);
-  inline uint_least8_t count_trailing_zeros(int8_t value) { return count_trailing_zeros(uint8_t(value)); }
-#endif
-  uint_least8_t count_trailing_zeros(uint16_t value);
-  inline uint_least8_t count_trailing_zeros(int16_t value) { return count_trailing_zeros(uint16_t(value)); }
-  uint_least8_t count_trailing_zeros(uint32_t value);
-  inline uint_least8_t count_trailing_zeros(int32_t value) { return count_trailing_zeros(uint32_t(value)); }
-  uint_least8_t count_trailing_zeros(uint64_t value);
-  inline uint_least8_t count_trailing_zeros(int64_t value) { return count_trailing_zeros(uint64_t(value)); }
+
 
   //***************************************************************************
   /// Find the position of the first set bit.
   /// Starts from LSB.
+  ///\ingroup binary
   //***************************************************************************
   template <typename T>
   uint_least8_t first_set_bit_position(T value)
@@ -398,6 +328,7 @@ namespace etl
   //***************************************************************************
   /// Find the position of the first clear bit.
   /// Starts from LSB.
+  ///\ingroup binary
   //***************************************************************************
   template <typename T>
   uint_least8_t first_clear_bit_position(T value)
@@ -409,6 +340,7 @@ namespace etl
   //***************************************************************************
   /// Find the position of the first bit that is clear or set.
   /// Starts from LSB.
+  ///\ingroup binary
   //***************************************************************************
   template <typename T>
   uint_least8_t first_bit_position(bool state, T value)
@@ -424,6 +356,7 @@ namespace etl
   //***************************************************************************
   /// Gets the value of the bit at POSITION
   /// Starts from LSB.
+  ///\ingroup binary
   //***************************************************************************
   template <const size_t POSITION>
   struct bit
@@ -437,6 +370,7 @@ namespace etl
 
   //***************************************************************************
   /// Fills a value with a bit pattern. Compile time.
+  ///\ingroup binary
   //***************************************************************************
   template <typename TResult, typename TValue = void*, const TValue VALUE = (void*)0>
   class binary_fill
@@ -459,6 +393,7 @@ namespace etl
 
   //***************************************************************************
   /// Fills a value with a bit pattern. Run time.
+  ///\ingroup binary
   //***************************************************************************
   template <typename TResult>
   class binary_fill<TResult, void*, (void*)0>
@@ -483,6 +418,7 @@ namespace etl
 #if ETL_8BIT_SUPPORT
   //***************************************************************************
   /// Detects the presence of zero bytes. Compile time.
+  ///\ingroup binary
   //***************************************************************************
   template <typename TValue = void*, const TValue VALUE = (void*)0>
   class has_zero_byte
@@ -506,6 +442,7 @@ namespace etl
 
   //***************************************************************************
   /// Detects the presence of zero bytes. Run time.
+  ///\ingroup binary
   //***************************************************************************
   template <>
   class has_zero_byte<void*, (void*)0>
@@ -526,6 +463,7 @@ namespace etl
 
   //***************************************************************************
   /// Detects the presence of a byte of value N. Compile time.
+  ///\ingroup binary
   //***************************************************************************
   template <const uint8_t N = 0, typename TValue = void*, const TValue VALUE = (void*)0>
   class has_byte_n
@@ -540,6 +478,7 @@ namespace etl
 
   //***************************************************************************
   /// Detects the presence of a byte of value N. Partial run time.
+  ///\ingroup binary
   //***************************************************************************
   template <const uint8_t N>
   class has_byte_n<N, void*, (void*)0>
@@ -555,6 +494,7 @@ namespace etl
 
   //***************************************************************************
   /// Detects the presence of a byte of value N. Run time.
+  ///\ingroup binary
   //***************************************************************************
   template <>
   class has_byte_n<0, void*, (void*)0>
@@ -573,6 +513,7 @@ namespace etl
   /// Merges two values according to a mask.
   /// Ones in the mask select bits from 'first', zeros select bits from second.
   /// Mask is a function parameter.
+  ///\ingroup binary
   //***************************************************************************
   template <typename T>
   T binary_merge(const T first, const T second, const T mask)
@@ -584,6 +525,7 @@ namespace etl
   /// Merges two values according to a mask.
   /// Ones in the mask select bits from 'first', zeros select bits from second.
   /// Mask is a template parameter.
+  ///\ingroup binary
   //***************************************************************************
   template <typename T, const T MASK>
   T binary_merge(const T first, const T second)
@@ -591,56 +533,710 @@ namespace etl
     return second ^ ((second ^ first) & MASK);
   }
 
+#if ETL_8BIT_SUPPORT
   //***************************************************************************
-  /// Binary interleave
+  /// Reverse 8 bits.
+  ///\ingroup binary
+  //***************************************************************************
+  inline uint8_t reverse_bits(uint8_t value)
+  {
+    value = ((value & 0xAA) >> 1) | ((value & 0x55) << 1);
+    value = ((value & 0xCC) >> 2) | ((value & 0x33) << 2);
+    value = (value >> 4) | (value << 4);
+
+    return value;
+  }
+
+  inline int8_t reverse_bits(int8_t value)
+  {
+    return int8_t(reverse_bits(uint8_t(value)));
+  }
+#endif
+
+  //***************************************************************************
+  /// Reverse 16 bits.
+  ///\ingroup binary
+  //***************************************************************************
+  inline uint16_t reverse_bits(uint16_t value)
+  {
+    value = ((value & 0xAAAA) >> 1) | ((value & 0x5555) << 1);
+    value = ((value & 0xCCCC) >> 2) | ((value & 0x3333) << 2);
+    value = ((value & 0xF0F0) >> 4) | ((value & 0x0F0F) << 4);
+    value = (value >> 8) | (value << 8);
+
+    return value;
+  }
+
+  inline int16_t reverse_bits(int16_t value)
+  {
+    return int16_t(reverse_bits(uint16_t(value)));
+  }
+
+  //***************************************************************************
+  /// Reverse 32 bits.
+  ///\ingroup binary
+  //***************************************************************************
+  inline uint32_t reverse_bits(uint32_t value)
+  {
+    value = ((value & 0xAAAAAAAA) >>  1) | ((value & 0x55555555) <<  1);
+    value = ((value & 0xCCCCCCCC) >>  2) | ((value & 0x33333333) <<  2);
+    value = ((value & 0xF0F0F0F0) >>  4) | ((value & 0x0F0F0F0F) <<  4);
+    value = ((value & 0xFF00FF00) >>  8) | ((value & 0x00FF00FF) <<  8);
+    value = (value >> 16) | (value << 16);
+
+    return value;
+  }
+
+  inline int32_t reverse_bits(int32_t value)
+  {
+    return int32_t(reverse_bits(uint32_t(value)));
+  }
+
+  //***************************************************************************
+  /// Reverse 64 bits.
+  ///\ingroup binary
+  //***************************************************************************
+  inline uint64_t reverse_bits(uint64_t value)
+  {
+    value = ((value & 0xAAAAAAAAAAAAAAAA) >>  1) | ((value & 0x5555555555555555) <<  1);
+    value = ((value & 0xCCCCCCCCCCCCCCCC) >>  2) | ((value & 0x3333333333333333) <<  2);
+    value = ((value & 0xF0F0F0F0F0F0F0F0) >>  4) | ((value & 0x0F0F0F0F0F0F0F0F) <<  4);
+    value = ((value & 0xFF00FF00FF00FF00) >>  8) | ((value & 0x00FF00FF00FF00FF) <<  8);
+    value = ((value & 0xFFFF0000FFFF0000) >> 16) | ((value & 0x0000FFFF0000FFFF) << 16);
+    value = (value >> 32) | (value << 32);
+
+    return value;
+  }
+
+  inline int64_t reverse_bits(int64_t value)
+  {
+    return int64_t(reverse_bits(uint64_t(value)));
+  }
+
+  //***************************************************************************
+  /// Reverse bytes 8 bit.
+  ///\ingroup binary
   //***************************************************************************
 #if ETL_8BIT_SUPPORT
-  uint16_t binary_interleave(uint8_t first, uint8_t second);
-  inline int16_t binary_interleave(int8_t first, int8_t second) { return int16_t(binary_interleave(uint8_t(first), uint8_t(second))); }
+  inline uint8_t reverse_bytes(uint8_t value)
+  {
+    return value;
+  }
+
+  inline int8_t reverse_bytes(int8_t value)
+  {
+    return value;
+  }
 #endif
-  uint32_t binary_interleave(uint16_t first, uint16_t second);
-  inline int32_t binary_interleave(int16_t first, int16_t second) { return int32_t(binary_interleave(uint16_t(first), uint16_t(second))); }
-  uint64_t binary_interleave(uint32_t first, uint32_t second);
-  inline int64_t binary_interleave(int32_t first, int32_t second) { return int64_t(binary_interleave(uint16_t(first), uint16_t(second))); }
+
+  //***************************************************************************
+  /// Reverse bytes 16 bit.
+  ///\ingroup binary
+  //***************************************************************************
+  inline uint16_t reverse_bytes(uint16_t value)
+  {
+    value = (value >> 8) | (value << 8);
+
+    return value;
+  }
+
+  inline int16_t reverse_bytes(int16_t value)
+  {
+    return int16_t(reverse_bytes(uint16_t(value)));
+  }
+
+  //***************************************************************************
+  /// Reverse bytes 32 bit.
+  ///\ingroup binary
+  //***************************************************************************
+  inline uint32_t reverse_bytes(uint32_t value)
+  {
+    value = ((value & 0xFF00FF00) >> 8) | ((value & 0x00FF00FF) << 8);
+    value = (value >> 16) | (value << 16);
+
+    return value;
+  }
+
+  inline int32_t reverse_bytes(int32_t value)
+  {
+    return int32_t(reverse_bytes(uint32_t(value)));
+  }
+
+  //***************************************************************************
+  /// Reverse bytes 64 bit.
+  ///\ingroup binary
+  //***************************************************************************
+  inline uint64_t reverse_bytes(uint64_t value)
+  {
+    value = ((value & 0xFF00FF00FF00FF00) >> 8)  | ((value & 0x00FF00FF00FF00FF) << 8);
+    value = ((value & 0xFFFF0000FFFF0000) >> 16) | ((value & 0x0000FFFF0000FFFF) << 16);
+    value = (value >> 32) | (value << 32);
+
+    return value;
+  }
+
+  inline int64_t reverse_bytes(int64_t value)
+  {
+    return int64_t(reverse_bytes(uint64_t(value)));
+  }
+
+#if ETL_8BIT_SUPPORT
+  //***************************************************************************
+  /// Converts Gray code to binary.
+  ///\ingroup binary
+  //***************************************************************************
+  inline uint8_t gray_to_binary(uint8_t value)
+  {
+    value ^= (value >> 4);
+    value ^= (value >> 2);
+    value ^= (value >> 1);
+
+    return value;
+  }
+
+  inline int8_t gray_to_binary(int8_t value)
+  {
+    return int8_t(gray_to_binary(uint8_t(value)));
+  }
+#endif
+
+  //***************************************************************************
+  /// Converts Gray code to binary.
+  ///\ingroup binary
+  //***************************************************************************
+  inline uint16_t gray_to_binary(uint16_t value)
+  {
+    value ^= (value >> 8);
+    value ^= (value >> 4);
+    value ^= (value >> 2);
+    value ^= (value >> 1);
+
+    return value;
+  }
+
+  inline int16_t gray_to_binary(int16_t value)
+  {
+    return int16_t(gray_to_binary(uint16_t(value)));
+  }
+
+  //***************************************************************************
+  /// Converts Gray code to binary.
+  ///\ingroup binary
+  //***************************************************************************
+  inline uint32_t gray_to_binary(uint32_t value)
+  {
+    value ^= (value >> 16);
+    value ^= (value >> 8);
+    value ^= (value >> 4);
+    value ^= (value >> 2);
+    value ^= (value >> 1);
+
+    return value;
+  }
+
+  inline int32_t gray_to_binary(int32_t value)
+  {
+    return int32_t(gray_to_binary(uint32_t(value)));
+  }
+
+  //***************************************************************************
+  /// Converts Gray code to binary.
+  ///\ingroup binary
+  //***************************************************************************
+  inline uint64_t gray_to_binary(uint64_t value)
+  {
+    value ^= (value >> 32);
+    value ^= (value >> 16);
+    value ^= (value >> 8);
+    value ^= (value >> 4);
+    value ^= (value >> 2);
+    value ^= (value >> 1);
+
+    return value;
+  }
+
+  inline int64_t gray_to_binary(int64_t value)
+  {
+    return int64_t(gray_to_binary(uint64_t(value)));
+  }
+
+#if ETL_8BIT_SUPPORT
+  //***************************************************************************
+  /// Count set bits. 8 bits.
+  ///\ingroup binary
+  //***************************************************************************
+  inline uint_least8_t count_bits(uint8_t value)
+  {
+    uint32_t count;
+    static const int S[] = { 1, 2, 4 };
+    static const uint8_t B[] = { 0x55, 0x33, 0x0F };
+
+    count = value - ((value >> 1) & B[0]);
+    count = ((count >> S[1]) & B[1]) + (count & B[1]);
+    count = ((count >> S[2]) + count) & B[2];
+
+    return uint_least8_t(count);
+  }
+
+  inline uint_least8_t count_bits(int8_t value)
+  {
+    return count_bits(uint8_t(value));
+  }
+
+#endif
+
+  //***************************************************************************
+  /// Count set bits. 16 bits.
+  ///\ingroup binary
+  //***************************************************************************
+  inline uint_least8_t count_bits(uint16_t value)
+  {
+    uint32_t count;
+    static const int S[] = { 1, 2, 4, 8 };
+    static const uint16_t B[] = { 0x5555, 0x3333, 0x0F0F, 0x00FF };
+
+    count = value - ((value >> 1) & B[0]);
+    count = ((count >> S[1]) & B[1]) + (count & B[1]);
+    count = ((count >> S[2]) + count) & B[2];
+    count = ((count >> S[3]) + count) & B[3];
+
+    return count;
+  }
+
+  inline uint_least8_t count_bits(int16_t value)
+  {
+    return count_bits(uint16_t(value));
+  }
+
+  //***************************************************************************
+  /// Count set bits. 32 bits.
+  ///\ingroup binary
+  //***************************************************************************
+  inline uint_least8_t count_bits(uint32_t value)
+  {
+    uint32_t count;
+
+    value = value - ((value >> 1) & 0x55555555);
+    value = (value & 0x33333333) + ((value >> 2) & 0x33333333);
+    count = (((value + (value >> 4)) & 0xF0F0F0F) * 0x1010101) >> 24;
+
+    return uint_least8_t(count);
+  }
+
+  inline uint_least8_t count_bits(int32_t value)
+  {
+    return count_bits(uint32_t(value));
+  }
+
+  //***************************************************************************
+  /// Count set bits. 64 bits.
+  ///\ingroup binary
+  //***************************************************************************
+  inline uint_least8_t count_bits(uint64_t value)
+  {
+    uint64_t count;
+    static const int S[] = { 1, 2, 4, 8, 16, 32 };
+    static const uint64_t B[] = { 0x5555555555555555, 0x3333333333333333, 0x0F0F0F0F0F0F0F0F, 0x00FF00FF00FF00FF, 0x0000FFFF0000FFFF, 0x00000000FFFFFFFF };
+
+    count = value - ((value >> 1) & B[0]);
+    count = ((count >> S[1]) & B[1]) + (count & B[1]);
+    count = ((count >> S[2]) + count) & B[2];
+    count = ((count >> S[3]) + count) & B[3];
+    count = ((count >> S[4]) + count) & B[4];
+    count = ((count >> S[5]) + count) & B[5];
+
+    return uint_least8_t(count);
+  }
+
+  inline uint_least8_t count_bits(int64_t value)
+  {
+    return count_bits(uint64_t(value));
+  }
+
+#if ETL_8BIT_SUPPORT
+  //***************************************************************************
+  /// Parity. 8bits. 0 = even, 1 = odd
+  ///\ingroup binary
+  //***************************************************************************
+  inline uint_least8_t parity(uint8_t value)
+  {
+    value ^= value >> 4;
+    value &= 0x0F;
+    return (0x6996 >> value) & 1;
+  }
+
+  inline uint_least8_t parity(int8_t value)
+  {
+    return parity(uint8_t(value));
+  }
+#endif
+
+  //***************************************************************************
+  /// Parity. 16bits. 0 = even, 1 = odd
+  ///\ingroup binary
+  //***************************************************************************
+  inline uint_least8_t parity(uint16_t value)
+  {
+    value ^= value >> 8;
+    value ^= value >> 4;
+    value &= 0x0F;
+    return (0x6996 >> value) & 1;
+  }
+
+  inline uint_least8_t parity(int16_t value)
+  {
+    return parity(uint16_t(value));
+  }
+
+  //***************************************************************************
+  /// Parity. 32bits. 0 = even, 1 = odd
+  ///\ingroup binary
+  //***************************************************************************
+  inline uint_least8_t parity(uint32_t value)
+  {
+    value ^= value >> 16;
+    value ^= value >> 8;
+    value ^= value >> 4;
+    value &= 0x0F;
+    return (0x6996 >> value) & 1;
+  }
+
+  inline uint_least8_t parity(int32_t value)
+  {
+    return parity(uint32_t(value));
+  }
+
+  //***************************************************************************
+  /// Parity. 64bits. 0 = even, 1 = odd
+  ///\ingroup binary
+  //***************************************************************************
+  inline uint_least8_t parity(uint64_t value)
+  {
+    value ^= value >> 32;
+    value ^= value >> 16;
+    value ^= value >> 8;
+    value ^= value >> 4;
+    value &= 0x0F;
+    return (0x69966996 >> value) & 1;
+  }
+
+  inline uint_least8_t parity(int64_t value)
+  {
+    return parity(uint64_t(value));
+  }
+
+#if ETL_8BIT_SUPPORT
+  //***************************************************************************
+  /// Count trailing zeros. bit.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline uint_least8_t count_trailing_zeros(uint8_t value)
+  {
+    uint_least8_t count;
+
+    if (value & 0x1)
+    {
+      count = 0;
+    }
+    else
+    {
+      count = 1;
+
+      if ((value & 0xF) == 0)
+      {
+        value >>= 4;
+        count += 4;
+      }
+
+      if ((value & 0x3) == 0)
+      {
+        value >>= 2;
+        count += 2;
+      }
+
+      count -= value & 0x1;
+    }
+
+    return count;
+  }
+
+  inline uint_least8_t count_trailing_zeros(int8_t value)
+  {
+    return count_trailing_zeros(uint8_t(value));
+  }
+#endif
+
+  //***************************************************************************
+  /// Count trailing zeros. 16bit.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline uint_least8_t count_trailing_zeros(uint16_t value)
+  {
+    uint_least8_t count;
+
+    if (value & 0x1)
+    {
+      count = 0;
+    }
+    else
+    {
+      count = 1;
+
+      if ((value & 0xFF) == 0)
+      {
+        value >>= 8;
+        count += 8;
+      }
+
+      if ((value & 0xF) == 0)
+      {
+        value >>= 4;
+        count += 4;
+      }
+
+      if ((value & 0x3) == 0)
+      {
+        value >>= 2;
+        count += 2;
+      }
+
+      count -= value & 0x1;
+    }
+
+    return count;
+  }
+
+  inline uint_least8_t count_trailing_zeros(int16_t value)
+  {
+    return count_trailing_zeros(uint16_t(value));
+  }
+
+  //***************************************************************************
+  /// Count trailing zeros. 32bit.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline uint_least8_t count_trailing_zeros(uint32_t value)
+  {
+    uint_least8_t count;
+
+    if (value & 0x1)
+    {
+      count = 0;
+    }
+    else
+    {
+      count = 1;
+
+      if ((value & 0xFFFF) == 0)
+      {
+        value >>= 16;
+        count += 16;
+      }
+
+      if ((value & 0xFF) == 0)
+      {
+        value >>= 8;
+        count += 8;
+      }
+
+      if ((value & 0xF) == 0)
+      {
+        value >>= 4;
+        count += 4;
+      }
+
+      if ((value & 0x3) == 0)
+      {
+        value >>= 2;
+        count += 2;
+      }
+
+      count -= value & 0x1;
+    }
+
+    return count;
+  }
+
+  inline uint_least8_t count_trailing_zeros(int32_t value)
+  {
+    return count_trailing_zeros(uint32_t(value));
+  }
+
+  //***************************************************************************
+  /// Count trailing zeros. 64bit.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline uint_least8_t count_trailing_zeros(uint64_t value)
+  {
+      uint_least8_t count;
+
+      if (value & 0x1)
+      {
+        count = 0;
+      }
+      else
+      {
+        count = 1;
+
+        if ((value & 0xFFFFFFFF) == 0)
+        {
+          value >>= 32;
+          count += 32;
+        }
+
+        if ((value & 0xFFFF) == 0)
+        {
+          value >>= 16;
+          count += 16;
+        }
+
+        if ((value & 0xFF) == 0)
+        {
+          value >>= 8;
+          count += 8;
+        }
+
+        if ((value & 0xF) == 0)
+        {
+          value >>= 4;
+          count += 4;
+        }
+
+        if ((value & 0x3) == 0)
+        {
+          value >>= 2;
+          count += 2;
+        }
+
+        count -= value & 0x1;
+      }
+
+      return count;
+  }
+
+  inline uint_least8_t count_trailing_zeros(int64_t value)
+  {
+    return count_trailing_zeros(uint64_t(value));
+  }
+
+#if ETL_8BIT_SUPPORT
+  //*****************************************************************************
+  /// Binary interleave
+  ///\ingroup binary
+  //*****************************************************************************
+  inline uint16_t binary_interleave(uint8_t first, uint8_t second)
+  {
+	  static const uint16_t mask[] = { 0x5555, 0x3333, 0x0F0F };
+
+	  uint16_t f = first;
+	  uint16_t s = second;
+
+	  f = (f | (f << 4)) & mask[2];
+	  f = (f | (f << 2)) & mask[1];
+	  f = (f | (f << 1)) & mask[0];
+
+	  s = (s | (s << 4)) & mask[2];
+	  s = (s | (s << 2)) & mask[1];
+	  s = (s | (s << 1)) & mask[0];
+
+	  return (f | (s << 1));
+  }
+
+  inline int16_t binary_interleave(int8_t first, int8_t second)
+  {
+    return int16_t(binary_interleave(uint8_t(first), uint8_t(second)));
+  }
+#endif
+
+  //*****************************************************************************
+  /// Binary interleave
+  ///\ingroup binary
+  //*****************************************************************************
+  inline uint32_t binary_interleave(uint16_t first, uint16_t second)
+  {
+	  static const uint32_t mask[] = { 0x55555555, 0x33333333, 0x0F0F0F0F, 0x00FF00FF };
+
+	  uint32_t f = first;
+	  uint32_t s = second;
+
+	  f = (f | (f << 8)) & mask[3];
+	  f = (f | (f << 4)) & mask[2];
+	  f = (f | (f << 2)) & mask[1];
+	  f = (f | (f << 1)) & mask[0];
+
+	  s = (s | (s << 8)) & mask[3];
+	  s = (s | (s << 4)) & mask[2];
+	  s = (s | (s << 2)) & mask[1];
+	  s = (s | (s << 1)) & mask[0];
+
+	  return (f | (s << 1));
+  }
+
+  inline int32_t binary_interleave(int16_t first, int16_t second)
+  {
+    return int32_t(binary_interleave(uint16_t(first), uint16_t(second)));
+  }
+
+  //*****************************************************************************
+  /// Binary interleave
+  ///\ingroup binary
+  //*****************************************************************************
+  inline uint64_t binary_interleave(uint32_t first, uint32_t second)
+  {
+	  static const uint64_t mask[] = { 0x5555555555555555, 0x3333333333333333, 0x0F0F0F0F0F0F0F0F, 0x00FF00FF00FF00FF, 0x0000FFFF0000FFFF };
+
+	  uint64_t f = first;
+	  uint64_t s = second;
+
+	  f = (f | (f << 16)) & mask[4];
+	  f = (f | (f << 8))  & mask[3];
+	  f = (f | (f << 4))  & mask[2];
+	  f = (f | (f << 2))  & mask[1];
+	  f = (f | (f << 1))  & mask[0];
+
+	  s = (s | (s << 16)) & mask[4];
+	  s = (s | (s << 8))  & mask[3];
+	  s = (s | (s << 4))  & mask[2];
+	  s = (s | (s << 2))  & mask[1];
+	  s = (s | (s << 1))  & mask[0];
+
+	  return (f | (s << 1));
+  }
+
+  inline int64_t binary_interleave(int32_t first, int32_t second)
+  {
+    return int64_t(binary_interleave(uint16_t(first), uint16_t(second)));
+  }
 
   //***************************************************************************
   /// Checks if odd.
+  ///\ingroup binary
   //***************************************************************************
-  bool is_odd(const unsigned char value);
-  inline bool is_odd(const char value) { return is_odd((unsigned char)value); }
-
-  bool is_odd(const unsigned short value);
-  inline bool is_odd(const short value) { return is_odd((unsigned short)value); }
-
-  bool is_odd(const unsigned int value);
-  inline bool is_odd(const int value) { return is_odd((unsigned int)value); }
-
-  bool is_odd(const unsigned long value);
-  inline bool is_odd(const long value) { return is_odd((unsigned long)value); }
-
-  bool is_odd(const unsigned long long value);
-  inline bool is_odd(const long long value) { return is_odd((unsigned long long)value); }
+  template <typename T>
+  typename etl::enable_if<etl::is_integral<T>::value, bool>::type
+   is_odd(const T value)
+  {
+	  return ((static_cast<typename etl::make_unsigned<T>::type>(value) & 1U) != 0U);
+  }
 
   //***************************************************************************
   /// Checks if even.
+  ///\ingroup binary
   //***************************************************************************
-  bool is_even(const unsigned char value);
-  inline bool is_even(const char value) { return is_even((unsigned char)value); }
-
-  bool is_even(const unsigned short value);
-  inline bool is_even(const short value) { return is_even((unsigned short)value); }
-
-  bool is_even(const unsigned int value);
-  inline bool is_even(const int value) { return is_even((unsigned int)value); }
-
-  bool is_even(const unsigned long value);
-  inline bool is_even(const long value) { return is_even((unsigned long)value); }
-
-  bool is_even(const unsigned long long value);
-  inline bool is_even(const long long value) { return is_even((unsigned long long)value); }
+  template <typename T>
+  typename etl::enable_if<etl::is_integral<T>::value, bool>::type
+    is_even(const T value)
+  {
+    return ((static_cast<typename etl::make_unsigned<T>::type>(value) & 1U) == 0U);
+  }
 
   //***************************************************************************
-  /// 8 bit binary constants.
+  /// 8 bit binary byte constants.
+  ///\ingroup binary
   //***************************************************************************
   enum binary_constant
   {
@@ -902,6 +1498,11 @@ namespace etl
     b11111111 = 255
   };
 
+
+  //***************************************************************************
+  /// Binary bit constants.
+  ///\ingroup binary
+  //***************************************************************************
   enum bit_constant
   {
     b0  = 0x1,
