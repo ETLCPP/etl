@@ -1,4 +1,4 @@
-///\file
+﻿///\file
 
 /******************************************************************************
 The MIT License(MIT)
@@ -289,6 +289,7 @@ namespace etl
   //***************************************************************************
   /// A 32 bit random number generator.
   /// Uses a linear shift feedback register.
+  /// Polynomial 0x80200003
   /// https://en.wikipedia.org/wiki/Linear-feedback_shift_register
   //***************************************************************************
   class random_lsfr : public random
@@ -499,6 +500,73 @@ namespace etl
 
     uint64_t value;
   };
+
+#if ETL_8BIT_SUPPORT
+  //***************************************************************************
+  /// A 32 bit random number generator.
+  /// Applies a user supplied 32bit hash to a counter.
+  /// The hash must implement 'void add(uint8_t)' and 'uint8_t value()' member functions.
+  //***************************************************************************
+  template <typename THash>
+  class random_hash : public random
+  {
+  public:
+
+    random_hash()
+    {
+      // An attempt to come up with a unique non-zero seed,
+      // based on the address of the instance.
+      uintptr_t n = reinterpret_cast<uintptr_t>(this);
+      value = static_cast<uint32_t>(n);
+    }
+
+    //***************************************************************************
+    /// Constructor with seed value.
+    ///\param seed The new seed value.
+    //***************************************************************************
+    random_hash(uint32_t seed)
+    {
+      initialise(seed);
+    }
+
+    //***************************************************************************
+    /// Initialises the sequence with a new seed value.
+    ///\param seed The new seed value.
+    //***************************************************************************
+    void initialise(uint32_t seed)
+    {
+      value = seed;
+    }
+
+    //***************************************************************************
+    /// Get the next random_lsfr number.
+    //***************************************************************************
+    uint32_t operator()()
+    {
+      ++value;
+      hash.add(value);
+      return hash.value();
+    }
+
+    //***************************************************************************
+    /// Get the next random_lsfr number in a specified inclusive range.
+    //***************************************************************************
+    uint32_t range(uint32_t low, uint32_t high)
+    {
+      uint32_t r = high - low + 1;
+      uint32_t n = operator()();
+      n %= r;
+      n += low;
+
+      return n;
+    }
+
+  private:
+
+    THash   hash;
+    uint8_t value;
+  };
+#endif
 }
 
 #endif

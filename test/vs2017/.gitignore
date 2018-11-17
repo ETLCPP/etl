@@ -4,3 +4,4 @@
 /random_mwc.csv
 /random_xorshift.csv
 /random_pcg.csv
+/random_hash.csv
