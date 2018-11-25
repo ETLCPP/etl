@@ -93,7 +93,8 @@ namespace etl
                  const state_id_t next_state_id_,
                  void (TObject::* const action_)() = nullptr,
                  bool (TObject::* const guard_)()  = nullptr)
-        : current_state_id(current_state_id_),
+        : from_any_state(false),
+          current_state_id(current_state_id_),
           event_id(event_id_),
           next_state_id(next_state_id_),
           action(action_),
@@ -101,6 +102,20 @@ namespace etl
       {
       }
 
+      transition(const event_id_t event_id_,
+                 const state_id_t next_state_id_,
+                 void (TObject::* const action_)() = nullptr,
+                 bool (TObject::* const guard_)()  = nullptr)
+          : from_any_state(true),
+            current_state_id(0),
+            event_id(event_id_),
+            next_state_id(next_state_id_),
+            action(action_),
+            guard(guard_)
+      {
+      }
+
+      const bool       from_any_state;
       const state_id_t current_state_id;
       const event_id_t event_id;
       const state_id_t next_state_id;
@@ -227,7 +242,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// 
+    ///
     //*************************************************************************
     void start(const bool on_entry_initial = true)
     {
@@ -335,7 +350,7 @@ namespace etl
 
       bool operator()(const transition& t) const
       {
-        return (t.event_id == event_id) && (t.current_state_id == state_id);
+        return (t.event_id == event_id) && (t.from_any_state || (t.current_state_id == state_id));
       }
 
       const event_id_t event_id;

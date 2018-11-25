@@ -47,7 +47,8 @@ namespace
       STOP,
       EMERGENCY_STOP,
       STOPPED,
-      SET_SPEED
+      SET_SPEED,
+      ABORT
     };
 
     ETL_DECLARE_ENUM_TYPE(EventId, etl::istate_chart::event_id_t)
@@ -56,6 +57,7 @@ namespace
     ETL_ENUM_TYPE(EMERGENCY_STOP, "Emergency Stop")
     ETL_ENUM_TYPE(STOPPED,        "Stopped")
     ETL_ENUM_TYPE(SET_SPEED,      "Set Speed")
+    ETL_ENUM_TYPE(ABORT,          "Abort")
     ETL_END_ENUM_TYPE
   };
 
@@ -204,19 +206,20 @@ namespace
 
     bool guard;
 
-    static const etl::array<MotorControl::transition, 6> transitionTable;
+    static const etl::array<MotorControl::transition, 7> transitionTable;
     static const etl::array<MotorControl::state, 3>      stateTable;
   };
 
   //***************************************************************************
-  const etl::array<MotorControl::transition, 6> MotorControl::transitionTable =
+  const etl::array<MotorControl::transition, 7> MotorControl::transitionTable =
   {
     MotorControl::transition(StateId::IDLE,         EventId::START,          StateId::RUNNING,      &MotorControl::OnStart, &MotorControl::Guard),
     MotorControl::transition(StateId::IDLE,         EventId::START,          StateId::IDLE,         &MotorControl::Null,    &MotorControl::NotGuard),
     MotorControl::transition(StateId::RUNNING,      EventId::STOP,           StateId::WINDING_DOWN, &MotorControl::OnStop),
     MotorControl::transition(StateId::RUNNING,      EventId::EMERGENCY_STOP, StateId::IDLE,         &MotorControl::OnStop),
     MotorControl::transition(StateId::RUNNING,      EventId::SET_SPEED,      StateId::RUNNING,      &MotorControl::OnSetSpeed),
-    MotorControl::transition(StateId::WINDING_DOWN, EventId::STOPPED,        StateId::IDLE,         &MotorControl::OnStopped)
+    MotorControl::transition(StateId::WINDING_DOWN, EventId::STOPPED,        StateId::IDLE,         &MotorControl::OnStopped),
+    MotorControl::transition(                       EventId::ABORT,          StateId::IDLE)
   };
 
   //***************************************************************************
@@ -282,7 +285,7 @@ namespace
       CHECK_EQUAL(0, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
       CHECK_EQUAL(0, motorControl.windingDown);
-      
+
       // Send Start event.
       motorControl.guard = false;
       motorControl.process_event(EventId::START);
@@ -399,7 +402,7 @@ namespace
     TEST(test_fsm_emergency_stop)
     {
       motorControl.ClearStatistics();
-      
+
       // Now in Idle state.
 
       // Send Start event.
@@ -430,6 +433,34 @@ namespace
       CHECK_EQUAL(1, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
       CHECK_EQUAL(0, motorControl.windingDown);
+    }
+
+    //*************************************************************************
+    TEST(test_fsm_abort)
+    {
+      motorControl.ClearStatistics();
+
+      // Now in Idle state.
+
+      // Send Start event.
+      motorControl.process_event(EventId::START);
+
+      // Now in Running state.
+
+      motorControl.process_event(EventId::ABORT);
+      CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
+
+      // Send Start event.
+      motorControl.process_event(EventId::START);
+
+      // Now in Running state.
+
+      // Send Stop event.
+      motorControl.process_event(EventId::STOP);
+
+      // Now in WindingDown state.
+      motorControl.process_event(EventId::ABORT);
+      CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
     }
   };
 }
