@@ -383,6 +383,14 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Get the node pool instance.
+    //*************************************************************************
+    etl::ipool* get_node_pool()
+    {
+      return p_node_pool;
+    }
+
+    //*************************************************************************
     /// Destructor.
     //*************************************************************************
     ~list_base()
@@ -1910,6 +1918,12 @@ namespace etl
     //*************************************************************************
     void set_pool(etl::ipool& pool)
     {
+      // Clear the list of any current elements.
+      if (this->get_node_pool() != nullptr)
+      {
+        this->clear();
+      }
+
       this->set_node_pool(pool);
     }
   };
@@ -1993,7 +2007,6 @@ bool operator >=(const etl::ilist<T>& lhs, const etl::ilist<T>& rhs)
 {
   return !(lhs < rhs);
 }
-
 
 #include "private/minmax_pop.h"
 

@@ -1004,39 +1004,6 @@
     <ClCompile Include="..\test_xor_rotate_checksum.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\private\pvoidvector.cpp">
-      <Filter>ETL\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\crc8_ccitt.cpp">
-      <Filter>ETL\Maths</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\crc16.cpp">
-      <Filter>ETL\Maths</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\crc16_ccitt.cpp">
-      <Filter>ETL\Maths</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\crc16_kermit.cpp">
-      <Filter>ETL\Maths</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\crc32.cpp">
-      <Filter>ETL\Maths</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\crc64_ecma.cpp">
-      <Filter>ETL\Maths</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\pearson.cpp">
-      <Filter>ETL\Maths</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\random.cpp">
-      <Filter>ETL\Maths</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\binary.cpp">
-      <Filter>ETL\Utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\error_handler.cpp">
-      <Filter>ETL\Utilities</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\c\ecl_timer.c">
       <Filter>ECL</Filter>
     </ClCompile>
@@ -1057,9 +1024,6 @@
     </ClCompile>
     <ClCompile Include="..\test_type_select.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\crc32_c.cpp">
-      <Filter>ETL\Maths</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\AssertException.cpp">
       <Filter>UnitTest++</Filter>
@@ -1149,6 +1113,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_list_shared_pool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_forward_list_shared_pool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_no_stl_iterator.cpp">
