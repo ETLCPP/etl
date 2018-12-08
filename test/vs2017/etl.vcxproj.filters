@@ -1115,6 +1115,9 @@
     <ClCompile Include="..\test_list_shared_pool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_forward_list_shared_pool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\test_no_stl_iterator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

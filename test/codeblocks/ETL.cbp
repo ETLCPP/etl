@@ -361,6 +361,7 @@
 		<Unit filename="../test_flat_set.cpp" />
 		<Unit filename="../test_fnv_1.cpp" />
 		<Unit filename="../test_forward_list.cpp" />
+		<Unit filename="../test_forward_list_shared_pool.cpp" />
 		<Unit filename="../test_fsm.cpp" />
 		<Unit filename="../test_function.cpp" />
 		<Unit filename="../test_functional.cpp" />
