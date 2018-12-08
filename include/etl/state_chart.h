@@ -242,7 +242,7 @@ namespace etl
     }
 
     //*************************************************************************
-    ///
+    /// 
     //*************************************************************************
     void start(const bool on_entry_initial = true)
     {
@@ -313,6 +313,8 @@ namespace etl
                   (object.*(s->on_exit))();
                 }
 
+                current_state_id = next_state_id;
+
                 // See if we have a state item for the next state.
                 s = find_state(next_state_id);
 
@@ -321,8 +323,6 @@ namespace etl
                 {
                   (object.*(s->on_entry))();
                 }
-
-                current_state_id = next_state_id;
               }
 
               t = transition_table.end();
