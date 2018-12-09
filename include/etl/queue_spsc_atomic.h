@@ -44,6 +44,8 @@ SOFTWARE.
 #undef ETL_FILE
 #define ETL_FILE "47"
 
+#define ETL_QUEUE_ATOMIC_FORCE_CPP03 0
+
 namespace etl
 {
   template <const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
@@ -221,6 +223,123 @@ namespace etl
       // Queue is full.
       return false;
     }
+
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL) && !ETL_QUEUE_ATOMIC_FORCE_CPP03
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    //*************************************************************************
+    template <typename ... Args>
+    bool emplace(Args&&... args)
+    {
+      size_type write_index = write.load(etl::memory_order_relaxed);
+      size_type next_index  = get_next_index(write_index, RESERVED);
+
+      if (next_index != read.load(etl::memory_order_acquire))
+      {
+        ::new (&p_buffer[write_index]) T(std::forward<Args>(args)...);
+
+        write.store(next_index, etl::memory_order_release);
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
+#else
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    //*************************************************************************
+    template <typename T1>
+    bool emplace(const T1& value1)
+    {
+      size_type write_index = write.load(etl::memory_order_relaxed);
+      size_type next_index  = get_next_index(write_index, RESERVED);
+
+      if (next_index != read.load(etl::memory_order_acquire))
+      {
+        ::new (&p_buffer[write_index]) T(value1);
+
+        write.store(next_index, etl::memory_order_release);
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    //*************************************************************************
+    template <typename T1, typename T2>
+    bool emplace(const T1& value1, const T2& value2)
+    {
+      size_type write_index = write.load(etl::memory_order_relaxed);
+      size_type next_index  = get_next_index(write_index, RESERVED);
+
+      if (next_index != read.load(etl::memory_order_acquire))
+      {
+        ::new (&p_buffer[write_index]) T(value1, value2);
+
+        write.store(next_index, etl::memory_order_release);
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3>
+    bool emplace(const T1& value1, const T2& value2, const T3& value3)
+    {
+      size_type write_index = write.load(etl::memory_order_relaxed);
+      size_type next_index  = get_next_index(write_index, RESERVED);
+
+      if (next_index != read.load(etl::memory_order_acquire))
+      {
+        ::new (&p_buffer[write_index]) T(value1, value2, value3);
+
+        write.store(next_index, etl::memory_order_release);
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    bool emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+      size_type write_index = write.load(etl::memory_order_relaxed);
+      size_type next_index  = get_next_index(write_index, RESERVED);
+
+      if (next_index != read.load(etl::memory_order_acquire))
+      {
+        ::new (&p_buffer[write_index]) T(value1, value2, value3, value4);
+
+        write.store(next_index, etl::memory_order_release);
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
+#endif
 
     //*************************************************************************
     /// Pop a value from the queue.

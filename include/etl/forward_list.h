@@ -719,6 +719,22 @@ namespace etl
       insert_node_after(start_node, data_node);
     }
 
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+    //*************************************************************************
+    /// Emplaces a value to the front of the list..
+    //*************************************************************************
+    template <typename ... Args>
+    void emplace_front(Args && ... args)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
+#endif
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(std::forward<Args>(args)...);
+      ETL_INCREMENT_DEBUG_COUNT
+      insert_node_after(start_node, *p_data_node);
+    }
+#else
     //*************************************************************************
     /// Emplaces a value to the front of the list..
     //*************************************************************************
@@ -778,6 +794,7 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT
       insert_node_after(start_node, *p_data_node);
     }
+#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
 
     //*************************************************************************
     /// Removes a value from the front of the forward_list.
@@ -855,6 +872,23 @@ namespace etl
       return iterator(&data_node);
     }
 
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+    //*************************************************************************
+    /// Emplaces a value to the forward_list after the specified position.
+    //*************************************************************************
+    template <typename ... Args>
+    iterator emplace_after(iterator position, Args && ... args)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
+
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(std::forward<Args>(args)...);
+      ETL_INCREMENT_DEBUG_COUNT
+      insert_node_after(*position.p_node, *p_data_node);
+
+      return iterator(p_data_node);
+    }
+#else
     //*************************************************************************
     /// Emplaces a value to the forward_list after the specified position.
     //*************************************************************************
@@ -918,6 +952,7 @@ namespace etl
 
       return iterator(p_data_node);
     }
+#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
 
     //*************************************************************************
     /// Inserts 'n' copies of a value to the forward_list after the specified position.
