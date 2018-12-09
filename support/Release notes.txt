@@ -1,4 +1,8 @@
 ===============================================================================
+14.4.0
+Added C++03/C++11 emplace for deque, priority_queue, queues, stack, variant & vector.
+
+===============================================================================
 14.3.0
 etl::forward_list supports shared pools.
 
