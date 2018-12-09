@@ -851,10 +851,10 @@ namespace etl
       insert_node(get_head(), allocate_data_node(value));
     }
 
-    //*************************************************************************
-    /// Emplaces a value to the front of the list..
-    //*************************************************************************
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+    //*************************************************************************
+    /// Emplaces a value to the front of the list.
+    //*************************************************************************
     template <typename ... Args>
     void emplace_front(Args && ... args)
     {
@@ -869,6 +869,9 @@ namespace etl
       insert_node(get_head(), *p_data_node);
     }
 #else
+    //*************************************************************************
+    /// Emplaces a value to the front of the list.
+    //*************************************************************************
     template <typename T1>
     void emplace_front(const T1& value1)
     {
@@ -883,6 +886,9 @@ namespace etl
       insert_node(get_head(), *p_data_node);
     }
 
+    //*************************************************************************
+    /// Emplaces a value to the front of the list.
+    //*************************************************************************
     template <typename T1, typename T2>
     void emplace_front(const T1& value1, const T2& value2)
     {
@@ -897,6 +903,9 @@ namespace etl
       insert_node(get_head(), *p_data_node);
     }
 
+    //*************************************************************************
+    /// Emplaces a value to the front of the list.
+    //*************************************************************************
     template <typename T1, typename T2, typename T3>
     void emplace_front(const T1& value1, const T2& value2, const T3& value3)
     {
@@ -911,6 +920,9 @@ namespace etl
       insert_node(get_head(), *p_data_node);
     }
 
+    //*************************************************************************
+    /// Emplaces a value to the front of the list.
+    //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
     void emplace_front(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
@@ -939,7 +951,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Pushes a value to the back of the list..
+    /// Pushes a value to the back of the list.
     //*************************************************************************
     void push_back(parameter_t value)
     {
@@ -950,7 +962,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Emplaces a value to the back of the list..
+    /// Emplaces a value to the back of the list.
     //*************************************************************************
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
     template <typename ... Args>

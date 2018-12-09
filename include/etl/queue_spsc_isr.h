@@ -43,6 +43,8 @@ SOFTWARE.
 #undef ETL_FILE
 #define ETL_FILE "46"
 
+#define ETL_QUEUE_ISR_FORCE_CPP03 0
+
 namespace etl
 {
   template <typename T, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
@@ -68,6 +70,19 @@ namespace etl
     {
       return push_implementation(value);
     }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    ///\param value The value to use to construct the item to push to the queue.
+    //*************************************************************************
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL) && !ETL_QUEUE_ISR_FORCE_CPP03
+    template <typename ... Args>
+    bool emplace_from_isr(Args&&... args)
+    {
+      return emplace_implementation(std::forward<Args>(args)...);
+    }
+#endif
 
     //*************************************************************************
     /// Pop a value from the queue from an ISR
@@ -178,6 +193,120 @@ namespace etl
       // Queue is full.
       return false;
     }
+
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL) && !ETL_QUEUE_ISR_FORCE_CPP03
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    ///\param value The value to use to construct the item to push to the queue.
+    //*************************************************************************
+    template <typename ... Args>
+    bool emplace_implementation(Args&&... args)
+    {
+      if (current_size != MAX_SIZE)
+      {
+        ::new (&p_buffer[write_index]) T(std::forward<Args>(args)...);
+
+        write_index = get_next_index(write_index, MAX_SIZE);
+
+        ++current_size;
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
+#else
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    //*************************************************************************
+    template <typename T1>
+    bool emplace_implementation(const T1& value1)
+    {
+      if (current_size != MAX_SIZE)
+      {
+        ::new (&p_buffer[write_index]) T(value1);
+
+        write_index = get_next_index(write_index, MAX_SIZE);
+
+        ++current_size;
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    //*************************************************************************
+    template <typename T1, typename T2>
+    bool emplace_implementation(const T1& value1, const T2& value2)
+    {
+      if (current_size != MAX_SIZE)
+      {
+        ::new (&p_buffer[write_index]) T(value1, value2);
+
+        write_index = get_next_index(write_index, MAX_SIZE);
+
+        ++current_size;
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3>
+    bool emplace_implementation(const T1& value1, const T2& value2, const T3& value3)
+    {
+      if (current_size != MAX_SIZE)
+      {
+        ::new (&p_buffer[write_index]) T(value1, value2, value3);
+
+        write_index = get_next_index(write_index, MAX_SIZE);
+
+        ++current_size;
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    bool emplace_implementation(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+      if (current_size != MAX_SIZE)
+      {
+        ::new (&p_buffer[write_index]) T(value1, value2, value3, value4);
+
+        write_index = get_next_index(write_index, MAX_SIZE);
+
+        ++current_size;
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
+
+#endif
 
     //*************************************************************************
     /// Pop a value from the queue.
@@ -298,6 +427,88 @@ namespace etl
 
       return result;
     }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    //*************************************************************************
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL) && !ETL_QUEUE_ISR_FORCE_CPP03
+    template <typename ... Args>
+    bool emplace(Args&&... args)
+    {
+      TAccess::lock();
+
+      bool result = this->emplace_implementation(std::forward<Args>(args)...);
+
+      TAccess::unlock();
+
+      return result;
+    }
+#else
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    //*************************************************************************
+    template <typename T1>
+    bool emplace(const T1& value1)
+    {
+      TAccess::lock();
+
+      bool result = this->emplace_implementation(value1);
+
+      TAccess::unlock();
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    //*************************************************************************
+    template <typename T1, typename T2>
+    bool emplace(const T1& value1, const T2& value2)
+    {
+      TAccess::lock();
+
+      bool result = this->emplace_implementation(value1, value2);
+
+      TAccess::unlock();
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3>
+    bool emplace(const T1& value1, const T2& value2, const T3& value3)
+    {
+      TAccess::lock();
+
+      bool result = this->emplace_implementation(value1, value2, value3);
+
+      TAccess::unlock();
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    bool emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+      TAccess::lock();
+
+      bool result = this->emplace_implementation(value1, value2, value3, value4);
+
+      TAccess::unlock();
+
+      return result;
+    }
+#endif
 
     //*************************************************************************
     /// Pop a value from the queue.

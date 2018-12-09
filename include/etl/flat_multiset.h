@@ -297,6 +297,9 @@ namespace etl
       return std::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
     }
 #else
+    //*************************************************************************
+    /// Emplaces a value to the set.
+    //*************************************************************************
     template <typename T1>
     std::pair<iterator, bool> emplace(const T1& value1)
     {
@@ -312,6 +315,9 @@ namespace etl
       return std::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
     }
 
+    //*************************************************************************
+    /// Emplaces a value to the set.
+    //*************************************************************************
     template <typename T1, typename T2>
     std::pair<iterator, bool> emplace(const T1& value1, const T2& value2)
     {
@@ -327,6 +333,9 @@ namespace etl
       return std::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
     }
 
+    //*************************************************************************
+    /// Emplaces a value to the set.
+    //*************************************************************************
     template <typename T1, typename T2, typename T3>
     std::pair<iterator, bool> emplace(const T1& value1, const T2& value2, const T3& value3)
     {
@@ -342,6 +351,9 @@ namespace etl
       return std::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
     }
 
+    //*************************************************************************
+    /// Emplaces a value to the set.
+    //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
     std::pair<iterator, bool> emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {

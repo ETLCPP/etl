@@ -315,6 +315,9 @@ namespace etl
       return result;
     }
 #else
+    //*************************************************************************
+    /// Emplaces a value to the set.
+    //*************************************************************************
     template <typename T1>
     std::pair<iterator, bool> emplace(const T1& value1)
     {
@@ -326,7 +329,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(value1);
 
-      iterator i_element = lower_bound(*pvalue);      
+      iterator i_element = lower_bound(*pvalue);
 
       // Doesn't already exist?
       if ((i_element == end() || (*i_element != *pvalue)))
@@ -345,6 +348,9 @@ namespace etl
       return result;
     }
 
+    //*************************************************************************
+    /// Emplaces a value to the set.
+    //*************************************************************************
     template <typename T1, typename T2>
     std::pair<iterator, bool> emplace(const T1& value1, const T2& value2)
     {
@@ -375,6 +381,9 @@ namespace etl
       return result;
     }
 
+    //*************************************************************************
+    /// Emplaces a value to the set.
+    //*************************************************************************
     template <typename T1, typename T2, typename T3>
     std::pair<iterator, bool> emplace(const T1& value1, const T2& value2, const T3& value3)
     {
@@ -405,6 +414,9 @@ namespace etl
       return result;
     }
 
+    //*************************************************************************
+    /// Emplaces a value to the set.
+    //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
     std::pair<iterator, bool> emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {

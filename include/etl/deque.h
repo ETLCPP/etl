@@ -981,7 +981,14 @@ namespace etl
 
       return position;
     }
+
 #else
+
+    //*************************************************************************
+    /// Emplaces data into the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is full.
+    ///\param insert_position>The insert position.
+    //*************************************************************************
     template <typename T1>
     iterator emplace(const_iterator insert_position, const T1& value1)
     {
@@ -1042,6 +1049,11 @@ namespace etl
       return position;
     }
 
+    //*************************************************************************
+    /// Emplaces data into the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is full.
+    ///\param insert_position>The insert position.
+    //*************************************************************************
     template <typename T1, typename T2>
     iterator emplace(const_iterator insert_position, const T1& value1, const T2& value2)
     {
@@ -1102,6 +1114,11 @@ namespace etl
       return position;
     }
 
+    //*************************************************************************
+    /// Emplaces data into the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is full.
+    ///\param insert_position>The insert position.
+    //*************************************************************************
     template <typename T1, typename T2, typename T3>
     iterator emplace(const_iterator insert_position, const T1& value1, const T2& value2, const T3& value3)
     {
@@ -1162,6 +1179,11 @@ namespace etl
       return position;
     }
 
+    //*************************************************************************
+    /// Emplaces data into the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is full.
+    ///\param insert_position>The insert position.
+    //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
     iterator emplace(const_iterator insert_position, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
@@ -1555,11 +1577,11 @@ namespace etl
       create_element_back(item);
     }
 
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
     //*************************************************************************
     /// Emplaces an item to the back of the deque.
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
     //*************************************************************************
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
     template <typename ... Args>
     void emplace_back(Args && ... args)
     {
@@ -1572,7 +1594,13 @@ namespace etl
       ++current_size;
       ETL_INCREMENT_DEBUG_COUNT
     }
+
 #else
+
+    //*************************************************************************
+    /// Emplaces an item to the back of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
+    //*************************************************************************
     template <typename T1>
     void emplace_back(const T1& value1)
     {
@@ -1586,6 +1614,10 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT
     }
 
+    //*************************************************************************
+    /// Emplaces an item to the back of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
+    //*************************************************************************
     template <typename T1, typename T2>
     void emplace_back(const T1& value1, const T2& value2)
     {
@@ -1599,6 +1631,10 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT
     }
 
+    //*************************************************************************
+    /// Emplaces an item to the back of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
+    //*************************************************************************
     template <typename T1, typename T2, typename T3>
     void emplace_back(const T1& value1, const T2& value2, const T3& value3)
     {
@@ -1612,6 +1648,10 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT
     }
 
+    //*************************************************************************
+    /// Emplaces an item to the back of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
+    //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
     void emplace_back(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
@@ -1650,11 +1690,11 @@ namespace etl
       create_element_front(item);
     }
 
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
     //*************************************************************************
     /// Emplaces an item to the front of the deque.
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
     //*************************************************************************
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
     template <typename ... Args>
     void emplace_front(Args && ... args)
     {
@@ -1667,7 +1707,13 @@ namespace etl
       ++current_size;
       ETL_INCREMENT_DEBUG_COUNT
     }
+
 #else
+
+    //*************************************************************************
+    /// Emplaces an item to the front of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
+    //*************************************************************************
     template <typename T1>
     void emplace_front(const T1& value1)
     {
@@ -1681,6 +1727,10 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT
     }
 
+    //*************************************************************************
+    /// Emplaces an item to the front of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
+    //*************************************************************************
     template <typename T1, typename T2>
     void emplace_front(const T1& value1, const T2& value2)
     {
@@ -1694,6 +1744,10 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT
     }
 
+    //*************************************************************************
+    /// Emplaces an item to the front of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
+    //*************************************************************************
     template <typename T1, typename T2, typename T3>
     void emplace_front(const T1& value1, const T2& value2, const T3& value3)
     {
@@ -1707,6 +1761,10 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT
     }
 
+    //*************************************************************************
+    /// Emplaces an item to the front of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
+    //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
     void emplace_front(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {

@@ -51,6 +51,8 @@ SOFTWARE.
 #undef ETL_FILE
 #define ETL_FILE "24"
 
+#define ETL_VARIANT_FORCE_CPP03 1
+
 //*****************************************************************************
 ///\defgroup variant variant
 /// A class that can contain one a several specified types in a type safe manner.
@@ -711,7 +713,22 @@ namespace etl
       type_id = other.type_id;
     }
 
-#if !ETL_CPP11_SUPPORTED || defined(ETL_STLPORT)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL) && !ETL_VARIANT_FORCE_CPP03
+    //*************************************************************************
+    /// Emplace with variadic constructor parameters.
+    //*************************************************************************
+    template <typename T, typename... Args>
+    T& emplace(Args&&... args)
+    {
+      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+
+      destruct_current();
+      ::new (static_cast<T*>(data)) T(std::forward<Args>(args)...);
+      type_id = Type_Id_Lookup<T>::type_id;
+
+      return *static_cast<T*>(data);
+    }
+#else
     //***************************************************************************
     /// Emplace with one constructor parameter.
     //***************************************************************************
@@ -767,22 +784,6 @@ namespace etl
 
       destruct_current();
       ::new (static_cast<T*>(data)) T(value1, value2, value3, value4);
-      type_id = Type_Id_Lookup<T>::type_id;
-
-      return *static_cast<T*>(data);
-    }
-
-#else
-    //*************************************************************************
-    /// Emplace with variadic constructor parameters.
-    //*************************************************************************
-    template <typename T, typename... Args>
-    T& emplace(Args&&... args)
-    {
-      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
-
-      destruct_current();
-      ::new (static_cast<T*>(data)) T(std::forward<Args>(args)...);
       type_id = Type_Id_Lookup<T>::type_id;
 
       return *static_cast<T*>(data);

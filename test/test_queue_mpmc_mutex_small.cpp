@@ -74,10 +74,10 @@ namespace
 
   typedef etl::queue_mpmc_mutex<int, 255, etl::memory_model::MEMORY_MODEL_SMALL> QueueInt255;
 
-//  bool operator ==(const Data& lhs, const Data& rhs)
-//  {
-//    return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
-//  }
+  bool operator ==(const Data& lhs, const Data& rhs)
+  {
+    return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
+  }
 
 //  std::ostream& operator <<(std::ostream& os, const Data& data)
 //  {
@@ -146,6 +146,30 @@ namespace
 
       CHECK(!queue.pop(i));
       CHECK(!queue.pop(i));
+    }
+
+    //*************************************************************************
+    TEST(test_multiple_emplace)
+    {
+      etl::queue_mpmc_mutex<Data, 4, etl::memory_model::MEMORY_MODEL_SMALL> queue;
+
+      queue.emplace(1);
+      queue.emplace(1, 2);
+      queue.emplace(1, 2, 3);
+      queue.emplace(1, 2, 3, 4);
+
+      Data popped;
+
+      CHECK_EQUAL(4U, queue.size());
+
+      queue.pop(popped);
+      CHECK(popped == Data(1, 2, 3, 4));
+      queue.pop(popped);
+      CHECK(popped == Data(1, 2, 3, 4));
+      queue.pop(popped);
+      CHECK(popped == Data(1, 2, 3, 4));
+      queue.pop(popped);
+      CHECK(popped == Data(1, 2, 3, 4));
     }
 
     //*************************************************************************

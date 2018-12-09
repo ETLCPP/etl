@@ -572,6 +572,7 @@ namespace
     }
 
     //*************************************************************************
+    // To test the CPP03 versions then ETL_TEST_VECTOR_CPP11 must be set to 0 in vector.h
     TEST_FIXTURE(SetupFixture, test_emplace_back_multiple)
     {
       class Data
@@ -581,10 +582,10 @@ namespace
         size_t b;
         double c;
         const char *d;
-        Data(std::string w) : a(w){}
-        Data(std::string w, size_t x) : a(w), b(x){}
-        Data(std::string w, size_t x, double y) : a(w), b(x), c(y){}
-        Data(std::string w, size_t x, double y, const char *z) : a(w), b(x), c(y){}
+        Data(std::string w) : a(w), b(0), c(0.0), d(0){}
+        Data(std::string w, size_t x) : a(w), b(x), c(0.0), d(0){}
+        Data(std::string w, size_t x, double y) : a(w), b(x), c(y), d(0){}
+        Data(std::string w, size_t x, double y, const char *z) : a(w), b(x), c(y), d(z){}
         bool operator == (const Data &other) const
         {
           return (a == other.a) && (b == other.b) && (c == other.c) && (d == other.d);
@@ -592,7 +593,7 @@ namespace
       };
 
       std::vector<Data> compare_data;
-      etl::vector<Data, SIZE * 3> data;
+      etl::vector<Data, SIZE * 4> data;
 
       std::string s;
       for (size_t i = 0; i < SIZE; ++i)
@@ -633,7 +634,7 @@ namespace
     // So this is only tested on C++11 onwards
     TEST_FIXTURE(SetupFixture, test_emplace_back_non_const_references)
     {
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL) && !ETL_VECTOR_FORCE_CPP03
       class Data
       {
       public:

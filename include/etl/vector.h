@@ -63,6 +63,8 @@ SOFTWARE.
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
+#define ETL_VECTOR_FORCE_CPP03 1
+
 //*****************************************************************************
 ///\defgroup vector vector
 /// A vector with the capacity defined at compile time.
@@ -411,12 +413,12 @@ namespace etl
       create_back(value);
     }
 
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL) && !ETL_VECTOR_FORCE_CPP03
     //*********************************************************************
     /// Constructs a value at the end of the vector.
     /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
     ///\param value The value to add.
     //*********************************************************************
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
     template <typename ... Args>
     void emplace_back(Args && ... args)
     {
@@ -428,6 +430,11 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT
     }
 #else
+    //*********************************************************************
+    /// Constructs a value at the end of the vector.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    ///\param value The value to add.
+    //*********************************************************************
     template <typename T1>
     void emplace_back(const T1& value1)
     {
@@ -439,6 +446,11 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT
     }
 
+    //*********************************************************************
+    /// Constructs a value at the end of the vector.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    ///\param value The value to add.
+    //*********************************************************************
     template <typename T1, typename T2>
     void emplace_back(const T1& value1, const T2& value2)
     {
@@ -450,6 +462,11 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT
     }
 
+    //*********************************************************************
+    /// Constructs a value at the end of the vector.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    ///\param value The value to add.
+    //*********************************************************************
     template <typename T1, typename T2, typename T3>
     void emplace_back(const T1& value1, const T2& value2, const T3& value3)
     {
@@ -461,6 +478,11 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT
     }
 
+    //*********************************************************************
+    /// Constructs a value at the end of the vector.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    ///\param value The value to add.
+    //*********************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
     void emplace_back(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
@@ -471,7 +493,7 @@ namespace etl
       ++p_end;
       ETL_INCREMENT_DEBUG_COUNT
     }
-#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL) && !ETL_VECTOR_FORCE_CPP03
 
     //*************************************************************************
     /// Removes an element from the end of the vector.
