@@ -48,6 +48,8 @@ SOFTWARE.
 #undef ETL_FILE
 #define ETL_FILE "12"
 
+#define ETL_PRIORITY_QUEUE_FORCE_CPP03 1
+
 //*****************************************************************************
 ///\defgroup queue queue
 /// A priority queue with the capacity defined at compile time,
@@ -168,6 +170,24 @@ namespace etl
       std::push_heap(container.begin(), container.end(), compare);
     }
 
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL) && !ETL_PRIORITY_QUEUE_FORCE_CPP03
+    //*************************************************************************
+    /// Emplaces a value to the queue.
+    /// If asserts or exceptions are enabled, throws an etl::priority_queue_full
+    /// is the priority queue is already full.
+    ///\param value The value to push to the queue.
+    //*************************************************************************
+    template <typename ... Args>
+    void emplace(Args && ... args)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(etl::priority_queue_full));
+
+      // Put element at end
+      container.emplace_back(std::forward<Args>(args)...);
+      // Make elements in container into heap
+      std::push_heap(container.begin(), container.end(), compare);
+    }
+#else
     //*************************************************************************
     /// Emplaces a value to the queue.
     /// If asserts or exceptions are enabled, throws an etl::priority_queue_full
@@ -235,6 +255,7 @@ namespace etl
       // Make elements in container into heap
       std::push_heap(container.begin(), container.end(), compare);
     }
+#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
 
     //*************************************************************************
     /// Assigns values to the priority queue.

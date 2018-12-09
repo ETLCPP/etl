@@ -42,6 +42,35 @@ SOFTWARE.
 
 namespace
 {
+  struct Data
+  {
+    Data(int a_, int b_ = 2, int c_ = 3, int d_ = 4)
+      : a(a_),
+      b(b_),
+      c(c_),
+      d(d_)
+    {
+    }
+
+    Data()
+      : a(0),
+      b(0),
+      c(0),
+      d(0)
+    {
+    }
+
+    int a;
+    int b;
+    int c;
+    int d;
+  };
+
+  bool operator ==(const Data& lhs, const Data& rhs)
+  {
+    return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
+  }
+
   SUITE(test_queue_atomic)
   {
     //*************************************************************************
@@ -186,6 +215,30 @@ namespace
 
       CHECK(!queue.pop());
       CHECK(!queue.pop());
+    }
+
+    //*************************************************************************
+    TEST(test_multiple_emplace)
+    {
+      etl::queue_spsc_atomic<Data, 4> queue;
+
+      queue.emplace(1);
+      queue.emplace(1, 2);
+      queue.emplace(1, 2, 3);
+      queue.emplace(1, 2, 3, 4);
+
+      CHECK_EQUAL(4U, queue.size());
+
+      Data popped;
+
+      queue.pop(popped);
+      CHECK(popped == Data(1, 2, 3, 4));
+      queue.pop(popped);
+      CHECK(popped == Data(1, 2, 3, 4));
+      queue.pop(popped);
+      CHECK(popped == Data(1, 2, 3, 4));
+      queue.pop(popped);
+      CHECK(popped == Data(1, 2, 3, 4));
     }
 
     //*************************************************************************

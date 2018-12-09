@@ -347,20 +347,22 @@ namespace etl
     //*************************************************************************
     std::pair<iterator, bool> emplace(const value_type& value)
     {
-      return insert(value);
+      return emplace(value.first, value.second);
     }
 
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
     //*************************************************************************
     /// Emplaces a value to the map.
     //*************************************************************************
-    std::pair<iterator, bool> emplace(const key_type& key, const mapped_type& value)
+    template <typename ... Args>
+    std::pair<iterator, bool> emplace(const key_type& key, Args && ... args)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
 
       // Create it.
       value_type* pvalue = storage.allocate<value_type>();
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
-      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value);
+      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(std::forward<Args>(args)...);
 
       iterator i_element = lower_bound(key);
 
@@ -380,6 +382,8 @@ namespace etl
 
       return result;
     }
+
+#else
 
     //*************************************************************************
     /// Emplaces a value to the map.
@@ -508,6 +512,8 @@ namespace etl
 
       return result;
     }
+
+#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
 
     //*********************************************************************
     /// Erases an element.

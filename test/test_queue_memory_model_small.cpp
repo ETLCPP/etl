@@ -349,6 +349,8 @@ namespace
       queue.emplace('c', 3, 5.6);
       queue.emplace('d', 4, 7.8);
 
+      CHECK_EQUAL(4U, queue.size());
+
       CHECK(queue.front() == Item('a', 1, 1.2));
       queue.pop();
       CHECK(queue.front() == Item('b', 2, 3.4));

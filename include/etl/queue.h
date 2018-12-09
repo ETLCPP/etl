@@ -49,6 +49,8 @@ SOFTWARE.
 #undef ETL_FILE
 #define ETL_FILE "13"
 
+#define ETL_QUEUE_FORCE_CPP03 1
+
 //*****************************************************************************
 ///\defgroup queue queue
 /// A First-in / first-out queue with the capacity defined at compile time,
@@ -316,6 +318,22 @@ namespace etl
       add_in();
     }
 
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL) && !ETL_QUEUE_FORCE_CPP03
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    ///\param value The value to use to construct the item to push to the queue.
+    //*************************************************************************
+    template <typename ... Args>
+    void emplace(Args && ... args)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(queue_full));
+#endif
+      ::new (&p_buffer[in]) T(std::forward<Args>(args)...);
+      add_in();
+    }
+#else
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
@@ -375,6 +393,7 @@ namespace etl
       ::new (&p_buffer[in]) T(value1, value2, value3, value4);
       add_in();
     }
+#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
 
     //*************************************************************************
     /// Clears the queue to the empty state.

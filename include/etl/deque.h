@@ -921,6 +921,74 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is full.
     ///\param insert_position>The insert position.
     //*************************************************************************
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+    template <typename ... Args>
+    iterator emplace(const_iterator insert_position, Args && ... args)
+    {
+      iterator position(insert_position.index, *this, p_buffer);
+
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+
+      void* p;
+
+      if (insert_position == begin())
+      {
+        --_begin;
+        p = etl::addressof(*_begin);
+        ++current_size;
+        ETL_INCREMENT_DEBUG_COUNT
+        position = _begin;
+      }
+      else if (insert_position == end())
+      {
+        p = etl::addressof(*_end);
+        ++_end;
+        ++current_size;
+        ETL_INCREMENT_DEBUG_COUNT
+        position = _end - 1;
+      }
+      else
+      {
+        // Are we closer to the front?
+        if (std::distance(_begin, position) < std::distance(position, _end - 1))
+        {
+          // Construct the _begin.
+          create_element_front(*_begin);
+
+          // Move the values.
+          std::copy(_begin + 1, position, _begin);
+
+          // Write the new value.
+          --position;
+          (*position).~T();
+          p = etl::addressof(*position);
+        }
+        else
+        {
+          // Construct the _end.
+          create_element_back(*(_end - 1));
+
+          // Move the values.
+          std::copy_backward(position, _end - 2, _end - 1);
+
+          // Write the new value.
+          (*position).~T();
+          p = etl::addressof(*position);
+        }
+      }
+
+      ::new (p) T(std::forward<Args>(args)...);
+
+      return position;
+    }
+
+#else
+
+    //*************************************************************************
+    /// Emplaces data into the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is full.
+    ///\param insert_position>The insert position.
+    //*************************************************************************
     template <typename T1>
     iterator emplace(const_iterator insert_position, const T1& value1)
     {
@@ -1175,6 +1243,7 @@ namespace etl
 
       return position;
     }
+#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
 
     //*************************************************************************
     /// Inserts 'n' copies of a value into the deque.
@@ -1508,6 +1577,26 @@ namespace etl
       create_element_back(item);
     }
 
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+    //*************************************************************************
+    /// Emplaces an item to the back of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
+    //*************************************************************************
+    template <typename ... Args>
+    void emplace_back(Args && ... args)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+#endif
+
+      ::new (&(*_end)) T(std::forward<Args>(args)...);
+      ++_end;
+      ++current_size;
+      ETL_INCREMENT_DEBUG_COUNT
+    }
+
+#else
+
     //*************************************************************************
     /// Emplaces an item to the back of the deque.
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
@@ -1575,6 +1664,7 @@ namespace etl
       ++current_size;
       ETL_INCREMENT_DEBUG_COUNT
     }
+#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
 
     //*************************************************************************
     /// Removes the oldest item from the deque.
@@ -1599,6 +1689,26 @@ namespace etl
 #endif
       create_element_front(item);
     }
+
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+    //*************************************************************************
+    /// Emplaces an item to the front of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
+    //*************************************************************************
+    template <typename ... Args>
+    void emplace_front(Args && ... args)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+#endif
+
+      --_begin;
+      ::new (&(*_begin)) T(std::forward<Args>(args)...);
+      ++current_size;
+      ETL_INCREMENT_DEBUG_COUNT
+    }
+
+#else
 
     //*************************************************************************
     /// Emplaces an item to the front of the deque.
@@ -1667,6 +1777,7 @@ namespace etl
       ++current_size;
       ETL_INCREMENT_DEBUG_COUNT
     }
+#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
 
     //*************************************************************************
     /// Removes the oldest item from the deque.
