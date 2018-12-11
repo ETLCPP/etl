@@ -118,8 +118,6 @@ set(TEST_SOURCE_FILES
   test_xor_checksum.cpp
   test_xor_rotate_checksum.cpp
 
-  ${CMAKE_SOURCE_DIR}/src/crc16_modbus.cpp
-
   # Compile the source level ecl_timer here as test has provided a ecl_user.h file
   ${PROJECT_SOURCE_DIR}/../src/c/ecl_timer.c
   )
