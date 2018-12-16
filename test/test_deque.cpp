@@ -39,6 +39,7 @@ SOFTWARE.
 #include <iostream>
 #include <numeric>
 #include <cstring>
+#include <memory>
 
 namespace
 {
@@ -87,7 +88,6 @@ namespace
     std::vector<DC>  initial_data_dc = { DC("0"), DC("1"), DC("2"), DC("3"), DC("4"), DC("5"), DC("6"), DC("7"), DC("8"), DC("9"), DC("10"), DC("11"), DC("12"), DC("13") };
     std::vector<int> int_data1 = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
     std::vector<int> int_data2 = { 15, 16, 17, 18 };
-
 
     //*************************************************************************
     TEST(test_constructor)
@@ -145,7 +145,7 @@ namespace
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
     }
-    
+
     //*************************************************************************
     TEST(test_copy_constructor)
     {
@@ -1687,6 +1687,67 @@ namespace
                             data.begin());
 
       CHECK(!is_equal);
+    }
+
+    //*************************************************************************
+    TEST(test_move)
+    {
+      const size_t SIZE = 10U;
+      typedef etl::deque<std::unique_ptr<unsigned>, SIZE> Data;
+
+      Data data1;
+
+      std::unique_ptr<uint32_t> p1(new uint32_t(1U));
+      std::unique_ptr<uint32_t> p2(new uint32_t(2U));
+      std::unique_ptr<uint32_t> p3(new uint32_t(3U));
+      std::unique_ptr<uint32_t> p4(new uint32_t(4U));
+      std::unique_ptr<uint32_t> p5(new uint32_t(5U));
+
+      // Move items to data1.
+      data1.push_front(std::move(p1));
+      data1.push_back(std::move(p2));
+      data1.insert(data1.begin(),     std::move(p3));
+      data1.insert(data1.begin() + 1, std::move(p4));
+      data1.insert(data1.end(),       std::move(p5));
+
+      const size_t ACTUAL_SIZE = data1.size();
+
+      CHECK(!bool(p1));
+      CHECK(!bool(p2));
+      CHECK(!bool(p3));
+      CHECK(!bool(p4));
+      CHECK(!bool(p5));
+
+      CHECK_EQUAL(3U, *(*(data1.begin() + 0)));
+      CHECK_EQUAL(4U, *(*(data1.begin() + 1)));
+      CHECK_EQUAL(1U, *(*(data1.begin() + 2)));
+      CHECK_EQUAL(2U, *(*(data1.begin() + 3)));
+      CHECK_EQUAL(5U, *(*(data1.begin() + 4)));
+
+      // Move constructor.
+      Data data2(std::move(data1));
+
+      CHECK_EQUAL(3U, *(*(data2.begin() + 0)));
+      CHECK_EQUAL(4U, *(*(data2.begin() + 1)));
+      CHECK_EQUAL(1U, *(*(data2.begin() + 2)));
+      CHECK_EQUAL(2U, *(*(data2.begin() + 3)));
+      CHECK_EQUAL(5U, *(*(data2.begin() + 4)));
+
+      CHECK(data1.empty());
+      CHECK_EQUAL(ACTUAL_SIZE, data2.size());
+
+      // Move assignment.
+      Data data3;
+      data3 = std::move(data2);
+
+      CHECK_EQUAL(3U, *(*(data3.begin() + 0)));
+      CHECK_EQUAL(4U, *(*(data3.begin() + 1)));
+      CHECK_EQUAL(1U, *(*(data3.begin() + 2)));
+      CHECK_EQUAL(2U, *(*(data3.begin() + 3)));
+      CHECK_EQUAL(5U, *(*(data3.begin() + 4)));
+
+      CHECK(data2.empty());
+      CHECK_EQUAL(ACTUAL_SIZE, data3.size());
     }
   };
 }
