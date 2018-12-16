@@ -163,6 +163,32 @@ namespace std
   }
 
   //***************************************************************************
+  // move
+  template <typename TIterator1, typename TIterator2>
+  TIterator2 move(TIterator1 sb, TIterator1 se, TIterator2 db)
+  {
+    while (sb != se)
+    {
+      *db++ = std::move(*sb++);
+    }
+
+    return db;
+  }
+
+  //***************************************************************************
+  // move_backward
+  template <typename TIterator1, typename TIterator2>
+  TIterator2 move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
+  {
+    while (sb != se)
+    {
+      *(--de) = std::move(*(--se));
+    }
+
+    return de;
+  }
+
+  //***************************************************************************
   // lower_bound
   template<typename TIterator, typename TValue, typename TCompare>
   TIterator lower_bound(TIterator first, TIterator last, const TValue& value, TCompare compare)
