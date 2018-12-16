@@ -36,6 +36,7 @@ SOFTWARE.
 #include <algorithm>
 #include <vector>
 #include <list>
+#include <memory>
 
 #include "no_stl_test_iterators.h"
 
@@ -645,6 +646,100 @@ namespace
 
       bool isEqual = std::equal(std::begin(dataD1), std::end(dataD1), std::begin(dataD2));
       CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(move)
+    {
+      typedef std::vector<std::unique_ptr<unsigned>> Data;
+
+      Data data1;
+
+      // Create some data.
+      std::unique_ptr<uint32_t> p1(new uint32_t(1U));
+      std::unique_ptr<uint32_t> p2(new uint32_t(2U));
+      std::unique_ptr<uint32_t> p3(new uint32_t(3U));
+      std::unique_ptr<uint32_t> p4(new uint32_t(4U));
+      std::unique_ptr<uint32_t> p5(new uint32_t(5U));
+
+      // Fill data1.
+      data1.push_back(std::move(p1));
+      data1.push_back(std::move(p2));
+      data1.push_back(std::move(p3));
+      data1.push_back(std::move(p4));
+      data1.push_back(std::move(p5));
+
+      Data data2;
+
+      // Move to data2.
+      etlstd::move(data1.begin(), data1.end(), std::back_inserter(data2));
+
+      // Old data now empty.
+      CHECK(!bool(p1));
+      CHECK(!bool(p2));
+      CHECK(!bool(p3));
+      CHECK(!bool(p4));
+      CHECK(!bool(p5));
+
+      CHECK_EQUAL(1U, *(data2[0]));
+      CHECK_EQUAL(2U, *(data2[1]));
+      CHECK_EQUAL(3U, *(data2[2]));
+      CHECK_EQUAL(4U, *(data2[3]));
+      CHECK_EQUAL(5U, *(data2[4]));
+    }
+
+    //*************************************************************************
+    TEST(move_backward)
+    {
+      typedef std::vector<std::unique_ptr<unsigned>> Data;
+
+      Data data1;
+
+      // Create some data.
+      std::unique_ptr<uint32_t> p1(new uint32_t(1U));
+      std::unique_ptr<uint32_t> p2(new uint32_t(2U));
+      std::unique_ptr<uint32_t> p3(new uint32_t(3U));
+      std::unique_ptr<uint32_t> p4(new uint32_t(4U));
+      std::unique_ptr<uint32_t> p5(new uint32_t(5U));
+
+      // Fill data1.
+      data1.push_back(std::move(p1));
+      data1.push_back(std::move(p2));
+      data1.push_back(std::move(p3));
+      data1.push_back(std::move(p4));
+      data1.push_back(std::move(p5));
+
+      Data data2;
+
+      // Create some data.
+      std::unique_ptr<uint32_t> p6(new uint32_t(6U));
+      std::unique_ptr<uint32_t> p7(new uint32_t(7U));
+      std::unique_ptr<uint32_t> p8(new uint32_t(8U));
+      std::unique_ptr<uint32_t> p9(new uint32_t(9U));
+      std::unique_ptr<uint32_t> p10(new uint32_t(10U));
+
+      // Fill data2.
+      data2.push_back(std::move(p6));
+      data2.push_back(std::move(p7));
+      data2.push_back(std::move(p8));
+      data2.push_back(std::move(p9));
+      data2.push_back(std::move(p10));
+
+      // Overwrite data2 with data1.
+      etlstd::move_backward(data1.begin(), data1.end(), data2.end());
+
+      // Old data now empty.
+      CHECK(!bool(p1));
+      CHECK(!bool(p2));
+      CHECK(!bool(p3));
+      CHECK(!bool(p4));
+      CHECK(!bool(p5));
+
+      CHECK_EQUAL(1U, *(data2[0]));
+      CHECK_EQUAL(2U, *(data2[1]));
+      CHECK_EQUAL(3U, *(data2[2]));
+      CHECK_EQUAL(4U, *(data2[3]));
+      CHECK_EQUAL(5U, *(data2[4]));
     }
   };
 }

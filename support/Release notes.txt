@@ -1,4 +1,9 @@
 ===============================================================================
+14.5.0
+Added move algorithms and utility to 'alternate' STL.
+Added rvalue reference API to etl::deque.
+
+===============================================================================
 14.4.0
 Added C++03/C++11 emplace for deque, priority_queue, queues, stack, variant & vector.
 
