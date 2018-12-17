@@ -15,23 +15,10 @@ set(ETL_PROFILE "DEFAULT" CACHE STRING "Defines what profile header to include. 
 
 option(BUILD_TESTS "Build unit tests" OFF)
 
+add_library(etl INTERFACE)
 
-# Note: this will not compile src/c/ecl_timer.c as that c file has a dependence
-#       on ecl_user.h which is provided by clients of this library 
-add_library(etl STATIC
-  src/binary.cpp
-  src/crc16.cpp
-  src/crc16_ccitt.cpp
-  src/crc16_kermit.cpp
-  src/crc32.cpp
-  src/crc64_ecma.cpp
-  src/crc8_ccitt.cpp
-  src/error_handler.cpp
-  src/pearson.cpp
-  src/random.cpp
-  )
 target_include_directories(etl
-  PUBLIC
+  INTERFACE
   include
   include/etl/profiles
   )
@@ -60,7 +47,7 @@ endif()
 message(STATUS "Compiling with ETL profile set to: ${ETL_PROFILE}")
 
 target_compile_definitions(etl
-  PUBLIC
+  INTERFACE
   ${ETL_PROFILE} 
   )
 
