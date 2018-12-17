@@ -238,8 +238,6 @@ namespace etl
 
   protected:
 
-    typedef typename etl::parameter_type<T>::type parameter_t;
-
     //*************************************************************************
     /// Test for an iterator.
     //*************************************************************************
@@ -1624,7 +1622,7 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
     ///\param item The item to push to the deque.
     //*************************************************************************
-    void push_back(parameter_t item)
+    void push_back(const T& item)
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(deque_full));
@@ -1752,7 +1750,7 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
     ///\param item The item to push to the deque.
     //*************************************************************************
-    void push_front(parameter_t item)
+    void push_front(const T& item)
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(deque_full));
@@ -2065,7 +2063,7 @@ namespace etl
     //*********************************************************************
     /// Create a new element with a default value at the front.
     //*********************************************************************
-    void create_element_front(parameter_t value)
+    void create_element_front(const T& value)
     {
       --_begin;
       ::new (&(*_begin)) T(value);
@@ -2076,7 +2074,7 @@ namespace etl
     //*********************************************************************
     /// Create a new element with a value at the back
     //*********************************************************************
-    void create_element_back(parameter_t value)
+    void create_element_back(const T& value)
     {
       ::new (&(*_end)) T(value);
       ++_end;
@@ -2274,7 +2272,7 @@ namespace etl
     //*************************************************************************
     /// Assigns data to the deque.
     //*************************************************************************
-    explicit deque(size_t n, typename etl::ideque<T>::parameter_t value = value_type())
+    explicit deque(size_t n, const T& value = value_type())
       : etl::ideque<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, BUFFER_SIZE)
     {
       this->assign(n, value);

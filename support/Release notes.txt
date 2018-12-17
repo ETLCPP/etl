@@ -1,4 +1,8 @@
 ===============================================================================
+14.5.1
+Fixed deque pushes for literals.
+
+===============================================================================
 14.5.0
 Added move algorithms and utility to 'alternate' STL.
 Added rvalue reference API to etl::deque.
