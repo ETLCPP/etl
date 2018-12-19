@@ -38,6 +38,7 @@ SOFTWARE.
 
 #include "stl/algorithm.h"
 #include "stl/iterator.h"
+#include "stl/utility.h"
 
 #include "container.h"
 #include "alignment.h"
@@ -236,8 +237,6 @@ namespace etl
     typedef typename std::iterator_traits<pointer>::difference_type difference_type;
 
   protected:
-
-    typedef typename etl::parameter_type<T>::type parameter_t;
 
     //*************************************************************************
     /// Test for an iterator.
@@ -916,6 +915,60 @@ namespace etl
       return position;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Inserts data into the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is full.
+    ///\param insert_position>The insert position.
+    ///\param value>The value to insert.
+    //*************************************************************************
+    iterator insert(const_iterator insert_position, value_type&& value)
+    {
+      iterator position(insert_position.index, *this, p_buffer);
+
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+
+      if (insert_position == begin())
+      {
+        create_element_front(std::move(value));
+        position = _begin;
+      }
+      else if (insert_position == end())
+      {
+        create_element_back(std::move(value));
+        position = _end - 1;
+      }
+      else
+      {
+        // Are we closer to the front?
+        if (std::distance(_begin, position) < std::distance(position, _end - 1))
+        {
+          // Construct the _begin.
+          create_element_front(std::move(*_begin));
+
+          // Move the values.
+          std::move(_begin + 1, position, _begin);
+
+          // Write the new value.
+          *--position = std::move(value);
+        }
+        else
+        {
+          // Construct the _end.
+          create_element_back(std::move(*(_end - 1)));
+
+          // Move the values.
+          std::move_backward(position, _end - 2, _end - 1);
+
+          // Write the new value.
+          *position = std::move(value);
+        }
+      }
+
+      return position;
+    }
+#endif
+
     //*************************************************************************
     /// Emplaces data into the deque.
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is full.
@@ -1569,13 +1622,28 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
     ///\param item The item to push to the deque.
     //*************************************************************************
-    void push_back(parameter_t item)
+    void push_back(const T& item)
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(deque_full));
 #endif
       create_element_back(item);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Adds an item to the back of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
+    ///\param item The item to push to the deque.
+    //*************************************************************************
+    void push_back(T&& item)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+#endif
+      create_element_back(std::move(item));
+    }
+#endif
 
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
     //*************************************************************************
@@ -1682,13 +1750,28 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
     ///\param item The item to push to the deque.
     //*************************************************************************
-    void push_front(parameter_t item)
+    void push_front(const T& item)
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(deque_full));
 #endif
       create_element_front(item);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Adds an item to the front of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
+    ///\param item The item to push to the deque.
+    //*************************************************************************
+    void push_front(T&& item)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+#endif
+      create_element_front(std::move(item));
+    }
+#endif
 
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
     //*************************************************************************
@@ -1980,7 +2063,7 @@ namespace etl
     //*********************************************************************
     /// Create a new element with a default value at the front.
     //*********************************************************************
-    void create_element_front(parameter_t value)
+    void create_element_front(const T& value)
     {
       --_begin;
       ::new (&(*_begin)) T(value);
@@ -1991,13 +2074,37 @@ namespace etl
     //*********************************************************************
     /// Create a new element with a value at the back
     //*********************************************************************
-    void create_element_back(parameter_t value)
+    void create_element_back(const T& value)
     {
       ::new (&(*_end)) T(value);
       ++_end;
       ++current_size;
       ETL_INCREMENT_DEBUG_COUNT
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    /// Create a new element with a default value at the front.
+    //*********************************************************************
+    void create_element_front(T&& value)
+    {
+      --_begin;
+      ::new (&(*_begin)) T(std::move(value));
+      ++current_size;
+      ETL_INCREMENT_DEBUG_COUNT
+    }
+
+    //*********************************************************************
+    /// Create a new element with a value at the back
+    //*********************************************************************
+    void create_element_back(T&& value)
+    {
+      ::new (&(*_end)) T(std::move(value));
+      ++_end;
+      ++current_size;
+      ETL_INCREMENT_DEBUG_COUNT
+    }
+#endif
 
     //*********************************************************************
     /// Destroy an element at the front.
@@ -2129,6 +2236,29 @@ namespace etl
       }
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move constructor.
+    //*************************************************************************
+    deque(deque&& other)
+      : etl::ideque<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, BUFFER_SIZE)
+    {
+      if (this != &other)
+      {
+        this->initialise();
+
+        typename etl::ideque<T>::iterator itr = other.begin();
+        while (itr != other.end())
+        {
+          this->push_back(std::move(*itr));
+          ++itr;
+        }
+
+        other.initialise();
+      }
+    }
+#endif
+
     //*************************************************************************
     /// Assigns data to the deque.
     //*************************************************************************
@@ -2142,7 +2272,7 @@ namespace etl
     //*************************************************************************
     /// Assigns data to the deque.
     //*************************************************************************
-    explicit deque(size_t n, typename etl::ideque<T>::parameter_t value = value_type())
+    explicit deque(size_t n, const T& value = value_type())
       : etl::ideque<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, BUFFER_SIZE)
     {
       this->assign(n, value);
@@ -2171,6 +2301,29 @@ namespace etl
 
       return *this;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    deque& operator =(deque&& rhs)
+    {
+      if (&rhs != this)
+      {
+        this->clear();
+        typename etl::ideque<T>::iterator itr = rhs.begin();
+        while (itr != rhs.end())
+        {
+          this->push_back(std::move(*itr));
+          ++itr;
+        }
+
+        rhs.initialise();
+      }
+
+      return *this;
+    }
+#endif
 
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.

@@ -1,4 +1,4 @@
-///\file
+ ///\file
 
 /******************************************************************************
 The MIT License(MIT)
@@ -32,6 +32,7 @@ SOFTWARE.
 #define ETL_STL_ALTERNATE_UTILITY_INCLUDED
 
 #include "../../platform.h"
+#include "../../type_traits.h"
 
 #if defined(ETL_IN_UNIT_TEST)
   #if !defined(ETLSTD)
@@ -48,7 +49,7 @@ SOFTWARE.
 #if !defined(ETL_COMPILER_ARM6)
   //******************************************************************************
   template <typename T1, typename T2>
-  struct pair 
+  struct pair
   {
     typedef T1 first_type;
     typedef T2 second_type;
@@ -57,27 +58,27 @@ SOFTWARE.
     T2 second;
 
     pair()
-      : first(T1()), 
-        second(T2()) 
+      : first(T1()),
+        second(T2())
     {
     }
 
-    pair(const T1& a, const T2& b) 
-      : first(a), 
+    pair(const T1& a, const T2& b)
+      : first(a),
         second(b)
     {
     }
 
     template <typename U1, typename U2>
-    pair(const pair<U1, U2>& other) 
-      : first(other.first), 
-        second(other.second) 
+    pair(const pair<U1, U2>& other)
+      : first(other.first),
+        second(other.second)
     {
     }
 
-    pair(const pair<T1, T2>& other) 
-      : first(other.first), 
-        second(other.second) 
+    pair(const pair<T1, T2>& other)
+      : first(other.first),
+        second(other.second)
     {
     }
 
@@ -99,7 +100,7 @@ SOFTWARE.
     return pair<T1, T2>(a, b);
   }
 
-#if !defined(ETL_COMPILER_ARM6)   
+#if !defined(ETL_COMPILER_ARM6)
   //******************************************************************************
   template <typename T1, typename T2>
   inline void swap(pair<T1, T2>& a, pair<T1, T2>& b)
@@ -121,7 +122,7 @@ SOFTWARE.
   }
 
   template <typename T1, typename T2>
-  inline bool operator <(const pair<T1, T2>& a, const pair<T1, T2>& b) 
+  inline bool operator <(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
     return (a.first < b.first) ||
            (!(b.first < a.first) && (a.second < b.second));
@@ -143,6 +144,14 @@ SOFTWARE.
   inline bool operator >=(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
     return !(a < b);
+  }
+#endif
+
+#if ETL_CPP11_SUPPORTED
+  template <typename T>
+  constexpr typename etl::remove_reference<T>::type&& move(T&& t) noexcept
+  {
+    return static_cast<typename etl::remove_reference<T>::type&&>(t);
   }
 #endif
 }
