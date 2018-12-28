@@ -711,6 +711,15 @@
     <ClInclude Include="..\..\include\etl\crc16_modbus.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\cumulative_moving_average.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\scaled_rounding.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\absolute.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1127,8 +1136,11 @@
     <ClCompile Include="..\test_state_chart.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\crc16_modbus.cpp">
-      <Filter>ETL\Maths</Filter>
+    <ClCompile Include="..\test_scaled_rounding.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_cumulative_moving_average.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

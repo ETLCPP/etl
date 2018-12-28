@@ -369,10 +369,13 @@
     <ClInclude Include="..\..\include\etl\constant.h" />
     <ClInclude Include="..\..\include\etl\crc16_modbus.h" />
     <ClInclude Include="..\..\include\etl\crc32_c.h" />
+    <ClInclude Include="..\..\include\etl\cumulative_moving_average.h" />
     <ClInclude Include="..\..\include\etl\c\ecl_timer.h" />
     <ClInclude Include="..\..\include\etl\fsm.h" />
     <ClInclude Include="..\..\include\etl\fsm_generator.h" />
     <ClInclude Include="..\..\include\etl\largest_generator.h" />
+    <ClInclude Include="..\..\include\etl\absolute.h" />
+    <ClInclude Include="..\..\include\etl\scaled_rounding.h" />
     <ClInclude Include="..\..\include\etl\state_chart.h" />
     <ClInclude Include="..\..\include\etl\math_constants.h" />
     <ClInclude Include="..\..\include\etl\memory_model.h" />
@@ -561,6 +564,7 @@
     <ClCompile Include="..\murmurhash3.cpp" />
     <ClCompile Include="..\test_algorithm.cpp" />
     <ClCompile Include="..\test_alignment.cpp" />
+    <ClCompile Include="..\test_cumulative_moving_average.cpp" />
     <ClCompile Include="..\test_forward_list_shared_pool.cpp" />
     <ClCompile Include="..\test_bit_stream.cpp" />
     <ClCompile Include="..\test_list_shared_pool.cpp" />
@@ -720,6 +724,7 @@
     <ClCompile Include="..\test_reference_flat_multimap.cpp" />
     <ClCompile Include="..\test_reference_flat_multiset.cpp" />
     <ClCompile Include="..\test_reference_flat_set.cpp" />
+    <ClCompile Include="..\test_scaled_rounding.cpp" />
     <ClCompile Include="..\test_set.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>

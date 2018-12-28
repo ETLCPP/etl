@@ -413,6 +413,7 @@
 		<Unit filename="../test_reference_flat_multimap.cpp" />
 		<Unit filename="../test_reference_flat_multiset.cpp" />
 		<Unit filename="../test_reference_flat_set.cpp" />
+		<Unit filename="../test_scaled_rounding.cpp" />
 		<Unit filename="../test_set.cpp" />
 		<Unit filename="../test_smallest.cpp" />
 		<Unit filename="../test_stack.cpp" />

@@ -1,4 +1,15 @@
 ===============================================================================
+14.6.0
+Added etl::scaled_rounding to allow selection of rounding algorithms when
+emulating fixed point arithmetic with scaled integral values.
+
+Added etl::cumulating_moving_average, implementing an algorithm for
+calculating an average for a stream of samples. There are specialisations
+for floating point and scaled integral sample types.
+
+Added C++11 rvalue reference 'push' functions for etl::deque.
+
+===============================================================================
 14.5.1
 Fixed deque pushes for literals.
 

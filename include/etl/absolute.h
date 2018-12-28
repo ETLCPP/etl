@@ -28,24 +28,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_VERSION_INCLUDED
-#define ETL_VERSION_INCLUDED
+#ifndef ETL_ABSOLUTE_INCLUDED
+#define ETL_ABSOLUTE_INCLUDED
 
-#include "macros.h"
+#include "type_traits.h"
 
-///\defgroup version version
-/// Definitions of the ETL version
-///\ingroup utilities
+namespace etl
+{
+  //***************************************************************************
+  // For signed types.
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_signed<T>::value, T>::type
+    absolute(T value)
+  {
+    return (value < T(0)) ? -value : value;
+  }
 
-#define ETL_VERSION_MAJOR 14
-#define ETL_VERSION_MINOR  6
-#define ETL_VERSION_PATCH  0
-
-#define ETL_VERSION       ETL_STRINGIFY(ETL_VERSION_MAJOR) ETL_STRINGIFY(ETL_VERSION_MINOR) ETL_STRINGIFY(ETL_VERSION_PATCH)
-#define ETL_VERSION_W     ETL_WIDE_STRING(ETL_CONCAT(ETL_CONCAT(ETL_VERSION_MAJOR, ETL_VERSION_MINOR), ETL_VERSION_PATCH))
-#define ETL_VERSION_U16   ETL_U16_STRING(ETL_CONCAT(ETL_CONCAT(ETL_VERSION_MAJOR, ETL_VERSION_MINOR), ETL_VERSION_PATCH))
-#define ETL_VERSION_U32   ETL_U32_STRING(ETL_CONCAT(ETL_CONCAT(ETL_VERSION_MAJOR, ETL_VERSION_MINOR), ETL_VERSION_PATCH))
-#define ETL_VERSION_VALUE ((ETL_VERSION_MAJOR * 10000) + (ETL_VERSION_MINOR * 100) + ETL_VERSION_PATCH)
+  //***************************************************************************
+  // For unsigned types.
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
+    absolute(T value)
+  {
+    return value;
+  }
+}
 
 #endif
 
