@@ -1693,7 +1693,7 @@ namespace
     TEST(test_move)
     {
       const size_t SIZE = 10U;
-      typedef etl::deque<std::unique_ptr<unsigned>, SIZE> Data;
+      typedef etl::deque<std::unique_ptr<uint32_t>, SIZE> Data;
 
       Data data1;
 
