@@ -31,6 +31,7 @@
 #include <vector>
 #include <array>
 #include <algorithm>
+#include <memory>
 
 #include "etl/vector.h"
 #include "data.h"
@@ -569,6 +570,80 @@ namespace
                                  compare_data.begin());
 
       CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_push_back_unique_ptr)
+    {
+      etl::vector<std::unique_ptr<int>, SIZE> data;
+
+      std::unique_ptr<int> p1(new int(1));
+      std::unique_ptr<int> p2(new int(2));
+      std::unique_ptr<int> p3(new int(3));
+      std::unique_ptr<int> p4(new int(4));
+
+      data.push_back(std::move(p1));
+      data.push_back(std::move(p2));
+      data.push_back(std::move(p3));
+      data.push_back(std::move(p4));
+
+      CHECK(!bool(p1));
+      CHECK(!bool(p2));
+      CHECK(!bool(p3));
+      CHECK(!bool(p4));
+
+      CHECK_EQUAL(1, *data[0]);
+      CHECK_EQUAL(2, *data[1]);
+      CHECK_EQUAL(3, *data[2]);
+      CHECK_EQUAL(4, *data[3]);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_int)
+    {
+      etl::vector<int, SIZE> data;
+
+      int p1(1);
+      int p2(2);
+      int p3(3);
+      int p4(4);
+
+      data.insert(data.begin(), p1);
+      data.insert(data.begin(), p2);
+      data.insert(data.begin(), p3);
+      data.insert(data.begin(), p4);
+
+      CHECK_EQUAL(4, data[0]);
+      CHECK_EQUAL(3, data[1]);
+      CHECK_EQUAL(2, data[2]);
+      CHECK_EQUAL(1, data[3]);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_unique_ptr)
+    {
+      etl::vector<std::unique_ptr<int>, SIZE> data;
+
+      std::unique_ptr<int> p1(new int(1));
+      std::unique_ptr<int> p2(new int(2));
+      std::unique_ptr<int> p3(new int(3));
+      std::unique_ptr<int> p4(new int(4));
+
+      data.insert(data.begin(), std::move(p1));
+      data.insert(data.begin(), std::move(p2));
+      data.insert(data.begin(), std::move(p3));
+      data.insert(data.begin(), std::move(p4));
+
+      CHECK(!bool(p1));
+      CHECK(!bool(p2));
+      CHECK(!bool(p3));
+      CHECK(!bool(p4));
+
+      CHECK_EQUAL(1, *data[3]);
+      CHECK_EQUAL(4, *data[0]);
+      CHECK_EQUAL(3, *data[1]);
+      CHECK_EQUAL(2, *data[2]);
+
     }
 
     //*************************************************************************
