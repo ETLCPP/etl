@@ -421,6 +421,16 @@ namespace etl
   /// Copy construct an item at address p.
   ///\ingroup memory
   //*****************************************************************************
+  template <typename T>
+  void create_copy_at(T* p, T&& value)
+  {
+    ::new (p) T(std::move(value));
+  }
+
+  //*****************************************************************************
+  /// Copy construct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
   template <typename T, typename TCounter>
    void create_copy_at(T* p, const T& value, TCounter& count)
   {
@@ -466,6 +476,17 @@ namespace etl
   /// Construct an item at address p.
   ///\ingroup memory
   //*****************************************************************************
+  template <typename T>
+  T& make_copy_at(T* p, T&& other)
+  {
+    ::new (p) T(std::move(other));
+    return *reinterpret_cast<T*>(p);
+  }
+
+  //*****************************************************************************
+  /// Construct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
   template <typename T, typename TCounter>
    T& make_copy_at(T* p, const T& other, TCounter& count)
   {
@@ -482,6 +503,17 @@ namespace etl
    T& make_value_at(T* p, const TParameter& value)
   {
     ::new (p) T(value);
+    return *reinterpret_cast<T*>(p);
+  }
+
+  //*****************************************************************************
+  /// Construct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T, typename TParameter>
+  T& make_value_at(T* p, TParameter&& value)
+  {
+    ::new (p) T(std::move(value));
     return *reinterpret_cast<T*>(p);
   }
 
