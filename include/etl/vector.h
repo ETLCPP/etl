@@ -413,6 +413,7 @@ namespace etl
       create_back(value);
     }
 
+#if ETL_CPP11_SUPPORTED
     //*********************************************************************
     /// Inserts a value at the end of the vector.
     /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
@@ -425,6 +426,7 @@ namespace etl
 #endif
       create_back(std::move(value));
     }
+#endif
 
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL) && !ETL_VECTOR_FORCE_CPP03
     //*********************************************************************
@@ -544,6 +546,7 @@ namespace etl
       return position;
     }
 
+#if ETL_CPP11_SUPPORTED
     //*********************************************************************
     /// Inserts a value to the vector.
     /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
@@ -567,6 +570,7 @@ namespace etl
 
       return position;
     }
+#endif
 
     //*************************************************************************
     /// Emplaces a value to the vextor at the specified position.
@@ -965,6 +969,7 @@ namespace etl
       ++p_end;
     }
 
+#if ETL_CPP11_SUPPORTED
     //*********************************************************************
     /// Create a new element with a value at the back
     //*********************************************************************
@@ -975,6 +980,7 @@ namespace etl
 
       ++p_end;
     }
+#endif
 
     //*********************************************************************
     /// Destroy an element at the back.

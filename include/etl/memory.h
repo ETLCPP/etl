@@ -417,6 +417,7 @@ namespace etl
     ::new (p) T(value);
   }
 
+#if ETL_CPP11_SUPPORTED
   //*****************************************************************************
   /// Copy construct an item at address p.
   ///\ingroup memory
@@ -426,6 +427,7 @@ namespace etl
   {
     ::new (p) T(std::move(value));
   }
+#endif
 
   //*****************************************************************************
   /// Copy construct an item at address p.
@@ -472,6 +474,7 @@ namespace etl
     return *reinterpret_cast<T*>(p);
   }
 
+#if ETL_CPP11_SUPPORTED
   //*****************************************************************************
   /// Construct an item at address p.
   ///\ingroup memory
@@ -482,6 +485,7 @@ namespace etl
     ::new (p) T(std::move(other));
     return *reinterpret_cast<T*>(p);
   }
+#endif
 
   //*****************************************************************************
   /// Construct an item at address p.
