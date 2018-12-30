@@ -37,6 +37,7 @@ SOFTWARE.
 #include <array>
 #include <list>
 #include <vector>
+#include <memory>
 
 namespace
 {
@@ -197,6 +198,36 @@ namespace
       other_data.pop_back();
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK_EQUAL(compare_data.size() - 2, other_data.size());
+    }
+
+    //*************************************************************************
+    TEST(test_move_constructor)
+    {
+      const size_t SIZE = 10U;
+      typedef etl::list<std::unique_ptr<uint32_t>, SIZE> Data;
+
+      std::unique_ptr<uint32_t> p1(new uint32_t(1U));
+      std::unique_ptr<uint32_t> p2(new uint32_t(2U));
+      std::unique_ptr<uint32_t> p3(new uint32_t(3U));
+      std::unique_ptr<uint32_t> p4(new uint32_t(4U));
+
+      Data data1;
+      data1.push_back(std::move(p1));
+      data1.push_back(std::move(p2));
+      data1.push_back(std::move(p3));
+      data1.push_back(std::move(p4));
+
+      Data data2(std::move(data1));
+
+      CHECK_EQUAL(0U, data1.size());
+      CHECK_EQUAL(4U, data2.size());
+
+      Data::const_iterator itr = data2.begin();
+
+      CHECK_EQUAL(1U, *(*itr++));
+      CHECK_EQUAL(2U, *(*itr++));
+      CHECK_EQUAL(3U, *(*itr++));
+      CHECK_EQUAL(4U, *(*itr++));
     }
 
     //*************************************************************************
@@ -430,6 +461,39 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_position_value_move)
+    {
+      typedef etl::list<std::unique_ptr<uint32_t>, SIZE> Data;
+
+      Data data;
+
+      std::unique_ptr<uint32_t> p1(new uint32_t(1U));
+      std::unique_ptr<uint32_t> p2(new uint32_t(2U));
+      std::unique_ptr<uint32_t> p3(new uint32_t(3U));
+      std::unique_ptr<uint32_t> p4(new uint32_t(4U));
+
+      // Move items to data.
+      data.insert(data.begin(), std::move(p1));
+      data.insert(data.begin(), std::move(p2));
+      data.insert(data.end(),   std::move(p3));
+      data.insert(data.begin(), std::move(p4));
+
+      CHECK_EQUAL(4U, data.size());
+
+      CHECK(!bool(p1));
+      CHECK(!bool(p2));
+      CHECK(!bool(p3));
+      CHECK(!bool(p4));
+
+      Data::const_iterator itr = data.begin();
+
+      CHECK_EQUAL(4U, *(*itr++));
+      CHECK_EQUAL(2U, *(*itr++));
+      CHECK_EQUAL(1U, *(*itr++));
+      CHECK_EQUAL(3U, *(*itr++));
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_emplace_position_value)
     {
       const size_t INITIAL_SIZE = 4;
@@ -552,6 +616,38 @@ namespace
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_push_front_move)
+    {
+      const size_t SIZE = 10U;
+      typedef etl::list<std::unique_ptr<uint32_t>, SIZE> Data;
+
+      std::unique_ptr<uint32_t> p1(new uint32_t(1U));
+      std::unique_ptr<uint32_t> p2(new uint32_t(2U));
+      std::unique_ptr<uint32_t> p3(new uint32_t(3U));
+      std::unique_ptr<uint32_t> p4(new uint32_t(4U));
+
+      Data data;
+      data.push_front(std::move(p1));
+      data.push_front(std::move(p2));
+      data.push_front(std::move(p3));
+      data.push_front(std::move(p4));
+
+      CHECK_EQUAL(4U, data.size());
+
+      CHECK(!bool(p1));
+      CHECK(!bool(p2));
+      CHECK(!bool(p3));
+      CHECK(!bool(p4));
+
+      Data::const_iterator itr = data.begin();
+
+      CHECK_EQUAL(4U, *(*itr++));
+      CHECK_EQUAL(3U, *(*itr++));
+      CHECK_EQUAL(2U, *(*itr++));
+      CHECK_EQUAL(1U, *(*itr++));
     }
 
     //*************************************************************************
@@ -679,6 +775,38 @@ namespace
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_push_back_move)
+    {
+      const size_t SIZE = 10U;
+      typedef etl::list<std::unique_ptr<uint32_t>, SIZE> Data;
+
+      std::unique_ptr<uint32_t> p1(new uint32_t(1U));
+      std::unique_ptr<uint32_t> p2(new uint32_t(2U));
+      std::unique_ptr<uint32_t> p3(new uint32_t(3U));
+      std::unique_ptr<uint32_t> p4(new uint32_t(4U));
+
+      Data data;
+      data.push_back(std::move(p1));
+      data.push_back(std::move(p2));
+      data.push_back(std::move(p3));
+      data.push_back(std::move(p4));
+
+      CHECK_EQUAL(4U, data.size());
+
+      CHECK(!bool(p1));
+      CHECK(!bool(p2));
+      CHECK(!bool(p3));
+      CHECK(!bool(p4));
+
+      Data::const_iterator itr = data.begin();
+
+      CHECK_EQUAL(1U, *(*itr++));
+      CHECK_EQUAL(2U, *(*itr++));
+      CHECK_EQUAL(3U, *(*itr++));
+      CHECK_EQUAL(4U, *(*itr++));
     }
 
     //*************************************************************************
@@ -906,6 +1034,38 @@ namespace
 
       CHECK(are_equal);
     }
+
+    //*************************************************************************
+    TEST(test_move_assignment)
+    {
+      const size_t SIZE = 10U;
+      typedef etl::list<std::unique_ptr<uint32_t>, SIZE> Data;
+
+      std::unique_ptr<uint32_t> p1(new uint32_t(1U));
+      std::unique_ptr<uint32_t> p2(new uint32_t(2U));
+      std::unique_ptr<uint32_t> p3(new uint32_t(3U));
+      std::unique_ptr<uint32_t> p4(new uint32_t(4U));
+
+      Data data1;
+      data1.push_back(std::move(p1));
+      data1.push_back(std::move(p2));
+      data1.push_back(std::move(p3));
+      data1.push_back(std::move(p4));
+
+      Data data2;
+      data2 = std::move(data1);
+
+      CHECK_EQUAL(0U, data1.size());
+      CHECK_EQUAL(4U, data2.size());
+
+      Data::const_iterator itr = data2.begin();
+
+      CHECK_EQUAL(1U, *(*itr++));
+      CHECK_EQUAL(2U, *(*itr++));
+      CHECK_EQUAL(3U, *(*itr++));
+      CHECK_EQUAL(4U, *(*itr++));
+    }
+
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assignment_interface)

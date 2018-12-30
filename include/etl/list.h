@@ -46,7 +46,6 @@ SOFTWARE.
 #include "debug_count.h"
 #include "nullptr.h"
 #include "type_traits.h"
-#include "parameter_type.h"
 #include "algorithm.h"
 
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
@@ -418,6 +417,7 @@ namespace etl
     typedef const T* const_pointer;
     typedef T&       reference;
     typedef const T& const_reference;
+    typedef T&&      rvalue_reference;
     typedef size_t   size_type;
 
   protected:
@@ -429,7 +429,7 @@ namespace etl
     //*************************************************************************
     struct data_node_t : public node_t
     {
-      explicit data_node_t(parameter_t value_)
+      explicit data_node_t(const T& value_)
         : value(value_)
       {
       }
@@ -823,7 +823,7 @@ namespace etl
     //*************************************************************************
     /// Assigns 'n' copies of a value to the list.
     //*************************************************************************
-    void assign(size_t n, parameter_t value)
+    void assign(size_t n, const T& value)
     {
 #if defined(ETL_DEBUG)
       ETL_ASSERT(n <= available(), ETL_ERROR(list_full));
@@ -843,13 +843,26 @@ namespace etl
     //*************************************************************************
     /// Pushes a value to the front of the list.
     //*************************************************************************
-    void push_front(parameter_t value)
+    void push_front(const T& value)
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(list_full));
 #endif
       insert_node(get_head(), allocate_data_node(value));
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Pushes a value to the front of the list.
+    //*************************************************************************
+    void push_front(rvalue_reference value)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(list_full));
+#endif
+      insert_node(get_head(), allocate_data_node(std::move(value)));
+    }
+#endif
 
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
     //*************************************************************************
@@ -953,13 +966,26 @@ namespace etl
     //*************************************************************************
     /// Pushes a value to the back of the list.
     //*************************************************************************
-    void push_back(parameter_t value)
+    void push_back(const T& value)
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(list_full));
 #endif
       insert_node(terminal_node, allocate_data_node(value));
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Pushes a value to the back of the list.
+    //*************************************************************************
+    void push_back(rvalue_reference value)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(list_full));
+#endif
+      insert_node(terminal_node, allocate_data_node(std::move(value)));
+    }
+#endif
 
     //*************************************************************************
     /// Emplaces a value to the back of the list.
@@ -1060,6 +1086,21 @@ namespace etl
 
       return iterator(data_node);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Inserts a value to the list at the specified position.
+    //*************************************************************************
+    iterator insert(iterator position, rvalue_reference value)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(list_full));
+
+      data_node_t& data_node = allocate_data_node(std::move(value));
+      insert_node(*position.p_node, data_node);
+
+      return iterator(data_node);
+    }
+#endif
 
     //*************************************************************************
     /// Emplaces a value to the list at the specified position.
@@ -1209,7 +1250,7 @@ namespace etl
     //*************************************************************************
     /// Resizes the list.
     //*************************************************************************
-    void resize(size_t n, parameter_t value)
+    void resize(size_t n, const_reference value)
     {
       ETL_ASSERT(n <= MAX_SIZE, ETL_ERROR(list_full));
 
@@ -1675,7 +1716,7 @@ namespace etl
     //*************************************************************************
     /// Allocate a data_node_t.
     //*************************************************************************
-    data_node_t& allocate_data_node(parameter_t value)
+    data_node_t& allocate_data_node(const_reference value)
     {
       ETL_ASSERT(p_node_pool != nullptr, ETL_ERROR(list_no_pool));
 
@@ -1685,6 +1726,22 @@ namespace etl
 
       return *p_data_node;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Allocate a data_node_t.
+    //*************************************************************************
+    data_node_t& allocate_data_node(rvalue_reference value)
+    {
+      ETL_ASSERT(p_node_pool != nullptr, ETL_ERROR(list_no_pool));
+
+      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_data_node->value)) T(std::move(value));
+      ETL_INCREMENT_DEBUG_COUNT
+
+        return *p_data_node;
+    }
+#endif
 
     //*************************************************************************
     /// Destroy a data_node_t.
@@ -1731,6 +1788,7 @@ namespace etl
     typedef const T* const_pointer;
     typedef T&       reference;
     typedef const T& const_reference;
+    typedef T&&      rvalue_reference;
     typedef size_t   size_type;
 
     //*************************************************************************
@@ -1761,7 +1819,7 @@ namespace etl
     //*************************************************************************
     /// Construct from size and value.
     //*************************************************************************
-    list(size_t initial_size, typename ilist<T>::parameter_t value)
+    list(size_t initial_size, const T& value)
       : etl::ilist<T>(node_pool, MAX_SIZE, false)
     {
       this->assign(initial_size, value);
@@ -1778,6 +1836,29 @@ namespace etl
         this->assign(other.cbegin(), other.cend());
       }
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move constructor.
+    //*************************************************************************
+    list(list&& other)
+      : etl::ilist<T>(node_pool, MAX_SIZE, false)
+    {
+      if (this != &other)
+      {
+        this->initialise();
+
+        typename etl::ilist<T>::iterator itr = other.begin();
+        while (itr != other.end())
+        {
+          this->push_back(std::move(*itr));
+          ++itr;
+        }
+
+        other.initialise();
+      }
+    }
+#endif
 
     //*************************************************************************
     /// Construct from range.
@@ -1812,6 +1893,30 @@ namespace etl
 
       return *this;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    list& operator = (list&& rhs)
+    {
+      if (&rhs != this)
+      {
+        this->initialise();
+
+        typename etl::ilist<T>::iterator itr = rhs.begin();
+        while (itr != rhs.end())
+        {
+          this->push_back(std::move(*itr));
+          ++itr;
+        }
+
+        rhs.initialise();
+      }
+
+      return *this;
+    }
+#endif
 
   private:
 
@@ -1873,7 +1978,7 @@ namespace etl
     //*************************************************************************
     /// Construct from size and value.
     //*************************************************************************
-    list(size_t initial_size, typename ilist<T>::parameter_t value, etl::ipool& node_pool)
+    list(size_t initial_size, const T& value, etl::ipool& node_pool)
       : etl::ilist<T>(node_pool, node_pool.max_size(), true)
     {
       this->assign(initial_size, value);
