@@ -1174,14 +1174,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Destructor.
-    //*************************************************************************
-    ~vector()
-    {
-      this->clear();
-    }
-
-    //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
     vector& operator = (const vector& rhs)
@@ -1192,6 +1184,58 @@ namespace etl
       }
 
       return *this;
+    }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move constructor.
+    //*************************************************************************
+    vector(vector&& other)
+      : etl::ivector<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
+    {
+      if (this != &other)
+      {
+        this->initialise();
+
+        typename etl::ivector<T>::iterator itr = other.begin();
+        while (itr != other.end())
+        {
+          this->push_back(std::move(*itr));
+          ++itr;
+        }
+
+        other.initialise();
+      }
+    }
+
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    vector& operator = (vector&& rhs)
+    {
+      if (&rhs != this)
+      {
+        this->clear();
+        typename etl::ivector<T>::iterator itr = rhs.begin();
+        while (itr != rhs.end())
+        {
+          this->push_back(std::move(*itr));
+          ++itr;
+        }
+
+        rhs.initialise();
+      }
+
+      return *this;
+    }
+#endif
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~vector()
+    {
+      this->clear();
     }
 
     //*************************************************************************
@@ -1307,50 +1351,6 @@ namespace etl
 
       return *this;
     }
-
-#if ETL_CPP11_SUPPORTED
-    //*************************************************************************
-    /// Move constructor.
-    //*************************************************************************
-    vector(vector&& other)
-      : etl::ivector<T*>(reinterpret_cast<T**>(&buffer), MAX_SIZE)
-    {
-      if (this != &other)
-      {
-        this->initialise();
-
-        typename etl::ivector<T>::iterator itr = other.begin();
-        while (itr != other.end())
-        {
-          this->push_back(std::move(*itr));
-          ++itr;
-        }
-
-        other.initialise();
-      }
-    }
-
-    //*************************************************************************
-    /// Assignment operator.
-    //*************************************************************************
-    vector& operator = (vector&& rhs)
-    {
-      if (&rhs != this)
-      {
-        this->clear();
-        typename etl::ivector<T>::iterator itr = rhs.begin();
-        while (itr != rhs.end())
-        {
-          this->push_back(std::move(*itr));
-          ++itr;
-        }
-
-        rhs.initialise();
-      }
-
-      return *this;
-    }
-#endif
 
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.

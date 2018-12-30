@@ -190,6 +190,34 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_move_constructor)
+    {
+      const size_t SIZE = 10U;
+      typedef etl::vector<std::unique_ptr<uint32_t>, SIZE> Data;
+
+      std::unique_ptr<uint32_t> p1(new uint32_t(1U));
+      std::unique_ptr<uint32_t> p2(new uint32_t(2U));
+      std::unique_ptr<uint32_t> p3(new uint32_t(3U));
+      std::unique_ptr<uint32_t> p4(new uint32_t(4U));
+
+      Data data1;
+      data1.push_back(std::move(p1));
+      data1.push_back(std::move(p2));
+      data1.push_back(std::move(p3));
+      data1.push_back(std::move(p4));
+
+      Data data2(std::move(data1));
+
+      CHECK_EQUAL(0U, data1.size());
+      CHECK_EQUAL(4U, data2.size());
+
+      CHECK_EQUAL(1U, *data2[0]);
+      CHECK_EQUAL(2U, *data2[1]);
+      CHECK_EQUAL(3U, *data2[2]);
+      CHECK_EQUAL(4U, *data2[3]);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assignment)
     {
       DataNDC data(initial_data.begin(), initial_data.end());
@@ -202,6 +230,35 @@ namespace
                                  other_data.begin());
 
       CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    TEST(test_move_assignment)
+    {
+      const size_t SIZE = 10U;
+      typedef etl::vector<std::unique_ptr<uint32_t>, SIZE> Data;
+
+      std::unique_ptr<uint32_t> p1(new uint32_t(1U));
+      std::unique_ptr<uint32_t> p2(new uint32_t(2U));
+      std::unique_ptr<uint32_t> p3(new uint32_t(3U));
+      std::unique_ptr<uint32_t> p4(new uint32_t(4U));
+
+      Data data1;
+      data1.push_back(std::move(p1));
+      data1.push_back(std::move(p2));
+      data1.push_back(std::move(p3));
+      data1.push_back(std::move(p4));
+
+      Data data2;
+      data2 = std::move(data1);
+
+      CHECK_EQUAL(0U, data1.size());
+      CHECK_EQUAL(4U, data2.size());
+
+      CHECK_EQUAL(1U, *data2[0]);
+      CHECK_EQUAL(2U, *data2[1]);
+      CHECK_EQUAL(3U, *data2[2]);
+      CHECK_EQUAL(4U, *data2[3]);
     }
 
     //*************************************************************************
