@@ -241,6 +241,40 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_move_assignment_interface)
+    {
+      const size_t SIZE = 10U;
+      typedef etl::deque<std::unique_ptr<uint32_t>, SIZE> Data;
+      typedef etl::ideque<std::unique_ptr<uint32_t>> IData;
+
+      std::unique_ptr<uint32_t> p1(new uint32_t(1U));
+      std::unique_ptr<uint32_t> p2(new uint32_t(2U));
+      std::unique_ptr<uint32_t> p3(new uint32_t(3U));
+      std::unique_ptr<uint32_t> p4(new uint32_t(4U));
+
+      Data deque1;
+      deque1.push_back(std::move(p1));
+      deque1.push_back(std::move(p2));
+      deque1.push_back(std::move(p3));
+      deque1.push_back(std::move(p4));
+
+      Data deque2;
+
+      IData& ideque1 = deque1;
+      IData& ideque2 = deque2;
+
+      ideque2 = std::move(ideque1);
+
+      CHECK_EQUAL(0U, deque1.size());
+      CHECK_EQUAL(4U, deque2.size());
+
+      CHECK_EQUAL(1U, *deque2[0]);
+      CHECK_EQUAL(2U, *deque2[1]);
+      CHECK_EQUAL(3U, *deque2[2]);
+      CHECK_EQUAL(4U, *deque2[3]);
+    }
+
+    //*************************************************************************
     TEST(test_self_assignment)
     {
       DataNDC deque1(initial_data.begin(), initial_data.end());

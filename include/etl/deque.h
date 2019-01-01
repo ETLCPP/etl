@@ -49,7 +49,6 @@ SOFTWARE.
 #include "debug_count.h"
 #include "algorithm.h"
 #include "type_traits.h"
-#include "parameter_type.h"
 
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
   #include <initializer_list>
@@ -1947,6 +1946,29 @@ namespace etl
 
       return *this;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    ideque& operator =(ideque&& rhs)
+    {
+      if (&rhs != this)
+      {
+        clear();
+        iterator itr = rhs.begin();
+        while (itr != rhs.end())
+        {
+          push_back(std::move(*itr));
+          ++itr;
+        }
+
+        rhs.initialise();
+      }
+
+      return *this;
+    }
+#endif
 
 #ifdef ETL_IDEQUE_REPAIR_ENABLE
     //*************************************************************************
