@@ -47,6 +47,7 @@ SOFTWARE.
 #include "nullptr.h"
 #include "type_traits.h"
 #include "algorithm.h"
+#include "memory.h"
 
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
   #include <initializer_list>
@@ -1077,7 +1078,7 @@ namespace etl
     //*************************************************************************
     /// Inserts a value to the list at the specified position.
     //*************************************************************************
-    iterator insert(iterator position, const value_type& value)
+    iterator insert(iterator position, const_reference value)
     {
       ETL_ASSERT(!full(), ETL_ERROR(list_full));
 
@@ -1180,7 +1181,7 @@ namespace etl
     //*************************************************************************
     /// Inserts 'n' copies of a value to the list at the specified position.
     //*************************************************************************
-    void insert(iterator position, size_t n, const value_type& value)
+    void insert(iterator position, size_t n, const_reference value)
     {
       for (size_t i = 0; i < n; ++i)
       {
@@ -1279,7 +1280,7 @@ namespace etl
     //*************************************************************************
     // Removes the values specified.
     //*************************************************************************
-    void remove(const value_type& value)
+    void remove(const_reference value)
     {
       iterator iValue = begin();
 
@@ -1368,6 +1369,25 @@ namespace etl
       }
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Splices from another list to this.
+    //*************************************************************************
+    void splice(iterator to, ilist&& other)
+    {
+      if (&other != this)
+      {
+        ilist::iterator itr = other.begin();
+        while (itr != other.end())
+        {
+          to = insert(to, std::move(*itr++));
+        }
+
+        other.erase(other.begin(), other.end());
+      }
+    }
+#endif
+
     //*************************************************************************
     /// Splices an element from another list to this.
     //*************************************************************************
@@ -1386,6 +1406,26 @@ namespace etl
       }
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Splices an element from another list to this.
+    //*************************************************************************
+    void splice(iterator to, ilist&& other, iterator from)
+    {
+      if (&other == this)
+      {
+        // Internal move.
+        move(to, from);
+      }
+      else
+      {
+        // From another list.
+        insert(to, std::move(*from));
+        other.erase(from);
+      }
+    }
+#endif
+
     //*************************************************************************
     /// Splices a range of elements from another list to this.
     //*************************************************************************
@@ -1403,6 +1443,32 @@ namespace etl
         other.erase(first, last);
       }
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Splices a range of elements from another list to this.
+    //*************************************************************************
+    void splice(iterator to, ilist&& other, iterator first, iterator last)
+    {
+      if (&other == this)
+      {
+        // Internal move.
+        move(to, first, last);
+      }
+      else
+      {
+        // From another list.
+        ilist::iterator itr = first;
+        while (itr != last)
+        {
+          to = insert(to, std::move(*itr++));
+          ++to;
+        }
+
+        other.erase(first, last);
+      }
+    }
+#endif
 
     //*************************************************************************
     /// Merge another list into this one. Both lists should be sorted.
@@ -1459,6 +1525,67 @@ namespace etl
         other.clear();
       }
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Merge another list into this one. Both lists should be sorted.
+    //*************************************************************************
+    void merge(ilist&& other)
+    {
+      merge(std::move(other), std::less<value_type>());
+    }
+
+    //*************************************************************************
+    /// Merge another list into this one. Both lists should be sorted.
+    //*************************************************************************
+    template <typename TCompare>
+    void merge(ilist&& other, TCompare compare)
+    {
+      if (!other.empty())
+      {
+#if defined(ETL_DEBUG)
+        ETL_ASSERT(etl::is_sorted(other.begin(), other.end(), compare), ETL_ERROR(list_unsorted));
+        ETL_ASSERT(etl::is_sorted(begin(), end(), compare), ETL_ERROR(list_unsorted));
+#endif
+
+        ilist::iterator other_begin = other.begin();
+        ilist::iterator other_end = other.end();
+
+        ilist::iterator this_begin = begin();
+        ilist::iterator this_end = end();
+
+        while ((this_begin != this_end) && (other_begin != other_end))
+        {
+          // Find the place to insert.
+          while ((this_begin != this_end) && !(compare(*other_begin, *this_begin)))
+          {
+            ++this_begin;
+          }
+
+          // Insert.
+          if (this_begin != this_end)
+          {
+            while ((other_begin != other_end) && (compare(*other_begin, *this_begin)))
+            {
+              insert(this_begin, std::move(*other_begin));
+              ++other_begin;
+            }
+          }
+        }
+
+        // Any left over?
+        if ((this_begin == this_end) && (other_begin != other_end))
+        {
+          while (other_begin != other_end)
+          {
+            insert(this_end, std::move(*other_begin++));
+            }
+        }
+
+        other.clear();
+      }
+    }
+#endif
 
     //*************************************************************************
     /// Sort using in-place merge sort algorithm.
@@ -1594,6 +1721,30 @@ namespace etl
 
       return *this;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    ilist& operator = (ilist&& rhs)
+    {
+      if (&rhs != this)
+      {
+        this->initialise();
+
+        iterator itr = rhs.begin();
+        while (itr != rhs.end())
+        {
+          push_back(std::move(*itr));
+          ++itr;
+        }
+
+        rhs.initialise();
+      }
+
+      return *this;
+    }
+#endif
 
   protected:
 
@@ -1772,7 +1923,6 @@ namespace etl
 
   //*************************************************************************
   /// A templated list implementation that uses a fixed size buffer.
-  ///\note 'merge' and 'splice' and are not supported.
   //*************************************************************************
   template <typename T, const size_t MAX_SIZE_>
   class list : public etl::ilist<T>
@@ -1926,7 +2076,6 @@ namespace etl
 
   //*************************************************************************
   /// A templated list implementation that uses a fixed size buffer.
-  ///\note 'merge' and 'splice' and are not supported.
   //*************************************************************************
   template <typename T>
   class list<T, 0> : public etl::ilist<T>
@@ -1996,6 +2145,29 @@ namespace etl
       }
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move constructor.
+    //*************************************************************************
+    list(list&& other)
+      : etl::ilist<T>(*other.p_node_pool, other.p_node_pool->max_size(), true)
+    {
+      if (this != &other)
+      {
+        this->initialise();
+
+        typename etl::ilist<T>::iterator itr = other.begin();
+        while (itr != other.end())
+        {
+          this->push_back(std::move(*itr));
+          ++itr;
+        }
+
+        other.initialise();
+      }
+    }
+#endif
+
     //*************************************************************************
     /// Construct from range.
     //*************************************************************************
@@ -2029,6 +2201,30 @@ namespace etl
 
       return *this;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    list& operator = (list&& rhs)
+    {
+      if (&rhs != this)
+      {
+        this->initialise();
+
+        typename etl::ilist<T>::iterator itr = rhs.begin();
+        while (itr != rhs.end())
+        {
+          this->push_back(std::move(*itr));
+          ++itr;
+        }
+
+        rhs.initialise();
+      }
+
+      return *this;
+    }
+#endif
 
     //*************************************************************************
     /// Set the pool instance.

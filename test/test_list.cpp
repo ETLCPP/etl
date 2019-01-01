@@ -37,7 +37,7 @@ SOFTWARE.
 #include <array>
 #include <list>
 #include <vector>
-#include <memory>
+
 
 namespace
 {
@@ -45,6 +45,7 @@ namespace
   {
     typedef TestDataDC<std::string>  ItemDC;
     typedef TestDataNDC<std::string> ItemNDC;
+    typedef TestDataM<uint32_t>      ItemM;
 
     const size_t SIZE = 10;
 
@@ -54,6 +55,9 @@ namespace
     typedef etl::ilist<ItemNDC>          IDataNDC;
 
     typedef etl::list<int, SIZE> DataInt;
+
+    typedef etl::list<ItemM, SIZE>  DataM;
+    typedef etl::ilist<ItemM>       IDataM;
 
     typedef std::list<ItemNDC>   CompareData;
     typedef std::vector<ItemNDC> InitialData;
@@ -203,31 +207,33 @@ namespace
     //*************************************************************************
     TEST(test_move_constructor)
     {
-      const size_t SIZE = 10U;
-      typedef etl::list<std::unique_ptr<uint32_t>, SIZE> Data;
+      ItemM p1(1U);
+      ItemM p2(2U);
+      ItemM p3(3U);
+      ItemM p4(4U);
 
-      std::unique_ptr<uint32_t> p1(new uint32_t(1U));
-      std::unique_ptr<uint32_t> p2(new uint32_t(2U));
-      std::unique_ptr<uint32_t> p3(new uint32_t(3U));
-      std::unique_ptr<uint32_t> p4(new uint32_t(4U));
-
-      Data data1;
+      DataM data1;
       data1.push_back(std::move(p1));
       data1.push_back(std::move(p2));
       data1.push_back(std::move(p3));
       data1.push_back(std::move(p4));
 
-      Data data2(std::move(data1));
+      CHECK(!bool(p1));
+      CHECK(!bool(p2));
+      CHECK(!bool(p3));
+      CHECK(!bool(p4));
+
+      DataM data2(std::move(data1));
 
       CHECK_EQUAL(0U, data1.size());
       CHECK_EQUAL(4U, data2.size());
 
-      Data::const_iterator itr = data2.begin();
+      DataM::const_iterator itr = data2.begin();
 
-      CHECK_EQUAL(1U, *(*itr++));
-      CHECK_EQUAL(2U, *(*itr++));
-      CHECK_EQUAL(3U, *(*itr++));
-      CHECK_EQUAL(4U, *(*itr++));
+      CHECK_EQUAL(1U, (*itr++).value);
+      CHECK_EQUAL(2U, (*itr++).value);
+      CHECK_EQUAL(3U, (*itr++).value);
+      CHECK_EQUAL(4U, (*itr++).value);
     }
 
     //*************************************************************************
@@ -463,34 +469,30 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_value_move)
     {
-      typedef etl::list<std::unique_ptr<uint32_t>, SIZE> Data;
+      ItemM p1(1U);
+      ItemM p2(2U);
+      ItemM p3(3U);
+      ItemM p4(4U);
 
-      Data data;
+      DataM data1;
+      data1.insert(data1.begin(), std::move(p1));
+      data1.insert(data1.begin(), std::move(p2));
+      data1.insert(data1.begin(), std::move(p3));
+      data1.insert(data1.begin(), std::move(p4));
 
-      std::unique_ptr<uint32_t> p1(new uint32_t(1U));
-      std::unique_ptr<uint32_t> p2(new uint32_t(2U));
-      std::unique_ptr<uint32_t> p3(new uint32_t(3U));
-      std::unique_ptr<uint32_t> p4(new uint32_t(4U));
-
-      // Move items to data.
-      data.insert(data.begin(), std::move(p1));
-      data.insert(data.begin(), std::move(p2));
-      data.insert(data.end(),   std::move(p3));
-      data.insert(data.begin(), std::move(p4));
-
-      CHECK_EQUAL(4U, data.size());
+      CHECK_EQUAL(4U, data1.size());
 
       CHECK(!bool(p1));
       CHECK(!bool(p2));
       CHECK(!bool(p3));
       CHECK(!bool(p4));
 
-      Data::const_iterator itr = data.begin();
+      DataM::const_iterator itr = data1.begin();
 
-      CHECK_EQUAL(4U, *(*itr++));
-      CHECK_EQUAL(2U, *(*itr++));
-      CHECK_EQUAL(1U, *(*itr++));
-      CHECK_EQUAL(3U, *(*itr++));
+      CHECK_EQUAL(4U, (*itr++).value);
+      CHECK_EQUAL(3U, (*itr++).value);
+      CHECK_EQUAL(2U, (*itr++).value);
+      CHECK_EQUAL(1U, (*itr++).value);
     }
 
     //*************************************************************************
@@ -621,15 +623,12 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_front_move)
     {
-      const size_t SIZE = 10U;
-      typedef etl::list<std::unique_ptr<uint32_t>, SIZE> Data;
+      ItemM p1(1U);
+      ItemM p2(2U);
+      ItemM p3(3U);
+      ItemM p4(4U);
 
-      std::unique_ptr<uint32_t> p1(new uint32_t(1U));
-      std::unique_ptr<uint32_t> p2(new uint32_t(2U));
-      std::unique_ptr<uint32_t> p3(new uint32_t(3U));
-      std::unique_ptr<uint32_t> p4(new uint32_t(4U));
-
-      Data data;
+      DataM data;
       data.push_front(std::move(p1));
       data.push_front(std::move(p2));
       data.push_front(std::move(p3));
@@ -642,12 +641,12 @@ namespace
       CHECK(!bool(p3));
       CHECK(!bool(p4));
 
-      Data::const_iterator itr = data.begin();
+      DataM::const_iterator itr = data.begin();
 
-      CHECK_EQUAL(4U, *(*itr++));
-      CHECK_EQUAL(3U, *(*itr++));
-      CHECK_EQUAL(2U, *(*itr++));
-      CHECK_EQUAL(1U, *(*itr++));
+      CHECK_EQUAL(4U, (*itr++).value);
+      CHECK_EQUAL(3U, (*itr++).value);
+      CHECK_EQUAL(2U, (*itr++).value);
+      CHECK_EQUAL(1U, (*itr++).value);
     }
 
     //*************************************************************************
@@ -780,15 +779,12 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_back_move)
     {
-      const size_t SIZE = 10U;
-      typedef etl::list<std::unique_ptr<uint32_t>, SIZE> Data;
+      ItemM p1(1U);
+      ItemM p2(2U);
+      ItemM p3(3U);
+      ItemM p4(4U);
 
-      std::unique_ptr<uint32_t> p1(new uint32_t(1U));
-      std::unique_ptr<uint32_t> p2(new uint32_t(2U));
-      std::unique_ptr<uint32_t> p3(new uint32_t(3U));
-      std::unique_ptr<uint32_t> p4(new uint32_t(4U));
-
-      Data data;
+      DataM data;
       data.push_back(std::move(p1));
       data.push_back(std::move(p2));
       data.push_back(std::move(p3));
@@ -801,12 +797,12 @@ namespace
       CHECK(!bool(p3));
       CHECK(!bool(p4));
 
-      Data::const_iterator itr = data.begin();
+      DataM::const_iterator itr = data.begin();
 
-      CHECK_EQUAL(1U, *(*itr++));
-      CHECK_EQUAL(2U, *(*itr++));
-      CHECK_EQUAL(3U, *(*itr++));
-      CHECK_EQUAL(4U, *(*itr++));
+      CHECK_EQUAL(1U, (*itr++).value);
+      CHECK_EQUAL(2U, (*itr++).value);
+      CHECK_EQUAL(3U, (*itr++).value);
+      CHECK_EQUAL(4U, (*itr++).value);
     }
 
     //*************************************************************************
@@ -1022,7 +1018,6 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assignment)
     {
-      CompareData compare_data(sorted_data.begin(), sorted_data.end());
       DataNDC data(sorted_data.begin(), sorted_data.end());
       DataNDC other_data;
 
@@ -1038,34 +1033,30 @@ namespace
     //*************************************************************************
     TEST(test_move_assignment)
     {
-      const size_t SIZE = 10U;
-      typedef etl::list<std::unique_ptr<uint32_t>, SIZE> Data;
+      ItemM p1(1U);
+      ItemM p2(2U);
+      ItemM p3(3U);
+      ItemM p4(4U);
 
-      std::unique_ptr<uint32_t> p1(new uint32_t(1U));
-      std::unique_ptr<uint32_t> p2(new uint32_t(2U));
-      std::unique_ptr<uint32_t> p3(new uint32_t(3U));
-      std::unique_ptr<uint32_t> p4(new uint32_t(4U));
-
-      Data data1;
+      DataM data1;
       data1.push_back(std::move(p1));
       data1.push_back(std::move(p2));
       data1.push_back(std::move(p3));
       data1.push_back(std::move(p4));
 
-      Data data2;
+      DataM data2;
       data2 = std::move(data1);
 
       CHECK_EQUAL(0U, data1.size());
       CHECK_EQUAL(4U, data2.size());
 
-      Data::const_iterator itr = data2.begin();
+      DataM::const_iterator itr = data2.begin();
 
-      CHECK_EQUAL(1U, *(*itr++));
-      CHECK_EQUAL(2U, *(*itr++));
-      CHECK_EQUAL(3U, *(*itr++));
-      CHECK_EQUAL(4U, *(*itr++));
+      CHECK_EQUAL(1U, (*itr++).value);
+      CHECK_EQUAL(2U, (*itr++).value);
+      CHECK_EQUAL(3U, (*itr++).value);
+      CHECK_EQUAL(4U, (*itr++).value);
     }
-
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assignment_interface)
@@ -1084,6 +1075,38 @@ namespace
       are_equal = std::equal(data1.begin(), data1.end(), data2.begin());
 
       CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST(test_move_assignment_interface)
+    {
+      ItemM p1(1U);
+      ItemM p2(2U);
+      ItemM p3(3U);
+      ItemM p4(4U);
+
+      DataM data1;
+      data1.push_back(std::move(p1));
+      data1.push_back(std::move(p2));
+      data1.push_back(std::move(p3));
+      data1.push_back(std::move(p4));
+
+      DataM data2;
+
+      IDataM& idata1 = data1;
+      IDataM& idata2 = data2;
+
+      idata2 = std::move(idata1);
+
+      CHECK_EQUAL(0U, data1.size());
+      CHECK_EQUAL(4U, data2.size());
+
+      DataM::const_iterator itr = data2.begin();
+
+      CHECK_EQUAL(1U, (*itr++).value);
+      CHECK_EQUAL(2U, (*itr++).value);
+      CHECK_EQUAL(3U, (*itr++).value);
+      CHECK_EQUAL(4U, (*itr++).value);
     }
 
     //*************************************************************************
@@ -1725,6 +1748,7 @@ namespace
       DataNDC2 data0(merge_data0.begin(), merge_data0.end());
       DataNDC2 data1(merge_data1.begin(), merge_data1.end());
 
+
       CompareData compare0(merge_data0.begin(), merge_data0.end());
       CompareData compare1(merge_data1.begin(), merge_data1.end());
 
@@ -1804,8 +1828,6 @@ namespace
       data0.reverse();
       data1.reverse();
 
-
-
       CompareData compare0(merge_data0.begin(), merge_data0.end());
       CompareData compare1(merge_data1.begin(), merge_data1.end());
 
@@ -1829,6 +1851,147 @@ namespace
       DataNDC2 data1(unsorted_data.begin(), unsorted_data.end());
 
       CHECK_THROW(data0.merge(data1), etl::list_unsorted);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_merge_move)
+    {
+      ItemM p1(1U);
+      ItemM p2(2U);
+      ItemM p3(3U);
+      ItemM p4(4U);
+
+      ItemM p5(5U);
+      ItemM p6(6U);
+      ItemM p7(7U);
+      ItemM p8(8U);
+
+      DataM data1;
+      data1.push_back(std::move(p1));
+      data1.push_back(std::move(p2));
+      data1.push_back(std::move(p3));
+      data1.push_back(std::move(p4));
+
+      DataM data2;
+      data2.push_back(std::move(p5));
+      data2.push_back(std::move(p6));
+      data2.push_back(std::move(p7));
+      data2.push_back(std::move(p8));
+
+      data1.merge(std::move(data2));
+
+      CHECK_EQUAL(8U, data1.size());
+      CHECK_EQUAL(0U, data2.size());
+
+      DataM::const_iterator itr = data1.begin();
+
+      CHECK_EQUAL(1U, (*itr++).value);
+      CHECK_EQUAL(2U, (*itr++).value);
+      CHECK_EQUAL(3U, (*itr++).value);
+      CHECK_EQUAL(4U, (*itr++).value);
+      CHECK_EQUAL(5U, (*itr++).value);
+      CHECK_EQUAL(6U, (*itr++).value);
+      CHECK_EQUAL(7U, (*itr++).value);
+      CHECK_EQUAL(8U, (*itr++).value);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_splice_move_range_same)
+    {
+      ItemM p1(1U);
+      ItemM p2(2U);
+      ItemM p3(3U);
+      ItemM p4(4U);
+      ItemM p5(5U);
+      ItemM p6(6U);
+      ItemM p7(7U);
+      ItemM p8(8U);
+
+      DataM data;
+      data.push_back(std::move(p1));
+      data.push_back(std::move(p2));
+      data.push_back(std::move(p3));
+      data.push_back(std::move(p4));
+      data.push_back(std::move(p5));
+      data.push_back(std::move(p6));
+      data.push_back(std::move(p7));
+      data.push_back(std::move(p8));
+
+      DataM::iterator begin;
+      DataM::iterator end;
+      DataM::iterator to;
+
+      // Move nearby.
+      begin = data.begin();
+      std::advance(begin, 4);
+      end = begin;
+      std::advance(end, 2);
+      to = data.begin();
+      std::advance(to, 2);
+      data.splice(to, std::move(data), begin, end);
+
+      CHECK_EQUAL(8U, data.size());
+
+      DataM::const_iterator itr = data.begin();
+
+      CHECK_EQUAL(1U, (*itr++).value);
+      CHECK_EQUAL(2U, (*itr++).value);
+      CHECK_EQUAL(5U, (*itr++).value);
+      CHECK_EQUAL(6U, (*itr++).value);
+      CHECK_EQUAL(3U, (*itr++).value);
+      CHECK_EQUAL(4U, (*itr++).value);
+      CHECK_EQUAL(7U, (*itr++).value);
+      CHECK_EQUAL(8U, (*itr++).value);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_splice_move_range_different)
+    {
+      ItemM p1(1U);
+      ItemM p2(2U);
+      ItemM p3(3U);
+      ItemM p4(4U);
+      ItemM p5(5U);
+      ItemM p6(6U);
+      ItemM p7(7U);
+      ItemM p8(8U);
+
+      DataM data1;
+      data1.push_back(std::move(p1));
+      data1.push_back(std::move(p2));
+      data1.push_back(std::move(p3));
+      data1.push_back(std::move(p4));
+
+      DataM data2;
+      data2.push_back(std::move(p5));
+      data2.push_back(std::move(p6));
+      data2.push_back(std::move(p7));
+      data2.push_back(std::move(p8));
+
+      DataM::iterator begin;
+      DataM::iterator end;
+      DataM::iterator to;
+
+      // Move.
+      begin = data2.begin();
+      std::advance(begin, 1);
+      end = begin;
+      std::advance(end, 2);
+      to = data1.begin();
+      std::advance(to, 2);
+      data1.splice(to, std::move(data2), begin, end);
+
+      CHECK_EQUAL(6U, data1.size());
+      CHECK_EQUAL(2U, data2.size());
+
+      DataM::const_iterator itr = data1.begin();
+
+      CHECK_EQUAL(1U, (*itr++).value); // 1
+      CHECK_EQUAL(2U, (*itr++).value); // 2
+      CHECK_EQUAL(6U, (*itr++).value); // 7
+      CHECK_EQUAL(7U, (*itr++).value); // 6
+      CHECK_EQUAL(3U, (*itr++).value); // 3
+      CHECK_EQUAL(4U, (*itr++).value); // 4
     }
   };
 }
