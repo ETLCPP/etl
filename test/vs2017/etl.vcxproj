@@ -532,6 +532,7 @@
     <ClInclude Include="..\..\include\etl\vector.h" />
     <ClInclude Include="..\..\include\etl\visitor.h" />
     <ClInclude Include="..\..\include\etl\wstring.h" />
+    <ClInclude Include="..\data.h" />
     <ClInclude Include="..\ecl_user.h" />
     <ClInclude Include="..\etl_profile.h" />
     <ClInclude Include="..\murmurhash3.h" />
