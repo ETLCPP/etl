@@ -40,7 +40,6 @@ SOFTWARE.
 #include "platform.h"
 #include "algorithm.h"
 #include "type_traits.h"
-#include "parameter_type.h"
 #include "error_handler.h"
 #include "memory.h"
 #include "container.h"
@@ -86,6 +85,7 @@ namespace etl
     typedef T                                     value_type;
     typedef T&                                    reference;
     typedef const T&                              const_reference;
+    typedef T&&                                   rvalue_reference;
     typedef T*                                    pointer;
     typedef const T*                              const_pointer;
     typedef T*                                    iterator;
@@ -405,7 +405,7 @@ namespace etl
     /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
     ///\param value The value to add.
     //*********************************************************************
-    void push_back(const T& value)
+    void push_back(const_reference value)
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
@@ -419,7 +419,7 @@ namespace etl
     /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
     ///\param value The value to add.
     //*********************************************************************
-    void push_back(T&& value)
+    void push_back(rvalue_reference value)
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
@@ -528,7 +528,7 @@ namespace etl
     ///\param position The position to insert before.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, const T& value)
+    iterator insert(iterator position, const_reference value)
     {
       ETL_ASSERT(size() + 1 <= CAPACITY, ETL_ERROR(vector_full));
 
@@ -553,7 +553,7 @@ namespace etl
     ///\param position The position to insert before.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, T&& value)
+    iterator insert(iterator position, rvalue_reference value)
     {
       ETL_ASSERT(size() + 1 <= CAPACITY, ETL_ERROR(vector_full));
 
@@ -866,6 +866,29 @@ namespace etl
       return *this;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    ivector& operator = (ivector&& rhs)
+    {
+      if (&rhs != this)
+      {
+        clear();
+        iterator itr = rhs.begin();
+        while (itr != rhs.end())
+        {
+          push_back(std::move(*itr));
+          ++itr;
+        }
+
+        rhs.initialise();
+      }
+
+      return *this;
+    }
+#endif
+
     //*************************************************************************
     /// Gets the current size of the vector.
     ///\return The current size of the vector.
@@ -961,7 +984,7 @@ namespace etl
     //*********************************************************************
     /// Create a new element with a value at the back
     //*********************************************************************
-    inline void create_back(const T& value)
+    inline void create_back(const_reference value)
     {
       etl::create_copy_at(p_end, value);
       ETL_INCREMENT_DEBUG_COUNT
@@ -973,7 +996,7 @@ namespace etl
     //*********************************************************************
     /// Create a new element with a value at the back
     //*********************************************************************
-    inline void create_back(T&& value)
+    inline void create_back(rvalue_reference value)
     {
       etl::create_copy_at(p_end, std::move(value));
       ETL_INCREMENT_DEBUG_COUNT
