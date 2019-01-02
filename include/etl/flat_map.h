@@ -38,6 +38,7 @@ SOFTWARE.
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
   #include <initializer_list>
 #endif
+#include "stl/utility.h"
 
 #undef ETL_FILE
 #define ETL_FILE "2"
@@ -229,20 +230,7 @@ namespace etl
     //*********************************************************************
     mapped_type& operator [](key_parameter_t key)
     {
-      iterator i_element = lower_bound(key);
-
-      // Doesn't already exist?
-      if (i_element == end())
-      {
-        value_type* pvalue = storage.allocate<value_type>();
-        ::new (pvalue) value_type();
-        ETL_INCREMENT_DEBUG_COUNT
-
-        std::pair<iterator, bool> result = refmap_t::insert_at(i_element, *pvalue);
-        i_element->second = result.first->second;
-      }
-
-      return i_element->second;
+      return insert(std::make_pair(key, mapped_type())).first->second;
     }
 
     //*********************************************************************
@@ -302,7 +290,7 @@ namespace etl
       std::pair<iterator, bool> result(i_element, false);
 
       // Doesn't already exist?
-      if ((i_element == end()) || compare(i_element->first, value.first) || compare(value.first, i_element->first))
+      if ((i_element == end()) || compare(value.first, i_element->first))
       {
         ETL_ASSERT(!refmap_t::full(), ETL_ERROR(flat_map_full));
 
@@ -369,7 +357,7 @@ namespace etl
       std::pair<iterator, bool> result(i_element, false);
 
       // Doesn't already exist?
-      if ((i_element == end() || (i_element->first != key)))
+      if ((i_element == end()) || compare(key, i_element->first))
       {
         ETL_INCREMENT_DEBUG_COUNT
         result = refmap_t::insert_at(i_element, *pvalue);
@@ -403,7 +391,7 @@ namespace etl
       std::pair<iterator, bool> result(i_element, false);
 
       // Doesn't already exist?
-      if ((i_element == end() || (i_element->first != key)))
+      if ((i_element == end()) || compare(key, i_element->first))
       {
         ETL_INCREMENT_DEBUG_COUNT
         result = refmap_t::insert_at(i_element, *pvalue);
@@ -435,7 +423,7 @@ namespace etl
       std::pair<iterator, bool> result(i_element, false);
 
       // Doesn't already exist?
-      if ((i_element == end() || (i_element->first != key)))
+      if ((i_element == end()) || compare(key, i_element->first))
       {
         ETL_INCREMENT_DEBUG_COUNT
         result = refmap_t::insert_at(i_element, *pvalue);
@@ -467,7 +455,7 @@ namespace etl
       std::pair<iterator, bool> result(i_element, false);
 
       // Doesn't already exist?
-      if ((i_element == end() || (i_element->first != key)))
+      if ((i_element == end()) || compare(key, i_element->first))
       {
         ETL_INCREMENT_DEBUG_COUNT
         result = refmap_t::insert_at(i_element, *pvalue);
@@ -499,7 +487,7 @@ namespace etl
       std::pair<iterator, bool> result(i_element, false);
 
       // Doesn't already exist?
-      if ((i_element == end() || (i_element->first != key)))
+      if ((i_element == end()) || compare(key, i_element->first))
       {
         ETL_INCREMENT_DEBUG_COUNT
         result = refmap_t::insert_at(i_element, *pvalue);

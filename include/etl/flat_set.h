@@ -233,7 +233,7 @@ namespace etl
       std::pair<iterator, bool> result(i_element, false);
 
       // Doesn't already exist?
-      if ((i_element == end()) || compare(*i_element, value) || compare(value, *i_element))
+      if ((i_element == end()) || compare(value, *i_element))
       {
         ETL_ASSERT(!refset_t::full(), ETL_ERROR(flat_set_full));
 
@@ -299,7 +299,7 @@ namespace etl
       iterator i_element = lower_bound(*pvalue);
 
       // Doesn't already exist?
-      if ((i_element == end() || (*i_element != *pvalue)))
+      if ((i_element == end()) || compare(*pvalue, *i_element))
       {
         ETL_INCREMENT_DEBUG_COUNT
         result = refset_t::insert_at(i_element, *pvalue);
@@ -332,7 +332,7 @@ namespace etl
       iterator i_element = lower_bound(*pvalue);
 
       // Doesn't already exist?
-      if ((i_element == end() || (*i_element != *pvalue)))
+      if ((i_element == end()) || compare(*pvalue, *i_element))
       {
         ETL_INCREMENT_DEBUG_COUNT
         result = refset_t::insert_at(i_element, *pvalue);
@@ -365,7 +365,7 @@ namespace etl
       iterator i_element = lower_bound(*pvalue);
 
       // Doesn't already exist?
-      if ((i_element == end() || (*i_element != *pvalue)))
+      if ((i_element == end()) || compare(*pvalue, *i_element))
       {
         ETL_INCREMENT_DEBUG_COUNT
         result = refset_t::insert_at(i_element, *pvalue);
@@ -398,7 +398,7 @@ namespace etl
       iterator i_element = lower_bound(*pvalue);
 
       // Doesn't already exist?
-      if ((i_element == end() || (*i_element != *pvalue)))
+      if ((i_element == end()) || compare(*pvalue, *i_element))
       {
         ETL_INCREMENT_DEBUG_COUNT
         result = refset_t::insert_at(i_element, *pvalue);
@@ -431,7 +431,7 @@ namespace etl
       iterator i_element = lower_bound(*pvalue);
 
       // Doesn't already exist?
-      if ((i_element == end() || (*i_element != *pvalue)))
+      if ((i_element == end()) || compare(*pvalue, *i_element))
       {
         ETL_INCREMENT_DEBUG_COUNT
         result = refset_t::insert_at(i_element, *pvalue);

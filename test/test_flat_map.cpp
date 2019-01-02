@@ -459,6 +459,36 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_index_assign)
+    {
+      Compare_DataDC compare_data(initial_data_dc.begin(), initial_data_dc.end());
+
+      DataDC data;
+
+      data[initial_data_dc[0].first] = initial_data_dc[0].second;
+      data[initial_data_dc[2].first] = initial_data_dc[2].second;
+      data[initial_data_dc[3].first] = initial_data_dc[3].second;
+      data[initial_data_dc[1].first] = initial_data_dc[1].second;
+      data[initial_data_dc[4].first] = initial_data_dc[4].second;
+      data[initial_data_dc[5].first] = initial_data_dc[5].second;
+      data[initial_data_dc[8].first] = initial_data_dc[8].second;
+      data[initial_data_dc[6].first] = initial_data_dc[6].second;
+      data[initial_data_dc[7].first] = initial_data_dc[7].second;
+      data[initial_data_dc[9].first] = initial_data_dc[9].second;
+
+      CHECK_EQUAL(compare_data[0], data[0]);
+      CHECK_EQUAL(compare_data[1], data[1]);
+      CHECK_EQUAL(compare_data[2], data[2]);
+      CHECK_EQUAL(compare_data[3], data[3]);
+      CHECK_EQUAL(compare_data[4], data[4]);
+      CHECK_EQUAL(compare_data[5], data[5]);
+      CHECK_EQUAL(compare_data[6], data[6]);
+      CHECK_EQUAL(compare_data[7], data[7]);
+      CHECK_EQUAL(compare_data[8], data[8]);
+      CHECK_EQUAL(compare_data[9], data[9]);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_index_value_changed)
     {
       Compare_DataDC compare_data;
@@ -636,24 +666,39 @@ namespace
       Compare_DataNDC compare_data;
       DataNDC data;
 
-      data.insert(std::make_pair(0, N0));
-      compare_data.insert(std::make_pair(0, N0));
+      std::pair<DataNDC::iterator, bool> dr;
+      std::pair<Compare_DataNDC::iterator, bool> cr;
 
-      data.insert(std::make_pair(1, N1));
-      compare_data.insert(std::make_pair(1, N1));
+      dr = data.insert(std::make_pair(0, N0));
+      cr = compare_data.insert(std::make_pair(0, N0));
+      CHECK(dr.first->first == cr.first->first);
+      CHECK(dr.second == cr.second);
 
-      data.insert(std::make_pair(2, N2));
-      compare_data.insert(std::make_pair(2, N2));
+      dr = data.insert(std::make_pair(1, N1));
+      cr = compare_data.insert(std::make_pair(1, N1));
+      CHECK(dr.first->first == cr.first->first);
+      CHECK(dr.second == cr.second);
+
+      dr = data.insert(std::make_pair(2, N2));
+      cr = compare_data.insert(std::make_pair(2, N2));
+      CHECK(dr.first->first == cr.first->first);
+      CHECK(dr.second == cr.second);
 
       // Do it again.
-      data.insert(std::make_pair(0, N0));
-      compare_data.insert(std::make_pair(0, N0));
+      dr = data.insert(std::make_pair(0, N0));
+      cr = compare_data.insert(std::make_pair(0, N0));
+      CHECK(dr.first->first == cr.first->first);
+      CHECK(dr.second == cr.second);
 
-      data.insert(std::make_pair(1, N1));
-      compare_data.insert(std::make_pair(1, N1));
+      dr = data.insert(std::make_pair(1, N1));
+      cr = compare_data.insert(std::make_pair(1, N1));
+      CHECK(dr.first->first == cr.first->first);
+      CHECK(dr.second == cr.second);
 
-      data.insert(std::make_pair(2, N2));
-      compare_data.insert(std::make_pair(2, N2));
+      dr = data.insert(std::make_pair(2, N2));
+      cr = compare_data.insert(std::make_pair(2, N2));
+      CHECK(dr.first->first == cr.first->first);
+      CHECK(dr.second == cr.second);
 
       CHECK_EQUAL(compare_data.size(), data.size());
 
