@@ -1127,8 +1127,8 @@ namespace etl
   /// Uses users defined comparison.
   ///\ingroup algorithm
   //***************************************************************************
-  template <typename TIterator, typename TCompare = std::less<typename std::iterator_traits<TIterator>::value_type> >
-  void sort(TIterator first, TIterator last, TCompare compare = TCompare())
+  template <typename TIterator, typename TCompare>
+  void sort(TIterator first, TIterator last, TCompare compare)
   {
     typedef typename std::iterator_traits<TIterator>::difference_type difference_t;
   
@@ -1154,7 +1154,16 @@ namespace etl
       }
     }
   }
+
+  //***************************************************************************
+  /// Sorts the elements using shell sort.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator>
+  void sort(TIterator first, TIterator last)
+  {
+    etl::sort(first, last, std::less<typename std::iterator_traits<TIterator>::value_type>());
+  }
 }
 
 #endif
-
