@@ -240,7 +240,7 @@ namespace etl
     //*******************************************
     void set_idle_callback(etl::ifunction<void>& callback)
     {
-;      p_idle_callback = &callback;
+      p_idle_callback = &callback;
     }
 
     //*******************************************
