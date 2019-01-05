@@ -213,7 +213,7 @@ namespace etl
       {
       }
 
-      const_iterator(const iterator& other)
+      const_iterator(const typename ireference_flat_multimap::iterator& other)
         : ilookup(other.ilookup)
       {
       }

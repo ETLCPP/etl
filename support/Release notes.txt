@@ -1,4 +1,8 @@
 ===============================================================================
+14.6.1
+Fixed bugs in etl::flat_map 'operator[]' and 'insert'.
+
+===============================================================================
 14.6.0
 Added etl::scaled_rounding to allow selection of rounding algorithms when
 emulating fixed point arithmetic with scaled integral values.

@@ -232,7 +232,7 @@ namespace etl
       {
       }
 
-      const_iterator(const iterator& other)
+      const_iterator(const typename ireference_flat_multiset::iterator& other)
         : ilookup(other.ilookup)
       {
       }
@@ -460,7 +460,7 @@ namespace etl
     {
       std::pair<iterator, bool> result(end(), false);
 
-      ETL_ASSERT(!lookup.full(), ETL_ERROR(flat_multiset_full));      
+      ETL_ASSERT(!lookup.full(), ETL_ERROR(flat_multiset_full));
 
       iterator i_element = std::lower_bound(begin(), end(), value, compare);
 

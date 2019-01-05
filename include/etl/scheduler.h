@@ -281,7 +281,7 @@ namespace etl
     //*******************************************
     void add_task(etl::task& task)
     {
-      ETL_ASSERT(!task_list.full(), ETL_ERROR(etl::scheduler_too_many_tasks_exception))
+      ETL_ASSERT(!task_list.full(), ETL_ERROR(etl::scheduler_too_many_tasks_exception));
 
       if (!task_list.full())
       {

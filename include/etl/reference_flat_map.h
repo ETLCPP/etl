@@ -238,7 +238,7 @@ namespace etl
       {
       }
 
-      const_iterator(const iterator& other)
+      const_iterator(const typename ireference_flat_map::iterator& other)
         : ilookup(other.ilookup)
       {
       }
@@ -248,7 +248,7 @@ namespace etl
       {
       }
 
-      const_iterator& operator =(const iterator& other)
+      const_iterator& operator =(const typename ireference_flat_map::iterator& other)
       {
         ilookup = other.ilookup;
         return *this;
