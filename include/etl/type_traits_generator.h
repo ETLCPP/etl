@@ -326,6 +326,13 @@ namespace etl
   template <typename T> struct is_trivially_copy_assignable : etl::is_pod<T> {};
 #endif
 
+#if ETL_CPP11_SUPPORTED
+  /// is_rvalue_reference
+  ///\ingroup type_traits
+  template <class T> struct is_rvalue_reference      : etl::false_type {};
+  template <class T> struct is_rvalue_reference<T&&> : etl::true_type {};
+#endif
+
   /// conditional
   ///\ingroup type_traits
   template <bool B, typename T, typename F>  struct conditional { typedef T type; };
@@ -347,7 +354,7 @@ namespace etl
   struct conditional_integral_constant<false, T, TRUE_VALUE, FALSE_VALUE>
   {
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
-    static const T value = FALSE_VALUE; 
+    static const T value = FALSE_VALUE;
   };
 
   /// make_signed

@@ -40,7 +40,6 @@ SOFTWARE.
 #include "platform.h"
 #include "algorithm.h"
 #include "type_traits.h"
-#include "parameter_type.h"
 #include "error_handler.h"
 #include "memory.h"
 #include "container.h"
@@ -86,6 +85,7 @@ namespace etl
     typedef T                                     value_type;
     typedef T&                                    reference;
     typedef const T&                              const_reference;
+    typedef T&&                                   rvalue_reference;
     typedef T*                                    pointer;
     typedef const T*                              const_pointer;
     typedef T*                                    iterator;
@@ -405,13 +405,28 @@ namespace etl
     /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
     ///\param value The value to add.
     //*********************************************************************
-    void push_back(parameter_t value)
+    void push_back(const_reference value)
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
 #endif
       create_back(value);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    /// Inserts a value at the end of the vector.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    ///\param value The value to add.
+    //*********************************************************************
+    void push_back(rvalue_reference value)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
+#endif
+      create_back(std::move(value));
+    }
+#endif
 
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL) && !ETL_VECTOR_FORCE_CPP03
     //*********************************************************************
@@ -513,7 +528,7 @@ namespace etl
     ///\param position The position to insert before.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, parameter_t value)
+    iterator insert(iterator position, const_reference value)
     {
       ETL_ASSERT(size() + 1 <= CAPACITY, ETL_ERROR(vector_full));
 
@@ -524,12 +539,38 @@ namespace etl
       else
       {
         create_back(back());
-        std::copy_backward(position, p_end - 1, p_end);
+        std::copy_backward(position, p_end - 2, p_end - 1);
         *position = value;
       }
 
       return position;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    /// Inserts a value to the vector.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    ///\param position The position to insert before.
+    ///\param value    The value to insert.
+    //*********************************************************************
+    iterator insert(iterator position, rvalue_reference value)
+    {
+      ETL_ASSERT(size() + 1 <= CAPACITY, ETL_ERROR(vector_full));
+
+      if (position == end())
+      {
+        create_back(std::move(value));
+      }
+      else
+      {
+        create_back(std::move(back()));
+        std::move_backward(position, p_end - 2, p_end - 1);
+        *position = std::move(value);
+      }
+
+      return position;
+    }
+#endif
 
     //*************************************************************************
     /// Emplaces a value to the vextor at the specified position.
@@ -551,7 +592,7 @@ namespace etl
       {
         p = etl::addressof(*position);
         create_back(back());
-        std::copy_backward(position, p_end - 1, p_end);
+        std::copy_backward(position, p_end - 2, p_end - 1);
         (*position).~T();
       }
 
@@ -576,7 +617,7 @@ namespace etl
       {
         p = etl::addressof(*position);
         create_back(back());
-        std::copy_backward(position, p_end - 1, p_end);
+        std::copy_backward(position, p_end - 2, p_end - 1);
         (*position).~T();
       }
 
@@ -601,7 +642,7 @@ namespace etl
       {
         p = etl::addressof(*position);
         create_back(back());
-        std::copy_backward(position, p_end - 1, p_end);
+        std::copy_backward(position, p_end - 2, p_end - 1);
         (*position).~T();
       }
 
@@ -626,7 +667,7 @@ namespace etl
       {
         p = etl::addressof(*position);
         create_back(back());
-        std::copy_backward(position, p_end - 1, p_end);
+        std::copy_backward(position, p_end - 2, p_end - 1);
         (*position).~T();
       }
 
@@ -651,7 +692,7 @@ namespace etl
       {
         p = etl::addressof(*position);
         create_back(back());
-        std::copy_backward(position, p_end - 1, p_end);
+        std::copy_backward(position, p_end - 2, p_end - 1);
         (*position).~T();
       }
 
@@ -701,15 +742,15 @@ namespace etl
       etl::uninitialized_copy_n(p_end - construct_old_n, construct_old_n, p_construct_old);
       ETL_ADD_DEBUG_COUNT(construct_old_n)
 
-      // Copy old.
-      etl::copy_n(p_buffer + insert_begin, copy_old_n, p_buffer + insert_end);
+        // Copy old.
+        etl::copy_n(p_buffer + insert_begin, copy_old_n, p_buffer + insert_end);
 
       // Construct new.
       etl::uninitialized_fill_n(p_end, construct_new_n, value);
       ETL_ADD_DEBUG_COUNT(construct_new_n)
 
-      // Copy new.
-      std::fill_n(p_buffer + insert_begin, copy_new_n, value);
+        // Copy new.
+        std::fill_n(p_buffer + insert_begin, copy_new_n, value);
 
       p_end += n;
     }
@@ -758,15 +799,15 @@ namespace etl
       etl::uninitialized_copy_n(p_end - construct_old_n, construct_old_n, p_construct_old);
       ETL_ADD_DEBUG_COUNT(construct_old_n)
 
-      // Copy old.
-      etl::copy_n(p_buffer + insert_begin, copy_old_n, p_buffer + insert_end);
+        // Copy old.
+        etl::copy_n(p_buffer + insert_begin, copy_old_n, p_buffer + insert_end);
 
       // Construct new.
       etl::uninitialized_copy_n(first + copy_new_n, construct_new_n, p_end);
       ETL_ADD_DEBUG_COUNT(construct_new_n)
 
-      // Copy new.
-      etl::copy_n(first, copy_new_n, p_buffer + insert_begin);
+        // Copy new.
+        etl::copy_n(first, copy_new_n, p_buffer + insert_begin);
 
       p_end += count;
     }
@@ -806,7 +847,7 @@ namespace etl
         // Destroy the elements left over at the end.
         etl::destroy(p_end - n_delete, p_end);
         ETL_SUBTRACT_DEBUG_COUNT(n_delete)
-        p_end -= n_delete;
+          p_end -= n_delete;
       }
 
       return first;
@@ -824,6 +865,29 @@ namespace etl
 
       return *this;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    ivector& operator = (ivector&& rhs)
+    {
+      if (&rhs != this)
+      {
+        clear();
+        iterator itr = rhs.begin();
+        while (itr != rhs.end())
+        {
+          push_back(std::move(*itr));
+          ++itr;
+        }
+
+        rhs.initialise();
+      }
+
+      return *this;
+    }
+#endif
 
     //*************************************************************************
     /// Gets the current size of the vector.
@@ -888,7 +952,7 @@ namespace etl
       etl::destroy(p_buffer, p_end);
       ETL_SUBTRACT_DEBUG_COUNT(int32_t(std::distance(p_buffer, p_end)))
 
-      p_end = p_buffer;
+        p_end = p_buffer;
     }
 
     //*************************************************************************
@@ -898,7 +962,7 @@ namespace etl
     {
       uintptr_t length = p_end - p_buffer;
       p_buffer = p_buffer_;
-      p_end    = p_buffer_ + length;
+      p_end = p_buffer_ + length;
     }
 
   private:
@@ -920,13 +984,26 @@ namespace etl
     //*********************************************************************
     /// Create a new element with a value at the back
     //*********************************************************************
-    inline void create_back(parameter_t value)
+    inline void create_back(const_reference value)
     {
       etl::create_copy_at(p_end, value);
       ETL_INCREMENT_DEBUG_COUNT
 
       ++p_end;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    /// Create a new element with a value at the back
+    //*********************************************************************
+    inline void create_back(rvalue_reference value)
+    {
+      etl::create_copy_at(p_end, std::move(value));
+      ETL_INCREMENT_DEBUG_COUNT
+
+      ++p_end;
+    }
+#endif
 
     //*********************************************************************
     /// Destroy an element at the back.
@@ -1035,7 +1112,12 @@ namespace etl
   {
     return !(lhs < rhs);
   }
+}
 
+#include "private/ivectorpointer.h"
+
+namespace etl
+{
   //***************************************************************************
   /// A vector implementation that uses a fixed size buffer.
   ///\tparam T The element type.
@@ -1115,14 +1197,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Destructor.
-    //*************************************************************************
-    ~vector()
-    {
-      this->clear();
-    }
-
-    //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
     vector& operator = (const vector& rhs)
@@ -1133,6 +1207,58 @@ namespace etl
       }
 
       return *this;
+    }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move constructor.
+    //*************************************************************************
+    vector(vector&& other)
+      : etl::ivector<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
+    {
+      if (this != &other)
+      {
+        this->initialise();
+
+        typename etl::ivector<T>::iterator itr = other.begin();
+        while (itr != other.end())
+        {
+          this->push_back(std::move(*itr));
+          ++itr;
+        }
+
+        other.initialise();
+      }
+    }
+
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    vector& operator = (vector&& rhs)
+    {
+      if (&rhs != this)
+      {
+        this->clear();
+        typename etl::ivector<T>::iterator itr = rhs.begin();
+        while (itr != rhs.end())
+        {
+          this->push_back(std::move(*itr));
+          ++itr;
+        }
+
+        rhs.initialise();
+      }
+
+      return *this;
+    }
+#endif
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~vector()
+    {
+      this->clear();
     }
 
     //*************************************************************************
@@ -1230,7 +1356,10 @@ namespace etl
     vector(const vector& other)
       : etl::ivector<T*>(reinterpret_cast<T**>(&buffer), MAX_SIZE)
     {
-      this->assign(other.begin(), other.end());
+      if (this != &other)
+      {
+        this->assign(other.begin(), other.end());
+      }
     }
 
     //*************************************************************************
@@ -1259,8 +1388,6 @@ namespace etl
     typename etl::aligned_storage<sizeof(T*) * MAX_SIZE, etl::alignment_of<T*>::value>::type buffer;
   };
 }
-
-#include "private/ivectorpointer.h"
 
 #ifdef ETL_COMPILER_GCC
 #pragma GCC diagnostic pop
