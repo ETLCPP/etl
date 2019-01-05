@@ -1,4 +1,11 @@
 ===============================================================================
+14.7.0
+Continuing updates for adding rvalue reference API to the containers.
+etl::deque
+etl::list
+etl::vector
+
+===============================================================================
 14.6.1
 Fixed bugs in etl::flat_map 'operator[]' and 'insert'.
 

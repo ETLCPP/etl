@@ -152,4 +152,89 @@ std::ostream& operator << (std::ostream& s, const TestDataNDC<T>& rhs)
   return s;
 }
 
+//*****************************************************************************
+// Movable.
+//*****************************************************************************
+template <typename T>
+class TestDataM : public etl::instance_count<TestDataM<T>>
+{
+public:
+
+  explicit TestDataM(const T& value_)
+    : value(value_)
+    , valid(true)
+  {
+  }
+
+  TestDataM(TestDataM&& other)
+    : value(other.value)
+    , valid(true)
+  {
+    other.value = T();
+    other.valid = false;
+  }
+
+  TestDataM& operator =(TestDataM&& other)
+  {
+    value = other.value;
+    valid = true;
+
+    other.value = T();
+    other.valid = false;
+  }
+
+  bool operator < (const TestDataM& other) const
+  {
+    return value < other.value;
+  }
+
+  bool operator > (const TestDataM& other) const
+  {
+    return other.value < value;
+  }
+
+  bool operator <= (const TestDataM& other) const
+  {
+    return !(other.value < value);
+  }
+
+  bool operator >= (const TestDataM& other) const
+  {
+    return !(value < other.value);
+  }
+
+  operator bool() const
+  {
+    return valid;
+  }
+
+  T    value;
+  bool valid;
+
+private:
+
+  TestDataM(const TestDataM& other) = delete;
+  TestDataM& operator =(const TestDataM& other) = delete;
+};
+
+template <typename T>
+bool operator == (const TestDataM<T>& lhs, const TestDataM<T>& rhs)
+{
+  return lhs.value == rhs.value;
+}
+
+template <typename T>
+bool operator != (const TestDataM<T>& lhs, const TestDataM<T>& rhs)
+{
+  return lhs.value != rhs.value;
+}
+
+template <typename T>
+std::ostream& operator << (std::ostream& s, const TestDataM<T>& rhs)
+{
+  s << rhs.value;
+  return s;
+}
+
+
 #endif

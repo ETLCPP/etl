@@ -515,6 +515,31 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_push_back_literal)
+    {
+      Compare_Data compare_data;
+      Data data;
+
+      compare_data.push_back(1);
+      compare_data.push_back(2);
+      compare_data.push_back(3);
+      compare_data.push_back(4);
+
+      data.push_back(1);
+      data.push_back(2);
+      data.push_back(3);
+      data.push_back(4);
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+
+      bool is_equal = std::equal(data.begin(),
+                                 data.end(),
+                                 compare_data.begin());
+
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_back_excess)
     {
       Data data;
