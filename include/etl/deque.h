@@ -231,6 +231,9 @@ namespace etl
     typedef size_t   size_type;
     typedef T&       reference;
     typedef const T& const_reference;
+#if ETL_CPP11_SUPPORTED
+    typedef T&&      rvalue_reference;
+#endif
     typedef T*       pointer;
     typedef const T* const_pointer;
     typedef typename std::iterator_traits<pointer>::difference_type difference_type;
@@ -1621,7 +1624,7 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
     ///\param item The item to push to the deque.
     //*************************************************************************
-    void push_back(const T& item)
+    void push_back(const_reference item)
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(deque_full));
@@ -1635,7 +1638,7 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
     ///\param item The item to push to the deque.
     //*************************************************************************
-    void push_back(T&& item)
+    void push_back(rvalue_reference item)
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(deque_full));
@@ -1749,7 +1752,7 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
     ///\param item The item to push to the deque.
     //*************************************************************************
-    void push_front(const T& item)
+    void push_front(const_reference item)
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(deque_full));
@@ -1763,7 +1766,7 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
     ///\param item The item to push to the deque.
     //*************************************************************************
-    void push_front(T&& item)
+    void push_front(rvalue_reference item)
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(deque_full));
@@ -2085,7 +2088,7 @@ namespace etl
     //*********************************************************************
     /// Create a new element with a default value at the front.
     //*********************************************************************
-    void create_element_front(const T& value)
+    void create_element_front(const_reference value)
     {
       --_begin;
       ::new (&(*_begin)) T(value);
@@ -2096,7 +2099,7 @@ namespace etl
     //*********************************************************************
     /// Create a new element with a value at the back
     //*********************************************************************
-    void create_element_back(const T& value)
+    void create_element_back(const_reference value)
     {
       ::new (&(*_end)) T(value);
       ++_end;
@@ -2108,7 +2111,7 @@ namespace etl
     //*********************************************************************
     /// Create a new element with a default value at the front.
     //*********************************************************************
-    void create_element_front(T&& value)
+    void create_element_front(rvalue_reference value)
     {
       --_begin;
       ::new (&(*_begin)) T(std::move(value));
@@ -2119,7 +2122,7 @@ namespace etl
     //*********************************************************************
     /// Create a new element with a value at the back
     //*********************************************************************
-    void create_element_back(T&& value)
+    void create_element_back(rvalue_reference value)
     {
       ::new (&(*_end)) T(std::move(value));
       ++_end;
@@ -2294,7 +2297,7 @@ namespace etl
     //*************************************************************************
     /// Assigns data to the deque.
     //*************************************************************************
-    explicit deque(size_t n, const T& value = value_type())
+    explicit deque(size_t n, const_reference value = value_type())
       : etl::ideque<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, BUFFER_SIZE)
     {
       this->assign(n, value);

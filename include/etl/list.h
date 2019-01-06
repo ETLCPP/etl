@@ -418,7 +418,9 @@ namespace etl
     typedef const T* const_pointer;
     typedef T&       reference;
     typedef const T& const_reference;
+#if ETL_CPP11_SUPPORTED
     typedef T&&      rvalue_reference;
+#endif
     typedef size_t   size_type;
 
   protected:
@@ -1938,7 +1940,9 @@ namespace etl
     typedef const T* const_pointer;
     typedef T&       reference;
     typedef const T& const_reference;
+#if ETL_CPP11_SUPPORTED
     typedef T&&      rvalue_reference;
+#endif
     typedef size_t   size_type;
 
     //*************************************************************************
