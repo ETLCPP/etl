@@ -85,7 +85,9 @@ namespace etl
     typedef T                                     value_type;
     typedef T&                                    reference;
     typedef const T&                              const_reference;
+#if ETL_CPP11_SUPPORTED
     typedef T&&                                   rvalue_reference;
+#endif
     typedef T*                                    pointer;
     typedef const T*                              const_pointer;
     typedef T*                                    iterator;
