@@ -1,4 +1,8 @@
 ===============================================================================
+14.7.1
+Rvalue reference C++-03/C++11 compatibility fix.
+
+===============================================================================
 14.7.0
 Continuing updates for adding rvalue reference API to the containers.
 etl::deque
