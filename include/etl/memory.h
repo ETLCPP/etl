@@ -510,6 +510,30 @@ namespace etl
     return *reinterpret_cast<T*>(p);
   }
 
+#if ETL_CPP11_SUPPORTED
+  //*****************************************************************************
+  /// Construct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T, typename TParameter>
+  T& make_value_at(T* p, TParameter&& value)
+  {
+    ::new (p) T(std::move(value));
+    return *reinterpret_cast<T*>(p);
+  }
+#endif
+
+  //*****************************************************************************
+  /// Construct an item at address p.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T, typename TParameter>
+  T& make_value_at(T* p, TParameter&& value)
+  {
+    ::new (p) T(std::move(value));
+    return *reinterpret_cast<T*>(p);
+  }
+
   //*****************************************************************************
   /// Construct an item at address p.
   ///\ingroup memory
