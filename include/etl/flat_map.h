@@ -76,7 +76,9 @@ namespace etl
     typedef TKeyCompare       key_compare;
     typedef value_type&       reference;
     typedef const value_type& const_reference;
+#if ETL_CPP11_SUPPORTED
     typedef value_type&&      rvalue_reference;
+#endif
     typedef value_type*       pointer;
     typedef const value_type* const_pointer;
     typedef size_t            size_type;
@@ -304,6 +306,7 @@ namespace etl
       return result;
     }
 
+#if ETL_CPP11_SUPPORTED
     //*********************************************************************
     /// Inserts a value to the flat_map.
     /// If asserts or exceptions are enabled, emits flat_map_full if the flat_map is already full.
@@ -328,6 +331,7 @@ namespace etl
 
       return result;
     }
+#endif
 
     //*********************************************************************
     /// Inserts a value to the flat_map.
@@ -340,6 +344,7 @@ namespace etl
       return insert(value).first;
     }
 
+#if ETL_CPP11_SUPPORTED
     //*********************************************************************
     /// Inserts a value to the flat_map.
     /// If asserts or exceptions are enabled, emits flat_map_full if the flat_map is already full.
@@ -350,6 +355,7 @@ namespace etl
     {
       return insert(std::move(value)).first;
     }
+#endif
 
     //*********************************************************************
     /// Inserts a range of values to the flat_map.
