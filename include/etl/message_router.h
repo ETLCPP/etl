@@ -38,12 +38,12 @@ SOFTWARE.
 // To generate to header file, run this at the command line.
 // Note: You will need Python and COG installed.
 //
-// python -m cogapp -d -e -omessage_router.h -DHandlers=<n> message_router_generator.h 
+// python -m cogapp -d -e -omessage_router.h -DHandlers=<n> message_router_generator.h
 // Where <n> is the number of messages to support.
 //
 // e.g.
 // To generate handlers for up to 16 messages...
-// python -m cogapp -d -e -omessage_router.h -DHandlers=16 message_router_generator.h 
+// python -m cogapp -d -e -omessage_router.h -DHandlers=16 message_router_generator.h
 //
 // See generate.bat
 //***************************************************************************
@@ -52,6 +52,7 @@ SOFTWARE.
 #define ETL_MESSAGE_ROUTER_INCLUDED
 
 #include <stdint.h>
+#include <new>
 
 #include "platform.h"
 #include "message.h"
@@ -161,10 +162,10 @@ namespace etl
     {
     }
 
-    imessage_router(etl::message_router_id_t id_, 
+    imessage_router(etl::message_router_id_t id_,
                     imessage_router&         successor_)
       : successor(&successor_),
-        message_router_id(id_)        
+        message_router_id(id_)
     {
     }
 
@@ -220,7 +221,7 @@ namespace etl
   /// Send a message to a router.
   /// Sets the 'sender' to etl::null_message_router type.
   //***************************************************************************
-  inline static void send_message(etl::imessage_router& destination, 
+  inline static void send_message(etl::imessage_router& destination,
                                   const etl::imessage&  message)
   {
     destination.receive(message);
@@ -229,13 +230,13 @@ namespace etl
   //***************************************************************************
   /// Send a message to a router.
   //***************************************************************************
-  inline static void send_message(etl::imessage_router& source, 
-                                  etl::imessage_router& destination, 
+  inline static void send_message(etl::imessage_router& source,
+                                  etl::imessage_router& destination,
                                   const etl::imessage&  message)
   {
     destination.receive(source, message);
   }
-  
+
   //***************************************************************************
   // The definition for all 16 message types.
   //***************************************************************************

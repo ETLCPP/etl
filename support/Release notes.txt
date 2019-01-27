@@ -1,4 +1,8 @@
 ===============================================================================
+14.7.2
+Added #include <new> to message_router.h for improved cross platform compatibility.
+
+===============================================================================
 14.7.1
 Rvalue reference C++-03/C++11 compatibility fix.
 
