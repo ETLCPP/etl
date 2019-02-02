@@ -723,6 +723,9 @@
     <ClInclude Include="..\data.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\callback_service.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1143,6 +1146,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_cumulative_moving_average.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_callback_service.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
