@@ -1,58 +1,61 @@
 #include <iostream>
-#include <iomanip>
 
-#include "function.h"
+#include "etl/function.h"
+#include "etl/callback_service.h"
 
-//********************************
-// Fake UART Rx register.
-//********************************
-char get_char()
+enum VectorId
 {
-  static char c = 'A';
-  return c++;
-}
+  TIM1_CC_IRQ_HANDLER = 42,
+  TIM2_IRQ_HANDLER    = 43,
+  TIM3_IRQ_HANDLER    = 44,
+  USART1_IRQ_HANDLER  = 52,
+  USART2_IRQ_HANDLER  = 53,
+  VECTOR_ID_RANGE     = USART2_IRQ_HANDLER - TIM1_CC_IRQ_HANDLER + 1,
+  VECTOR_ID_OFFSET    = TIM1_CC_IRQ_HANDLER
+};
 
-//********************************
-// Interrupt vectors & callbacks. 
-//********************************
-// Callback interfaces.
-// Note that they do not require any knowledge about the callee apart from the parameter type.
-etl::ifunction<void>* timer1_callback;   // A pointer to a callback taking no parameters.
-etl::ifunction<void>* timer2_callback;   // A pointer to a callback taking no parameters.
-etl::ifunction<void>* timer3_callback;   // A pointer to a callback taking no parameters.
-etl::ifunction<char>* uart1_rx_callback; // A pointer to a callback taking a char parameter.
-etl::ifunction<char>* uart2_rx_callback; // A pointer to a callback taking a char parameter.
+typedef etl::callback_service<VECTOR_ID_RANGE, VECTOR_ID_OFFSET> InterruptVectors;
+
+// Ensure that the callback service is initialised before use.
+InterruptVectors& GetInterruptVectorsInstance()
+{
+  static InterruptVectors interruptVectors;
+
+  return interruptVectors;
+}
 
 extern "C"
 {
+  InterruptVectors& interruptVectors = GetInterruptVectorsInstance();
+
   // Function called from the timer1 interrupt vector.
-  void Timer1Interrupt()
+  void TIM1_CC_IRQHandler()
   {
-    (*timer1_callback)();
+    interruptVectors.callback<TIM1_CC_IRQ_HANDLER>();
   }
 
   // Function called from the timer2 interrupt vector.
-  void Timer2Interrupt()
+  void TIM2_IRQHandler()
   {
-    (*timer2_callback)();
+    interruptVectors.callback<TIM2_IRQ_HANDLER>();
   }
 
   // Function called from the timer3 interrupt vector.
-  void Timer3Interrupt()
+  void TIM3_IRQHandler()
   {
-    (*timer3_callback)();
+    interruptVectors.callback<TIM3_IRQ_HANDLER>();
   }
 
-  // Function called from the UART1 rx interrupt vector.
-  void Uart1RxInterrupt()
+  // Function called from the usart1 interrupt vector.
+  void USART1_IRQHandler()
   {
-    (*uart1_rx_callback)(get_char());
+    interruptVectors.callback<USART1_IRQ_HANDLER>();
   }
 
-  // Function called from the UART2 rx interrupt vector.
-  void Uart2RxInterrupt()
+  // Function called from the usart2 interrupt vector.
+  void USART2_IRQHandler()
   {
-    (*uart2_rx_callback)(get_char());
+    interruptVectors.callback<USART2_IRQ_HANDLER>();
   }
 }
 
@@ -63,33 +66,28 @@ class Timer
 {
 public:
 
-  // Constructor.
-  Timer()
+  Timer(int interruptId)
+    : callback(*this)
   {
+    GetInterruptVectorsInstance().register_callback(interruptId, callback);
   }
 
   // Handler for interrupts from the timer.
-  void MemberTimerInterruptHandler()
+  void InterruptHandler(const size_t id)
   {
-    std::cout << "Timer interrupt (member)\n";
+    std::cout << "Timer interrupt (member) : ID " << id << "\n";
   }
 
-  // Static handler for interrupts from the timer.
-  static void StaticTimerInterruptHandler()
-  {
-    std::cout << "Timer interrupt (static)\n";
-  }
+  etl::function_mp<Timer, size_t, &Timer::InterruptHandler> callback;
 };
 
 //********************************
 // Free function timer driver.
 //********************************
-void FreeTimerInterruptHandler()
+void FreeTimerInterruptHandler(const size_t id)
 {
-  std::cout << "Timer interrupt (free)\n";
+  std::cout << "Timer interrupt (free)   : ID " << id << "\n";
 }
-
-etl::function_fv<FreeTimerInterruptHandler> free_callback;
 
 //********************************
 // UART driver.
@@ -99,29 +97,37 @@ class Uart
 public:
 
   // Constructor.
-  Uart(int port_id)
-    : port_id(port_id)
+  Uart(int port_id, int interruptId)
+    : port_id(port_id),
+      callback(*this)
   {
+    GetInterruptVectorsInstance().register_callback(interruptId, callback);
   }
 
-  // Handler for rx interrupts from the UART.
-  void RxInterruptHandler(char c)
+  // Handler for interrupts from the UART.
+  void InterruptHandler(const size_t id)
   {
-    std::cout << "UART" << port_id << " Rx char interrupt : Received '" << c << "'\n";
+    std::cout << "UART" << port_id << "                    : ID " << id << "\n";
   }
+
+  etl::function_mp<Uart, size_t, &Uart::InterruptHandler> callback;
 
   int port_id;
 };
 
-// Declare the driver instances.
-Timer timer;
-Uart  uart1(0);
-Uart  uart2(1);
+void UnhandledInterrupt(const size_t id)
+{
+  std::cout << "Unhandled Interrupt      : ID " << id << "\n";
+}
 
-etl::function_imv<Timer, timer, &Timer::MemberTimerInterruptHandler> timer_member_callback;
-etl::function_fv<&Timer::StaticTimerInterruptHandler>                timer_static_callback;
-etl::function_imp<Uart, char, uart1, &Uart::RxInterruptHandler>      uart1_callback;
-etl::function_imp<Uart, char, uart2, &Uart::RxInterruptHandler>      uart2_callback;
+// Declare the driver instances.
+Timer timer(TIM1_CC_IRQ_HANDLER);
+Uart  uart1(0, USART1_IRQ_HANDLER);
+Uart  uart2(1, USART2_IRQ_HANDLER);
+
+// Declare the callbacks for the free functions.
+etl::function_fp<size_t, FreeTimerInterruptHandler> timer_free_callback;
+etl::function_fp<size_t, UnhandledInterrupt>        unhandled_callback;
 
 //********************************
 // Test it out.
@@ -129,21 +135,17 @@ etl::function_imp<Uart, char, uart2, &Uart::RxInterruptHandler>      uart2_callb
 int main()
 {
   // Setup the callbacks.
-  // This may be part of the cross platform interface.
-  timer1_callback   = &timer_member_callback;
-  timer2_callback   = &timer_static_callback;
-  timer3_callback   = &free_callback;
-  uart1_rx_callback = &uart1_callback;
-  uart2_rx_callback = &uart2_callback;
+  InterruptVectors& interruptVectors = GetInterruptVectorsInstance();
+
+  interruptVectors.register_callback<TIM2_IRQ_HANDLER>(timer_free_callback);
+  interruptVectors.register_unhandled_callback(unhandled_callback);
 
   // Simulate the interrupts.
-  Timer1Interrupt();
-  Timer2Interrupt();
-  Timer3Interrupt();
-  Uart1RxInterrupt();
-  Uart2RxInterrupt();
+  TIM1_CC_IRQHandler();
+  TIM2_IRQHandler();
+  USART1_IRQHandler();
+  USART2_IRQHandler();
+  TIM3_IRQHandler(); // Unhandled!
 
   return 0;
 }
-
-

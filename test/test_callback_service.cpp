@@ -33,7 +33,10 @@ SOFTWARE.
 
 namespace
 {
-  typedef etl::callback_service<3> Service;
+  const size_t SIZE   = 3U;
+  const size_t OFFSET = 5U;
+
+  typedef etl::callback_service<SIZE, OFFSET> Service;
 
   //*****************************************************************************
   bool global_called    = false;
@@ -119,10 +122,9 @@ namespace
 {
   enum
   {
-    GLOBAL,
+    GLOBAL = OFFSET,
     MEMBER1,
     MEMBER2,
-    UNHANDLED,
     OUT_OF_RANGE
   };
 
