@@ -34,6 +34,7 @@ SOFTWARE.
 #include "nullptr.h"
 #include "static_assert.h"
 #include "function.h"
+#include "array.h"
 
 namespace etl
 {
@@ -51,14 +52,11 @@ namespace etl
     /// Reset the callback service.
     /// Sets all callbacks to the internal default.
     //*************************************************************************
-    static void initialize()
+    callback_service()
+      : unhandled_callback(*this, &callback_service<NUMBER_OF_CALLBACKS>::unhandled),
+        p_unhandled(nullptr)
     {
-      for (size_t i = 0; i < NUMBER_OF_CALLBACKS; ++i)
-      {
-        lookup[i] = &unhandled_callback;
-      }
-
-      p_unhandled = nullptr;
+      lookup.fill(&unhandled_callback);
     }
 
     //*************************************************************************
@@ -68,7 +66,7 @@ namespace etl
     /// \param callback reference to the callback.
     //*************************************************************************
     template <const size_t ID>
-    static void register_callback(etl::ifunction<size_t>& callback)
+    void register_callback(etl::ifunction<size_t>& callback)
     {
       ETL_STATIC_ASSERT(ID < NUMBER_OF_CALLBACKS, "Callback Id out of range");
 
@@ -81,7 +79,7 @@ namespace etl
     /// \param id       Id of the callback.
     /// \param callback Reference to the callback.
     //*************************************************************************
-    static void register_callback(const size_t id, etl::ifunction<size_t>& callback)
+    void register_callback(const size_t id, etl::ifunction<size_t>& callback)
     {
       if (id < NUMBER_OF_CALLBACKS)
       {
@@ -95,7 +93,7 @@ namespace etl
     /// \tparam ID The id of the callback.
     //*************************************************************************
     template <const size_t ID>
-    static void callback()
+    void callback()
     {
       ETL_STATIC_ASSERT(ID < NUMBER_OF_CALLBACKS, "Callback Id out of range");
 
@@ -106,7 +104,7 @@ namespace etl
     /// Executes the callback function for the index.
     /// \param id Id of the callback.
     //*************************************************************************
-    static void callback(const size_t id)
+    void callback(const size_t id)
     {
       if (id < NUMBER_OF_CALLBACKS)
       {
@@ -122,7 +120,7 @@ namespace etl
     /// Registers an alternative callback for unhandled ids.
     /// \param callback A reference to the user supplied 'unhandled' callback.
     //*************************************************************************
-    static void register_unhandled_callback(etl::ifunction<size_t>& callback)
+    void register_unhandled_callback(etl::ifunction<size_t>& callback)
     {
       p_unhandled = &callback;
     }
@@ -133,7 +131,7 @@ namespace etl
     /// The default callback function.
     /// Does nothing.
     //*************************************************************************
-    static void unhandled(size_t id)
+    void unhandled(size_t id)
     {
       if (p_unhandled != nullptr)
       {
@@ -142,23 +140,14 @@ namespace etl
     }
 
     /// The default callback for unhandled ids.
-    static etl::function_fp<size_t, etl::callback_service<NUMBER_OF_CALLBACKS>::unhandled> unhandled_callback;
+    etl::function<callback_service<NUMBER_OF_CALLBACKS>, size_t> unhandled_callback;
 
     /// Pointer to the user defined 'unhandled' callback.
-    static etl::ifunction<size_t>* p_unhandled;
+    etl::ifunction<size_t>* p_unhandled;
 
     /// Lookup table of callbacks.
-    static etl::ifunction<size_t>* lookup[NUMBER_OF_CALLBACKS];
+    etl::array<etl::ifunction<size_t>*, NUMBER_OF_CALLBACKS> lookup;
   };
-
-  template <const size_t NUMBER_OF_CALLBACKS>
-  etl::function_fp<size_t, etl::callback_service<NUMBER_OF_CALLBACKS>::unhandled> etl::callback_service<NUMBER_OF_CALLBACKS>::unhandled_callback;
-
-  template <const size_t NUMBER_OF_CALLBACKS>
-  etl::ifunction<size_t>* etl::callback_service<NUMBER_OF_CALLBACKS>::lookup[NUMBER_OF_CALLBACKS];
-
-  template <const size_t NUMBER_OF_CALLBACKS>
-  etl::ifunction<size_t>* etl::callback_service<NUMBER_OF_CALLBACKS>::p_unhandled = nullptr;
 }
 
 #endif

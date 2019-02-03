@@ -131,12 +131,13 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_callback_global_compile_time)
     {
-      Service::initialize();
-      Service::register_callback<GLOBAL>(global_callback);
-      Service::register_callback<MEMBER1>(test.callback);
-      Service::register_callback<MEMBER2>(member_callback);
+      Service service;
 
-      Service::callback<GLOBAL>();
+      service.register_callback<GLOBAL>(global_callback);
+      service.register_callback<MEMBER1>(test.callback);
+      service.register_callback<MEMBER2>(member_callback);
+
+      service.callback<GLOBAL>();
 
       CHECK_EQUAL(GLOBAL, called_id);
       CHECK(global_called);
@@ -148,12 +149,13 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_callback_global_run_time)
     {
-      Service::initialize();
-      Service::register_callback(GLOBAL,  global_callback);
-      Service::register_callback(MEMBER1, test.callback);
-      Service::register_callback(MEMBER2, member_callback);
+      Service service;
 
-      Service::callback(GLOBAL);
+      service.register_callback(GLOBAL,  global_callback);
+      service.register_callback(MEMBER1, test.callback);
+      service.register_callback(MEMBER2, member_callback);
+
+      service.callback(GLOBAL);
 
       CHECK_EQUAL(GLOBAL, called_id);
       CHECK(global_called);
@@ -165,12 +167,13 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_callback_member1_compile_time)
     {
-      Service::initialize();
-      Service::register_callback<GLOBAL>(global_callback);
-      Service::register_callback<MEMBER1>(test.callback);
-      Service::register_callback<MEMBER2>(member_callback);
+      Service service;
 
-      Service::callback<MEMBER1>();
+      service.register_callback<GLOBAL>(global_callback);
+      service.register_callback<MEMBER1>(test.callback);
+      service.register_callback<MEMBER2>(member_callback);
+
+      service.callback<MEMBER1>();
 
       CHECK_EQUAL(MEMBER1, called_id);
       CHECK(!global_called);
@@ -182,12 +185,13 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_callback_member1_run_time)
     {
-      Service::initialize();
-      Service::register_callback(GLOBAL,  global_callback);
-      Service::register_callback(MEMBER1, test.callback);
-      Service::register_callback(MEMBER2, member_callback);
+      Service service;
 
-      Service::callback(MEMBER1);
+      service.register_callback(GLOBAL,  global_callback);
+      service.register_callback(MEMBER1, test.callback);
+      service.register_callback(MEMBER2, member_callback);
+
+      service.callback(MEMBER1);
 
       CHECK_EQUAL(MEMBER1, called_id);
       CHECK(!global_called);
@@ -199,12 +203,13 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_callback_member2_compile_time)
     {
-      Service::initialize();
-      Service::register_callback<GLOBAL>(global_callback);
-      Service::register_callback<MEMBER1>(test.callback);
-      Service::register_callback<MEMBER2>(member_callback);
+      Service service;
 
-      Service::callback<MEMBER2>();
+      service.register_callback<GLOBAL>(global_callback);
+      service.register_callback<MEMBER1>(test.callback);
+      service.register_callback<MEMBER2>(member_callback);
+
+      service.callback<MEMBER2>();
 
       CHECK_EQUAL(MEMBER2, called_id);
       CHECK(!global_called);
@@ -216,12 +221,13 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_callback_unhandled_out_of_range_run_time_default)
     {
-      Service::initialize();
-      Service::register_callback<GLOBAL>(global_callback);
-      Service::register_callback<MEMBER1>(test.callback);
-      Service::register_callback<MEMBER2>(member_callback);
+      Service service;
 
-      Service::callback(OUT_OF_RANGE);
+      service.register_callback<GLOBAL>(global_callback);
+      service.register_callback<MEMBER1>(test.callback);
+      service.register_callback<MEMBER2>(member_callback);
+
+      service.callback(OUT_OF_RANGE);
 
       CHECK_EQUAL(UINT_MAX, called_id);
       CHECK(!global_called);
@@ -233,14 +239,15 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_callback_unhandled_out_of_range_run_time_user_supplied)
     {
-      Service::initialize();
-      Service::register_callback<GLOBAL>(global_callback);
-      Service::register_callback<MEMBER1>(test.callback);
-      Service::register_callback<MEMBER2>(member_callback);
+      Service service;
 
-      Service::register_unhandled_callback(unhandled_callback);
+      service.register_callback<GLOBAL>(global_callback);
+      service.register_callback<MEMBER1>(test.callback);
+      service.register_callback<MEMBER2>(member_callback);
 
-      Service::callback(OUT_OF_RANGE);
+      service.register_unhandled_callback(unhandled_callback);
+
+      service.callback(OUT_OF_RANGE);
 
       CHECK_EQUAL(OUT_OF_RANGE, called_id);
       CHECK(!global_called);
@@ -252,11 +259,12 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_callback_unhandled_not_registered_compile_time_default)
     {
-      Service::initialize();
-      Service::register_callback<GLOBAL>(global_callback);
-      Service::register_callback<MEMBER2>(member_callback);
+      Service service;
 
-      Service::callback<MEMBER1>();
+      service.register_callback<GLOBAL>(global_callback);
+      service.register_callback<MEMBER2>(member_callback);
+
+      service.callback<MEMBER1>();
 
       CHECK_EQUAL(UINT_MAX, called_id);
       CHECK(!global_called);
@@ -268,11 +276,12 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_callback_unhandled_not_registered_run_time_default)
     {
-      Service::initialize();
-      Service::register_callback(GLOBAL,  global_callback);
-      Service::register_callback(MEMBER2, member_callback);
+      Service service;
 
-      Service::callback(MEMBER1);
+      service.register_callback(GLOBAL,  global_callback);
+      service.register_callback(MEMBER2, member_callback);
+
+      service.callback(MEMBER1);
 
       CHECK_EQUAL(UINT_MAX, called_id);
       CHECK(!global_called);
@@ -284,13 +293,14 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_callback_not_registered_compile_time_user_supplied)
     {
-      Service::initialize();
-      Service::register_callback<GLOBAL>(global_callback);
-      Service::register_callback<MEMBER2>(member_callback);
+      Service service;
 
-      Service::register_unhandled_callback(unhandled_callback);
+      service.register_callback<GLOBAL>(global_callback);
+      service.register_callback<MEMBER2>(member_callback);
 
-      Service::callback<MEMBER1>();
+      service.register_unhandled_callback(unhandled_callback);
+
+      service.callback<MEMBER1>();
 
       CHECK_EQUAL(MEMBER1, called_id);
       CHECK(!global_called);
@@ -302,13 +312,14 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_callback_unhandled_run_time_user_supplied)
     {
-      Service::initialize();
-      Service::register_callback(GLOBAL,  global_callback);
-      Service::register_callback(MEMBER2, member_callback);
+      Service service;
 
-      Service::register_unhandled_callback(unhandled_callback);
+      service.register_callback(GLOBAL,  global_callback);
+      service.register_callback(MEMBER2, member_callback);
 
-      Service::callback(MEMBER1);
+      service.register_unhandled_callback(unhandled_callback);
+
+      service.callback(MEMBER1);
 
       CHECK_EQUAL(MEMBER1, called_id);
       CHECK(!global_called);
