@@ -45,7 +45,7 @@ namespace etl
   /// \tparam OFFSET The lowest callback id value.
   /// The callback ids must range between OFFSET and OFFSET + RANGE - 1.
   //***************************************************************************
-  template <const size_t RANGE, size_t OFFSET = 0U>
+  template <const size_t RANGE, const size_t OFFSET = 0U>
   class callback_service
   {
   public:
