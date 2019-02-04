@@ -1,4 +1,9 @@
 ===============================================================================
+14.8.0
+Added etl::callback_service
+Useful for abstracting the interrupt system from C++ handlers.
+
+===============================================================================
 14.7.2
 Added #include <new> to message_router.h for improved cross platform compatibility.
 

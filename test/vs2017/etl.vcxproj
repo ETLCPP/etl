@@ -373,6 +373,7 @@
     <ClInclude Include="..\..\include\etl\c\ecl_timer.h" />
     <ClInclude Include="..\..\include\etl\fsm.h" />
     <ClInclude Include="..\..\include\etl\fsm_generator.h" />
+    <ClInclude Include="..\..\include\etl\callback_service.h" />
     <ClInclude Include="..\..\include\etl\largest_generator.h" />
     <ClInclude Include="..\..\include\etl\absolute.h" />
     <ClInclude Include="..\..\include\etl\scaled_rounding.h" />
@@ -565,6 +566,7 @@
     <ClCompile Include="..\murmurhash3.cpp" />
     <ClCompile Include="..\test_algorithm.cpp" />
     <ClCompile Include="..\test_alignment.cpp" />
+    <ClCompile Include="..\test_callback_service.cpp" />
     <ClCompile Include="..\test_cumulative_moving_average.cpp" />
     <ClCompile Include="..\test_forward_list_shared_pool.cpp" />
     <ClCompile Include="..\test_bit_stream.cpp" />
