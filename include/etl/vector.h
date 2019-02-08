@@ -744,8 +744,8 @@ namespace etl
       etl::uninitialized_copy_n(p_end - construct_old_n, construct_old_n, p_construct_old);
       ETL_ADD_DEBUG_COUNT(construct_old_n)
 
-        // Copy old.
-        etl::copy_n(p_buffer + insert_begin, copy_old_n, p_buffer + insert_end);
+      // Copy old.
+      std::copy_backward(p_buffer + insert_begin, p_buffer + insert_begin + copy_old_n, p_buffer + insert_end + copy_old_n);
 
       // Construct new.
       etl::uninitialized_fill_n(p_end, construct_new_n, value);
@@ -801,15 +801,15 @@ namespace etl
       etl::uninitialized_copy_n(p_end - construct_old_n, construct_old_n, p_construct_old);
       ETL_ADD_DEBUG_COUNT(construct_old_n)
 
-        // Copy old.
-        etl::copy_n(p_buffer + insert_begin, copy_old_n, p_buffer + insert_end);
+      // Copy old.
+      std::copy_backward(p_buffer + insert_begin, p_buffer + insert_begin + copy_old_n, p_buffer + insert_end + copy_old_n);
 
       // Construct new.
       etl::uninitialized_copy_n(first + copy_new_n, construct_new_n, p_end);
       ETL_ADD_DEBUG_COUNT(construct_new_n)
 
-        // Copy new.
-        etl::copy_n(first, copy_new_n, p_buffer + insert_begin);
+      // Copy new.
+      etl::copy_n(first, copy_new_n, p_buffer + insert_begin);
 
       p_end += count;
     }

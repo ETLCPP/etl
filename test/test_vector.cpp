@@ -1036,5 +1036,70 @@ namespace
 
       CHECK(!is_equal);
     }
+
+    //*************************************************************************
+    TEST(test_insert_bug)
+    {
+      struct S
+      {
+        virtual ~S()
+        {
+
+        }
+
+        S(int i): i(i){}
+
+        int i;
+      };
+
+      const S raw[6] = { 1, 2, 3, 4, 5, 6 };
+
+      etl::vector<S, 10> dest(etl::begin(raw), etl::end(raw));
+      etl::vector<S, 10> src((size_t) 2, S(8));
+
+      dest.insert(dest.begin(), src.begin(), src.end());
+
+      CHECK(dest.size() == 8);
+      CHECK_EQUAL(src[0].i, dest[0].i);
+      CHECK_EQUAL(src[1].i, dest[1].i);
+      CHECK_EQUAL(raw[0].i, dest[2].i);
+      CHECK_EQUAL(raw[1].i, dest[3].i);
+      CHECK_EQUAL(raw[2].i, dest[4].i);
+      CHECK_EQUAL(raw[3].i, dest[5].i);
+      CHECK_EQUAL(raw[4].i, dest[6].i);
+      CHECK_EQUAL(raw[5].i, dest[7].i);
+    }
+
+    //*************************************************************************
+    TEST(test_insert_n_bug)
+    {
+      struct S
+      {
+        virtual ~S()
+        {
+
+        }
+
+        S(int i): i(i){}
+
+        int i;
+      };
+
+      const S raw[6] = { 1, 2, 3, 4, 5, 6 };
+
+      etl::vector<S, 10> dest(etl::begin(raw), etl::end(raw));
+
+      dest.insert(dest.begin(), 2, S(8));
+
+      CHECK(dest.size() == 8);
+      CHECK_EQUAL(8,        dest[0].i);
+      CHECK_EQUAL(8,        dest[1].i);
+      CHECK_EQUAL(raw[0].i, dest[2].i);
+      CHECK_EQUAL(raw[1].i, dest[3].i);
+      CHECK_EQUAL(raw[2].i, dest[4].i);
+      CHECK_EQUAL(raw[3].i, dest[5].i);
+      CHECK_EQUAL(raw[4].i, dest[6].i);
+      CHECK_EQUAL(raw[5].i, dest[7].i);
+    }
   };
 }

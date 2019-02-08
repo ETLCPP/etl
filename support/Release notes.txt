@@ -1,4 +1,8 @@
 ===============================================================================
+14.8.1
+Fixed bug for certain inserts in etl::vector
+
+===============================================================================
 14.8.0
 Added etl::callback_service
 Useful for abstracting the interrupt system from C++ handlers.

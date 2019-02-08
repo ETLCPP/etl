@@ -53,6 +53,10 @@ public:
   {
   }
 
+  virtual ~TestDataDC()
+  {
+  }
+
   bool operator < (const TestDataDC& other) const
   {
     return value < other.value;
@@ -108,6 +112,10 @@ public:
     : value(value_),
       index(index_)
   {}
+
+  virtual ~TestDataNDC()
+  {
+  }
 
   bool operator < (const TestDataNDC& other) const
   {
@@ -172,6 +180,10 @@ public:
   {
     other.value = T();
     other.valid = false;
+  }
+
+  virtual ~TestDataM()
+  {
   }
 
   TestDataM& operator =(TestDataM&& other)
