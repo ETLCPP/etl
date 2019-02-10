@@ -114,7 +114,7 @@ namespace etl
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    array_view()
+    ETL_CONSTEXPR array_view()
       : mbegin(nullptr),
         mend(nullptr)
     {
@@ -125,7 +125,7 @@ namespace etl
     /// data() and size() member functions.
     //*************************************************************************
     template <typename TArray>
-    explicit array_view(TArray& a)
+    ETL_CONSTEXPR explicit array_view(TArray& a)
       : mbegin(a.data()),
         mend(a.data() + a.size())
     {
@@ -135,7 +135,7 @@ namespace etl
     /// Construct from iterators
     //*************************************************************************
     template <typename TIterator>
-    array_view(TIterator begin_, TIterator end_)
+    ETL_CONSTEXPR array_view(TIterator begin_, TIterator end_)
       : mbegin(etl::addressof(*begin_)),
         mend(etl::addressof(*begin_) + std::distance(begin_, end_))
     {
@@ -146,7 +146,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator, 
               typename TSize>
-    array_view(TIterator begin_, TSize size_)
+    ETL_CONSTEXPR array_view(TIterator begin_, TSize size_)
       : mbegin(etl::addressof(*begin_)),
         mend(etl::addressof(*begin_) + size_)
     {
@@ -156,7 +156,7 @@ namespace etl
     /// Construct from C array
     //*************************************************************************
     template<const size_t ARRAY_SIZE>
-    explicit array_view(T(&begin_)[ARRAY_SIZE])
+    ETL_CONSTEXPR explicit array_view(T(&begin_)[ARRAY_SIZE])
       : mbegin(begin_),
         mend(begin_ + ARRAY_SIZE)
     {
@@ -165,7 +165,7 @@ namespace etl
     //*************************************************************************
     /// Copy constructor
     //*************************************************************************
-    array_view(const array_view& other)
+    ETL_CONSTEXPR array_view(const array_view& other)
       : mbegin(other.mbegin),
         mend(other.mend)
     {
@@ -504,7 +504,7 @@ namespace etl
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    const_array_view()
+    ETL_CONSTEXPR const_array_view()
       : mbegin(nullptr),
         mend(nullptr)
     {
@@ -515,7 +515,7 @@ namespace etl
     /// data() and size() member functions.
     //*************************************************************************
     template <typename TArray>
-    explicit const_array_view(TArray& a)
+    ETL_CONSTEXPR explicit const_array_view(TArray& a)
       : mbegin(a.data()),
         mend(a.data() + a.size())
     {
@@ -525,7 +525,7 @@ namespace etl
     /// Construct from iterators
     //*************************************************************************
     template <typename TIterator>
-    const_array_view(TIterator begin_, TIterator end_)
+    ETL_CONSTEXPR const_array_view(TIterator begin_, TIterator end_)
       : mbegin(etl::addressof(*begin_)),
         mend(etl::addressof(*begin_) + std::distance(begin_, end_))
     {
@@ -536,7 +536,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator, 
               typename TSize>
-    const_array_view(TIterator begin_, TSize size_)
+    ETL_CONSTEXPR const_array_view(TIterator begin_, TSize size_)
       : mbegin(etl::addressof(*begin_)),
         mend(etl::addressof(*begin_) + size_)
     {
@@ -546,16 +546,16 @@ namespace etl
     /// Construct from C array
     //*************************************************************************
     template<const size_t ARRAY_SIZE>
-    explicit const_array_view(const T(&begin_)[ARRAY_SIZE])
+    ETL_CONSTEXPR explicit const_array_view(const T(&begin_)[ARRAY_SIZE])
       : mbegin(begin_),
         mend(begin_ + ARRAY_SIZE)
     {
     }
 
-    //*************************************************************************
+    //************0*************************************************************
     /// Copy constructor
     //*************************************************************************
-    const_array_view(const array_view<T>& other)
+    ETL_CONSTEXPR const_array_view(const array_view<T>& other)
       : mbegin(other.begin()),
         mend(other.end())
     {
@@ -564,9 +564,9 @@ namespace etl
     //*************************************************************************
     /// Copy constructor
     //*************************************************************************
-    const_array_view(const const_array_view& other)
+    ETL_CONSTEXPR const_array_view(const const_array_view& other)
       : mbegin(other.mbegin),
-      mend(other.mend)
+        mend(other.mend)
     {
     }
 
