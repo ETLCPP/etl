@@ -726,6 +726,9 @@
     <ClInclude Include="..\..\include\etl\callback_service.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\frame_check_sequence.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">

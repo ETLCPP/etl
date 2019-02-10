@@ -371,6 +371,7 @@
     <ClInclude Include="..\..\include\etl\crc32_c.h" />
     <ClInclude Include="..\..\include\etl\cumulative_moving_average.h" />
     <ClInclude Include="..\..\include\etl\c\ecl_timer.h" />
+    <ClInclude Include="..\..\include\etl\frame_check_sequence.h" />
     <ClInclude Include="..\..\include\etl\fsm.h" />
     <ClInclude Include="..\..\include\etl\fsm_generator.h" />
     <ClInclude Include="..\..\include\etl\callback_service.h" />

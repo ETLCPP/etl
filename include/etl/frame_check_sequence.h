@@ -5,7 +5,7 @@
 The MIT License(MIT)
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 Copyright(c) 2014 jwellbelove
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -24,8 +24,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_FRAME_CHECK_SEQUENCE__
-#define __ETL_FRAME_CHECK_SEQUENCE__
+#ifndef ETL_FRAME_CHECK_SEQUENCE_INCLUDED
+#define ETL_FRAME_CHECK_SEQUENCE_INCLUDED
 
 #include <stdint.h>
 
@@ -33,6 +33,8 @@ SOFTWARE.
 #include "static_assert.h"
 #include "type_traits.h"
 #include "binary.h"
+
+#include "stl/iterator.h"
 
 ETL_STATIC_ASSERT(ETL_8BIT_SUPPORT, "This file does not currently support targets with no 8bit type");
 

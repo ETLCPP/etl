@@ -1,4 +1,8 @@
 ===============================================================================
+14.8.2
+Added missing #include "stl/interator.h" in frame_check_sequence.h
+
+===============================================================================
 14.8.1
 Fixed bug for certain inserts in etl::vector
 
