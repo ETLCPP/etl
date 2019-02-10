@@ -66,19 +66,11 @@ class Timer
 {
 public:
 
-  Timer(int interruptId)
-    : callback(*this)
-  {
-    GetInterruptVectorsInstance().register_callback(interruptId, callback);
-  }
-
   // Handler for interrupts from the timer.
   void InterruptHandler(const size_t id)
   {
     std::cout << "Timer interrupt (member) : ID " << id << "\n";
   }
-
-  etl::function_mp<Timer, size_t, &Timer::InterruptHandler> callback;
 };
 
 //********************************
@@ -121,9 +113,13 @@ void UnhandledInterrupt(const size_t id)
 }
 
 // Declare the driver instances.
-Timer timer(TIM1_CC_IRQ_HANDLER);
+Timer timer;
 Uart  uart1(0, USART1_IRQ_HANDLER);
 Uart  uart2(1, USART2_IRQ_HANDLER);
+
+// Declare a global callback for the timer.
+// Uses the most efficient callback type for a class, as everthing is known at compile time.
+etl::function_imp<Timer, size_t, timer, &Timer::InterruptHandler> timer_member_callback;
 
 // Declare the callbacks for the free functions.
 etl::function_fp<size_t, FreeTimerInterruptHandler> timer_free_callback;
@@ -137,6 +133,7 @@ int main()
   // Setup the callbacks.
   InterruptVectors& interruptVectors = GetInterruptVectorsInstance();
 
+  interruptVectors.register_callback<TIM1_CC_IRQ_HANDLER>(timer_member_callback);
   interruptVectors.register_callback<TIM2_IRQ_HANDLER>(timer_free_callback);
   interruptVectors.register_unhandled_callback(unhandled_callback);
 

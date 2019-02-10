@@ -118,7 +118,7 @@ namespace etl
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    basic_string_view()
+    ETL_CONSTEXPR basic_string_view()
       : mbegin(nullptr),
         mend(nullptr)
     {
@@ -127,7 +127,7 @@ namespace etl
     //*************************************************************************
     /// Construct from T*.
     //*************************************************************************
-    basic_string_view(const T* begin_)
+    ETL_CONSTEXPR basic_string_view(const T* begin_)
       : mbegin(begin_),
         mend(begin_ + TTraits::length(begin_))
     {
@@ -136,7 +136,7 @@ namespace etl
     //*************************************************************************
     /// Construct from pointer range.
     //*************************************************************************
-    basic_string_view(const T* begin_, const T* end_)
+    ETL_CONSTEXPR basic_string_view(const T* begin_, const T* end_)
       : mbegin(begin_),
         mend(end_)
     {
@@ -146,7 +146,7 @@ namespace etl
     /// Construct from iterator/size.
     //*************************************************************************
     template <typename TSize, typename TDummy = typename etl::enable_if<etl::is_integral<TSize>::value, void>::type>
-    basic_string_view(const T* begin_, TSize size_)
+    ETL_CONSTEXPR basic_string_view(const T* begin_, TSize size_)
       : mbegin(begin_),
         mend(begin_ + size_)
     {
@@ -155,7 +155,7 @@ namespace etl
     //*************************************************************************
     /// Copy constructor
     //*************************************************************************
-    basic_string_view(const basic_string_view& other)
+    ETL_CONSTEXPR basic_string_view(const basic_string_view& other)
       : mbegin(other.mbegin),
         mend(other.mend)
     {

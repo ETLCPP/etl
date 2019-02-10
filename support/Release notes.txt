@@ -1,4 +1,8 @@
 ===============================================================================
+14.9.0
+Added constexpr constructors to string_view and array_view.
+
+===============================================================================
 14.8.2
 Added missing #include "stl/interator.h" in frame_check_sequence.h
 
