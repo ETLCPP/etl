@@ -94,4 +94,12 @@ SOFTWARE.
   #define ETL_DELETE
 #endif
 
+#if ETL_CPP11_SUPPORTED
+  #define ETL_NO_EXCEPT noexcept
+  #define ETL_NO_EXCEPT_EXPR(expression) noexcept(expression)
+#else
+  #define ETL_NO_EXCEPT
+  #define ETL_NO_EXCEPT_EXPR(expression)
+#endif
+
 #endif
