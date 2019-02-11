@@ -95,11 +95,11 @@ SOFTWARE.
 #endif
 
 #if ETL_CPP11_SUPPORTED
-  #define ETL_NO_EXCEPT noexcept
-  #define ETL_NO_EXCEPT_EXPR(expression) noexcept(expression)
+  #define ETL_NOEXCEPT noexcept
+  #define ETL_NOEXCEPT_EXPR(expression) noexcept(expression)
 #else
-  #define ETL_NO_EXCEPT
-  #define ETL_NO_EXCEPT_EXPR(expression)
+  #define ETL_NOEXCEPT
+  #define ETL_NOEXCEPT_EXPR(expression)
 #endif
 
 #endif
