@@ -1,4 +1,9 @@
 ===============================================================================
+14.10.0
+Added ETL_NOEXCEPT macros.
+Added std::forward support to alternate STL utility header.
+
+===============================================================================
 14.9.0
 Added constexpr constructors to string_view and array_view.
 
