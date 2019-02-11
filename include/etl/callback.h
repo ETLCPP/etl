@@ -49,8 +49,8 @@ namespace etl
     template <typename T, const int I>
     struct parameter
     {
-        parameter(T value)
-            : value(value)
+        parameter(T value_)
+            : value(value_)
         {
         }
 

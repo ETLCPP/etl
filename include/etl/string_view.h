@@ -855,7 +855,7 @@ namespace etl
 //*************************************************************************
 /// Swaps the values.
 //*************************************************************************
-template <typename T, typename TTraits = etl::char_traits<T>>
+template <typename T, typename TTraits = etl::char_traits<T> >
 void swap(etl::basic_string_view<T, TTraits>& lhs, etl::basic_string_view<T, TTraits>& rhs)
 {
   lhs.swap(rhs);
