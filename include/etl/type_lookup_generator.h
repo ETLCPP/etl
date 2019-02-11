@@ -105,7 +105,7 @@ namespace etl
   cog.outl("    typedef ")
   for n in range(1, int(NTypes) + 1):
       cog.outl("          typename etl::conditional<ID == T%s::ID, typename T%s::type," %(n, n))
-  cog.out("          etl::null_type<0>>")
+  cog.out("          etl::null_type<0> >")
   for n in range(1, int(NTypes) + 1):
       if n == int(NTypes):
           cog.outl("::type type;")
@@ -159,8 +159,8 @@ namespace etl
   cog.outl("//***************************************************************************")
   cog.outl("template <typename T1,")
   for n in range(2, int(NTypes)):
-      cog.outl("          typename T%s = etl::type_type_pair<etl::null_type<0>, etl::null_type<0>>," %n)
-  cog.outl("          typename T%s = etl::type_type_pair<etl::null_type<0>, etl::null_type<0>> >" %NTypes)
+      cog.outl("          typename T%s = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >," %n)
+  cog.outl("          typename T%s = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> > >" %NTypes)
   cog.outl("struct type_type_lookup")
   cog.outl("{")
   cog.outl("public:")
@@ -172,7 +172,7 @@ namespace etl
   cog.outl("    typedef ")
   for n in range(1, int(NTypes) + 1):
       cog.outl("          typename etl::conditional<etl::is_same<T, typename T%s::type1>::value, typename T%s::type2," %(n, n))
-  cog.out("          etl::null_type<0>>")
+  cog.out("          etl::null_type<0> >")
   for n in range(1, int(NTypes) + 1):
       if n == int(NTypes):
           cog.outl("::type type;")

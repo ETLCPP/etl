@@ -178,21 +178,21 @@ namespace etl
   // For 16 types.
   //***************************************************************************
   template <typename T1,
-            typename T2 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0>>,
-            typename T3 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0>>,
-            typename T4 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0>>,
-            typename T5 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0>>,
-            typename T6 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0>>,
-            typename T7 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0>>,
-            typename T8 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0>>,
-            typename T9 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0>>,
-            typename T10 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0>>,
-            typename T11 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0>>,
-            typename T12 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0>>,
-            typename T13 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0>>,
-            typename T14 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0>>,
-            typename T15 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0>>,
-            typename T16 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0>> >
+            typename T2 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
+            typename T3 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
+            typename T4 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
+            typename T5 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
+            typename T6 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
+            typename T7 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
+            typename T8 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
+            typename T9 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
+            typename T10 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
+            typename T11 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
+            typename T12 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
+            typename T13 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
+            typename T14 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
+            typename T15 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
+            typename T16 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> > >
   struct type_type_lookup
   {
   public:
