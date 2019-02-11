@@ -148,10 +148,24 @@ SOFTWARE.
 #endif
 
 #if ETL_CPP11_SUPPORTED
+  //******************************************************************************
   template <typename T>
   constexpr typename etl::remove_reference<T>::type&& move(T&& t) noexcept
   {
     return static_cast<typename etl::remove_reference<T>::type&&>(t);
+  }
+
+  //******************************************************************************
+  template <typename T>
+  constexpr T&& forward(typename etl::remove_reference<T>::type& t) noexcept
+  {
+    return static_cast<T&&>(t);
+  }
+
+  template <typename T>
+  constexpr T&& forward(typename etl::remove_reference<T>::type&& t) noexcept
+  {
+    return static_cast<T&&>(t);
   }
 #endif
 }
