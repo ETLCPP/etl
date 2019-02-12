@@ -600,6 +600,6 @@ namespace etl
   typedef std::atomic<ptrdiff_t>           atomic_ptrdiff_t;
   typedef std::atomic<intmax_t>            atomic_intmax_t;
   typedef std::atomic<uintmax_t>           atomic_uintmax_t;
-};
+}
 
 #endif
