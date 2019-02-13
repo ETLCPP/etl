@@ -28,6 +28,8 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
+#include <sstream>
+
 #include <map>
 #include <array>
 #include <algorithm>
@@ -687,9 +689,35 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_release)
+    TEST_FIXTURE(SetupFixture, test_insert_and_erase_bug)
     {
+      etl::unordered_map<uint32_t, char, 5> map;
 
+      map[1] = 'b';
+      map[2] = 'c';
+      map[3] = 'd';
+      map[4] = 'e';
+
+      auto it = map.find(1);
+      map.erase(it);
+      
+      it = map.find(4);
+      map.erase(it);
+
+      std::vector<std::string> s;
+
+      for (const auto &kv : map) 
+      {
+        std::stringstream ss;
+        ss << "map[" << kv.first << "] = " << kv.second;
+        s.push_back(ss.str());
+      }
+
+      CHECK_EQUAL(2, s.size());
+      CHECK_EQUAL("map[2] = c", s[0]);
+      CHECK_EQUAL("map[3] = d", s[1]);
+      CHECK_EQUAL('c', map[2]);
+      CHECK_EQUAL('d', map[3]);
     }
   };
 }
