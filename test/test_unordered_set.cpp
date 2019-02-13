@@ -453,5 +453,35 @@ namespace
       data.assign(initial_data.begin(), initial_data.end());
       CHECK_CLOSE(2.0, data.load_factor(), 0.01);
     }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_and_erase_bug)
+    {
+      etl::unordered_set<uint32_t, 5> set;
+
+      set.insert(1);
+      set.insert(2);
+      set.insert(3);
+      set.insert(4);
+
+      auto it = set.find(1);
+      set.erase(it);
+
+      it = set.find(4);
+      set.erase(it);
+
+      std::vector<std::string> s;
+
+      for (const auto &kv : set)
+      {
+        std::stringstream ss;
+        ss << "set" << " = " << kv;
+        s.push_back(ss.str());
+      }
+
+      CHECK_EQUAL(2, s.size());
+      CHECK_EQUAL("set = 2", s[0]);
+      CHECK_EQUAL("set = 3", s[1]);
+    }
   };
 }

@@ -1,4 +1,8 @@
 ===============================================================================
+14.10.2
+Fix for unordered_multimap, unordered_set and unordered_multiset insert and erase bug.
+
+===============================================================================
 14.10.1
 Fix for unordered_map insert and erase bug.
 
