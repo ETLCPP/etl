@@ -1,4 +1,8 @@
 ===============================================================================
+14.10.1
+Fix for unordered_map insert and erase bug.
+
+===============================================================================
 14.10.0
 Added ETL_NOEXCEPT macros.
 Added std::forward support to alternate STL utility header.
