@@ -663,6 +663,8 @@ namespace etl
 
       pbucket->insert_after(pbucket->before_begin(), node);
 
+      adjust_first_last_markers_after_insert(pbucket);
+
       return pbucket->begin()->key_value_pair.second;
     }
 
@@ -791,10 +793,10 @@ namespace etl
         // Just add the pointer to the bucket;
         bucket.insert_after(bucket.before_begin(), node);
 
+        adjust_first_last_markers_after_insert(pbucket);
+
         result.first = iterator((pbuckets + number_of_buckets), pbucket, pbucket->begin());
         result.second = true;
-
-        adjust_first_last_markers(pbucket);
       }
       else
       {
@@ -824,6 +826,7 @@ namespace etl
 
           // Add the node to the end of the bucket;
           bucket.insert_after(inode_previous, node);
+          adjust_first_last_markers_after_insert(&bucket);
           ++inode_previous;
 
           result.first = iterator((pbuckets + number_of_buckets), pbucket, inode_previous);
@@ -889,6 +892,7 @@ namespace etl
         bucket.erase_after(iprevious);          // Unlink from the bucket.
         icurrent->key_value_pair.~value_type(); // Destroy the value.
         pnodepool->release(&*icurrent);         // Release it back to the pool.
+        adjust_first_last_markers_after_erase(&bucket);
         n = 1;
         ETL_DECREMENT_DEBUG_COUNT
       }
@@ -919,6 +923,7 @@ namespace etl
       bucket.erase_after(iprevious);          // Unlink from the bucket.
       icurrent->key_value_pair.~value_type(); // Destroy the value.
       pnodepool->release(&*icurrent);         // Release it back to the pool.
+      adjust_first_last_markers_after_erase(&bucket);
       ETL_DECREMENT_DEBUG_COUNT
 
       return inext;
@@ -954,6 +959,7 @@ namespace etl
         local_iterator inext = pbucket->erase_after(iprevious); // Unlink from the bucket.
         icurrent->key_value_pair.~value_type(); // Destroy the value.
         pnodepool->release(&*icurrent);         // Release it back to the pool.
+        adjust_first_last_markers_after_erase(pbucket);
         ETL_DECREMENT_DEBUG_COUNT
 
         icurrent = inext;
@@ -1245,15 +1251,68 @@ namespace etl
     //*********************************************************************
     /// Adjust the first and last markers according to the new entry.
     //*********************************************************************
-    void adjust_first_last_markers(bucket_t* pbucket)
+    void adjust_first_last_markers_after_insert(bucket_t* pbucket)
     {
-      if (pbucket < first)
+      if (size() == 1)
       {
         first = pbucket;
+        last  = pbucket;
       }
-      else if (pbucket > last)
+      else
       {
-        last = pbucket;
+        if (pbucket < first)
+        {
+          first = pbucket;
+        }
+        else if (pbucket > last)
+        {
+          last = pbucket;
+        }
+      }
+    }
+
+    //*********************************************************************
+    /// Adjust the first and last markers according to the erased entry.
+    //*********************************************************************
+    void adjust_first_last_markers_after_erase(bucket_t* pbucket)
+    {
+      if (empty())
+      {
+        first = pbuckets;
+        last  = pbuckets;
+      }
+      else
+      {
+        if (pbucket == first)
+        {         
+          // We erased the first so, we need to search again from where we erased.
+          while (first->empty())
+          {
+            ++first;
+          }
+        }
+        else if (pbucket == last)
+        {
+          // We erased the last, so we need to search again. Start from the first, go no further than the current last.
+          bucket_t* pbucket = first;
+          bucket_t* pend = last;
+
+          last = first;
+
+          while (pbucket != pend)
+          {
+            if (!pbucket->empty())
+            {
+              last = pbucket;
+            }
+
+            ++pbucket;
+          }
+        }
+        else
+        {
+          // Nothing to do.
+        }
       }
     }
 
