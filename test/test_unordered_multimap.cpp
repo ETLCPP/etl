@@ -614,5 +614,35 @@ namespace
       data.assign(initial_data.begin(), initial_data.end());
       CHECK_CLOSE(2.0, data.load_factor(), 0.01);
     }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_and_erase_bug)
+    {
+      etl::unordered_multimap<uint32_t, char, 5> map;
+
+      map.insert(std::make_pair(1, 'b'));
+      map.insert(std::make_pair(2, 'c'));
+      map.insert(std::make_pair(3, 'd'));
+      map.insert(std::make_pair(4, 'e'));
+
+      auto it = map.find(1);
+      map.erase(it);
+
+      it = map.find(4);
+      map.erase(it);
+
+      std::vector<std::string> s;
+
+      for (const auto &kv : map)
+      {
+        std::stringstream ss;
+        ss << "map[" << kv.first << "] = " << kv.second;
+        s.push_back(ss.str());
+      }
+
+      CHECK_EQUAL(2, s.size());
+      CHECK_EQUAL("map[2] = c", s[0]);
+      CHECK_EQUAL("map[3] = d", s[1]);
+    }
   };
 }
