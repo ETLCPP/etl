@@ -1,4 +1,8 @@
 ===============================================================================
+14.11.0
+Added rvalue reference interfaces to forward_list.
+
+===============================================================================
 14.10.2
 Fix for unordered_multimap, unordered_set and unordered_multiset insert and erase bug.
 
