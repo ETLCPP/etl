@@ -48,10 +48,14 @@ namespace
 
     typedef TestDataDC<std::string>  ItemDC;
     typedef TestDataNDC<std::string> ItemNDC;
+    typedef TestDataM<uint32_t>      ItemM;
 
     typedef etl::forward_list<ItemDC, SIZE>  DataDC;
     typedef etl::forward_list<ItemNDC, SIZE> DataNDC;
     typedef etl::iforward_list<ItemNDC>      IDataNDC;
+
+    typedef etl::forward_list<ItemM, SIZE>  DataM;
+    typedef etl::iforward_list<ItemM>       IDataM;
 
     typedef etl::forward_list<int, SIZE> DataInt;
 
@@ -168,6 +172,98 @@ namespace
       DataNDC other_data(data);
 
       CHECK(std::equal(data.begin(), data.end(), other_data.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_move_constructor)
+    {
+      ItemM p1(1U);
+      ItemM p2(2U);
+      ItemM p3(3U);
+      ItemM p4(4U);
+
+      DataM data1;
+      data1.push_front(std::move(p1));
+      data1.push_front(std::move(p2));
+      data1.push_front(std::move(p3));
+      data1.push_front(std::move(p4));
+
+      CHECK(!bool(p1));
+      CHECK(!bool(p2));
+      CHECK(!bool(p3));
+      CHECK(!bool(p4));
+
+      DataM data2(std::move(data1));
+
+      CHECK_EQUAL(0U, data1.size());
+      CHECK_EQUAL(4U, data2.size());
+
+      DataM::const_iterator itr = data2.begin();
+
+      CHECK_EQUAL(4U, (*itr++).value);
+      CHECK_EQUAL(3U, (*itr++).value);
+      CHECK_EQUAL(2U, (*itr++).value);
+      CHECK_EQUAL(1U, (*itr++).value);
+    }
+
+    //*************************************************************************
+    TEST(test_move_assignment)
+    {
+      ItemM p1(1U);
+      ItemM p2(2U);
+      ItemM p3(3U);
+      ItemM p4(4U);
+
+      DataM data1;
+      data1.push_front(std::move(p1));
+      data1.push_front(std::move(p2));
+      data1.push_front(std::move(p3));
+      data1.push_front(std::move(p4));
+
+      DataM data2;
+      data2 = std::move(data1);
+
+      CHECK_EQUAL(0U, data1.size());
+      CHECK_EQUAL(4U, data2.size());
+
+      DataM::const_iterator itr = data2.begin();
+
+      CHECK_EQUAL(4U, (*itr++).value);
+      CHECK_EQUAL(3U, (*itr++).value);
+      CHECK_EQUAL(2U, (*itr++).value);
+      CHECK_EQUAL(1U, (*itr++).value);
+    }
+
+    //*************************************************************************
+    TEST(test_move_assignment_interface)
+    {
+      ItemM p1(1U);
+      ItemM p2(2U);
+      ItemM p3(3U);
+      ItemM p4(4U);
+
+      DataM data1;
+      data1.push_front(std::move(p1));
+      data1.push_front(std::move(p2));
+      data1.push_front(std::move(p3));
+      data1.push_front(std::move(p4));
+
+      DataM data2;
+
+      IDataM& idata1 = data1;
+      IDataM& idata2 = data2;
+
+      idata2 = std::move(idata1);
+
+      CHECK_EQUAL(0U, data1.size());
+      CHECK_EQUAL(4U, data2.size());
+
+      DataM::const_iterator itr = data2.begin();
+
+      CHECK_EQUAL(4U, (*itr++).value);
+      CHECK_EQUAL(3U, (*itr++).value);
+      CHECK_EQUAL(2U, (*itr++).value);
+      CHECK_EQUAL(1U, (*itr++).value);
     }
 
     //*************************************************************************
@@ -499,6 +595,35 @@ namespace
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_push_front_move)
+    {
+      ItemM p1(1U);
+      ItemM p2(2U);
+      ItemM p3(3U);
+      ItemM p4(4U);
+
+      DataM data;
+      data.push_front(std::move(p1));
+      data.push_front(std::move(p2));
+      data.push_front(std::move(p3));
+      data.push_front(std::move(p4));
+
+      CHECK_EQUAL(4U, data.size());
+
+      CHECK(!bool(p1));
+      CHECK(!bool(p2));
+      CHECK(!bool(p3));
+      CHECK(!bool(p4));
+
+      DataM::const_iterator itr = data.begin();
+
+      CHECK_EQUAL(4U, (*itr++).value);
+      CHECK_EQUAL(3U, (*itr++).value);
+      CHECK_EQUAL(2U, (*itr++).value);
+      CHECK_EQUAL(1U, (*itr++).value);
     }
 
     //*************************************************************************

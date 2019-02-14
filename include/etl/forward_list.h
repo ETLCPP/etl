@@ -38,6 +38,7 @@ SOFTWARE.
 #include "stl/algorithm.h"
 #include "stl/iterator.h"
 #include "stl/functional.h"
+#include "stl/utility.h"
 
 #include "pool.h"
 #include "container.h"
@@ -376,6 +377,10 @@ namespace etl
     typedef T&       reference;
     typedef const T& const_reference;
     typedef size_t   size_type;
+
+#if ETL_CPP11_SUPPORTED
+    typedef T&&      rvalue_reference;
+#endif
 
   protected:
 
@@ -717,7 +722,22 @@ namespace etl
       insert_node_after(start_node, data_node);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Pushes a value to the front of the forward_list.
+    //*************************************************************************
+    void push_front(rvalue_reference value)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
+#endif
+
+      data_node_t& data_node = allocate_data_node(std::move(value));
+      insert_node_after(start_node, data_node);
+    }
+#endif
+
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
     //*************************************************************************
     /// Emplaces a value to the front of the list..
     //*************************************************************************
@@ -792,7 +812,7 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT
       insert_node_after(start_node, *p_data_node);
     }
-#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
 
     //*************************************************************************
     /// Removes a value from the front of the forward_list.
@@ -870,7 +890,7 @@ namespace etl
       return iterator(&data_node);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
     //*************************************************************************
     /// Emplaces a value to the forward_list after the specified position.
     //*************************************************************************
@@ -950,7 +970,7 @@ namespace etl
 
       return iterator(p_data_node);
     }
-#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
 
     //*************************************************************************
     /// Inserts 'n' copies of a value to the forward_list after the specified position.
@@ -1332,6 +1352,18 @@ namespace etl
       return *this;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    iforward_list& operator = (iforward_list&& rhs)
+    {
+      move_container(std::move(rhs));
+
+      return *this;
+    }
+#endif
+
   protected:
 
     //*************************************************************************
@@ -1380,6 +1412,63 @@ namespace etl
 
       start_node.next = nullptr;
     }
+
+    //*************************************************************************
+    /// Allocate a data_node_t.
+    //*************************************************************************
+    data_node_t& allocate_data_node(const_reference value)
+    {
+      data_node_t* p_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_node->value)) T(value);
+      ETL_INCREMENT_DEBUG_COUNT
+
+      return *p_node;
+    }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Allocate a data_node_t.
+    //*************************************************************************
+    data_node_t& allocate_data_node(rvalue_reference value)
+    {
+      data_node_t* p_node = p_node_pool->allocate<data_node_t>();
+      ::new (&(p_node->value)) T(std::move(value));
+      ETL_INCREMENT_DEBUG_COUNT
+
+      return *p_node;
+    }
+#endif
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move a forward list
+    //*************************************************************************
+    void move_container(iforward_list&& rhs)
+    {
+      if (&rhs != this)
+      {
+        this->initialise();
+
+        node_t* p_last_node = &start_node;
+
+        etl::iforward_list<T>::iterator first = rhs.begin();
+        etl::iforward_list<T>::iterator last = rhs.end();
+
+        // Add all of the elements.
+        while (first != last)
+        {
+          ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
+
+          data_node_t& data_node = this->allocate_data_node(std::move(*first++));
+          join(p_last_node, &data_node);
+          data_node.next = nullptr;
+          p_last_node = &data_node;
+        }
+
+        rhs.initialise();
+      }
+    }
+#endif
 
   private:
 
@@ -1431,18 +1520,6 @@ namespace etl
         // Destroy the pool object.
         destroy_data_node(static_cast<data_node_t&>(*p_node));
       }
-    }
-
-    //*************************************************************************
-    /// Allocate a data_node_t.
-    //*************************************************************************
-    data_node_t& allocate_data_node(const T& value)
-    {
-      data_node_t* p_node = p_node_pool->allocate<data_node_t>();
-      ::new (&(p_node->value)) T(value);
-      ETL_INCREMENT_DEBUG_COUNT
-
-      return *p_node;
     }
 
     //*************************************************************************
@@ -1521,6 +1598,17 @@ namespace etl
       this->assign(other.cbegin(), other.cend());
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move constructor.
+    //*************************************************************************
+    forward_list(forward_list&& other)
+      : etl::iforward_list<T>(node_pool, MAX_SIZE, false)
+    {
+      this->move_container(std::move(other));
+    }
+#endif
+
     //*************************************************************************
     /// Construct from range.
     //*************************************************************************
@@ -1562,6 +1650,19 @@ namespace etl
 
       return *this;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    forward_list& operator = (forward_list&& rhs)
+    {
+
+      this->move_container(std::move(rhs));
+
+      return *this;
+    }
+#endif
 
   private:
 
@@ -1631,6 +1732,29 @@ namespace etl
       this->assign(other.cbegin(), other.cend());
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move constructor.
+    //*************************************************************************
+    forward_list(forward_list&& other)
+      : etl::iforward_list<T>(*other.p_node_pool, other.p_node_pool->max_size(), true)
+    {
+      if (this != &other)
+      {
+        this->initialise();
+
+        typename etl::iforward_list<T>::iterator itr = other.begin();
+        while (itr != other.end())
+        {
+          this->push_back(std::move(*itr));
+          ++itr;
+        }
+
+        other.initialise();
+      }
+    }
+#endif
+
     //*************************************************************************
     /// Construct from range.
     //*************************************************************************
@@ -1672,6 +1796,18 @@ namespace etl
 
       return *this;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    forward_list& operator = (forward_list&& rhs)
+    {
+      this->move_container(std::move(rhs));
+
+      return *this;
+    }
+#endif
 
     //*************************************************************************
     /// Set the pool instance.
