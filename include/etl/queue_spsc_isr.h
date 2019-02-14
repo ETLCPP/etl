@@ -676,6 +676,6 @@ namespace etl
     /// The uninitialised buffer of T used in the queue_spsc_isr.
     typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[MAX_SIZE];
   };
-};
+}
 
 #endif

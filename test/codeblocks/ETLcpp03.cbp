@@ -64,7 +64,6 @@
 			<Add option="-Wnon-virtual-dtor" />
 			<Add option="-Wshadow" />
 			<Add option="-Wundef" />
-			<Add option="-pedantic-errors" />
 			<Add option="-Wall" />
 			<Add option="-std=c++03" />
 			<Add option="-Wunused-parameter" />
@@ -324,7 +323,7 @@
 		<Unit filename="../data.h" />
 		<Unit filename="../ecl_user.h" />
 		<Unit filename="../etl_profile.h" />
-		<Unit filename="../main.cpp" />
+		<Unit filename="../maincpp03check.cpp" />
 		<Unit filename="../murmurhash3.h" />
 		<Unit filename="../no_stl_test_iterators.h" />
 		<Extensions>
