@@ -45,7 +45,7 @@ namespace etl
     const double root2_reciprocal = 0.70710678118655;
     const double euler            = 0.57721566490153;
     const double golden_ratio     = 1.61803398874989;
-  };
+  }
 }
 
 #endif
