@@ -48,7 +48,7 @@ SOFTWARE.
 #undef ETL_FILE
 #define ETL_FILE "12"
 
-#define ETL_PRIORITY_QUEUE_FORCE_CPP03 1
+#define ETL_PRIORITY_QUEUE_FORCE_CPP03 0
 
 //*****************************************************************************
 ///\defgroup queue queue

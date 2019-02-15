@@ -49,7 +49,7 @@ SOFTWARE.
 #undef ETL_FILE
 #define ETL_FILE "13"
 
-#define ETL_QUEUE_FORCE_CPP03 1
+#define ETL_QUEUE_FORCE_CPP03 0
 
 //*****************************************************************************
 ///\defgroup queue queue
