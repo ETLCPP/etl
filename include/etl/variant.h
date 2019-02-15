@@ -51,7 +51,7 @@ SOFTWARE.
 #undef ETL_FILE
 #define ETL_FILE "24"
 
-#define ETL_VARIANT_FORCE_CPP03 1
+#define ETL_VARIANT_FORCE_CPP03 0
 
 //*****************************************************************************
 ///\defgroup variant variant

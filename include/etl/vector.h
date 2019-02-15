@@ -62,7 +62,7 @@ SOFTWARE.
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
-#define ETL_VECTOR_FORCE_CPP03 1
+#define ETL_VECTOR_FORCE_CPP03 0
 
 //*****************************************************************************
 ///\defgroup vector vector
