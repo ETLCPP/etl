@@ -51,6 +51,7 @@ SOFTWARE.
 #include "integral_limits.h"
 #include "exception.h"
 
+#undef ETL_FILE
 #define ETL_FILE "27"
 
 #ifdef ETL_COMPILER_GCC

@@ -471,4 +471,6 @@ namespace etl
   };
 }
 
+#undef ETL_FILE
+
 #endif

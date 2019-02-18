@@ -48,6 +48,7 @@ SOFTWARE.
 #include "parameter_type.h"
 #include "type_traits.h"
 
+#undef ETL_FILE
 #define ETL_FILE "15"
 
 //*****************************************************************************
