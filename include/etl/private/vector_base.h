@@ -42,6 +42,7 @@ SOFTWARE.
 #include "../error_handler.h"
 #include "../debug_count.h"
 
+#undef ETL_FILE
 #define ETL_FILE "17"
 
 namespace etl
