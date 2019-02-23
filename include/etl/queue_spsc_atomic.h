@@ -44,8 +44,6 @@ SOFTWARE.
 #undef ETL_FILE
 #define ETL_FILE "47"
 
-#define ETL_QUEUE_ATOMIC_FORCE_CPP03 0
-
 namespace etl
 {
   template <const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>

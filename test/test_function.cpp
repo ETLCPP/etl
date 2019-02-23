@@ -32,7 +32,7 @@ SOFTWARE.
 
 //*****************************************************************************
 const int VALUE = 1;
-bool function_called   = false;
+bool function_called = false;
 bool parameter_correct = false;
 
 //*****************************************************************************
@@ -108,7 +108,7 @@ void free_void()
 //*****************************************************************************
 void free_int(int i)
 {
-  function_called   = true;
+  function_called = true;
   parameter_correct = (i == VALUE);
 }
 
@@ -117,7 +117,7 @@ void free_int(int i)
 //*****************************************************************************
 void free_reference(const Data& data)
 {
-  function_called   = true;
+  function_called = true;
   parameter_correct = (data.d == VALUE);
 }
 
@@ -155,13 +155,13 @@ struct SetupFixture
 {
   SetupFixture()
   {
-    function_called   = false;
+    function_called = false;
     parameter_correct = false;
   }
 };
 
 namespace
-{		
+{
   SUITE(test_function)
   {
     //*************************************************************************
@@ -173,8 +173,8 @@ namespace
 
       CHECK(function_called);
     }
-    
-        //*************************************************************************
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_free_void)
     {
       const etl::function<void, void> function(free_void);
@@ -194,7 +194,7 @@ namespace
       CHECK(function_called);
       CHECK(parameter_correct);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_free_int)
     {
@@ -216,7 +216,7 @@ namespace
       CHECK(function_called);
       CHECK(parameter_correct);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_free_reference)
     {
@@ -237,7 +237,7 @@ namespace
 
       CHECK(function_called);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_free_void_compile_time)
     {
@@ -258,7 +258,7 @@ namespace
       CHECK(function_called);
       CHECK(parameter_correct);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_free_int_compile_time)
     {
@@ -280,7 +280,7 @@ namespace
       CHECK(function_called);
       CHECK(parameter_correct);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_free_reference_compile_time)
     {
@@ -302,7 +302,7 @@ namespace
 
       CHECK(function_called);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_member_void)
     {
@@ -325,7 +325,7 @@ namespace
       CHECK(function_called);
       CHECK(parameter_correct);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_member_int)
     {
@@ -349,7 +349,7 @@ namespace
       CHECK(function_called);
       CHECK(parameter_correct);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_member_reference)
     {
@@ -372,7 +372,7 @@ namespace
 
       CHECK(function_called);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_member_void_compile_time)
     {
@@ -395,7 +395,7 @@ namespace
       CHECK(function_called);
       CHECK(parameter_correct);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_member_int_compile_time)
     {
@@ -419,7 +419,7 @@ namespace
       CHECK(function_called);
       CHECK(parameter_correct);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_member_reference_compile_time)
     {
@@ -443,7 +443,7 @@ namespace
 
       CHECK(function_called);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_instance_member_void_compile_time)
     {
@@ -467,7 +467,7 @@ namespace
 
       CHECK(function_called);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_instance_member_parameter_compile_time)
     {
@@ -491,7 +491,7 @@ namespace
 
       CHECK(function_called);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_instance_member_reference_compile_time)
     {
