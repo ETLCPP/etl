@@ -76,6 +76,12 @@ SOFTWARE.
 
 //#define ETL_NO_STL
 
+#define ETL_FUNCTION_FORCE_CPP03          0
+#define ETL_QUEUE_MPMC_MUTEX_FORCE_CPP03  0
+#define ETL_PRIORITY_QUEUE_FORCE_CPP03    0
+#define ETL_QUEUE_ATOMIC_FORCE_CPP03      0
+#define ETL_VARIANT_FORCE_CPP03           0
+
 #ifdef _MSC_VER
   #include "etl/profiles/msvc_x86.h"
 #else

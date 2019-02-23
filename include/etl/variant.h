@@ -51,8 +51,6 @@ SOFTWARE.
 #undef ETL_FILE
 #define ETL_FILE "24"
 
-#define ETL_VARIANT_FORCE_CPP03 0
-
 //*****************************************************************************
 ///\defgroup variant variant
 /// A class that can contain one a several specified types in a type safe manner.
