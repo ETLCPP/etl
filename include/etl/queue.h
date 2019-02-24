@@ -49,8 +49,6 @@ SOFTWARE.
 #undef ETL_FILE
 #define ETL_FILE "13"
 
-#define ETL_QUEUE_FORCE_CPP03 0
-
 //*****************************************************************************
 ///\defgroup queue queue
 /// A First-in / first-out queue with the capacity defined at compile time,
@@ -318,7 +316,7 @@ namespace etl
       add_in();
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL) && !ETL_QUEUE_FORCE_CPP03
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_QUEUE_FORCE_CPP03)
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
@@ -393,7 +391,7 @@ namespace etl
       ::new (&p_buffer[in]) T(value1, value2, value3, value4);
       add_in();
     }
-#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#endif
 
     //*************************************************************************
     /// Clears the queue to the empty state.

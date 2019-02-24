@@ -43,8 +43,6 @@ SOFTWARE.
 #undef ETL_FILE
 #define ETL_FILE "46"
 
-#define ETL_QUEUE_ISR_FORCE_CPP03 0
-
 namespace etl
 {
   template <typename T, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
@@ -76,7 +74,7 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
     ///\param value The value to use to construct the item to push to the queue.
     //*************************************************************************
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL) && !ETL_QUEUE_ISR_FORCE_CPP03
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !ETL_QUEUE_ISR_FORCE_CPP03
     template <typename ... Args>
     bool emplace_from_isr(Args&&... args)
     {
@@ -194,7 +192,7 @@ namespace etl
       return false;
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL) && !ETL_QUEUE_ISR_FORCE_CPP03
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !ETL_QUEUE_ISR_FORCE_CPP03
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
@@ -432,7 +430,7 @@ namespace etl
     /// Constructs a value in the queue 'in place'.
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
     //*************************************************************************
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL) && !ETL_QUEUE_ISR_FORCE_CPP03
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !ETL_QUEUE_ISR_FORCE_CPP03
     template <typename ... Args>
     bool emplace(Args&&... args)
     {

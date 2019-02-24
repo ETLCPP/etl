@@ -976,7 +976,7 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is full.
     ///\param insert_position>The insert position.
     //*************************************************************************
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
     template <typename ... Args>
     iterator emplace(const_iterator insert_position, Args && ... args)
     {
@@ -1298,7 +1298,7 @@ namespace etl
 
       return position;
     }
-#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#endif
 
     //*************************************************************************
     /// Inserts 'n' copies of a value into the deque.
@@ -1647,7 +1647,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
     //*************************************************************************
     /// Emplaces an item to the back of the deque.
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
@@ -1734,7 +1734,7 @@ namespace etl
       ++current_size;
       ETL_INCREMENT_DEBUG_COUNT
     }
-#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#endif
 
     //*************************************************************************
     /// Removes the oldest item from the deque.
@@ -1775,7 +1775,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
     //*************************************************************************
     /// Emplaces an item to the front of the deque.
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
@@ -1862,7 +1862,7 @@ namespace etl
       ++current_size;
       ETL_INCREMENT_DEBUG_COUNT
     }
-#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#endif
 
     //*************************************************************************
     /// Removes the oldest item from the deque.

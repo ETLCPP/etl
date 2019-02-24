@@ -338,7 +338,7 @@ namespace etl
       return emplace(value.first, value.second);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
     //*************************************************************************
     /// Emplaces a value to the map.
     //*************************************************************************
@@ -501,7 +501,7 @@ namespace etl
       return result;
     }
 
-#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#endif
 
     //*********************************************************************
     /// Erases an element.

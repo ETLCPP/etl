@@ -800,7 +800,7 @@ namespace
     // So this is only tested on C++11 onwards
     TEST_FIXTURE(SetupFixture, test_emplace_back_non_const_references)
     {
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL) && !ETL_VECTOR_FORCE_CPP03
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_VECTOR_FORCE_CPP03)
       class Data
       {
       public:
@@ -835,7 +835,7 @@ namespace
                                        compare_data.begin());
 
       CHECK(is_equal);
-#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#endif
     }
 
     //*************************************************************************
