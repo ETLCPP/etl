@@ -711,7 +711,7 @@ namespace etl
       type_id = other.type_id;
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL) && !ETL_VARIANT_FORCE_CPP03
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_VARIANT_FORCE_CPP03)
     //*************************************************************************
     /// Emplace with variadic constructor parameters.
     //*************************************************************************

@@ -62,8 +62,6 @@ SOFTWARE.
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
-#define ETL_VECTOR_FORCE_CPP03 0
-
 //*****************************************************************************
 ///\defgroup vector vector
 /// A vector with the capacity defined at compile time.
@@ -430,7 +428,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL) && !ETL_VECTOR_FORCE_CPP03
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_VECTOR_FORCE_CPP03)
     //*********************************************************************
     /// Constructs a value at the end of the vector.
     /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
@@ -510,7 +508,7 @@ namespace etl
       ++p_end;
       ETL_INCREMENT_DEBUG_COUNT
     }
-#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL) && !ETL_VECTOR_FORCE_CPP03
+#endif
 
     //*************************************************************************
     /// Removes an element from the end of the vector.
@@ -577,7 +575,7 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the vextor at the specified position.
     //*************************************************************************
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
     template <typename ... Args>
     iterator emplace(iterator position, Args && ... args)
     {
@@ -702,7 +700,7 @@ namespace etl
 
       return position;
     }
-#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#endif
 
     //*********************************************************************
     /// Inserts 'n' values to the vector.

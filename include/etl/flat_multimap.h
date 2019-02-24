@@ -320,7 +320,7 @@ namespace etl
       return refmap_t::insert_at(i_element, *pvalue);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
     //*************************************************************************
     /// Emplaces a value to the map.
     //*************************************************************************
@@ -412,7 +412,7 @@ namespace etl
       return refmap_t::insert_at(i_element, *pvalue);
     }
 
-#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#endif
 
     //*********************************************************************
     /// Erases an element.

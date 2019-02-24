@@ -284,7 +284,7 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the set.
     //*************************************************************************
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
     template <typename ... Args>
     std::pair<iterator, bool> emplace(Args && ... args)
     {
@@ -446,7 +446,7 @@ namespace etl
 
       return result;
     }
-#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#endif
 
     //*********************************************************************
     /// Erases an element.

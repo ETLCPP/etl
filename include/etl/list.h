@@ -867,7 +867,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
     //*************************************************************************
     /// Emplaces a value to the front of the list.
     //*************************************************************************
@@ -952,7 +952,7 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT
       insert_node(get_head(), *p_data_node);
     }
-#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#endif
 
     //*************************************************************************
     /// Removes a value from the front of the list.
@@ -993,7 +993,7 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the back of the list.
     //*************************************************************************
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
     template <typename ... Args>
     void emplace_back(Args && ... args)
     {
@@ -1063,7 +1063,7 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT
       insert_node(terminal_node, *p_data_node);
     }
-#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#endif
 
     //*************************************************************************
     /// Removes a value from the back of the list.
@@ -1108,7 +1108,7 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the list at the specified position.
     //*************************************************************************
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
     template <typename ... Args>
     iterator emplace(iterator position, Args && ... args)
     {
@@ -1178,7 +1178,7 @@ namespace etl
 
       return iterator(*p_data_node);
     }
-#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#endif
 
     //*************************************************************************
     /// Inserts 'n' copies of a value to the list at the specified position.
