@@ -377,6 +377,7 @@
     <ClInclude Include="..\..\include\etl\callback_service.h" />
     <ClInclude Include="..\..\include\etl\largest_generator.h" />
     <ClInclude Include="..\..\include\etl\absolute.h" />
+    <ClInclude Include="..\..\include\etl\queue_spsc_locked.h" />
     <ClInclude Include="..\..\include\etl\scaled_rounding.h" />
     <ClInclude Include="..\..\include\etl\state_chart.h" />
     <ClInclude Include="..\..\include\etl\math_constants.h" />
@@ -720,6 +721,8 @@
     <ClCompile Include="..\test_queue_spsc_atomic_small.cpp" />
     <ClCompile Include="..\test_queue_spsc_isr.cpp" />
     <ClCompile Include="..\test_queue_spsc_isr_small.cpp" />
+    <ClCompile Include="..\test_queue_spsc_locked.cpp" />
+    <ClCompile Include="..\test_queue_spsc_locked_small.cpp" />
     <ClCompile Include="..\test_random.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>

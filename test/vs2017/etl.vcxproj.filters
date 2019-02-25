@@ -729,6 +729,9 @@
     <ClInclude Include="..\..\include\etl\frame_check_sequence.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\queue_spsc_locked.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1152,6 +1155,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_callback_service.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue_spsc_locked.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue_spsc_locked_small.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
