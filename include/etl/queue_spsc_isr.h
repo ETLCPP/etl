@@ -39,6 +39,7 @@ SOFTWARE.
 #include "parameter_type.h"
 #include "memory_model.h"
 #include "integral_limits.h"
+#include "function.h"
 
 #undef ETL_FILE
 #define ETL_FILE "46"
@@ -390,14 +391,10 @@ namespace etl
   ///\ingroup queue_spsc
   ///\brief This is the base for all queue_spsc_isrs that contain a particular type.
   ///\details Normally a reference to this type will be taken from a derived queue_spsc_isr.
-  ///\code
-  /// etl::queue_spsc_isr_isr<int, 10> myQueue;
-  /// etl::iqueue_isr<int>& iQueue = myQueue;
-  ///\endcode
   /// This queue supports concurrent access by one producer and one consumer.
   /// \tparam T The type of value that the queue_spsc_isr holds.
   //***************************************************************************
-  template <typename T, typename TAccess, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
+  template <typename T, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class iqueue_spsc_isr : public queue_spsc_isr_base<T, MEMORY_MODEL>
   {
   private:
@@ -417,11 +414,11 @@ namespace etl
     //*************************************************************************
     bool push(parameter_t value)
     {
-      TAccess::lock();
+      lock();
 
       bool result = this->push_implementation(value);
 
-      TAccess::unlock();
+      unlock();
 
       return result;
     }
@@ -434,11 +431,11 @@ namespace etl
     template <typename ... Args>
     bool emplace(Args&&... args)
     {
-      TAccess::lock();
+      lock();
 
       bool result = this->emplace_implementation(std::forward<Args>(args)...);
 
-      TAccess::unlock();
+      unlock();
 
       return result;
     }
@@ -450,11 +447,11 @@ namespace etl
     template <typename T1>
     bool emplace(const T1& value1)
     {
-      TAccess::lock();
+      lock();
 
       bool result = this->emplace_implementation(value1);
 
-      TAccess::unlock();
+      unlock();
 
       return result;
     }
@@ -466,11 +463,11 @@ namespace etl
     template <typename T1, typename T2>
     bool emplace(const T1& value1, const T2& value2)
     {
-      TAccess::lock();
+      lock();
 
       bool result = this->emplace_implementation(value1, value2);
 
-      TAccess::unlock();
+      unlock();
 
       return result;
     }
@@ -482,11 +479,11 @@ namespace etl
     template <typename T1, typename T2, typename T3>
     bool emplace(const T1& value1, const T2& value2, const T3& value3)
     {
-      TAccess::lock();
+      lock();
 
       bool result = this->emplace_implementation(value1, value2, value3);
 
-      TAccess::unlock();
+      unlock();
 
       return result;
     }
@@ -498,11 +495,11 @@ namespace etl
     template <typename T1, typename T2, typename T3, typename T4>
     bool emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
-      TAccess::lock();
+      lock();
 
       bool result = this->emplace_implementation(value1, value2, value3, value4);
 
-      TAccess::unlock();
+      unlock();
 
       return result;
     }
@@ -513,11 +510,11 @@ namespace etl
     //*************************************************************************
     bool pop(reference value)
     {
-      TAccess::lock();
+      lock();
 
       bool result = this->pop_implementation(value);
 
-      TAccess::unlock();
+      unlock();
 
       return result;
     }
@@ -527,11 +524,11 @@ namespace etl
     //*************************************************************************
     bool pop()
     {
-      TAccess::lock();
+      lock();
 
       bool result = this->pop_implementation();
 
-      TAccess::unlock();
+      unlock();
 
       return result;
     }
@@ -541,14 +538,14 @@ namespace etl
     //*************************************************************************
     void clear()
     {
-      TAccess::lock();
+      lock();
 
       while (this->pop_implementation())
       {
         // Do nothing.
       }
 
-      TAccess::unlock();
+      unlock();
     }
 
     //*************************************************************************
@@ -556,11 +553,11 @@ namespace etl
     //*************************************************************************
     bool empty() const
     {
-      TAccess::lock();
+      lock();
 
       size_type result = (this->current_size == 0);
 
-      TAccess::unlock();
+      unlock();
 
       return result;
     }
@@ -570,11 +567,11 @@ namespace etl
     //*************************************************************************
     bool full() const
     {
-      TAccess::lock();
+      lock();
 
       size_type result = (this->current_size == this->MAX_SIZE);
 
-      TAccess::unlock();
+      unlock();
 
       return result;
     }
@@ -584,11 +581,11 @@ namespace etl
     //*************************************************************************
     size_type size() const
     {
-      TAccess::lock();
+      lock();
 
       size_type result = this->current_size;
 
-      TAccess::unlock();
+      unlock();
 
       return result;
     }
@@ -598,11 +595,11 @@ namespace etl
     //*************************************************************************
     size_type available() const
     {
-      TAccess::lock();
+      lock();
 
       size_type result = this->MAX_SIZE - this->current_size;
 
-      TAccess::unlock();
+      unlock();
 
       return result;
     }
@@ -612,8 +609,10 @@ namespace etl
     //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
-    iqueue_spsc_isr(T* p_buffer_, size_type max_size_)
+    iqueue_spsc_isr(T* p_buffer_, size_type max_size_, etl::ifunction<void>& lock_, etl::ifunction<void>& unlock_)
       : base_t(p_buffer_, max_size_)
+      , lock(lock_)
+      , unlock(unlock_)
     {
     }
 
@@ -623,7 +622,8 @@ namespace etl
     iqueue_spsc_isr(const iqueue_spsc_isr&);
     iqueue_spsc_isr& operator =(const iqueue_spsc_isr&);
 
-    TAccess access; ///< The object that locks/unlocks interrupts.
+    etl::ifunction<void>& lock;   ///< The callback that locks interrupts.
+    etl::ifunction<void>& unlock; ///< The callback that unlocks interrupts.
   };
 
   //***************************************************************************
@@ -632,15 +632,14 @@ namespace etl
   /// This queue supports concurrent access by one producer and one consumer.
   /// \tparam T            The type this queue should support.
   /// \tparam SIZE         The maximum capacity of the queue.
-  /// \tparam TAccess      The type that will lock and unlock interrupts.
   /// \tparam MEMORY_MODEL The memory model for the queue. Determines the type of the internal counter variables.
   //***************************************************************************
-  template <typename T, size_t SIZE, typename TAccess, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
-  class queue_spsc_isr : public etl::iqueue_spsc_isr<T, TAccess, MEMORY_MODEL>
+  template <typename T, size_t SIZE, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
+  class queue_spsc_isr : public etl::iqueue_spsc_isr<T, MEMORY_MODEL>
   {
   private:
 
-    typedef etl::iqueue_spsc_isr<T, TAccess, MEMORY_MODEL> base_t;
+    typedef etl::iqueue_spsc_isr<T, MEMORY_MODEL> base_t;
 
   public:
 
@@ -653,8 +652,9 @@ namespace etl
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    queue_spsc_isr()
-      : base_t(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE)
+    queue_spsc_isr(etl::ifunction<void>& lock,
+                   etl::ifunction<void>& unlock)
+      : base_t(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, lock, unlock)
     {
     }
 

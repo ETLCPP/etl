@@ -29,6 +29,7 @@ SOFTWARE.
 #include "UnitTest++.h"
 
 #include "etl/queue_spsc_isr.h"
+#include "etl/function.h"
 
 #include <thread>
 #include <mutex>
@@ -46,44 +47,46 @@ namespace
   {
   public:
 
-    static void clear()
+    void clear()
     {
-      called_lock = false;
+      called_lock   = false;
       called_unlock = false;
     }
 
-    static void lock()
+    void lock()
     {
       called_lock = true;
     }
 
-    static void unlock()
+    void unlock()
     {
       called_unlock = true;
     }
 
-    static bool called_lock;
-    static bool called_unlock;
+    bool called_lock;
+    bool called_unlock;
   };
 
-  bool Access::called_lock;
-  bool Access::called_unlock;
+  Access access;
+
+  etl::function_imv<Access, access, &Access::lock>   lock;
+  etl::function_imv<Access, access, &Access::unlock> unlock;
 
   struct Data
   {
     Data(int a_, int b_ = 2, int c_ = 3, int d_ = 4)
       : a(a_),
-      b(b_),
-      c(c_),
-      d(d_)
+        b(b_),
+        c(c_),
+        d(d_)
     {
     }
 
     Data()
       : a(0),
-      b(0),
-      c(0),
-      d(0)
+        b(0),
+        c(0),
+        d(0)
     {
     }
 
@@ -103,121 +106,121 @@ namespace
     //*************************************************************************
     TEST(test_constructor)
     {
-      Access::clear();
+      access.clear();
 
-      etl::queue_spsc_isr<int, 4, Access> queue;
+      etl::queue_spsc_isr<int, 4> queue(lock, unlock);
 
       CHECK_EQUAL(4U, queue.max_size());
       CHECK_EQUAL(4U, queue.capacity());
 
-      CHECK(!Access::called_lock);
-      CHECK(!Access::called_unlock);
+      CHECK(!access.called_lock);
+      CHECK(!access.called_unlock);
     }
 
     //*************************************************************************
     TEST(test_size_push_pop)
     {
-      Access::clear();
+      access.clear();
 
-      etl::queue_spsc_isr<int, 4, Access> queue;
+      etl::queue_spsc_isr<int, 4> queue(lock, unlock);
 
       CHECK_EQUAL(0U, queue.size_from_isr());
 
-      CHECK(!Access::called_lock);
-      CHECK(!Access::called_unlock);
+      CHECK(!access.called_lock);
+      CHECK(!access.called_unlock);
 
-      Access::clear();
+      access.clear();
 
       CHECK_EQUAL(4U, queue.available_from_isr());
-      CHECK(!Access::called_lock);
-      CHECK(!Access::called_unlock);
+      CHECK(!access.called_lock);
+      CHECK(!access.called_unlock);
 
-      Access::clear();
+      access.clear();
 
       CHECK_EQUAL(0U, queue.size());
 
-      CHECK(Access::called_lock);
-      CHECK(Access::called_unlock);
+      CHECK(access.called_lock);
+      CHECK(access.called_unlock);
 
-      Access::clear();
+      access.clear();
 
       CHECK_EQUAL(4U, queue.available());
 
-      CHECK(Access::called_lock);
-      CHECK(Access::called_unlock);
+      CHECK(access.called_lock);
+      CHECK(access.called_unlock);
 
-      Access::clear();
+      access.clear();
 
       queue.push_from_isr(1);
-      CHECK(!Access::called_lock);
-      CHECK(!Access::called_unlock);
+      CHECK(!access.called_lock);
+      CHECK(!access.called_unlock);
       CHECK_EQUAL(1U, queue.size_from_isr());
       CHECK_EQUAL(3U, queue.available_from_isr());
 
-      Access::clear();
+      access.clear();
 
       queue.push(2);
-      CHECK(Access::called_lock);
-      CHECK(Access::called_unlock);
+      CHECK(access.called_lock);
+      CHECK(access.called_unlock);
       CHECK_EQUAL(2U, queue.size_from_isr());
       CHECK_EQUAL(2U, queue.available_from_isr());
 
-      Access::clear();
+      access.clear();
 
       queue.push(3);
-      CHECK(Access::called_lock);
-      CHECK(Access::called_unlock);
+      CHECK(access.called_lock);
+      CHECK(access.called_unlock);
       CHECK_EQUAL(3U, queue.size_from_isr());
       CHECK_EQUAL(1U, queue.available_from_isr());
 
-      Access::clear();
+      access.clear();
 
       queue.push(4);
-      CHECK(Access::called_lock);
-      CHECK(Access::called_unlock);
+      CHECK(access.called_lock);
+      CHECK(access.called_unlock);
       CHECK_EQUAL(4U, queue.size_from_isr());
       CHECK_EQUAL(0U, queue.available_from_isr());
 
-      Access::clear();
+      access.clear();
 
       CHECK(!queue.push(5));
       CHECK(!queue.push_from_isr(5));
 
-      Access::clear();
+      access.clear();
 
       int i;
 
       CHECK(queue.pop(i));
       CHECK_EQUAL(1, i);
-      CHECK(Access::called_lock);
-      CHECK(Access::called_unlock);
+      CHECK(access.called_lock);
+      CHECK(access.called_unlock);
       CHECK_EQUAL(3U, queue.size_from_isr());
 
-      Access::clear();
+      access.clear();
 
       CHECK(queue.pop_from_isr(i));
       CHECK_EQUAL(2, i);
-      CHECK(!Access::called_lock);
-      CHECK(!Access::called_unlock);
+      CHECK(!access.called_lock);
+      CHECK(!access.called_unlock);
       CHECK_EQUAL(2U, queue.size_from_isr());
 
-      Access::clear();
+      access.clear();
 
       CHECK(queue.pop_from_isr(i));
       CHECK_EQUAL(3, i);
-      CHECK(!Access::called_lock);
-      CHECK(!Access::called_unlock);
+      CHECK(!access.called_lock);
+      CHECK(!access.called_unlock);
       CHECK_EQUAL(1U, queue.size_from_isr());
 
-      Access::clear();
+      access.clear();
 
       CHECK(queue.pop_from_isr(i));
       CHECK_EQUAL(4, i);
-      CHECK(!Access::called_lock);
-      CHECK(!Access::called_unlock);
+      CHECK(!access.called_lock);
+      CHECK(!access.called_unlock);
       CHECK_EQUAL(0U, queue.size_from_isr());
 
-      Access::clear();
+      access.clear();
 
       CHECK(!queue.pop(i));
       CHECK(!queue.pop_from_isr(i));
@@ -226,92 +229,92 @@ namespace
     //*************************************************************************
     TEST(test_size_push_pop_iqueue)
     {
-      Access::clear();
+      access.clear();
 
-      etl::queue_spsc_isr<int, 4, Access> queue;
+      etl::queue_spsc_isr<int, 4> queue(lock, unlock);
 
-      etl::iqueue_spsc_isr<int, Access>& iqueue = queue;
+      etl::iqueue_spsc_isr<int>& iqueue = queue;
 
       CHECK_EQUAL(0U, iqueue.size_from_isr());
 
-      CHECK(!Access::called_lock);
-      CHECK(!Access::called_unlock);
+      CHECK(!access.called_lock);
+      CHECK(!access.called_unlock);
 
-      Access::clear();
+      access.clear();
 
       CHECK_EQUAL(0U, iqueue.size());
 
-      CHECK(Access::called_lock);
-      CHECK(Access::called_unlock);
+      CHECK(access.called_lock);
+      CHECK(access.called_unlock);
 
-      Access::clear();
+      access.clear();
 
       iqueue.push_from_isr(1);
-      CHECK(!Access::called_lock);
-      CHECK(!Access::called_unlock);
+      CHECK(!access.called_lock);
+      CHECK(!access.called_unlock);
       CHECK_EQUAL(1U, iqueue.size_from_isr());
 
-      Access::clear();
+      access.clear();
 
       iqueue.push(2);
-      CHECK(Access::called_lock);
-      CHECK(Access::called_unlock);
+      CHECK(access.called_lock);
+      CHECK(access.called_unlock);
       CHECK_EQUAL(2U, iqueue.size_from_isr());
 
-      Access::clear();
+      access.clear();
 
       iqueue.push(3);
-      CHECK(Access::called_lock);
-      CHECK(Access::called_unlock);
+      CHECK(access.called_lock);
+      CHECK(access.called_unlock);
       CHECK_EQUAL(3U, iqueue.size_from_isr());
 
-      Access::clear();
+      access.clear();
 
       iqueue.push(4);
-      CHECK(Access::called_lock);
-      CHECK(Access::called_unlock);
+      CHECK(access.called_lock);
+      CHECK(access.called_unlock);
       CHECK_EQUAL(4U, iqueue.size_from_isr());
 
-      Access::clear();
+      access.clear();
 
       CHECK(!iqueue.push(5));
       CHECK(!iqueue.push_from_isr(5));
 
-      Access::clear();
+      access.clear();
 
       int i;
 
       CHECK(iqueue.pop(i));
       CHECK_EQUAL(1, i);
-      CHECK(Access::called_lock);
-      CHECK(Access::called_unlock);
+      CHECK(access.called_lock);
+      CHECK(access.called_unlock);
       CHECK_EQUAL(3U, iqueue.size_from_isr());
 
-      Access::clear();
+      access.clear();
 
       CHECK(iqueue.pop_from_isr(i));
       CHECK_EQUAL(2, i);
-      CHECK(!Access::called_lock);
-      CHECK(!Access::called_unlock);
+      CHECK(!access.called_lock);
+      CHECK(!access.called_unlock);
       CHECK_EQUAL(2U, iqueue.size_from_isr());
 
-      Access::clear();
+      access.clear();
 
       CHECK(iqueue.pop_from_isr(i));
       CHECK_EQUAL(3, i);
-      CHECK(!Access::called_lock);
-      CHECK(!Access::called_unlock);
+      CHECK(!access.called_lock);
+      CHECK(!access.called_unlock);
       CHECK_EQUAL(1U, iqueue.size_from_isr());
 
-      Access::clear();
+      access.clear();
 
       CHECK(iqueue.pop_from_isr(i));
       CHECK_EQUAL(4, i);
-      CHECK(!Access::called_lock);
-      CHECK(!Access::called_unlock);
+      CHECK(!access.called_lock);
+      CHECK(!access.called_unlock);
       CHECK_EQUAL(0U, iqueue.size_from_isr());
 
-      Access::clear();
+      access.clear();
 
       CHECK(!iqueue.pop(i));
       CHECK(!iqueue.pop_from_isr(i));
@@ -320,84 +323,84 @@ namespace
     //*************************************************************************
     TEST(test_size_push_pop_void)
     {
-      Access::clear();
+      access.clear();
 
-      etl::queue_spsc_isr<int, 4, Access> queue;
+      etl::queue_spsc_isr<int, 4> queue(lock, unlock);
 
       CHECK_EQUAL(0U, queue.size_from_isr());
 
-      CHECK(!Access::called_lock);
-      CHECK(!Access::called_unlock);
+      CHECK(!access.called_lock);
+      CHECK(!access.called_unlock);
 
-      Access::clear();
+      access.clear();
 
       CHECK_EQUAL(0U, queue.size());
 
-      CHECK(Access::called_lock);
-      CHECK(Access::called_unlock);
+      CHECK(access.called_lock);
+      CHECK(access.called_unlock);
 
-      Access::clear();
+      access.clear();
 
       queue.push_from_isr(1);
-      CHECK(!Access::called_lock);
-      CHECK(!Access::called_unlock);
+      CHECK(!access.called_lock);
+      CHECK(!access.called_unlock);
       CHECK_EQUAL(1U, queue.size_from_isr());
 
-      Access::clear();
+      access.clear();
 
       queue.push(2);
-      CHECK(Access::called_lock);
-      CHECK(Access::called_unlock);
+      CHECK(access.called_lock);
+      CHECK(access.called_unlock);
       CHECK_EQUAL(2U, queue.size_from_isr());
 
-      Access::clear();
+      access.clear();
 
       queue.push(3);
-      CHECK(Access::called_lock);
-      CHECK(Access::called_unlock);
+      CHECK(access.called_lock);
+      CHECK(access.called_unlock);
       CHECK_EQUAL(3U, queue.size_from_isr());
 
-      Access::clear();
+      access.clear();
 
       queue.push(4);
-      CHECK(Access::called_lock);
-      CHECK(Access::called_unlock);
+      CHECK(access.called_lock);
+      CHECK(access.called_unlock);
       CHECK_EQUAL(4U, queue.size_from_isr());
 
-      Access::clear();
+      access.clear();
 
       CHECK(!queue.push(5));
       CHECK(!queue.push_from_isr(5));
 
-      Access::clear();
+      access.clear();
 
       CHECK(queue.pop());
-      CHECK(Access::called_lock);
-      CHECK(Access::called_unlock);
+      CHECK(access.called_lock);
+      CHECK(access.called_unlock);
       CHECK_EQUAL(3U, queue.size_from_isr());
 
-      Access::clear();
+      access.clear();
 
       CHECK(queue.pop_from_isr());
-      CHECK(!Access::called_lock);
-      CHECK(!Access::called_unlock);
+      CHECK(!access.called_lock);
+      CHECK(!access.called_unlock);
       CHECK_EQUAL(2U, queue.size_from_isr());
 
-      Access::clear();
+      access.clear();
 
       CHECK(queue.pop_from_isr());
-      CHECK(!Access::called_lock);
-      CHECK(!Access::called_unlock);
+      CHECK(!access.called_lock);
+      CHECK(!access.called_unlock);
       CHECK_EQUAL(1U, queue.size_from_isr());
 
-      Access::clear();
+      access.clear();
 
       CHECK(queue.pop_from_isr());
-      CHECK(!Access::called_lock);
-      CHECK(!Access::called_unlock);
+      CHECK(!access.called_lock);
+      CHECK(!access.called_unlock);
       CHECK_EQUAL(0U, queue.size_from_isr());
 
-      Access::clear();
+      access.clear();
 
       CHECK(!queue.pop());
       CHECK(!queue.pop_from_isr());
@@ -406,7 +409,7 @@ namespace
     //*************************************************************************
     TEST(test_multiple_emplace)
     {
-      etl::queue_spsc_isr<Data, 4, Access> queue;
+      etl::queue_spsc_isr<Data, 4> queue(lock, unlock);
 
       queue.emplace(1);
       queue.emplace(1, 2);
@@ -430,20 +433,20 @@ namespace
     //*************************************************************************
     TEST(test_clear)
     {
-      Access::clear();
+      access.clear();
 
-      etl::queue_spsc_isr<int, 4, Access> queue;
+      etl::queue_spsc_isr<int, 4> queue(lock, unlock);
 
       CHECK_EQUAL(0U, queue.size());
 
       queue.push(1);
       queue.push(2);
       queue.clear();
-      CHECK(Access::called_lock);
-      CHECK(Access::called_unlock);
+      CHECK(access.called_lock);
+      CHECK(access.called_unlock);
       CHECK_EQUAL(0U, queue.size());
 
-      Access::clear();
+      access.clear();
 
       // Do it again to check that clear() didn't screw up the internals.
       queue.push_from_isr(1);
@@ -451,84 +454,84 @@ namespace
       CHECK_EQUAL(2U, queue.size_from_isr());
       queue.clear_from_isr();
       CHECK_EQUAL(0U, queue.size_from_isr());
-      CHECK(!Access::called_lock);
-      CHECK(!Access::called_unlock);
+      CHECK(!access.called_lock);
+      CHECK(!access.called_unlock);
     }
 
     //*************************************************************************
     TEST(test_empty)
     {
-      Access::clear();
+      access.clear();
 
-      etl::queue_spsc_isr<int, 4, Access> queue;
+      etl::queue_spsc_isr<int, 4> queue(lock, unlock);
 
       CHECK(queue.empty());
-      CHECK(Access::called_lock);
-      CHECK(Access::called_unlock);
+      CHECK(access.called_lock);
+      CHECK(access.called_unlock);
 
       queue.push(1);
 
-      Access::clear();
+      access.clear();
 
       CHECK(!queue.empty());
-      CHECK(Access::called_lock);
-      CHECK(Access::called_unlock);
+      CHECK(access.called_lock);
+      CHECK(access.called_unlock);
 
       queue.clear();
-      Access::clear();
+      access.clear();
 
       CHECK(queue.empty_from_isr());
-      CHECK(!Access::called_lock);
-      CHECK(!Access::called_unlock);
+      CHECK(!access.called_lock);
+      CHECK(!access.called_unlock);
 
       queue.push(1);
 
-      Access::clear();
+      access.clear();
 
       CHECK(!queue.empty_from_isr());
-      CHECK(!Access::called_lock);
-      CHECK(!Access::called_unlock);
+      CHECK(!access.called_lock);
+      CHECK(!access.called_unlock);
     }
 
     //*************************************************************************
     TEST(test_full)
     {
-      Access::clear();
+      access.clear();
 
-      etl::queue_spsc_isr<int, 4, Access> queue;
+      etl::queue_spsc_isr<int, 4> queue(lock, unlock);
 
       CHECK(!queue.full());
-      CHECK(Access::called_lock);
-      CHECK(Access::called_unlock);
+      CHECK(access.called_lock);
+      CHECK(access.called_unlock);
 
       queue.push(1);
       queue.push(2);
       queue.push(3);
       queue.push(4);
 
-      Access::clear();
+      access.clear();
 
       CHECK(queue.full());
-      CHECK(Access::called_lock);
-      CHECK(Access::called_unlock);
+      CHECK(access.called_lock);
+      CHECK(access.called_unlock);
 
       queue.clear();
-      Access::clear();
+      access.clear();
 
       CHECK(!queue.full_from_isr());
-      CHECK(!Access::called_lock);
-      CHECK(!Access::called_unlock);
+      CHECK(!access.called_lock);
+      CHECK(!access.called_unlock);
 
       queue.push(1);
       queue.push(2);
       queue.push(3);
       queue.push(4);
 
-      Access::clear();
+      access.clear();
 
       CHECK(queue.full_from_isr());
-      CHECK(!Access::called_lock);
-      CHECK(!Access::called_unlock);
+      CHECK(!access.called_lock);
+      CHECK(!access.called_unlock);
     }
 
     //=========================================================================
@@ -544,22 +547,25 @@ namespace
 
     struct ThreadLock
     {
-      static void lock()
+      void lock()
       {
         mutex.lock();
       }
 
-      static void unlock()
+      void unlock()
       {
         mutex.unlock();
       }
 
-      static std::mutex mutex;
+      std::mutex mutex;
     };
 
-    std::mutex ThreadLock::mutex;
+    ThreadLock threadLock;
 
-    etl::queue_spsc_isr<int, 10, ThreadLock> queue;
+    etl::function_imv<ThreadLock, threadLock, &ThreadLock::lock>   lock;
+    etl::function_imv<ThreadLock, threadLock, &ThreadLock::unlock> unlock;
+
+    etl::queue_spsc_isr<int, 10> queue(lock, unlock);
 
     const size_t LENGTH = 1000;
 
@@ -574,14 +580,14 @@ namespace
 
       while (ticks <= LENGTH)
       {
-        if (ThreadLock::mutex.try_lock())
+        if (threadLock.mutex.try_lock())
         {
           if (queue.push_from_isr(ticks))
           {
             ++ticks;
           }
 
-          ThreadLock::mutex.unlock();
+          threadLock.mutex.unlock();
         }
 
         Sleep(0);
