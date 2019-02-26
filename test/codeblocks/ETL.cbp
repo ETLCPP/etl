@@ -410,6 +410,8 @@
 		<Unit filename="../test_queue_spsc_atomic_small.cpp" />
 		<Unit filename="../test_queue_spsc_isr.cpp" />
 		<Unit filename="../test_queue_spsc_isr_small.cpp" />
+		<Unit filename="../test_queue_spsc_locked.cpp" />
+		<Unit filename="../test_queue_spsc_locked_small.cpp" />
 		<Unit filename="../test_random.cpp" />
 		<Unit filename="../test_reference_flat_map.cpp" />
 		<Unit filename="../test_reference_flat_multimap.cpp" />
