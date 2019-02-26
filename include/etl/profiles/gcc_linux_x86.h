@@ -41,7 +41,7 @@ SOFTWARE.
 #ifdef __cplusplus
   #define ETL_CPP11_SUPPORTED                      (__cplusplus >= 201103L)
   #define ETL_CPP14_SUPPORTED                      (__cplusplus >= 201402L)
-  #define ETL_CPP17_SUPPORTED                      0
+  #define ETL_CPP17_SUPPORTED                      (__cplusplus >= 201703L)
 #else
   #define ETL_CPP11_SUPPORTED                      0
   #define ETL_CPP14_SUPPORTED                      0
