@@ -609,7 +609,7 @@ namespace etl
     //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
-    iqueue_spsc_locked(T* p_buffer_, size_type max_size_, etl::ifunction<void>& lock_, etl::ifunction<void>& unlock_)
+    iqueue_spsc_locked(T* p_buffer_, size_type max_size_, const etl::ifunction<void>& lock_, const etl::ifunction<void>& unlock_)
       : base_t(p_buffer_, max_size_)
       , lock(lock_)
       , unlock(unlock_)
@@ -622,8 +622,8 @@ namespace etl
     iqueue_spsc_locked(const iqueue_spsc_locked&);
     iqueue_spsc_locked& operator =(const iqueue_spsc_locked&);
 
-    etl::ifunction<void>& lock;   ///< The callback that locks interrupts.
-    etl::ifunction<void>& unlock; ///< The callback that unlocks interrupts.
+    const etl::ifunction<void>& lock;   ///< The callback that locks interrupts.
+    const etl::ifunction<void>& unlock; ///< The callback that unlocks interrupts.
   };
 
   //***************************************************************************
@@ -652,8 +652,9 @@ namespace etl
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    queue_spsc_locked(etl::ifunction<void>& lock,
-                   etl::ifunction<void>& unlock)
+
+    queue_spsc_locked(const etl::ifunction<void>& lock,
+                      const etl::ifunction<void>& unlock)
       : base_t(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, lock, unlock)
     {
     }

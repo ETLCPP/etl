@@ -1,4 +1,8 @@
 ===============================================================================
+14.13.1
+Modified etl::queue_spsc_locked parameters to 'const'.
+
+===============================================================================
 14.13.0
 Added etl::queue_spsc_locked with injected locking functions.
 
