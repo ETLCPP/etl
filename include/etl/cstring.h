@@ -79,6 +79,16 @@ namespace etl
     }
 
     //*************************************************************************
+    /// From other istring.
+    ///\param other The other istring.
+    //*************************************************************************
+    string(const etl::istring& other)
+      : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
+    {
+      this->assign(other.begin(), other.end());
+    }
+
+    //*************************************************************************
     /// From other string, position, length.
     ///\param other The other string.
     ///\param position The position of the first character.
