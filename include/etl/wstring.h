@@ -79,6 +79,16 @@ namespace etl
       wstring::assign(other.begin(), other.end());
     }
 
+    //*************************************************************************
+    /// From other iwstring.
+    ///\param other The other iwstring.
+    //*************************************************************************
+    wstring(const etl::iwstring& other)
+      : iwstring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
+    {
+      this->assign(other.begin(), other.end());
+    }
+
 
     //*************************************************************************
     /// From other string, position, length.

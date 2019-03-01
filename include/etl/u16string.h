@@ -80,6 +80,16 @@ namespace etl
     }
 
     //*************************************************************************
+    /// From other iu16string.
+    ///\param other The other iu16string.
+    //*************************************************************************
+    u16string(const etl::iu16string& other)
+      : iu16string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
+    {
+      this->assign(other.begin(), other.end());
+    }
+
+    //*************************************************************************
     /// From other string, position, length.
     ///\param other The other string.
     ///\param position The position of the first character.
