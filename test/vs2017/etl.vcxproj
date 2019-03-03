@@ -434,6 +434,7 @@
     <ClInclude Include="..\..\include\etl\string_view.h" />
     <ClInclude Include="..\..\include\etl\task.h" />
     <ClInclude Include="..\..\include\etl\timer.h" />
+    <ClInclude Include="..\..\include\etl\to_string.h" />
     <ClInclude Include="..\..\include\etl\type_lookup.h" />
     <ClInclude Include="..\..\include\etl\type_lookup_generator.h" />
     <ClInclude Include="..\..\include\etl\type_select.h" />

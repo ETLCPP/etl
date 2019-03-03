@@ -732,6 +732,9 @@
     <ClInclude Include="..\..\include\etl\queue_spsc_locked.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\to_string.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
