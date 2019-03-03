@@ -30,6 +30,7 @@ SOFTWARE.
 
 #include <string>
 
+#include "etl/to_string.h"
 #include "etl/cstring.h"
 
 #undef STR
@@ -50,7 +51,7 @@ namespace
     }
   }
 
-  // Implementation of itoa() 
+  // Implementation of itoa()
   char* itoa(int num, char* str, int base)
   {
     int i = 0;
@@ -64,15 +65,15 @@ namespace
       return str;
     }
 
-    // In standard itoa(), negative numbers are handled only with  
-    // base 10. Otherwise numbers are considered unsigned. 
+    // In standard itoa(), negative numbers are handled only with
+    // base 10. Otherwise numbers are considered unsigned.
     if (num < 0 && base == 10)
     {
       isNegative = true;
       num = -num;
     }
 
-    // Process individual digits 
+    // Process individual digits
     while (num != 0)
     {
       int rem = num % base;
@@ -80,13 +81,13 @@ namespace
       num = num / base;
     }
 
-    // If number is negative, append '-' 
+    // If number is negative, append '-'
     if (isNegative)
       str[i++] = '-';
 
-    str[i] = '\0'; // Append string terminator 
+    str[i] = '\0'; // Append string terminator
 
-    // Reverse the string 
+    // Reverse the string
     reverse(str, i);
 
     return str;
@@ -97,12 +98,18 @@ namespace
     //*************************************************************************
     TEST(test_x)
     {
-      char str[100];
-      itoa(1567, str, 10);
-      itoa(-1567, str, 10);
-      itoa(1567, str, 2);
-      itoa(1567, str, 8);
-      itoa(1567, str, 16);
+      //char str[100];
+
+      etl::string<10> str;
+
+      etl::to_string(char(127), str, 10);
+
+      str.clear();
+      etl::to_string(char(-128), str, 10);
+      //itoa(-1567, str, 10);
+      //itoa(1567, str, 2);
+      //itoa(1567, str, 8);
+      //itoa(1567, str, 16);
     }
   };
 }
