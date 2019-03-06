@@ -1,4 +1,11 @@
 ===============================================================================
+14.14.0
+Fixed string push_back() bug where ther internal terminator was not updated.
+Basic Conan package added.
+Added const ref istring constructors.
+Updated profiles for C++17.
+
+===============================================================================
 14.13.1
 Modified etl::queue_spsc_locked parameters to 'const'.
 

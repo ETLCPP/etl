@@ -610,6 +610,7 @@ namespace
         text.push_back(STR('A') + value_t(i));
       }
 
+      CHECK_EQUAL(etl::strlen(compare_text.data()), etl::strlen(text.data()));
       CHECK_EQUAL(compare_text.size(), text.size());
 
       bool is_equal = Equal(compare_text, text);

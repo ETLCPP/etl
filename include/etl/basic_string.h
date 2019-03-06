@@ -630,6 +630,7 @@ namespace etl
       if (current_size != CAPACITY)
       {
         p_buffer[current_size++] = value;
+        p_buffer[current_size]   = 0;
         is_truncated = false;
       }
       else
