@@ -1,6 +1,6 @@
 ===============================================================================
 14.14.0
-Fixed string push_back() bug where ther internal terminator was not updated.
+Fixed string push_back() bug where the internal terminator was not updated.
 Basic Conan package added.
 Added const ref istring constructors.
 Updated profiles for C++17.
