@@ -761,6 +761,7 @@
     <ClCompile Include="..\test_vector_external_buffer.cpp" />
     <ClCompile Include="..\test_vector_non_trivial.cpp" />
     <ClCompile Include="..\test_vector_pointer.cpp" />
+    <ClCompile Include="..\test_vector_pointer_external_buffer.cpp" />
     <ClCompile Include="..\test_visitor.cpp" />
     <ClCompile Include="..\test_xor_checksum.cpp" />
     <ClCompile Include="..\test_xor_rotate_checksum.cpp" />
