@@ -393,6 +393,8 @@ namespace etl
     //*********************************************************************
     void resize(size_t new_size, T value)
     {
+      is_truncated = (new_size > CAPACITY);
+
       new_size = std::min(new_size, CAPACITY);
 
       // Size up?
@@ -560,6 +562,8 @@ namespace etl
     //*********************************************************************
     void assign(const_pointer other, size_t length_)
     {
+      is_truncated = (length_ > CAPACITY);
+
       length_ = std::min(length_, CAPACITY);
 
       initialise();
@@ -593,6 +597,8 @@ namespace etl
       }
 
       p_buffer[current_size] = 0;
+
+      is_truncated = (first != last);
     }
 
     //*********************************************************************
@@ -605,6 +611,8 @@ namespace etl
     {
       initialise();
 
+      is_truncated = (n > CAPACITY);
+      
       n = std::min(n, CAPACITY);
 
       std::fill_n(begin(), n, value);

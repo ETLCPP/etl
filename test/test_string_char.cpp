@@ -102,6 +102,7 @@ namespace
       CHECK_EQUAL(text.capacity(), SIZE);
       CHECK_EQUAL(text.max_size(), SIZE);
       CHECK(text.begin() == text.end());
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -113,6 +114,7 @@ namespace
       CHECK(text.cbegin()  == text.cend());
       CHECK(text.rbegin()  == text.rend());
       CHECK(text.crbegin() == text.crend());
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -130,6 +132,7 @@ namespace
       bool is_equal = Equal(compare_text, text);
 
       CHECK(is_equal);
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -138,6 +141,7 @@ namespace
       Text text(SIZE + 1, STR('A'));
 
       CHECK_EQUAL(SIZE, text.size());
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -151,6 +155,21 @@ namespace
 
         bool is_equal = Equal(compare_text, text);
         CHECK(is_equal);
+        CHECK(!text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_char_pointer_excess)
+    {
+      Compare_Text compare_text(initial_text.c_str());
+
+      Text text(longer_text.c_str());
+
+      CHECK(!text.empty());
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -164,6 +183,21 @@ namespace
 
         bool is_equal = Equal(compare_text, text);
         CHECK(is_equal);
+        CHECK(!text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_char_pointer_size_excess)
+    {
+      Compare_Text compare_text(SIZE, STR('A'));
+
+      Text text(SIZE + 1, STR('A'));
+
+      CHECK(!text.empty());
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -177,6 +211,21 @@ namespace
 
         bool is_equal = Equal(compare_text, text);
         CHECK(is_equal);
+        CHECK(!text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_size_char_excess)
+    {
+      Compare_Text compare_text(initial_text.c_str(), initial_text.size());
+
+      Text text(longer_text.c_str(), longer_text.size());
+
+      CHECK(!text.empty());
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
