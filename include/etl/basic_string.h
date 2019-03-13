@@ -1927,7 +1927,8 @@ namespace etl
     void initialise()
     {
       current_size = 0;
-      p_buffer[0] = 0;
+      p_buffer[0]  = 0;
+      is_truncated = false;
     }
 
     //*************************************************************************
