@@ -94,13 +94,10 @@ namespace etl
     ///\param position The position of the first character.
     ///\param length   The number of characters. Default = npos.
     //*************************************************************************
-    string(const etl::string<MAX_SIZE_>& other, size_t position, size_t length_ = npos)
+    string(const etl::istring& other, size_t position, size_t length_ = npos)
       : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
       ETL_ASSERT(position < other.size(), ETL_ERROR(string_out_of_bounds));
-
-      // Set the length to the exact amount.
-      length_ = (length_ > MAX_SIZE_) ? MAX_SIZE_ : length_;
 
       this->assign(other.begin() + position, other.begin() + position + length_);
     }
@@ -186,7 +183,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    string& operator = (const string& rhs)
+    string& operator = (const istring& rhs)
     {
       if (&rhs != this)
       {

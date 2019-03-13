@@ -237,6 +237,7 @@ namespace
 
       CHECK(text.size() == SIZE);
       CHECK(!text.empty());
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -250,6 +251,7 @@ namespace
       CHECK(is_equal);
       CHECK(text.size() == SIZE);
       CHECK(!text.empty());
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -258,6 +260,27 @@ namespace
       Text text(initial_text.c_str());
       Text text2(text);
       CHECK(text2 == text);
+      CHECK(!text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_copy_constructor_i)
+    {
+      Text text(initial_text.c_str());
+      IText& itext = text;
+      Text text2(itext);
+      CHECK(text2 == text);
+      CHECK(!text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_copy_constructor_excess)
+    {
+      Text  text(initial_text.c_str());
+      TextL textl(longer_text.c_str());
+      Text  text2(textl);
+      CHECK(text2 == text);
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -268,6 +291,19 @@ namespace
 
       Text text(initial_text.c_str());
       Text text2(text, 2, 4);
+
+      bool is_equal = Equal(compare_text2, text2);
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_construct_position_length_excess)
+    {
+      Compare_Text compare_text(longer_text.c_str());
+      Compare_Text compare_text2(compare_text, 2, 11);
+
+      TextL textl(longer_text.c_str());
+      Text text2(textl, 2, 12);
 
       bool is_equal = Equal(compare_text2, text2);
       CHECK(is_equal);

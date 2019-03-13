@@ -612,7 +612,7 @@ namespace etl
       initialise();
 
       is_truncated = (n > CAPACITY);
-      
+
       n = std::min(n, CAPACITY);
 
       std::fill_n(begin(), n, value);
@@ -1002,6 +1002,8 @@ namespace etl
       std::copy(i_element + 1, end(), i_element);
       p_buffer[--current_size] = 0;
 
+      is_truncated = false;
+
       return i_element;
     }
 
@@ -1020,6 +1022,8 @@ namespace etl
 
       current_size -= n_delete;
       p_buffer[current_size] = 0;
+
+      is_truncated = false;
 
       return first;
     }
@@ -1040,6 +1044,8 @@ namespace etl
     //*********************************************************************
     size_t copy(pointer s, size_t len, size_t pos = 0)
     {
+      is_truncated = (pos + len > size());
+
       size_t endpos = std::min(pos + len, size());
 
       for (size_t i = pos; i < endpos; ++i)
