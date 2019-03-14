@@ -260,7 +260,7 @@ namespace
       Text text(initial_text.c_str());
       Text text2(text);
       CHECK(text2 == text);
-      CHECK(!text.truncated());
+      CHECK(!text2.truncated());
     }
 
     //*************************************************************************
@@ -270,7 +270,7 @@ namespace
       IText& itext = text;
       Text text2(itext);
       CHECK(text2 == text);
-      CHECK(!text.truncated());
+      CHECK(!text2.truncated());
     }
 
     //*************************************************************************
@@ -280,7 +280,7 @@ namespace
       TextL textl(longer_text.c_str());
       Text  text2(textl);
       CHECK(text2 == text);
-      CHECK(!text.truncated());
+      CHECK(text2.truncated());
     }
 
     //*************************************************************************
