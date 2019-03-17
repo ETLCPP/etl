@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2016 jwellbelove
 
@@ -102,6 +102,7 @@ namespace
       CHECK_EQUAL(text.capacity(), SIZE);
       CHECK_EQUAL(text.max_size(), SIZE);
       CHECK(text.begin() == text.end());
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -113,6 +114,7 @@ namespace
       CHECK(text.cbegin()  == text.cend());
       CHECK(text.rbegin()  == text.rend());
       CHECK(text.crbegin() == text.crend());
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -130,6 +132,7 @@ namespace
       bool is_equal = Equal(compare_text, text);
 
       CHECK(is_equal);
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -138,6 +141,7 @@ namespace
       Text text(SIZE + 1, STR('A'));
 
       CHECK_EQUAL(SIZE, text.size());
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -151,6 +155,21 @@ namespace
 
         bool is_equal = Equal(compare_text, text);
         CHECK(is_equal);
+        CHECK(!text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_char_pointer_excess)
+    {
+      Compare_Text compare_text(initial_text.c_str());
+
+      Text text(longer_text.c_str());
+
+      CHECK(!text.empty());
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -164,6 +183,21 @@ namespace
 
         bool is_equal = Equal(compare_text, text);
         CHECK(is_equal);
+        CHECK(!text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_char_pointer_size_excess)
+    {
+      Compare_Text compare_text(SIZE, STR('A'));
+
+      Text text(SIZE + 1, STR('A'));
+
+      CHECK(!text.empty());
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -177,6 +211,21 @@ namespace
 
         bool is_equal = Equal(compare_text, text);
         CHECK(is_equal);
+        CHECK(!text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_size_char_excess)
+    {
+      Compare_Text compare_text(initial_text.c_str(), initial_text.size());
+
+      Text text(longer_text.c_str(), longer_text.size());
+
+      CHECK(!text.empty());
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -188,6 +237,7 @@ namespace
 
       CHECK(text.size() == SIZE);
       CHECK(!text.empty());
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -201,6 +251,7 @@ namespace
       CHECK(is_equal);
       CHECK(text.size() == SIZE);
       CHECK(!text.empty());
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -209,6 +260,27 @@ namespace
       Text text(initial_text.c_str());
       Text text2(text);
       CHECK(text2 == text);
+      CHECK(!text2.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_copy_constructor_i)
+    {
+      Text text(initial_text.c_str());
+      IText& itext = text;
+      Text text2(itext);
+      CHECK(text2 == text);
+      CHECK(!text2.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_copy_constructor_excess)
+    {
+      Text  text(initial_text.c_str());
+      TextL textl(longer_text.c_str());
+      Text  text2(textl);
+      CHECK(text2 == text);
+      CHECK(text2.truncated());
     }
 
     //*************************************************************************
@@ -222,6 +294,21 @@ namespace
 
       bool is_equal = Equal(compare_text2, text2);
       CHECK(is_equal);
+      CHECK(!text2.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_construct_position_length_excess)
+    {
+      Compare_Text compare_text(longer_text.c_str());
+      Compare_Text compare_text2(compare_text, 2, 11);
+
+      TextL textl(longer_text.c_str());
+      Text text2(textl, 2, 12);
+
+      bool is_equal = Equal(compare_text2, text2);
+      CHECK(is_equal);
+      CHECK(text2.truncated());
     }
 
     //*************************************************************************
@@ -232,6 +319,21 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_construct_initializer_list_excess)
+    {
+      Compare_Text compare_text = { STR('H'), STR('e'), STR('l'), STR('l'), STR('o'),  STR(' '),
+                                    STR('W'), STR('o'), STR('r'), STR('l'), STR('d') };
+      Text text = { STR('H'), STR('e'), STR('l'), STR('l'), STR('o'),  STR(' '),
+                    STR('W'), STR('o'), STR('r'), STR('l'), STR('d'),  STR(' '),
+                    STR('T'), STR('h'), STR('e'), STR('r'), STR('e') };
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -244,6 +346,22 @@ namespace
 
       bool is_equal = Equal(text, other_text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
+      CHECK(!other_text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assignment_excess)
+    {
+      Text text(longer_text.begin(), longer_text.end());
+      Text other_text;
+
+      other_text = text;
+
+      bool is_equal = Equal(text, other_text);
+      CHECK(is_equal);
+      CHECK(text.truncated());
+      CHECK(!other_text.truncated());
     }
 
     //*************************************************************************
@@ -260,8 +378,27 @@ namespace
       bool is_equal = Equal(text1, text2);
 
       CHECK(is_equal);
+      CHECK(!text1.truncated());
+      CHECK(!text2.truncated());
     }
 
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assignment_iterface_excess)
+    {
+      Text text1(longer_text.begin(), longer_text.end());
+      Text text2;
+
+      IText& itext1 = text1;
+      IText& itext2 = text2;
+
+      itext2 = itext1;
+
+      bool is_equal = Equal(text1, text2);
+
+      CHECK(is_equal);
+      CHECK(text1.truncated());
+      CHECK(!text2.truncated());
+    }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_self_assignment)
@@ -274,6 +411,23 @@ namespace
       bool is_equal = Equal(text, other_text);
 
       CHECK(is_equal);
+      CHECK(!text.truncated());
+      CHECK(!other_text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_self_assignment_excess)
+    {
+      Text text(longer_text.begin(), longer_text.end());
+      Text other_text(text);
+
+      other_text = other_text;
+
+      bool is_equal = Equal(text, other_text);
+
+      CHECK(is_equal);
+      CHECK(text.truncated());
+      CHECK(!other_text.truncated());
     }
 
     //*************************************************************************
@@ -307,6 +461,7 @@ namespace
       text.resize(NEW_SIZE);
 
       CHECK_EQUAL(text.size(), NEW_SIZE);
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -323,8 +478,8 @@ namespace
       compare_text.fill(INITIAL_VALUE);
 
       bool is_equal = Equal(compare_text, text);
-
       CHECK(is_equal);
+      CHECK(!text.truncated());
     }
 
 
@@ -337,6 +492,7 @@ namespace
       Text text(INITIAL_SIZE, STR('A'));
       text.resize(NEW_SIZE, STR('A'));
       CHECK_EQUAL(SIZE, text.size());
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -349,6 +505,7 @@ namespace
       text.resize(NEW_SIZE);
 
       CHECK_EQUAL(text.size(), NEW_SIZE);
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -368,26 +525,66 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
     }
 
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_empty)
+    TEST_FIXTURE(SetupFixture, test_empty_full)
+    {
+      Text text;
+      text.resize(text.max_size(), STR('A'));
+
+      CHECK(!text.empty());
+      CHECK(!text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_empty_half)
+    {
+      Text text;
+      text.resize(text.max_size() / 2, STR('A'));
+
+      CHECK(!text.empty());
+      CHECK(!text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_empty_empty)
+    {
+      Text text;
+
+      CHECK(text.empty());
+      CHECK(!text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_full_full)
     {
       Text text;
       text.resize(text.max_size(), STR('A'));
 
       CHECK(text.full());
-      CHECK(!text.empty());
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_full)
+    TEST_FIXTURE(SetupFixture, test_full_half)
+    {
+      Text text;
+      text.resize(text.max_size() / 2, STR('A'));
+
+      CHECK(!text.full());
+      CHECK(!text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_full_empty)
     {
       Text text;
 
       CHECK(!text.full());
-      CHECK(text.empty());
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -400,30 +597,36 @@ namespace
       {
         CHECK_EQUAL(text[i], compare_text[i]);
       }
+
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_index_const)
     {
-        const Compare_Text compare_text(initial_text.c_str());
-        const Text text(initial_text.c_str());
+      const Compare_Text compare_text(initial_text.c_str());
+      const Text text(initial_text.c_str());
 
-        for (size_t i = 0; i < text.size(); ++i)
-        {
-          CHECK_EQUAL(text[i], compare_text[i]);
-        }
+      for (size_t i = 0; i < text.size(); ++i)
+      {
+        CHECK_EQUAL(text[i], compare_text[i]);
+      }
+
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_at)
     {
-        Compare_Text compare_text(initial_text.c_str());
-        Text text(initial_text.c_str());
+      Compare_Text compare_text(initial_text.c_str());
+      Text text(initial_text.c_str());
 
-        for (size_t i = 0; i < text.size(); ++i)
-        {
-            CHECK_EQUAL(text.at(i), compare_text.at(i));
-        }
+      for (size_t i = 0; i < text.size(); ++i)
+      {
+        CHECK_EQUAL(text.at(i), compare_text.at(i));
+      }
+
+      CHECK(!text.truncated());
 
       CHECK_THROW(text.at(text.size()), etl::string_out_of_bounds);
     }
@@ -431,15 +634,17 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_at_const)
     {
-        const Compare_Text compare_text(initial_text.c_str());
-        const Text text(initial_text.c_str());
+      const Compare_Text compare_text(initial_text.c_str());
+      const Text text(initial_text.c_str());
 
-        for (size_t i = 0; i < text.size(); ++i)
-        {
-          CHECK_EQUAL(text.at(i), compare_text.at(i));
-        }
+      for (size_t i = 0; i < text.size(); ++i)
+      {
+        CHECK_EQUAL(text.at(i), compare_text.at(i));
+      }
 
-        CHECK_THROW(text.at(text.size()), etl::string_out_of_bounds);
+      CHECK(!text.truncated());
+
+      CHECK_THROW(text.at(text.size()), etl::string_out_of_bounds);
     }
 
     //*************************************************************************
@@ -449,6 +654,7 @@ namespace
       Text text(initial_text.c_str());
 
       CHECK(text.front() == compare_text.front());
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -458,6 +664,7 @@ namespace
       const Text text(initial_text.c_str());
 
       CHECK(text.front() == compare_text.front());
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -467,6 +674,7 @@ namespace
       Text text(initial_text.c_str());
 
       CHECK(text.back() == compare_text.back());
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -476,6 +684,7 @@ namespace
       const Text text(initial_text.c_str());
 
       CHECK(text.back() == compare_text.back());
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -490,6 +699,7 @@ namespace
                                  compare_text.begin());
 
       CHECK(is_equal);
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -504,6 +714,7 @@ namespace
                                  compare_text.begin());
 
       CHECK(is_equal);
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -512,20 +723,24 @@ namespace
       Compare_Text compare_text(initial_text.c_str());
 
       Text text;
-
-      text.assign(compare_text.c_str());
+      text.assign(initial_text.c_str());
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
+    }
 
-      compare_text.assign(longer_text.c_str());
-      compare_text.resize(std::min(compare_text.size(), SIZE));
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assign_pointer_excess)
+    {
+      Compare_Text compare_text(initial_text.c_str());
 
-      text.assign(compare_text.c_str());
+      Text text;
+      text.assign(longer_text.c_str());
 
-      is_equal = Equal(compare_text, text);
-
+      bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -538,8 +753,8 @@ namespace
       text.assign(compare_text.begin(), compare_text.end());
 
       bool is_equal = Equal(compare_text, text);
-
       CHECK(is_equal);
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -551,11 +766,9 @@ namespace
 
       CHECK_EQUAL(initial_text.size(), text.size());
 
-      bool is_equal = std::equal(text.begin(),
-                                 text.end(),
-                                 initial_text.begin());
-
+      bool is_equal = Equal(initial_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -573,8 +786,8 @@ namespace
       CHECK(text.size() == INITIAL_SIZE);
 
       bool is_equal = Equal(compare_text, text);
-
       CHECK(is_equal);
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -591,9 +804,8 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
     }
-
-
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_back)
@@ -616,12 +828,19 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_back_excess)
     {
+      Compare_Text compare_text;
       Text text;
+
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        compare_text.push_back(STR('A') + value_t(i));
+      }
 
       for (size_t i = 0; i < SIZE; ++i)
       {
@@ -631,8 +850,12 @@ namespace
 
       text.push_back(STR('A') + value_t(SIZE));
 
+      CHECK_EQUAL(etl::strlen(compare_text.data()), etl::strlen(text.data()));
+      CHECK_EQUAL(compare_text.size(), text.size());
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
       CHECK(text.truncated());
-      CHECK_EQUAL(SIZE, text.size());
     }
 
     //*************************************************************************
@@ -797,7 +1020,7 @@ namespace
       text.assign(initial_text.begin(), initial_text.end());
       text.insert(text.begin() + offset, INSERT_SIZE, INSERT_VALUE);
 
-      CHECK(!text.truncated());
+      CHECK(text.truncated());
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -891,6 +1114,7 @@ namespace
 
         bool is_equal = Equal(compare_text, text);
         CHECK(is_equal);
+        CHECK(!text.truncated());
       }
     }
 
@@ -909,6 +1133,7 @@ namespace
 
         bool is_equal = Equal(compare_text, text);
         CHECK(is_equal);
+        CHECK(!text.truncated());
       }
     }
 
@@ -927,6 +1152,7 @@ namespace
 
         bool is_equal = Equal(compare_text, text);
         CHECK(is_equal);
+        CHECK(text.truncated());
       }
     }
 
@@ -943,6 +1169,7 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       compare_text.assign(short_text.begin(), short_text.end());
       text.assign(short_text.begin(), short_text.end());
@@ -955,6 +1182,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       compare_text.assign(short_text.begin(), short_text.end());
       text.assign(short_text.begin(), short_text.end());
@@ -965,6 +1193,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -980,6 +1209,7 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow.
       compare_text.assign(short_text.c_str());
@@ -992,6 +1222,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -1007,6 +1238,7 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Partial string.
       compare_text.assign(short_text.c_str());
@@ -1019,6 +1251,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow.
       compare_text.assign(short_text.c_str());
@@ -1031,6 +1264,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -1046,6 +1280,7 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow.
       compare_text.assign(short_text.c_str());
@@ -1057,6 +1292,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -1072,6 +1308,7 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow.
       compare_text.assign(short_text.c_str());
@@ -1083,6 +1320,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -1098,6 +1336,7 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow.
       compare_text.assign(short_text.c_str());
@@ -1110,6 +1349,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -1125,6 +1365,7 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Non-overflow short text.
       compare_text.assign(short_text.c_str());
@@ -1136,6 +1377,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow short text.
       compare_text.assign(short_text.c_str());
@@ -1147,6 +1389,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
 
       // Overflow short text, npos.
       compare_text.assign(short_text.c_str());
@@ -1158,17 +1401,19 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
 
       // Non-overflow.
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, 2, Compare_Text(STR("Replace")));
+      compare_text.replace(2, 7, Compare_Text(STR("Replace")));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 2, Text(STR("Replace")));
+      text.replace(2, 7, Text(STR("Replace")));
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow.
       compare_text.assign(initial_text.c_str());
@@ -1180,6 +1425,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
 
       // Overflow, npos.
       compare_text.assign(initial_text.c_str());
@@ -1191,6 +1437,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -1206,6 +1453,7 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow short text.
       compare_text.assign(short_text.c_str());
@@ -1217,17 +1465,19 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
 
       // Non-overflow.
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, Compare_Text(STR("Replace")));
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 9, Compare_Text(STR("Replace")));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 4, Text(STR("Replace")));
+      text.replace(text.begin() + 2, text.begin() + 9, Text(STR("Replace")));
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow.
       compare_text.assign(initial_text.c_str());
@@ -1239,6 +1489,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -1254,6 +1505,7 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Non-overflow short text, npos.
       compare_text.assign(short_text.c_str());
@@ -1265,6 +1517,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow short text.
       compare_text.assign(short_text.c_str());
@@ -1276,6 +1529,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
 
       // Overflow short text, npos.
       compare_text.assign(short_text.c_str());
@@ -1287,17 +1541,19 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
 
       // Non-overflow.
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, 4, Compare_Text(STR("Replace")), 1, 5);
+      compare_text.replace(2, 7, Compare_Text(STR("Replace")), 1, 5);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 4, Text(STR("Replace")), 1, 5);
+      text.replace(2, 7, Text(STR("Replace")), 1, 5);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Non-overflow, npos.
       compare_text.assign(initial_text.c_str());
@@ -1309,6 +1565,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow.
       compare_text.assign(initial_text.c_str());
@@ -1320,6 +1577,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
 
       // Overflow, npos.
       compare_text.assign(initial_text.c_str());
@@ -1331,6 +1589,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -1346,6 +1605,7 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Non-overflow short text, npos.
       compare_text.assign(short_text.c_str());
@@ -1357,6 +1617,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow short text.
       compare_text.assign(short_text.c_str());
@@ -1368,6 +1629,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
 
       // Overflow short text, npos.
       compare_text.assign(short_text.c_str());
@@ -1379,17 +1641,19 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
 
       // Non-overflow.
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, 4, Compare_Text(STR("Replace")).c_str());
+      compare_text.replace(2, 7, Compare_Text(STR("Replace")).c_str());
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 4, Text(STR("Replace")).c_str());
+      text.replace(2, 7, Text(STR("Replace")).c_str());
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Non-overflow, npos.
       compare_text.assign(initial_text.c_str());
@@ -1401,6 +1665,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow.
       compare_text.assign(initial_text.c_str());
@@ -1412,6 +1677,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
 
       // Overflow, npos.
       compare_text.assign(initial_text.c_str());
@@ -1423,6 +1689,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -1438,6 +1705,7 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow short text.
       compare_text.assign(short_text.c_str());
@@ -1449,17 +1717,19 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
 
       // Non-overflow.
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, Compare_Text(STR("Replace")).c_str());
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 9, Compare_Text(STR("Replace")).c_str());
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 4, Text(STR("Replace")).c_str());
+      text.replace(text.begin() + 2, text.begin() + 9, Text(STR("Replace")).c_str());
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow.
       compare_text.assign(initial_text.c_str());
@@ -1471,6 +1741,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -1486,6 +1757,7 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Non-overflow short text, npos.
       compare_text.assign(short_text.c_str());
@@ -1497,6 +1769,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow short text.
       compare_text.assign(short_text.c_str());
@@ -1508,6 +1781,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
 
       // Overflow short text, npos.
       compare_text.assign(short_text.c_str());
@@ -1519,17 +1793,19 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
 
       // Non-overflow.
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, 4, Compare_Text(STR("Replace")).c_str(), 5);
+      compare_text.replace(2, 7, Compare_Text(STR("Replace")).c_str(), 5);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 4, Text(STR("Replace")).c_str(), 5);
+      text.replace(2, 7, Text(STR("Replace")).c_str(), 5);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Non-overflow, npos.
       compare_text.assign(initial_text.c_str());
@@ -1541,6 +1817,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow.
       compare_text.assign(initial_text.c_str());
@@ -1552,6 +1829,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
 
       // Overflow, npos.
       compare_text.assign(initial_text.c_str());
@@ -1563,6 +1841,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -1578,6 +1857,7 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow short text.
       compare_text.assign(short_text.c_str());
@@ -1589,17 +1869,19 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
 
       // Non-overflow.
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, Compare_Text(STR("Replace")).c_str(), 5);
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 9, Compare_Text(STR("Replace")).c_str(), 5);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 4, Text(STR("Replace")).c_str(), 5);
+      text.replace(text.begin() + 2, text.begin() + 9, Text(STR("Replace")).c_str(), 5);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow.
       compare_text.assign(initial_text.c_str());
@@ -1611,6 +1893,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -1626,6 +1909,7 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Non-overflow short text, npos.
       compare_text.assign(short_text.c_str());
@@ -1637,6 +1921,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow short text.
       compare_text.assign(short_text.c_str());
@@ -1648,6 +1933,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
 
       // Overflow short text, npos.
       compare_text.assign(short_text.c_str());
@@ -1659,17 +1945,19 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
 
       // Non-overflow.
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, 4, 7, STR('A'));
+      compare_text.replace(2, 7, 7, STR('A'));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 4, 7, STR('A'));
+      text.replace(2, 7, 7, STR('A'));
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Non-overflow, npos.
       compare_text.assign(initial_text.c_str());
@@ -1681,6 +1969,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow.
       compare_text.assign(initial_text.c_str());
@@ -1692,6 +1981,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
 
       // Overflow, npos.
       compare_text.assign(initial_text.c_str());
@@ -1703,6 +1993,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -1718,6 +2009,7 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow short text.
       compare_text.assign(short_text.c_str());
@@ -1729,17 +2021,19 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
 
       // Non-overflow.
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, 7, STR('A'));
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 9, 7, STR('A'));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 4, 7, STR('A'));
+      text.replace(text.begin() + 2, text.begin() + 9, 7, STR('A'));
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow.
       compare_text.assign(initial_text.c_str());
@@ -1751,6 +2045,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -1769,6 +2064,7 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow short text.
       compare_text.assign(short_text.c_str());
@@ -1780,17 +2076,19 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
 
       // Non-overflow.
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, replace.begin() + 1, replace.begin() + 5);
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 7, replace.begin() + 1, replace.begin() + 5);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 4, replace_long.begin() + 1, replace_long.begin() + 5);
+      text.replace(text.begin() + 2, text.begin() + 7, replace_long.begin() + 1, replace_long.begin() + 5);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
 
       // Overflow.
       compare_text.assign(initial_text.c_str());
@@ -1802,6 +2100,7 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -1815,6 +2114,7 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -1829,6 +2129,7 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -1838,6 +2139,7 @@ namespace
       text.clear();
 
       CHECK_EQUAL(text.size(), size_t(0));
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -1846,8 +2148,9 @@ namespace
       Compare_Text compare_text(initial_text.c_str());
       Text text(initial_text.c_str());
 
-      bool is_equal = Equal(compare_text, text);
+      bool is_equal = std::equal(text.begin(), text.end(), compare_text.begin());
       CHECK(is_equal);
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -1856,8 +2159,9 @@ namespace
       Compare_Text compare_text(initial_text.c_str());
       Text text(initial_text.c_str());
 
-      bool is_equal = Equal(compare_text, text);
+      bool is_equal = std::equal(text.cbegin(), text.cend(), compare_text.cbegin());
       CHECK(is_equal);
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -1866,8 +2170,9 @@ namespace
       Compare_Text compare_text(initial_text.c_str());
       Text text(initial_text.c_str());
 
-      bool is_equal = Equal(compare_text, text);
+      bool is_equal = std::equal(text.rbegin(), text.rend(), compare_text.rbegin());
       CHECK(is_equal);
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -1876,8 +2181,9 @@ namespace
       Compare_Text compare_text(initial_text.c_str());
       Text text(initial_text.c_str());
 
-      bool is_equal = Equal(compare_text, text);
+      bool is_equal = std::equal(text.crbegin(), text.crend(), compare_text.crbegin());
       CHECK(is_equal);
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -2070,6 +2376,7 @@ namespace
       buffer2[length2] = STR('\0');
 
       CHECK_EQUAL(length1, length2);
+      CHECK(!text.truncated());
 
       bool is_equal = std::equal(buffer1,
                                  buffer1 + length1,
@@ -3066,6 +3373,7 @@ namespace
       CHECK_EQUAL(compare_hash, hash);
     }
 
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_memcpy_repair)
     {
       Text text;

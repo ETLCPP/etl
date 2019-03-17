@@ -39,6 +39,7 @@ SOFTWARE.
 #include "char_traits.h"
 #include "integral_limits.h"
 #include "hash.h"
+#include "basic_string.h"
 
 #include "algorithm.h"
 
@@ -121,6 +122,15 @@ namespace etl
     ETL_CONSTEXPR basic_string_view()
       : mbegin(nullptr),
         mend(nullptr)
+    {
+    }
+
+    //*************************************************************************
+    /// Construct from string.
+    //*************************************************************************
+    ETL_CONSTEXPR basic_string_view(const etl::ibasic_string<T>& str)
+      : mbegin(str.begin()),
+        mend(str.end())
     {
     }
 

@@ -95,13 +95,10 @@ namespace etl
     ///\param position The position of the first character.
     ///\param length   The number of characters. Default = npos.
     //*************************************************************************
-    u32string(const etl::u32string<MAX_SIZE_>& other, size_t position, size_t length_ = npos)
+    u32string(const etl::iu32string& other, size_t position, size_t length_ = npos)
       : iu32string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
       ETL_ASSERT(position < other.size(), ETL_ERROR(string_out_of_bounds));
-
-      // Set the length to the exact amount.
-      length_ = (length_ > MAX_SIZE_) ? MAX_SIZE_ : length_;
 
       this->initialise();
       this->assign(other.begin() + position, other.begin() + position + length_);
