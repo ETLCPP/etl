@@ -794,8 +794,9 @@ namespace etl
       const size_t start = std::distance(cbegin(), position);
 
       // No effect.
-      if (start == CAPACITY)
+      if (start >= CAPACITY)
       {
+        is_truncated = true;
         return;
       }
 
@@ -854,8 +855,9 @@ namespace etl
       const size_t n = std::distance(first, last);
 
       // No effect.
-      if (start == CAPACITY)
+      if (start >= CAPACITY)
       {
+        is_truncated = true;
         return;
       }
 
