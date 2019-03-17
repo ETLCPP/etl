@@ -393,6 +393,8 @@ namespace etl
     //*********************************************************************
     void resize(size_t new_size, T value)
     {
+      is_truncated = (new_size > CAPACITY);
+
       new_size = std::min(new_size, CAPACITY);
 
       // Size up?
@@ -560,6 +562,8 @@ namespace etl
     //*********************************************************************
     void assign(const_pointer other, size_t length_)
     {
+      is_truncated = (length_ > CAPACITY);
+
       length_ = std::min(length_, CAPACITY);
 
       initialise();
@@ -593,6 +597,8 @@ namespace etl
       }
 
       p_buffer[current_size] = 0;
+
+      is_truncated = (first != last);
     }
 
     //*********************************************************************
@@ -604,6 +610,8 @@ namespace etl
     void assign(size_t n, T value)
     {
       initialise();
+
+      is_truncated = (n > CAPACITY);
 
       n = std::min(n, CAPACITY);
 
@@ -786,8 +794,9 @@ namespace etl
       const size_t start = std::distance(cbegin(), position);
 
       // No effect.
-      if (start == CAPACITY)
+      if (start >= CAPACITY)
       {
+        is_truncated = true;
         return;
       }
 
@@ -846,8 +855,9 @@ namespace etl
       const size_t n = std::distance(first, last);
 
       // No effect.
-      if (start == CAPACITY)
+      if (start >= CAPACITY)
       {
+        is_truncated = true;
         return;
       }
 
@@ -994,6 +1004,8 @@ namespace etl
       std::copy(i_element + 1, end(), i_element);
       p_buffer[--current_size] = 0;
 
+      is_truncated = false;
+
       return i_element;
     }
 
@@ -1012,6 +1024,8 @@ namespace etl
 
       current_size -= n_delete;
       p_buffer[current_size] = 0;
+
+      is_truncated = false;
 
       return first;
     }
@@ -1032,6 +1046,8 @@ namespace etl
     //*********************************************************************
     size_t copy(pointer s, size_t len, size_t pos = 0)
     {
+      is_truncated = (pos + len > size());
+
       size_t endpos = std::min(pos + len, size());
 
       for (size_t i = pos; i < endpos; ++i)
@@ -1919,7 +1935,8 @@ namespace etl
     void initialise()
     {
       current_size = 0;
-      p_buffer[0] = 0;
+      p_buffer[0]  = 0;
+      is_truncated = false;
     }
 
     //*************************************************************************
