@@ -1897,10 +1897,7 @@ namespace etl
     //*************************************************************************
     ibasic_string& operator += (const ibasic_string& rhs)
     {
-      if (&rhs != this)
-      {
-        append(rhs);
-      }
+      append(rhs);
 
       return *this;
     }

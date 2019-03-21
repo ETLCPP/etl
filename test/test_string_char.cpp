@@ -1276,6 +1276,33 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_append_string_to_self)
+    {
+      Compare_Text compare_text(short_text.c_str());
+      Text text(short_text.c_str());
+
+      // Non-overflow.
+      compare_text.append(compare_text);
+      text.append(text);
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+      CHECK(!text.truncated());
+
+      // Overflow.
+      compare_text.assign(shorter_text.c_str());
+      text.assign(shorter_text.c_str());
+
+      compare_text.append(compare_text);
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.append(text);
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+      CHECK(text.truncated());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_append_string_subpos_sublen)
     {
       Compare_Text compare_text(short_text.c_str());
