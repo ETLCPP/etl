@@ -393,7 +393,10 @@ namespace etl
     //*********************************************************************
     void resize(size_t new_size, T value)
     {
-      is_truncated = (new_size > CAPACITY);
+      if (new_size > CAPACITY)
+      {
+        is_truncated = true;
+      }
 
       new_size = std::min(new_size, CAPACITY);
 
@@ -639,7 +642,6 @@ namespace etl
       {
         p_buffer[current_size++] = value;
         p_buffer[current_size]   = 0;
-        is_truncated = false;
       }
       else
       {
@@ -734,8 +736,6 @@ namespace etl
     //*********************************************************************
     iterator insert(const_iterator position, T value)
     {
-      is_truncated = false;
-
       // Quick hack, as iterators are pointers.
       iterator insert_position = const_cast<iterator>(position);
 
@@ -782,8 +782,6 @@ namespace etl
     //*********************************************************************
     void insert(const_iterator position, size_t n, T value)
     {
-      is_truncated = false;
-
       if (n == 0)
       {
         return;
@@ -803,7 +801,11 @@ namespace etl
       // Fills the string to the end?
       if ((start + n) >= CAPACITY)
       {
-        is_truncated = ((current_size + n) > CAPACITY);
+        if ((current_size + n) > CAPACITY)
+        {
+          is_truncated = true;
+        }
+
         current_size = CAPACITY;
         std::fill(insert_position, end(), value);
       }
@@ -844,8 +846,6 @@ namespace etl
     template <class TIterator>
     void insert(iterator position, TIterator first, TIterator last)
     {
-      is_truncated = false;
-
       if (first == last)
       {
         return;
@@ -864,7 +864,11 @@ namespace etl
       // Fills the string to the end?
       if ((start + n) >= CAPACITY)
       {
-        is_truncated = ((current_size + n) > CAPACITY);
+        if (((current_size + n) > CAPACITY))
+        {
+          is_truncated = true;
+        }
+
         current_size = CAPACITY;
 
         while (position != end())
@@ -1004,8 +1008,6 @@ namespace etl
       std::copy(i_element + 1, end(), i_element);
       p_buffer[--current_size] = 0;
 
-      is_truncated = false;
-
       return i_element;
     }
 
@@ -1024,8 +1026,6 @@ namespace etl
 
       current_size -= n_delete;
       p_buffer[current_size] = 0;
-
-      is_truncated = false;
 
       return first;
     }
@@ -1046,7 +1046,10 @@ namespace etl
     //*********************************************************************
     size_t copy(pointer s, size_t len, size_t pos = 0)
     {
-      is_truncated = (pos + len > size());
+      if ((pos + len > size()))
+      {
+        is_truncated = true;
+      }
 
       size_t endpos = std::min(pos + len, size());
 
@@ -1873,7 +1876,18 @@ namespace etl
       if (&rhs != this)
       {
         assign(rhs.cbegin(), rhs.cend());
+        is_truncated = rhs.is_truncated;
       }
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    ibasic_string& operator = (const_pointer rhs)
+    {
+      assign(rhs);
 
       return *this;
     }
@@ -1894,7 +1908,7 @@ namespace etl
     //*************************************************************************
     /// += operator.
     //*************************************************************************
-    ibasic_string& operator += (const T* rhs)
+    ibasic_string& operator += (const_pointer rhs)
     {
       append(rhs);
 

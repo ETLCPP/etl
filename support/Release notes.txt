@@ -1,4 +1,9 @@
 ===============================================================================
+14.14.2
+Modified 'truncated' to only be cleared on 'clear()' or 'assign()'.
+Added assignment from zero terminated string pointer.
+
+===============================================================================
 14.14.1
 Fixed bug where 'truncated' was not always set correctly for strings.
 

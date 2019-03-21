@@ -194,6 +194,16 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    string& operator = (const value_type* text)
+    {
+      this->assign(text);
+
+      return *this;
+    }
+
+    //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
 #ifdef ETL_ISTRING_REPAIR_ENABLE

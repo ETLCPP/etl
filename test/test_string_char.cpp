@@ -361,7 +361,7 @@ namespace
       bool is_equal = Equal(text, other_text);
       CHECK(is_equal);
       CHECK(text.truncated());
-      CHECK(!other_text.truncated());
+      CHECK(other_text.truncated());
     }
 
     //*************************************************************************
@@ -397,7 +397,7 @@ namespace
 
       CHECK(is_equal);
       CHECK(text1.truncated());
-      CHECK(!text2.truncated());
+      CHECK(text2.truncated());
     }
 
     //*************************************************************************
@@ -428,6 +428,56 @@ namespace
       CHECK(is_equal);
       CHECK(text.truncated());
       CHECK(!other_text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assignment_from_literal)
+    {
+      Text text;
+
+      text = STR("Hello World");
+
+      bool is_equal = Equal(std::string(STR("Hello World")), text);
+      CHECK(is_equal);
+      CHECK(!text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assignment_from_literal_excess)
+    {
+      Text text;
+
+      text = STR("Hello World There");
+
+      bool is_equal = Equal(std::string(STR("Hello World")), text);
+      CHECK(is_equal);
+      CHECK(text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assignment_from_literal_via_interface)
+    {
+      Text text;
+      IText& itext = text;
+
+      itext = STR("Hello World");
+
+      bool is_equal = Equal(std::string(STR("Hello World")), itext);
+      CHECK(is_equal);
+      CHECK(!itext.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assignment_from_literal_via_interface_excess)
+    {
+      Text text;
+      IText& itext = text;
+
+      itext = STR("Hello World There");
+
+      bool is_equal = Equal(std::string(STR("Hello World")), itext);
+      CHECK(is_equal);
+      CHECK(itext.truncated());
     }
 
     //*************************************************************************
@@ -3421,6 +3471,31 @@ namespace
       text = STR("GHIJKL");
       is_equal = Equal(text, itext);
       CHECK(!is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_truncate_over_many_operations)
+    {
+      Text text(short_text.c_str());
+      CHECK(!text.truncated());
+
+      text.insert(3, initial_text.c_str());
+      CHECK(text.truncated());
+
+      while (text.size() != 0)
+      {
+        text.pop_back();
+        CHECK(text.truncated());
+      }
+
+      text.clear();
+      CHECK(!text.truncated());
+
+      text.assign(longer_text.c_str());
+      CHECK(text.truncated());
+
+      text.assign(short_text.c_str());
+      CHECK(!text.truncated());
     }
   };
 }
