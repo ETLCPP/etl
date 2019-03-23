@@ -75,8 +75,7 @@ namespace etl
     u32string(const etl::u32string<MAX_SIZE_>& other)
       : iu32string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      this->initialise();
-      this->assign(other.begin(), other.end());
+      this->assign(other);
     }
 
     //*************************************************************************
@@ -86,7 +85,7 @@ namespace etl
     u32string(const etl::iu32string& other)
       : iu32string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      this->assign(other.begin(), other.end());
+      this->assign(other);
     }
 
     //*************************************************************************
@@ -100,8 +99,12 @@ namespace etl
     {
       ETL_ASSERT(position < other.size(), ETL_ERROR(string_out_of_bounds));
 
-      this->initialise();
       this->assign(other.begin() + position, other.begin() + position + length_);
+
+      if (other.truncated())
+      {
+        this->is_truncated = true;
+      }
     }
 
     //*************************************************************************
@@ -111,7 +114,6 @@ namespace etl
     u32string(const value_type* text)
       : iu32string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      this->initialise();
       this->assign(text, text + etl::char_traits<value_type>::length(text));
     }
 
@@ -123,7 +125,6 @@ namespace etl
     u32string(const value_type* text, size_t count)
       : iu32string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      this->initialise();
       this->assign(text, text + count);
     }
 
@@ -191,8 +192,18 @@ namespace etl
     {
       if (&rhs != this)
       {
-        this->assign(rhs.cbegin(), rhs.cend());
+        this->assign(rhs);
       }
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    u32string& operator = (const value_type* text)
+    {
+      this->assign(text);
 
       return *this;
     }
