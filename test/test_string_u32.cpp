@@ -55,6 +55,7 @@ namespace
     typedef std::u32string       Compare_Text;
     typedef Text::value_type     value_t;
     typedef etl::u32string<52>   TextL;
+    typedef etl::u32string<4>    TextS;
 
     Compare_Text initial_text;
     Compare_Text less_text;
@@ -242,9 +243,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_range_excess)
     {
-      Text text;
-
-      text.assign(longer_text.begin(), longer_text.end());
+      Text text(longer_text.begin(), longer_text.end());
 
       bool is_equal = Equal(initial_text, text);
       CHECK(is_equal);
@@ -279,6 +278,14 @@ namespace
       TextL textl(longer_text.c_str());
       Text  text2(textl);
       CHECK(text2 == text);
+      CHECK(text2.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_copy_constructor_from_truncated)
+    {
+      Text  text(longer_text.c_str());
+      Text  text2(text);
       CHECK(text2.truncated());
     }
 
@@ -360,7 +367,7 @@ namespace
       bool is_equal = Equal(text, other_text);
       CHECK(is_equal);
       CHECK(text.truncated());
-      CHECK(!other_text.truncated());
+      CHECK(other_text.truncated());
     }
 
     //*************************************************************************
@@ -426,7 +433,7 @@ namespace
 
       CHECK(is_equal);
       CHECK(text.truncated());
-      CHECK(!other_text.truncated());
+      CHECK(other_text.truncated());
     }
 
     //*************************************************************************
@@ -764,6 +771,40 @@ namespace
 
       CHECK(is_equal);
       CHECK(!text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assign_string)
+    {
+      Compare_Text compare_input(initial_text.c_str());
+      Text input(initial_text.c_str());
+
+      Compare_Text compare_text;
+      Text text;
+
+      compare_text.assign(compare_input);
+      text.assign(input);
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+      CHECK(!text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assign_string_excess)
+    {
+      Compare_Text compare_input(initial_text.c_str());
+      TextL input(longer_text.c_str());
+
+      Compare_Text compare_text;
+      Text text;
+
+      compare_text.assign(compare_input);
+      text.assign(input);
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+      CHECK(text.truncated());
     }
 
     //*************************************************************************
@@ -1206,6 +1247,27 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_size_t_position_string_from_truncated)
+    {
+      for (size_t offset = 0; offset <= short_text.size(); ++offset)
+      {
+        Compare_Text compare_text(short_text.begin(), short_text.end());
+        Text text(short_text.begin(), short_text.end());
+        Text insert(longer_text.begin(), longer_text.end());
+        insert.erase(insert.begin(), insert.end());
+        insert.append(insert_text.begin(), insert_text.end());
+
+        text.insert(offset, insert);
+        compare_text.insert(offset, insert_text);
+        compare_text.resize(std::min(compare_text.size(), SIZE));
+
+        bool is_equal = Equal(compare_text, text);
+        CHECK(is_equal);
+        CHECK(text.truncated());
+      }
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_size_t_position_string_subpos_sunlen)
     {
       Compare_Text compare_text(short_text.begin(), short_text.end());
@@ -1275,6 +1337,17 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_append_truncated_string)
+    {
+      Text text(short_text.c_str());
+      TextS append(short_text.c_str());
+      CHECK(append.truncated());
+
+      text.append(append);
+      CHECK(text.truncated());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_append_string_to_self)
     {
       Compare_Text compare_text(short_text.c_str());
@@ -1340,6 +1413,17 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
+      CHECK(text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_append_truncated_string_subpos_sublen)
+    {
+      Text text(short_text.c_str());
+      TextS append(short_text.c_str());
+      CHECK(append.truncated());
+
+      text.append(append, 1, 2);
       CHECK(text.truncated());
     }
 
@@ -3521,6 +3605,49 @@ namespace
       CHECK(text.truncated());
 
       text.assign(short_text.c_str());
+      CHECK(!text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_add_from_truncated)
+    {
+      Text  text1(short_text.c_str());
+      TextS text2(short_text.c_str());
+
+      CHECK(!text1.truncated());
+      CHECK(text2.truncated());
+
+      // text2 has the truncate flag set.
+      text1 += text2;
+
+      CHECK(text1.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_add_to_truncated)
+    {
+      Text text1(longer_text.c_str());
+      Text text2(short_text.c_str());
+
+      CHECK(text1.truncated());
+      CHECK(!text2.truncated());
+
+      // Clear text but not the truncate flag.
+      text1.erase(text1.begin(), text1.end());
+
+      // text1 still has the truncate flag set.
+      text1 += text2;
+
+      CHECK(text1.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_clear_truncated)
+    {
+      Text text(longer_text.c_str());
+      CHECK(text.truncated());
+
+      text.clear_truncated();
       CHECK(!text.truncated());
     }
   };

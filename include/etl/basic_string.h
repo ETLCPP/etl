@@ -221,6 +221,14 @@ namespace etl
       return is_truncated;
     }
 
+    //*************************************************************************
+    /// Clears the 'truncated' flag.
+    //*************************************************************************
+    void clear_truncated()
+    {
+      is_truncated = false;
+    }
+
   protected:
 
     //*************************************************************************
@@ -515,8 +523,12 @@ namespace etl
     //*********************************************************************
     void assign(const etl::ibasic_string<T>& other)
     {
-      size_t len = std::min(CAPACITY, other.size());
-      assign(other.begin(), other.begin() + len);
+      assign(other.begin(), other.end());
+
+      if (other.truncated())
+      {
+        is_truncated = true;
+      }
     }
 
     //*********************************************************************
@@ -668,6 +680,12 @@ namespace etl
     ibasic_string& append(const ibasic_string& str)
     {
       insert(end(), str.begin(), str.end());
+
+      if (str.truncated())
+      {
+        is_truncated = true;
+      }
+
       return *this;
     }
 
@@ -682,6 +700,7 @@ namespace etl
       ETL_ASSERT(subposition <= str.size(), ETL_ERROR(string_out_of_bounds));
 
       insert(size(), str, subposition, sublength);
+
       return *this;
     }
 
@@ -917,6 +936,12 @@ namespace etl
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
       insert(begin() + position, str.cbegin(), str.cend());
+
+      if (str.truncated())
+      {
+        is_truncated = true;
+      }
+
       return *this;
     }
 
@@ -938,6 +963,12 @@ namespace etl
       }
 
       insert(begin() + position, str.cbegin() + subposition, str.cbegin() + subposition + sublength);
+
+      if (str.truncated())
+      {
+        is_truncated = true;
+      }
+
       return *this;
     }
 
@@ -1323,6 +1354,11 @@ namespace etl
 
       // Insert the new stuff.
       insert(first_, str.begin(), str.end());
+
+      if (str.truncated())
+      {
+        is_truncated = true;
+      }
 
       return *this;
     }
@@ -1875,8 +1911,7 @@ namespace etl
     {
       if (&rhs != this)
       {
-        assign(rhs.cbegin(), rhs.cend());
-        is_truncated = rhs.is_truncated;
+        assign(rhs);
       }
 
       return *this;

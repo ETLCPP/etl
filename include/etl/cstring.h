@@ -75,7 +75,7 @@ namespace etl
     string(const etl::string<MAX_SIZE_>& other)
       : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      this->assign(other.begin(), other.end());
+      this->assign(other);
     }
 
     //*************************************************************************
@@ -85,7 +85,7 @@ namespace etl
     string(const etl::istring& other)
       : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      this->assign(other.begin(), other.end());
+      this->assign(other);
     }
 
     //*************************************************************************
@@ -100,6 +100,11 @@ namespace etl
       ETL_ASSERT(position < other.size(), ETL_ERROR(string_out_of_bounds));
 
       this->assign(other.begin() + position, other.begin() + position + length_);
+
+      if (other.truncated())
+      {
+        this->is_truncated = true;
+      }
     }
 
     //*************************************************************************
@@ -187,7 +192,7 @@ namespace etl
     {
       if (&rhs != this)
       {
-        this->assign(rhs.cbegin(), rhs.cend());
+        this->assign(rhs);
       }
 
       return *this;
