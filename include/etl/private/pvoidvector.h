@@ -224,7 +224,7 @@ namespace etl
     //*********************************************************************
     reference operator [](size_t i)
     {
-      return reference(p_buffer[i]);
+      return p_buffer[i];
     }
 
     //*********************************************************************
@@ -246,7 +246,7 @@ namespace etl
     reference at(size_t i)
     {
       ETL_ASSERT(i < size(), ETL_ERROR(vector_out_of_bounds));
-      return reference(p_buffer[i]);
+      return p_buffer[i];
     }
 
     //*********************************************************************
@@ -267,7 +267,7 @@ namespace etl
     //*********************************************************************
     reference front()
     {
-      return reference(p_buffer[0]);
+      return p_buffer[0];
     }
 
     //*********************************************************************
@@ -285,7 +285,7 @@ namespace etl
     //*********************************************************************
     reference back()
     {
-      return reference(*(p_end - 1));
+      return *(p_end - 1);
     }
 
     //*********************************************************************
@@ -303,7 +303,7 @@ namespace etl
     //*********************************************************************
     pointer data()
     {
-      return pointer(p_buffer);
+      return p_buffer;
     }
 
     //*********************************************************************
@@ -474,7 +474,7 @@ namespace etl
     iterator erase(iterator first, iterator last)
     {
       std::copy(last, end(), first);
-      size_t n_delete = std::distance(first, last);
+      auto n_delete = std::distance(first, last);
 
       // Just adjust the count.
       p_end -= n_delete;
@@ -556,7 +556,7 @@ namespace etl
     //*************************************************************************
     void repair_buffer(void** p_buffer_)
     {
-      uintptr_t length = p_end - p_buffer;
+      auto length = p_end - p_buffer;
 
       p_buffer = p_buffer_;
       p_end = p_buffer_ + length;

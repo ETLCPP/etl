@@ -187,7 +187,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_signed : false_type {};
   template <> struct is_signed<char> : integral_constant<bool, (char(255) < 0)> {};
-  template <> struct is_signed<wchar_t> : public etl::integral_constant<bool, static_cast<bool>(wchar_t(-1) < wchar_t(0))> {};
+  template <> struct is_signed<wchar_t> : public etl::integral_constant<bool, (wchar_t(-1) < wchar_t(0))> {};
   template <> struct is_signed<signed char> : true_type {};
   template <> struct is_signed<short> : true_type {};
   template <> struct is_signed<int> : true_type {};
@@ -452,7 +452,7 @@ namespace etl
 
   public:
 
-    static const bool value = (sizeof(check((internal*)0)) == sizeof(TBase*));
+    static const bool value = (sizeof(check(static_cast<internal*>(0))) == sizeof(TBase*));
   };
 
   // For when TBase or TDerived is a fundamental type.

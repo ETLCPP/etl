@@ -53,6 +53,7 @@ namespace etl
   class ifunction
   {
   public:
+    virtual ~ifunction() = default;
 
     typedef TParameter parameter_type; ///< The type of parameter sent to the function.
 
@@ -70,6 +71,7 @@ namespace etl
   class ifunction<void>
   {
   public:
+    virtual ~ifunction() = default;
 
     typedef void parameter_type; ///< The type of parameter sent to the function.
 
@@ -197,6 +199,7 @@ namespace etl
   class function<void, void> : public ifunction<void>
   {
   public:
+    virtual ~function() = default;
 
     //*************************************************************************
     /// Constructor.
