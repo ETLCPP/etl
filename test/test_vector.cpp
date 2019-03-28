@@ -164,6 +164,16 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_move_constructor)
+    {
+      Data data(initial_data.begin(), initial_data.end());
+      Data data2(std::move(data));
+      CHECK(data.size() == 0);
+      CHECK(data2.size() == initial_data.size());
+      CHECK(data2 != data);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assignment)
     {
       Data data(initial_data.begin(), initial_data.end());
@@ -176,6 +186,19 @@ namespace
                                  other_data.begin());
 
       CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_move_assignment)
+    {
+      Data data(initial_data.begin(), initial_data.end());
+      Data other_data;
+
+      other_data = std::move(data);
+
+      CHECK(data.size() == 0);
+      CHECK(other_data.size() == initial_data.size());
+      CHECK(data != other_data);
     }
 
     //*************************************************************************

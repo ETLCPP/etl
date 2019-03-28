@@ -1400,8 +1400,10 @@ namespace etl
         this->initialise();
 
         this->p_buffer = other.p_buffer;
+        this->p_end    = other.p_end;
 
-        other.initialise();
+        this->initialise_destination_external_buffer_after_move();
+        other.initialise_source_external_buffer_after_move();
       }
     }
 
@@ -1560,7 +1562,7 @@ namespace etl
           ++itr;
         }
 
-        other.initialise();
+        other.initialise_source_external_buffer_after_move();
       }
     }
 
@@ -1579,7 +1581,7 @@ namespace etl
           ++itr;
         }
 
-        rhs.initialise();
+        rhs.initialise_source_external_buffer_after_move();
       }
 
       return *this;
@@ -1697,11 +1699,11 @@ namespace etl
     {
       if (this != &other)
       {
-        this->initialise();
-
         this->p_buffer = other.p_buffer;
+        this->p_end    = other.p_end;
 
-        other.initialise();
+        this->initialise_destination_external_buffer_after_move();
+        other.initialise_source_external_buffer_after_move();
       }
     }
 
