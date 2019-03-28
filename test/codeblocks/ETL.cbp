@@ -441,8 +441,10 @@
 		<Unit filename="../test_variant.cpp" />
 		<Unit filename="../test_variant_pool.cpp" />
 		<Unit filename="../test_vector.cpp" />
+		<Unit filename="../test_vector_external_buffer.cpp" />
 		<Unit filename="../test_vector_non_trivial.cpp" />
 		<Unit filename="../test_vector_pointer.cpp" />
+		<Unit filename="../test_vector_pointer_external_buffer.cpp" />
 		<Unit filename="../test_visitor.cpp" />
 		<Unit filename="../test_xor_checksum.cpp" />
 		<Unit filename="../test_xor_rotate_checksum.cpp" />
