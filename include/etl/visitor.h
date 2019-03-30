@@ -40,16 +40,45 @@ SOFTWARE.
 /// structure on which it operates. A practical result of this separation is the
 /// ability to add new operations to existing object structures without modifying
 /// those structures. It is one way to easily follow the open/closed principle.
-/// In essence, the visitor allows one to add new virtual functions to a family 
-/// of classes without modifying the classes themselves; instead, one creates a 
+/// In essence, the visitor allows one to add new virtual functions to a family
+/// of classes without modifying the classes themselves; instead, one creates a
 /// visitor class that implements all of the appropriate specialisations of the
-/// virtual function. The visitor takes the instance as input, and implements 
+/// virtual function. The visitor takes the instance as input, and implements
 /// the goal through double dispatch.<br>
 /// \ingroup patterns
 //*****************************************************************************
 
 namespace etl
 {
+#if ETL_CPP11_SUPPORTED && !defined(ETL_VISITOR_FORCE_CPP03)
+
+  //*****************************************************************
+  /// The visitable class for N types.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename T1, typename... Types>
+  class visitable : public visitable<T1>, public visitable<Types...>
+  {
+  public:
+
+    using visitable<T1>::accept;
+    using visitable<Types...>::accept;
+  };
+
+  //*****************************************************************
+  /// The specialised visitable class for 1 type.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename T1>
+  class visitable<T1>
+  {
+  public:
+
+    virtual void accept(T1&) = 0;
+  };
+
+#else
+
   //*****************************************************************
   /// The visitable base class for four visitor types.
   /// Derive visitable classes from this.
@@ -108,6 +137,37 @@ namespace etl
     virtual void accept(T1&) = 0;
   };
 
+#endif
+
+#if ETL_CPP11_SUPPORTED && !defined(ETL_VISITOR_FORCE_CPP03)
+
+  //*****************************************************************
+  /// The visitor class for N types.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename T1, typename... Types>
+  class visitor : public visitor<T1>, public visitor<Types...>
+  {
+  public:
+
+    using visitor<T1>::visit;
+    using visitor<Types...>::visit;
+  };
+
+  //*****************************************************************
+  /// The specialised visitor class for 1 type.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename T1>
+  class visitor<T1>
+  {
+  public:
+
+    virtual void visit(T1&) = 0;
+  };
+
+#else
+
   //*****************************************************************
   /// The visitor base class for sixteen types.
   /// Derive visitors from this.
@@ -115,7 +175,7 @@ namespace etl
   //*****************************************************************
   template <typename T1,         typename T2  = void, typename T3  = void, typename T4  = void,
             typename T5  = void, typename T6  = void, typename T7  = void, typename T8  = void,
-            typename T9  = void, typename T10 = void, typename T11 = void, typename T12 = void, 
+            typename T9  = void, typename T10 = void, typename T11 = void, typename T12 = void,
             typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void>
   class visitor
   {
@@ -323,7 +383,7 @@ namespace etl
     virtual void visit(T8&) = 0;
     virtual void visit(T9&) = 0;
   };
-  
+
   //*****************************************************************
   /// The visitor base class for eight types.
   /// Derive visitors from this.
@@ -459,6 +519,8 @@ namespace etl
 
       virtual void visit(T1&) = 0;
   };
+
+#endif
 }
 
 #endif
