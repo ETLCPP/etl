@@ -1,4 +1,8 @@
 ===============================================================================
+14.16.0
+Added C++11 variadic templates for etl::visitable and etl::visitor.
+
+===============================================================================
 14.15.0
 Added external buffer support for vector.
 
