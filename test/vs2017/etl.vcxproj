@@ -760,8 +760,10 @@
     <ClCompile Include="..\test_variant.cpp" />
     <ClCompile Include="..\test_variant_pool.cpp" />
     <ClCompile Include="..\test_vector.cpp" />
+    <ClCompile Include="..\test_vector_external_buffer.cpp" />
     <ClCompile Include="..\test_vector_non_trivial.cpp" />
     <ClCompile Include="..\test_vector_pointer.cpp" />
+    <ClCompile Include="..\test_vector_pointer_external_buffer.cpp" />
     <ClCompile Include="..\test_visitor.cpp" />
     <ClCompile Include="..\test_xor_checksum.cpp" />
     <ClCompile Include="..\test_xor_rotate_checksum.cpp" />

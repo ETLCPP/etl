@@ -87,6 +87,18 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_constructor_etl_string)
+    {
+      View view(etltext);
+
+      CHECK_EQUAL(etltext.size(), view.size());
+      CHECK_EQUAL(etltext.size(), view.max_size());
+
+      bool isEqual = std::equal(view.begin(), view.end(), etltext.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
     TEST(test_constructor_pointer_size)
     {
       View view(pctext, strlen(pctext));

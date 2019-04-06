@@ -1,4 +1,32 @@
 ===============================================================================
+14.17.0
+Added C++11 variadic templates for etl::observer.
+
+===============================================================================
+14.16.0
+Added C++11 variadic templates for etl::visitable and etl::visitor.
+
+===============================================================================
+14.15.0
+Added external buffer support for vector.
+
+===============================================================================
+14.14.2
+Modified 'truncated' to only be cleared on 'clear()' or 'assign()'.
+Added assignment from zero terminated string pointer.
+
+===============================================================================
+14.14.1
+Fixed bug where 'truncated' was not always set correctly for strings.
+
+===============================================================================
+14.14.0
+Fixed string push_back() bug where the internal terminator was not updated.
+Basic Conan package added.
+Added const ref istring constructors.
+Updated profiles for C++17.
+
+===============================================================================
 14.13.1
 Modified etl::queue_spsc_locked parameters to 'const'.
 

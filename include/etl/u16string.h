@@ -75,8 +75,7 @@ namespace etl
     u16string(const etl::u16string<MAX_SIZE_>& other)
       : iu16string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      this->initialise();
-      this->assign(other.begin(), other.end());
+      this->assign(other);
     }
 
     //*************************************************************************
@@ -86,7 +85,7 @@ namespace etl
     u16string(const etl::iu16string& other)
       : iu16string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      this->assign(other.begin(), other.end());
+      this->assign(other);
     }
 
     //*************************************************************************
@@ -95,16 +94,17 @@ namespace etl
     ///\param position The position of the first character.
     ///\param length   The number of characters. Default = npos.
     //*************************************************************************
-    u16string(const etl::u16string<MAX_SIZE_>& other, size_t position, size_t length_ = npos)
+    u16string(const etl::iu16string& other, size_t position, size_t length_ = npos)
       : iu16string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
       ETL_ASSERT(position < other.size(), ETL_ERROR(string_out_of_bounds));
 
-      // Set the length to the exact amount.
-      length_ = (length_ > MAX_SIZE_) ? MAX_SIZE_ : length_;
-
-      this->initialise();
       this->assign(other.begin() + position, other.begin() + position + length_);
+
+      if (other.truncated())
+      {
+        this->is_truncated = true;
+      }
     }
 
     //*************************************************************************
@@ -114,7 +114,6 @@ namespace etl
     u16string(const value_type* text)
       : iu16string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      this->initialise();
       this->assign(text, text + etl::char_traits<value_type>::length(text));
     }
 
@@ -126,7 +125,6 @@ namespace etl
     u16string(const value_type* text, size_t count)
       : iu16string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      this->initialise();
       this->assign(text, text + count);
     }
 
@@ -194,8 +192,18 @@ namespace etl
     {
       if (&rhs != this)
       {
-        this->assign(rhs.cbegin(), rhs.cend());
+        this->assign(rhs);
       }
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    u16string& operator = (const value_type* text)
+    {
+      this->assign(text);
 
       return *this;
     }
