@@ -32,84 +32,41 @@ SOFTWARE.
 
 #include "etl/to_string.h"
 #include "etl/cstring.h"
+#include "etl/format_spec.h"
 
 #undef STR
 #define STR(x) x
 
 namespace
 {
-  /* A utility function to reverse a string  */
-  void reverse(char str[], int length)
-  {
-    int start = 0;
-    int end = length - 1;
-    while (start < end)
-    {
-      std::swap(*(str + start), *(str + end));
-      start++;
-      end--;
-    }
-  }
-
-  // Implementation of itoa()
-  char* itoa(int num, char* str, int base)
-  {
-    int i = 0;
-    bool isNegative = false;
-
-    /* Handle 0 explicitely, otherwise empty string is printed for 0 */
-    if (num == 0)
-    {
-      str[i++] = '0';
-      str[i] = '\0';
-      return str;
-    }
-
-    // In standard itoa(), negative numbers are handled only with
-    // base 10. Otherwise numbers are considered unsigned.
-    if (num < 0 && base == 10)
-    {
-      isNegative = true;
-      num = -num;
-    }
-
-    // Process individual digits
-    while (num != 0)
-    {
-      int rem = num % base;
-      str[i++] = (rem > 9) ? (rem - 10) + 'a' : rem + '0';
-      num = num / base;
-    }
-
-    // If number is negative, append '-'
-    if (isNegative)
-      str[i++] = '-';
-
-    str[i] = '\0'; // Append string terminator
-
-    // Reverse the string
-    reverse(str, i);
-
-    return str;
-  }
+  typedef etl::format_spec<etl::istring> Format;
 
   SUITE(test_string_char)
   {
     //*************************************************************************
-    TEST(test_x)
+    TEST(test_default_format_no_append)
     {
-      //char str[100];
+      etl::string<20> str;
 
-      etl::string<10> str;
+      CHECK(etl::string<20>(STR("0"))                    == etl::to_string(uint8_t(0), str));
+      CHECK(etl::string<20>(STR("0"))                    == etl::to_string(uint16_t(0), str));
+      CHECK(etl::string<20>(STR("0"))                    == etl::to_string(uint32_t(0), str));
+      CHECK(etl::string<20>(STR("0"))                    == etl::to_string(uint64_t(0), str));
 
-      etl::to_string(char(127), str, 10);
+      CHECK(etl::string<20>(STR("128"))                  == etl::to_string(uint8_t(128), str));
+      CHECK(etl::string<20>(STR("32768"))                == etl::to_string(uint16_t(32768), str));
+      CHECK(etl::string<20>(STR("2147483648"))           == etl::to_string(uint32_t(2147483648ul), str));
+      CHECK(etl::string<20>(STR("9223372036854775808"))  == etl::to_string(uint64_t(9223372036854775808ull), str));
 
-      str.clear();
-      etl::to_string(char(-128), str, 10);
-      //itoa(-1567, str, 10);
-      //itoa(1567, str, 2);
-      //itoa(1567, str, 8);
-      //itoa(1567, str, 16);
+      CHECK(etl::string<20>(STR("127"))                  == etl::to_string(int8_t(127), str));
+      CHECK(etl::string<20>(STR("32767"))                == etl::to_string(int16_t(32767), str));
+      CHECK(etl::string<20>(STR("2147483647"))           == etl::to_string(int32_t(2147483647ll), str));
+      CHECK(etl::string<20>(STR("9223372036854775807"))  == etl::to_string(int64_t(9223372036854775807ll), str));
+
+      CHECK(etl::string<20>(STR("-128"))                 == etl::to_string(int8_t(-128), str));
+      CHECK(etl::string<20>(STR("-32768"))               == etl::to_string(int16_t(-32768), str));
+      CHECK(etl::string<20>(STR("-2147483648"))          == etl::to_string(int32_t(-2147483648ll), str));
+      CHECK(etl::string<20>(STR("-9223372036854775808")) == etl::to_string(int64_t(-9223372036854775808ll), str));
     }
   };
 }

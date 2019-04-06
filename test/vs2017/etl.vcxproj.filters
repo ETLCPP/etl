@@ -735,6 +735,24 @@
     <ClInclude Include="..\..\include\etl\to_string.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\negative.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\format_spec.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\to_u16string.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\to_u32string.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\to_wstring.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\to_string_helper.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
