@@ -753,6 +753,9 @@
     <ClCompile Include="..\test_string_wchar_t.cpp" />
     <ClCompile Include="..\test_task_scheduler.cpp" />
     <ClCompile Include="..\test_to_string.cpp" />
+    <ClCompile Include="..\test_to_u16string.cpp" />
+    <ClCompile Include="..\test_to_u32string.cpp" />
+    <ClCompile Include="..\test_to_wstring.cpp" />
     <ClCompile Include="..\test_type_def.cpp" />
     <ClCompile Include="..\test_type_lookup.cpp" />
     <ClCompile Include="..\test_type_select.cpp" />

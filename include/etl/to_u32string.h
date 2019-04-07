@@ -47,8 +47,8 @@ namespace etl
   template <typename T>
   typename etl::enable_if<etl::is_integral<T>::value &&
                           etl::is_signed<T>::value &&
-                          !etl::is_same<T, int64_t>::value, const etl::iu32string&>::type
-    to_string(const T value, etl::iu32string& str, const bool append = false)
+                          !etl::is_same<T, int64_t>::value, etl::iu32string&>::type
+    to_u32string(const T value, etl::iu32string& str, const bool append = false)
   {
     etl::format_spec<etl::iu32string> format;
 
@@ -61,8 +61,8 @@ namespace etl
   template <typename T>
   typename etl::enable_if<etl::is_integral<T>::value &&
                           etl::is_signed<T>::value &&
-                          !etl::is_same<T, int64_t>::value, const etl::iu32string&>::type
-    to_string(const T value, etl::iu32string& str, const etl::format_spec<etl::iu32string>& format,  const bool append = false)
+                          !etl::is_same<T, int64_t>::value, etl::iu32string&>::type
+    to_u32string(const T value, etl::iu32string& str, const etl::format_spec<etl::iu32string>& format,  const bool append = false)
   {
     return to_string_helper(int32_t(value), str, format, append);
   }
@@ -73,8 +73,8 @@ namespace etl
   template <typename T>
   typename etl::enable_if<etl::is_integral<T>::value &&
                           etl::is_unsigned<T>::value &&
-                          !etl::is_same<T, uint64_t>::value, const etl::iu32string&>::type
-    to_string(const T value, etl::iu32string& str, const bool append = false)
+                          !etl::is_same<T, uint64_t>::value, etl::iu32string&>::type
+    to_u32string(const T value, etl::iu32string& str, const bool append = false)
   {
     etl::format_spec<etl::iu32string> format;
 
@@ -87,8 +87,8 @@ namespace etl
   template <typename T>
   typename etl::enable_if<etl::is_integral<T>::value &&
                           etl::is_unsigned<T>::value &&
-                          !etl::is_same<T, uint64_t>::value, const etl::iu32string&>::type
-    to_string(const T value, etl::iu32string& str, const etl::format_spec<etl::iu32string>& format, const bool append = false)
+                          !etl::is_same<T, uint64_t>::value, etl::iu32string&>::type
+    to_u32string(const T value, etl::iu32string& str, const etl::format_spec<etl::iu32string>& format, const bool append = false)
   {
     return to_string_helper(uint32_t(value), str, format, append);
   }
@@ -99,8 +99,8 @@ namespace etl
   template <typename T>
   typename etl::enable_if<etl::is_integral<T>::value &&
                           etl::is_signed<T>::value &&
-                          etl::is_same<T, int64_t>::value, const etl::iu32string&>::type
-    to_string(const T value, etl::iu32string& str, const bool append = false)
+                          etl::is_same<T, int64_t>::value, etl::iu32string&>::type
+    to_u32string(const T value, etl::iu32string& str, const bool append = false)
   {
     etl::format_spec<etl::iu32string> format;
 
@@ -113,8 +113,8 @@ namespace etl
   template <typename T>
   typename etl::enable_if<etl::is_integral<T>::value &&
                           etl::is_signed<T>::value &&
-                          etl::is_same<T, int64_t>::value, const etl::iu32string&>::type
-    to_string(const T value, etl::iu32string& str, const etl::format_spec<etl::iu32string>& format, const bool append = false)
+                          etl::is_same<T, int64_t>::value, etl::iu32string&>::type
+    to_u32string(const T value, etl::iu32string& str, const etl::format_spec<etl::iu32string>& format, const bool append = false)
   {
     return to_string_helper(int64_t(value), str, format, append);
   }
@@ -125,8 +125,8 @@ namespace etl
   template <typename T>
   typename etl::enable_if<etl::is_integral<T>::value &&
                           etl::is_unsigned<T>::value &&
-                          etl::is_same<T, uint64_t>::value, const etl::iu32string&>::type
-    to_string(const T value, etl::iu32string& str, const bool append = false)
+                          etl::is_same<T, uint64_t>::value, etl::iu32string&>::type
+    to_u32string(const T value, etl::iu32string& str, const bool append = false)
   {
     etl::format_spec<etl::iu32string> format;
 
@@ -139,8 +139,8 @@ namespace etl
   template <typename T>
   typename etl::enable_if<etl::is_integral<T>::value &&
                           etl::is_unsigned<T>::value &&
-                          etl::is_same<T, uint64_t>::value, const etl::iu32string&>::type
-    to_string(const T value, etl::iu32string& str, const etl::format_spec<etl::iu32string>& format, const bool append = false)
+                          etl::is_same<T, uint64_t>::value, etl::iu32string&>::type
+    to_u32string(const T value, etl::iu32string& str, const etl::format_spec<etl::iu32string>& format, const bool append = false)
   {
     return to_string_helper(uint64_t(value), str, format, append);
   }

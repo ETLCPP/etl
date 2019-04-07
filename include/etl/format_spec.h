@@ -50,13 +50,13 @@ namespace etl
     /// Base = 10
     /// Width = 0
     /// Upper case (for hex) = true
-    /// Rifght Justified = true
+    /// Left Justified = false
     //***************************************************************************
     format_spec()
       : base_(10)
       , width_(0)
       , upper_case_(true)
-      , right_justified_(true)
+      , left_justified_(false)
       , fill_(typename TString::value_type(' '))
     {
 
@@ -111,7 +111,7 @@ namespace etl
     //***************************************************************************
     /// Gets the upper case flag.
     //***************************************************************************
-    bool upper_case(const bool u) const
+    bool upper_case() const
     {
       return upper_case_;
     }
@@ -135,21 +135,21 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Sets the right justify flag.
+    /// Sets the left justify flag.
     /// \return A reference to the format_spec.
     //***************************************************************************
-    format_spec& right_justified(const bool r)
+    format_spec& left_justified(const bool l)
     {
-      right_justified_ = r;
+      left_justified_ = l;
       return *this;
     }
 
     //***************************************************************************
-    /// Gets the right justify flag.
+    /// Gets the left justify flag.
     //***************************************************************************
-    bool right_justified() const
+    bool left_justified() const
     {
-      return right_justified_;
+      return left_justified_;
     }
 
   private:
@@ -157,7 +157,7 @@ namespace etl
     uint_least8_t base_;
     uint_least8_t width_;
     bool upper_case_;
-    bool right_justified_;
+    bool left_justified_;
     typename TString::value_type fill_;
   };
 }

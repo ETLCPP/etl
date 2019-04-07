@@ -48,7 +48,7 @@ namespace etl
   /// Helper function for integrals.
   //***************************************************************************
   template <typename T, typename TIString>
-  typename etl::enable_if<etl::is_integral<T>::value, const TIString&>::type
+  typename etl::enable_if<etl::is_integral<T>::value, TIString&>::type
     to_string_helper(T value,
                      TIString& str,
                      const etl::format_spec<TIString>& format,
@@ -76,7 +76,7 @@ namespace etl
       while (value != 0)
       {
         T remainder = etl::absolute(value % T(format.base()));
-        str.push_back((remainder > 9) ? type('a' + (remainder - 10)) : type('0' + remainder));
+        str.push_back((remainder > 9) ? (format.upper_case() ? type('A' + (remainder - 10)) : type('a' + (remainder - 10))) : type('0' + remainder));
         value = value / T(format.base());
       }
 
@@ -100,15 +100,15 @@ namespace etl
       {
         uint32_t fill_length = format.width() - length;
 
-        if (format.right_justified())
-        {
-          // Insert fill characters on the left.
-          str.insert(start, fill_length, format.fill());
-        }
-        else
+        if (format.left_justified())
         {
           // Insert fill characters on the right.
           str.insert(str.end(), fill_length, format.fill());
+        }
+        else
+        {
+          // Insert fill characters on the left.
+          str.insert(start, fill_length, format.fill());
         }
       }
     }
