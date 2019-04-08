@@ -76,7 +76,7 @@ namespace
       CHECK_EQUAL(etl::u32string<20>(STR("-128")),                 etl::to_u32string(int8_t(-128), str));
       CHECK_EQUAL(etl::u32string<20>(STR("-32768")),               etl::to_u32string(int16_t(-32768), str));
       CHECK_EQUAL(etl::u32string<20>(STR("-2147483648")),          etl::to_u32string(int32_t(-2147483648ll), str));
-      CHECK_EQUAL(etl::u32string<20>(STR("-9223372036854775808")), etl::to_u32string(int64_t(-9223372036854775808ll), str));
+      CHECK_EQUAL(etl::u32string<20>(STR("-9223372036854775808")), etl::to_u32string(int64_t(-9223372036854775807ll - 1), str));
     }
 
     //*************************************************************************
@@ -102,7 +102,7 @@ namespace
       CHECK_EQUAL(etl::u32string<120>(STR("000012832768214748364892233720368547758081273276721474836479223372036854775807-128")),                                      etl::to_u32string(int8_t(-128), str, true));
       CHECK_EQUAL(etl::u32string<120>(STR("000012832768214748364892233720368547758081273276721474836479223372036854775807-128-32768")),                                etl::to_u32string(int16_t(-32768), str, true));
       CHECK_EQUAL(etl::u32string<120>(STR("000012832768214748364892233720368547758081273276721474836479223372036854775807-128-32768-2147483648")),                     etl::to_u32string(int32_t(-2147483648ll), str, true));
-      CHECK_EQUAL(etl::u32string<120>(STR("000012832768214748364892233720368547758081273276721474836479223372036854775807-128-32768-2147483648-9223372036854775808")), etl::to_u32string(int64_t(-9223372036854775808ll), str, true));
+      CHECK_EQUAL(etl::u32string<120>(STR("000012832768214748364892233720368547758081273276721474836479223372036854775807-128-32768-2147483648-9223372036854775808")), etl::to_u32string(int64_t(-9223372036854775807ll - 1), str, true));
     }
 
     //*************************************************************************
@@ -130,7 +130,7 @@ namespace
       CHECK_EQUAL(etl::u32string<20>(STR("################-128")), etl::to_u32string(int8_t(-128), str, format));
       CHECK_EQUAL(etl::u32string<20>(STR("##############-32768")), etl::to_u32string(int16_t(-32768), str, format));
       CHECK_EQUAL(etl::u32string<20>(STR("#########-2147483648")), etl::to_u32string(int32_t(-2147483648ll), str, format));
-      CHECK_EQUAL(etl::u32string<20>(STR("-9223372036854775808")), etl::to_u32string(int64_t(-9223372036854775808ll), str, format));
+      CHECK_EQUAL(etl::u32string<20>(STR("-9223372036854775808")), etl::to_u32string(int64_t(-9223372036854775807ll - 1), str, format));
     }
 
     //*************************************************************************
@@ -158,7 +158,7 @@ namespace
       CHECK_EQUAL(etl::u32string<20>(STR("-128################")), etl::to_u32string(int8_t(-128), str, format));
       CHECK_EQUAL(etl::u32string<20>(STR("-32768##############")), etl::to_u32string(int16_t(-32768), str, format));
       CHECK_EQUAL(etl::u32string<20>(STR("-2147483648#########")), etl::to_u32string(int32_t(-2147483648ll), str, format));
-      CHECK_EQUAL(etl::u32string<20>(STR("-9223372036854775808")), etl::to_u32string(int64_t(-9223372036854775808ll), str, format));
+      CHECK_EQUAL(etl::u32string<20>(STR("-9223372036854775808")), etl::to_u32string(int64_t(-9223372036854775807ll - 1), str, format));
     }
 
     //*************************************************************************
@@ -184,7 +184,7 @@ namespace
       CHECK_EQUAL(etl::u32string<64>(STR("10000000")),                                                          etl::to_u32string(int8_t(-128), str, Format().base(2).width(8).fill(STR('0'))));
       CHECK_EQUAL(etl::u32string<64>(STR("1000000000000000")),                                                  etl::to_u32string(int16_t(-32768), str, Format().base(2).width(16).fill(STR('0'))));
       CHECK_EQUAL(etl::u32string<64>(STR("10000000000000000000000000000000")),                                  etl::to_u32string(int32_t(-2147483648ll), str, Format().base(2).width(32).fill(STR('0'))));
-      CHECK_EQUAL(etl::u32string<64>(STR("1000000000000000000000000000000000000000000000000000000000000000")),  etl::to_u32string(int64_t(-9223372036854775808ll), str, Format().base(2).width(64).fill(STR('0'))));
+      CHECK_EQUAL(etl::u32string<64>(STR("1000000000000000000000000000000000000000000000000000000000000000")),  etl::to_u32string(int64_t(-9223372036854775807ll - 1), str, Format().base(2).width(64).fill(STR('0'))));
     }
 
     //*************************************************************************
@@ -210,7 +210,7 @@ namespace
       CHECK_EQUAL(etl::u32string<22>(STR("200")),                    etl::to_u32string(int8_t(-128), str, Format().base(8).width(3).fill(STR('0'))));
       CHECK_EQUAL(etl::u32string<22>(STR("100000")),                 etl::to_u32string(int16_t(-32768), str, Format().base(8).width(6).fill(STR('0'))));
       CHECK_EQUAL(etl::u32string<22>(STR("20000000000")),            etl::to_u32string(int32_t(-2147483648ll), str, Format().base(8).width(11).fill(STR('0'))));
-      CHECK_EQUAL(etl::u32string<22>(STR("1000000000000000000000")), etl::to_u32string(int64_t(-9223372036854775808ll), str, Format().base(8).width(22).fill(STR('0'))));
+      CHECK_EQUAL(etl::u32string<22>(STR("1000000000000000000000")), etl::to_u32string(int64_t(-9223372036854775807ll - 1), str, Format().base(8).width(22).fill(STR('0'))));
     }
 
     //*************************************************************************
@@ -236,7 +236,7 @@ namespace
       CHECK_EQUAL(etl::u32string<16>(STR("80")),               etl::to_u32string(int8_t(-128), str, Format().base(16).width(2).fill(STR('0'))));
       CHECK_EQUAL(etl::u32string<16>(STR("8000")),             etl::to_u32string(int16_t(-32768), str, Format().base(16).width(4).fill(STR('0'))));
       CHECK_EQUAL(etl::u32string<16>(STR("80000000")),         etl::to_u32string(int32_t(-2147483648ll), str, Format().base(16).width(8).fill(STR('0'))));
-      CHECK_EQUAL(etl::u32string<16>(STR("8000000000000000")), etl::to_u32string(int64_t(-9223372036854775808ll), str, Format().base(16).width(16).fill(STR('0'))));
+      CHECK_EQUAL(etl::u32string<16>(STR("8000000000000000")), etl::to_u32string(int64_t(-9223372036854775807ll - 1), str, Format().base(16).width(16).fill(STR('0'))));
     }
 
 

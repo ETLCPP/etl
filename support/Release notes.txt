@@ -1,4 +1,9 @@
 ===============================================================================
+14.18.0
+Added etl::to_string, etl::to_wstring, etl::to_u16string and etl::to_u32string
+plus formating support for integrals.
+
+===============================================================================
 14.17.0
 Added C++11 variadic templates for etl::observer.
 

@@ -435,6 +435,9 @@
 		<Unit filename="../test_string_wchar_t.cpp" />
 		<Unit filename="../test_task_scheduler.cpp" />
 		<Unit filename="../test_to_string.cpp" />
+		<Unit filename="../test_to_u16string.cpp" />
+		<Unit filename="../test_to_u32string.cpp" />
+		<Unit filename="../test_to_wstring.cpp" />
 		<Unit filename="../test_type_def.cpp" />
 		<Unit filename="../test_type_lookup.cpp" />
 		<Unit filename="../test_type_select.cpp" />
