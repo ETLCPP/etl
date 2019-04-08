@@ -371,12 +371,15 @@
     <ClInclude Include="..\..\include\etl\crc32_c.h" />
     <ClInclude Include="..\..\include\etl\cumulative_moving_average.h" />
     <ClInclude Include="..\..\include\etl\c\ecl_timer.h" />
+    <ClInclude Include="..\..\include\etl\format_spec.h" />
     <ClInclude Include="..\..\include\etl\frame_check_sequence.h" />
     <ClInclude Include="..\..\include\etl\fsm.h" />
     <ClInclude Include="..\..\include\etl\fsm_generator.h" />
     <ClInclude Include="..\..\include\etl\callback_service.h" />
     <ClInclude Include="..\..\include\etl\largest_generator.h" />
     <ClInclude Include="..\..\include\etl\absolute.h" />
+    <ClInclude Include="..\..\include\etl\negative.h" />
+    <ClInclude Include="..\..\include\etl\private\to_string_helper.h" />
     <ClInclude Include="..\..\include\etl\queue_spsc_locked.h" />
     <ClInclude Include="..\..\include\etl\scaled_rounding.h" />
     <ClInclude Include="..\..\include\etl\state_chart.h" />
@@ -434,6 +437,10 @@
     <ClInclude Include="..\..\include\etl\string_view.h" />
     <ClInclude Include="..\..\include\etl\task.h" />
     <ClInclude Include="..\..\include\etl\timer.h" />
+    <ClInclude Include="..\..\include\etl\to_string.h" />
+    <ClInclude Include="..\..\include\etl\to_u16string.h" />
+    <ClInclude Include="..\..\include\etl\to_u32string.h" />
+    <ClInclude Include="..\..\include\etl\to_wstring.h" />
     <ClInclude Include="..\..\include\etl\type_lookup.h" />
     <ClInclude Include="..\..\include\etl\type_lookup_generator.h" />
     <ClInclude Include="..\..\include\etl\type_select.h" />
@@ -745,6 +752,10 @@
     <ClCompile Include="..\test_string_view.cpp" />
     <ClCompile Include="..\test_string_wchar_t.cpp" />
     <ClCompile Include="..\test_task_scheduler.cpp" />
+    <ClCompile Include="..\test_to_string.cpp" />
+    <ClCompile Include="..\test_to_u16string.cpp" />
+    <ClCompile Include="..\test_to_u32string.cpp" />
+    <ClCompile Include="..\test_to_wstring.cpp" />
     <ClCompile Include="..\test_type_def.cpp" />
     <ClCompile Include="..\test_type_lookup.cpp" />
     <ClCompile Include="..\test_type_select.cpp" />

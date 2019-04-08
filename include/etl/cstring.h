@@ -55,6 +55,8 @@ namespace etl
   {
   public:
 
+    typedef istring base_type;
+
     typedef istring::value_type value_type;
 
     static const size_t MAX_SIZE = MAX_SIZE_;

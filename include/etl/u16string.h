@@ -55,6 +55,8 @@ namespace etl
   {
   public:
 
+    typedef iu16string base_type;
+
     typedef iu16string::value_type value_type;
 
     static const size_t MAX_SIZE = MAX_SIZE_;

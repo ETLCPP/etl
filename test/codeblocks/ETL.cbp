@@ -197,6 +197,7 @@
 		<Unit filename="../../include/etl/flat_multiset.h" />
 		<Unit filename="../../include/etl/flat_set.h" />
 		<Unit filename="../../include/etl/fnv_1.h" />
+		<Unit filename="../../include/etl/format_spec.h" />
 		<Unit filename="../../include/etl/forward_list.h" />
 		<Unit filename="../../include/etl/frame_check_sequence.h" />
 		<Unit filename="../../include/etl/fsm.h" />
@@ -247,6 +248,7 @@
 		<Unit filename="../../include/etl/priority_queue.h" />
 		<Unit filename="../../include/etl/private/ivectorpointer.h" />
 		<Unit filename="../../include/etl/private/pvoidvector.h" />
+		<Unit filename="../../include/etl/private/to_string_helper.h" />
 		<Unit filename="../../include/etl/private/vector_base.h" />
 		<Unit filename="../../include/etl/profiles/arduino_arm.h" />
 		<Unit filename="../../include/etl/profiles/armv5.h" />
@@ -297,6 +299,10 @@
 		<Unit filename="../../include/etl/task.h" />
 		<Unit filename="../../include/etl/temp.h" />
 		<Unit filename="../../include/etl/timer.h" />
+		<Unit filename="../../include/etl/to_string.h" />
+		<Unit filename="../../include/etl/to_u16string.h" />
+		<Unit filename="../../include/etl/to_u32string.h" />
+		<Unit filename="../../include/etl/to_wstring.h" />
 		<Unit filename="../../include/etl/type_def.h" />
 		<Unit filename="../../include/etl/type_lookup.h" />
 		<Unit filename="../../include/etl/type_lookup_generator.h" />
@@ -428,6 +434,10 @@
 		<Unit filename="../test_string_view.cpp" />
 		<Unit filename="../test_string_wchar_t.cpp" />
 		<Unit filename="../test_task_scheduler.cpp" />
+		<Unit filename="../test_to_string.cpp" />
+		<Unit filename="../test_to_u16string.cpp" />
+		<Unit filename="../test_to_u32string.cpp" />
+		<Unit filename="../test_to_wstring.cpp" />
 		<Unit filename="../test_type_def.cpp" />
 		<Unit filename="../test_type_lookup.cpp" />
 		<Unit filename="../test_type_select.cpp" />
