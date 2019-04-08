@@ -238,5 +238,16 @@ namespace
       CHECK_EQUAL(etl::wstring<16>(STR("80000000")),         etl::to_wstring(int32_t(-2147483648ll), str, Format().base(16).width(8).fill(STR('0'))));
       CHECK_EQUAL(etl::wstring<16>(STR("8000000000000000")), etl::to_wstring(int64_t(-9223372036854775808ll), str, Format().base(16).width(16).fill(STR('0'))));
     }
+
+    //*************************************************************************
+    TEST(test_named_format_no_append)
+    {
+      etl::wstring<17> str;
+
+      CHECK_EQUAL(etl::wstring<17>(STR("11110001001000000")), etl::to_wstring(123456, str, Format().binary()));
+      CHECK_EQUAL(etl::wstring<17>(STR("361100")),            etl::to_wstring(123456, str, Format().octal()));
+      CHECK_EQUAL(etl::wstring<17>(STR("123456")),            etl::to_wstring(123456, str, Format().decimal()));
+      CHECK_EQUAL(etl::wstring<17>(STR("1E240")),             etl::to_wstring(123456, str, Format().hex()));
+    }
   };
 }
