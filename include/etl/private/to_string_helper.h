@@ -36,7 +36,7 @@ SOFTWARE.
 #include "../platform.h"
 #include "../absolute.h"
 #include "../negative.h"
-#include "../format_spec.h"
+#include "../basic_format_spec.h"
 #include "../type_traits.h"
 
 #include "../stl/algorithm.h"
@@ -51,7 +51,7 @@ namespace etl
   typename etl::enable_if<etl::is_integral<T>::value, TIString&>::type
     to_string_helper(T value,
                      TIString& str,
-                     const etl::format_spec<TIString>& format,
+                     const etl::basic_format_spec<TIString>& format,
                      const bool append)
   {
     typedef typename TIString::value_type type;

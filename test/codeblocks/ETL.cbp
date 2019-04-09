@@ -154,6 +154,7 @@
 		<Unit filename="../../include/etl/atomic/atomic_arm.h" />
 		<Unit filename="../../include/etl/atomic/atomic_gcc_sync.h" />
 		<Unit filename="../../include/etl/atomic/atomic_std.h" />
+		<Unit filename="../../include/etl/basic_format_spec.h" />
 		<Unit filename="../../include/etl/basic_string.h" />
 		<Unit filename="../../include/etl/binary.h" />
 		<Unit filename="../../include/etl/bit_stream.h" />
@@ -309,7 +310,9 @@
 		<Unit filename="../../include/etl/type_select.h" />
 		<Unit filename="../../include/etl/type_traits.h" />
 		<Unit filename="../../include/etl/type_traits_generator.h" />
+		<Unit filename="../../include/etl/u16format_spec.h" />
 		<Unit filename="../../include/etl/u16string.h" />
+		<Unit filename="../../include/etl/u32format_spec.h" />
 		<Unit filename="../../include/etl/u32string.h" />
 		<Unit filename="../../include/etl/unordered_map.h" />
 		<Unit filename="../../include/etl/unordered_multimap.h" />
@@ -323,6 +326,7 @@
 		<Unit filename="../../include/etl/vector.h" />
 		<Unit filename="../../include/etl/version.h" />
 		<Unit filename="../../include/etl/visitor.h" />
+		<Unit filename="../../include/etl/wformat_spec.h" />
 		<Unit filename="../../include/etl/wstring.h" />
 		<Unit filename="../../src/c/ecl_timer.c">
 			<Option compilerVar="CC" />

@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_TO_U32STRING_INCLUDED
-#define ETL_TO_U32STRING_INCLUDED
+#ifndef ETL_TO_STRING_INCLUDED
+#define ETL_TO_STRING_INCLUDED
 
 ///\ingroup string
 
@@ -50,7 +50,7 @@ namespace etl
                           !etl::is_same<T, int64_t>::value, const etl::istring&>::type
     to_string(const T value, etl::istring& str, const bool append = false)
   {
-    etl::format_spec<etl::istring> format;
+    etl::format_spec format;
 
     return to_string_helper(int32_t(value), str, format, append);
   }
@@ -62,7 +62,7 @@ namespace etl
   typename etl::enable_if<etl::is_integral<T>::value &&
                           etl::is_signed<T>::value &&
                           !etl::is_same<T, int64_t>::value, const etl::istring&>::type
-    to_string(const T value, etl::istring& str, const etl::format_spec<etl::istring>& format,  const bool append = false)
+    to_string(const T value, etl::istring& str, const etl::format_spec& format,  const bool append = false)
   {
     return to_string_helper(int32_t(value), str, format, append);
   }
@@ -76,7 +76,7 @@ namespace etl
                           !etl::is_same<T, uint64_t>::value, const etl::istring&>::type
     to_string(const T value, etl::istring& str, const bool append = false)
   {
-    etl::format_spec<etl::istring> format;
+    etl::format_spec format;
 
     return to_string_helper(uint32_t(value), str, format, append);
   }
@@ -88,7 +88,7 @@ namespace etl
   typename etl::enable_if<etl::is_integral<T>::value &&
                           etl::is_unsigned<T>::value &&
                           !etl::is_same<T, uint64_t>::value, const etl::istring&>::type
-    to_string(const T value, etl::istring& str, const etl::format_spec<etl::istring>& format, const bool append = false)
+    to_string(const T value, etl::istring& str, const etl::format_spec& format, const bool append = false)
   {
     return to_string_helper(uint32_t(value), str, format, append);
   }
@@ -102,7 +102,7 @@ namespace etl
                           etl::is_same<T, int64_t>::value, const etl::istring&>::type
     to_string(const T value, etl::istring& str, const bool append = false)
   {
-    etl::format_spec<etl::istring> format;
+    etl::format_spec format;
 
     return to_string_helper(int64_t(value), str, format, append);
   }
@@ -114,7 +114,7 @@ namespace etl
   typename etl::enable_if<etl::is_integral<T>::value &&
                           etl::is_signed<T>::value &&
                           etl::is_same<T, int64_t>::value, const etl::istring&>::type
-    to_string(const T value, etl::istring& str, const etl::format_spec<etl::istring>& format, const bool append = false)
+    to_string(const T value, etl::istring& str, const etl::format_spec& format, const bool append = false)
   {
     return to_string_helper(int64_t(value), str, format, append);
   }
@@ -128,7 +128,7 @@ namespace etl
                           etl::is_same<T, uint64_t>::value, const etl::istring&>::type
     to_string(const T value, etl::istring& str, const bool append = false)
   {
-    etl::format_spec<etl::istring> format;
+    etl::format_spec format;
 
     return to_string_helper(uint64_t(value), str, format, append);
   }
@@ -140,7 +140,7 @@ namespace etl
   typename etl::enable_if<etl::is_integral<T>::value &&
                           etl::is_unsigned<T>::value &&
                           etl::is_same<T, uint64_t>::value, const etl::istring&>::type
-    to_string(const T value, etl::istring& str, const etl::format_spec<etl::istring>& format, const bool append = false)
+    to_string(const T value, etl::istring& str, const etl::format_spec& format, const bool append = false)
   {
     return to_string_helper(uint64_t(value), str, format, append);
   }
