@@ -1,4 +1,9 @@
 ===============================================================================
+14.18.1
+Changed etl::format_sepc template to etl::basic_firmat_spec.
+Created individual format_spec typedefs for each string type.
+
+===============================================================================
 14.18.0
 Added etl::to_string, etl::to_wstring, etl::to_u16string and etl::to_u32string
 plus formating support for integrals.

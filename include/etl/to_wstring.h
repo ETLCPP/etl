@@ -36,7 +36,7 @@ SOFTWARE.
 #include "platform.h"
 #include "type_traits.h"
 #include "wstring.h"
-#include "format_spec.h"
+#include "wformat_spec.h"
 #include "private/to_string_helper.h"
 
 namespace etl
@@ -50,7 +50,7 @@ namespace etl
                           !etl::is_same<T, int64_t>::value, etl::iwstring&>::type
     to_wstring(const T value, etl::iwstring& str, const bool append = false)
   {
-    etl::format_spec<etl::iwstring> format;
+    etl::wformat_spec format;
 
     return to_string_helper(int32_t(value), str, format, append);
   }
@@ -62,7 +62,7 @@ namespace etl
   typename etl::enable_if<etl::is_integral<T>::value &&
                           etl::is_signed<T>::value &&
                           !etl::is_same<T, int64_t>::value, etl::iwstring&>::type
-    to_wstring(const T value, etl::iwstring& str, const etl::format_spec<etl::iwstring>& format,  const bool append = false)
+    to_wstring(const T value, etl::iwstring& str, const etl::wformat_spec& format,  const bool append = false)
   {
     return to_string_helper(int32_t(value), str, format, append);
   }
@@ -76,7 +76,7 @@ namespace etl
                           !etl::is_same<T, uint64_t>::value, etl::iwstring&>::type
     to_wstring(const T value, etl::iwstring& str, const bool append = false)
   {
-    etl::format_spec<etl::iwstring> format;
+    etl::wformat_spec format;
 
     return to_string_helper(uint32_t(value), str, format, append);
   }
@@ -88,7 +88,7 @@ namespace etl
   typename etl::enable_if<etl::is_integral<T>::value &&
                           etl::is_unsigned<T>::value &&
                           !etl::is_same<T, uint64_t>::value, etl::iwstring&>::type
-    to_wstring(const T value, etl::iwstring& str, const etl::format_spec<etl::iwstring>& format, const bool append = false)
+    to_wstring(const T value, etl::iwstring& str, const etl::wformat_spec& format, const bool append = false)
   {
     return to_string_helper(uint32_t(value), str, format, append);
   }
@@ -102,7 +102,7 @@ namespace etl
                           etl::is_same<T, int64_t>::value, etl::iwstring&>::type
     to_wstring(const T value, etl::iwstring& str, const bool append = false)
   {
-    etl::format_spec<etl::iwstring> format;
+    etl::wformat_spec format;
 
     return to_string_helper(int64_t(value), str, format, append);
   }
@@ -114,7 +114,7 @@ namespace etl
   typename etl::enable_if<etl::is_integral<T>::value &&
                           etl::is_signed<T>::value &&
                           etl::is_same<T, int64_t>::value, etl::iwstring&>::type
-    to_wstring(const T value, etl::iwstring& str, const etl::format_spec<etl::iwstring>& format, const bool append = false)
+    to_wstring(const T value, etl::iwstring& str, const etl::wformat_spec& format, const bool append = false)
   {
     return to_string_helper(int64_t(value), str, format, append);
   }
@@ -128,7 +128,7 @@ namespace etl
                           etl::is_same<T, uint64_t>::value, etl::iwstring&>::type
     to_wstring(const T value, etl::iwstring& str, const bool append = false)
   {
-    etl::format_spec<etl::iwstring> format;
+    etl::wformat_spec format;
 
     return to_string_helper(uint64_t(value), str, format, append);
   }
@@ -140,7 +140,7 @@ namespace etl
   typename etl::enable_if<etl::is_integral<T>::value &&
                           etl::is_unsigned<T>::value &&
                           etl::is_same<T, uint64_t>::value, etl::iwstring&>::type
-    to_wstring(const T value, etl::iwstring& str, const etl::format_spec<etl::iwstring>& format, const bool append = false)
+    to_wstring(const T value, etl::iwstring& str, const etl::wformat_spec& format, const bool append = false)
   {
     return to_string_helper(uint64_t(value), str, format, append);
   }

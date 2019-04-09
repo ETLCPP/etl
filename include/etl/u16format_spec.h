@@ -28,18 +28,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_FORMAT_SPEC_INCLUDED
-#define ETL_FORMAT_SPEC_INCLUDED
+#ifndef ETL_U16FORMAT_SPEC_INCLUDED
+#define ETL_U16FORMAT_SPEC_INCLUDED
 
 ///\ingroup string
 
 #include "platform.h"
 #include "basic_format_spec.h"
-#include "cstring.h"
+#include "u16string.h"
 
 namespace etl
 {
-  typedef etl::basic_format_spec<etl::istring> format_spec;
+  typedef etl::basic_format_spec<etl::iu16string> u16format_spec;
 }
 
 #endif

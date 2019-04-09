@@ -39,7 +39,7 @@ SOFTWARE.
 
 namespace
 {
-  typedef etl::format_spec<etl::iwstring> Format;
+  typedef etl::wformat_spec Format;
 
   std::ostream& operator << (std::ostream& os, const etl::iwstring& str)
   {
