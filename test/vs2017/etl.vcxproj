@@ -362,6 +362,7 @@
     <ClInclude Include="..\..\include\etl\atomic\atomic_gcc_sync.h" />
     <ClInclude Include="..\..\include\etl\atomic\atomic_llvm_sync.h" />
     <ClInclude Include="..\..\include\etl\atomic\atomic_std.h" />
+    <ClInclude Include="..\..\include\etl\basic_format_spec.h" />
     <ClInclude Include="..\..\include\etl\bit_stream.h" />
     <ClInclude Include="..\..\include\etl\callback_timer.h" />
     <ClInclude Include="..\..\include\etl\combinations.h" />
@@ -446,6 +447,8 @@
     <ClInclude Include="..\..\include\etl\type_select.h" />
     <ClInclude Include="..\..\include\etl\type_select_generator.h" />
     <ClInclude Include="..\..\include\etl\type_traits_generator.h" />
+    <ClInclude Include="..\..\include\etl\u16format_spec.h" />
+    <ClInclude Include="..\..\include\etl\u32format_spec.h" />
     <ClInclude Include="..\..\include\etl\variant_pool.h" />
     <ClInclude Include="..\..\include\etl\variant_pool_generator.h" />
     <ClInclude Include="..\..\include\etl\version.h" />
@@ -541,6 +544,7 @@
     <ClInclude Include="..\..\include\etl\variant.h" />
     <ClInclude Include="..\..\include\etl\vector.h" />
     <ClInclude Include="..\..\include\etl\visitor.h" />
+    <ClInclude Include="..\..\include\etl\wformat_spec.h" />
     <ClInclude Include="..\..\include\etl\wstring.h" />
     <ClInclude Include="..\data.h" />
     <ClInclude Include="..\ecl_user.h" />
