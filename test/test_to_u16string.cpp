@@ -28,10 +28,6 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
-#include <ostream>
-#include <sstream>
-#include <iomanip>
-
 #include "etl/to_u16string.h"
 #include "etl/u16string.h"
 #include "etl/format_spec.h"
@@ -42,8 +38,6 @@ SOFTWARE.
 namespace
 {
   typedef etl::u16format_spec Format;
-
-  typedef std::basic_ostringstream<char16_t> u16stringstream;
 
   std::ostream& operator << (std::ostream& os, const etl::iu16string& str)
   {
