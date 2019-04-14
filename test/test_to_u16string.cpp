@@ -28,8 +28,6 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
-#include <ostream>
-
 #include "etl/to_u16string.h"
 #include "etl/u16string.h"
 #include "etl/format_spec.h"
@@ -138,7 +136,7 @@ namespace
     {
       etl::u16string<20> str;
 
-      Format format = Format().base(10).width(20).fill(STR('#')).left_justified(true);
+      Format format = Format().base(10).width(20).fill(STR('#')).left();
 
       CHECK_EQUAL(etl::u16string<20>(STR("0###################")), etl::to_u16string(uint8_t(0), str, format));
       CHECK_EQUAL(etl::u16string<20>(STR("0###################")), etl::to_u16string(uint16_t(0), str, format));
@@ -248,6 +246,73 @@ namespace
       CHECK_EQUAL(etl::u16string<17>(STR("361100")),             etl::to_u16string(123456, str, Format().octal()));
       CHECK_EQUAL(etl::u16string<17>(STR("123456")),             etl::to_u16string(123456, str, Format().decimal()));
       CHECK_EQUAL(etl::u16string<17>(STR("1E240")),              etl::to_u16string(123456, str, Format().hex()));
+    }
+
+    //*************************************************************************
+    TEST(test_floating_point_no_append)
+    {
+      etl::u16string<20> str;
+
+      CHECK_EQUAL(etl::u16string<20>(STR(" 12.345678")), etl::to_u16string(12.345678, str, Format().precision(6).width(10).right()));
+      CHECK_EQUAL(etl::u16string<20>(STR("12.345678 ")), etl::to_u16string(12.345678, str, Format().precision(6).width(10).left()));
+    }
+
+    //*************************************************************************
+    TEST(test_floating_point_append)
+    {
+      etl::u16string<20> str;
+
+      str.assign(STR("Result "));
+      CHECK_EQUAL(etl::u16string<20>(STR("Result  12.345678")), etl::to_u16string(12.345678, str, Format().precision(6).width(10).right(), true));
+
+      str.assign(STR("Result "));
+      CHECK_EQUAL(etl::u16string<20>(STR("Result 12.345678 ")), etl::to_u16string(12.345678, str, Format().precision(6).width(10).left(), true));
+    }
+
+    //*************************************************************************
+    TEST(test_bool_no_append)
+    {
+      etl::u16string<20> str;
+
+      CHECK_EQUAL(etl::u16string<20>(STR("         0")), to_u16string(false, str, Format().precision(6).width(10).right().boolalpha(false)));
+      CHECK_EQUAL(etl::u16string<20>(STR("         1")), to_u16string(true, str, Format().precision(6).width(10).right().boolalpha(false)));
+      CHECK_EQUAL(etl::u16string<20>(STR("0         ")), to_u16string(false, str, Format().precision(6).width(10).left().boolalpha(false)));
+      CHECK_EQUAL(etl::u16string<20>(STR("1         ")), to_u16string(true, str, Format().precision(6).width(10).left().boolalpha(false)));
+
+      CHECK_EQUAL(etl::u16string<20>(STR("     false")), to_u16string(false, str, Format().precision(6).width(10).right().boolalpha(true)));
+      CHECK_EQUAL(etl::u16string<20>(STR("      true")), to_u16string(true, str, Format().precision(6).width(10).right().boolalpha(true)));
+      CHECK_EQUAL(etl::u16string<20>(STR("false     ")), to_u16string(false, str, Format().precision(6).width(10).left().boolalpha(true)));
+      CHECK_EQUAL(etl::u16string<20>(STR("true      ")), to_u16string(true, str, Format().precision(6).width(10).left().boolalpha(true)));
+    }
+
+    //*************************************************************************
+    TEST(test_bool_append)
+    {
+      etl::u16string<20> str;
+
+      str.assign(STR("Result "));
+      CHECK_EQUAL(etl::u16string<20>(STR("Result          0")), to_u16string(false, str, Format().precision(6).width(10).right().boolalpha(false), true));
+
+      str.assign(STR("Result "));
+      CHECK_EQUAL(etl::u16string<20>(STR("Result          1")), to_u16string(true, str, Format().precision(6).width(10).right().boolalpha(false), true));
+
+      str.assign(STR("Result "));
+      CHECK_EQUAL(etl::u16string<20>(STR("Result 0         ")), to_u16string(false, str, Format().precision(6).width(10).left().boolalpha(false), true));
+
+      str.assign(STR("Result "));
+      CHECK_EQUAL(etl::u16string<20>(STR("Result 1         ")), to_u16string(true, str, Format().precision(6).width(10).left().boolalpha(false), true));
+
+      str.assign(STR("Result "));
+      CHECK_EQUAL(etl::u16string<20>(STR("Result      false")), to_u16string(false, str, Format().precision(6).width(10).right().boolalpha(true), true));
+
+      str.assign(STR("Result "));
+      CHECK_EQUAL(etl::u16string<20>(STR("Result       true")), to_u16string(true, str, Format().precision(6).width(10).right().boolalpha(true), true));
+
+      str.assign(STR("Result "));
+      CHECK_EQUAL(etl::u16string<20>(STR("Result false     ")), to_u16string(false, str, Format().precision(6).width(10).left().boolalpha(true), true));
+
+      str.assign(STR("Result "));
+      CHECK_EQUAL(etl::u16string<20>(STR("Result true      ")), to_u16string(true, str, Format().precision(6).width(10).left().boolalpha(true), true));
     }
   };
 }
