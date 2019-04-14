@@ -1,4 +1,8 @@
 ===============================================================================
+14.18.2
+Finalised 'to string'.
+
+===============================================================================
 14.18.1
 Changed etl::format_sepc template to etl::basic_firmat_spec.
 Created individual format_spec typedefs for each string type.
