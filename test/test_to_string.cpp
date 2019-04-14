@@ -29,6 +29,8 @@ SOFTWARE.
 #include "UnitTest++.h"
 
 #include <ostream>
+#include <sstream>
+#include <iomanip>
 
 #include "etl/to_string.h"
 #include "etl/cstring.h"
@@ -112,6 +114,8 @@ namespace
 
       Format format = Format().base(10).width(20).fill(STR('#'));
 
+      etl::to_string(uint8_t(0), str, format);
+
       CHECK_EQUAL(etl::string<20>(STR("###################0")), etl::to_string(uint8_t(0), str, format));
       CHECK_EQUAL(etl::string<20>(STR("###################0")), etl::to_string(uint16_t(0), str, format));
       CHECK_EQUAL(etl::string<20>(STR("###################0")), etl::to_string(uint32_t(0), str, format));
@@ -138,7 +142,7 @@ namespace
     {
       etl::string<20> str;
 
-      Format format = Format().base(10).width(20).fill(STR('#')).left_justified(true);
+      Format format = Format().base(10).width(20).fill(STR('#')).left();
 
       CHECK_EQUAL(etl::string<20>(STR("0###################")), etl::to_string(uint8_t(0), str, format));
       CHECK_EQUAL(etl::string<20>(STR("0###################")), etl::to_string(uint16_t(0), str, format));
@@ -248,6 +252,135 @@ namespace
       CHECK_EQUAL(etl::string<17>(STR("361100")),             etl::to_string(123456, str, Format().octal()));
       CHECK_EQUAL(etl::string<17>(STR("123456")),             etl::to_string(123456, str, Format().decimal()));
       CHECK_EQUAL(etl::string<17>(STR("1E240")),              etl::to_string(123456, str, Format().hex()));
+    }
+
+    //*************************************************************************
+    TEST(test_floating_point_no_append)
+    {
+      etl::string<20> str;
+
+      CHECK_EQUAL(etl::string<20>(STR(" 12.345678")), etl::to_string(12.345678, str, Format().precision(6).width(10).right()));
+      CHECK_EQUAL(etl::string<20>(STR("12.345678 ")), etl::to_string(12.345678, str, Format().precision(6).width(10).left()));
+    }
+
+    //*************************************************************************
+    TEST(test_floating_point_append)
+    {
+      etl::string<20> str;
+
+      str.assign(STR("Result "));
+      CHECK_EQUAL(etl::string<20>(STR("Result  12.345678")), etl::to_string(12.345678, str, Format().precision(6).width(10).right(), true));
+
+      str.assign(STR("Result "));
+      CHECK_EQUAL(etl::string<20>(STR("Result 12.345678 ")), etl::to_string(12.345678, str, Format().precision(6).width(10).left(), true));
+    }
+
+    //*************************************************************************
+    TEST(test_bool_no_append)
+    {
+      etl::string<20> str;
+
+      CHECK_EQUAL(etl::string<20>(STR("         0")), to_string(false, str, Format().precision(6).width(10).right().boolalpha(false)));
+      CHECK_EQUAL(etl::string<20>(STR("         1")), to_string(true,  str, Format().precision(6).width(10).right().boolalpha(false)));
+      CHECK_EQUAL(etl::string<20>(STR("0         ")), to_string(false, str, Format().precision(6).width(10).left().boolalpha(false)));
+      CHECK_EQUAL(etl::string<20>(STR("1         ")), to_string(true,  str, Format().precision(6).width(10).left().boolalpha(false)));
+
+      CHECK_EQUAL(etl::string<20>(STR("     false")), to_string(false, str, Format().precision(6).width(10).right().boolalpha(true)));
+      CHECK_EQUAL(etl::string<20>(STR("      true")), to_string(true, str, Format().precision(6).width(10).right().boolalpha(true)));
+      CHECK_EQUAL(etl::string<20>(STR("false     ")), to_string(false, str, Format().precision(6).width(10).left().boolalpha(true)));
+      CHECK_EQUAL(etl::string<20>(STR("true      ")), to_string(true, str, Format().precision(6).width(10).left().boolalpha(true)));
+    }
+
+    //*************************************************************************
+    TEST(test_bool_append)
+    {
+      etl::string<20> str;
+
+      str.assign(STR("Result "));
+      CHECK_EQUAL(etl::string<20>(STR("Result          0")), to_string(false, str, Format().precision(6).width(10).right().boolalpha(false), true));
+
+      str.assign(STR("Result "));
+      CHECK_EQUAL(etl::string<20>(STR("Result          1")), to_string(true, str, Format().precision(6).width(10).right().boolalpha(false), true));
+
+      str.assign(STR("Result "));
+      CHECK_EQUAL(etl::string<20>(STR("Result 0         ")), to_string(false, str, Format().precision(6).width(10).left().boolalpha(false), true));
+
+      str.assign(STR("Result "));
+      CHECK_EQUAL(etl::string<20>(STR("Result 1         ")), to_string(true, str, Format().precision(6).width(10).left().boolalpha(false), true));
+
+      str.assign(STR("Result "));
+      CHECK_EQUAL(etl::string<20>(STR("Result      false")), to_string(false, str, Format().precision(6).width(10).right().boolalpha(true), true));
+
+      str.assign(STR("Result "));
+      CHECK_EQUAL(etl::string<20>(STR("Result       true")), to_string(true, str, Format().precision(6).width(10).right().boolalpha(true), true));
+
+      str.assign(STR("Result "));
+      CHECK_EQUAL(etl::string<20>(STR("Result false     ")), to_string(false, str, Format().precision(6).width(10).left().boolalpha(true), true));
+
+      str.assign(STR("Result "));
+      CHECK_EQUAL(etl::string<20>(STR("Result true      ")), to_string(true, str, Format().precision(6).width(10).left().boolalpha(true), true));
+    }
+
+    //*************************************************************************
+    TEST(test_pointer_no_append)
+    {
+      etl::string<20> str;
+
+      static const volatile int cvi = 0;
+
+      std::ostringstream oss;
+      oss.width(10);
+      oss.fill(STR('0'));
+      oss << std::hex << std::uppercase << std::right << uintptr_t(&cvi);
+      std::string temp(oss.str());
+      etl::string<20> compare(temp.begin(), temp.end());
+
+      to_string(&cvi, str, Format().hex().width(10).right().fill(STR('0')));
+      CHECK_EQUAL(compare, str);
+
+      oss.clear();
+      oss.str(STR(""));
+      oss.width(10);
+      oss.fill(STR('0'));
+      oss << std::hex << std::uppercase << std::left << uintptr_t(&cvi);
+      temp = oss.str();
+      compare.assign(temp.begin(), temp.end());
+
+      to_string(&cvi, str, Format().hex().width(10).left().fill(STR('0')));
+      CHECK_EQUAL(compare, str);
+    }
+
+    //*************************************************************************
+    TEST(test_pointer_append)
+    {
+      etl::string<20> str;
+
+      static const volatile int cvi = 0;
+
+      std::ostringstream oss;
+      oss.width(10);
+      oss.fill(STR('0'));
+      oss << std::hex << std::uppercase << std::right << uintptr_t(&cvi);
+      std::string temp(STR("Result "));
+      temp.append(oss.str());
+      etl::string<20> compare(temp.begin(), temp.end());
+
+      str.assign(STR("Result "));
+      to_string(&cvi, str, Format().hex().width(10).right().fill(STR('0')), true);
+      CHECK_EQUAL(compare, str);
+
+      oss.clear();
+      oss.str(STR(""));
+      oss.width(10);
+      oss.fill(STR('0'));
+      oss << std::hex << std::uppercase << std::left << uintptr_t(&cvi);
+      temp = STR("Result ");
+      temp.append(oss.str());
+      compare.assign(temp.begin(), temp.end());
+
+      str.assign(STR("Result "));
+      to_string(&cvi, str, Format().hex().width(10).left().fill(STR('0')), true);
+      CHECK_EQUAL(compare, str);
     }
   };
 }

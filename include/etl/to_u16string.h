@@ -42,107 +42,23 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  /// For signed integrals less than 64 bits. Default format spec.
+  /// Default format spec.
   //***************************************************************************
   template <typename T>
-  typename etl::enable_if<etl::is_integral<T>::value &&
-                          etl::is_signed<T>::value &&
-                          !etl::is_same<T, int64_t>::value, etl::iu16string&>::type
-    to_u16string(const T value, etl::iu16string& str, const bool append = false)
+  const etl::iu16string& to_u16string(const T value, etl::iu16string& str, const bool append = false)
   {
     etl::u16format_spec format;
 
-    return to_string_helper(int32_t(value), str, format, append);
+    return etl::private_to_string::to_string(value, str, format, append);
   }
 
   //***************************************************************************
-  /// For signed integrals less than 64 bits. Supplied format spec.
+  /// Supplied format spec.
   //***************************************************************************
   template <typename T>
-  typename etl::enable_if<etl::is_integral<T>::value &&
-                          etl::is_signed<T>::value &&
-                          !etl::is_same<T, int64_t>::value, etl::iu16string&>::type
-    to_u16string(const T value, etl::iu16string& str, const etl::u16format_spec& format,  const bool append = false)
+  const etl::iu16string& to_u16string(const T value, etl::iu16string& str, const etl::u16format_spec& format, const bool append = false)
   {
-    return to_string_helper(int32_t(value), str, format, append);
-  }
-
-  //***************************************************************************
-  /// For unsigned integrals less then 64 bits. Default format spec.
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_integral<T>::value &&
-                          etl::is_unsigned<T>::value &&
-                          !etl::is_same<T, uint64_t>::value, etl::iu16string&>::type
-    to_u16string(const T value, etl::iu16string& str, const bool append = false)
-  {
-    etl::u16format_spec format;
-
-    return to_string_helper(uint32_t(value), str, format, append);
-  }
-
-  //***************************************************************************
-  /// For unsigned integrals less than 64 bits. Supplied format spec.
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_integral<T>::value &&
-                          etl::is_unsigned<T>::value &&
-                          !etl::is_same<T, uint64_t>::value, etl::iu16string&>::type
-    to_u16string(const T value, etl::iu16string& str, const etl::u16format_spec& format, const bool append = false)
-  {
-    return to_string_helper(uint32_t(value), str, format, append);
-  }
-
-  //***************************************************************************
-  /// For signed 64 bit integrals. Default format spec.
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_integral<T>::value &&
-                          etl::is_signed<T>::value &&
-                          etl::is_same<T, int64_t>::value, etl::iu16string&>::type
-    to_u16string(const T value, etl::iu16string& str, const bool append = false)
-  {
-    etl::u16format_spec format;
-
-    return to_string_helper(int64_t(value), str, format, append);
-  }
-
-  //***************************************************************************
-  /// For signed 64 bit integrals. Supplied format spec.
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_integral<T>::value &&
-                          etl::is_signed<T>::value &&
-                          etl::is_same<T, int64_t>::value, etl::iu16string&>::type
-    to_u16string(const T value, etl::iu16string& str, const etl::u16format_spec& format, const bool append = false)
-  {
-    return to_string_helper(int64_t(value), str, format, append);
-  }
-
-  //***************************************************************************
-  /// For unsigned 64 bit integrals. Default format spec.
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_integral<T>::value &&
-                          etl::is_unsigned<T>::value &&
-                          etl::is_same<T, uint64_t>::value, etl::iu16string&>::type
-    to_u16string(const T value, etl::iu16string& str, const bool append = false)
-  {
-    etl::u16format_spec format;
-
-    return to_string_helper(uint64_t(value), str, format, append);
-  }
-
-  //***************************************************************************
-  /// For unsigned 64 bit integrals. Supplied format spec.
-  //***************************************************************************
-  template <typename T>
-  typename etl::enable_if<etl::is_integral<T>::value &&
-                          etl::is_unsigned<T>::value &&
-                          etl::is_same<T, uint64_t>::value, etl::iu16string&>::type
-    to_u16string(const T value, etl::iu16string& str, const etl::u16format_spec& format, const bool append = false)
-  {
-    return to_string_helper(uint64_t(value), str, format, append);
+    return etl::private_to_string::to_string(value, str, format, append);
   }
 }
 

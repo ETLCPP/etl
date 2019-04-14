@@ -55,8 +55,10 @@ namespace etl
     basic_format_spec()
       : base_(10)
       , width_(0)
+      , precision_(0)
       , upper_case_(true)
       , left_justified_(false)
+      , boolalpha_(false)
       , fill_(typename TString::value_type(' '))
     {
 
@@ -111,10 +113,11 @@ namespace etl
       base(16);
       return *this;
     }
+
     //***************************************************************************
     /// Gets the base.
     //***************************************************************************
-    uint32_t base() const
+    uint32_t get_base() const
     {
       return base_;
     }
@@ -132,9 +135,27 @@ namespace etl
     //***************************************************************************
     /// Gets the width.
     //***************************************************************************
-    uint32_t width() const
+    uint32_t get_width() const
     {
       return width_;
+    }
+
+    //***************************************************************************
+    /// Sets the precision.
+    /// \return A reference to the basic_format_spec.
+    //***************************************************************************
+    basic_format_spec& precision(const uint32_t w)
+    {
+      precision_ = static_cast<uint_least8_t>(w);
+      return *this;
+    }
+
+    //***************************************************************************
+    /// Gets the precision.
+    //***************************************************************************
+    uint32_t get_precision() const
+    {
+      return precision_;
     }
 
     //***************************************************************************
@@ -150,7 +171,7 @@ namespace etl
     //***************************************************************************
     /// Gets the upper case flag.
     //***************************************************************************
-    bool upper_case() const
+    bool is_upper_case() const
     {
       return upper_case_;
     }
@@ -168,7 +189,7 @@ namespace etl
     //***************************************************************************
     /// Gets the fill character.
     //***************************************************************************
-    typename TString::value_type fill() const
+    typename TString::value_type get_fill() const
     {
       return fill_;
     }
@@ -177,26 +198,64 @@ namespace etl
     /// Sets the left justify flag.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    basic_format_spec& left_justified(const bool l)
+    basic_format_spec& left()
     {
-      left_justified_ = l;
+      left_justified_ = true;
       return *this;
     }
 
     //***************************************************************************
     /// Gets the left justify flag.
     //***************************************************************************
-    bool left_justified() const
+    bool is_left() const
     {
       return left_justified_;
+    }
+
+    //***************************************************************************
+    /// Sets the right justify flag.
+    /// \return A reference to the basic_format_spec.
+    //***************************************************************************
+    basic_format_spec& right()
+    {
+      left_justified_ = false;
+      return *this;
+    }
+
+    //***************************************************************************
+    /// Gets the right justify flag.
+    //***************************************************************************
+    bool is_right() const
+    {
+      return !left_justified_;
+    }
+
+    //***************************************************************************
+    /// Sets the bool alpha flag.
+    /// \return A reference to the basic_format_spec.
+    //***************************************************************************
+    basic_format_spec& boolalpha(bool b)
+    {
+      boolalpha_ = b;
+      return *this;
+    }
+
+    //***************************************************************************
+    /// Gets the boolalpha flag.
+    //***************************************************************************
+    bool is_boolalpha() const
+    {
+      return boolalpha_;
     }
 
   private:
 
     uint_least8_t base_;
     uint_least8_t width_;
+    uint_least8_t precision_;
     bool upper_case_;
     bool left_justified_;
+    bool boolalpha_;
     typename TString::value_type fill_;
   };
 }
