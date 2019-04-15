@@ -56,6 +56,7 @@ namespace etl
   public:
 
     typedef iu16string base_type;
+    typedef iu16string interface_type;
 
     typedef iu16string::value_type value_type;
 
