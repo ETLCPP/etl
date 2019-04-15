@@ -46,21 +46,21 @@ namespace etl
   //***************************************************************************
   /// Default format spec.
   //***************************************************************************
-  template <typename T>
-  const etl::istring& to_string(const T value, etl::istring& str, const bool append = false)
+  template <typename T, const size_t SIZE>
+  const etl::istring& to_string(const T value, etl::string<SIZE>& str, const bool append = false)
   {
     etl::format_spec format;
 
-    return private_to_string::to_string(value, str, format, append);
+    return private_to_string::to_string(value, static_cast<etl::istring&>(str), format, append);
   }
 
   //***************************************************************************
-  /// Supplied format spec.
+  /// Supplied format spec..
   //***************************************************************************
-  template <typename T>
-  const etl::istring& to_string(const T value, etl::istring& str, const etl::format_spec& format, const bool append = false)
+  template <typename T, const size_t SIZE>
+  const etl::istring& to_string(const T value, etl::string<SIZE>& str, const etl::format_spec& format, const bool append = false)
   {
-    return private_to_string::to_string(value, str, format, append);
+    return private_to_string::to_string(value, static_cast<etl::istring&>(str), format, append);
   }
 }
 
