@@ -51,7 +51,7 @@ namespace
     return os;
   }
 
-  SUITE(test_to_string)
+  SUITE(test_to_u32string)
   {
     //*************************************************************************
     TEST(test_default_format_no_append)
