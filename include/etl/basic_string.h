@@ -263,6 +263,8 @@ namespace etl
   {
   public:
 
+    typedef ibasic_string<T> interface_type;
+
     typedef T                                     value_type;
     typedef T&                                    reference;
     typedef const T&                              const_reference;

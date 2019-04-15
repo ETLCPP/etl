@@ -56,6 +56,7 @@ namespace etl
   public:
 
     typedef istring base_type;
+    typedef istring interface_type;
 
     typedef istring::value_type value_type;
 
