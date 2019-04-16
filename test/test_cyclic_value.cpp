@@ -310,29 +310,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_advance_negative_compile_time)
-    {
-      etl::cyclic_value<int, 2, 7> value;
-
-      value.to_last();
-      value.advance(-14);
-
-      CHECK_EQUAL(5, value);
-    }
-
-    //*************************************************************************
-    TEST(test_advance_negative_run_time)
-    {
-      etl::cyclic_value<int> value;
-
-      value.set(2, 7);
-      value.to_last();
-      value.advance(-14);
-
-      CHECK_EQUAL(5, value);
-    }
-
-    //*************************************************************************
     TEST(test_advance_negative_large_compile_time)
     {
       etl::cyclic_value<int, 2, 7> value;
@@ -353,6 +330,39 @@ namespace
       value.advance(-14);
 
       CHECK_EQUAL(5, value);
+    }
+
+    //*************************************************************************
+    TEST(test_advance_negative_unsigned_compile_time)
+    {
+      etl::cyclic_value<size_t, 0U, 2U> value;
+
+      value.advance(-2);
+
+      CHECK_EQUAL(1U, value);
+    }
+
+    //*************************************************************************
+    TEST(test_advance_negative_run_time)
+    {
+      etl::cyclic_value<int> value;
+
+      value.set(2, 7);
+      value.to_last();
+      value.advance(-14);
+
+      CHECK_EQUAL(5, value);
+    }
+
+    //*************************************************************************
+    TEST(test_advance_negative_unsigned_run_time)
+    {
+      etl::cyclic_value<size_t> value;
+
+      value.set(0U, 2U);
+      value.advance(-2);
+
+      CHECK_EQUAL(1U, value);
     }
 
     //*************************************************************************
