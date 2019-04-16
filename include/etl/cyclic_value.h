@@ -117,10 +117,6 @@ namespace etl
     //*************************************************************************
     void advance(int n)
     {
-      T range = LAST - FIRST + T(1);
-
-      n = n % range;
-
       if (n > 0)
       {
         for (int i = 0; i < n; ++i)
@@ -394,10 +390,6 @@ namespace etl
     //*************************************************************************
     void advance(int n)
     {
-      T range = last_value - first_value + T(1);
-
-      n = n % range;
-
       if (n > 0)
       {
         for (int i = 0; i < n; ++i)
