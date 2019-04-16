@@ -201,16 +201,17 @@ namespace etl
     void add_integral_fractional(const int64_t integral,
                                  const int64_t fractional,
                                  TIString& str,
-                                 const etl::basic_format_spec<TIString>& format)
+                                 const etl::basic_format_spec<TIString>& integral_format,
+                                 const etl::basic_format_spec<TIString>& fractional_format)
     {
       typedef typename TIString::value_type type;
 
-      etl::private_to_string::add_integral(integral, str, format, true);
+      etl::private_to_string::add_integral(integral, str, integral_format, true);
 
-      if (format.get_precision() > 0)
+      if (fractional_format.get_precision() > 0)
       {
         str.push_back(type('.'));
-        etl::private_to_string::add_integral(fractional, str, format, true);
+        etl::private_to_string::add_integral(fractional, str, fractional_format, true);
       }
     }
 
@@ -224,6 +225,7 @@ namespace etl
                             const bool append)
     {
       typedef typename TIString::iterator   iterator;
+      typedef typename TIString::value_type type;
 
       if (!append)
       {
@@ -241,12 +243,15 @@ namespace etl
         // Make sure we format the two halves correctly.
         uint32_t max_precision = std::numeric_limits<T>::digits10;
 
-        etl::basic_format_spec<TIString> local_format = format;
-        local_format.decimal().width(0).precision(format.get_precision() > max_precision ? max_precision : format.get_precision());
+        etl::basic_format_spec<TIString> integral_format = format;
+        integral_format.decimal().width(0).precision(format.get_precision() > max_precision ? max_precision : format.get_precision());
+
+        etl::basic_format_spec<TIString> fractional_format = integral_format;
+        fractional_format.width(integral_format.get_precision()).fill(type('0')).right();
 
         int64_t multiplier = 1;
 
-        for (uint32_t i = 0; i < local_format.get_precision(); ++i)
+        for (uint32_t i = 0; i < fractional_format.get_precision(); ++i)
         {
           multiplier *= 10U;
         }
@@ -255,7 +260,7 @@ namespace etl
         int64_t integral = static_cast<int64_t>(f_integral);
         int64_t fractional = static_cast<int64_t>(round((value - f_integral) * multiplier));
 
-        etl::private_to_string::add_integral_fractional(integral, fractional, str, local_format);
+        etl::private_to_string::add_integral_fractional(integral, fractional, str, integral_format, fractional_format);
       }
 
       etl::private_to_string::add_alignment(str, start, format);
