@@ -257,6 +257,18 @@ namespace
     {
       etl::wstring<20> str;
 
+      CHECK_EQUAL(etl::wstring<20>(STR("  0.000000")), etl::to_string(0.0, str, Format().precision(6).width(10).right()));
+      CHECK_EQUAL(etl::wstring<20>(STR("0.000000  ")), etl::to_string(0.0, str, Format().precision(6).width(10).left()));
+
+      CHECK_EQUAL(etl::wstring<20>(STR("  0.000001")), etl::to_string(0.000001, str, Format().precision(6).width(10).right()));
+      CHECK_EQUAL(etl::wstring<20>(STR("0.000001  ")), etl::to_string(0.000001, str, Format().precision(6).width(10).left()));
+
+      CHECK_EQUAL(etl::wstring<20>(STR("  1.000000")), etl::to_string(1.0, str, Format().precision(6).width(10).right()));
+      CHECK_EQUAL(etl::wstring<20>(STR("1.000000  ")), etl::to_string(1.0, str, Format().precision(6).width(10).left()));
+
+      CHECK_EQUAL(etl::wstring<20>(STR("  1.000001")), etl::to_string(1.000001, str, Format().precision(6).width(10).right()));
+      CHECK_EQUAL(etl::wstring<20>(STR("1.000001  ")), etl::to_string(1.000001, str, Format().precision(6).width(10).left()));
+
       CHECK_EQUAL(etl::wstring<20>(STR(" 12.345678")), etl::to_string(12.345678, str, Format().precision(6).width(10).right()));
       CHECK_EQUAL(etl::wstring<20>(STR("12.345678 ")), etl::to_string(12.345678, str, Format().precision(6).width(10).left()));
     }

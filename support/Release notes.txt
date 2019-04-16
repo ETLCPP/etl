@@ -1,4 +1,8 @@
 ===============================================================================
+14.18.4
+Fixed bug in fractional part for floating point with leading zeros after the decimal point.
+
+===============================================================================
 14.18.3
 Unified 'to string' API.
 
