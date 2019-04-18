@@ -1,4 +1,9 @@
 ===============================================================================
+14.19.0
+Added 'emplace' to etl::optional.
+C++03 & C++11 variants supplied depending on compiler support.
+
+===============================================================================
 14.18.4
 Fixed bug in fractional part for floating point with leading zeros after the decimal point.
 

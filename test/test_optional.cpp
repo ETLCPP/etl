@@ -36,6 +36,7 @@ SOFTWARE.
 #include "data.h"
 
 typedef TestDataNDC<std::string> Data;
+typedef TestDataM<uint32_t>      DataM;
 
 std::ostream& operator << (std::ostream& os, const Data& data)
 {
@@ -83,6 +84,23 @@ namespace
       data4 = Data("Hello");
       data4 = etl::nullopt;
       CHECK(!bool(data4));
+    }
+
+    //*************************************************************************
+    TEST(test_emplace)
+    {
+      etl::optional<DataM> data;
+
+      data.emplace(1U);
+      CHECK_EQUAL(1U, data.value().value);
+
+      data.emplace(2U);
+      CHECK_EQUAL(2U, data.value().value);
+
+      data.emplace(3U);
+      CHECK_EQUAL(3U, data.value().value);
+
+      CHECK_EQUAL(1, DataM::get_instance_count());
     }
 
     //*************************************************************************
