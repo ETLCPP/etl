@@ -325,6 +325,93 @@ namespace etl
       }
     }
 
+#if ETL_CPP11_SUPPORTED  && !defined(ETL_STLPORT) && !defined(ETL_OPTIONAL_FORCE_CPP03)
+    //*************************************************************************
+    /// Emplaces a value.
+    ///\param args The arguments to construct with.
+    //*************************************************************************
+    template <typename ... Args>
+    void emplace(Args && ... args)
+    {
+      if (valid)
+      {
+        // Destroy the old one.
+        storage.template get_reference<T>().~T();
+      }
+
+      ::new (storage.template get_address<T>()) T(std::forward<Args>(args)...);
+      valid = true;
+    }
+#else
+    //*************************************************************************
+    /// Emplaces a value.
+    /// 1 parameter.
+    //*************************************************************************
+    template <typename T1>
+    void emplace(const T1& value1)
+    {
+      if (valid)
+      {
+        // Destroy the old one.
+        storage.template get_reference<T>().~T();
+      }
+
+      ::new (storage.template get_address<T>()) T(value1);
+      valid = true;
+    }
+
+    //*************************************************************************
+    /// Emplaces a value.
+    /// 2 parameters.
+    //*************************************************************************
+    template <typename T1, typename T2>
+    void emplace(const T1& value1, const T2& value2)
+    {
+      if (valid)
+      {
+        // Destroy the old one.
+        storage.template get_reference<T>().~T();
+      }
+
+      ::new (storage.template get_address<T>()) T(value1, value2);
+      valid = true;
+    }
+
+    //*************************************************************************
+    /// Emplaces a value.
+    /// 3 parameters.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3>
+    void emplace(const T1& value1, const T2& value2, const T3& value3)
+    {
+      if (valid)
+      {
+        // Destroy the old one.
+        storage.template get_reference<T>().~T();
+      }
+
+      ::new (storage.template get_address<T>()) T(value1, value2, value3);
+      valid = true;
+    }
+
+    //*************************************************************************
+    /// Emplaces a value.
+    /// 4 parameters.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    void emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+      if (valid)
+      {
+        // Destroy the old one.
+        storage.template get_reference<T>().~T();
+      }
+
+      ::new (storage.template get_address<T>()) T(value1, value2, value3, value4);
+      valid = true;
+    }
+#endif
+
   private:
 
     typename etl::aligned_storage_as<sizeof(T), T>::type storage;
