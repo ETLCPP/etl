@@ -267,7 +267,7 @@ namespace
 
       CHECK_EQUAL(etl::u32string<20>(STR("  1.000001")), etl::to_string(1.000001, str, Format().precision(6).width(10).right()));
       CHECK_EQUAL(etl::u32string<20>(STR("1.000001  ")), etl::to_string(1.000001, str, Format().precision(6).width(10).left()));
-      
+
       CHECK_EQUAL(etl::u32string<20>(STR(" 12.345678")), etl::to_string(12.345678, str, Format().precision(6).width(10).right()));
       CHECK_EQUAL(etl::u32string<20>(STR("12.345678 ")), etl::to_string(12.345678, str, Format().precision(6).width(10).left()));
     }
