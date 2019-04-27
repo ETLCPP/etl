@@ -59,8 +59,8 @@ namespace etl
     };
   }
 
-  template <typename T, const size_t D1, const size_t... Dx>
-  using multi_array = typename private_multi_array::multi_array_t<T, D1, Dx...>::type;
+  template <typename T, const size_t... Dx>
+  using multi_array = typename private_multi_array::multi_array_t<T, Dx...>::type;
 
 #endif
 }
