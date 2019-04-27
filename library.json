@@ -9,7 +9,10 @@
   "license": "MIT",
   "description": "A C++ template library for embedded applications",
   "keywords": "ETL embedded template container",
-  "repository": "https://github.com/ETLCPP/etl.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ETLCPP/etl.git"
+  },
   "platforms": [
     "espressif8266",
     "espressif32"
