@@ -14,8 +14,10 @@
     "url": "https://github.com/ETLCPP/etl.git"
   },
   "platforms": [
+    "atmelavr",
     "espressif8266",
-    "espressif32"
+    "espressif32",
+    "ststm32"
   ],
   "frameworks": "arduino",
   "build": {
