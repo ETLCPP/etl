@@ -1,4 +1,9 @@
 ===============================================================================
+14.20.0
+Added etl::multi_array for multi-dimensional arrays.
+C++11 only.
+
+===============================================================================
 14.19.0
 Added 'emplace' to etl::optional.
 C++03 & C++11 variants supplied depending on compiler support.
