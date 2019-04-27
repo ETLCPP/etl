@@ -765,6 +765,9 @@
     <ClInclude Include="..\..\include\etl\wformat_spec.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\multi_array.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1212,6 +1215,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_to_u32string.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_multi_array.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

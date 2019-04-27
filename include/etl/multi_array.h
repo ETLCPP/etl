@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2018 jwellbelove
+Copyright(c) 2019 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,24 +28,42 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_VERSION_INCLUDED
-#define ETL_VERSION_INCLUDED
+#ifndef ETL_MULTI_ARRAY_INCLUDED
+#define ETL_MULTI_ARRAY_INCLUDED
 
-#include "macros.h"
+#include "platform.h"
+#include "array.h"
 
-///\defgroup version version
-/// Definitions of the ETL version
-///\ingroup utilities
+///\defgroup multi_array multi_array
+/// A multi dimentional array.
+///\ingroup containers
 
-#define ETL_VERSION_MAJOR 14
-#define ETL_VERSION_MINOR 20
-#define ETL_VERSION_PATCH  0
+namespace etl
+{
+#if ETL_CPP11_SUPPORTED
 
-#define ETL_VERSION       ETL_STRINGIFY(ETL_VERSION_MAJOR) ETL_STRINGIFY(ETL_VERSION_MINOR) ETL_STRINGIFY(ETL_VERSION_PATCH)
-#define ETL_VERSION_W     ETL_WIDE_STRING(ETL_CONCAT(ETL_CONCAT(ETL_VERSION_MAJOR, ETL_VERSION_MINOR), ETL_VERSION_PATCH))
-#define ETL_VERSION_U16   ETL_U16_STRING(ETL_CONCAT(ETL_CONCAT(ETL_VERSION_MAJOR, ETL_VERSION_MINOR), ETL_VERSION_PATCH))
-#define ETL_VERSION_U32   ETL_U32_STRING(ETL_CONCAT(ETL_CONCAT(ETL_VERSION_MAJOR, ETL_VERSION_MINOR), ETL_VERSION_PATCH))
-#define ETL_VERSION_VALUE ((ETL_VERSION_MAJOR * 10000) + (ETL_VERSION_MINOR * 100) + ETL_VERSION_PATCH)
+  namespace private_multi_array
+  {
+    template <class T, size_t D1, size_t... Dx>
+    struct multi_array_t
+    {
+      using type = etl::array<typename multi_array_t<T, Dx...>::type, D1>;
+      static constexpr size_t SIZE = D1;
+    };
+
+    template <class T, size_t D1>
+    struct multi_array_t<T, D1>
+    {
+      using type = etl::array<T, D1>;
+      static constexpr size_t SIZE = D1;
+    };
+  }
+
+  template <typename T, const size_t D1, const size_t... Dx>
+  using multi_array = typename private_multi_array::multi_array_t<T, D1, Dx...>::type;
+
+#endif
+}
 
 #endif
 
