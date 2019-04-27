@@ -20,9 +20,9 @@
       "-I include"
     ],
     "srcFilter": [
-        "-<src/*>",
-        "-<temp/*>",
-        "-<test/*>"
+      "-<src/*>",
+      "-<temp/*>",
+      "-<test/*>"
     ]
-}
+  }
 }
