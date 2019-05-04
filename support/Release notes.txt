@@ -1,4 +1,17 @@
 ===============================================================================
+14.21.0
+Added variadic min and max functions.
+etl::multimin
+etl::multimin_compare
+etl::multimin_iter
+etl::multimin_iter_compare
+etl::multimax
+etl::multimax_compare
+etl::multimax_iter
+etl::multimax_iter_compare
+C++11 only.
+
+===============================================================================
 14.20.0
 Added etl::multi_array for multi-dimensional arrays.
 C++11 only.

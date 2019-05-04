@@ -1131,21 +1131,21 @@ namespace etl
   void sort(TIterator first, TIterator last, TCompare compare)
   {
     typedef typename std::iterator_traits<TIterator>::difference_type difference_t;
-  
+
     difference_t n = std::distance(first, last);
 
-    for (difference_t i = n / 2; i > 0; i /= 2) 
+    for (difference_t i = n / 2; i > 0; i /= 2)
     {
-      for (difference_t j = i; j < n; ++j) 
+      for (difference_t j = i; j < n; ++j)
       {
         for (difference_t k = j - i; k >= 0; k -= i)
         {
-          TIterator itr1 = first; 
+          TIterator itr1 = first;
           TIterator itr2 = first;
-          
+
           std::advance(itr1, k);
           std::advance(itr2, k + i);
-          
+
           if (compare(*itr2, *itr1))
           {
             std::iter_swap(itr1, itr2);
@@ -1164,6 +1164,120 @@ namespace etl
   {
     etl::sort(first, last, std::less<typename std::iterator_traits<TIterator>::value_type>());
   }
+
+#if ETL_CPP11_SUPPORTED
+  //***************************************************************************
+
+  template <typename T>
+  constexpr const T& multimax(const T& a, const T& b)
+  {
+    return a < b ? b : a;
+  }
+
+  template <typename T, typename... Tx>
+  constexpr const T& multimax(const T& t, const Tx&... tx)
+  {
+    return multimax(t, multimax(tx...));
+  }
+
+  //***************************************************************************
+
+  template <typename TCompare, typename T>
+  constexpr const T& multimax_compare(TCompare compare, const T& a, const T& b)
+  {
+    return compare(a, b) ? b : a;
+  }
+
+  template <typename TCompare, typename T, typename... Tx>
+  constexpr const T& multimax_compare(TCompare compare, const T& t, const Tx&... tx)
+  {
+    return multimax_compare(compare, t, multimax_compare(compare, tx...));
+  }
+
+  //***************************************************************************
+
+  template <typename T>
+  constexpr const T& multimin(const T& a, const T& b)
+  {
+    return a < b ? a : b;
+  }
+
+  template <typename T, typename... Tx>
+  constexpr const T& multimin(const T& t, const Tx&... tx)
+  {
+    return multimin(t, multimin(tx...));
+  }
+
+  //***************************************************************************
+
+  template <typename TCompare, typename T>
+  constexpr const T& multimin_compare(TCompare compare, const T& a, const T& b)
+  {
+    return compare(a, b) ? a : b;
+  }
+
+  template <typename TCompare, typename T, typename... Tx>
+  constexpr const T& multimin_compare(TCompare compare, const T& t, const Tx&... tx)
+  {
+    return multimin_compare(compare, t, multimin_compare(compare, tx...));
+  }
+
+  //***************************************************************************
+
+  template <typename TIterator>
+  constexpr const TIterator& multimax_iter(const TIterator& a, const TIterator& b)
+  {
+    return *a < *b ? b : a;
+  }
+
+  template <typename TIterator, typename... TIteratorx>
+  constexpr const TIterator& multimax_iter(const TIterator& t, const TIteratorx&... tx)
+  {
+    return multimax_iter(t, multimax_iter(tx...));
+  }
+
+  //***************************************************************************
+
+  template <typename TCompare, typename TIterator>
+  constexpr const TIterator& multimax_iter_compare(TCompare compare, const TIterator& a, const TIterator& b)
+  {
+    return compare(*a, *b) ? b : a;
+  }
+
+  template <typename TCompare, typename TIterator, typename... TIteratorx>
+  constexpr const TIterator& multimax_iter_compare(TCompare compare, const TIterator& t, const TIteratorx&... tx)
+  {
+    return multimax_iter_compare(compare, t, multimax_iter_compare(compare, tx...));
+  }
+
+  //***************************************************************************
+
+  template <typename TIterator>
+  constexpr const TIterator& multimin_iter(const TIterator& a, const TIterator& b)
+  {
+    return *a < *b ? a : b;
+  }
+
+  template <typename TIterator, typename... Tx>
+  constexpr const TIterator& multimin_iter(const TIterator& t, const Tx&... tx)
+  {
+    return multimin_iter(t, multimin_iter(tx...));
+  }
+
+  //***************************************************************************
+
+  template <typename TCompare, typename TIterator>
+  constexpr const TIterator& multimin_iter_compare(TCompare compare, const TIterator& a, const TIterator& b)
+  {
+    return compare(*a, *b) ? a : b;
+  }
+
+  template <typename TCompare, typename TIterator, typename... Tx>
+  constexpr const TIterator& multimin_iter_compare(TCompare compare, const TIterator& t, const Tx&... tx)
+  {
+    return multimin_iter_compare(compare, t, multimin_iter_compare(compare, tx...));
+  }
+#endif
 }
 
 #endif
