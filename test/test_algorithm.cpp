@@ -909,5 +909,41 @@ namespace
         CHECK(is_same);
       }
     }
+
+    //=========================================================================
+    TEST(multimax)
+    {
+      CHECK_EQUAL(8, etl::multimax(1, 2, 3, 4, 5, 6, 7, 8));
+      CHECK_EQUAL(8, etl::multimax_compare(std::less<int>(), 1, 2, 3, 4, 5, 6, 7, 8));
+      CHECK_EQUAL(1, etl::multimax_compare(std::greater<int>(), 1, 2, 3, 4, 5, 6, 7, 8));
+    }
+
+    //=========================================================================
+    TEST(multimax_iter)
+    {
+      int i[8] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+      CHECK_EQUAL(8, *etl::multimax_iter(&i[0], &i[1], &i[2], &i[3], &i[4], &i[5], &i[6], &i[7]));
+      CHECK_EQUAL(8, *etl::multimax_iter_compare(std::less<int>(), &i[0], &i[1], &i[2], &i[3], &i[4], &i[5], &i[6], &i[7]));
+      CHECK_EQUAL(1, *etl::multimax_iter_compare(std::greater<int>(), &i[0], &i[1], &i[2], &i[3], &i[4], &i[5], &i[6], &i[7]));
+    }
+
+    //=========================================================================
+    TEST(multimin)
+    {
+      CHECK_EQUAL(1, etl::multimin(1, 2, 3, 4, 5, 6, 7, 8));
+      CHECK_EQUAL(1, etl::multimin_compare(std::less<int>(), 1, 2, 3, 4, 5, 6, 7, 8));
+      CHECK_EQUAL(8, etl::multimin_compare(std::greater<int>(), 1, 2, 3, 4, 5, 6, 7, 8));
+    }
+
+    //=========================================================================
+    TEST(multimin_iter)
+    {
+      int i[8] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+      CHECK_EQUAL(1, *etl::multimin_iter(&i[0], &i[1], &i[2], &i[3], &i[4], &i[5], &i[6], &i[7]));
+      CHECK_EQUAL(1, *etl::multimin_iter_compare(std::less<int>(), &i[0], &i[1], &i[2], &i[3], &i[4], &i[5], &i[6], &i[7]));
+      CHECK_EQUAL(8, *etl::multimin_iter_compare(std::greater<int>(), &i[0], &i[1], &i[2], &i[3], &i[4], &i[5], &i[6], &i[7]));
+    }
   };
 }
