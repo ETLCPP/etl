@@ -1167,7 +1167,8 @@ namespace etl
 
 #if ETL_CPP11_SUPPORTED
   //***************************************************************************
-
+  /// Returns the maximum value.
+  //***************************************************************************
   template <typename T>
   constexpr const T& multimax(const T& a, const T& b)
   {
@@ -1181,7 +1182,9 @@ namespace etl
   }
 
   //***************************************************************************
-
+  /// Returns the maximum value.
+  /// User supplied compare function.
+  //***************************************************************************
   template <typename TCompare, typename T>
   constexpr const T& multimax_compare(TCompare compare, const T& a, const T& b)
   {
@@ -1195,7 +1198,8 @@ namespace etl
   }
 
   //***************************************************************************
-
+  /// Returns the maximum value.
+  //***************************************************************************
   template <typename T>
   constexpr const T& multimin(const T& a, const T& b)
   {
@@ -1209,7 +1213,9 @@ namespace etl
   }
 
   //***************************************************************************
-
+  /// Returns the minimum value.
+  /// User supplied compare function.
+  //***************************************************************************
   template <typename TCompare, typename T>
   constexpr const T& multimin_compare(TCompare compare, const T& a, const T& b)
   {
@@ -1223,7 +1229,8 @@ namespace etl
   }
 
   //***************************************************************************
-
+  /// Returns the iterator to the maximum value.
+  //***************************************************************************
   template <typename TIterator>
   constexpr const TIterator& multimax_iter(const TIterator& a, const TIterator& b)
   {
@@ -1237,7 +1244,9 @@ namespace etl
   }
 
   //***************************************************************************
-
+  /// Returns the iterator to the maximum value.
+  /// User supplied compare function.
+  //***************************************************************************
   template <typename TCompare, typename TIterator>
   constexpr const TIterator& multimax_iter_compare(TCompare compare, const TIterator& a, const TIterator& b)
   {
@@ -1251,7 +1260,8 @@ namespace etl
   }
 
   //***************************************************************************
-
+  /// Returns the iterator to the minimum value.
+  //***************************************************************************
   template <typename TIterator>
   constexpr const TIterator& multimin_iter(const TIterator& a, const TIterator& b)
   {
@@ -1265,7 +1275,9 @@ namespace etl
   }
 
   //***************************************************************************
-
+  /// Returns the iterator to the minimum value.
+  /// User supplied compare function.
+  //***************************************************************************
   template <typename TCompare, typename TIterator>
   constexpr const TIterator& multimin_iter_compare(TCompare compare, const TIterator& a, const TIterator& b)
   {
