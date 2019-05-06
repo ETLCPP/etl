@@ -1,4 +1,9 @@
 ===============================================================================
+14.22.0
+Added etl::memory_clear and etl::memory_set utility functions.
+These functions will overwrite the memory allocated to the supplied object.
+
+===============================================================================
 14.21.0
 Added variadic min and max functions.
 etl::multimin
