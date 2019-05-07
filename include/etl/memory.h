@@ -1108,31 +1108,57 @@ namespace etl
 
   //*****************************************************************************
   /// A low level function that clears an object's memory to zero.
-  ///\tparam T The type.
-  ///\param  object The object to clear.
+
+  ///\param p Pointer to the memory.
+  ///\param n Size of the memory.
+  ///\ingroup memory
+  //*****************************************************************************
+  inline void memory_clear(volatile char* p, size_t n)
+  {
+    while (n--)
+    {
+      *p++ = 0;
+    }
+  }
+
+  //*****************************************************************************
+  /// A low level function that clears an object's memory to zero.
+  ///\tparam T     The type.
+  ///\param object The object to clear.
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
   void memory_clear(T &object)
   {
-    std::fill_n(reinterpret_cast<char*>(&object),
-                sizeof(T),
-                0);
+    memory_clear(reinterpret_cast<volatile char*>(&object), sizeof(T));
+  }
+
+  //*****************************************************************************
+  /// A low level function that clears an object's memory to zero.
+  ///\param p     Pointer to the memory.
+  ///\param n     Size of the memory.
+  ///\param value The value to set.
+  ///\ingroup memory
+  //*****************************************************************************
+  inline void memory_set(volatile char* p, size_t n, char value)
+  {
+    while (n--)
+    {
+      *p++ = value;
+    }
   }
 
   //*****************************************************************************
   /// A low level function that sets an object's memory to a value.
   ///\tparam T The type.
-  ///\param  object The object to set.
-  ///\param  value  The value to set the object with.
+  ///\param object The object to set.
+  ///\param value  The value to set the object's memory to.
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-  void memory_set(T &object, int value)
+  void memory_set(T &object, char value)
   {
-    std::fill_n(reinterpret_cast<char*>(&object),
-                sizeof(T),
-                static_cast<char>(value));
+    memory_set(reinterpret_cast<volatile char*>(&object), sizeof(T), value);
   }
 }
 

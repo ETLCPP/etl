@@ -1,4 +1,8 @@
 ===============================================================================
+14.22.1
+Modified memory functions so that they will not be optimised away.
+
+===============================================================================
 14.22.0
 Added etl::memory_clear and etl::memory_set utility functions.
 These functions will overwrite the memory allocated to the supplied object.
