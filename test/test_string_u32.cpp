@@ -3650,5 +3650,90 @@ namespace
       text.clear_truncated();
       CHECK(!text.truncated());
     }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_secure_after_destructor)
+    {
+      char buffer[sizeof(Text)];
+      std::fill_n(buffer, sizeof(Text), 0);
+      ::new (buffer) Text(STR("ABCDEF"));
+
+      Text& text = *reinterpret_cast<Text*>(buffer);
+      text.set_secure();
+
+      CHECK(Text(STR("ABCDEF")) == text);
+
+      Text::pointer pb = text.begin();
+      Text::pointer pe = text.end();
+
+      // Destroy the text object.
+      text.~Text();
+
+      // Check there no non-zero values in the string.
+      CHECK(std::find_if(pb, pe, [](auto x) { return x != 0; }) == pe);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_secure_after_assign)
+    {
+      Text text;
+      text.set_secure();
+      text.assign(STR("ABCDEF"));
+
+      Text::pointer pb = text.begin();
+      Text::pointer pe = text.end();
+
+      text.assign(STR("ABC"));
+
+      CHECK(std::find_if(text.end(), pe, [](auto x) { return x != 0; }) == pe);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_secure_after_erase)
+    {
+      Text text;
+      text.set_secure();
+      text.assign(STR("ABCDEF"));
+
+      Text::pointer pb = text.begin();
+      Text::pointer pe = text.end();
+
+      text.erase(pb + 2, pb + 5);
+
+      // Check there no non-zero values in the remainder of the string.
+      CHECK(std::find_if(text.end(), pe, [](auto x) { return x != 0; }) == pe);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_secure_after_replace)
+    {
+      Text text;
+      text.set_secure();
+      text.assign(STR("ABCDEF"));
+
+      Text::pointer pb = text.begin();
+      Text::pointer pe = text.end();
+
+      text.replace(pb + 1, pb + 4, STR("G"));
+
+      // Check there no non-zero values in the remainder of the string.
+      CHECK(std::find_if(text.end(), pe, [](auto x) { return x != 0; }) == pe);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_secure_after_clear)
+    {
+      Text text;
+      text.set_secure();
+      text.assign(STR("ABCDEF"));
+
+      Text::pointer pb = text.begin();
+      Text::pointer pe = text.end();
+
+      text.clear();
+
+      // Check there no non-zero values in the remainder of the string.
+      CHECK(std::find_if(pb, pe, [](auto x) { return x != 0; }) == pe);
+    }
   };
 }
