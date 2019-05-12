@@ -3670,7 +3670,7 @@ namespace
       text.~Text();
 
       // Check there no non-zero values in the string.
-      CHECK(std::find_if(pb, pe, [](auto x) { return x != 0; }) == pe);
+      CHECK(std::find_if(pb, pe, [](Text::value_type x) { return x != 0; }) == pe);
     }
 
     //*************************************************************************
@@ -3685,7 +3685,7 @@ namespace
 
       text.assign(STR("ABC"));
 
-      CHECK(std::find_if(text.end(), pe, [](auto x) { return x != 0; }) == pe);
+      CHECK(std::find_if(text.end(), pe, [](Text::value_type x) { return x != 0; }) == pe);
     }
 
     //*************************************************************************
@@ -3701,7 +3701,7 @@ namespace
       text.erase(pb + 2, pb + 5);
 
       // Check there no non-zero values in the remainder of the string.
-      CHECK(std::find_if(text.end(), pe, [](auto x) { return x != 0; }) == pe);
+      CHECK(std::find_if(text.end(), pe, [](Text::value_type x) { return x != 0; }) == pe);
     }
 
     //*************************************************************************
@@ -3717,7 +3717,7 @@ namespace
       text.replace(pb + 1, pb + 4, STR("G"));
 
       // Check there no non-zero values in the remainder of the string.
-      CHECK(std::find_if(text.end(), pe, [](auto x) { return x != 0; }) == pe);
+      CHECK(std::find_if(text.end(), pe, [](Text::value_type x) { return x != 0; }) == pe);
     }
 
     //*************************************************************************
@@ -3733,7 +3733,7 @@ namespace
       text.clear();
 
       // Check there no non-zero values in the remainder of the string.
-      CHECK(std::find_if(pb, pe, [](auto x) { return x != 0; }) == pe);
+      CHECK(std::find_if(pb, pe, [](Text::value_type x) { return x != 0; }) == pe);
     }
 };
 }
