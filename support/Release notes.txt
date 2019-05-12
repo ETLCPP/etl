@@ -1,4 +1,8 @@
 ===============================================================================
+14.23.1
+Added missing 'cleanup' to string's resize() method.
+
+===============================================================================
 14.23.0
 Added an optional secure mode to strings so that unused space will be cleared to zero
 and also cleared on destruction.

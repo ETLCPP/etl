@@ -3690,6 +3690,20 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_secure_after_resize_down)
+    {
+      Text text;
+      text.set_secure();
+      text.assign(STR("ABCDEF"));
+
+      Text::pointer pe = text.end();
+
+      text.resize(text.size() - 3U);
+
+      CHECK(std::find_if(text.end(), pe, [](Text::value_type x) { return x != 0; }) == pe);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_secure_after_erase)
     {
       Text text;
