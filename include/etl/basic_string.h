@@ -437,6 +437,7 @@ namespace etl
 
       current_size = new_size;
       p_buffer[new_size] = 0;
+      cleanup();
     }
 
     //*********************************************************************
