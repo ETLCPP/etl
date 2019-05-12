@@ -578,13 +578,6 @@ namespace
         char     d2;
       };
 
-      Data data = { 0xFFFFFFFF, char(0xFF) };
-
-      etl::memory_set(data, 0x5A);
-
-      CHECK_EQUAL(0x5A5A5A5A, data.d1);
-      CHECK_EQUAL(0x5A,       data.d2);
-=======
       Data data[3] = { { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) } };
 
       etl::memory_clear_range(std::begin(data), std::end(data));
