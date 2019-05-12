@@ -1,4 +1,9 @@
 ===============================================================================
+14.23.0
+Added an optional secure mode to strings so that unused space will be cleared to zero
+and also cleared on destruction.
+
+===============================================================================
 14.22.1
 Modified memory functions so that they will not be optimised away.
 

@@ -547,6 +547,52 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_memory_clear_range_pointer_n)
+    {
+      struct Data
+      {
+        uint32_t d1;
+        char     d2;
+      };
+
+      Data data[3] = { { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) } };
+
+      etl::memory_clear_range(data, 3);
+
+      CHECK_EQUAL(0x00000000, data[0].d1);
+      CHECK_EQUAL(0x00, data[0].d2);
+
+      CHECK_EQUAL(0x00000000, data[1].d1);
+      CHECK_EQUAL(0x00, data[1].d2);
+
+      CHECK_EQUAL(0x00000000, data[2].d1);
+      CHECK_EQUAL(0x00, data[2].d2);
+    }
+
+    //*************************************************************************
+    TEST(test_memory_clear_range_pointer_pointer)
+    {
+      struct Data
+      {
+        uint32_t d1;
+        char     d2;
+      };
+
+      Data data[3] = { { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) } };
+
+      etl::memory_clear_range(std::begin(data), std::end(data));
+
+      CHECK_EQUAL(0x00000000, data[0].d1);
+      CHECK_EQUAL(0x00, data[0].d2);
+
+      CHECK_EQUAL(0x00000000, data[1].d1);
+      CHECK_EQUAL(0x00, data[1].d2);
+
+      CHECK_EQUAL(0x00000000, data[2].d1);
+      CHECK_EQUAL(0x00, data[2].d2);
+    }
+
+    //*************************************************************************
     TEST(test_memory_set)
     {
       struct Data
@@ -561,6 +607,52 @@ namespace
 
       CHECK_EQUAL(0x5A5A5A5A, data.d1);
       CHECK_EQUAL(0x5A,       data.d2);
+    }
+
+    //*************************************************************************
+    TEST(test_memory_set_range_pointer_n)
+    {
+      struct Data
+      {
+        uint32_t d1;
+        char     d2;
+      };
+
+      Data data[3] = { { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) } };
+
+      etl::memory_set_range(data, 3, 0x5A);
+
+      CHECK_EQUAL(0x5A5A5A5A, data[0].d1);
+      CHECK_EQUAL(0x5A, data[0].d2);
+
+      CHECK_EQUAL(0x5A5A5A5A, data[1].d1);
+      CHECK_EQUAL(0x5A, data[1].d2);
+
+      CHECK_EQUAL(0x5A5A5A5A, data[2].d1);
+      CHECK_EQUAL(0x5A, data[2].d2);
+    }
+
+    //*************************************************************************
+    TEST(test_memory_set_range_pointer_pointer)
+    {
+      struct Data
+      {
+        uint32_t d1;
+        char     d2;
+      };
+
+      Data data[3] = { { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) } };
+
+      etl::memory_set_range(std::begin(data), std::end(data), 0x5A);
+
+      CHECK_EQUAL(0x5A5A5A5A, data[0].d1);
+      CHECK_EQUAL(0x5A, data[0].d2);
+
+      CHECK_EQUAL(0x5A5A5A5A, data[1].d1);
+      CHECK_EQUAL(0x5A, data[1].d2);
+
+      CHECK_EQUAL(0x5A5A5A5A, data[2].d1);
+      CHECK_EQUAL(0x5A, data[2].d2);
     }
   };
 }
