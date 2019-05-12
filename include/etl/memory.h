@@ -1108,7 +1108,6 @@ namespace etl
 
   //*****************************************************************************
   /// A low level function that clears an object's memory to zero.
-
   ///\param p Pointer to the memory.
   ///\param n Size of the memory.
   ///\ingroup memory
@@ -1128,9 +1127,37 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-  void memory_clear(T &object)
+  void memory_clear(volatile T &object)
   {
     memory_clear(reinterpret_cast<volatile char*>(&object), sizeof(T));
+  }
+
+  //*****************************************************************************
+  /// A low level function that clears a range to zero.
+  ///\tparam T    The type.
+  ///\param begin The first object in the range.
+  ///\param n     The number of objects.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  void memory_clear_range(volatile T* begin, size_t n)
+  {
+    memory_clear(reinterpret_cast<volatile char*>(begin), n * sizeof(T));
+  }
+
+  //*****************************************************************************
+  /// A low level function that clears a range to zero.
+  ///\tparam T    The type.
+  ///\param begin The first object in the range.
+  ///\param end   One past the last object in the range.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  void memory_clear_range(volatile T* begin, volatile T* end)
+  {
+    const size_t n = static_cast<size_t>(std::distance(begin, end));
+
+    memory_clear_range(begin, n);
   }
 
   //*****************************************************************************
@@ -1156,10 +1183,56 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-  void memory_set(T &object, char value)
+  void memory_set(volatile T &object, const char value)
   {
     memory_set(reinterpret_cast<volatile char*>(&object), sizeof(T), value);
   }
+
+  //*****************************************************************************
+  /// A low level function that clears a range to zero.
+  ///\tparam T    The type.
+  ///\param begin The first object in the range.
+  ///\param n     The number of objects.
+  ///\param value The value to set the object's memory to.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  void memory_set_range(volatile T* begin, size_t n, const char value)
+  {
+    memory_set(reinterpret_cast<volatile char*>(begin), n * sizeof(T), value);
+  }
+
+  //*****************************************************************************
+  /// A low level function that clears a range to zero.
+  ///\tparam T    The type.
+  ///\param begin The first object in the range.
+  ///\param end   One past the last object in the range.
+  ///\param value The value to set the object's memory to.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  void memory_set_range(volatile T* begin, volatile T* end, const char value)
+  {
+    const size_t n = static_cast<size_t>(std::distance(begin, end));
+
+    memory_set_range(begin, n, value);
+  }
+
+  //*****************************************************************************
+  /// Base class for objects that require their memory to be wiped after use.
+  /// Erases the object's memory to zero.
+  /// Note: This may not work for multiply inherited objects.
+  ///\tparam T The derived type.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  struct wipe_on_destruct
+  {
+    ~wipe_on_destruct()
+    {
+      memory_clear(static_cast<volatile T&>(*this));
+    }
+  };
 }
 
 #endif
