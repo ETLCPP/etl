@@ -1,4 +1,67 @@
 ===============================================================================
+14.23.1
+Added missing 'cleanup' to string's resize() method.
+
+===============================================================================
+14.23.0
+Added an optional secure mode to strings so that unused space will be cleared to zero
+and also cleared on destruction.
+
+===============================================================================
+14.22.1
+Modified memory functions so that they will not be optimised away.
+
+===============================================================================
+14.22.0
+Added etl::memory_clear and etl::memory_set utility functions.
+These functions will overwrite the memory allocated to the supplied object.
+
+===============================================================================
+14.21.0
+Added variadic min and max functions.
+etl::multimin
+etl::multimin_compare
+etl::multimin_iter
+etl::multimin_iter_compare
+etl::multimax
+etl::multimax_compare
+etl::multimax_iter
+etl::multimax_iter_compare
+C++11 only.
+
+===============================================================================
+14.20.0
+Added etl::multi_array for multi-dimensional arrays.
+C++11 only.
+
+===============================================================================
+14.19.0
+Added 'emplace' to etl::optional.
+C++03 & C++11 variants supplied depending on compiler support.
+
+===============================================================================
+14.18.4
+Fixed bug in fractional part for floating point with leading zeros after the decimal point.
+
+===============================================================================
+14.18.3
+Unified 'to string' API.
+
+===============================================================================
+14.18.2
+Finalised 'to string'.
+
+===============================================================================
+14.18.1
+Changed etl::format_sepc template to etl::basic_firmat_spec.
+Created individual format_spec typedefs for each string type.
+
+===============================================================================
+14.18.0
+Added etl::to_string, etl::to_wstring, etl::to_u16string and etl::to_u32string
+plus formating support for integrals.
+
+===============================================================================
 14.17.0
 Added C++11 variadic templates for etl::observer.
 

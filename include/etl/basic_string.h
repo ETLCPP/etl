@@ -50,6 +50,7 @@ SOFTWARE.
 #include "error_handler.h"
 #include "integral_limits.h"
 #include "exception.h"
+#include "memory.h"
 
 #undef ETL_FILE
 #define ETL_FILE "27"
@@ -229,15 +230,32 @@ namespace etl
       is_truncated = false;
     }
 
+    //*************************************************************************
+    /// Sets the 'secure' flag to the requested state.
+    //*************************************************************************
+    void set_secure()
+    {
+      clear_afer_use = true;
+    }
+
+    //*************************************************************************
+    /// Gets the 'secure' state flag.
+//*************************************************************************
+    bool is_secure() const
+    {
+      return clear_afer_use;
+    }
+
   protected:
 
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
     string_base(size_t max_size_)
-      : is_truncated(false),
-        current_size(0),
-        CAPACITY(max_size_)
+      : is_truncated(false)
+      , clear_afer_use(false)
+      , current_size(0)
+      , CAPACITY(max_size_)
     {
     }
 
@@ -248,9 +266,10 @@ namespace etl
     {
     }
 
-    bool            is_truncated; ///< Set to true if the operation truncated the string.
-    size_type       current_size; ///< The current number of elements in the string.
-    const size_type CAPACITY;     ///< The maximum number of elements in the string.
+    bool            is_truncated;   ///< Set to true if the operation truncated the string.
+    bool            clear_afer_use; ///< Set to true if the string must be cleared after use.
+    size_type       current_size;   ///< The current number of elements in the string.
+    const size_type CAPACITY;       ///< The maximum number of elements in the string.
   };
 
   //***************************************************************************
@@ -262,6 +281,8 @@ namespace etl
   class ibasic_string : public etl::string_base
   {
   public:
+
+    typedef ibasic_string<T> interface_type;
 
     typedef T                                     value_type;
     typedef T&                                    reference;
@@ -416,6 +437,7 @@ namespace etl
 
       current_size = new_size;
       p_buffer[new_size] = 0;
+      cleanup();
     }
 
     //*********************************************************************
@@ -529,6 +551,8 @@ namespace etl
       {
         is_truncated = true;
       }
+
+      cleanup();
     }
 
     //*********************************************************************
@@ -1057,6 +1081,7 @@ namespace etl
 
       current_size -= n_delete;
       p_buffer[current_size] = 0;
+      cleanup();
 
       return first;
     }
@@ -1380,6 +1405,11 @@ namespace etl
 
       // Insert the new stuff.
       insert(position, str, subposition, sublength);
+
+      if (str.truncated())
+      {
+        is_truncated = true;
+      }
 
       return *this;
     }
@@ -1981,7 +2011,8 @@ namespace etl
     void initialise()
     {
       current_size = 0;
-      p_buffer[0]  = 0;
+      cleanup();
+      p_buffer[0] = 0;
       is_truncated = false;
     }
 
@@ -2035,9 +2066,25 @@ namespace etl
       }
     }
 
-    // Disable copy construction.
+    //*************************************************************************
+    /// Clear the unused trailing portion of the string.
+    //*************************************************************************
+    void cleanup()
+    {
+      if (is_secure())
+      {
+        etl::memory_clear_range(&p_buffer[current_size], &p_buffer[CAPACITY]);
+      }
+    }
+
+    //*************************************************************************
+    /// Disable copy construction.
+    //*************************************************************************
     ibasic_string(const ibasic_string&);
 
+    //*************************************************************************
+    /// Pointer to the string's buffer.
+    //*************************************************************************
     T* p_buffer;
 
     //*************************************************************************
@@ -2045,15 +2092,17 @@ namespace etl
     //*************************************************************************
 #if defined(ETL_POLYMORPHIC_STRINGS) || defined(ETL_POLYMORPHIC_CONTAINERS)
   public:
-    virtual ~ibasic_string()
-    {
-    }
+    virtual
 #else
   protected:
+#endif
     ~ibasic_string()
     {
+      if (is_secure())
+      {
+        initialise();
+      }
     }
-#endif
   };
 
   //***************************************************************************

@@ -506,7 +506,7 @@ namespace
       std::fill(std::begin(n), std::end(n), 0xFF);
       CHECK_EQUAL(0x00000000U, etl::make_default_at(pn));
 
-      std::fill(std::begin(n), std::end(n), 0x00);      
+      std::fill(std::begin(n), std::end(n), 0x00);
       CHECK_EQUAL(0xFFFFFFFFU, etl::make_value_at(pn, 0xFFFFFFFFU));
 
       std::fill(std::begin(n), std::end(n), 0xFF);
@@ -530,45 +530,129 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_wipe_on_destruct)
+    TEST(test_memory_clear)
     {
-      struct Data : public etl::wipe_on_destruct<Data>
+      struct Data
       {
-        Data(int a_, char b_, double c_)
-          : a(a_),
-            b(b_),
-            c(c_)
-        {
-        }
-
-        bool operator ==(const Data& other) const
-        {
-          return (a == other.a) && (b == other.b) && (c == other.c);
-        }
-
-        int a;
-        char b;
-        double c;
+        uint32_t d1;
+        char     d2;
       };
 
-      std::array<char, sizeof(Data)> buffer;
-      buffer.fill(0);
+      Data data = { 0xFFFFFFFF, char(0xFF) };
 
-      // Construct in-place.
-      ::new (buffer.data()) Data(1, 'b', 3.4);
+      etl::memory_clear(data);
 
-      Data& other = *reinterpret_cast<Data*>(buffer.data());
-      CHECK(other == Data(1, 'b', 3.4));
+      CHECK_EQUAL(0x00000000, data.d1);
+      CHECK_EQUAL(0x00,       data.d2);
+    }
 
-      // Cleared compare buffer.
-      std::array<char, sizeof(Data)> clear;
-      clear.fill(0);
+    //*************************************************************************
+    TEST(test_memory_clear_range_pointer_n)
+    {
+      struct Data
+      {
+        uint32_t d1;
+        char     d2;
+      };
 
-      // Destruct;
-      other.~Data();
+      Data data[3] = { { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) } };
 
-      // Storage should be wiped.
-      CHECK(buffer == clear);
+      etl::memory_clear_range(data, 3);
+
+      CHECK_EQUAL(0x00000000, data[0].d1);
+      CHECK_EQUAL(0x00, data[0].d2);
+
+      CHECK_EQUAL(0x00000000, data[1].d1);
+      CHECK_EQUAL(0x00, data[1].d2);
+
+      CHECK_EQUAL(0x00000000, data[2].d1);
+      CHECK_EQUAL(0x00, data[2].d2);
+    }
+
+    //*************************************************************************
+    TEST(test_memory_clear_range_pointer_pointer)
+    {
+      struct Data
+      {
+        uint32_t d1;
+        char     d2;
+      };
+
+      Data data[3] = { { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) } };
+
+      etl::memory_clear_range(std::begin(data), std::end(data));
+
+      CHECK_EQUAL(0x00000000, data[0].d1);
+      CHECK_EQUAL(0x00, data[0].d2);
+
+      CHECK_EQUAL(0x00000000, data[1].d1);
+      CHECK_EQUAL(0x00, data[1].d2);
+
+      CHECK_EQUAL(0x00000000, data[2].d1);
+      CHECK_EQUAL(0x00, data[2].d2);
+    }
+
+    //*************************************************************************
+    TEST(test_memory_set)
+    {
+      struct Data
+      {
+        uint32_t d1;
+        char     d2;
+      };
+
+      Data data = { 0xFFFFFFFF, char(0xFF) };
+
+      etl::memory_set(data, 0x5A);
+
+      CHECK_EQUAL(0x5A5A5A5A, data.d1);
+      CHECK_EQUAL(0x5A,       data.d2);
+    }
+
+    //*************************************************************************
+    TEST(test_memory_set_range_pointer_n)
+    {
+      struct Data
+      {
+        uint32_t d1;
+        char     d2;
+      };
+
+      Data data[3] = { { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) } };
+
+      etl::memory_set_range(data, 3, 0x5A);
+
+      CHECK_EQUAL(0x5A5A5A5A, data[0].d1);
+      CHECK_EQUAL(0x5A, data[0].d2);
+
+      CHECK_EQUAL(0x5A5A5A5A, data[1].d1);
+      CHECK_EQUAL(0x5A, data[1].d2);
+
+      CHECK_EQUAL(0x5A5A5A5A, data[2].d1);
+      CHECK_EQUAL(0x5A, data[2].d2);
+    }
+
+    //*************************************************************************
+    TEST(test_memory_set_range_pointer_pointer)
+    {
+      struct Data
+      {
+        uint32_t d1;
+        char     d2;
+      };
+
+      Data data[3] = { { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) } };
+
+      etl::memory_set_range(std::begin(data), std::end(data), 0x5A);
+
+      CHECK_EQUAL(0x5A5A5A5A, data[0].d1);
+      CHECK_EQUAL(0x5A, data[0].d2);
+
+      CHECK_EQUAL(0x5A5A5A5A, data[1].d1);
+      CHECK_EQUAL(0x5A, data[1].d2);
+
+      CHECK_EQUAL(0x5A5A5A5A, data[2].d1);
+      CHECK_EQUAL(0x5A, data[2].d2);
     }
   };
 }

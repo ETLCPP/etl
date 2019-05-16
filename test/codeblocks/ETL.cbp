@@ -154,6 +154,7 @@
 		<Unit filename="../../include/etl/atomic/atomic_arm.h" />
 		<Unit filename="../../include/etl/atomic/atomic_gcc_sync.h" />
 		<Unit filename="../../include/etl/atomic/atomic_std.h" />
+		<Unit filename="../../include/etl/basic_format_spec.h" />
 		<Unit filename="../../include/etl/basic_string.h" />
 		<Unit filename="../../include/etl/binary.h" />
 		<Unit filename="../../include/etl/bit_stream.h" />
@@ -197,6 +198,7 @@
 		<Unit filename="../../include/etl/flat_multiset.h" />
 		<Unit filename="../../include/etl/flat_set.h" />
 		<Unit filename="../../include/etl/fnv_1.h" />
+		<Unit filename="../../include/etl/format_spec.h" />
 		<Unit filename="../../include/etl/forward_list.h" />
 		<Unit filename="../../include/etl/frame_check_sequence.h" />
 		<Unit filename="../../include/etl/fsm.h" />
@@ -229,6 +231,7 @@
 		<Unit filename="../../include/etl/message_router_generator.h" />
 		<Unit filename="../../include/etl/message_timer.h" />
 		<Unit filename="../../include/etl/message_types.h" />
+		<Unit filename="../../include/etl/multi_array.h" />
 		<Unit filename="../../include/etl/multimap.h" />
 		<Unit filename="../../include/etl/multiset.h" />
 		<Unit filename="../../include/etl/murmur3.h" />
@@ -247,6 +250,7 @@
 		<Unit filename="../../include/etl/priority_queue.h" />
 		<Unit filename="../../include/etl/private/ivectorpointer.h" />
 		<Unit filename="../../include/etl/private/pvoidvector.h" />
+		<Unit filename="../../include/etl/private/to_string_helper.h" />
 		<Unit filename="../../include/etl/private/vector_base.h" />
 		<Unit filename="../../include/etl/profiles/arduino_arm.h" />
 		<Unit filename="../../include/etl/profiles/armv5.h" />
@@ -297,13 +301,19 @@
 		<Unit filename="../../include/etl/task.h" />
 		<Unit filename="../../include/etl/temp.h" />
 		<Unit filename="../../include/etl/timer.h" />
+		<Unit filename="../../include/etl/to_string.h" />
+		<Unit filename="../../include/etl/to_u16string.h" />
+		<Unit filename="../../include/etl/to_u32string.h" />
+		<Unit filename="../../include/etl/to_wstring.h" />
 		<Unit filename="../../include/etl/type_def.h" />
 		<Unit filename="../../include/etl/type_lookup.h" />
 		<Unit filename="../../include/etl/type_lookup_generator.h" />
 		<Unit filename="../../include/etl/type_select.h" />
 		<Unit filename="../../include/etl/type_traits.h" />
 		<Unit filename="../../include/etl/type_traits_generator.h" />
+		<Unit filename="../../include/etl/u16format_spec.h" />
 		<Unit filename="../../include/etl/u16string.h" />
+		<Unit filename="../../include/etl/u32format_spec.h" />
 		<Unit filename="../../include/etl/u32string.h" />
 		<Unit filename="../../include/etl/unordered_map.h" />
 		<Unit filename="../../include/etl/unordered_multimap.h" />
@@ -317,6 +327,7 @@
 		<Unit filename="../../include/etl/vector.h" />
 		<Unit filename="../../include/etl/version.h" />
 		<Unit filename="../../include/etl/visitor.h" />
+		<Unit filename="../../include/etl/wformat_spec.h" />
 		<Unit filename="../../include/etl/wstring.h" />
 		<Unit filename="../../src/c/ecl_timer.c">
 			<Option compilerVar="CC" />
@@ -387,6 +398,7 @@
 		<Unit filename="../test_message_bus.cpp" />
 		<Unit filename="../test_message_router.cpp" />
 		<Unit filename="../test_message_timer.cpp" />
+		<Unit filename="../test_multi_array.cpp" />
 		<Unit filename="../test_multimap.cpp" />
 		<Unit filename="../test_multiset.cpp" />
 		<Unit filename="../test_murmur3.cpp" />
@@ -428,6 +440,10 @@
 		<Unit filename="../test_string_view.cpp" />
 		<Unit filename="../test_string_wchar_t.cpp" />
 		<Unit filename="../test_task_scheduler.cpp" />
+		<Unit filename="../test_to_string.cpp" />
+		<Unit filename="../test_to_u16string.cpp" />
+		<Unit filename="../test_to_u32string.cpp" />
+		<Unit filename="../test_to_wstring.cpp" />
 		<Unit filename="../test_type_def.cpp" />
 		<Unit filename="../test_type_lookup.cpp" />
 		<Unit filename="../test_type_select.cpp" />

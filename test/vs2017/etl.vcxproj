@@ -362,6 +362,7 @@
     <ClInclude Include="..\..\include\etl\atomic\atomic_gcc_sync.h" />
     <ClInclude Include="..\..\include\etl\atomic\atomic_llvm_sync.h" />
     <ClInclude Include="..\..\include\etl\atomic\atomic_std.h" />
+    <ClInclude Include="..\..\include\etl\basic_format_spec.h" />
     <ClInclude Include="..\..\include\etl\bit_stream.h" />
     <ClInclude Include="..\..\include\etl\callback_timer.h" />
     <ClInclude Include="..\..\include\etl\combinations.h" />
@@ -371,12 +372,16 @@
     <ClInclude Include="..\..\include\etl\crc32_c.h" />
     <ClInclude Include="..\..\include\etl\cumulative_moving_average.h" />
     <ClInclude Include="..\..\include\etl\c\ecl_timer.h" />
+    <ClInclude Include="..\..\include\etl\format_spec.h" />
     <ClInclude Include="..\..\include\etl\frame_check_sequence.h" />
     <ClInclude Include="..\..\include\etl\fsm.h" />
     <ClInclude Include="..\..\include\etl\fsm_generator.h" />
     <ClInclude Include="..\..\include\etl\callback_service.h" />
     <ClInclude Include="..\..\include\etl\largest_generator.h" />
     <ClInclude Include="..\..\include\etl\absolute.h" />
+    <ClInclude Include="..\..\include\etl\multi_array.h" />
+    <ClInclude Include="..\..\include\etl\negative.h" />
+    <ClInclude Include="..\..\include\etl\private\to_string_helper.h" />
     <ClInclude Include="..\..\include\etl\queue_spsc_locked.h" />
     <ClInclude Include="..\..\include\etl\scaled_rounding.h" />
     <ClInclude Include="..\..\include\etl\state_chart.h" />
@@ -434,11 +439,17 @@
     <ClInclude Include="..\..\include\etl\string_view.h" />
     <ClInclude Include="..\..\include\etl\task.h" />
     <ClInclude Include="..\..\include\etl\timer.h" />
+    <ClInclude Include="..\..\include\etl\to_string.h" />
+    <ClInclude Include="..\..\include\etl\to_u16string.h" />
+    <ClInclude Include="..\..\include\etl\to_u32string.h" />
+    <ClInclude Include="..\..\include\etl\to_wstring.h" />
     <ClInclude Include="..\..\include\etl\type_lookup.h" />
     <ClInclude Include="..\..\include\etl\type_lookup_generator.h" />
     <ClInclude Include="..\..\include\etl\type_select.h" />
     <ClInclude Include="..\..\include\etl\type_select_generator.h" />
     <ClInclude Include="..\..\include\etl\type_traits_generator.h" />
+    <ClInclude Include="..\..\include\etl\u16format_spec.h" />
+    <ClInclude Include="..\..\include\etl\u32format_spec.h" />
     <ClInclude Include="..\..\include\etl\variant_pool.h" />
     <ClInclude Include="..\..\include\etl\variant_pool_generator.h" />
     <ClInclude Include="..\..\include\etl\version.h" />
@@ -534,6 +545,7 @@
     <ClInclude Include="..\..\include\etl\variant.h" />
     <ClInclude Include="..\..\include\etl\vector.h" />
     <ClInclude Include="..\..\include\etl\visitor.h" />
+    <ClInclude Include="..\..\include\etl\wformat_spec.h" />
     <ClInclude Include="..\..\include\etl\wstring.h" />
     <ClInclude Include="..\data.h" />
     <ClInclude Include="..\ecl_user.h" />
@@ -573,6 +585,7 @@
     <ClCompile Include="..\test_forward_list_shared_pool.cpp" />
     <ClCompile Include="..\test_bit_stream.cpp" />
     <ClCompile Include="..\test_list_shared_pool.cpp" />
+    <ClCompile Include="..\test_multi_array.cpp" />
     <ClCompile Include="..\test_no_stl_algorithm.cpp" />
     <ClCompile Include="..\test_array.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../unittest-cpp</AdditionalIncludeDirectories>
@@ -745,6 +758,10 @@
     <ClCompile Include="..\test_string_view.cpp" />
     <ClCompile Include="..\test_string_wchar_t.cpp" />
     <ClCompile Include="..\test_task_scheduler.cpp" />
+    <ClCompile Include="..\test_to_string.cpp" />
+    <ClCompile Include="..\test_to_u16string.cpp" />
+    <ClCompile Include="..\test_to_u32string.cpp" />
+    <ClCompile Include="..\test_to_wstring.cpp" />
     <ClCompile Include="..\test_type_def.cpp" />
     <ClCompile Include="..\test_type_lookup.cpp" />
     <ClCompile Include="..\test_type_select.cpp" />
