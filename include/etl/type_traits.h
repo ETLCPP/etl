@@ -314,6 +314,13 @@ namespace etl
   template <typename T> struct is_trivially_copy_assignable : etl::is_pod<T> {};
 #endif
 
+#if ETL_CPP11_SUPPORTED
+  /// is_rvalue_reference
+  ///\ingroup type_traits
+  template <class T> struct is_rvalue_reference      : etl::false_type {};
+  template <class T> struct is_rvalue_reference<T&&> : etl::true_type {};
+#endif
+
   /// conditional
   ///\ingroup type_traits
   template <bool B, typename T, typename F>  struct conditional { typedef T type; };
@@ -335,7 +342,7 @@ namespace etl
   struct conditional_integral_constant<false, T, TRUE_VALUE, FALSE_VALUE>
   {
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
-    static const T value = FALSE_VALUE; 
+    static const T value = FALSE_VALUE;
   };
 
   /// make_signed
@@ -480,19 +487,40 @@ namespace etl
   ///\ingroup type_traits
   template <> struct alignment_of<void> : integral_constant <size_t, 0>{};
 
+#if ETL_CPP11_SUPPORTED
+
+  //***************************************************************************"
+  /// Template to determine if a type is one of a specified list.
+  ///\ingroup types
+  //***************************************************************************"
+  template <typename T, typename T1, typename... TRest>
+  struct is_one_of
+  {
+    static const bool value = etl::is_same<T, T1>::value ||
+                              etl::is_one_of<T, TRest...>::value;
+  };
+
+  template <typename T, typename T1>
+  struct is_one_of<T, T1>
+  {
+    static const bool value = etl::is_same<T, T1>::value;
+  };
+
+#else
+
   //***************************************************************************
   /// Template to determine if a type is one of a specified list.
   ///\ingroup types
   //***************************************************************************
   template <typename T,
-            typename T1, typename T2 = void, typename T3 = void, typename T4 = void, 
-            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void, 
-            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void, 
-            typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void, 
+            typename T1, typename T2 = void, typename T3 = void, typename T4 = void,
+            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void,
+            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void,
+            typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void,
             typename T17 = void>
   struct is_one_of
   {
-    static const bool value = 
+    static const bool value =
         etl::is_same<T, T1>::value ||
         etl::is_same<T, T2>::value ||
         etl::is_same<T, T3>::value ||
@@ -511,6 +539,8 @@ namespace etl
         etl::is_same<T, T16>::value ||
         etl::is_same<T, T17>::value;
   };
+
+#endif
 
   //***************************************************************************
   // A set of templates to allow related types to be derived.

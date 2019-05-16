@@ -499,6 +499,27 @@ namespace etl
   ///\ingroup type_traits
   template <> struct alignment_of<void> : integral_constant <size_t, 0>{};
 
+#if ETL_CPP11_SUPPORTED
+
+  //***************************************************************************"
+  /// Template to determine if a type is one of a specified list.
+  ///\ingroup types
+  //***************************************************************************"
+  template <typename T, typename T1, typename... TRest>
+  struct is_one_of
+  {
+    static const bool value = etl::is_same<T, T1>::value ||
+                              etl::is_one_of<T, TRest...>::value;
+  };
+
+  template <typename T, typename T1>
+  struct is_one_of<T, T1>
+  {
+    static const bool value = etl::is_same<T, T1>::value;
+  };
+
+#else
+
   /*[[[cog
   import cog
   cog.outl("//***************************************************************************")
@@ -523,6 +544,8 @@ namespace etl
   cog.outl("};")
   ]]]*/
   /*[[[end]]]*/
+
+#endif
 
   //***************************************************************************
   // A set of templates to allow related types to be derived.
