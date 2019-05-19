@@ -30,123 +30,126 @@ SOFTWARE.
 
 #include "etl/function.h"
 
-//*****************************************************************************
-const int VALUE = 1;
-bool function_called = false;
-bool parameter_correct = false;
-
-//*****************************************************************************
-// Test data structure.
-//*****************************************************************************
-struct Data
+namespace
 {
-  int d;
-};
+  //*****************************************************************************
+  const int VALUE = 1;
+  bool function_called = false;
+  bool parameter_correct = false;
 
-//*****************************************************************************
-// Call the function taking no parameters.
-//*****************************************************************************
-void call(etl::ifunction<void>& function)
-{
-  function();
-}
+  //*****************************************************************************
+  // Test data structure.
+  //*****************************************************************************
+  struct Data
+  {
+    int d;
+  };
 
-//*****************************************************************************
-// Call the const function taking no parameters.
-//*****************************************************************************
-void call(const etl::ifunction<void>& function)
-{
-  function();
-}
+  //*****************************************************************************
+  // Call the function taking no parameters.
+  //*****************************************************************************
+  void call(etl::ifunction<void>& function)
+  {
+    function();
+  }
 
-//*****************************************************************************
-// Call the function taking an int parameter.
-//*****************************************************************************
-void call(etl::ifunction<int>& function)
-{
-  function(VALUE);
-}
+  //*****************************************************************************
+  // Call the const function taking no parameters.
+  //*****************************************************************************
+  void call(const etl::ifunction<void>& function)
+  {
+    function();
+  }
 
-//*****************************************************************************
-// Call the const function taking an int parameter.
-//*****************************************************************************
-void call(const etl::ifunction<int>& function)
-{
-  function(VALUE);
-}
+  //*****************************************************************************
+  // Call the function taking an int parameter.
+  //*****************************************************************************
+  void call(etl::ifunction<int>& function)
+  {
+    function(VALUE);
+  }
 
-//*****************************************************************************
-// Call the function taking a Data parameter.
-//*****************************************************************************
-void call(etl::ifunction<const Data&>& function)
-{
-  Data data;
-  data.d = VALUE;
-  function(data);
-}
+  //*****************************************************************************
+  // Call the const function taking an int parameter.
+  //*****************************************************************************
+  void call(const etl::ifunction<int>& function)
+  {
+    function(VALUE);
+  }
 
-//*****************************************************************************
-// Call the const function taking a Data parameter.
-//*****************************************************************************
-void call(const etl::ifunction<const Data&>& function)
-{
-  Data data;
-  data.d = VALUE;
-  function(data);
-}
+  //*****************************************************************************
+  // Call the function taking a Data parameter.
+  //*****************************************************************************
+  void call(etl::ifunction<const Data&>& function)
+  {
+    Data data;
+    data.d = VALUE;
+    function(data);
+  }
 
-//*****************************************************************************
-// The free function taking no parameters.
-//*****************************************************************************
-void free_void()
-{
-  function_called = true;
-}
+  //*****************************************************************************
+  // Call the const function taking a Data parameter.
+  //*****************************************************************************
+  void call(const etl::ifunction<const Data&>& function)
+  {
+    Data data;
+    data.d = VALUE;
+    function(data);
+  }
 
-//*****************************************************************************
-// The free function taking an int parameter.
-//*****************************************************************************
-void free_int(int i)
-{
-  function_called = true;
-  parameter_correct = (i == VALUE);
-}
-
-//*****************************************************************************
-// The free function taking a Data reference parameter.
-//*****************************************************************************
-void free_reference(const Data& data)
-{
-  function_called = true;
-  parameter_correct = (data.d == VALUE);
-}
-
-//*****************************************************************************
-// The test class with member functions.
-//*****************************************************************************
-class Test
-{
-public:
-
-  void member_void()
+  //*****************************************************************************
+  // The free function taking no parameters.
+  //*****************************************************************************
+  void free_void()
   {
     function_called = true;
   }
 
-  void member_int(int i)
+  //*****************************************************************************
+  // The free function taking an int parameter.
+  //*****************************************************************************
+  void free_int(int i)
   {
     function_called = true;
     parameter_correct = (i == VALUE);
   }
 
-  void member_reference(const Data& data)
+  //*****************************************************************************
+  // The free function taking a Data reference parameter.
+  //*****************************************************************************
+  void free_reference(const Data& data)
   {
     function_called = true;
     parameter_correct = (data.d == VALUE);
   }
-};
 
-Test test_static;
+  //*****************************************************************************
+  // The test class with member functions.
+  //*****************************************************************************
+  class Test
+  {
+  public:
+
+    void member_void()
+    {
+      function_called = true;
+    }
+
+    void member_int(int i)
+    {
+      function_called = true;
+      parameter_correct = (i == VALUE);
+    }
+
+    void member_reference(const Data& data)
+    {
+      function_called = true;
+      parameter_correct = (data.d == VALUE);
+    }
+  };
+
+  Test test_static;
+}
 
 //*****************************************************************************
 // Initialises the test results.

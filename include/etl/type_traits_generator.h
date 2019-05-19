@@ -598,6 +598,27 @@ namespace etl
     typedef const type_t*       const_pointer;
     typedef const type_t* const const_pointer_const;
   };
+
+  //***************************************************************************
+  // size_of
+  //***************************************************************************
+  template <typename T>
+  struct size_of
+  {
+    enum
+    {
+      size = sizeof(T)
+    };
+  };
+
+  template <>
+  struct size_of<void>
+  {
+    enum
+    {
+      size = 1
+    };
+  };
 }
 
 #endif
