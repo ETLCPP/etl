@@ -49,9 +49,12 @@ namespace
 namespace etl
 {
   template <>
-  struct etl::size_of<TestData>
+  struct size_of<TestData>
   {
-    static const size_t size = 20;
+    enum
+    {
+      size = 20
+    };
   };
 }
 

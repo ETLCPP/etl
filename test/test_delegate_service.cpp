@@ -28,15 +28,15 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
-#include "etl/function.h"
-#include "etl/callback_service.h"
+#include "etl/delegate.h"
+#include "etl/delegate_service.h"
 
 namespace
 {
   const size_t SIZE   = 3U;
   const size_t OFFSET = 5U;
 
-  typedef etl::callback_service<SIZE, OFFSET> Service;
+  using Service = etl::delegate_service<SIZE, OFFSET>;
 
   //*****************************************************************************
   bool global_called    = false;
@@ -71,7 +71,7 @@ namespace
   public:
 
     Test()
-      : callback(*this)
+      : callback(etl::delegate<void(size_t)>::create<Test, &Test::member1>(*this))
     {
     }
 
@@ -88,19 +88,19 @@ namespace
     }
 
     // Callback for 'member1'.
-    etl::function_mp<Test, size_t, &Test::member1> callback;
+    etl::delegate<void(size_t)> callback;
   };
 
   Test test;
 
   // Callback for 'member2'.
-  etl::function_imp<Test, size_t, test, &Test::member2> member_callback;
+  etl::delegate<void(size_t)> member_callback = etl::delegate<void(size_t)>::create<Test, test, &Test::member2>();
 
   // Callback for 'global'.
-  etl::function_fp<size_t, global> global_callback;
+  etl::delegate<void(size_t)> global_callback = etl::delegate<void(size_t)>::create<global>();
 
   // Callback for 'unhandled'.
-  etl::function_fp<size_t, unhandled> unhandled_callback;
+  etl::delegate<void(size_t)> unhandled_callback = etl::delegate<void(size_t)>::create<unhandled>();
 
   //*****************************************************************************
   // Initialises the test results.
@@ -128,18 +128,18 @@ namespace
     OUT_OF_RANGE
   };
 
-  SUITE(test_callback_service)
+  SUITE(test_delegate_service)
   {
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_callback_global_compile_time)
+    TEST_FIXTURE(SetupFixture, test_delegate_global_compile_time)
     {
       Service service;
 
-      service.register_callback<GLOBAL>(global_callback);
-      service.register_callback<MEMBER1>(test.callback);
-      service.register_callback<MEMBER2>(member_callback);
+      service.register_delegate<GLOBAL>(global_callback);
+      service.register_delegate<MEMBER1>(test.callback);
+      service.register_delegate<MEMBER2>(member_callback);
 
-      service.callback<GLOBAL>();
+      service.call<GLOBAL>();
 
       CHECK_EQUAL(GLOBAL, called_id);
       CHECK(global_called);
@@ -149,15 +149,15 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_callback_global_run_time)
+    TEST_FIXTURE(SetupFixture, test_delegate_global_run_time)
     {
       Service service;
 
-      service.register_callback(GLOBAL,  global_callback);
-      service.register_callback(MEMBER1, test.callback);
-      service.register_callback(MEMBER2, member_callback);
+      service.register_delegate(GLOBAL,  global_callback);
+      service.register_delegate(MEMBER1, test.callback);
+      service.register_delegate(MEMBER2, member_callback);
 
-      service.callback(GLOBAL);
+      service.call(GLOBAL);
 
       CHECK_EQUAL(GLOBAL, called_id);
       CHECK(global_called);
@@ -167,15 +167,15 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_callback_member1_compile_time)
+    TEST_FIXTURE(SetupFixture, test_delegate_member1_compile_time)
     {
       Service service;
 
-      service.register_callback<GLOBAL>(global_callback);
-      service.register_callback<MEMBER1>(test.callback);
-      service.register_callback<MEMBER2>(member_callback);
+      service.register_delegate<GLOBAL>(global_callback);
+      service.register_delegate<MEMBER1>(test.callback);
+      service.register_delegate<MEMBER2>(member_callback);
 
-      service.callback<MEMBER1>();
+      service.call<MEMBER1>();
 
       CHECK_EQUAL(MEMBER1, called_id);
       CHECK(!global_called);
@@ -185,15 +185,15 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_callback_member1_run_time)
+    TEST_FIXTURE(SetupFixture, test_delegate_member1_run_time)
     {
       Service service;
 
-      service.register_callback(GLOBAL,  global_callback);
-      service.register_callback(MEMBER1, test.callback);
-      service.register_callback(MEMBER2, member_callback);
+      service.register_delegate(GLOBAL,  global_callback);
+      service.register_delegate(MEMBER1, test.callback);
+      service.register_delegate(MEMBER2, member_callback);
 
-      service.callback(MEMBER1);
+      service.call(MEMBER1);
 
       CHECK_EQUAL(MEMBER1, called_id);
       CHECK(!global_called);
@@ -203,15 +203,15 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_callback_member2_compile_time)
+    TEST_FIXTURE(SetupFixture, test_delegate_member2_compile_time)
     {
       Service service;
 
-      service.register_callback<GLOBAL>(global_callback);
-      service.register_callback<MEMBER1>(test.callback);
-      service.register_callback<MEMBER2>(member_callback);
+      service.register_delegate<GLOBAL>(global_callback);
+      service.register_delegate<MEMBER1>(test.callback);
+      service.register_delegate<MEMBER2>(member_callback);
 
-      service.callback<MEMBER2>();
+      service.call<MEMBER2>();
 
       CHECK_EQUAL(MEMBER2, called_id);
       CHECK(!global_called);
@@ -221,15 +221,15 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_callback_unhandled_out_of_range_run_time_default)
+    TEST_FIXTURE(SetupFixture, test_delegate_unhandled_out_of_range_run_time_default)
     {
       Service service;
 
-      service.register_callback<GLOBAL>(global_callback);
-      service.register_callback<MEMBER1>(test.callback);
-      service.register_callback<MEMBER2>(member_callback);
+      service.register_delegate<GLOBAL>(global_callback);
+      service.register_delegate<MEMBER1>(test.callback);
+      service.register_delegate<MEMBER2>(member_callback);
 
-      service.callback(OUT_OF_RANGE);
+      service.call(OUT_OF_RANGE);
 
       CHECK_EQUAL(UINT_MAX, called_id);
       CHECK(!global_called);
@@ -239,17 +239,17 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_callback_unhandled_out_of_range_run_time_user_supplied)
+    TEST_FIXTURE(SetupFixture, test_delegate_unhandled_out_of_range_run_time_user_supplied)
     {
       Service service;
 
-      service.register_callback<GLOBAL>(global_callback);
-      service.register_callback<MEMBER1>(test.callback);
-      service.register_callback<MEMBER2>(member_callback);
+      service.register_delegate<GLOBAL>(global_callback);
+      service.register_delegate<MEMBER1>(test.callback);
+      service.register_delegate<MEMBER2>(member_callback);
 
-      service.register_unhandled_callback(unhandled_callback);
+      service.register_unhandled_delegate(unhandled_callback);
 
-      service.callback(OUT_OF_RANGE);
+      service.call(OUT_OF_RANGE);
 
       CHECK_EQUAL(OUT_OF_RANGE, called_id);
       CHECK(!global_called);
@@ -259,14 +259,14 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_callback_unhandled_not_registered_compile_time_default)
+    TEST_FIXTURE(SetupFixture, test_delegate_unhandled_not_registered_compile_time_default)
     {
       Service service;
 
-      service.register_callback<GLOBAL>(global_callback);
-      service.register_callback<MEMBER2>(member_callback);
+      service.register_delegate<GLOBAL>(global_callback);
+      service.register_delegate<MEMBER2>(member_callback);
 
-      service.callback<MEMBER1>();
+      service.call<MEMBER1>();
 
       CHECK_EQUAL(UINT_MAX, called_id);
       CHECK(!global_called);
@@ -276,14 +276,14 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_callback_unhandled_not_registered_run_time_default)
+    TEST_FIXTURE(SetupFixture, test_delegate_unhandled_not_registered_run_time_default)
     {
       Service service;
 
-      service.register_callback(GLOBAL,  global_callback);
-      service.register_callback(MEMBER2, member_callback);
+      service.register_delegate(GLOBAL,  global_callback);
+      service.register_delegate(MEMBER2, member_callback);
 
-      service.callback(MEMBER1);
+      service.call(MEMBER1);
 
       CHECK_EQUAL(UINT_MAX, called_id);
       CHECK(!global_called);
@@ -293,16 +293,16 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_callback_not_registered_compile_time_user_supplied)
+    TEST_FIXTURE(SetupFixture, test_delegate_not_registered_compile_time_user_supplied)
     {
       Service service;
 
-      service.register_callback<GLOBAL>(global_callback);
-      service.register_callback<MEMBER2>(member_callback);
+      service.register_delegate<GLOBAL>(global_callback);
+      service.register_delegate<MEMBER2>(member_callback);
 
-      service.register_unhandled_callback(unhandled_callback);
+      service.register_unhandled_delegate(unhandled_callback);
 
-      service.callback<MEMBER1>();
+      service.call<MEMBER1>();
 
       CHECK_EQUAL(MEMBER1, called_id);
       CHECK(!global_called);
@@ -312,16 +312,16 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_callback_unhandled_run_time_user_supplied)
+    TEST_FIXTURE(SetupFixture, test_delegate_unhandled_run_time_user_supplied)
     {
       Service service;
 
-      service.register_callback(GLOBAL,  global_callback);
-      service.register_callback(MEMBER2, member_callback);
+      service.register_delegate(GLOBAL,  global_callback);
+      service.register_delegate(MEMBER2, member_callback);
 
-      service.register_unhandled_callback(unhandled_callback);
+      service.register_unhandled_delegate(unhandled_callback);
 
-      service.callback(MEMBER1);
+      service.call(MEMBER1);
 
       CHECK_EQUAL(MEMBER1, called_id);
       CHECK(!global_called);

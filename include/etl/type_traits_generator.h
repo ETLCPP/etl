@@ -605,13 +605,19 @@ namespace etl
   template <typename T>
   struct size_of
   {
-    static const size_t size = sizeof(T);
+    enum
+    {
+      size = sizeof(T)
+    };
   };
 
   template <>
   struct size_of<void>
   {
-    static const size_t size = 1;
+    enum
+    {
+      size = 1
+    };
   };
 }
 
