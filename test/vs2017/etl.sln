@@ -9,6 +9,8 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug 64|Win32 = Debug 64|Win32
 		Debug 64|x64 = Debug 64|x64
+		Debug LLVM|Win32 = Debug LLVM|Win32
+		Debug LLVM|x64 = Debug LLVM|x64
 		Debug No Unit Tests|Win32 = Debug No Unit Tests|Win32
 		Debug No Unit Tests|x64 = Debug No Unit Tests|x64
 		Debug|Win32 = Debug|Win32
@@ -21,6 +23,10 @@ Global
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug 64|Win32.Build.0 = Debug No Unit Tests|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug 64|x64.ActiveCfg = Debug64|x64
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug 64|x64.Build.0 = Debug64|x64
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug LLVM|Win32.ActiveCfg = Debug LLVM|Win32
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug LLVM|Win32.Build.0 = Debug LLVM|Win32
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug LLVM|x64.ActiveCfg = Debug LLVM|x64
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug LLVM|x64.Build.0 = Debug LLVM|x64
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug No Unit Tests|Win32.ActiveCfg = Debug No Unit Tests|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug No Unit Tests|Win32.Build.0 = Debug No Unit Tests|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug No Unit Tests|x64.ActiveCfg = Debug No Unit Tests|x64
