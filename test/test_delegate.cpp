@@ -46,8 +46,6 @@ namespace
     int d;
   };
 
-  Data data;
-
   //*****************************************************************************
   // The free function taking no parameters.
   //*****************************************************************************
@@ -272,6 +270,28 @@ namespace
 
       CHECK(function_called);
     }
+
+#if !defined(ETL_COMPILER_GCC)
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_member_operator_void_compile_time)
+    {
+      etl::delegate<void(void)> d = etl::delegate<void(void)>::create<Test, test_static>();
+
+      d();
+
+      CHECK(function_called);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_member_operator_void_compile_time_const)
+    {
+      etl::delegate<void(void)> d = etl::delegate<void(void)>::create<const Test, const_test_static>();
+
+      d();
+
+      CHECK(function_called);
+    }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assignment_member_operator_void)

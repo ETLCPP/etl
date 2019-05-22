@@ -139,6 +139,17 @@ namespace etl
       return delegate(const_method_instance_stub<T, Instance, Method>);
     }
 
+#if !defined(ETL_COMPILER_GCC)
+    //*************************************************************************
+    /// Create from instance function operator (Compile time).
+    //*************************************************************************
+    template <typename T, T& Instance>
+    static delegate create()
+    {
+      return delegate(operator_instance_stub<T, Instance>);
+    }
+#endif
+
     //*************************************************************************
     /// Execute the delegate.
     //*************************************************************************
@@ -304,6 +315,17 @@ namespace etl
     {
       return (Instance.*Method)(params...);
     }
+
+#if !defined(ETL_COMPILER_GCC)
+    //*************************************************************************
+    /// Stub call for a function operator. Compile time instance.
+    //*************************************************************************
+    template <typename T, T& Instance>
+    static TReturn operator_instance_stub(void*, TParams... params)
+    {
+      return Instance.operator()(params...);
+    }
+#endif
 
     //*************************************************************************
     /// Stub call for a free function.
