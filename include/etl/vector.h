@@ -1555,7 +1555,7 @@ namespace etl
       {
         this->initialise();
 
-        typename etl::ivector<T>::iterator itr = other.begin();
+        typename etl::ivector<T*>::iterator itr = other.begin();
         while (itr != other.end())
         {
           this->push_back(std::move(*itr));
@@ -1574,7 +1574,7 @@ namespace etl
       if (&rhs != this)
       {
         this->clear();
-        typename etl::ivector<T>::iterator itr = rhs.begin();
+        typename etl::ivector<T*>::iterator itr = rhs.begin();
         while (itr != rhs.end())
         {
           this->push_back(std::move(*itr));
