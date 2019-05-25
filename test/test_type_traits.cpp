@@ -49,9 +49,12 @@ namespace
 namespace etl
 {
   template <>
-  struct etl::size_of<TestData>
+  struct size_of<TestData>
   {
-    static const size_t size = 20;
+    enum
+    {
+      value = 20
+    };
   };
 }
 
@@ -746,10 +749,10 @@ namespace
   //*************************************************************************
   TEST(size_of)
   {
-    CHECK_EQUAL(1, etl::size_of<void>::size);
-    CHECK_EQUAL(1, etl::size_of<char>::size);
-    CHECK_EQUAL(2, etl::size_of<short>::size);
-    CHECK_EQUAL(4, etl::size_of<int>::size);
-    CHECK_EQUAL(20, etl::size_of<TestData>::size);
+    CHECK_EQUAL(1, etl::size_of<void>::value);
+    CHECK_EQUAL(1, etl::size_of<char>::value);
+    CHECK_EQUAL(2, etl::size_of<short>::value);
+    CHECK_EQUAL(4, etl::size_of<int>::value);
+    CHECK_EQUAL(20, etl::size_of<TestData>::value);
   }
 }
