@@ -633,7 +633,7 @@ namespace etl
   }
 
   template <>
-  constexpr size_t size_of<void>() const
+  constexpr size_t size_of<void>()
   {
     return 1;
   }

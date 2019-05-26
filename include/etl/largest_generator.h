@@ -83,10 +83,14 @@ namespace etl
   ///\ingroup largest
   //***************************************************************************
   template <typename T1, typename... TRest>
-  struct largest_type
+  class largest_type
   {
+  private:
+
     // Define 'largest_other' as 'largest_type' with all but the first parameter.
     using largest_other = typename largest_type<TRest...>::type;
+
+  public:
 
     // Set 'type' to be the largest of the first parameter and any of the others.
     // This is recursive.
@@ -106,8 +110,10 @@ namespace etl
   // Specialisation for one template parameter.
   //***************************************************************************
   template <typename T1>
-  struct largest_type<T1>
+  class largest_type<T1>
   {
+  public:
+
     using type = T1;
 
     enum
