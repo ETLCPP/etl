@@ -33,7 +33,7 @@ SOFTWARE.
 #include <type_traits>
 
 namespace
-{		
+{
   SUITE(test_largest)
   {
     //*************************************************************************
@@ -92,7 +92,7 @@ namespace
       struct S1 { char a; char  b; char c; };
       struct S2 { char a; short b; char c; };
       struct S3 { int  a; short b; char c; };
-      
+
       size_t size = etl::largest_alignment<S1, S2, S3>::value;
 
       CHECK_EQUAL(std::alignment_of<S3>::value, size);

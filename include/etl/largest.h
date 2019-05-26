@@ -61,8 +61,55 @@ SOFTWARE.
 #include "smallest.h"
 #include "static_assert.h"
 
-namespace etl 
+namespace etl
 {
+#if ETL_CPP11_SUPPORTED && !defined(ETL_LARGEST_TYPE_FORCE_CPP03)
+  //***************************************************************************
+  /// Template to determine the largest type and size.
+  /// Defines 'value_type' which is the type of the largest parameter.
+  /// Defines 'size' which is the size of the largest parameter.
+  ///\ingroup largest
+  //***************************************************************************
+  template <typename T1, typename... TRest>
+  class largest_type
+  {
+  private:
+
+    // Define 'largest_other' as 'largest_type' with all but the first parameter.
+    using largest_other = typename largest_type<TRest...>::type;
+
+  public:
+
+    // Set 'type' to be the largest of the first parameter and any of the others.
+    // This is recursive.
+    using type = typename etl::conditional<(etl::size_of<T1>() > etl::size_of<largest_other>()), // Boolean
+                                           T1,                                                   // TrueType
+                                           largest_other>                                        // FalseType
+                                           ::type;                                               // The largest type of the two.
+
+    // The size of the largest type.
+    enum
+    {
+      size = etl::size_of<type>()
+    };
+  };
+
+  //***************************************************************************
+  // Specialisation for one template parameter.
+  //***************************************************************************
+  template <typename T1>
+  class largest_type<T1>
+  {
+  public:
+
+    using type = T1;
+
+    enum
+    {
+      size = etl::size_of<type>()
+    };
+  };
+#else
   //***************************************************************************
   /// Template to determine the largest type and size.
   /// Supports up to 16 types.
@@ -107,7 +154,48 @@ namespace etl
       size = sizeof(type)
     };
   };
+#endif
 
+#if ETL_CPP11_SUPPORTED && !defined(ETL_LARGEST_ALIGNMENT_FORCE_CPP03)
+  //***************************************************************************
+  /// Template to determine the largest alignment.
+  /// Defines <b>value</b> which is the largest alignment of all the parameters.
+  ///\ingroup largest
+  //***************************************************************************
+  template <typename T1, typename... TRest>
+  struct largest_alignment
+  {
+    // Define 'largest_other' as 'largest_type' with all but the first parameter.
+    using largest_other = typename largest_alignment<TRest...>::type;
+
+    // Set 'type' to be the largest of the first parameter and any of the others.
+    // This is recursive.
+    using type = typename etl::conditional<(etl::alignment_of<T1>::value > etl::alignment_of<largest_other>::value), // Boolean
+                                            T1,                                                                      // TrueType
+                                            largest_other>                                                           // FalseType
+                                            ::type;                                                                  // The largest type of the two.
+
+    // The largest alignment.
+    enum
+    {
+      value = etl::alignment_of<type>::value
+    };
+  };
+
+  //***************************************************************************
+  // Specialisation for one template parameter.
+  //***************************************************************************
+  template <typename T1>
+  struct largest_alignment<T1>
+  {
+    typedef T1 type;
+
+    enum
+    {
+      value = etl::alignment_of<type>::value
+    };
+  };
+#else
   //***************************************************************************
   /// Template to determine the largest alignment.
   /// Supports up to 16 types.
@@ -151,6 +239,7 @@ namespace etl
       value = etl::alignment_of<type>::value
     };
   };
+#endif
 
   //***************************************************************************
   /// Defines a type that is as larger or larger than the specified type.
@@ -203,6 +292,24 @@ namespace etl
     typedef typename etl::smallest_int_for_bits<etl::integral_limits<T>::bits + 1>::type type;
   };
 
+#if ETL_CPP11_SUPPORTED && !defined(ETL_LARGEST_FORCE_CPP03)
+  //***************************************************************************
+  /// Template to determine the largest type, size and alignment.
+  /// Defines <b>value</b> which is the largest type, size and alignment of all the parameters.
+  ///\ingroup largest
+  //***************************************************************************
+  template <typename... T>
+    struct largest
+  {
+    using type = typename etl::largest_type<T...>::type;
+
+    enum
+    {
+      size      = etl::largest_type<T...>::size,
+      alignment = etl::largest_alignment<T...>::value
+    };
+  };
+#else
   //***************************************************************************
   /// Template to determine the largest type, size and alignment.
   /// Supports up to 16 types.
@@ -223,6 +330,7 @@ namespace etl
       alignment = etl::largest_alignment<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value
     };
   };
+#endif
 }
 
 #endif

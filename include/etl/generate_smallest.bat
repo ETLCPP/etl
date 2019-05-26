@@ -1,1 +1,1 @@
-python -m cogapp -d -e -olargest.h -DNTypes=16 largest_generator.h
+python -m cogapp -d -e -osmallest.h -DNTypes=16 smallest_generator.h

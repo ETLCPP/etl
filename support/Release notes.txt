@@ -1,4 +1,9 @@
 ===============================================================================
+14.25.0
+Added variadic template versions of etl::largest, etl::largest_type,
+etl::largest_alignment and etl::smallest
+
+===============================================================================
 14.24.2
 Fixed bug in 'vector of pointers' move constructor.
 
