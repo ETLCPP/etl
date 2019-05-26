@@ -625,23 +625,19 @@ namespace etl
   //***************************************************************************
   // size_of
   //***************************************************************************
+#if ETL_CPP11_SUPPORTED
   template <typename T>
-  struct size_of
+  constexpr size_t size_of()
   {
-    enum
-    {
-      value = sizeof(T)
-    };
-  };
+    return sizeof(T);
+  }
 
   template <>
-  struct size_of<void>
+  constexpr size_t size_of<void>() const
   {
-    enum
-    {
-      value = 1
-    };
-  };
+    return 1;
+  }
+#endif
 }
 
 #endif
