@@ -75,6 +75,53 @@ cog.outl("//********************************************************************
 
 namespace etl
 {
+#if ETL_CPP11_SUPPORTED && !defined(ETL_SMALLEST_TYPE_FORCE_CPP03)
+  //***************************************************************************
+  /// Template to determine the largest type and size.
+  /// Defines 'value_type' which is the type of the largest parameter.
+  /// Defines 'size' which is the size of the largest parameter.
+  ///\ingroup largest
+  //***************************************************************************
+  template <typename T1, typename... TRest>
+  class smallest_type
+  {
+  private:
+
+    // Define 'smallest_other' as 'smallest_type' with all but the first parameter.
+    using smallest_other = typename smallest_type<TRest...>::type;
+
+  public:
+
+    // Set 'type' to be the smallest of the first parameter and any of the others.
+    // This is recursive.
+    using type = typename etl::conditional<(etl::size_of<T1>() < etl::size_of<smallest_other>()), // Boolean
+                                            T1,                                                   // TrueType
+                                            smallest_other>                                       // FalseType
+                                            ::type;                                               // The smallest type of the two.
+
+    // The size of the smallest type.
+    enum
+    {
+      size = etl::size_of<type>()
+    };
+  };
+
+  //***************************************************************************
+  // Specialisation for one template parameter.
+  //***************************************************************************
+  template <typename T1>
+  class smallest_type<T1>
+  {
+  public:
+
+    using type = T1;
+
+    enum
+    {
+      size = etl::size_of<type>()
+    };
+  };
+#else
   /*[[[cog
   import cog
   cog.outl("//***************************************************************************")
@@ -161,7 +208,8 @@ namespace etl
   cog.outl("};")
   ]]]*/
   /*[[[end]]]*/
-  
+#endif
+
   namespace private_smallest
   {
     //*************************************************************************
@@ -169,7 +217,7 @@ namespace etl
     //*************************************************************************
     template <const int index>
     struct best_fit_uint_type;
-    
+
     //*************************************************************************
     // Less than or equal to 8 bits.
     //*************************************************************************
@@ -250,7 +298,7 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Template to determine the smallest unsigned int type that can contain a 
+  /// Template to determine the smallest unsigned int type that can contain a
   /// value with the specified number of bits.
   /// Defines 'type' which is the type of the smallest unsigned integer.
   ///\ingroup smallest
@@ -259,9 +307,9 @@ namespace etl
   struct smallest_uint_for_bits
   {
   private:
-    
+
     // Determines the index of the best unsigned type for the required number of bits.
-    static const int TYPE_INDEX = ((NBITS >  8) ? 1 : 0) + 
+    static const int TYPE_INDEX = ((NBITS >  8) ? 1 : 0) +
                                   ((NBITS > 16) ? 1 : 0) +
                                   ((NBITS > 32) ? 1 : 0);
 
@@ -271,7 +319,7 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Template to determine the smallest signed int type that can contain a 
+  /// Template to determine the smallest signed int type that can contain a
   /// value with the specified number of bits.
   /// Defines 'type' which is the type of the smallest signed integer.
   ///\ingroup smallest
@@ -304,7 +352,7 @@ namespace etl
 
     // Determines the index of the best unsigned type for the required value.
     static const int TYPE_INDEX = ((VALUE > UINT_LEAST8_MAX)  ? 1 : 0) +
-                                  ((VALUE > UINT16_MAX) ? 1 : 0) + 
+                                  ((VALUE > UINT16_MAX) ? 1 : 0) +
                                   ((VALUE > UINT32_MAX) ? 1 : 0);
 
   public:
@@ -324,7 +372,7 @@ namespace etl
   private:
 
     // Determines the index of the best signed type for the required value.
-    static const int TYPE_INDEX = (((VALUE > INT_LEAST8_MAX)  || (VALUE < INT_LEAST8_MIN))  ? 1 : 0) + 
+    static const int TYPE_INDEX = (((VALUE > INT_LEAST8_MAX)  || (VALUE < INT_LEAST8_MIN))  ? 1 : 0) +
                                   (((VALUE > INT16_MAX) || (VALUE < INT16_MIN)) ? 1 : 0) +
                                   (((VALUE > INT32_MAX) || (VALUE < INT32_MIN)) ? 1 : 0);
 

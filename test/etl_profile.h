@@ -86,6 +86,7 @@ SOFTWARE.
 //#define ETL_QUEUE_ISR_FORCE_CPP03
 //#define ETL_QUEUE_LOCKED_FORCE_CPP03
 //#define ETL_OPTIONAL_FORCE_CPP03
+//#define ETL_LARGEST_TYPE_FORCE_CPP03
 
 #ifdef _MSC_VER
   #include "etl/profiles/msvc_x86.h"
