@@ -238,7 +238,7 @@ namespace etl
     /// Starts the FSM.
     /// Can only be called once.
     /// Subsequent calls will do nothing.
-    ///\param call_on_enter_state If will call on_enter_state() for the first state. Default = true.
+    ///\param call_on_enter_state If true will call on_enter_state() for the first state. Default = true.
     //*******************************************
     void start(bool call_on_enter_state = true)
     {
@@ -271,6 +271,17 @@ namespace etl
     {
       static etl::null_message_router nmr;
       receive(nmr, message);
+    }
+
+    //*******************************************
+    /// Top level message handler for the FSM.
+    //*******************************************
+    void receive(imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& message)
+    {
+      if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
+      {
+        receive(source, message);
+      }
     }
 
     //*******************************************
@@ -360,6 +371,12 @@ namespace etl
       p_state = nullptr;
     }
 
+    //********************************************
+    bool is_null_router() const
+    {
+      return false;
+    }
+
   private:
 
     etl::ifsm_state*    p_state;          ///< A pointer to the current state.
@@ -390,7 +407,7 @@ namespace etl
     }
 
   protected:
-      
+
     ~fsm_state()
     {
     }
@@ -455,7 +472,7 @@ namespace etl
     }
 
   protected:
-      
+
     ~fsm_state()
     {
     }
@@ -519,7 +536,7 @@ namespace etl
     }
 
   protected:
-      
+
     ~fsm_state()
     {
     }
@@ -582,7 +599,7 @@ namespace etl
     }
 
   protected:
-      
+
     ~fsm_state()
     {
     }
@@ -643,7 +660,7 @@ namespace etl
     }
 
   protected:
-      
+
     ~fsm_state()
     {
     }
@@ -703,7 +720,7 @@ namespace etl
     }
 
   protected:
-      
+
     ~fsm_state()
     {
     }
@@ -762,7 +779,7 @@ namespace etl
     }
 
   protected:
-      
+
     ~fsm_state()
     {
     }
@@ -820,7 +837,7 @@ namespace etl
     }
 
   protected:
-      
+
     ~fsm_state()
     {
     }
@@ -876,7 +893,7 @@ namespace etl
     }
 
   protected:
-      
+
     ~fsm_state()
     {
     }
@@ -931,7 +948,7 @@ namespace etl
     }
 
   protected:
-      
+
     ~fsm_state()
     {
     }
@@ -985,7 +1002,7 @@ namespace etl
     }
 
   protected:
-      
+
     ~fsm_state()
     {
     }
@@ -1038,7 +1055,7 @@ namespace etl
     }
 
   protected:
-      
+
     ~fsm_state()
     {
     }
@@ -1089,7 +1106,7 @@ namespace etl
     }
 
   protected:
-      
+
     ~fsm_state()
     {
     }
@@ -1139,7 +1156,7 @@ namespace etl
     }
 
   protected:
-      
+
     ~fsm_state()
     {
     }
@@ -1188,7 +1205,7 @@ namespace etl
     }
 
   protected:
-      
+
     ~fsm_state()
     {
     }
@@ -1236,7 +1253,7 @@ namespace etl
     }
 
   protected:
-      
+
     ~fsm_state()
     {
     }
@@ -1280,9 +1297,9 @@ namespace etl
       : ifsm_state(STATE_ID)
     {
     }
-  
+
   protected:
-      
+
     ~fsm_state()
     {
     }

@@ -1,4 +1,10 @@
 ===============================================================================
+14.26.0
+Simplified message framework internal code.
+Additional receive() virtual function overload taking destination id.
+Removed is_bus() member function.
+
+===============================================================================
 14.25.0
 Added variadic template versions of etl::largest, etl::largest_type,
 etl::largest_alignment and etl::smallest
