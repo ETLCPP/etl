@@ -255,10 +255,10 @@ namespace
       RouterA router3(ROUTER3);
       RouterA router4(ROUTER4);
 
-      bus1.subscribe(router1);
-      bus1.subscribe(router2);
       bus1.subscribe(bus2);
+      bus1.subscribe(router1);
       bus1.subscribe(bus3);
+      bus1.subscribe(router2);
 
       bus2.subscribe(router3);
       bus3.subscribe(router4);

@@ -102,21 +102,12 @@ namespace etl
 
         if (ok)
         {
-          if (router.is_bus())
-          {
-            // Message busses get added to the end.
-            router_list.push_back(&router);
-          }
-          else
-          {
-            // Routers get added in id order.
-            router_list_t::iterator irouter = std::upper_bound(router_list.begin(),
-                                                               router_list.end(),
-                                                               router.get_message_router_id(),
-                                                               compare_router_id());
+          router_list_t::iterator irouter = std::upper_bound(router_list.begin(),
+                                                             router_list.end(),
+                                                             router.get_message_router_id(),
+                                                             compare_router_id());
 
-            router_list.insert(irouter, &router);
-          }
+          router_list.insert(irouter, &router);
         }
       }
 
@@ -203,17 +194,9 @@ namespace etl
           {
             etl::imessage_router& router = **irouter;
 
-            if (router.is_bus())
+            if (router.accepts(message.message_id))
             {
-              // The router is actually a bus.
-              etl::imessage_bus& bus = static_cast<etl::imessage_bus&>(router);
-
-              // So pass it on.
-              bus.receive(source, destination_router_id, message);
-            }
-            else if (router.accepts(message.message_id))
-            {
-              router.receive(source, message);
+              router.receive(source, destination_router_id, message);
             }
 
             ++irouter;
@@ -254,11 +237,8 @@ namespace etl
 
           while (irouter != router_list.end())
           {
-            // The router is actually a bus.
-            etl::imessage_bus& bus = static_cast<etl::imessage_bus&>(**irouter);
-
             // So pass it on.
-            bus.receive(source, destination_router_id, message);
+            (*irouter)->receive(source, destination_router_id, message);
 
             ++irouter;
           }
@@ -289,6 +269,12 @@ namespace etl
     void clear()
     {
       return router_list.clear();
+    }
+
+    //********************************************
+    bool is_null_router() const
+    {
+      return false;
     }
 
   protected:
