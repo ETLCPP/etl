@@ -114,7 +114,9 @@ namespace etl
     virtual ~imessage_router() {}
     virtual void receive(const etl::imessage& message) = 0;
     virtual void receive(imessage_router& source, const etl::imessage& message) = 0;
+    virtual void receive(imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& message) = 0;
     virtual bool accepts(etl::message_id_t id) const = 0;
+    virtual bool is_null_router() const = 0;
 
     //********************************************
     bool accepts(const etl::imessage& msg) const
@@ -126,18 +128,6 @@ namespace etl
     etl::message_router_id_t get_message_router_id() const
     {
       return message_router_id;
-    }
-
-    //********************************************
-    bool is_null_router() const
-    {
-      return (message_router_id == NULL_MESSAGE_ROUTER);
-    }
-
-    //********************************************
-    bool is_bus() const
-    {
-      return (message_router_id == MESSAGE_BUS);
     }
 
     //********************************************
@@ -216,9 +206,20 @@ namespace etl
     }
 
     //********************************************
+    void receive(imessage_router&, etl::message_router_id_t, const etl::imessage&)
+    {
+    }
+
+    //********************************************
     bool accepts(etl::message_id_t) const
     {
       return false;
+    }
+
+    //********************************************
+    bool is_null_router() const
+    {
+      return true;
     }
 
     //********************************************
@@ -376,6 +377,15 @@ namespace etl
       cog.outl("  }")
       cog.outl("")
       cog.outl("  //**********************************************")
+      cog.outl("  void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg)")
+      cog.outl("  {")
+      cog.outl("    if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))")
+      cog.outl("    {")
+      cog.outl("      receive(source, msg);")
+      cog.outl("    }")
+      cog.outl("  }")
+      cog.outl("")
+      cog.outl("  //**********************************************")
       cog.outl("  void receive(etl::imessage_router& source, const etl::imessage& msg)")
       cog.outl("  {")
       cog.outl("    const etl::message_id_t id = msg.message_id;")
@@ -418,6 +428,12 @@ namespace etl
       cog.outl("      default:")
       cog.outl("        return false; break;")
       cog.outl("    }")
+      cog.outl("  }")
+      cog.outl("")
+      cog.outl("  //********************************************")
+      cog.outl("  bool is_null_router() const")
+      cog.outl("  {")
+      cog.outl("    return false;")
       cog.outl("  }")
       cog.outl("};")
 
@@ -561,6 +577,15 @@ namespace etl
           cog.outl("  }")
           cog.outl("")
           cog.outl("  //**********************************************")
+          cog.outl("  void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg)")
+          cog.outl("  {")
+          cog.outl("    if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))")
+          cog.outl("    {")
+          cog.outl("      receive(source, msg);")
+          cog.outl("    }")
+          cog.outl("  }")
+          cog.outl("")
+          cog.outl("  //**********************************************")
           cog.outl("  void receive(etl::imessage_router& source, const etl::imessage& msg)")
           cog.outl("  {")
           cog.outl("    const size_t id = msg.message_id;")
@@ -604,6 +629,12 @@ namespace etl
           cog.outl("      default:")
           cog.outl("        return false; break;")
           cog.outl("    }")
+          cog.outl("  }")
+          cog.outl("")
+          cog.outl("  //********************************************")
+          cog.outl("  bool is_null_router() const")
+          cog.outl("  {")
+          cog.outl("    return false;")
           cog.outl("  }")
           cog.outl("};")
   ]]]*/

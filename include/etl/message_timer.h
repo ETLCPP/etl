@@ -63,7 +63,7 @@ SOFTWARE.
   #if !defined(ETL_MESSAGE_TIMER_DISABLE_INTERRUPTS) || !defined(ETL_MESSAGE_TIMER_ENABLE_INTERRUPTS)
     #error ETL_MESSAGE_TIMER_DISABLE_INTERRUPTS and/or ETL_MESSAGE_TIMER_ENABLE_INTERRUPTS not defined
   #endif
-  
+
   #define ETL_DISABLE_TIMER_UPDATES (ETL_MESSAGE_TIMER_DISABLE_INTERRUPTS)
   #define ETL_ENABLE_TIMER_UPDATES  (ETL_MESSAGE_TIMER_ENABLE_INTERRUPTS)
   #define ETL_TIMER_UPDATES_ENABLED true
@@ -95,24 +95,17 @@ namespace etl
                        etl::imessage_router&    irouter_,
                        uint32_t                 period_,
                        bool                     repeating_,
-                       etl::message_router_id_t destination_router_id_)
+                       etl::message_router_id_t destination_router_id_ = etl::imessage_bus::ALL_MESSAGE_ROUTERS)
       : p_message(&message_),
         p_router(&irouter_),
         period(period_),
         delta(etl::timer::state::INACTIVE),
+        destination_router_id(destination_router_id_),
         id(id_),
         previous(etl::timer::id::NO_TIMER),
         next(etl::timer::id::NO_TIMER),
         repeating(repeating_)
     {
-      if (irouter_.is_bus())
-      {
-        destination_router_id = destination_router_id_;
-      }
-      else
-      {
-        destination_router_id = etl::imessage_bus::ALL_MESSAGE_ROUTERS;
-      }
     }
 
     //*******************************************
@@ -471,17 +464,8 @@ namespace etl
 
               if (timer.p_router != nullptr)
               {
-                if (timer.p_router->is_bus())
-                {
-                  // Send to a message bus.
-                  etl::imessage_bus& bus = static_cast<etl::imessage_bus&>(*(timer.p_router));
-                  bus.receive(timer.destination_router_id, *(timer.p_message));
-                }
-                else
-                {
-                  // Send to a router.
-                  timer.p_router->receive(*(timer.p_message));
-                }
+                static etl::null_message_router nmr;
+                timer.p_router->receive(nmr, timer.destination_router_id, *(timer.p_message));
               }
 
               has_active = !active_list.empty();
@@ -576,7 +560,7 @@ namespace etl
         timer_array[id_].period = period_;
         return true;
       }
-      
+
       return false;
     }
 
@@ -627,7 +611,7 @@ namespace etl
     private_message_timer::list active_list;
 
     volatile bool enabled;
-    
+
 #if defined(ETL_MESSAGE_TIMER_USE_ATOMIC_LOCK)
     volatile etl::timer_semaphore_t process_semaphore;
 #endif
