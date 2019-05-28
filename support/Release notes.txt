@@ -1,4 +1,8 @@
 ===============================================================================
+14.26.1
+Simplified 'to_string' templates.
+
+===============================================================================
 14.26.0
 Simplified message framework internal code.
 Additional receive() virtual function overload taking destination id.
