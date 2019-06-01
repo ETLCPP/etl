@@ -39,6 +39,8 @@ SOFTWARE.
 
 #include <string.h>
 
+#include <new>
+
 ///\defgroup memory memory
 ///\ingroup etl
 namespace etl

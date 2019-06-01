@@ -33,6 +33,8 @@ SOFTWARE.
 
 #include <stddef.h>
 
+#include <new>
+
 #include "platform.h"
 #include "container.h"
 #include "pool.h"
@@ -762,7 +764,7 @@ namespace etl
 
     typedef std::reverse_iterator<iterator>       reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-    
+
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************

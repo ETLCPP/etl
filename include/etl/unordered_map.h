@@ -33,6 +33,8 @@ SOFTWARE.
 
 #include <stddef.h>
 
+#include <new>
+
 #include "platform.h"
 
 #include "stl/algorithm.h"
@@ -1284,7 +1286,7 @@ namespace etl
       else
       {
         if (pbucket == first)
-        {         
+        {
           // We erased the first so, we need to search again from where we erased.
           while (first->empty())
           {

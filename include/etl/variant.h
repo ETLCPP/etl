@@ -33,6 +33,8 @@ SOFTWARE.
 
 #include <stdint.h>
 
+#include <new>
+
 #include "platform.h"
 #include "array.h"
 #include "largest.h"
