@@ -33,6 +33,8 @@ SOFTWARE.
 
 #include <stddef.h>
 
+#include <new>
+
 #include "platform.h"
 
 #include "stl/algorithm.h"
@@ -230,7 +232,7 @@ namespace etl
       , root_node(nullptr)
     {
     }
-   
+
     //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************

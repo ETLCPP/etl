@@ -31,6 +31,8 @@ SOFTWARE.
 #ifndef ETL_OPTIONAL_INCLUDED
 #define ETL_OPTIONAL_INCLUDED
 
+#include <new>
+
 #include "platform.h"
 #include "alignment.h"
 #include "type_traits.h"

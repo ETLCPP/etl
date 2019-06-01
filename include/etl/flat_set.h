@@ -31,6 +31,8 @@ SOFTWARE.
 #ifndef ETL_FLAT_SET_INCLUDED
 #define ETL_FLAT_SET_INCLUDED
 
+#include <new>
+
 #include "platform.h"
 #include "reference_flat_set.h"
 #include "pool.h"

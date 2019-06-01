@@ -34,6 +34,8 @@ SOFTWARE.
 #include <stddef.h>
 #include <stdint.h>
 
+#include <new>
+
 #include "platform.h"
 #include "container.h"
 #include "alignment.h"

@@ -33,6 +33,8 @@ SOFTWARE.
 
 #include "platform.h"
 
+#include <new>
+
 #include "stl/algorithm.h"
 #include "stl/iterator.h"
 

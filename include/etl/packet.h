@@ -31,6 +31,8 @@ SOFTWARE.
 #ifndef ETL_PACKET_INCLUDED
 #define ETL_PACKET_INCLUDED
 
+#include <new>
+
 #include "platform.h"
 #include "static_assert.h"
 #include "alignment.h"
@@ -51,7 +53,7 @@ namespace etl
   /// to the size and alignment requirements.
   ///\ingroup packet
   //***************************************************************************
-  template <typename TBase, size_t SIZE, size_t ALIGNMENT>            
+  template <typename TBase, size_t SIZE, size_t ALIGNMENT>
   class packet
   {
   public:
@@ -111,7 +113,7 @@ namespace etl
     }
 
   private:
-    
+
     packet(const packet& other);
     packet& operator =(const packet& other);
 

@@ -34,6 +34,8 @@ SOFTWARE.
 #include <stddef.h>
 #include <stdint.h>
 
+#include <new>
+
 #include "platform.h"
 #include "alignment.h"
 #include "parameter_type.h"

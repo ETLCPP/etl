@@ -37,6 +37,8 @@ SOFTWARE.
 #include <stdint.h>
 #include <stddef.h>
 
+#include <new>
+
 #include "platform.h"
 #include "algorithm.h"
 #include "type_traits.h"
