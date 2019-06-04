@@ -768,12 +768,10 @@ namespace etl
   inline uint_least8_t count_bits(uint8_t value)
   {
     uint32_t count;
-    static const int S[] = { 1, 2, 4 };
-    static const uint8_t B[] = { 0x55, 0x33, 0x0F };
 
-    count = value - ((value >> 1) & B[0]);
-    count = ((count >> S[1]) & B[1]) + (count & B[1]);
-    count = ((count >> S[2]) + count) & B[2];
+    count = value - ((value >> 1) & 0x55);
+    count = ((count >> 2) & 0x33) + (count & 0x33);
+    count = ((count >> 4) + count) & 0x0F;
 
     return uint_least8_t(count);
   }
@@ -792,13 +790,11 @@ namespace etl
   inline uint_least8_t count_bits(uint16_t value)
   {
     uint32_t count;
-    static const int S[] = { 1, 2, 4, 8 };
-    static const uint16_t B[] = { 0x5555, 0x3333, 0x0F0F, 0x00FF };
 
-    count = value - ((value >> 1) & B[0]);
-    count = ((count >> S[1]) & B[1]) + (count & B[1]);
-    count = ((count >> S[2]) + count) & B[2];
-    count = ((count >> S[3]) + count) & B[3];
+    count = value - ((value >> 1) & 0x5555);
+    count = ((count >> 2) & 0x3333) + (count & 0x3333);
+    count = ((count >> 4) + count) & 0x0F0F;
+    count = ((count >> 8) + count) & 0x00FF;
 
     return count;
   }
@@ -816,9 +812,11 @@ namespace etl
   {
     uint32_t count;
 
-    value = value - ((value >> 1) & 0x55555555);
-    value = (value & 0x33333333) + ((value >> 2) & 0x33333333);
-    count = (((value + (value >> 4)) & 0xF0F0F0F) * 0x1010101) >> 24;
+    count = value - ((value >> 1) & 0x55555555);
+    count = ((count >> 2) & 0x33333333) + (count & 0x33333333);
+    count = ((count >> 4)  + count) & 0x0F0F0F0F;
+    count = ((count >> 8)  + count) & 0x00FF00FF;
+    count = ((count >> 16) + count) & 0x0000FF;
 
     return uint_least8_t(count);
   }
@@ -835,15 +833,13 @@ namespace etl
   inline uint_least8_t count_bits(uint64_t value)
   {
     uint64_t count;
-    static const int S[] = { 1, 2, 4, 8, 16, 32 };
-    static const uint64_t B[] = { 0x5555555555555555, 0x3333333333333333, 0x0F0F0F0F0F0F0F0F, 0x00FF00FF00FF00FF, 0x0000FFFF0000FFFF, 0x00000000FFFFFFFF };
 
-    count = value - ((value >> 1) & B[0]);
-    count = ((count >> S[1]) & B[1]) + (count & B[1]);
-    count = ((count >> S[2]) + count) & B[2];
-    count = ((count >> S[3]) + count) & B[3];
-    count = ((count >> S[4]) + count) & B[4];
-    count = ((count >> S[5]) + count) & B[5];
+    count = value - ((value >> 1) & 0x5555555555555555);
+    count = ((count >> 2) & 0x3333333333333333) + (count & 0x3333333333333333);
+    count = ((count >> 4)  + count) & 0x0F0F0F0F0F0F0F0F;
+    count = ((count >> 8)  + count) & 0x00FF00FF00FF00FF;
+    count = ((count >> 16) + count) & 0x0000FFFF0000FFFF;
+    count = ((count >> 32) + count) & 0x00000000FFFFFFFF;
 
     return uint_least8_t(count);
   }
@@ -1130,18 +1126,16 @@ namespace etl
   //*****************************************************************************
   inline uint16_t binary_interleave(uint8_t first, uint8_t second)
   {
-	  static const uint16_t mask[] = { 0x5555, 0x3333, 0x0F0F };
-
 	  uint16_t f = first;
 	  uint16_t s = second;
 
-	  f = (f | (f << 4)) & mask[2];
-	  f = (f | (f << 2)) & mask[1];
-	  f = (f | (f << 1)) & mask[0];
+	  f = (f | (f << 4)) & 0x0F0F;
+	  f = (f | (f << 2)) & 0x3333;
+	  f = (f | (f << 1)) & 0x5555;
 
-	  s = (s | (s << 4)) & mask[2];
-	  s = (s | (s << 2)) & mask[1];
-	  s = (s | (s << 1)) & mask[0];
+	  s = (s | (s << 4)) & 0x0F0F;
+	  s = (s | (s << 2)) & 0x3333;
+	  s = (s | (s << 1)) & 0x5555;
 
 	  return (f | (s << 1));
   }
@@ -1158,20 +1152,18 @@ namespace etl
   //*****************************************************************************
   inline uint32_t binary_interleave(uint16_t first, uint16_t second)
   {
-	  static const uint32_t mask[] = { 0x55555555, 0x33333333, 0x0F0F0F0F, 0x00FF00FF };
-
 	  uint32_t f = first;
 	  uint32_t s = second;
 
-	  f = (f | (f << 8)) & mask[3];
-	  f = (f | (f << 4)) & mask[2];
-	  f = (f | (f << 2)) & mask[1];
-	  f = (f | (f << 1)) & mask[0];
+	  f = (f | (f << 8)) & 0x00FF00FF;
+	  f = (f | (f << 4)) & 0x0F0F0F0F;
+	  f = (f | (f << 2)) & 0x33333333;
+	  f = (f | (f << 1)) & 0x55555555;
 
-	  s = (s | (s << 8)) & mask[3];
-	  s = (s | (s << 4)) & mask[2];
-	  s = (s | (s << 2)) & mask[1];
-	  s = (s | (s << 1)) & mask[0];
+	  s = (s | (s << 8)) & 0x00FF00FF;
+	  s = (s | (s << 4)) & 0x0F0F0F0F;
+	  s = (s | (s << 2)) & 0x33333333;
+	  s = (s | (s << 1)) & 0x55555555;
 
 	  return (f | (s << 1));
   }
@@ -1187,22 +1179,20 @@ namespace etl
   //*****************************************************************************
   inline uint64_t binary_interleave(uint32_t first, uint32_t second)
   {
-	  static const uint64_t mask[] = { 0x5555555555555555, 0x3333333333333333, 0x0F0F0F0F0F0F0F0F, 0x00FF00FF00FF00FF, 0x0000FFFF0000FFFF };
-
 	  uint64_t f = first;
 	  uint64_t s = second;
 
-	  f = (f | (f << 16)) & mask[4];
-	  f = (f | (f << 8))  & mask[3];
-	  f = (f | (f << 4))  & mask[2];
-	  f = (f | (f << 2))  & mask[1];
-	  f = (f | (f << 1))  & mask[0];
+	  f = (f | (f << 16)) & 0x0000FFFF0000FFFF;
+	  f = (f | (f << 8))  & 0x00FF00FF00FF00FF;
+	  f = (f | (f << 4))  & 0x0F0F0F0F0F0F0F0F;
+	  f = (f | (f << 2))  & 0x3333333333333333;
+	  f = (f | (f << 1))  & 0x5555555555555555;
 
-	  s = (s | (s << 16)) & mask[4];
-	  s = (s | (s << 8))  & mask[3];
-	  s = (s | (s << 4))  & mask[2];
-	  s = (s | (s << 2))  & mask[1];
-	  s = (s | (s << 1))  & mask[0];
+	  s = (s | (s << 16)) & 0x0000FFFF0000FFFF;
+	  s = (s | (s << 8))  & 0x00FF00FF00FF00FF;
+	  s = (s | (s << 4))  & 0x0F0F0F0F0F0F0F0F;
+	  s = (s | (s << 2))  & 0x3333333333333333;
+	  s = (s | (s << 1))  & 0x5555555555555555;
 
 	  return (f | (s << 1));
   }
