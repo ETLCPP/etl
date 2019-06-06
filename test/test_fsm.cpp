@@ -135,8 +135,13 @@ namespace
   {
   public:
 
-    MotorControl(etl::ifsm_state** p_states, size_t size)
+    MotorControl()
       : fsm(MOTOR_CONTROL)
+    {
+    }
+
+    //***********************************
+    void Initialise(etl::ifsm_state** p_states, size_t size)
     {
       set_states(p_states, size);
       ClearStatistics();
@@ -324,7 +329,7 @@ namespace
     &idle, &running, &windingDown, &locked
   };
 
-  MotorControl motorControl(stateList, etl::size(stateList));
+  MotorControl motorControl;
 
   SUITE(test_map)
   {
@@ -333,6 +338,7 @@ namespace
     {
       etl::null_message_router nmr;
 
+      motorControl.Initialise(stateList, etl::size(stateList));
       motorControl.reset();
       motorControl.ClearStatistics();
 
@@ -471,6 +477,7 @@ namespace
     {
       etl::null_message_router nmr;
 
+      motorControl.Initialise(stateList, etl::size(stateList)); 
       motorControl.reset();
       motorControl.ClearStatistics();
 
@@ -519,6 +526,7 @@ namespace
     {
       etl::null_message_router nmr;
 
+      motorControl.Initialise(stateList, etl::size(stateList));
       motorControl.reset();
       motorControl.ClearStatistics();
 
