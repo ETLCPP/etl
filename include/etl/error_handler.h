@@ -124,7 +124,7 @@ namespace etl
   #define ETL_ASSERT(b, e)                                                               // Does nothing.
 #elif defined(ETL_THROW_EXCEPTIONS)
   #if defined(ETL_LOG_ERRORS)
-    #define ETL_ASSERT(b, e) {if (!(b)) {etl::error_handler::error((e)); throw((e);)}}   // If the condition fails, calls the error handler then throws an exception.
+    #define ETL_ASSERT(b, e) {if (!(b)) {etl::error_handler::error((e)); throw((e));}}   // If the condition fails, calls the error handler then throws an exception.
   #else
     #define ETL_ASSERT(b, e) {if (!(b)) {throw((e));}}                                   // If the condition fails, throws an exception.
   #endif
