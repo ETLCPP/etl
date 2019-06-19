@@ -176,6 +176,16 @@ namespace etl
     ///\tparam TNotification the notification type.
     ///\param n The notification.
     //*****************************************************************
+#if ETL_CPP11_SUPPORTED && !defined(ETL_OBSERVER_FORCE_CPP03)
+    template <typename... TNotification>
+    void notify_observers(TNotification... n)
+    {
+      for (auto observer : observer_list)
+      {
+        observer->notification(n...);
+      }
+    }
+#else
     template <typename TNotification>
     void notify_observers(TNotification n)
     {
@@ -184,6 +194,8 @@ namespace etl
         observer_list[i]->notification(n);
       }
     }
+#endif
+
 
   protected:
 

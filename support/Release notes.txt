@@ -1,4 +1,8 @@
 ===============================================================================
+14.26.6
+Added variadic parameters to observer notification.
+
+===============================================================================
 14.26.5
 Fixed misplaced semicolon in error_handler.h
 
