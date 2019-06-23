@@ -401,6 +401,7 @@ namespace
       CHECK(parameter_correct);
     }
 
+#if !(defined(ETL_COMPILER_GCC) && (__GNUC__ <= 5))
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_void_compile_time)
     {
@@ -470,6 +471,7 @@ namespace
       CHECK(function_called);
       CHECK(parameter_correct);
     }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_copy_construct)

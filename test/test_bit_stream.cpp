@@ -870,7 +870,6 @@ namespace
       int32_t i2 = -1520786086;  // 0xA55AA55A
       float f = 3.1415927f;
       double d = 3.1415927;
-      long double ld = 3.1414927L;
 
       std::array<unsigned char, 100> storage;
 
@@ -884,7 +883,6 @@ namespace
       bit_stream.put(i2);
       bit_stream.put(d);
       bit_stream.put(s2);
-      bit_stream.put(ld);
       bit_stream.put(c2);
 
       bit_stream.restart();
@@ -897,7 +895,6 @@ namespace
       int32_t ri2;
       float rf;
       double rd;
-      long double rld;
 
       // Read them all back.
       CHECK(bit_stream.get(rc1));
@@ -921,9 +918,6 @@ namespace
       CHECK(bit_stream.get(rs2));
       CHECK_EQUAL(s2, rs2);
 
-      CHECK(bit_stream.get(rld));
-      CHECK_CLOSE(ld, rld, 0.1);
-
       CHECK(bit_stream.get(rc2));
       CHECK_EQUAL(int(c2), int(rc2));
     }
@@ -939,7 +933,6 @@ namespace
       int32_t i2 = -10836646;   // 25 bits
       float f = 3.1415927f;
       double d = 3.1415927;
-      long double ld = 3.1414927L;
       int64_t ll = 140737488355327LL;
 
       std::array<unsigned char, 100> storage;
@@ -975,38 +968,13 @@ namespace
       CHECK_EQUAL(22U,  bit_stream.size());
       CHECK_EQUAL(174U, bit_stream.bits());
 
-      if (sizeof(long double) == 8)
-      {
-        bit_stream.put(ld);
-        CHECK_EQUAL(30U, bit_stream.size());
-        CHECK_EQUAL(238U, bit_stream.bits());
+      bit_stream.put(c2, 7);
+      CHECK_EQUAL(23U, bit_stream.size());
+      CHECK_EQUAL(181U, bit_stream.bits());
 
-        bit_stream.put(c2, 7);
-        CHECK_EQUAL(31U, bit_stream.size());
-        CHECK_EQUAL(245U, bit_stream.bits());
-
-        bit_stream.put(ll, 47);
-        CHECK_EQUAL(37U, bit_stream.size());
-        CHECK_EQUAL(292U, bit_stream.bits());
-      }
-      else if (sizeof(long double) == 12)
-      {
-        bit_stream.put(ld);
-        CHECK_EQUAL(34U, bit_stream.size());
-        CHECK_EQUAL(270U, bit_stream.bits());
-
-        bit_stream.put(c2, 7);
-        CHECK_EQUAL(35U, bit_stream.size());
-        CHECK_EQUAL(277U, bit_stream.bits());
-
-        bit_stream.put(ll, 47);
-        CHECK_EQUAL(41U, bit_stream.size());
-        CHECK_EQUAL(324U, bit_stream.bits());
-      }
-      else
-      {
-        assert(false);
-      }
+      bit_stream.put(ll, 47);
+      CHECK_EQUAL(29U, bit_stream.size());
+      CHECK_EQUAL(228U, bit_stream.bits());
 
       bit_stream.restart();
 
@@ -1018,7 +986,6 @@ namespace
       int32_t ri2;
       float rf;
       double rd;
-      long double rld;
       int64_t rll;
 
       // Read them all back.
@@ -1042,9 +1009,6 @@ namespace
 
       CHECK(bit_stream.get(rs2, 11));
       CHECK_EQUAL(s2, rs2);
-
-      CHECK(bit_stream.get(rld));
-      CHECK_CLOSE(ld, rld, 0.1);
 
       CHECK(bit_stream.get(rc2, 7));
       CHECK_EQUAL(int(c2), int(rc2));
