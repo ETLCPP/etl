@@ -18,7 +18,8 @@ else()
   # Therefore we update the provide UTPP_INCLUDE_DIRS here
   set(UTPP_INCLUDE_DIRS "${UTPP_INCLUDE_DIRS}/UnitTest++")
 endif()
-include_directories(${UTPP_INCLUDE_DIRS})
+
+include_directories(${UTPP_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/../include)
 
 set(TEST_SOURCE_FILES
   main.cpp
@@ -117,6 +118,38 @@ set(TEST_SOURCE_FILES
   test_visitor.cpp
   test_xor_checksum.cpp
   test_xor_rotate_checksum.cpp
+  test_atomic_std.cpp
+  test_callback_service.cpp
+  test_cumulative_moving_average.cpp
+  test_delegate.cpp
+  test_delegate_service.cpp
+  test_forward_list_shared_pool.cpp
+  test_list_shared_pool.cpp
+  test_multi_array.cpp
+  test_no_stl_algorithm.cpp
+  test_no_stl_functional.cpp
+  test_no_stl_iterator.cpp
+  test_no_stl_limits.cpp
+  test_no_stl_utility.cpp
+  test_queue_memory_model_small.cpp
+  test_queue_mpmc_mutex.cpp
+  test_queue_mpmc_mutex_small.cpp
+  test_queue_spsc_atomic.cpp
+  test_queue_spsc_atomic_small.cpp
+  test_queue_spsc_isr.cpp
+  test_queue_spsc_isr_small.cpp
+  test_queue_spsc_locked.cpp
+  test_queue_spsc_locked_small.cpp
+  test_scaled_rounding.cpp
+  test_state_chart.cpp
+  test_string_view.cpp
+  test_to_string.cpp
+  test_to_u16string.cpp
+  test_to_u32string.cpp
+  test_to_wstring.cpp
+  test_type_select.cpp
+  test_vector_external_buffer.cpp
+  test_vector_pointer_external_buffer.cpp
 
   # Compile the source level ecl_timer here as test has provided a ecl_user.h file
   ${PROJECT_SOURCE_DIR}/../src/c/ecl_timer.c
@@ -132,7 +165,6 @@ if (WIN32)
   ADD_DEFINITIONS(-D_UNICODE)
 endif()
 
-
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   list(APPEND TEST_SOURCE_FILES "test_atomic_gcc_sync.cpp")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
@@ -140,7 +172,8 @@ endif()
 add_executable(etl_tests
   ${TEST_SOURCE_FILES}
   )
-target_link_libraries(etl_tests etl UnitTest++)
+#target_link_libraries(etl_tests etl UnitTest++)
+target_link_libraries(etl_tests UnitTest++)
 target_include_directories(etl_tests
   PUBLIC
   ${CMAKE_CURRENT_LIST_DIR}
@@ -155,6 +188,6 @@ add_test(etl_unit_tests etl_tests)
 add_custom_target(test_verbose COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
 
 
-# Remaining Tests to be implemented:
-#1. Enable embedded compile target testing
-#   - test_embedded_compile.cpp
+#RSG
+set_property(TARGET etl_tests PROPERTY CXX_STANDARD 17)
+

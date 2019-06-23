@@ -39,8 +39,6 @@ SOFTWARE.
 #include "format_spec.h"
 #include "private/to_string_helper.h"
 
-#include <math.h>
-
 namespace etl
 {
   //***************************************************************************

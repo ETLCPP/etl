@@ -33,7 +33,7 @@ SOFTWARE.
 
 ///\ingroup private
 
-#include <math.h>
+#include <cmath>
 
 #include "../platform.h"
 #include "../absolute.h"
@@ -234,9 +234,9 @@ namespace etl
 
       iterator start = str.end();
 
-      if (isnan(value) || isinf(value))
+      if (std::isnan(value) || std::isinf(value))
       {
-        etl::private_to_string::add_nan_inf(isnan(value), isinf(value), str);
+        etl::private_to_string::add_nan_inf(std::isnan(value), std::isinf(value), str);
       }
       else
       {
