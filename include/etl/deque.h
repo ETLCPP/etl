@@ -2372,87 +2372,87 @@ namespace etl
     /// The uninitialised buffer of T used in the deque.
     typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[BUFFER_SIZE];
   };
-}
 
-//***************************************************************************
-/// Equal operator.
-///\param lhs  Reference to the _begin deque.
-///\param rhs  Reference to the second deque.
-///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
-///\ingroup deque
-//***************************************************************************
-template <typename T>
-bool operator ==(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
-{
-  return (lhs.size() == rhs.size()) && std::equal(lhs.begin(), lhs.end(), rhs.begin());
-}
+  //***************************************************************************
+  /// Equal operator.
+  ///\param lhs  Reference to the _begin deque.
+  ///\param rhs  Reference to the second deque.
+  ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
+  ///\ingroup deque
+  //***************************************************************************
+  template <typename T>
+  bool operator ==(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
+  {
+    return (lhs.size() == rhs.size()) && std::equal(lhs.begin(), lhs.end(), rhs.begin());
+  }
 
-//***************************************************************************
-/// Not equal operator.
-///\param lhs  Reference to the _begin deque.
-///\param rhs  Reference to the second deque.
-///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
-///\ingroup deque
-//***************************************************************************
-template <typename T>
-bool operator !=(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
-{
-  return !(lhs == rhs);
-}
+  //***************************************************************************
+  /// Not equal operator.
+  ///\param lhs  Reference to the _begin deque.
+  ///\param rhs  Reference to the second deque.
+  ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
+  ///\ingroup deque
+  //***************************************************************************
+  template <typename T>
+  bool operator !=(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
+  {
+    return !(lhs == rhs);
+  }
 
-//***************************************************************************
-/// Less than operator.
-///\param lhs  Reference to the _begin deque.
-///\param rhs  Reference to the second deque.
-///\return <b>true</b> if the _begin deque is lexicographically less than the second, otherwise <b>false</b>
-///\ingroup deque
-//***************************************************************************
-template <typename T>
-bool operator <(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
-{
-  return std::lexicographical_compare(lhs.begin(),
-    lhs.end(),
-    rhs.begin(),
-    rhs.end());
-}
+  //***************************************************************************
+  /// Less than operator.
+  ///\param lhs  Reference to the _begin deque.
+  ///\param rhs  Reference to the second deque.
+  ///\return <b>true</b> if the _begin deque is lexicographically less than the second, otherwise <b>false</b>
+  ///\ingroup deque
+  //***************************************************************************
+  template <typename T>
+  bool operator <(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
+  {
+    return std::lexicographical_compare(lhs.begin(),
+      lhs.end(),
+      rhs.begin(),
+      rhs.end());
+  }
 
-//***************************************************************************
-/// Less than or equal operator.
-///\param lhs  Reference to the _begin deque.
-///\param rhs  Reference to the second deque.
-///\return <b>true</b> if the _begin deque is lexicographically less than or equal to the second, otherwise <b>false</b>
-///\ingroup deque
-//***************************************************************************
-template <typename T>
-bool operator <=(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
-{
-  return !(lhs > rhs);
-}
+  //***************************************************************************
+  /// Less than or equal operator.
+  ///\param lhs  Reference to the _begin deque.
+  ///\param rhs  Reference to the second deque.
+  ///\return <b>true</b> if the _begin deque is lexicographically less than or equal to the second, otherwise <b>false</b>
+  ///\ingroup deque
+  //***************************************************************************
+  template <typename T>
+  bool operator <=(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
+  {
+    return !(lhs > rhs);
+  }
 
-//***************************************************************************
-/// Greater than operator.
-///\param lhs  Reference to the _begin deque.
-///\param rhs  Reference to the second deque.
-///\return <b>true</b> if the _begin deque is lexicographically greater than the second, otherwise <b>false</b>
-///\ingroup deque
-//***************************************************************************
-template <typename T>
-bool operator >(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
-{
-  return (rhs < lhs);
-}
+  //***************************************************************************
+  /// Greater than operator.
+  ///\param lhs  Reference to the _begin deque.
+  ///\param rhs  Reference to the second deque.
+  ///\return <b>true</b> if the _begin deque is lexicographically greater than the second, otherwise <b>false</b>
+  ///\ingroup deque
+  //***************************************************************************
+  template <typename T>
+  bool operator >(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
+  {
+    return (rhs < lhs);
+  }
 
-//***************************************************************************
-/// Greater than or equal operator.
-///\param "lhs  Reference to the _begin deque.
-///\param "rhs  Reference to the second deque.
-///\return <b>true</b> if the _begin deque is lexicographically greater than or equal to the second, otherwise <b>false</b>
-///\ingroup deque
-//***************************************************************************
-template <typename T>
-bool operator >=(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
-{
-  return !(lhs < rhs);
+  //***************************************************************************
+  /// Greater than or equal operator.
+  ///\param "lhs  Reference to the _begin deque.
+  ///\param "rhs  Reference to the second deque.
+  ///\return <b>true</b> if the _begin deque is lexicographically greater than or equal to the second, otherwise <b>false</b>
+  ///\ingroup deque
+  //***************************************************************************
+  template <typename T>
+  bool operator >=(const etl::ideque<T>& lhs, const etl::ideque<T>& rhs)
+  {
+    return !(lhs < rhs);
+  }
 }
 
 #undef ETL_FILE
