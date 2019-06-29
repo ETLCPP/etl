@@ -174,97 +174,97 @@ namespace etl
 
     TIterator it; ///< The underlying iterator.
   };
-}
 
-//*****************************************************************************
-/// + difference operator.
-//*****************************************************************************
-template <typename TIterator>
-etl::fixed_iterator<TIterator>& operator +(etl::fixed_iterator<TIterator>& lhs,
-                                           typename std::iterator_traits<TIterator>::difference_type /*rhs*/)
-{
-  return lhs;
-}
+  //*****************************************************************************
+  /// + difference operator.
+  //*****************************************************************************
+  template <typename TIterator>
+  etl::fixed_iterator<TIterator>& operator +(etl::fixed_iterator<TIterator>& lhs,
+                                            typename std::iterator_traits<TIterator>::difference_type /*rhs*/)
+  {
+    return lhs;
+  }
 
-//*****************************************************************************
-/// - difference operator.
-//*****************************************************************************
-template <typename TIterator>
-etl::fixed_iterator<TIterator>& operator -(etl::fixed_iterator<TIterator>& lhs,
-                                           typename std::iterator_traits<TIterator>::difference_type /*rhs*/)
-{
-  return lhs;
-}
+  //*****************************************************************************
+  /// - difference operator.
+  //*****************************************************************************
+  template <typename TIterator>
+  etl::fixed_iterator<TIterator>& operator -(etl::fixed_iterator<TIterator>& lhs,
+                                            typename std::iterator_traits<TIterator>::difference_type /*rhs*/)
+  {
+    return lhs;
+  }
 
-//*****************************************************************************
-/// - fixed_iterator operator.
-//*****************************************************************************
-template <typename TIterator>
-typename std::iterator_traits<TIterator>::difference_type operator -(etl::fixed_iterator<TIterator>& lhs,
-                                                                     etl::fixed_iterator<TIterator>& rhs)
-{
-  return TIterator(lhs) - TIterator(rhs);
-}
+  //*****************************************************************************
+  /// - fixed_iterator operator.
+  //*****************************************************************************
+  template <typename TIterator>
+  typename std::iterator_traits<TIterator>::difference_type operator -(etl::fixed_iterator<TIterator>& lhs,
+                                                                      etl::fixed_iterator<TIterator>& rhs)
+  {
+    return TIterator(lhs) - TIterator(rhs);
+  }
 
-//*****************************************************************************
-/// Equality operator. fixed_iterator == fixed_iterator.
-//*****************************************************************************
-template <typename TIterator>
-bool operator ==(const etl::fixed_iterator<TIterator>& lhs,
-                 const etl::fixed_iterator<TIterator>& rhs)
-{
-  return TIterator(lhs) == TIterator(rhs);
-}
+  //*****************************************************************************
+  /// Equality operator. fixed_iterator == fixed_iterator.
+  //*****************************************************************************
+  template <typename TIterator>
+  bool operator ==(const etl::fixed_iterator<TIterator>& lhs,
+                  const etl::fixed_iterator<TIterator>& rhs)
+  {
+    return TIterator(lhs) == TIterator(rhs);
+  }
 
-//*****************************************************************************
-/// Equality operator. fixed_iterator == iterator.
-//*****************************************************************************
-template <typename TIterator>
-bool operator ==(const etl::fixed_iterator<TIterator>& lhs,
-                 TIterator rhs)
-{
-  return TIterator(lhs) == rhs;
-}
+  //*****************************************************************************
+  /// Equality operator. fixed_iterator == iterator.
+  //*****************************************************************************
+  template <typename TIterator>
+  bool operator ==(const etl::fixed_iterator<TIterator>& lhs,
+                  TIterator rhs)
+  {
+    return TIterator(lhs) == rhs;
+  }
 
-//*****************************************************************************
-/// Equality operator. iterator == fixed_iterator.
-//*****************************************************************************
-template <typename TIterator>
-bool operator ==(TIterator lhs,
-                 const etl::fixed_iterator<TIterator>& rhs)
-{
-  return lhs == TIterator(rhs);
-}
+  //*****************************************************************************
+  /// Equality operator. iterator == fixed_iterator.
+  //*****************************************************************************
+  template <typename TIterator>
+  bool operator ==(TIterator lhs,
+                  const etl::fixed_iterator<TIterator>& rhs)
+  {
+    return lhs == TIterator(rhs);
+  }
 
 
-//*****************************************************************************
-/// Inequality operator. fixed_iterator == fixed_iterator.
-//*****************************************************************************
-template <typename TIterator>
-bool operator !=(const etl::fixed_iterator<TIterator>& lhs,
-                 const etl::fixed_iterator<TIterator>& rhs)
-{
-  return !(lhs == rhs);
-}
+  //*****************************************************************************
+  /// Inequality operator. fixed_iterator == fixed_iterator.
+  //*****************************************************************************
+  template <typename TIterator>
+  bool operator !=(const etl::fixed_iterator<TIterator>& lhs,
+                  const etl::fixed_iterator<TIterator>& rhs)
+  {
+    return !(lhs == rhs);
+  }
 
-//*****************************************************************************
-/// Inequality operator. fixed_iterator == iterator.
-//*****************************************************************************
-template <typename TIterator>
-bool operator !=(const etl::fixed_iterator<TIterator>& lhs,
-                 TIterator rhs)
-{
-  return !(lhs == rhs);
-}
+  //*****************************************************************************
+  /// Inequality operator. fixed_iterator == iterator.
+  //*****************************************************************************
+  template <typename TIterator>
+  bool operator !=(const etl::fixed_iterator<TIterator>& lhs,
+                  TIterator rhs)
+  {
+    return !(lhs == rhs);
+  }
 
-//*****************************************************************************
-/// Inequality operator. iterator == fixed_iterator.
-//*****************************************************************************
-template <typename TIterator>
-bool operator !=(TIterator& lhs,
-                 const etl::fixed_iterator<TIterator>& rhs)
-{
-  return !(lhs == rhs);
+  //*****************************************************************************
+  /// Inequality operator. iterator == fixed_iterator.
+  //*****************************************************************************
+  template <typename TIterator>
+  bool operator !=(TIterator& lhs,
+                  const etl::fixed_iterator<TIterator>& rhs)
+  {
+    return !(lhs == rhs);
+  }
 }
 
 #endif

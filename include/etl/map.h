@@ -2115,87 +2115,87 @@ namespace etl
     /// The pool of data nodes used for the map.
     etl::pool<typename etl::imap<TKey, TValue, TCompare>::Data_Node, MAX_SIZE> node_pool;
   };
-}
 
-//***************************************************************************
-/// Equal operator.
-///\param lhs Reference to the first lookup.
-///\param rhs Reference to the second lookup.
-///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
-///\ingroup lookup
-//***************************************************************************
-template <typename TKey, typename TMapped, typename TKeyCompare>
-bool operator ==(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
-{
-  return (lhs.size() == rhs.size()) && std::equal(lhs.begin(), lhs.end(), rhs.begin());
-}
+  //***************************************************************************
+  /// Equal operator.
+  ///\param lhs Reference to the first lookup.
+  ///\param rhs Reference to the second lookup.
+  ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
+  ///\ingroup lookup
+  //***************************************************************************
+  template <typename TKey, typename TMapped, typename TKeyCompare>
+  bool operator ==(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
+  {
+    return (lhs.size() == rhs.size()) && std::equal(lhs.begin(), lhs.end(), rhs.begin());
+  }
 
-//***************************************************************************
-/// Not equal operator.
-///\param lhs Reference to the first lookup.
-///\param rhs Reference to the second lookup.
-///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
-///\ingroup lookup
-//***************************************************************************
-template <typename TKey, typename TMapped, typename TKeyCompare>
-bool operator !=(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
-{
-  return !(lhs == rhs);
-}
+  //***************************************************************************
+  /// Not equal operator.
+  ///\param lhs Reference to the first lookup.
+  ///\param rhs Reference to the second lookup.
+  ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
+  ///\ingroup lookup
+  //***************************************************************************
+  template <typename TKey, typename TMapped, typename TKeyCompare>
+  bool operator !=(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
+  {
+    return !(lhs == rhs);
+  }
 
-//*************************************************************************
-/// Less than operator.
-///\param lhs Reference to the first list.
-///\param rhs Reference to the second list.
-///\return <b>true</b> if the first list is lexicographically less than the
-/// second, otherwise <b>false</b>.
-//*************************************************************************
-template <typename TKey, typename TMapped, typename TKeyCompare>
-bool operator <(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
-{
-  return std::lexicographical_compare(lhs.begin(),
-    lhs.end(),
-    rhs.begin(),
-    rhs.end());
-}
+  //*************************************************************************
+  /// Less than operator.
+  ///\param lhs Reference to the first list.
+  ///\param rhs Reference to the second list.
+  ///\return <b>true</b> if the first list is lexicographically less than the
+  /// second, otherwise <b>false</b>.
+  //*************************************************************************
+  template <typename TKey, typename TMapped, typename TKeyCompare>
+  bool operator <(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
+  {
+    return std::lexicographical_compare(lhs.begin(),
+      lhs.end(),
+      rhs.begin(),
+      rhs.end());
+  }
 
-//*************************************************************************
-/// Greater than operator.
-///\param lhs Reference to the first list.
-///\param rhs Reference to the second list.
-///\return <b>true</b> if the first list is lexicographically greater than the
-/// second, otherwise <b>false</b>.
-//*************************************************************************
-template <typename TKey, typename TMapped, typename TKeyCompare>
-bool operator >(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
-{
-  return (rhs < lhs);
-}
+  //*************************************************************************
+  /// Greater than operator.
+  ///\param lhs Reference to the first list.
+  ///\param rhs Reference to the second list.
+  ///\return <b>true</b> if the first list is lexicographically greater than the
+  /// second, otherwise <b>false</b>.
+  //*************************************************************************
+  template <typename TKey, typename TMapped, typename TKeyCompare>
+  bool operator >(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
+  {
+    return (rhs < lhs);
+  }
 
-//*************************************************************************
-/// Less than or equal operator.
-///\param lhs Reference to the first list.
-///\param rhs Reference to the second list.
-///\return <b>true</b> if the first list is lexicographically less than or equal
-/// to the second, otherwise <b>false</b>.
-//*************************************************************************
-template <typename TKey, typename TMapped, typename TKeyCompare>
-bool operator <=(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
-{
-  return !(lhs > rhs);
-}
+  //*************************************************************************
+  /// Less than or equal operator.
+  ///\param lhs Reference to the first list.
+  ///\param rhs Reference to the second list.
+  ///\return <b>true</b> if the first list is lexicographically less than or equal
+  /// to the second, otherwise <b>false</b>.
+  //*************************************************************************
+  template <typename TKey, typename TMapped, typename TKeyCompare>
+  bool operator <=(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
+  {
+    return !(lhs > rhs);
+  }
 
-//*************************************************************************
-/// Greater than or equal operator.
-///\param lhs Reference to the first list.
-///\param rhs Reference to the second list.
-///\return <b>true</b> if the first list is lexicographically greater than or
-/// equal to the second, otherwise <b>false</b>.
-//*************************************************************************
-template <typename TKey, typename TMapped, typename TKeyCompare>
-bool operator >=(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
-{
-  return !(lhs < rhs);
+  //*************************************************************************
+  /// Greater than or equal operator.
+  ///\param lhs Reference to the first list.
+  ///\param rhs Reference to the second list.
+  ///\return <b>true</b> if the first list is lexicographically greater than or
+  /// equal to the second, otherwise <b>false</b>.
+  //*************************************************************************
+  template <typename TKey, typename TMapped, typename TKeyCompare>
+  bool operator >=(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
+  {
+    return !(lhs < rhs);
+  }
 }
 
 #include "private/minmax_pop.h"
