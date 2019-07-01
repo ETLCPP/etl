@@ -38,6 +38,7 @@ SOFTWARE.
 
 namespace etl
 {
+#if defined(ETL_POLYMORPHIC_RANDOM)
   //***************************************************************************
   /// The base for all 32 bit random number generators.
   //***************************************************************************
@@ -53,6 +54,23 @@ namespace etl
     virtual uint32_t operator()() = 0;
     virtual uint32_t range(uint32_t low, uint32_t high) = 0;
   };
+#else
+  //***************************************************************************
+  /// The base for all 32 bit random number generators.
+  /// Empty, non-virtual.
+  //***************************************************************************
+  class random
+  {
+  protected:
+    random()
+    {
+    }
+
+    ~random()
+    {
+    }
+  };
+#endif
 
   //***************************************************************************
   /// A 32 bit random number generator.

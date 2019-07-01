@@ -1,4 +1,9 @@
 ===============================================================================
+14.27.0
+ETL's random number generators are now non-polymorphic by default.
+Define ETL_POLYMORPHIC_RANDOM to enable previous functionality.
+
+===============================================================================
 14.26.8
 Moved global operators to ETL namespace.
 
