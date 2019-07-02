@@ -441,7 +441,7 @@ namespace etl
     {
       if (enabled)
       {
-        if ETL_IF_CONSTEXPR(ETL_TIMER_UPDATES_ENABLED)
+        if (ETL_TIMER_UPDATES_ENABLED)
         {
           // We have something to do?
           bool has_active = !active_list.empty();

@@ -1,4 +1,8 @@
 ===============================================================================
+14.27.1
+Removed ETL_IF_CONSTEXPR from etl::message_timer 'tick()'
+
+===============================================================================
 14.27.0
 ETL's random number generators are now non-polymorphic by default.
 Define ETL_POLYMORPHIC_RANDOM to enable previous functionality.
