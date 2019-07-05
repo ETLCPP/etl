@@ -102,12 +102,104 @@ namespace
     }
 
     //*************************************************************************
+    TEST(integral_signed_average_positive_runtime_sample_size)
+    {
+      typedef etl::cumulative_moving_average<int, 0U, SCALING> CMA;
+      CMA cma(0, SAMPLE_SIZE * 2U);
+
+      CHECK_EQUAL(0, cma.value());
+
+      cma.set_sample_size(SAMPLE_SIZE);
+
+      cma.add(9);
+      cma.add(1);
+      cma.add(8);
+      cma.add(2);
+      cma.add(7);
+      cma.add(3);
+      cma.add(6);
+      cma.add(4);
+      cma.add(5);
+
+      CHECK_EQUAL(280, cma.value());
+    }
+
+    //*************************************************************************
+    TEST(integral_signed_average_negative_runtime_sample_size)
+    {
+      typedef etl::cumulative_moving_average<int, 0U, SCALING> CMA;
+      CMA cma(0, SAMPLE_SIZE * 2U);
+
+      CHECK_EQUAL(0, cma.value());
+
+      cma.set_sample_size(SAMPLE_SIZE);
+
+      cma.add(-9);
+      cma.add(-1);
+      cma.add(-8);
+      cma.add(-2);
+      cma.add(-7);
+      cma.add(-3);
+      cma.add(-6);
+      cma.add(-4);
+      cma.add(-5);
+
+      CHECK_EQUAL(-280, cma.value());
+    }
+
+    //*************************************************************************
+    TEST(integral_unsigned_average_positive_runtime_sample_size)
+    {
+      typedef etl::cumulative_moving_average<unsigned int, 0U, SCALING> CMA;
+      CMA cma(0U, SAMPLE_SIZE * 2U);
+
+      CHECK_EQUAL(0U, cma.value());
+
+      cma.set_sample_size(SAMPLE_SIZE);
+
+      cma.add(9U);
+      cma.add(1U);
+      cma.add(8U);
+      cma.add(2U);
+      cma.add(7U);
+      cma.add(3U);
+      cma.add(6U);
+      cma.add(4U);
+      cma.add(5U);
+
+      CHECK_EQUAL(280U, cma.value());
+    }
+
+    //*************************************************************************
     TEST(floating_point_average)
     {
       typedef etl::cumulative_moving_average<double, SAMPLE_SIZE> CMA;
       CMA cma(0);
 
       CHECK_EQUAL(0.0, cma.value());
+
+      cma.add(9.0);
+      cma.add(1.0);
+      cma.add(8.0);
+      cma.add(2.0);
+      cma.add(7.0);
+      cma.add(3.0);
+      cma.add(6.0);
+      cma.add(4.0);
+      cma.add(5.0);
+
+      CHECK_CLOSE(2.82, cma.value(), 0.01);
+    }
+
+    //*************************************************************************
+    TEST(floating_point_average_runtime_sample_size)
+    {
+      typedef etl::cumulative_moving_average<double, 0U> CMA;
+      CMA cma(0, SAMPLE_SIZE * 2);
+
+      CHECK_EQUAL(0.0, cma.value());
+
+      cma.set_sample_size(SAMPLE_SIZE);
 
       cma.add(9.0);
       cma.add(1.0);

@@ -113,6 +113,78 @@ namespace etl
   };
 
   //***************************************************************************
+/// Cumulative Moving Average
+/// For integral types.
+/// \tparam T           The sample value type.
+/// \tparam SCALING     The scaling factor applied to samples. Default = 1.
+//***************************************************************************
+  template <typename T, const size_t SCALING_>
+  class cumulative_moving_average<T, 0, SCALING_, true, false>
+  {
+    typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type scale_t;
+    typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type sample_t;
+
+    static const scale_t SCALE = static_cast<scale_t>(SCALING_);
+
+  public:
+
+    static const size_t SCALING = SCALING_;     ///< The sample scaling factor.
+
+    //*************************************************************************
+    /// Constructor
+    /// \param initial_value The initial value for the average.
+    //*************************************************************************
+    cumulative_moving_average(const T initial_value, const size_t sample_size)
+      : average(initial_value * SCALE)
+      , samples(sample_size)
+    {
+    }
+
+    //*************************************************************************
+    /// Clears the average.
+    /// \param initial_value The initial value for the average.
+    //*************************************************************************
+    void clear(const T initial_value)
+    {
+      average = (initial_value * SCALE);
+    }
+
+    //*************************************************************************
+    /// Sets the sample size.
+    /// \param sample_size The new sample size.
+    //*************************************************************************
+    void set_sample_size(const size_t sample_size)
+    {
+      samples = sample_t(sample_size);
+    }
+
+    //*************************************************************************
+    /// Adds a new sample to the average.
+    /// \param new_value The value to add.
+    //*************************************************************************
+    void add(T new_value)
+    {
+      average *= samples;
+      average += SCALE * new_value;
+      average /= samples + sample_t(1);
+    }
+
+    //*************************************************************************
+    /// Gets the current cumulative average.
+    /// \return The current average.
+    //*************************************************************************
+    T value() const
+    {
+      return average;
+    }
+
+  private:
+
+    T        average; ///< The current cumulative average.
+    sample_t samples; ///< The nuimber of samples to average over.
+  };
+
+  //***************************************************************************
   /// Cumulative Moving Average
   /// For floating point types.
   /// \tparam T           The sample value type.
@@ -130,8 +202,8 @@ namespace etl
     /// \param initial_value The initial value for the average.
     //*************************************************************************
     cumulative_moving_average(const T initial_value)
-      : sample_size(T(SAMPLE_SIZE_)),
-        sample_size_plus_1(T(SAMPLE_SIZE_ + 1)),
+      : samples(T(SAMPLE_SIZE_)),
+        samples_plus_1(T(SAMPLE_SIZE_ + 1U)),
         average(initial_value)
     {
     }
@@ -151,9 +223,9 @@ namespace etl
     //*************************************************************************
     void add(const T new_value)
     {
-      average *= sample_size;
+      average *= samples;
       average += new_value;
-      average /= sample_size_plus_1;
+      average /= samples_plus_1;
     }
 
     //*************************************************************************
@@ -167,9 +239,77 @@ namespace etl
 
   private:
 
-    const T sample_size;        ///< The sample size to average over.
-    const T sample_size_plus_1; ///< One greater than the sample size.
+    const T samples;        ///< The sample size to average over.
+    const T samples_plus_1; ///< One greater than the sample size.
     T       average;            ///< The current cumulative average.
+  };
+
+  //***************************************************************************
+/// Cumulative Moving Average
+/// For floating point types.
+/// \tparam T           The sample value type.
+/// \tparam SAMPLE_SIZE The number of samples to average over.
+//***************************************************************************
+  template <typename T>
+  class cumulative_moving_average<T, 0U, 1U, false, true>
+  {
+  public:
+
+    //*************************************************************************
+    /// Constructor
+    /// \param initial_value The initial value for the average.
+    //*************************************************************************
+    cumulative_moving_average(const T initial_value, const size_t sample_size)
+      : samples(T(sample_size)),
+        samples_plus_1(T(sample_size + 1U)),
+        average(initial_value)
+    {
+    }
+
+    //*************************************************************************
+    /// Clears the average.
+    /// \param initial_value The initial value for the average.
+    //*************************************************************************
+    void clear(const T initial_value)
+    {
+      average = initial_value;
+    }
+
+    //*************************************************************************
+    /// Sets the sample size.
+    /// \param sample_size The new sample size.
+    //*************************************************************************
+    void set_sample_size(const size_t sample_size)
+    {
+      samples = T(sample_size);
+      samples_plus_1 = samples + T(1);
+    }
+
+    //*************************************************************************
+    /// Adds a new sample to the average.
+    /// \param new_value The value to add.
+    //*************************************************************************
+    void add(const T new_value)
+    {
+      average *= samples;
+      average += new_value;
+      average /= samples_plus_1;
+    }
+
+    //*************************************************************************
+    /// Gets the current cumulative average.
+    /// \return The current average.
+    //*************************************************************************
+    T value() const
+    {
+      return average;
+    }
+
+  private:
+
+    T samples;        ///< The sample size to average over.
+    T samples_plus_1; ///< One greater than the sample size.
+    T average;            ///< The current cumulative average.
   };
 }
 
