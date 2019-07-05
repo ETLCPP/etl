@@ -1,4 +1,8 @@
 ===============================================================================
+14.28.0
+Added runtime sample size specialisations to etl::cumulative_moving_average.
+
+===============================================================================
 14.27.1
 Removed ETL_IF_CONSTEXPR from etl::message_timer 'tick()'
 
