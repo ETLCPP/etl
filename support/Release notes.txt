@@ -1,4 +1,8 @@
 ===============================================================================
+14.28.1
+Optimisation of floating point specialisations of etl::cumulative_moving_average.
+
+===============================================================================
 14.28.0
 Added runtime sample size specialisations to etl::cumulative_moving_average.
 
