@@ -202,9 +202,8 @@ namespace etl
     /// \param initial_value The initial value for the average.
     //*************************************************************************
     cumulative_moving_average(const T initial_value)
-      : samples(T(SAMPLE_SIZE_)),
-        samples_plus_1(T(SAMPLE_SIZE_ + 1U)),
-        average(initial_value)
+      : reciprocal_samples_plus_1(T(1.0) / T(SAMPLE_SIZE_ + 1U))
+      , average(initial_value)
     {
     }
 
@@ -223,9 +222,7 @@ namespace etl
     //*************************************************************************
     void add(const T new_value)
     {
-      average *= samples;
-      average += new_value;
-      average /= samples_plus_1;
+      average += (new_value - average) * reciprocal_samples_plus_1;
     }
 
     //*************************************************************************
@@ -239,9 +236,8 @@ namespace etl
 
   private:
 
-    const T samples;        ///< The sample size to average over.
-    const T samples_plus_1; ///< One greater than the sample size.
-    T       average;            ///< The current cumulative average.
+    const T reciprocal_samples_plus_1; ///< Reciprocal of one greater than the sample size.
+    T       average;                   ///< The current cumulative average.
   };
 
   //***************************************************************************
@@ -260,9 +256,8 @@ namespace etl
     /// \param initial_value The initial value for the average.
     //*************************************************************************
     cumulative_moving_average(const T initial_value, const size_t sample_size)
-      : samples(T(sample_size)),
-        samples_plus_1(T(sample_size + 1U)),
-        average(initial_value)
+      : reciprocal_samples_plus_1(T(1.0) / T(sample_size + 1U))
+      , average(initial_value)
     {
     }
 
@@ -281,8 +276,7 @@ namespace etl
     //*************************************************************************
     void set_sample_size(const size_t sample_size)
     {
-      samples = T(sample_size);
-      samples_plus_1 = samples + T(1);
+      reciprocal_samples_plus_1 = T(1.0) / (T(sample_size) + T(1));
     }
 
     //*************************************************************************
@@ -291,9 +285,7 @@ namespace etl
     //*************************************************************************
     void add(const T new_value)
     {
-      average *= samples;
-      average += new_value;
-      average /= samples_plus_1;
+      average += (new_value - average) * reciprocal_samples_plus_1;
     }
 
     //*************************************************************************
@@ -307,9 +299,8 @@ namespace etl
 
   private:
 
-    T samples;        ///< The sample size to average over.
-    T samples_plus_1; ///< One greater than the sample size.
-    T average;            ///< The current cumulative average.
+    T reciprocal_samples_plus_1; ///< Reciprocal of one greater than the sample size.
+    T average;                   ///< The current cumulative average.
   };
 }
 
