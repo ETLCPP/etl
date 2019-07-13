@@ -28,11 +28,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <stdint.h>
-#include <limits.h>
-
 #ifndef ETL_PLATFORM_INCLUDED
 #define ETL_PLATFORM_INCLUDED
+
+#include <stdint.h>
+#include <limits.h>
 
 // Some targets do not support 8bit types.
 #define ETL_8BIT_SUPPORT (CHAR_BIT == 8)
@@ -43,7 +43,7 @@ SOFTWARE.
 #endif
 
 // Undefine all of the macros.
-#undef ETL_PLATFORM_16BIT 
+#undef ETL_PLATFORM_16BIT
 #undef ETL_PLATFORM_32BIT
 #undef ETL_PLATFORM_64BIT
 #undef ETL_CPP11_SUPPORTED

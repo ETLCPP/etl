@@ -292,6 +292,8 @@ namespace etl
       return max_size() - p_node_pool->size();
     }
 
+  protected:
+
     //*************************************************************************
     /// Is the list a trivial length?
     //*************************************************************************
@@ -299,8 +301,6 @@ namespace etl
     {
       return (size() < 2);
     }
-
-  protected:
 
     //*************************************************************************
     /// Get the head node.
@@ -1259,8 +1259,13 @@ namespace etl
     {
       ETL_ASSERT(n <= MAX_SIZE, ETL_ERROR(list_full));
 
+      // Zero?
+      if (n == 0U)
+      {
+        clear();
+      }
       // Smaller?
-      if (n < size())
+      else if (n < size())
       {
         iterator i_start = end();
         std::advance(i_start, -difference_type(size() - n));

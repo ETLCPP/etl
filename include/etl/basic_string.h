@@ -601,11 +601,11 @@ namespace etl
     //*********************************************************************
     void assign(const_pointer other, size_t length_)
     {
+      initialise();
+
       is_truncated = (length_ > CAPACITY);
 
       length_ = std::min(length_, CAPACITY);
-
-      initialise();
 
       etl::copy_n(other, length_, begin());
 
