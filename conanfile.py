@@ -6,7 +6,7 @@ from conans import ConanFile
 
 class EmbeddedTemplateLibraryConan(ConanFile):
     name = "embedded-template-library"
-    version = "14.11.2"
+    version = "14.28.2"
     license = "MIT"
     author = "John Wellbelove <smartgit@wellbelove.co.uk>"
     url = "https://github.com/ETLCPP/etl"
