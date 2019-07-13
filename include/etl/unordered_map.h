@@ -516,7 +516,7 @@ namespace etl
     //*********************************************************************
     local_iterator begin(size_t i)
     {
-      return (*pbuckets)[i].begin();
+      return pbuckets[i].begin();
     }
 
     //*********************************************************************
@@ -525,7 +525,7 @@ namespace etl
     //*********************************************************************
     local_const_iterator begin(size_t i) const
     {
-      return (*pbuckets)[i].cbegin();
+      return pbuckets[i].cbegin();
     }
 
     //*********************************************************************
@@ -534,7 +534,7 @@ namespace etl
     //*********************************************************************
     local_const_iterator cbegin(size_t i) const
     {
-      return (*pbuckets)[i].cbegin();
+      return pbuckets[i].cbegin();
     }
 
     //*********************************************************************
@@ -570,7 +570,7 @@ namespace etl
     //*********************************************************************
     local_iterator end(size_t i)
     {
-      return (*pbuckets)[i].end();
+      return pbuckets[i].end();
     }
 
     //*********************************************************************
@@ -579,7 +579,7 @@ namespace etl
     //*********************************************************************
     local_const_iterator end(size_t i) const
     {
-      return (*pbuckets)[i].cend();
+      return pbuckets[i].cend();
     }
 
     //*********************************************************************
@@ -588,7 +588,7 @@ namespace etl
     //*********************************************************************
     local_const_iterator cend(size_t i) const
     {
-      return (*pbuckets)[i].cend();
+      return pbuckets[i].cend();
     }
 
     //*********************************************************************
@@ -608,7 +608,7 @@ namespace etl
     {
       size_t index = bucket(key);
 
-      return std::distance((*pbuckets)[index].begin(), (*pbuckets)[index].end());
+      return std::distance(pbuckets[index].begin(), pbuckets[index].end());
     }
 
     //*********************************************************************

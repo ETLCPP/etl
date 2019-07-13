@@ -1,4 +1,11 @@
 ===============================================================================
+14.28.2
+Various fixes.
+void assign(const_pointer, size_t) did not set the truncation flag.
+Fixed resize(0) error for etl::fixed_list
+Removed erroneous pointers in etl::unordered_map::begin()
+
+===============================================================================
 14.28.1
 Optimisation of floating point specialisations of etl::cumulative_moving_average.
 

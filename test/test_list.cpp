@@ -337,6 +337,19 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_resize_zero)
+    {
+      const size_t INITIAL_SIZE = 4;
+      const size_t NEW_SIZE = 0;
+      const ItemNDC VALUE = ItemNDC("1");
+
+      DataNDC data(INITIAL_SIZE, VALUE);
+      data.resize(NEW_SIZE, VALUE);
+
+      CHECK_EQUAL(data.size(), NEW_SIZE);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_clear)
     {
       DataNDC data(sorted_data.begin(), sorted_data.end());

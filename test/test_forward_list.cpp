@@ -374,6 +374,25 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_resize_zero)
+    {
+      const size_t INITIAL_SIZE = 4;
+      const size_t NEW_SIZE = 0;
+      const ItemDC VALUE("1");
+
+      DataDC data(INITIAL_SIZE, VALUE);
+      data.resize(NEW_SIZE);
+
+      CompareDataDC compare_data(INITIAL_SIZE, VALUE);
+      compare_data.resize(NEW_SIZE);
+
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_clear)
     {
       DataNDC data(sorted_data.begin(), sorted_data.end());

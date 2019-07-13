@@ -834,6 +834,34 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assign_pointer_length)
+    {
+      Compare_Text compare_text(initial_text.c_str());
+
+      Text text;
+      text.assign(initial_text.c_str(), initial_text.size());
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+      CHECK(!text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assign_pointer_length_excess)
+    {
+      Compare_Text compare_text(longer_text.c_str());
+
+      Text text;
+      text.assign(longer_text.c_str(), longer_text.size());
+
+      compare_text.resize(text.max_size());
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+      CHECK(text.truncated());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_range)
     {
       Compare_Text compare_text(initial_text.c_str());
