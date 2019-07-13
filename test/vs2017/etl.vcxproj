@@ -904,6 +904,7 @@
     <Text Include="..\..\CMakeLists.txt" />
     <Text Include="..\..\include\etl\file_error_numbers.txt" />
     <Text Include="..\..\support\Release notes.txt" />
+    <Text Include="..\..\todo.txt" />
     <Text Include="..\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
