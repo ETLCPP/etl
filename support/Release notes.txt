@@ -1,4 +1,8 @@
 ===============================================================================
+14.28.3
+Removed redundant etl::const_array_view
+
+===============================================================================
 14.28.2
 Various fixes.
 void assign(const_pointer, size_t) did not set the truncation flag.

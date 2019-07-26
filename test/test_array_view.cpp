@@ -47,7 +47,7 @@ namespace
     typedef std::vector<int> StlVData;
 
     typedef etl::array_view<int> View;
-    typedef etl::const_array_view<int> CView;
+    typedef etl::array_view<const int> CView;
 
     EtlData etldata = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     StlData stldata = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
