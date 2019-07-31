@@ -135,7 +135,7 @@ namespace etl
     /// Construct from iterators
     //*************************************************************************
     template <typename TIterator>
-    ETL_CONSTEXPR array_view(TIterator begin_, TIterator end_)
+    ETL_CONSTEXPR array_view(const TIterator begin_, const TIterator end_)
       : mbegin(etl::addressof(*begin_)),
         mend(etl::addressof(*begin_) + std::distance(begin_, end_))
     {
@@ -144,14 +144,14 @@ namespace etl
     //*************************************************************************
     /// Construct from C array
     //*************************************************************************
-    template <typename TIterator, 
+    template <typename TIterator,
               typename TSize>
-    ETL_CONSTEXPR array_view(TIterator begin_, TSize size_)
+    ETL_CONSTEXPR array_view(const TIterator begin_, const TSize size_)
       : mbegin(etl::addressof(*begin_)),
         mend(etl::addressof(*begin_) + size_)
     {
     }
-    
+
     //*************************************************************************
     /// Construct from C array
     //*************************************************************************
@@ -353,7 +353,7 @@ namespace etl
     /// Assign from iterators
     //*************************************************************************
     template <typename TIterator>
-    void assign(TIterator begin_, TIterator end_)
+    void assign(const TIterator begin_, const TIterator end_)
     {
       mbegin = etl::addressof(*begin_);
       mend   = etl::addressof(*begin_) + std::distance(begin_, end_);
@@ -364,7 +364,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator,
               typename TSize>
-    void assign(TIterator begin_, TSize size_)
+    void assign(const TIterator begin_, const TSize size_)
     {
       mbegin = etl::addressof(*begin_);
       mend   = etl::addressof(*begin_) + size_;
@@ -373,7 +373,7 @@ namespace etl
     //*************************************************************************
     /// Returns a reference to the indexed value.
     //*************************************************************************
-    reference operator[](size_t i)
+    reference operator[](const size_t i)
     {
       return mbegin[i];
     }
@@ -381,7 +381,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reference to the indexed value.
     //*************************************************************************
-    const_reference operator[](size_t i) const
+    const_reference operator[](const size_t i) const
     {
       return mbegin[i];
     }
@@ -389,7 +389,7 @@ namespace etl
     //*************************************************************************
     /// Returns a reference to the indexed value.
     //*************************************************************************
-    reference at(size_t i)
+    reference at(const size_t i)
     {
       ETL_ASSERT((mbegin != nullptr && mend != nullptr), ETL_ERROR(array_view_uninitialised));
       ETL_ASSERT(i < size(), ETL_ERROR(array_view_bounds));
@@ -399,7 +399,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reference to the indexed value.
     //*************************************************************************
-    const_reference at(size_t i) const
+    const_reference at(const size_t i) const
     {
       ETL_ASSERT((mbegin != nullptr && mend != nullptr), ETL_ERROR(array_view_uninitialised));
       ETL_ASSERT(i < size(), ETL_ERROR(array_view_bounds));
@@ -415,18 +415,18 @@ namespace etl
       std::swap(mend, other.mend);
     }
 
-    //*************************************************************************          
+    //*************************************************************************
     /// Shrinks the view by moving its start forward.
-    //*************************************************************************          
-    void remove_prefix(size_type n)
+    //*************************************************************************
+    void remove_prefix(const size_type n)
     {
       mbegin += n;
     }
 
-    //*************************************************************************          
+    //*************************************************************************
     /// Shrinks the view by moving its end backward.
-    //*************************************************************************          
-    void remove_suffix(size_type n)
+    //*************************************************************************
+    void remove_suffix(const size_type n)
     {
       mend -= n;
     }
