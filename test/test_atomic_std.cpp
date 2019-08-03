@@ -265,8 +265,8 @@ namespace
       std::atomic<int> compare(1);
       etl::atomic<int> test(1);
 
-      compare += 2;
-      test += 2;
+      compare -= 2;
+      test -= 2;
 
       CHECK_EQUAL((int)compare, (int)test);
     }
@@ -279,8 +279,8 @@ namespace
       std::atomic<int*> compare(&data[3]);
       etl::atomic<int*> test(&data[3]);
 
-      compare += 2;
-      test += 2;
+      compare -= 2;
+      test -= 2;
 
       CHECK_EQUAL((int*)compare, (int*)test);
     }

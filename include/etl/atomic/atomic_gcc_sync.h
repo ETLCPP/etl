@@ -36,10 +36,12 @@ SOFTWARE.
 #include "../char_traits.h"
 
 #include <stdint.h>
+#include <string.h>
 
 #if defined(ETL_COMPILER_GCC)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wunused-value"
 #endif
 
 namespace etl
@@ -94,100 +96,100 @@ namespace etl
     // Pre-increment
     T operator ++()
     {
-      return fetch_add(1) + 1;
+      return __sync_add_and_fetch(&value, 1);
     }
 
     T operator ++() volatile
     {
-      return fetch_add(1) + 1;
+      return __sync_add_and_fetch(&value, 1);
     }
 
     // Post-increment
     T operator ++(int)
     {
-      return fetch_add(1);
+      return __sync_fetch_and_add(&value, 1);
     }
 
     T operator ++(int) volatile
     {
-      return fetch_add(1);
+      return __sync_fetch_and_add(&value, 1);
     }
 
     // Pre-decrement
     T operator --()
     {
-      return fetch_sub(1) + 1;
+      return __sync_sub_and_fetch(&value, 1);
     }
 
     T operator --() volatile
     {
-      return fetch_sub(1) + 1;
+      return __sync_sub_and_fetch(&value, 1);
     }
 
     // Post-decrement
     T operator --(int)
     {
-      return fetch_sub(1);
+      return __sync_fetch_and_sub(&value, 1);
     }
 
     T operator --(int) volatile
     {
-      return fetch_sub(1);
+      return __sync_fetch_and_sub(&value, 1);
     }
 
     // Add
     T operator +=(T v)
     {
-      return fetch_add(v) + v;
+      return __sync_fetch_and_add(&value, v);
     }
 
     T operator +=(T v) volatile
     {
-      return fetch_add(v) + v;
+      return __sync_fetch_and_add(&value, v);
     }
 
     // Subtract
     T operator -=(T v)
     {
-      return fetch_sub(v) - v;
+      return __sync_fetch_and_sub(&value, v);
     }
 
     T operator -=(T v) volatile
     {
-      return fetch_sub(v) - v;
+      return __sync_fetch_and_sub(&value, v);
     }
 
     // And
     T operator &=(T v)
     {
-      return fetch_and(v) & v;
+      return __sync_fetch_and_and(&value, v);
     }
 
     T operator &=(T v) volatile
     {
-      return fetch_and(v) & v;
+      return __sync_fetch_and_and(&value, v);
     }
 
     // Or
     T operator |=(T v)
     {
-      return fetch_or(v) | v;
+      return __sync_fetch_and_or(&value, v);
     }
 
     T operator |=(T v) volatile
     {
-      return fetch_or(v) | v;
+      return __sync_fetch_and_or(&value, v);
     }
 
     // Exclusive or
     T operator ^=(T v)
     {
-      return fetch_xor(v) ^ v;
+      return __sync_fetch_and_xor(&value, v);
     }
 
     T operator ^=(T v) volatile
     {
-      return fetch_xor(v) ^ v;
+      return __sync_fetch_and_xor(&value, v);
     }
 
     // Conversion operator
@@ -215,12 +217,12 @@ namespace etl
     // Store
     void store(T v, etl::memory_order order = etl::memory_order_seq_cst)
     {
-      __sync_lock_test_and_set(&value, v);
+      (void)__sync_lock_test_and_set(&value, v);
     }
 
     void store(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
-      __sync_lock_test_and_set(&value, v);
+      (void)__sync_lock_test_and_set(&value, v);
     }
 
     // Load
@@ -467,73 +469,73 @@ namespace etl
     // Pre-increment
     T* operator ++()
     {
-      return fetch_add(1) + 1;
+      return (T*)__sync_add_and_fetch(&value, sizeof(T));
     }
 
     T* operator ++() volatile
     {
-      return fetch_add(1) + 1;
+      return (T*)__sync_add_and_fetch(&value, sizeof(T));
     }
 
     // Post-increment
     T* operator ++(int)
     {
-      return fetch_add(1);
+      return (T*)__sync_fetch_and_add(&value, sizeof(T));
     }
 
     T* operator ++(int) volatile
     {
-      return fetch_add(1);
+      return (T*)__sync_fetch_and_add(&value, sizeof(T));
     }
 
     // Pre-decrement
     T* operator --()
     {
-      return fetch_sub(1) + 1;
+      return (T*)__sync_sub_and_fetch(&value, sizeof(T));
     }
 
     T* operator --() volatile
     {
-      return fetch_sub(1) + 1;
+      return (T*)__sync_sub_and_fetch(&value, sizeof(T));
     }
 
     // Post-decrement
     T* operator --(int)
     {
-      return fetch_sub(1);
+      return (T*)__sync_fetch_and_sub(&value, sizeof(T));
     }
 
     T* operator --(int) volatile
     {
-      return fetch_sub(1);
+      return (T*)__sync_fetch_and_sub(&value, sizeof(T));
     }
 
     // Add
     T* operator +=(ptrdiff_t v)
     {
-      return fetch_add(v) + v;
+      return (T*)__sync_fetch_and_add(&value, v * sizeof(T));
     }
 
     T* operator +=(ptrdiff_t v) volatile
     {
-      return fetch_add(v) + v;
+      return (T*)__sync_fetch_and_add(&value, v * sizeof(T));
     }
 
     // Subtract
     T* operator -=(ptrdiff_t v)
     {
-      return fetch_sub(v) - v;
+      return (T*)__sync_fetch_and_sub(&value, v * sizeof(T));
     }
 
     T* operator -=(ptrdiff_t v) volatile
     {
-      return fetch_sub(v) - v;
+      return (T*)__sync_fetch_and_sub(&value, v * sizeof(T));
     }
 
     // Conversion operator
     operator T* () const
     {
-      return __sync_fetch_and_add(&value, 0);
+      return (T*)__sync_fetch_and_add(&value, 0);
     }
 
     operator T*() volatile const
@@ -566,7 +568,7 @@ namespace etl
     // Load
     T* load(etl::memory_order order = etl::memory_order_seq_cst) const
     {
-      return __sync_fetch_and_add(&value, 0);
+      return (T*)__sync_fetch_and_add(&value, 0);
     }
 
     T* load(etl::memory_order order = etl::memory_order_seq_cst) const volatile
@@ -577,34 +579,34 @@ namespace etl
     // Fetch add
     T* fetch_add(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst)
     {
-      return __sync_fetch_and_add(&value, v);
+      return (T*)__sync_fetch_and_add(&value, v);
     }
 
     T* fetch_add(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
-      return __sync_fetch_and_add(&value, v);
+      return (T*)__sync_fetch_and_add(&value, v);
     }
 
     // Fetch subtract
     T* fetch_sub(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst)
     {
-      return __sync_fetch_and_sub(&value, v);
+      return (T*)__sync_fetch_and_sub(&value, v);
     }
 
     T* fetch_sub(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
-      return __sync_fetch_and_sub(&value, v);
+      return (T*)__sync_fetch_and_sub(&value, v);
     }
 
     // Exchange
     T* exchange(T* v, etl::memory_order order = etl::memory_order_seq_cst)
     {
-      return __sync_lock_test_and_set(&value, v);
+      return (T*)__sync_lock_test_and_set(&value, v);
     }
 
     T* exchange(T* v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
-      return __sync_lock_test_and_set(&value, v);
+      return (T*)__sync_lock_test_and_set(&value, v);
     }
 
     // Compare exchange weak
