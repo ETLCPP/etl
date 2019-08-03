@@ -39,6 +39,8 @@ SOFTWARE.
 #include "exception.h"
 #include "error_handler.h"
 
+#include "stl/utility.h"
+
 namespace etl
 {
   //*****************************************************************************
