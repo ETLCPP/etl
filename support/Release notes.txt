@@ -1,4 +1,8 @@
 ===============================================================================
+14.29.2
+Fixed incorrect results returned from pointers for atomic_gcc_sync
+
+===============================================================================
 14.29.1
 Added #include "stl/utility.h" to etl::optional
 
