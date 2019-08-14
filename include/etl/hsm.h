@@ -54,7 +54,7 @@ SOFTWARE.
 // fix a few bugs, and add some additional UML statechart
 // support. For instance, with this version it is possible to have a composite
 // state as target for a transaction.
- 
+
 #ifndef ETL_HSM_INCLUDED
 #define ETL_HSM_INCLUDED
 
@@ -64,7 +64,7 @@ namespace etl {
 namespace state {
 
 // ------------------------------------------------------------------------------------------
-// Top 
+// Top
 // ------------------------------------------------------------------------------------------
 template<typename H>
 struct Top
@@ -1039,7 +1039,7 @@ public:
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
@@ -1127,7 +1127,7 @@ const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13,
       Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15>::obj {};
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 15 messages
+// Leaf specialisation for 15 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1143,7 +1143,7 @@ public:
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
@@ -1228,7 +1228,7 @@ const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13,
       Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14>::obj {};
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 14 messages
+// Leaf specialisation for 14 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1243,7 +1243,7 @@ public:
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
@@ -1324,7 +1324,7 @@ const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13>
       Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13>::obj {};
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 13 messages
+// Leaf specialisation for 13 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1339,7 +1339,7 @@ public:
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
@@ -1417,7 +1417,7 @@ const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12>
       Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12>::obj {};
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 12 messages
+// Leaf specialisation for 12 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1432,7 +1432,7 @@ public:
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
@@ -1507,7 +1507,7 @@ const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11>
       Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11>::obj {};
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 11 messages
+// Leaf specialisation for 11 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1522,7 +1522,7 @@ public:
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
@@ -1594,7 +1594,7 @@ const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10>
       Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10>::obj {};
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 10 messages
+// Leaf specialisation for 10 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1608,7 +1608,7 @@ public:
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
@@ -1676,7 +1676,7 @@ const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9>
       Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9>::obj {};
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 9 messages
+// Leaf specialisation for 9 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1690,7 +1690,7 @@ public:
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
@@ -1755,7 +1755,7 @@ const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8>
       Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8>::obj {};
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 8 messages
+// Leaf specialisation for 8 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1769,7 +1769,7 @@ public:
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
@@ -1831,7 +1831,7 @@ const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7>
       Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7>::obj {};
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 7 messages
+// Leaf specialisation for 7 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1845,7 +1845,7 @@ public:
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
@@ -1904,7 +1904,7 @@ const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6>
       Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6>::obj {};
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 6 messages
+// Leaf specialisation for 6 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5>
@@ -1917,7 +1917,7 @@ public:
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
@@ -1972,7 +1972,7 @@ const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5>
       Leaf<H, ID, P, M0, M1, M2, M3, M4, M5>::obj {};
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 5 messages
+// Leaf specialisation for 5 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4>
@@ -1985,7 +1985,7 @@ public:
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
@@ -2037,7 +2037,7 @@ const Leaf<H, ID, P, M0, M1, M2, M3, M4>
       Leaf<H, ID, P, M0, M1, M2, M3, M4>::obj {};
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 4 messages
+// Leaf specialisation for 4 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3>
@@ -2050,7 +2050,7 @@ public:
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
@@ -2099,7 +2099,7 @@ const Leaf<H, ID, P, M0, M1, M2, M3>
       Leaf<H, ID, P, M0, M1, M2, M3>::obj {};
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 3 messages
+// Leaf specialisation for 3 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2>
@@ -2112,7 +2112,7 @@ public:
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
@@ -2158,7 +2158,7 @@ const Leaf<H, ID, P, M0, M1, M2>
       Leaf<H, ID, P, M0, M1, M2>::obj {};
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 2 messages
+// Leaf specialisation for 2 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1>
 class Leaf<H, ID, P, M0, M1> : public P
@@ -2170,7 +2170,7 @@ public:
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
@@ -2212,7 +2212,7 @@ const Leaf<H, ID, P, M0, M1>
       Leaf<H, ID, P, M0, M1>::obj {};
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 1 messages
+// Leaf specialisation for 1 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0>
 class Leaf<H, ID, P, M0> : public P
@@ -2224,7 +2224,7 @@ public:
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
@@ -2263,7 +2263,7 @@ const Leaf<H, ID, P, M0>
       Leaf<H, ID, P, M0>::obj {};
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 0 messages
+// Leaf specialisation for 0 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P>
 class Leaf<H, ID, P> : public P
@@ -2275,7 +2275,7 @@ public:
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
@@ -2370,13 +2370,13 @@ struct Transition
       exitStop  = eTB_CB && eS_C,
       entryStop = eS_C || (eS_CB && !eC_S)
    };
-   
+
    Transition(Hsm & arg)
       : _hsm(arg)
    {
       exit_actions(_hsm, Bool<false>());
    }
-   
+
    ~Transition()
    {
       using Trans = Transition<Target, Source, Target>;
@@ -2391,7 +2391,7 @@ struct Transition
    static void exit_actions (Hsm &, Bool<true>) {}
    static void exit_actions (Hsm & h, Bool<false>)
    {
-      using Trans = Transition<Current_parent, Source, Target>; 
+      using Trans = Transition<Current_parent, Source, Target>;
       Current::handle_exit(h);
       Trans::exit_actions(h, Bool<exitStop>());
    };
@@ -2399,7 +2399,7 @@ struct Transition
    static void entry_actions(Hsm &, Bool<true >) {}
    static void entry_actions(Hsm & h, Bool<false>)
    {
-      using Trans = Transition<Current_parent, Source, Target>; 
+      using Trans = Transition<Current_parent, Source, Target>;
       Trans::entry_actions(h, Bool<entryStop>());
       Current::handle_entry(h);
    };
@@ -2411,7 +2411,7 @@ private:
 } // namespace state
 
 // ------------------------------------------------------------------------------------------
-// hsm: The base class for the finite state machine 
+// hsm: The base class for the finite state machine
 // ------------------------------------------------------------------------------------------
 template<typename DERIVED_HSM>
 class hsm : public etl::imessage_router
@@ -2420,7 +2420,7 @@ public:
    using derived_hsm = DERIVED_HSM;
    using state       = state::Top<derived_hsm>;
 
-   // Construction / destruction 
+   // Construction / destruction
    hsm(etl::message_router_id_t id)
       : imessage_router(id) { };
 
