@@ -1,4 +1,8 @@
 ===============================================================================
+14.29.3
+Minor updatess for etl::delegate
+
+===============================================================================
 14.29.2
 Fixed incorrect results returned from pointers for atomic_gcc_sync
 
