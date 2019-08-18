@@ -178,8 +178,6 @@ def create_class(classname, is_declaration, is_topspec, is_leaf, n):
       cog.outl('\ntemplate<typename H, unsigned ID, typename P{}'.format(typename_M(n)))
       cog.outl('const {c}<H, ID, P{m}\n      {c}<H, ID, P{m}::obj {{}};'.format(c = classname, m = M(n)))
 
-
-
 ################################################################################
 # Creating classes here
 ################################################################################
