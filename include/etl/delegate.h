@@ -49,7 +49,6 @@ Original publication: https://www.codeproject.com/Articles/1170503/The-Impossibl
 #define ETL_DELEGATE_INCLUDED
 
 #include "platform.h"
-#include "type_traits.h"
 
 #if ETL_CPP11_SUPPORTED == 0
 #error NOT SUPPORTED FOR C++03 OR BELOW
@@ -77,10 +76,8 @@ namespace etl
     //*************************************************************************
     // Constructor from lambda or functor.
     //*************************************************************************
-    template <typename TLambda, 
-              typename TDummy = typename etl::enable_if<!etl::is_same<TLambda, 
-                                                                      etl::delegate<TReturn(TParams...)>>::value, int>::type>
-    delegate(TLambda& instance)
+    template <typename TLambda>
+    delegate(const TLambda& instance)
     {
       assign((void*)(&instance), lambda_stub<TLambda>);
     }
@@ -97,10 +94,8 @@ namespace etl
     //*************************************************************************
     /// Create from Lambda or Functor.
     //*************************************************************************
-    template <typename TLambda,
-              typename TDummy = typename etl::enable_if<!etl::is_same<TLambda,
-                                                                      etl::delegate<TReturn(TParams...)>>::value, int>::type>
-    static delegate create(TLambda& instance)
+    template <typename TLambda>
+    static delegate create(const TLambda& instance)
     {
       return delegate((void*)(&instance), lambda_stub<TLambda>);
     }
@@ -130,6 +125,9 @@ namespace etl
       return delegate((void*)(&instance), const_method_stub<T, Method>);
     }
 
+    //*************************************************************************
+    /// Disable create from rvalue instance method (Run time).
+    //*************************************************************************
     template <typename T, TReturn(T::*Method)(TParams...) const>
     static delegate create(T&& instance) = delete;
 
@@ -179,10 +177,8 @@ namespace etl
     //*************************************************************************
     /// Create from Lambda or Functor.
     //*************************************************************************
-    template <typename TLambda,
-              typename TDummy = typename etl::enable_if<!etl::is_same<TLambda,
-                                                                      etl::delegate<TReturn(TParams...)>>::value, int>::type>
-    delegate& operator =(TLambda& instance)
+    template <typename TLambda>
+    delegate& operator =(const TLambda& instance)
     {
       assign((void*)(&instance), lambda_stub<TLambda>);
       return *this;
