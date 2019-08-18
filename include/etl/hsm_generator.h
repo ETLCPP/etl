@@ -58,7 +58,7 @@ cog.outl("//********************************************************************
 // fix a few bugs, and add some additional UML statechart
 // support. For instance, with this version it is possible to have a composite
 // state as target for a transaction.
- 
+
 #ifndef ETL_HSM_INCLUDED
 #define ETL_HSM_INCLUDED
 
@@ -68,7 +68,7 @@ namespace etl {
 namespace state {
 
 // ------------------------------------------------------------------------------------------
-// Top 
+// Top
 // ------------------------------------------------------------------------------------------
 template<typename H>
 struct Top
@@ -92,7 +92,7 @@ def message_types(prefix, msgs, nfirstline, notherlines, suffix=''):
          s += '{} {}{}{}'.format(sep, prefix, sx, suffix)
    s += '>'
    return s
-   
+
 def typename_M_eq_void(n):
    return message_types(prefix='typename M', msgs=n, nfirstline=2, notherlines=4, suffix=' = void')
 
@@ -102,12 +102,12 @@ def typename_M(n):
 def M(n):
    return message_types(prefix='M', msgs=n, nfirstline=16, notherlines=24)
 
-def header_comment(text): 
+def header_comment(text):
    cog.outl('\n// ------------------------------------------------------------------------------------------')
    cog.outl('// {}'.format(text))
    cog.outl('// ------------------------------------------------------------------------------------------')
-   
-def create_class(classname, is_declaration, is_topspec, is_leaf, n): 
+
+def create_class(classname, is_declaration, is_topspec, is_leaf, n):
    if is_declaration:
       cog.outl('template<typename H, unsigned ID, typename P = Composite<H, 0, Top<H>>{}'.format(typename_M(n)))
       cog.outl('class {} : public P'.format(classname))
@@ -136,7 +136,7 @@ def create_class(classname, is_declaration, is_topspec, is_leaf, n):
    if not is_leaf:
       cog.outl('   static void handle_init(Hsm &);')
    else:
-      cog.outl('   static void handle_init ( Hsm & arg)')
+      cog.outl('   static void handle_init(Hsm & arg)')
       cog.outl('   {\n       arg.set_state(obj);\n   }')
 
       cog.outl('\n   static const {} obj;\n'.format(classname))
@@ -167,7 +167,7 @@ def create_class(classname, is_declaration, is_topspec, is_leaf, n):
 
    if n > 0:
       cog.outl('\nprivate:')
-   
+
    for t in range(n):
       cog.outl('   template<typename LEAF>')
       cog.outl('   void on_event(etl::imessage_router &, M%d const &, Hsm &, LEAF const &) const;' % t)
@@ -177,8 +177,6 @@ def create_class(classname, is_declaration, is_topspec, is_leaf, n):
    if is_leaf:
       cog.outl('\ntemplate<typename H, unsigned ID, typename P{}'.format(typename_M(n)))
       cog.outl('const {c}<H, ID, P{m}\n      {c}<H, ID, P{m}::obj {{}};'.format(c = classname, m = M(n)))
-  
-
 
 ################################################################################
 # Creating classes here
@@ -205,7 +203,7 @@ cog.outl('class {};\n'.format('Leaf'))
 create_class('Leaf', is_declaration=True, is_topspec=False, is_leaf=True, n=h)
 
 for i in range(h - 1, -1, -1):
-   header_comment('Composite specialisation for {} messages'.format(i))
+   header_comment('Leaf specialisation for {} messages'.format(i))
    create_class('Leaf', is_declaration=False, is_topspec=False, is_leaf=True, n = i)
 
 ]]]*/
@@ -276,13 +274,13 @@ struct Transition
       exitStop  = eTB_CB && eS_C,
       entryStop = eS_C || (eS_CB && !eC_S)
    };
-   
+
    Transition(Hsm & arg)
       : _hsm(arg)
    {
       exit_actions(_hsm, Bool<false>());
    }
-   
+
    ~Transition()
    {
       using Trans = Transition<Target, Source, Target>;
@@ -297,7 +295,7 @@ struct Transition
    static void exit_actions (Hsm &, Bool<true>) {}
    static void exit_actions (Hsm & h, Bool<false>)
    {
-      using Trans = Transition<Current_parent, Source, Target>; 
+      using Trans = Transition<Current_parent, Source, Target>;
       Current::handle_exit(h);
       Trans::exit_actions(h, Bool<exitStop>());
    };
@@ -305,7 +303,7 @@ struct Transition
    static void entry_actions(Hsm &, Bool<true >) {}
    static void entry_actions(Hsm & h, Bool<false>)
    {
-      using Trans = Transition<Current_parent, Source, Target>; 
+      using Trans = Transition<Current_parent, Source, Target>;
       Trans::entry_actions(h, Bool<entryStop>());
       Current::handle_entry(h);
    };
@@ -317,7 +315,7 @@ private:
 } // namespace state
 
 // ------------------------------------------------------------------------------------------
-// hsm: The base class for the finite state machine 
+// hsm: The base class for the finite state machine
 // ------------------------------------------------------------------------------------------
 template<typename DERIVED_HSM>
 class hsm : public etl::imessage_router
@@ -326,7 +324,7 @@ public:
    using derived_hsm = DERIVED_HSM;
    using state       = state::Top<derived_hsm>;
 
-   // Construction / destruction 
+   // Construction / destruction
    hsm(etl::message_router_id_t id)
       : imessage_router(id) { };
 
