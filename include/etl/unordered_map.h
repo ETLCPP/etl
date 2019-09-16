@@ -244,7 +244,7 @@ namespace etl
       }
 
       //*********************************
-      std::pair<const TKey, T> operator *()
+      reference operator *()
       {
         return inode->key_value_pair;
       }
