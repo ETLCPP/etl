@@ -1,4 +1,8 @@
 ===============================================================================
+14.30.0
+Allow conan's etl version metadata to automatically update via git tags
+
+===============================================================================
 14.29.4
 Fixed unordered_map iterator operator* return type
 
