@@ -1,13 +1,13 @@
 {
   "name": "Embedded Template Library",
-  "version": "10.21.2",
+  "version": "14.31.0",
   "authors": {
     "name": "John Wellbelove",
     "email":  "<john.wellbelove@etlcpp.com>"
   },
   "homepage": "https://www.etlcpp.com/",
   "license": "MIT",
-  "description": "A C++ template library tailored for embedded systems. Requires some support from STL. See http://andybrown.me.uk/2011/01/15/the-standard-template-library-stl-for-avr-with-c-streams/ or https://github.com/mike-matera/ArduinoSTL.git for Arduino.",
+  "description": "A C++ template library tailored for embedded systems.
   "repository": "https://github.com/ETLCPP/etl.git",
   "platforms": [
     "espressif8266",
@@ -19,8 +19,6 @@
       "-I include"
     ],
     "srcFilter": [
-        "-<src/*>",
-        "-<temp/*>",
         "-<test/*>"
     ]
 }
