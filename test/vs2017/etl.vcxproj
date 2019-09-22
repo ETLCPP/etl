@@ -449,7 +449,6 @@
     <ClInclude Include="..\..\include\etl\crc16_modbus.h" />
     <ClInclude Include="..\..\include\etl\crc32_c.h" />
     <ClInclude Include="..\..\include\etl\cumulative_moving_average.h" />
-    <ClInclude Include="..\..\include\etl\c\ecl_timer.h" />
     <ClInclude Include="..\..\include\etl\delegate.h" />
     <ClInclude Include="..\..\include\etl\delegate_service.h" />
     <ClInclude Include="..\..\include\etl\format_spec.h" />
@@ -628,7 +627,6 @@
     <ClInclude Include="..\..\include\etl\wformat_spec.h" />
     <ClInclude Include="..\..\include\etl\wstring.h" />
     <ClInclude Include="..\data.h" />
-    <ClInclude Include="..\ecl_user.h" />
     <ClInclude Include="..\etl_profile.h" />
     <ClInclude Include="..\murmurhash3.h" />
     <ClInclude Include="..\no_stl_test_iterators.h" />
@@ -655,7 +653,6 @@
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\TimeConstraint.cpp" />
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\Win32\TimeHelpers.cpp" />
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\XmlTestReporter.cpp" />
-    <ClCompile Include="..\..\src\c\ecl_timer.c" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\murmurhash3.cpp" />
     <ClCompile Include="..\test_algorithm.cpp" />
@@ -689,7 +686,6 @@
     <ClCompile Include="..\test_container.cpp" />
     <ClCompile Include="..\test_crc.cpp" />
     <ClCompile Include="..\test_cyclic_value.cpp" />
-    <ClCompile Include="..\test_c_timer_framework.cpp" />
     <ClCompile Include="..\test_debounce.cpp" />
     <ClCompile Include="..\test_deque.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
@@ -889,6 +885,7 @@
     <None Include="..\..\etl.pspimage" />
     <None Include="..\..\etl.xar" />
     <None Include="..\..\include\etl\generate_type_select.bat" />
+    <None Include="..\..\library.json" />
     <None Include="..\..\library.properties" />
     <None Include="..\..\include\etl\generate.bat" />
     <None Include="..\..\include\etl\generate_fsm.bat" />

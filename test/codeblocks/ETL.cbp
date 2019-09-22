@@ -160,7 +160,6 @@
 		<Unit filename="../../include/etl/bit_stream.h" />
 		<Unit filename="../../include/etl/bitset.h" />
 		<Unit filename="../../include/etl/bloom_filter.h" />
-		<Unit filename="../../include/etl/c/ecl_timer.h" />
 		<Unit filename="../../include/etl/callback.h" />
 		<Unit filename="../../include/etl/callback_service.h" />
 		<Unit filename="../../include/etl/callback_timer.h" />
@@ -334,9 +333,6 @@
 		<Unit filename="../../include/etl/visitor.h" />
 		<Unit filename="../../include/etl/wformat_spec.h" />
 		<Unit filename="../../include/etl/wstring.h" />
-		<Unit filename="../../src/c/ecl_timer.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="../ExtraCheckMacros.h" />
 		<Unit filename="../data.h" />
 		<Unit filename="../ecl_user.h" />
@@ -357,7 +353,6 @@
 		<Unit filename="../test_bitset.cpp" />
 		<Unit filename="../test_bloom_filter.cpp" />
 		<Unit filename="../test_bsd_checksum.cpp" />
-		<Unit filename="../test_c_timer_framework.cpp" />
 		<Unit filename="../test_callback_service.cpp" />
 		<Unit filename="../test_callback_timer.cpp" />
 		<Unit filename="../test_checksum.cpp" />
