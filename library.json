@@ -7,19 +7,8 @@
   },
   "homepage": "https://www.etlcpp.com/",
   "license": "MIT",
-  "description": "A C++ template library tailored for embedded systems.
+  "description": "A C++ template library tailored for embedded systems.",
   "repository": "https://github.com/ETLCPP/etl.git",
-  "platforms": [
-    "espressif8266",
-    "espressif32"
-  ],
-  "frameworks": "arduino",
-  "build": {
-    "flags": [
-      "-I include"
-    ],
-    "srcFilter": [
-        "-<test/*>"
-    ]
-}
+  "platforms": "*",
+  "frameworks": "*"
 }
