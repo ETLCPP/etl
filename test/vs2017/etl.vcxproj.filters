@@ -765,6 +765,9 @@
     <ClInclude Include="..\..\include\etl\basic_string.h">
       <Filter>ETL\Strings</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\macros.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
