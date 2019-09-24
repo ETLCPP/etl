@@ -3,12 +3,18 @@
   "version": "14.31.1",
   "authors": {
     "name": "John Wellbelove",
-    "email":  "<john.wellbelove@etlcpp.com>"
+    "email": "<john.wellbelove@etlcpp.com>"
   },
   "homepage": "https://www.etlcpp.com/",
   "license": "MIT",
   "description": "A C++ template library tailored for embedded systems.",
-  "repository": "https://github.com/ETLCPP/etl.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ETLCPP/etl.git"
+  },
+  "build": {
+    "includeDir": "include"
+  },
   "platforms": "*",
   "frameworks": "*"
 }
