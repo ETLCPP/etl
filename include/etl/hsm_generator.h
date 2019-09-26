@@ -73,7 +73,7 @@ namespace state {
 template<typename H>
 struct Top
 {
-   using Hsm = H;
+   typedef H Hsm;
    virtual void process_event(etl::imessage_router &, etl::imessage const &, Hsm &) const = 0;
    virtual unsigned get_id() const = 0;
 };
@@ -121,14 +121,14 @@ def create_class(classname, is_declaration, is_topspec, is_leaf, n):
    cog.outl('{')
 
    cog.outl('public:')
-   cog.outl('   using Hsm = H;')
+   cog.outl('   typedef H Hsm;')
 
    if is_topspec:
-      cog.outl('   using Parent = Top<H>;')
-      cog.outl('   using Self = {}<H, 0, Top<H>>;'.format(classname))
+      cog.outl('   typedef Top<H> Parent;')
+      cog.outl('   typedef {}<H, 0, Top<H>> Self;'.format(classname))
    else:
-      cog.outl('   using Parent = P;')
-      cog.outl('   using Self = {}<H, ID, P{};'.format(classname, M(n)))
+      cog.outl('   typedef P Parent;')
+      cog.outl('   typedef {}<H, ID, P{} Self;'.format(classname, M(n)))
 
    cog.outl('\n   static void handle_entry(Hsm &) {}')
    cog.outl('   static void handle_exit(Hsm &) {}')
@@ -216,8 +216,8 @@ for i in range(h - 1, -1, -1):
 template<typename C>
 struct Init
 {
-   using Child = C;
-   using Hsm = typename C::Hsm;
+   typedef C Child;
+   typedef typename C::Hsm Hsm;
    Init(Hsm & arg) : _hsm(arg) { };
    ~Init()
       {
@@ -235,8 +235,8 @@ template<typename C, typename P>
 struct Is_child
 {
 private:
-   using Child  = C;
-   using Parent = P;
+   typedef C Child;
+   typedef P Parent;
    class  Yes { char a[1]; };
    class  No  { char a[5]; };
    static Yes test(Parent *); // undefined
@@ -258,12 +258,12 @@ template<bool> class Bool { };
 template<typename C, typename S, typename T>
 struct Transition
 {
-   using Current = C;
-   using Source  = S;
-   using Target  = T;
-   using Hsm     = typename Current::Hsm;
-   using Current_parent = typename Current::Parent;
-   using Target_parent  = typename Target::Parent;
+   typedef C Current;
+   typedef S Source;
+   typedef T Target;
+   typedef typename Current::Hsm Hsm;
+   typedef typename Current::Parent Current_parent;
+   typedef typename Target::Parent Target_parent;
 
    enum // work out when to terminate template recursion
    {
@@ -283,7 +283,7 @@ struct Transition
 
    ~Transition()
    {
-      using Trans = Transition<Target, Source, Target>;
+      typedef Transition<Target, Source, Target> Trans;
       Trans::entry_actions(_hsm, Bool<false>());
       Target::handle_init(_hsm);
    }
@@ -295,7 +295,7 @@ struct Transition
    static void exit_actions (Hsm &, Bool<true>) {}
    static void exit_actions (Hsm & h, Bool<false>)
    {
-      using Trans = Transition<Current_parent, Source, Target>;
+      typedef Transition<Current_parent, Source, Target> Trans;
       Current::handle_exit(h);
       Trans::exit_actions(h, Bool<exitStop>());
    };
@@ -303,7 +303,7 @@ struct Transition
    static void entry_actions(Hsm &, Bool<true >) {}
    static void entry_actions(Hsm & h, Bool<false>)
    {
-      using Trans = Transition<Current_parent, Source, Target>;
+      typedef Transition<Current_parent, Source, Target> Trans;
       Trans::entry_actions(h, Bool<entryStop>());
       Current::handle_entry(h);
    };
@@ -321,8 +321,8 @@ template<typename DERIVED_HSM>
 class hsm : public etl::imessage_router
 {
 public:
-   using derived_hsm = DERIVED_HSM;
-   using state       = state::Top<derived_hsm>;
+   typedef DERIVED_HSM derived_hsm;
+   typedef state::Top<derived_hsm> state;
 
    // Construction / destruction
    hsm(etl::message_router_id_t id)

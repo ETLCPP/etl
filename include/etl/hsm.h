@@ -69,7 +69,7 @@ namespace state {
 template<typename H>
 struct Top
 {
-   using Hsm = H;
+   typedef H Hsm;
    virtual void process_event(etl::imessage_router &, etl::imessage const &, Hsm &) const = 0;
    virtual unsigned get_id() const = 0;
 };
@@ -93,9 +93,9 @@ template<typename H, unsigned ID, typename P = Composite<H, 0, Top<H>>, typename
 class Composite : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -169,9 +169,9 @@ template<typename H>
 class Composite<H, 0> : public Top<H>
 {
 public:
-   using Hsm = H;
-   using Parent = Top<H>;
-   using Self = Composite<H, 0, Top<H>>;
+   typedef H Hsm;
+   typedef Top<H> Parent;
+   typedef Composite<H, 0, Top<H>> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -195,9 +195,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -271,9 +271,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -344,9 +344,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -414,9 +414,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -481,9 +481,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -544,9 +544,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -604,9 +604,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -661,9 +661,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -715,9 +715,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -765,9 +765,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2, M3, M4, M5> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3, M4, M5>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -812,9 +812,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2, M3, M4> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3, M4>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3, M4> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -856,9 +856,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2, M3> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -897,9 +897,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -934,9 +934,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1>
 class Composite<H, ID, P, M0, M1> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -968,9 +968,9 @@ template<typename H, unsigned ID, typename P, typename M0>
 class Composite<H, ID, P, M0> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -999,9 +999,9 @@ template<typename H, unsigned ID, typename P>
 class Composite<H, ID, P> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1033,9 +1033,9 @@ template<typename H, unsigned ID, typename P = Composite<H, 0, Top<H>>, typename
 class Leaf : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1137,9 +1137,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1237,9 +1237,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1333,9 +1333,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1426,9 +1426,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1516,9 +1516,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1602,9 +1602,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1684,9 +1684,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1763,9 +1763,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1839,9 +1839,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1911,9 +1911,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3, M4, M5>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1979,9 +1979,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Leaf<H, ID, P, M0, M1, M2, M3, M4> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3, M4>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -2044,9 +2044,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Leaf<H, ID, P, M0, M1, M2, M3> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -2106,9 +2106,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Leaf<H, ID, P, M0, M1, M2> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -2164,9 +2164,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1>
 class Leaf<H, ID, P, M0, M1> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -2218,9 +2218,9 @@ template<typename H, unsigned ID, typename P, typename M0>
 class Leaf<H, ID, P, M0> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -2269,9 +2269,9 @@ template<typename H, unsigned ID, typename P>
 class Leaf<H, ID, P> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -2312,8 +2312,8 @@ const Leaf<H, ID, P>
 template<typename C>
 struct Init
 {
-   using Child = C;
-   using Hsm = typename C::Hsm;
+   typedef C Child;
+   typedef typename C::Hsm Hsm;
    Init(Hsm & arg) : _hsm(arg) { };
    ~Init()
       {
@@ -2331,8 +2331,8 @@ template<typename C, typename P>
 struct Is_child
 {
 private:
-   using Child  = C;
-   using Parent = P;
+   typedef C Child;
+   typedef P Parent;
    class  Yes { char a[1]; };
    class  No  { char a[5]; };
    static Yes test(Parent *); // undefined
@@ -2354,12 +2354,12 @@ template<bool> class Bool { };
 template<typename C, typename S, typename T>
 struct Transition
 {
-   using Current = C;
-   using Source  = S;
-   using Target  = T;
-   using Hsm     = typename Current::Hsm;
-   using Current_parent = typename Current::Parent;
-   using Target_parent  = typename Target::Parent;
+   typedef C Current;
+   typedef S Source;
+   typedef T Target;
+   typedef typename Current::Hsm Hsm;
+   typedef typename Current::Parent Current_parent;
+   typedef typename Target::Parent Target_parent;
 
    enum // work out when to terminate template recursion
    {
@@ -2379,7 +2379,7 @@ struct Transition
 
    ~Transition()
    {
-      using Trans = Transition<Target, Source, Target>;
+      typedef Transition<Target, Source, Target> Trans;
       Trans::entry_actions(_hsm, Bool<false>());
       Target::handle_init(_hsm);
    }
@@ -2391,7 +2391,7 @@ struct Transition
    static void exit_actions (Hsm &, Bool<true>) {}
    static void exit_actions (Hsm & h, Bool<false>)
    {
-      using Trans = Transition<Current_parent, Source, Target>;
+      typedef Transition<Current_parent, Source, Target> Trans;
       Current::handle_exit(h);
       Trans::exit_actions(h, Bool<exitStop>());
    };
@@ -2399,7 +2399,7 @@ struct Transition
    static void entry_actions(Hsm &, Bool<true >) {}
    static void entry_actions(Hsm & h, Bool<false>)
    {
-      using Trans = Transition<Current_parent, Source, Target>;
+      typedef Transition<Current_parent, Source, Target> Trans;
       Trans::entry_actions(h, Bool<entryStop>());
       Current::handle_entry(h);
    };
@@ -2417,8 +2417,8 @@ template<typename DERIVED_HSM>
 class hsm : public etl::imessage_router
 {
 public:
-   using derived_hsm = DERIVED_HSM;
-   using state       = state::Top<derived_hsm>;
+   typedef DERIVED_HSM derived_hsm;
+   typedef state::Top<derived_hsm> state;
 
    // Construction / destruction
    hsm(etl::message_router_id_t id)

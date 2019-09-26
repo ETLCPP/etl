@@ -135,13 +135,14 @@ namespace state {
  * Definition of the state hierarchy. The numbers are unique unsigned
  * values used to uniquify state types in the case two states have the
  * same parent and message set. */
-using Top  = etl::state::Composite<State_machine, 0>;
-using S0   = etl::state::Composite<State_machine, 1, Top, message::E>;
-using S1   = etl::state::Composite<State_machine, 2, S0,  message::A, message::B, message::C, message::D, message::F>;
-using S11  = etl::state::Leaf     <State_machine, 3, S1,  message::G>;
-using S2   = etl::state::Composite<State_machine, 4, S0,  message::C, message::F>;
-using S21  = etl::state::Composite<State_machine, 5, S2,  message::B, message::H>;
-using S211 = etl::state::Leaf     <State_machine, 6, S21, message::D, message::G>;
+typedef etl::state::Composite<State_machine, 0> Top;
+typedef etl::state::Composite<State_machine, 1, Top, message::E> S0;
+typedef etl::state::Composite<State_machine, 2, S0, message::A, message::B,
+                              message::C, message::D, message::F> S1;
+typedef etl::state::Leaf     <State_machine, 3, S1, message::G> S11;
+typedef etl::state::Composite<State_machine, 4, S0, message::C, message::F> S2;
+typedef etl::state::Composite<State_machine, 5, S2, message::B, message::H> S21;
+typedef etl::state::Leaf     <State_machine, 6, S21, message::D, message::G> S211;
 
 } // namespace state
 } // namespace test
