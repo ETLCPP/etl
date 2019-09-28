@@ -40,8 +40,8 @@ namespace
   {
     return TCompare()(a, b);
   }
-  
-  struct test : std::binary_function<int, int, bool>
+
+  struct test : etlstd::binary_function<int, int, bool>
   {
     bool operator()(int a, int b) const
     {

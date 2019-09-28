@@ -36,6 +36,7 @@ set(TEST_SOURCE_FILES
   test_callback_timer.cpp
   test_checksum.cpp
   test_compare.cpp
+  test_compiler_settings.cpp
   test_constant.cpp
   test_container.cpp
   test_crc.cpp

@@ -1324,9 +1324,9 @@ namespace
       DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
       DataNDC data2(sorted_data.begin(), sorted_data.end(), pool);
 
-      compare_data.remove_if(std::bind2nd(std::equal_to<ItemNDC>(), ItemNDC("7")));
-      data1.remove_if(std::bind2nd(std::equal_to<ItemNDC>(), ItemNDC("7")));
-      data2.remove_if(std::bind2nd(std::equal_to<ItemNDC>(), ItemNDC("7")));
+      compare_data.remove_if(std::bind(std::equal_to<ItemNDC>(), std::placeholders::_1, ItemNDC("7")));
+      data1.remove_if(std::bind(std::equal_to<ItemNDC>(), std::placeholders::_1, ItemNDC("7")));
+      data2.remove_if(std::bind(std::equal_to<ItemNDC>(), std::placeholders::_1, ItemNDC("7")));
 
       CHECK_EQUAL(compare_data.size(), data1.size());
       CHECK_EQUAL(compare_data.size(), data2.size());
