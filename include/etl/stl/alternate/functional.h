@@ -61,7 +61,7 @@
   template <typename TArgumentType, typename TResultType>
   struct unary_function
   {
-    typedef TArgumentType aurgument_type;
+    typedef TArgumentType argument_type;
     typedef TResultType   result_type;
   };
 
@@ -70,15 +70,15 @@
   template <typename TFirstArgumentType, typename TSecondArgumentType, typename TResultType>
   struct binary_function
   {
-    typedef TFirstArgumentType  first_aurgument_type;
-    typedef TSecondArgumentType second_aurgument_type;
+    typedef TFirstArgumentType  first_argument_type;
+    typedef TSecondArgumentType second_argument_type;
     typedef TResultType         result_type;
   };
 
   //***************************************************************************
 
   template <typename TFunction>
-  class binder1st : public ETLSTD::unary_function<typename TFunction::second_argument_type, typename TFunction::result_type> 
+  class binder1st : public ETLSTD::unary_function<typename TFunction::second_argument_type, typename TFunction::result_type>
   {
   protected:
 
@@ -112,7 +112,7 @@
   //***************************************************************************
 
   template <typename TFunction >
-  class binder2nd : public ETLSTD::unary_function<typename TFunction::first_argument_type, typename TFunction::result_type> 
+  class binder2nd : public ETLSTD::unary_function<typename TFunction::first_argument_type, typename TFunction::result_type>
   {
   protected:
     TFunction operation;

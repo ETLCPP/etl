@@ -110,7 +110,7 @@ namespace
 //    return os;
 //  }
 
-  struct Greater : public std::binary_function<int, int, bool>
+  struct Greater : public etlstd::binary_function<int, int, bool>
   {
     bool operator()(int a, int b) const
     {
