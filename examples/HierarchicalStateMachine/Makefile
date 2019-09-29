@@ -1,6 +1,8 @@
 #CC        = clang++
 CC        = g++
-CFLAGS    = -std=c++03 -Wall -Wfatal-errors -g -I../../include -I../../include/etl -I../../include/etl/profiles -DPROFILE_CPP03_GENERIC
+
+# -permissive required to allow for specialisation of hsm in different namespace
+CFLAGS    = -std=c++03 -fpermissive -Wall -Wfatal-errors -g -I./ -I../../include
 INCLUDES  = ../../include/etl/hsm.h
 
 all: testhsm

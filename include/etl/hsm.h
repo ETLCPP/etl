@@ -85,7 +85,7 @@ template<typename H, unsigned ID, typename P, typename M0 = void, typename M1 = 
          typename M14 = void, typename M15 = void>
 class Composite;
 
-template<typename H, unsigned ID, typename P = Composite<H, 0, Top<H>>, typename M0, typename M1,
+template<typename H, unsigned ID, typename P = Composite<H, 0, Top<H> >, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11, typename M12, typename M13,
@@ -171,7 +171,7 @@ class Composite<H, 0> : public Top<H>
 public:
    typedef H Hsm;
    typedef Top<H> Parent;
-   typedef Composite<H, 0, Top<H>> Self;
+   typedef Composite<H, 0, Top<H> > Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1025,7 +1025,7 @@ template<typename H, unsigned ID, typename P, typename M0 = void, typename M1 = 
          typename M14 = void, typename M15 = void>
 class Leaf;
 
-template<typename H, unsigned ID, typename P = Composite<H, 0, Top<H>>, typename M0, typename M1,
+template<typename H, unsigned ID, typename P = Composite<H, 0, Top<H> >, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11, typename M12, typename M13,
@@ -1046,13 +1046,13 @@ public:
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -1124,7 +1124,7 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M10, typename M11, typename M12, typename M13,
          typename M14, typename M15>
 const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 15 messages
@@ -1150,13 +1150,13 @@ public:
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -1225,7 +1225,7 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M10, typename M11, typename M12, typename M13,
          typename M14>
 const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 14 messages
@@ -1250,13 +1250,13 @@ public:
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -1321,7 +1321,7 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11, typename M12, typename M13>
 const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 13 messages
@@ -1346,13 +1346,13 @@ public:
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -1414,7 +1414,7 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11, typename M12>
 const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 12 messages
@@ -1439,13 +1439,13 @@ public:
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -1504,7 +1504,7 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11>
 const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 11 messages
@@ -1529,13 +1529,13 @@ public:
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -1591,7 +1591,7 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M6, typename M7, typename M8, typename M9,
          typename M10>
 const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 10 messages
@@ -1615,13 +1615,13 @@ public:
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -1673,7 +1673,7 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9>
 const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 9 messages
@@ -1697,13 +1697,13 @@ public:
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -1752,7 +1752,7 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8>
 const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 8 messages
@@ -1776,13 +1776,13 @@ public:
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -1828,7 +1828,7 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7>
 const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 7 messages
@@ -1852,13 +1852,13 @@ public:
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -1901,7 +1901,7 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6>
 const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 6 messages
@@ -1924,13 +1924,13 @@ public:
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -1969,7 +1969,7 @@ private:
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5>
 const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 5 messages
@@ -1992,13 +1992,13 @@ public:
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -2034,7 +2034,7 @@ private:
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4>
 const Leaf<H, ID, P, M0, M1, M2, M3, M4>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3, M4>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 4 messages
@@ -2057,13 +2057,13 @@ public:
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -2096,7 +2096,7 @@ private:
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3>
 const Leaf<H, ID, P, M0, M1, M2, M3>
-      Leaf<H, ID, P, M0, M1, M2, M3>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 3 messages
@@ -2119,13 +2119,13 @@ public:
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -2155,7 +2155,7 @@ private:
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2>
 const Leaf<H, ID, P, M0, M1, M2>
-      Leaf<H, ID, P, M0, M1, M2>::obj {};
+      Leaf<H, ID, P, M0, M1, M2>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 2 messages
@@ -2177,13 +2177,13 @@ public:
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -2209,7 +2209,7 @@ private:
 
 template<typename H, unsigned ID, typename P, typename M0, typename M1>
 const Leaf<H, ID, P, M0, M1>
-      Leaf<H, ID, P, M0, M1>::obj {};
+      Leaf<H, ID, P, M0, M1>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 1 messages
@@ -2231,13 +2231,13 @@ public:
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -2260,7 +2260,7 @@ private:
 
 template<typename H, unsigned ID, typename P, typename M0>
 const Leaf<H, ID, P, M0>
-      Leaf<H, ID, P, M0>::obj {};
+      Leaf<H, ID, P, M0>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 0 messages
@@ -2282,13 +2282,13 @@ public:
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -2303,7 +2303,7 @@ public:
 
 template<typename H, unsigned ID, typename P>
 const Leaf<H, ID, P>
-      Leaf<H, ID, P>::obj {};
+      Leaf<H, ID, P>::obj;
 
 
 // ------------------------------------------------------------------------------------------
@@ -2421,8 +2421,11 @@ public:
    typedef state::Top<derived_hsm> state;
 
    // Construction / destruction
-   hsm(etl::message_router_id_t id)
-      : imessage_router(id) { };
+   hsm(message_router_id_t id)
+      : etl::imessage_router(id),
+      _state (nullptr)
+   {
+   };
 
    // Accepts everything but sinks unhandled messages
    bool is_started() const
@@ -2430,12 +2433,12 @@ public:
       return _state != nullptr;
    };
 
-   bool accepts(etl::message_id_t) const override
+   bool accepts(message_id_t) const
    {
       return true;
    };
 
-   bool is_null_router() const override
+   bool is_null_router() const
    {
       return false;
    };
@@ -2451,7 +2454,7 @@ public:
    };
 
 private:
-   const state * _state {nullptr};
+   const state * _state;
 };
 
 } // namespace etl

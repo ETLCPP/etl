@@ -109,7 +109,7 @@ def header_comment(text):
 
 def create_class(classname, is_declaration, is_topspec, is_leaf, n):
    if is_declaration:
-      cog.outl('template<typename H, unsigned ID, typename P = Composite<H, 0, Top<H>>{}'.format(typename_M(n)))
+      cog.outl('template<typename H, unsigned ID, typename P = Composite<H, 0, Top<H> >{}'.format(typename_M(n)))
       cog.outl('class {} : public P'.format(classname))
    else:
       if not is_topspec:
@@ -125,7 +125,7 @@ def create_class(classname, is_declaration, is_topspec, is_leaf, n):
 
    if is_topspec:
       cog.outl('   typedef Top<H> Parent;')
-      cog.outl('   typedef {}<H, 0, Top<H>> Self;'.format(classname))
+      cog.outl('   typedef {}<H, 0, Top<H> > Self;'.format(classname))
    else:
       cog.outl('   typedef P Parent;')
       cog.outl('   typedef {}<H, ID, P{} Self;'.format(classname, M(n)))
@@ -141,11 +141,11 @@ def create_class(classname, is_declaration, is_topspec, is_leaf, n):
 
       cog.outl('\n   static const {} obj;\n'.format(classname))
 
-      cog.outl('   virtual unsigned get_id() const override')
+      cog.outl('   virtual unsigned get_id() const')
       cog.outl('   {\n      return ID;\n   }')
       cog.outl('   virtual void process_event(etl::imessage_router & source,')
       cog.outl('                              etl::imessage  const & message,')
-      cog.outl('                              Hsm                  & h) const final override')
+      cog.outl('                              Hsm                  & h) const')
       cog.outl('   {\n      handle_event(source, message, h, *this);\n   };')
 
    cog.outl('\n   template<typename LEAF>')
@@ -176,7 +176,7 @@ def create_class(classname, is_declaration, is_topspec, is_leaf, n):
 
    if is_leaf:
       cog.outl('\ntemplate<typename H, unsigned ID, typename P{}'.format(typename_M(n)))
-      cog.outl('const {c}<H, ID, P{m}\n      {c}<H, ID, P{m}::obj {{}};'.format(c = classname, m = M(n)))
+      cog.outl('const {c}<H, ID, P{m}\n      {c}<H, ID, P{m}::obj;'.format(c = classname, m = M(n)))
 
 ################################################################################
 # Creating classes here
@@ -326,7 +326,10 @@ public:
 
    // Construction / destruction
    hsm(etl::message_router_id_t id)
-      : imessage_router(id) { };
+      : etl::imessage_router(id),
+      _state (nullptr)
+   {
+   };
 
    // Accepts everything but sinks unhandled messages
    bool is_started() const
@@ -334,12 +337,12 @@ public:
       return _state != nullptr;
    };
 
-   bool accepts(etl::message_id_t) const override
+   bool accepts(etl::message_id_t) const
    {
       return true;
    };
 
-   bool is_null_router() const override
+   bool is_null_router() const
    {
       return false;
    };
@@ -355,7 +358,7 @@ public:
    };
 
 private:
-   const state * _state {nullptr};
+   const state * _state;
 };
 
 } // namespace etl

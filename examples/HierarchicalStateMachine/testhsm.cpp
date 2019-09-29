@@ -11,6 +11,9 @@
 */
 //#include "UnitTest++.h"
 
+#include "etl/nullptr.h"
+const std::nullptr_t nullptr = {};
+
 #include "etl/hsm.h"
 #include "etl/enum_type.h"
 
@@ -54,15 +57,15 @@ etl::imessage factory(char c)
 {
 	switch (c)
 		{
-		case 'a': return A {};
-		case 'b': return B {};
-		case 'c': return C {};
-		case 'd': return D {};
-		case 'e': return E {};
-		case 'f': return F {};
-		case 'g': return G {};
-		case 'h': return H {};
-		default: return A {};
+		case 'a': return A();
+		case 'b': return B();
+		case 'c': return C();
+		case 'd': return D();
+		case 'e': return E();
+		case 'f': return F();
+		case 'g': return G();
+		case 'h': return H();
+		default : return A();
 		}
 };
 
@@ -404,7 +407,7 @@ on_event(etl::imessage_router &, test::message::G const &, test::State_machine &
  ******************************************************************************/
 int main()
 {
-	test::State_machine hsm {test::state_machine_id};
+	test::State_machine hsm(test::state_machine_id);
 	test::state::Top::handle_init(hsm);
 	for(;;) {
 		std::cout << "\nEvent: ";
