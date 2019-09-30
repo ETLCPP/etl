@@ -1,3 +1,5 @@
+///\file
+
 /******************************************************************************
 The MIT License(MIT)
 
@@ -5,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2019 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -26,25 +28,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_ATOMIC_INCLUDED
-#define ETL_ATOMIC_INCLUDED
+#ifndef ETL_ARMV7_NO_STL_INCLUDED
+#define ETL_ARMV7_NO_STL_INCLUDED
 
-#include "platform.h"
+//*****************************************************************************
+// ARM Compiler Version 7
+//*****************************************************************************
 
-#if ETL_CPP11_SUPPORTED == 1 && !defined(ETL_NO_STL)
-  #include "atomic/atomic_std.h"
-  #define ETL_HAS_ATOMIC 1
-#elif defined(ETL_COMPILER_ARM5)
-  #include "atomic/atomic_arm.h"
-  #define ETL_HAS_ATOMIC 1
-#elif defined(ETL_COMPILER_ARM6)
-  #include "atomic/atomic_arm.h"
-  #define ETL_HAS_ATOMIC 1
-#elif defined(ETL_COMPILER_GCC)
-  #include "atomic/atomic_gcc_sync.h"
-  #define ETL_HAS_ATOMIC 1
-#else
-  #define ETL_HAS_ATOMIC 0
-#endif
+#define ETL_TARGET_DEVICE_ARM
+#define ETL_TARGET_OS_NONE
+#define ETL_COMPILER_CLANG
+#define ETL_CPP11_SUPPORTED 1
+#define ETL_CPP14_SUPPORTED 1
+#define ETL_CPP17_SUPPORTED 0
+#define ETL_NO_NULLPTR_SUPPORT 0
+#define ETL_NO_LARGE_CHAR_SUPPORT 0
+#define ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED 1
+#define ETL_NO_STL
 
 #endif
