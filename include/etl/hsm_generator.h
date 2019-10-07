@@ -43,7 +43,7 @@ cog.outl("//********************************************************************
 //
 // e.g.
 // To generate handlers for up to 16 events...
-// python -m cogapp -d -e -ofsm.h -DHandlers=16 fsm_generator.h
+// python -m cogapp -d -e -ohsm.h -DHandlers=16 hsm_generator.h
 //
 // See generate.bat
 //***************************************************************************
