@@ -768,6 +768,21 @@
     <ClInclude Include="..\..\include\etl\macros.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\armv7.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\armv7_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\clang_generic.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\cpp17.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\cpp17_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
