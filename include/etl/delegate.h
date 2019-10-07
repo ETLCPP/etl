@@ -71,10 +71,7 @@ namespace etl
     //*************************************************************************
     // Copy constructor.
     //*************************************************************************
-    delegate(const delegate& other)
-    {
-      other.invocation.clone(invocation);
-    }
+    delegate(const delegate& other) = default;
 
     //*************************************************************************
     // Constructor from lambda or functor.
@@ -113,6 +110,13 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Create from instance method (Run time).
+    /// Deleted for rvalue references.
+    //*************************************************************************
+    template <typename T, TReturn(T::*Method)(TParams...)>
+    static delegate create(T&& instance) = delete;
+
+    //*************************************************************************
     /// Create from const instance method (Run time).
     //*************************************************************************
     template <typename T, TReturn(T::*Method)(TParams...) const>
@@ -120,6 +124,12 @@ namespace etl
     {
       return delegate((void*)(&instance), const_method_stub<T, Method>);
     }
+
+    //*************************************************************************
+    /// Disable create from rvalue instance method (Run time).
+    //*************************************************************************
+    template <typename T, TReturn(T::*Method)(TParams...) const>
+    static delegate create(T&& instance) = delete;
 
     //*************************************************************************
     /// Create from instance method (Compile time).
@@ -142,6 +152,7 @@ namespace etl
 #if !defined(ETL_COMPILER_GCC)
     //*************************************************************************
     /// Create from instance function operator (Compile time).
+    /// At the time of writing, GCC appears to have trouble with this.
     //*************************************************************************
     template <typename T, T& Instance>
     static delegate create()
@@ -161,11 +172,7 @@ namespace etl
     //*************************************************************************
     /// Create from function (Compile time).
     //*************************************************************************
-    delegate& operator =(const delegate& other)
-    {
-      other.invocation.clone(invocation);
-      return *this;
-    }
+    delegate& operator =(const delegate& rhs) = default;
 
     //*************************************************************************
     /// Create from Lambda or Functor.
@@ -180,17 +187,17 @@ namespace etl
     //*************************************************************************
     /// Checks equality.
     //*************************************************************************
-    bool operator == (const delegate& other) const
+    bool operator == (const delegate& rhs) const
     {
-      return invocation == other.invocation;
+      return invocation == rhs.invocation;
     }
 
     //*************************************************************************
     /// Returns <b>true</b> if the delegate is valid.
     //*************************************************************************
-    bool operator != (const delegate& other) const
+    bool operator != (const delegate& rhs) const
     {
-      return invocation != other.invocation;
+      return invocation != rhs.invocation;
     }
 
     //*************************************************************************
@@ -228,22 +235,15 @@ namespace etl
       }
 
       //***********************************************************************
-      void clone(invocation_element& target) const
+      bool operator ==(const invocation_element& rhs) const
       {
-        target.stub   = stub;
-        target.object = object;
+        return (rhs.stub == stub) && (rhs.object == object);
       }
 
       //***********************************************************************
-      bool operator ==(const invocation_element& another) const
+      bool operator !=(const invocation_element& rhs) const
       {
-        return (another.stub == stub) && (another.object == object);
-      }
-
-      //***********************************************************************
-      bool operator !=(const invocation_element& another) const
-      {
-        return (another.stub != stub) || (another.object != object);
+        return (rhs.stub != stub) || (rhs.object != object);
       }
 
       //***********************************************************************

@@ -1,18 +1,31 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from conans import ConanFile, tools
 
-from conans import ConanFile
 
+def get_version_from_git_tag():
+    """
+    :returns: The git tag associated with the current commit, or None if it is not able to get the Git data.
+
+    Returning None is necessary when the recipe is already in the Conan cache, and the Git repository may not be there.
+    A value of None makes Conan get the version from the metadata.
+    See: https://docs.conan.io/en/latest/howtos/capture_version.html
+    """
+    try:
+        return tools.Git().get_tag()
+    except:
+        return None
 
 class EmbeddedTemplateLibraryConan(ConanFile):
     name = "embedded-template-library"
-    version = "14.28.2"
+    version = get_version_from_git_tag()
     license = "MIT"
     author = "John Wellbelove <smartgit@wellbelove.co.uk>"
     url = "https://github.com/ETLCPP/etl"
     description = "A C++ template library for embedded applications"
     topics = ("embedded", "template", "container")
-    no_copy_source = True
+
+    # Source info
     scm = {
         "type": "git",
         "url": "auto",

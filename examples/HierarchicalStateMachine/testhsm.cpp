@@ -11,6 +11,9 @@
 */
 //#include "UnitTest++.h"
 
+#include "etl/nullptr.h"
+const std::nullptr_t nullptr = {};
+
 #include "etl/hsm.h"
 #include "etl/enum_type.h"
 
@@ -54,15 +57,15 @@ etl::imessage factory(char c)
 {
 	switch (c)
 		{
-		case 'a': return A {};
-		case 'b': return B {};
-		case 'c': return C {};
-		case 'd': return D {};
-		case 'e': return E {};
-		case 'f': return F {};
-		case 'g': return G {};
-		case 'h': return H {};
-		default: return A {};
+		case 'a': return A();
+		case 'b': return B();
+		case 'c': return C();
+		case 'd': return D();
+		case 'e': return E();
+		case 'f': return F();
+		case 'g': return G();
+		case 'h': return H();
+		default : return A();
 		}
 };
 
@@ -135,13 +138,14 @@ namespace state {
  * Definition of the state hierarchy. The numbers are unique unsigned
  * values used to uniquify state types in the case two states have the
  * same parent and message set. */
-using Top  = etl::state::Composite<State_machine, 0>;
-using S0   = etl::state::Composite<State_machine, 1, Top, message::E>;
-using S1   = etl::state::Composite<State_machine, 2, S0,  message::A, message::B, message::C, message::D, message::F>;
-using S11  = etl::state::Leaf     <State_machine, 3, S1,  message::G>;
-using S2   = etl::state::Composite<State_machine, 4, S0,  message::C, message::F>;
-using S21  = etl::state::Composite<State_machine, 5, S2,  message::B, message::H>;
-using S211 = etl::state::Leaf     <State_machine, 6, S21, message::D, message::G>;
+typedef etl::state::Composite<State_machine, 0> Top;
+typedef etl::state::Composite<State_machine, 1, Top, message::E> S0;
+typedef etl::state::Composite<State_machine, 2, S0, message::A, message::B,
+                              message::C, message::D, message::F> S1;
+typedef etl::state::Leaf     <State_machine, 3, S1, message::G> S11;
+typedef etl::state::Composite<State_machine, 4, S0, message::C, message::F> S2;
+typedef etl::state::Composite<State_machine, 5, S2, message::B, message::H> S21;
+typedef etl::state::Leaf     <State_machine, 6, S21, message::D, message::G> S211;
 
 } // namespace state
 } // namespace test
@@ -403,7 +407,7 @@ on_event(etl::imessage_router &, test::message::G const &, test::State_machine &
  ******************************************************************************/
 int main()
 {
-	test::State_machine hsm {test::state_machine_id};
+	test::State_machine hsm(test::state_machine_id);
 	test::state::Top::handle_init(hsm);
 	for(;;) {
 		std::cout << "\nEvent: ";
