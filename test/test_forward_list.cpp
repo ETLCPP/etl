@@ -1008,8 +1008,8 @@ namespace
       CompareDataNDC compare_data(sorted_data.begin(), sorted_data.end());
       DataNDC data(sorted_data.begin(), sorted_data.end());
 
-      compare_data.remove_if(std::bind2nd(std::equal_to<ItemNDC>(), ItemNDC("7")));
-      data.remove_if(std::bind2nd(std::equal_to<ItemNDC>(), ItemNDC("7")));
+      compare_data.remove_if(std::bind(std::equal_to<ItemNDC>(), std::placeholders::_1, ItemNDC("7")));
+      data.remove_if(std::bind(std::equal_to<ItemNDC>(), std::placeholders::_1, ItemNDC("7")));
 
       CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 

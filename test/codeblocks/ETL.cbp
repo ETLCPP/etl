@@ -12,7 +12,7 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-std=c++11" />
+					<Add option="-std=c++17" />
 					<Add option="-m32" />
 					<Add option="-g" />
 					<Add option="-D_DEBUG" />
@@ -66,6 +66,8 @@
 			<Add option="-Wshadow" />
 			<Add option="-Wundef" />
 			<Add option="-Wall" />
+			<Add option="-std=c++14" />
+			<Add option="-std=c++17" />
 			<Add option="-std=c++11" />
 			<Add option="-fexceptions" />
 			<Add directory="../../../unittest-cpp/UnitTest++/" />
@@ -357,6 +359,7 @@
 		<Unit filename="../test_callback_timer.cpp" />
 		<Unit filename="../test_checksum.cpp" />
 		<Unit filename="../test_compare.cpp" />
+		<Unit filename="../test_compiler_settings.cpp" />
 		<Unit filename="../test_constant.cpp" />
 		<Unit filename="../test_container.cpp" />
 		<Unit filename="../test_crc.cpp" />
