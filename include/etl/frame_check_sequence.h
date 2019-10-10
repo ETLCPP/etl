@@ -74,7 +74,7 @@ namespace etl
     template<typename TIterator>
     frame_check_sequence(TIterator begin, const TIterator end)
     {
-      ETL_STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
+      ETL_STATIC_ASSERT(sizeof(typename ETLSTD::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
 
       reset();
       add(begin, end);
@@ -96,7 +96,7 @@ namespace etl
     template<typename TIterator>
     void add(TIterator begin, const TIterator end)
     {
-      ETL_STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
+      ETL_STATIC_ASSERT(sizeof(typename ETLSTD::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
 
       while (begin != end)
       {

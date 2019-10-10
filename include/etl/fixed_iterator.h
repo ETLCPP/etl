@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2015 jwellbelove
 
@@ -44,7 +44,7 @@ namespace etl
   /// This can be useful when using STL algorithms to interact with fixed memory locations such as registers.
   ///\ingroup iterator
   template <typename TIterator>
-  class fixed_iterator : std::iterator<typename std::iterator_traits<TIterator>::iterator_category, typename std::iterator_traits<TIterator>::value_type>
+  class fixed_iterator : ETLSTD::iterator<typename ETLSTD::iterator_traits<TIterator>::iterator_category, typename ETLSTD::iterator_traits<TIterator>::value_type>
   {
   public:
 
@@ -99,7 +99,7 @@ namespace etl
     //***************************************************************************
     /// Dereference operator.
     //***************************************************************************
-    typename std::iterator_traits<TIterator>::value_type operator *()
+    typename ETLSTD::iterator_traits<TIterator>::value_type operator *()
     {
       return *it;
     }
@@ -107,7 +107,7 @@ namespace etl
     //***************************************************************************
     /// Dereference operator.
     //***************************************************************************
-    const typename std::iterator_traits<TIterator>::value_type operator *() const
+    const typename ETLSTD::iterator_traits<TIterator>::value_type operator *() const
     {
       return *it;
     }
@@ -139,7 +139,7 @@ namespace etl
     //***************************************************************************
     /// += operator.
     //***************************************************************************
-    fixed_iterator& operator +=(typename std::iterator_traits<TIterator>::difference_type /*offset*/)
+    fixed_iterator& operator +=(typename ETLSTD::iterator_traits<TIterator>::difference_type /*offset*/)
     {
       return *this;
     }
@@ -147,7 +147,7 @@ namespace etl
     //***************************************************************************
     /// -= operator.
     //***************************************************************************
-    fixed_iterator& operator -=(typename std::iterator_traits<TIterator>::difference_type /*offset*/)
+    fixed_iterator& operator -=(typename ETLSTD::iterator_traits<TIterator>::difference_type /*offset*/)
     {
       return *this;
     }
@@ -180,7 +180,7 @@ namespace etl
   //*****************************************************************************
   template <typename TIterator>
   etl::fixed_iterator<TIterator>& operator +(etl::fixed_iterator<TIterator>& lhs,
-                                            typename std::iterator_traits<TIterator>::difference_type /*rhs*/)
+                                            typename ETLSTD::iterator_traits<TIterator>::difference_type /*rhs*/)
   {
     return lhs;
   }
@@ -190,7 +190,7 @@ namespace etl
   //*****************************************************************************
   template <typename TIterator>
   etl::fixed_iterator<TIterator>& operator -(etl::fixed_iterator<TIterator>& lhs,
-                                            typename std::iterator_traits<TIterator>::difference_type /*rhs*/)
+                                            typename ETLSTD::iterator_traits<TIterator>::difference_type /*rhs*/)
   {
     return lhs;
   }
@@ -199,7 +199,7 @@ namespace etl
   /// - fixed_iterator operator.
   //*****************************************************************************
   template <typename TIterator>
-  typename std::iterator_traits<TIterator>::difference_type operator -(etl::fixed_iterator<TIterator>& lhs,
+  typename ETLSTD::iterator_traits<TIterator>::difference_type operator -(etl::fixed_iterator<TIterator>& lhs,
                                                                       etl::fixed_iterator<TIterator>& rhs)
   {
     return TIterator(lhs) - TIterator(rhs);

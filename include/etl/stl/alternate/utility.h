@@ -34,17 +34,7 @@ SOFTWARE.
 #include "../../platform.h"
 #include "../../type_traits.h"
 
-#if defined(ETL_IN_UNIT_TEST)
-  #if !defined(ETLSTD)
-    #define ETLSTD etlstd
-  #endif
-  namespace etlstd
-#else
-  #if !defined(ETLSTD)
-    #define ETLSTD std
-  #endif
-  namespace std
-#endif
+namespace etlstd
 {
   //******************************************************************************
   template <typename T1, typename T2>

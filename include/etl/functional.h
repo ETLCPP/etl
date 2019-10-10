@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -67,7 +67,7 @@ namespace etl
       *t = value;
       return *this;
     }
-    
+
     T& get() const
     {
       return *t;

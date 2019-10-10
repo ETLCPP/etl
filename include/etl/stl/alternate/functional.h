@@ -4,17 +4,7 @@
 
 #include "../../platform.h"
 
-#if defined(ETL_IN_UNIT_TEST)
-  #if !defined(ETLSTD)
-    #define ETLSTD etlstd
-  #endif
-  namespace etlstd
-#else
-  #if !defined(ETLSTD)
-    #define ETLSTD std
-  #endif
-  namespace std
-#endif
+namespace etlstd
 {
   //***************************************************************************
   template <typename T = void>
@@ -78,7 +68,7 @@
   //***************************************************************************
 
   template <typename TFunction>
-  class binder1st : public ETLSTD::unary_function<typename TFunction::second_argument_type, typename TFunction::result_type>
+  class binder1st : public etlstd::unary_function<typename TFunction::second_argument_type, typename TFunction::result_type>
   {
   protected:
 
@@ -112,7 +102,7 @@
   //***************************************************************************
 
   template <typename TFunction >
-  class binder2nd : public ETLSTD::unary_function<typename TFunction::first_argument_type, typename TFunction::result_type>
+  class binder2nd : public etlstd::unary_function<typename TFunction::first_argument_type, typename TFunction::result_type>
   {
   protected:
     TFunction operation;

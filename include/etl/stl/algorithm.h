@@ -32,6 +32,7 @@ SOFTWARE.
 #define ETL_STL_ALGORITHM_INCLUDED
 
 #include "../platform.h"
+#include "choose_namespace.h"
 
 #if defined(ETL_NO_STL)
   #include "alternate/algorithm.h"

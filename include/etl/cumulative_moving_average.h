@@ -44,8 +44,8 @@ namespace etl
   template <typename T,
             const size_t SAMPLE_SIZE,
             const size_t SCALING  = 1U,
-            const bool IsIntegral = std::is_integral<T>::value,
-            const bool IsFloat    = std::is_floating_point<T>::value>
+            const bool IsIntegral = ETLSTD::is_integral<T>::value,
+            const bool IsFloat    = ETLSTD::is_floating_point<T>::value>
   class cumulative_moving_average;
 
   //***************************************************************************

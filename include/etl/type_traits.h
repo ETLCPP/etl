@@ -53,6 +53,8 @@ SOFTWARE.
 #ifndef ETL_TYPE_TRAITS_INCLUDED
 #define ETL_TYPE_TRAITS_INCLUDED
 
+#include "stl/choose_namespace.h"
+
 #include <stddef.h>
 #include <stdint.h>
 
@@ -243,7 +245,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_fundamental : integral_constant<bool, is_arithmetic<T>::value ||
                                                                         is_void<T>::value  ||
-                                                                        is_same<std::nullptr_t,
+                                                                        is_same<ETLSTD::nullptr_t,
                                                                   typename remove_cv<T>::type>::value> {};
 
   /// is_compound
@@ -271,7 +273,7 @@ namespace etl
   ///\ingroup type_traits
 #if (ETL_CPP11_SUPPORTED && !defined(ARDUINO) && !defined(ETL_STLPORT)) && !defined(ETL_IN_UNIT_TEST) && !defined(ETL_NO_STL)
   // For compilers that support C++11
-  template <typename T> struct is_pod : std::is_pod<T> {};
+  template <typename T> struct is_pod : ETLSTD::is_pod<T> {};
 #else
   template <typename T> struct is_pod : etl::integral_constant<bool, etl::is_fundamental<T>::value || etl::is_pointer<T>::value> {};
 #endif
@@ -279,19 +281,19 @@ namespace etl
 #if (ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED) && !defined(ETL_STLPORT) && !defined(ETL_IN_UNIT_TEST) && !defined(ETL_NO_STL)
   /// is_trivially_constructible
   ///\ingroup type_traits
-  template <typename T> struct is_trivially_constructible : std::is_trivially_constructible<T> {};
+  template <typename T> struct is_trivially_constructible : ETLSTD::is_trivially_constructible<T> {};
 
   /// is_trivially_copy_constructible
   ///\ingroup type_traits
-  template <typename T> struct is_trivially_copy_constructible : std::is_trivially_copy_constructible<T> {};
+  template <typename T> struct is_trivially_copy_constructible : ETLSTD::is_trivially_copy_constructible<T> {};
 
   /// is_trivially_destructible
   ///\ingroup type_traits
-  template <typename T> struct is_trivially_destructible : std::is_trivially_destructible<T> {};
+  template <typename T> struct is_trivially_destructible : ETLSTD::is_trivially_destructible<T> {};
 
   /// is_trivially_copy_assignable
   ///\ingroup type_traits
-  template <typename T> struct is_trivially_copy_assignable : std::is_trivially_copy_assignable<T> {};
+  template <typename T> struct is_trivially_copy_assignable : ETLSTD::is_trivially_copy_assignable<T> {};
 #else
   /// is_trivially_constructible
   /// For C++03, only POD types are recognised.
@@ -513,14 +515,14 @@ namespace etl
   ///\ingroup types
   //***************************************************************************
   template <typename T,
-            typename T1, typename T2 = void, typename T3 = void, typename T4 = void, 
-            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void, 
-            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void, 
-            typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void, 
+            typename T1, typename T2 = void, typename T3 = void, typename T4 = void,
+            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void,
+            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void,
+            typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void,
             typename T17 = void>
   struct is_one_of
   {
-    static const bool value = 
+    static const bool value =
         etl::is_same<T, T1>::value ||
         etl::is_same<T, T2>::value ||
         etl::is_same<T, T3>::value ||

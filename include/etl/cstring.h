@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2016 jwellbelove
 
@@ -160,7 +160,7 @@ namespace etl
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
-    string(std::initializer_list<value_type> init)
+    string(ETLSTD::initializer_list<value_type> init)
       : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
       this->assign(init.begin(), init.end());
@@ -180,7 +180,7 @@ namespace etl
       {
         ETL_ASSERT(position < this->size(), ETL_ERROR(string_out_of_bounds));
 
-        length_ = std::min(length_, this->size() - position);
+        length_ = ETLSTD::min(length_, this->size() - position);
 
         new_string.assign(buffer + position, buffer + position + length_);
       }

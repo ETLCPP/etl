@@ -39,18 +39,18 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  // ETL Atomic type for compilers that support std::atomic.
-  // etl::atomic is a simple wrapper around std::atomic.
+  // ETL Atomic type for compilers that support ETLSTD::atomic.
+  // etl::atomic is a simple wrapper around ETLSTD::atomic.
   //***************************************************************************
 
-  typedef std::memory_order memory_order;
+  typedef ETLSTD::memory_order memory_order;
 
-  static const etl::memory_order memory_order_relaxed = std::memory_order_relaxed;
-  static const etl::memory_order memory_order_consume = std::memory_order_consume;
-  static const etl::memory_order memory_order_acquire = std::memory_order_acquire;
-  static const etl::memory_order memory_order_release = std::memory_order_release;
-  static const etl::memory_order memory_order_acq_rel = std::memory_order_acq_rel;
-  static const etl::memory_order memory_order_seq_cst = std::memory_order_seq_cst;
+  static const etl::memory_order memory_order_relaxed = ETLSTD::memory_order_relaxed;
+  static const etl::memory_order memory_order_consume = ETLSTD::memory_order_consume;
+  static const etl::memory_order memory_order_acquire = ETLSTD::memory_order_acquire;
+  static const etl::memory_order memory_order_release = ETLSTD::memory_order_release;
+  static const etl::memory_order memory_order_acq_rel = ETLSTD::memory_order_acq_rel;
+  static const etl::memory_order memory_order_seq_cst = ETLSTD::memory_order_seq_cst;
 
   template <typename T>
   class atomic
@@ -334,7 +334,7 @@ namespace etl
     atomic& operator =(const atomic&);
     //atomic& operator =(const atomic&) volatile;
 
-    std::atomic<T> value;
+    ETLSTD::atomic<T> value;
   };
 
   template <typename T>
@@ -553,53 +553,53 @@ namespace etl
     atomic & operator =(const atomic&);
     //atomic& operator =(const atomic&) volatile;
 
-    std::atomic<T*> value;
+    ETLSTD::atomic<T*> value;
   };
 
-  typedef std::atomic<char>                atomic_char;
-  typedef std::atomic<signed char>         atomic_schar;
-  typedef std::atomic<unsigned char>       atomic_uchar;
-  typedef std::atomic<short>               atomic_short;
-  typedef std::atomic<unsigned short>      atomic_ushort;
-  typedef std::atomic<int>                 atomic_int;
-  typedef std::atomic<unsigned int>        atomic_uint;
-  typedef std::atomic<long>                atomic_long;
-  typedef std::atomic<unsigned long>       atomic_ulong;
-  typedef std::atomic<long long>           atomic_llong;
-  typedef std::atomic<unsigned long long>  atomic_ullong;
-  typedef std::atomic<wchar_t>             atomic_wchar_t;
-  typedef std::atomic<char16_t>            atomic_char16_t;
-  typedef std::atomic<char32_t>            atomic_char32_t;
-  typedef std::atomic<uint8_t>             atomic_uint8_t;
-  typedef std::atomic<int8_t>              atomic_int8_t;
-  typedef std::atomic<uint16_t>            atomic_uint16_t;
-  typedef std::atomic<int16_t>             atomic_int16_t;
-  typedef std::atomic<uint32_t>            atomic_uint32_t;
-  typedef std::atomic<int32_t>             atomic_int32_t;
-  typedef std::atomic<uint64_t>            atomic_uint64_t;
-  typedef std::atomic<int64_t>             atomic_int64_t;
-  typedef std::atomic<int_least8_t>        atomic_int_least8_t;
-  typedef std::atomic<uint_least8_t>       atomic_uint_least8_t;
-  typedef std::atomic<int_least16_t>       atomic_int_least16_t;
-  typedef std::atomic<uint_least16_t>      atomic_uint_least16_t;
-  typedef std::atomic<int_least32_t>       atomic_int_least32_t;
-  typedef std::atomic<uint_least32_t>      atomic_uint_least32_t;
-  typedef std::atomic<int_least64_t>       atomic_int_least64_t;
-  typedef std::atomic<uint_least64_t>      atomic_uint_least64_t;
-  typedef std::atomic<int_fast8_t>         atomic_int_fast8_t;
-  typedef std::atomic<uint_fast8_t>        atomic_uint_fast8_t;
-  typedef std::atomic<int_fast16_t>        atomic_int_fast16_t;
-  typedef std::atomic<uint_fast16_t>       atomic_uint_fast16_t;
-  typedef std::atomic<int_fast32_t>        atomic_int_fast32_t;
-  typedef std::atomic<uint_fast32_t>       atomic_uint_fast32_t;
-  typedef std::atomic<int_fast64_t>        atomic_int_fast64_t;
-  typedef std::atomic<uint_fast64_t>       atomic_uint_fast64_t;
-  typedef std::atomic<intptr_t>            atomic_intptr_t;
-  typedef std::atomic<uintptr_t>           atomic_uintptr_t;
-  typedef std::atomic<size_t>              atomic_size_t;
-  typedef std::atomic<ptrdiff_t>           atomic_ptrdiff_t;
-  typedef std::atomic<intmax_t>            atomic_intmax_t;
-  typedef std::atomic<uintmax_t>           atomic_uintmax_t;
+  typedef ETLSTD::atomic<char>                atomic_char;
+  typedef ETLSTD::atomic<signed char>         atomic_schar;
+  typedef ETLSTD::atomic<unsigned char>       atomic_uchar;
+  typedef ETLSTD::atomic<short>               atomic_short;
+  typedef ETLSTD::atomic<unsigned short>      atomic_ushort;
+  typedef ETLSTD::atomic<int>                 atomic_int;
+  typedef ETLSTD::atomic<unsigned int>        atomic_uint;
+  typedef ETLSTD::atomic<long>                atomic_long;
+  typedef ETLSTD::atomic<unsigned long>       atomic_ulong;
+  typedef ETLSTD::atomic<long long>           atomic_llong;
+  typedef ETLSTD::atomic<unsigned long long>  atomic_ullong;
+  typedef ETLSTD::atomic<wchar_t>             atomic_wchar_t;
+  typedef ETLSTD::atomic<char16_t>            atomic_char16_t;
+  typedef ETLSTD::atomic<char32_t>            atomic_char32_t;
+  typedef ETLSTD::atomic<uint8_t>             atomic_uint8_t;
+  typedef ETLSTD::atomic<int8_t>              atomic_int8_t;
+  typedef ETLSTD::atomic<uint16_t>            atomic_uint16_t;
+  typedef ETLSTD::atomic<int16_t>             atomic_int16_t;
+  typedef ETLSTD::atomic<uint32_t>            atomic_uint32_t;
+  typedef ETLSTD::atomic<int32_t>             atomic_int32_t;
+  typedef ETLSTD::atomic<uint64_t>            atomic_uint64_t;
+  typedef ETLSTD::atomic<int64_t>             atomic_int64_t;
+  typedef ETLSTD::atomic<int_least8_t>        atomic_int_least8_t;
+  typedef ETLSTD::atomic<uint_least8_t>       atomic_uint_least8_t;
+  typedef ETLSTD::atomic<int_least16_t>       atomic_int_least16_t;
+  typedef ETLSTD::atomic<uint_least16_t>      atomic_uint_least16_t;
+  typedef ETLSTD::atomic<int_least32_t>       atomic_int_least32_t;
+  typedef ETLSTD::atomic<uint_least32_t>      atomic_uint_least32_t;
+  typedef ETLSTD::atomic<int_least64_t>       atomic_int_least64_t;
+  typedef ETLSTD::atomic<uint_least64_t>      atomic_uint_least64_t;
+  typedef ETLSTD::atomic<int_fast8_t>         atomic_int_fast8_t;
+  typedef ETLSTD::atomic<uint_fast8_t>        atomic_uint_fast8_t;
+  typedef ETLSTD::atomic<int_fast16_t>        atomic_int_fast16_t;
+  typedef ETLSTD::atomic<uint_fast16_t>       atomic_uint_fast16_t;
+  typedef ETLSTD::atomic<int_fast32_t>        atomic_int_fast32_t;
+  typedef ETLSTD::atomic<uint_fast32_t>       atomic_uint_fast32_t;
+  typedef ETLSTD::atomic<int_fast64_t>        atomic_int_fast64_t;
+  typedef ETLSTD::atomic<uint_fast64_t>       atomic_uint_fast64_t;
+  typedef ETLSTD::atomic<intptr_t>            atomic_intptr_t;
+  typedef ETLSTD::atomic<uintptr_t>           atomic_uintptr_t;
+  typedef ETLSTD::atomic<size_t>              atomic_size_t;
+  typedef ETLSTD::atomic<ptrdiff_t>           atomic_ptrdiff_t;
+  typedef ETLSTD::atomic<intmax_t>            atomic_intmax_t;
+  typedef ETLSTD::atomic<uintmax_t>           atomic_uintmax_t;
 }
 
 #endif
