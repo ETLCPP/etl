@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2016 jwellbelove
 
@@ -41,8 +41,8 @@ namespace etl
   template <const size_t NUM, const size_t DEN = 1>
   struct ratio
   {
-    static const std::intmax_t num = NUM;
-    static const std::intmax_t den = DEN;
+    static const ETLSTD::intmax_t num = NUM;
+    static const ETLSTD::intmax_t den = DEN;
   };
 
   #if INT_MAX > INT32_MAX

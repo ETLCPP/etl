@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2016 jwellbelove
 
@@ -56,10 +56,10 @@ namespace etl
     typedef const value_type*                     const_pointer;
     typedef value_type*                           iterator;
     typedef const value_type*                     const_iterator;
-    typedef std::reverse_iterator<iterator>       reverse_iterator;
-    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef ETLSTD::reverse_iterator<iterator>       reverse_iterator;
+    typedef ETLSTD::reverse_iterator<const_iterator> const_reverse_iterator;
     typedef size_t                                size_type;
-    typedef typename std::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename ETLSTD::iterator_traits<iterator>::difference_type difference_type;
 
   protected:
 
@@ -441,7 +441,7 @@ namespace etl
     //*********************************************************************
     void initialise_source_external_buffer_after_move()
     {
-      ETL_SUBTRACT_DEBUG_COUNT(int32_t(std::distance(p_buffer, p_end)))
+      ETL_SUBTRACT_DEBUG_COUNT(int32_t(ETLSTD::distance(p_buffer, p_end)))
 
         p_end = p_buffer;
     }
@@ -451,7 +451,7 @@ namespace etl
     //*********************************************************************
     void initialise_destination_external_buffer_after_move()
     {
-      ETL_ADD_DEBUG_COUNT(int32_t(std::distance(p_buffer, p_end)))
+      ETL_ADD_DEBUG_COUNT(int32_t(ETLSTD::distance(p_buffer, p_end)))
     }
   };
 
@@ -467,10 +467,10 @@ namespace etl
     typedef const value_type*                     const_pointer;
     typedef value_type*                           iterator;
     typedef const value_type*                     const_iterator;
-    typedef std::reverse_iterator<iterator>       reverse_iterator;
-    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef ETLSTD::reverse_iterator<iterator>       reverse_iterator;
+    typedef ETLSTD::reverse_iterator<const_iterator> const_reverse_iterator;
     typedef size_t                                size_type;
-    typedef typename std::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename ETLSTD::iterator_traits<iterator>::difference_type difference_type;
 
   protected:
 
@@ -852,7 +852,7 @@ namespace etl
     //*********************************************************************
     void initialise_source_external_buffer_after_move()
     {
-      ETL_SUBTRACT_DEBUG_COUNT(int32_t(std::distance(p_buffer, p_end)))
+      ETL_SUBTRACT_DEBUG_COUNT(int32_t(ETLSTD::distance(p_buffer, p_end)))
 
         p_end = p_buffer;
     }
@@ -862,7 +862,7 @@ namespace etl
     //*********************************************************************
     void initialise_destination_external_buffer_after_move()
     {
-      ETL_ADD_DEBUG_COUNT(int32_t(std::distance(p_buffer, p_end)))
+      ETL_ADD_DEBUG_COUNT(int32_t(ETLSTD::distance(p_buffer, p_end)))
     }
   };
 

@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2016 jwellbelove
 
@@ -67,10 +67,10 @@ namespace etl
     typedef const value_type*                     const_pointer;
     typedef value_type*                           iterator;
     typedef const value_type*                     const_iterator;
-    typedef std::reverse_iterator<iterator>       reverse_iterator;
-    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef ETLSTD::reverse_iterator<iterator>       reverse_iterator;
+    typedef ETLSTD::reverse_iterator<const_iterator> const_reverse_iterator;
     typedef size_t                                size_type;
-    typedef std::iterator_traits<iterator>::difference_type difference_type;
+    typedef ETLSTD::iterator_traits<iterator>::difference_type difference_type;
 
   public:
 
@@ -211,7 +211,7 @@ namespace etl
       // Size up if necessary.
       if (p_end < p_new_end)
       {
-        std::fill(p_end, p_new_end, value);
+        ETLSTD::fill(p_end, p_new_end, value);
       }
 
       p_end = p_new_end;
@@ -326,7 +326,7 @@ namespace etl
     void assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      difference_type d = std::distance(first, last);
+      difference_type d = ETLSTD::distance(first, last);
       ETL_ASSERT(static_cast<size_t>(d) <= CAPACITY, ETL_ERROR(vector_full));
 #endif
 
@@ -402,7 +402,7 @@ namespace etl
       if (position != end())
       {
         ++p_end;
-        std::copy_backward(position, end() - 1, end());
+        ETLSTD::copy_backward(position, end() - 1, end());
         *position = value;
       }
       else
@@ -424,8 +424,8 @@ namespace etl
     {
       ETL_ASSERT((size() + 1) <= CAPACITY, ETL_ERROR(vector_full));
 
-      std::copy_backward(position, p_end, p_end + n);
-      std::fill_n(position, n, value);
+      ETLSTD::copy_backward(position, p_end, p_end + n);
+      ETLSTD::fill_n(position, n, value);
 
       p_end += n;
     }
@@ -441,12 +441,12 @@ namespace etl
     template <typename TIterator>
     void insert(iterator position, TIterator first, TIterator last)
     {
-      size_t count = std::distance(first, last);
+      size_t count = ETLSTD::distance(first, last);
 
       ETL_ASSERT((size() + count) <= CAPACITY, ETL_ERROR(vector_full));
 
-      std::copy_backward(position, p_end, p_end + count);
-      std::copy(first, last, position);
+      ETLSTD::copy_backward(position, p_end, p_end + count);
+      ETLSTD::copy(first, last, position);
       p_end += count;
     }
 
@@ -457,7 +457,7 @@ namespace etl
     //*********************************************************************
     iterator erase(iterator i_element)
     {
-      std::copy(i_element + 1, end(), i_element);
+      ETLSTD::copy(i_element + 1, end(), i_element);
       --p_end;
 
       return i_element;
@@ -473,8 +473,8 @@ namespace etl
     //*********************************************************************
     iterator erase(iterator first, iterator last)
     {
-      std::copy(last, end(), first);
-      size_t n_delete = std::distance(first, last);
+      ETLSTD::copy(last, end(), first);
+      size_t n_delete = ETLSTD::distance(first, last);
 
       // Just adjust the count.
       p_end -= n_delete;
@@ -580,7 +580,7 @@ namespace etl
   //***************************************************************************
   inline bool operator ==(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
-    return (lhs.size() == rhs.size()) && std::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (lhs.size() == rhs.size()) && ETLSTD::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //***************************************************************************
@@ -604,7 +604,7 @@ namespace etl
   //***************************************************************************
   inline bool operator <(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
-    return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    return ETLSTD::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
 
   //***************************************************************************

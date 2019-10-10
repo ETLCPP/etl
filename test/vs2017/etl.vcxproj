@@ -517,6 +517,7 @@
     <ClInclude Include="..\..\include\etl\stl\alternate\iterator.h" />
     <ClInclude Include="..\..\include\etl\stl\alternate\limits.h" />
     <ClInclude Include="..\..\include\etl\stl\alternate\utility.h" />
+    <ClInclude Include="..\..\include\etl\stl\choose_namespace.h" />
     <ClInclude Include="..\..\include\etl\stl\functional.h" />
     <ClInclude Include="..\..\include\etl\stl\iterator.h" />
     <ClInclude Include="..\..\include\etl\stl\limits.h" />

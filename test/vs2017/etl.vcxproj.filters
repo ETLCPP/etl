@@ -783,6 +783,9 @@
     <ClInclude Include="..\..\include\etl\profiles\cpp17_no_stl.h">
       <Filter>ETL\Profiles</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\stl\choose_namespace.h">
+      <Filter>ETL\STL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">

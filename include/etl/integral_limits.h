@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -41,7 +41,7 @@ SOFTWARE.
 
 //*****************************************************************************
 ///\defgroup integral_limits integral_limits
-/// A set of templated compile time constants that mirror some of std::numeric_limits funtionality.
+/// A set of templated compile time constants that mirror some of ETLSTD::numeric_limits funtionality.
 ///\ingroup utilities
 //*****************************************************************************
 

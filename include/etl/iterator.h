@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2017 jwellbelove
 
@@ -45,37 +45,37 @@ namespace etl
   template <typename T>
   struct is_input_iterator
   {
-    static const bool value = etl::is_same<typename std::iterator_traits<T>::iterator_category, std::input_iterator_tag>::value;
+    static const bool value = etl::is_same<typename ETLSTD::iterator_traits<T>::iterator_category, ETLSTD::input_iterator_tag>::value;
   };
 
   template <typename T>
   struct is_output_iterator
   {
-    static const bool value = etl::is_same<typename std::iterator_traits<T>::iterator_category, std::output_iterator_tag>::value;
+    static const bool value = etl::is_same<typename ETLSTD::iterator_traits<T>::iterator_category, ETLSTD::output_iterator_tag>::value;
   };
 
   template <typename T>
   struct is_forward_iterator
   {
-    static const bool value = etl::is_same<typename std::iterator_traits<T>::iterator_category, std::forward_iterator_tag>::value;
+    static const bool value = etl::is_same<typename ETLSTD::iterator_traits<T>::iterator_category, ETLSTD::forward_iterator_tag>::value;
   };
 
   template <typename T>
   struct is_bidirectional_iterator
   {
-    static const bool value = etl::is_same<typename std::iterator_traits<T>::iterator_category, std::bidirectional_iterator_tag>::value;
+    static const bool value = etl::is_same<typename ETLSTD::iterator_traits<T>::iterator_category, ETLSTD::bidirectional_iterator_tag>::value;
   };
 
   template <typename T>
   struct is_random_iterator
   {
-    static const bool value = etl::is_same<typename std::iterator_traits<T>::iterator_category, std::random_access_iterator_tag>::value;
+    static const bool value = etl::is_same<typename ETLSTD::iterator_traits<T>::iterator_category, ETLSTD::random_access_iterator_tag>::value;
   };
 
   template <typename T>
   struct is_input_iterator_concept
   {
-    static const bool value = etl::is_input_iterator<T>::value || 
+    static const bool value = etl::is_input_iterator<T>::value ||
                               etl::is_forward_iterator<T>::value ||
                               etl::is_bidirectional_iterator<T>::value ||
                               etl::is_random_iterator<T>::value;
