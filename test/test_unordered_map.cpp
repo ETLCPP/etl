@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2016 jwellbelove
 
@@ -700,13 +700,13 @@ namespace
 
       auto it = map.find(1);
       map.erase(it);
-      
+
       it = map.find(4);
       map.erase(it);
 
       std::vector<std::string> s;
 
-      for (const auto &kv : map) 
+      for (const auto &kv : map)
       {
         std::stringstream ss;
         ss << "map[" << kv.first << "] = " << kv.second;

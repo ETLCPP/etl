@@ -126,7 +126,7 @@ namespace etl
     typedef T&                    reference;          ///< A reference to the type used in the queue.
     typedef const T&              const_reference;    ///< A const reference to the type used in the queue.
     typedef typename TContainer::size_type size_type; ///< The type used for determining the size of the queue.
-    typedef typename std::iterator_traits<typename TContainer::iterator>::difference_type difference_type;
+    typedef typename ETLSTD::iterator_traits<typename TContainer::iterator>::difference_type difference_type;
 
   private:
 

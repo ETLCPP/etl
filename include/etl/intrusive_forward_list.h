@@ -494,7 +494,7 @@ namespace etl
       const value_type* p_value;
     };
 
-    typedef typename std::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename ETLSTD::iterator_traits<iterator>::difference_type difference_type;
 
     //*************************************************************************
     /// Constructor.

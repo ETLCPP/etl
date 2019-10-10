@@ -1,3 +1,5 @@
+///\file
+
 /******************************************************************************
 The MIT License(MIT)
 
@@ -5,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2019 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -26,47 +28,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_MUTEX_STD_INCLUDED
-#define ETL_MUTEX_STD_INCLUDED
+#ifndef ETL_STL_CHOOSE_NAMESPACE_INCLUDED
+#define ETL_STL_CHOOSE_NAMESPACE_INCLUDED
 
 #include "../platform.h"
 
-#include <mutex>
-
-namespace etl
-{
-  //***************************************************************************
-  ///\ingroup mutex
-  ///\brief This mutex class is implemented using ETLSTD::mutex.
-  //***************************************************************************
-  class mutex
-  {
-  public:
-
-    mutex()
-      : access()
-    {
-    }
-
-    void lock()
-    {
-      access.lock();
-    }
-
-    bool try_lock()
-    {
-      return access.try_lock();
-    }
-
-    void unlock()
-    {
-      access.unlock();
-    }
-
-  private:
-
-    std::mutex access;
-  };
-}
+#if defined(ETL_NO_STL)
+  #ifndef ETLSTD
+    #define ETLSTD etlstd
+  #endif
+#else
+  #ifndef ETLSTD
+    #define ETLSTD std
+  #endif
+#endif
 
 #endif

@@ -160,7 +160,7 @@ namespace etl
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
-    string(ETLSTD::initializer_list<value_type> init)
+    string(std::initializer_list<value_type> init)
       : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
       this->assign(init.begin(), init.end());
