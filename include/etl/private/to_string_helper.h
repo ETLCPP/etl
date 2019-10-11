@@ -41,6 +41,7 @@ SOFTWARE.
 #include "../basic_format_spec.h"
 #include "../type_traits.h"
 #include "../container.h"
+#include "../absolute.h"
 
 #include "../stl/algorithm.h"
 #include "../stl/iterator.h"
@@ -258,7 +259,7 @@ namespace etl
 
         T f_integral = (value < T(0.0) ? ceil(value) : floor(value));
         int64_t integral = static_cast<int64_t>(f_integral);
-        int64_t fractional = static_cast<int64_t>(round((value - f_integral) * multiplier));
+        int64_t fractional = etl::absolute(static_cast<int64_t>(round((value - f_integral) * multiplier)));
 
         etl::private_to_string::add_integral_fractional(integral, fractional, str, integral_format, fractional_format);
       }

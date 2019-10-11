@@ -267,6 +267,9 @@ namespace
 
       CHECK_EQUAL(etl::u16string<20>(STR(" 12.345678")), etl::to_string(12.345678, str, Format().precision(6).width(10).right()));
       CHECK_EQUAL(etl::u16string<20>(STR("12.345678 ")), etl::to_string(12.345678, str, Format().precision(6).width(10).left()));
+
+      CHECK_EQUAL(etl::u16string<20>(STR(" -12.345678")), etl::to_string(-12.345678, str, Format().precision(6).width(11).right()));
+      CHECK_EQUAL(etl::u16string<20>(STR("-12.345678 ")), etl::to_string(-12.345678, str, Format().precision(6).width(11).left()));
     }
 
     //*************************************************************************
@@ -279,6 +282,12 @@ namespace
 
       str.assign(STR("Result "));
       CHECK_EQUAL(etl::u16string<20>(STR("Result 12.345678 ")), etl::to_string(12.345678, str, Format().precision(6).width(10).left(), true));
+
+      str.assign(STR("Result "));
+      CHECK_EQUAL(etl::u16string<20>(STR("Result  -12.345678")), etl::to_string(-12.345678, str, Format().precision(6).width(11).right(), true));
+
+      str.assign(STR("Result "));
+      CHECK_EQUAL(etl::u16string<20>(STR("Result -12.345678 ")), etl::to_string(-12.345678, str, Format().precision(6).width(11).left(), true));
     }
 
     //*************************************************************************
