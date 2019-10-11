@@ -1,4 +1,8 @@
 ===============================================================================
+14.35.1
+Fixed incorrect result for negative float to string.
+
+===============================================================================
 14.35.0
 Changed namespace for alternate ETL's STL support.
 
