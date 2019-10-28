@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2017 jwellbelove
 
@@ -285,7 +285,7 @@ namespace etl
 
       if (!task_list.full())
       {
-        typename task_list_t::iterator itask = std::upper_bound(task_list.begin(),
+        typename task_list_t::iterator itask = ETLSTD::upper_bound(task_list.begin(),
                                                                 task_list.end(),
                                                                 task.get_task_priority(),
                                                                 compare_priority());

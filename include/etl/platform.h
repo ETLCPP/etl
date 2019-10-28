@@ -64,7 +64,7 @@ SOFTWARE.
 // The macros below are dependent on the profile.
 
 #if defined(ETL_COMPILER_MICROSOFT)
-  // Disable warning of deprecated std::iterator.
+  // Disable warning of deprecated ETLSTD::iterator.
   #pragma warning(disable : 4996)
 #endif
 

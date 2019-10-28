@@ -109,7 +109,7 @@ namespace etl
     typedef const T&                              const_reference;
     typedef const T*                              const_pointer;
     typedef const T*                              const_iterator;
-    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef ETLSTD::reverse_iterator<const_iterator> const_reverse_iterator;
 
     enum
     {
@@ -313,7 +313,7 @@ namespace etl
       void assign(TIterator begin_, TIterator end_)
     {
       mbegin = etl::addressof(*begin_);
-      mend = etl::addressof(*begin_) + std::distance(begin_, end_);
+      mend = etl::addressof(*begin_) + ETLSTD::distance(begin_, end_);
     }
 
     //*************************************************************************
@@ -351,8 +351,8 @@ namespace etl
     //*************************************************************************
     void swap(basic_string_view& other)
     {
-      std::swap(mbegin, other.mbegin);
-      std::swap(mend, other.mend);
+      ETLSTD::swap(mbegin, other.mbegin);
+      ETLSTD::swap(mend, other.mend);
     }
 
     //*************************************************************************
@@ -364,9 +364,9 @@ namespace etl
 
       if (position < size())
       {
-        n = std::min(count, size() - position);
+        n = ETLSTD::min(count, size() - position);
 
-        std::copy(mbegin + position, mbegin + position + n, destination);
+        ETLSTD::copy(mbegin + position, mbegin + position + n, destination);
       }
 
       return n;
@@ -381,7 +381,7 @@ namespace etl
 
       if (position < size())
       {
-        size_t n = std::min(count, size() - position);
+        size_t n = ETLSTD::min(count, size() - position);
 
         view = basic_string_view(mbegin + position, mbegin + position + n);
       }
@@ -495,7 +495,7 @@ namespace etl
         return npos;
       }
 
-      const_iterator iposition = std::search(begin() + position, end(), view.begin(), view.end());
+      const_iterator iposition = ETLSTD::search(begin() + position, end(), view.begin(), view.end());
 
       if (iposition == end())
       {
@@ -503,7 +503,7 @@ namespace etl
       }
       else
       {
-        return std::distance(begin(), iposition);
+        return ETLSTD::distance(begin(), iposition);
       }
     }
 
@@ -532,9 +532,9 @@ namespace etl
         return npos;
       }
 
-      position = std::min(position, size());
+      position = ETLSTD::min(position, size());
 
-      const_iterator iposition = std::find_end(begin(),
+      const_iterator iposition = ETLSTD::find_end(begin(),
                                                begin() + position,
                                                view.begin(),
                                                view.end());
@@ -545,7 +545,7 @@ namespace etl
       }
       else
       {
-        return std::distance(begin(), iposition);
+        return ETLSTD::distance(begin(), iposition);
       }
     }
 
@@ -615,7 +615,7 @@ namespace etl
         return npos;
       }
 
-      position = std::min(position, size() - 1);
+      position = ETLSTD::min(position, size() - 1);
 
       const_reverse_iterator it = rbegin() + size() - position - 1;
 
@@ -711,7 +711,7 @@ namespace etl
         return npos;
       }
 
-      position = std::min(position, size() - 1);
+      position = ETLSTD::min(position, size() - 1);
 
       const_reverse_iterator it = rbegin() + size() - position - 1;
 
@@ -762,7 +762,7 @@ namespace etl
     friend bool operator == (const etl::basic_string_view<T, TTraits>& lhs, const etl::basic_string_view<T, TTraits>& rhs)
     {
       return (lhs.size() == rhs.size()) &&
-        std::equal(lhs.begin(), lhs.end(), rhs.begin());
+        ETLSTD::equal(lhs.begin(), lhs.end(), rhs.begin());
     }
 
     //*************************************************************************
@@ -778,7 +778,7 @@ namespace etl
     //*************************************************************************
     friend bool operator < (const etl::basic_string_view<T, TTraits>& lhs, const etl::basic_string_view<T, TTraits>& rhs)
     {
-      return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+      return ETLSTD::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
     }
 
     //*************************************************************************

@@ -462,6 +462,11 @@
     <ClInclude Include="..\..\include\etl\multi_array.h" />
     <ClInclude Include="..\..\include\etl\negative.h" />
     <ClInclude Include="..\..\include\etl\private\to_string_helper.h" />
+    <ClInclude Include="..\..\include\etl\profiles\armv7.h" />
+    <ClInclude Include="..\..\include\etl\profiles\armv7_no_stl.h" />
+    <ClInclude Include="..\..\include\etl\profiles\clang_generic.h" />
+    <ClInclude Include="..\..\include\etl\profiles\cpp17.h" />
+    <ClInclude Include="..\..\include\etl\profiles\cpp17_no_stl.h" />
     <ClInclude Include="..\..\include\etl\queue_spsc_locked.h" />
     <ClInclude Include="..\..\include\etl\scaled_rounding.h" />
     <ClInclude Include="..\..\include\etl\state_chart.h" />
@@ -512,6 +517,7 @@
     <ClInclude Include="..\..\include\etl\stl\alternate\iterator.h" />
     <ClInclude Include="..\..\include\etl\stl\alternate\limits.h" />
     <ClInclude Include="..\..\include\etl\stl\alternate\utility.h" />
+    <ClInclude Include="..\..\include\etl\stl\choose_namespace.h" />
     <ClInclude Include="..\..\include\etl\stl\functional.h" />
     <ClInclude Include="..\..\include\etl\stl\iterator.h" />
     <ClInclude Include="..\..\include\etl\stl\limits.h" />

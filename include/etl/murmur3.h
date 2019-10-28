@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -81,7 +81,7 @@ namespace etl
     murmur3(TIterator begin, const TIterator end, value_type seed_ = 0)
       : seed(seed_)
     {
-      ETL_STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
+      ETL_STATIC_ASSERT(sizeof(typename ETLSTD::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
 
       reset();
       while (begin != end)
@@ -119,7 +119,7 @@ namespace etl
     template<typename TIterator>
     void add(TIterator begin, const TIterator end)
     {
-      ETL_STATIC_ASSERT(sizeof(typename std::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
+      ETL_STATIC_ASSERT(sizeof(typename ETLSTD::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
       ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised));
 
       while (begin != end)

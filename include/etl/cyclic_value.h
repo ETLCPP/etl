@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -257,7 +257,7 @@ namespace etl
     //*************************************************************************
     void swap(cyclic_value<T, FIRST, LAST>& other)
     {
-      std::swap(value, other.value);
+      ETLSTD::swap(value, other.value);
     }
 
     //*************************************************************************
@@ -531,9 +531,9 @@ namespace etl
     //*************************************************************************
     void swap(cyclic_value<T, FIRST, LAST>& other)
     {
-      std::swap(first_value, other.first_value);
-      std::swap(last_value, other.last_value);
-      std::swap(value, other.value);
+      ETLSTD::swap(first_value, other.first_value);
+      ETLSTD::swap(last_value, other.last_value);
+      ETLSTD::swap(value, other.value);
     }
 
     //*************************************************************************

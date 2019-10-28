@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2019 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,25 +28,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_PARAMETER_INCLUDED
-#define ETL_PARAMETER_INCLUDED
+#ifndef ETL_STL_CHOOSE_NAMESPACE_INCLUDED
+#define ETL_STL_CHOOSE_NAMESPACE_INCLUDED
 
-#include "platform.h"
-#include "type_traits.h"
+#include "../platform.h"
 
-namespace etl
-{
-  //*************************************************************************
-  /// Determine how to pass parameters.
-  //*************************************************************************
-  template <typename T>
-  struct parameter_type
-  {
-    /// By default fundamental and pointer types are passed by value.
-    typedef typename etl::conditional<is_fundamental<T>::value || is_pointer<T>::value,
-                                      T,
-                                      const T&>::type type;
-  };
-}
+#if defined(ETL_NO_STL)
+  #ifndef ETLSTD
+    #define ETLSTD etlstd
+  #endif
+#else
+  #ifndef ETLSTD
+    #define ETLSTD std
+  #endif
+#endif
 
 #endif

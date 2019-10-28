@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -177,9 +177,9 @@ namespace etl
   ///\ingroup container
   //*****************************************************************************
   template<typename TValue, const size_t ARRAY_SIZE>
-  ETL_CONSTEXPR std::reverse_iterator<TValue*> rbegin(const TValue(&data)[ARRAY_SIZE])
+  ETL_CONSTEXPR ETLSTD::reverse_iterator<TValue*> rbegin(const TValue(&data)[ARRAY_SIZE])
   {
-    return std::reverse_iterator<TValue*>(&data[ARRAY_SIZE]);
+    return ETLSTD::reverse_iterator<TValue*>(&data[ARRAY_SIZE]);
   }
 
   //*****************************************************************************
@@ -187,9 +187,9 @@ namespace etl
   ///\ingroup container
   //*****************************************************************************
   template<typename TValue, const size_t ARRAY_SIZE>
-  ETL_CONSTEXPR std::reverse_iterator<const TValue*> crbegin(const TValue(&data)[ARRAY_SIZE])
+  ETL_CONSTEXPR ETLSTD::reverse_iterator<const TValue*> crbegin(const TValue(&data)[ARRAY_SIZE])
   {
-    return std::reverse_iterator<const TValue*>(&data[ARRAY_SIZE]);
+    return ETLSTD::reverse_iterator<const TValue*>(&data[ARRAY_SIZE]);
   }
 
 	//*****************************************************************************
@@ -227,9 +227,9 @@ namespace etl
   ///\ingroup container
   //*****************************************************************************
   template<typename TValue, const size_t ARRAY_SIZE>
-  ETL_CONSTEXPR std::reverse_iterator<TValue*> rend(const TValue(&data)[ARRAY_SIZE])
+  ETL_CONSTEXPR ETLSTD::reverse_iterator<TValue*> rend(const TValue(&data)[ARRAY_SIZE])
   {
-    return std::reverse_iterator<TValue*>(&data[0]);
+    return ETLSTD::reverse_iterator<TValue*>(&data[0]);
   }
 
   //*****************************************************************************
@@ -237,9 +237,9 @@ namespace etl
   ///\ingroup container
   //*****************************************************************************
   template<typename TValue, const size_t ARRAY_SIZE>
-  ETL_CONSTEXPR std::reverse_iterator<const TValue*> crend(const TValue(&data)[ARRAY_SIZE])
+  ETL_CONSTEXPR ETLSTD::reverse_iterator<const TValue*> crend(const TValue(&data)[ARRAY_SIZE])
   {
-    return std::reverse_iterator<const TValue*>(&data[0]);
+    return ETLSTD::reverse_iterator<const TValue*>(&data[0]);
   }
 
   //*****************************************************************************
@@ -249,7 +249,7 @@ namespace etl
   template<class TIterator>
   TIterator next(TIterator iterator, ptrdiff_t n = 1)
   {
-      std::advance(iterator, n);
+      ETLSTD::advance(iterator, n);
       return iterator;
   }
 
@@ -260,7 +260,7 @@ namespace etl
   template<class TIterator>
   TIterator prev(TIterator iterator, ptrdiff_t n = 1)
   {
-      std::advance(iterator, -n);
+      ETLSTD::advance(iterator, -n);
       return iterator;
   }
 

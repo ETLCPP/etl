@@ -41,6 +41,7 @@ SOFTWARE.
 #include "../basic_format_spec.h"
 #include "../type_traits.h"
 #include "../container.h"
+#include "../absolute.h"
 
 #include "../stl/algorithm.h"
 #include "../stl/iterator.h"
@@ -56,7 +57,7 @@ namespace etl
     template <typename TIString>
     void add_alignment(TIString& str, typename TIString::iterator position, const etl::basic_format_spec<TIString>& format)
     {
-      uint32_t length = static_cast<uint32_t>(std::distance(position, str.end()));
+      uint32_t length = static_cast<uint32_t>(ETLSTD::distance(position, str.end()));
 
       if (length < format.get_width())
       {
@@ -165,7 +166,7 @@ namespace etl
         }
 
         // Reverse the string we appended.
-        std::reverse(start, str.end());
+        ETLSTD::reverse(start, str.end());
       }
 
       etl::private_to_string::add_alignment(str, start, format);
@@ -234,14 +235,14 @@ namespace etl
 
       iterator start = str.end();
 
-      if (std::isnan(value) || std::isinf(value))
+      if (ETLSTD::isnan(value) || ETLSTD::isinf(value))
       {
-        etl::private_to_string::add_nan_inf(std::isnan(value), std::isinf(value), str);
+        etl::private_to_string::add_nan_inf(ETLSTD::isnan(value), ETLSTD::isinf(value), str);
       }
       else
       {
         // Make sure we format the two halves correctly.
-        uint32_t max_precision = std::numeric_limits<T>::digits10;
+        uint32_t max_precision = ETLSTD::numeric_limits<T>::digits10;
 
         etl::basic_format_spec<TIString> integral_format = format;
         integral_format.decimal().width(0).precision(format.get_precision() > max_precision ? max_precision : format.get_precision());
@@ -258,7 +259,7 @@ namespace etl
 
         T f_integral = (value < T(0.0) ? ceil(value) : floor(value));
         int64_t integral = static_cast<int64_t>(f_integral);
-        int64_t fractional = static_cast<int64_t>(round((value - f_integral) * multiplier));
+        int64_t fractional = etl::absolute(static_cast<int64_t>(round((value - f_integral) * multiplier)));
 
         etl::private_to_string::add_integral_fractional(integral, fractional, str, integral_format, fractional_format);
       }
