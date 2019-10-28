@@ -58,6 +58,7 @@ set(TEST_SOURCE_FILES
   test_functional.cpp
   test_function.cpp
   test_hash.cpp
+  test_hsm.cpp
   test_instance_count.cpp
   test_integral_limits.cpp
   test_intrusive_forward_list.cpp

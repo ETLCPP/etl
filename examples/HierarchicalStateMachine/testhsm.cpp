@@ -142,7 +142,7 @@ typedef etl::state::Composite<State_machine, 0> Top;
 typedef etl::state::Composite<State_machine, 1, Top, message::E> S0;
 typedef etl::state::Composite<State_machine, 2, S0, message::A, message::B,
                               message::C, message::D, message::F> S1;
-typedef etl::state::Leaf     <State_machine, 3, S1, message::G> S11;
+typedef etl::state::Leaf     <State_machine, 3, S1, message::G, message::H> S11;
 typedef etl::state::Composite<State_machine, 4, S0, message::C, message::F> S2;
 typedef etl::state::Composite<State_machine, 5, S2, message::B, message::H> S21;
 typedef etl::state::Leaf     <State_machine, 6, S21, message::D, message::G> S211;
@@ -286,6 +286,18 @@ on_event(etl::imessage_router &, test::message::G const &, test::State_machine &
 	std::cout << "Tran(S11, S211, G) - ";
 }
 
+template<>
+template<typename LEAF>
+inline void test::state::S11::
+on_event(etl::imessage_router &, test::message::H const &, test::State_machine & h, LEAF const & l) const
+{
+	if (h.foo())
+	{
+		h.foo(0);
+		std::cout << "h[foo]/foo=0 - ";
+	}
+}
+
 /******************************************************************************
  * S2
  ******************************************************************************/
@@ -364,7 +376,7 @@ on_event(etl::imessage_router &, test::message::H const &, test::State_machine &
 {
 	if (!h.foo()) {
 		etl::state::Transition<LEAF, Self, test::state::S21> t(h);
-		std::cout << "!foo/Tran(S21, S21, H) - ";
+		std::cout << "h[!foo]/foo=1 - ";
 		h.foo(1);
 	}
 }
