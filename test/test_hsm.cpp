@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2019 Pontus Astrom
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -40,7 +40,6 @@ namespace test {
 etl::message_router_id_t const state_machine_id = 0;
 
 namespace message {
-// Messages
 struct Id
 {
 	 enum enum_type
@@ -69,22 +68,6 @@ class F : public etl::message<Id::F>{};
 class G : public etl::message<Id::G>{};
 class H : public etl::message<Id::H>{};
 
-etl::imessage factory(char c)
-{
-	switch (c)
-	{
-	case 'a': return A();
-	case 'b': return B();
-	case 'c': return C();
-	case 'd': return D();
-	case 'e': return E();
-	case 'f': return F();
-	case 'g': return G();
-	case 'h': return H();
-	default : return A();
-	}
-};
-
 } // namespace message
 
 /******************************************************************************
@@ -98,65 +81,63 @@ public:
 
 	 // Non-mutable
 	 unsigned get_event_cnt() const
-			{
-				return _event_cnt;
-			};
+    {
+       return _event_cnt;
+    };
 
 	 int foo() const
-			{
-				return _foo;
-			};
-
+	 {
+       return _foo;
+    };
+   
 	 std::string get_transition() const
-			{
-				return _os.str();
-			};
+	 {
+       return _os.str();
+    };
 
 	 // Mutable
 	 void inc_event_cnt()
-			{
-				_event_cnt++;
-			};
+	 {
+       _event_cnt++;
+    };
 
 	 void foo(int i)
-			{
-				_foo = i;
-			};
+	 {
+       _foo = i;
+    };
 
 	 std::ostringstream & set_transition()
-			{
-				return _os;
-			}
+	 {
+       return _os;
+    }
 	 
 	 void clear_transition()
-			{
-				_os.str(std::string());
-			}
+	 {
+       _os.str(std::string());
+    }
 	 
 	 virtual void receive(etl::imessage_router & source,
-												etl::imessage const & message) override final
-			{
-				get_state()->process_event(source, message, * this);
-			};
-
+                         etl::imessage const & message) override final
+    {
+       get_state()->process_event(source, message, * this);
+    };
 
 	 virtual void receive(etl::imessage const & message) override final
-			{
-				static etl::null_message_router nmr;
-				receive(nmr, message);
-			};
+    {
+       static etl::null_message_router nmr;
+       receive(nmr, message);
+    };
 
 	 virtual void receive(imessage_router & source,
-												etl::message_router_id_t destination_router_id,
-												etl::imessage const & message) override final
-			{
-				if ((destination_router_id == get_message_router_id())
-						||
-						(destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
-				{
-					receive(source, message);
-				}
-			};
+                         etl::message_router_id_t destination_router_id,
+                         etl::imessage const & message) override final
+  	 {
+       if ((destination_router_id == get_message_router_id())
+           || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
+       {
+          receive(source, message);
+       }
+    };
 	
 private:
 	 int                _foo       {0};
@@ -448,7 +429,9 @@ on_event(etl::imessage_router &, test::message::G const &, test::State_machine &
 	h.set_transition() << "Tran(S211, S0, G) - ";
 }
 
-
+/******************************************************************************
+ * Testsuite
+ ******************************************************************************/
 SUITE(test_map_hsm)
 {
 	class HsmFixture
@@ -595,4 +578,3 @@ SUITE(test_map_hsm)
 	}
 
 };
-//} // namespace test
