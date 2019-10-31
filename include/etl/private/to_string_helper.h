@@ -257,9 +257,19 @@ namespace etl
           multiplier *= 10U;
         }
 
+        // Find the integral part of the floating point
         T f_integral = (value < T(0.0) ? ceil(value) : floor(value));
-        int64_t integral = static_cast<int64_t>(f_integral);
+        int64_t integral   = static_cast<int64_t>(f_integral);
+
+        // Find the fractional part of the floating point.
         int64_t fractional = etl::absolute(static_cast<int64_t>(round((value - f_integral) * multiplier)));
+
+        // Check for a rounding carry to the integral.
+        if (fractional == multiplier)
+        {
+          ++integral;
+          fractional = 0;
+        }
 
         etl::private_to_string::add_integral_fractional(integral, fractional, str, integral_format, fractional_format);
       }
