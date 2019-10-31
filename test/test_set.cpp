@@ -982,5 +982,59 @@ namespace
       CHECK(!compare(b, a));
 #endif
     }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_compare_lowerbound)
+    {
+        Data etlset = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18};
+        Compare_Data stlset = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18};
+
+        std::vector<int> tab = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19} ;
+
+        //make sure both etlset and stlset contain same elements
+        std::vector<int> data_elements;
+        std::vector<int> compare_data_elements;
+
+        for(Data::iterator it = etlset.begin() ; it != etlset.end() ; ++it)
+        {
+            data_elements.push_back(*it);
+        }
+        for(Compare_Data::iterator it = stlset.begin() ; it != stlset.end() ; ++it)
+        {
+            compare_data_elements.push_back(*it);
+        }
+        CHECK(data_elements == compare_data_elements);
+        CHECK_EQUAL(data_elements.size(), MAX_SIZE);
+
+        for(std::vector<int>::iterator it = tab.begin() ; it != tab.end() ; ++it)
+        {
+            int i = *it;
+            CHECK_EQUAL(stlset.lower_bound(i) == stlset.end(), etlset.lower_bound(i) == etlset.end());
+
+            //if both end, or none
+            if((stlset.lower_bound(i) == stlset.end()) == (etlset.lower_bound(i) == etlset.end()))
+            {
+                //if both are not end
+                if(stlset.lower_bound(i) != stlset.end())
+                {
+                    CHECK_EQUAL(*stlset.lower_bound(i), *etlset.lower_bound(i));
+                }
+
+                std::pair<Compare_Data::const_iterator, Compare_Data::const_iterator> stlret = stlset.equal_range(i);
+                std::pair<Data::const_iterator, Data::const_iterator> etlret = etlset.equal_range(i);
+
+                CHECK_EQUAL(stlret.first == stlset.end(), etlret.first == etlset.end());
+                if((stlret.first != stlset.end()) && (etlret.first != etlset.end()))
+                {
+                    CHECK_EQUAL(*stlret.first, *etlret.first);
+                }
+                CHECK_EQUAL(stlret.second == stlset.end(), etlret.second == etlset.end());
+                if((stlret.second != stlset.end()) && (etlret.second != etlset.end()))
+                {
+                    CHECK_EQUAL(*stlret.second, *etlret.second);
+                }
+            }
+        }
+    }
   };
 }
