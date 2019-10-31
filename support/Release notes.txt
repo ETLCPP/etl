@@ -1,4 +1,8 @@
 ===============================================================================
+14.35.2
+Fixed incorrect result when rounding up to integral part.
+
+===============================================================================
 14.35.1
 Fixed incorrect result for negative float to string.
 
