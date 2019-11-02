@@ -1411,6 +1411,7 @@ namespace etl
     {
       // Something at this position? keep going
       Node* lower_node = position;
+      Node* prev_node  = nullptr;
       while (lower_node)
       {
         // Downcast lower node to Data_Node reference for key comparisons
@@ -1420,6 +1421,7 @@ namespace etl
         {
           if (lower_node->children[kLeft])
           {
+            prev_node  = lower_node;
             lower_node = lower_node->children[kLeft];
           }
           else
@@ -1430,7 +1432,15 @@ namespace etl
         }
         else if (node_comp(data_node, key))
         {
-          lower_node = lower_node->children[kRight];
+          if(lower_node->children[kRight] == NULL)
+          {
+            lower_node = prev_node;
+            break;
+          }
+          else
+          {
+            lower_node = lower_node->children[kRight];
+          }
         }
         else
         {

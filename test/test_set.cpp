@@ -984,7 +984,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_compare_lowerbound)
+    TEST_FIXTURE(SetupFixture, test_compare_lower_upper_bound)
     {
         Data etlset = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18};
         Compare_Data stlset = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18};
@@ -1009,8 +1009,9 @@ namespace
         for(std::vector<int>::iterator it = tab.begin() ; it != tab.end() ; ++it)
         {
             int i = *it;
-            CHECK_EQUAL(stlset.lower_bound(i) == stlset.end(), etlset.lower_bound(i) == etlset.end());
 
+            //lower_bound
+            CHECK_EQUAL(stlset.lower_bound(i) == stlset.end(), etlset.lower_bound(i) == etlset.end());
             //if both end, or none
             if((stlset.lower_bound(i) == stlset.end()) == (etlset.lower_bound(i) == etlset.end()))
             {
@@ -1032,6 +1033,18 @@ namespace
                 if((stlret.second != stlset.end()) && (etlret.second != etlset.end()))
                 {
                     CHECK_EQUAL(*stlret.second, *etlret.second);
+                }
+            }
+
+            //upper_bound
+            CHECK_EQUAL(stlset.upper_bound(i) == stlset.end(), etlset.upper_bound(i) == etlset.end());
+            //if both end, or none
+            if((stlset.upper_bound(i) == stlset.end()) == (etlset.upper_bound(i) == etlset.end()))
+            {
+                //if both are not end
+                if(stlset.upper_bound(i) != stlset.end())
+                {
+                    CHECK_EQUAL(*stlset.upper_bound(i), *etlset.upper_bound(i));
                 }
             }
         }
