@@ -295,7 +295,7 @@ namespace etl
     {
       reset();
 
-      size_t i = std::min(NBITS, etl::strlen(text));
+      size_t i = std::min(NBITS, strlen(text));
 
       while (i > 0)
       {
