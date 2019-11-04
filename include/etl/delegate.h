@@ -49,13 +49,44 @@ Original publication: https://www.codeproject.com/Articles/1170503/The-Impossibl
 #define ETL_DELEGATE_INCLUDED
 
 #include "platform.h"
+#include "error_handler.h"
+#include "exception.h"
 
 #if ETL_CPP11_SUPPORTED == 0
 #error NOT SUPPORTED FOR C++03 OR BELOW
 #endif
 
+#undef ETL_FILE
+#define ETL_FILE "51"
+
 namespace etl
 {
+  //***************************************************************************
+  /// The base class for delegate exceptions.
+  //***************************************************************************
+  class delegate_exception : public exception
+  {
+  public:
+
+    delegate_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// The exception thrown when the delegate is uninitialised.
+  //***************************************************************************
+  class delegate_uninitialised : public delegate_exception
+  {
+  public:
+
+    delegate_uninitialised(string_type file_name_, numeric_type line_number_)
+      : delegate_exception(ETL_ERROR_TEXT("delegate:uninitialised", ETL_FILE"A"), file_name_, line_number_)
+    {
+    }
+  };
+
   template <typename T> class delegate;
 
   template <typename TReturn, typename... TParams>
@@ -166,6 +197,8 @@ namespace etl
     //*************************************************************************
     TReturn operator()(TParams... args) const
     {
+      ETL_ASSERT(invocation.stub != nullptr, ETL_ERROR(delegate_uninitialised));
+
       return (*invocation.stub)(invocation.object, args...);
     }
 
@@ -352,5 +385,7 @@ namespace etl
     invocation_element invocation;
   };
 }
+
+#undef ETL_FILE
 
 #endif

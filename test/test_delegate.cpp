@@ -27,6 +27,7 @@ SOFTWARE.
 ******************************************************************************/
 
 #include "UnitTest++.h"
+#include "ExtraCheckMacros.h"
 
 #include "etl/delegate.h"
 
@@ -167,6 +168,8 @@ namespace
 
       CHECK(!d.is_valid());
       CHECK(!d);
+
+      CHECK_THROW(d(), etl::delegate_uninitialised);
     }
 
     //*************************************************************************
@@ -176,6 +179,7 @@ namespace
 
       CHECK(d.is_valid());
       CHECK(d);
+      CHECK_NO_THROW(d());
     }
 
     //*************************************************************************

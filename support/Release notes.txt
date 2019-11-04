@@ -1,4 +1,8 @@
 ===============================================================================
+14.35.3
+Added assert when calling uninitialised delegate.
+
+===============================================================================
 14.35.2
 Fixed incorrect result when rounding up to integral part.
 
