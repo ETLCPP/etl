@@ -1005,7 +1005,7 @@ namespace etl
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
-      insert(begin() + position, s, s + strlen(s));
+      insert(begin() + position, s, s + etl::strlen(s));
       return *this;
     }
 

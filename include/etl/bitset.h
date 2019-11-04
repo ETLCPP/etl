@@ -47,6 +47,7 @@ SOFTWARE.
 #include "exception.h"
 #include "integral_limits.h"
 #include "binary.h"
+#include "char_traits.h"
 
 #include "private/minmax_push.h"
 
@@ -294,7 +295,7 @@ namespace etl
     {
       reset();
 
-      size_t i = std::min(NBITS, strlen(text));
+      size_t i = std::min(NBITS, etl::strlen(text));
 
       while (i > 0)
       {
