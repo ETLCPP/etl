@@ -108,6 +108,8 @@ namespace
       std::vector<int> excess_data;
       std::vector<int> different_data;
       std::vector<int> random_data;
+      std::vector<int> initial_data_even;
+      std::vector<int> test_data;
 
       SetupFixture()
       {
@@ -168,10 +170,50 @@ namespace
           4,
         };
 
+        int n_even[] =
+        {
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+        };
+
+        int n5[] =
+        {
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19
+        } ;
+
         initial_data.assign(std::begin(n), std::end(n));
         excess_data.assign(std::begin(n2), std::end(n2));
         different_data.assign(std::begin(n3), std::end(n3));
         random_data.assign(std::begin(n4), std::end(n4));
+        initial_data_even.assign(std::begin(n_even), std::end(n_even));
+        test_data.assign(std::begin(n5), std::end(n5));
       }
     };
 
@@ -986,23 +1028,15 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_compare_lower_upper_bound)
     {
-        Data etlset = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18};
-        Compare_Data stlset = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18};
+        Data data(initial_data_even.begin(), initial_data_even.end());
+        Compare_Data compare(initial_data_even.begin(), initial_data_even.end());
 
-        std::vector<int> tab = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19} ;
+        std::vector<int> tab(test_data.begin(), test_data.end());
 
-        //make sure both etlset and stlset contain same elements
-        std::vector<int> data_elements;
-        std::vector<int> compare_data_elements;
+        //make sure both data and compare contain same elements
+        std::vector<int> data_elements(data.begin(), data.end());
+        std::vector<int> compare_data_elements(compare.begin(), compare.end());
 
-        for(Data::iterator it = etlset.begin() ; it != etlset.end() ; ++it)
-        {
-            data_elements.push_back(*it);
-        }
-        for(Compare_Data::iterator it = stlset.begin() ; it != stlset.end() ; ++it)
-        {
-            compare_data_elements.push_back(*it);
-        }
         CHECK(data_elements == compare_data_elements);
         CHECK_EQUAL(data_elements.size(), MAX_SIZE);
 
@@ -1011,40 +1045,40 @@ namespace
             int i = *it;
 
             //lower_bound
-            CHECK_EQUAL(stlset.lower_bound(i) == stlset.end(), etlset.lower_bound(i) == etlset.end());
+            CHECK_EQUAL(compare.lower_bound(i) == compare.end(), data.lower_bound(i) == data.end());
             //if both end, or none
-            if((stlset.lower_bound(i) == stlset.end()) == (etlset.lower_bound(i) == etlset.end()))
+            if((compare.lower_bound(i) == compare.end()) == (data.lower_bound(i) == data.end()))
             {
                 //if both are not end
-                if(stlset.lower_bound(i) != stlset.end())
+                if(compare.lower_bound(i) != compare.end())
                 {
-                    CHECK_EQUAL(*stlset.lower_bound(i), *etlset.lower_bound(i));
+                    CHECK_EQUAL(*compare.lower_bound(i), *data.lower_bound(i));
                 }
 
-                std::pair<Compare_Data::const_iterator, Compare_Data::const_iterator> stlret = stlset.equal_range(i);
-                std::pair<Data::const_iterator, Data::const_iterator> etlret = etlset.equal_range(i);
+                std::pair<Compare_Data::const_iterator, Compare_Data::const_iterator> stlret = compare.equal_range(i);
+                std::pair<Data::const_iterator, Data::const_iterator> etlret = data.equal_range(i);
 
-                CHECK_EQUAL(stlret.first == stlset.end(), etlret.first == etlset.end());
-                if((stlret.first != stlset.end()) && (etlret.first != etlset.end()))
+                CHECK_EQUAL(stlret.first == compare.end(), etlret.first == data.end());
+                if((stlret.first != compare.end()) && (etlret.first != data.end()))
                 {
                     CHECK_EQUAL(*stlret.first, *etlret.first);
                 }
-                CHECK_EQUAL(stlret.second == stlset.end(), etlret.second == etlset.end());
-                if((stlret.second != stlset.end()) && (etlret.second != etlset.end()))
+                CHECK_EQUAL(stlret.second == compare.end(), etlret.second == data.end());
+                if((stlret.second != compare.end()) && (etlret.second != data.end()))
                 {
                     CHECK_EQUAL(*stlret.second, *etlret.second);
                 }
             }
 
             //upper_bound
-            CHECK_EQUAL(stlset.upper_bound(i) == stlset.end(), etlset.upper_bound(i) == etlset.end());
+            CHECK_EQUAL(compare.upper_bound(i) == compare.end(), data.upper_bound(i) == data.end());
             //if both end, or none
-            if((stlset.upper_bound(i) == stlset.end()) == (etlset.upper_bound(i) == etlset.end()))
+            if((compare.upper_bound(i) == compare.end()) == (data.upper_bound(i) == data.end()))
             {
                 //if both are not end
-                if(stlset.upper_bound(i) != stlset.end())
+                if(compare.upper_bound(i) != compare.end())
                 {
-                    CHECK_EQUAL(*stlset.upper_bound(i), *etlset.upper_bound(i));
+                    CHECK_EQUAL(*compare.upper_bound(i), *data.upper_bound(i));
                 }
             }
         }
