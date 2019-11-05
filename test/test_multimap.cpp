@@ -34,6 +34,7 @@ SOFTWARE.
 #include <utility>
 #include <iterator>
 #include <string>
+#include <vector>
 
 #include "etl/multimap.h"
 
@@ -118,6 +119,8 @@ namespace
       std::multimap<std::string, int> excess_data;
       std::multimap<std::string, int> different_data;
       std::multimap<std::string, int> random_data;
+      std::multimap<std::string, int> initial_data_even;
+      std::multimap<std::string, int> test_data;
 
       SetupFixture()
       {
@@ -169,6 +172,41 @@ namespace
         random_data.insert(std::pair<std::string, int>("2", 3));
         random_data.insert(std::pair<std::string, int>("4", 7));
         random_data.insert(std::pair<std::string, int>("3", 4));
+
+
+        //even values
+        initial_data_even.insert(std::pair<std::string, int>("00", 0));
+        initial_data_even.insert(std::pair<std::string, int>("02", 2));
+        initial_data_even.insert(std::pair<std::string, int>("04", 4));
+        initial_data_even.insert(std::pair<std::string, int>("06", 6));
+        initial_data_even.insert(std::pair<std::string, int>("08", 8));
+        initial_data_even.insert(std::pair<std::string, int>("10", 10));
+        initial_data_even.insert(std::pair<std::string, int>("12", 12));
+        initial_data_even.insert(std::pair<std::string, int>("14", 14));
+        initial_data_even.insert(std::pair<std::string, int>("16", 16));
+        initial_data_even.insert(std::pair<std::string, int>("18", 18));
+
+        //test set
+        test_data.insert(std::pair<std::string, int>("00", 0));
+        test_data.insert(std::pair<std::string, int>("01", 1));
+        test_data.insert(std::pair<std::string, int>("02", 2));
+        test_data.insert(std::pair<std::string, int>("03", 3));
+        test_data.insert(std::pair<std::string, int>("04", 4));
+        test_data.insert(std::pair<std::string, int>("05", 5));
+        test_data.insert(std::pair<std::string, int>("06", 6));
+        test_data.insert(std::pair<std::string, int>("07", 7));
+        test_data.insert(std::pair<std::string, int>("08", 8));
+        test_data.insert(std::pair<std::string, int>("09", 9));
+        test_data.insert(std::pair<std::string, int>("10", 10));
+        test_data.insert(std::pair<std::string, int>("11", 11));
+        test_data.insert(std::pair<std::string, int>("12", 12));
+        test_data.insert(std::pair<std::string, int>("13", 13));
+        test_data.insert(std::pair<std::string, int>("14", 14));
+        test_data.insert(std::pair<std::string, int>("15", 15));
+        test_data.insert(std::pair<std::string, int>("16", 16));
+        test_data.insert(std::pair<std::string, int>("17", 17));
+        test_data.insert(std::pair<std::string, int>("18", 18));
+        test_data.insert(std::pair<std::string, int>("19", 19));
       }
     };
 
@@ -1046,6 +1084,65 @@ namespace
       CHECK(compare(a, b));
       CHECK(!compare(b, a));
 #endif
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_compare_lower_upper_bound)
+    {
+        Data data(initial_data_even.begin(), initial_data_even.end());
+        Compare_Data compare(initial_data_even.begin(), initial_data_even.end());
+
+        std::vector<std::pair<std::string, int> > tab(test_data.begin(), test_data.end());
+
+        //make sure both data and compare contain same elements
+        std::vector<std::pair<std::string, int> > data_elements(data.begin(), data.end());
+        std::vector<std::pair<std::string, int> > compare_data_elements(compare.begin(), compare.end());
+
+        CHECK(data_elements == compare_data_elements);
+        CHECK_EQUAL(data_elements.size(), MAX_SIZE);
+
+        for(std::vector<std::pair<std::string, int> >::iterator it = tab.begin() ; it != tab.end() ; ++it)
+        {
+            std::string i = it->first;
+
+            //lower_bound
+            CHECK_EQUAL(compare.lower_bound(i) == compare.end(), data.lower_bound(i) == data.end());
+            //if both end, or none
+            if((compare.lower_bound(i) == compare.end()) == (data.lower_bound(i) == data.end()))
+            {
+                //if both are not end
+                if(compare.lower_bound(i) != compare.end())
+                {
+                    CHECK((*compare.lower_bound(i)) == (*data.lower_bound(i)));
+                }
+
+                std::pair<Compare_Data::const_iterator, Compare_Data::const_iterator> stlret = compare.equal_range(i);
+                std::pair<Data::const_iterator, Data::const_iterator> etlret = data.equal_range(i);
+
+                CHECK_EQUAL(stlret.first == compare.end(), etlret.first == data.end());
+                if((stlret.first != compare.end()) && (etlret.first != data.end()))
+                {
+                    CHECK((*stlret.first) == (*etlret.first));
+                }
+                CHECK_EQUAL(stlret.second == compare.end(), etlret.second == data.end());
+                if((stlret.second != compare.end()) && (etlret.second != data.end()))
+                {
+                    CHECK((*stlret.second) == (*etlret.second));
+                }
+            }
+
+            //upper_bound
+            CHECK_EQUAL(compare.upper_bound(i) == compare.end(), data.upper_bound(i) == data.end());
+            //if both end, or none
+            if((compare.upper_bound(i) == compare.end()) == (data.upper_bound(i) == data.end()))
+            {
+                //if both are not end
+                if(compare.upper_bound(i) != compare.end())
+                {
+                    CHECK((*compare.upper_bound(i)) == (*data.upper_bound(i)));
+                }
+            }
+        }
     }
   };
 }
