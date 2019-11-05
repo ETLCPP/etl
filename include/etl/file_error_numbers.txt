@@ -49,3 +49,4 @@
 49 type_select
 50 binary
 51 delegate
+52 bitset
