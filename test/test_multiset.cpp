@@ -1102,5 +1102,40 @@ namespace
             }
         }
     }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_bug)
+    {
+      using Data = etl::multiset<int, 10>;
+
+      int keys[10] = { 3, 2, 1, 0, 3, 0, 3, 0, 2, 2 };
+
+      Data data;
+
+      for (int eltNum = 0; eltNum != 10; ++eltNum)
+      {
+        data.insert(Data::value_type(keys[eltNum]));
+      }
+
+      data.erase(2);
+
+      int prv = INT_MAX;
+      Data::const_reverse_iterator pos;
+
+      bool pass = true;
+
+      for (pos = data.crbegin(); pos != data.crend(); ++pos)
+      {
+        if (*pos > prv)
+        {
+          pass = false;
+          break;
+        }
+
+        prv = *pos;
+      }
+
+      CHECK(pass);
+    }
   };
 }

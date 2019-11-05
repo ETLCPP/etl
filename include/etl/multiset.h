@@ -276,6 +276,11 @@ namespace etl
       // otherwise we might lose the other child of the swap node
       replacement = swap->children[1 - swap->dir];
 
+      if (replacement != nullptr)
+      {
+        replacement->parent = swap->parent;
+      }
+
       // Point swap node to detached node's parent, children and weight
       swap->parent = detached->parent;
       swap->children[kLeft] = detached->children[kLeft];
