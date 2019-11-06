@@ -239,6 +239,16 @@ namespace etl
       return (e == eof()) ? eof() - 1 : e;
     }
   };
+
+
+  //***************************************************************************
+  /// Alternative strlen for all character types.
+  //***************************************************************************
+  template <typename T>
+  size_t strlen(const T* t)
+  {
+    return etl::char_traits<T>::length(t);
+  }
 }
 
 #endif
