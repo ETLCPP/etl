@@ -91,7 +91,7 @@ namespace etl
   public:
 
     bitset_nullptr(string_type file_name_, numeric_type line_number_)
-      : bitset_exception(ETL_ERROR_TEXT("bitset: nullptr", ETL_FILE"A"), file_name_, line_number_)
+      : bitset_exception(ETL_ERROR_TEXT("bitset:nullptr", ETL_FILE"A"), file_name_, line_number_)
     {
     }
   };
@@ -405,9 +405,12 @@ namespace etl
 
       if (OK)
       {
+        T shift = T(0);
+
         for (size_t i = 0; i < SIZE; ++i)
         {
-          v |= T(pdata[i]) << T(i * BITS_PER_ELEMENT);
+          v |= T(pdata[i]) << shift;
+          shift += T(BITS_PER_ELEMENT);
         }
       }
 
