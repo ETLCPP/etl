@@ -261,12 +261,147 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_value)
+    TEST(test_value_u8_min)
     {
-      etl::bitset<60> data("110001001000110100010101100111001100010010001101000101011001");
+      etl::bitset<8> data("00000000");
+      uint8_t value = data.value<uint8_t>();
+
+      CHECK_EQUAL(std::numeric_limits<uint8_t>::min(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_value_u8_max)
+    {
+      etl::bitset<8> data("11111111");
+      uint8_t value = data.value<uint8_t>();
+
+      CHECK_EQUAL(std::numeric_limits<uint8_t>::max(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_value_s8_min)
+    {
+      etl::bitset<8> data("10000000");
+      int8_t value = data.value<int8_t>();
+
+      CHECK_EQUAL(std::numeric_limits<int8_t>::min(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_value_s8_max)
+    {
+      etl::bitset<8> data("01111111");
+      int8_t value = data.value<int8_t>();
+
+      CHECK_EQUAL(std::numeric_limits<int8_t>::max(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_value_u16_min)
+    {
+      etl::bitset<16> data("0000000000000000");
+      uint16_t value = data.value<uint16_t>();
+
+      CHECK_EQUAL(std::numeric_limits<uint16_t>::min(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_value_u16_max)
+    {
+      etl::bitset<16> data("1111111111111111");
+      uint16_t value = data.value<uint16_t>();
+
+      CHECK_EQUAL(std::numeric_limits<uint16_t>::max(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_value_s16_min)
+    {
+      etl::bitset<16> data("1000000000000000");
+      int16_t value = data.value<int16_t>();
+
+      CHECK_EQUAL(std::numeric_limits<int16_t>::min(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_value_s16_max)
+    {
+      etl::bitset<16> data("0111111111111111");
+      int16_t value = data.value<int16_t>();
+
+      CHECK_EQUAL(std::numeric_limits<int16_t>::max(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_value_u32_min)
+    {
+      etl::bitset<32> data("00000000000000000000000000000000");
+      uint32_t value = data.value<uint32_t>();
+
+      CHECK_EQUAL(std::numeric_limits<uint32_t>::min(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_value_u32_max)
+    {
+      etl::bitset<32> data("11111111111111111111111111111111");
+      uint32_t value = data.value<uint32_t>();
+
+      CHECK_EQUAL(std::numeric_limits<uint32_t>::max(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_value_s32_min)
+    {
+      etl::bitset<32> data("10000000000000000000000000000000");
+      int32_t value = data.value<int32_t>();
+
+      CHECK_EQUAL(std::numeric_limits<int32_t>::min(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_value_s32_max)
+    {
+      etl::bitset<32> data("01111111111111111111111111111111");
+      int32_t value = data.value<int32_t>();
+
+      CHECK_EQUAL(std::numeric_limits<int32_t>::max(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_value_u64_min)
+    {
+      etl::bitset<64> data("0000000000000000000000000000000000000000000000000000000000000000");
       uint64_t value = data.value<uint64_t>();
 
-      CHECK_EQUAL(885187510387921241ull, value);
+      CHECK_EQUAL(std::numeric_limits<uint64_t>::min(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_value_u64_max)
+    {
+      etl::bitset<64> data("1111111111111111111111111111111111111111111111111111111111111111");
+      uint64_t value = data.value<uint64_t>();
+
+      CHECK_EQUAL(std::numeric_limits<uint64_t>::max(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_value_s64_min)
+    {
+      etl::bitset<64> data("1000000000000000000000000000000000000000000000000000000000000000");
+      int64_t value = data.value<int64_t>();
+
+      CHECK_EQUAL(std::numeric_limits<int64_t>::min(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_value_s64_max)
+    {
+      etl::bitset<64> data("0111111111111111111111111111111111111111111111111111111111111111");
+      int64_t value = data.value<int64_t>();
+
+      CHECK_EQUAL(std::numeric_limits<int64_t>::max(), value);
     }
 
     //*************************************************************************
