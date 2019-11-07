@@ -242,7 +242,7 @@ namespace etl
     //*************************************************************************
     bool test(size_t position) const
     {
-      size_t       index;
+      size_t    index;
       element_t mask;
 
       if (SIZE == 1)
