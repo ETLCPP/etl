@@ -786,6 +786,9 @@
     <ClInclude Include="..\..\include\etl\stl\choose_namespace.h">
       <Filter>ETL\STL</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\indirect_vector.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1239,6 +1242,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_compiler_settings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_indirect_vector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
