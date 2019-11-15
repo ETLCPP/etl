@@ -73,7 +73,8 @@ namespace etl
 #endif
     typedef T*                                    pointer;
     typedef const T*                              const_pointer;
-    typedef T* const *                            pointer_const_pointer;
+    typedef pointer const *                       indirect_pointer;
+    typedef const_pointer const *                 indirect_const_pointer;
 
     typedef typename etl::ivector<T*>::size_type       size_type;
     typedef typename etl::ivector<T*>::difference_type difference_type;
@@ -595,9 +596,19 @@ namespace etl
     //*********************************************************************
     /// Returns a pointer to the beginning of the internal lookup vector data.
     /// These are a list of pointers to objects
-    ///\return A const pointer to the beginning of the internal lookup vector data.
+    ///\return An indirect pointer to the beginning of the internal lookup vector data.
     //*********************************************************************
-    pointer_const_pointer data() const
+    indirect_pointer data()
+    {
+      return lookup.data();
+    }
+
+    //*********************************************************************
+    /// Returns a pointer to the beginning of the internal lookup vector data.
+    /// These are a list of pointers to objects
+    ///\return An indirect pointer to the beginning of the internal lookup vector data.
+    //*********************************************************************
+    indirect_const_pointer data() const
     {
       return lookup.data();
     }

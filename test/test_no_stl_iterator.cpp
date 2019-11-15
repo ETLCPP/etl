@@ -68,7 +68,7 @@ namespace
     {
       int* itr1 = std::begin(dataA);
       non_random_iterator<int> itr2 = std::begin(dataA);
-      
+
       std::advance(itr1, 4);
       etlstd::advance(itr2, 4);
       CHECK_EQUAL(*itr1, *itr2);
@@ -91,6 +91,36 @@ namespace
       std::advance(itr1, -3);
       etlstd::advance(itr2, -3);
       CHECK_EQUAL(*itr1, *itr2);
+    }
+
+    //*************************************************************************
+    TEST(prev)
+    {
+      int data[] = { 1, 2, 3, 4, 5, 6, 7 };
+
+      size_t length = 6U;
+
+      int* itr = &data[0] + length;
+
+      for (size_t i = 1; i <= length; ++i)
+      {
+        CHECK_EQUAL(data[length - i], *etlstd::prev(itr, i));
+      }
+    }
+
+    //*************************************************************************
+    TEST(next)
+    {
+      int data[] = { 1, 2, 3, 4, 5, 6, 7 };
+
+      size_t length = 6U;
+
+      int* itr = &data[0];
+
+      for (size_t i = 1; i <= length; ++i)
+      {
+        CHECK_EQUAL(data[i], *etlstd::next(itr, i));
+      }
     }
   };
 }

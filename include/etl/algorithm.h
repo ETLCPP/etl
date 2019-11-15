@@ -57,8 +57,8 @@ namespace etl
   template <typename TIterator,
             typename TCompare>
   ETLSTD::pair<TIterator, TIterator> minmax_element(TIterator begin,
-                                                 TIterator end,
-                                                 TCompare  compare)
+                                                    TIterator end,
+                                                    TCompare  compare)
   {
     TIterator minimum = begin;
     TIterator maximum = begin;
@@ -88,7 +88,7 @@ namespace etl
   //***************************************************************************
   template <typename TIterator>
   ETLSTD::pair<TIterator, TIterator> minmax_element(TIterator begin,
-                                                 TIterator end)
+                                                    TIterator end)
   {
       typedef typename ETLSTD::iterator_traits<TIterator>::value_type value_t;
 
@@ -102,7 +102,7 @@ namespace etl
   //***************************************************************************
   template <typename T>
   ETLSTD::pair<const T&, const T&> minmax(const T& a,
-                                       const T& b)
+                                          const T& b)
   {
     return (b < a) ? ETLSTD::pair<const T&, const T&>(b, a) : ETLSTD::pair<const T&, const T&>(a, b);
   }
@@ -115,8 +115,8 @@ namespace etl
   template <typename T,
             typename TCompare>
   ETLSTD::pair<const T&, const T&> minmax(const T& a,
-                                       const T& b,
-                                       TCompare compare)
+                                          const T& b,
+                                          TCompare compare)
   {
     return compare(b, a) ? ETLSTD::pair<const T&, const T&>(b, a) : ETLSTD::pair<const T&, const T&>(a, b);
   }
@@ -1175,61 +1175,12 @@ namespace etl
   /// Uses user defined comparison.
   ///\ingroup algorithm
   //***************************************************************************
-  // Pointers and PODs.
   template <typename TIterator, typename TCompare>
-  typename etl::enable_if<etl::is_pointer<TIterator>::value &&
-                          etl::is_pointer<TIterator>::value &&
-                          etl::is_pod<typename ETLSTD::iterator_traits<TIterator>::value_type>::value, void>::type
-    insertion_sort(TIterator first, TIterator last, TCompare compare)
+  void insertion_sort(TIterator first, TIterator last, TCompare compare)
   {
-    //#############################################################################
-    // OPTIMISE THIS FOR POINTERS AND PODS USING MEMMOVE OR COPY_BACKWARD
-    //#############################################################################
-
-    typedef typename ETLSTD::iterator_traits<TIterator>::value_type value_type;
-
-    TIterator a = first;
-
-    if (a == last)
+    for (TIterator itr = first; itr != last; ++itr)
     {
-      return;
-    }
-
-    ETLSTD::iter_swap(first, ETLSTD::min_element(a, last));
-
-    for (TIterator b = a; ++b < last; a = b)
-    {
-      for (TIterator c = b; compare(*c, *a); --c, a -= (a != first))
-      {
-        ETLSTD::iter_swap(a, c);
-      }
-    }
-  }
-
-  // Other types.
-  template <typename TIterator, typename TCompare>
-  typename etl::enable_if<!etl::is_pointer<TIterator>::value ||
-                          !etl::is_pointer<TIterator>::value ||
-                          !etl::is_pod<typename ETLSTD::iterator_traits<TIterator>::value_type>::value, void>::type
-    insertion_sort(TIterator first, TIterator last, TCompare compare)
-  {
-    typedef typename ETLSTD::iterator_traits<TIterator>::value_type value_type;
-
-    TIterator a = first;
-
-    if (a == last)
-    {
-      return;
-    }
-
-    ETLSTD::iter_swap(first, ETLSTD::min_element(a, last));
-
-    for (TIterator b = a; ++b < last; a = b)
-    {
-      for (TIterator c = b; compare(*c, *a); --c, a -= (a != first))
-      {
-        ETLSTD::iter_swap(a, c);
-      }
+      ETLSTD::rotate(ETLSTD::upper_bound(first, itr, *itr, compare), itr, ETLSTD::next(itr));
     }
   }
 

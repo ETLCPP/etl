@@ -570,11 +570,25 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_data)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      DataNDC::indirect_pointer p = data.data();
+
+      for (size_t i = 0U; i < data.size(); ++i)
+      {
+        CHECK(data[i] == **p);
+        ++p;
+      }
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_data_const)
     {
       const DataNDC data(initial_data.begin(), initial_data.end());
 
-      NDC* const * p = data.data();
+      DataNDC::indirect_const_pointer p = data.data();
 
       for (size_t i = 0U; i < data.size(); ++i)
       {
