@@ -41,8 +41,8 @@ namespace etl
   template <const size_t NUM, const size_t DEN = 1>
   struct ratio
   {
-    static const ETLSTD::intmax_t num = NUM;
-    static const ETLSTD::intmax_t den = DEN;
+    static const std::intmax_t num = NUM;
+    static const std::intmax_t den = DEN;
   };
 
   #if INT_MAX > INT32_MAX

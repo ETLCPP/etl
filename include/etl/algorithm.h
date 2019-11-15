@@ -56,7 +56,7 @@ namespace etl
   //***************************************************************************
   template <typename TIterator,
             typename TCompare>
-  ETLSTD::pair<TIterator, TIterator> minmax_element(TIterator begin,
+  std::pair<TIterator, TIterator> minmax_element(TIterator begin,
                                                     TIterator end,
                                                     TCompare  compare)
   {
@@ -78,7 +78,7 @@ namespace etl
       ++begin;
     }
 
-    return ETLSTD::pair<TIterator, TIterator>(minimum, maximum);
+    return std::pair<TIterator, TIterator>(minimum, maximum);
   }
 
   //***************************************************************************
@@ -87,12 +87,12 @@ namespace etl
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/minmax_element"></a>
   //***************************************************************************
   template <typename TIterator>
-  ETLSTD::pair<TIterator, TIterator> minmax_element(TIterator begin,
+  std::pair<TIterator, TIterator> minmax_element(TIterator begin,
                                                     TIterator end)
   {
-      typedef typename ETLSTD::iterator_traits<TIterator>::value_type value_t;
+      typedef typename std::iterator_traits<TIterator>::value_type value_t;
 
-      return etl::minmax_element(begin, end, ETLSTD::less<value_t>());
+      return etl::minmax_element(begin, end, std::less<value_t>());
   }
 
   //***************************************************************************
@@ -101,10 +101,10 @@ namespace etl
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/minmax"></a>
   //***************************************************************************
   template <typename T>
-  ETLSTD::pair<const T&, const T&> minmax(const T& a,
+  std::pair<const T&, const T&> minmax(const T& a,
                                           const T& b)
   {
-    return (b < a) ? ETLSTD::pair<const T&, const T&>(b, a) : ETLSTD::pair<const T&, const T&>(a, b);
+    return (b < a) ? std::pair<const T&, const T&>(b, a) : std::pair<const T&, const T&>(a, b);
   }
 
   //***************************************************************************
@@ -114,11 +114,11 @@ namespace etl
   //***************************************************************************
   template <typename T,
             typename TCompare>
-  ETLSTD::pair<const T&, const T&> minmax(const T& a,
+  std::pair<const T&, const T&> minmax(const T& a,
                                           const T& b,
                                           TCompare compare)
   {
-    return compare(b, a) ? ETLSTD::pair<const T&, const T&>(b, a) : ETLSTD::pair<const T&, const T&>(a, b);
+    return compare(b, a) ? std::pair<const T&, const T&>(b, a) : std::pair<const T&, const T&>(a, b);
   }
 
   //***************************************************************************
@@ -223,11 +223,11 @@ namespace etl
         TOutputIterator o_begin,
         TOutputIterator o_end)
   {
-      size_t s_size = ETLSTD::distance(i_begin, i_end);
-      size_t d_size = ETLSTD::distance(o_begin, o_end);
+      size_t s_size = std::distance(i_begin, i_end);
+      size_t d_size = std::distance(o_begin, o_end);
       size_t size   = (s_size < d_size) ? s_size : d_size;
 
-      return ETLSTD::copy(i_begin, i_begin + size, o_begin);
+      return std::copy(i_begin, i_begin + size, o_begin);
   }
 
   //***************************************************************************
@@ -271,7 +271,7 @@ namespace etl
           TSize           n,
           TOutputIterator o_begin)
   {
-    return ETLSTD::copy(i_begin, i_begin + n, o_begin);
+    return std::copy(i_begin, i_begin + n, o_begin);
   }
 
   //***************************************************************************
@@ -430,7 +430,7 @@ namespace etl
                           TIterator     end,
                           const TValue& value)
   {
-    TIterator it = ETLSTD::lower_bound(begin, end, value);
+    TIterator it = std::lower_bound(begin, end, value);
 
     if ((it == end) || (*it != value))
     {
@@ -455,7 +455,7 @@ namespace etl
                           TBinaryPredicate predicate,
                           TBinaryEquality  equality)
   {
-    TIterator it = ETLSTD::lower_bound(begin, end, value, predicate);
+    TIterator it = std::lower_bound(begin, end, value, predicate);
 
     if ((it == end) || !equality(*it, value))
     {
@@ -514,7 +514,7 @@ namespace etl
               TIterator       end,
               TUnaryPredicate predicate)
   {
-    return ETLSTD::find_if(begin, end, predicate) != end;
+    return std::find_if(begin, end, predicate) != end;
   }
 
   //***************************************************************************
@@ -528,7 +528,7 @@ namespace etl
                TIterator       end,
                TUnaryPredicate predicate)
   {
-    return ETLSTD::find_if(begin, end, predicate) == end;
+    return std::find_if(begin, end, predicate) == end;
   }
 
   //***************************************************************************
@@ -546,15 +546,15 @@ namespace etl
     {
       TIterator2 end2 = begin2;
 
-      ETLSTD::advance(end2, ETLSTD::distance(begin1, end1));
+      std::advance(end2, std::distance(begin1, end1));
 
       for (TIterator1 i = begin1; i != end1; ++i)
       {
-        if (i == ETLSTD::find(begin1, i, *i))
+        if (i == std::find(begin1, i, *i))
         {
-          size_t n = ETLSTD::count(begin2, end2, *i);
+          size_t n = std::count(begin2, end2, *i);
 
-          if (n == 0 || size_t(ETLSTD::count(i, end1, *i)) != n)
+          if (n == 0 || size_t(std::count(i, end1, *i)) != n)
           {
             return false;
           }
@@ -581,11 +581,11 @@ namespace etl
     {
       for (TIterator1 i = begin1; i != end1; ++i)
       {
-        if (i == ETLSTD::find(begin1, i, *i))
+        if (i == std::find(begin1, i, *i))
         {
-          size_t n = ETLSTD::count(begin2, end2, *i);
+          size_t n = std::count(begin2, end2, *i);
 
-          if (n == 0 || size_t(ETLSTD::count(i, end1, *i)) != n)
+          if (n == 0 || size_t(std::count(i, end1, *i)) != n)
           {
             return false;
           }
@@ -613,19 +613,19 @@ namespace etl
     {
       TIterator2 end2 = begin2;
 
-      ETLSTD::advance(end2, ETLSTD::distance(begin1, end1));
+      std::advance(end2, std::distance(begin1, end1));
 
       for (TIterator1 i = begin1; i != end1; ++i)
       {
 #if ETL_CPP11_SUPPORTED && !defined(ETL_NO_STL)
-        if (i == ETLSTD::find_if(begin1, i, ETLSTD::bind(predicate, *i, ETLSTD::placeholders::_1)))
+        if (i == std::find_if(begin1, i, std::bind(predicate, *i, std::placeholders::_1)))
 #else
-        if (i == ETLSTD::find_if(begin1, i, ETLSTD::bind1st(predicate, *i)))
+        if (i == std::find_if(begin1, i, std::bind1st(predicate, *i)))
 #endif
         {
-          size_t n = ETLSTD::count(begin2, end2, *i);
+          size_t n = std::count(begin2, end2, *i);
 
-          if (n == 0 || size_t(ETLSTD::count(i, end1, *i)) != n)
+          if (n == 0 || size_t(std::count(i, end1, *i)) != n)
           {
             return false;
           }
@@ -655,14 +655,14 @@ namespace etl
       for (TIterator1 i = begin1; i != end1; ++i)
       {
 #if ETL_CPP11_SUPPORTED && !defined(ETL_NO_STL)
-        if (i == ETLSTD::find_if(begin1, i, ETLSTD::bind(predicate, *i, ETLSTD::placeholders::_1)))
+        if (i == std::find_if(begin1, i, std::bind(predicate, *i, std::placeholders::_1)))
 #else
-        if (i == ETLSTD::find_if(begin1, i, ETLSTD::bind1st(predicate, *i)))
+        if (i == std::find_if(begin1, i, std::bind1st(predicate, *i)))
 #endif
         {
-          size_t n = ETLSTD::count(begin2, end2, *i);
+          size_t n = std::count(begin2, end2, *i);
 
-          if (n == 0 || size_t(ETLSTD::count(i, end1, *i)) != n)
+          if (n == 0 || size_t(std::count(i, end1, *i)) != n)
           {
             return false;
           }
@@ -737,7 +737,7 @@ namespace etl
             typename TDestinationTrue,
             typename TDestinationFalse,
             typename TUnaryPredicate>
-  ETLSTD::pair<TDestinationTrue, TDestinationFalse> partition_copy(TSource           begin,
+  std::pair<TDestinationTrue, TDestinationFalse> partition_copy(TSource           begin,
                                                                 TSource           end,
                                                                 TDestinationTrue  destination_true,
                                                                 TDestinationFalse destination_false,
@@ -755,11 +755,11 @@ namespace etl
       }
     }
 
-    return ETLSTD::pair<TDestinationTrue, TDestinationFalse>(destination_true, destination_false);
+    return std::pair<TDestinationTrue, TDestinationFalse>(destination_true, destination_false);
   }
 
   //***************************************************************************
-  /// Like ETLSTD::for_each but applies a predicate before calling the function.
+  /// Like std::for_each but applies a predicate before calling the function.
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TIterator,
@@ -784,7 +784,7 @@ namespace etl
   }
 
     //***************************************************************************
-  /// Like ETLSTD::for_each but for 'n' iterations.
+  /// Like std::for_each but for 'n' iterations.
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TIterator,
@@ -803,7 +803,7 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Like ETLSTD::for_each but applies a predicate before calling the function, for 'n' iterations
+  /// Like std::for_each but applies a predicate before calling the function, for 'n' iterations
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TIterator,
@@ -829,7 +829,7 @@ namespace etl
   }
 
   //***************************************************************************
-  /// A form of ETLSTD::transform where the transform returns when the first range
+  /// A form of std::transform where the transform returns when the first range
   /// end is reached.
   /// There is currently no STL equivalent.
   ///\ingroup algorithm
@@ -865,7 +865,7 @@ namespace etl
                TOutputIterator o_begin,
                TUnaryFunction  function)
   {
-    ETLSTD::transform(i_begin, i_begin + n, o_begin, function);
+    std::transform(i_begin, i_begin + n, o_begin, function);
   }
 
   //***************************************************************************
@@ -887,7 +887,7 @@ namespace etl
                TOutputIterator o_begin,
                TBinaryFunction function)
   {
-    ETLSTD::transform(i_begin1, i_begin1 + n, i_begin2, o_begin, function);
+    std::transform(i_begin1, i_begin1 + n, i_begin2, o_begin, function);
   }
 
   //***************************************************************************
@@ -940,7 +940,7 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Like ETLSTD::transform but applies a predicate before calling the function.
+  /// Like std::transform but applies a predicate before calling the function.
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TInputIterator,
@@ -997,7 +997,7 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Like ETLSTD::transform_if, for 'n' items.
+  /// Like std::transform_if, for 'n' items.
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TInputIterator,
@@ -1063,7 +1063,7 @@ namespace etl
   template <typename TSource, typename TDestinationTrue, typename TDestinationFalse,
             typename TUnaryFunctionTrue, typename TUnaryFunctionFalse,
             typename TUnaryPredicate>
-  ETLSTD::pair<TDestinationTrue, TDestinationFalse> partition_transform(TSource             begin,
+  std::pair<TDestinationTrue, TDestinationFalse> partition_transform(TSource             begin,
                                                                      TSource             end,
                                                                      TDestinationTrue    destination_true,
                                                                      TDestinationFalse   destination_false,
@@ -1083,7 +1083,7 @@ namespace etl
       }
     }
 
-    return ETLSTD::pair<TDestinationTrue, TDestinationFalse>(destination_true, destination_false);
+    return std::pair<TDestinationTrue, TDestinationFalse>(destination_true, destination_false);
   }
 
   //***************************************************************************
@@ -1098,7 +1098,7 @@ namespace etl
             typename TBinaryFunctionTrue,
             typename TBinaryFunctionFalse,
             typename TBinaryPredicate>
-  ETLSTD::pair<TDestinationTrue, TDestinationFalse> partition_transform(TSource1             begin1,
+  std::pair<TDestinationTrue, TDestinationFalse> partition_transform(TSource1             begin1,
                                                                      TSource1             end1,
                                                                      TSource2             begin2,
                                                                      TDestinationTrue     destination_true,
@@ -1119,7 +1119,7 @@ namespace etl
       }
     }
 
-    return ETLSTD::pair<TDestinationTrue, TDestinationFalse>(destination_true, destination_false);
+    return std::pair<TDestinationTrue, TDestinationFalse>(destination_true, destination_false);
   }
 
   //***************************************************************************
@@ -1135,9 +1135,9 @@ namespace etl
       return;
     }
 
-    typedef typename ETLSTD::iterator_traits<TIterator>::difference_type difference_t;
+    typedef typename std::iterator_traits<TIterator>::difference_type difference_t;
 
-    difference_t n = ETLSTD::distance(first, last);
+    difference_t n = std::distance(first, last);
 
     for (difference_t i = n / 2; i > 0; i /= 2)
     {
@@ -1148,12 +1148,12 @@ namespace etl
           TIterator itr1 = first;
           TIterator itr2 = first;
 
-          ETLSTD::advance(itr1, k);
-          ETLSTD::advance(itr2, k + i);
+          std::advance(itr1, k);
+          std::advance(itr2, k + i);
 
           if (compare(*itr2, *itr1))
           {
-            ETLSTD::iter_swap(itr1, itr2);
+            std::iter_swap(itr1, itr2);
           }
         }
       }
@@ -1167,7 +1167,7 @@ namespace etl
   template <typename TIterator>
   void shell_sort(TIterator first, TIterator last)
   {
-    etl::shell_sort(first, last, ETLSTD::less<typename ETLSTD::iterator_traits<TIterator>::value_type>());
+    etl::shell_sort(first, last, std::less<typename std::iterator_traits<TIterator>::value_type>());
   }
 
   //***************************************************************************
@@ -1180,7 +1180,7 @@ namespace etl
   {
     for (TIterator itr = first; itr != last; ++itr)
     {
-      ETLSTD::rotate(ETLSTD::upper_bound(first, itr, *itr, compare), itr, ETLSTD::next(itr));
+      std::rotate(std::upper_bound(first, itr, *itr, compare), itr, std::next(itr));
     }
   }
 
@@ -1191,7 +1191,7 @@ namespace etl
   template <typename TIterator>
   void insertion_sort(TIterator first, TIterator last)
   {
-    etl::insertion_sort(first, last, ETLSTD::less<typename ETLSTD::iterator_traits<TIterator>::value_type>());
+    etl::insertion_sort(first, last, std::less<typename std::iterator_traits<TIterator>::value_type>());
   }
 
   //***************************************************************************
@@ -1212,7 +1212,7 @@ namespace etl
   template <typename TIterator>
   void sort(TIterator first, TIterator last)
   {
-    etl::shell_sort(first, last, ETLSTD::less<typename ETLSTD::iterator_traits<TIterator>::value_type>());
+    etl::shell_sort(first, last, std::less<typename std::iterator_traits<TIterator>::value_type>());
   }
 
   //***************************************************************************
@@ -1235,7 +1235,7 @@ namespace etl
   template <typename TIterator>
   void stable_sort(TIterator first, TIterator last)
   {
-    etl::insertion_sort(first, last, ETLSTD::less<typename ETLSTD::iterator_traits<TIterator>::value_type>());
+    etl::insertion_sort(first, last, std::less<typename std::iterator_traits<TIterator>::value_type>());
   }
 
 #if ETL_CPP11_SUPPORTED

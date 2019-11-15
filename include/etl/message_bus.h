@@ -102,7 +102,7 @@ namespace etl
 
         if (ok)
         {
-          router_list_t::iterator irouter = ETLSTD::upper_bound(router_list.begin(),
+          router_list_t::iterator irouter = std::upper_bound(router_list.begin(),
                                                              router_list.end(),
                                                              router.get_message_router_id(),
                                                              compare_router_id());
@@ -125,7 +125,7 @@ namespace etl
       }
       else
       {
-        ETLSTD::pair<router_list_t::iterator, router_list_t::iterator> range = ETLSTD::equal_range(router_list.begin(),
+        std::pair<router_list_t::iterator, router_list_t::iterator> range = std::equal_range(router_list.begin(),
                                                                                              router_list.end(),
                                                                                              id,
                                                                                              compare_router_id());
@@ -137,7 +137,7 @@ namespace etl
     //*******************************************
     void unsubscribe(etl::imessage_router& router)
     {
-      router_list_t::iterator irouter = ETLSTD::find(router_list.begin(),
+      router_list_t::iterator irouter = std::find(router_list.begin(),
                                                   router_list.end(),
                                                   &router);
 
@@ -212,7 +212,7 @@ namespace etl
           router_list_t::iterator irouter = router_list.begin();
 
           // Find routers with the id.
-          ETLSTD::pair<router_list_t::iterator, router_list_t::iterator> range = ETLSTD::equal_range(router_list.begin(),
+          std::pair<router_list_t::iterator, router_list_t::iterator> range = std::equal_range(router_list.begin(),
                                                                                                router_list.end(),
                                                                                                destination_router_id,
                                                                                                compare_router_id());
@@ -230,7 +230,7 @@ namespace etl
 
           // Do any message buses.
           // These are always at the end of the list.
-          irouter = ETLSTD::lower_bound(router_list.begin(),
+          irouter = std::lower_bound(router_list.begin(),
                                      router_list.end(),
                                      etl::imessage_bus::MESSAGE_BUS,
                                      compare_router_id());

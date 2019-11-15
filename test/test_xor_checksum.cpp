@@ -40,7 +40,7 @@ namespace
   template <typename TSum, typename TIterator>
   TSum reference_checksum(TIterator begin, TIterator end)
   {
-    typedef typename ETLSTD::iterator_traits<TIterator>::value_type value_type;
+    typedef typename std::iterator_traits<TIterator>::value_type value_type;
     TSum checksum = 0;
 
     while (begin != end)
@@ -76,7 +76,7 @@ namespace
       {
         checksum_calculator.add(data[i]);
       }
-      
+
       uint8_t sum     = checksum_calculator;
       uint8_t compare = reference_checksum<uint8_t>(data.begin(), data.end());
 

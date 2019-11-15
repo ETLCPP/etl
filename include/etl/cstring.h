@@ -180,7 +180,7 @@ namespace etl
       {
         ETL_ASSERT(position < this->size(), ETL_ERROR(string_out_of_bounds));
 
-        length_ = ETLSTD::min(length_, this->size() - position);
+        length_ = std::min(length_, this->size() - position);
 
         new_string.assign(buffer + position, buffer + position + length_);
       }

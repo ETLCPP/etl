@@ -93,8 +93,8 @@ namespace etl
     typedef const T*                              const_pointer;
     typedef T*                                    iterator;
     typedef const T*                              const_iterator;
-    typedef ETLSTD::reverse_iterator<iterator>       reverse_iterator;
-    typedef ETLSTD::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef std::reverse_iterator<iterator>       reverse_iterator;
+    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
     typedef typename etl::parameter_type<T>::type parameter_t;
 

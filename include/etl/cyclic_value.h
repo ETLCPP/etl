@@ -257,7 +257,7 @@ namespace etl
     //*************************************************************************
     void swap(cyclic_value<T, FIRST, LAST>& other)
     {
-      ETLSTD::swap(value, other.value);
+      std::swap(value, other.value);
     }
 
     //*************************************************************************
@@ -531,9 +531,9 @@ namespace etl
     //*************************************************************************
     void swap(cyclic_value<T, FIRST, LAST>& other)
     {
-      ETLSTD::swap(first_value, other.first_value);
-      ETLSTD::swap(last_value, other.last_value);
-      ETLSTD::swap(value, other.value);
+      std::swap(first_value, other.first_value);
+      std::swap(last_value, other.last_value);
+      std::swap(value, other.value);
     }
 
     //*************************************************************************

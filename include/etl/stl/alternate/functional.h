@@ -3,8 +3,9 @@
 #define ETL_STL_ALTERNATE_FUNCTIONAL_INCLUDED
 
 #include "../../platform.h"
+#include "choose_namespace.h"
 
-namespace etlstd
+namespace ETLSTD
 {
   //***************************************************************************
   template <typename T = void>
@@ -68,7 +69,7 @@ namespace etlstd
   //***************************************************************************
 
   template <typename TFunction>
-  class binder1st : public etlstd::unary_function<typename TFunction::second_argument_type, typename TFunction::result_type>
+  class binder1st : public ETLSTD::unary_function<typename TFunction::second_argument_type, typename TFunction::result_type>
   {
   protected:
 
@@ -102,7 +103,7 @@ namespace etlstd
   //***************************************************************************
 
   template <typename TFunction >
-  class binder2nd : public etlstd::unary_function<typename TFunction::first_argument_type, typename TFunction::result_type>
+  class binder2nd : public ETLSTD::unary_function<typename TFunction::first_argument_type, typename TFunction::result_type>
   {
   protected:
     TFunction operation;

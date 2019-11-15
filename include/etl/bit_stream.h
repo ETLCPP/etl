@@ -68,7 +68,7 @@ namespace etl
     //***************************************************************************
     bit_stream(char* begin_, char* end_)
       : pdata(reinterpret_cast<unsigned char*>(begin_)),
-        length(ETLSTD::distance(begin_, end_))
+        length(std::distance(begin_, end_))
     {
       restart();
     }
@@ -78,7 +78,7 @@ namespace etl
     //***************************************************************************
     bit_stream(unsigned char* begin_, unsigned char* end_)
       : pdata(begin_),
-        length(ETLSTD::distance(begin_, end_))
+        length(std::distance(begin_, end_))
     {
       restart();
     }
@@ -128,7 +128,7 @@ namespace etl
     //***************************************************************************
     void set_stream(char* begin_, char* end_)
     {
-      set_stream(begin_, ETLSTD::distance(begin_, end_));
+      set_stream(begin_, std::distance(begin_, end_));
     }
 
     //***************************************************************************
@@ -136,7 +136,7 @@ namespace etl
     //***************************************************************************
     void set_stream(unsigned char* begin_, unsigned char* end_)
     {
-      set_stream(begin_, ETLSTD::distance(begin_, end_));
+      set_stream(begin_, std::distance(begin_, end_));
     }
 
     //***************************************************************************
@@ -266,7 +266,7 @@ namespace etl
           // Get the bits from the stream.
           while (width != 0)
           {
-            unsigned char mask_width = static_cast<unsigned char>(ETLSTD::min(width, bits_in_byte));
+            unsigned char mask_width = static_cast<unsigned char>(std::min(width, bits_in_byte));
             unsigned char chunk = get_chunk(mask_width);
 
             width -= mask_width;
@@ -379,7 +379,7 @@ namespace etl
           // Send the bits to the stream.
           while (width != 0)
           {
-            unsigned char mask_width = static_cast<unsigned char>(ETLSTD::min(width, bits_in_byte));
+            unsigned char mask_width = static_cast<unsigned char>(std::min(width, bits_in_byte));
             width -= mask_width;
             uint32_t mask = ((uint32_t(1U) << mask_width) - 1U) << width;
 
@@ -412,7 +412,7 @@ namespace etl
           // Send the bits to the stream.
           while (width != 0)
           {
-            unsigned char mask_width = static_cast<unsigned char>(ETLSTD::min(width, bits_in_byte));
+            unsigned char mask_width = static_cast<unsigned char>(std::min(width, bits_in_byte));
             width -= mask_width;
             uint64_t mask = ((uint64_t(1U) << mask_width) - 1U) << width;
 
@@ -495,11 +495,11 @@ namespace etl
       // Network to host.
       if (etl::endianness::value() == etl::endian::little)
       {
-        ETLSTD::reverse_copy(data, data + sizeof(T), temp);
+        std::reverse_copy(data, data + sizeof(T), temp);
       }
       else
       {
-        ETLSTD::copy(data, data + sizeof(T), temp);
+        std::copy(data, data + sizeof(T), temp);
       }
 
       value = *reinterpret_cast<T*>(temp);
@@ -516,11 +516,11 @@ namespace etl
       // Host to network.
       if (etl::endianness::value() == etl::endian::little)
       {
-        ETLSTD::reverse_copy(pf, pf + sizeof(T), data);
+        std::reverse_copy(pf, pf + sizeof(T), data);
       }
       else
       {
-        ETLSTD::copy(pf, pf + sizeof(T), data);
+        std::copy(pf, pf + sizeof(T), data);
       }
     }
 

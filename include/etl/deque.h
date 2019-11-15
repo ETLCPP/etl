@@ -238,7 +238,7 @@ namespace etl
 #endif
     typedef T*       pointer;
     typedef const T* const_pointer;
-    typedef typename ETLSTD::iterator_traits<pointer>::difference_type difference_type;
+    typedef typename std::iterator_traits<pointer>::difference_type difference_type;
 
   protected:
 
@@ -633,8 +633,8 @@ namespace etl
       pointer         p_buffer;
     };
 
-    typedef ETLSTD::reverse_iterator<iterator>       reverse_iterator;
-    typedef ETLSTD::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef std::reverse_iterator<iterator>       reverse_iterator;
+    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
     //*************************************************************************
     /// Assigns a range to the deque.
@@ -2232,7 +2232,7 @@ namespace etl
     typedef T&       reference;
     typedef const T& const_reference;
     typedef size_t   size_type;
-    typedef typename ETLSTD::iterator_traits<pointer>::difference_type difference_type;
+    typedef typename std::iterator_traits<pointer>::difference_type difference_type;
 
     //*************************************************************************
     /// Default constructor.

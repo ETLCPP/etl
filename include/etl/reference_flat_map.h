@@ -316,9 +316,9 @@ namespace etl
       typename lookup_t::const_iterator ilookup;
     };
 
-    typedef ETLSTD::reverse_iterator<iterator>       reverse_iterator;
-    typedef ETLSTD::reverse_iterator<const_iterator> const_reverse_iterator;
-    typedef typename ETLSTD::iterator_traits<iterator>::difference_type difference_type;
+    typedef std::reverse_iterator<iterator>       reverse_iterator;
+    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef typename std::iterator_traits<iterator>::difference_type difference_type;
 
   protected:
 
@@ -524,7 +524,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-      ETL_STATIC_ASSERT((etl::is_same<value_type, typename ETLSTD::iterator_traits<TIterator>::value_type>::value), "Incompatible data for assign");
+      ETL_STATIC_ASSERT((etl::is_same<value_type, typename std::iterator_traits<TIterator>::value_type>::value), "Incompatible data for assign");
 
 #if defined(ETL_DEBUG)
       difference_type d = std::distance(first, last);

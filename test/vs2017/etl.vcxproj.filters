@@ -783,11 +783,11 @@
     <ClInclude Include="..\..\include\etl\profiles\cpp17_no_stl.h">
       <Filter>ETL\Profiles</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\stl\choose_namespace.h">
-      <Filter>ETL\STL</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\indirect_vector.h">
       <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\stl\alternate\choose_namespace.h">
+      <Filter>ETL\STL\Alternate</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

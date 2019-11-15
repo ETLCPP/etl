@@ -48,7 +48,7 @@ namespace etl
   /// Read write port.
   //***************************************************************************
   template <typename T, uintptr_t ADDRESS = 0>
-  class io_port_rw : public ETLSTD::iterator<ETLSTD::forward_iterator_tag, T>
+  class io_port_rw : public std::iterator<std::forward_iterator_tag, T>
   {
   public:
 
@@ -128,7 +128,7 @@ namespace etl
   /// Read only port.
   //***************************************************************************
   template <typename T, uintptr_t ADDRESS = 0>
-  class io_port_ro : public ETLSTD::iterator<ETLSTD::input_iterator_tag, T>
+  class io_port_ro : public std::iterator<std::input_iterator_tag, T>
   {
   public:
 
@@ -192,7 +192,7 @@ namespace etl
   /// Write only port.
   //***************************************************************************
   template <typename T, uintptr_t ADDRESS = 0>
-  class io_port_wo : public ETLSTD::iterator<ETLSTD::output_iterator_tag, T>
+  class io_port_wo : public std::iterator<std::output_iterator_tag, T>
   {
   public:
 
@@ -256,7 +256,7 @@ namespace etl
   /// Write only port with shadow register.
   //***************************************************************************
   template <typename T, uintptr_t ADDRESS = 0>
-  class io_port_wos : public ETLSTD::iterator<ETLSTD::forward_iterator_tag, T>
+  class io_port_wos : public std::iterator<std::forward_iterator_tag, T>
   {
   public:
 
@@ -335,7 +335,7 @@ namespace etl
   /// Specialisation for dynamic addresses.
   //***************************************************************************
   template <typename T>
-  class io_port_rw<T, 0> : public ETLSTD::iterator<ETLSTD::forward_iterator_tag, T>
+  class io_port_rw<T, 0> : public std::iterator<std::forward_iterator_tag, T>
   {
   public:
 
@@ -446,7 +446,7 @@ namespace etl
   /// Specialisation for dynamic addresses.
   //***************************************************************************
   template <typename T>
-  class io_port_ro<T, 0> : public ETLSTD::iterator<ETLSTD::input_iterator_tag, T>
+  class io_port_ro<T, 0> : public std::iterator<std::input_iterator_tag, T>
   {
   public:
 
@@ -535,7 +535,7 @@ namespace etl
   /// Specialisation for dynamic addresses.
   //***************************************************************************
   template <typename T>
-  class io_port_wo<T, 0> : public ETLSTD::iterator<ETLSTD::output_iterator_tag, T>
+  class io_port_wo<T, 0> : public std::iterator<std::output_iterator_tag, T>
   {
   public:
 
@@ -630,7 +630,7 @@ namespace etl
   /// Specialisation for dynamic addresses.
   //***************************************************************************
   template <typename T>
-  class io_port_wos<T, 0> : public ETLSTD::iterator<ETLSTD::forward_iterator_tag, T>
+  class io_port_wos<T, 0> : public std::iterator<std::forward_iterator_tag, T>
   {
   public:
 
@@ -639,7 +639,7 @@ namespace etl
     typedef volatile T&       reference;
     typedef volatile const T& const_reference;
 
-    class iterator : public ETLSTD::iterator<ETLSTD::bidirectional_iterator_tag, T>
+    class iterator : public std::iterator<std::bidirectional_iterator_tag, T>
     {
       typedef io_port_wos<T, 0> iop_t;
 

@@ -72,7 +72,7 @@ SOFTWARE.
 ///
 /// direction = value;                   // Implicit conversion from 'int'. **** Compilation error ****
 ///
-/// ETLSTD::cout << "Direction = " << direction.c_str(); // Prints "Direction = North"
+/// std::cout << "Direction = " << direction.c_str(); // Prints "Direction = North"
 ///\endcode
 /// If a conversion to a string is not required then the 'ETL_ENUM_TYPE' declaration may be omitted.
 /// In that case the c_str() function will return a "?". This will also be the case for any

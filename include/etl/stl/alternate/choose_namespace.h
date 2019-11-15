@@ -31,15 +31,15 @@ SOFTWARE.
 #ifndef ETL_STL_CHOOSE_NAMESPACE_INCLUDED
 #define ETL_STL_CHOOSE_NAMESPACE_INCLUDED
 
-#include "../platform.h"
+#include "../../platform.h"
 
-#if defined(ETL_NO_STL)
+#if defined(ETL_IN_UNIT_TEST)
   #ifndef ETLSTD
-    #define ETLSTD etlstd
+    #define ETLSTD etlstd // Used for the unit tests.
   #endif
 #else
   #ifndef ETLSTD
-    #define ETLSTD std
+    #define ETLSTD std    // Used for normal code.
   #endif
 #endif
 

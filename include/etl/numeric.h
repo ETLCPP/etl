@@ -40,7 +40,7 @@ namespace etl
 {
   //***************************************************************************
   /// iota
-  /// Reverse engineered version of ETLSTD::iota for non C++ 0x11 compilers.
+  /// Reverse engineered version of std::iota for non C++ 0x11 compilers.
   /// Fills a range of elements with sequentially increasing values starting with <b>value</b>.
   ///\param first An iterator to the first position to fill.
   ///\param last  An iterator to the last + 1 position.
