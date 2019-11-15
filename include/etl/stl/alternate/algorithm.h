@@ -691,6 +691,7 @@ namespace etlstd
     return private_heap::is_heap(first, last - first, compare);
   }
 
+  //***************************************************************************
   // Search
   template<typename TIterator1, typename TIterator2, typename TCompare>
   TIterator1 search(TIterator1 first, TIterator1 last, TIterator2 search_first, TIterator2 search_last, TCompare compare)
@@ -734,6 +735,30 @@ namespace etlstd
     typedef etlstd::equal_to<typename etlstd::iterator_traits<TIterator1>::value_type> compare;
 
     return etlstd::search(first, last, search_first, search_last, compare());
+  }
+
+  //***************************************************************************
+  // Rotate
+  template<typename TIterator>
+  TIterator rotate(TIterator first, TIterator middle, TIterator last)
+  {
+    TIterator next = middle;
+
+    while (first != next)
+    {
+      etlstd::swap(*first++, *next++);
+
+      if (next == last)
+      {
+        next = middle;
+      }
+      else if (first == middle)
+      {
+        middle = next;
+      }
+    }
+
+    return first;
   }
 }
 

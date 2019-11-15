@@ -197,7 +197,7 @@ namespace etl
     //*************************************************************************
     TReturn operator()(TParams... args) const
     {
-      ETL_ASSERT(invocation.stub != nullptr, ETL_ERROR(delegate_uninitialised));
+      ETL_ASSERT(is_valid(), ETL_ERROR(delegate_uninitialised));
 
       return (*invocation.stub)(invocation.object, args...);
     }

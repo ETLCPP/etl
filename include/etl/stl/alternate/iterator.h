@@ -370,6 +370,24 @@ namespace etlstd
   {
     return itr.operator +(n);
   }
+
+  //***************************************************************************
+  // Previous
+  template<typename TIterator>
+  TIterator prev(TIterator itr, typename etlstd::iterator_traits<TIterator>::difference_type n = 1)
+  {
+    etlstd::advance(itr, -n);
+    return itr;
+  }
+
+  //***************************************************************************
+  // Next
+  template<typename TIterator>
+  TIterator next(TIterator itr, typename etlstd::iterator_traits<TIterator>::difference_type n = 1)
+  {
+    etlstd::advance(itr, n);
+    return itr;
+  }
 }
 
 #endif

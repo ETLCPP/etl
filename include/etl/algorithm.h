@@ -57,8 +57,8 @@ namespace etl
   template <typename TIterator,
             typename TCompare>
   ETLSTD::pair<TIterator, TIterator> minmax_element(TIterator begin,
-                                                 TIterator end,
-                                                 TCompare  compare)
+                                                    TIterator end,
+                                                    TCompare  compare)
   {
     TIterator minimum = begin;
     TIterator maximum = begin;
@@ -88,7 +88,7 @@ namespace etl
   //***************************************************************************
   template <typename TIterator>
   ETLSTD::pair<TIterator, TIterator> minmax_element(TIterator begin,
-                                                 TIterator end)
+                                                    TIterator end)
   {
       typedef typename ETLSTD::iterator_traits<TIterator>::value_type value_t;
 
@@ -102,7 +102,7 @@ namespace etl
   //***************************************************************************
   template <typename T>
   ETLSTD::pair<const T&, const T&> minmax(const T& a,
-                                       const T& b)
+                                          const T& b)
   {
     return (b < a) ? ETLSTD::pair<const T&, const T&>(b, a) : ETLSTD::pair<const T&, const T&>(a, b);
   }
@@ -115,8 +115,8 @@ namespace etl
   template <typename T,
             typename TCompare>
   ETLSTD::pair<const T&, const T&> minmax(const T& a,
-                                       const T& b,
-                                       TCompare compare)
+                                          const T& b,
+                                          TCompare compare)
   {
     return compare(b, a) ? ETLSTD::pair<const T&, const T&>(b, a) : ETLSTD::pair<const T&, const T&>(a, b);
   }
@@ -1124,12 +1124,17 @@ namespace etl
 
   //***************************************************************************
   /// Sorts the elements using shell sort.
-  /// Uses users defined comparison.
+  /// Uses user defined comparison.
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TIterator, typename TCompare>
-  void sort(TIterator first, TIterator last, TCompare compare)
+  void shell_sort(TIterator first, TIterator last, TCompare compare)
   {
+    if (first == last)
+    {
+      return;
+    }
+
     typedef typename ETLSTD::iterator_traits<TIterator>::difference_type difference_t;
 
     difference_t n = ETLSTD::distance(first, last);
@@ -1160,9 +1165,77 @@ namespace etl
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TIterator>
+  void shell_sort(TIterator first, TIterator last)
+  {
+    etl::shell_sort(first, last, ETLSTD::less<typename ETLSTD::iterator_traits<TIterator>::value_type>());
+  }
+
+  //***************************************************************************
+  /// Sorts the elements using insertion sort.
+  /// Uses user defined comparison.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename TCompare>
+  void insertion_sort(TIterator first, TIterator last, TCompare compare)
+  {
+    for (TIterator itr = first; itr != last; ++itr)
+    {
+      ETLSTD::rotate(ETLSTD::upper_bound(first, itr, *itr, compare), itr, ETLSTD::next(itr));
+    }
+  }
+
+  //***************************************************************************
+  /// Sorts the elements using insertion sort.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator>
+  void insertion_sort(TIterator first, TIterator last)
+  {
+    etl::insertion_sort(first, last, ETLSTD::less<typename ETLSTD::iterator_traits<TIterator>::value_type>());
+  }
+
+  //***************************************************************************
+  /// Sorts the elements.
+  /// Uses user defined comparison.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename TCompare>
+  void sort(TIterator first, TIterator last, TCompare compare)
+  {
+    etl::shell_sort(first, last, compare);
+  }
+
+  //***************************************************************************
+  /// Sorts the elements.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator>
   void sort(TIterator first, TIterator last)
   {
-    etl::sort(first, last, ETLSTD::less<typename ETLSTD::iterator_traits<TIterator>::value_type>());
+    etl::shell_sort(first, last, ETLSTD::less<typename ETLSTD::iterator_traits<TIterator>::value_type>());
+  }
+
+  //***************************************************************************
+  /// Sorts the elements.
+  /// Stable.
+  /// Uses user defined comparison.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename TCompare>
+  void stable_sort(TIterator first, TIterator last, TCompare compare)
+  {
+    etl::insertion_sort(first, last, compare);
+  }
+
+  //***************************************************************************
+  /// Sorts the elements.
+  /// Stable.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator>
+  void stable_sort(TIterator first, TIterator last)
+  {
+    etl::insertion_sort(first, last, ETLSTD::less<typename ETLSTD::iterator_traits<TIterator>::value_type>());
   }
 
 #if ETL_CPP11_SUPPORTED

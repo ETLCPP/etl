@@ -31,6 +31,8 @@ SOFTWARE.
 #include "etl/algorithm.h"
 #include "etl/container.h"
 
+#include "data.h"
+
 #include <vector>
 #include <list>
 #include <algorithm>
@@ -40,6 +42,7 @@ SOFTWARE.
 
 namespace
 {
+  using NDC = TestDataNDC<int>;
   std::random_device rng;
   std::mt19937 urng(rng());
 
@@ -912,6 +915,108 @@ namespace
         bool is_same = std::equal(data1.begin(), data1.end(), data2.begin());
         CHECK(is_same);
       }
+    }
+
+    //=========================================================================
+    TEST(stable_sort_default)
+    {
+      std::vector<NDC> initial_data = { NDC(1, 1), NDC(2, 1), NDC(3, 1), NDC(2, 2), NDC(3, 2), NDC(4, 1), NDC(2, 3), NDC(3, 3), NDC(5, 1) };
+
+      std::vector<NDC> data1(initial_data);
+      std::vector<NDC> data2(initial_data);
+
+      std::stable_sort(data1.begin(), data1.end());
+      etl::stable_sort(data2.begin(), data2.end());
+
+      bool is_same = std::equal(data1.begin(), data1.end(), data2.begin(), NDC::are_identical);
+      CHECK(is_same);
+    }
+
+    //=========================================================================
+    TEST(stable_sort_greater)
+    {
+      std::vector<NDC> initial_data = { NDC(1, 1), NDC(2, 1), NDC(3, 1), NDC(2, 2), NDC(3, 2), NDC(4, 1), NDC(2, 3), NDC(3, 3), NDC(5, 1) };
+
+      std::vector<NDC> data1(initial_data);
+      std::vector<NDC> data2(initial_data);
+
+      std::stable_sort(data1.begin(), data1.end(), std::greater<NDC>());
+      etl::stable_sort(data2.begin(), data2.end(), std::greater<NDC>());
+
+      bool is_same = std::equal(data1.begin(), data1.end(), data2.begin(), NDC::are_identical);
+      CHECK(is_same);
+    }
+
+    //=========================================================================
+    TEST(shell_sort_default)
+    {
+      std::vector<int> data(100, 0);
+      std::iota(data.begin(), data.end(), 1);
+
+      for (int i = 0; i < 100; ++i)
+      {
+        std::shuffle(data.begin(), data.end(), urng);
+
+        std::vector<int> data1 = data;
+        std::vector<int> data2 = data;
+
+        std::sort(data1.begin(), data1.end());
+        etl::shell_sort(data2.begin(), data2.end());
+
+        bool is_same = std::equal(data1.begin(), data1.end(), data2.begin());
+        CHECK(is_same);
+      }
+    }
+
+    //=========================================================================
+    TEST(shell_sort_greater)
+    {
+      std::vector<int> data(100, 0);
+      std::iota(data.begin(), data.end(), 1);
+
+      for (int i = 0; i < 100; ++i)
+      {
+        std::shuffle(data.begin(), data.end(), urng);
+
+        std::vector<int> data1 = data;
+        std::vector<int> data2 = data;
+
+        std::sort(data1.begin(), data1.end(), std::greater<int>());
+        etl::shell_sort(data2.begin(), data2.end(), std::greater<int>());
+
+        bool is_same = std::equal(data1.begin(), data1.end(), data2.begin());
+        CHECK(is_same);
+      }
+    }
+
+    //=========================================================================
+    TEST(insertion_sort_default)
+    {
+      std::vector<NDC> initial_data = { NDC(1, 1), NDC(2, 1), NDC(3, 1), NDC(2, 2), NDC(3, 2), NDC(4, 1), NDC(2, 3), NDC(3, 3), NDC(5, 1) };
+
+      std::vector<NDC> data1(initial_data);
+      std::vector<NDC> data2(initial_data);
+
+      std::stable_sort(data1.begin(), data1.end());
+      etl::insertion_sort(data2.begin(), data2.end());
+
+      bool is_same = std::equal(data1.begin(), data1.end(), data2.begin(), NDC::are_identical);
+      CHECK(is_same);
+    }
+
+    //=========================================================================
+    TEST(insertion_sort_greater)
+    {
+      std::vector<NDC> initial_data = { NDC(1, 1), NDC(2, 1), NDC(3, 1), NDC(2, 2), NDC(3, 2), NDC(4, 1), NDC(2, 3), NDC(3, 3), NDC(5, 1) };
+
+      std::vector<NDC> data1(initial_data);
+      std::vector<NDC> data2(initial_data);
+
+      std::stable_sort(data1.begin(), data1.end(), std::greater<NDC>());
+      etl::insertion_sort(data2.begin(), data2.end(), std::greater<NDC>());
+
+      bool is_same = std::equal(data1.begin(), data1.end(), data2.begin(), NDC::are_identical);
+      CHECK(is_same);
     }
 
     //=========================================================================

@@ -28,6 +28,8 @@ SOFTWARE.
 
 #include "UnitTest++.h"
 
+#define IN_TYPE_TRAITS_TEST
+
 #if defined(ETL_COMPILER_GCC)
 namespace std
 {

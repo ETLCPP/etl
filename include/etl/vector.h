@@ -575,7 +575,7 @@ namespace etl
 #endif
 
     //*************************************************************************
-    /// Emplaces a value to the vextor at the specified position.
+    /// Emplaces a value to the vector at the specified position.
     //*************************************************************************
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
     template <typename ... Args>

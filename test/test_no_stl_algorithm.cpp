@@ -741,5 +741,23 @@ namespace
       CHECK_EQUAL(4U, *(data2[3]));
       CHECK_EQUAL(5U, *(data2[4]));
     }
+
+    //*************************************************************************
+    TEST(rotate)
+    {
+      std::vector<int> initial_data = { 1, 2, 3, 4, 5, 6, 7 };
+
+      for (size_t i = 0; i < initial_data.size(); ++i)
+      {
+        std::vector data1(initial_data);
+        std::vector data2(initial_data);
+
+        std::rotate(data1.data(), data1.data() + i, data1.data() + data1.size());
+        etlstd::rotate(data2.data(), data2.data() + i, data2.data() + data2.size());
+
+        bool isEqual = std::equal(std::begin(data1), std::end(data1), std::begin(data2));
+        CHECK(isEqual);
+      }
+    }
   };
 }
