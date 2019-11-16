@@ -1627,7 +1627,7 @@ namespace etl
     /// Constructor, with size.
     ///\param initial_size The initial size of the vector.
     //*************************************************************************
-    explicit vector(size_t initial_size, void* buffer, size_t max_size)
+    vector(size_t initial_size, void* buffer, size_t max_size)
       : etl::ivector<T*>(reinterpret_cast<T**>(buffer), max_size)
     {
       this->initialise();
