@@ -1166,7 +1166,6 @@ namespace etl
       : lookup(lookup_)
       , storage(storage_)
     {
-      ETL_ASSERT(lookup.capacity() <= storage.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
     }
 
     //*********************************************************************
@@ -1374,7 +1373,6 @@ namespace etl
     indirect_vector()
       : etl::iindirect_vector<T>(lookup_vector, storage_pool)
     {
-      this->initialise();
     }
 
     //*************************************************************************
@@ -1384,7 +1382,6 @@ namespace etl
     explicit indirect_vector(size_t initial_size)
       : etl::iindirect_vector<T>(lookup_vector, storage_pool)
     {
-      this->initialise();
       this->resize(initial_size);
     }
 
@@ -1396,7 +1393,6 @@ namespace etl
     indirect_vector(size_t initial_size, typename etl::iindirect_vector<T>::parameter_t value)
       : etl::iindirect_vector<T>(lookup_vector, storage_pool)
     {
-      this->initialise();
       this->resize(initial_size, value);
     }
 
@@ -1498,7 +1494,7 @@ namespace etl
     indirect_vector(etl::ivector<T*>& lookup_, etl::ipool& pool_)
       : etl::iindirect_vector<T>(lookup_, pool_)
     {
-      this->initialise();
+      ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
     }
 
     //*************************************************************************
@@ -1508,7 +1504,7 @@ namespace etl
     explicit indirect_vector(size_t initial_size, etl::ivector<T*>& lookup_, etl::ipool& pool_)
       : etl::iindirect_vector<T>(lookup_, pool_)
     {
-      this->initialise();
+      ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
       this->resize(initial_size);
     }
 
@@ -1520,7 +1516,7 @@ namespace etl
     indirect_vector(size_t initial_size, typename etl::iindirect_vector<T>::parameter_t value, etl::ivector<T*>& lookup_, etl::ipool& pool_)
       : etl::iindirect_vector<T>(lookup_, pool_)
     {
-      this->initialise();
+      ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
       this->resize(initial_size, value);
     }
 
@@ -1534,6 +1530,7 @@ namespace etl
     indirect_vector(TIterator first, TIterator last, etl::ivector<T*>& lookup_, etl::ipool& pool_)
       : etl::iindirect_vector<T>(lookup_, pool_)
     {
+      ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
       this->assign(first, last);
     }
 
@@ -1544,6 +1541,7 @@ namespace etl
     indirect_vector(std::initializer_list<T> init, etl::ivector<T*>& lookup_, etl::ipool& pool_)
       : etl::iindirect_vector<T>(lookup_, pool_)
     {
+      ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
       this->assign(init.begin(), init.end());
     }
 #endif
@@ -1554,6 +1552,7 @@ namespace etl
     indirect_vector(const indirect_vector& other, etl::ivector<T*>& lookup_, etl::ipool& pool_)
       : etl::iindirect_vector<T>(lookup_, pool_)
     {
+      ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
       this->assign(other.begin(), other.end());
     }
 
@@ -1577,6 +1576,7 @@ namespace etl
     indirect_vector(indirect_vector&& other, etl::ivector<T*>& lookup_, etl::ipool& pool_)
       : etl::iindirect_vector<T>(lookup_, pool_)
     {
+      ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
       this->move_container(std::move(other));
     }
 
