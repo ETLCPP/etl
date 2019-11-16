@@ -50,3 +50,4 @@
 50 binary
 51 delegate
 52 bitset
+53 indirect_vector

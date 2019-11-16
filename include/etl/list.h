@@ -1386,7 +1386,7 @@ namespace etl
     {
       if (&other != this)
       {
-        ilist::iterator itr = other.begin();
+        typename ilist<T>::iterator itr = other.begin();
         while (itr != other.end())
         {
           to = insert(to, std::move(*itr++));
