@@ -39,7 +39,10 @@ SOFTWARE.
 #include "static_assert.h"
 #include "timer.h"
 #include "atomic.h"
-#include "delegate.h"
+
+#if ETL_CPP11_SUPPORTED
+  #include "delegate.h"
+#endif
 
 #undef ETL_FILE
 #define ETL_FILE "43"
@@ -74,8 +77,11 @@ namespace etl
   /// The configuration of a timer.
   struct callback_timer_data
   {
-    enum callback_type {
-            C_CALLBACK,IFUNCTION,DELEGATE
+    enum callback_type
+    {
+      C_CALLBACK,
+      IFUNCTION,
+      DELEGATE
     };
     //*******************************************
     callback_timer_data()
@@ -431,9 +437,10 @@ namespace etl
       //*******************************************
       /// Register a timer.
       //*******************************************
+#if ETL_CPP11_SUPPORTED
       etl::timer::id::type register_timer(etl::delegate<void()>& callback_,
-                                          uint32_t              period_,
-                                          bool                  repeating_)
+                                          uint32_t               period_,
+                                          bool                   repeating_)
       {
           etl::timer::id::type id = etl::timer::id::NO_TIMER;
 
@@ -459,6 +466,7 @@ namespace etl
 
           return id;
       }
+#endif
 
     //*******************************************
     /// Unregister a timer.
@@ -573,8 +581,9 @@ namespace etl
                     // Call the function wrapper callback.
                     (*reinterpret_cast<etl::delegate<void()>*>(timer.p_callback))();
                 }
-                else {
-                    ETL_ALWAYS_ASSERT("Callback timer have incorrect callback type stored")
+                else
+                {
+                    ETL_ALWAYS_ASSERT("Callback timer has incorrect callback type stored");
                 }
               }
 
