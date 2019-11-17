@@ -646,60 +646,6 @@ namespace
       CHECK_ARRAY_EQUAL(compare1.data(), free_tick_list1.data(), compare1.size());
     }
 
-    class test_object{
-    public:
-        void call() {
-            called++;
-        }
-        size_t called = 0;
-    };
-
-    TEST(callback_timer_call_etl_delegate)
-    {
-        test_object test_obj;
-        etl::delegate<void()> delegate_callback = etl::delegate<void()>::create<test_object,&test_object::call>(test_obj);
-        etl::callback_timer<1> timer_controller;
-        timer_controller.enable(true);
-        etl::timer::id::type id = timer_controller.register_timer(delegate_callback, 5, etl::timer::mode::SINGLE_SHOT);
-        timer_controller.start(id);
-        timer_controller.tick(4);
-        CHECK(test_obj.called == 0);
-        timer_controller.tick(2);
-        CHECK(test_obj.called == 1);
-
-    }
-
-    //=========================================================================
-    class test_object
-    {
-    public:
-
-      void call()
-      {
-        ++called;
-      }
-
-      size_t called = 0;
-    };
-
-    TEST(callback_timer_call_etl_delegate)
-    {
-        test_object test_obj;
-        etl::delegate<void()> delegate_callback = etl::delegate<void()>::create<test_object, &test_object::call>(test_obj);
-        etl::callback_timer<1> timer_controller;
-
-        timer_controller.enable(true);
-
-        etl::timer::id::type id = timer_controller.register_timer(delegate_callback, 5, etl::timer::mode::SINGLE_SHOT);
-        timer_controller.start(id);
-
-        timer_controller.tick(4);
-        CHECK(test_obj.called == 0);
-
-        timer_controller.tick(2);
-        CHECK(test_obj.called == 1);
-    }
-
     //=========================================================================
     class test_object
     {
