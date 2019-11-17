@@ -39,6 +39,7 @@ SOFTWARE.
 #include "static_assert.h"
 #include "timer.h"
 #include "atomic.h"
+#include "delegate.h"
 
 #undef ETL_FILE
 #define ETL_FILE "43"
@@ -73,6 +74,9 @@ namespace etl
   /// The configuration of a timer.
   struct callback_timer_data
   {
+    enum callback_type {
+            C_CALLBACK,IFUNCTION,DELEGATE
+    };
     //*******************************************
     callback_timer_data()
       : p_callback(nullptr),
@@ -82,7 +86,7 @@ namespace etl
         previous(etl::timer::id::NO_TIMER),
         next(etl::timer::id::NO_TIMER),
         repeating(true),
-        has_c_callback(true)
+        cbk_type(IFUNCTION)
     {
     }
 
@@ -100,7 +104,7 @@ namespace etl
         previous(etl::timer::id::NO_TIMER),
         next(etl::timer::id::NO_TIMER),
         repeating(repeating_),
-        has_c_callback(true)
+        cbk_type(C_CALLBACK)
     {
     }
 
@@ -118,9 +122,27 @@ namespace etl
         previous(etl::timer::id::NO_TIMER),
         next(etl::timer::id::NO_TIMER),
         repeating(repeating_),
-        has_c_callback(false)
+        cbk_type(IFUNCTION)
     {
     }
+
+      //*******************************************
+      /// ETL delegate callback
+      //*******************************************
+      callback_timer_data(etl::timer::id::type  id_,
+                          etl::delegate<void()>& callback_,
+                          uint32_t              period_,
+                          bool                  repeating_)
+              : p_callback(reinterpret_cast<void*>(&callback_)),
+                period(period_),
+                delta(etl::timer::state::INACTIVE),
+                id(id_),
+                previous(etl::timer::id::NO_TIMER),
+                next(etl::timer::id::NO_TIMER),
+                repeating(repeating_),
+                cbk_type(DELEGATE)
+      {
+      }
 
     //*******************************************
     /// Returns true if the timer is active.
@@ -145,7 +167,7 @@ namespace etl
     uint_least8_t         previous;
     uint_least8_t         next;
     bool                  repeating;
-    bool                  has_c_callback;
+    callback_type         cbk_type;
 
   private:
 
@@ -406,6 +428,38 @@ namespace etl
       return id;
     }
 
+      //*******************************************
+      /// Register a timer.
+      //*******************************************
+      etl::timer::id::type register_timer(etl::delegate<void()>& callback_,
+                                          uint32_t              period_,
+                                          bool                  repeating_)
+      {
+          etl::timer::id::type id = etl::timer::id::NO_TIMER;
+
+          bool is_space = (registered_timers < MAX_TIMERS);
+
+          if (is_space)
+          {
+              // Search for the free space.
+              for (uint_least8_t i = 0; i < MAX_TIMERS; ++i)
+              {
+                  etl::callback_timer_data& timer = timer_array[i];
+
+                  if (timer.id == etl::timer::id::NO_TIMER)
+                  {
+                      // Create in-place.
+                      new (&timer) callback_timer_data(i, callback_, period_, repeating_);
+                      ++registered_timers;
+                      id = i;
+                      break;
+                  }
+              }
+          }
+
+          return id;
+      }
+
     //*******************************************
     /// Unregister a timer.
     //*******************************************
@@ -504,15 +558,23 @@ namespace etl
 
               if (timer.p_callback != nullptr)
               {
-                if (timer.has_c_callback)
+                if (timer.cbk_type == callback_timer_data::C_CALLBACK)
                 {
                   // Call the C callback.
                   reinterpret_cast<void(*)()>(timer.p_callback)();
                 }
-                else
+                else if(timer.cbk_type == callback_timer_data::IFUNCTION)
                 {
                   // Call the function wrapper callback.
                   (*reinterpret_cast<etl::ifunction<void>*>(timer.p_callback))();
+                }
+                else if(timer.cbk_type == callback_timer_data::DELEGATE)
+                {
+                    // Call the function wrapper callback.
+                    (*reinterpret_cast<etl::delegate<void()>*>(timer.p_callback))();
+                }
+                else {
+                    ETL_ALWAYS_ASSERT("Callback timer have incorrect callback type stored")
                 }
               }
 
