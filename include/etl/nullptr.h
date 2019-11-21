@@ -78,7 +78,7 @@ const std::nullptr_t nullptr = {};
 #endif
 
 #else
-    #include <cstddef>
+    #include <stddef.h>
 #endif
 
 #if defined(ARDUINO)
