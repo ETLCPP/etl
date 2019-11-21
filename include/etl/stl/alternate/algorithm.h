@@ -75,7 +75,9 @@ namespace ETLSTD
     typedef typename ETLSTD::iterator_traits<TIterator1>::value_type value_t;
     typedef typename ETLSTD::iterator_traits<TIterator1>::difference_type difference_t;
 
-    return TIterator2(memcpy(db, sb, sizeof(value_t) * (se - sb))) + (se - sb);
+    difference_t count = (se - sb);
+
+    return TIterator2(memcpy(db, sb, sizeof(value_t) * count)) + count;
   }
 
   // Other iterator
@@ -104,7 +106,7 @@ namespace ETLSTD
   {
     typedef typename ETLSTD::iterator_traits<TIterator1>::value_type value_t;
 
-    return TIterator2(memcpy(db, sb, sizeof(value_t) * count));
+    return TIterator2(memcpy(db, sb, sizeof(value_t) * count)) + count;
   }
 
   // Other iterator
