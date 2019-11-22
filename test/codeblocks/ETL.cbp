@@ -209,6 +209,7 @@
 		<Unit filename="../../include/etl/function.h" />
 		<Unit filename="../../include/etl/functional.h" />
 		<Unit filename="../../include/etl/hash.h" />
+		<Unit filename="../../include/etl/hsm.h" />
 		<Unit filename="../../include/etl/icache.h" />
 		<Unit filename="../../include/etl/ihash.h" />
 		<Unit filename="../../include/etl/indirect_vector.h" />
@@ -395,6 +396,7 @@
 		<Unit filename="../test_function.cpp" />
 		<Unit filename="../test_functional.cpp" />
 		<Unit filename="../test_hash.cpp" />
+		<Unit filename="../test_hsm.cpp" />
 		<Unit filename="../test_indirect_vector.cpp" />
 		<Unit filename="../test_instance_count.cpp" />
 		<Unit filename="../test_integral_limits.cpp" />
