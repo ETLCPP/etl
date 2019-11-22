@@ -39,7 +39,7 @@ SOFTWARE.
 //
 // e.g.
 // To generate handlers for up to 16 events...
-// python -m cogapp -d -e -ofsm.h -DHandlers=16 fsm_generator.h
+// python -m cogapp -d -e -ohsm.h -DHandlers=16 hsm_generator.h
 //
 // See generate.bat
 //***************************************************************************
@@ -54,7 +54,7 @@ SOFTWARE.
 // fix a few bugs, and add some additional UML statechart
 // support. For instance, with this version it is possible to have a composite
 // state as target for a transaction.
- 
+
 #ifndef ETL_HSM_INCLUDED
 #define ETL_HSM_INCLUDED
 
@@ -64,12 +64,12 @@ namespace etl {
 namespace state {
 
 // ------------------------------------------------------------------------------------------
-// Top 
+// Top
 // ------------------------------------------------------------------------------------------
 template<typename H>
 struct Top
 {
-   using Hsm = H;
+   typedef H Hsm;
    virtual void process_event(etl::imessage_router &, etl::imessage const &, Hsm &) const = 0;
    virtual unsigned get_id() const = 0;
 };
@@ -85,7 +85,7 @@ template<typename H, unsigned ID, typename P, typename M0 = void, typename M1 = 
          typename M14 = void, typename M15 = void>
 class Composite;
 
-template<typename H, unsigned ID, typename P = Composite<H, 0, Top<H>>, typename M0, typename M1,
+template<typename H, unsigned ID, typename P = Composite<H, 0, Top<H> >, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11, typename M12, typename M13,
@@ -93,9 +93,9 @@ template<typename H, unsigned ID, typename P = Composite<H, 0, Top<H>>, typename
 class Composite : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -169,9 +169,9 @@ template<typename H>
 class Composite<H, 0> : public Top<H>
 {
 public:
-   using Hsm = H;
-   using Parent = Top<H>;
-   using Self = Composite<H, 0, Top<H>>;
+   typedef H Hsm;
+   typedef Top<H> Parent;
+   typedef Composite<H, 0, Top<H> > Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -195,9 +195,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -271,9 +271,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -344,9 +344,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -414,9 +414,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -481,9 +481,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -544,9 +544,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -604,9 +604,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -661,9 +661,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -715,9 +715,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -765,9 +765,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2, M3, M4, M5> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3, M4, M5>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -812,9 +812,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2, M3, M4> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3, M4>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3, M4> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -856,9 +856,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2, M3> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2, M3>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2, M3> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -897,9 +897,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Composite<H, ID, P, M0, M1, M2> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1, M2>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1, M2> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -934,9 +934,9 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1>
 class Composite<H, ID, P, M0, M1> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0, M1>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0, M1> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -968,9 +968,9 @@ template<typename H, unsigned ID, typename P, typename M0>
 class Composite<H, ID, P, M0> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P, M0>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P, M0> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -999,9 +999,9 @@ template<typename H, unsigned ID, typename P>
 class Composite<H, ID, P> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Composite<H, ID, P>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Composite<H, ID, P> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1025,7 +1025,7 @@ template<typename H, unsigned ID, typename P, typename M0 = void, typename M1 = 
          typename M14 = void, typename M15 = void>
 class Leaf;
 
-template<typename H, unsigned ID, typename P = Composite<H, 0, Top<H>>, typename M0, typename M1,
+template<typename H, unsigned ID, typename P = Composite<H, 0, Top<H> >, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11, typename M12, typename M13,
@@ -1033,26 +1033,26 @@ template<typename H, unsigned ID, typename P = Composite<H, 0, Top<H>>, typename
 class Leaf : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -1124,10 +1124,10 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M10, typename M11, typename M12, typename M13,
          typename M14, typename M15>
 const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 15 messages
+// Leaf specialisation for 15 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1137,26 +1137,26 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -1225,10 +1225,10 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M10, typename M11, typename M12, typename M13,
          typename M14>
 const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 14 messages
+// Leaf specialisation for 14 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1237,26 +1237,26 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -1321,10 +1321,10 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11, typename M12, typename M13>
 const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 13 messages
+// Leaf specialisation for 13 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1333,26 +1333,26 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -1414,10 +1414,10 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11, typename M12>
 const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 12 messages
+// Leaf specialisation for 12 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1426,26 +1426,26 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -1504,10 +1504,10 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11>
 const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 11 messages
+// Leaf specialisation for 11 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1516,26 +1516,26 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -1591,10 +1591,10 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M6, typename M7, typename M8, typename M9,
          typename M10>
 const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 10 messages
+// Leaf specialisation for 10 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1602,26 +1602,26 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -1673,10 +1673,10 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9>
 const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 9 messages
+// Leaf specialisation for 9 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1684,26 +1684,26 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -1752,10 +1752,10 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8>
 const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 8 messages
+// Leaf specialisation for 8 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1763,26 +1763,26 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -1828,10 +1828,10 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7>
 const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 7 messages
+// Leaf specialisation for 7 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1839,26 +1839,26 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
 class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -1901,36 +1901,36 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6>
 const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 6 messages
+// Leaf specialisation for 6 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5>
 class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3, M4, M5>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -1969,36 +1969,36 @@ private:
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5>
 const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 5 messages
+// Leaf specialisation for 5 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4>
 class Leaf<H, ID, P, M0, M1, M2, M3, M4> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3, M4>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -2034,36 +2034,36 @@ private:
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4>
 const Leaf<H, ID, P, M0, M1, M2, M3, M4>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3, M4>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 4 messages
+// Leaf specialisation for 4 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3>
 class Leaf<H, ID, P, M0, M1, M2, M3> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2, M3>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2, M3> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -2096,36 +2096,36 @@ private:
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3>
 const Leaf<H, ID, P, M0, M1, M2, M3>
-      Leaf<H, ID, P, M0, M1, M2, M3>::obj {};
+      Leaf<H, ID, P, M0, M1, M2, M3>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 3 messages
+// Leaf specialisation for 3 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2>
 class Leaf<H, ID, P, M0, M1, M2> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1, M2>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1, M2> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -2155,35 +2155,35 @@ private:
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2>
 const Leaf<H, ID, P, M0, M1, M2>
-      Leaf<H, ID, P, M0, M1, M2>::obj {};
+      Leaf<H, ID, P, M0, M1, M2>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 2 messages
+// Leaf specialisation for 2 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1>
 class Leaf<H, ID, P, M0, M1> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0, M1>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0, M1> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -2209,35 +2209,35 @@ private:
 
 template<typename H, unsigned ID, typename P, typename M0, typename M1>
 const Leaf<H, ID, P, M0, M1>
-      Leaf<H, ID, P, M0, M1>::obj {};
+      Leaf<H, ID, P, M0, M1>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 1 messages
+// Leaf specialisation for 1 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0>
 class Leaf<H, ID, P, M0> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P, M0>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P, M0> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -2260,35 +2260,35 @@ private:
 
 template<typename H, unsigned ID, typename P, typename M0>
 const Leaf<H, ID, P, M0>
-      Leaf<H, ID, P, M0>::obj {};
+      Leaf<H, ID, P, M0>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 0 messages
+// Leaf specialisation for 0 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P>
 class Leaf<H, ID, P> : public P
 {
 public:
-   using Hsm = H;
-   using Parent = P;
-   using Self = Leaf<H, ID, P>;
+   typedef H Hsm;
+   typedef P Parent;
+   typedef Leaf<H, ID, P> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
-   static void handle_init ( Hsm & arg)
+   static void handle_init(Hsm & arg)
    {
        arg.set_state(obj);
    }
 
    static const Leaf obj;
 
-   virtual unsigned get_id() const override
+   virtual unsigned get_id() const
    {
       return ID;
    }
    virtual void process_event(etl::imessage_router & source,
                               etl::imessage  const & message,
-                              Hsm                  & h) const final override
+                              Hsm                  & h) const
    {
       handle_event(source, message, h, *this);
    };
@@ -2303,7 +2303,7 @@ public:
 
 template<typename H, unsigned ID, typename P>
 const Leaf<H, ID, P>
-      Leaf<H, ID, P>::obj {};
+      Leaf<H, ID, P>::obj;
 
 
 // ------------------------------------------------------------------------------------------
@@ -2312,8 +2312,8 @@ const Leaf<H, ID, P>
 template<typename C>
 struct Init
 {
-   using Child = C;
-   using Hsm = typename C::Hsm;
+   typedef C Child;
+   typedef typename C::Hsm Hsm;
    Init(Hsm & arg) : _hsm(arg) { };
    ~Init()
       {
@@ -2331,8 +2331,8 @@ template<typename C, typename P>
 struct Is_child
 {
 private:
-   using Child  = C;
-   using Parent = P;
+   typedef C Child;
+   typedef P Parent;
    class  Yes { char a[1]; };
    class  No  { char a[5]; };
    static Yes test(Parent *); // undefined
@@ -2354,12 +2354,12 @@ template<bool> class Bool { };
 template<typename C, typename S, typename T>
 struct Transition
 {
-   using Current = C;
-   using Source  = S;
-   using Target  = T;
-   using Hsm     = typename Current::Hsm;
-   using Current_parent = typename Current::Parent;
-   using Target_parent  = typename Target::Parent;
+   typedef C Current;
+   typedef S Source;
+   typedef T Target;
+   typedef typename Current::Hsm Hsm;
+   typedef typename Current::Parent Current_parent;
+   typedef typename Target::Parent Target_parent;
 
    enum // work out when to terminate template recursion
    {
@@ -2370,16 +2370,16 @@ struct Transition
       exitStop  = eTB_CB && eS_C,
       entryStop = eS_C || (eS_CB && !eC_S)
    };
-   
+
    Transition(Hsm & arg)
       : _hsm(arg)
    {
       exit_actions(_hsm, Bool<false>());
    }
-   
+
    ~Transition()
    {
-      using Trans = Transition<Target, Source, Target>;
+      typedef Transition<Target, Source, Target> Trans;
       Trans::entry_actions(_hsm, Bool<false>());
       Target::handle_init(_hsm);
    }
@@ -2391,7 +2391,7 @@ struct Transition
    static void exit_actions (Hsm &, Bool<true>) {}
    static void exit_actions (Hsm & h, Bool<false>)
    {
-      using Trans = Transition<Current_parent, Source, Target>; 
+      typedef Transition<Current_parent, Source, Target> Trans;
       Current::handle_exit(h);
       Trans::exit_actions(h, Bool<exitStop>());
    };
@@ -2399,7 +2399,7 @@ struct Transition
    static void entry_actions(Hsm &, Bool<true >) {}
    static void entry_actions(Hsm & h, Bool<false>)
    {
-      using Trans = Transition<Current_parent, Source, Target>; 
+      typedef Transition<Current_parent, Source, Target> Trans;
       Trans::entry_actions(h, Bool<entryStop>());
       Current::handle_entry(h);
    };
@@ -2411,18 +2411,21 @@ private:
 } // namespace state
 
 // ------------------------------------------------------------------------------------------
-// hsm: The base class for the finite state machine 
+// hsm: The base class for the finite state machine
 // ------------------------------------------------------------------------------------------
 template<typename DERIVED_HSM>
 class hsm : public etl::imessage_router
 {
 public:
-   using derived_hsm = DERIVED_HSM;
-   using state       = state::Top<derived_hsm>;
+   typedef DERIVED_HSM derived_hsm;
+   typedef state::Top<derived_hsm> state;
 
-   // Construction / destruction 
-   hsm(etl::message_router_id_t id)
-      : imessage_router(id) { };
+   // Construction / destruction
+   hsm(message_router_id_t id)
+      : etl::imessage_router(id),
+      _state (nullptr)
+   {
+   };
 
    // Accepts everything but sinks unhandled messages
    bool is_started() const
@@ -2430,12 +2433,12 @@ public:
       return _state != nullptr;
    };
 
-   bool accepts(etl::message_id_t) const override
+   bool accepts(message_id_t) const
    {
       return true;
    };
 
-   bool is_null_router() const override
+   bool is_null_router() const
    {
       return false;
    };
@@ -2451,7 +2454,7 @@ public:
    };
 
 private:
-   const state * _state {nullptr};
+   const state * _state;
 };
 
 } // namespace etl

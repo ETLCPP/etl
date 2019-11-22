@@ -789,6 +789,9 @@
     <ClInclude Include="..\..\include\etl\stl\alternate\choose_namespace.h">
       <Filter>ETL\STL\Alternate</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\hsm.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1248,6 +1251,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_indirect_vector_external_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_hsm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
