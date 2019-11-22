@@ -37,7 +37,7 @@ namespace etl
 {
   //***************************************************************************
   ///\ingroup mutex
-  ///\brief This mutex class is implemented using std::mutex.
+  ///\brief This mutex class is implemented using ETLSTD::mutex.
   //***************************************************************************
   class mutex
   {

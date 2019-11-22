@@ -76,7 +76,7 @@ namespace
       {
         checksum_calculator.add(data[i]);
       }
-      
+
       uint8_t sum     = checksum_calculator;
       uint8_t compare = reference_checksum<uint8_t>(data.begin(), data.end());
 

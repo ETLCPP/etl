@@ -46,7 +46,7 @@ namespace etl
 {
   //***************************************************************************
   /// Defines <=, >, >= interms of <
-  /// Default 
+  /// Default
   //***************************************************************************
   template <typename T, typename TLess = std::less<T> >
   struct compare

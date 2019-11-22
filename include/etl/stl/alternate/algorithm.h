@@ -37,21 +37,12 @@ SOFTWARE.
 
 #include "../../type_traits.h"
 
+#include "choose_namespace.h"
 #include "iterator.h"
 #include "functional.h"
 #include "utility.h"
 
-#if defined(ETL_IN_UNIT_TEST)
-  #if !defined(ETLSTD)
-#define ETLSTD etlstd
-  #endif
-namespace etlstd
-#else
-  #if !defined(ETLSTD)
-#define ETLSTD std
-  #endif
-namespace std
-#endif
+namespace ETLSTD
 {
   //***************************************************************************
   // advance
@@ -82,8 +73,11 @@ namespace std
     copy(TIterator1 sb, TIterator1 se, TIterator2 db)
   {
     typedef typename ETLSTD::iterator_traits<TIterator1>::value_type value_t;
+    typedef typename ETLSTD::iterator_traits<TIterator1>::difference_type difference_t;
 
-    return TIterator2(memcpy(db, sb, sizeof(value_t) * (se - sb)));
+    difference_t count = (se - sb);
+
+    return TIterator2(memcpy(db, sb, sizeof(value_t) * count)) + count;
   }
 
   // Other iterator
@@ -112,7 +106,7 @@ namespace std
   {
     typedef typename ETLSTD::iterator_traits<TIterator1>::value_type value_t;
 
-    return TIterator2(memcpy(db, sb, sizeof(value_t) * count));
+    return TIterator2(memcpy(db, sb, sizeof(value_t) * count)) + count;
   }
 
   // Other iterator
@@ -169,7 +163,7 @@ namespace std
   {
     while (sb != se)
     {
-      *db++ = std::move(*sb++);
+      *db++ = ETLSTD::move(*sb++);
     }
 
     return db;
@@ -182,7 +176,7 @@ namespace std
   {
     while (sb != se)
     {
-      *(--de) = std::move(*(--se));
+      *(--de) = ETLSTD::move(*(--se));
     }
 
     return de;
@@ -701,6 +695,7 @@ namespace std
     return private_heap::is_heap(first, last - first, compare);
   }
 
+  //***************************************************************************
   // Search
   template<typename TIterator1, typename TIterator2, typename TCompare>
   TIterator1 search(TIterator1 first, TIterator1 last, TIterator2 search_first, TIterator2 search_last, TCompare compare)
@@ -744,6 +739,30 @@ namespace std
     typedef ETLSTD::equal_to<typename ETLSTD::iterator_traits<TIterator1>::value_type> compare;
 
     return ETLSTD::search(first, last, search_first, search_last, compare());
+  }
+
+  //***************************************************************************
+  // Rotate
+  template<typename TIterator>
+  TIterator rotate(TIterator first, TIterator middle, TIterator last)
+  {
+    TIterator next = middle;
+
+    while (first != next)
+    {
+      ETLSTD::swap(*first++, *next++);
+
+      if (next == last)
+      {
+        next = middle;
+      }
+      else if (first == middle)
+      {
+        middle = next;
+      }
+    }
+
+    return first;
   }
 }
 

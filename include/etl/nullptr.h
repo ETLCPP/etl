@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -78,7 +78,7 @@ const std::nullptr_t nullptr = {};
 #endif
 
 #else
-    #include <cstddef>
+    #include <stddef.h>
 #endif
 
 #if defined(ARDUINO)

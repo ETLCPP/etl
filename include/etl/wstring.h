@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2016 jwellbelove
 
@@ -57,7 +57,7 @@ namespace etl
 
     typedef iwstring base_type;
     typedef iwstring interface_type;
-    
+
     typedef iwstring::value_type value_type;
 
     static const size_t MAX_SIZE = MAX_SIZE_;

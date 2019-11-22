@@ -267,6 +267,9 @@ namespace
 
       CHECK_EQUAL(etl::u16string<20>(STR(" 12.345678")), etl::to_string(12.345678, str, Format().precision(6).width(10).right()));
       CHECK_EQUAL(etl::u16string<20>(STR("12.345678 ")), etl::to_string(12.345678, str, Format().precision(6).width(10).left()));
+
+      CHECK_EQUAL(etl::u16string<20>(STR(" -12.345678")), etl::to_string(-12.345678, str, Format().precision(6).width(11).right()));
+      CHECK_EQUAL(etl::u16string<20>(STR("-12.345678 ")), etl::to_string(-12.345678, str, Format().precision(6).width(11).left()));
     }
 
     //*************************************************************************
@@ -279,6 +282,29 @@ namespace
 
       str.assign(STR("Result "));
       CHECK_EQUAL(etl::u16string<20>(STR("Result 12.345678 ")), etl::to_string(12.345678, str, Format().precision(6).width(10).left(), true));
+
+      str.assign(STR("Result "));
+      CHECK_EQUAL(etl::u16string<20>(STR("Result  -12.345678")), etl::to_string(-12.345678, str, Format().precision(6).width(11).right(), true));
+
+      str.assign(STR("Result "));
+      CHECK_EQUAL(etl::u16string<20>(STR("Result -12.345678 ")), etl::to_string(-12.345678, str, Format().precision(6).width(11).left(), true));
+    }
+
+    //*************************************************************************
+    TEST(test_floating_point_rounding)
+    {
+      etl::u16string<20> str;
+
+      CHECK_EQUAL(etl::u16string<20>(STR("0.00001")), etl::to_string(0.000009, str, Format().precision(5).width(7).right()));
+      CHECK_EQUAL(etl::u16string<20>(STR("0.0001")),  etl::to_string(0.000099, str, Format().precision(4).width(6).right()));
+      CHECK_EQUAL(etl::u16string<20>(STR("0.001")),   etl::to_string(0.000999, str, Format().precision(3).width(5).right()));
+      CHECK_EQUAL(etl::u16string<20>(STR("0.01")),    etl::to_string(0.009999, str, Format().precision(2).width(4).right()));
+      CHECK_EQUAL(etl::u16string<20>(STR("0.1")),     etl::to_string(0.099999, str, Format().precision(1).width(3).right()));
+      CHECK_EQUAL(etl::u16string<20>(STR("1.0")),     etl::to_string(0.999999, str, Format().precision(1).width(3).right()));
+      CHECK_EQUAL(etl::u16string<20>(STR("1")),       etl::to_string(0.999999, str, Format().precision(0).width(1).right()));
+      CHECK_EQUAL(etl::u16string<20>(STR("2")),       etl::to_string(1.999999, str, Format().precision(0).width(1).right()));
+      CHECK_EQUAL(etl::u16string<20>(STR("10.0")),    etl::to_string(9.999999, str, Format().precision(1).width(4).right()));
+      CHECK_EQUAL(etl::u16string<20>(STR("20.0")),    etl::to_string(19.999999, str, Format().precision(1).width(4).right()));
     }
 
     //*************************************************************************

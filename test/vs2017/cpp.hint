@@ -4,5 +4,5 @@
 #define ETL_CONSTEXPR
 #define ETL_CONSTEXPR_IF
 #define ETL_DELETE
-
-
+#define ETL_NOEXCEPT
+#define ETL_NOEXCEPT_EXPR

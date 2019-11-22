@@ -12,7 +12,7 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-std=c++11" />
+					<Add option="-std=c++17" />
 					<Add option="-m32" />
 					<Add option="-g" />
 					<Add option="-D_DEBUG" />
@@ -66,6 +66,8 @@
 			<Add option="-Wshadow" />
 			<Add option="-Wundef" />
 			<Add option="-Wall" />
+			<Add option="-std=c++14" />
+			<Add option="-std=c++17" />
 			<Add option="-std=c++11" />
 			<Add option="-fexceptions" />
 			<Add directory="../../../unittest-cpp/UnitTest++/" />
@@ -160,7 +162,6 @@
 		<Unit filename="../../include/etl/bit_stream.h" />
 		<Unit filename="../../include/etl/bitset.h" />
 		<Unit filename="../../include/etl/bloom_filter.h" />
-		<Unit filename="../../include/etl/c/ecl_timer.h" />
 		<Unit filename="../../include/etl/callback.h" />
 		<Unit filename="../../include/etl/callback_service.h" />
 		<Unit filename="../../include/etl/callback_timer.h" />
@@ -210,6 +211,7 @@
 		<Unit filename="../../include/etl/hash.h" />
 		<Unit filename="../../include/etl/icache.h" />
 		<Unit filename="../../include/etl/ihash.h" />
+		<Unit filename="../../include/etl/indirect_vector.h" />
 		<Unit filename="../../include/etl/instance_count.h" />
 		<Unit filename="../../include/etl/integral_limits.h" />
 		<Unit filename="../../include/etl/intrusive_forward_list.h" />
@@ -260,14 +262,23 @@
 		<Unit filename="../../include/etl/profiles/arduino_arm.h" />
 		<Unit filename="../../include/etl/profiles/armv5.h" />
 		<Unit filename="../../include/etl/profiles/armv6.h" />
+		<Unit filename="../../include/etl/profiles/armv7.h" />
+		<Unit filename="../../include/etl/profiles/armv7_no_stl.h" />
+		<Unit filename="../../include/etl/profiles/clang_generic.h" />
 		<Unit filename="../../include/etl/profiles/cpp03.h" />
+		<Unit filename="../../include/etl/profiles/cpp03_no_stl.h" />
 		<Unit filename="../../include/etl/profiles/cpp11.h" />
+		<Unit filename="../../include/etl/profiles/cpp11_no_stl.h" />
 		<Unit filename="../../include/etl/profiles/cpp14.h" />
+		<Unit filename="../../include/etl/profiles/cpp14_no_stl.h" />
+		<Unit filename="../../include/etl/profiles/cpp17.h" />
+		<Unit filename="../../include/etl/profiles/cpp17_no_stl.h" />
 		<Unit filename="../../include/etl/profiles/etl_profile.h" />
 		<Unit filename="../../include/etl/profiles/gcc_generic.h" />
 		<Unit filename="../../include/etl/profiles/gcc_linux_x86.h" />
 		<Unit filename="../../include/etl/profiles/gcc_windows_x86.h" />
 		<Unit filename="../../include/etl/profiles/msvc_x86.h" />
+		<Unit filename="../../include/etl/profiles/segger_gcc_stlport.h" />
 		<Unit filename="../../include/etl/profiles/ticc.h" />
 		<Unit filename="../../include/etl/queue.h" />
 		<Unit filename="../../include/etl/queue_mpmc_mutex.h" />
@@ -294,6 +305,7 @@
 		<Unit filename="../../include/etl/static_assert.h" />
 		<Unit filename="../../include/etl/stl/algorithm.h" />
 		<Unit filename="../../include/etl/stl/alternate/algorithm.h" />
+		<Unit filename="../../include/etl/stl/alternate/choose_namespace.h" />
 		<Unit filename="../../include/etl/stl/alternate/functional.h" />
 		<Unit filename="../../include/etl/stl/alternate/iterator.h" />
 		<Unit filename="../../include/etl/stl/alternate/limits.h" />
@@ -334,9 +346,6 @@
 		<Unit filename="../../include/etl/visitor.h" />
 		<Unit filename="../../include/etl/wformat_spec.h" />
 		<Unit filename="../../include/etl/wstring.h" />
-		<Unit filename="../../src/c/ecl_timer.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="../ExtraCheckMacros.h" />
 		<Unit filename="../data.h" />
 		<Unit filename="../ecl_user.h" />
@@ -357,11 +366,11 @@
 		<Unit filename="../test_bitset.cpp" />
 		<Unit filename="../test_bloom_filter.cpp" />
 		<Unit filename="../test_bsd_checksum.cpp" />
-		<Unit filename="../test_c_timer_framework.cpp" />
 		<Unit filename="../test_callback_service.cpp" />
 		<Unit filename="../test_callback_timer.cpp" />
 		<Unit filename="../test_checksum.cpp" />
 		<Unit filename="../test_compare.cpp" />
+		<Unit filename="../test_compiler_settings.cpp" />
 		<Unit filename="../test_constant.cpp" />
 		<Unit filename="../test_container.cpp" />
 		<Unit filename="../test_crc.cpp" />
@@ -386,6 +395,7 @@
 		<Unit filename="../test_function.cpp" />
 		<Unit filename="../test_functional.cpp" />
 		<Unit filename="../test_hash.cpp" />
+		<Unit filename="../test_indirect_vector.cpp" />
 		<Unit filename="../test_instance_count.cpp" />
 		<Unit filename="../test_integral_limits.cpp" />
 		<Unit filename="../test_intrusive_forward_list.cpp" />

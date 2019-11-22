@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2017 jwellbelove
 
@@ -75,7 +75,7 @@ namespace etl
   template <typename T>
   struct is_input_iterator_concept
   {
-    static const bool value = etl::is_input_iterator<T>::value || 
+    static const bool value = etl::is_input_iterator<T>::value ||
                               etl::is_forward_iterator<T>::value ||
                               etl::is_bidirectional_iterator<T>::value ||
                               etl::is_random_iterator<T>::value;

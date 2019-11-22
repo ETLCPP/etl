@@ -34,6 +34,7 @@ SOFTWARE.
 #include <utility>
 #include <iterator>
 #include <string>
+#include <vector>
 
 #include "etl/multiset.h"
 
@@ -110,6 +111,8 @@ namespace
       std::multiset<int> excess_data;
       std::multiset<int> different_data;
       std::multiset<int> random_data;
+      std::multiset<int> initial_data_even;
+      std::multiset<int> test_data;
 
       SetupFixture()
       {
@@ -161,6 +164,41 @@ namespace
         random_data.insert(2);
         random_data.insert(4);
         random_data.insert(3);
+
+
+        //even values
+        initial_data_even.insert(0);
+        initial_data_even.insert(2);
+        initial_data_even.insert(4);
+        initial_data_even.insert(6);
+        initial_data_even.insert(8);
+        initial_data_even.insert(10);
+        initial_data_even.insert(12);
+        initial_data_even.insert(14);
+        initial_data_even.insert(16);
+        initial_data_even.insert(18);
+
+        //test set
+        test_data.insert(0);
+        test_data.insert(1);
+        test_data.insert(2);
+        test_data.insert(3);
+        test_data.insert(4);
+        test_data.insert(5);
+        test_data.insert(6);
+        test_data.insert(7);
+        test_data.insert(8);
+        test_data.insert(9);
+        test_data.insert(10);
+        test_data.insert(11);
+        test_data.insert(12);
+        test_data.insert(13);
+        test_data.insert(14);
+        test_data.insert(15);
+        test_data.insert(16);
+        test_data.insert(17);
+        test_data.insert(18);
+        test_data.insert(19);
       }
     };
 
@@ -1004,6 +1042,100 @@ namespace
       CHECK(compare(a, b));
       CHECK(!compare(b, a));
 #endif
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_compare_lower_upper_bound)
+    {
+        Data data(initial_data_even.begin(), initial_data_even.end());
+        Compare_Data compare(initial_data_even.begin(), initial_data_even.end());
+
+        std::vector<int> tab(test_data.begin(), test_data.end());
+
+        //make sure both data and compare contain same elements
+        std::vector<int> data_elements(data.begin(), data.end());
+        std::vector<int> compare_data_elements(compare.begin(), compare.end());
+
+        CHECK(data_elements == compare_data_elements);
+        CHECK_EQUAL(data_elements.size(), MAX_SIZE);
+
+        for(std::vector<int>::iterator it = tab.begin() ; it != tab.end() ; ++it)
+        {
+            int i = *it;
+
+            //lower_bound
+            CHECK_EQUAL(compare.lower_bound(i) == compare.end(), data.lower_bound(i) == data.end());
+            //if both end, or none
+            if((compare.lower_bound(i) == compare.end()) == (data.lower_bound(i) == data.end()))
+            {
+                //if both are not end
+                if(compare.lower_bound(i) != compare.end())
+                {
+                    CHECK((*compare.lower_bound(i)) == (*data.lower_bound(i)));
+                }
+
+                std::pair<Compare_Data::const_iterator, Compare_Data::const_iterator> stlret = compare.equal_range(i);
+                std::pair<Data::const_iterator, Data::const_iterator> etlret = data.equal_range(i);
+
+                CHECK_EQUAL(stlret.first == compare.end(), etlret.first == data.end());
+                if((stlret.first != compare.end()) && (etlret.first != data.end()))
+                {
+                    CHECK((*stlret.first) == (*etlret.first));
+                }
+                CHECK_EQUAL(stlret.second == compare.end(), etlret.second == data.end());
+                if((stlret.second != compare.end()) && (etlret.second != data.end()))
+                {
+                    CHECK((*stlret.second) == (*etlret.second));
+                }
+            }
+
+            //upper_bound
+            CHECK_EQUAL(compare.upper_bound(i) == compare.end(), data.upper_bound(i) == data.end());
+            //if both end, or none
+            if((compare.upper_bound(i) == compare.end()) == (data.upper_bound(i) == data.end()))
+            {
+                //if both are not end
+                if(compare.upper_bound(i) != compare.end())
+                {
+                    CHECK((*compare.upper_bound(i)) == (*data.upper_bound(i)));
+                }
+            }
+        }
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_bug)
+    {
+      using Data = etl::multiset<int, 10>;
+
+      int keys[10] = { 3, 2, 1, 0, 3, 0, 3, 0, 2, 2 };
+
+      Data data;
+
+      for (int eltNum = 0; eltNum != 10; ++eltNum)
+      {
+        data.insert(Data::value_type(keys[eltNum]));
+      }
+
+      data.erase(2);
+
+      int prv = INT_MAX;
+      Data::const_reverse_iterator pos;
+
+      bool pass = true;
+
+      for (pos = data.crbegin(); pos != data.crend(); ++pos)
+      {
+        if (*pos > prv)
+        {
+          pass = false;
+          break;
+        }
+
+        prv = *pos;
+      }
+
+      CHECK(pass);
     }
   };
 }

@@ -36,10 +36,10 @@ set(TEST_SOURCE_FILES
   test_callback_timer.cpp
   test_checksum.cpp
   test_compare.cpp
+  test_compiler_settings.cpp
   test_constant.cpp
   test_container.cpp
   test_crc.cpp
-  test_c_timer_framework.cpp
   test_cyclic_value.cpp
   test_debounce.cpp
   test_deque.cpp
@@ -150,9 +150,6 @@ set(TEST_SOURCE_FILES
   test_type_select.cpp
   test_vector_external_buffer.cpp
   test_vector_pointer_external_buffer.cpp
-
-  # Compile the source level ecl_timer here as test has provided a ecl_user.h file
-  ${PROJECT_SOURCE_DIR}/../src/c/ecl_timer.c
   )
 
 

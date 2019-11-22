@@ -289,6 +289,14 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Returns the maximum number of items in the pool.
+    //*************************************************************************
+    size_t capacity() const
+    {
+      return MAX_SIZE;
+    }
+
+    //*************************************************************************
     /// Returns the number of free items in the pool.
     //*************************************************************************
     size_t available() const
@@ -352,8 +360,9 @@ namespace etl
         // Initialise another one if necessary.
         if (items_initialised < MAX_SIZE)
         {
-          uintptr_t p = reinterpret_cast<uintptr_t>(p_buffer + (items_initialised * ITEM_SIZE));
-          *reinterpret_cast<uintptr_t*>(p) = p + ITEM_SIZE;
+          char* p = p_buffer + (items_initialised * ITEM_SIZE);
+          char* np = p + ITEM_SIZE;
+          *reinterpret_cast<char**>(p) = np;
           ++items_initialised;
         }
 
@@ -585,7 +594,7 @@ namespace etl
     // The pool element.
     union Element
     {
-      uintptr_t next;              ///< Pointer to the next free element.
+      char*     next;              ///< Pointer to the next free element.
       char      value[TYPE_SIZE_]; ///< Storage for value type.
       typename  etl::type_with_alignment<ALIGNMENT_>::type dummy; ///< Dummy item to get correct alignment.
     };

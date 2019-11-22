@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2016 jwellbelove
 
@@ -70,15 +70,6 @@ SOFTWARE.
 
 namespace etl
 {
-  //***************************************************************************
-  /// Alternative strlen for all character types.
-  //***************************************************************************
-  template <typename T>
-  size_t strlen(const T* t)
-  {
-    return etl::char_traits<T>::length(t);
-  }
-
   //***************************************************************************
   ///\ingroup string
   /// Exception base for strings
@@ -1005,7 +996,7 @@ namespace etl
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
-      insert(begin() + position, s, s + strlen(s));
+      insert(begin() + position, s, s + etl::strlen(s));
       return *this;
     }
 

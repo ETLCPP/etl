@@ -47,10 +47,14 @@ SOFTWARE.
 #include "exception.h"
 #include "integral_limits.h"
 #include "binary.h"
+#include "char_traits.h"
+#include "static_assert.h"
+#include "error_handler.h"
 
 #include "private/minmax_push.h"
 
-#include "error_handler.h"
+#undef ETL_FILE
+#define ETL_FILE "52"
 
 #if defined(ETL_COMPILER_KEIL)
 #pragma diag_suppress 1300
@@ -87,7 +91,21 @@ namespace etl
   public:
 
     bitset_nullptr(string_type file_name_, numeric_type line_number_)
-      : bitset_exception("bitset: nullptr", file_name_, line_number_)
+      : bitset_exception(ETL_ERROR_TEXT("bitset:nullptr", ETL_FILE"A"), file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// Bitset type_too_small exception.
+  ///\ingroup bitset
+  //***************************************************************************
+  class bitset_type_too_small : public bitset_exception
+  {
+  public:
+
+    bitset_type_too_small(string_type file_name_, numeric_type line_number_)
+      : bitset_exception(ETL_ERROR_TEXT("bitset:type_too_small", ETL_FILE"B"), file_name_, line_number_)
     {
     }
   };
@@ -224,7 +242,7 @@ namespace etl
     //*************************************************************************
     bool test(size_t position) const
     {
-      size_t       index;
+      size_t    index;
       element_t mask;
 
       if (SIZE == 1)
@@ -294,7 +312,7 @@ namespace etl
     {
       reset();
 
-      size_t i = std::min(NBITS, strlen(text));
+      size_t i = std::min(NBITS, etl::strlen(text));
 
       while (i > 0)
       {
@@ -302,6 +320,101 @@ namespace etl
       }
 
       return *this;
+    }
+
+    //*************************************************************************
+    /// Set from a string.
+    //*************************************************************************
+    ibitset& from_string(const char* text)
+    {
+      reset();
+
+      size_t i = std::min(NBITS, etl::strlen(text));
+
+      while (i > 0)
+      {
+        set(--i, *text++ == L'1');
+      }
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Set from a wide string.
+    //*************************************************************************
+    ibitset& from_string(const wchar_t* text)
+    {
+      reset();
+
+      size_t i = std::min(NBITS, etl::strlen(text));
+
+      while (i > 0)
+      {
+        set(--i, *text++ == L'1');
+      }
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Set from a u16 string.
+    //*************************************************************************
+    ibitset& from_string(const char16_t* text)
+    {
+      reset();
+
+      size_t i = std::min(NBITS, etl::strlen(text));
+
+      while (i > 0)
+      {
+        set(--i, *text++ == u'1');
+      }
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Set from a u32 string.
+    //*************************************************************************
+    ibitset& from_string(const char32_t* text)
+    {
+      reset();
+
+      size_t i = std::min(NBITS, etl::strlen(text));
+
+      while (i > 0)
+      {
+        set(--i, *text++ == U'1');
+      }
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Put to a value.
+    //*************************************************************************
+    template <typename T>
+    typename etl::enable_if<etl::is_integral<T>::value, T>::type
+      value() const
+    {
+      T v = T(0);
+
+      const bool OK = (sizeof(T) * CHAR_BIT) >= (SIZE * BITS_PER_ELEMENT);
+
+      ETL_ASSERT(OK, ETL_ERROR(etl::bitset_type_too_small));
+
+      if (OK)
+      {
+        T shift = T(0);
+
+        for (size_t i = 0; i < SIZE; ++i)
+        {
+          v |= T(pdata[i]) << shift;
+          shift += T(BITS_PER_ELEMENT);
+        }
+      }
+
+      return v;
     }
 
     //*************************************************************************
@@ -820,6 +933,58 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Set from a string.
+    //*************************************************************************
+    bitset<MAXN>& from_string(const char* text)
+    {
+      ibitset::from_string(text);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Set from a wide string.
+    //*************************************************************************
+    bitset<MAXN>& from_string(const wchar_t* text)
+    {
+      ibitset::from_string(text);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Set from a u16 string.
+    //*************************************************************************
+    bitset<MAXN>& from_string(const char16_t* text)
+    {
+      ibitset::from_string(text);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Set from a u32 string.
+    //*************************************************************************
+    bitset<MAXN>& from_string(const char32_t* text)
+    {
+      ibitset::from_string(text);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Put to a value.
+    //*************************************************************************
+    template <typename T>
+    typename etl::enable_if<etl::is_integral<T>::value, T>::type
+      value() const
+    {
+      ETL_STATIC_ASSERT((sizeof(T) * CHAR_BIT) >= (ARRAY_SIZE * BITS_PER_ELEMENT), "Type too small");
+
+      return ibitset::value<T>();
+    }
+
+    //*************************************************************************
     /// Reset all of the bits.
     //*************************************************************************
     bitset<MAXN>& reset()
@@ -1019,5 +1184,7 @@ void swap(etl::bitset<MAXN>& lhs, etl::bitset<MAXN>& rhs)
 }
 
 #include "private/minmax_pop.h"
+
+#undef ETL_FILE
 
 #endif

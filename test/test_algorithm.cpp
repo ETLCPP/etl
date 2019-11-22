@@ -31,14 +31,21 @@ SOFTWARE.
 #include "etl/algorithm.h"
 #include "etl/container.h"
 
+#include "data.h"
+
 #include <vector>
 #include <list>
 #include <algorithm>
 #include <functional>
 #include <numeric>
+#include <random>
 
 namespace
 {
+  using NDC = TestDataNDC<int>;
+  std::random_device rng;
+  std::mt19937 urng(rng());
+
   typedef std::vector<int> Data;
   Data data = { 2, 1, 4, 3, 6, 5, 8, 7, 10, 9 };
 
@@ -367,8 +374,8 @@ namespace
       int data3[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
       // Copy everything less than 5.
-      std::copy_if(std::begin(data1), std::end(data1), std::begin(data2), std::bind2nd(std::less<int>(), 5));
-      etl::copy_if(std::begin(data1), std::end(data1), std::begin(data3), std::bind2nd(std::less<int>(), 5));
+      std::copy_if(std::begin(data1), std::end(data1), std::begin(data2), std::bind(std::less<int>(), std::placeholders::_1, 5));
+      etl::copy_if(std::begin(data1), std::end(data1), std::begin(data3), std::bind(std::less<int>(), std::placeholders::_1, 5));
 
       bool is_same = std::equal(std::begin(data2), std::end(data2), std::begin(data3));
       CHECK(is_same);
@@ -390,7 +397,7 @@ namespace
           *pout++ = *pin;
         }
       }
-      etl::copy_n_if(std::begin(data1), 6, std::begin(data3), std::bind2nd(std::less<int>(), 5));
+      etl::copy_n_if(std::begin(data1), 6, std::begin(data3), std::bind(std::less<int>(), std::placeholders::_1, 5));
 
       bool is_same = std::equal(std::begin(data2), std::end(data2), std::begin(data3));
       CHECK(is_same);
@@ -413,21 +420,21 @@ namespace
 
       // Exact size.
       std::fill(std::begin(out1), std::end(out1), 0);
-      result = etl::copy_if(std::begin(data1), std::end(data1), std::begin(out1), std::end(out1), std::bind2nd(std::less<int>(), 5));
+      result = etl::copy_if(std::begin(data1), std::end(data1), std::begin(out1), std::end(out1), std::bind(std::less<int>(), std::placeholders::_1, 5));
       CHECK_EQUAL(std::end(out1), result);
       bool is_same = std::equal(std::begin(out1), std::end(out1), std::begin(check1));
       CHECK(is_same);
 
       // Destination smaller.
       std::fill(std::begin(out2), std::end(out2), 0);
-      result = etl::copy_if(std::begin(data1), std::end(data1), std::begin(out2), std::end(out2), std::bind2nd(std::less<int>(), 5));
+      result = etl::copy_if(std::begin(data1), std::end(data1), std::begin(out2), std::end(out2), std::bind(std::less<int>(), std::placeholders::_1, 5));
       CHECK_EQUAL(std::end(out2), result);
       is_same = std::equal(std::begin(out2), std::end(out2), std::begin(check2));
       CHECK(is_same);
 
       // Destination larger.
       std::fill(std::begin(out3), std::end(out3), 0);
-      result = etl::copy_if(std::begin(data1), std::end(data1), std::begin(out3), std::end(out3), std::bind2nd(std::less<int>(), 5));
+      result = etl::copy_if(std::begin(data1), std::end(data1), std::begin(out3), std::end(out3), std::bind(std::less<int>(), std::placeholders::_1, 5));
       CHECK_EQUAL(std::begin(out3) + 4, result);
       is_same = std::equal(std::begin(out3), std::end(out3), std::begin(check3));
       CHECK(is_same);
@@ -438,12 +445,12 @@ namespace
     {
       int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
-      bool expected = std::any_of(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 4));
-      bool result = etl::any_of(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 4));
+      bool expected = std::any_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
+      bool result = etl::any_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
       CHECK_EQUAL(expected, result);
 
-      expected = std::any_of(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 0));
-      result = etl::any_of(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 0));
+      expected = std::any_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 0));
+      result = etl::any_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 0));
       CHECK_EQUAL(expected, result);
     }
 
@@ -452,12 +459,12 @@ namespace
     {
       int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
-      bool expected = std::all_of(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 0));
-      bool result = etl::all_of(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 0));
+      bool expected = std::all_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 0));
+      bool result = etl::all_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 0));
       CHECK_EQUAL(expected, result);
 
-      expected = std::all_of(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 4));
-      result = etl::all_of(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 4));
+      expected = std::all_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
+      result = etl::all_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
       CHECK_EQUAL(expected, result);
     }
 
@@ -466,16 +473,16 @@ namespace
     {
       int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
-      bool expected = std::none_of(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 8));
-      bool result = etl::none_of(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 8));
+      bool expected = std::none_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 8));
+      bool result = etl::none_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 8));
       CHECK_EQUAL(expected, result);
 
-      expected = std::none_of(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 4));
-      result = etl::none_of(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 4));
+      expected = std::none_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
+      result = etl::none_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
       CHECK_EQUAL(expected, result);
     }
 
-    struct Compare : public std::binary_function < int, int, bool >
+    struct Compare
     {
       bool operator()(int a, int b) const
       {
@@ -520,14 +527,14 @@ namespace
     {
       int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
 
-      bool expected = std::is_partitioned(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 4));
-      bool result = etl::is_partitioned(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 4));
+      bool expected = std::is_partitioned(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
+      bool result = etl::is_partitioned(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
       CHECK_EQUAL(expected, result);
 
-      std::partition(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 4));
+      std::partition(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
 
-      expected = std::is_partitioned(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 4));
-      result = etl::is_partitioned(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 4));
+      expected = std::is_partitioned(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
+      result = etl::is_partitioned(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
       CHECK_EQUAL(expected, result);
     }
 
@@ -536,16 +543,16 @@ namespace
     {
       int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
 
-      std::partition(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 4));
+      std::partition(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
 
-      int* partition1 = std::partition_point(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 4));
-      int* partition2 = etl::partition_point(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 4));
+      int* partition1 = std::partition_point(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
+      int* partition2 = etl::partition_point(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
       CHECK_EQUAL(std::distance(std::begin(data1), partition1), std::distance(std::begin(data1), partition2));
 
-      std::partition(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 8));
+      std::partition(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 8));
 
-      partition1 = std::partition_point(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 0));
-      partition2 = etl::partition_point(std::begin(data1), std::end(data1), std::bind2nd(std::greater<int>(), 0));
+      partition1 = std::partition_point(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 0));
+      partition2 = etl::partition_point(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 0));
       CHECK_EQUAL(std::distance(std::begin(data1), partition1), std::distance(std::begin(data1), partition2));
     }
 
@@ -558,8 +565,8 @@ namespace
       int data4[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
       int data5[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
-      std::partition_copy(std::begin(data1), std::end(data1), std::begin(data2),  std::begin(data3), std::bind2nd(std::greater<int>(), 4));
-      etl::partition_copy(std::begin(data1), std::end(data1), std::begin(data4),  std::begin(data5), std::bind2nd(std::greater<int>(), 4));
+      std::partition_copy(std::begin(data1), std::end(data1), std::begin(data2),  std::begin(data3), std::bind(std::greater<int>(), std::placeholders::_1, 4));
+      etl::partition_copy(std::begin(data1), std::end(data1), std::begin(data4),  std::begin(data5), std::bind(std::greater<int>(), std::placeholders::_1, 4));
 
       bool are_equal;
 
@@ -576,7 +583,7 @@ namespace
       int data1[] = { 1, 2, 3, 5, 6, 7, 8 };
 
       // Find the element not less than 4.
-      int* p = etl::find_if_not(std::begin(data1), std::end(data1), std::bind2nd(std::less<int>(), 4));
+      int* p = etl::find_if_not(std::begin(data1), std::end(data1), std::bind(std::less<int>(), std::placeholders::_1, 4));
       CHECK_EQUAL(5, *p);
     }
 
@@ -633,7 +640,7 @@ namespace
       accumulator = etl::for_each_if(std::begin(data1),
                                      std::end(data1),
                                      accumulator,
-                                     std::bind2nd(std::less<int>(), 5));
+                                     std::bind(std::less<int>(), std::placeholders::_1, 5));
 
       CHECK_EQUAL(10, accumulator.sum);
     }
@@ -672,7 +679,7 @@ namespace
         }
       } multiplier;
 
-      etl::for_each_n_if(std::begin(data1), 5, multiplier, std::bind2nd(std::less<int>(), 5));
+      etl::for_each_n_if(std::begin(data1), 5, multiplier, std::bind(std::less<int>(), std::placeholders::_1, 5));
 
       bool are_equal = std::equal(std::begin(data1), std::end(data1), std::begin(data2));
       CHECK(are_equal);
@@ -690,7 +697,7 @@ namespace
                      std::end(input),
                      std::begin(output),
                      std::begin(output) + (etl::size(output) / 2),
-                     std::bind2nd(std::multiplies<int>(), 2));
+                     std::bind(std::multiplies<int>(), std::placeholders::_1, 2));
 
       bool is_same = std::equal(std::begin(output), std::end(output), std::begin(compare));
       CHECK(is_same);
@@ -701,7 +708,7 @@ namespace
                      std::begin(input) + (etl::size(input) / 2),
                      std::begin(output),
                      std::end(output),
-                     std::bind2nd(std::multiplies<int>(), 2));
+                     std::bind(std::multiplies<int>(), std::placeholders::_1, 2));
 
       is_same = std::equal(std::begin(output), std::end(output), std::begin(compare));
       CHECK(is_same);
@@ -717,7 +724,7 @@ namespace
       etl::transform_n(std::begin(input),
                        7,
                        std::begin(output),
-                       std::bind2nd(std::multiplies<int>(), 2));
+                       std::bind(std::multiplies<int>(), std::placeholders::_1, 2));
 
       bool is_same = std::equal(std::begin(output), std::end(output), std::begin(compare));
       CHECK(is_same);
@@ -733,7 +740,7 @@ namespace
       etl::transform_n(std::begin(input),
                        7,
                        std::begin(output),
-                       std::bind2nd(std::multiplies<int>(), 2));
+                       std::bind(std::multiplies<int>(), std::placeholders::_1, 2));
 
       bool is_same = std::equal(std::begin(output), std::end(output), std::begin(compare));
       CHECK(is_same);
@@ -750,8 +757,8 @@ namespace
       etl::transform_if(std::begin(input),
                         std::end(input),
                         std::begin(output),
-                        std::bind2nd(std::multiplies<int>(), 2),
-                        std::bind2nd(std::less<int>(), 5));
+                        std::bind(std::multiplies<int>(), std::placeholders::_1, 2),
+                        std::bind(std::less<int>(), std::placeholders::_1, 5));
 
       bool is_same = std::equal(std::begin(output), std::end(output), std::begin(compare));
       CHECK(is_same);
@@ -788,8 +795,8 @@ namespace
       etl::transform_n_if(std::begin(input),
                           5,
                           std::begin(output),
-                          std::bind2nd(std::multiplies<int>(), 2),
-                          std::bind2nd(std::less<int>(), 5));
+                          std::bind(std::multiplies<int>(), std::placeholders::_1, 2),
+                          std::bind(std::less<int>(), std::placeholders::_1, 5));
 
       bool is_same = std::equal(std::begin(output), std::end(output), std::begin(compare));
       CHECK(is_same);
@@ -830,9 +837,9 @@ namespace
                                std::end(input),
                                std::begin(output_true),
                                std::begin(output_false),
-                               std::bind2nd(std::multiplies<int>(), 2),
-                               std::bind2nd(std::multiplies<int>(), -2),
-                               std::bind2nd(std::less<int>(), 5));
+                               std::bind(std::multiplies<int>(), std::placeholders::_1, 2),
+                               std::bind(std::multiplies<int>(), std::placeholders::_1, -2),
+                               std::bind(std::less<int>(), std::placeholders::_1, 5));
 
       bool is_same = std::equal(std::begin(output_true), std::end(output_true), std::begin(compare_true));
       CHECK(is_same);
@@ -876,7 +883,7 @@ namespace
 
       for (int i = 0; i < 100; ++i)
       {
-        std::random_shuffle(data.begin(), data.end());
+        std::shuffle(data.begin(), data.end(), urng);
 
         std::vector<int> data1 = data;
         std::vector<int> data2 = data;
@@ -897,7 +904,7 @@ namespace
 
       for (int i = 0; i < 100; ++i)
       {
-        std::random_shuffle(data.begin(), data.end());
+        std::shuffle(data.begin(), data.end(), urng);
 
         std::vector<int> data1 = data;
         std::vector<int> data2 = data;
@@ -908,6 +915,108 @@ namespace
         bool is_same = std::equal(data1.begin(), data1.end(), data2.begin());
         CHECK(is_same);
       }
+    }
+
+    //=========================================================================
+    TEST(stable_sort_default)
+    {
+      std::vector<NDC> initial_data = { NDC(1, 1), NDC(2, 1), NDC(3, 1), NDC(2, 2), NDC(3, 2), NDC(4, 1), NDC(2, 3), NDC(3, 3), NDC(5, 1) };
+
+      std::vector<NDC> data1(initial_data);
+      std::vector<NDC> data2(initial_data);
+
+      std::stable_sort(data1.begin(), data1.end());
+      etl::stable_sort(data2.begin(), data2.end());
+
+      bool is_same = std::equal(data1.begin(), data1.end(), data2.begin(), NDC::are_identical);
+      CHECK(is_same);
+    }
+
+    //=========================================================================
+    TEST(stable_sort_greater)
+    {
+      std::vector<NDC> initial_data = { NDC(1, 1), NDC(2, 1), NDC(3, 1), NDC(2, 2), NDC(3, 2), NDC(4, 1), NDC(2, 3), NDC(3, 3), NDC(5, 1) };
+
+      std::vector<NDC> data1(initial_data);
+      std::vector<NDC> data2(initial_data);
+
+      std::stable_sort(data1.begin(), data1.end(), std::greater<NDC>());
+      etl::stable_sort(data2.begin(), data2.end(), std::greater<NDC>());
+
+      bool is_same = std::equal(data1.begin(), data1.end(), data2.begin(), NDC::are_identical);
+      CHECK(is_same);
+    }
+
+    //=========================================================================
+    TEST(shell_sort_default)
+    {
+      std::vector<int> data(100, 0);
+      std::iota(data.begin(), data.end(), 1);
+
+      for (int i = 0; i < 100; ++i)
+      {
+        std::shuffle(data.begin(), data.end(), urng);
+
+        std::vector<int> data1 = data;
+        std::vector<int> data2 = data;
+
+        std::sort(data1.begin(), data1.end());
+        etl::shell_sort(data2.begin(), data2.end());
+
+        bool is_same = std::equal(data1.begin(), data1.end(), data2.begin());
+        CHECK(is_same);
+      }
+    }
+
+    //=========================================================================
+    TEST(shell_sort_greater)
+    {
+      std::vector<int> data(100, 0);
+      std::iota(data.begin(), data.end(), 1);
+
+      for (int i = 0; i < 100; ++i)
+      {
+        std::shuffle(data.begin(), data.end(), urng);
+
+        std::vector<int> data1 = data;
+        std::vector<int> data2 = data;
+
+        std::sort(data1.begin(), data1.end(), std::greater<int>());
+        etl::shell_sort(data2.begin(), data2.end(), std::greater<int>());
+
+        bool is_same = std::equal(data1.begin(), data1.end(), data2.begin());
+        CHECK(is_same);
+      }
+    }
+
+    //=========================================================================
+    TEST(insertion_sort_default)
+    {
+      std::vector<NDC> initial_data = { NDC(1, 1), NDC(2, 1), NDC(3, 1), NDC(2, 2), NDC(3, 2), NDC(4, 1), NDC(2, 3), NDC(3, 3), NDC(5, 1) };
+
+      std::vector<NDC> data1(initial_data);
+      std::vector<NDC> data2(initial_data);
+
+      std::stable_sort(data1.begin(), data1.end());
+      etl::insertion_sort(data2.begin(), data2.end());
+
+      bool is_same = std::equal(data1.begin(), data1.end(), data2.begin(), NDC::are_identical);
+      CHECK(is_same);
+    }
+
+    //=========================================================================
+    TEST(insertion_sort_greater)
+    {
+      std::vector<NDC> initial_data = { NDC(1, 1), NDC(2, 1), NDC(3, 1), NDC(2, 2), NDC(3, 2), NDC(4, 1), NDC(2, 3), NDC(3, 3), NDC(5, 1) };
+
+      std::vector<NDC> data1(initial_data);
+      std::vector<NDC> data2(initial_data);
+
+      std::stable_sort(data1.begin(), data1.end(), std::greater<NDC>());
+      etl::insertion_sort(data2.begin(), data2.end(), std::greater<NDC>());
+
+      bool is_same = std::equal(data1.begin(), data1.end(), data2.begin(), NDC::are_identical);
+      CHECK(is_same);
     }
 
     //=========================================================================

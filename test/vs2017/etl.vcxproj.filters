@@ -52,12 +52,6 @@
     <Filter Include="ETL\Profiles">
       <UniqueIdentifier>{0a77d88b-f9f0-456a-be4b-c0a0ce6b437b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\ECL">
-      <UniqueIdentifier>{1fdf39d9-079e-4404-a24a-6d5cb30def6a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ECL">
-      <UniqueIdentifier>{4ac80fd1-3eca-4775-8695-eb1ea39c93f1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ETL\Containers\Generators">
       <UniqueIdentifier>{e4a699ae-e7f3-418e-bf9f-211c21f7f4b2}</UniqueIdentifier>
     </Filter>
@@ -453,9 +447,6 @@
     <ClInclude Include="..\..\include\etl\atomic\atomic_arm.h">
       <Filter>ETL\Utilities\Atomic</Filter>
     </ClInclude>
-    <ClInclude Include="..\ecl_user.h">
-      <Filter>Source Files\ECL</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\variant_pool.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
@@ -470,9 +461,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\version.h">
       <Filter>ETL\Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\c\ecl_timer.h">
-      <Filter>ECL</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\atomic\atomic_std.h">
       <Filter>ETL\Utilities\Atomic</Filter>
@@ -777,6 +765,30 @@
     <ClInclude Include="..\..\include\etl\basic_string.h">
       <Filter>ETL\Strings</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\macros.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\armv7.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\armv7_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\clang_generic.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\cpp17.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\cpp17_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\indirect_vector.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\stl\alternate\choose_namespace.h">
+      <Filter>ETL\STL\Alternate</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1070,12 +1082,6 @@
     <ClCompile Include="..\test_xor_rotate_checksum.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\c\ecl_timer.c">
-      <Filter>ECL</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_c_timer_framework.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_atomic_std.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1235,6 +1241,15 @@
     <ClCompile Include="..\test_delegate_service.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_compiler_settings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_indirect_vector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_indirect_vector_external_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -1274,6 +1289,9 @@
       <Filter>Resource Files\Generators</Filter>
     </None>
     <None Include="cpp.hint" />
+    <None Include="..\..\library.json">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\include\etl\file_error_numbers.txt">

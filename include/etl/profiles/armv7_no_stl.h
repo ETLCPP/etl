@@ -1,3 +1,5 @@
+///\file
+
 /******************************************************************************
 The MIT License(MIT)
 
@@ -5,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2019 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -26,13 +28,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ECL_USER__
-#define __ECL_USER__
+#ifndef ETL_ARMV7_NO_STL_INCLUDED
+#define ETL_ARMV7_NO_STL_INCLUDED
 
-#include <stdint.h>
+//*****************************************************************************
+// ARM Compiler Version 7
+//*****************************************************************************
 
-#define ECL_TIMER_TIMER_SEMAPHORE       uint32_t
-#define ECL_TIMER_DISABLE_PROCESSING(x) __sync_fetch_and_add(&x, 1)
-#define ECL_TIMER_ENABLE_PROCESSING(x)  __sync_fetch_and_sub(&x, 1)
-#define ECL_TIMER_PROCESSING_ENABLED(x) (__sync_fetch_and_add(&x, 0) == 0)
+#define ETL_TARGET_DEVICE_ARM
+#define ETL_TARGET_OS_NONE
+#define ETL_COMPILER_CLANG
+#define ETL_CPP11_SUPPORTED 1
+#define ETL_CPP14_SUPPORTED 1
+#define ETL_CPP17_SUPPORTED 0
+#define ETL_NO_NULLPTR_SUPPORT 0
+#define ETL_NO_LARGE_CHAR_SUPPORT 0
+#define ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED 1
+#define ETL_NO_STL
+
 #endif

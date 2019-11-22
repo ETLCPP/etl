@@ -118,6 +118,8 @@ namespace
       std::map<std::string, int> excess_data;
       std::map<std::string, int> different_data;
       std::map<std::string, int> random_data;
+      std::map<std::string, int> initial_data_even;
+      std::map<std::string, int> test_data;
 
       SetupFixture()
       {
@@ -169,6 +171,40 @@ namespace
         random_data["3"] = 3;
         random_data["7"] = 7;
         random_data["4"] = 4;
+
+        //even values
+        initial_data_even["00"] = 0;
+        initial_data_even["02"] = 2;
+        initial_data_even["04"] = 4;
+        initial_data_even["06"] = 6;
+        initial_data_even["08"] = 8;
+        initial_data_even["10"] = 10;
+        initial_data_even["12"] = 12;
+        initial_data_even["14"] = 14;
+        initial_data_even["16"] = 16;
+        initial_data_even["18"] = 18;
+
+        //test set
+        test_data["00"] = 0;
+        test_data["01"] = 1;
+        test_data["02"] = 2;
+        test_data["03"] = 3;
+        test_data["04"] = 4;
+        test_data["05"] = 5;
+        test_data["06"] = 6;
+        test_data["07"] = 7;
+        test_data["08"] = 8;
+        test_data["09"] = 9;
+        test_data["10"] = 10;
+        test_data["11"] = 11;
+        test_data["12"] = 12;
+        test_data["13"] = 13;
+        test_data["14"] = 14;
+        test_data["15"] = 15;
+        test_data["16"] = 16;
+        test_data["17"] = 17;
+        test_data["18"] = 18;
+        test_data["19"] = 19;
       }
     };
 
@@ -1091,6 +1127,65 @@ namespace
       CHECK(compare(a, b));
       CHECK(!compare(b, a));
 #endif
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_compare_lower_upper_bound)
+    {
+        Data data(initial_data_even.begin(), initial_data_even.end());
+        Compare_Data compare(initial_data_even.begin(), initial_data_even.end());
+
+        std::vector<std::pair<std::string, int> > tab(test_data.begin(), test_data.end());
+
+        //make sure both data and compare contain same elements
+        std::vector<std::pair<std::string, int> > data_elements(data.begin(), data.end());
+        std::vector<std::pair<std::string, int> > compare_data_elements(compare.begin(), compare.end());
+
+        CHECK(data_elements == compare_data_elements);
+        CHECK_EQUAL(data_elements.size(), MAX_SIZE);
+
+        for(std::vector<std::pair<std::string, int> >::iterator it = tab.begin() ; it != tab.end() ; ++it)
+        {
+            std::string i = it->first;
+
+            //lower_bound
+            CHECK_EQUAL(compare.lower_bound(i) == compare.end(), data.lower_bound(i) == data.end());
+            //if both end, or none
+            if((compare.lower_bound(i) == compare.end()) == (data.lower_bound(i) == data.end()))
+            {
+                //if both are not end
+                if(compare.lower_bound(i) != compare.end())
+                {
+                    CHECK((*compare.lower_bound(i)) == (*data.lower_bound(i)));
+                }
+
+                std::pair<Compare_Data::const_iterator, Compare_Data::const_iterator> stlret = compare.equal_range(i);
+                std::pair<Data::const_iterator, Data::const_iterator> etlret = data.equal_range(i);
+
+                CHECK_EQUAL(stlret.first == compare.end(), etlret.first == data.end());
+                if((stlret.first != compare.end()) && (etlret.first != data.end()))
+                {
+                    CHECK((*stlret.first) == (*etlret.first));
+                }
+                CHECK_EQUAL(stlret.second == compare.end(), etlret.second == data.end());
+                if((stlret.second != compare.end()) && (etlret.second != data.end()))
+                {
+                    CHECK((*stlret.second) == (*etlret.second));
+                }
+            }
+
+            //upper_bound
+            CHECK_EQUAL(compare.upper_bound(i) == compare.end(), data.upper_bound(i) == data.end());
+            //if both end, or none
+            if((compare.upper_bound(i) == compare.end()) == (data.upper_bound(i) == data.end()))
+            {
+                //if both are not end
+                if(compare.upper_bound(i) != compare.end())
+                {
+                    CHECK((*compare.upper_bound(i)) == (*data.upper_bound(i)));
+                }
+            }
+        }
     }
   };
 }

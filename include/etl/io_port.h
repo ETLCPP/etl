@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -56,7 +56,7 @@ namespace etl
     typedef volatile const T* const_pointer;
     typedef volatile T&       reference;
     typedef volatile const T& const_reference;
-  
+
     /// Read.
     operator T() const
     {
@@ -105,7 +105,7 @@ namespace etl
     {
       return *this;
     }
-    
+
     /// Get the IO port address.
     pointer get_address()
     {
@@ -616,7 +616,7 @@ namespace etl
     {
       return *this;
     }
-    
+
   private:
 
     /// Read disabled.
@@ -695,7 +695,7 @@ namespace etl
 
       iop_t* p_iop;
     };
-    
+
     /// Default constructor.
     io_port_wos()
       : address(nullptr)
@@ -797,7 +797,7 @@ namespace etl
     {
       return *this;
     }
-    
+
   private:
 
     T       shadow_value;

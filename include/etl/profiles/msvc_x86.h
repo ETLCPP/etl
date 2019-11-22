@@ -40,7 +40,7 @@ SOFTWARE.
 #define ETL_COMPILER_MICROSOFT
 #define ETL_CPP11_SUPPORTED                        (_MSC_VER >= 1600)
 #define ETL_CPP14_SUPPORTED                        (_MSC_VER >= 1900)
-#define ETL_CPP17_SUPPORTED                        0
+#define ETL_CPP17_SUPPORTED                        (_MSC_VER >= 1914)
 #define ETL_NO_NULLPTR_SUPPORT                     !ETL_CPP11_SUPPORTED
 #define ETL_NO_LARGE_CHAR_SUPPORT                  !ETL_CPP11_SUPPORTED
 #define ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED ETL_CPP14_SUPPORTED

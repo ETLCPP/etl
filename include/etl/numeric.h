@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -37,7 +37,7 @@ SOFTWARE.
 ///\ingroup utilities
 
 namespace etl
-{ 
+{
   //***************************************************************************
   /// iota
   /// Reverse engineered version of std::iota for non C++ 0x11 compilers.

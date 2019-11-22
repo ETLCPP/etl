@@ -38,8 +38,8 @@ SOFTWARE.
   #include "atomic/atomic_arm.h"
   #define ETL_HAS_ATOMIC 1
 #elif defined(ETL_COMPILER_ARM6)
-#include "atomic/atomic_arm.h"
-#define ETL_HAS_ATOMIC 1
+  #include "atomic/atomic_arm.h"
+  #define ETL_HAS_ATOMIC 1
 #elif defined(ETL_COMPILER_GCC)
   #include "atomic/atomic_gcc_sync.h"
   #define ETL_HAS_ATOMIC 1

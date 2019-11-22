@@ -1502,17 +1502,18 @@ namespace etl
     Node* find_lower_node(Node* position, key_parameter_t key) const
     {
       // Something at this position? keep going
-      Node* lower_node = position;
-      while (lower_node)
+      Node* lower_node = nullptr;
+      while (position)
       {
         // Downcast lower node to Data_Node reference for key comparisons
-        Data_Node& data_node = imap::data_cast(*lower_node);
+        Data_Node& data_node = imap::data_cast(*position);
         // Compare the key value to the current lower node key value
         if (node_comp(key, data_node))
         {
-          if (lower_node->children[kLeft])
+          lower_node = position;
+          if (position->children[kLeft])
           {
-            lower_node = lower_node->children[kLeft];
+            position = position->children[kLeft];
           }
           else
           {
@@ -1522,12 +1523,13 @@ namespace etl
         }
         else if (node_comp(data_node, key))
         {
-          lower_node = lower_node->children[kRight];
+          position = position->children[kRight];
         }
         else
         {
-          // Found equal node
-          break;
+          // Make note of current position, but keep looking to left for more
+          lower_node = position;
+          position = position->children[kLeft];
         }
       }
 

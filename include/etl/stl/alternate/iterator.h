@@ -37,17 +37,9 @@ SOFTWARE.
 #include <string.h>
 #include "../../type_traits.h"
 
-#if defined(ETL_IN_UNIT_TEST)
-  #if !defined(ETLSTD)
-    #define ETLSTD etlstd
-  #endif
-namespace etlstd
-#else
-  #if !defined(ETLSTD)
-    #define ETLSTD std
-  #endif
-namespace std
-#endif
+#include "choose_namespace.h"
+
+namespace ETLSTD
 {
   //***************************************************************************
   // iterator
@@ -379,6 +371,24 @@ namespace std
   inline reverse_iterator<TIterator> operator +(TDifference n, const reverse_iterator<TIterator>& itr)
   {
     return itr.operator +(n);
+  }
+
+  //***************************************************************************
+  // Previous
+  template<typename TIterator>
+  TIterator prev(TIterator itr, typename ETLSTD::iterator_traits<TIterator>::difference_type n = 1)
+  {
+    ETLSTD::advance(itr, -n);
+    return itr;
+  }
+
+  //***************************************************************************
+  // Next
+  template<typename TIterator>
+  TIterator next(TIterator itr, typename ETLSTD::iterator_traits<TIterator>::difference_type n = 1)
+  {
+    ETLSTD::advance(itr, n);
+    return itr;
   }
 }
 

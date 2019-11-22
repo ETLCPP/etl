@@ -77,6 +77,11 @@ public:
     return !(value < other.value);
   }
 
+  static bool are_identical(const TestDataDC& lhs, const TestDataDC& rhs)
+  {
+    return (lhs.value == rhs.value) && (lhs.index == rhs.index);
+  }
+
   T   value;
   int index;
 };
@@ -135,6 +140,11 @@ public:
   bool operator >= (const TestDataNDC& other) const
   {
     return !(value < other.value);
+  }
+
+  static bool are_identical(const TestDataNDC& lhs, const TestDataNDC& rhs)
+  {
+    return (lhs.value == rhs.value) && (lhs.index == rhs.index);
   }
 
   T value;
