@@ -76,26 +76,26 @@ struct Top
 
 
 // ------------------------------------------------------------------------------------------
-// composite declaration for 16 messages
+// Composite declaration for 16 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0 = void, typename M1 = void,
          typename M2 = void, typename M3 = void, typename M4 = void, typename M5 = void,
          typename M6 = void, typename M7 = void, typename M8 = void, typename M9 = void,
          typename M10 = void, typename M11 = void, typename M12 = void, typename M13 = void,
          typename M14 = void, typename M15 = void>
-class Composite;
+class composite;
 
-template<typename H, unsigned ID, typename P = Composite<H, 0, Top<H> >, typename M0, typename M1,
+template<typename H, unsigned ID, typename P = composite<H, 0, Top<H> >, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11, typename M12, typename M13,
          typename M14, typename M15>
-class Composite : public P
+class composite : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15> Self;
+   typedef composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -163,15 +163,15 @@ private:
 };
 
 // ------------------------------------------------------------------------------------------
-// composite specialisation for top-state which has class Top as parent
+// Composite specialisation for top-state which has class Top as parent
 // ------------------------------------------------------------------------------------------
 template<typename H>
-class Composite<H, 0> : public Top<H>
+class composite<H, 0> : public Top<H>
 {
 public:
    typedef H Hsm;
    typedef Top<H> Parent;
-   typedef Composite<H, 0, Top<H> > Self;
+   typedef composite<H, 0, Top<H> > Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -185,19 +185,19 @@ public:
 };
 
 // ------------------------------------------------------------------------------------------
-// composite specialisation for 15 messages
+// Composite specialisation for 15 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11, typename M12, typename M13,
          typename M14>
-class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14> : public P
+class composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14> Self;
+   typedef composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -273,7 +273,7 @@ class composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12,
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13> Self;
+   typedef composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -341,12 +341,12 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11, typename M12>
-class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12> : public P
+class composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12> Self;
+   typedef composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -411,12 +411,12 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11>
-class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11> : public P
+class composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11> Self;
+   typedef composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -478,12 +478,12 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9,
          typename M10>
-class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10> : public P
+class composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10> Self;
+   typedef composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -541,12 +541,12 @@ private:
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9>
-class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9> : public P
+class composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9> Self;
+   typedef composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -601,12 +601,12 @@ private:
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8>
-class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8> : public P
+class composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8> Self;
+   typedef composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -658,12 +658,12 @@ private:
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7>
-class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7> : public P
+class composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7> Self;
+   typedef composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -712,12 +712,12 @@ private:
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6>
-class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6> : public P
+class composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6> Self;
+   typedef composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -762,12 +762,12 @@ private:
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5>
-class Composite<H, ID, P, M0, M1, M2, M3, M4, M5> : public P
+class composite<H, ID, P, M0, M1, M2, M3, M4, M5> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Composite<H, ID, P, M0, M1, M2, M3, M4, M5> Self;
+   typedef composite<H, ID, P, M0, M1, M2, M3, M4, M5> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -809,12 +809,12 @@ private:
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4>
-class Composite<H, ID, P, M0, M1, M2, M3, M4> : public P
+class composite<H, ID, P, M0, M1, M2, M3, M4> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Composite<H, ID, P, M0, M1, M2, M3, M4> Self;
+   typedef composite<H, ID, P, M0, M1, M2, M3, M4> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -853,12 +853,12 @@ private:
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3>
-class Composite<H, ID, P, M0, M1, M2, M3> : public P
+class composite<H, ID, P, M0, M1, M2, M3> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Composite<H, ID, P, M0, M1, M2, M3> Self;
+   typedef composite<H, ID, P, M0, M1, M2, M3> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -894,12 +894,12 @@ private:
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2>
-class Composite<H, ID, P, M0, M1, M2> : public P
+class composite<H, ID, P, M0, M1, M2> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Composite<H, ID, P, M0, M1, M2> Self;
+   typedef composite<H, ID, P, M0, M1, M2> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -931,12 +931,12 @@ private:
 // Composite specialisation for 2 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1>
-class Composite<H, ID, P, M0, M1> : public P
+class composite<H, ID, P, M0, M1> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Composite<H, ID, P, M0, M1> Self;
+   typedef composite<H, ID, P, M0, M1> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -965,12 +965,12 @@ private:
 // Composite specialisation for 1 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0>
-class Composite<H, ID, P, M0> : public P
+class composite<H, ID, P, M0> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Composite<H, ID, P, M0> Self;
+   typedef composite<H, ID, P, M0> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -996,12 +996,12 @@ private:
 // Composite specialisation for 0 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P>
-class Composite<H, ID, P> : public P
+class composite<H, ID, P> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Composite<H, ID, P> Self;
+   typedef composite<H, ID, P> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1023,19 +1023,19 @@ template<typename H, unsigned ID, typename P, typename M0 = void, typename M1 = 
          typename M6 = void, typename M7 = void, typename M8 = void, typename M9 = void,
          typename M10 = void, typename M11 = void, typename M12 = void, typename M13 = void,
          typename M14 = void, typename M15 = void>
-class Leaf;
+class leaf;
 
-template<typename H, unsigned ID, typename P = Composite<H, 0, Top<H> >, typename M0, typename M1,
+template<typename H, unsigned ID, typename P = composite<H, 0, Top<H> >, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11, typename M12, typename M13,
          typename M14, typename M15>
-class Leaf : public P
+class leaf : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15> Self;
+   typedef leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1044,7 +1044,7 @@ public:
        arg.set_state(obj);
    }
 
-   static const Leaf obj;
+   static const leaf obj;
 
    virtual unsigned get_id() const
    {
@@ -1123,8 +1123,8 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11, typename M12, typename M13,
          typename M14, typename M15>
-const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15>::obj;
+const leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15>
+      leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 15 messages
@@ -1134,12 +1134,12 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11, typename M12, typename M13,
          typename M14>
-class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14> : public P
+class leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14> Self;
+   typedef leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1148,7 +1148,7 @@ public:
        arg.set_state(obj);
    }
 
-   static const Leaf obj;
+   static const leaf obj;
 
    virtual unsigned get_id() const
    {
@@ -1224,8 +1224,8 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11, typename M12, typename M13,
          typename M14>
-const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14>::obj;
+const leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14>
+      leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 14 messages
@@ -1234,12 +1234,12 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11, typename M12, typename M13>
-class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13> : public P
+class leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13> Self;
+   typedef leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1248,7 +1248,7 @@ public:
        arg.set_state(obj);
    }
 
-   static const Leaf obj;
+   static const leaf obj;
 
    virtual unsigned get_id() const
    {
@@ -1320,8 +1320,8 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11, typename M12, typename M13>
-const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13>::obj;
+const leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13>
+      leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 13 messages
@@ -1330,12 +1330,12 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11, typename M12>
-class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12> : public P
+class leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12> Self;
+   typedef leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1344,7 +1344,7 @@ public:
        arg.set_state(obj);
    }
 
-   static const Leaf obj;
+   static const leaf obj;
 
    virtual unsigned get_id() const
    {
@@ -1413,8 +1413,8 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11, typename M12>
-const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12>::obj;
+const leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12>
+      leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 12 messages
@@ -1423,12 +1423,12 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11>
-class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11> : public P
+class leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11> Self;
+   typedef leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1437,7 +1437,7 @@ public:
        arg.set_state(obj);
    }
 
-   static const Leaf obj;
+   static const leaf obj;
 
    virtual unsigned get_id() const
    {
@@ -1503,8 +1503,8 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11>
-const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11>::obj;
+const leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11>
+      leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 11 messages
@@ -1513,12 +1513,12 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9,
          typename M10>
-class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10> : public P
+class leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10> Self;
+   typedef leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1527,7 +1527,7 @@ public:
        arg.set_state(obj);
    }
 
-   static const Leaf obj;
+   static const leaf obj;
 
    virtual unsigned get_id() const
    {
@@ -1590,8 +1590,8 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9,
          typename M10>
-const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10>::obj;
+const leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10>
+      leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 10 messages
@@ -1599,12 +1599,12 @@ const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10>
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9>
-class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9> : public P
+class leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9> Self;
+   typedef leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1613,7 +1613,7 @@ public:
        arg.set_state(obj);
    }
 
-   static const Leaf obj;
+   static const leaf obj;
 
    virtual unsigned get_id() const
    {
@@ -1672,8 +1672,8 @@ private:
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9>
-const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9>::obj;
+const leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9>
+      leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 9 messages
@@ -1681,12 +1681,12 @@ const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9>
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8>
-class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8> : public P
+class leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8> Self;
+   typedef leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1695,7 +1695,7 @@ public:
        arg.set_state(obj);
    }
 
-   static const Leaf obj;
+   static const leaf obj;
 
    virtual unsigned get_id() const
    {
@@ -1751,8 +1751,8 @@ private:
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8>
-const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8>::obj;
+const leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8>
+      leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 8 messages
@@ -1760,12 +1760,12 @@ const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8>
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7>
-class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7> : public P
+class leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7> Self;
+   typedef leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1774,7 +1774,7 @@ public:
        arg.set_state(obj);
    }
 
-   static const Leaf obj;
+   static const leaf obj;
 
    virtual unsigned get_id() const
    {
@@ -1827,8 +1827,8 @@ private:
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7>
-const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7>::obj;
+const leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7>
+      leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 7 messages
@@ -1836,12 +1836,12 @@ const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7>
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6>
-class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6> : public P
+class leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6> Self;
+   typedef leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1850,7 +1850,7 @@ public:
        arg.set_state(obj);
    }
 
-   static const Leaf obj;
+   static const leaf obj;
 
    virtual unsigned get_id() const
    {
@@ -1900,20 +1900,20 @@ private:
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6>
-const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6>::obj;
+const leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6>
+      leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 6 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5>
-class Leaf<H, ID, P, M0, M1, M2, M3, M4, M5> : public P
+class leaf<H, ID, P, M0, M1, M2, M3, M4, M5> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4, M5> Self;
+   typedef leaf<H, ID, P, M0, M1, M2, M3, M4, M5> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1922,7 +1922,7 @@ public:
        arg.set_state(obj);
    }
 
-   static const Leaf obj;
+   static const leaf obj;
 
    virtual unsigned get_id() const
    {
@@ -1968,20 +1968,20 @@ private:
 
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5>
-const Leaf<H, ID, P, M0, M1, M2, M3, M4, M5>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4, M5>::obj;
+const leaf<H, ID, P, M0, M1, M2, M3, M4, M5>
+      leaf<H, ID, P, M0, M1, M2, M3, M4, M5>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 5 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4>
-class Leaf<H, ID, P, M0, M1, M2, M3, M4> : public P
+class leaf<H, ID, P, M0, M1, M2, M3, M4> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Leaf<H, ID, P, M0, M1, M2, M3, M4> Self;
+   typedef leaf<H, ID, P, M0, M1, M2, M3, M4> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -1990,7 +1990,7 @@ public:
        arg.set_state(obj);
    }
 
-   static const Leaf obj;
+   static const leaf obj;
 
    virtual unsigned get_id() const
    {
@@ -2033,20 +2033,20 @@ private:
 
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4>
-const Leaf<H, ID, P, M0, M1, M2, M3, M4>
-      Leaf<H, ID, P, M0, M1, M2, M3, M4>::obj;
+const leaf<H, ID, P, M0, M1, M2, M3, M4>
+      leaf<H, ID, P, M0, M1, M2, M3, M4>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 4 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3>
-class Leaf<H, ID, P, M0, M1, M2, M3> : public P
+class leaf<H, ID, P, M0, M1, M2, M3> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Leaf<H, ID, P, M0, M1, M2, M3> Self;
+   typedef leaf<H, ID, P, M0, M1, M2, M3> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -2055,7 +2055,7 @@ public:
        arg.set_state(obj);
    }
 
-   static const Leaf obj;
+   static const leaf obj;
 
    virtual unsigned get_id() const
    {
@@ -2095,20 +2095,20 @@ private:
 
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3>
-const Leaf<H, ID, P, M0, M1, M2, M3>
-      Leaf<H, ID, P, M0, M1, M2, M3>::obj;
+const leaf<H, ID, P, M0, M1, M2, M3>
+      leaf<H, ID, P, M0, M1, M2, M3>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 3 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2>
-class Leaf<H, ID, P, M0, M1, M2> : public P
+class leaf<H, ID, P, M0, M1, M2> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Leaf<H, ID, P, M0, M1, M2> Self;
+   typedef leaf<H, ID, P, M0, M1, M2> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -2117,7 +2117,7 @@ public:
        arg.set_state(obj);
    }
 
-   static const Leaf obj;
+   static const leaf obj;
 
    virtual unsigned get_id() const
    {
@@ -2154,19 +2154,19 @@ private:
 
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2>
-const Leaf<H, ID, P, M0, M1, M2>
-      Leaf<H, ID, P, M0, M1, M2>::obj;
+const leaf<H, ID, P, M0, M1, M2>
+      leaf<H, ID, P, M0, M1, M2>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 2 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1>
-class Leaf<H, ID, P, M0, M1> : public P
+class leaf<H, ID, P, M0, M1> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Leaf<H, ID, P, M0, M1> Self;
+   typedef leaf<H, ID, P, M0, M1> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -2175,7 +2175,7 @@ public:
        arg.set_state(obj);
    }
 
-   static const Leaf obj;
+   static const leaf obj;
 
    virtual unsigned get_id() const
    {
@@ -2208,19 +2208,19 @@ private:
 };
 
 template<typename H, unsigned ID, typename P, typename M0, typename M1>
-const Leaf<H, ID, P, M0, M1>
-      Leaf<H, ID, P, M0, M1>::obj;
+const leaf<H, ID, P, M0, M1>
+      leaf<H, ID, P, M0, M1>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 1 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0>
-class Leaf<H, ID, P, M0> : public P
+class leaf<H, ID, P, M0> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Leaf<H, ID, P, M0> Self;
+   typedef leaf<H, ID, P, M0> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -2229,7 +2229,7 @@ public:
        arg.set_state(obj);
    }
 
-   static const Leaf obj;
+   static const leaf obj;
 
    virtual unsigned get_id() const
    {
@@ -2259,19 +2259,19 @@ private:
 };
 
 template<typename H, unsigned ID, typename P, typename M0>
-const Leaf<H, ID, P, M0>
-      Leaf<H, ID, P, M0>::obj;
+const leaf<H, ID, P, M0>
+      leaf<H, ID, P, M0>::obj;
 
 // ------------------------------------------------------------------------------------------
 // Leaf specialisation for 0 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P>
-class Leaf<H, ID, P> : public P
+class leaf<H, ID, P> : public P
 {
 public:
    typedef H Hsm;
    typedef P Parent;
-   typedef Leaf<H, ID, P> Self;
+   typedef leaf<H, ID, P> Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -2280,7 +2280,7 @@ public:
        arg.set_state(obj);
    }
 
-   static const Leaf obj;
+   static const leaf obj;
 
    virtual unsigned get_id() const
    {
@@ -2302,8 +2302,8 @@ public:
 };
 
 template<typename H, unsigned ID, typename P>
-const Leaf<H, ID, P>
-      Leaf<H, ID, P>::obj;
+const leaf<H, ID, P>
+      leaf<H, ID, P>::obj;
 
 
 // ------------------------------------------------------------------------------------------
