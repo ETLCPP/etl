@@ -76,7 +76,7 @@ struct Top
 
 
 // ------------------------------------------------------------------------------------------
-// Composite declaration for 16 messages
+// composite declaration for 16 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0 = void, typename M1 = void,
          typename M2 = void, typename M3 = void, typename M4 = void, typename M5 = void,
@@ -163,7 +163,7 @@ private:
 };
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for top-state which has class Top as parent
+// composite specialisation for top-state which has class Top as parent
 // ------------------------------------------------------------------------------------------
 template<typename H>
 class Composite<H, 0> : public Top<H>
@@ -185,7 +185,7 @@ public:
 };
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 15 messages
+// composite specialisation for 15 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -268,7 +268,7 @@ template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11, typename M12, typename M13>
-class Composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13> : public P
+class composite<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13> : public P
 {
 public:
    typedef H Hsm;
