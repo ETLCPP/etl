@@ -37,6 +37,8 @@ SOFTWARE.
 
 #include "stl/iterator.h"
 
+#include <assert.h>
+
 #include <string.h>
 
 #include <new>
