@@ -1,4 +1,9 @@
 ===============================================================================
+14.38.0
+Added optional to force string and string_view construction from character
+pointers to be explicit.
+
+===============================================================================
 14.37.2
 Added assert.h include to memory.h
 
