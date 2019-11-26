@@ -114,7 +114,7 @@ namespace etl
     /// Constructor, from null terminated text.
     ///\param text The initial text of the u16string.
     //*************************************************************************
-    u16string(const value_type* text)
+    ETL_EXPLICIT_STRING_FROM_CHAR u16string(const value_type* text)
       : iu16string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
       this->assign(text, text + etl::char_traits<value_type>::length(text));
