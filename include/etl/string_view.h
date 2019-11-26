@@ -137,7 +137,7 @@ namespace etl
     //*************************************************************************
     /// Construct from T*.
     //*************************************************************************
-    ETL_CONSTEXPR basic_string_view(const T* begin_)
+    ETL_EXPLICIT_STRING_FROM_CHAR ETL_CONSTEXPR basic_string_view(const T* begin_)
       : mbegin(begin_),
         mend(begin_ + TTraits::length(begin_))
     {
