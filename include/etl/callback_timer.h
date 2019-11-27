@@ -132,23 +132,25 @@ namespace etl
     {
     }
 
-      //*******************************************
-      /// ETL delegate callback
-      //*******************************************
-      callback_timer_data(etl::timer::id::type  id_,
-                          etl::delegate<void()>& callback_,
-                          uint32_t              period_,
-                          bool                  repeating_)
-              : p_callback(reinterpret_cast<void*>(&callback_)),
-                period(period_),
-                delta(etl::timer::state::INACTIVE),
-                id(id_),
-                previous(etl::timer::id::NO_TIMER),
-                next(etl::timer::id::NO_TIMER),
-                repeating(repeating_),
-                cbk_type(DELEGATE)
-      {
-      }
+#if ETL_CPP11_SUPPORTED
+    //*******************************************
+    /// ETL delegate callback
+    //*******************************************
+    callback_timer_data(etl::timer::id::type  id_,
+                        etl::delegate<void()>& callback_,
+                        uint32_t              period_,
+                        bool                  repeating_)
+            : p_callback(reinterpret_cast<void*>(&callback_)),
+              period(period_),
+              delta(etl::timer::state::INACTIVE),
+              id(id_),
+              previous(etl::timer::id::NO_TIMER),
+              next(etl::timer::id::NO_TIMER),
+              repeating(repeating_),
+              cbk_type(DELEGATE)
+    {
+    }
+#endif
 
     //*******************************************
     /// Returns true if the timer is active.
@@ -434,38 +436,38 @@ namespace etl
       return id;
     }
 
-      //*******************************************
-      /// Register a timer.
-      //*******************************************
+    //*******************************************
+    /// Register a timer.
+    //*******************************************
 #if ETL_CPP11_SUPPORTED
-      etl::timer::id::type register_timer(etl::delegate<void()>& callback_,
-                                          uint32_t               period_,
-                                          bool                   repeating_)
-      {
-          etl::timer::id::type id = etl::timer::id::NO_TIMER;
+    etl::timer::id::type register_timer(etl::delegate<void()>& callback_,
+                                        uint32_t               period_,
+                                        bool                   repeating_)
+    {
+        etl::timer::id::type id = etl::timer::id::NO_TIMER;
 
-          bool is_space = (registered_timers < MAX_TIMERS);
+        bool is_space = (registered_timers < MAX_TIMERS);
 
-          if (is_space)
-          {
-              // Search for the free space.
-              for (uint_least8_t i = 0; i < MAX_TIMERS; ++i)
-              {
-                  etl::callback_timer_data& timer = timer_array[i];
+        if (is_space)
+        {
+            // Search for the free space.
+            for (uint_least8_t i = 0; i < MAX_TIMERS; ++i)
+            {
+                etl::callback_timer_data& timer = timer_array[i];
 
-                  if (timer.id == etl::timer::id::NO_TIMER)
-                  {
-                      // Create in-place.
-                      new (&timer) callback_timer_data(i, callback_, period_, repeating_);
-                      ++registered_timers;
-                      id = i;
-                      break;
-                  }
-              }
-          }
+                if (timer.id == etl::timer::id::NO_TIMER)
+                {
+                    // Create in-place.
+                    new (&timer) callback_timer_data(i, callback_, period_, repeating_);
+                    ++registered_timers;
+                    id = i;
+                    break;
+                }
+            }
+        }
 
-          return id;
-      }
+        return id;
+    }
 #endif
 
     //*******************************************
@@ -576,11 +578,13 @@ namespace etl
                   // Call the function wrapper callback.
                   (*reinterpret_cast<etl::ifunction<void>*>(timer.p_callback))();
                 }
+#if ETL_CPP11_SUPPORTED
                 else if(timer.cbk_type == callback_timer_data::DELEGATE)
                 {
                     // Call the function wrapper callback.
                     (*reinterpret_cast<etl::delegate<void()>*>(timer.p_callback))();
                 }
+#endif
                 else
                 {
                     ETL_ALWAYS_ASSERT("Callback timer has incorrect callback type stored");
@@ -618,7 +622,7 @@ namespace etl
 
         // Registered timer?
         if (timer.id != etl::timer::id::NO_TIMER)
-        {         
+        {
           // Has a valid period.
           if (timer.period != etl::timer::state::INACTIVE)
           {
@@ -633,7 +637,7 @@ namespace etl
             ETL_ENABLE_TIMER_UPDATES;
 
             result = true;
-          }                
+          }
         }
       }
 
