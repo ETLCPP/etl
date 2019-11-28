@@ -226,7 +226,7 @@ namespace ETLSTD
     {
     }
 
-    explicit reverse_iterator(TIterator itr) : current(itr)
+    explicit reverse_iterator(TIterator itr) : current(--itr)
     {
     }
 
@@ -261,16 +261,12 @@ namespace ETLSTD
 
     reference operator *() const
     {
-      TIterator temp = current;
-      --temp;
-      return *temp;
+      return *current;
     }
 
     pointer operator ->() const
     {
-      TIterator temp = current;
-      --temp;
-      return &(*temp);
+      return &(*current);
     }
 
     reverse_iterator<TIterator>& operator ++()
@@ -323,7 +319,7 @@ namespace ETLSTD
 
     reference operator [](difference_type n) const
     {
-      return *(*this + n);
+      return *(current - n);
     }
 
   protected:
@@ -332,15 +328,21 @@ namespace ETLSTD
   };
 
   template <class TIterator>
-  inline bool operator <(const reverse_iterator<TIterator>& lhs, const reverse_iterator<TIterator>& rhs)
+  inline bool operator ==(const reverse_iterator<TIterator>& lhs, const reverse_iterator<TIterator>& rhs)
   {
-    return rhs.base() < lhs.base();
+    return lhs.base() == rhs.base();
   }
 
   template <class TIterator>
   inline bool operator !=(const reverse_iterator<TIterator>& lhs, const reverse_iterator<TIterator>& rhs)
   {
     return !(lhs == rhs);
+  }
+
+  template <class TIterator>
+  inline bool operator <(const reverse_iterator<TIterator>& lhs, const reverse_iterator<TIterator>& rhs)
+  {
+    return rhs.base() < lhs.base();
   }
 
   template <class TIterator>
