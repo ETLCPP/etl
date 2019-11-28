@@ -1,4 +1,9 @@
 ===============================================================================
+14.38.2
+Added alternate 'No STL' reverse_iterator unit tests.
+Fixed missing equality operator for reverse_iterator.
+
+===============================================================================
 14.38.1
 Added missing C++11 specific conditional compilation in callback_timer.h
 
