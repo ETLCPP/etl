@@ -46,6 +46,8 @@ SOFTWARE.
 #undef ETL_FILE
 #define ETL_FILE "47"
 
+#if ETL_HAS_ATOMIC
+
 namespace etl
 {
   template <const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
@@ -237,7 +239,7 @@ namespace etl
 
       if (next_index != read.load(etl::memory_order_acquire))
       {
-        ::new (&p_buffer[write_index]) T(std::forward<Args>(args)...);
+        ::new (&p_buffer[write_index]) T(ETL_STD::forward<Args>(args)...);
 
         write.store(next_index, etl::memory_order_release);
 
@@ -470,6 +472,8 @@ namespace etl
     typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[RESERVED_SIZE];
   };
 }
+
+#endif
 
 #undef ETL_FILE
 

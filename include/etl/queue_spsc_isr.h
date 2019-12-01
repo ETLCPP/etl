@@ -42,6 +42,8 @@ SOFTWARE.
 #include "memory_model.h"
 #include "integral_limits.h"
 
+#include "stl/utility.h"
+
 #undef ETL_FILE
 #define ETL_FILE "46"
 
@@ -80,7 +82,7 @@ namespace etl
     template <typename ... Args>
     bool emplace_from_isr(Args&&... args)
     {
-      return emplace_implementation(std::forward<Args>(args)...);
+      return emplace_implementation(ETL_STD::forward<Args>(args)...);
     }
 #endif
 
@@ -205,7 +207,7 @@ namespace etl
     {
       if (current_size != MAX_SIZE)
       {
-        ::new (&p_buffer[write_index]) T(std::forward<Args>(args)...);
+        ::new (&p_buffer[write_index]) T(ETL_STD::forward<Args>(args)...);
 
         write_index = get_next_index(write_index, MAX_SIZE);
 
@@ -438,7 +440,7 @@ namespace etl
     {
       TAccess::lock();
 
-      bool result = this->emplace_implementation(std::forward<Args>(args)...);
+      bool result = this->emplace_implementation(ETL_STD::forward<Args>(args)...);
 
       TAccess::unlock();
 

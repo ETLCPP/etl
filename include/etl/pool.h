@@ -138,7 +138,7 @@ namespace etl
       return reinterpret_cast<T*>(allocate_item());
     }
 
-#if !ETL_CPP11_SUPPORTED || ETL_POOL_CPP03_CODE || defined(ETL_STLPORT) || defined(ETL_NO_STL)
+#if !ETL_CPP11_SUPPORTED || ETL_POOL_CPP03_CODE || defined(ETL_STLPORT)
     //*************************************************************************
     /// Allocate storage for an object from the pool and create default.
     /// If asserts or exceptions are enabled and there are no more free items an
@@ -224,7 +224,7 @@ namespace etl
 
       if (p)
       {
-        ::new (p) T(std::forward<Args>(args)...);
+        ::new (p) T(ETL_STD::forward<Args>(args)...);
       }
 
       return p;
@@ -497,7 +497,7 @@ namespace etl
       return ipool::allocate<U>();
     }
 
-#if !ETL_CPP11_SUPPORTED || ETL_POOL_CPP03_CODE || defined(ETL_STLPORT) || defined(ETL_NO_STL)
+#if !ETL_CPP11_SUPPORTED || ETL_POOL_CPP03_CODE || defined(ETL_STLPORT)
     //*************************************************************************
     /// Allocate storage for an object from the pool and create with default.
     /// If asserts or exceptions are enabled and there are no more free items an
@@ -571,7 +571,7 @@ namespace etl
     {
       ETL_STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
       ETL_STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
-      return ipool::create<U>(std::forward<Args>(args)...);
+      return ipool::create<U>(ETL_STD::forward<Args>(args)...);
     }
 #endif
 
@@ -648,7 +648,7 @@ namespace etl
       return base_t::template allocate<U>();
     }
 
-#if !ETL_CPP11_SUPPORTED || ETL_POOL_CPP03_CODE || defined(ETL_STLPORT) || defined(ETL_NO_STL)
+#if !ETL_CPP11_SUPPORTED || ETL_POOL_CPP03_CODE || defined(ETL_STLPORT)
     //*************************************************************************
     /// Allocate storage for an object from the pool and create with default.
     /// If asserts or exceptions are enabled and there are no more free items an
@@ -724,7 +724,7 @@ namespace etl
     {
       ETL_STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
       ETL_STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
-      return base_t::template create<U>(std::forward<Args>(args)...);
+      return base_t::template create<U>(ETL_STD::forward<Args>(args)...);
     }
 #endif
 

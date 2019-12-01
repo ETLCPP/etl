@@ -31,10 +31,13 @@ SOFTWARE.
 #ifndef ETL_NO_STL_TEST_ITERATORS_INCLUDED
 #define ETL_NO_STL_TEST_ITERATORS_INCLUDED
 
-#include "etl/stl/alternate/iterator.h"
+#include "etl/platform.h"
+#include "etl/iterator.h"
+
+#include "etl/stl/iterator.h"
 
 template <typename T>
-struct non_random_iterator : public etlstd::iterator<etlstd::bidirectional_iterator_tag, T>
+struct non_random_iterator : public etl::iterator<ETL_BIDIRECTIONAL_ITERATOR_TAG, T>
 {
   non_random_iterator()
     : ptr(nullptr)
@@ -113,7 +116,7 @@ bool operator !=(const non_random_iterator<T>& lhs, const non_random_iterator<T>
 }
 
 template <typename T>
-struct random_iterator : public etlstd::iterator<etlstd::random_access_iterator_tag, T>
+struct random_iterator : public etl::iterator<ETL_RANDOM_ACCESS_ITERATOR_TAG, T>
 {
   random_iterator()
     : ptr(nullptr)

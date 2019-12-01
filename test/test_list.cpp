@@ -37,7 +37,7 @@ SOFTWARE.
 #include <array>
 #include <list>
 #include <vector>
-
+#include <functional>
 
 namespace
 {
@@ -168,6 +168,7 @@ namespace
       CHECK(!data.empty());
     }
 
+#if !defined(ETL_NO_STL)
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
@@ -182,6 +183,7 @@ namespace
       CHECK_EQUAL(ItemNDC("2"), *i_item++);
       CHECK_EQUAL(ItemNDC("3"), *i_item++);
     }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_copy_constructor)

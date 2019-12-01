@@ -317,6 +317,7 @@ namespace
       CHECK(text2.truncated());
     }
 
+#if !defined(ETL_NO_STL)
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_construct_initializer_list)
     {
@@ -341,6 +342,7 @@ namespace
       CHECK(is_equal);
       CHECK(text.truncated());
     }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assignment)

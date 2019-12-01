@@ -39,6 +39,7 @@ SOFTWARE.
 #include <vector>
 #include <string>
 #include <list>
+#include <functional>
 
 namespace
 {
@@ -172,6 +173,7 @@ namespace
       CHECK(are_equal);
     }
 
+#if !defined(ETL_NO_STL)
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
@@ -189,6 +191,7 @@ namespace
       are_equal = std::equal(data2.begin(), data2.end(), compare.begin());
       CHECK(are_equal);
     }
+#endif
 
     //*************************************************************************
     TEST(test_destruct_via_iforward_list)
@@ -1293,7 +1296,6 @@ namespace
 
       are_equal = std::equal(data2.begin(), data2.end(), compare_data.begin());
       CHECK(are_equal);
-
     }
 
     //*************************************************************************

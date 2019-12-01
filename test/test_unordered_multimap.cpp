@@ -77,8 +77,8 @@ namespace
     typedef TestDataDC<std::string>  DC;
     typedef TestDataNDC<std::string> NDC;
 
-    typedef std::pair<std::string, DC>  ElementDC;
-    typedef std::pair<std::string, NDC> ElementNDC;
+    typedef ETL_PAIR<std::string, DC>  ElementDC;
+    typedef ETL_PAIR<std::string, NDC> ElementNDC;
 
     typedef etl::unordered_multimap<std::string, DC,  SIZE, SIZE / 2, simple_hash> DataDC;
     typedef etl::unordered_multimap<std::string, NDC, SIZE, SIZE / 2, simple_hash> DataNDC;
@@ -313,12 +313,12 @@ namespace
       CHECK_EQUAL(5U, data.size());
 
       DataNDC::iterator idata;
-      
+
       idata = data.find(K0);
-      
+
       std::string k = idata->first;
       NDC n = idata->second;
-      
+
       CHECK(idata != data.end());
       CHECK(idata->first  == K0);
       CHECK(idata->second == N0);
@@ -350,7 +350,7 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.insert(std::make_pair(K10, N10)), etl::unordered_multimap_full);
+      CHECK_THROW(data.insert(ETL_MAKE_PAIR(K10, N10)), etl::unordered_multimap_full);
     }
 
     //*************************************************************************
@@ -506,7 +506,7 @@ namespace
     {
       DataNDC data(equal_data.begin(), equal_data.end());
 
-      std::pair<DataNDC::iterator, DataNDC::iterator> result;
+      ETL_PAIR<DataNDC::iterator, DataNDC::iterator> result;
 
       result = data.equal_range(K10);
       CHECK(result.first  == data.begin());
@@ -532,7 +532,7 @@ namespace
     {
       const DataNDC data(equal_data.begin(), equal_data.end());
 
-      std::pair<DataNDC::const_iterator, DataNDC::const_iterator> result;
+      ETL_PAIR<DataNDC::const_iterator, DataNDC::const_iterator> result;
 
       result = data.equal_range(K10);
       CHECK(result.first == data.begin());
@@ -620,10 +620,10 @@ namespace
     {
       etl::unordered_multimap<uint32_t, char, 5> map;
 
-      map.insert(std::make_pair(1, 'b'));
-      map.insert(std::make_pair(2, 'c'));
-      map.insert(std::make_pair(3, 'd'));
-      map.insert(std::make_pair(4, 'e'));
+      map.insert(ETL_MAKE_PAIR(1, 'b'));
+      map.insert(ETL_MAKE_PAIR(2, 'c'));
+      map.insert(ETL_MAKE_PAIR(3, 'd'));
+      map.insert(ETL_MAKE_PAIR(4, 'e'));
 
       auto it = map.find(1);
       map.erase(it);

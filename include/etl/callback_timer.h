@@ -39,6 +39,7 @@ SOFTWARE.
 #include "static_assert.h"
 #include "timer.h"
 #include "atomic.h"
+#include "error_handler.h"
 
 #if ETL_CPP11_SUPPORTED
   #include "delegate.h"
@@ -47,18 +48,27 @@ SOFTWARE.
 #undef ETL_FILE
 #define ETL_FILE "43"
 
-#if !defined(ETL_CALLBACK_TIMER_USE_ATOMIC_LOCK) && !defined(ETL_CALLBACK_TIMER_USE_INTERRUPT_LOCK)
-  #error ETL_CALLBACK_TIMER_USE_ATOMIC_LOCK or ETL_CALLBACK_TIMER_USE_INTERRUPT_LOCK not defined
-#endif
+#if defined(ETL_IN_UNIT_TEST) && defined(ETL_NO_STL)
+  #define ETL_DISABLE_TIMER_UPDATES
+  #define ETL_ENABLE_TIMER_UPDATES
+  #define ETL_TIMER_UPDATES_ENABLED true
 
-#if defined(ETL_CALLBACK_TIMER_USE_ATOMIC_LOCK) && defined(ETL_CALLBACK_TIMER_USE_INTERRUPT_LOCK)
-  #error Only define one of ETL_CALLBACK_TIMER_USE_ATOMIC_LOCK or ETL_CALLBACK_TIMER_USE_INTERRUPT_LOCK
-#endif
+  #undef ETL_CALLBACK_TIMER_USE_ATOMIC_LOCK
+  #undef ETL_CALLBACK_TIMER_USE_INTERRUPT_LOCK
+#else
+  #if !defined(ETL_CALLBACK_TIMER_USE_ATOMIC_LOCK) && !defined(ETL_CALLBACK_TIMER_USE_INTERRUPT_LOCK)
+    #error ETL_CALLBACK_TIMER_USE_ATOMIC_LOCK or ETL_CALLBACK_TIMER_USE_INTERRUPT_LOCK not defined
+  #endif
 
-#if defined(ETL_CALLBACK_TIMER_USE_ATOMIC_LOCK)
-  #define ETL_DISABLE_TIMER_UPDATES (++process_semaphore)
-  #define ETL_ENABLE_TIMER_UPDATES  (--process_semaphore)
-  #define ETL_TIMER_UPDATES_ENABLED (process_semaphore.load() == 0)
+  #if defined(ETL_CALLBACK_TIMER_USE_ATOMIC_LOCK) && defined(ETL_CALLBACK_TIMER_USE_INTERRUPT_LOCK)
+    #error Only define one of ETL_CALLBACK_TIMER_USE_ATOMIC_LOCK or ETL_CALLBACK_TIMER_USE_INTERRUPT_LOCK
+  #endif
+
+  #if defined(ETL_CALLBACK_TIMER_USE_ATOMIC_LOCK)
+    #define ETL_DISABLE_TIMER_UPDATES (++process_semaphore)
+    #define ETL_ENABLE_TIMER_UPDATES  (--process_semaphore)
+    #define ETL_TIMER_UPDATES_ENABLED (process_semaphore.load() == 0)
+  #endif
 #endif
 
 #if defined(ETL_CALLBACK_TIMER_USE_INTERRUPT_LOCK)
