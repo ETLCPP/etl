@@ -207,17 +207,6 @@ namespace etlstd
   }
 
   //***************************************************************************
-  // reverse
-  template<typename TIterator>
-  void reverse(TIterator first, TIterator last)
-  {
-    while ((first != last) && (first != --last))
-    {
-      ETLSTD::swap(*first++, *last);
-    }
-  }
-
-  //***************************************************************************
   // move
   template <typename TIterator1, typename TIterator2>
   TIterator2 move(TIterator1 sb, TIterator1 se, TIterator2 db)
