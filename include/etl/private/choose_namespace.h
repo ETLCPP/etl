@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2018 jwellbelove
+Copyright(c) 2019 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,19 +28,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_STL_ALGORITHM_INCLUDED
-#define ETL_STL_ALGORITHM_INCLUDED
+#ifndef ETL_STL_CHOOSE_NAMESPACE_INCLUDED
+#define ETL_STL_CHOOSE_NAMESPACE_INCLUDED
 
 #include "../platform.h"
 
-#include "../private/choose_namespace.h"
-#include "../private/choose_tag_types.h"
-#include "../private/choose_pair_types.h"
-
 #if defined(ETL_NO_STL)
-  #include "alternate/algorithm.h"
+  #ifndef ETL_STD
+    #define ETL_STD etlstd /// Namespace for the alternate STL.
+  #endif
 #else
-  #include <algorithm>
+  #ifndef ETL_STD
+    #define ETL_STD std    /// Namespace for conventional STL
+  #endif
 #endif
 
 #endif

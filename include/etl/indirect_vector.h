@@ -34,6 +34,7 @@ SOFTWARE.
 #include "platform.h"
 #include "vector.h"
 #include "pool.h"
+#include "iterator.h"
 
 #include "stl/iterator.h"
 #include "stl/functional.h"
@@ -99,7 +100,7 @@ namespace etl
     //*************************************************************************
     /// iterator.
     //*************************************************************************
-    class iterator : public std::iterator<std::random_access_iterator_tag, T>
+    class iterator : public etl::iterator<ETL_RANDOM_ACCESS_ITERATOR_TAG, T>
     {
     public:
 
@@ -237,7 +238,7 @@ namespace etl
     //*************************************************************************
     /// const_iterator.
     //*************************************************************************
-    class const_iterator : public std::iterator<std::random_access_iterator_tag, const T>
+    class const_iterator : public etl::iterator<ETL_RANDOM_ACCESS_ITERATOR_TAG, const T>
     {
     public:
 
@@ -362,8 +363,8 @@ namespace etl
       lookup_itr_t lookup_itr;
     };
 
-    typedef std::reverse_iterator<iterator>       reverse_iterator;
-    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef ETL_STD::reverse_iterator<iterator>       reverse_iterator;
+    typedef ETL_STD::reverse_iterator<const_iterator> const_reverse_iterator;
 
   protected:
 
@@ -640,10 +641,10 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-      ETL_STATIC_ASSERT((etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename std::iterator_traits<TIterator>::value_type>::type>::value), "Iterator type does not match container type");
+      ETL_STATIC_ASSERT((etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename ETL_STD::iterator_traits<TIterator>::value_type>::type>::value), "Iterator type does not match container type");
 
 #if defined(ETL_DEBUG)
-      difference_type d = std::distance(first, last);
+      difference_type d = ETL_STD::distance(first, last);
       ETL_ASSERT(static_cast<size_t>(d) <= capacity(), ETL_ERROR(vector_full));
 #endif
 
@@ -709,7 +710,7 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(size() != capacity(), ETL_ERROR(vector_full));
 #endif
-      T* p = storage.create<T>(std::move(value));
+      T* p = storage.create<T>(ETL_STD::move(value));
       lookup.push_back(p);
     }
 #endif
@@ -723,7 +724,7 @@ namespace etl
     template <typename ... Args>
     void emplace_back(Args && ... args)
     {
-      T* p = storage.create<T>(std::forward<Args>(args)...);
+      T* p = storage.create<T>(ETL_STD::forward<Args>(args)...);
       lookup.push_back(p);
     }
 #else
@@ -815,7 +816,7 @@ namespace etl
     {
       ETL_ASSERT(size() + 1 <= capacity(), ETL_ERROR(vector_full));
 
-      T* p = storage.create<T>(T(std::move(value)));
+      T* p = storage.create<T>(T(ETL_STD::move(value)));
       position = iterator(lookup.insert(position.lookup_itr, p));
 
       return position;
@@ -831,7 +832,7 @@ namespace etl
     {
       ETL_ASSERT(!full(), ETL_ERROR(vector_full));
 
-      T* p = storage.create<T>(T(std::forward<Args>(args)...));
+      T* p = storage.create<T>(T(ETL_STD::forward<Args>(args)...));
       position = iterator(lookup.insert(position.lookup_itr, p));
 
       return position;
@@ -914,7 +915,7 @@ namespace etl
     template <class TIterator>
     void insert(iterator position, TIterator first, TIterator last)
     {
-      size_t count = size_t(std::distance(first, last));
+      size_t count = size_t(ETL_STD::distance(first, last));
 
       ETL_ASSERT((size() + count) <= capacity(), ETL_ERROR(vector_full));
 
@@ -990,7 +991,7 @@ namespace etl
         iterator itr = rhs.begin();
         while (itr != rhs.end())
         {
-          push_back(std::move(*itr));
+          push_back(ETL_STD::move(*itr));
           ++itr;
         }
 
@@ -1060,7 +1061,7 @@ namespace etl
     //*************************************************************************
     void sort()
     {
-      sort_function(begin(), end(), std::less<T>());
+      sort_function(begin(), end(), ETL_STD::less<T>());
     }
 
     //*************************************************************************
@@ -1077,7 +1078,7 @@ namespace etl
     //*************************************************************************
     void sort(iterator first, iterator last)
     {
-      sort_function(first, last, std::less<T>());
+      sort_function(first, last, ETL_STD::less<T>());
     }
 
     //*************************************************************************
@@ -1094,7 +1095,7 @@ namespace etl
     //*************************************************************************
     void stable_sort()
     {
-      stable_sort_function(begin(), end(), std::less<T>());
+      stable_sort_function(begin(), end(), ETL_STD::less<T>());
     }
 
     //*************************************************************************
@@ -1111,7 +1112,7 @@ namespace etl
     //*************************************************************************
     void stable_sort(iterator first, iterator last)
     {
-      stable_sort_function(first, last, std::less<T>());
+      stable_sort_function(first, last, ETL_STD::less<T>());
     }
 
     //*************************************************************************
@@ -1128,7 +1129,7 @@ namespace etl
     //*************************************************************************
     bool is_sorted() const
     {
-      return is_sorted_function(cbegin(), cend(), std::less<T>());
+      return is_sorted_function(cbegin(), cend(), ETL_STD::less<T>());
     }
 
     //*************************************************************************
@@ -1145,7 +1146,7 @@ namespace etl
     //*************************************************************************
     bool is_sorted(const_iterator first, const_iterator last) const
     {
-      return is_sorted_function(first, last, std::less<T>());
+      return is_sorted_function(first, last, ETL_STD::less<T>());
     }
 
     //*************************************************************************
@@ -1197,7 +1198,7 @@ namespace etl
 
         while (itr != other.end())
         {
-          push_back(std::move(*itr));
+          push_back(ETL_STD::move(*itr));
           ++itr;
         }
 
@@ -1286,7 +1287,7 @@ namespace etl
   template <typename T>
   bool operator ==(const etl::iindirect_vector<T>& lhs, const etl::iindirect_vector<T>& rhs)
   {
-    return (lhs.size() == rhs.size()) && std::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (lhs.size() == rhs.size()) && ETL_STD::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //***************************************************************************
@@ -1312,7 +1313,7 @@ namespace etl
   template <typename T>
   bool operator <(const etl::iindirect_vector<T>& lhs, const etl::iindirect_vector<T>& rhs)
   {
-    return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    return ETL_STD::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
 
   //***************************************************************************
@@ -1449,7 +1450,7 @@ namespace etl
     indirect_vector(indirect_vector&& other)
       : etl::iindirect_vector<T>(lookup_vector, storage_pool)
     {
-      this->move_container(std::move(other));
+      this->move_container(ETL_STD::move(other));
     }
 
     //*************************************************************************
@@ -1457,7 +1458,7 @@ namespace etl
     //*************************************************************************
     indirect_vector& operator = (indirect_vector&& rhs)
     {
-      this->move_container(std::move(rhs));
+      this->move_container(ETL_STD::move(rhs));
 
       return *this;
     }
@@ -1577,7 +1578,7 @@ namespace etl
       : etl::iindirect_vector<T>(lookup_, pool_)
     {
       ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
-      this->move_container(std::move(other));
+      this->move_container(ETL_STD::move(other));
     }
 
     //*************************************************************************
@@ -1585,7 +1586,7 @@ namespace etl
     //*************************************************************************
     indirect_vector& operator = (indirect_vector&& rhs)
     {
-      this->move_container(std::move(rhs));
+      this->move_container(ETL_STD::move(rhs));
 
       return *this;
     }

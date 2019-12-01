@@ -31,6 +31,7 @@ SOFTWARE.
 #undef min
 #undef max
 
+#include "etl/stl/functional.h"
 #include "etl/stl/alternate/functional.h"
 
 namespace

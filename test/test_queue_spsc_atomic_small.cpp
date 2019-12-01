@@ -34,6 +34,8 @@ SOFTWARE.
 
 #include "etl/queue_spsc_atomic.h"
 
+#if ETL_HAS_ATOMIC
+
 #if defined(ETL_COMPILER_MICROSOFT)
   #include <Windows.h>
 #endif
@@ -381,3 +383,5 @@ namespace
 #endif
   };
 }
+
+#endif

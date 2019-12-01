@@ -37,6 +37,8 @@ SOFTWARE.
 
 #include "etl/queue_mpmc_mutex.h"
 
+#if ETL_HAS_MUTEX
+
 #if defined(ETL_COMPILER_MICROSOFT)
   #include <Windows.h>
 #endif
@@ -482,3 +484,5 @@ namespace
 #endif
   };
 }
+
+#endif

@@ -98,7 +98,7 @@ namespace etl
   /// Can be used as a reference type for all reference_flat_multisets containing a specific type.
   ///\ingroup reference_flat_multiset
   //***************************************************************************
-  template <typename T, typename TKeyCompare = std::less<T> >
+  template <typename T, typename TKeyCompare = ETL_STD::less<T> >
   class ireference_flat_multiset
   {
   public:
@@ -119,7 +119,7 @@ namespace etl
   public:
 
     //*************************************************************************
-    class iterator : public std::iterator<std::bidirectional_iterator_tag, value_type>
+    class iterator : public etl::iterator<ETL_BIDIRECTIONAL_ITERATOR_TAG, value_type>
     {
     public:
 
@@ -217,7 +217,7 @@ namespace etl
     };
 
     //*************************************************************************
-    class const_iterator : public std::iterator<std::bidirectional_iterator_tag, const value_type>
+    class const_iterator : public etl::iterator<ETL_BIDIRECTIONAL_ITERATOR_TAG, const value_type>
     {
     public:
 
@@ -316,9 +316,9 @@ namespace etl
 
   public:
 
-    typedef std::reverse_iterator<iterator>       reverse_iterator;
-    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-    typedef typename std::iterator_traits<iterator>::difference_type difference_type;
+    typedef ETL_STD::reverse_iterator<iterator>       reverse_iterator;
+    typedef ETL_STD::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef typename ETL_STD::iterator_traits<iterator>::difference_type difference_type;
 
     //*********************************************************************
     /// Returns an iterator to the beginning of the reference_flat_multiset.
@@ -439,7 +439,7 @@ namespace etl
     void assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      difference_type d = std::distance(first, last);
+      difference_type d = ETL_STD::distance(first, last);
       ETL_ASSERT(d <= difference_type(capacity()), ETL_ERROR(flat_multiset_full));
 #endif
 
@@ -456,13 +456,13 @@ namespace etl
     /// If asserts or exceptions are enabled, emits reference_flat_multiset_full if the reference_flat_multiset is already full.
     ///\param value    The value to insert.
     //*********************************************************************
-    std::pair<iterator, bool> insert(value_type& value)
+    ETL_PAIR<iterator, bool> insert(value_type& value)
     {
-      std::pair<iterator, bool> result(end(), false);
+      ETL_PAIR<iterator, bool> result(end(), false);
 
       ETL_ASSERT(!lookup.full(), ETL_ERROR(flat_multiset_full));
 
-      iterator i_element = std::lower_bound(begin(), end(), value, compare);
+      iterator i_element = ETL_STD::lower_bound(begin(), end(), value, compare);
 
       if (i_element == end())
       {
@@ -516,7 +516,7 @@ namespace etl
     //*********************************************************************
     size_t erase(parameter_t key)
     {
-      std::pair<iterator, iterator> range = equal_range(key);
+      ETL_PAIR<iterator, iterator> range = equal_range(key);
 
       if (range.first == end())
       {
@@ -524,7 +524,7 @@ namespace etl
       }
       else
       {
-        size_t d = std::distance(range.first, range.second);
+        size_t d = ETL_STD::distance(range.first, range.second);
         erase(range.first, range.second);
         return d;
       }
@@ -566,7 +566,7 @@ namespace etl
     //*********************************************************************
     iterator find(parameter_t key)
     {
-      iterator itr = std::lower_bound(begin(), end(), key, compare);
+      iterator itr = ETL_STD::lower_bound(begin(), end(), key, compare);
 
       if (itr != end())
       {
@@ -590,7 +590,7 @@ namespace etl
     //*********************************************************************
     const_iterator find(parameter_t key) const
     {
-      const_iterator itr = std::lower_bound(begin(), end(), key, compare);
+      const_iterator itr = ETL_STD::lower_bound(begin(), end(), key, compare);
 
       if (itr != end())
       {
@@ -614,9 +614,9 @@ namespace etl
     //*********************************************************************
     size_t count(parameter_t key) const
     {
-      std::pair<const_iterator, const_iterator> range = equal_range(key);
+      ETL_PAIR<const_iterator, const_iterator> range = equal_range(key);
 
-      return std::distance(range.first, range.second);
+      return ETL_STD::distance(range.first, range.second);
     }
 
     //*********************************************************************
@@ -626,7 +626,7 @@ namespace etl
     //*********************************************************************
     iterator lower_bound(parameter_t key)
     {
-      return std::lower_bound(begin(), end(), key, compare);
+      return ETL_STD::lower_bound(begin(), end(), key, compare);
     }
 
     //*********************************************************************
@@ -636,7 +636,7 @@ namespace etl
     //*********************************************************************
     const_iterator lower_bound(parameter_t key) const
     {
-      return std::lower_bound(cbegin(), cend(), key, compare);
+      return ETL_STD::lower_bound(cbegin(), cend(), key, compare);
     }
 
     //*********************************************************************
@@ -646,7 +646,7 @@ namespace etl
     //*********************************************************************
     iterator upper_bound(parameter_t key)
     {
-      return std::upper_bound(begin(), end(), key, compare);
+      return ETL_STD::upper_bound(begin(), end(), key, compare);
     }
 
     //*********************************************************************
@@ -656,7 +656,7 @@ namespace etl
     //*********************************************************************
     const_iterator upper_bound(parameter_t key) const
     {
-      return std::upper_bound(cbegin(), cend(), key, compare);
+      return ETL_STD::upper_bound(cbegin(), cend(), key, compare);
     }
 
     //*********************************************************************
@@ -664,9 +664,9 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    std::pair<iterator, iterator> equal_range(parameter_t key)
+    ETL_PAIR<iterator, iterator> equal_range(parameter_t key)
     {
-      return std::equal_range(begin(), end(), key, compare);
+      return ETL_STD::equal_range(begin(), end(), key, compare);
     }
 
     //*********************************************************************
@@ -674,9 +674,9 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    std::pair<const_iterator, const_iterator> equal_range(parameter_t key) const
+    ETL_PAIR<const_iterator, const_iterator> equal_range(parameter_t key) const
     {
-      return std::equal_range(begin(), end(), key, compare);
+      return ETL_STD::equal_range(begin(), end(), key, compare);
     }
 
     //*************************************************************************
@@ -748,9 +748,9 @@ namespace etl
     ///\param i_element The place to insert.
     ///\param value     The value to insert.
     //*********************************************************************
-    std::pair<iterator, bool> insert_at(iterator i_element, reference value)
+    ETL_PAIR<iterator, bool> insert_at(iterator i_element, reference value)
     {
-      std::pair<iterator, bool> result(end(), false);
+      ETL_PAIR<iterator, bool> result(end(), false);
 
       if (i_element == end())
       {
@@ -805,7 +805,7 @@ namespace etl
   /// An reference flat set
   ///\ingroup reference_flat_multiset
   //***************************************************************************
-  template <typename TKey, const size_t MAX_SIZE_, typename TKeyCompare = std::less<TKey> >
+  template <typename TKey, const size_t MAX_SIZE_, typename TKeyCompare = ETL_STD::less<TKey> >
   class reference_flat_multiset : public ireference_flat_multiset<TKey, TKeyCompare>
   {
   public:
@@ -868,7 +868,7 @@ namespace etl
   template <typename T, typename TKeyCompare>
   bool operator ==(const etl::ireference_flat_multiset<T, TKeyCompare>& lhs, const etl::ireference_flat_multiset<T, TKeyCompare>& rhs)
   {
-    return (lhs.size() == rhs.size()) && std::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (lhs.size() == rhs.size()) && ETL_STD::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //***************************************************************************

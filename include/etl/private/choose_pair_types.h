@@ -28,19 +28,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_STL_CHOOSE_NAMESPACE_INCLUDED
-#define ETL_STL_CHOOSE_NAMESPACE_INCLUDED
+#ifndef ETL_STL_CHOOSE_PAIR_TYPES_INCLUDED
+#define ETL_STL_CHOOSE_PAIR_TYPES_INCLUDED
 
-#include "../../platform.h"
+#include "../platform.h"
 
-#if defined(ETL_IN_UNIT_TEST)
-  #ifndef ETLSTD
-    #define ETLSTD etlstd // Used for the unit tests.
-  #endif
+#if defined(ETL_IN_UNIT_TEST) // When in the unit tests we have to ensure that the STL and ETL are using the same definitions.
+  #include <utility>
+  #define ETL_PAIR      std::pair
+  #define ETL_MAKE_PAIR std::make_pair
 #else
-  #ifndef ETLSTD
-    #define ETLSTD std    // Used for normal code.
-  #endif
+  #define ETL_PAIR      etlstd::pair
+  #define ETL_MAKE_PAIR etlstd::make_pair
 #endif
 
 #endif

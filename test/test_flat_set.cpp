@@ -101,7 +101,7 @@ namespace
     std::vector<NDC> initial_data;
     std::vector<NDC> excess_data;
     std::vector<NDC> different_data;
-    
+
     std::vector<int> int_data;
 
     struct D1
@@ -294,6 +294,7 @@ namespace
       CHECK(!data.empty());
     }
 
+#if !defined(ETL_NO_STL)
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
@@ -309,6 +310,7 @@ namespace
                                 compare_data.begin());
       CHECK(isEqual);
     }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assignment)
@@ -859,8 +861,8 @@ namespace
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      std::pair<Compare_DataNDC::iterator, Compare_DataNDC::iterator> i_compare = compare_data.equal_range(N5);
-      std::pair<DataNDC::iterator, DataNDC::iterator> i_data = data.equal_range(N5);
+      ETL_PAIR<Compare_DataNDC::iterator, Compare_DataNDC::iterator> i_compare = compare_data.equal_range(N5);
+      ETL_PAIR<DataNDC::iterator, DataNDC::iterator> i_data = data.equal_range(N5);
 
       CHECK_EQUAL(std::distance(compare_data.begin(), i_compare.first),  std::distance(data.begin(), i_data.first));
       CHECK_EQUAL(std::distance(compare_data.begin(), i_compare.second), std::distance(data.begin(), i_data.second));
@@ -871,7 +873,7 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      std::pair<DataNDC::iterator, DataNDC::iterator> i_data;
+      ETL_PAIR<DataNDC::iterator, DataNDC::iterator> i_data;
 
       i_data = data.equal_range(NX);
       CHECK_EQUAL(data.begin(),   i_data.first);

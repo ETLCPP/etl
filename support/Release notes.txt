@@ -1,4 +1,9 @@
 ===============================================================================
+15.0.0
+Unit tests and library code updated so that the ETL may be compiled and tested
+with and without STL support.
+
+===============================================================================
 14.38.2
 Added alternate 'No STL' reverse_iterator unit tests.
 Fixed missing equality operator for reverse_iterator.

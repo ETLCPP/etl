@@ -108,8 +108,8 @@ namespace etl
     typedef const T*                              const_pointer;
     typedef T*                                    iterator;
     typedef const T*                              const_iterator;
-    typedef std::reverse_iterator<iterator>       reverse_iterator;
-    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef ETL_STD::reverse_iterator<iterator>       reverse_iterator;
+    typedef ETL_STD::reverse_iterator<const_iterator> const_reverse_iterator;
 
     //*************************************************************************
     /// Default constructor.
@@ -137,7 +137,7 @@ namespace etl
     template <typename TIterator>
     ETL_CONSTEXPR array_view(const TIterator begin_, const TIterator end_)
       : mbegin(etl::addressof(*begin_)),
-        mend(etl::addressof(*begin_) + std::distance(begin_, end_))
+        mend(etl::addressof(*begin_) + ETL_STD::distance(begin_, end_))
     {
     }
 
@@ -356,7 +356,7 @@ namespace etl
     void assign(const TIterator begin_, const TIterator end_)
     {
       mbegin = etl::addressof(*begin_);
-      mend   = etl::addressof(*begin_) + std::distance(begin_, end_);
+      mend   = etl::addressof(*begin_) + ETL_STD::distance(begin_, end_);
     }
 
     //*************************************************************************
@@ -411,8 +411,8 @@ namespace etl
     //*************************************************************************
     void swap(array_view& other)
     {
-      std::swap(mbegin, other.mbegin);
-      std::swap(mend, other.mend);
+      ETL_STD::swap(mbegin, other.mbegin);
+      ETL_STD::swap(mend, other.mend);
     }
 
     //*************************************************************************
@@ -437,7 +437,7 @@ namespace etl
     friend bool operator == (const array_view<T>& lhs, const array_view<T>& rhs)
     {
       return (lhs.size() == rhs.size()) &&
-             std::equal(lhs.begin(), lhs.end(), rhs.begin());
+             ETL_STD::equal(lhs.begin(), lhs.end(), rhs.begin());
     }
 
     //*************************************************************************
@@ -453,7 +453,7 @@ namespace etl
     //*************************************************************************
     friend bool operator < (const array_view<T>& lhs, const array_view<T>& rhs)
     {
-      return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+      return ETL_STD::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
     }
 
     //*************************************************************************

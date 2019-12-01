@@ -500,12 +500,12 @@ namespace
           c = c_;
         }
 
-        void read(int i_)
+        void read(int i_) override
         {
           i = i_;
         }
 
-        void read(const std::string& s_)
+        void read(const std::string& s_) override
         {
           s = s_;
         }

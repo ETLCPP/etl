@@ -104,7 +104,7 @@ namespace etl
 
   protected:
 
-    typedef std::pair<TKey, TValue> key_value_t;
+    typedef ETL_PAIR<TKey, TValue> key_value_t;
 
     bool write_through; ///< If true, the cache should write changed items back to the store immediately. If false then a flush() or destruct will be required.
 
