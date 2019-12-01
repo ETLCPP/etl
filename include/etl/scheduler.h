@@ -285,7 +285,7 @@ namespace etl
 
       if (!task_list.full())
       {
-        typename task_list_t::iterator itask = std::upper_bound(task_list.begin(),
+        typename task_list_t::iterator itask = ETL_STD::upper_bound(task_list.begin(),
                                                                 task_list.end(),
                                                                 task.get_task_priority(),
                                                                 compare_priority());

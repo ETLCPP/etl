@@ -34,9 +34,10 @@ SOFTWARE.
 #include "../../platform.h"
 #include "../../type_traits.h"
 
-#include "choose_namespace.h"
+#include "../../private/choose_tag_types.h"
+#include "../../private/choose_pair_types.h"
 
-namespace ETLSTD
+namespace etlstd
 {
   //******************************************************************************
   template <typename T1, typename T2>

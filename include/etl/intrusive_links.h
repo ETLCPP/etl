@@ -40,6 +40,7 @@ SOFTWARE.
 #include "error_handler.h"
 
 #include "stl/utility.h"
+#include "stl/algorithm.h"
 
 #undef ETL_FILE
 #define ETL_FILE "22"
@@ -89,22 +90,22 @@ namespace etl
   template <const size_t ID_>
   struct forward_link
   {
-      enum
-      {
-        ID = ID_,
-      };
+    enum
+    {
+      ID = ID_,
+    };
 
-      void clear()
-      {
-        etl_next = nullptr;
-      }
+    void clear()
+    {
+      etl_next = nullptr;
+    }
 
-      bool is_linked() const
-      {
-        return etl_next != nullptr;
-      }
+    bool is_linked() const
+    {
+      return etl_next != nullptr;
+    }
 
-      forward_link* etl_next;
+    forward_link* etl_next;
   };
 
   // Reference, Reference
@@ -246,29 +247,29 @@ namespace etl
   template <const size_t ID_>
   struct bidirectional_link
   {
-      enum
-      {
-        ID = ID_,
-      };
+    enum
+    {
+      ID = ID_,
+    };
 
-      void clear()
-      {
-        etl_previous = nullptr;
-        etl_next     = nullptr;
-      }
+    void clear()
+    {
+      etl_previous = nullptr;
+      etl_next     = nullptr;
+    }
 
-      bool is_linked() const
-      {
-        return (etl_previous != nullptr) || (etl_next != nullptr);
-      }
+    bool is_linked() const
+    {
+      return (etl_previous != nullptr) || (etl_next != nullptr);
+    }
 
-      void reverse()
-      {
-        std::swap(etl_previous, etl_next);
-      }
+    void reverse()
+    {
+      ETL_STD::swap(etl_previous, etl_next);
+    }
 
-      bidirectional_link* etl_previous;
-      bidirectional_link* etl_next;
+    bidirectional_link* etl_previous;
+    bidirectional_link* etl_next;
 
     void unlink()
     {

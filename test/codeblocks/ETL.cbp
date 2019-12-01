@@ -25,6 +25,26 @@
 					<Add after="${TARGET_OUTPUT_DIR}${TARGET_OUTPUT_BASENAME}" />
 				</ExtraCommands>
 			</Target>
+			<Target title="Windows No STL">
+				<Option output="bin/Debug No STL/ETL" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-std=c++17" />
+					<Add option="-m32" />
+					<Add option="-g" />
+					<Add option="-D_DEBUG" />
+					<Add option="-DETL_NO_STL" />
+					<Add directory="../../src" />
+				</Compiler>
+				<Linker>
+					<Add option="-m32" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="${TARGET_OUTPUT_DIR}${TARGET_OUTPUT_BASENAME}" />
+				</ExtraCommands>
+			</Target>
 			<Target title="Linux">
 				<Option output="bin/Debug/ETL" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
@@ -41,7 +61,7 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="Windows 64">
-				<Option output="bin/Debug/ETL" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug 64/ETL" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -141,6 +161,7 @@
 		<Unit filename="../../../unittest-cpp/UnitTest++/Win32/TimeHelpers.cpp">
 			<Option target="Windows" />
 			<Option target="Windows 64" />
+			<Option target="Windows No STL" />
 		</Unit>
 		<Unit filename="../../../unittest-cpp/UnitTest++/Win32/TimeHelpers.h">
 			<Option target="&lt;{~None~}&gt;" />

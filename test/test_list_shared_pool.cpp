@@ -39,6 +39,7 @@ SOFTWARE.
 #include <array>
 #include <list>
 #include <vector>
+#include <functional>
 
 namespace
 {
@@ -231,6 +232,7 @@ namespace
       CHECK(pool.full());
     }
 
+#if !defined(ETL_NO_STL)
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
@@ -259,6 +261,7 @@ namespace
 
       CHECK(pool.full());
     }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_copy_constructor)

@@ -93,8 +93,8 @@ namespace etl
     typedef const T*                              const_pointer;
     typedef T*                                    iterator;
     typedef const T*                              const_iterator;
-    typedef std::reverse_iterator<iterator>       reverse_iterator;
-    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef ETL_STD::reverse_iterator<iterator>       reverse_iterator;
+    typedef ETL_STD::reverse_iterator<const_iterator> const_reverse_iterator;
 
     typedef typename etl::parameter_type<T>::type parameter_t;
 
@@ -310,7 +310,7 @@ namespace etl
     //*************************************************************************
     void fill(parameter_t value)
     {
-      std::fill(begin(), end(), value);
+      ETL_STD::fill(begin(), end(), value);
     }
 
     //*************************************************************************
@@ -322,7 +322,7 @@ namespace etl
     {
       for (size_t i = 0; i < SIZE; ++i)
       {
-        std::swap(ARRAY_[i], other.begin()[i]);
+        ETL_STD::swap(ARRAY_[i], other.begin()[i]);
       }
     }
   };
@@ -334,7 +334,7 @@ namespace etl
   bool operator == (const etl::array_wrapper<TL, SIZEL, ARRAYL>& lhs,
                     const etl::array_wrapper<TR, SIZER, ARRAYR>& rhs)
   {
-    return (SIZEL == SIZER) && std::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (SIZEL == SIZER) && ETL_STD::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //*************************************************************************
@@ -354,7 +354,7 @@ namespace etl
   bool operator < (const etl::array_wrapper<TL, SIZEL, ARRAYL>& lhs,
                    const etl::array_wrapper<TR, SIZER, ARRAYR>& rhs)
   {
-    return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    return ETL_STD::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
 
   //*************************************************************************

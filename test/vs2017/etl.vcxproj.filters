@@ -786,8 +786,14 @@
     <ClInclude Include="..\..\include\etl\indirect_vector.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\stl\alternate\choose_namespace.h">
-      <Filter>ETL\STL\Alternate</Filter>
+    <ClInclude Include="..\..\include\etl\private\choose_namespace.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\choose_tag_types.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\choose_pair_types.h">
+      <Filter>ETL\Private</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

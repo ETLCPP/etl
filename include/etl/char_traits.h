@@ -141,7 +141,7 @@ namespace etl
     {
       if (p != 0)
       {
-        std::fill_n(p, n, c);
+        ETL_STD::fill_n(p, n, c);
       }
 
       return p;
@@ -156,9 +156,9 @@ namespace etl
       }
       else
       {
-        etl::copy_n(std::reverse_iterator<char_type*>(src + count),
+        etl::copy_n(ETL_STD::reverse_iterator<char_type*>(src + count),
                     count,
-                    std::reverse_iterator<char_type*>(dest + count));
+                    ETL_STD::reverse_iterator<char_type*>(dest + count));
       }
 
       return dest;
