@@ -33,7 +33,8 @@ SOFTWARE.
 
 #include "../platform.h"
 
-#if defined(ETL_IN_UNIT_TEST) // When in the unit tests we have to ensure that the STL and ETL are using the same definitions.
+// When in the unit tests we have to ensure that the STL and ETL are using the same definitions.
+#if defined(ETL_IN_UNIT_TEST) || !defined(ETL_NO_STL)
   #include <iterator>
   #define ETL_INPUT_ITERATOR_TAG         std::input_iterator_tag
   #define ETL_OUTPUT_ITERATOR_TAG        std::output_iterator_tag

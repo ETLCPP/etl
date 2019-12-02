@@ -1,4 +1,9 @@
 ===============================================================================
+15.1.0
+Fixes to the conditional compilation of choose_tag_types.h and
+choose_pair_types.h to take into account ETL_NO_STL.
+
+===============================================================================
 15.0.0
 Unit tests and library code updated so that the ETL may be compiled and tested
 with and without STL support.
