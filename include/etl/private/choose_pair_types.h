@@ -33,7 +33,8 @@ SOFTWARE.
 
 #include "../platform.h"
 
-#if defined(ETL_IN_UNIT_TEST) // When in the unit tests we have to ensure that the STL and ETL are using the same definitions.
+// When in the unit tests we have to ensure that the STL and ETL are using the same definitions.
+#if defined(ETL_IN_UNIT_TEST) || !defined(ETL_NO_STL)
   #include <utility>
   #define ETL_PAIR      std::pair
   #define ETL_MAKE_PAIR std::make_pair
