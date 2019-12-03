@@ -251,6 +251,14 @@ namespace etl
     }
   };
 #endif
+  //***************************************************************************
+  /// make u32string from UTF-16 string literal or char32_t array
+  //***************************************************************************
+  template<const size_t MAX_SIZE>
+  etl::u32string<MAX_SIZE - 1> make_u32string(const char32_t (&string) [MAX_SIZE])
+  {
+    return etl::u32string<MAX_SIZE - 1>(string);
+  }
 }
 
 #include "private/minmax_pop.h"
