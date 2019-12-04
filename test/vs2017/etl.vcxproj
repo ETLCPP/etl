@@ -941,6 +941,7 @@
     <ClCompile Include="..\test_indirect_vector.cpp" />
     <ClCompile Include="..\test_indirect_vector_external_buffer.cpp" />
     <ClCompile Include="..\test_list_shared_pool.cpp" />
+    <ClCompile Include="..\test_make_string.cpp" />
     <ClCompile Include="..\test_multi_array.cpp" />
     <ClCompile Include="..\test_no_stl_algorithm.cpp" />
     <ClCompile Include="..\test_array.cpp">

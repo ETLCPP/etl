@@ -251,6 +251,15 @@ namespace etl
     }
   };
 #endif
+
+  //***************************************************************************
+  /// Make string from string literal or char array
+  //***************************************************************************
+  template<const size_t MAX_SIZE>
+  etl::string<MAX_SIZE - 1> make_string(const char (&text) [MAX_SIZE])
+  {
+    return etl::string<MAX_SIZE - 1>(text);
+  }
 }
 
 #include "private/minmax_pop.h"
