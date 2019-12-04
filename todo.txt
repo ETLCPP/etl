@@ -1,7 +1,7 @@
 List of ideas for future development.
 
-delegate_timer (Variant of callback_timer)
-
 delegate_state_chart (Variant of state_chart)
 
 Finish secure containers
+
+Finish move semantics for all containers

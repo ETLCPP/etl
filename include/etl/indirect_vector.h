@@ -83,19 +83,102 @@ namespace etl
   {
   public:
 
-    typedef T                                     value_type;
-    typedef T&                                    reference;
-    typedef const T&                              const_reference;
+    typedef T              value_type;
+    typedef T&             reference;
+    typedef const T&       const_reference;
 #if ETL_CPP11_SUPPORTED
-    typedef T&&                                   rvalue_reference;
+    typedef T&&            rvalue_reference;
 #endif
-    typedef T*                                    pointer;
-    typedef const T*                              const_pointer;
-    typedef pointer const *                       indirect_pointer;
-    typedef const_pointer const *                 indirect_const_pointer;
+    typedef T*             pointer;
+    typedef const T*       const_pointer;
+
+    typedef typename etl::ivector<T*>::iterator        indirect_iterator;
+    typedef typename etl::ivector<T*>::const_iterator  indirect_const_iterator;
 
     typedef typename etl::ivector<T*>::size_type       size_type;
     typedef typename etl::ivector<T*>::difference_type difference_type;
+
+    //*************************************************************************
+    /// Unary function adaptor.
+    //*************************************************************************
+    template <typename TUnaryFunction, typename TReturnType = void>
+    class unary_function_adaptor
+    {
+    public:
+
+      unary_function_adaptor(TUnaryFunction unary_function_)
+        : unary_function(unary_function_)
+      {
+      }
+
+      TReturnType operator()(const_pointer indirect_itr)
+      {
+        return unary_function(*indirect_itr);
+      }
+
+      TUnaryFunction unary_function;
+    };
+
+    //*************************************************************************
+    template <typename TUnaryFunction>
+    class unary_function_adaptor<TUnaryFunction, void>
+    {
+    public:
+
+      unary_function_adaptor(TUnaryFunction unary_function_)
+        : unary_function(unary_function_)
+      {
+      }
+
+      void operator()(const_pointer indirect_itr)
+      {
+        unary_function(*indirect_itr);
+      }
+
+      TUnaryFunction unary_function;
+    };
+
+    //*************************************************************************
+    /// Binary function adaptor.
+    //*************************************************************************
+    template <typename TBinaryFunction, typename TReturnType = void>
+    class binary_function_adaptor
+    {
+    public:
+
+      binary_function_adaptor(TBinaryFunction binary_function_)
+        : binary_function(binary_function_)
+      {
+      }
+
+      TReturnType operator()(const_pointer indirect_itr_lhs,
+                             const_pointer indirect_itr_rhs)
+      {
+        return binary_function(*indirect_itr_lhs, *indirect_itr_rhs);
+      }
+
+      TBinaryFunction binary_function;
+    };
+
+    //*************************************************************************
+    template <typename TBinaryFunction>
+    class binary_function_adaptor<TBinaryFunction, void>
+    {
+    public:
+
+      binary_function_adaptor(TBinaryFunction binary_function_)
+        : binary_function(binary_function_)
+      {
+      }
+
+      void operator()(const_pointer indirect_itr_lhs,
+                      const_pointer indirect_itr_rhs)
+      {
+        binary_function(*indirect_itr_lhs, *indirect_itr_rhs);
+      }
+
+      TBinaryFunction binary_function;
+    };
 
     //*************************************************************************
     /// iterator.
@@ -203,6 +286,16 @@ namespace etl
         return result;
       }
 
+      indirect_iterator indirection()
+      {
+        return lookup_itr;
+      }
+
+      indirect_const_iterator indirection() const
+      {
+        return lookup_itr;
+      }
+
       friend difference_type operator -(const iterator& lhs, const iterator& rhs)
       {
         return lhs.lookup_itr - rhs.lookup_itr;
@@ -225,14 +318,12 @@ namespace etl
 
     private:
 
-      typedef typename etl::ivector<T*>::iterator lookup_itr_t;
-
-      iterator(lookup_itr_t itr_)
+      iterator(indirect_iterator itr_)
         : lookup_itr(itr_)
       {
       }
 
-      lookup_itr_t lookup_itr;
+      indirect_iterator lookup_itr;
     };
 
     //*************************************************************************
@@ -317,6 +408,11 @@ namespace etl
         return &(**lookup_itr);
       }
 
+      indirect_const_iterator indirection() const
+      {
+        return lookup_itr;
+      }
+
       friend const_iterator operator +(const const_iterator& lhs, difference_type offset)
       {
         const_iterator result(lhs);
@@ -355,12 +451,12 @@ namespace etl
 
       typedef typename etl::ivector<T*>::const_iterator lookup_itr_t;
 
-      const_iterator(lookup_itr_t itr_)
+      const_iterator(indirect_const_iterator itr_)
         : lookup_itr(itr_)
       {
       }
 
-      lookup_itr_t lookup_itr;
+      indirect_const_iterator lookup_itr;
     };
 
     typedef ETL_STD::reverse_iterator<iterator>       reverse_iterator;
@@ -609,26 +705,6 @@ namespace etl
     const_reference back() const
     {
       return *(lookup.back());
-    }
-
-    //*********************************************************************
-    /// Returns a pointer to the beginning of the internal lookup vector data.
-    /// These are a list of pointers to objects
-    ///\return An indirect pointer to the beginning of the internal lookup vector data.
-    //*********************************************************************
-    indirect_pointer data()
-    {
-      return lookup.data();
-    }
-
-    //*********************************************************************
-    /// Returns a pointer to the beginning of the internal lookup vector data.
-    /// These are a list of pointers to objects
-    ///\return An indirect pointer to the beginning of the internal lookup vector data.
-    //*********************************************************************
-    indirect_const_pointer data() const
-    {
-      return lookup.data();
     }
 
     //*********************************************************************
@@ -1014,7 +1090,7 @@ namespace etl
     //*************************************************************************
     /// Gets the current capacity of the indirect_vector.
     ///\return The capacity of the indirect_vector.
-//*************************************************************************
+    //*************************************************************************
     size_type capacity() const
     {
       return lookup.capacity();
@@ -1054,108 +1130,6 @@ namespace etl
     size_type available() const
     {
       return lookup.available();
-    }
-
-    //*************************************************************************
-    /// Sorts the indirect vector using the default 'less'.
-    //*************************************************************************
-    void sort()
-    {
-      sort_function(begin(), end(), ETL_STD::less<T>());
-    }
-
-    //*************************************************************************
-    /// Sorts the indirect vector using a supplied compare function.
-    //*************************************************************************
-    template <typename TCompare>
-    void sort(TCompare compare)
-    {
-      sort_function(begin(), end(), compare);
-    }
-
-    //*************************************************************************
-    /// Sorts the indirect vector between two iterators.
-    //*************************************************************************
-    void sort(iterator first, iterator last)
-    {
-      sort_function(first, last, ETL_STD::less<T>());
-    }
-
-    //*************************************************************************
-    /// Sorts the indirect vector between two iterators.
-    //*************************************************************************
-    template <typename TCompare>
-    void sort(iterator first, iterator last, TCompare compare)
-    {
-      sort_function(first, last, compare);
-    }
-
-    //*************************************************************************
-    /// Sorts the indirect vector using the default 'less'.
-    //*************************************************************************
-    void stable_sort()
-    {
-      stable_sort_function(begin(), end(), ETL_STD::less<T>());
-    }
-
-    //*************************************************************************
-    /// Sorts the indirect vector using a supplied compare function.
-    //*************************************************************************
-    template <typename TCompare>
-    void stable_sort(TCompare compare)
-    {
-      stable_sort_function(begin(), end(), compare);
-    }
-
-    //*************************************************************************
-    /// Sorts the indirect vector between two iterators.
-    //*************************************************************************
-    void stable_sort(iterator first, iterator last)
-    {
-      stable_sort_function(first, last, ETL_STD::less<T>());
-    }
-
-    //*************************************************************************
-    /// Sorts the indirect vector between two iterators.
-    //*************************************************************************
-    template <typename TCompare>
-    void stable_sort(iterator first, iterator last, TCompare compare)
-    {
-      stable_sort_function(first, last, compare);
-    }
-
-    //*************************************************************************
-    /// Checks to see if the vector is sorted, using the default 'less'.
-    //*************************************************************************
-    bool is_sorted() const
-    {
-      return is_sorted_function(cbegin(), cend(), ETL_STD::less<T>());
-    }
-
-    //*************************************************************************
-    /// Sorts the indirect vector using a supplied compare function.
-    //*************************************************************************
-    template <typename TCompare>
-    bool is_sorted(TCompare compare) const
-    {
-      return is_sorted_function(cbegin(), cend(), compare);
-    }
-
-    //*************************************************************************
-    /// Sorts the indirect vector between two iterators.
-    //*************************************************************************
-    bool is_sorted(const_iterator first, const_iterator last) const
-    {
-      return is_sorted_function(first, last, ETL_STD::less<T>());
-    }
-
-    //*************************************************************************
-    /// Sorts the indirect vector between two iterators.
-    //*************************************************************************
-    template <typename TCompare>
-    bool is_sorted(const_iterator first, const_iterator last, TCompare compare) const
-    {
-      return is_sorted_function(first, last, compare);
     }
 
   protected:
@@ -1210,54 +1184,6 @@ namespace etl
     etl::ipool&       storage;
 
   private:
-
-    //*********************************************************************
-    /// Sorts the range.
-    //*********************************************************************
-    template <typename TCompare>
-    void sort_function(iterator first, iterator last, TCompare compare)
-    {
-      etl::sort(first.lookup_itr, last.lookup_itr, ObjectCompare<TCompare>(compare));
-    }
-
-    //*********************************************************************
-    /// Sorts the range.
-    /// Stable
-    //*********************************************************************
-    template <typename TCompare>
-    void stable_sort_function(iterator first, iterator last, TCompare compare)
-    {
-      etl::stable_sort(first.lookup_itr, last.lookup_itr, ObjectCompare<TCompare>(compare));
-    }
-
-    //*********************************************************************
-    /// Checks if the range is sorted.
-    //*********************************************************************
-    template <typename TCompare>
-    bool is_sorted_function(const_iterator first, const_iterator last, TCompare compare) const
-    {
-      return etl::is_sorted(first.lookup_itr, last.lookup_itr, ObjectCompare<TCompare>(compare));
-    }
-
-    //*********************************************************************
-    /// How to compare two objects via the lookup iterators.
-    /// \tparam TCompare Type to compare two T objects.
-    //*********************************************************************
-    template <typename TCompare>
-    struct ObjectCompare
-    {
-      ObjectCompare(TCompare compare_)
-        : compare(compare_)
-      {
-      }
-
-      bool operator ()(const T* lhs, const T* rhs) const
-      {
-        return compare(*lhs, *rhs);
-      }
-
-      TCompare compare;
-    };
 
     // Disable copy construction.
     iindirect_vector(const iindirect_vector&) ETL_DELETE;
