@@ -252,6 +252,15 @@ namespace etl
     }
   };
 #endif
+
+  //***************************************************************************
+  /// Make wstring from wide string literal or wchar_t array
+  //***************************************************************************
+  template<const size_t MAX_SIZE>
+  etl::wstring<MAX_SIZE - 1> make_string(const wchar_t (&text) [MAX_SIZE])
+  {
+    return etl::wstring<MAX_SIZE - 1>(text);
+  }
 }
 
 #include "private/minmax_pop.h"
