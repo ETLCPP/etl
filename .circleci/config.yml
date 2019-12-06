@@ -4,6 +4,9 @@ jobs:
   build:
     docker:
       - image: "debian:stretch"
+    branches:
+      only:
+      - /feature/add_circle-ci_support
     steps:
       - checkout
       - run:
@@ -23,4 +26,4 @@ jobs:
           command: 'cmake --build build'
       - run:
           name: ETL Unit Testing
-          command: './bin/etl'
+          command: './bin'
