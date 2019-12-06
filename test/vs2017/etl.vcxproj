@@ -1253,6 +1253,7 @@
     <None Include="..\..\include\etl\generate_type_lookup.bat" />
     <None Include="..\..\include\etl\generate_type_traits.bat" />
     <None Include="..\..\include\etl\generate_variant_pool.bat" />
+    <None Include="..\..\README.md" />
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>

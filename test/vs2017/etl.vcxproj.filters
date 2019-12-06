@@ -76,6 +76,12 @@
     <Filter Include="ETL\Strings">
       <UniqueIdentifier>{da88d71d-e5ea-4c26-9807-94616d31addb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\CI">
+      <UniqueIdentifier>{0eaad66f-3ce3-4952-8ae8-c935e6aa7c1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\CI\CircleCI">
+      <UniqueIdentifier>{0d5824b1-3ef9-43e0-b2d5-15d6246b843e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -1299,6 +1305,12 @@
     </None>
     <None Include="cpp.hint" />
     <None Include="..\..\library.json">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\.circleci\config.yml">
+      <Filter>Resource Files\CI\CircleCI</Filter>
+    </None>
+    <None Include="..\..\README.md">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
