@@ -6,8 +6,8 @@ jobs:
     docker:
       - image: "debian:stretch"
     branches:
-	  only:
-      - /feature/add_circle-ci_support
+      only:
+        - /feature/add_circle-ci_support
     steps:
       - checkout
       - run:
