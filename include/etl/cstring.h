@@ -258,7 +258,7 @@ namespace etl
   template<const size_t MAX_SIZE>
   etl::string<MAX_SIZE - 1> make_string(const char (&text) [MAX_SIZE])
   {
-    return etl::string<MAX_SIZE - 1>(text);
+    return etl::string<MAX_SIZE - 1>(text, MAX_SIZE - 1);
   }
 }
 

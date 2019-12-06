@@ -258,7 +258,7 @@ namespace etl
   template<const size_t MAX_SIZE>
   etl::u16string<MAX_SIZE - 1> make_string(const char16_t (&text) [MAX_SIZE])
   {
-    return etl::u16string<MAX_SIZE - 1>(text);
+    return etl::u16string<MAX_SIZE - 1>(text, MAX_SIZE - 1);
   }
 }
 
