@@ -259,7 +259,7 @@ namespace etl
   template<const size_t MAX_SIZE>
   etl::wstring<MAX_SIZE - 1> make_string(const wchar_t (&text) [MAX_SIZE])
   {
-    return etl::wstring<MAX_SIZE - 1>(text);
+    return etl::wstring<MAX_SIZE - 1>(text, MAX_SIZE - 1);
   }
 }
 
