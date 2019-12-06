@@ -82,7 +82,6 @@ namespace
       SetupFixture()
       {
         initial_text   = STR("Hello World");
-        initial_text   = STR("Hello World");
         insert_text    = STR("Insert");
         less_text      = STR("Hello Vorld");
         greater_text   = STR("Hello Xorld");
@@ -251,6 +250,17 @@ namespace
       CHECK(text.size() == SIZE);
       CHECK(!text.empty());
       CHECK(text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_from_literal)
+    {
+      Text text(STR("Hello World"));
+
+      bool is_equal = Equal(initial_text, text);
+      CHECK(is_equal);
+      CHECK(text.size() == SIZE);
+      CHECK(!text.empty());
     }
 
     //*************************************************************************
