@@ -261,6 +261,15 @@ namespace etl
   {
     return etl::wstring<MAX_SIZE - 1>(text, MAX_SIZE - 1);
   }
+
+  //***************************************************************************
+  /// Make string with max capacity from string literal or char array
+  //***************************************************************************
+  template<const size_t MAX_SIZE, const size_t SIZE>
+  etl::wstring<MAX_SIZE> make_string_with_capacity(const wchar_t(&text)[SIZE])
+  {
+    return etl::wstring<MAX_SIZE>(text, SIZE - 1);
+  }
 }
 
 #include "private/minmax_pop.h"
