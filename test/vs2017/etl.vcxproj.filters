@@ -1307,11 +1307,11 @@
     <None Include="..\..\library.json">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\..\.circleci\config.yml">
-      <Filter>Resource Files\CI\CircleCI</Filter>
-    </None>
     <None Include="..\..\README.md">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\.circleci\config.yml">
+      <Filter>Resource Files\CI\CircleCI</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
