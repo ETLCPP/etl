@@ -7,6 +7,7 @@ jobs:
       - image: "debian:stretch"
     branches:
       only:
+        - /master
         - /feature/add_circle-ci_support
     steps:
       - checkout
