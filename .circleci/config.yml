@@ -7,6 +7,9 @@ jobs:
       only:
       - feature/add_circle-ci_support
     steps:
+      - run:
+          name: Install Git
+          command: 'apt-get update && apt-get install git'
       - checkout
       - run:
           name: Installing SUDO
@@ -17,9 +20,6 @@ jobs:
       - run:
           name: Install CMAKE
           command: 'apt-get update && apt-get install -y cmake'
-      - run:
-          name: Install Git
-          command: 'apt-get update && apt-get install git'
       - run:
           name: Creating Build Files
           command: 'cmake -H. -Bbuild'
