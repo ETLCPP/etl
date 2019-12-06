@@ -31,7 +31,7 @@ jobs:
           command: 'ls -lrt /root/project/build/CMakeFiles'
       - run:
           name: Listing3
-          command: 'echo $PATH; ls -l ./bin' 
+          command: 'cat /root/project/build/CMakeFiles/CMakeOutput.log' 
       - run:
           name: ETL Unit Testing
           command: './bin/etl'
