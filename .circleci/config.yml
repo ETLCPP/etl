@@ -26,6 +26,8 @@ jobs:
       - run:
           name: Creating Binary Files
           command: 'cmake --build build'
+      - store_artifacts:
+          path: /bin/etltest
       - run:
           name: Listing
           command: 'ls -lrt /root/project/build'
@@ -37,4 +39,4 @@ jobs:
           command: 'cat /root/project/build/CMakeFiles/CMakeOutput.log' 
       - run:
           name: ETL Unit Testing
-          command: './bin/etl'
+          command: './bin/etltest/etl'
