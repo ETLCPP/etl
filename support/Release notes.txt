@@ -1,4 +1,12 @@
 ===============================================================================
+15.3.0
+Added etl::make_string_with_capacity
+
+===============================================================================
+15.2.1
+Compile time optimisations to etl::make_string
+
+===============================================================================
 15.2.0
 Added function adaptors and removed built-in sort functions from indirect_vector.
 Added etl::make_string for all string types.

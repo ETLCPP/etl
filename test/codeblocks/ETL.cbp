@@ -430,6 +430,7 @@
 		<Unit filename="../test_largest.cpp" />
 		<Unit filename="../test_list.cpp" />
 		<Unit filename="../test_list_shared_pool.cpp" />
+		<Unit filename="../test_make_string.cpp" />
 		<Unit filename="../test_map.cpp" />
 		<Unit filename="../test_maths.cpp" />
 		<Unit filename="../test_memory.cpp" />
