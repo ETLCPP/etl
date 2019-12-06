@@ -26,4 +26,4 @@ jobs:
           command: 'cmake --build build'
       - run:
           name: ETL Unit Testing
-          command: './bin'
+          command: './bin/etl'
