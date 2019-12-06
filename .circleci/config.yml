@@ -24,5 +24,8 @@ jobs:
           name: Creating Binary Files
           command: 'cmake --build build'
       - run:
+          name: Listing
+          command: 'ls -lrt /root/project/build'
+      - run:
           name: ETL Unit Testing
-          command: '/root/project/build/etl'
+          command: './etl'
