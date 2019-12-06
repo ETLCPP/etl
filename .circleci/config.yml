@@ -2,14 +2,12 @@ version: 2
 
 jobs:
 
-  general:
-    branches:
-	  only:
-	    - /feature/add_circle-ci_support
-
   build:
     docker:
       - image: "debian:stretch"
+    branches:
+	  only:
+      - /feature/add_circle-ci_support
     steps:
       - checkout
       - run:
