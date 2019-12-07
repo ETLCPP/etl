@@ -51,13 +51,14 @@ namespace etl
   /// CRC16 CCITT policy.
   /// Calculates CRC16 CCITT using polynomial 0x1021
   //***************************************************************************
+  template<uint16_t I>
   struct crc_policy_16_ccitt
   {
     typedef uint16_t value_type;
 
     inline uint16_t initial() const
     {
-      return 0xFFFF;
+      return I;
     }
 
     inline uint16_t add(uint16_t crc, uint8_t value) const
@@ -94,7 +95,8 @@ namespace etl
   //*************************************************************************
   /// CRC16 CCITT
   //*************************************************************************
-  class crc16_ccitt : public etl::frame_check_sequence<etl::crc_policy_16_ccitt>
+  template<uint16_t I>
+  class crc16_ccitt : public etl::frame_check_sequence<etl::crc_policy_16_ccitt<I>>
   {
   public:
 
@@ -118,6 +120,9 @@ namespace etl
       this->add(begin, end);
     }
   };
+  
+  typedef crc16_ccitt_base<0xFFFF> crc16_ccitt;
+  typedef crc16_ccitt_base<0x0000> crc16_ccitt_xmodem;
 }
 
 #endif
