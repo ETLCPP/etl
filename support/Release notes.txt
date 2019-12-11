@@ -1,4 +1,8 @@
 ===============================================================================
+15.3.1
+Changes to alternate STL limits.h for ARM5 compiler compatibility
+
+===============================================================================
 15.3.0
 Added etl::make_string_with_capacity
 
