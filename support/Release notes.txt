@@ -1,4 +1,9 @@
 ===============================================================================
+15.4.0
+Refactored CRC classes for better code sharing and reduced resource requirements
+Added new CRC definitions
+
+===============================================================================
 15.3.1
 Changes to alternate STL limits.h for ARM5 compiler compatibility
 
