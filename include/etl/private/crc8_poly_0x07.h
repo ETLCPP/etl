@@ -49,16 +49,14 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
+  ///
+  //***************************************************************************
   class crc8_table_poly_0x07
   {
-  protected:
+  public:
 
-    crc8_table_poly_0x07()
-      : table(get_table())
-    {
-    }
-
-    static const uint8_t * const get_table()
+    //*************************************************************************
+    uint8_t add(uint8_t crc, uint8_t value) const
     {
       static const uint8_t table[256] =
       {
@@ -80,23 +78,19 @@ namespace etl
         0xDE, 0xD9, 0xD0, 0xD7, 0xC2, 0xC5, 0xCC, 0xCB, 0xE6, 0xE1, 0xE8, 0xEF, 0xFA, 0xFD, 0xF4, 0xF3
       };
 
-      return table;
+      return table[crc ^ value];
     }
-
-    const uint8_t * const table;
   };
 
   //***************************************************************************
+  ///
+  //***************************************************************************
   class crc8_table_poly_0x07_reflected
   {
-  protected:
+  public:
 
-    crc8_table_poly_0x07_reflected()
-      : table(get_table())
-    {
-    }
-
-    static const uint8_t * const get_table()
+    //*************************************************************************
+    uint8_t add(uint8_t crc, uint8_t value) const
     {
       static const uint8_t table[256] =
       {
@@ -118,10 +112,8 @@ namespace etl
         0x82, 0xB3, 0xE0, 0xD1, 0x46, 0x77, 0x24, 0x15, 0x3B, 0x0A, 0x59, 0x68, 0xFF, 0xCE, 0x9D, 0xAC
       };
 
-      return table;
+      return table[crc ^ value];
     }
-
-    const uint8_t * const table;
   };
 
   //***************************************************************************
@@ -137,12 +129,6 @@ namespace etl
     ETL_CONSTEXPR uint8_t initial() const
     {
       return INITIAL;
-    }
-
-    //*************************************************************************
-    uint8_t add(uint8_t crc, uint8_t value) const
-    {
-      return table[crc ^ value];
     }
 
     //*************************************************************************
@@ -164,12 +150,6 @@ namespace etl
     ETL_CONSTEXPR uint8_t initial() const
     {
       return INITIAL;
-    }
-
-    //*************************************************************************
-    uint8_t add(uint8_t crc, uint8_t value) const
-    {
-      return table[crc ^ value];
     }
 
     //*************************************************************************

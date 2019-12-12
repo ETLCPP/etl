@@ -49,16 +49,14 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
+  /// Table and add value.
+  //***************************************************************************
   class crc64_table_poly_0x42f0e1eba9ea3693
   {
-  protected:
+  public:
 
-    crc64_table_poly_0x42f0e1eba9ea3693()
-      : table(get_table())
-    {
-    }
-
-    static const uint64_t * const get_table()
+    //*************************************************************************
+    uint64_t add(uint64_t crc, uint8_t value) const
     {
       static const uint64_t table[256] =
       {
@@ -96,21 +94,19 @@ namespace etl
         0x14DEA25F3AF9026D, 0x562E43B4931334FE, 0x913F6188692D6F4B, 0xD3CF8063C0C759D8, 0x5DEDC41A34BBEEB2, 0x1F1D25F19D51D821, 0xD80C07CD676F8394, 0x9AFCE626CE85B507
       };
 
-      return table;
+      return (crc << 8) ^ table[((crc >> 56) ^ value) & 0xFF];
     }
-
-    const uint64_t * const table;
   };
 
   //***************************************************************************
+  /// Table and add value.
+  //***************************************************************************
   class crc64_table_poly_0x42f0e1eba9ea3693_reflected
   {
-    crc64_table_poly_0x42f0e1eba9ea3693_reflected()
-      : table(get_table())
-    {
-    }
+  public:
 
-    static const uint64_t * const get_table()
+    //*************************************************************************
+    uint64_t add(uint64_t crc, uint8_t value) const
     {
       static const uint64_t table[256] =
       {
@@ -148,10 +144,8 @@ namespace etl
         0xB6409F5CFA457B28, 0x7F2CC8C92DC2746A, 0xD2F6B4961186FC89, 0x1B9AE303C601F3CB, 0x4D77DD2C5823B7BA, 0x841B8AB98FA4B8F8, 0x29C1F6E6B3E0301B, 0xE0ADA17364673F59
       };
 
-      return table;
+      return (crc >> 8) ^ table[(crc ^ value) & 0xFF];
     }
-
-    const uint64_t * const table;
   };
 
   //***************************************************************************
@@ -167,12 +161,6 @@ namespace etl
     ETL_CONSTEXPR uint64_t initial() const
     {
       return INITIAL;
-    }
-
-    //*************************************************************************
-    uint64_t add(uint64_t crc, uint8_t value) const
-    {
-      return (crc << 8) ^ table[((crc >> 56) ^ value) & 0xFF];
     }
 
     //*************************************************************************
@@ -194,12 +182,6 @@ namespace etl
     ETL_CONSTEXPR uint64_t initial() const
     {
       return INITIAL;
-    }
-
-    //*************************************************************************
-    uint64_t add(uint64_t crc, uint8_t value) const
-    {
-      return (crc >> 8) ^ table[(crc ^ value) & 0xFF];
     }
 
     //*************************************************************************
