@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2019 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,22 +28,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_CRC8_CCITT_INCLUDED
-#define ETL_CRC8_CCITT_INCLUDED
+#ifndef ETL_CRC32_MPEG2_INCLUDED
+#define ETL_CRC32_MPEG2_INCLUDED
 
 #include "platform.h"
-#include "private/crc8_poly_0x07.h"
+#include "private/crc32_poly_0x04c11db7.h"
 
 #if defined(ETL_COMPILER_KEIL)
 #pragma diag_suppress 1300
 #endif
 
-///\defgroup crc8_ccitt 8 bit CRC calculation
+///\defgroup crc32 MPEG2 32 bit CRC calculation
 ///\ingroup crc
 
 namespace etl
 {
-  typedef crc8_poly_0x07<0x00U, 0x00U, false> crc8_ccitt;
+  typedef crc32_poly_0x04c11db7<0xFFFFFFFFU, 0x00000000U, false> crc32_mpeg2;
 }
 
 #endif
