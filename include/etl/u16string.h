@@ -114,7 +114,7 @@ namespace etl
     /// Constructor, from null terminated text.
     ///\param text The initial text of the u16string.
     //*************************************************************************
-    u16string(const value_type* text)
+    ETL_EXPLICIT_STRING_FROM_CHAR u16string(const value_type* text)
       : iu16string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
       this->assign(text, text + etl::char_traits<value_type>::length(text));
@@ -180,7 +180,7 @@ namespace etl
       {
         ETL_ASSERT(position < size(), ETL_ERROR(string_out_of_bounds));
 
-        length_ = std::min(length_, size() - position);
+        length_ = ETL_STD::min(length_, size() - position);
 
         new_string.assign(buffer + position, buffer + position + length_);
       }
@@ -251,6 +251,24 @@ namespace etl
     }
   };
 #endif
+
+  //***************************************************************************
+  /// Make u16string from UTF-8 string literal or char16_t array
+  //***************************************************************************
+  template<const size_t MAX_SIZE>
+  etl::u16string<MAX_SIZE - 1> make_string(const char16_t (&text) [MAX_SIZE])
+  {
+    return etl::u16string<MAX_SIZE - 1>(text, MAX_SIZE - 1);
+  }
+
+  //***************************************************************************
+  /// Make string with max capacity from string literal or char array
+  //***************************************************************************
+  template<const size_t MAX_SIZE, const size_t SIZE>
+  etl::u16string<MAX_SIZE> make_string_with_capacity(const char16_t(&text)[SIZE])
+  {
+    return etl::u16string<MAX_SIZE>(text, SIZE - 1);
+  }
 }
 
 #include "private/minmax_pop.h"

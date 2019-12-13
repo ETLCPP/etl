@@ -91,6 +91,10 @@ SOFTWARE.
 //#define ETL_OPTIONAL_FORCE_CPP03
 //#define ETL_LARGEST_TYPE_FORCE_CPP03
 
+#if defined(ETL_NO_STL)
+  #define ETL_TIMER_SEMAPHORE_TYPE uint32_t
+#endif
+
 #ifdef _MSC_VER
   #include "etl/profiles/msvc_x86.h"
 #else

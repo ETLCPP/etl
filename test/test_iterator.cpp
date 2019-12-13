@@ -30,31 +30,29 @@ SOFTWARE.
 
 #include "etl/iterator.h"
 
-//#include <iterator>
-
 namespace
 {
-  struct input : public std::iterator<std::input_iterator_tag, int>
+  struct input : public etl::iterator<ETL_INPUT_ITERATOR_TAG, int>
   {
 
   };
 
-  struct output : public std::iterator<std::output_iterator_tag, int>
+  struct output : public etl::iterator<ETL_OUTPUT_ITERATOR_TAG, int>
   {
 
   };
 
-  struct forward : public std::iterator<std::forward_iterator_tag, int>
+  struct forward : public etl::iterator<ETL_FORWARD_ITERATOR_TAG, int>
   {
 
   };
 
-  struct bidirectional : public std::iterator<std::bidirectional_iterator_tag, int>
+  struct bidirectional : public etl::iterator<ETL_BIDIRECTIONAL_ITERATOR_TAG, int>
   {
 
   };
 
-  struct random : public std::iterator<std::random_access_iterator_tag, int>
+  struct random : public etl::iterator<ETL_RANDOM_ACCESS_ITERATOR_TAG, int>
   {
 
   };

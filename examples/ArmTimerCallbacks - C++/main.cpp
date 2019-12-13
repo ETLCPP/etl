@@ -16,6 +16,9 @@ extern "C"
 #include "etl/function.h"
 #include "etl/callback_timer.h"
 #include "etl/vector.h"
+#include "etl/iterator.h"
+
+static bool b = etl::is_input_iterator<int*>::value;
 
 struct FP
 {

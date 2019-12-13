@@ -1,6 +1,57 @@
 ===============================================================================
+15.4.0
+Refactored CRC classes for better code sharing and reduced resource requirements
+Added new CRC definitions
+
+===============================================================================
+15.3.1
+Changes to alternate STL limits.h for ARM5 compiler compatibility
+
+===============================================================================
+15.3.0
+Added etl::make_string_with_capacity
+
+===============================================================================
+15.2.1
+Compile time optimisations to etl::make_string
+
+===============================================================================
+15.2.0
+Added function adaptors and removed built-in sort functions from indirect_vector.
+Added etl::make_string for all string types.
+
+===============================================================================
+15.1.0
+Fixes to the conditional compilation of choose_tag_types.h and
+choose_pair_types.h to take into account ETL_NO_STL.
+
+===============================================================================
+15.0.0
+Unit tests and library code updated so that the ETL may be compiled and tested
+with and without STL support.
+
+===============================================================================
+14.38.2
+Added alternate 'No STL' reverse_iterator unit tests.
+Fixed missing equality operator for reverse_iterator.
+
+===============================================================================
+14.38.1
+Added missing C++11 specific conditional compilation in callback_timer.h
+
+===============================================================================
+14.38.0
+Added optional to force string and string_view construction from character
+pointers to be explicit.
+
+===============================================================================
+14.37.2
+Added assert.h include to memory.h
+
+===============================================================================
 14.37.1
 Fix to the return value of alternate STL 'copy'
+Added delegate option to callback_timer
 
 ===============================================================================
 14.37.0

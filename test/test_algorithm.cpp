@@ -87,8 +87,8 @@ namespace
     //=========================================================================
     TEST(minmax_element)
     {
-      std::pair<Data::iterator, Data::iterator> expected = std::minmax_element(data.begin(), data.end());
-      std::pair<Data::iterator, Data::iterator> result   = etl::minmax_element(data.begin(), data.end());
+      ETL_PAIR<Data::iterator, Data::iterator> expected = std::minmax_element(data.begin(), data.end());
+      ETL_PAIR<Data::iterator, Data::iterator> result   = etl::minmax_element(data.begin(), data.end());
       CHECK_EQUAL(std::distance(data.begin(), expected.first), std::distance(data.begin(), result.first));
       CHECK_EQUAL(std::distance(data.begin(), expected.second), std::distance(data.begin(), result.second));
     }
@@ -96,8 +96,8 @@ namespace
     //=========================================================================
     TEST(minmax_element_compare)
     {
-      std::pair<Data::iterator, Data::iterator> expected = std::minmax_element(data.begin(), data.end(), std::greater<int>());
-      std::pair<Data::iterator, Data::iterator> result   = etl::minmax_element(data.begin(), data.end(), std::greater<int>());
+      ETL_PAIR<Data::iterator, Data::iterator> expected = std::minmax_element(data.begin(), data.end(), std::greater<int>());
+      ETL_PAIR<Data::iterator, Data::iterator> result   = etl::minmax_element(data.begin(), data.end(), std::greater<int>());
       CHECK_EQUAL(std::distance(data.begin(), expected.first),  std::distance(data.begin(), result.first));
       CHECK_EQUAL(std::distance(data.begin(), expected.second), std::distance(data.begin(), result.second));
     }
@@ -108,8 +108,8 @@ namespace
       int a = 1;
       int b = 2;
 
-      std::pair<int, int> expected = std::minmax(a, b);
-      std::pair<int, int> result   = etl::minmax(a, b);
+      ETL_PAIR<int, int> expected = std::minmax(a, b);
+      ETL_PAIR<int, int> result   = etl::minmax(a, b);
       CHECK_EQUAL(expected.first,  result.first);
       CHECK_EQUAL(expected.second, result.second);
 
@@ -125,8 +125,8 @@ namespace
       int a = 1;
       int b = 2;
 
-      std::pair<int, int> expected = std::minmax(a, b, std::greater<int>());
-      std::pair<int, int> result   = etl::minmax(a, b, std::greater<int>());
+      ETL_PAIR<int, int> expected = std::minmax(a, b, std::greater<int>());
+      ETL_PAIR<int, int> result   = etl::minmax(a, b, std::greater<int>());
       CHECK_EQUAL(expected.first, result.first);
       CHECK_EQUAL(expected.second, result.second);
 

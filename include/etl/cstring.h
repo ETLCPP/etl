@@ -114,7 +114,7 @@ namespace etl
     /// Constructor, from null terminated text.
     ///\param text The initial text of the string.
     //*************************************************************************
-    string(const value_type* text)
+    ETL_EXPLICIT_STRING_FROM_CHAR string(const value_type* text)
       : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
       this->assign(text, text + etl::char_traits<value_type>::length(text));
@@ -180,7 +180,7 @@ namespace etl
       {
         ETL_ASSERT(position < this->size(), ETL_ERROR(string_out_of_bounds));
 
-        length_ = std::min(length_, this->size() - position);
+        length_ = ETL_STD::min(length_, this->size() - position);
 
         new_string.assign(buffer + position, buffer + position + length_);
       }
@@ -237,7 +237,7 @@ namespace etl
     size_t operator()(const etl::istring& text) const
     {
       return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
-                                                         reinterpret_cast<const uint8_t*>(&text[text.size()]));
+                                                     reinterpret_cast<const uint8_t*>(&text[text.size()]));
     }
   };
 
@@ -247,10 +247,28 @@ namespace etl
     size_t operator()(const etl::string<SIZE>& text) const
     {
       return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
-                                                         reinterpret_cast<const uint8_t*>(&text[text.size()]));
+                                                     reinterpret_cast<const uint8_t*>(&text[text.size()]));
     }
   };
 #endif
+
+  //***************************************************************************
+  /// Make string from string literal or char array
+  //***************************************************************************
+  template<const size_t MAX_SIZE>
+  etl::string<MAX_SIZE - 1> make_string(const char (&text) [MAX_SIZE])
+  {
+    return etl::string<MAX_SIZE - 1>(text, MAX_SIZE - 1);
+  }
+
+  //***************************************************************************
+  /// Make string with max capacity from string literal or char array
+  //***************************************************************************
+  template<const size_t MAX_SIZE, const size_t SIZE>
+  etl::string<MAX_SIZE> make_string_with_capacity(const char(&text)[SIZE])
+  {
+    return etl::string<MAX_SIZE>(text, SIZE - 1);
+  }
 }
 
 #include "private/minmax_pop.h"

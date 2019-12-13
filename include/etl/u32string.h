@@ -114,7 +114,7 @@ namespace etl
     /// Constructor, from null terminated text.
     ///\param text The initial text of the u32string.
     //*************************************************************************
-    u32string(const value_type* text)
+    ETL_EXPLICIT_STRING_FROM_CHAR u32string(const value_type* text)
       : iu32string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
       this->assign(text, text + etl::char_traits<value_type>::length(text));
@@ -180,7 +180,7 @@ namespace etl
       {
         ETL_ASSERT(position < size(), ETL_ERROR(string_out_of_bounds));
 
-        length_ = std::min(length_, size() - position);
+        length_ = ETL_STD::min(length_, size() - position);
 
         new_string.assign(buffer + position, buffer + position + length_);
       }
@@ -251,6 +251,24 @@ namespace etl
     }
   };
 #endif
+
+  //***************************************************************************
+  /// Make u32string from UTF-16 string literal or char32_t array
+  //***************************************************************************
+  template<const size_t MAX_SIZE>
+  etl::u32string<MAX_SIZE - 1> make_string(const char32_t (&text) [MAX_SIZE])
+  {
+    return etl::u32string<MAX_SIZE - 1>(text, MAX_SIZE - 1);
+  }
+
+  //***************************************************************************
+  /// Make string with max capacity from string literal or char array
+  //***************************************************************************
+  template<const size_t MAX_SIZE, const size_t SIZE>
+  etl::u32string<MAX_SIZE> make_string_with_capacity(const char32_t(&text)[SIZE])
+  {
+    return etl::u32string<MAX_SIZE>(text, SIZE - 1);
+  }
 }
 
 #include "private/minmax_pop.h"

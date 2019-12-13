@@ -31,15 +31,13 @@ SOFTWARE.
 #ifndef ETL_STL_CHOOSE_NAMESPACE_INCLUDED
 #define ETL_STL_CHOOSE_NAMESPACE_INCLUDED
 
-#include "../../platform.h"
-
-#if defined(ETL_IN_UNIT_TEST)
-  #ifndef ETLSTD
-    #define ETLSTD etlstd // Used for the unit tests.
+#if defined(ETL_NO_STL)
+  #ifndef ETL_STD
+    #define ETL_STD etlstd /// Namespace for the alternate STL.
   #endif
 #else
-  #ifndef ETLSTD
-    #define ETLSTD std    // Used for normal code.
+  #ifndef ETL_STD
+    #define ETL_STD std    /// Namespace for conventional STL
   #endif
 #endif
 

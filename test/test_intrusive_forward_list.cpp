@@ -39,6 +39,7 @@ SOFTWARE.
 #include <vector>
 #include <list>
 #include <string>
+#include <functional>
 
 typedef TestDataDC<std::string>  ItemDC;
 typedef TestDataNDC<std::string> ItemNDC;

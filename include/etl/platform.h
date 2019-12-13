@@ -53,6 +53,7 @@ SOFTWARE.
 #undef ETL_NO_LARGE_CHAR_SUPPORT
 #undef ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
 #undef ETL_STD_ATOMIC_SUPPORTED
+#undef ETL_FORCE_EXPLICIT_STRING_CONVERSION_FROM_CHAR
 
 // Determine the bit width of the platform.
 #define ETL_PLATFORM_16BIT (UINT16_MAX == UINTPTR_MAX)
@@ -63,28 +64,27 @@ SOFTWARE.
 
 // The macros below are dependent on the profile.
 
-#if defined(ETL_COMPILER_MICROSOFT)
-  // Disable warning of deprecated std::iterator.
-  #pragma warning(disable : 4996)
-#endif
-
 #if defined(ETL_COMPILER_GCC)
   #define ETL_COMPILER_VERSION      __GNUC__
   #define ETL_COMPILER_FULL_VERSION ((__GNUC__ * 10000) + (__GNUC_MINOR__ * 100) + __GNUC_PATCHLEVEL__)
-#elif defined ETL_COMPILER_MICROSOFT
+#elif defined(ETL_COMPILER_MICROSOFT)
   #define ETL_COMPILER_VERSION      _MSC_VER
   #define ETL_COMPILER_FULL_VERSION _MSC_FULL_VER
 #endif
 
 #if ETL_CPP11_SUPPORTED
   #define ETL_CONSTEXPR constexpr
+  #define ETL_CONST     constexpr
 #else
   #define ETL_CONSTEXPR
+  #define ETL_CONST     const
 #endif
 
 #if ETL_CPP17_SUPPORTED
+  #define ETL_CONSTEXPR17 constexpr
   #define ETL_IF_CONSTEXPR constexpr
 #else
+  #define ETL_CONSTEXPR17
   #define ETL_IF_CONSTEXPR
 #endif
 
@@ -97,9 +97,23 @@ SOFTWARE.
 #if ETL_CPP11_SUPPORTED
   #define ETL_NOEXCEPT noexcept
   #define ETL_NOEXCEPT_EXPR(expression) noexcept(expression)
+  #define ETL_NODISCARD [[nodiscard]]
 #else
   #define ETL_NOEXCEPT
   #define ETL_NOEXCEPT_EXPR(expression)
+  #define ETL_NODISCARD
+#endif
+
+#if defined(ETL_FORCE_EXPLICIT_STRING_CONVERSION_FROM_CHAR)
+  #define ETL_EXPLICIT_STRING_FROM_CHAR explicit
+#else
+  #define ETL_EXPLICIT_STRING_FROM_CHAR
+#endif
+
+#if defined(ETL_FORCE_EXPLICIT_STRING_CONVERSION_FROM_CHAR)
+  #define ETL_EXPLICIT_STRING_FROM_CHAR explicit
+#else
+  #define ETL_EXPLICIT_STRING_FROM_CHAR
 #endif
 
 #endif

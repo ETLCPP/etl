@@ -31,6 +31,7 @@ SOFTWARE.
 #undef min
 #undef max
 
+#include "etl/stl/iterator.h"
 #include "etl/stl/alternate/iterator.h"
 
 #include <algorithm>
@@ -121,6 +122,132 @@ namespace
       {
         CHECK_EQUAL(data[i], *etlstd::next(itr, i));
       }
+    }
+
+    //*************************************************************************
+    TEST(reverse_iterator)
+    {
+      int data[] = { 1, 2, 3, 4, 5, 6, 7 };
+
+      std::reverse_iterator<int*> sri(&data[7]);
+      etlstd::reverse_iterator<int*> eri(&data[7]);
+
+      CHECK_EQUAL(*sri++, *eri++);
+      CHECK_EQUAL(*sri++, *eri++);
+      CHECK_EQUAL(*sri++, *eri++);
+
+      CHECK(etlstd::reverse_iterator<int*>(&data[5]) < eri);
+      CHECK(etlstd::reverse_iterator<int*>(&data[3]) > eri);
+      CHECK(etlstd::reverse_iterator<int*>(&data[4]) <= eri);
+      CHECK(etlstd::reverse_iterator<int*>(&data[5]) <= eri);
+      CHECK(etlstd::reverse_iterator<int*>(&data[4]) >= eri);
+      CHECK(etlstd::reverse_iterator<int*>(&data[3]) >= eri);
+
+      CHECK_EQUAL(*sri++, *eri++);
+      CHECK_EQUAL(*sri++, *eri++);
+      CHECK_EQUAL(*sri++, *eri++);
+      CHECK_EQUAL(*sri, *eri);
+
+      CHECK(etlstd::reverse_iterator<int*>(&data[1]) == eri);
+      CHECK(etlstd::reverse_iterator<int*>(&data[2]) != eri);
+      CHECK(etlstd::reverse_iterator<int*>(&data[3]) != eri);
+      CHECK(etlstd::reverse_iterator<int*>(&data[4]) != eri);
+      CHECK(etlstd::reverse_iterator<int*>(&data[5]) != eri);
+      CHECK(etlstd::reverse_iterator<int*>(&data[6]) != eri);
+      CHECK(etlstd::reverse_iterator<int*>(&data[7]) != eri);
+
+      sri = std::reverse_iterator<int*>(&data[7]);
+      eri = etlstd::reverse_iterator<int*>(&data[7]);
+      CHECK_EQUAL(sri[0], eri[0]);
+      CHECK_EQUAL(sri[1], eri[1]);
+      CHECK_EQUAL(sri[2], eri[2]);
+      CHECK_EQUAL(sri[3], eri[3]);
+      CHECK_EQUAL(sri[4], eri[4]);
+      CHECK_EQUAL(sri[5], eri[5]);
+      CHECK_EQUAL(sri[6], eri[6]);
+
+      sri += 4;
+      eri += 4;
+      CHECK_EQUAL(*sri, *eri);
+
+      sri -= 2;
+      eri -= 2;
+      CHECK_EQUAL(*sri, *eri);
+
+      std::reverse_iterator<int*>    sri2 = sri + 3;
+      etlstd::reverse_iterator<int*> eri2 = eri + 3;
+      CHECK_EQUAL(*sri, *eri);
+
+      sri2 = sri - 3;
+      eri2 = eri - 3;
+      CHECK_EQUAL(*sri, *eri);
+    }
+
+    //*************************************************************************
+    TEST(reverse_iterator_const)
+    {
+      const int data[] = { 1, 2, 3, 4, 5, 6, 7 };
+
+      std::reverse_iterator<const int*> sri(&data[7]);
+      etlstd::reverse_iterator<const int*> eri(&data[7]);
+
+      CHECK_EQUAL(*sri++, *eri++);
+      CHECK_EQUAL(*sri++, *eri++);
+      CHECK_EQUAL(*sri++, *eri++);
+
+      CHECK(etlstd::reverse_iterator<const int*>(&data[5]) < eri);
+      CHECK(etlstd::reverse_iterator<const int*>(&data[3]) > eri);
+      CHECK(etlstd::reverse_iterator<const int*>(&data[4]) <= eri);
+      CHECK(etlstd::reverse_iterator<const int*>(&data[5]) <= eri);
+      CHECK(etlstd::reverse_iterator<const int*>(&data[4]) >= eri);
+      CHECK(etlstd::reverse_iterator<const int*>(&data[3]) >= eri);
+
+      CHECK_EQUAL(*sri++, *eri++);
+      CHECK_EQUAL(*sri++, *eri++);
+      CHECK_EQUAL(*sri++, *eri++);
+      CHECK_EQUAL(*sri, *eri);
+
+      CHECK(etlstd::reverse_iterator<const int*>(&data[1]) == eri);
+      CHECK(etlstd::reverse_iterator<const int*>(&data[2]) != eri);
+      CHECK(etlstd::reverse_iterator<const int*>(&data[3]) != eri);
+      CHECK(etlstd::reverse_iterator<const int*>(&data[4]) != eri);
+      CHECK(etlstd::reverse_iterator<const int*>(&data[5]) != eri);
+      CHECK(etlstd::reverse_iterator<const int*>(&data[6]) != eri);
+      CHECK(etlstd::reverse_iterator<const int*>(&data[7]) != eri);
+
+      sri = std::reverse_iterator<const int*>(&data[7]);
+      eri = etlstd::reverse_iterator<const int*>(&data[7]);
+      CHECK_EQUAL(sri[0], eri[0]);
+      CHECK_EQUAL(sri[1], eri[1]);
+      CHECK_EQUAL(sri[2], eri[2]);
+      CHECK_EQUAL(sri[3], eri[3]);
+      CHECK_EQUAL(sri[4], eri[4]);
+      CHECK_EQUAL(sri[5], eri[5]);
+      CHECK_EQUAL(sri[6], eri[6]);
+
+      CHECK_EQUAL(*sri, *eri);
+      CHECK_EQUAL(*(sri + 1), *(eri + 1));
+      CHECK_EQUAL(*(sri + 2), *(eri + 2));
+      CHECK_EQUAL(*(sri + 3), *(eri + 3));
+      CHECK_EQUAL(*(sri + 4), *(eri + 4));
+      CHECK_EQUAL(*(sri + 5), *(eri + 5));
+      CHECK_EQUAL(*(sri + 6), *(eri + 6));
+
+      sri += 4;
+      eri += 4;
+      CHECK_EQUAL(*sri, *eri);
+
+      sri -= 2;
+      eri -= 2;
+      CHECK_EQUAL(*sri, *eri);
+
+      std::reverse_iterator<const int*>    sri2 = sri + 3;
+      etlstd::reverse_iterator<const int*> eri2 = eri + 3;
+      CHECK_EQUAL(*sri, *eri);
+
+      sri2 = sri - 3;
+      eri2 = eri - 3;
+      CHECK_EQUAL(*sri, *eri);
     }
   };
 }

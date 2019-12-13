@@ -236,6 +236,7 @@ namespace
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
     }
 
+#if !defined(ETL_NO_STL)
     //*************************************************************************
     TEST(test_constructor_initializer_list)
     {
@@ -265,6 +266,7 @@ namespace
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
     }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_copy_constructor)

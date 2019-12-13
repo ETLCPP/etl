@@ -357,7 +357,7 @@ namespace etl
 
         if (p != nullptr)
         {
-          new (p) T(std::forward<Args>(args)...);
+          new (p) T(ETL_STD::forward<Args>(args)...);
         }
       }
 

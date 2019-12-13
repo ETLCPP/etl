@@ -84,7 +84,7 @@ namespace
       typedef etl::priority_queue<int, 4> priority_queue_t;
 
       priority_queue_t* ppriority_queue = new etl::priority_queue<int, 4>;
-      
+
       etl::ipriority_queue<int, priority_queue_t::container_type, priority_queue_t::compare_type>* pipriority_queue = ppriority_queue;
 
       pipriority_queue->push(1);
@@ -447,7 +447,7 @@ namespace
     TEST(test_assignment_interface)
     {
       etl::priority_queue<int, SIZE> priority_queue1;
-      
+
       priority_queue1.push(1);
       priority_queue1.push(4);
       priority_queue1.push(3);
@@ -455,8 +455,8 @@ namespace
 
       etl::priority_queue<int, SIZE> priority_queue2;
 
-      etl::ipriority_queue<int, etl::vector<int, SIZE>, std::less<int>>& ipriority_queue1 = priority_queue1;      
-      etl::ipriority_queue<int, etl::vector<int, SIZE>, std::less<int>>& ipriority_queue2 = priority_queue2;
+      etl::ipriority_queue<int, etl::vector<int, SIZE>, ETL_STD::less<int>>& ipriority_queue1 = priority_queue1;
+      etl::ipriority_queue<int, etl::vector<int, SIZE>, ETL_STD::less<int>>& ipriority_queue2 = priority_queue2;
 
       ipriority_queue2 = ipriority_queue1;
 

@@ -88,6 +88,15 @@ namespace
     CompareDataNDC stable_part_ordered_data;
     CompareDataNDC stable_part_greater_ordered_data;
 
+    template <typename TIterator, typename TFunctor>
+    void test_algorithm(TIterator first1, TIterator last1, TIterator first2, TFunctor functor)
+    {
+      while (first1 != last1)
+      {
+        functor(*first1++, *first2++);
+      }
+    }
+
     //*************************************************************************
     struct SetupFixture
     {
@@ -249,6 +258,7 @@ namespace
       CHECK(!data.empty());
     }
 
+#if !defined(ETL_NO_STL)
     //*************************************************************************
     TEST(test_constructor_initializer_list)
     {
@@ -261,6 +271,7 @@ namespace
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
     }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_copy_constructor)
@@ -341,7 +352,6 @@ namespace
     //*************************************************************************
     TEST(test_move_assignment)
     {
-      const size_t SIZE = 10U;
       typedef etl::indirect_vector<std::unique_ptr<uint32_t>, 0> Data;
 
       LookupUniquePtr lookup1;
@@ -713,40 +723,6 @@ namespace
       const DataNDC data(initial_data.begin(), initial_data.end(), lookup, pool);
 
       CHECK(data.back() == compare_data.back());
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_data)
-    {
-      LookupNDC lookup;
-      PoolNDC   pool;
-
-      DataNDC data(initial_data.begin(), initial_data.end(), lookup, pool);
-
-      DataNDC::indirect_pointer p = data.data();
-
-      for (size_t i = 0U; i < data.size(); ++i)
-      {
-        CHECK(data[i] == **p);
-        ++p;
-      }
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_data_const)
-    {
-      LookupNDC lookup;
-      PoolNDC   pool;
-
-      const DataNDC data(initial_data.begin(), initial_data.end(), lookup, pool);
-
-      DataNDC::indirect_const_pointer p = data.data();
-
-      for (size_t i = 0U; i < data.size(); ++i)
-      {
-        CHECK(data[i] == **p);
-        ++p;
-      }
     }
 
     //*************************************************************************
@@ -1538,299 +1514,170 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_sort_default_order_from_unordered_std_sort)
+    TEST_FIXTURE(SetupFixture, test_indirect_algorithm)
     {
-      LookupNDC lookup;
-      PoolNDC   pool;
+      LookupNDC lookup1;
+      PoolNDC   pool1;
 
-      DataNDC data(unordered_data.begin(), unordered_data.end(), lookup, pool);
+      LookupNDC lookup2;
+      PoolNDC   pool2;
 
-      std::sort(data.begin(), data.end());
+      DataNDC data1(initial_data.begin(), initial_data.end(), lookup1, pool1);
+      DataNDC data2(initial_data.rbegin(), initial_data.rend(), lookup2, pool2);
+
+      std::reverse(data1.begin().indirection(), data1.end().indirection());
+
+      bool is_equal = std::equal(data1.begin(),
+                                 data1.end(),
+                                 data2.begin());
+
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_indirect_algorithm_void_unary_function)
+    {
+      struct functor
+      {
+        void operator()(const NDC& ndc)
+        {
+          result += ndc.value;
+        }
+
+        std::string result;
+      };
+
+      LookupNDC lookup1;
+      PoolNDC   pool1;
+
+      const DataNDC data(ordered_data.begin(), ordered_data.end(), lookup1, pool1);
+
+      typedef typename DataNDC::unary_function_adaptor<functor> wrapped_functor;
+
+      functor unwrapped;
+      wrapped_functor wrapped(unwrapped);
+
+      functor direct = std::for_each(data.begin(),
+                                     data.end(),
+                                     unwrapped);
+
+      functor indirect = std::for_each(data.begin().indirection(),
+                                       data.end().indirection(),
+                                       wrapped).unary_function;
+
+      CHECK_EQUAL(direct.result, indirect.result);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_indirect_algorithm_bool_unary_function)
+    {
+      struct functor
+      {
+        bool operator()(const NDC& ndc)
+        {
+          return ndc.value == "4";
+        }
+
+        std::string result;
+      };
+
+      LookupNDC lookup1;
+      PoolNDC   pool1;
+
+      LookupNDC lookup2;
+      PoolNDC   pool2;
+
+      DataNDC data1(unordered_data.begin(), unordered_data.end(), lookup1, pool1);
+      DataNDC data2(unordered_data.begin(), unordered_data.end(), lookup2, pool2);
+
+      typedef typename DataNDC::unary_function_adaptor<functor, bool> wrapped_functor;
+
+      functor unwrapped;
+      wrapped_functor wrapped(unwrapped);
+
+      typename DataNDC::iterator direct = std::partition(data1.begin(),
+                                                         data1.end(),
+                                                         unwrapped);
+
+      typename DataNDC::indirect_iterator indirect = std::partition(data2.begin().indirection(),
+                                                                    data2.end().indirection(),
+                                                                    wrapped);
+
+      bool is_equal = std::equal(data1.begin(),
+                                 data1.end(),
+                                 data2.begin());
+
+      CHECK(is_equal);
+      CHECK(*direct == **indirect);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_indirect_algorithm_void_binary_function)
+    {
+      struct functor
+      {
+        void operator()(const NDC& lhs, const NDC& rhs)
+        {
+          result += lhs.value;
+          result += rhs.value;
+        }
+
+        std::string result;
+      };
+
+      typedef typename DataNDC::binary_function_adaptor<functor> wrapped_functor;
+
+      functor unwrapped;
+      wrapped_functor wrapped(unwrapped);
+
+      LookupNDC lookup1;
+      PoolNDC   pool1;
+
+      LookupNDC lookup2;
+      PoolNDC   pool2;
+
+      LookupNDC lookup3;
+      PoolNDC   pool3;
+
+      LookupNDC lookup4;
+      PoolNDC   pool4;
+
+      const DataNDC data1(ordered_data.begin(), ordered_data.end(), lookup1, pool1);
+      const DataNDC data2(ordered_data.begin(), ordered_data.end(), lookup2, pool2);
+
+      DataNDC direct_data(lookup3, pool3);
+      DataNDC indirect_data(lookup4, pool4);
+
+      test_algorithm(data1.begin(),
+                     data1.end(),
+                     data2.begin(),
+                     unwrapped);
+
+      test_algorithm(data1.begin().indirection(),
+                     data1.end().indirection(),
+                     data2.begin().indirection(),
+                     wrapped);
+
+      CHECK_EQUAL(unwrapped.result, wrapped.binary_function.result);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_indirect_algorithm_bool_binary_function)
+    {
+      LookupNDC lookup1;
+      PoolNDC   pool1;
+
+      DataNDC data(unordered_data.begin(), unordered_data.end(), lookup1, pool1);
+
+      std::sort(data.begin().indirection(),
+                data.end().indirection(),
+                typename DataNDC::binary_function_adaptor<std::less<NDC>, bool>(std::less<NDC>()));
 
       bool is_equal = std::equal(data.begin(),
                                  data.end(),
                                  ordered_data.begin());
 
       CHECK(is_equal);
-      CHECK(data.is_sorted());
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_sort_default_order_from_unordered_std_stable_sort)
-    {
-      LookupNDC lookup;
-      PoolNDC   pool;
-
-      DataNDC data(unordered_data.begin(), unordered_data.end(), lookup, pool);
-
-      std::stable_sort(data.begin(), data.end());
-
-      bool is_equal = std::equal(data.begin(),
-                                 data.end(),
-                                 stable_default_ordered_data.begin(),
-                                 NDC::are_identical);
-
-      CHECK(is_equal);
-      CHECK(data.is_sorted());
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_sort_default_order_from_ordered)
-    {
-      LookupNDC lookup;
-      PoolNDC   pool;
-
-      DataNDC data(ordered_data.begin(), ordered_data.end(), lookup, pool);
-
-      data.sort();
-
-      bool is_equal = std::equal(data.begin(),
-                                 data.end(),
-                                 ordered_data.begin());
-
-      CHECK(is_equal);
-      CHECK(data.is_sorted());
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_sort_default_order_from_reverse_ordered)
-    {
-      LookupNDC lookup;
-      PoolNDC   pool;
-
-      DataNDC data(ordered_data.rbegin(), ordered_data.rend(), lookup, pool);
-
-      data.sort();
-
-      bool is_equal = std::equal(data.begin(),
-                                 data.end(),
-                                 ordered_data.begin());
-
-      CHECK(is_equal);
-      CHECK(data.is_sorted());
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_sort_default_order_from_unordered)
-    {
-      LookupNDC lookup;
-      PoolNDC   pool;
-
-      DataNDC data(unordered_data.begin(), unordered_data.end(), lookup, pool);
-
-      data.sort();
-
-      bool is_equal = std::equal(data.begin(),
-                                 data.end(),
-                                 ordered_data.begin());
-
-      CHECK(is_equal);
-      CHECK(data.is_sorted());
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_sort_greater_order_from_reverse_ordered)
-    {
-      LookupNDC lookup;
-      PoolNDC   pool;
-
-      DataNDC data(ordered_data.rbegin(), ordered_data.rend(), lookup, pool);
-
-      data.sort(std::greater<NDC>());
-
-      bool is_equal = std::equal(data.begin(),
-                                 data.end(),
-                                 ordered_data.rbegin());
-
-      CHECK(is_equal);
-      CHECK(data.is_sorted(std::greater<NDC>()));
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_sort_greater_order_from_unordered)
-    {
-      LookupNDC lookup;
-      PoolNDC   pool;
-
-      DataNDC data(unordered_data.begin(), unordered_data.end(), lookup, pool);
-
-      data.sort(std::greater<NDC>());
-
-      bool is_equal = std::equal(data.begin(),
-                                 data.end(),
-                                 ordered_data.rbegin());
-
-      CHECK(is_equal);
-      CHECK(data.is_sorted(std::greater<NDC>()));
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_sort_default_partial_order_from_unordered)
-    {
-      LookupNDC lookup;
-      PoolNDC   pool;
-
-      DataNDC data(unordered_data.begin(), unordered_data.end(), lookup, pool);
-
-      data.sort(data.begin() + 2, data.end() - 2);
-
-      bool is_equal = std::equal(data.begin(),
-                                 data.end(),
-                                 part_ordered_data.begin());
-
-      CHECK(is_equal);
-      CHECK((data.is_sorted(data.cbegin() + 2, data.cend() - 2)));
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_sort_greater_partial_order_from_unordered)
-    {
-      LookupNDC lookup;
-      PoolNDC   pool;
-
-      DataNDC data(unordered_data.begin(), unordered_data.end(), lookup, pool);
-
-      data.sort(data.begin() + 2, data.end() - 2, std::greater<NDC>());
-
-      bool is_equal = std::equal(data.begin(),
-                                 data.end(),
-                                 part_reverse_ordered_data.begin());
-
-      CHECK(is_equal);
-      CHECK((data.is_sorted(data.begin() + 2, data.end() - 2, std::greater<NDC>())));
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_stable_sort_default_order_from_ordered)
-    {
-      LookupNDC lookup;
-      PoolNDC   pool;
-
-      DataNDC data(stable_default_ordered_data.begin(), stable_default_ordered_data.end(), lookup, pool);
-
-      data.stable_sort();
-
-      bool is_equal = std::equal(data.begin(),
-                                 data.end(),
-                                 stable_default_ordered_data.begin(),
-                                 NDC::are_identical);
-
-      CHECK(is_equal);
-      CHECK(data.is_sorted());
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_stable_sort_default_order_from_reverse_ordered)
-    {
-      LookupNDC lookup;
-      PoolNDC   pool;
-
-      DataNDC data(stable_default_ordered_data.rbegin(), stable_default_ordered_data.rend(), lookup, pool);
-
-      data.stable_sort();
-
-      bool is_equal = std::equal(data.begin(),
-                                 data.end(),
-                                 stable_reverse_ordered_data.begin(),
-                                 NDC::are_identical);
-
-      CHECK(is_equal);
-      CHECK(data.is_sorted());
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_stable_sort_default_order_from_unordered)
-    {
-      LookupNDC lookup;
-      PoolNDC   pool;
-
-      DataNDC data(unordered_data.begin(), unordered_data.end(), lookup, pool);
-
-      data.stable_sort();
-
-      bool is_equal = std::equal(data.begin(),
-                                 data.end(),
-                                 stable_default_ordered_data.begin(),
-                                 NDC::are_identical);
-
-      CHECK(is_equal);
-      CHECK(data.is_sorted());
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_stable_sort_greater_order_from_reverse_ordered)
-    {
-      LookupNDC lookup;
-      PoolNDC   pool;
-
-      DataNDC data(stable_default_ordered_data.rbegin(), stable_default_ordered_data.rend(), lookup, pool);
-
-      data.stable_sort(std::greater<NDC>());
-
-      bool is_equal = std::equal(data.begin(),
-                                 data.end(),
-                                 stable_greater_reverse_ordered_data.begin(),
-                                 NDC::are_identical);
-
-      CHECK(is_equal);
-      CHECK(data.is_sorted(std::greater<NDC>()));
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_stable_sort_greater_order_from_unordered)
-    {
-      LookupNDC lookup;
-      PoolNDC   pool;
-
-      DataNDC data(unordered_data.begin(), unordered_data.end(), lookup, pool);
-
-      data.stable_sort(std::greater<NDC>());
-
-      bool is_equal = std::equal(data.begin(),
-                                 data.end(),
-                                 stable_greater_ordered_data.begin(),
-                                 NDC::are_identical);
-
-      CHECK(is_equal);
-      CHECK(data.is_sorted(std::greater<NDC>()));
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_stable_sort_default_partial_order_from_unordered)
-    {
-      LookupNDC lookup;
-      PoolNDC   pool;
-
-      DataNDC data(unordered_data.begin(), unordered_data.end(), lookup, pool);
-
-      data.stable_sort(data.begin() + 2, data.end() - 2);
-
-      bool is_equal = std::equal(data.begin(),
-                                 data.end(),
-                                 stable_part_ordered_data.begin(),
-                                 NDC::are_identical);
-
-      CHECK(is_equal);
-      CHECK((data.is_sorted(data.cbegin() + 2, data.cend() - 2)));
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_stable_sort_greater_partial_order_from_unordered)
-    {
-      LookupNDC lookup;
-      PoolNDC   pool;
-
-      DataNDC data(unordered_data.begin(), unordered_data.end(), lookup, pool);
-
-      data.stable_sort(data.begin() + 2, data.end() - 2, std::greater<NDC>());
-
-      bool is_equal = std::equal(data.begin(),
-                                 data.end(),
-                                 stable_part_greater_ordered_data.begin(),
-                                 NDC::are_identical);
-
-      CHECK(is_equal);
-      CHECK((data.is_sorted(data.begin() + 2, data.end() - 2, std::greater<NDC>())));
     }
   };
 }
