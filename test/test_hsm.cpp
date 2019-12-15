@@ -89,7 +89,7 @@ public:
 	 {
        return _foo;
     };
-   
+
 	 std::string get_transition() const
 	 {
        return _os.str();
@@ -110,12 +110,12 @@ public:
 	 {
        return _os;
     }
-	 
+
 	 void clear_transition()
 	 {
        _os.str(std::string());
     }
-	 
+
 	 virtual void receive(etl::imessage_router & source,
                          etl::imessage const & message) override final
     {
@@ -138,7 +138,7 @@ public:
           receive(source, message);
        }
     };
-	
+
 private:
 	 int                _foo       {0};
 	 unsigned           _event_cnt {0};
@@ -153,14 +153,14 @@ namespace state {
  * Definition of the state hierarchy. The numbers are unique unsigned
  * values used to uniquify state types in the case two states have the
  * same parent and message set. */
-typedef etl::state::Composite<State_machine, 0> Top;
-typedef etl::state::Composite<State_machine, 1, Top, message::E> S0;
-typedef etl::state::Composite<State_machine, 2, S0, message::A, message::B,
+typedef etl::state::composite<State_machine, 0> Top;
+typedef etl::state::composite<State_machine, 1, Top, message::E> S0;
+typedef etl::state::composite<State_machine, 2, S0, message::A, message::B,
                               message::C, message::D, message::F> S1;
-typedef etl::state::Leaf     <State_machine, 3, S1, message::G, message::H> S11;
-typedef etl::state::Composite<State_machine, 4, S0, message::C, message::F> S2;
-typedef etl::state::Composite<State_machine, 5, S2, message::B, message::H> S21;
-typedef etl::state::Leaf     <State_machine, 6, S21, message::D, message::G> S211;
+typedef etl::state::leaf     <State_machine, 3, S1, message::G, message::H> S11;
+typedef etl::state::composite<State_machine, 4, S0, message::C, message::F> S2;
+typedef etl::state::composite<State_machine, 5, S2, message::B, message::H> S21;
+typedef etl::state::leaf     <State_machine, 6, S21, message::D, message::G> S211;
 
 } // namespace state
 } // namespace test
@@ -439,8 +439,8 @@ SUITE(test_map_hsm)
 	public:
 		 HsmFixture() {}
 		 ~HsmFixture() {}
-		 
-		 test::State_machine hsm {test::state_machine_id}; 
+
+		 test::State_machine hsm {test::state_machine_id};
 	};
 
 	//*************************************************************************
@@ -506,31 +506,31 @@ SUITE(test_map_hsm)
 		CHECK(hsm.get_transition() == "Exit(S211) - Exit(S21) - Tran(S211, S21, D) - Entry(S21) - Init(S21) - Entry(S211) - ");
 		CHECK(hsm.get_state() == &test::state::S211::obj);
 		hsm.clear_transition();
-		
+
 		// In S211
 		hsm.receive(test::message::E());
 		CHECK(hsm.get_transition() == "Exit(S211) - Exit(S21) - Exit(S2) - Exit(S0) - Tran(S0, S211, E) - Entry(S0) - Entry(S2) - Entry(S21) - Entry(S211) - ");
 		CHECK(hsm.get_state() == &test::state::S211::obj);
 		hsm.clear_transition();
-		
+
 		// In S211
 		hsm.receive(test::message::F());
 		CHECK(hsm.get_transition() == "Exit(S211) - Exit(S21) - Exit(S2) - Tran(S2, S11, F) - Entry(S1) - Entry(S11) - ");
 		CHECK(hsm.get_state() == &test::state::S11::obj);
 		hsm.clear_transition();
-		
+
 		// In S11
 		hsm.receive(test::message::F());
 		CHECK(hsm.get_transition() == "Exit(S11) - Exit(S1) - Tran(S1, S211, F) - Entry(S2) - Entry(S21) - Entry(S211) - ");
 		CHECK(hsm.get_state() == &test::state::S211::obj);
 		hsm.clear_transition();
-		
+
 		// In S211
 		hsm.receive(test::message::G());
 		CHECK(hsm.get_transition() == "Exit(S211) - Exit(S21) - Exit(S2) - Exit(S0) - Tran(S211, S0, G) - Entry(S0) - Init(S0) - Entry(S1) - Init(S1) - Entry(S11) - ");
 		CHECK(hsm.get_state() == &test::state::S11::obj);
 		hsm.clear_transition();
-		
+
 		// In S11
 		hsm.receive(test::message::G());
 		CHECK(hsm.get_transition() == "Exit(S11) - Exit(S1) - Tran(S11, S211, G) - Entry(S2) - Entry(S21) - Entry(S211) - ");
@@ -553,13 +553,13 @@ SUITE(test_map_hsm)
 		hsm.receive(test::message::C());
 		CHECK(hsm.get_state() == &test::state::S11::obj);
 		hsm.clear_transition();
-		
+
 		// In S11
 		hsm.receive(test::message::H());
 		CHECK(hsm.get_transition() == "h[foo]/foo=0 - ");
 		CHECK(hsm.get_state() == &test::state::S11::obj);
 		hsm.clear_transition();
-		
+
 		// In S11
 		hsm.receive(test::message::H());
 		CHECK(hsm.get_transition() == "");
