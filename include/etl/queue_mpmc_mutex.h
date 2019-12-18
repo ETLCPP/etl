@@ -37,12 +37,12 @@ SOFTWARE.
 #include <new>
 
 #include "platform.h"
+#include "mutex.h"
 
 #if ETL_HAS_MUTEX
 
 #include "alignment.h"
 #include "parameter_type.h"
-#include "mutex.h"
 #include "memory_model.h"
 #include "integral_limits.h"
 
