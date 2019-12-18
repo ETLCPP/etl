@@ -30,6 +30,9 @@ SOFTWARE.
 
 #include "etl/array_wrapper.h"
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warray-bounds"
+
 namespace
 {
   int data5[]  = { 0, 1, 2, 3, 4 };
@@ -560,9 +563,12 @@ namespace
 
 
       size_t compare_hash = etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&data5[0]), reinterpret_cast<const uint8_t*>(&data5[5]));
-      
-      
+
+
       CHECK_EQUAL(compare_hash, hash);
     }
   };
 }
+
+#pragma clang diagnostic pop
+
