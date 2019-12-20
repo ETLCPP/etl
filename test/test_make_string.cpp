@@ -73,5 +73,71 @@ namespace
       CHECK(Equal(std::u16string(u"Hello World"), ctext));
       CHECK(Equal(std::u32string(U"Hello World"), ctext));
     }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_make_string_with_capacity)
+    {
+      constexpr size_t CAPACITY = 20;
+      size_t length = strlen("Hello World");
+
+      auto ctext   = etl::make_string_with_capacity<CAPACITY>("Hello World");
+      auto wtext   = etl::make_string_with_capacity<CAPACITY>(L"Hello World");
+      auto u16text = etl::make_string_with_capacity<CAPACITY>(u"Hello World");
+      auto u32text = etl::make_string_with_capacity<CAPACITY>(U"Hello World");
+
+      CHECK_EQUAL(CAPACITY, ctext.max_size());
+      CHECK_EQUAL(length, ctext.size());
+      CHECK(!ctext.truncated());
+
+      CHECK_EQUAL(CAPACITY, wtext.max_size());
+      CHECK_EQUAL(length, wtext.size());
+      CHECK(!wtext.truncated());
+
+      CHECK_EQUAL(CAPACITY, u16text.max_size());
+      CHECK_EQUAL(length, u16text.size());
+      CHECK(!u16text.truncated());
+
+      CHECK_EQUAL(CAPACITY, u32text.max_size());
+      CHECK_EQUAL(length, u32text.size());
+      CHECK(!u32text.truncated());
+
+      CHECK(Equal(std::string("Hello World"), ctext));
+      CHECK(Equal(std::wstring(L"Hello World"), ctext));
+      CHECK(Equal(std::u16string(u"Hello World"), ctext));
+      CHECK(Equal(std::u32string(U"Hello World"), ctext));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_make_string_with_capacity_truncated)
+    {
+      constexpr size_t CAPACITY = 10;
+      size_t length = strlen("Hello World");
+
+      auto ctext   = etl::make_string_with_capacity<CAPACITY>("Hello World");
+      auto wtext   = etl::make_string_with_capacity<CAPACITY>(L"Hello World");
+      auto u16text = etl::make_string_with_capacity<CAPACITY>(u"Hello World");
+      auto u32text = etl::make_string_with_capacity<CAPACITY>(U"Hello World");
+
+      CHECK_EQUAL(CAPACITY, ctext.max_size());
+      CHECK_EQUAL(length - 1, ctext.size());
+      CHECK(ctext.truncated());
+
+      CHECK_EQUAL(CAPACITY, wtext.max_size());
+      CHECK_EQUAL(length - 1, wtext.size());
+      CHECK(wtext.truncated());
+
+      CHECK_EQUAL(CAPACITY, u16text.max_size());
+      CHECK_EQUAL(length - 1, u16text.size());
+      CHECK(u16text.truncated());
+
+      CHECK_EQUAL(CAPACITY, u32text.max_size());
+      CHECK_EQUAL(length - 1, u32text.size());
+      CHECK(u32text.truncated());
+
+      CHECK(Equal(std::string("Hello Worl"), ctext));
+      CHECK(Equal(std::wstring(L"Hello Worl"), ctext));
+      CHECK(Equal(std::u16string(u"Hello Worl"), ctext));
+      CHECK(Equal(std::u32string(U"Hello Worl"), ctext));
+    }
   };
 }

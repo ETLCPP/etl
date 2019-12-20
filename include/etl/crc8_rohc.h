@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2019 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_CRC8_CCITT_INCLUDED
-#define ETL_CRC8_CCITT_INCLUDED
+#ifndef ETL_CRC8_ROHC_INCLUDED
+#define ETL_CRC8_ROHC_INCLUDED
 
 #include "platform.h"
 #include "private/crc8_poly_0x07.h"
@@ -43,7 +43,7 @@ SOFTWARE.
 
 namespace etl
 {
-  typedef crc8_poly_0x07<0x00U, 0x00U, false> crc8_ccitt;
+  typedef crc8_poly_0x07<0xFF, 0x00, true, true> crc8_rohc;
 }
 
 #endif

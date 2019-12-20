@@ -1,4 +1,25 @@
 ===============================================================================
+15.4.1
+Move ETL_NODISCARD definition to ETL_CPP17_SUPPORTED test
+
+===============================================================================
+15.4.0
+Refactored CRC classes for better code sharing and reduced resource requirements
+Added new CRC definitions
+
+===============================================================================
+15.3.1
+Changes to alternate STL limits.h for ARM5 compiler compatibility
+
+===============================================================================
+15.3.0
+Added etl::make_string_with_capacity
+
+===============================================================================
+15.2.1
+Compile time optimisations to etl::make_string
+
+===============================================================================
 15.2.0
 Added function adaptors and removed built-in sort functions from indirect_vector.
 Added etl::make_string for all string types.

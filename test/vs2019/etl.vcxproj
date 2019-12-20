@@ -710,17 +710,8 @@
     <ClInclude Include="..\..\include\etl\combinations.h" />
     <ClInclude Include="..\..\include\etl\compare.h" />
     <ClInclude Include="..\..\include\etl\constant.h" />
-    <ClInclude Include="..\..\include\etl\crc16_aug_ccitt.h" />
-    <ClInclude Include="..\..\include\etl\crc16_genibus.h" />
     <ClInclude Include="..\..\include\etl\crc16_modbus.h" />
-    <ClInclude Include="..\..\include\etl\crc16_usb.h" />
-    <ClInclude Include="..\..\include\etl\crc16_x25.h" />
-    <ClInclude Include="..\..\include\etl\crc16_xmodem.h" />
-    <ClInclude Include="..\..\include\etl\crc32_bzip2.h" />
     <ClInclude Include="..\..\include\etl\crc32_c.h" />
-    <ClInclude Include="..\..\include\etl\crc32_mpeg2.h" />
-    <ClInclude Include="..\..\include\etl\crc32_posix.h" />
-    <ClInclude Include="..\..\include\etl\crc8_rohc.h" />
     <ClInclude Include="..\..\include\etl\cumulative_moving_average.h" />
     <ClInclude Include="..\..\include\etl\delegate.h" />
     <ClInclude Include="..\..\include\etl\delegate_service.h" />
@@ -738,12 +729,6 @@
     <ClInclude Include="..\..\include\etl\private\choose_namespace.h" />
     <ClInclude Include="..\..\include\etl\private\choose_pair_types.h" />
     <ClInclude Include="..\..\include\etl\private\choose_tag_types.h" />
-    <ClInclude Include="..\..\include\etl\private\crc16_poly_0x1021_.h" />
-    <ClInclude Include="..\..\include\etl\private\crc16_poly_0x8005.h" />
-    <ClInclude Include="..\..\include\etl\private\crc32_poly_0x04c11db7.h" />
-    <ClInclude Include="..\..\include\etl\private\crc32_poly_0x1edc6f41.h" />
-    <ClInclude Include="..\..\include\etl\private\crc64_poly_0x42f0e1eba9ea3693.h" />
-    <ClInclude Include="..\..\include\etl\private\crc8_poly_0x07.h" />
     <ClInclude Include="..\..\include\etl\private\to_string_helper.h" />
     <ClInclude Include="..\..\include\etl\profiles\armv7.h" />
     <ClInclude Include="..\..\include\etl\profiles\armv7_no_stl.h" />
@@ -1268,7 +1253,6 @@
     <None Include="..\..\include\etl\generate_type_lookup.bat" />
     <None Include="..\..\include\etl\generate_type_traits.bat" />
     <None Include="..\..\include\etl\generate_variant_pool.bat" />
-    <None Include="..\..\README.md" />
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>

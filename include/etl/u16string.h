@@ -258,7 +258,16 @@ namespace etl
   template<const size_t MAX_SIZE>
   etl::u16string<MAX_SIZE - 1> make_string(const char16_t (&text) [MAX_SIZE])
   {
-    return etl::u16string<MAX_SIZE - 1>(text);
+    return etl::u16string<MAX_SIZE - 1>(text, MAX_SIZE - 1);
+  }
+
+  //***************************************************************************
+  /// Make string with max capacity from string literal or char array
+  //***************************************************************************
+  template<const size_t MAX_SIZE, const size_t SIZE>
+  etl::u16string<MAX_SIZE> make_string_with_capacity(const char16_t(&text)[SIZE])
+  {
+    return etl::u16string<MAX_SIZE>(text, SIZE - 1);
   }
 }
 
