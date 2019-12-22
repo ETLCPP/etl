@@ -1,4 +1,11 @@
 ===============================================================================
+15.4.2
+Fix visitor overridden test virtual visit function parameters
+Reduced warnings in unit tests for CLang
+Updated type_traits_generator
+Added explicit construction from string_view
+
+===============================================================================
 15.4.1
 Move ETL_NODISCARD definition to ETL_CPP17_SUPPORTED test
 
