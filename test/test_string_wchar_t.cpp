@@ -253,6 +253,29 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_from_literal)
+    {
+      Text text(STR("Hello World"));
+
+      bool is_equal = Equal(initial_text, text);
+      CHECK(is_equal);
+      CHECK(text.size() == SIZE);
+      CHECK(!text.empty());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_from_string_view)
+    {
+      etl::wstring_view view(initial_text.data(), initial_text.size());
+      Text text(view);
+
+      bool is_equal = Equal(initial_text, text);
+      CHECK(is_equal);
+      CHECK(text.size() == SIZE);
+      CHECK(!text.empty());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_copy_constructor)
     {
       Text text(initial_text.c_str());

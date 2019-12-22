@@ -2175,7 +2175,6 @@ namespace etl
     return !(lhs == rhs);
   }
 
-
   //***************************************************************************
   /// Less than operator.
   ///\param lhs Reference to the first string.

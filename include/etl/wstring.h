@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "basic_string.h"
+#include "string_view.h"
 #include "hash.h"
 
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
@@ -167,6 +168,16 @@ namespace etl
       this->assign(init.begin(), init.end());
     }
 #endif
+
+    //*************************************************************************
+    /// From string_view.
+    ///\param view The string_view.
+    //*************************************************************************
+    explicit wstring(const etl::wstring_view& view)
+      : iwstring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
+    {
+      this->assign(view.begin(), view.end());
+    }
 
     //*************************************************************************
     /// Returns a sub-string.
