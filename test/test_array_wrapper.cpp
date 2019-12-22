@@ -30,8 +30,10 @@ SOFTWARE.
 
 #include "etl/array_wrapper.h"
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warray-bounds"
+#if defined(ETL_COMPILER_CLANG)
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Warray-bounds"
+#endif
 
 namespace
 {
@@ -570,5 +572,7 @@ namespace
   };
 }
 
-#pragma clang diagnostic pop
+#if defined(ETL_COMPILER_CLANG)
+  #pragma clang diagnostic pop
+#endif
 
