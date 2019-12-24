@@ -31,6 +31,8 @@ SOFTWARE.
 #ifndef ETL_STL_CHOOSE_NAMESPACE_INCLUDED
 #define ETL_STL_CHOOSE_NAMESPACE_INCLUDED
 
+#include "../platform.h"
+
 #if defined(ETL_NO_STL)
   #ifndef ETL_STD
     #define ETL_STD etlstd /// Namespace for the alternate STL.

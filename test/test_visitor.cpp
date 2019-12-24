@@ -355,7 +355,7 @@ namespace
       {
       public:
 
-        void visit(Shape<1, ShapeVisitor>) {}
+        void visit(Shape<1, ShapeVisitor>&) {}
       };
 
       // This test just needs to compile without errors.
@@ -369,8 +369,8 @@ namespace
       {
       public:
 
-        void visit(Shape<1, ShapeVisitor>) {}
-        void visit(Shape<2, ShapeVisitor>) {}
+        void visit(Shape<1, ShapeVisitor>&) {}
+        void visit(Shape<2, ShapeVisitor>&) {}
       };
 
       // This test just needs to compile without errors.
@@ -384,9 +384,9 @@ namespace
       {
       public:
 
-        void visit(Shape<1, ShapeVisitor>) {}
-        void visit(Shape<2, ShapeVisitor>) {}
-        void visit(Shape<3, ShapeVisitor>) {}
+        void visit(Shape<1, ShapeVisitor>&) {}
+        void visit(Shape<2, ShapeVisitor>&) {}
+        void visit(Shape<3, ShapeVisitor>&) {}
       };
 
       // This test just needs to compile without errors.
@@ -400,10 +400,10 @@ namespace
       {
       public:
 
-        void visit(Shape<1, ShapeVisitor>) {}
-        void visit(Shape<2, ShapeVisitor>) {}
-        void visit(Shape<3, ShapeVisitor>) {}
-        void visit(Shape<4, ShapeVisitor>) {}
+        void visit(Shape<1, ShapeVisitor>&) {}
+        void visit(Shape<2, ShapeVisitor>&) {}
+        void visit(Shape<3, ShapeVisitor>&) {}
+        void visit(Shape<4, ShapeVisitor>&) {}
       };
 
       // This test just needs to compile without errors.
@@ -418,11 +418,11 @@ namespace
       {
       public:
 
-        void visit(Shape<1, ShapeVisitor>) {}
-        void visit(Shape<2, ShapeVisitor>) {}
-        void visit(Shape<3, ShapeVisitor>) {}
-        void visit(Shape<4, ShapeVisitor>) {}
-        void visit(Shape<5, ShapeVisitor>) {}
+        void visit(Shape<1, ShapeVisitor>&) {}
+        void visit(Shape<2, ShapeVisitor>&) {}
+        void visit(Shape<3, ShapeVisitor>&) {}
+        void visit(Shape<4, ShapeVisitor>&) {}
+        void visit(Shape<5, ShapeVisitor>&) {}
       };
 
       // This test just needs to compile without errors.
@@ -437,12 +437,12 @@ namespace
       {
       public:
 
-        void visit(Shape<1, ShapeVisitor>) {}
-        void visit(Shape<2, ShapeVisitor>) {}
-        void visit(Shape<3, ShapeVisitor>) {}
-        void visit(Shape<4, ShapeVisitor>) {}
-        void visit(Shape<5, ShapeVisitor>) {}
-        void visit(Shape<6, ShapeVisitor>) {}
+        void visit(Shape<1, ShapeVisitor>&) {}
+        void visit(Shape<2, ShapeVisitor>&) {}
+        void visit(Shape<3, ShapeVisitor>&) {}
+        void visit(Shape<4, ShapeVisitor>&) {}
+        void visit(Shape<5, ShapeVisitor>&) {}
+        void visit(Shape<6, ShapeVisitor>&) {}
       };
 
       // This test just needs to compile without errors.
@@ -457,13 +457,13 @@ namespace
       {
       public:
 
-        void visit(Shape<1, ShapeVisitor>) {}
-        void visit(Shape<2, ShapeVisitor>) {}
-        void visit(Shape<3, ShapeVisitor>) {}
-        void visit(Shape<4, ShapeVisitor>) {}
-        void visit(Shape<5, ShapeVisitor>) {}
-        void visit(Shape<6, ShapeVisitor>) {}
-        void visit(Shape<7, ShapeVisitor>) {}
+        void visit(Shape<1, ShapeVisitor>&) {}
+        void visit(Shape<2, ShapeVisitor>&) {}
+        void visit(Shape<3, ShapeVisitor>&) {}
+        void visit(Shape<4, ShapeVisitor>&) {}
+        void visit(Shape<5, ShapeVisitor>&) {}
+        void visit(Shape<6, ShapeVisitor>&) {}
+        void visit(Shape<7, ShapeVisitor>&) {}
       };
 
       // This test just needs to compile without errors.
@@ -478,14 +478,14 @@ namespace
       {
       public:
 
-        void visit(Shape<1, ShapeVisitor>) {}
-        void visit(Shape<2, ShapeVisitor>) {}
-        void visit(Shape<3, ShapeVisitor>) {}
-        void visit(Shape<4, ShapeVisitor>) {}
-        void visit(Shape<5, ShapeVisitor>) {}
-        void visit(Shape<6, ShapeVisitor>) {}
-        void visit(Shape<7, ShapeVisitor>) {}
-        void visit(Shape<8, ShapeVisitor>) {}
+        void visit(Shape<1, ShapeVisitor>&) {}
+        void visit(Shape<2, ShapeVisitor>&) {}
+        void visit(Shape<3, ShapeVisitor>&) {}
+        void visit(Shape<4, ShapeVisitor>&) {}
+        void visit(Shape<5, ShapeVisitor>&) {}
+        void visit(Shape<6, ShapeVisitor>&) {}
+        void visit(Shape<7, ShapeVisitor>&) {}
+        void visit(Shape<8, ShapeVisitor>&) {}
       };
 
       // This test just needs to compile without errors.
@@ -501,15 +501,15 @@ namespace
       {
       public:
 
-        void visit(Shape<1, ShapeVisitor>) {}
-        void visit(Shape<2, ShapeVisitor>) {}
-        void visit(Shape<3, ShapeVisitor>) {}
-        void visit(Shape<4, ShapeVisitor>) {}
-        void visit(Shape<5, ShapeVisitor>) {}
-        void visit(Shape<6, ShapeVisitor>) {}
-        void visit(Shape<7, ShapeVisitor>) {}
-        void visit(Shape<8, ShapeVisitor>) {}
-        void visit(Shape<9, ShapeVisitor>) {}
+        void visit(Shape<1, ShapeVisitor>&) {}
+        void visit(Shape<2, ShapeVisitor>&) {}
+        void visit(Shape<3, ShapeVisitor>&) {}
+        void visit(Shape<4, ShapeVisitor>&) {}
+        void visit(Shape<5, ShapeVisitor>&) {}
+        void visit(Shape<6, ShapeVisitor>&) {}
+        void visit(Shape<7, ShapeVisitor>&) {}
+        void visit(Shape<8, ShapeVisitor>&) {}
+        void visit(Shape<9, ShapeVisitor>&) {}
       };
 
       // This test just needs to compile without errors.
@@ -525,16 +525,16 @@ namespace
       {
       public:
 
-        void visit(Shape<1, ShapeVisitor>) {}
-        void visit(Shape<2, ShapeVisitor>) {}
-        void visit(Shape<3, ShapeVisitor>) {}
-        void visit(Shape<4, ShapeVisitor>) {}
-        void visit(Shape<5, ShapeVisitor>) {}
-        void visit(Shape<6, ShapeVisitor>) {}
-        void visit(Shape<7, ShapeVisitor>) {}
-        void visit(Shape<8, ShapeVisitor>) {}
-        void visit(Shape<9, ShapeVisitor>) {}
-        void visit(Shape<10, ShapeVisitor>) {}
+        void visit(Shape<1, ShapeVisitor>&) {}
+        void visit(Shape<2, ShapeVisitor>&) {}
+        void visit(Shape<3, ShapeVisitor>&) {}
+        void visit(Shape<4, ShapeVisitor>&) {}
+        void visit(Shape<5, ShapeVisitor>&) {}
+        void visit(Shape<6, ShapeVisitor>&) {}
+        void visit(Shape<7, ShapeVisitor>&) {}
+        void visit(Shape<8, ShapeVisitor>&) {}
+        void visit(Shape<9, ShapeVisitor>&) {}
+        void visit(Shape<10, ShapeVisitor>&) {}
       };
 
       // This test just needs to compile without errors.
@@ -551,17 +551,17 @@ namespace
       {
       public:
 
-        void visit(Shape<1, ShapeVisitor>) {}
-        void visit(Shape<2, ShapeVisitor>) {}
-        void visit(Shape<3, ShapeVisitor>) {}
-        void visit(Shape<4, ShapeVisitor>) {}
-        void visit(Shape<5, ShapeVisitor>) {}
-        void visit(Shape<6, ShapeVisitor>) {}
-        void visit(Shape<7, ShapeVisitor>) {}
-        void visit(Shape<8, ShapeVisitor>) {}
-        void visit(Shape<9, ShapeVisitor>) {}
-        void visit(Shape<10, ShapeVisitor>) {}
-        void visit(Shape<11, ShapeVisitor>) {}
+        void visit(Shape<1, ShapeVisitor>&) {}
+        void visit(Shape<2, ShapeVisitor>&) {}
+        void visit(Shape<3, ShapeVisitor>&) {}
+        void visit(Shape<4, ShapeVisitor>&) {}
+        void visit(Shape<5, ShapeVisitor>&) {}
+        void visit(Shape<6, ShapeVisitor>&) {}
+        void visit(Shape<7, ShapeVisitor>&) {}
+        void visit(Shape<8, ShapeVisitor>&) {}
+        void visit(Shape<9, ShapeVisitor>&) {}
+        void visit(Shape<10, ShapeVisitor>&) {}
+        void visit(Shape<11, ShapeVisitor>&) {}
       };
 
       // This test just needs to compile without errors.
@@ -577,18 +577,18 @@ namespace
       {
       public:
 
-        void visit(Shape<1, ShapeVisitor>) {}
-        void visit(Shape<2, ShapeVisitor>) {}
-        void visit(Shape<3, ShapeVisitor>) {}
-        void visit(Shape<4, ShapeVisitor>) {}
-        void visit(Shape<5, ShapeVisitor>) {}
-        void visit(Shape<6, ShapeVisitor>) {}
-        void visit(Shape<7, ShapeVisitor>) {}
-        void visit(Shape<8, ShapeVisitor>) {}
-        void visit(Shape<9, ShapeVisitor>) {}
-        void visit(Shape<10, ShapeVisitor>) {}
-        void visit(Shape<11, ShapeVisitor>) {}
-        void visit(Shape<12, ShapeVisitor>) {}
+        void visit(Shape<1, ShapeVisitor>&) {}
+        void visit(Shape<2, ShapeVisitor>&) {}
+        void visit(Shape<3, ShapeVisitor>&) {}
+        void visit(Shape<4, ShapeVisitor>&) {}
+        void visit(Shape<5, ShapeVisitor>&) {}
+        void visit(Shape<6, ShapeVisitor>&) {}
+        void visit(Shape<7, ShapeVisitor>&) {}
+        void visit(Shape<8, ShapeVisitor>&) {}
+        void visit(Shape<9, ShapeVisitor>&) {}
+        void visit(Shape<10, ShapeVisitor>&) {}
+        void visit(Shape<11, ShapeVisitor>&) {}
+        void visit(Shape<12, ShapeVisitor>&) {}
       };
 
       // This test just needs to compile without errors.
@@ -605,19 +605,19 @@ namespace
       {
       public:
 
-        void visit(Shape<1, ShapeVisitor>) {}
-        void visit(Shape<2, ShapeVisitor>) {}
-        void visit(Shape<3, ShapeVisitor>) {}
-        void visit(Shape<4, ShapeVisitor>) {}
-        void visit(Shape<5, ShapeVisitor>) {}
-        void visit(Shape<6, ShapeVisitor>) {}
-        void visit(Shape<7, ShapeVisitor>) {}
-        void visit(Shape<8, ShapeVisitor>) {}
-        void visit(Shape<9, ShapeVisitor>) {}
-        void visit(Shape<10, ShapeVisitor>) {}
-        void visit(Shape<11, ShapeVisitor>) {}
-        void visit(Shape<12, ShapeVisitor>) {}
-        void visit(Shape<13, ShapeVisitor>) {}
+        void visit(Shape<1, ShapeVisitor>&) {}
+        void visit(Shape<2, ShapeVisitor>&) {}
+        void visit(Shape<3, ShapeVisitor>&) {}
+        void visit(Shape<4, ShapeVisitor>&) {}
+        void visit(Shape<5, ShapeVisitor>&) {}
+        void visit(Shape<6, ShapeVisitor>&) {}
+        void visit(Shape<7, ShapeVisitor>&) {}
+        void visit(Shape<8, ShapeVisitor>&) {}
+        void visit(Shape<9, ShapeVisitor>&) {}
+        void visit(Shape<10, ShapeVisitor>&) {}
+        void visit(Shape<11, ShapeVisitor>&) {}
+        void visit(Shape<12, ShapeVisitor>&) {}
+        void visit(Shape<13, ShapeVisitor>&) {}
       };
 
       // This test just needs to compile without errors.
@@ -634,20 +634,20 @@ namespace
       {
       public:
 
-        void visit(Shape<1, ShapeVisitor>) {}
-        void visit(Shape<2, ShapeVisitor>) {}
-        void visit(Shape<3, ShapeVisitor>) {}
-        void visit(Shape<4, ShapeVisitor>) {}
-        void visit(Shape<5, ShapeVisitor>) {}
-        void visit(Shape<6, ShapeVisitor>) {}
-        void visit(Shape<7, ShapeVisitor>) {}
-        void visit(Shape<8, ShapeVisitor>) {}
-        void visit(Shape<9, ShapeVisitor>) {}
-        void visit(Shape<10, ShapeVisitor>) {}
-        void visit(Shape<11, ShapeVisitor>) {}
-        void visit(Shape<12, ShapeVisitor>) {}
-        void visit(Shape<13, ShapeVisitor>) {}
-        void visit(Shape<14, ShapeVisitor>) {}
+        void visit(Shape<1, ShapeVisitor>&) {}
+        void visit(Shape<2, ShapeVisitor>&) {}
+        void visit(Shape<3, ShapeVisitor>&) {}
+        void visit(Shape<4, ShapeVisitor>&) {}
+        void visit(Shape<5, ShapeVisitor>&) {}
+        void visit(Shape<6, ShapeVisitor>&) {}
+        void visit(Shape<7, ShapeVisitor>&) {}
+        void visit(Shape<8, ShapeVisitor>&) {}
+        void visit(Shape<9, ShapeVisitor>&) {}
+        void visit(Shape<10, ShapeVisitor>&) {}
+        void visit(Shape<11, ShapeVisitor>&) {}
+        void visit(Shape<12, ShapeVisitor>&) {}
+        void visit(Shape<13, ShapeVisitor>&) {}
+        void visit(Shape<14, ShapeVisitor>&) {}
       };
 
       // This test just needs to compile without errors.
@@ -664,21 +664,21 @@ namespace
       {
       public:
 
-        void visit(Shape<1, ShapeVisitor>) {}
-        void visit(Shape<2, ShapeVisitor>) {}
-        void visit(Shape<3, ShapeVisitor>) {}
-        void visit(Shape<4, ShapeVisitor>) {}
-        void visit(Shape<5, ShapeVisitor>) {}
-        void visit(Shape<6, ShapeVisitor>) {}
-        void visit(Shape<7, ShapeVisitor>) {}
-        void visit(Shape<8, ShapeVisitor>) {}
-        void visit(Shape<9, ShapeVisitor>) {}
-        void visit(Shape<10, ShapeVisitor>) {}
-        void visit(Shape<11, ShapeVisitor>) {}
-        void visit(Shape<12, ShapeVisitor>) {}
-        void visit(Shape<13, ShapeVisitor>) {}
-        void visit(Shape<14, ShapeVisitor>) {}
-        void visit(Shape<15, ShapeVisitor>) {}
+        void visit(Shape<1, ShapeVisitor>&) {}
+        void visit(Shape<2, ShapeVisitor>&) {}
+        void visit(Shape<3, ShapeVisitor>&) {}
+        void visit(Shape<4, ShapeVisitor>&) {}
+        void visit(Shape<5, ShapeVisitor>&) {}
+        void visit(Shape<6, ShapeVisitor>&) {}
+        void visit(Shape<7, ShapeVisitor>&) {}
+        void visit(Shape<8, ShapeVisitor>&) {}
+        void visit(Shape<9, ShapeVisitor>&) {}
+        void visit(Shape<10, ShapeVisitor>&) {}
+        void visit(Shape<11, ShapeVisitor>&) {}
+        void visit(Shape<12, ShapeVisitor>&) {}
+        void visit(Shape<13, ShapeVisitor>&) {}
+        void visit(Shape<14, ShapeVisitor>&) {}
+        void visit(Shape<15, ShapeVisitor>&) {}
       };
 
       // This test just needs to compile without errors.
@@ -695,22 +695,22 @@ namespace
       {
       public:
 
-        void visit(Shape<1, ShapeVisitor>) {}
-        void visit(Shape<2, ShapeVisitor>) {}
-        void visit(Shape<3, ShapeVisitor>) {}
-        void visit(Shape<4, ShapeVisitor>) {}
-        void visit(Shape<5, ShapeVisitor>) {}
-        void visit(Shape<6, ShapeVisitor>) {}
-        void visit(Shape<7, ShapeVisitor>) {}
-        void visit(Shape<8, ShapeVisitor>) {}
-        void visit(Shape<9, ShapeVisitor>) {}
-        void visit(Shape<10, ShapeVisitor>) {}
-        void visit(Shape<11, ShapeVisitor>) {}
-        void visit(Shape<12, ShapeVisitor>) {}
-        void visit(Shape<13, ShapeVisitor>) {}
-        void visit(Shape<14, ShapeVisitor>) {}
-        void visit(Shape<15, ShapeVisitor>) {}
-        void visit(Shape<16, ShapeVisitor>) {}
+        void visit(Shape<1, ShapeVisitor>&) {}
+        void visit(Shape<2, ShapeVisitor>&) {}
+        void visit(Shape<3, ShapeVisitor>&) {}
+        void visit(Shape<4, ShapeVisitor>&) {}
+        void visit(Shape<5, ShapeVisitor>&) {}
+        void visit(Shape<6, ShapeVisitor>&) {}
+        void visit(Shape<7, ShapeVisitor>&) {}
+        void visit(Shape<8, ShapeVisitor>&) {}
+        void visit(Shape<9, ShapeVisitor>&) {}
+        void visit(Shape<10, ShapeVisitor>&) {}
+        void visit(Shape<11, ShapeVisitor>&) {}
+        void visit(Shape<12, ShapeVisitor>&) {}
+        void visit(Shape<13, ShapeVisitor>&) {}
+        void visit(Shape<14, ShapeVisitor>&) {}
+        void visit(Shape<15, ShapeVisitor>&) {}
+        void visit(Shape<16, ShapeVisitor>&) {}
       };
 
       // This test just needs to compile without errors.

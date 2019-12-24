@@ -45,10 +45,6 @@ SOFTWARE.
   #include "delegate.h"
 #endif
 
-#if ETL_CPP11_SUPPORTED
-  #include "delegate.h"
-#endif
-
 #undef ETL_FILE
 #define ETL_FILE "43"
 
@@ -476,12 +472,12 @@ namespace etl
                       ++registered_timers;
                       id = i;
                       break;
-                  }
-              }
-          }
+                }
+            }
+        }
 
-          return id;
-      }
+        return id;
+    }
 #endif
 
     //*******************************************

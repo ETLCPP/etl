@@ -798,6 +798,30 @@ namespace etlstd
   }
 
   //***************************************************************************
+  // Rotate
+  template<typename TIterator>
+  TIterator rotate(TIterator first, TIterator middle, TIterator last)
+  {
+    TIterator next = middle;
+
+    while (first != next)
+    {
+      etlstd::swap(*first++, *next++);
+
+      if (next == last)
+      {
+        next = middle;
+      }
+      else if (first == middle)
+      {
+        middle = next;
+      }
+    }
+
+    return first;
+  }
+
+  //***************************************************************************
   // find_end
   // Predicate
   template <typename TIterator1, typename TIterator2, typename TPredicate>
@@ -838,30 +862,6 @@ namespace etlstd
     typedef etlstd::equal_to<typename etlstd::iterator_traits<TIterator1>::value_type> predicate;
 
     return find_end(b, e, sb, se, predicate());
-  }
-
-  //***************************************************************************
-  // Rotate
-  template<typename TIterator>
-  TIterator rotate(TIterator first, TIterator middle, TIterator last)
-  {
-    TIterator next = middle;
-
-    while (first != next)
-    {
-      etlstd::swap(*first++, *next++);
-
-      if (next == last)
-      {
-        next = middle;
-      }
-      else if (first == middle)
-      {
-        middle = next;
-      }
-    }
-
-    return first;
   }
 }
 

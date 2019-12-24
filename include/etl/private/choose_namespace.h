@@ -32,6 +32,7 @@ SOFTWARE.
 #define ETL_STL_CHOOSE_NAMESPACE_INCLUDED
 
 #include "../platform.h"
+#include/etl/private/choose_namespace.h
 
 #if defined(ETL_NO_STL)
   #ifndef ETL_STD

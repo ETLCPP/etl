@@ -119,7 +119,7 @@ namespace etl
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    ETL_CONSTEXPR basic_string_view()
+    ETL_CONSTEXPR17 basic_string_view()
       : mbegin(nullptr),
         mend(nullptr)
     {
@@ -128,7 +128,7 @@ namespace etl
     //*************************************************************************
     /// Construct from string.
     //*************************************************************************
-    ETL_CONSTEXPR basic_string_view(const etl::ibasic_string<T>& str)
+    ETL_CONSTEXPR17 basic_string_view(const etl::ibasic_string<T>& str)
       : mbegin(str.begin()),
         mend(str.end())
     {
@@ -137,7 +137,7 @@ namespace etl
     //*************************************************************************
     /// Construct from T*.
     //*************************************************************************
-    ETL_EXPLICIT_STRING_FROM_CHAR ETL_CONSTEXPR basic_string_view(const T* begin_)
+    ETL_EXPLICIT_STRING_FROM_CHAR ETL_CONSTEXPR17 basic_string_view(const T* begin_)
       : mbegin(begin_),
         mend(begin_ + TTraits::length(begin_))
     {
@@ -146,7 +146,7 @@ namespace etl
     //*************************************************************************
     /// Construct from pointer range.
     //*************************************************************************
-    ETL_CONSTEXPR basic_string_view(const T* begin_, const T* end_)
+    ETL_CONSTEXPR17 basic_string_view(const T* begin_, const T* end_)
       : mbegin(begin_),
         mend(end_)
     {
@@ -156,7 +156,7 @@ namespace etl
     /// Construct from iterator/size.
     //*************************************************************************
     template <typename TSize, typename TDummy = typename etl::enable_if<etl::is_integral<TSize>::value, void>::type>
-    ETL_CONSTEXPR basic_string_view(const T* begin_, TSize size_)
+    ETL_CONSTEXPR17 basic_string_view(const T* begin_, TSize size_)
       : mbegin(begin_),
         mend(begin_ + size_)
     {
@@ -165,7 +165,7 @@ namespace etl
     //*************************************************************************
     /// Copy constructor
     //*************************************************************************
-    ETL_CONSTEXPR basic_string_view(const basic_string_view& other)
+    ETL_CONSTEXPR17 basic_string_view(const basic_string_view& other)
       : mbegin(other.mbegin),
         mend(other.mend)
     {
