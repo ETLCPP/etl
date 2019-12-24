@@ -1,4 +1,10 @@
 ===============================================================================
+15.5.0
+Added hierarchical state machine.
+Submitted by Pontus Astrom, from a 2004 article by Stefan Heinzmann
+http://accu.org/index.php/journals/252
+
+===============================================================================
 15.4.2
 Fix visitor overridden test virtual visit function parameters
 Reduced warnings in unit tests for CLang
