@@ -730,6 +730,7 @@
     <ClInclude Include="..\..\include\etl\fsm_generator.h" />
     <ClInclude Include="..\..\include\etl\callback_service.h" />
     <ClInclude Include="..\..\include\etl\hsm.h" />
+    <ClInclude Include="..\..\include\etl\hsm_generator.h" />
     <ClInclude Include="..\..\include\etl\indirect_vector.h" />
     <ClInclude Include="..\..\include\etl\largest_generator.h" />
     <ClInclude Include="..\..\include\etl\absolute.h" />
@@ -1260,6 +1261,7 @@
   <ItemGroup>
     <None Include="..\..\etl.pspimage" />
     <None Include="..\..\etl.xar" />
+    <None Include="..\..\include\etl\generate_hsm.bat" />
     <None Include="..\..\include\etl\generate_type_select.bat" />
     <None Include="..\..\library.json" />
     <None Include="..\..\library.properties" />

@@ -846,6 +846,15 @@
     <ClInclude Include="..\..\include\etl\crc32_posix.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\stl\alternate\choose_namespace.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\hsm.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\hsm_generator.h">
+      <Filter>ETL\Frameworks\Generators</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1310,6 +1319,9 @@
     <ClCompile Include="..\test_make_string.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_hsm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -1352,11 +1364,11 @@
     <None Include="..\..\library.json">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\..\.circleci\config.yml">
-      <Filter>Resource Files\CI\CircleCI</Filter>
-    </None>
     <None Include="..\..\README.md">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\include\etl\generate_hsm.bat">
+      <Filter>Resource Files\Generators</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

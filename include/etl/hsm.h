@@ -61,13 +61,13 @@ SOFTWARE.
 #include "message_router.h"
 
 namespace etl {
-namespace state {
+namespace hsm_state {
 
 // ------------------------------------------------------------------------------------------
-// Top
+// top
 // ------------------------------------------------------------------------------------------
 template<typename H>
-struct Top
+struct top
 {
    typedef H Hsm;
    virtual void process_event(etl::imessage_router &, etl::imessage const &, Hsm &) const = 0;
@@ -76,7 +76,7 @@ struct Top
 
 
 // ------------------------------------------------------------------------------------------
-// Composite declaration for 16 messages
+// composite declaration for 16 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0 = void, typename M1 = void,
          typename M2 = void, typename M3 = void, typename M4 = void, typename M5 = void,
@@ -85,7 +85,7 @@ template<typename H, unsigned ID, typename P, typename M0 = void, typename M1 = 
          typename M14 = void, typename M15 = void>
 class composite;
 
-template<typename H, unsigned ID, typename P = composite<H, 0, Top<H> >, typename M0, typename M1,
+template<typename H, unsigned ID, typename P = composite<H, 0, top<H> >, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11, typename M12, typename M13,
@@ -163,15 +163,15 @@ private:
 };
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for top-state which has class Top as parent
+// composite specialisation for top-state which has class top as parent
 // ------------------------------------------------------------------------------------------
 template<typename H>
-class composite<H, 0> : public Top<H>
+class composite<H, 0> : public top<H>
 {
 public:
    typedef H Hsm;
-   typedef Top<H> Parent;
-   typedef composite<H, 0, Top<H> > Self;
+   typedef top<H> Parent;
+   typedef composite<H, 0, top<H> > Self;
 
    static void handle_entry(Hsm &) {}
    static void handle_exit(Hsm &) {}
@@ -185,7 +185,7 @@ public:
 };
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 15 messages
+// composite specialisation for 15 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -262,7 +262,7 @@ private:
 };
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 14 messages
+// composite specialisation for 14 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -335,7 +335,7 @@ private:
 };
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 13 messages
+// composite specialisation for 13 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -405,7 +405,7 @@ private:
 };
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 12 messages
+// composite specialisation for 12 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -472,7 +472,7 @@ private:
 };
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 11 messages
+// composite specialisation for 11 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -536,7 +536,7 @@ private:
 };
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 10 messages
+// composite specialisation for 10 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -596,7 +596,7 @@ private:
 };
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 9 messages
+// composite specialisation for 9 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -653,7 +653,7 @@ private:
 };
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 8 messages
+// composite specialisation for 8 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -707,7 +707,7 @@ private:
 };
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 7 messages
+// composite specialisation for 7 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -758,7 +758,7 @@ private:
 };
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 6 messages
+// composite specialisation for 6 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5>
@@ -805,7 +805,7 @@ private:
 };
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 5 messages
+// composite specialisation for 5 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4>
@@ -849,7 +849,7 @@ private:
 };
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 4 messages
+// composite specialisation for 4 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3>
@@ -890,7 +890,7 @@ private:
 };
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 3 messages
+// composite specialisation for 3 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2>
@@ -928,7 +928,7 @@ private:
 };
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 2 messages
+// composite specialisation for 2 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1>
 class composite<H, ID, P, M0, M1> : public P
@@ -962,7 +962,7 @@ private:
 };
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 1 messages
+// composite specialisation for 1 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0>
 class composite<H, ID, P, M0> : public P
@@ -993,7 +993,7 @@ private:
 };
 
 // ------------------------------------------------------------------------------------------
-// Composite specialisation for 0 messages
+// composite specialisation for 0 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P>
 class composite<H, ID, P> : public P
@@ -1016,7 +1016,7 @@ public:
 };
 
 // ------------------------------------------------------------------------------------------
-// Leaf declaration for 16 messages
+// leaf declaration for 16 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0 = void, typename M1 = void,
          typename M2 = void, typename M3 = void, typename M4 = void, typename M5 = void,
@@ -1025,7 +1025,7 @@ template<typename H, unsigned ID, typename P, typename M0 = void, typename M1 = 
          typename M14 = void, typename M15 = void>
 class leaf;
 
-template<typename H, unsigned ID, typename P = composite<H, 0, Top<H> >, typename M0, typename M1,
+template<typename H, unsigned ID, typename P = composite<H, 0, top<H> >, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
          typename M6, typename M7, typename M8, typename M9,
          typename M10, typename M11, typename M12, typename M13,
@@ -1127,7 +1127,7 @@ const leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13,
       leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Leaf specialisation for 15 messages
+// leaf specialisation for 15 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1228,7 +1228,7 @@ const leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13,
       leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Leaf specialisation for 14 messages
+// leaf specialisation for 14 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1324,7 +1324,7 @@ const leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13>
       leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Leaf specialisation for 13 messages
+// leaf specialisation for 13 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1417,7 +1417,7 @@ const leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12>
       leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Leaf specialisation for 12 messages
+// leaf specialisation for 12 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1507,7 +1507,7 @@ const leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11>
       leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Leaf specialisation for 11 messages
+// leaf specialisation for 11 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1594,7 +1594,7 @@ const leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10>
       leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Leaf specialisation for 10 messages
+// leaf specialisation for 10 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1676,7 +1676,7 @@ const leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9>
       leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Leaf specialisation for 9 messages
+// leaf specialisation for 9 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1755,7 +1755,7 @@ const leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8>
       leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7, M8>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Leaf specialisation for 8 messages
+// leaf specialisation for 8 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1831,7 +1831,7 @@ const leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7>
       leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6, M7>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Leaf specialisation for 7 messages
+// leaf specialisation for 7 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5,
@@ -1904,7 +1904,7 @@ const leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6>
       leaf<H, ID, P, M0, M1, M2, M3, M4, M5, M6>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Leaf specialisation for 6 messages
+// leaf specialisation for 6 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4, typename M5>
@@ -1972,7 +1972,7 @@ const leaf<H, ID, P, M0, M1, M2, M3, M4, M5>
       leaf<H, ID, P, M0, M1, M2, M3, M4, M5>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Leaf specialisation for 5 messages
+// leaf specialisation for 5 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3, typename M4>
@@ -2037,7 +2037,7 @@ const leaf<H, ID, P, M0, M1, M2, M3, M4>
       leaf<H, ID, P, M0, M1, M2, M3, M4>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Leaf specialisation for 4 messages
+// leaf specialisation for 4 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2, typename M3>
@@ -2099,7 +2099,7 @@ const leaf<H, ID, P, M0, M1, M2, M3>
       leaf<H, ID, P, M0, M1, M2, M3>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Leaf specialisation for 3 messages
+// leaf specialisation for 3 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1,
          typename M2>
@@ -2158,7 +2158,7 @@ const leaf<H, ID, P, M0, M1, M2>
       leaf<H, ID, P, M0, M1, M2>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Leaf specialisation for 2 messages
+// leaf specialisation for 2 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0, typename M1>
 class leaf<H, ID, P, M0, M1> : public P
@@ -2212,7 +2212,7 @@ const leaf<H, ID, P, M0, M1>
       leaf<H, ID, P, M0, M1>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Leaf specialisation for 1 messages
+// leaf specialisation for 1 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P, typename M0>
 class leaf<H, ID, P, M0> : public P
@@ -2263,7 +2263,7 @@ const leaf<H, ID, P, M0>
       leaf<H, ID, P, M0>::obj;
 
 // ------------------------------------------------------------------------------------------
-// Leaf specialisation for 0 messages
+// leaf specialisation for 0 messages
 // ------------------------------------------------------------------------------------------
 template<typename H, unsigned ID, typename P>
 class leaf<H, ID, P> : public P
@@ -2305,54 +2305,58 @@ template<typename H, unsigned ID, typename P>
 const leaf<H, ID, P>
       leaf<H, ID, P>::obj;
 
-
 // ------------------------------------------------------------------------------------------
 // Init
 // ------------------------------------------------------------------------------------------
 template<typename C>
 struct Init
 {
-   typedef C Child;
-   typedef typename C::Hsm Hsm;
-   Init(Hsm & arg) : _hsm(arg) { };
-   ~Init()
-      {
-         Child::handle_entry(_hsm);
-         Child::handle_init (_hsm);
-      }
-   Hsm & _hsm;
+  typedef C Child;
+  typedef typename C::Hsm Hsm;
+  Init(Hsm & arg) : _hsm(arg) { };
+  ~Init()
+  {
+    Child::handle_entry(_hsm);
+    Child::handle_init(_hsm);
+  }
+  Hsm & _hsm;
 };
 
-// ------------------------------------------------------------------------------------------
-// Is_child
-// See GOTW #71 for design
-// ------------------------------------------------------------------------------------------
-template<typename C, typename P>
-struct Is_child
+namespace _private_
 {
-private:
-   typedef C Child;
-   typedef P Parent;
-   class  Yes { char a[1]; };
-   class  No  { char a[5]; };
-   static Yes test(Parent *); // undefined
-   static No  test(...);      // undefined
+  // ------------------------------------------------------------------------------------------
+  // Is_child
+  // See GOTW #71 for design
+  // ------------------------------------------------------------------------------------------
+  template<typename C, typename P>
+  struct Is_child
+  {
+  private:
+    typedef C Child;
+    typedef P Parent;
+    class  Yes { char a[1]; };
+    class  No { char a[5]; };
+    static Yes test(Parent *); // undefined
+    static No  test(...);      // undefined
 
-public:
-   enum { Res =
-      sizeof(test(static_cast<Child *>(0))) == sizeof(Yes) ? 1 : 0 };
-};
+  public:
+    enum {
+      Res =
+      sizeof(test(static_cast<Child *>(0))) == sizeof(Yes) ? 1 : 0
+    };
+  };
+
+  // ------------------------------------------------------------------------------------------
+  // Bool
+  // ------------------------------------------------------------------------------------------
+  template<bool> class Bool { };
+}
 
 // ------------------------------------------------------------------------------------------
-// Bool
-// ------------------------------------------------------------------------------------------
-template<bool> class Bool { };
-
-// ------------------------------------------------------------------------------------------
-// Transition
+// transition
 // ------------------------------------------------------------------------------------------
 template<typename C, typename S, typename T>
-struct Transition
+struct transition
 {
    typedef C Current;
    typedef S Source;
@@ -2363,24 +2367,24 @@ struct Transition
 
    enum // work out when to terminate template recursion
    {
-      eTB_CB    = Is_child<Target_parent, Current_parent>::Res,
-      eS_CB     = Is_child<Source       , Current_parent>::Res,
-      eS_C      = Is_child<Source       , Current       >::Res,
-      eC_S      = Is_child<Current      , Source        >::Res,
+      eTB_CB    = _private_::Is_child<Target_parent, Current_parent>::Res,
+      eS_CB     = _private_::Is_child<Source       , Current_parent>::Res,
+      eS_C      = _private_::Is_child<Source       , Current       >::Res,
+      eC_S      = _private_::Is_child<Current      , Source        >::Res,
       exitStop  = eTB_CB && eS_C,
       entryStop = eS_C || (eS_CB && !eC_S)
    };
 
-   Transition(Hsm & arg)
+   transition(Hsm & arg)
       : _hsm(arg)
    {
-      exit_actions(_hsm, Bool<false>());
+      exit_actions(_hsm, _private_::Bool<false>());
    }
 
-   ~Transition()
+   ~transition()
    {
-      typedef Transition<Target, Source, Target> Trans;
-      Trans::entry_actions(_hsm, Bool<false>());
+      typedef transition<Target, Source, Target> Trans;
+      Trans::entry_actions(_hsm, _private_::Bool<false>());
       Target::handle_init(_hsm);
    }
 
@@ -2388,19 +2392,19 @@ struct Transition
    // specialization method would require to specialize the inner
    // template without specializing the outer one, which is
    // forbidden.
-   static void exit_actions (Hsm &, Bool<true>) {}
-   static void exit_actions (Hsm & h, Bool<false>)
+   static void exit_actions (Hsm &, _private_::Bool<true>) {}
+   static void exit_actions (Hsm & h, _private_::Bool<false>)
    {
-      typedef Transition<Current_parent, Source, Target> Trans;
+      typedef transition<Current_parent, Source, Target> Trans;
       Current::handle_exit(h);
-      Trans::exit_actions(h, Bool<exitStop>());
+      Trans::exit_actions(h, _private_::Bool<exitStop>());
    };
 
-   static void entry_actions(Hsm &, Bool<true >) {}
-   static void entry_actions(Hsm & h, Bool<false>)
+   static void entry_actions(Hsm &, _private_::Bool<true >) {}
+   static void entry_actions(Hsm & h, _private_::Bool<false>)
    {
-      typedef Transition<Current_parent, Source, Target> Trans;
-      Trans::entry_actions(h, Bool<entryStop>());
+      typedef transition<Current_parent, Source, Target> Trans;
+      Trans::entry_actions(h, _private_::Bool<entryStop>());
       Current::handle_entry(h);
    };
 
@@ -2408,7 +2412,7 @@ private:
    Hsm & _hsm;
 };
 
-} // namespace state
+} // namespace hsm_state
 
 // ------------------------------------------------------------------------------------------
 // hsm: The base class for the finite state machine
@@ -2418,10 +2422,10 @@ class hsm : public etl::imessage_router
 {
 public:
    typedef DERIVED_HSM derived_hsm;
-   typedef state::Top<derived_hsm> state;
+   typedef hsm_state::top<derived_hsm> state;
 
    // Construction / destruction
-   hsm(message_router_id_t id)
+   hsm(etl::message_router_id_t id)
       : etl::imessage_router(id),
       _state (nullptr)
    {
@@ -2433,7 +2437,7 @@ public:
       return _state != nullptr;
    };
 
-   bool accepts(message_id_t) const
+   bool accepts(etl::message_id_t) const
    {
       return true;
    };
@@ -2450,11 +2454,11 @@ public:
 
    void set_state(state const & arg)
    {
-      _state = & arg;
+      _state = &arg;
    };
 
 private:
-   const state * _state;
+   const state* _state;
 };
 
 } // namespace etl

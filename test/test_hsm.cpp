@@ -29,141 +29,140 @@ SOFTWARE.
 #include "UnitTest++.h"
 
 #include "etl/nullptr.h"
-//const std::nullptr_t nullptr = {};
 
 #include "etl/hsm.h"
 #include "etl/enum_type.h"
 
 #include <sstream>
 
-namespace test {
-etl::message_router_id_t const state_machine_id = 0;
-
-namespace message {
-struct Id
+namespace test
 {
-	 enum enum_type
-	 {
-		 A, B, C, D, E, F, G, H
-	 };
+  const etl::message_router_id_t state_machine_id = 0;
 
-	 ETL_DECLARE_ENUM_TYPE(Id, etl::message_id_t)
-	 ETL_ENUM_TYPE(A, "A")
-	 ETL_ENUM_TYPE(B, "B")
-	 ETL_ENUM_TYPE(C, "C")
-	 ETL_ENUM_TYPE(D, "D")
-	 ETL_ENUM_TYPE(E, "E")
-	 ETL_ENUM_TYPE(F, "F")
-	 ETL_ENUM_TYPE(G, "G")
-	 ETL_ENUM_TYPE(H, "H")
-	 ETL_END_ENUM_TYPE
-};
-
-class A : public etl::message<Id::A>{};
-class B : public etl::message<Id::B>{};
-class C : public etl::message<Id::C>{};
-class D : public etl::message<Id::D>{};
-class E : public etl::message<Id::E>{};
-class F : public etl::message<Id::F>{};
-class G : public etl::message<Id::G>{};
-class H : public etl::message<Id::H>{};
-
-} // namespace message
-
-/******************************************************************************
- ** State_machine declaration
- ******************************************************************************/
-class State_machine : public etl::hsm<State_machine>
-{
-public:
-	 State_machine(etl::message_router_id_t id)
-		 : etl::hsm<State_machine>(id) { };
-
-	 // Non-mutable
-	 unsigned get_event_cnt() const
+  namespace message
+  {
+    struct Id
     {
-       return _event_cnt;
+	     enum enum_type
+	     {
+		     A, B, C, D, E, F, G, H
+	     };
+
+	     ETL_DECLARE_ENUM_TYPE(Id, etl::message_id_t)
+	     ETL_ENUM_TYPE(A, "A")
+	     ETL_ENUM_TYPE(B, "B")
+	     ETL_ENUM_TYPE(C, "C")
+	     ETL_ENUM_TYPE(D, "D")
+	     ETL_ENUM_TYPE(E, "E")
+	     ETL_ENUM_TYPE(F, "F")
+	     ETL_ENUM_TYPE(G, "G")
+	     ETL_ENUM_TYPE(H, "H")
+	     ETL_END_ENUM_TYPE
     };
 
-	 int foo() const
-	 {
-       return _foo;
-    };
+    class A : public etl::message<Id::A>{};
+    class B : public etl::message<Id::B>{};
+    class C : public etl::message<Id::C>{};
+    class D : public etl::message<Id::D>{};
+    class E : public etl::message<Id::E>{};
+    class F : public etl::message<Id::F>{};
+    class G : public etl::message<Id::G>{};
+    class H : public etl::message<Id::H>{};
+  }
 
-	 std::string get_transition() const
-	 {
-       return _os.str();
-    };
+  /******************************************************************************
+   ** State_machine declaration
+   ******************************************************************************/
+  class State_machine : public etl::hsm<State_machine>
+  {
+  public:
+	   State_machine(etl::message_router_id_t id)
+		   : etl::hsm<State_machine>(id) { };
 
-	 // Mutable
-	 void inc_event_cnt()
-	 {
-       _event_cnt++;
-    };
+	   // Non-mutable
+	   unsigned get_event_cnt() const
+      {
+         return _event_cnt;
+      };
 
-	 void foo(int i)
-	 {
-       _foo = i;
-    };
+	   int foo() const
+	   {
+         return _foo;
+      };
 
-	 std::ostringstream & set_transition()
-	 {
-       return _os;
-    }
+	   std::string get_transition() const
+	   {
+         return _os.str();
+      };
 
-	 void clear_transition()
-	 {
-       _os.str(std::string());
-    }
+	   // Mutable
+	   void inc_event_cnt()
+	   {
+         _event_cnt++;
+      };
 
-	 virtual void receive(etl::imessage_router & source,
-                         etl::imessage const & message) override final
-    {
-       get_state()->process_event(source, message, * this);
-    };
+	   void foo(int i)
+	   {
+         _foo = i;
+      };
 
-	 virtual void receive(etl::imessage const & message) override final
-    {
-       static etl::null_message_router nmr;
-       receive(nmr, message);
-    };
+	   std::ostringstream & set_transition()
+	   {
+         return _os;
+      }
 
-	 virtual void receive(imessage_router & source,
-                         etl::message_router_id_t destination_router_id,
-                         etl::imessage const & message) override final
-  	 {
-       if ((destination_router_id == get_message_router_id())
-           || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
-       {
-          receive(source, message);
-       }
-    };
+	   void clear_transition()
+	   {
+         _os.str(std::string());
+      }
 
-private:
-	 int                _foo       {0};
-	 unsigned           _event_cnt {0};
-	 std::ostringstream _os;
-};
+	   virtual void receive(etl::imessage_router & source,
+                           etl::imessage const & message) override final
+      {
+         get_state()->process_event(source, message, * this);
+      };
 
-/******************************************************************************
- ** State definition
- ******************************************************************************/
-namespace state {
-/**
- * Definition of the state hierarchy. The numbers are unique unsigned
- * values used to uniquify state types in the case two states have the
- * same parent and message set. */
-typedef etl::state::composite<State_machine, 0> Top;
-typedef etl::state::composite<State_machine, 1, Top, message::E> S0;
-typedef etl::state::composite<State_machine, 2, S0, message::A, message::B,
-                              message::C, message::D, message::F> S1;
-typedef etl::state::leaf     <State_machine, 3, S1, message::G, message::H> S11;
-typedef etl::state::composite<State_machine, 4, S0, message::C, message::F> S2;
-typedef etl::state::composite<State_machine, 5, S2, message::B, message::H> S21;
-typedef etl::state::leaf     <State_machine, 6, S21, message::D, message::G> S211;
+	   virtual void receive(etl::imessage const & message) override final
+      {
+         static etl::null_message_router nmr;
+         receive(nmr, message);
+      };
 
-} // namespace state
-} // namespace test
+	   virtual void receive(imessage_router & source,
+                           etl::message_router_id_t destination_router_id,
+                           etl::imessage const & message) override final
+  	   {
+         if ((destination_router_id == get_message_router_id())
+             || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
+         {
+            receive(source, message);
+         }
+      };
+
+  private:
+	   int                _foo       {0};
+	   unsigned           _event_cnt {0};
+	   std::ostringstream _os;
+  };
+
+  /******************************************************************************
+   ** State definition
+   ******************************************************************************/
+  namespace state
+  {
+    /**
+     * Definition of the state hierarchy. The numbers are unique unsigned
+     * values used to uniquify state types in the case two states have the
+     * same parent and message set. */
+    typedef etl::hsm_state::composite<State_machine, 0> Top;
+    typedef etl::hsm_state::composite<State_machine, 1, Top, message::E> S0;
+    typedef etl::hsm_state::composite<State_machine, 2, S0,  message::A, message::B, message::C, message::D, message::F> S1;
+    typedef etl::hsm_state::leaf     <State_machine, 3, S1,  message::G, message::H> S11;
+    typedef etl::hsm_state::composite<State_machine, 4, S0,  message::C, message::F> S2;
+    typedef etl::hsm_state::composite<State_machine, 5, S2,  message::B, message::H> S21;
+    typedef etl::hsm_state::leaf     <State_machine, 6, S21, message::D, message::G> S211;
+  }
+}
 
 /******************************************************************************
  * Top
@@ -172,7 +171,7 @@ template<>
 inline void test::state::Top::handle_init(test::State_machine & arg)
 {
 	arg.set_transition() << "Init(Top) - ";
-	etl::state::Init<test::state::S0> tmp(arg);
+	etl::hsm_state::Init<test::state::S0> tmp(arg);
 }
 
 /******************************************************************************
@@ -188,7 +187,7 @@ template<>
 inline void test::state::S0::handle_init(test::State_machine & arg)
 {
 	arg.set_transition() << "Init(S0) - ";
-	etl::state::Init<test::state::S1> tmp(arg);
+	etl::hsm_state::Init<test::state::S1> tmp(arg);
 }
 
 template<>
@@ -205,7 +204,7 @@ on_event(etl::imessage_router &, test::message::E const &, test::State_machine &
 	/* Guard condition (no guard here)*/
 	/* optional Transition if a state change shall be
 	 * affected. Transition::Transition() performs UML exit/ actions.*/
-	etl::state::Transition<LEAF, Self, test::state::S211> t(h);
+	etl::hsm_state::transition<LEAF, Self, test::state::S211> t(h);
 	/* Transition action goes here */
 	h.set_transition() << "Tran(S0, S211, E) - ";
 }
@@ -223,7 +222,7 @@ template<>
 inline void test::state::S1::handle_init(test::State_machine & arg)
 {
 	arg.set_transition() << "Init(S1) - ";
-	etl::state::Init<test::state::S11> tmp(arg);
+	etl::hsm_state::Init<test::state::S11> tmp(arg);
 }
 
 template<>
@@ -237,7 +236,7 @@ template<typename LEAF>
 inline void test::state::S1::
 on_event(etl::imessage_router &, test::message::A const &, test::State_machine & h,	const LEAF & l) const
 {
-	etl::state::Transition<LEAF, Self, test::state::S1> t(h);
+	etl::hsm_state::transition<LEAF, Self, test::state::S1> t(h);
 	h.set_transition() << "Tran(S1, S1, A) - ";
 }
 
@@ -246,7 +245,7 @@ template<typename LEAF>
 inline void test::state::S1::
 on_event(etl::imessage_router &, test::message::B const &, test::State_machine & h,	const LEAF & l) const
 {
-	etl::state::Transition<LEAF, Self, test::state::S11> t(h);
+	etl::hsm_state::transition<LEAF, Self, test::state::S11> t(h);
 	h.set_transition() << "Tran(S1, S11, B) - ";
 }
 
@@ -255,7 +254,7 @@ template<typename LEAF>
 inline void test::state::S1::
 on_event(etl::imessage_router &, test::message::C const &, test::State_machine & h, const LEAF & l) const
 {
-	etl::state::Transition<LEAF, Self, test::state::S2> t(h);
+	etl::hsm_state::transition<LEAF, Self, test::state::S2> t(h);
 	h.set_transition() << "Tran(S1, S2, C) - ";
 }
 
@@ -264,7 +263,7 @@ template<typename LEAF>
 inline void test::state::S1::
 on_event(etl::imessage_router &, test::message::D const &, test::State_machine & h, const LEAF & l) const
 {
-	etl::state::Transition<LEAF, Self, test::state::S0> t(h);
+	etl::hsm_state::transition<LEAF, Self, test::state::S0> t(h);
 	h.set_transition() << "Tran(S1, S0, D) - ";
 }
 
@@ -273,7 +272,7 @@ template<typename LEAF>
 inline void test::state::S1::
 on_event(etl::imessage_router &, test::message::F const &, test::State_machine & h,	const LEAF & l) const
 {
-	etl::state::Transition<LEAF, Self, test::state::S211> t(h);
+	etl::hsm_state::transition<LEAF, Self, test::state::S211> t(h);
 	h.set_transition() << "Tran(S1, S211, F) - ";
 }
 
@@ -297,7 +296,7 @@ template<typename LEAF>
 inline void test::state::S11::
 on_event(etl::imessage_router &, test::message::G const &, test::State_machine & h, LEAF const & l) const
 {
-	etl::state::Transition<LEAF, Self, test::state::S211> t(h);
+	etl::hsm_state::transition<LEAF, Self, test::state::S211> t(h);
 	h.set_transition() << "Tran(S11, S211, G) - ";
 }
 
@@ -319,7 +318,7 @@ on_event(etl::imessage_router &, test::message::H const &, test::State_machine &
 template<>
 inline void test::state::S2::handle_init(test::State_machine & arg)
 {
-	etl::state::Init<test::state::S21> tmp(arg);
+	etl::hsm_state::Init<test::state::S21> tmp(arg);
 	arg.set_transition() << "Init(S2) - ";
 }
 
@@ -340,7 +339,7 @@ template<typename LEAF>
 inline void test::state::S2::
 on_event(etl::imessage_router &, test::message::C const &, test::State_machine & h,	const LEAF & l) const
 {
-	etl::state::Transition<LEAF, Self, test::state::S1> t(h);
+	etl::hsm_state::transition<LEAF, Self, test::state::S1> t(h);
 	h.set_transition() << "Tran(S2, S1, C) - ";
 }
 
@@ -349,7 +348,7 @@ template<typename LEAF>
 inline void test::state::S2::
 on_event(etl::imessage_router &, test::message::F const &, test::State_machine & h,	const LEAF & l) const
 {
-	etl::state::Transition<LEAF, Self, test::state::S11> t(h);
+	etl::hsm_state::transition<LEAF, Self, test::state::S11> t(h);
 	h.set_transition() << "Tran(S2, S11, F) - ";
 }
 
@@ -366,7 +365,7 @@ template<>
 inline void test::state::S21::handle_init(test::State_machine & arg)
 {
 	arg.set_transition() << "Init(S21) - ";
-	etl::state::Init<test::state::S211> tmp(arg);
+	etl::hsm_state::Init<test::state::S211> tmp(arg);
 }
 
 template<>
@@ -380,7 +379,7 @@ template<typename LEAF>
 inline void test::state::S21::
 on_event(etl::imessage_router &, test::message::B const &, test::State_machine & h,	const LEAF & l) const
 {
-	etl::state::Transition<LEAF, Self, test::state::S211> t(h);
+	etl::hsm_state::transition<LEAF, Self, test::state::S211> t(h);
 	h.set_transition() << "Tran(S21, S211, B) - ";
 }
 
@@ -390,7 +389,7 @@ inline void test::state::S21::
 on_event(etl::imessage_router &, test::message::H const &, test::State_machine & h,	const LEAF & l) const
 {
 	if (!h.foo()) {
-		etl::state::Transition<LEAF, Self, test::state::S21> t(h);
+		etl::hsm_state::transition<LEAF, Self, test::state::S21> t(h);
 		h.set_transition() << "h[!foo]/foo=1 - ";
 		h.foo(1);
 	}
@@ -416,7 +415,7 @@ template<typename LEAF>
 inline void test::state::S211::
 on_event(etl::imessage_router &, test::message::D const &, test::State_machine & h,	const LEAF & l) const
 {
-	etl::state::Transition<LEAF, Self, test::state::S21> t(h);
+	etl::hsm_state::transition<LEAF, Self, test::state::S21> t(h);
 	h.set_transition() << "Tran(S211, S21, D) - ";
 }
 
@@ -425,7 +424,7 @@ template<typename LEAF>
 inline void test::state::S211::
 on_event(etl::imessage_router &, test::message::G const &, test::State_machine & h,	const LEAF & l) const
 {
-	etl::state::Transition<LEAF, Self, test::state::S0> t(h);
+	etl::hsm_state::transition<LEAF, Self, test::state::S0> t(h);
 	h.set_transition() << "Tran(S211, S0, G) - ";
 }
 
