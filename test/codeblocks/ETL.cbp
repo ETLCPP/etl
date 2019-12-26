@@ -12,7 +12,9 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-std=c++14" />
 					<Add option="-std=c++17" />
+					<Add option="-std=c++11" />
 					<Add option="-m32" />
 					<Add option="-g" />
 					<Add option="-D_DEBUG" />
@@ -26,12 +28,14 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="Windows No STL">
-				<Option output="bin/Debug No STL/ETL" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/ETL" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-std=c++14" />
 					<Add option="-std=c++17" />
+					<Add option="-std=c++11" />
 					<Add option="-m32" />
 					<Add option="-g" />
 					<Add option="-D_DEBUG" />
@@ -43,21 +47,6 @@
 				</Linker>
 				<ExtraCommands>
 					<Add after="${TARGET_OUTPUT_DIR}${TARGET_OUTPUT_BASENAME}" />
-				</ExtraCommands>
-			</Target>
-			<Target title="Linux">
-				<Option output="bin/Debug/ETL" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Debug/" />
-				<Option type="1" />
-				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-std=c++11" />
-					<Add option="-g" />
-					<Add option="-D_DEBUG" />
-				</Compiler>
-				<ExtraCommands>
-					<Add after="${TARGET_OUTPUT_DIR}${TARGET_OUTPUT_BASENAME}" />
-					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Windows 64">
@@ -77,6 +66,41 @@
 				</Linker>
 				<ExtraCommands>
 					<Add after="${TARGET_OUTPUT_DIR}${TARGET_OUTPUT_BASENAME}" />
+				</ExtraCommands>
+			</Target>
+			<Target title="Linux">
+				<Option output="bin/Debug/ETL" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-std=c++14" />
+					<Add option="-std=c++17" />
+					<Add option="-std=c++11" />
+					<Add option="-g" />
+					<Add option="-D_DEBUG" />
+				</Compiler>
+				<ExtraCommands>
+					<Add after="${TARGET_OUTPUT_DIR}${TARGET_OUTPUT_BASENAME}" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+			<Target title="Linux No STL">
+				<Option output="bin/Debug/ETL" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-std=c++14" />
+					<Add option="-std=c++17" />
+					<Add option="-std=c++11" />
+					<Add option="-g" />
+					<Add option="-D_DEBUG" />
+					<Add option="-DETL_NO_STL" />
+				</Compiler>
+				<ExtraCommands>
+					<Add after="${TARGET_OUTPUT_DIR}${TARGET_OUTPUT_BASENAME}" />
+					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 		</Build>
@@ -117,12 +141,14 @@
 		<Unit filename="../../../unittest-cpp/UnitTest++/MemoryOutStream.h" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/Posix/SignalTranslator.cpp">
 			<Option target="Linux" />
+			<Option target="Linux No STL" />
 		</Unit>
 		<Unit filename="../../../unittest-cpp/UnitTest++/Posix/SignalTranslator.h">
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Unit filename="../../../unittest-cpp/UnitTest++/Posix/TimeHelpers.cpp">
 			<Option target="Linux" />
+			<Option target="Linux No STL" />
 		</Unit>
 		<Unit filename="../../../unittest-cpp/UnitTest++/Posix/TimeHelpers.h">
 			<Option target="&lt;{~None~}&gt;" />
@@ -260,6 +286,7 @@
 		<Unit filename="../../include/etl/multimap.h" />
 		<Unit filename="../../include/etl/multiset.h" />
 		<Unit filename="../../include/etl/murmur3.h" />
+		<Unit filename="../../include/etl/mutex.h" />
 		<Unit filename="../../include/etl/null_type.h" />
 		<Unit filename="../../include/etl/nullptr.h" />
 		<Unit filename="../../include/etl/numeric.h" />

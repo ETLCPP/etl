@@ -46,7 +46,7 @@ namespace etl
     mutex()
       : flag(0)
     {
-      __sync_lock_release(flag);
+      __sync_lock_release(&flag);
     }
 
     void lock()
@@ -56,6 +56,7 @@ namespace etl
         while (flag)
         {
         }
+      }
     }
 
     bool try_lock()
@@ -65,12 +66,12 @@ namespace etl
 
     void unlock()
     {
-      __sync_lock_release(flag);
+      __sync_lock_release(&flag);
     }
 
   private:
 
-    volatile uint32_t flag;
+    char flag;
   };
 }
 
