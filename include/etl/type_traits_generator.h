@@ -494,15 +494,16 @@ namespace etl
   /// Alignment templates.
   /// These require compiler specific intrinsics.
   ///\ingroup type_traits
-#ifdef ETL_COMPILER_MICROSOFT
-  template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof(T))> {};
-
-#elif defined(ETL_COMPILER_IAR) || defined(ETL_COMPILER_TI)
-  template <typename T> struct alignment_of : integral_constant<size_t, size_t(__ALIGNOF__(T))> {};
-
+#if ETL_CPP11_SUPPORTED
+  template <typename T> struct alignment_of : integral_constant<size_t, size_t(alignof(T))> {};
 #else
-  template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof__(T))> {};
-
+  #ifdef ETL_COMPILER_MICROSOFT
+    template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof(T))> {};
+  #elif defined(ETL_COMPILER_IAR) || defined(ETL_COMPILER_TI)
+    template <typename T> struct alignment_of : integral_constant<size_t, size_t(__ALIGNOF__(T))> {};
+  #else
+    template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof__(T))> {};
+  #endif
 #endif
 
   /// Specialisation of 'alignment_of' for 'void'.

@@ -482,15 +482,16 @@ namespace etl
   /// Alignment templates.
   /// These require compiler specific intrinsics.
   ///\ingroup type_traits
-#ifdef ETL_COMPILER_MICROSOFT
-  template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof(T))> {};
-
-#elif defined(ETL_COMPILER_IAR) || defined(ETL_COMPILER_TI)
-  template <typename T> struct alignment_of : integral_constant<size_t, size_t(__ALIGNOF__(T))> {};
-
+#if ETL_CPP11_SUPPORTED
+  template <typename T> struct alignment_of : integral_constant<size_t, size_t(alignof(T))> {};
 #else
-  template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof__(T))> {};
-
+  #ifdef ETL_COMPILER_MICROSOFT
+    template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof(T))> {};
+  #elif defined(ETL_COMPILER_IAR) || defined(ETL_COMPILER_TI)
+    template <typename T> struct alignment_of : integral_constant<size_t, size_t(__ALIGNOF__(T))> {};
+  #else
+    template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof__(T))> {};
+  #endif
 #endif
 
   /// Specialisation of 'alignment_of' for 'void'.
@@ -523,14 +524,14 @@ namespace etl
   ///\ingroup types
   //***************************************************************************
   template <typename T,
-            typename T1, typename T2 = void, typename T3 = void, typename T4 = void,
-            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void,
-            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void,
-            typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void,
+            typename T1, typename T2 = void, typename T3 = void, typename T4 = void, 
+            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void, 
+            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void, 
+            typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void, 
             typename T17 = void>
   struct is_one_of
   {
-    static const bool value =
+    static const bool value = 
         etl::is_same<T, T1>::value ||
         etl::is_same<T, T2>::value ||
         etl::is_same<T, T3>::value ||

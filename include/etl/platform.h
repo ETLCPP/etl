@@ -38,8 +38,10 @@ SOFTWARE.
 #define ETL_8BIT_SUPPORT (CHAR_BIT == 8)
 
 // Define a debug macro
-#if defined(_DEBUG) || defined(DEBUG)
-#define ETL_DEBUG
+#if !defined(ETL_DEBUG)
+  #if defined(_DEBUG) || defined(DEBUG)
+    #define ETL_DEBUG
+  #endif
 #endif
 
 // Undefine all of the macros.
@@ -62,25 +64,23 @@ SOFTWARE.
 
 #include "etl_profile.h"
 
-// The macros below are dependent on the profile.
-
-#if defined(ETL_COMPILER_GCC)
-  #define ETL_COMPILER_VERSION      __GNUC__
-  #define ETL_COMPILER_FULL_VERSION ((__GNUC__ * 10000) + (__GNUC_MINOR__ * 100) + __GNUC_PATCHLEVEL__)
-#elif defined(ETL_COMPILER_MICROSOFT)
-  #define ETL_COMPILER_VERSION      _MSC_VER
-  #define ETL_COMPILER_FULL_VERSION _MSC_FULL_VER
+#if defined(ETL_AUTO_DETERMINE_COMPILER_INFO)
+  // Figure out things about the compiler.
+  #include "profiles/determine_compiler.h"
+  #include "profiles/determine_compiler_version.h"
+  #include "profiles/determine_compiler_language_support.h"
 #endif
 
+// The macros below are dependent on the profile.
 #if ETL_CPP11_SUPPORTED
   #define ETL_CONSTEXPR constexpr
-  #define ETL_CONST     constexpr
+  #define ETL_CONST_OR_CONSTEXPR constexpr
   #define ETL_DELETE    = delete
   #define ETL_NOEXCEPT  noexcept
   #define ETL_NOEXCEPT_EXPR(expression) noexcept(expression)
 #else
   #define ETL_CONSTEXPR
-  #define ETL_CONST     const
+  #define ETL_CONST_OR_CONSTEXPR const
   #define ETL_DELETE
   #define ETL_NOEXCEPT
   #define ETL_NOEXCEPT_EXPR(expression)

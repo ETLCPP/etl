@@ -46,6 +46,7 @@ SOFTWARE.
 #include "platform.h"
 #include "iterator.h"
 #include "type_traits.h"
+#include "container.h"
 
 namespace etl
 {
@@ -1180,7 +1181,7 @@ namespace etl
   {
     for (TIterator itr = first; itr != last; ++itr)
     {
-      ETL_STD::rotate(ETL_STD::upper_bound(first, itr, *itr, compare), itr, ETL_STD::next(itr));
+      ETL_STD::rotate(ETL_STD::upper_bound(first, itr, *itr, compare), itr, etl::next(itr));
     }
   }
 
