@@ -286,9 +286,9 @@ namespace etl
       if (!task_list.full())
       {
         typename task_list_t::iterator itask = ETL_STD::upper_bound(task_list.begin(),
-                                                                task_list.end(),
-                                                                task.get_task_priority(),
-                                                                compare_priority());
+                                                                    task_list.end(),
+                                                                    task.get_task_priority(),
+                                                                    compare_priority());
 
         task_list.insert(itask, &task);
       }
@@ -335,11 +335,6 @@ namespace etl
     //*******************************************
     struct compare_priority
     {
-      bool operator()(etl::task* ptask, etl::task_priority_t priority) const
-      {
-        return ptask->get_task_priority() > priority;
-      }
-
       bool operator()(etl::task_priority_t priority, etl::task* ptask) const
       {
         return priority > ptask->get_task_priority();
