@@ -37,9 +37,9 @@ SOFTWARE.
 
 #include "platform.h"
 
-#include "stl/algorithm.h"
-#include "stl/iterator.h"
-#include "stl/functional.h"
+#include "algorithm.h"
+#include "iterator.h"
+#include "functional.h"
 
 #include "parameter_type.h"
 #include "container.h"
@@ -623,7 +623,7 @@ namespace etl
   /// A templated base for all etl::multiset types.
   ///\ingroup set
   //***************************************************************************
-  template <typename T, typename TCompare = ETL_STD::less<T> >
+  template <typename T, typename TCompare = ETL_OR_STD::less<T> >
   class imultiset : public etl::multiset_base
   {
   public:
@@ -713,7 +713,7 @@ namespace etl
     //*************************************************************************
     /// iterator.
     //*************************************************************************
-    class iterator : public etl::iterator<ETL_BIDIRECTIONAL_ITERATOR_TAG, value_type>
+    class iterator : public etl::iterator<ETL_OR_STD::bidirectional_iterator_tag, value_type>
     {
     public:
 
@@ -818,7 +818,7 @@ namespace etl
     //*************************************************************************
     /// const_iterator
     //*************************************************************************
-    class const_iterator : public etl::iterator<ETL_BIDIRECTIONAL_ITERATOR_TAG, const value_type>
+    class const_iterator : public etl::iterator<ETL_OR_STD::bidirectional_iterator_tag, const value_type>
     {
     public:
 
@@ -925,10 +925,10 @@ namespace etl
     };
     friend class const_iterator;
 
-    typedef typename ETL_STD::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename etlstd::iterator_traits<iterator>::difference_type difference_type;
 
-    typedef ETL_STD::reverse_iterator<iterator>       reverse_iterator;
-    typedef ETL_STD::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
 
     //*************************************************************************
     /// Gets the beginning of the multiset.
@@ -1895,7 +1895,7 @@ namespace etl
   //*************************************************************************
   /// A templated multiset implementation that uses a fixed size buffer.
   //*************************************************************************
-  template <typename T, const size_t MAX_SIZE_, typename TCompare = ETL_STD::less<T> >
+  template <typename T, const size_t MAX_SIZE_, typename TCompare = ETL_OR_STD::less<T> >
   class multiset : public etl::imultiset<T, TCompare>
   {
   public:
@@ -1982,7 +1982,7 @@ namespace etl
   template <typename T, typename TCompare>
   bool operator ==(const etl::imultiset<T, TCompare>& lhs, const etl::imultiset<T, TCompare>& rhs)
   {
-    return (lhs.size() == rhs.size()) && ETL_STD::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (lhs.size() == rhs.size()) && ETL_OR_STD::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //***************************************************************************
@@ -2008,7 +2008,7 @@ namespace etl
   template <typename T, typename TCompare>
   bool operator <(const etl::imultiset<T, TCompare>& lhs, const etl::imultiset<T, TCompare>& rhs)
   {
-    return ETL_STD::lexicographical_compare(lhs.begin(),
+    return ETL_OR_STD::lexicographical_compare(lhs.begin(),
       lhs.end(),
       rhs.begin(),
       rhs.end());

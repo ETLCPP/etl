@@ -117,41 +117,41 @@ namespace
     //*************************************************************************
     TEST(test_type_from_id_16)
     {
-      CHECK((std::is_same<Type1,  typename Type_Id_Lookup16::type_from_id<Type1::ID>::type>::value));
-      CHECK((std::is_same<Type2,  typename Type_Id_Lookup16::type_from_id<Type2::ID>::type>::value));
-      CHECK((std::is_same<Type3,  typename Type_Id_Lookup16::type_from_id<Type3::ID>::type>::value));
-      CHECK((std::is_same<Type4,  typename Type_Id_Lookup16::type_from_id<Type4::ID>::type>::value));
-      CHECK((std::is_same<Type5,  typename Type_Id_Lookup16::type_from_id<Type5::ID>::type>::value));
-      CHECK((std::is_same<Type6,  typename Type_Id_Lookup16::type_from_id<Type6::ID>::type>::value));
-      CHECK((std::is_same<Type7,  typename Type_Id_Lookup16::type_from_id<Type7::ID>::type>::value));
-      CHECK((std::is_same<Type8,  typename Type_Id_Lookup16::type_from_id<Type8::ID>::type>::value));
-      CHECK((std::is_same<Type9,  typename Type_Id_Lookup16::type_from_id<Type9::ID>::type>::value));
-      CHECK((std::is_same<Type10, typename Type_Id_Lookup16::type_from_id<Type10::ID>::type>::value));
-      CHECK((std::is_same<Type11, typename Type_Id_Lookup16::type_from_id<Type11::ID>::type>::value));
-      CHECK((std::is_same<Type12, typename Type_Id_Lookup16::type_from_id<Type12::ID>::type>::value));
-      CHECK((std::is_same<Type13, typename Type_Id_Lookup16::type_from_id<Type13::ID>::type>::value));
-      CHECK((std::is_same<Type14, typename Type_Id_Lookup16::type_from_id<Type14::ID>::type>::value));
-      CHECK((std::is_same<Type15, typename Type_Id_Lookup16::type_from_id<Type15::ID>::type>::value));
-      CHECK((std::is_same<Type16, typename Type_Id_Lookup16::type_from_id<Type16::ID>::type>::value));
+      CHECK((etlstd::is_same<Type1,  typename Type_Id_Lookup16::type_from_id<Type1::ID>::type>::value));
+      CHECK((etlstd::is_same<Type2,  typename Type_Id_Lookup16::type_from_id<Type2::ID>::type>::value));
+      CHECK((etlstd::is_same<Type3,  typename Type_Id_Lookup16::type_from_id<Type3::ID>::type>::value));
+      CHECK((etlstd::is_same<Type4,  typename Type_Id_Lookup16::type_from_id<Type4::ID>::type>::value));
+      CHECK((etlstd::is_same<Type5,  typename Type_Id_Lookup16::type_from_id<Type5::ID>::type>::value));
+      CHECK((etlstd::is_same<Type6,  typename Type_Id_Lookup16::type_from_id<Type6::ID>::type>::value));
+      CHECK((etlstd::is_same<Type7,  typename Type_Id_Lookup16::type_from_id<Type7::ID>::type>::value));
+      CHECK((etlstd::is_same<Type8,  typename Type_Id_Lookup16::type_from_id<Type8::ID>::type>::value));
+      CHECK((etlstd::is_same<Type9,  typename Type_Id_Lookup16::type_from_id<Type9::ID>::type>::value));
+      CHECK((etlstd::is_same<Type10, typename Type_Id_Lookup16::type_from_id<Type10::ID>::type>::value));
+      CHECK((etlstd::is_same<Type11, typename Type_Id_Lookup16::type_from_id<Type11::ID>::type>::value));
+      CHECK((etlstd::is_same<Type12, typename Type_Id_Lookup16::type_from_id<Type12::ID>::type>::value));
+      CHECK((etlstd::is_same<Type13, typename Type_Id_Lookup16::type_from_id<Type13::ID>::type>::value));
+      CHECK((etlstd::is_same<Type14, typename Type_Id_Lookup16::type_from_id<Type14::ID>::type>::value));
+      CHECK((etlstd::is_same<Type15, typename Type_Id_Lookup16::type_from_id<Type15::ID>::type>::value));
+      CHECK((etlstd::is_same<Type16, typename Type_Id_Lookup16::type_from_id<Type16::ID>::type>::value));
     }
 
     //*************************************************************************
     TEST(test_type_from_id_8)
     {
-      CHECK((std::is_same<Type1,  typename Type_Id_Lookup8::type_from_id<Type1::ID>::type>::value));
-      CHECK((std::is_same<Type2,  typename Type_Id_Lookup8::type_from_id<Type2::ID>::type>::value));
-      CHECK((std::is_same<Type3,  typename Type_Id_Lookup8::type_from_id<Type3::ID>::type>::value));
-      CHECK((std::is_same<Type4,  typename Type_Id_Lookup8::type_from_id<Type4::ID>::type>::value));
-      CHECK((std::is_same<Type13, typename Type_Id_Lookup8::type_from_id<Type13::ID>::type>::value));
-      CHECK((std::is_same<Type14, typename Type_Id_Lookup8::type_from_id<Type14::ID>::type>::value));
-      CHECK((std::is_same<Type15, typename Type_Id_Lookup8::type_from_id<Type15::ID>::type>::value));
-      CHECK((std::is_same<Type16, typename Type_Id_Lookup8::type_from_id<Type16::ID>::type>::value));
+      CHECK((etlstd::is_same<Type1,  typename Type_Id_Lookup8::type_from_id<Type1::ID>::type>::value));
+      CHECK((etlstd::is_same<Type2,  typename Type_Id_Lookup8::type_from_id<Type2::ID>::type>::value));
+      CHECK((etlstd::is_same<Type3,  typename Type_Id_Lookup8::type_from_id<Type3::ID>::type>::value));
+      CHECK((etlstd::is_same<Type4,  typename Type_Id_Lookup8::type_from_id<Type4::ID>::type>::value));
+      CHECK((etlstd::is_same<Type13, typename Type_Id_Lookup8::type_from_id<Type13::ID>::type>::value));
+      CHECK((etlstd::is_same<Type14, typename Type_Id_Lookup8::type_from_id<Type14::ID>::type>::value));
+      CHECK((etlstd::is_same<Type15, typename Type_Id_Lookup8::type_from_id<Type15::ID>::type>::value));
+      CHECK((etlstd::is_same<Type16, typename Type_Id_Lookup8::type_from_id<Type16::ID>::type>::value));
     }
 
     //*************************************************************************
     TEST(test_type_from_id_1)
     {
-      CHECK((std::is_same<Type16, typename Type_Id_Lookup1::type_from_id<Type16::ID>::type>::value));
+      CHECK((etlstd::is_same<Type16, typename Type_Id_Lookup1::type_from_id<Type16::ID>::type>::value));
     }
 
     //*************************************************************************
@@ -177,7 +177,7 @@ namespace
       CHECK_EQUAL((unsigned int)Type1::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type<Type1>());
       CHECK_EQUAL((unsigned int)Type1::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type(Type1()));
       CHECK_EQUAL((unsigned int)Type2::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type<Type2>());
-      CHECK_EQUAL((unsigned int)Type2::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type(Type2()));      
+      CHECK_EQUAL((unsigned int)Type2::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type(Type2()));
       CHECK_EQUAL((unsigned int)Type3::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type<Type3>());
       CHECK_EQUAL((unsigned int)Type3::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type(Type3()));
       CHECK_EQUAL((unsigned int)Type4::ID,  (unsigned int)Type_Id_Lookup16::get_id_from_type<Type4>());
@@ -251,41 +251,41 @@ namespace
     //*************************************************************************
     TEST(test_type_from_type_16)
     {
-      CHECK((std::is_same<Type2,  typename Type_Type_Lookup16::type_from_type<Type1>::type>::value));
-      CHECK((std::is_same<Type1,  typename Type_Type_Lookup16::type_from_type<Type2>::type>::value));
-      CHECK((std::is_same<Type4,  typename Type_Type_Lookup16::type_from_type<Type3>::type>::value));
-      CHECK((std::is_same<Type3,  typename Type_Type_Lookup16::type_from_type<Type4>::type>::value));
-      CHECK((std::is_same<Type6,  typename Type_Type_Lookup16::type_from_type<Type5>::type>::value));
-      CHECK((std::is_same<Type5,  typename Type_Type_Lookup16::type_from_type<Type6>::type>::value));
-      CHECK((std::is_same<Type8,  typename Type_Type_Lookup16::type_from_type<Type7>::type>::value));
-      CHECK((std::is_same<Type7,  typename Type_Type_Lookup16::type_from_type<Type8>::type>::value));
-      CHECK((std::is_same<Type10, typename Type_Type_Lookup16::type_from_type<Type9>::type>::value));
-      CHECK((std::is_same<Type9,  typename Type_Type_Lookup16::type_from_type<Type10>::type>::value));
-      CHECK((std::is_same<Type12, typename Type_Type_Lookup16::type_from_type<Type11>::type>::value));
-      CHECK((std::is_same<Type11, typename Type_Type_Lookup16::type_from_type<Type12>::type>::value));
-      CHECK((std::is_same<Type14, typename Type_Type_Lookup16::type_from_type<Type13>::type>::value));
-      CHECK((std::is_same<Type13, typename Type_Type_Lookup16::type_from_type<Type14>::type>::value));
-      CHECK((std::is_same<Type16, typename Type_Type_Lookup16::type_from_type<Type15>::type>::value));
-      CHECK((std::is_same<Type15, typename Type_Type_Lookup16::type_from_type<Type16>::type>::value));
+      CHECK((etlstd::is_same<Type2,  typename Type_Type_Lookup16::type_from_type<Type1>::type>::value));
+      CHECK((etlstd::is_same<Type1,  typename Type_Type_Lookup16::type_from_type<Type2>::type>::value));
+      CHECK((etlstd::is_same<Type4,  typename Type_Type_Lookup16::type_from_type<Type3>::type>::value));
+      CHECK((etlstd::is_same<Type3,  typename Type_Type_Lookup16::type_from_type<Type4>::type>::value));
+      CHECK((etlstd::is_same<Type6,  typename Type_Type_Lookup16::type_from_type<Type5>::type>::value));
+      CHECK((etlstd::is_same<Type5,  typename Type_Type_Lookup16::type_from_type<Type6>::type>::value));
+      CHECK((etlstd::is_same<Type8,  typename Type_Type_Lookup16::type_from_type<Type7>::type>::value));
+      CHECK((etlstd::is_same<Type7,  typename Type_Type_Lookup16::type_from_type<Type8>::type>::value));
+      CHECK((etlstd::is_same<Type10, typename Type_Type_Lookup16::type_from_type<Type9>::type>::value));
+      CHECK((etlstd::is_same<Type9,  typename Type_Type_Lookup16::type_from_type<Type10>::type>::value));
+      CHECK((etlstd::is_same<Type12, typename Type_Type_Lookup16::type_from_type<Type11>::type>::value));
+      CHECK((etlstd::is_same<Type11, typename Type_Type_Lookup16::type_from_type<Type12>::type>::value));
+      CHECK((etlstd::is_same<Type14, typename Type_Type_Lookup16::type_from_type<Type13>::type>::value));
+      CHECK((etlstd::is_same<Type13, typename Type_Type_Lookup16::type_from_type<Type14>::type>::value));
+      CHECK((etlstd::is_same<Type16, typename Type_Type_Lookup16::type_from_type<Type15>::type>::value));
+      CHECK((etlstd::is_same<Type15, typename Type_Type_Lookup16::type_from_type<Type16>::type>::value));
     }
 
     //*************************************************************************
     TEST(test_type_from_type_8)
     {
-      CHECK((std::is_same<Type2, typename Type_Type_Lookup8::type_from_type<Type1>::type>::value));
-      CHECK((std::is_same<Type1, typename Type_Type_Lookup8::type_from_type<Type2>::type>::value));
-      CHECK((std::is_same<Type4, typename Type_Type_Lookup8::type_from_type<Type3>::type>::value));
-      CHECK((std::is_same<Type3, typename Type_Type_Lookup8::type_from_type<Type4>::type>::value));
-      CHECK((std::is_same<Type6, typename Type_Type_Lookup8::type_from_type<Type5>::type>::value));
-      CHECK((std::is_same<Type5, typename Type_Type_Lookup8::type_from_type<Type6>::type>::value));
-      CHECK((std::is_same<Type8, typename Type_Type_Lookup8::type_from_type<Type7>::type>::value));
-      CHECK((std::is_same<Type7, typename Type_Type_Lookup8::type_from_type<Type8>::type>::value));
+      CHECK((etlstd::is_same<Type2, typename Type_Type_Lookup8::type_from_type<Type1>::type>::value));
+      CHECK((etlstd::is_same<Type1, typename Type_Type_Lookup8::type_from_type<Type2>::type>::value));
+      CHECK((etlstd::is_same<Type4, typename Type_Type_Lookup8::type_from_type<Type3>::type>::value));
+      CHECK((etlstd::is_same<Type3, typename Type_Type_Lookup8::type_from_type<Type4>::type>::value));
+      CHECK((etlstd::is_same<Type6, typename Type_Type_Lookup8::type_from_type<Type5>::type>::value));
+      CHECK((etlstd::is_same<Type5, typename Type_Type_Lookup8::type_from_type<Type6>::type>::value));
+      CHECK((etlstd::is_same<Type8, typename Type_Type_Lookup8::type_from_type<Type7>::type>::value));
+      CHECK((etlstd::is_same<Type7, typename Type_Type_Lookup8::type_from_type<Type8>::type>::value));
     }
 
     //*************************************************************************
     TEST(test_type_from_type_1)
     {
-      CHECK((std::is_same<Type2, typename Type_Type_Lookup1::type_from_type<Type1>::type>::value));
+      CHECK((etlstd::is_same<Type2, typename Type_Type_Lookup1::type_from_type<Type1>::type>::value));
     }
   };
 }

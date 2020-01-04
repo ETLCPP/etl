@@ -37,9 +37,9 @@ SOFTWARE.
 
 #include "platform.h"
 
-#include "stl/algorithm.h"
-#include "stl/iterator.h"
-#include "stl/functional.h"
+#include "algorithm.h"
+#include "iterator.h"
+#include "functional.h"
 
 #include "container.h"
 #include "pool.h"
@@ -462,7 +462,7 @@ namespace etl
   /// A templated base for all etl::map types.
   ///\ingroup map
   //***************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare = ETL_STD::less<TKey> >
+  template <typename TKey, typename TMapped, typename TKeyCompare = etlstd::less<TKey> >
   class imap : public etl::map_base
   {
   public:
@@ -575,7 +575,7 @@ namespace etl
     //*************************************************************************
     /// iterator.
     //*************************************************************************
-    class iterator : public etl::iterator<ETL_BIDIRECTIONAL_ITERATOR_TAG, value_type>
+    class iterator : public etl::iterator<ETL_OR_STD::bidirectional_iterator_tag, value_type>
     {
     public:
 
@@ -696,7 +696,7 @@ namespace etl
     //*************************************************************************
     /// const_iterator
     //*************************************************************************
-    class const_iterator : public etl::iterator<ETL_BIDIRECTIONAL_ITERATOR_TAG, const value_type>
+    class const_iterator : public etl::iterator<ETL_OR_STD::bidirectional_iterator_tag, const value_type>
     {
     public:
 
@@ -804,10 +804,10 @@ namespace etl
 
     friend class const_iterator;
 
-    typedef typename ETL_STD::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename etlstd::iterator_traits<iterator>::difference_type difference_type;
 
-    typedef ETL_STD::reverse_iterator<iterator>       reverse_iterator;
-    typedef ETL_STD::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
 
     //*************************************************************************
     /// Gets the beginning of the map.
@@ -2042,7 +2042,7 @@ namespace etl
   //*************************************************************************
   /// A templated map implementation that uses a fixed size buffer.
   //*************************************************************************
-  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename TCompare = ETL_STD::less<TKey> >
+  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename TCompare = etlstd::less<TKey> >
   class map : public etl::imap<TKey, TValue, TCompare>
   {
   public:
@@ -2129,7 +2129,7 @@ namespace etl
   template <typename TKey, typename TMapped, typename TKeyCompare>
   bool operator ==(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
   {
-    return (lhs.size() == rhs.size()) && ETL_STD::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (lhs.size() == rhs.size()) && etlstd::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //***************************************************************************
@@ -2155,10 +2155,7 @@ namespace etl
   template <typename TKey, typename TMapped, typename TKeyCompare>
   bool operator <(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
   {
-    return ETL_STD::lexicographical_compare(lhs.begin(),
-      lhs.end(),
-      rhs.begin(),
-      rhs.end());
+    return etlstd::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
 
   //*************************************************************************

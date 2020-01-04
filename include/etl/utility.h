@@ -37,8 +37,128 @@ SOFTWARE.
 ///\defgroup utility utility
 ///\ingroup utilities
 
-namespace etl
+namespace etlstd
 {
+  //******************************************************************************
+  template <typename T1, typename T2>
+  struct pair
+  {
+    typedef T1 first_type;
+    typedef T2 second_type;
+
+    T1 first;
+    T2 second;
+
+    pair()
+      : first(T1()),
+      second(T2())
+    {
+    }
+
+    pair(const T1& a, const T2& b)
+      : first(a),
+      second(b)
+    {
+    }
+
+    template <typename U1, typename U2>
+    pair(const pair<U1, U2>& other)
+      : first(other.first),
+      second(other.second)
+    {
+    }
+
+    pair(const pair<T1, T2>& other)
+      : first(other.first),
+      second(other.second)
+    {
+    }
+
+    void swap(pair<T1, T2>& other)
+    {
+      T1 temp1 = first;
+      T2 temp2 = second;
+      first = other.first;
+      second = other.second;
+      other.first = temp1;
+      other.second = temp2;
+    }
+  };
+
+  //******************************************************************************
+  template <typename T1, typename T2>
+  inline pair<T1, T2> make_pair(T1 a, T2 b)
+  {
+    return pair<T1, T2>(a, b);
+  }
+
+  //******************************************************************************
+  template <typename T1, typename T2>
+  inline void swap(pair<T1, T2>& a, pair<T1, T2>& b)
+  {
+    a.swap(b);
+  }
+
+  //******************************************************************************
+  template <typename T1, typename T2>
+  inline bool operator ==(const pair<T1, T2>& a, const pair<T1, T2>& b)
+  {
+    return (a.first == b.first) && (a.second == b.second);
+  }
+
+  template <typename T1, typename T2>
+  inline bool operator !=(const pair<T1, T2>& a, const pair<T1, T2>& b)
+  {
+    return !(a == b);
+  }
+
+  template <typename T1, typename T2>
+  inline bool operator <(const pair<T1, T2>& a, const pair<T1, T2>& b)
+  {
+    return (a.first < b.first) ||
+      (!(b.first < a.first) && (a.second < b.second));
+  }
+
+  template <typename T1, typename T2>
+  inline bool operator >(const pair<T1, T2>& a, const pair<T1, T2>& b)
+  {
+    return (b < a);
+  }
+
+  template <typename T1, typename T2>
+  inline bool operator <=(const pair<T1, T2>& a, const pair<T1, T2>& b)
+  {
+    return !(b < a);
+  }
+
+  template <typename T1, typename T2>
+  inline bool operator >=(const pair<T1, T2>& a, const pair<T1, T2>& b)
+  {
+    return !(a < b);
+  }
+
+#if ETL_CPP11_SUPPORTED
+  //******************************************************************************
+  template <typename T>
+  constexpr typename etlstd::remove_reference<T>::type&& move(T&& t) noexcept
+  {
+    return static_cast<typename etlstd::remove_reference<T>::type&&>(t);
+  }
+
+  //******************************************************************************
+  template <typename T>
+  constexpr T&& forward(typename etlstd::remove_reference<T>::type& t) noexcept
+  {
+    return static_cast<T&&>(t);
+  }
+
+  template <typename T>
+  constexpr T&& forward(typename etlstd::remove_reference<T>::type&& t) noexcept
+  {
+    return static_cast<T&&>(t);
+  }
+#endif
+
   //***************************************************************************
   /// exchange (const)
   //***************************************************************************
@@ -54,7 +174,7 @@ namespace etl
   /// as_const
   //***************************************************************************
   template <typename T>
-  typename etl::add_const<T>::type& as_const(T& t)
+  typename etlstd::add_const<T>::type& as_const(T& t)
   {
     return t;
   }

@@ -88,7 +88,7 @@ namespace
     TEST(minmax_element)
     {
       ETL_PAIR<Data::iterator, Data::iterator> expected = std::minmax_element(data.begin(), data.end());
-      ETL_PAIR<Data::iterator, Data::iterator> result   = etl::minmax_element(data.begin(), data.end());
+      ETL_PAIR<Data::iterator, Data::iterator> result   = etlstd::minmax_element(data.begin(), data.end());
       CHECK_EQUAL(std::distance(data.begin(), expected.first), std::distance(data.begin(), result.first));
       CHECK_EQUAL(std::distance(data.begin(), expected.second), std::distance(data.begin(), result.second));
     }
@@ -97,7 +97,7 @@ namespace
     TEST(minmax_element_compare)
     {
       ETL_PAIR<Data::iterator, Data::iterator> expected = std::minmax_element(data.begin(), data.end(), std::greater<int>());
-      ETL_PAIR<Data::iterator, Data::iterator> result   = etl::minmax_element(data.begin(), data.end(), std::greater<int>());
+      ETL_PAIR<Data::iterator, Data::iterator> result   = etlstd::minmax_element(data.begin(), data.end(), std::greater<int>());
       CHECK_EQUAL(std::distance(data.begin(), expected.first),  std::distance(data.begin(), result.first));
       CHECK_EQUAL(std::distance(data.begin(), expected.second), std::distance(data.begin(), result.second));
     }
@@ -109,11 +109,11 @@ namespace
       int b = 2;
 
       ETL_PAIR<int, int> expected = std::minmax(a, b);
-      ETL_PAIR<int, int> result   = etl::minmax(a, b);
+      ETL_PAIR<int, int> result   = etlstd::minmax(a, b);
       CHECK_EQUAL(expected.first,  result.first);
       CHECK_EQUAL(expected.second, result.second);
 
-      result   = etl::minmax(b, a);
+      result   = etlstd::minmax(b, a);
       expected = std::minmax(b, a);
       CHECK_EQUAL(expected.first, result.first);
       CHECK_EQUAL(expected.second, result.second);
@@ -126,11 +126,11 @@ namespace
       int b = 2;
 
       ETL_PAIR<int, int> expected = std::minmax(a, b, std::greater<int>());
-      ETL_PAIR<int, int> result   = etl::minmax(a, b, std::greater<int>());
+      ETL_PAIR<int, int> result   = etlstd::minmax(a, b, std::greater<int>());
       CHECK_EQUAL(expected.first, result.first);
       CHECK_EQUAL(expected.second, result.second);
 
-      result   = etl::minmax(b, a, std::greater<int>());
+      result   = etlstd::minmax(b, a, std::greater<int>());
       expected = std::minmax(b, a, std::greater<int>());
       CHECK_EQUAL(expected.first, result.first);
       CHECK_EQUAL(expected.second, result.second);
@@ -142,7 +142,7 @@ namespace
       int data[] = { 1, 2, 3, 4, 6, 5, 7, 8, 9, 10 };
 
       int* p1 = std::is_sorted_until(std::begin(data), std::end(data));
-      int* p2 = etl::is_sorted_until(std::begin(data), std::end(data));
+      int* p2 = etlstd::is_sorted_until(std::begin(data), std::end(data));
       CHECK_EQUAL(std::distance(std::begin(data), p1), std::distance(std::begin(data), p2));
     }
 
@@ -152,7 +152,7 @@ namespace
       int data[] = { 10, 9, 8, 7, 5, 6, 4, 3, 4, 2, 1 };
 
       int* p1 = std::is_sorted_until(std::begin(data), std::end(data), std::greater<int>());
-      int* p2 = etl::is_sorted_until(std::begin(data), std::end(data), std::greater<int>());
+      int* p2 = etlstd::is_sorted_until(std::begin(data), std::end(data), std::greater<int>());
       CHECK_EQUAL(std::distance(etl::begin(data), p1), std::distance(std::begin(data), p2));
     }
 
@@ -161,12 +161,12 @@ namespace
     {
       int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
-      bool is_sorted = etl::is_sorted(std::begin(data1), std::end(data1));
+      bool is_sorted = etlstd::is_sorted(std::begin(data1), std::end(data1));
       CHECK(is_sorted);
 
       int data2[] = { 1, 2, 3, 4, 6, 5, 7, 8 , 9, 10};
 
-      is_sorted = etl::is_sorted(std::begin(data2), std::end(data2));
+      is_sorted = etlstd::is_sorted(std::begin(data2), std::end(data2));
       CHECK(!is_sorted);
     }
 
@@ -175,12 +175,12 @@ namespace
     {
       int data1[] = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
 
-      bool is_sorted = etl::is_sorted(std::begin(data1), std::end(data1), std::greater<int>());
+      bool is_sorted = etlstd::is_sorted(std::begin(data1), std::end(data1), std::greater<int>());
       CHECK(is_sorted);
 
       int data2[] = { 10, 9, 8, 7, 5, 6, 4, 3, 2, 1 };
 
-      is_sorted = etl::is_sorted(std::begin(data2), std::end(data2), std::greater<int>());
+      is_sorted = etlstd::is_sorted(std::begin(data2), std::end(data2), std::greater<int>());
       CHECK(!is_sorted);
     }
 
@@ -268,7 +268,7 @@ namespace
       int* result;
 
       std::copy_n(std::begin(data1), 4, std::begin(data2));
-      result = etl::copy_n(std::begin(data1), 4, std::begin(data3));
+      result = etlstd::copy_n(std::begin(data1), 4, std::begin(data3));
 
       CHECK_EQUAL(std::begin(data3) + 4, result);
 
@@ -286,7 +286,7 @@ namespace
       int* result;
 
       std::copy_n(std::begin(data1), 4, std::begin(data2));
-      result = etl::copy_n(std::begin(data1), 4, std::begin(data3));
+      result = etlstd::copy_n(std::begin(data1), 4, std::begin(data3));
 
       CHECK_EQUAL(std::begin(data3) + 4, result);
 
@@ -375,7 +375,7 @@ namespace
 
       // Copy everything less than 5.
       std::copy_if(std::begin(data1), std::end(data1), std::begin(data2), std::bind(std::less<int>(), std::placeholders::_1, 5));
-      etl::copy_if(std::begin(data1), std::end(data1), std::begin(data3), std::bind(std::less<int>(), std::placeholders::_1, 5));
+      etlstd::copy_if(std::begin(data1), std::end(data1), std::begin(data3), std::bind(std::less<int>(), std::placeholders::_1, 5));
 
       bool is_same = std::equal(std::begin(data2), std::end(data2), std::begin(data3));
       CHECK(is_same);
@@ -446,11 +446,11 @@ namespace
       int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
       bool expected = std::any_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-      bool result = etl::any_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
+      bool result = etlstd::any_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
       CHECK_EQUAL(expected, result);
 
       expected = std::any_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 0));
-      result = etl::any_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 0));
+      result = etlstd::any_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 0));
       CHECK_EQUAL(expected, result);
     }
 
@@ -460,11 +460,11 @@ namespace
       int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
       bool expected = std::all_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 0));
-      bool result = etl::all_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 0));
+      bool result = etlstd::all_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 0));
       CHECK_EQUAL(expected, result);
 
       expected = std::all_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-      result = etl::all_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
+      result = etlstd::all_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
       CHECK_EQUAL(expected, result);
     }
 
@@ -474,11 +474,11 @@ namespace
       int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
       bool expected = std::none_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 8));
-      bool result = etl::none_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 8));
+      bool result = etlstd::none_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 8));
       CHECK_EQUAL(expected, result);
 
       expected = std::none_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-      result = etl::none_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
+      result = etlstd::none_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
       CHECK_EQUAL(expected, result);
     }
 
@@ -497,28 +497,28 @@ namespace
       int permutation[]     = { 1, 3, 2, 4, 7, 6, 5, 8 };
       int not_permutation[] = { 1, 2, 3, 4, 5, 6, 7, 7 };
 
-      bool is_permutation   = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(permutation));
+      bool is_permutation   = etlstd::is_permutation(std::begin(data1), std::end(data1), std::begin(permutation));
       CHECK(is_permutation);
 
-      is_permutation   = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation));
+      is_permutation   = etlstd::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation));
       CHECK(!is_permutation);
 
-      is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(permutation), std::equal_to<int>());
+      is_permutation = etlstd::is_permutation(std::begin(data1), std::end(data1), std::begin(permutation), std::equal_to<int>());
       CHECK(is_permutation);
 
-      is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation), std::equal_to<int>());
+      is_permutation = etlstd::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation), std::equal_to<int>());
       CHECK(!is_permutation);
 
-      is_permutation   = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(permutation), std::end(permutation));
+      is_permutation   = etlstd::is_permutation(std::begin(data1), std::end(data1), std::begin(permutation), std::end(permutation));
       CHECK(is_permutation);
 
-      is_permutation   = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation), std::end(not_permutation));
+      is_permutation   = etlstd::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation), std::end(not_permutation));
       CHECK(!is_permutation);
 
-      is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(permutation), std::end(permutation), std::equal_to<int>());
+      is_permutation = etlstd::is_permutation(std::begin(data1), std::end(data1), std::begin(permutation), std::end(permutation), std::equal_to<int>());
       CHECK(is_permutation);
 
-      is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation), std::end(not_permutation), std::equal_to<int>());
+      is_permutation = etlstd::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation), std::end(not_permutation), std::equal_to<int>());
       CHECK(!is_permutation);
     }
 
@@ -528,13 +528,13 @@ namespace
       int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
 
       bool expected = std::is_partitioned(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-      bool result = etl::is_partitioned(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
+      bool result = etlstd::is_partitioned(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
       CHECK_EQUAL(expected, result);
 
       std::partition(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
 
       expected = std::is_partitioned(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-      result = etl::is_partitioned(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
+      result = etlstd::is_partitioned(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
       CHECK_EQUAL(expected, result);
     }
 
@@ -546,13 +546,13 @@ namespace
       std::partition(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
 
       int* partition1 = std::partition_point(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-      int* partition2 = etl::partition_point(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
+      int* partition2 = etlstd::partition_point(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
       CHECK_EQUAL(std::distance(std::begin(data1), partition1), std::distance(std::begin(data1), partition2));
 
       std::partition(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 8));
 
       partition1 = std::partition_point(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 0));
-      partition2 = etl::partition_point(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 0));
+      partition2 = etlstd::partition_point(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 0));
       CHECK_EQUAL(std::distance(std::begin(data1), partition1), std::distance(std::begin(data1), partition2));
     }
 
@@ -566,7 +566,7 @@ namespace
       int data5[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
       std::partition_copy(std::begin(data1), std::end(data1), std::begin(data2),  std::begin(data3), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-      etl::partition_copy(std::begin(data1), std::end(data1), std::begin(data4),  std::begin(data5), std::bind(std::greater<int>(), std::placeholders::_1, 4));
+      etlstd::partition_copy(std::begin(data1), std::end(data1), std::begin(data4),  std::begin(data5), std::bind(std::greater<int>(), std::placeholders::_1, 4));
 
       bool are_equal;
 
@@ -583,7 +583,7 @@ namespace
       int data1[] = { 1, 2, 3, 5, 6, 7, 8 };
 
       // Find the element not less than 4.
-      int* p = etl::find_if_not(std::begin(data1), std::end(data1), std::bind(std::less<int>(), std::placeholders::_1, 4));
+      int* p = etlstd::find_if_not(std::begin(data1), std::end(data1), std::bind(std::less<int>(), std::placeholders::_1, 4));
       CHECK_EQUAL(5, *p);
     }
 
@@ -693,7 +693,7 @@ namespace
       int compare[] = { 2, 16, 4, 14, 6, 0, 0, 0, 0, 0 };
 
       // Double everything and copy to output.
-      etl::transform(std::begin(input),
+      etlstd::transform(std::begin(input),
                      std::end(input),
                      std::begin(output),
                      std::begin(output) + (etl::size(output) / 2),
@@ -704,7 +704,7 @@ namespace
 
       std::fill(std::begin(output), std::end(output), 0);
 
-      etl::transform(std::begin(input),
+      etlstd::transform(std::begin(input),
                      std::begin(input) + (etl::size(input) / 2),
                      std::begin(output),
                      std::end(output),

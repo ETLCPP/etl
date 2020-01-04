@@ -32,27 +32,27 @@ SOFTWARE.
 
 namespace
 {
-  struct input : public etl::iterator<ETL_INPUT_ITERATOR_TAG, int>
+  struct input : public etl::iterator<ETL_OR_STD::input_iterator_tag, int>
   {
 
   };
 
-  struct output : public etl::iterator<ETL_OUTPUT_ITERATOR_TAG, int>
+  struct output : public etl::iterator<ETL_OR_STD::output_iterator_tag, int>
   {
 
   };
 
-  struct forward : public etl::iterator<ETL_FORWARD_ITERATOR_TAG, int>
+  struct forward : public etl::iterator<ETL_OR_STD::forward_iterator_tag, int>
   {
 
   };
 
-  struct bidirectional : public etl::iterator<ETL_BIDIRECTIONAL_ITERATOR_TAG, int>
+  struct bidirectional : public etl::iterator<ETL_OR_STD::bidirectional_iterator_tag, int>
   {
 
   };
 
-  struct random : public etl::iterator<ETL_RANDOM_ACCESS_ITERATOR_TAG, int>
+  struct random : public etl::iterator<ETL_OR_STD::random_access_iterator_tag, int>
   {
 
   };

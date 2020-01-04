@@ -74,7 +74,7 @@ namespace etl
     static const signed char min = SCHAR_MIN;
     static const signed char max = SCHAR_MAX;
     static const int bits        = CHAR_BIT;
-    static const bool is_signed  = etl::is_signed<signed char>::value;
+    static const bool is_signed  = etlstd::is_signed<signed char>::value;
   };
 
   //***************************************************************************
@@ -86,7 +86,7 @@ namespace etl
     static const unsigned char min = 0;
     static const unsigned char max = UCHAR_MAX;
     static const int bits          = CHAR_BIT;
-    static const bool is_signed    = etl::is_signed<unsigned char>::value;
+    static const bool is_signed    = etlstd::is_signed<unsigned char>::value;
   };
 
   //***************************************************************************
@@ -95,10 +95,10 @@ namespace etl
   template <>
   struct integral_limits<char>
   {
-    static const char min       = (etl::is_signed<char>::value) ? SCHAR_MIN : 0;
-    static const char max       = (etl::is_signed<char>::value) ? SCHAR_MAX : char(UCHAR_MAX);
+    static const char min       = (etlstd::is_signed<char>::value) ? SCHAR_MIN : 0;
+    static const char max       = (etlstd::is_signed<char>::value) ? SCHAR_MAX : char(UCHAR_MAX);
     static const int bits       = CHAR_BIT;
-    static const bool is_signed = etl::is_signed<char>::value;
+    static const bool is_signed = etlstd::is_signed<char>::value;
   };
 
   //***************************************************************************
@@ -110,7 +110,7 @@ namespace etl
     static const short min      = SHRT_MIN;
     static const short max      = SHRT_MAX;
     static const int bits       = CHAR_BIT * (sizeof(short) / sizeof(char));
-    static const bool is_signed = etl::is_signed<short>::value;
+    static const bool is_signed = etlstd::is_signed<short>::value;
   };
 
   //***************************************************************************
@@ -122,7 +122,7 @@ namespace etl
     static const unsigned short min = 0;
     static const unsigned short max = USHRT_MAX;
     static const int bits           = CHAR_BIT * (sizeof(unsigned short) / sizeof(char));
-    static const bool is_signed     = etl::is_signed<unsigned short>::value;
+    static const bool is_signed     = etlstd::is_signed<unsigned short>::value;
   };
 
   //***************************************************************************
@@ -134,7 +134,7 @@ namespace etl
     static const int min        = INT_MIN;
     static const int max        = INT_MAX;
     static const int bits       = CHAR_BIT * (sizeof(int) / sizeof(char));
-    static const bool is_signed = etl::is_signed<int>::value;
+    static const bool is_signed = etlstd::is_signed<int>::value;
   };
 
   //***************************************************************************
@@ -146,7 +146,7 @@ namespace etl
     static const unsigned int min = 0;
     static const unsigned int max = UINT_MAX;
     static const int bits         = CHAR_BIT * (sizeof(unsigned int) / sizeof(char));
-    static const bool is_signed   = etl::is_signed<unsigned int>::value;
+    static const bool is_signed   = etlstd::is_signed<unsigned int>::value;
   };
 
   //***************************************************************************
@@ -158,7 +158,7 @@ namespace etl
     static const long min       = LONG_MIN;
     static const long max       = LONG_MAX;
     static const int bits       = CHAR_BIT * (sizeof(long) / sizeof(char));
-    static const bool is_signed = etl::is_signed<long>::value;
+    static const bool is_signed = etlstd::is_signed<long>::value;
   };
 
   //***************************************************************************
@@ -170,7 +170,7 @@ namespace etl
     static const unsigned long min = 0;
     static const unsigned long max = ULONG_MAX;
     static const int bits          = CHAR_BIT * (sizeof(unsigned long) / sizeof(char));
-    static const bool is_signed    = etl::is_signed<unsigned long>::value;
+    static const bool is_signed    = etlstd::is_signed<unsigned long>::value;
   };
 
 #ifndef LLONG_MAX
@@ -194,7 +194,7 @@ namespace etl
     static const long long min  = LLONG_MIN;
     static const long long max  = LLONG_MAX;
     static const int bits       = CHAR_BIT * (sizeof(long long) / sizeof(char));
-    static const bool is_signed = etl::is_signed<long long>::value;
+    static const bool is_signed = etlstd::is_signed<long long>::value;
   };
 
   //***************************************************************************
@@ -206,7 +206,7 @@ namespace etl
     static const unsigned long long min = 0;
     static const unsigned long long max = ULLONG_MAX;
     static const int bits               = CHAR_BIT * (sizeof(unsigned long long) / sizeof(char));
-    static const bool is_signed         = etl::is_signed<unsigned long long>::value;
+    static const bool is_signed         = etlstd::is_signed<unsigned long long>::value;
   };
 }
 

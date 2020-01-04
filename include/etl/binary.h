@@ -45,7 +45,7 @@ SOFTWARE.
 #include "exception.h"
 #include "error_handler.h"
 
-#include "stl/limits.h"
+#include "limits.h"
 
 #undef ETL_FILE
 #define ETL_FILE "50"
@@ -110,7 +110,7 @@ namespace etl
   template <typename T>
   T rotate_left(T value)
   {
-    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
+    ETL_STATIC_ASSERT(etlstd::is_integral<T>::value, "Not an integral type");
 
     const size_t SHIFT = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits - 1;
 
@@ -124,7 +124,7 @@ namespace etl
   template <typename T>
   T rotate_left(T value, size_t distance)
   {
-    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
+    ETL_STATIC_ASSERT(etlstd::is_integral<T>::value, "Not an integral type");
 
     const size_t BITS = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits;
     distance %= BITS;
@@ -140,7 +140,7 @@ namespace etl
   template <typename T>
   T rotate_right(T value)
   {
-    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
+    ETL_STATIC_ASSERT(etlstd::is_integral<T>::value, "Not an integral type");
 
     const size_t SHIFT = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits - 1;
 
@@ -154,7 +154,7 @@ namespace etl
   template <typename T>
   T rotate_right(T value, size_t distance)
   {
-    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
+    ETL_STATIC_ASSERT(etlstd::is_integral<T>::value, "Not an integral type");
 
     const size_t BITS = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits;
     distance %= BITS;
@@ -171,7 +171,7 @@ namespace etl
   template <typename T>
   T rotate(T value, typename etl::make_signed<size_t>::type distance)
   {
-    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
+    ETL_STATIC_ASSERT(etlstd::is_integral<T>::value, "Not an integral type");
 
     T result;
 
@@ -194,7 +194,7 @@ namespace etl
   template <typename T>
   T binary_to_gray(T value)
   {
-    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
+    ETL_STATIC_ASSERT(etlstd::is_integral<T>::value, "Not an integral type");
 
     return (value >> 1) ^ value;
   }
@@ -235,10 +235,10 @@ namespace etl
   template <typename TReturn, const size_t NBITS, typename TValue>
   TReturn sign_extend(TValue value)
   {
-    ETL_STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
-    ETL_STATIC_ASSERT(etl::is_integral<TReturn>::value, "TReturn not an integral type");
-    ETL_STATIC_ASSERT(etl::is_signed<TReturn>::value,   "TReturn not a signed type");
-    ETL_STATIC_ASSERT(NBITS <= ETL_STD::numeric_limits<TReturn>::digits, "NBITS too large for return type");
+    ETL_STATIC_ASSERT(etlstd::is_integral<TValue>::value,  "TValue not an integral type");
+    ETL_STATIC_ASSERT(etlstd::is_integral<TReturn>::value, "TReturn not an integral type");
+    ETL_STATIC_ASSERT(etlstd::is_signed<TReturn>::value,   "TReturn not a signed type");
+    ETL_STATIC_ASSERT(NBITS <= etlstd::numeric_limits<TReturn>::digits, "NBITS too large for return type");
 
     struct S
     {
@@ -257,11 +257,11 @@ namespace etl
   template <typename TReturn, const size_t NBITS, const size_t SHIFT, typename TValue>
   TReturn sign_extend(TValue value)
   {
-    ETL_STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
-    ETL_STATIC_ASSERT(etl::is_integral<TReturn>::value, "TReturn not an integral type");
-    ETL_STATIC_ASSERT(etl::is_signed<TReturn>::value,   "TReturn not a signed type");
-    ETL_STATIC_ASSERT(NBITS <= ETL_STD::numeric_limits<TReturn>::digits, "NBITS too large for return type");
-    ETL_STATIC_ASSERT(SHIFT <= ETL_STD::numeric_limits<TReturn>::digits, "SHIFT too large");
+    ETL_STATIC_ASSERT(etlstd::is_integral<TValue>::value,  "TValue not an integral type");
+    ETL_STATIC_ASSERT(etlstd::is_integral<TReturn>::value, "TReturn not an integral type");
+    ETL_STATIC_ASSERT(etlstd::is_signed<TReturn>::value,   "TReturn not a signed type");
+    ETL_STATIC_ASSERT(NBITS <= etlstd::numeric_limits<TReturn>::digits, "NBITS too large for return type");
+    ETL_STATIC_ASSERT(SHIFT <= etlstd::numeric_limits<TReturn>::digits, "SHIFT too large");
 
     struct S
     {
@@ -279,11 +279,11 @@ namespace etl
   template <typename TReturn, typename TValue>
   TReturn sign_extend(TValue value, const size_t NBITS)
   {
-    ETL_STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
-    ETL_STATIC_ASSERT(etl::is_integral<TReturn>::value, "TReturn not an integral type");
-    ETL_STATIC_ASSERT(etl::is_signed<TReturn>::value,   "TReturn not a signed type");
+    ETL_STATIC_ASSERT(etlstd::is_integral<TValue>::value,  "TValue not an integral type");
+    ETL_STATIC_ASSERT(etlstd::is_integral<TReturn>::value, "TReturn not an integral type");
+    ETL_STATIC_ASSERT(etlstd::is_signed<TReturn>::value,   "TReturn not a signed type");
 
-    ETL_ASSERT((NBITS <= ETL_STD::numeric_limits<TReturn>::digits), ETL_ERROR(binary_out_of_range));
+    ETL_ASSERT((NBITS <= etlstd::numeric_limits<TReturn>::digits), ETL_ERROR(binary_out_of_range));
 
     TReturn mask = TReturn(1) << (NBITS - 1);
     value = value & static_cast<TValue>((TReturn(1) << NBITS) - 1);
@@ -300,11 +300,11 @@ namespace etl
   template <typename TReturn, typename TValue>
   TReturn sign_extend(TValue value, const size_t NBITS, const size_t SHIFT)
   {
-    ETL_STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
-    ETL_STATIC_ASSERT(etl::is_integral<TReturn>::value, "TReturn not an integral type");
-    ETL_STATIC_ASSERT(etl::is_signed<TReturn>::value,   "TReturn not a signed type");
+    ETL_STATIC_ASSERT(etlstd::is_integral<TValue>::value,  "TValue not an integral type");
+    ETL_STATIC_ASSERT(etlstd::is_integral<TReturn>::value, "TReturn not an integral type");
+    ETL_STATIC_ASSERT(etlstd::is_signed<TReturn>::value,   "TReturn not a signed type");
 
-    ETL_ASSERT((NBITS <= ETL_STD::numeric_limits<TReturn>::digits), ETL_ERROR(binary_out_of_range));
+    ETL_ASSERT((NBITS <= etlstd::numeric_limits<TReturn>::digits), ETL_ERROR(binary_out_of_range));
 
     TReturn mask = TReturn(1) << (NBITS - 1);
     value = (value >> SHIFT) & static_cast<TValue>((TReturn(1) << NBITS) - 1);
@@ -1207,7 +1207,7 @@ namespace etl
   ///\ingroup binary
   //***************************************************************************
   template <typename T>
-  typename etl::enable_if<etl::is_integral<T>::value, bool>::type
+  typename etlstd::enable_if<etlstd::is_integral<T>::value, bool>::type
    is_odd(const T value)
   {
 	  return ((static_cast<typename etl::make_unsigned<T>::type>(value) & 1U) != 0U);
@@ -1218,7 +1218,7 @@ namespace etl
   ///\ingroup binary
   //***************************************************************************
   template <typename T>
-  typename etl::enable_if<etl::is_integral<T>::value, bool>::type
+  typename etlstd::enable_if<etlstd::is_integral<T>::value, bool>::type
     is_even(const T value)
   {
     return ((static_cast<typename etl::make_unsigned<T>::type>(value) & 1U) == 0U);

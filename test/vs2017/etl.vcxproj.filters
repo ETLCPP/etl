@@ -67,12 +67,6 @@
     <Filter Include="ETL\Utilities\Mutex">
       <UniqueIdentifier>{0bcdf7f9-8e2b-4f70-932b-bde56404f421}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ETL\STL">
-      <UniqueIdentifier>{86dc2850-2ddf-4582-9908-2436a1aa6e86}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ETL\STL\Alternate">
-      <UniqueIdentifier>{0d093ee6-686c-4c9e-856e-bdf7075ff7a6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ETL\Strings">
       <UniqueIdentifier>{da88d71d-e5ea-4c26-9807-94616d31addb}</UniqueIdentifier>
     </Filter>
@@ -618,15 +612,6 @@
     <ClInclude Include="..\..\include\etl\private\vector_base.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\stl\alternate\limits.h">
-      <Filter>ETL\STL\Alternate</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\stl\alternate\iterator.h">
-      <Filter>ETL\STL\Alternate</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\stl\iterator.h">
-      <Filter>ETL\STL</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\profiles\armv5_no_stl.h">
       <Filter>ETL\Profiles</Filter>
     </ClInclude>
@@ -641,27 +626,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\profiles\cpp14_no_stl.h">
       <Filter>ETL\Profiles</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\stl\alternate\algorithm.h">
-      <Filter>ETL\STL\Alternate</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\stl\algorithm.h">
-      <Filter>ETL\STL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\stl\functional.h">
-      <Filter>ETL\STL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\stl\alternate\functional.h">
-      <Filter>ETL\STL\Alternate</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\stl\utility.h">
-      <Filter>ETL\STL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\stl\alternate\utility.h">
-      <Filter>ETL\STL\Alternate</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\stl\limits.h">
-      <Filter>ETL\STL</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\math_constants.h">
       <Filter>ETL\Maths</Filter>
@@ -792,9 +756,6 @@
     <ClInclude Include="..\..\include\etl\indirect_vector.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\choose_namespace.h">
-      <Filter>ETL\Private</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\private\choose_tag_types.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
@@ -857,6 +818,12 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\profiles\determine_compiler_language_support.h">
       <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\choose_namespace.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\limits.h">
+      <Filter>ETL\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1363,9 +1330,6 @@
     <None Include="cpp.hint" />
     <None Include="..\..\library.json">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\..\.circleci\config.yml">
-      <Filter>Resource Files\CI\CircleCI</Filter>
     </None>
     <None Include="..\..\README.md">
       <Filter>Resource Files</Filter>

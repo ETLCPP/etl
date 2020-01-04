@@ -63,7 +63,7 @@ SOFTWARE.
 #include "type_lookup.h"
 #include "pool.h"
 
-#include "stl/utility.h"
+#include "utility.h"
 
 #undef ETL_FILE
 #define ETL_FILE "40"
@@ -105,21 +105,21 @@ namespace etl
 
   //***************************************************************************
   template <const size_t MAX_SIZE_,
-            typename T1, 
-            typename T2 = void, 
-            typename T3 = void, 
-            typename T4 = void, 
-            typename T5 = void, 
-            typename T6 = void, 
-            typename T7 = void, 
-            typename T8 = void, 
-            typename T9 = void, 
-            typename T10 = void, 
-            typename T11 = void, 
-            typename T12 = void, 
-            typename T13 = void, 
-            typename T14 = void, 
-            typename T15 = void, 
+            typename T1,
+            typename T2 = void,
+            typename T3 = void,
+            typename T4 = void,
+            typename T5 = void,
+            typename T6 = void,
+            typename T7 = void,
+            typename T8 = void,
+            typename T9 = void,
+            typename T10 = void,
+            typename T11 = void,
+            typename T12 = void,
+            typename T13 = void,
+            typename T14 = void,
+            typename T15 = void,
             typename T16 = void>
   class variant_pool
   {
@@ -290,7 +290,7 @@ namespace etl
 
         if (p != nullptr)
         {
-          new (p) T(ETL_STD::forward<Args>(args)...);
+          new (p) T(etlstd::forward<Args>(args)...);
         }
       }
 
@@ -305,22 +305,22 @@ namespace etl
     bool destroy(const T* const p)
     {
       ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value ||
-                     etl::is_base_of<T, T1>::value ||
-                     etl::is_base_of<T, T2>::value ||
-                     etl::is_base_of<T, T3>::value ||
-                     etl::is_base_of<T, T4>::value ||
-                     etl::is_base_of<T, T5>::value ||
-                     etl::is_base_of<T, T6>::value ||
-                     etl::is_base_of<T, T7>::value ||
-                     etl::is_base_of<T, T8>::value ||
-                     etl::is_base_of<T, T9>::value ||
-                     etl::is_base_of<T, T10>::value ||
-                     etl::is_base_of<T, T11>::value ||
-                     etl::is_base_of<T, T12>::value ||
-                     etl::is_base_of<T, T13>::value ||
-                     etl::is_base_of<T, T14>::value ||
-                     etl::is_base_of<T, T15>::value ||
-                     etl::is_base_of<T, T16>::value), "Invalid type");
+                     etlstd::is_base_of<T, T1>::value ||
+                     etlstd::is_base_of<T, T2>::value ||
+                     etlstd::is_base_of<T, T3>::value ||
+                     etlstd::is_base_of<T, T4>::value ||
+                     etlstd::is_base_of<T, T5>::value ||
+                     etlstd::is_base_of<T, T6>::value ||
+                     etlstd::is_base_of<T, T7>::value ||
+                     etlstd::is_base_of<T, T8>::value ||
+                     etlstd::is_base_of<T, T9>::value ||
+                     etlstd::is_base_of<T, T10>::value ||
+                     etlstd::is_base_of<T, T11>::value ||
+                     etlstd::is_base_of<T, T12>::value ||
+                     etlstd::is_base_of<T, T13>::value ||
+                     etlstd::is_base_of<T, T14>::value ||
+                     etlstd::is_base_of<T, T15>::value ||
+                     etlstd::is_base_of<T, T16>::value), "Invalid type");
 
       p->~T();
 

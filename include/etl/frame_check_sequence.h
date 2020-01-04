@@ -34,7 +34,7 @@ SOFTWARE.
 #include "type_traits.h"
 #include "binary.h"
 
-#include "stl/iterator.h"
+#include "iterator.h"
 
 ETL_STATIC_ASSERT(ETL_8BIT_SUPPORT, "This file does not currently support targets with no 8bit type");
 
@@ -56,7 +56,7 @@ namespace etl
     typedef TPolicy policy_type;
     typedef typename policy_type::value_type value_type;
 
-    ETL_STATIC_ASSERT(etl::is_unsigned<value_type>::value, "Signed frame check type not supported");
+    ETL_STATIC_ASSERT(etlstd::is_unsigned<value_type>::value, "Signed frame check type not supported");
 
     //*************************************************************************
     /// Default constructor.
@@ -74,7 +74,7 @@ namespace etl
     template<typename TIterator>
     frame_check_sequence(TIterator begin, const TIterator end)
     {
-      ETL_STATIC_ASSERT(sizeof(typename ETL_STD::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
+      ETL_STATIC_ASSERT(sizeof(typename etlstd::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
 
       reset();
       add(begin, end);
@@ -96,7 +96,7 @@ namespace etl
     template<typename TIterator>
     void add(TIterator begin, const TIterator end)
     {
-      ETL_STATIC_ASSERT(sizeof(typename ETL_STD::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
+      ETL_STATIC_ASSERT(sizeof(typename etlstd::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
 
       while (begin != end)
       {

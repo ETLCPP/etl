@@ -46,9 +46,9 @@ SOFTWARE.
 #include "parameter_type.h"
 #include "iterator.h"
 
-#include "stl/algorithm.h"
-#include "stl/iterator.h"
-#include "stl/functional.h"
+#include "algorithm.h"
+#include "iterator.h"
+#include "functional.h"
 
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
   #include <initializer_list>
@@ -457,7 +457,7 @@ namespace etl
   /// A templated base for all etl::set types.
   ///\ingroup set
   //***************************************************************************
-  template <typename T, typename TCompare = ETL_STD::less<T> >
+  template <typename T, typename TCompare = etlstd::less<T> >
   class iset : public etl::set_base
   {
   public:
@@ -549,7 +549,7 @@ namespace etl
     //*************************************************************************
     /// iterator.
     //*************************************************************************
-    class iterator : public etl::iterator<ETL_BIDIRECTIONAL_ITERATOR_TAG, value_type>
+    class iterator : public etl::iterator<ETL_OR_STD::bidirectional_iterator_tag, value_type>
     {
     public:
 
@@ -654,7 +654,7 @@ namespace etl
     //*************************************************************************
     /// const_iterator
     //*************************************************************************
-    class const_iterator : public etl::iterator<ETL_BIDIRECTIONAL_ITERATOR_TAG, const value_type>
+    class const_iterator : public etl::iterator<ETL_OR_STD::bidirectional_iterator_tag, const value_type>
     {
     public:
 
@@ -761,10 +761,10 @@ namespace etl
     };
     friend class const_iterator;
 
-    typedef typename ETL_STD::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename etlstd::iterator_traits<iterator>::difference_type difference_type;
 
-    typedef ETL_STD::reverse_iterator<iterator>       reverse_iterator;
-    typedef ETL_STD::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
 
     //*************************************************************************
     /// Assignment operator.
@@ -1950,7 +1950,7 @@ namespace etl
   //*************************************************************************
   /// A templated set implementation that uses a fixed size buffer.
   //*************************************************************************
-  template <typename T, const size_t MAX_SIZE_, typename TCompare = ETL_STD::less<T> >
+  template <typename T, const size_t MAX_SIZE_, typename TCompare = etlstd::less<T> >
   class set : public etl::iset<T, TCompare>
   {
   public:
@@ -2037,7 +2037,7 @@ namespace etl
   template <typename T, typename TCompare>
   bool operator ==(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>& rhs)
   {
-    return (lhs.size() == rhs.size()) && ETL_STD::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (lhs.size() == rhs.size()) && etlstd::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //***************************************************************************
@@ -2063,10 +2063,7 @@ namespace etl
   template <typename T, typename TCompare>
   bool operator <(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>& rhs)
   {
-    return ETL_STD::lexicographical_compare(lhs.begin(),
-      lhs.end(),
-      rhs.begin(),
-      rhs.end());
+    return etlstd::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
 
   //*************************************************************************

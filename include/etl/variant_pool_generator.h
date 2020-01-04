@@ -75,7 +75,7 @@ cog.outl("//********************************************************************
 #include "type_lookup.h"
 #include "pool.h"
 
-#include "stl/utility.h"
+#include "utility.h"
 
 #undef ETL_FILE
 #define ETL_FILE "40"
@@ -357,7 +357,7 @@ namespace etl
 
         if (p != nullptr)
         {
-          new (p) T(ETL_STD::forward<Args>(args)...);
+          new (p) T(ETL_OR_STD::forward<Args>(args)...);
         }
       }
 
@@ -382,8 +382,8 @@ namespace etl
       cog.outl("T%s>::value ||" % int(NTypes))
 
       for n in range(1, int(NTypes)):
-          cog.outl("               etl::is_base_of<T, T%s>::value ||" % n)
-      cog.outl("               etl::is_base_of<T, T%s>::value), \"Invalid type\");" % int(NTypes))
+          cog.outl("               etlstd::is_base_of<T, T%s>::value ||" % n)
+      cog.outl("               etlstd::is_base_of<T, T%s>::value), \"Invalid type\");" % int(NTypes))
 
       ]]]*/
       /*[[[end]]]*/

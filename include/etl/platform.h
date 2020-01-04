@@ -102,4 +102,9 @@ SOFTWARE.
   #define ETL_EXPLICIT_STRING_FROM_CHAR
 #endif
 
+// Sort out names for STL/No STL options.
+#include "private/choose_namespace.h"
+#include "private/choose_tag_types.h"
+#include "private/choose_pair_types.h"
+
 #endif

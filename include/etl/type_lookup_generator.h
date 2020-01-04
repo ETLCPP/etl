@@ -104,7 +104,7 @@ namespace etl
   cog.outl("  {")
   cog.outl("    typedef ")
   for n in range(1, int(NTypes) + 1):
-      cog.outl("          typename etl::conditional<ID == T%s::ID, typename T%s::type," %(n, n))
+      cog.outl("          typename etlstd::conditional<ID == T%s::ID, typename T%s::type," %(n, n))
   cog.out("          etl::null_type<0> >")
   for n in range(1, int(NTypes) + 1):
       if n == int(NTypes):
@@ -116,7 +116,7 @@ namespace etl
               cog.outl("")
               cog.out("                            ")
   cog.outl("")
-  cog.outl("    ETL_STATIC_ASSERT(!(etl::is_same<etl::null_type<0>, type>::value), \"Invalid id\");")
+  cog.outl("    ETL_STATIC_ASSERT(!(etlstd::is_same<etl::null_type<0>, type>::value), \"Invalid id\");")
   cog.outl("  };")
   cog.outl("")
   cog.outl("  //************************************")
@@ -132,7 +132,7 @@ namespace etl
   cog.outl("    {")
   cog.outl("      value =")
   for n in range(1, int(NTypes) + 1) :
-      cog.outl("        (unsigned int) etl::is_same<T, typename T%s::type>::value ? T%s::ID :" % (n, n))
+      cog.outl("        (unsigned int) etlstd::is_same<T, typename T%s::type>::value ? T%s::ID :" % (n, n))
   cog.outl("        (unsigned int) UNKNOWN")
   cog.outl("    };")
   cog.outl("")
@@ -171,7 +171,7 @@ namespace etl
   cog.outl("  {")
   cog.outl("    typedef ")
   for n in range(1, int(NTypes) + 1):
-      cog.outl("          typename etl::conditional<etl::is_same<T, typename T%s::type1>::value, typename T%s::type2," %(n, n))
+      cog.outl("          typename etlstd::conditional<etlstd::is_same<T, typename T%s::type1>::value, typename T%s::type2," %(n, n))
   cog.out("          etl::null_type<0> >")
   for n in range(1, int(NTypes) + 1):
       if n == int(NTypes):
@@ -183,7 +183,7 @@ namespace etl
               cog.outl("")
               cog.out("                            ")
   cog.outl("")
-  cog.outl("    ETL_STATIC_ASSERT(!(etl::is_same<etl::null_type<0>, type>::value), \"Invalid type\");")
+  cog.outl("    ETL_STATIC_ASSERT(!(etlstd::is_same<etl::null_type<0>, type>::value), \"Invalid type\");")
   cog.outl("  };")
   cog.outl("};")
   ]]]*/

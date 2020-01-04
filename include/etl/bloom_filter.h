@@ -104,12 +104,12 @@ namespace etl
     {
       flags.set(get_hash<THash1>(key));
 
-      if (!etl::is_same<THash2, null_hash>::value)
+      if (!etlstd::is_same<THash2, null_hash>::value)
       {
         flags.set(get_hash<THash2>(key));
       }
 
-      if (!etl::is_same<THash3, null_hash>::value)
+      if (!etlstd::is_same<THash3, null_hash>::value)
       {
         flags.set(get_hash<THash3>(key));
       }
@@ -127,13 +127,13 @@ namespace etl
       bool exists3 = true;
 
       // Do we have a second hash?
-      if (!etl::is_same<THash2, null_hash>::value)
+      if (!etlstd::is_same<THash2, null_hash>::value)
       {
         exists2 = flags[get_hash<THash2>(key)];
       }
 
       // Do we have a third hash?
-      if (!etl::is_same<THash3, null_hash>::value)
+      if (!etlstd::is_same<THash3, null_hash>::value)
       {
         exists3 = flags[get_hash<THash3>(key)];
       }

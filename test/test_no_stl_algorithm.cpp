@@ -31,8 +31,7 @@ SOFTWARE.
 #undef min
 #undef max
 
-#include "etl/stl/algorithm.h"
-#include "etl/stl/alternate/algorithm.h"
+#include "etl/algorithm.h"
 
 #include <algorithm>
 #include <vector>
@@ -520,7 +519,7 @@ namespace
       int a = 1;
       int b = 2;
 
-      etlstd::swap(a, b);
+      swap(a, b);
       CHECK_EQUAL(2, a);
       CHECK_EQUAL(1, b);
     }
@@ -766,6 +765,26 @@ namespace
     }
 
     //*************************************************************************
+    TEST(transform_safer)
+    {
+      struct Function
+      {
+        int operator()(int d) const
+        {
+          return d * 2;
+        }
+      };
+
+      int* p1 = std::transform(std::begin(dataS), std::end(dataS), std::begin(dataD1), Function());
+      int* p2 = etl::transform(std::begin(dataS), std::end(dataS), std::begin(dataD2), std::end(dataD2), Function());
+
+      CHECK(p2 == std::end(dataD2));
+
+      bool isEqual = std::equal(std::begin(dataD1), std::end(dataD1), std::begin(dataD2));
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
     TEST(transform2)
     {
       struct Function
@@ -777,7 +796,7 @@ namespace
       };
 
       int* p1 = std::transform(std::begin(dataS), std::end(dataS), std::begin(dataA), std::begin(dataD1), Function());
-      int* p2 = etlstd::transform(std::begin(dataS), std::end(dataS), std::begin(dataA), std::begin(dataD2), Function());
+      int* p2 = etl::transform(std::begin(dataS), std::end(dataS), std::begin(dataA), std::begin(dataD2), Function());
 
       CHECK(p2 == std::end(dataD2));
 

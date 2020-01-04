@@ -77,13 +77,13 @@ namespace
     {
       bool b;
 
-      b = !etl::is_reference<etl::parameter_type<int>::type>::value;
+      b = !etlstd::is_reference<etl::parameter_type<int>::type>::value;
       CHECK(b);
 
-      b = etl::is_reference<etl::parameter_type<Test>::type>::value;
+      b = etlstd::is_reference<etl::parameter_type<Test>::type>::value;
       CHECK(b);
 
-      b = !etl::is_reference<etl::parameter_type<Test2>::type>::value;
+      b = !etlstd::is_reference<etl::parameter_type<Test2>::type>::value;
       CHECK(b);
     }
   };

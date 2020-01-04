@@ -732,6 +732,7 @@
     <ClInclude Include="..\..\include\etl\indirect_vector.h" />
     <ClInclude Include="..\..\include\etl\largest_generator.h" />
     <ClInclude Include="..\..\include\etl\absolute.h" />
+    <ClInclude Include="..\..\include\etl\limits.h" />
     <ClInclude Include="..\..\include\etl\macros.h" />
     <ClInclude Include="..\..\include\etl\multi_array.h" />
     <ClInclude Include="..\..\include\etl\negative.h" />
@@ -798,16 +799,6 @@
     <ClInclude Include="..\..\include\etl\queue_spsc_isr.h" />
     <ClInclude Include="..\..\include\etl\queue_mpmc_mutex.h" />
     <ClInclude Include="..\..\include\etl\sqrt.h" />
-    <ClInclude Include="..\..\include\etl\stl\algorithm.h" />
-    <ClInclude Include="..\..\include\etl\stl\alternate\algorithm.h" />
-    <ClInclude Include="..\..\include\etl\stl\alternate\functional.h" />
-    <ClInclude Include="..\..\include\etl\stl\alternate\iterator.h" />
-    <ClInclude Include="..\..\include\etl\stl\alternate\limits.h" />
-    <ClInclude Include="..\..\include\etl\stl\alternate\utility.h" />
-    <ClInclude Include="..\..\include\etl\stl\functional.h" />
-    <ClInclude Include="..\..\include\etl\stl\iterator.h" />
-    <ClInclude Include="..\..\include\etl\stl\limits.h" />
-    <ClInclude Include="..\..\include\etl\stl\utility.h" />
     <ClInclude Include="..\..\include\etl\string_view.h" />
     <ClInclude Include="..\..\include\etl\task.h" />
     <ClInclude Include="..\..\include\etl\timer.h" />

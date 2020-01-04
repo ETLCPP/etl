@@ -57,7 +57,7 @@ namespace etl
   /// Can be used as a reference type for all flat_multisets containing a specific type.
   ///\ingroup flat_multiset
   //***************************************************************************
-  template <typename T, typename TKeyCompare = ETL_STD::less<T> >
+  template <typename T, typename TKeyCompare = etlstd::less<T> >
   class iflat_multiset : private etl::ireference_flat_multiset<T, TKeyCompare>
   {
   private:
@@ -80,9 +80,9 @@ namespace etl
     typedef typename refset_t::iterator       iterator;
     typedef typename refset_t::const_iterator const_iterator;
 
-    typedef ETL_STD::reverse_iterator<iterator>       reverse_iterator;
-    typedef ETL_STD::reverse_iterator<const_iterator> const_reverse_iterator;
-    typedef typename ETL_STD::iterator_traits<iterator>::difference_type difference_type;
+    typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef typename etlstd::iterator_traits<iterator>::difference_type difference_type;
 
   protected:
 
@@ -209,7 +209,7 @@ namespace etl
     void assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      difference_type d = ETL_STD::distance(first, last);
+      difference_type d = etlstd::distance(first, last);
       ETL_ASSERT(d <= difference_type(capacity()), ETL_ERROR(flat_multiset_full));
 #endif
 
@@ -232,7 +232,7 @@ namespace etl
 
       ETL_ASSERT(!full(), ETL_ERROR(flat_multiset_full));
 
-      iterator i_element = ETL_STD::lower_bound(begin(), end(), value, compare);
+      iterator i_element = etlstd::lower_bound(begin(), end(), value, compare);
 
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(value);
@@ -289,7 +289,7 @@ namespace etl
 
       // Create it.
       value_type* pvalue = storage.allocate<value_type>();
-      ::new (pvalue) value_type(ETL_STD::forward<Args>(args)...);
+      ::new (pvalue) value_type(etlstd::forward<Args>(args)...);
 
       iterator i_element = lower_bound(*pvalue);
 
@@ -385,7 +385,7 @@ namespace etl
       }
       else
       {
-        size_t d = ETL_STD::distance(range.first, range.second);
+        size_t d = etlstd::distance(range.first, range.second);
         erase(range.first, range.second);
         return d;
       }
@@ -656,7 +656,7 @@ namespace etl
   template <typename T, typename TKeyCompare>
   bool operator ==(const etl::iflat_multiset<T, TKeyCompare>& lhs, const etl::iflat_multiset<T, TKeyCompare>& rhs)
   {
-    return (lhs.size() == rhs.size()) && ETL_STD::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (lhs.size() == rhs.size()) && etlstd::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //***************************************************************************
@@ -675,11 +675,11 @@ namespace etl
   //***************************************************************************
   /// A flat_multiset implementation that uses a fixed size buffer.
   ///\tparam T        The value type.
-  ///\tparam TCompare The type to compare keys. Default = ETL_STD::less<T>
+  ///\tparam TCompare The type to compare keys. Default = etlstd::less<T>
   ///\tparam MAX_SIZE_ The maximum number of elements that can be stored.
   ///\ingroup flat_multiset
   //***************************************************************************
-  template <typename T, const size_t MAX_SIZE_, typename TCompare = ETL_STD::less<T> >
+  template <typename T, const size_t MAX_SIZE_, typename TCompare = etlstd::less<T> >
   class flat_multiset : public etl::iflat_multiset<T, TCompare>
   {
   public:

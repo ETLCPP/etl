@@ -239,7 +239,7 @@ namespace etl
 
       if (next_index != read.load(etl::memory_order_acquire))
       {
-        ::new (&p_buffer[write_index]) T(ETL_STD::forward<Args>(args)...);
+        ::new (&p_buffer[write_index]) T(etlstd::forward<Args>(args)...);
 
         write.store(next_index, etl::memory_order_release);
 
@@ -469,7 +469,7 @@ namespace etl
   private:
 
     /// The uninitialised buffer of T used in the queue_spsc.
-    typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[RESERVED_SIZE];
+    typename etl::aligned_storage<sizeof(T), etlstd::alignment_of<T>::value>::type buffer[RESERVED_SIZE];
   };
 }
 

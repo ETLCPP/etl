@@ -31,8 +31,7 @@ SOFTWARE.
 #undef min
 #undef max
 
-#include "etl/stl/functional.h"
-#include "etl/stl/alternate/functional.h"
+#include "etl/functional.h"
 
 namespace
 {
@@ -42,7 +41,7 @@ namespace
     return TCompare()(a, b);
   }
 
-  struct test : etlstd::binary_function<int, int, bool>
+  struct test : etl::binary_function<int, int, bool>
   {
     bool operator()(int a, int b) const
     {
@@ -63,25 +62,25 @@ namespace
     //*************************************************************************
     TEST(test_greater)
     {
-      CHECK(!(compare<etlstd::greater<int>>(1, 2)));
-      CHECK((compare<etlstd::greater<int>>(2, 1)));
-      CHECK(!(compare<etlstd::greater<int>>(1, 1)));
+      CHECK(!(compare<etl::greater<int>>(1, 2)));
+      CHECK((compare<etl::greater<int>>(2, 1)));
+      CHECK(!(compare<etl::greater<int>>(1, 1)));
     }
 
     //*************************************************************************
     TEST(test_equal_to)
     {
-      CHECK((compare<etlstd::equal_to<int>>(1, 1)));
-      CHECK(!(compare<etlstd::equal_to<int>>(1, 2)));
-      CHECK(!(compare<etlstd::equal_to<int>>(2, 1)));
+      CHECK((compare<etl::equal_to<int>>(1, 1)));
+      CHECK(!(compare<etl::equal_to<int>>(1, 2)));
+      CHECK(!(compare<etl::equal_to<int>>(2, 1)));
     }
 
     //*************************************************************************
     TEST(test_not_equal_to)
     {
-      CHECK(!(compare<etlstd::not_equal_to<int>>(1, 1)));
-      CHECK((compare<etlstd::not_equal_to<int>>(1, 2)));
-      CHECK((compare<etlstd::not_equal_to<int>>(2, 1)));
+      CHECK(!(compare<etl::not_equal_to<int>>(1, 1)));
+      CHECK((compare<etl::not_equal_to<int>>(1, 2)));
+      CHECK((compare<etl::not_equal_to<int>>(2, 1)));
     }
 
     //*************************************************************************
@@ -94,8 +93,8 @@ namespace
     //*************************************************************************
     TEST(test_bind2nd)
     {
-      CHECK(!(etlstd::bind2nd(test(), 1)(2)));
-      CHECK((etlstd::bind2nd(test(), 2)(1)));
+      CHECK(!(etl::bind2nd(test(), 1)(2)));
+      CHECK((etl::bind2nd(test(), 2)(1)));
     }
   };
 }

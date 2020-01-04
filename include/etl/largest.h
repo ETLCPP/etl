@@ -82,15 +82,15 @@ namespace etl
 
     // Set 'type' to be the largest of the first parameter and any of the others.
     // This is recursive.
-    using type = typename etl::conditional<(etl::size_of<T1>() > etl::size_of<largest_other>()), // Boolean
-                                           T1,                                                   // TrueType
-                                           largest_other>                                        // FalseType
-                                           ::type;                                               // The largest type of the two.
+    using type = typename etlstd::conditional<(etl::size_of<T1>::value > etl::size_of<largest_other>::value),  // Boolean
+                                            T1,                                                             // TrueType
+                                            largest_other>                                                  // FalseType
+                                            ::type;                                                         // The largest type of the two.
 
     // The size of the largest type.
     enum
     {
-      size = etl::size_of<type>()
+      size = etl::size_of<type>::value
     };
   };
 
@@ -106,7 +106,7 @@ namespace etl
 
     enum
     {
-      size = etl::size_of<type>()
+      size = etl::size_of<type>::value
     };
   };
 #else
@@ -128,7 +128,7 @@ namespace etl
 
     // Set 'type' to be the largest of the first parameter and any of the others.
     // This is recursive.
-    typedef typename etl::conditional<(sizeof(T1) > sizeof(largest_other)), // Boolean
+    typedef typename etlstd::conditional<(sizeof(T1) > sizeof(largest_other)), // Boolean
                                        T1,                                  // TrueType
                                        largest_other>                       // FalseType
                                        ::type type;                         // The largest type of the two.
@@ -170,7 +170,7 @@ namespace etl
 
     // Set 'type' to be the largest of the first parameter and any of the others.
     // This is recursive.
-    using type = typename etl::conditional<(etl::alignment_of<T1>::value > etl::alignment_of<largest_other>::value), // Boolean
+    using type = typename etlstd::conditional<(etlstd::alignment_of<T1>::value > etlstd::alignment_of<largest_other>::value), // Boolean
                                             T1,                                                                      // TrueType
                                             largest_other>                                                           // FalseType
                                             ::type;                                                                  // The largest type of the two.
@@ -178,7 +178,7 @@ namespace etl
     // The largest alignment.
     enum
     {
-      value = etl::alignment_of<type>::value
+      value = etlstd::alignment_of<type>::value
     };
   };
 
@@ -192,7 +192,7 @@ namespace etl
 
     enum
     {
-      value = etl::alignment_of<type>::value
+      value = etlstd::alignment_of<type>::value
     };
   };
 #else
@@ -213,7 +213,7 @@ namespace etl
 
     // Set 'type' to be the largest of the first parameter and any of the others.
     // This is recursive.
-    typedef typename etl::conditional<(etl::alignment_of<T1>::value > etl::alignment_of<largest_other>::value), // Boolean
+    typedef typename etlstd::conditional<(etlstd::alignment_of<T1>::value > etlstd::alignment_of<largest_other>::value), // Boolean
                                        T1,                                                                      // TrueType
                                        largest_other>                                                           // FalseType
                                        ::type type;                                                             // The largest type of the two.
@@ -221,7 +221,7 @@ namespace etl
     // The largest alignment.
     enum
     {
-      value = etl::alignment_of<type>::value
+      value = etlstd::alignment_of<type>::value
     };
   };
 
@@ -236,7 +236,7 @@ namespace etl
 
     enum
     {
-      value = etl::alignment_of<type>::value
+      value = etlstd::alignment_of<type>::value
     };
   };
 #endif
@@ -249,7 +249,7 @@ namespace etl
   template <typename T>
   struct larger_int_type
   {
-    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Must be an integral type");
+    ETL_STATIC_ASSERT(etlstd::is_integral<T>::value, "Must be an integral type");
 
     typedef typename etl::smallest_int_for_bits<etl::integral_limits<typename etl::make_signed<T>::type>::bits + 1>::type type;
   };
@@ -262,7 +262,7 @@ namespace etl
   template <typename T>
   struct larger_uint_type
   {
-    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Must be an integral type");
+    ETL_STATIC_ASSERT(etlstd::is_integral<T>::value, "Must be an integral type");
 
     typedef typename etl::smallest_uint_for_bits<etl::integral_limits<typename etl::make_unsigned<T>::type>::bits + 1>::type type;
   };
@@ -273,13 +273,13 @@ namespace etl
   /// The returned type will be of the same sign.
   ///\ingroup largest
   //***************************************************************************
-  template <typename T, bool IS_SIGNED = etl::is_signed<T>::value>
+  template <typename T, bool IS_SIGNED = etlstd::is_signed<T>::value>
   struct larger_type;
 
   template <typename T>
   struct larger_type<T, false>
   {
-    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Must be an integral type");
+    ETL_STATIC_ASSERT(etlstd::is_integral<T>::value, "Must be an integral type");
 
     typedef typename etl::smallest_uint_for_bits<etl::integral_limits<T>::bits + 1>::type type;
   };
@@ -287,7 +287,7 @@ namespace etl
   template <typename T>
   struct larger_type<T, true>
   {
-    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Must be an integral type");
+    ETL_STATIC_ASSERT(etlstd::is_integral<T>::value, "Must be an integral type");
 
     typedef typename etl::smallest_int_for_bits<etl::integral_limits<T>::bits + 1>::type type;
   };

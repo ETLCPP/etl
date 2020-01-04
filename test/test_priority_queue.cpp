@@ -455,8 +455,8 @@ namespace
 
       etl::priority_queue<int, SIZE> priority_queue2;
 
-      etl::ipriority_queue<int, etl::vector<int, SIZE>, ETL_STD::less<int>>& ipriority_queue1 = priority_queue1;
-      etl::ipriority_queue<int, etl::vector<int, SIZE>, ETL_STD::less<int>>& ipriority_queue2 = priority_queue2;
+      etl::ipriority_queue<int, etl::vector<int, SIZE>, std::less<int>>& ipriority_queue1 = priority_queue1;
+      etl::ipriority_queue<int, etl::vector<int, SIZE>, std::less<int>>& ipriority_queue2 = priority_queue2;
 
       ipriority_queue2 = ipriority_queue1;
 

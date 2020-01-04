@@ -50,10 +50,10 @@ namespace
       size_t alignment;
       size_t expected;
 
-      typedef etl::aligned_storage<sizeof(uint16_t), etl::alignment_of<uint32_t>::value>::type storage32_t;
+      typedef etl::aligned_storage<sizeof(uint16_t), etlstd::alignment_of<uint32_t>::value>::type storage32_t;
       static storage32_t data32[10];
 
-      alignment = etl::alignment_of<storage32_t>::value;
+      alignment = etlstd::alignment_of<storage32_t>::value;
       expected  = std::alignment_of<uint32_t>::value;
 
       CHECK_EQUAL(expected, alignment);
@@ -70,7 +70,7 @@ namespace
     //*************************************************************************
     TEST(test_aligned_storage_conversion_operators)
     {
-      typedef etl::aligned_storage<sizeof(uint32_t), etl::alignment_of<uint32_t>::value>::type storage32_t;
+      typedef etl::aligned_storage<sizeof(uint32_t), etlstd::alignment_of<uint32_t>::value>::type storage32_t;
       static storage32_t data;
 
       void* pdata = &data.data;
@@ -105,7 +105,7 @@ namespace
       typedef etl::aligned_storage_as<sizeof(uint16_t), uint32_t>::type storage32_t;
       static storage32_t data32[10];
 
-      alignment = etl::alignment_of<storage32_t>::value;
+      alignment = etlstd::alignment_of<storage32_t>::value;
       expected = std::alignment_of<uint32_t>::value;
 
       CHECK_EQUAL(expected, alignment);

@@ -28,21 +28,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_STL_ALTERNATE_LIMITS_INCLUDED
-#define ETL_STL_ALTERNATE_LIMITS_INCLUDED
+#ifndef ETL_LIMITS_INCLUDED
+#define ETL_LIMITS_INCLUDED
 
-#include "../../platform.h"
-#include "../../type_traits.h"
-#include "../../char_traits.h"
-#include "../../integral_limits.h"
-
-#include "../../private/choose_tag_types.h"
-#include "../../private/choose_pair_types.h"
+#include "platform.h"
+#include "type_traits.h"
+#include "char_traits.h"
+#include "integral_limits.h"
 
 #include <limits.h>
 #include <stdint.h>
 #include <float.h>
 
+#if defined(ETL_NO_STL)
 #define ETL_LOG2(x) (((x) * 301) / 1000)
 
 namespace etlstd
@@ -82,10 +80,10 @@ namespace etlstd
     static ETL_CONSTEXPR T epsilon() { return 0; }
     static ETL_CONSTEXPR T round_error() { return 0; }
 
-    static ETL_CONST_OR_CONSTEXPR int digits = (CHAR_BIT * sizeof(T)) - (etl::is_signed<T>::value ? 1 : 0);
+    static ETL_CONST_OR_CONSTEXPR int digits = (CHAR_BIT * sizeof(T)) - (etlstd::is_signed<T>::value ? 1 : 0);
     static ETL_CONST_OR_CONSTEXPR int digits10 = ETL_LOG2(digits);
 
-    static ETL_CONST_OR_CONSTEXPR bool is_signed = etl::is_signed<T>::value;
+    static ETL_CONST_OR_CONSTEXPR bool is_signed = etlstd::is_signed<T>::value;
 
     static ETL_CONST_OR_CONSTEXPR int min_exponent = 0;
     static ETL_CONST_OR_CONSTEXPR int min_exponent10 = 0;
@@ -105,7 +103,7 @@ namespace etlstd
 
     static ETL_CONST_OR_CONSTEXPR bool is_iec559 = false;
     static ETL_CONST_OR_CONSTEXPR bool is_bounded = true;
-    static ETL_CONST_OR_CONSTEXPR bool is_modulo = etl::is_unsigned<T>::value;
+    static ETL_CONST_OR_CONSTEXPR bool is_modulo = etlstd::is_unsigned<T>::value;
 
     static ETL_CONST_OR_CONSTEXPR bool traps = false;
     static ETL_CONST_OR_CONSTEXPR bool tinyness_before = false;
@@ -257,6 +255,7 @@ namespace etlstd
     static ETL_CONSTEXPR char16_t min() { return 0; }
     static ETL_CONSTEXPR char16_t max() { return UINT_LEAST16_MAX; }
     static ETL_CONSTEXPR char16_t lowest() { return 0; }
+    static ETL_CONST_OR_CONSTEXPR bool is_modulo = true;
   };
 
   //***************************************************************************
@@ -269,6 +268,7 @@ namespace etlstd
     static ETL_CONSTEXPR char32_t min() { return 0; }
     static ETL_CONSTEXPR char32_t max() { return UINT_LEAST32_MAX; }
     static ETL_CONSTEXPR char32_t lowest() { return 0; }
+    static ETL_CONST_OR_CONSTEXPR bool is_modulo = true;
   };
 #endif
 
@@ -449,5 +449,34 @@ namespace etlstd
     static ETL_CONST_OR_CONSTEXPR int max_exponent10 = LDBL_MAX_10_EXP;
   };
 }
+
+#else
+
+#include <limits>
+
+namespace etlstd
+{
+  enum float_round_style
+  {
+    round_indeterminate       = std::float_round_style::round_indeterminate,
+    round_toward_zero         = std::float_round_style::round_toward_zero,
+    round_to_nearest          = std::float_round_style::round_to_nearest,
+    round_toward_infinity     = std::float_round_style::round_toward_infinity,
+    round_toward_neg_infinity = std::float_round_style::round_toward_neg_infinity,
+  };
+
+  enum float_denorm_style
+  {
+    denorm_indeterminate = std::float_denorm_style::denorm_indeterminate,
+    denorm_absent        = std::float_denorm_style::denorm_absent,
+    denorm_present       = std::float_denorm_style::denorm_present
+  };
+
+  template <typename T>
+  class numeric_limits : public std::numeric_limits<T>
+  {
+  };
+}
+#endif
 
 #endif

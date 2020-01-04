@@ -43,7 +43,7 @@ SOFTWARE.
 #include "static_assert.h"
 #include "type_traits.h"
 
-#include "stl/algorithm.h"
+#include "algorithm.h"
 
 namespace etl
 {
@@ -257,7 +257,13 @@ namespace etl
     //*************************************************************************
     void swap(cyclic_value<T, FIRST, LAST>& other)
     {
-      ETL_STD::swap(value, other.value);
+#if defined(ETL_NO_STL)
+      using etlstd::swap;
+#else
+      using std::swap;
+#endif
+
+      swap(value, other.value);
     }
 
     //*************************************************************************
@@ -298,7 +304,7 @@ namespace etl
   ///\ingroup cyclic_value
   //***************************************************************************
   template <typename T, const T FIRST, const T LAST>
-  class cyclic_value<T, FIRST, LAST, typename etl::enable_if<(FIRST == 0) && (LAST == 0)>::type>
+  class cyclic_value<T, FIRST, LAST, typename etlstd::enable_if<(FIRST == 0) && (LAST == 0)>::type>
   {
   public:
 
@@ -531,9 +537,15 @@ namespace etl
     //*************************************************************************
     void swap(cyclic_value<T, FIRST, LAST>& other)
     {
-      ETL_STD::swap(first_value, other.first_value);
-      ETL_STD::swap(last_value, other.last_value);
-      ETL_STD::swap(value, other.value);
+#if defined(ETL_NO_STL)
+      using etlstd::swap;
+#else
+      using std::swap;
+#endif
+
+      swap(first_value, other.first_value);
+      swap(last_value, other.last_value);
+      swap(value, other.value);
     }
 
     //*************************************************************************

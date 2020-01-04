@@ -39,7 +39,7 @@ namespace etl
   // For signed types.
   //***************************************************************************
   template <typename T>
-  typename etl::enable_if<etl::is_signed<T>::value, T>::type
+  typename etlstd::enable_if<etlstd::is_signed<T>::value, T>::type
     absolute(T value)
   {
     return (value < T(0)) ? -value : value;
@@ -49,7 +49,7 @@ namespace etl
   // For unsigned types.
   //***************************************************************************
   template <typename T>
-  typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
+  typename etlstd::enable_if<etlstd::is_unsigned<T>::value, T>::type
     absolute(T value)
   {
     return value;

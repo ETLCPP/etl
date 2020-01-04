@@ -35,9 +35,9 @@ SOFTWARE.
 
 #include "platform.h"
 
-#include "stl/algorithm.h"
-#include "stl/iterator.h"
-#include "stl/functional.h"
+#include "algorithm.h"
+#include "iterator.h"
+#include "functional.h"
 
 #include "exception.h"
 #include "type_traits.h"
@@ -107,8 +107,8 @@ namespace etl
     typedef const T*                              const_pointer;
     typedef T*                                    iterator;
     typedef const T*                              const_iterator;
-    typedef ETL_STD::reverse_iterator<iterator>       reverse_iterator;
-    typedef ETL_STD::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
 
     //*************************************************************************
     // Element access
@@ -342,7 +342,7 @@ namespace etl
     //*************************************************************************
     void fill(parameter_t value)
     {
-      ETL_STD::fill(begin(), end(), value);
+      etlstd::fill(begin(), end(), value);
     }
 
     //*************************************************************************
@@ -351,9 +351,15 @@ namespace etl
     //*************************************************************************
     void swap(array& other)
     {
+#if defined(ETL_NO_STL)
+      using etlstd::swap;
+#else
+      using std::swap;
+#endif
+
       for (size_t i = 0; i < SIZE; ++i)
       {
-        ETL_STD::swap(_buffer[i], other._buffer[i]);
+        swap(_buffer[i], other._buffer[i]);
       }
     }
 
@@ -367,7 +373,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, const TIterator last)
     {
-      etl::copy(first, last, begin(), end());
+      etlstd::copy(first, last, begin(), end());
     }
 
     //*************************************************************************
@@ -381,10 +387,10 @@ namespace etl
     void assign(TIterator first, const TIterator last, parameter_t value)
     {
       // Copy from the range.
-      iterator p = etl::copy(first, last, begin(), end());
+      iterator p = etlstd::copy(first, last, begin(), end());
 
       // Default initialise any that are left.
-      ETL_STD::fill(p, end(), value);
+      etlstd::fill(p, end(), value);
     }
 
     //*************************************************************************
@@ -406,7 +412,7 @@ namespace etl
     {
       iterator p = const_cast<iterator>(position);
 
-      ETL_STD::copy_backward(p, end() - 1, end());
+      etlstd::copy_backward(p, end() - 1, end());
       *p = value;
 
       return p;
@@ -436,18 +442,18 @@ namespace etl
       iterator p = const_cast<iterator>(position);
       iterator result(p);
 
-      size_t source_size       = ETL_STD::distance(first, last);
-      size_t destination_space = ETL_STD::distance(position, cend());
+      size_t source_size       = etlstd::distance(first, last);
+      size_t destination_space = etlstd::distance(position, cend());
 
       // Do we need to move anything?
       if (source_size < destination_space)
       {
-        size_t length = SIZE - (ETL_STD::distance(begin(), p) + source_size);
-        ETL_STD::copy_backward(p, p + length, end());
+        size_t length = SIZE - (etlstd::distance(begin(), p) + source_size);
+        etlstd::copy_backward(p, p + length, end());
       }
 
       // Copy from the range.
-      etl::copy(first, last, p, end());
+      etlstd::copy(first, last, p, end());
 
       return result;
     }
@@ -470,7 +476,7 @@ namespace etl
     iterator erase(const_iterator position)
     {
       iterator p = const_cast<iterator>(position);
-      ETL_STD::copy(p + 1, end(), p);
+      etlstd::copy(p + 1, end(), p);
 
       return p;
     }
@@ -495,7 +501,7 @@ namespace etl
     iterator erase(const_iterator first, const_iterator last)
     {
       iterator p = const_cast<iterator>(first);
-      ETL_STD::copy(last, cend(), p);
+      etlstd::copy(last, cend(), p);
       return p;
     }
 
@@ -518,7 +524,7 @@ namespace etl
     {
       iterator p = const_cast<iterator>(position);
 
-      ETL_STD::copy(p + 1, end(), p);
+      etlstd::copy(p + 1, end(), p);
       back() = value;
 
       return p;
@@ -544,8 +550,8 @@ namespace etl
     {
       iterator p = const_cast<iterator>(first);
 
-      p = ETL_STD::copy(last, cend(), p);
-      ETL_STD::fill(p, end(), value);
+      p = etlstd::copy(last, cend(), p);
+      etlstd::fill(p, end(), value);
 
       return const_cast<iterator>(first);
     }
@@ -574,7 +580,7 @@ namespace etl
   template <typename T, size_t SIZE>
   bool operator ==(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
-    return ETL_STD::equal(lhs.cbegin(), lhs.cend(), rhs.cbegin());
+    return etlstd::equal(lhs.cbegin(), lhs.cend(), rhs.cbegin());
   }
 
   //*************************************************************************
@@ -598,7 +604,7 @@ namespace etl
   template <typename T, size_t SIZE>
   bool operator <(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
-    return ETL_STD::lexicographical_compare(lhs.cbegin(),
+    return etlstd::lexicographical_compare(lhs.cbegin(),
                                         lhs.cend(),
                                         rhs.cbegin(),
                                         rhs.cend());

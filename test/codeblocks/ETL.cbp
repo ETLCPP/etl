@@ -361,7 +361,6 @@
 		<Unit filename="../../include/etl/static_assert.h" />
 		<Unit filename="../../include/etl/stl/algorithm.h" />
 		<Unit filename="../../include/etl/stl/alternate/algorithm.h" />
-		<Unit filename="../../include/etl/stl/alternate/choose_namespace.h" />
 		<Unit filename="../../include/etl/stl/alternate/functional.h" />
 		<Unit filename="../../include/etl/stl/alternate/iterator.h" />
 		<Unit filename="../../include/etl/stl/alternate/limits.h" />

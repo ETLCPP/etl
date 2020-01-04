@@ -37,8 +37,8 @@ SOFTWARE.
 
 #include "platform.h"
 
-#include "stl/algorithm.h"
-#include "stl/iterator.h"
+#include "algorithm.h"
+#include "iterator.h"
 
 #include "integral_limits.h"
 #include "algorithm.h"
@@ -312,7 +312,7 @@ namespace etl
     {
       reset();
 
-      size_t i = ETL_STD::min(NBITS, etl::strlen(text));
+      size_t i = etlstd::min(NBITS, etl::strlen(text));
 
       while (i > 0)
       {
@@ -329,7 +329,7 @@ namespace etl
     {
       reset();
 
-      size_t i = ETL_STD::min(NBITS, etl::strlen(text));
+      size_t i = etlstd::min(NBITS, etl::strlen(text));
 
       while (i > 0)
       {
@@ -346,7 +346,7 @@ namespace etl
     {
       reset();
 
-      size_t i = ETL_STD::min(NBITS, etl::strlen(text));
+      size_t i = etlstd::min(NBITS, etl::strlen(text));
 
       while (i > 0)
       {
@@ -363,7 +363,7 @@ namespace etl
     {
       reset();
 
-      size_t i = ETL_STD::min(NBITS, etl::strlen(text));
+      size_t i = etlstd::min(NBITS, etl::strlen(text));
 
       while (i > 0)
       {
@@ -380,7 +380,7 @@ namespace etl
     {
       reset();
 
-      size_t i = ETL_STD::min(NBITS, etl::strlen(text));
+      size_t i = etlstd::min(NBITS, etl::strlen(text));
 
       while (i > 0)
       {
@@ -394,7 +394,7 @@ namespace etl
     /// Put to a value.
     //*************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_integral<T>::value, T>::type
+    typename etlstd::enable_if<etlstd::is_integral<T>::value, T>::type
       value() const
     {
       T v = T(0);
@@ -746,7 +746,7 @@ namespace etl
     //*************************************************************************
     void swap(ibitset& other)
     {
-      ETL_STD::swap_ranges(pdata, pdata + SIZE, other.pdata);
+      etl::swap_ranges(pdata, pdata + SIZE, other.pdata);
     }
 
   protected:
@@ -818,7 +818,7 @@ namespace etl
     //*************************************************************************
     static bool is_equal(const ibitset& lhs, const ibitset&rhs)
     {
-      return ETL_STD::equal(lhs.pdata, lhs.pdata + lhs.SIZE, rhs.pdata);
+      return etlstd::equal(lhs.pdata, lhs.pdata + lhs.SIZE, rhs.pdata);
     }
 
     element_t TOP_MASK;
@@ -976,7 +976,7 @@ namespace etl
     /// Put to a value.
     //*************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_integral<T>::value, T>::type
+    typename etlstd::enable_if<etlstd::is_integral<T>::value, T>::type
       value() const
     {
       ETL_STATIC_ASSERT((sizeof(T) * CHAR_BIT) >= (ARRAY_SIZE * BITS_PER_ELEMENT), "Type too small");

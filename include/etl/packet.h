@@ -64,9 +64,9 @@ namespace etl
     template <typename T>
     explicit packet(const T& value)
     {
-      ETL_STATIC_ASSERT((etl::is_base_of<TBase, T>::value), "Unsupported type");
+      ETL_STATIC_ASSERT((etlstd::is_base_of<TBase, T>::value), "Unsupported type");
       ETL_STATIC_ASSERT(sizeof(T) <= SIZE, "Unsupported size");
-      ETL_STATIC_ASSERT(etl::alignment_of<T>::value <= ALIGNMENT, "Unsupported alignment");
+      ETL_STATIC_ASSERT(etlstd::alignment_of<T>::value <= ALIGNMENT, "Unsupported alignment");
 
       ::new (static_cast<T*>(data)) T(value);
     }
@@ -86,9 +86,9 @@ namespace etl
     template <typename T>
     packet& operator =(const T& value)
     {
-      ETL_STATIC_ASSERT((etl::is_base_of<TBase, T>::value), "Unsupported type");
+      ETL_STATIC_ASSERT((etlstd::is_base_of<TBase, T>::value), "Unsupported type");
       ETL_STATIC_ASSERT(sizeof(T) <= SIZE, "Unsupported size");
-      ETL_STATIC_ASSERT(etl::alignment_of<T>::value <= ALIGNMENT, "Unsupported alignment");
+      ETL_STATIC_ASSERT(etlstd::alignment_of<T>::value <= ALIGNMENT, "Unsupported alignment");
 
       static_cast<TBase*>(data)->~TBase();
       ::new (static_cast<T*>(data)) T(value);
