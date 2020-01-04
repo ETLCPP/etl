@@ -946,11 +946,12 @@
     <ClCompile Include="..\test_cumulative_moving_average.cpp" />
     <ClCompile Include="..\test_delegate.cpp" />
     <ClCompile Include="..\test_delegate_service.cpp" />
-    <ClCompile Include="..\test_etlstl_algorithm.cpp" />
-    <ClCompile Include="..\test_etlstl_functional.cpp" />
-    <ClCompile Include="..\test_etlstl_iterator.cpp" />
-    <ClCompile Include="..\test_etlstl_limits.cpp" />
-    <ClCompile Include="..\test_etlstl_utility.cpp" />
+    <ClCompile Include="..\test_etlstd_algorithm.cpp" />
+    <ClCompile Include="..\test_etlstd_functional.cpp" />
+    <ClCompile Include="..\test_etlstd_iterator.cpp" />
+    <ClCompile Include="..\test_etlstd_limits.cpp" />
+    <ClCompile Include="..\test_etlstd_type_traits.cpp" />
+    <ClCompile Include="..\test_etlstd_utility.cpp" />
     <ClCompile Include="..\test_forward_list_shared_pool.cpp" />
     <ClCompile Include="..\test_bit_stream.cpp" />
     <ClCompile Include="..\test_indirect_vector.cpp" />
@@ -1232,7 +1233,6 @@
     <ClCompile Include="..\test_type_def.cpp" />
     <ClCompile Include="..\test_type_lookup.cpp" />
     <ClCompile Include="..\test_type_select.cpp" />
-    <ClCompile Include="..\test_type_traits.cpp" />
     <ClCompile Include="..\test_unordered_map.cpp" />
     <ClCompile Include="..\test_unordered_multimap.cpp" />
     <ClCompile Include="..\test_unordered_multiset.cpp" />

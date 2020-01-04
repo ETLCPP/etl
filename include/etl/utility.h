@@ -34,6 +34,10 @@ SOFTWARE.
 #include "platform.h"
 #include "type_traits.h"
 
+#if !defined(ETL_NO_STL)
+  #include <utility>
+#endif
+
 ///\defgroup utility utility
 ///\ingroup utilities
 
@@ -159,6 +163,7 @@ namespace etlstd
   }
 #endif
 
+#if defined(ETL_NO_STL)
   //***************************************************************************
   /// exchange (const)
   //***************************************************************************
@@ -169,6 +174,16 @@ namespace etlstd
     object = new_value;
     return old_value;
   }
+#else
+  //***************************************************************************
+  /// exchange (const)
+  //***************************************************************************
+  template <typename T, typename U = T>
+  T exchange(T& object, const U& new_value)
+  {
+    return std::exchange(object, new_value);
+  }
+#endif
 
   //***************************************************************************
   /// as_const

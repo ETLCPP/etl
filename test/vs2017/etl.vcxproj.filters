@@ -860,9 +860,6 @@
     <ClCompile Include="..\test_container.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_type_traits.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_cyclic_value.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1277,19 +1274,22 @@
     <ClCompile Include="..\test_stl_utility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_etlstl_algorithm.cpp">
+    <ClCompile Include="..\test_etlstd_algorithm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_etlstl_functional.cpp">
+    <ClCompile Include="..\test_etlstd_functional.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_etlstl_iterator.cpp">
+    <ClCompile Include="..\test_etlstd_iterator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_etlstl_limits.cpp">
+    <ClCompile Include="..\test_etlstd_limits.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_etlstl_utility.cpp">
+    <ClCompile Include="..\test_etlstd_type_traits.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_etlstd_utility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
