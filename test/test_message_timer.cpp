@@ -137,7 +137,7 @@ namespace
 
   SUITE(test_message_timer)
   {
-    //=========================================================================
+    //*************************************************************************
     TEST(message_timer_too_many_timers)
     {
       etl::message_timer<2> timer_controller;
@@ -155,7 +155,7 @@ namespace
       CHECK(id3 != etl::timer::id::NO_TIMER);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_timer_one_shot)
     {
       etl::message_timer<3> timer_controller;
@@ -191,7 +191,7 @@ namespace
       CHECK_ARRAY_EQUAL(compare3.data(), router1.message3.data(), compare3.size());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_timer_one_shot_after_timeout)
     {
       etl::message_timer<1> timer_controller;
@@ -237,7 +237,7 @@ namespace
       CHECK(!timer_controller.stop(id1));
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_timer_repeating)
     {
       etl::message_timer<3> timer_controller;
@@ -273,7 +273,7 @@ namespace
       CHECK_ARRAY_EQUAL(compare3.data(), router1.message3.data(), compare3.size());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_timer_repeating_bigger_step)
     {
       etl::message_timer<3> timer_controller;
@@ -313,7 +313,7 @@ namespace
       CHECK_ARRAY_EQUAL(compare3.data(), router1.message3.data(), compare3.size());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_timer_repeating_stop_start)
     {
       etl::message_timer<3> timer_controller;
@@ -360,7 +360,7 @@ namespace
       CHECK_ARRAY_EQUAL(compare3.data(), router1.message3.data(), compare3.size());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_timer_repeating_register_unregister)
     {
       etl::message_timer<3> timer_controller;
@@ -403,7 +403,7 @@ namespace
       CHECK_ARRAY_EQUAL(compare3.data(), router1.message3.data(), compare3.size());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_timer_repeating_clear)
     {
       etl::message_timer<3> timer_controller;
@@ -445,7 +445,7 @@ namespace
       CHECK_ARRAY_EQUAL(compare3.data(), router1.message3.data(), compare3.size());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_timer_route_through_bus)
     {
       etl::message_timer<3> timer_controller;
@@ -483,7 +483,7 @@ namespace
       CHECK_ARRAY_EQUAL(compare3.data(), router1.message3.data(), compare3.size());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_timer_immediate_delayed)
     {
       etl::message_timer<3> timer_controller;
@@ -524,7 +524,7 @@ namespace
       CHECK_ARRAY_EQUAL(compare3.data(), router1.message3.data(), compare3.size());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_timer_one_shot_big_step_short_delay_insert)
     {
       etl::message_timer<3> timer_controller;
@@ -556,7 +556,7 @@ namespace
       CHECK_ARRAY_EQUAL(compare2.data(), router1.message2.data(), compare2.size());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(callback_timer_one_shot_empty_list_huge_tick_before_insert)
     {
       etl::message_timer<3> timer_controller;
@@ -594,7 +594,7 @@ namespace
       CHECK_ARRAY_EQUAL(compare1.data(), router1.message1.data(), compare1.size());
     }
 
-    //=========================================================================
+    //*************************************************************************
 #if REALTIME_TEST
 
   #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported

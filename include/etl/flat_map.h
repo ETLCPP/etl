@@ -72,7 +72,7 @@ namespace etl
   public:
 
 
-    typedef ETL_PAIR<const TKey, TMapped> value_type;
+    typedef ETL_OR_STD::pair<const TKey, TMapped> value_type;
     typedef TKey              key_type;
     typedef TMapped           mapped_type;
     typedef TKeyCompare       key_compare;
@@ -285,11 +285,11 @@ namespace etl
     /// If asserts or exceptions are enabled, emits flat_map_full if the flat_map is already full.
     ///\param value    The value to insert.
     //*********************************************************************
-    ETL_PAIR<iterator, bool> insert(const_reference value)
+    ETL_OR_STD::pair<iterator, bool> insert(const_reference value)
     {
       iterator i_element = lower_bound(value.first);
 
-      ETL_PAIR<iterator, bool> result(i_element, false);
+      ETL_OR_STD::pair<iterator, bool> result(i_element, false);
 
       // Doesn't already exist?
       if ((i_element == end()) || compare(value.first, i_element->first))
@@ -335,7 +335,7 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the map.
     //*************************************************************************
-    ETL_PAIR<iterator, bool> emplace(const value_type& value)
+    ETL_OR_STD::pair<iterator, bool> emplace(const value_type& value)
     {
       return emplace(value.first, value.second);
     }
@@ -345,7 +345,7 @@ namespace etl
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename ... Args>
-    ETL_PAIR<iterator, bool> emplace(const key_type& key, Args && ... args)
+    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, Args && ... args)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
 
@@ -356,7 +356,7 @@ namespace etl
 
       iterator i_element = lower_bound(key);
 
-      ETL_PAIR<iterator, bool> result(i_element, false);
+      ETL_OR_STD::pair<iterator, bool> result(i_element, false);
 
       // Doesn't already exist?
       if ((i_element == end()) || compare(key, i_element->first))
@@ -379,7 +379,7 @@ namespace etl
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename T1>
-    ETL_PAIR<iterator, bool> emplace(const key_type& key, const T1& value1)
+    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, const T1& value1)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
 
@@ -390,7 +390,7 @@ namespace etl
 
       iterator i_element = lower_bound(key);
 
-      ETL_PAIR<iterator, bool> result(i_element, false);
+      ETL_OR_STD::pair<iterator, bool> result(i_element, false);
 
       // Doesn't already exist?
       if ((i_element == end()) || compare(key, i_element->first))
@@ -411,7 +411,7 @@ namespace etl
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename T1, typename T2>
-    ETL_PAIR<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2)
+    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
 
@@ -422,7 +422,7 @@ namespace etl
 
       iterator i_element = lower_bound(key);
 
-      ETL_PAIR<iterator, bool> result(i_element, false);
+      ETL_OR_STD::pair<iterator, bool> result(i_element, false);
 
       // Doesn't already exist?
       if ((i_element == end()) || compare(key, i_element->first))
@@ -443,7 +443,7 @@ namespace etl
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename T1, typename T2, typename T3>
-    ETL_PAIR<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3)
+    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
 
@@ -454,7 +454,7 @@ namespace etl
 
       iterator i_element = lower_bound(key);
 
-      ETL_PAIR<iterator, bool> result(i_element, false);
+      ETL_OR_STD::pair<iterator, bool> result(i_element, false);
 
       // Doesn't already exist?
       if ((i_element == end()) || compare(key, i_element->first))
@@ -475,7 +475,7 @@ namespace etl
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
-    ETL_PAIR<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
 
@@ -486,7 +486,7 @@ namespace etl
 
       iterator i_element = lower_bound(key);
 
-      ETL_PAIR<iterator, bool> result(i_element, false);
+      ETL_OR_STD::pair<iterator, bool> result(i_element, false);
 
       // Doesn't already exist?
       if ((i_element == end()) || compare(key, i_element->first))
@@ -662,7 +662,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    ETL_PAIR<iterator, iterator> equal_range(key_parameter_t key)
+    ETL_OR_STD::pair<iterator, iterator> equal_range(key_parameter_t key)
     {
       return refmap_t::equal_range(key);
     }
@@ -672,7 +672,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    ETL_PAIR<const_iterator, const_iterator> equal_range(key_parameter_t key) const
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(key_parameter_t key) const
     {
       return refmap_t::equal_range(key);
     }

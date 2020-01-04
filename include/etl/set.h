@@ -911,7 +911,7 @@ namespace etl
     /// Returns two iterators with bounding (lower bound, upper bound) the
     /// value provided
     //*************************************************************************
-    ETL_PAIR<iterator, iterator> equal_range(const value_type& value)
+    ETL_OR_STD::pair<iterator, iterator> equal_range(const value_type& value)
     {
       return ETL_MAKE_PAIR<iterator, iterator>(
         iterator(*this, find_lower_node(root_node, value)),
@@ -922,7 +922,7 @@ namespace etl
     /// Returns two const iterators with bounding (lower bound, upper bound)
     /// the value provided.
     //*************************************************************************
-    ETL_PAIR<const_iterator, const_iterator> equal_range(const value_type& value) const
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const value_type& value) const
     {
       return ETL_MAKE_PAIR<const_iterator, const_iterator>(
         const_iterator(*this, find_lower_node(root_node, value)),
@@ -1015,7 +1015,7 @@ namespace etl
     /// If asserts or exceptions are enabled, emits set_full if the set is already full.
     ///\param value    The value to insert.
     //*********************************************************************
-    ETL_PAIR<iterator, bool> insert(value_type& value)
+    ETL_OR_STD::pair<iterator, bool> insert(value_type& value)
     {
       // Default to no inserted node
       Node* inserted_node = nullptr;

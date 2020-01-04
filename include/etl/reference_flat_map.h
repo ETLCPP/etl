@@ -108,7 +108,7 @@ namespace etl
   {
   public:
 
-    typedef ETL_PAIR<const TKey, TMapped> value_type;
+    typedef ETL_OR_STD::pair<const TKey, TMapped> value_type;
 
   protected:
 
@@ -545,7 +545,7 @@ namespace etl
     /// If asserts or exceptions are enabled, emits flat_map_full if the reference_flat_map is already full.
     ///\param value    The value to insert.
     //*********************************************************************
-    ETL_PAIR<iterator, bool> insert(reference value)
+    ETL_OR_STD::pair<iterator, bool> insert(reference value)
     {
       iterator i_element = lower_bound(value.first);
 
@@ -731,7 +731,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    ETL_PAIR<iterator, iterator> equal_range(key_parameter_t key)
+    ETL_OR_STD::pair<iterator, iterator> equal_range(key_parameter_t key)
     {
       iterator i_lower = etlstd::lower_bound(begin(), end(), key, compare);
 
@@ -743,7 +743,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    ETL_PAIR<const_iterator, const_iterator> equal_range(key_parameter_t key) const
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(key_parameter_t key) const
     {
       const_iterator i_lower = etlstd::lower_bound(cbegin(), cend(), key, compare);
 
@@ -819,9 +819,9 @@ namespace etl
     ///\param i_element The place to insert.
     ///\param value     The value to insert.
     //*********************************************************************
-    ETL_PAIR<iterator, bool> insert_at(iterator i_element, value_type& value)
+    ETL_OR_STD::pair<iterator, bool> insert_at(iterator i_element, value_type& value)
     {
-      ETL_PAIR<iterator, bool> result(end(), false);
+      ETL_OR_STD::pair<iterator, bool> result(end(), false);
 
       if (i_element == end())
       {

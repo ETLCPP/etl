@@ -49,6 +49,11 @@ namespace
   typedef std::vector<int> Data;
   Data data = { 2, 1, 4, 3, 6, 5, 8, 7, 10, 9 };
 
+  constexpr size_t SIZE = 10;
+
+  int dataS[SIZE] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+  std::list<int> dataSL = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
   struct StructData
   {
     int a;
@@ -84,107 +89,7 @@ namespace
 
   SUITE(test_algorithm)
   {
-    //=========================================================================
-    TEST(minmax_element)
-    {
-      ETL_PAIR<Data::iterator, Data::iterator> expected = std::minmax_element(data.begin(), data.end());
-      ETL_PAIR<Data::iterator, Data::iterator> result   = etlstd::minmax_element(data.begin(), data.end());
-      CHECK_EQUAL(std::distance(data.begin(), expected.first), std::distance(data.begin(), result.first));
-      CHECK_EQUAL(std::distance(data.begin(), expected.second), std::distance(data.begin(), result.second));
-    }
-
-    //=========================================================================
-    TEST(minmax_element_compare)
-    {
-      ETL_PAIR<Data::iterator, Data::iterator> expected = std::minmax_element(data.begin(), data.end(), std::greater<int>());
-      ETL_PAIR<Data::iterator, Data::iterator> result   = etlstd::minmax_element(data.begin(), data.end(), std::greater<int>());
-      CHECK_EQUAL(std::distance(data.begin(), expected.first),  std::distance(data.begin(), result.first));
-      CHECK_EQUAL(std::distance(data.begin(), expected.second), std::distance(data.begin(), result.second));
-    }
-
-    //=========================================================================
-    TEST(minmax)
-    {
-      int a = 1;
-      int b = 2;
-
-      ETL_PAIR<int, int> expected = std::minmax(a, b);
-      ETL_PAIR<int, int> result   = etlstd::minmax(a, b);
-      CHECK_EQUAL(expected.first,  result.first);
-      CHECK_EQUAL(expected.second, result.second);
-
-      result   = etlstd::minmax(b, a);
-      expected = std::minmax(b, a);
-      CHECK_EQUAL(expected.first, result.first);
-      CHECK_EQUAL(expected.second, result.second);
-    }
-
-    //=========================================================================
-    TEST(minmax_compare)
-    {
-      int a = 1;
-      int b = 2;
-
-      ETL_PAIR<int, int> expected = std::minmax(a, b, std::greater<int>());
-      ETL_PAIR<int, int> result   = etlstd::minmax(a, b, std::greater<int>());
-      CHECK_EQUAL(expected.first, result.first);
-      CHECK_EQUAL(expected.second, result.second);
-
-      result   = etlstd::minmax(b, a, std::greater<int>());
-      expected = std::minmax(b, a, std::greater<int>());
-      CHECK_EQUAL(expected.first, result.first);
-      CHECK_EQUAL(expected.second, result.second);
-    }
-
-    //=========================================================================
-    TEST(is_sorted_until)
-    {
-      int data[] = { 1, 2, 3, 4, 6, 5, 7, 8, 9, 10 };
-
-      int* p1 = std::is_sorted_until(std::begin(data), std::end(data));
-      int* p2 = etlstd::is_sorted_until(std::begin(data), std::end(data));
-      CHECK_EQUAL(std::distance(std::begin(data), p1), std::distance(std::begin(data), p2));
-    }
-
-    //=========================================================================
-    TEST(is_sorted_until_compare)
-    {
-      int data[] = { 10, 9, 8, 7, 5, 6, 4, 3, 4, 2, 1 };
-
-      int* p1 = std::is_sorted_until(std::begin(data), std::end(data), std::greater<int>());
-      int* p2 = etlstd::is_sorted_until(std::begin(data), std::end(data), std::greater<int>());
-      CHECK_EQUAL(std::distance(etl::begin(data), p1), std::distance(std::begin(data), p2));
-    }
-
-    //=========================================================================
-    TEST(is_sorted)
-    {
-      int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-
-      bool is_sorted = etlstd::is_sorted(std::begin(data1), std::end(data1));
-      CHECK(is_sorted);
-
-      int data2[] = { 1, 2, 3, 4, 6, 5, 7, 8 , 9, 10};
-
-      is_sorted = etlstd::is_sorted(std::begin(data2), std::end(data2));
-      CHECK(!is_sorted);
-    }
-
-    //=========================================================================
-    TEST(is_sorted_compare)
-    {
-      int data1[] = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
-
-      bool is_sorted = etlstd::is_sorted(std::begin(data1), std::end(data1), std::greater<int>());
-      CHECK(is_sorted);
-
-      int data2[] = { 10, 9, 8, 7, 5, 6, 4, 3, 2, 1 };
-
-      is_sorted = etlstd::is_sorted(std::begin(data2), std::end(data2), std::greater<int>());
-      CHECK(!is_sorted);
-    }
-
-    //=========================================================================
+    //*************************************************************************
     TEST(copy_4_parameter_random_iterator)
     {
       int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
@@ -221,7 +126,7 @@ namespace
       CHECK(is_same);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(copy_4_parameter_non_random_iterator)
     {
       std::list<int> data1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
@@ -258,43 +163,7 @@ namespace
       CHECK(is_same);
     }
 
-    //=========================================================================
-    TEST(copy_n_random_iterator)
-    {
-      int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-      int data2[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-      int data3[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
-      int* result;
-
-      std::copy_n(std::begin(data1), 4, std::begin(data2));
-      result = etlstd::copy_n(std::begin(data1), 4, std::begin(data3));
-
-      CHECK_EQUAL(std::begin(data3) + 4, result);
-
-      bool is_same = std::equal(std::begin(data2), std::end(data2), std::begin(data3));
-      CHECK(is_same);
-    }
-
-    //=========================================================================
-    TEST(copy_n_non_random_iterator)
-    {
-      std::list<int> data1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-      int data2[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-      int data3[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
-      int* result;
-
-      std::copy_n(std::begin(data1), 4, std::begin(data2));
-      result = etlstd::copy_n(std::begin(data1), 4, std::begin(data3));
-
-      CHECK_EQUAL(std::begin(data3) + 4, result);
-
-      bool is_same = std::equal(std::begin(data2), std::end(data2), std::begin(data3));
-      CHECK(is_same);
-    }
-
-    //=========================================================================
+    //*************************************************************************
     TEST(copy_n_4_parameter)
     {
       int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
@@ -330,7 +199,7 @@ namespace
       CHECK(is_same);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(copy_2n_4_parameter)
     {
       int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
@@ -366,22 +235,7 @@ namespace
       CHECK(is_same);
     }
 
-    //=========================================================================
-    TEST(copy_if)
-    {
-      int data1[] = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
-      int data2[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-      int data3[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
-      // Copy everything less than 5.
-      std::copy_if(std::begin(data1), std::end(data1), std::begin(data2), std::bind(std::less<int>(), std::placeholders::_1, 5));
-      etlstd::copy_if(std::begin(data1), std::end(data1), std::begin(data3), std::bind(std::less<int>(), std::placeholders::_1, 5));
-
-      bool is_same = std::equal(std::begin(data2), std::end(data2), std::begin(data3));
-      CHECK(is_same);
-    }
-
-    //=========================================================================
+    //*************************************************************************
     TEST(copy_n_if)
     {
       int data1[] = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
@@ -403,7 +257,7 @@ namespace
       CHECK(is_same);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(copy_if_4_parameter)
     {
       int data1[] = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
@@ -440,154 +294,7 @@ namespace
       CHECK(is_same);
     }
 
-    //=========================================================================
-    TEST(any_of)
-    {
-      int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-
-      bool expected = std::any_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-      bool result = etlstd::any_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-      CHECK_EQUAL(expected, result);
-
-      expected = std::any_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 0));
-      result = etlstd::any_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 0));
-      CHECK_EQUAL(expected, result);
-    }
-
-    //=========================================================================
-    TEST(all_of)
-    {
-      int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-
-      bool expected = std::all_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 0));
-      bool result = etlstd::all_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 0));
-      CHECK_EQUAL(expected, result);
-
-      expected = std::all_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-      result = etlstd::all_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-      CHECK_EQUAL(expected, result);
-    }
-
-    //=========================================================================
-    TEST(none_of)
-    {
-      int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-
-      bool expected = std::none_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 8));
-      bool result = etlstd::none_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 8));
-      CHECK_EQUAL(expected, result);
-
-      expected = std::none_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-      result = etlstd::none_of(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-      CHECK_EQUAL(expected, result);
-    }
-
-    struct Compare
-    {
-      bool operator()(int a, int b) const
-      {
-        return a == b;
-      }
-    };
-
-    //=========================================================================
-    TEST(is_permutation)
-    {
-      int data1[]           = { 1, 2, 3, 4, 5, 6, 7, 8 };
-      int permutation[]     = { 1, 3, 2, 4, 7, 6, 5, 8 };
-      int not_permutation[] = { 1, 2, 3, 4, 5, 6, 7, 7 };
-
-      bool is_permutation   = etlstd::is_permutation(std::begin(data1), std::end(data1), std::begin(permutation));
-      CHECK(is_permutation);
-
-      is_permutation   = etlstd::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation));
-      CHECK(!is_permutation);
-
-      is_permutation = etlstd::is_permutation(std::begin(data1), std::end(data1), std::begin(permutation), std::equal_to<int>());
-      CHECK(is_permutation);
-
-      is_permutation = etlstd::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation), std::equal_to<int>());
-      CHECK(!is_permutation);
-
-      is_permutation   = etlstd::is_permutation(std::begin(data1), std::end(data1), std::begin(permutation), std::end(permutation));
-      CHECK(is_permutation);
-
-      is_permutation   = etlstd::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation), std::end(not_permutation));
-      CHECK(!is_permutation);
-
-      is_permutation = etlstd::is_permutation(std::begin(data1), std::end(data1), std::begin(permutation), std::end(permutation), std::equal_to<int>());
-      CHECK(is_permutation);
-
-      is_permutation = etlstd::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation), std::end(not_permutation), std::equal_to<int>());
-      CHECK(!is_permutation);
-    }
-
-    //=========================================================================
-    TEST(is_partitioned)
-    {
-      int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
-
-      bool expected = std::is_partitioned(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-      bool result = etlstd::is_partitioned(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-      CHECK_EQUAL(expected, result);
-
-      std::partition(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-
-      expected = std::is_partitioned(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-      result = etlstd::is_partitioned(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-      CHECK_EQUAL(expected, result);
-    }
-
-    //=========================================================================
-    TEST(partition_point)
-    {
-      int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
-
-      std::partition(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-
-      int* partition1 = std::partition_point(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-      int* partition2 = etlstd::partition_point(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-      CHECK_EQUAL(std::distance(std::begin(data1), partition1), std::distance(std::begin(data1), partition2));
-
-      std::partition(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 8));
-
-      partition1 = std::partition_point(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 0));
-      partition2 = etlstd::partition_point(std::begin(data1), std::end(data1), std::bind(std::greater<int>(), std::placeholders::_1, 0));
-      CHECK_EQUAL(std::distance(std::begin(data1), partition1), std::distance(std::begin(data1), partition2));
-    }
-
-    //=========================================================================
-    TEST(partition_copy)
-    {
-      int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
-      int data2[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
-      int data3[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
-      int data4[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
-      int data5[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
-
-      std::partition_copy(std::begin(data1), std::end(data1), std::begin(data2),  std::begin(data3), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-      etlstd::partition_copy(std::begin(data1), std::end(data1), std::begin(data4),  std::begin(data5), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-
-      bool are_equal;
-
-      are_equal = std::equal(std::begin(data2), std::end(data2), std::begin(data4));
-      CHECK(are_equal);
-
-      are_equal = std::equal(std::begin(data3), std::end(data3), std::begin(data5));
-      CHECK(are_equal);
-    }
-
-    //=========================================================================
-    TEST(find_if_not)
-    {
-      int data1[] = { 1, 2, 3, 5, 6, 7, 8 };
-
-      // Find the element not less than 4.
-      int* p = etlstd::find_if_not(std::begin(data1), std::end(data1), std::bind(std::less<int>(), std::placeholders::_1, 4));
-      CHECK_EQUAL(5, *p);
-    }
-
-    //=========================================================================
+    //*************************************************************************
     TEST(binary_find)
     {
       int data1[] = { 1, 2, 3, 5, 6, 7, 8 };
@@ -601,7 +308,7 @@ namespace
       CHECK_EQUAL(std::end(data1), p);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(binary_find_StructDataPredicate_StructDataEquality)
     {
       StructData data1[] = { { 1, 8 }, { 2, 7 }, { 3, 6 },{ 4, 5 },{ 5, 4 },{ 6, 3 },{ 7, 2 },{ 8, 1 } };
@@ -617,7 +324,7 @@ namespace
       CHECK_EQUAL(std::end(data1), p);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(for_each_if)
     {
       int data1[] = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
@@ -645,7 +352,7 @@ namespace
       CHECK_EQUAL(10, accumulator.sum);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(for_each_n)
     {
       int data1[] = { 1,  8, 2, 7,  3, 6, 4, 5, 10, 9 };
@@ -665,7 +372,7 @@ namespace
       CHECK(are_equal);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(for_each_n_if)
     {
       int data1[] = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
@@ -685,7 +392,7 @@ namespace
       CHECK(are_equal);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(transform_4_parameter)
     {
       int input[]   = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
@@ -714,7 +421,7 @@ namespace
       CHECK(is_same);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(transform_n_random_iterator)
     {
       int input[] = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
@@ -730,7 +437,7 @@ namespace
       CHECK(is_same);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(transform_n_non_random_iterator)
     {
       std::list<int> input = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
@@ -746,7 +453,7 @@ namespace
       CHECK(is_same);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(transform_if)
     {
       int input[]   = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
@@ -764,7 +471,7 @@ namespace
       CHECK(is_same);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(transform_if_2_input_ranges)
     {
       int input1[] = { 1, 8, 2, 7, 3,  6, 4, 5, 10, 9 };
@@ -784,7 +491,7 @@ namespace
       CHECK(is_same);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(transform_n_if)
     {
       int input[] = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
@@ -802,7 +509,7 @@ namespace
       CHECK(is_same);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(transform_n_if_2_input_ranges)
     {
       int input1[] = { 1, 8, 2, 7, 3,  6, 4, 5, 10, 9 };
@@ -822,7 +529,7 @@ namespace
       CHECK(is_same);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(partition_transform)
     {
       int input[]         = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
@@ -848,7 +555,7 @@ namespace
       CHECK(is_same);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(partition_transform_2_input_ranges)
     {
       int input1[] = { 1, 8, 2, 7, 3,  6, 4, 5, 10, 9 };
@@ -875,7 +582,7 @@ namespace
       CHECK(is_same);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(sort_default)
     {
       std::vector<int> data(100, 0);
@@ -896,7 +603,7 @@ namespace
       }
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(sort_greater)
     {
       std::vector<int> data(100, 0);
@@ -917,7 +624,7 @@ namespace
       }
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(stable_sort_default)
     {
       std::vector<NDC> initial_data = { NDC(1, 1), NDC(2, 1), NDC(3, 1), NDC(2, 2), NDC(3, 2), NDC(4, 1), NDC(2, 3), NDC(3, 3), NDC(5, 1) };
@@ -932,7 +639,7 @@ namespace
       CHECK(is_same);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(stable_sort_greater)
     {
       std::vector<NDC> initial_data = { NDC(1, 1), NDC(2, 1), NDC(3, 1), NDC(2, 2), NDC(3, 2), NDC(4, 1), NDC(2, 3), NDC(3, 3), NDC(5, 1) };
@@ -947,7 +654,7 @@ namespace
       CHECK(is_same);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(shell_sort_default)
     {
       std::vector<int> data(100, 0);
@@ -968,7 +675,7 @@ namespace
       }
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(shell_sort_greater)
     {
       std::vector<int> data(100, 0);
@@ -989,7 +696,7 @@ namespace
       }
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(insertion_sort_default)
     {
       std::vector<NDC> initial_data = { NDC(1, 1), NDC(2, 1), NDC(3, 1), NDC(2, 2), NDC(3, 2), NDC(4, 1), NDC(2, 3), NDC(3, 3), NDC(5, 1) };
@@ -1004,7 +711,7 @@ namespace
       CHECK(is_same);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(insertion_sort_greater)
     {
       std::vector<NDC> initial_data = { NDC(1, 1), NDC(2, 1), NDC(3, 1), NDC(2, 2), NDC(3, 2), NDC(4, 1), NDC(2, 3), NDC(3, 3), NDC(5, 1) };
@@ -1019,7 +726,7 @@ namespace
       CHECK(is_same);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(multimax)
     {
       CHECK_EQUAL(8, etl::multimax(1, 2, 3, 4, 5, 6, 7, 8));
@@ -1027,7 +734,7 @@ namespace
       CHECK_EQUAL(1, etl::multimax_compare(std::greater<int>(), 1, 2, 3, 4, 5, 6, 7, 8));
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(multimax_iter)
     {
       int i[8] = { 1, 2, 3, 4, 5, 6, 7, 8 };
@@ -1037,7 +744,7 @@ namespace
       CHECK_EQUAL(1, *etl::multimax_iter_compare(std::greater<int>(), &i[0], &i[1], &i[2], &i[3], &i[4], &i[5], &i[6], &i[7]));
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(multimin)
     {
       CHECK_EQUAL(1, etl::multimin(1, 2, 3, 4, 5, 6, 7, 8));
@@ -1045,7 +752,7 @@ namespace
       CHECK_EQUAL(8, etl::multimin_compare(std::greater<int>(), 1, 2, 3, 4, 5, 6, 7, 8));
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(multimin_iter)
     {
       int i[8] = { 1, 2, 3, 4, 5, 6, 7, 8 };

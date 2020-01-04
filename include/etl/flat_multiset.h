@@ -226,9 +226,9 @@ namespace etl
     /// If asserts or exceptions are enabled, emits flat_multiset_full if the flat_multiset is already full.
     ///\param value    The value to insert.
     //*********************************************************************
-    ETL_PAIR<iterator, bool> insert(parameter_t value)
+    ETL_OR_STD::pair<iterator, bool> insert(parameter_t value)
     {
-      ETL_PAIR<iterator, bool> result(end(), false);
+      ETL_OR_STD::pair<iterator, bool> result(end(), false);
 
       ETL_ASSERT(!full(), ETL_ERROR(flat_multiset_full));
 
@@ -273,7 +273,7 @@ namespace etl
     /// Emplaces a value to the set.
     //*************************************************************************
     template <typename T1>
-    ETL_PAIR<iterator, bool> emplace(parameter_t value)
+    ETL_OR_STD::pair<iterator, bool> emplace(parameter_t value)
     {
       return insert(value);
     }
@@ -283,7 +283,7 @@ namespace etl
     //*************************************************************************
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
     template <typename ... Args>
-    ETL_PAIR<iterator, bool> emplace(Args && ... args)
+    ETL_OR_STD::pair<iterator, bool> emplace(Args && ... args)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_multiset_full));
 
@@ -294,14 +294,14 @@ namespace etl
       iterator i_element = lower_bound(*pvalue);
 
       ETL_INCREMENT_DEBUG_COUNT
-      return ETL_PAIR<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
+      return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
     }
 #else
     //*************************************************************************
     /// Emplaces a value to the set.
     //*************************************************************************
     template <typename T1>
-    ETL_PAIR<iterator, bool> emplace(const T1& value1)
+    ETL_OR_STD::pair<iterator, bool> emplace(const T1& value1)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_multiset_full));
 
@@ -312,14 +312,14 @@ namespace etl
       iterator i_element = lower_bound(*pvalue);
 
       ETL_INCREMENT_DEBUG_COUNT
-      return ETL_PAIR<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
+      return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
     }
 
     //*************************************************************************
     /// Emplaces a value to the set.
     //*************************************************************************
     template <typename T1, typename T2>
-    ETL_PAIR<iterator, bool> emplace(const T1& value1, const T2& value2)
+    ETL_OR_STD::pair<iterator, bool> emplace(const T1& value1, const T2& value2)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_multiset_full));
 
@@ -330,14 +330,14 @@ namespace etl
       iterator i_element = lower_bound(*pvalue);
 
       ETL_INCREMENT_DEBUG_COUNT
-      return ETL_PAIR<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
+      return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
     }
 
     //*************************************************************************
     /// Emplaces a value to the set.
     //*************************************************************************
     template <typename T1, typename T2, typename T3>
-    ETL_PAIR<iterator, bool> emplace(const T1& value1, const T2& value2, const T3& value3)
+    ETL_OR_STD::pair<iterator, bool> emplace(const T1& value1, const T2& value2, const T3& value3)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_multiset_full));
 
@@ -348,14 +348,14 @@ namespace etl
       iterator i_element = lower_bound(*pvalue);
 
       ETL_INCREMENT_DEBUG_COUNT
-      return ETL_PAIR<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
+      return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
     }
 
     //*************************************************************************
     /// Emplaces a value to the set.
     //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
-    ETL_PAIR<iterator, bool> emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    ETL_OR_STD::pair<iterator, bool> emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_multiset_full));
 
@@ -366,7 +366,7 @@ namespace etl
       iterator i_element = lower_bound(*pvalue);
 
       ETL_INCREMENT_DEBUG_COUNT
-      return ETL_PAIR<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
+      return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
     }
 #endif
 
@@ -377,7 +377,7 @@ namespace etl
     //*********************************************************************
     size_t erase(parameter_t key)
     {
-      ETL_PAIR<iterator, iterator> range = equal_range(key);
+      ETL_OR_STD::pair<iterator, iterator> range = equal_range(key);
 
       if (range.first == end())
       {
@@ -525,7 +525,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    ETL_PAIR<iterator, iterator> equal_range(parameter_t key)
+    ETL_OR_STD::pair<iterator, iterator> equal_range(parameter_t key)
     {
       return refset_t::equal_range(key);
     }
@@ -535,7 +535,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    ETL_PAIR<const_iterator, const_iterator> equal_range(parameter_t key) const
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(parameter_t key) const
     {
       return refset_t::equal_range(key);
     }

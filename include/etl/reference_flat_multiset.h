@@ -456,9 +456,9 @@ namespace etl
     /// If asserts or exceptions are enabled, emits reference_flat_multiset_full if the reference_flat_multiset is already full.
     ///\param value    The value to insert.
     //*********************************************************************
-    ETL_PAIR<iterator, bool> insert(value_type& value)
+    ETL_OR_STD::pair<iterator, bool> insert(value_type& value)
     {
-      ETL_PAIR<iterator, bool> result(end(), false);
+      ETL_OR_STD::pair<iterator, bool> result(end(), false);
 
       ETL_ASSERT(!lookup.full(), ETL_ERROR(flat_multiset_full));
 
@@ -516,7 +516,7 @@ namespace etl
     //*********************************************************************
     size_t erase(parameter_t key)
     {
-      ETL_PAIR<iterator, iterator> range = equal_range(key);
+      ETL_OR_STD::pair<iterator, iterator> range = equal_range(key);
 
       if (range.first == end())
       {
@@ -614,7 +614,7 @@ namespace etl
     //*********************************************************************
     size_t count(parameter_t key) const
     {
-      ETL_PAIR<const_iterator, const_iterator> range = equal_range(key);
+      ETL_OR_STD::pair<const_iterator, const_iterator> range = equal_range(key);
 
       return etlstd::distance(range.first, range.second);
     }
@@ -664,7 +664,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    ETL_PAIR<iterator, iterator> equal_range(parameter_t key)
+    ETL_OR_STD::pair<iterator, iterator> equal_range(parameter_t key)
     {
       return etlstd::equal_range(begin(), end(), key, compare);
     }
@@ -674,7 +674,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    ETL_PAIR<const_iterator, const_iterator> equal_range(parameter_t key) const
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(parameter_t key) const
     {
       return etlstd::equal_range(begin(), end(), key, compare);
     }
@@ -748,9 +748,9 @@ namespace etl
     ///\param i_element The place to insert.
     ///\param value     The value to insert.
     //*********************************************************************
-    ETL_PAIR<iterator, bool> insert_at(iterator i_element, reference value)
+    ETL_OR_STD::pair<iterator, bool> insert_at(iterator i_element, reference value)
     {
-      ETL_PAIR<iterator, bool> result(end(), false);
+      ETL_OR_STD::pair<iterator, bool> result(end(), false);
 
       if (i_element == end())
       {

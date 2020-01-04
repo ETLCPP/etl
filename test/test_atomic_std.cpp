@@ -37,7 +37,7 @@ namespace
 {
   SUITE(test_atomic_std)
   {
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_integer_is_lock_free)
     {
       std::atomic<int> compare;
@@ -46,7 +46,7 @@ namespace
       CHECK_EQUAL(compare.is_lock_free(), test.is_lock_free());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_pointer_is_lock_free)
     {
       std::atomic<int*> compare;
@@ -55,7 +55,7 @@ namespace
       CHECK_EQUAL(compare.is_lock_free(), test.is_lock_free());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_integer_load)
     {
       std::atomic<int> compare(1);
@@ -64,7 +64,7 @@ namespace
       CHECK_EQUAL((int)compare.load(), (int)test.load());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_pointer_load)
     {
       int i;
@@ -75,7 +75,7 @@ namespace
       CHECK_EQUAL((int*)compare.load(), (int*)test.load());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_integer_store)
     {
       std::atomic<int> compare(1);
@@ -86,7 +86,7 @@ namespace
       CHECK_EQUAL((int)compare.load(), (int)test.load());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_pointer_store)
     {
       int i;
@@ -100,7 +100,7 @@ namespace
       CHECK_EQUAL((int*)compare.load(), (int*)test.load());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_integer_assignment)
     {
       std::atomic<int> compare(1);
@@ -111,7 +111,7 @@ namespace
       CHECK_EQUAL((int)compare.load(), (int)test.load());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_pointer_assignment)
     {
       int i;
@@ -125,7 +125,7 @@ namespace
       CHECK_EQUAL((int*)compare.load(), (int*)test.load());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_operator_integer_pre_increment)
     {
       std::atomic<int> compare(1);
@@ -135,7 +135,7 @@ namespace
       CHECK_EQUAL((int)++compare, (int)++test);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_operator_integer_post_increment)
     {
       std::atomic<int> compare(1);
@@ -145,7 +145,7 @@ namespace
       CHECK_EQUAL((int)compare++, (int)test++);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_operator_integer_pre_decrement)
     {
       std::atomic<int> compare(1);
@@ -155,7 +155,7 @@ namespace
       CHECK_EQUAL((int)--compare, (int)--test);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_operator_integer_post_decrement)
     {
       std::atomic<int> compare(1);
@@ -165,7 +165,7 @@ namespace
       CHECK_EQUAL((int)compare--, (int)test--);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_operator_pointer_pre_increment)
     {
       int data[] = { 1, 2, 3, 4 };
@@ -177,7 +177,7 @@ namespace
       CHECK_EQUAL((int*)++compare, (int*)++test);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_operator_pointer_post_increment)
     {
       int data[] = { 1, 2, 3, 4 };
@@ -189,7 +189,7 @@ namespace
       CHECK_EQUAL((int*)compare++, (int*)test++);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_operator_pointer_pre_decrement)
     {
       int data[] = { 1, 2, 3, 4 };
@@ -201,7 +201,7 @@ namespace
       CHECK_EQUAL((int*)--compare, (int*)--test);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_operator_pointer_post_decrement)
     {
       int data[] = { 1, 2, 3, 4 };
@@ -213,7 +213,7 @@ namespace
       CHECK_EQUAL((int*)compare--, (int*)test--);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_operator_integer_fetch_add)
     {
       std::atomic<int> compare(1);
@@ -222,7 +222,7 @@ namespace
       CHECK_EQUAL((int)compare.fetch_add(2), (int)test.fetch_add(2));
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_operator_pointer_fetch_add)
     {
       int data[] = { 1, 2, 3, 4 };
@@ -233,7 +233,7 @@ namespace
       CHECK_EQUAL((int*)compare.fetch_add(ptrdiff_t(10)), (int*)test.fetch_add(ptrdiff_t(10)));
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_operator_integer_plus_equals)
     {
       std::atomic<int> compare(1);
@@ -245,7 +245,7 @@ namespace
       CHECK_EQUAL((int)compare, (int)test);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_operator_pointer_plus_equals)
     {
       int data[] = { 1, 2, 3, 4 };
@@ -259,7 +259,7 @@ namespace
       CHECK_EQUAL((int*)compare, (int*)test);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_operator_integer_minus_equals)
     {
       std::atomic<int> compare(1);
@@ -271,7 +271,7 @@ namespace
       CHECK_EQUAL((int)compare, (int)test);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_operator_pointer_minus_equals)
     {
       int data[] = { 1, 2, 3, 4 };
@@ -285,7 +285,7 @@ namespace
       CHECK_EQUAL((int*)compare, (int*)test);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_operator_integer_and_equals)
     {
       std::atomic<int> compare(0x0000FFFF);
@@ -297,7 +297,7 @@ namespace
       CHECK_EQUAL((int)compare, (int)test);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_operator_integer_or_equals)
     {
       std::atomic<int> compare(0x0000FFFF);
@@ -309,7 +309,7 @@ namespace
       CHECK_EQUAL((int)compare, (int)test);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_operator_integer_xor_equals)
     {
       std::atomic<int> compare(0x0000FFFF);
@@ -321,7 +321,7 @@ namespace
       CHECK_EQUAL((int)compare, (int)test);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_operator_integer_fetch_sub)
     {
       std::atomic<int> compare(1);
@@ -330,7 +330,7 @@ namespace
       CHECK_EQUAL((int)compare.fetch_sub(2), (int)test.fetch_sub(2));
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_operator_pointer_fetch_sub)
     {
       int data[] = { 1, 2, 3, 4 };
@@ -341,7 +341,7 @@ namespace
       CHECK_EQUAL((int*)compare.fetch_add(ptrdiff_t(10)), (int*)test.fetch_add(ptrdiff_t(10)));
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_operator_fetch_and)
     {
       std::atomic<int> compare(0xFFFFFFFF);
@@ -350,7 +350,7 @@ namespace
       CHECK_EQUAL((int)compare.fetch_and(0x55AA55AA), (int)test.fetch_and(0x55AA55AA));
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_operator_fetch_or)
     {
       std::atomic<int> compare(0x0000FFFF);
@@ -359,7 +359,7 @@ namespace
       CHECK_EQUAL((int)compare.fetch_or(0x55AA55AA), (int)test.fetch_or(0x55AA55AA));
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_operator_fetch_xor)
     {
       std::atomic<int> compare(0x0000FFFF);
@@ -368,7 +368,7 @@ namespace
       CHECK_EQUAL((int)compare.fetch_xor(0x55AA55AA), (int)test.fetch_xor(0x55AA55AA));
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_integer_exchange)
     {
       std::atomic<int> compare(1);
@@ -377,7 +377,7 @@ namespace
       CHECK_EQUAL((int)compare.exchange(2), (int)test.exchange(2));
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_pointer_exchange)
     {
       int i;
@@ -389,7 +389,7 @@ namespace
       CHECK_EQUAL((int*)compare.exchange(&j), (int*)test.exchange(&j));
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_compare_exchange_weak_fail)
     {
       std::atomic<int> compare;
@@ -412,7 +412,7 @@ namespace
       CHECK_EQUAL(compare.load(),   test.load());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_compare_exchange_weak_pass)
     {
       std::atomic<int> compare;
@@ -435,7 +435,7 @@ namespace
       CHECK_EQUAL(compare.load(),   test.load());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_compare_exchange_strong_fail)
     {
       std::atomic<int> compare;
@@ -458,7 +458,7 @@ namespace
       CHECK_EQUAL(compare.load(), test.load());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_atomic_compare_exchange_strong_pass)
     {
       std::atomic<int> compare;

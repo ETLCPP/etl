@@ -1196,18 +1196,6 @@
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\Win32\TimeHelpers.cpp">
       <Filter>UnitTest++\Win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_no_stl_algorithm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_no_stl_utility.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_no_stl_functional.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_no_stl_limits.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_queue_memory_model_small.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1224,9 +1212,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_forward_list_shared_pool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_no_stl_iterator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_bit_stream.cpp">
@@ -1287,6 +1272,24 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_make_string.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_stl_utility.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_etlstl_algorithm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_etlstl_functional.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_etlstl_iterator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_etlstl_limits.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_etlstl_utility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

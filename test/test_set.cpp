@@ -377,9 +377,9 @@ namespace
       Compare_Data compare_data;
       Data data;
 
-      ETL_PAIR<Data::iterator, bool> data_result =
+      ETL_OR_STD::pair<Data::iterator, bool> data_result =
         data.insert(0);
-      ETL_PAIR<Compare_Data::iterator, bool> compare_result =
+      ETL_OR_STD::pair<Compare_Data::iterator, bool> compare_result =
         compare_data.insert(0);
 
       // Check that both return successful return results
@@ -423,8 +423,8 @@ namespace
       Compare_Data compare_data;
       Data data;
 
-      ETL_PAIR<Data::iterator, bool> data_result = data.insert(2);
-      ETL_PAIR<Compare_Data::iterator, bool> compare_result = compare_data.insert(2);
+      ETL_OR_STD::pair<Data::iterator, bool> data_result = data.insert(2);
+      ETL_OR_STD::pair<Compare_Data::iterator, bool> compare_result = compare_data.insert(2);
 
       // Check that both return successful return results
       CHECK_EQUAL(*data_result.first, *compare_result.first);
@@ -451,9 +451,9 @@ namespace
       Compare_Data compare_data;
       Data data;
 
-      ETL_PAIR<Data::iterator, bool> data_result =
+      ETL_OR_STD::pair<Data::iterator, bool> data_result =
         data.insert(2);
-      ETL_PAIR<Compare_Data::iterator, bool> compare_result =
+      ETL_OR_STD::pair<Compare_Data::iterator, bool> compare_result =
         compare_data.insert(2);
 
       // Check that both return successful return results
@@ -529,8 +529,8 @@ namespace
       //Compare_Data compare_data;
       //Data data;
 
-      //ETL_PAIR<Data::iterator, bool> data_result = data.emplace(0);
-      //ETL_PAIR<Compare_Data::iterator, bool> compare_result = compare_data.emplace(0);
+      //ETL_OR_STD::pair<Data::iterator, bool> data_result = data.emplace(0);
+      //ETL_OR_STD::pair<Compare_Data::iterator, bool> compare_result = compare_data.emplace(0);
 
       //// Check that both return successful return results
       //CHECK_EQUAL(*data_result.first, *compare_result.first);
@@ -573,10 +573,10 @@ namespace
       Compare_Data compare_data(random_data.begin(), random_data.end());
       Data data(random_data.begin(), random_data.end());
 
-      ETL_PAIR<Data::iterator, Data::iterator> data_result =
+      ETL_OR_STD::pair<Data::iterator, Data::iterator> data_result =
         data.equal_range(2);
       Data::iterator data_lb = data.lower_bound(2);
-      ETL_PAIR<Compare_Data::iterator, Compare_Data::iterator> compare_result =
+      ETL_OR_STD::pair<Compare_Data::iterator, Compare_Data::iterator> compare_result =
         compare_data.equal_range(2);
       Compare_Data::iterator compare_data_lb = compare_data.lower_bound(2);
 
@@ -598,9 +598,9 @@ namespace
       const Compare_Data compare_data(initial_data.begin(), initial_data.end());
       const Data data(initial_data.begin(), initial_data.end());
 
-      ETL_PAIR<Data::const_iterator, Data::const_iterator> data_result =
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> data_result =
         data.equal_range(2);
-      ETL_PAIR<Compare_Data::const_iterator, Compare_Data::const_iterator> compare_result =
+      ETL_OR_STD::pair<Compare_Data::const_iterator, Compare_Data::const_iterator> compare_result =
         compare_data.equal_range(2);
 
       // Check that both return the same return results
@@ -1057,8 +1057,8 @@ namespace
                     CHECK_EQUAL(*compare.lower_bound(i), *data.lower_bound(i));
                 }
 
-                ETL_PAIR<Compare_Data::const_iterator, Compare_Data::const_iterator> stlret = compare.equal_range(i);
-                ETL_PAIR<Data::const_iterator, Data::const_iterator> etlret = data.equal_range(i);
+                ETL_OR_STD::pair<Compare_Data::const_iterator, Compare_Data::const_iterator> stlret = compare.equal_range(i);
+                ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> etlret = data.equal_range(i);
 
                 CHECK_EQUAL(stlret.first == compare.end(), etlret.first == data.end());
                 if((stlret.first != compare.end()) && (etlret.first != data.end()))

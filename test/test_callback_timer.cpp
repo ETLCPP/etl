@@ -109,7 +109,7 @@ namespace
 
   SUITE(test_callback_timer)
   {
-    //=========================================================================
+    //*************************************************************************
     TEST(callback_timer_too_many_timers)
     {
       etl::callback_timer<2> timer_controller;
@@ -127,7 +127,7 @@ namespace
       CHECK(id3 != etl::timer::id::NO_TIMER);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(callback_timer_one_shot)
     {
       etl::callback_timer<4> timer_controller;
@@ -169,7 +169,7 @@ namespace
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_timer_one_shot_after_timeout)
     {
       etl::callback_timer<1> timer_controller;
@@ -215,7 +215,7 @@ namespace
       CHECK(!timer_controller.stop(id1));
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(callback_timer_repeating)
     {
       etl::callback_timer<3> timer_controller;
@@ -257,7 +257,7 @@ namespace
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(callback_timer_repeating_bigger_step)
     {
       etl::callback_timer<3> timer_controller;
@@ -303,7 +303,7 @@ namespace
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(callback_timer_repeating_stop_start)
     {
       etl::callback_timer<3> timer_controller;
@@ -356,7 +356,7 @@ namespace
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(callback_timer_timer_starts_timer_small_step)
     {
       etl::callback_timer<3> timer_controller;
@@ -393,7 +393,7 @@ namespace
       CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(), compare1.size());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(callback_timer_timer_starts_timer_big_step)
     {
       etl::callback_timer<3> timer_controller;
@@ -430,7 +430,7 @@ namespace
       CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(callback_timer_repeating_register_unregister)
     {
       etl::callback_timer<3> timer_controller;
@@ -479,7 +479,7 @@ namespace
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(callback_timer_repeating_clear)
     {
       etl::callback_timer<3> timer_controller;
@@ -527,7 +527,7 @@ namespace
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(callback_timer_delayed_immediate)
     {
       etl::callback_timer<3> timer_controller;
@@ -570,7 +570,7 @@ namespace
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(callback_timer_one_shot_big_step_short_delay_insert)
     {
       etl::callback_timer<3> timer_controller;
@@ -606,7 +606,7 @@ namespace
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list2.data(), compare2.size());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(callback_timer_one_shot_empty_list_huge_tick_before_insert)
     {
       etl::callback_timer<3> timer_controller;
@@ -646,7 +646,7 @@ namespace
       CHECK_ARRAY_EQUAL(compare1.data(), free_tick_list1.data(), compare1.size());
     }
 
-    //=========================================================================
+    //*************************************************************************
     class test_object
     {
     public:
@@ -677,7 +677,7 @@ namespace
         CHECK(test_obj.called == 1);
     }
 
-    //=========================================================================
+    //*************************************************************************
 #if REALTIME_TEST
 
   #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported

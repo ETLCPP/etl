@@ -1062,7 +1062,7 @@ namespace etl
     /// Returns two iterators with bounding (lower bound, upper bound) the key
     /// provided
     //*************************************************************************
-    ETL_PAIR<iterator, iterator> equal_range(const value_type& key)
+    ETL_OR_STD::pair<iterator, iterator> equal_range(const value_type& key)
     {
       return ETL_MAKE_PAIR<iterator, iterator>(
         iterator(*this, find_lower_node(root_node, key)),
@@ -1073,7 +1073,7 @@ namespace etl
     /// Returns two const iterators with bounding (lower bound, upper bound)
     /// the key provided.
     //*************************************************************************
-    ETL_PAIR<const_iterator, const_iterator> equal_range(const value_type& key) const
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const value_type& key) const
     {
       return ETL_MAKE_PAIR<const_iterator, const_iterator>(
         const_iterator(*this, find_lower_node(root_node, key)),

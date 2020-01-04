@@ -946,6 +946,11 @@
     <ClCompile Include="..\test_cumulative_moving_average.cpp" />
     <ClCompile Include="..\test_delegate.cpp" />
     <ClCompile Include="..\test_delegate_service.cpp" />
+    <ClCompile Include="..\test_etlstl_algorithm.cpp" />
+    <ClCompile Include="..\test_etlstl_functional.cpp" />
+    <ClCompile Include="..\test_etlstl_iterator.cpp" />
+    <ClCompile Include="..\test_etlstl_limits.cpp" />
+    <ClCompile Include="..\test_etlstl_utility.cpp" />
     <ClCompile Include="..\test_forward_list_shared_pool.cpp" />
     <ClCompile Include="..\test_bit_stream.cpp" />
     <ClCompile Include="..\test_indirect_vector.cpp" />
@@ -953,7 +958,6 @@
     <ClCompile Include="..\test_list_shared_pool.cpp" />
     <ClCompile Include="..\test_make_string.cpp" />
     <ClCompile Include="..\test_multi_array.cpp" />
-    <ClCompile Include="..\test_no_stl_algorithm.cpp" />
     <ClCompile Include="..\test_array.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../unittest-cpp</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../../unittest-cpp</AdditionalIncludeDirectories>
@@ -1163,10 +1167,7 @@
     <ClCompile Include="..\test_multimap.cpp" />
     <ClCompile Include="..\test_multiset.cpp" />
     <ClCompile Include="..\test_murmur3.cpp" />
-    <ClCompile Include="..\test_no_stl_functional.cpp" />
-    <ClCompile Include="..\test_no_stl_iterator.cpp" />
-    <ClCompile Include="..\test_no_stl_limits.cpp" />
-    <ClCompile Include="..\test_no_stl_utility.cpp" />
+    <ClCompile Include="..\test_stl_utility.cpp" />
     <ClCompile Include="..\test_numeric.cpp" />
     <ClCompile Include="..\test_observer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>

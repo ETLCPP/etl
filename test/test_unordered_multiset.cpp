@@ -430,7 +430,7 @@ namespace
     {
       DataNDC data(equal_data.begin(), equal_data.end());
 
-      ETL_PAIR<DataNDC::iterator, DataNDC::iterator> result;
+      ETL_OR_STD::pair<DataNDC::iterator, DataNDC::iterator> result;
 
       result = data.equal_range(N0);
       CHECK(result.first == data.begin());
@@ -456,7 +456,7 @@ namespace
     {
       const DataNDC data(equal_data.begin(), equal_data.end());
 
-      ETL_PAIR<DataNDC::const_iterator, DataNDC::const_iterator> result;
+      ETL_OR_STD::pair<DataNDC::const_iterator, DataNDC::const_iterator> result;
 
       result = data.equal_range(N0);
       CHECK(result.first == data.begin());

@@ -64,7 +64,7 @@ namespace etl
   {
   public:
 
-    typedef ETL_PAIR<const TKey, TMapped> value_type;
+    typedef ETL_OR_STD::pair<const TKey, TMapped> value_type;
 
   private:
 
@@ -254,11 +254,11 @@ namespace etl
     /// If asserts or exceptions are enabled, emits flat_multimap_full if the flat_multimap is already full.
     ///\param value    The value to insert.
     //*********************************************************************
-    ETL_PAIR<iterator, bool> insert(const value_type& value)
+    ETL_OR_STD::pair<iterator, bool> insert(const value_type& value)
     {
       ETL_ASSERT(!refmap_t::full(), ETL_ERROR(flat_multimap_full));
 
-      ETL_PAIR<iterator, bool> result(end(), false);
+      ETL_OR_STD::pair<iterator, bool> result(end(), false);
 
       iterator i_element = lower_bound(value.first);
 
@@ -300,7 +300,7 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the map.
     //*************************************************************************
-    ETL_PAIR<iterator, bool> emplace(const value_type& value)
+    ETL_OR_STD::pair<iterator, bool> emplace(const value_type& value)
     {
       return insert(value);
     }
@@ -308,7 +308,7 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the map.
     //*************************************************************************
-    ETL_PAIR<iterator, bool> emplace(const key_type& key, const mapped_type& value)
+    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, const mapped_type& value)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_multimap_full));
 
@@ -327,7 +327,7 @@ namespace etl
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename ... Args>
-    ETL_PAIR<iterator, bool> emplace(const key_type& key, Args && ... args)
+    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, Args && ... args)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_multimap_full));
 
@@ -346,7 +346,7 @@ namespace etl
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename T1>
-    ETL_PAIR<iterator, bool> emplace(const key_type& key, const T1& value1)
+    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, const T1& value1)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_multimap_full));
 
@@ -364,7 +364,7 @@ namespace etl
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename T1, typename T2>
-    ETL_PAIR<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2)
+    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_multimap_full));
 
@@ -382,7 +382,7 @@ namespace etl
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename T1, typename T2, typename T3>
-    ETL_PAIR<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3)
+    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_multimap_full));
 
@@ -400,7 +400,7 @@ namespace etl
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
-    ETL_PAIR<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_multimap_full));
 
@@ -423,7 +423,7 @@ namespace etl
     //*********************************************************************
     size_t erase(key_parameter_t key)
     {
-      ETL_PAIR<iterator, iterator> range = equal_range(key);
+      ETL_OR_STD::pair<iterator, iterator> range = equal_range(key);
 
       if (range.first == end())
       {
@@ -571,7 +571,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    ETL_PAIR<iterator, iterator> equal_range(key_parameter_t key)
+    ETL_OR_STD::pair<iterator, iterator> equal_range(key_parameter_t key)
     {
       return refmap_t::equal_range(key);
     }
@@ -581,7 +581,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    ETL_PAIR<const_iterator, const_iterator> equal_range(key_parameter_t key) const
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(key_parameter_t key) const
     {
       return refmap_t::equal_range(key);
     }

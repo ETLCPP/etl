@@ -319,7 +319,7 @@ namespace
       CHECK(queue.full());
     }
 
-    //=========================================================================
+    //*************************************************************************
 #if REALTIME_TEST && defined(ETL_COMPILER_MICROSOFT)
     #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported
       #define FIX_PROCESSOR_AFFINITY1 SetThreadAffinityMask(GetCurrentThread(), 1);

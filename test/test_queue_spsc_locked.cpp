@@ -534,7 +534,7 @@ namespace
       CHECK(!access.called_unlock);
     }
 
-    //=========================================================================
+    //*************************************************************************
 #if REALTIME_TEST && defined(ETL_COMPILER_MICROSOFT)
   #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported
     #define RAISE_THREAD_PRIORITY  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST)

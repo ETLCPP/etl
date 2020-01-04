@@ -125,7 +125,7 @@ namespace etl
       }
       else
       {
-        ETL_PAIR<router_list_t::iterator, router_list_t::iterator> range = etlstd::equal_range(router_list.begin(),
+        ETL_OR_STD::pair<router_list_t::iterator, router_list_t::iterator> range = etlstd::equal_range(router_list.begin(),
                                                                                                router_list.end(),
                                                                                                id,
                                                                                                compare_router_id());
@@ -212,7 +212,7 @@ namespace etl
           router_list_t::iterator irouter = router_list.begin();
 
           // Find routers with the id.
-          ETL_PAIR<router_list_t::iterator, router_list_t::iterator> range = etlstd::equal_range(router_list.begin(),
+          ETL_OR_STD::pair<router_list_t::iterator, router_list_t::iterator> range = etlstd::equal_range(router_list.begin(),
                                                                                                  router_list.end(),
                                                                                                  destination_router_id,
                                                                                                  compare_router_id());

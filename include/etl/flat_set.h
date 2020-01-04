@@ -228,11 +228,11 @@ namespace etl
     /// If asserts or exceptions are enabled, emits flat_set_full if the flat_set is already full.
     ///\param value    The value to insert.
     //*********************************************************************
-    ETL_PAIR<iterator, bool> insert(parameter_t value)
+    ETL_OR_STD::pair<iterator, bool> insert(parameter_t value)
     {
       iterator i_element = lower_bound(value);
 
-      ETL_PAIR<iterator, bool> result(i_element, false);
+      ETL_OR_STD::pair<iterator, bool> result(i_element, false);
 
       // Doesn't already exist?
       if ((i_element == end()) || compare(value, *i_element))
@@ -278,7 +278,7 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the set.
     //*************************************************************************
-    ETL_PAIR<iterator, bool> emplace(parameter_t value)
+    ETL_OR_STD::pair<iterator, bool> emplace(parameter_t value)
     {
       return insert(value);
     }
@@ -288,11 +288,11 @@ namespace etl
     //*************************************************************************
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
     template <typename ... Args>
-    ETL_PAIR<iterator, bool> emplace(Args && ... args)
+    ETL_OR_STD::pair<iterator, bool> emplace(Args && ... args)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_set_full));
 
-      ETL_PAIR<iterator, bool> result;
+      ETL_OR_STD::pair<iterator, bool> result;
 
       // Create it.
       value_type* pvalue = storage.allocate<value_type>();
@@ -311,7 +311,7 @@ namespace etl
         // Destroy it.
         pvalue->~value_type();
         storage.release(pvalue);
-        result = ETL_PAIR<iterator, bool>(end(), false);
+        result = ETL_OR_STD::pair<iterator, bool>(end(), false);
       }
 
       return result;
@@ -321,11 +321,11 @@ namespace etl
     /// Emplaces a value to the set.
     //*************************************************************************
     template <typename T1>
-    ETL_PAIR<iterator, bool> emplace(const T1& value1)
+    ETL_OR_STD::pair<iterator, bool> emplace(const T1& value1)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_set_full));
 
-      ETL_PAIR<iterator, bool> result;
+      ETL_OR_STD::pair<iterator, bool> result;
 
       // Create it.
       value_type* pvalue = storage.allocate<value_type>();
@@ -344,7 +344,7 @@ namespace etl
         // Destroy it.
         pvalue->~value_type();
         storage.release(pvalue);
-        result = ETL_PAIR<iterator, bool>(end(), false);
+        result = ETL_OR_STD::pair<iterator, bool>(end(), false);
       }
 
       return result;
@@ -354,11 +354,11 @@ namespace etl
     /// Emplaces a value to the set.
     //*************************************************************************
     template <typename T1, typename T2>
-    ETL_PAIR<iterator, bool> emplace(const T1& value1, const T2& value2)
+    ETL_OR_STD::pair<iterator, bool> emplace(const T1& value1, const T2& value2)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_set_full));
 
-      ETL_PAIR<iterator, bool> result;
+      ETL_OR_STD::pair<iterator, bool> result;
 
       // Create it.
       value_type* pvalue = storage.allocate<value_type>();
@@ -377,7 +377,7 @@ namespace etl
         // Destroy it.
         pvalue->~value_type();
         storage.release(pvalue);
-        result = ETL_PAIR<iterator, bool>(end(), false);
+        result = ETL_OR_STD::pair<iterator, bool>(end(), false);
       }
 
       return result;
@@ -387,11 +387,11 @@ namespace etl
     /// Emplaces a value to the set.
     //*************************************************************************
     template <typename T1, typename T2, typename T3>
-    ETL_PAIR<iterator, bool> emplace(const T1& value1, const T2& value2, const T3& value3)
+    ETL_OR_STD::pair<iterator, bool> emplace(const T1& value1, const T2& value2, const T3& value3)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_set_full));
 
-      ETL_PAIR<iterator, bool> result;
+      ETL_OR_STD::pair<iterator, bool> result;
 
       // Create it.
       value_type* pvalue = storage.allocate<value_type>();
@@ -410,7 +410,7 @@ namespace etl
         // Destroy it.
         pvalue->~value_type();
         storage.release(pvalue);
-        result = ETL_PAIR<iterator, bool>(end(), false);
+        result = ETL_OR_STD::pair<iterator, bool>(end(), false);
       }
 
       return result;
@@ -420,11 +420,11 @@ namespace etl
     /// Emplaces a value to the set.
     //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
-    ETL_PAIR<iterator, bool> emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    ETL_OR_STD::pair<iterator, bool> emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_set_full));
 
-      ETL_PAIR<iterator, bool> result;
+      ETL_OR_STD::pair<iterator, bool> result;
 
       // Create it.
       value_type* pvalue = storage.allocate<value_type>();
@@ -443,7 +443,7 @@ namespace etl
         // Destroy it.
         pvalue->~value_type();
         storage.release(pvalue);
-        result = ETL_PAIR<iterator, bool>(end(), false);
+        result = ETL_OR_STD::pair<iterator, bool>(end(), false);
       }
 
       return result;
@@ -608,7 +608,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    ETL_PAIR<iterator, iterator> equal_range(parameter_t key)
+    ETL_OR_STD::pair<iterator, iterator> equal_range(parameter_t key)
     {
       return refset_t::equal_range(key);
     }
@@ -618,7 +618,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    ETL_PAIR<const_iterator, const_iterator> equal_range(parameter_t key) const
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(parameter_t key) const
     {
       return refset_t::upper_bound(key);
     }

@@ -521,9 +521,9 @@ namespace
       Data data(random_data.begin(), random_data.end());
 
       // Test a number not available
-      ETL_PAIR<Data::iterator, Data::iterator> data_result =
+      ETL_OR_STD::pair<Data::iterator, Data::iterator> data_result =
         data.equal_range(1);
-      ETL_PAIR<Compare_Data::iterator, Compare_Data::iterator> compare_result =
+      ETL_OR_STD::pair<Compare_Data::iterator, Compare_Data::iterator> compare_result =
         compare_data.equal_range(1);
 
       // Check that both return the same return results
@@ -544,9 +544,9 @@ namespace
       const Data data(initial_data.begin(), initial_data.end());
 
       // Test a number with several of the same key
-      ETL_PAIR<Data::const_iterator, Data::const_iterator> data_result =
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> data_result =
         data.equal_range(2);
-      ETL_PAIR<Compare_Data::const_iterator, Compare_Data::const_iterator> compare_result =
+      ETL_OR_STD::pair<Compare_Data::const_iterator, Compare_Data::const_iterator> compare_result =
         compare_data.equal_range(2);
 
       // Check that both return the same return results
@@ -1076,8 +1076,8 @@ namespace
                     CHECK((*compare.lower_bound(i)) == (*data.lower_bound(i)));
                 }
 
-                ETL_PAIR<Compare_Data::const_iterator, Compare_Data::const_iterator> stlret = compare.equal_range(i);
-                ETL_PAIR<Data::const_iterator, Data::const_iterator> etlret = data.equal_range(i);
+                ETL_OR_STD::pair<Compare_Data::const_iterator, Compare_Data::const_iterator> stlret = compare.equal_range(i);
+                ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> etlret = data.equal_range(i);
 
                 CHECK_EQUAL(stlret.first == compare.end(), etlret.first == data.end());
                 if((stlret.first != compare.end()) && (etlret.first != data.end()))

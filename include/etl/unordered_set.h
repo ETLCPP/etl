@@ -655,9 +655,9 @@ namespace etl
     /// If asserts or exceptions are enabled, emits unordered_set_full if the unordered_set is already full.
     ///\param value The value to insert.
     //*********************************************************************
-    ETL_PAIR<iterator, bool> insert(const value_type& key)
+    ETL_OR_STD::pair<iterator, bool> insert(const value_type& key)
     {
-      ETL_PAIR<iterator, bool> result(end(), false);
+      ETL_OR_STD::pair<iterator, bool> result(end(), false);
 
       ETL_ASSERT(!full(), ETL_ERROR(unordered_set_full));
 
@@ -964,7 +964,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair to the range of elements if the key exists, otherwise end().
     //*********************************************************************
-    ETL_PAIR<iterator, iterator> equal_range(key_parameter_t key)
+    ETL_OR_STD::pair<iterator, iterator> equal_range(key_parameter_t key)
     {
       iterator f = find(key);
       iterator l = f;
@@ -974,7 +974,7 @@ namespace etl
         ++l;
       }
 
-      return ETL_PAIR<iterator, iterator>(f, l);
+      return ETL_OR_STD::pair<iterator, iterator>(f, l);
     }
 
     //*********************************************************************
@@ -985,7 +985,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return A const iterator pair to the range of elements if the key exists, otherwise end().
     //*********************************************************************
-    ETL_PAIR<const_iterator, const_iterator> equal_range(key_parameter_t key) const
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(key_parameter_t key) const
     {
       const_iterator f = find(key);
       const_iterator l = f;
@@ -995,7 +995,7 @@ namespace etl
         ++l;
       }
 
-      return ETL_PAIR<const_iterator, const_iterator>(f, l);
+      return ETL_OR_STD::pair<const_iterator, const_iterator>(f, l);
     }
 
     //*************************************************************************

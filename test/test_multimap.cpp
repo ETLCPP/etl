@@ -125,88 +125,88 @@ namespace
       SetupFixture()
       {
         // Create a map of initial data
-        initial_data.insert(ETL_PAIR<std::string, int>("0", 0));
-        initial_data.insert(ETL_PAIR<std::string, int>("0", 1));
-        initial_data.insert(ETL_PAIR<std::string, int>("1", 2));
-        initial_data.insert(ETL_PAIR<std::string, int>("1", 3));
-        initial_data.insert(ETL_PAIR<std::string, int>("1", 4));
-        initial_data.insert(ETL_PAIR<std::string, int>("2", 5));
-        initial_data.insert(ETL_PAIR<std::string, int>("2", 8));
-        initial_data.insert(ETL_PAIR<std::string, int>("2", 7));
-        initial_data.insert(ETL_PAIR<std::string, int>("3", 6));
-        initial_data.insert(ETL_PAIR<std::string, int>("4", 9));
+        initial_data.insert(ETL_OR_STD::pair<std::string, int>("0", 0));
+        initial_data.insert(ETL_OR_STD::pair<std::string, int>("0", 1));
+        initial_data.insert(ETL_OR_STD::pair<std::string, int>("1", 2));
+        initial_data.insert(ETL_OR_STD::pair<std::string, int>("1", 3));
+        initial_data.insert(ETL_OR_STD::pair<std::string, int>("1", 4));
+        initial_data.insert(ETL_OR_STD::pair<std::string, int>("2", 5));
+        initial_data.insert(ETL_OR_STD::pair<std::string, int>("2", 8));
+        initial_data.insert(ETL_OR_STD::pair<std::string, int>("2", 7));
+        initial_data.insert(ETL_OR_STD::pair<std::string, int>("3", 6));
+        initial_data.insert(ETL_OR_STD::pair<std::string, int>("4", 9));
 
         // Create a multimap of excess data
-        excess_data.insert(ETL_PAIR<std::string, int>("0", 0));
-        excess_data.insert(ETL_PAIR<std::string, int>("1", 1));
-        excess_data.insert(ETL_PAIR<std::string, int>("2", 2));
-        excess_data.insert(ETL_PAIR<std::string, int>("2", 3));
-        excess_data.insert(ETL_PAIR<std::string, int>("3", 6));
-        excess_data.insert(ETL_PAIR<std::string, int>("3", 5));
-        excess_data.insert(ETL_PAIR<std::string, int>("3", 4));
-        excess_data.insert(ETL_PAIR<std::string, int>("4", 7));
-        excess_data.insert(ETL_PAIR<std::string, int>("5", 8));
-        excess_data.insert(ETL_PAIR<std::string, int>("6", 9));
-        excess_data.insert(ETL_PAIR<std::string, int>("10", 10));
+        excess_data.insert(ETL_OR_STD::pair<std::string, int>("0", 0));
+        excess_data.insert(ETL_OR_STD::pair<std::string, int>("1", 1));
+        excess_data.insert(ETL_OR_STD::pair<std::string, int>("2", 2));
+        excess_data.insert(ETL_OR_STD::pair<std::string, int>("2", 3));
+        excess_data.insert(ETL_OR_STD::pair<std::string, int>("3", 6));
+        excess_data.insert(ETL_OR_STD::pair<std::string, int>("3", 5));
+        excess_data.insert(ETL_OR_STD::pair<std::string, int>("3", 4));
+        excess_data.insert(ETL_OR_STD::pair<std::string, int>("4", 7));
+        excess_data.insert(ETL_OR_STD::pair<std::string, int>("5", 8));
+        excess_data.insert(ETL_OR_STD::pair<std::string, int>("6", 9));
+        excess_data.insert(ETL_OR_STD::pair<std::string, int>("10", 10));
 
         // Create a multimap of different data
-        different_data.insert(ETL_PAIR<std::string, int>("10", 10));
-        different_data.insert(ETL_PAIR<std::string, int>("11", 11));
-        different_data.insert(ETL_PAIR<std::string, int>("12", 12));
-        different_data.insert(ETL_PAIR<std::string, int>("13", 13));
-        different_data.insert(ETL_PAIR<std::string, int>("14", 14));
-        different_data.insert(ETL_PAIR<std::string, int>("15", 15));
-        different_data.insert(ETL_PAIR<std::string, int>("16", 16));
-        different_data.insert(ETL_PAIR<std::string, int>("17", 17));
-        different_data.insert(ETL_PAIR<std::string, int>("18", 18));
-        different_data.insert(ETL_PAIR<std::string, int>("19", 19));
+        different_data.insert(ETL_OR_STD::pair<std::string, int>("10", 10));
+        different_data.insert(ETL_OR_STD::pair<std::string, int>("11", 11));
+        different_data.insert(ETL_OR_STD::pair<std::string, int>("12", 12));
+        different_data.insert(ETL_OR_STD::pair<std::string, int>("13", 13));
+        different_data.insert(ETL_OR_STD::pair<std::string, int>("14", 14));
+        different_data.insert(ETL_OR_STD::pair<std::string, int>("15", 15));
+        different_data.insert(ETL_OR_STD::pair<std::string, int>("16", 16));
+        different_data.insert(ETL_OR_STD::pair<std::string, int>("17", 17));
+        different_data.insert(ETL_OR_STD::pair<std::string, int>("18", 18));
+        different_data.insert(ETL_OR_STD::pair<std::string, int>("19", 19));
 
         // Create a multimap of random data
-        random_data.insert(ETL_PAIR<std::string, int>("3", 6));
-        random_data.insert(ETL_PAIR<std::string, int>("3", 5));
-        random_data.insert(ETL_PAIR<std::string, int>("0", 0));
-        random_data.insert(ETL_PAIR<std::string, int>("5", 8));
-        random_data.insert(ETL_PAIR<std::string, int>("6", 9));
-        random_data.insert(ETL_PAIR<std::string, int>("2", 2));
-        random_data.insert(ETL_PAIR<std::string, int>("0", 1));
-        random_data.insert(ETL_PAIR<std::string, int>("2", 3));
-        random_data.insert(ETL_PAIR<std::string, int>("4", 7));
-        random_data.insert(ETL_PAIR<std::string, int>("3", 4));
+        random_data.insert(ETL_OR_STD::pair<std::string, int>("3", 6));
+        random_data.insert(ETL_OR_STD::pair<std::string, int>("3", 5));
+        random_data.insert(ETL_OR_STD::pair<std::string, int>("0", 0));
+        random_data.insert(ETL_OR_STD::pair<std::string, int>("5", 8));
+        random_data.insert(ETL_OR_STD::pair<std::string, int>("6", 9));
+        random_data.insert(ETL_OR_STD::pair<std::string, int>("2", 2));
+        random_data.insert(ETL_OR_STD::pair<std::string, int>("0", 1));
+        random_data.insert(ETL_OR_STD::pair<std::string, int>("2", 3));
+        random_data.insert(ETL_OR_STD::pair<std::string, int>("4", 7));
+        random_data.insert(ETL_OR_STD::pair<std::string, int>("3", 4));
 
 
         //even values
-        initial_data_even.insert(ETL_PAIR<std::string, int>("00", 0));
-        initial_data_even.insert(ETL_PAIR<std::string, int>("02", 2));
-        initial_data_even.insert(ETL_PAIR<std::string, int>("04", 4));
-        initial_data_even.insert(ETL_PAIR<std::string, int>("06", 6));
-        initial_data_even.insert(ETL_PAIR<std::string, int>("08", 8));
-        initial_data_even.insert(ETL_PAIR<std::string, int>("10", 10));
-        initial_data_even.insert(ETL_PAIR<std::string, int>("12", 12));
-        initial_data_even.insert(ETL_PAIR<std::string, int>("14", 14));
-        initial_data_even.insert(ETL_PAIR<std::string, int>("16", 16));
-        initial_data_even.insert(ETL_PAIR<std::string, int>("18", 18));
+        initial_data_even.insert(ETL_OR_STD::pair<std::string, int>("00", 0));
+        initial_data_even.insert(ETL_OR_STD::pair<std::string, int>("02", 2));
+        initial_data_even.insert(ETL_OR_STD::pair<std::string, int>("04", 4));
+        initial_data_even.insert(ETL_OR_STD::pair<std::string, int>("06", 6));
+        initial_data_even.insert(ETL_OR_STD::pair<std::string, int>("08", 8));
+        initial_data_even.insert(ETL_OR_STD::pair<std::string, int>("10", 10));
+        initial_data_even.insert(ETL_OR_STD::pair<std::string, int>("12", 12));
+        initial_data_even.insert(ETL_OR_STD::pair<std::string, int>("14", 14));
+        initial_data_even.insert(ETL_OR_STD::pair<std::string, int>("16", 16));
+        initial_data_even.insert(ETL_OR_STD::pair<std::string, int>("18", 18));
 
         //test set
-        test_data.insert(ETL_PAIR<std::string, int>("00", 0));
-        test_data.insert(ETL_PAIR<std::string, int>("01", 1));
-        test_data.insert(ETL_PAIR<std::string, int>("02", 2));
-        test_data.insert(ETL_PAIR<std::string, int>("03", 3));
-        test_data.insert(ETL_PAIR<std::string, int>("04", 4));
-        test_data.insert(ETL_PAIR<std::string, int>("05", 5));
-        test_data.insert(ETL_PAIR<std::string, int>("06", 6));
-        test_data.insert(ETL_PAIR<std::string, int>("07", 7));
-        test_data.insert(ETL_PAIR<std::string, int>("08", 8));
-        test_data.insert(ETL_PAIR<std::string, int>("09", 9));
-        test_data.insert(ETL_PAIR<std::string, int>("10", 10));
-        test_data.insert(ETL_PAIR<std::string, int>("11", 11));
-        test_data.insert(ETL_PAIR<std::string, int>("12", 12));
-        test_data.insert(ETL_PAIR<std::string, int>("13", 13));
-        test_data.insert(ETL_PAIR<std::string, int>("14", 14));
-        test_data.insert(ETL_PAIR<std::string, int>("15", 15));
-        test_data.insert(ETL_PAIR<std::string, int>("16", 16));
-        test_data.insert(ETL_PAIR<std::string, int>("17", 17));
-        test_data.insert(ETL_PAIR<std::string, int>("18", 18));
-        test_data.insert(ETL_PAIR<std::string, int>("19", 19));
+        test_data.insert(ETL_OR_STD::pair<std::string, int>("00", 0));
+        test_data.insert(ETL_OR_STD::pair<std::string, int>("01", 1));
+        test_data.insert(ETL_OR_STD::pair<std::string, int>("02", 2));
+        test_data.insert(ETL_OR_STD::pair<std::string, int>("03", 3));
+        test_data.insert(ETL_OR_STD::pair<std::string, int>("04", 4));
+        test_data.insert(ETL_OR_STD::pair<std::string, int>("05", 5));
+        test_data.insert(ETL_OR_STD::pair<std::string, int>("06", 6));
+        test_data.insert(ETL_OR_STD::pair<std::string, int>("07", 7));
+        test_data.insert(ETL_OR_STD::pair<std::string, int>("08", 8));
+        test_data.insert(ETL_OR_STD::pair<std::string, int>("09", 9));
+        test_data.insert(ETL_OR_STD::pair<std::string, int>("10", 10));
+        test_data.insert(ETL_OR_STD::pair<std::string, int>("11", 11));
+        test_data.insert(ETL_OR_STD::pair<std::string, int>("12", 12));
+        test_data.insert(ETL_OR_STD::pair<std::string, int>("13", 13));
+        test_data.insert(ETL_OR_STD::pair<std::string, int>("14", 14));
+        test_data.insert(ETL_OR_STD::pair<std::string, int>("15", 15));
+        test_data.insert(ETL_OR_STD::pair<std::string, int>("16", 16));
+        test_data.insert(ETL_OR_STD::pair<std::string, int>("17", 17));
+        test_data.insert(ETL_OR_STD::pair<std::string, int>("18", 18));
+        test_data.insert(ETL_OR_STD::pair<std::string, int>("19", 19));
       }
     };
 
@@ -551,9 +551,9 @@ namespace
       Data data(random_data.begin(), random_data.end());
 
       // Test a number not available
-      ETL_PAIR<Data::iterator, Data::iterator> data_result =
+      ETL_OR_STD::pair<Data::iterator, Data::iterator> data_result =
         data.equal_range("1");
-      ETL_PAIR<Compare_Data::iterator, Compare_Data::iterator> compare_result =
+      ETL_OR_STD::pair<Compare_Data::iterator, Compare_Data::iterator> compare_result =
         compare_data.equal_range("1");
 
       // Check that both return the same return results
@@ -576,9 +576,9 @@ namespace
       const Data data(initial_data.begin(), initial_data.end());
 
       // Test a number with several of the same key
-      ETL_PAIR<Data::const_iterator, Data::const_iterator> data_result =
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> data_result =
         data.equal_range("2");
-      ETL_PAIR<Compare_Data::const_iterator, Compare_Data::const_iterator> compare_result =
+      ETL_OR_STD::pair<Compare_Data::const_iterator, Compare_Data::const_iterator> compare_result =
         compare_data.equal_range("2");
 
       // Check that both return the same return results
@@ -1094,16 +1094,16 @@ namespace
         Data data(initial_data_even.begin(), initial_data_even.end());
         Compare_Data compare(initial_data_even.begin(), initial_data_even.end());
 
-        std::vector<ETL_PAIR<std::string, int> > tab(test_data.begin(), test_data.end());
+        std::vector<ETL_OR_STD::pair<std::string, int> > tab(test_data.begin(), test_data.end());
 
         //make sure both data and compare contain same elements
-        std::vector<ETL_PAIR<std::string, int> > data_elements(data.begin(), data.end());
-        std::vector<ETL_PAIR<std::string, int> > compare_data_elements(compare.begin(), compare.end());
+        std::vector<ETL_OR_STD::pair<std::string, int> > data_elements(data.begin(), data.end());
+        std::vector<ETL_OR_STD::pair<std::string, int> > compare_data_elements(compare.begin(), compare.end());
 
         CHECK(data_elements == compare_data_elements);
         CHECK_EQUAL(data_elements.size(), MAX_SIZE);
 
-        for(std::vector<ETL_PAIR<std::string, int> >::iterator it = tab.begin() ; it != tab.end() ; ++it)
+        for(std::vector<ETL_OR_STD::pair<std::string, int> >::iterator it = tab.begin() ; it != tab.end() ; ++it)
         {
             std::string i = it->first;
 
@@ -1118,8 +1118,8 @@ namespace
                     CHECK((*compare.lower_bound(i)) == (*data.lower_bound(i)));
                 }
 
-                ETL_PAIR<Compare_Data::const_iterator, Compare_Data::const_iterator> stlret = compare.equal_range(i);
-                ETL_PAIR<Data::const_iterator, Data::const_iterator> etlret = data.equal_range(i);
+                ETL_OR_STD::pair<Compare_Data::const_iterator, Compare_Data::const_iterator> stlret = compare.equal_range(i);
+                ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> etlret = data.equal_range(i);
 
                 CHECK_EQUAL(stlret.first == compare.end(), etlret.first == data.end());
                 if((stlret.first != compare.end()) && (etlret.first != data.end()))

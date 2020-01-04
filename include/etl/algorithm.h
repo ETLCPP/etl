@@ -346,7 +346,7 @@ namespace etlstd
     {
       while (b < --e)
       {
-        etl::iter_swap(b, e);
+        etlstd::iter_swap(b, e);
         ++b;
       }
     }
@@ -359,7 +359,7 @@ namespace etlstd
   {
     while ((b != e) && (b != --e))
     {
-      etl::iter_swap(b++, e);
+      etlstd::iter_swap(b++, e);
     }
   }
 #else
@@ -462,7 +462,7 @@ namespace etlstd
   {
     typedef etlstd::less<typename etlstd::iterator_traits<TIterator>::value_type> compare;
 
-    return etl::upper_bound(first, last, value, compare());
+    return etlstd::upper_bound(first, last, value, compare());
   }
 #else
   //***************************************************************************
@@ -761,7 +761,7 @@ namespace etlstd
   {
     typedef etlstd::less<typename etlstd::iterator_traits<TIterator1>::value_type> compare;
 
-    return etl::lexicographical_compare(first1, last1, first2, last2, compare());
+    return etlstd::lexicographical_compare(first1, last1, first2, last2, compare());
   }
 #else
   //***************************************************************************
@@ -798,7 +798,7 @@ namespace etlstd
   {
     typedef etlstd::less<T> compare;
 
-    return etl::min(a, b, compare());
+    return etlstd::min(a, b, compare());
   }
 #else
   //***************************************************************************
@@ -830,7 +830,7 @@ namespace etlstd
   {
     typedef etlstd::less<T> compare;
 
-    return etl::max(a, b, compare());
+    return etlstd::max(a, b, compare());
   }
 #else
   //***************************************************************************
@@ -979,7 +979,7 @@ namespace etlstd
   {
     typedef etlstd::less<typename etlstd::iterator_traits<TIterator>::value_type> compare;
 
-    etl::pop_heap(first, last, compare());
+    etlstd::pop_heap(first, last, compare());
   }
 
   // Push Heap
@@ -998,7 +998,7 @@ namespace etlstd
   {
     typedef etlstd::less<typename etlstd::iterator_traits<TIterator>::value_type> compare;
 
-    etl::push_heap(first, last, compare());
+    etlstd::push_heap(first, last, compare());
   }
 
   // Make Heap
@@ -1034,7 +1034,7 @@ namespace etlstd
   {
     typedef etlstd::less<typename etlstd::iterator_traits<TIterator>::value_type> compare;
 
-    etl::make_heap(first, last, compare());
+    etlstd::make_heap(first, last, compare());
   }
 
   // Is Heap
@@ -1152,9 +1152,9 @@ namespace etlstd
   template<typename TIterator1, class TIterator2>
   TIterator1 search(TIterator1 first, TIterator1 last, TIterator2 search_first, TIterator2 search_last)
   {
-    typedef etl::equal_to<typename etlstd::iterator_traits<TIterator1>::value_type> compare;
+    typedef etlstd::equal_to<typename etlstd::iterator_traits<TIterator1>::value_type> compare;
 
-    return etl::search(first, last, search_first, search_last, compare());
+    return etlstd::search(first, last, search_first, search_last, compare());
   }
 #else
   //***************************************************************************
@@ -1231,7 +1231,7 @@ namespace etlstd
 
     while (true)
     {
-      TIterator1 new_result = etl::search(b, e, sb, se, predicate);
+      TIterator1 new_result = etlstd::search(b, e, sb, se, predicate);
 
       if (new_result == e)
       {
@@ -1252,7 +1252,7 @@ namespace etlstd
   TIterator1 find_end(TIterator1 b, TIterator1 e,
                       TIterator2 sb, TIterator2 se)
   {
-    typedef etl::equal_to<typename etlstd::iterator_traits<TIterator1>::value_type> predicate;
+    typedef etlstd::equal_to<typename etlstd::iterator_traits<TIterator1>::value_type> predicate;
 
     return find_end(b, e, sb, se, predicate());
   }

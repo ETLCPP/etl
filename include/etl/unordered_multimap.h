@@ -132,7 +132,7 @@ namespace etl
   {
   public:
 
-    typedef ETL_PAIR<const TKey, T> value_type;
+    typedef ETL_OR_STD::pair<const TKey, T> value_type;
 
     typedef TKey              key_type;
     typedef T                 mapped_type;
@@ -982,7 +982,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair to the range of elements if the key exists, otherwise end().
     //*********************************************************************
-    ETL_PAIR<iterator, iterator> equal_range(key_parameter_t key)
+    ETL_OR_STD::pair<iterator, iterator> equal_range(key_parameter_t key)
     {
       iterator f = find(key);
       iterator l = f;
@@ -997,7 +997,7 @@ namespace etl
         }
       }
 
-      return ETL_PAIR<iterator, iterator>(f, l);
+      return ETL_OR_STD::pair<iterator, iterator>(f, l);
     }
 
     //*********************************************************************
@@ -1008,7 +1008,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return A const iterator pair to the range of elements if the key exists, otherwise end().
     //*********************************************************************
-    ETL_PAIR<const_iterator, const_iterator> equal_range(key_parameter_t key) const
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(key_parameter_t key) const
     {
       const_iterator f = find(key);
       const_iterator l = f;
@@ -1023,7 +1023,7 @@ namespace etl
         }
       }
 
-      return ETL_PAIR<const_iterator, const_iterator>(f, l);
+      return ETL_OR_STD::pair<const_iterator, const_iterator>(f, l);
     }
 
     //*************************************************************************

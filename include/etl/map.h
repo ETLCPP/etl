@@ -468,7 +468,7 @@ namespace etl
   public:
 
     typedef TKey                           key_type;
-    typedef ETL_PAIR<const TKey, TMapped> value_type;
+    typedef ETL_OR_STD::pair<const TKey, TMapped> value_type;
     typedef TMapped                        mapped_type;
     typedef TKeyCompare                    key_compare;
     typedef value_type&                    reference;
@@ -989,7 +989,7 @@ namespace etl
     /// Returns two iterators with bounding (lower bound, upper bound) the key
     /// provided
     //*************************************************************************
-    ETL_PAIR<iterator, iterator> equal_range(key_parameter_t key)
+    ETL_OR_STD::pair<iterator, iterator> equal_range(key_parameter_t key)
     {
       return ETL_MAKE_PAIR<iterator, iterator>(
         iterator(*this, find_lower_node(root_node, key)),
@@ -1000,7 +1000,7 @@ namespace etl
     /// Returns two const iterators with bounding (lower bound, upper bound)
     /// the key provided.
     //*************************************************************************
-    ETL_PAIR<const_iterator, const_iterator> equal_range(key_parameter_t key) const
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(key_parameter_t key) const
     {
       return ETL_MAKE_PAIR<const_iterator, const_iterator>(
         const_iterator(*this, find_lower_node(root_node, key)),
@@ -1093,7 +1093,7 @@ namespace etl
     /// If asserts or exceptions are enabled, emits map_full if the map is already full.
     ///\param value    The value to insert.
     //*********************************************************************
-    ETL_PAIR<iterator, bool> insert(const value_type& value)
+    ETL_OR_STD::pair<iterator, bool> insert(const value_type& value)
     {
       // Default to no inserted node
       Node* inserted_node = nullptr;
