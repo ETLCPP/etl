@@ -446,38 +446,38 @@ namespace etl
       return id;
     }
 
-    //*******************************************
-    /// Register a timer.
-    //*******************************************
+      //*******************************************
+      /// Register a timer.
+      //*******************************************
 #if ETL_CPP11_SUPPORTED
-    etl::timer::id::type register_timer(etl::delegate<void()>& callback_,
-                                        uint32_t               period_,
-                                        bool                   repeating_)
-    {
-        etl::timer::id::type id = etl::timer::id::NO_TIMER;
+      etl::timer::id::type register_timer(etl::delegate<void()>& callback_,
+                                          uint32_t               period_,
+                                          bool                   repeating_)
+      {
+          etl::timer::id::type id = etl::timer::id::NO_TIMER;
 
-        bool is_space = (registered_timers < MAX_TIMERS);
+          bool is_space = (registered_timers < MAX_TIMERS);
 
-        if (is_space)
-        {
-            // Search for the free space.
-            for (uint_least8_t i = 0; i < MAX_TIMERS; ++i)
-            {
-                etl::callback_timer_data& timer = timer_array[i];
+          if (is_space)
+          {
+              // Search for the free space.
+              for (uint_least8_t i = 0; i < MAX_TIMERS; ++i)
+              {
+                  etl::callback_timer_data& timer = timer_array[i];
 
-                if (timer.id == etl::timer::id::NO_TIMER)
-                {
-                    // Create in-place.
-                    new (&timer) callback_timer_data(i, callback_, period_, repeating_);
-                    ++registered_timers;
-                    id = i;
-                    break;
-                }
-            }
-        }
+                  if (timer.id == etl::timer::id::NO_TIMER)
+                  {
+                      // Create in-place.
+                      new (&timer) callback_timer_data(i, callback_, period_, repeating_);
+                      ++registered_timers;
+                      id = i;
+                      break;
+                  }
+              }
+          }
 
-        return id;
-    }
+          return id;
+      }
 #endif
 
     //*******************************************

@@ -12,7 +12,9 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-std=c++14" />
 					<Add option="-std=c++17" />
+					<Add option="-std=c++11" />
 					<Add option="-m32" />
 					<Add option="-g" />
 					<Add option="-D_DEBUG" />
@@ -31,7 +33,7 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-std=c++17" />
+					<Add option="-std=c++1z" />
 					<Add option="-m32" />
 					<Add option="-g" />
 					<Add option="-D_DEBUG" />
@@ -51,13 +53,17 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-std=c++11" />
+					<Add option="-std=c++17" />
+					<Add option="-m32" />
 					<Add option="-g" />
 					<Add option="-D_DEBUG" />
+					<Add directory="../../src" />
 				</Compiler>
+				<Linker>
+					<Add option="-m32" />
+				</Linker>
 				<ExtraCommands>
 					<Add after="${TARGET_OUTPUT_DIR}${TARGET_OUTPUT_BASENAME}" />
-					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Windows 64">
@@ -66,7 +72,6 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-std=c++11" />
 					<Add option="-m64" />
 					<Add option="-g" />
 					<Add option="-D_DEBUG" />
@@ -79,16 +84,30 @@
 					<Add after="${TARGET_OUTPUT_DIR}${TARGET_OUTPUT_BASENAME}" />
 				</ExtraCommands>
 			</Target>
+			<Target title="Linux No STL">
+				<Option output="bin/Debug/ETL" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-std=c++17" />
+					<Add option="-g" />
+					<Add option="-D_DEBUG" />
+					<Add option="-DETL_NO_STL" />
+				</Compiler>
+				<ExtraCommands>
+					<Add after="${TARGET_OUTPUT_DIR}${TARGET_OUTPUT_BASENAME}" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-Wunused-parameter" />
-			<Add option="-Wstrict-aliasing" />
 			<Add option="-Wshadow" />
 			<Add option="-Wundef" />
 			<Add option="-Wall" />
-			<Add option="-std=c++14" />
+			<Add option="-Wunused-parameter" />
+			<Add option="-Wstrict-aliasing" />
 			<Add option="-std=c++17" />
-			<Add option="-std=c++11" />
 			<Add option="-fexceptions" />
 			<Add directory="../../../unittest-cpp/UnitTest++/" />
 			<Add directory="../../src" />
@@ -117,12 +136,14 @@
 		<Unit filename="../../../unittest-cpp/UnitTest++/MemoryOutStream.h" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/Posix/SignalTranslator.cpp">
 			<Option target="Linux" />
+			<Option target="Linux No STL" />
 		</Unit>
 		<Unit filename="../../../unittest-cpp/UnitTest++/Posix/SignalTranslator.h">
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Unit filename="../../../unittest-cpp/UnitTest++/Posix/TimeHelpers.cpp">
 			<Option target="Linux" />
+			<Option target="Linux No STL" />
 		</Unit>
 		<Unit filename="../../../unittest-cpp/UnitTest++/Posix/TimeHelpers.h">
 			<Option target="&lt;{~None~}&gt;" />
@@ -260,6 +281,7 @@
 		<Unit filename="../../include/etl/multimap.h" />
 		<Unit filename="../../include/etl/multiset.h" />
 		<Unit filename="../../include/etl/murmur3.h" />
+		<Unit filename="../../include/etl/mutex.h" />
 		<Unit filename="../../include/etl/null_type.h" />
 		<Unit filename="../../include/etl/nullptr.h" />
 		<Unit filename="../../include/etl/numeric.h" />
@@ -273,10 +295,21 @@
 		<Unit filename="../../include/etl/pool.h" />
 		<Unit filename="../../include/etl/power.h" />
 		<Unit filename="../../include/etl/priority_queue.h" />
+		<Unit filename="../../include/etl/private/choose_namespace.h" />
+		<Unit filename="../../include/etl/private/choose_pair_types.h" />
+		<Unit filename="../../include/etl/private/choose_tag_types.h" />
+		<Unit filename="../../include/etl/private/crc16_poly_0x1021_.h" />
+		<Unit filename="../../include/etl/private/crc16_poly_0x8005.h" />
+		<Unit filename="../../include/etl/private/crc32_poly_0x04c11db7.h" />
+		<Unit filename="../../include/etl/private/crc32_poly_0x1edc6f41.h" />
+		<Unit filename="../../include/etl/private/crc64_poly_0x42f0e1eba9ea3693.h" />
+		<Unit filename="../../include/etl/private/crc8_poly_0x07.h" />
 		<Unit filename="../../include/etl/private/delegate_base.h" />
 		<Unit filename="../../include/etl/private/delegate_base_cpp03.h" />
 		<Unit filename="../../include/etl/private/delegate_cpp03.h" />
 		<Unit filename="../../include/etl/private/ivectorpointer.h" />
+		<Unit filename="../../include/etl/private/minmax_pop.h" />
+		<Unit filename="../../include/etl/private/minmax_push.h" />
 		<Unit filename="../../include/etl/private/pvoidvector.h" />
 		<Unit filename="../../include/etl/private/to_string_helper.h" />
 		<Unit filename="../../include/etl/private/vector_base.h" />
@@ -294,6 +327,8 @@
 		<Unit filename="../../include/etl/profiles/cpp14_no_stl.h" />
 		<Unit filename="../../include/etl/profiles/cpp17.h" />
 		<Unit filename="../../include/etl/profiles/cpp17_no_stl.h" />
+		<Unit filename="../../include/etl/profiles/determine_compiler.h" />
+		<Unit filename="../../include/etl/profiles/determine_compiler_version.h" />
 		<Unit filename="../../include/etl/profiles/etl_profile.h" />
 		<Unit filename="../../include/etl/profiles/gcc_generic.h" />
 		<Unit filename="../../include/etl/profiles/gcc_linux_x86.h" />

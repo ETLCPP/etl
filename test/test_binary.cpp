@@ -30,6 +30,7 @@ SOFTWARE.
 
 #include <cstdint>
 #include <type_traits>
+#include <limits>
 
 #include "etl/binary.h"
 #include "etl/bitset.h"

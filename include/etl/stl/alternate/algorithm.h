@@ -114,7 +114,7 @@ namespace etlstd
 
     difference_t count = (se - sb);
 
-    return TIterator2(memcpy(db, sb, sizeof(value_t) * count)) + count;
+    return TIterator2(memmove(db, sb, sizeof(value_t) * count)) + count;
   }
 
   // Other iterator
@@ -156,7 +156,7 @@ namespace etlstd
   {
     typedef typename etlstd::iterator_traits<TIterator1>::value_type value_t;
 
-    return TIterator2(memcpy(db, sb, sizeof(value_t) * count)) + count;
+    return TIterator2(memmove(db, sb, sizeof(value_t) * count)) + count;
   }
 
   // Other iterator

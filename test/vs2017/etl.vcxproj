@@ -342,7 +342,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;__clang__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../../../unittest-cpp/UnitTest++/;../../include;../../include/etl/c;../../test</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
@@ -350,7 +350,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <SupportJustMyCode>false</SupportJustMyCode>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalOptions>-Wno-self-assign %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Wno-self-assign /Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -366,7 +366,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;ETL_NO_STL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;ETL_NO_STL;__clang__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../../../unittest-cpp/UnitTest++/;../../include;../../include/etl/c;../../test</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
@@ -374,7 +374,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <SupportJustMyCode>false</SupportJustMyCode>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalOptions>-Wno-self-assign %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Wno-self-assign /Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -747,9 +747,13 @@
     <ClInclude Include="..\..\include\etl\private\to_string_helper.h" />
     <ClInclude Include="..\..\include\etl\profiles\armv7.h" />
     <ClInclude Include="..\..\include\etl\profiles\armv7_no_stl.h" />
+    <ClInclude Include="..\..\include\etl\profiles\auto.h" />
     <ClInclude Include="..\..\include\etl\profiles\clang_generic.h" />
     <ClInclude Include="..\..\include\etl\profiles\cpp17.h" />
     <ClInclude Include="..\..\include\etl\profiles\cpp17_no_stl.h" />
+    <ClInclude Include="..\..\include\etl\profiles\determine_compiler.h" />
+    <ClInclude Include="..\..\include\etl\profiles\determine_compiler_language_support.h" />
+    <ClInclude Include="..\..\include\etl\profiles\determine_compiler_version.h" />
     <ClInclude Include="..\..\include\etl\queue_spsc_locked.h" />
     <ClInclude Include="..\..\include\etl\scaled_rounding.h" />
     <ClInclude Include="..\..\include\etl\state_chart.h" />

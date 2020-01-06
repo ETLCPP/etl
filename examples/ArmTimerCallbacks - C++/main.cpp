@@ -18,8 +18,6 @@ extern "C"
 #include "etl/vector.h"
 #include "etl/iterator.h"
 
-static bool b = etl::is_input_iterator<int*>::value;
-
 struct FP
 {
   void (*function)();
@@ -32,7 +30,6 @@ void register_poweroff_callback(void (*function)())
   FP fp = { function };
   power_callbacks.push_back(fp);
 }
-
 
 const int N_TIMERS = 4;
 
@@ -130,12 +127,6 @@ int main()
    
   LED_Initialize();
   Buttons_Initialize();
-
-  long int v = __cplusplus;
-  
-  char16_t c16;
-  
-  int* p = nullptr;
   
   // The LEDs will start flashing fast after 2 seconds.
   // After another 5 seconds they will start flashing slower.  

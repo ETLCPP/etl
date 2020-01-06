@@ -1,4 +1,18 @@
 ===============================================================================
+15.5.0
+Added the ability to self determine the compiler type, version and language support
+by defining ETL_AUTO_DETERMINE_COMPILER_INFO or including the 'auto.h' profile.
+Added support for C++11's 'alignas' and 'alignof'
+Changed 'memcpy' to 'memmove' in alternate STL algorithms.
+
+===============================================================================
+15.4.2
+Fix visitor overridden test virtual visit function parameters
+Reduced warnings in unit tests for CLang
+Updated type_traits_generator
+Added explicit construction from string_view
+
+===============================================================================
 15.4.1
 Move ETL_NODISCARD definition to ETL_CPP17_SUPPORTED test
 

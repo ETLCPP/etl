@@ -95,10 +95,14 @@ SOFTWARE.
   #define ETL_TIMER_SEMAPHORE_TYPE uint32_t
 #endif
 
-#ifdef _MSC_VER
-  #include "etl/profiles/msvc_x86.h"
-#else
-  #include "etl/profiles/gcc_windows_x86.h"
+#if defined(WIN32) || defined(WIN64) || defined(_WIN32) || defined(_WIN64)
+  #define ETL_TARGET_OS_WINDOWS
 #endif
+
+#if defined(linux)
+  #define ETL_TARGET_OS_LINUX
+#endif
+
+#include "etl/profiles/auto.h"
 
 #endif

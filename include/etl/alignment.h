@@ -180,11 +180,15 @@ namespace etl
         return reinterpret_cast<const T*>(data);
       }
 
+#if ETL_CPP11_SUPPORTED
+      alignas(ALIGNMENT) char data[LENGTH];
+#else
       union
       {
         char data[LENGTH];
         typename etl::type_with_alignment<ALIGNMENT>::type etl_alignment_type; // A POD type that has the same alignment as ALIGNMENT.
       };
+#endif
     };
   };
 

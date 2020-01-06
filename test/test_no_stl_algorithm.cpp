@@ -886,8 +886,8 @@ namespace
 
       for (size_t i = 0; i < initial_data.size(); ++i)
       {
-        std::vector data1(initial_data);
-        std::vector data2(initial_data);
+        std::vector<int> data1(initial_data);
+        std::vector<int> data2(initial_data);
 
         std::rotate(data1.data(), data1.data() + i, data1.data() + data1.size());
         etlstd::rotate(data2.data(), data2.data() + i, data2.data() + data2.size());

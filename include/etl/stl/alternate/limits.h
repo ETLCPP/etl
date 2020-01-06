@@ -71,45 +71,45 @@ namespace etlstd
   class etl_integral_type
   {
   public:
-    static ETL_CONST bool is_specialized = true;
+    static ETL_CONST_OR_CONSTEXPR bool is_specialized = true;
 
-    static ETL_CONST int max_digits10 = 0;
+    static ETL_CONST_OR_CONSTEXPR int max_digits10 = 0;
 
-    static ETL_CONST bool is_integer = true;
-    static ETL_CONST bool is_exact = true;
+    static ETL_CONST_OR_CONSTEXPR bool is_integer = true;
+    static ETL_CONST_OR_CONSTEXPR bool is_exact = true;
 
-    static ETL_CONST int radix = 2;
+    static ETL_CONST_OR_CONSTEXPR int radix = 2;
     static ETL_CONSTEXPR T epsilon() { return 0; }
     static ETL_CONSTEXPR T round_error() { return 0; }
 
-    static ETL_CONST int digits = (CHAR_BIT * sizeof(T)) - (etl::is_signed<T>::value ? 1 : 0);
-    static ETL_CONST int digits10 = ETL_LOG2(digits);
+    static ETL_CONST_OR_CONSTEXPR int digits = (CHAR_BIT * sizeof(T)) - (etl::is_signed<T>::value ? 1 : 0);
+    static ETL_CONST_OR_CONSTEXPR int digits10 = ETL_LOG2(digits);
 
-    static ETL_CONST bool is_signed = etl::is_signed<T>::value;
+    static ETL_CONST_OR_CONSTEXPR bool is_signed = etl::is_signed<T>::value;
 
-    static ETL_CONST int min_exponent = 0;
-    static ETL_CONST int min_exponent10 = 0;
-    static ETL_CONST int max_exponent = 0;
-    static ETL_CONST int max_exponent10 = 0;
+    static ETL_CONST_OR_CONSTEXPR int min_exponent = 0;
+    static ETL_CONST_OR_CONSTEXPR int min_exponent10 = 0;
+    static ETL_CONST_OR_CONSTEXPR int max_exponent = 0;
+    static ETL_CONST_OR_CONSTEXPR int max_exponent10 = 0;
 
-    static ETL_CONST bool has_infinity = false;
-    static ETL_CONST bool has_quiet_NaN = false;
-    static ETL_CONST bool has_signaling_NaN = false;
-    static ETL_CONST float_denorm_style has_denorm = denorm_absent;
-    static ETL_CONST bool has_denorm_loss = false;
+    static ETL_CONST_OR_CONSTEXPR bool has_infinity = false;
+    static ETL_CONST_OR_CONSTEXPR bool has_quiet_NaN = false;
+    static ETL_CONST_OR_CONSTEXPR bool has_signaling_NaN = false;
+    static ETL_CONST_OR_CONSTEXPR float_denorm_style has_denorm = denorm_absent;
+    static ETL_CONST_OR_CONSTEXPR bool has_denorm_loss = false;
 
     static ETL_CONSTEXPR T infinity() { return 0; }
     static ETL_CONSTEXPR T quiet_NaN() { return 0; }
     static ETL_CONSTEXPR T signaling_NaN() { return 0; }
     static ETL_CONSTEXPR T denorm_min() { return 0; }
 
-    static ETL_CONST bool is_iec559 = false;
-    static ETL_CONST bool is_bounded = true;
-    static ETL_CONST bool is_modulo = etl::is_unsigned<T>::value;
+    static ETL_CONST_OR_CONSTEXPR bool is_iec559 = false;
+    static ETL_CONST_OR_CONSTEXPR bool is_bounded = true;
+    static ETL_CONST_OR_CONSTEXPR bool is_modulo = etl::is_unsigned<T>::value;
 
-    static ETL_CONST bool traps = false;
-    static ETL_CONST bool tinyness_before = false;
-    static ETL_CONST float_round_style round_style = round_toward_zero;
+    static ETL_CONST_OR_CONSTEXPR bool traps = false;
+    static ETL_CONST_OR_CONSTEXPR bool tinyness_before = false;
+    static ETL_CONST_OR_CONSTEXPR float_round_style round_style = round_toward_zero;
   };
 
   //***************************************************************************
@@ -118,38 +118,47 @@ namespace etlstd
   class etl_floating_point_type
   {
   public:
-    static ETL_CONST bool is_specialized = true;
+    static ETL_CONST_OR_CONSTEXPR bool is_specialized = true;
 
-    static ETL_CONST bool is_signed = true;
-    static ETL_CONST bool is_integer = false;
-    static ETL_CONST bool is_exact = false;
+    static ETL_CONST_OR_CONSTEXPR bool is_signed = true;
+    static ETL_CONST_OR_CONSTEXPR bool is_integer = false;
+    static ETL_CONST_OR_CONSTEXPR bool is_exact = false;
 
-    static ETL_CONST int radix = 2;
+    static ETL_CONST_OR_CONSTEXPR int radix = 2;
 
-    static ETL_CONST bool has_infinity = false;
-    static ETL_CONST bool has_quiet_NaN = false;
-    static ETL_CONST bool has_signaling_NaN = false;
-    static ETL_CONST float_denorm_style has_denorm = denorm_present;
-    static ETL_CONST bool has_denorm_loss = true;
+    static ETL_CONST_OR_CONSTEXPR bool has_infinity = false;
+    static ETL_CONST_OR_CONSTEXPR bool has_quiet_NaN = false;
+    static ETL_CONST_OR_CONSTEXPR bool has_signaling_NaN = false;
+    static ETL_CONST_OR_CONSTEXPR float_denorm_style has_denorm = denorm_present;
+    static ETL_CONST_OR_CONSTEXPR bool has_denorm_loss = true;
 
-    static ETL_CONST bool is_iec559 = true;
-    static ETL_CONST bool is_bounded = true;
-    static ETL_CONST bool is_modulo = false;
+    static ETL_CONST_OR_CONSTEXPR bool is_iec559 = true;
+    static ETL_CONST_OR_CONSTEXPR bool is_bounded = true;
+    static ETL_CONST_OR_CONSTEXPR bool is_modulo = false;
 
     static ETL_CONSTEXPR T round_error() { return T(0.5); }
     static ETL_CONSTEXPR T infinity() { return 0; }
     static ETL_CONSTEXPR T quiet_NaN() { return 0; }
     static ETL_CONSTEXPR T signaling_NaN() { return 0; }
 
-    static ETL_CONST bool traps = false;
-    static ETL_CONST bool tinyness_before = true;
-    static ETL_CONST float_round_style round_style = round_to_nearest;
+    static ETL_CONST_OR_CONSTEXPR bool traps = false;
+    static ETL_CONST_OR_CONSTEXPR bool tinyness_before = true;
+    static ETL_CONST_OR_CONSTEXPR float_round_style round_style = round_to_nearest;
   };
 
   //***************************************************************************
   // Default
-  template<class T>
+  template <typename T>
   class numeric_limits;
+
+  template <typename T>
+  class numeric_limits<const T> : public numeric_limits<T> { };
+
+  template <typename T>
+  class numeric_limits<volatile T> : public numeric_limits<T> { };
+
+  template <typename T>
+  class numeric_limits<const volatile T> : public numeric_limits<T> { };
 
   //***************************************************************************
   // bool
@@ -158,47 +167,47 @@ namespace etlstd
   {
   public:
 
-    static ETL_CONST bool is_specialized = true;
+    static ETL_CONST_OR_CONSTEXPR bool is_specialized = true;
 
     static ETL_CONSTEXPR bool min() { return false; }
     static ETL_CONSTEXPR bool max() { return true; }
     static ETL_CONSTEXPR bool lowest() { return false; }
 
-    static ETL_CONST int digits = 1;
-    static ETL_CONST int digits10 = 0;
-    static ETL_CONST int max_digits10 = 0;
+    static ETL_CONST_OR_CONSTEXPR int digits = 1;
+    static ETL_CONST_OR_CONSTEXPR int digits10 = 0;
+    static ETL_CONST_OR_CONSTEXPR int max_digits10 = 0;
 
-    static ETL_CONST bool is_signed = false;
-    static ETL_CONST bool is_integer = true;
-    static ETL_CONST bool is_exact = true;
+    static ETL_CONST_OR_CONSTEXPR bool is_signed = false;
+    static ETL_CONST_OR_CONSTEXPR bool is_integer = true;
+    static ETL_CONST_OR_CONSTEXPR bool is_exact = true;
 
-    static ETL_CONST int radix = 2;
-    static ETL_CONST bool epsilon() { return 0; }
-    static ETL_CONST bool round_error() { return 0; }
+    static ETL_CONST_OR_CONSTEXPR int radix = 2;
+    static ETL_CONST_OR_CONSTEXPR bool epsilon() { return false; }
+    static ETL_CONST_OR_CONSTEXPR bool round_error() { return false; }
 
-    static ETL_CONST int min_exponent = 0;
-    static ETL_CONST int min_exponent10 = 0;
-    static ETL_CONST int max_exponent = 0;
-    static ETL_CONST int max_exponent10 = 0;
+    static ETL_CONST_OR_CONSTEXPR int min_exponent = 0;
+    static ETL_CONST_OR_CONSTEXPR int min_exponent10 = 0;
+    static ETL_CONST_OR_CONSTEXPR int max_exponent = 0;
+    static ETL_CONST_OR_CONSTEXPR int max_exponent10 = 0;
 
-    static ETL_CONST bool has_infinity = false;
-    static ETL_CONST bool has_quiet_NaN = false;
-    static ETL_CONST bool has_signaling_NaN = false;
-    static ETL_CONST float_denorm_style has_denorm = denorm_absent;
-    static ETL_CONST bool has_denorm_loss = false;
+    static ETL_CONST_OR_CONSTEXPR bool has_infinity = false;
+    static ETL_CONST_OR_CONSTEXPR bool has_quiet_NaN = false;
+    static ETL_CONST_OR_CONSTEXPR bool has_signaling_NaN = false;
+    static ETL_CONST_OR_CONSTEXPR float_denorm_style has_denorm = denorm_absent;
+    static ETL_CONST_OR_CONSTEXPR bool has_denorm_loss = false;
 
-    static ETL_CONSTEXPR bool infinity() { return 0; }
-    static ETL_CONSTEXPR bool quiet_NaN() { return 0; }
-    static ETL_CONSTEXPR bool signaling_NaN() { return 0; }
-    static ETL_CONSTEXPR bool denorm_min() { return 0; }
+    static ETL_CONSTEXPR bool infinity() { return false; }
+    static ETL_CONSTEXPR bool quiet_NaN() { return false; }
+    static ETL_CONSTEXPR bool signaling_NaN() { return false; }
+    static ETL_CONSTEXPR bool denorm_min() { return false; }
 
-    static ETL_CONST bool is_iec559 = false;
-    static ETL_CONST bool is_bounded = true;
-    static ETL_CONST bool is_modulo = false;
+    static ETL_CONST_OR_CONSTEXPR bool is_iec559 = false;
+    static ETL_CONST_OR_CONSTEXPR bool is_bounded = true;
+    static ETL_CONST_OR_CONSTEXPR bool is_modulo = false;
 
-    static ETL_CONST bool traps = false;
-    static ETL_CONST bool tinyness_before = false;
-    static ETL_CONST float_round_style round_style = round_toward_zero;
+    static ETL_CONST_OR_CONSTEXPR bool traps = false;
+    static ETL_CONST_OR_CONSTEXPR bool tinyness_before = false;
+    static ETL_CONST_OR_CONSTEXPR float_round_style round_style = round_toward_zero;
   };
 
   //***************************************************************************
@@ -384,14 +393,14 @@ namespace etlstd
     static ETL_CONSTEXPR float epsilon() { return FLT_EPSILON; }
     static ETL_CONSTEXPR float denorm_min() { return FLT_MIN; }
 
-    static ETL_CONST int digits = FLT_MANT_DIG;
-    static ETL_CONST int digits10 = FLT_DIG;
-    static ETL_CONST int max_digits10 = ETL_LOG2(FLT_MANT_DIG) + 2;
+    static ETL_CONST_OR_CONSTEXPR int digits = FLT_MANT_DIG;
+    static ETL_CONST_OR_CONSTEXPR int digits10 = FLT_DIG;
+    static ETL_CONST_OR_CONSTEXPR int max_digits10 = ETL_LOG2(FLT_MANT_DIG) + 2;
 
-    static ETL_CONST int min_exponent = FLT_MIN_EXP;
-    static ETL_CONST int min_exponent10 = FLT_MIN_10_EXP;
-    static ETL_CONST int max_exponent = FLT_MAX_EXP;
-    static ETL_CONST int max_exponent10 = FLT_MAX_10_EXP;
+    static ETL_CONST_OR_CONSTEXPR int min_exponent = FLT_MIN_EXP;
+    static ETL_CONST_OR_CONSTEXPR int min_exponent10 = FLT_MIN_10_EXP;
+    static ETL_CONST_OR_CONSTEXPR int max_exponent = FLT_MAX_EXP;
+    static ETL_CONST_OR_CONSTEXPR int max_exponent10 = FLT_MAX_10_EXP;
   };
 
   //***************************************************************************
@@ -407,14 +416,14 @@ namespace etlstd
     static ETL_CONSTEXPR double epsilon() { return DBL_EPSILON; }
     static ETL_CONSTEXPR double denorm_min() { return DBL_MIN; }
 
-    static ETL_CONST int digits = DBL_MANT_DIG;
-    static ETL_CONST int digits10 = DBL_DIG;
-    static ETL_CONST int max_digits10 = ETL_LOG2(DBL_MANT_DIG) + 2;
+    static ETL_CONST_OR_CONSTEXPR int digits = DBL_MANT_DIG;
+    static ETL_CONST_OR_CONSTEXPR int digits10 = DBL_DIG;
+    static ETL_CONST_OR_CONSTEXPR int max_digits10 = ETL_LOG2(DBL_MANT_DIG) + 2;
 
-    static ETL_CONST int min_exponent = DBL_MIN_EXP;
-    static ETL_CONST int min_exponent10 = DBL_MIN_10_EXP;
-    static ETL_CONST int max_exponent = DBL_MAX_EXP;
-    static ETL_CONST int max_exponent10 = DBL_MAX_10_EXP;
+    static ETL_CONST_OR_CONSTEXPR int min_exponent = DBL_MIN_EXP;
+    static ETL_CONST_OR_CONSTEXPR int min_exponent10 = DBL_MIN_10_EXP;
+    static ETL_CONST_OR_CONSTEXPR int max_exponent = DBL_MAX_EXP;
+    static ETL_CONST_OR_CONSTEXPR int max_exponent10 = DBL_MAX_10_EXP;
   };
 
   //***************************************************************************
@@ -430,14 +439,14 @@ namespace etlstd
     static ETL_CONSTEXPR long double epsilon() { return LDBL_EPSILON; }
     static ETL_CONSTEXPR long double denorm_min() { return LDBL_MIN; }
 
-    static ETL_CONST int digits = LDBL_MANT_DIG;
-    static ETL_CONST int digits10 = LDBL_DIG;
-    static ETL_CONST int max_digits10 = ETL_LOG2(LDBL_MANT_DIG) + 2;
+    static ETL_CONST_OR_CONSTEXPR int digits = LDBL_MANT_DIG;
+    static ETL_CONST_OR_CONSTEXPR int digits10 = LDBL_DIG;
+    static ETL_CONST_OR_CONSTEXPR int max_digits10 = ETL_LOG2(LDBL_MANT_DIG) + 2;
 
-    static ETL_CONST int min_exponent = LDBL_MIN_EXP;
-    static ETL_CONST int min_exponent10 = LDBL_MIN_10_EXP;
-    static ETL_CONST int max_exponent = LDBL_MAX_EXP;
-    static ETL_CONST int max_exponent10 = LDBL_MAX_10_EXP;
+    static ETL_CONST_OR_CONSTEXPR int min_exponent = LDBL_MIN_EXP;
+    static ETL_CONST_OR_CONSTEXPR int min_exponent10 = LDBL_MIN_10_EXP;
+    static ETL_CONST_OR_CONSTEXPR int max_exponent = LDBL_MAX_EXP;
+    static ETL_CONST_OR_CONSTEXPR int max_exponent10 = LDBL_MAX_10_EXP;
   };
 }
 
