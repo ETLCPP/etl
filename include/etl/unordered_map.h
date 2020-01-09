@@ -127,7 +127,7 @@ namespace etl
   /// Can be used as a reference type for all unordered_map containing a specific type.
   ///\ingroup unordered_map
   //***************************************************************************
-  template <typename TKey, typename T, typename THash = etl::hash<TKey>, typename TKeyEqual = etlstd::equal_to<TKey> >
+  template <typename TKey, typename T, typename THash = etl::hash<TKey>, typename TKeyEqual = etl::equal_to<TKey> >
   class iunordered_map
   {
   public:
@@ -482,7 +482,7 @@ namespace etl
       local_iterator inode;
     };
 
-    typedef typename etlstd::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
     //*********************************************************************
     /// Returns an iterator to the beginning of the unordered_map.
@@ -609,7 +609,7 @@ namespace etl
     {
       size_t index = bucket(key);
 
-      return etlstd::distance(pbuckets[index].begin(), pbuckets[index].end());
+      return etl::distance(pbuckets[index].begin(), pbuckets[index].end());
     }
 
     //*********************************************************************
@@ -752,7 +752,7 @@ namespace etl
     void assign(TIterator first_, TIterator last_)
     {
 #if defined(ETL_DEBUG)
-      difference_type d = etlstd::distance(first_, last_);
+      difference_type d = etl::distance(first_, last_);
       ETL_ASSERT(d >= 0, ETL_ERROR(unordered_map_iterator));
       ETL_ASSERT(size_t(d) <= max_size(), ETL_ERROR(unordered_map_full));
 #endif
@@ -1370,7 +1370,7 @@ namespace etl
   template <typename TKey, typename TMapped, typename TKeyCompare>
   bool operator ==(const etl::iunordered_map<TKey, TMapped, TKeyCompare>& lhs, const etl::iunordered_map<TKey, TMapped, TKeyCompare>& rhs)
   {
-    return (lhs.size() == rhs.size()) && etlstd::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //***************************************************************************
@@ -1389,7 +1389,7 @@ namespace etl
   //*************************************************************************
   /// A templated unordered_map implementation that uses a fixed size buffer.
   //*************************************************************************
-  template <typename TKey, typename TValue, const size_t MAX_SIZE_, const size_t MAX_BUCKETS_ = MAX_SIZE_, typename THash = etl::hash<TKey>, typename TKeyEqual = etlstd::equal_to<TKey> >
+  template <typename TKey, typename TValue, const size_t MAX_SIZE_, const size_t MAX_BUCKETS_ = MAX_SIZE_, typename THash = etl::hash<TKey>, typename TKeyEqual = etl::equal_to<TKey> >
   class unordered_map : public etl::iunordered_map<TKey, TValue, THash, TKeyEqual>
   {
   private:

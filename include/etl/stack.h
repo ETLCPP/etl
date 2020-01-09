@@ -278,7 +278,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(stack_full));
 #endif
       base_t::add_in();
-      ::new (&p_buffer[top_index]) T(etlstd::forward<Args>(args)...);
+      ::new (&p_buffer[top_index]) T(etl::forward<Args>(args)...);
     }
 #else
     //*************************************************************************
@@ -408,7 +408,7 @@ namespace etl
     //*************************************************************************
     void reverse()
     {
-      etlstd::reverse(p_buffer, p_buffer + current_size);
+      etl::reverse(p_buffer, p_buffer + current_size);
     }
 
     //*************************************************************************
@@ -527,7 +527,7 @@ namespace etl
   private:
 
     /// The unintitialised buffer of T used in the stack.
-    typename etl::aligned_storage<sizeof(T), etlstd::alignment_of<T>::value>::type buffer[SIZE];
+    typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[SIZE];
   };
 }
 

@@ -191,7 +191,7 @@ namespace etl
       {
         ETL_ASSERT(position < this->size(), ETL_ERROR(string_out_of_bounds));
 
-        length_ = etlstd::min(length_, this->size() - position);
+        length_ = etl::min(length_, this->size() - position);
 
         new_string.assign(buffer + position, buffer + position + length_);
       }

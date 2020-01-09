@@ -164,14 +164,14 @@ namespace etl
     template <typename T>
     struct Type_Id_Lookup
     {
-      static const uint_least8_t type_id = etlstd::is_same<T, T1>::value ? 0 :
-                                           etlstd::is_same<T, T2>::value ? 1 :
-                                           etlstd::is_same<T, T3>::value ? 2 :
-                                           etlstd::is_same<T, T4>::value ? 3 :
-                                           etlstd::is_same<T, T5>::value ? 4 :
-                                           etlstd::is_same<T, T6>::value ? 5 :
-                                           etlstd::is_same<T, T7>::value ? 6 :
-                                           etlstd::is_same<T, T8>::value ? 7 :
+      static const uint_least8_t type_id = etl::is_same<T, T1>::value ? 0 :
+                                           etl::is_same<T, T2>::value ? 1 :
+                                           etl::is_same<T, T3>::value ? 2 :
+                                           etl::is_same<T, T4>::value ? 3 :
+                                           etl::is_same<T, T5>::value ? 4 :
+                                           etl::is_same<T, T6>::value ? 5 :
+                                           etl::is_same<T, T7>::value ? 6 :
+                                           etl::is_same<T, T8>::value ? 7 :
                                            UNSUPPORTED_TYPE_ID;
     };
 
@@ -723,7 +723,7 @@ namespace etl
       ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
       destruct_current();
-      ::new (static_cast<T*>(data)) T(etlstd::forward<Args>(args)...);
+      ::new (static_cast<T*>(data)) T(etl::forward<Args>(args)...);
       type_id = Type_Id_Lookup<T>::type_id;
 
       return *static_cast<T*>(data);

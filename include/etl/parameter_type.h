@@ -43,7 +43,7 @@ namespace etl
   struct parameter_type
   {
     /// By default fundamental and pointer types are passed by value.
-    typedef typename etlstd::conditional<etlstd::is_fundamental<T>::value || is_pointer<T>::value,
+    typedef typename etl::conditional<etl::is_fundamental<T>::value || etl::is_pointer<T>::value,
                                          T,
                                          const T&>::type type;
   };

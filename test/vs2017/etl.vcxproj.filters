@@ -630,9 +630,6 @@
     <ClInclude Include="..\..\include\etl\math_constants.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\no_stl_test_iterators.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\atomic\atomic_llvm_sync.h">
       <Filter>ETL\Utilities\Atomic</Filter>
     </ClInclude>
@@ -756,12 +753,6 @@
     <ClInclude Include="..\..\include\etl\indirect_vector.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\choose_tag_types.h">
-      <Filter>ETL\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\choose_pair_types.h">
-      <Filter>ETL\Private</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\private\crc8_poly_0x07.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
@@ -824,6 +815,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\limits.h">
       <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iterators_for_unit_tests.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1271,25 +1265,10 @@
     <ClCompile Include="..\test_make_string.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_stl_utility.cpp">
+    <ClCompile Include="..\test_type_traits.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_etlstd_algorithm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_etlstd_functional.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_etlstd_iterator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_etlstd_limits.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_etlstd_type_traits.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_etlstd_utility.cpp">
+    <ClCompile Include="..\test_limits.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1330,11 +1309,13 @@
     <None Include="..\..\include\etl\generate_type_select.bat">
       <Filter>Resource Files\Generators</Filter>
     </None>
-    <None Include="cpp.hint" />
     <None Include="..\..\library.json">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\..\README.md">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="cpp.hint">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

@@ -45,7 +45,7 @@ namespace etl
   template <const size_t VALUE, const size_t I = 1>
   struct sqrt
   {
-    typedef typename etlstd::conditional<((I * I) > VALUE), 
+    typedef typename etl::conditional<((I * I) > VALUE), 
                                       etl::constant<intmax_t, I - 1>,
                                       etl::sqrt<VALUE, I + 1> >::type type;
 

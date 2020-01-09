@@ -41,7 +41,7 @@ SOFTWARE.
 ///\defgroup iterator iterator
 ///\ingroup utilities
 
-namespace etlstd
+namespace etl
 {
   //***************************************************************************
   // iterator tags
@@ -133,7 +133,7 @@ namespace etlstd
   template <typename TIterator, typename TDistance>
   ETL_CONSTEXPR17 void advance(TIterator& itr, TDistance n)
   {
-    typedef typename etlstd::iterator_traits<TIterator>::iterator_category tag;
+    typedef typename etl::iterator_traits<TIterator>::iterator_category tag;
 
     advance_helper(itr, n, tag());
   }
@@ -152,9 +152,9 @@ namespace etlstd
   // distance
 #if defined(ETL_NO_STL)
   template<typename TIterator>
-  ETL_CONSTEXPR17 typename etlstd::iterator_traits<TIterator>::difference_type distance_helper(TIterator first, TIterator last, ETL_OR_STD::input_iterator_tag)
+  ETL_CONSTEXPR17 typename etl::iterator_traits<TIterator>::difference_type distance_helper(TIterator first, TIterator last, ETL_OR_STD::input_iterator_tag)
   {
-    typename etlstd::iterator_traits<TIterator>::difference_type d = 0;
+    typename etl::iterator_traits<TIterator>::difference_type d = 0;
 
     while (first != last)
     {
@@ -166,9 +166,9 @@ namespace etlstd
   }
 
   template<typename TIterator>
-  ETL_CONSTEXPR17 typename etlstd::iterator_traits<TIterator>::difference_type distance_helper(TIterator first, TIterator last, ETL_OR_STD::forward_iterator_tag)
+  ETL_CONSTEXPR17 typename etl::iterator_traits<TIterator>::difference_type distance_helper(TIterator first, TIterator last, ETL_OR_STD::forward_iterator_tag)
   {
-    typename etlstd::iterator_traits<TIterator>::difference_type d = 0;
+    typename etl::iterator_traits<TIterator>::difference_type d = 0;
 
     while (first != last)
     {
@@ -180,9 +180,9 @@ namespace etlstd
   }
 
   template<typename TIterator>
-  ETL_CONSTEXPR17 typename etlstd::iterator_traits<TIterator>::difference_type distance_helper(TIterator first, TIterator last, ETL_OR_STD::bidirectional_iterator_tag)
+  ETL_CONSTEXPR17 typename etl::iterator_traits<TIterator>::difference_type distance_helper(TIterator first, TIterator last, ETL_OR_STD::bidirectional_iterator_tag)
   {
-    typename etlstd::iterator_traits<TIterator>::difference_type d = 0;
+    typename etl::iterator_traits<TIterator>::difference_type d = 0;
 
     while (first != last)
     {
@@ -194,15 +194,15 @@ namespace etlstd
   }
 
   template<typename TIterator>
-  ETL_CONSTEXPR17 typename etlstd::iterator_traits<TIterator>::difference_type distance_helper(TIterator first, TIterator last, ETL_OR_STD::random_access_iterator_tag)
+  ETL_CONSTEXPR17 typename etl::iterator_traits<TIterator>::difference_type distance_helper(TIterator first, TIterator last, ETL_OR_STD::random_access_iterator_tag)
   {
     return last - first;
   }
 
   template<typename TIterator>
-  ETL_CONSTEXPR17 typename etlstd::iterator_traits<TIterator>::difference_type distance(TIterator first, TIterator last)
+  ETL_CONSTEXPR17 typename etl::iterator_traits<TIterator>::difference_type distance(TIterator first, TIterator last)
   {
-    typedef typename etlstd::iterator_traits<TIterator>::iterator_category tag;
+    typedef typename etl::iterator_traits<TIterator>::iterator_category tag;
 
     return distance_helper(first, last, tag());
   }
@@ -220,10 +220,10 @@ namespace etlstd
   //***************************************************************************
   // Previous
   template<typename TIterator>
-  ETL_CONSTEXPR17 TIterator prev(TIterator itr, typename etlstd::iterator_traits<TIterator>::difference_type n = 1)
+  ETL_CONSTEXPR17 TIterator prev(TIterator itr, typename etl::iterator_traits<TIterator>::difference_type n = 1)
   {
 #if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
-    etlstd::advance(itr, -n);
+    etl::advance(itr, -n);
 #else
     std::advance(itr, -n);
 #endif
@@ -233,10 +233,10 @@ namespace etlstd
   //***************************************************************************
   // Next
   template<typename TIterator>
-  ETL_CONSTEXPR17 TIterator next(TIterator itr, typename etlstd::iterator_traits<TIterator>::difference_type n = 1)
+  ETL_CONSTEXPR17 TIterator next(TIterator itr, typename etl::iterator_traits<TIterator>::difference_type n = 1)
   {
 #if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
-    etlstd::advance(itr, n);
+    etl::advance(itr, n);
 #else
     std::advance(itr, n);
 #endif
@@ -436,31 +436,31 @@ namespace etl
   template <typename T>
   struct is_input_iterator
   {
-    static ETL_CONST_OR_CONSTEXPR bool value = etlstd::is_same<typename etlstd::iterator_traits<T>::iterator_category, ETL_OR_STD::input_iterator_tag>::value;
+    static ETL_CONST_OR_CONSTEXPR bool value = etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::input_iterator_tag>::value;
   };
 
   template <typename T>
   struct is_output_iterator
   {
-    static ETL_CONST_OR_CONSTEXPR bool value = etlstd::is_same<typename etlstd::iterator_traits<T>::iterator_category, ETL_OR_STD::output_iterator_tag>::value;
+    static ETL_CONST_OR_CONSTEXPR bool value = etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::output_iterator_tag>::value;
   };
 
   template <typename T>
   struct is_forward_iterator
   {
-    static ETL_CONST_OR_CONSTEXPR bool value = etlstd::is_same<typename etlstd::iterator_traits<T>::iterator_category, ETL_OR_STD::forward_iterator_tag>::value;
+    static ETL_CONST_OR_CONSTEXPR bool value = etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::forward_iterator_tag>::value;
   };
 
   template <typename T>
   struct is_bidirectional_iterator
   {
-    static ETL_CONST_OR_CONSTEXPR bool value = etlstd::is_same<typename etlstd::iterator_traits<T>::iterator_category, ETL_OR_STD::bidirectional_iterator_tag>::value;
+    static ETL_CONST_OR_CONSTEXPR bool value = etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::bidirectional_iterator_tag>::value;
   };
 
   template <typename T>
   struct is_random_iterator
   {
-    static ETL_CONST_OR_CONSTEXPR bool value = etlstd::is_same<typename etlstd::iterator_traits<T>::iterator_category, ETL_OR_STD::random_access_iterator_tag>::value;
+    static ETL_CONST_OR_CONSTEXPR bool value = etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::random_access_iterator_tag>::value;
   };
 
   template <typename T>

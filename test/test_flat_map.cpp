@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include <map>
 #include <array>
@@ -594,8 +594,8 @@ namespace
 
       ETL_OR_STD::pair<DataNDC::iterator, bool> result;
 
-      result = data.insert(ETL_MAKE_PAIR(0, N0));
-      compare_data.insert(ETL_MAKE_PAIR(0, N0));
+      result = data.insert(ETL_OR_STD::make_pair(0, N0));
+      compare_data.insert(ETL_OR_STD::make_pair(0, N0));
 
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),
@@ -605,8 +605,8 @@ namespace
       CHECK(result.second);
       CHECK(*result.first == DataNDC::value_type(0, N0));
 
-      result = data.insert(ETL_MAKE_PAIR(2, N2));
-      compare_data.insert(ETL_MAKE_PAIR(2, N2));
+      result = data.insert(ETL_OR_STD::make_pair(2, N2));
+      compare_data.insert(ETL_OR_STD::make_pair(2, N2));
 
       isEqual = Check_Equal(data.begin(),
                             data.end(),
@@ -616,8 +616,8 @@ namespace
       CHECK(result.second);
       CHECK(*result.first == DataNDC::value_type(2, N2));
 
-      result = data.insert(ETL_MAKE_PAIR(1, N1));
-      compare_data.insert(ETL_MAKE_PAIR(1, N1));
+      result = data.insert(ETL_OR_STD::make_pair(1, N1));
+      compare_data.insert(ETL_OR_STD::make_pair(1, N1));
 
       isEqual = Check_Equal(data.begin(),
                             data.end(),
@@ -640,7 +640,7 @@ namespace
       ETL_OR_STD::pair<Compare_DataNDC::iterator, bool> result2;
 
       result1 = data.insert(DataNDC::value_type(0, N0));
-      result2 = compare_data.insert(ETL_MAKE_PAIR(0, N0));
+      result2 = compare_data.insert(ETL_OR_STD::make_pair(0, N0));
 
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),
@@ -650,8 +650,8 @@ namespace
       CHECK(result1.second);
       CHECK(*result1.first == DataNDC::value_type(0, N0));
 
-      result1 = data.insert(ETL_MAKE_PAIR(0, N2));
-      result2 = compare_data.insert(ETL_MAKE_PAIR(0, N2));
+      result1 = data.insert(ETL_OR_STD::make_pair(0, N2));
+      result2 = compare_data.insert(ETL_OR_STD::make_pair(0, N2));
 
       isEqual = Check_Equal(data.begin(),
                             data.end(),
@@ -671,34 +671,34 @@ namespace
       ETL_OR_STD::pair<DataNDC::iterator, bool> dr;
       ETL_OR_STD::pair<Compare_DataNDC::iterator, bool> cr;
 
-      dr = data.insert(ETL_MAKE_PAIR(0, N0));
-      cr = compare_data.insert(ETL_MAKE_PAIR(0, N0));
+      dr = data.insert(ETL_OR_STD::make_pair(0, N0));
+      cr = compare_data.insert(ETL_OR_STD::make_pair(0, N0));
       CHECK(dr.first->first == cr.first->first);
       CHECK(dr.second == cr.second);
 
-      dr = data.insert(ETL_MAKE_PAIR(1, N1));
-      cr = compare_data.insert(ETL_MAKE_PAIR(1, N1));
+      dr = data.insert(ETL_OR_STD::make_pair(1, N1));
+      cr = compare_data.insert(ETL_OR_STD::make_pair(1, N1));
       CHECK(dr.first->first == cr.first->first);
       CHECK(dr.second == cr.second);
 
-      dr = data.insert(ETL_MAKE_PAIR(2, N2));
-      cr = compare_data.insert(ETL_MAKE_PAIR(2, N2));
+      dr = data.insert(ETL_OR_STD::make_pair(2, N2));
+      cr = compare_data.insert(ETL_OR_STD::make_pair(2, N2));
       CHECK(dr.first->first == cr.first->first);
       CHECK(dr.second == cr.second);
 
       // Do it again.
-      dr = data.insert(ETL_MAKE_PAIR(0, N0));
-      cr = compare_data.insert(ETL_MAKE_PAIR(0, N0));
+      dr = data.insert(ETL_OR_STD::make_pair(0, N0));
+      cr = compare_data.insert(ETL_OR_STD::make_pair(0, N0));
       CHECK(dr.first->first == cr.first->first);
       CHECK(dr.second == cr.second);
 
-      dr = data.insert(ETL_MAKE_PAIR(1, N1));
-      cr = compare_data.insert(ETL_MAKE_PAIR(1, N1));
+      dr = data.insert(ETL_OR_STD::make_pair(1, N1));
+      cr = compare_data.insert(ETL_OR_STD::make_pair(1, N1));
       CHECK(dr.first->first == cr.first->first);
       CHECK(dr.second == cr.second);
 
-      dr = data.insert(ETL_MAKE_PAIR(2, N2));
-      cr = compare_data.insert(ETL_MAKE_PAIR(2, N2));
+      dr = data.insert(ETL_OR_STD::make_pair(2, N2));
+      cr = compare_data.insert(ETL_OR_STD::make_pair(2, N2));
       CHECK(dr.first->first == cr.first->first);
       CHECK(dr.second == cr.second);
 
@@ -716,7 +716,7 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.insert(ETL_MAKE_PAIR(10, N10)), etl::flat_map_full);
+      CHECK_THROW(data.insert(ETL_OR_STD::make_pair(10, N10)), etl::flat_map_full);
     }
 
     //*************************************************************************
@@ -762,8 +762,8 @@ namespace
       CHECK(result.second);
       CHECK(*result.first == Element1(0, D1("0")));
 
-      result = data.emplace(ETL_MAKE_PAIR(2, D1("2")));
-      compare.emplace(ETL_MAKE_PAIR(2, D1("2")));
+      result = data.emplace(ETL_OR_STD::make_pair(2, D1("2")));
+      compare.emplace(ETL_OR_STD::make_pair(2, D1("2")));
 
       isEqual = Check_Equal(data.begin(),
                             data.end(),
@@ -807,8 +807,8 @@ namespace
       CHECK(result.second);
       CHECK(*result.first == Element2(0, D2("0", "1")));
 
-      result = data.emplace(ETL_MAKE_PAIR(2, D2("2", "3")));
-      compare.emplace(ETL_MAKE_PAIR(2, D2("2", "3")));
+      result = data.emplace(ETL_OR_STD::make_pair(2, D2("2", "3")));
+      compare.emplace(ETL_OR_STD::make_pair(2, D2("2", "3")));
 
       isEqual = Check_Equal(data.begin(),
                             data.end(),
@@ -852,8 +852,8 @@ namespace
       CHECK(result.second);
       CHECK(*result.first == Element3(0, D3("0", "1", "2")));
 
-      result = data.emplace(ETL_MAKE_PAIR(2, D3("2", "3", "4")));
-      compare.emplace(ETL_MAKE_PAIR(2, D3("2", "3", "4")));
+      result = data.emplace(ETL_OR_STD::make_pair(2, D3("2", "3", "4")));
+      compare.emplace(ETL_OR_STD::make_pair(2, D3("2", "3", "4")));
 
       isEqual = Check_Equal(data.begin(),
         data.end(),
@@ -897,8 +897,8 @@ namespace
       CHECK(result.second);
       CHECK(*result.first == Element4(0, D4("0", "1", "2", "3")));
 
-      result = data.emplace(ETL_MAKE_PAIR(2, D4("2", "3", "4", "5")));
-      compare.emplace(ETL_MAKE_PAIR(2, D4("2", "3", "4", "5")));
+      result = data.emplace(ETL_OR_STD::make_pair(2, D4("2", "3", "4", "5")));
+      compare.emplace(ETL_OR_STD::make_pair(2, D4("2", "3", "4", "5")));
 
       isEqual = Check_Equal(data.begin(),
                             data.end(),

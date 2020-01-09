@@ -8,15 +8,6 @@ if(NOT UnitTest++_FOUND)
   # Add unittest-cpp as an ExternalProject
   include(cmake/unit-test_external_project.cmake)
   add_unittest_cpp()
-else()
-  include(${UnitTest++_CONFIG})
-  # The CMake install of UnitTest++ puts the include directory to ${CMAKE_INSTALL_PREFIX}/include
-  # under the assumptions that clients will consume the headers via
-  # #include<UnitTest++/UnitTest++.h>
-  # However the tests in etl include the headers directly, e.g.
-  # #include "UnitTest++.h"
-  # Therefore we update the provide UTPP_INCLUDE_DIRS here
-  set(UTPP_INCLUDE_DIRS "${UTPP_INCLUDE_DIRS}/UnitTest++")
 endif()
 
 include_directories(${UTPP_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/../include)

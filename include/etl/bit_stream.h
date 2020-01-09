@@ -67,7 +67,7 @@ namespace etl
     //***************************************************************************
     bit_stream(char* begin_, char* end_)
       : pdata(reinterpret_cast<unsigned char*>(begin_)),
-        length(etlstd::distance(begin_, end_))
+        length(etl::distance(begin_, end_))
     {
       restart();
     }
@@ -77,7 +77,7 @@ namespace etl
     //***************************************************************************
     bit_stream(unsigned char* begin_, unsigned char* end_)
       : pdata(begin_),
-        length(etlstd::distance(begin_, end_))
+        length(etl::distance(begin_, end_))
     {
       restart();
     }
@@ -127,7 +127,7 @@ namespace etl
     //***************************************************************************
     void set_stream(char* begin_, char* end_)
     {
-      set_stream(begin_, etlstd::distance(begin_, end_));
+      set_stream(begin_, etl::distance(begin_, end_));
     }
 
     //***************************************************************************
@@ -135,7 +135,7 @@ namespace etl
     //***************************************************************************
     void set_stream(unsigned char* begin_, unsigned char* end_)
     {
-      set_stream(begin_, etlstd::distance(begin_, end_));
+      set_stream(begin_, etl::distance(begin_, end_));
     }
 
     //***************************************************************************
@@ -180,7 +180,7 @@ namespace etl
     /// For integral types
     //***************************************************************************
     template <typename T>
-    typename etlstd::enable_if<etlstd::is_integral<T>::value, bool>::type
+    typename etl::enable_if<etl::is_integral<T>::value, bool>::type
       put(T value, uint_least8_t width = CHAR_BIT * sizeof(T))
     {
       return put_integral(static_cast<uint32_t>(value), width);
@@ -206,7 +206,7 @@ namespace etl
     /// For floating point types
     //***************************************************************************
     template <typename T>
-    typename etlstd::enable_if<etlstd::is_floating_point<T>::value, bool>::type
+    typename etl::enable_if<etl::is_floating_point<T>::value, bool>::type
       put(T value)
     {
       bool success = true;
@@ -249,7 +249,7 @@ namespace etl
     /// For integral types
     //***************************************************************************
     template <typename T>
-    typename etlstd::enable_if<etlstd::is_integral<T>::value, bool>::type
+    typename etl::enable_if<etl::is_integral<T>::value, bool>::type
       get(T& value, uint_least8_t width = CHAR_BIT * sizeof(T))
     {
       bool success = false;
@@ -265,7 +265,7 @@ namespace etl
           // Get the bits from the stream.
           while (width != 0)
           {
-            unsigned char mask_width = static_cast<unsigned char>(etlstd::min(width, bits_in_byte));
+            unsigned char mask_width = static_cast<unsigned char>(etl::min(width, bits_in_byte));
             unsigned char chunk = get_chunk(mask_width);
 
             width -= mask_width;
@@ -277,7 +277,7 @@ namespace etl
       }
 
       // Sign extend if signed type and not already full bit width.
-      if (etlstd::is_signed<T>::value && (bits != (CHAR_BIT * sizeof(T))))
+      if (etl::is_signed<T>::value && (bits != (CHAR_BIT * sizeof(T))))
       {
         typedef typename etl::make_signed<T>::type ST;
         value = etl::sign_extend<ST, ST>(value, bits);
@@ -290,7 +290,7 @@ namespace etl
     /// For floating point types
     //***************************************************************************
     template <typename T>
-    typename etlstd::enable_if<etlstd::is_floating_point<T>::value, bool>::type
+    typename etl::enable_if<etl::is_floating_point<T>::value, bool>::type
       get(T& value)
     {
       bool success = false;
@@ -378,7 +378,7 @@ namespace etl
           // Send the bits to the stream.
           while (width != 0)
           {
-            unsigned char mask_width = static_cast<unsigned char>(etlstd::min(width, bits_in_byte));
+            unsigned char mask_width = static_cast<unsigned char>(etl::min(width, bits_in_byte));
             width -= mask_width;
             uint32_t mask = ((uint32_t(1U) << mask_width) - 1U) << width;
 
@@ -411,7 +411,7 @@ namespace etl
           // Send the bits to the stream.
           while (width != 0)
           {
-            unsigned char mask_width = static_cast<unsigned char>(etlstd::min(width, bits_in_byte));
+            unsigned char mask_width = static_cast<unsigned char>(etl::min(width, bits_in_byte));
             width -= mask_width;
             uint64_t mask = ((uint64_t(1U) << mask_width) - 1U) << width;
 
@@ -494,11 +494,11 @@ namespace etl
       // Network to host.
       if (etl::endianness::value() == etl::endian::little)
       {
-        etlstd::reverse_copy(data, data + sizeof(T), temp);
+        etl::reverse_copy(data, data + sizeof(T), temp);
       }
       else
       {
-        etlstd::copy(data, data + sizeof(T), temp);
+        etl::copy(data, data + sizeof(T), temp);
       }
 
       value = *reinterpret_cast<T*>(temp);
@@ -515,11 +515,11 @@ namespace etl
       // Host to network.
       if (etl::endianness::value() == etl::endian::little)
       {
-        etlstd::reverse_copy(pf, pf + sizeof(T), data);
+        etl::reverse_copy(pf, pf + sizeof(T), data);
       }
       else
       {
-        etlstd::copy(pf, pf + sizeof(T), data);
+        etl::copy(pf, pf + sizeof(T), data);
       }
     }
 

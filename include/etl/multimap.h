@@ -624,7 +624,7 @@ namespace etl
   /// A templated base for all etl::multimap types.
   ///\ingroup map
   //***************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare = etlstd::less<TKey> >
+  template <typename TKey, typename TMapped, typename TKeyCompare = etl::less<TKey> >
   class imultimap : public etl::multimap_base
   {
   public:
@@ -960,7 +960,7 @@ namespace etl
     };
     friend class const_iterator;
 
-    typedef typename etlstd::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
     typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
     typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
@@ -1099,7 +1099,7 @@ namespace etl
     //*************************************************************************
     ETL_OR_STD::pair<iterator, iterator> equal_range(key_parameter_t key)
     {
-      return ETL_MAKE_PAIR<iterator, iterator>(
+      return ETL_OR_STD::make_pair<iterator, iterator>(
         iterator(*this, find_lower_node(root_node, key)),
         iterator(*this, find_upper_node(root_node, key)));
     }
@@ -1110,7 +1110,7 @@ namespace etl
     //*************************************************************************
     ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(key_parameter_t key) const
     {
-      return ETL_MAKE_PAIR<const_iterator, const_iterator>(
+      return ETL_OR_STD::make_pair<const_iterator, const_iterator>(
         const_iterator(*this, find_lower_node(root_node, key)),
         const_iterator(*this, find_upper_node(root_node, key)));
     }
@@ -1931,7 +1931,7 @@ namespace etl
   //*************************************************************************
   /// A templated multimap implementation that uses a fixed size buffer.
   //*************************************************************************
-  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename TCompare = etlstd::less<TKey> >
+  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename TCompare = etl::less<TKey> >
   class multimap : public etl::imultimap<TKey, TValue, TCompare>
   {
   public:
@@ -2018,7 +2018,7 @@ namespace etl
   template <typename TKey, typename TMapped, typename TKeyCompare>
   bool operator ==(const etl::imultimap<TKey, TMapped, TKeyCompare>& lhs, const etl::imultimap<TKey, TMapped, TKeyCompare>& rhs)
   {
-    return (lhs.size() == rhs.size()) && etlstd::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //***************************************************************************
@@ -2044,7 +2044,7 @@ namespace etl
   template <typename TKey, typename TMapped, typename TKeyCompare>
   bool operator <(const etl::imultimap<TKey, TMapped, TKeyCompare>& lhs, const etl::imultimap<TKey, TMapped, TKeyCompare>& rhs)
   {
-    return etlstd::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    return etl::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
 
   //*************************************************************************

@@ -41,7 +41,7 @@ SOFTWARE.
 ///\defgroup utility utility
 ///\ingroup utilities
 
-namespace etlstd
+namespace etl
 {
   //******************************************************************************
   template <typename T1, typename T2>
@@ -144,20 +144,20 @@ namespace etlstd
 #if ETL_CPP11_SUPPORTED
   //******************************************************************************
   template <typename T>
-  constexpr typename etlstd::remove_reference<T>::type&& move(T&& t) noexcept
+  constexpr typename etl::remove_reference<T>::type&& move(T&& t) noexcept
   {
-    return static_cast<typename etlstd::remove_reference<T>::type&&>(t);
+    return static_cast<typename etl::remove_reference<T>::type&&>(t);
   }
 
   //******************************************************************************
   template <typename T>
-  constexpr T&& forward(typename etlstd::remove_reference<T>::type& t) noexcept
+  constexpr T&& forward(typename etl::remove_reference<T>::type& t) noexcept
   {
     return static_cast<T&&>(t);
   }
 
   template <typename T>
-  constexpr T&& forward(typename etlstd::remove_reference<T>::type&& t) noexcept
+  constexpr T&& forward(typename etl::remove_reference<T>::type&& t) noexcept
   {
     return static_cast<T&&>(t);
   }
@@ -189,7 +189,7 @@ namespace etlstd
   /// as_const
   //***************************************************************************
   template <typename T>
-  typename etlstd::add_const<T>::type& as_const(T& t)
+  typename etl::add_const<T>::type& as_const(T& t)
   {
     return t;
   }

@@ -925,7 +925,7 @@ namespace etl
     };
     friend class const_iterator;
 
-    typedef typename etlstd::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
     typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
     typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
@@ -1064,7 +1064,7 @@ namespace etl
     //*************************************************************************
     ETL_OR_STD::pair<iterator, iterator> equal_range(const value_type& key)
     {
-      return ETL_MAKE_PAIR<iterator, iterator>(
+      return ETL_OR_STD::make_pair<iterator, iterator>(
         iterator(*this, find_lower_node(root_node, key)),
         iterator(*this, find_upper_node(root_node, key)));
     }
@@ -1075,7 +1075,7 @@ namespace etl
     //*************************************************************************
     ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const value_type& key) const
     {
-      return ETL_MAKE_PAIR<const_iterator, const_iterator>(
+      return ETL_OR_STD::make_pair<const_iterator, const_iterator>(
         const_iterator(*this, find_lower_node(root_node, key)),
         const_iterator(*this, find_upper_node(root_node, key)));
     }

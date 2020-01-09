@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include "etl/utility.h"
 
@@ -50,6 +50,108 @@ namespace
 {
   SUITE(test_utility)
   {
+    //*************************************************************************
+    TEST(pair_default_construct)
+    {
+      etl::pair<int, double> p1;
+
+      CHECK_EQUAL(int(), p1.first);
+      CHECK_EQUAL(double(), p1.second);
+    }
+
+    //*************************************************************************
+    TEST(test_pair_construct)
+    {
+      etl::pair<int, double> p1(1, 2.3);
+
+      CHECK_EQUAL(1, p1.first);
+      CHECK_EQUAL(2.3, p1.second);
+    }
+
+    //*************************************************************************
+    TEST(test_pair_copy_construct)
+    {
+      etl::pair<int, double> p1(1, 2.3);
+      etl::pair<int, double> p2(p1);
+
+      CHECK_EQUAL(p1.first, p2.first);
+      CHECK_EQUAL(p1.second, p2.second);
+    }
+
+    //*************************************************************************
+    TEST(test_pair_copy_construct_alternate)
+    {
+      etl::pair<char, float> p1(1, 2.3f);
+      etl::pair<int, double> p2(p1);
+
+      CHECK_EQUAL(p1.first, p2.first);
+      CHECK_EQUAL(p1.second, p2.second);
+    }
+
+    //*************************************************************************
+    TEST(test_make_pair)
+    {
+      etl::pair<int, double> p1(1, 2.3);
+      etl::pair<int, double> p2;
+      p2 = etl::make_pair(1, 2.3);
+
+      CHECK_EQUAL(p1.first, p2.first);
+      CHECK_EQUAL(p1.second, p2.second);
+    }
+
+    //*************************************************************************
+    TEST(test_pair_swap_member)
+    {
+      etl::pair<int, double> p1(1, 2.3);
+      etl::pair<int, double> p2(2, 3.4);
+
+      p1.swap(p2);
+
+      CHECK_EQUAL(2, p1.first);
+      CHECK_EQUAL(3.4, p1.second);
+
+      CHECK_EQUAL(1, p2.first);
+      CHECK_EQUAL(2.3, p2.second);
+    }
+
+    //*************************************************************************
+    TEST(test_pair_swap_global)
+    {
+      etl::pair<int, double> p1(1, 2.3);
+      etl::pair<int, double> p2(2, 3.4);
+
+      swap(p1, p2);
+
+      CHECK_EQUAL(2, p1.first);
+      CHECK_EQUAL(3.4, p1.second);
+
+      CHECK_EQUAL(1, p2.first);
+      CHECK_EQUAL(2.3, p2.second);
+    }
+
+    //*************************************************************************
+    TEST(test_pair_conditional)
+    {
+      etl::pair<int, double> p1(1, 2.3);
+      etl::pair<int, double> p2(1, 2.3);
+      etl::pair<int, double> p3(2, 3.4);
+
+      CHECK(p1 == p2);
+      CHECK(!(p1 == p3));
+      CHECK(p1 != p3);
+      CHECK(!(p1 != p2));
+      CHECK(p1 <= p2);
+      CHECK(p1 <= p3);
+      CHECK(!(p1 < p2));
+      CHECK(p1 < p3);
+      CHECK(!(p3 < p1));
+      CHECK(p1 >= p2);
+      CHECK(!(p1 >= p3));
+      CHECK(!(p1 > p2));
+      CHECK(!(p1 > p3));
+      CHECK(p3 > p1);
+    }
+
     //*************************************************************************
     TEST(test_exchange)
     {
@@ -78,10 +180,10 @@ namespace
     TEST(test_as_const)
     {
       std::string text = "Hello World!";
-      
+
       nonConstCalled = false;
       constCalled    = false;
-      
+
       TestText(text);
 
       CHECK(nonConstCalled);

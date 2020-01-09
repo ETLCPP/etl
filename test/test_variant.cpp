@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 #include "ExtraCheckMacros.h"
 
 #include "etl/variant.h"
@@ -216,10 +216,10 @@ namespace
       static test_variant_c c(3);
       static test_variant_d d(4.5);
 
-      CHECK((uintptr_t(&a.get<char>()) % uintptr_t(etlstd::alignment_of<char>::value)) == 0);
-      CHECK((uintptr_t(&b.get<short>()) % uintptr_t(etlstd::alignment_of<short>::value)) == 0);
-      CHECK((uintptr_t(&c.get<int>()) % uintptr_t(etlstd::alignment_of<int>::value)) == 0);
-      CHECK((uintptr_t(&d.get<double>()) % uintptr_t(etlstd::alignment_of<double>::value)) == 0);
+      CHECK((uintptr_t(&a.get<char>()) % uintptr_t(etl::alignment_of<char>::value)) == 0);
+      CHECK((uintptr_t(&b.get<short>()) % uintptr_t(etl::alignment_of<short>::value)) == 0);
+      CHECK((uintptr_t(&c.get<int>()) % uintptr_t(etl::alignment_of<int>::value)) == 0);
+      CHECK((uintptr_t(&d.get<double>()) % uintptr_t(etl::alignment_of<double>::value)) == 0);
     }
 
     //*************************************************************************

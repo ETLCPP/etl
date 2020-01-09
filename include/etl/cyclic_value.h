@@ -257,11 +257,7 @@ namespace etl
     //*************************************************************************
     void swap(cyclic_value<T, FIRST, LAST>& other)
     {
-#if defined(ETL_NO_STL)
-      using etlstd::swap;
-#else
-      using std::swap;
-#endif
+      using ETL_OR_STD::swap; // Allow ADL
 
       swap(value, other.value);
     }
@@ -304,7 +300,7 @@ namespace etl
   ///\ingroup cyclic_value
   //***************************************************************************
   template <typename T, const T FIRST, const T LAST>
-  class cyclic_value<T, FIRST, LAST, typename etlstd::enable_if<(FIRST == 0) && (LAST == 0)>::type>
+  class cyclic_value<T, FIRST, LAST, typename etl::enable_if<(FIRST == 0) && (LAST == 0)>::type>
   {
   public:
 
@@ -537,11 +533,7 @@ namespace etl
     //*************************************************************************
     void swap(cyclic_value<T, FIRST, LAST>& other)
     {
-#if defined(ETL_NO_STL)
-      using etlstd::swap;
-#else
-      using std::swap;
-#endif
+      using ETL_OR_STD::swap; // Allow ADL
 
       swap(first_value, other.first_value);
       swap(last_value, other.last_value);

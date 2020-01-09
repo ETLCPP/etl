@@ -342,7 +342,7 @@ namespace etl
     //*************************************************************************
     void fill(parameter_t value)
     {
-      etlstd::fill(begin(), end(), value);
+      etl::fill(begin(), end(), value);
     }
 
     //*************************************************************************
@@ -351,11 +351,7 @@ namespace etl
     //*************************************************************************
     void swap(array& other)
     {
-#if defined(ETL_NO_STL)
-      using etlstd::swap;
-#else
-      using std::swap;
-#endif
+      using ETL_OR_STD::swap; // Allow ADL
 
       for (size_t i = 0; i < SIZE; ++i)
       {
@@ -373,7 +369,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, const TIterator last)
     {
-      etlstd::copy(first, last, begin(), end());
+      etl::copy_s(first, last, begin(), end());
     }
 
     //*************************************************************************
@@ -387,10 +383,10 @@ namespace etl
     void assign(TIterator first, const TIterator last, parameter_t value)
     {
       // Copy from the range.
-      iterator p = etlstd::copy(first, last, begin(), end());
+      iterator p = etl::copy_s(first, last, begin(), end());
 
       // Default initialise any that are left.
-      etlstd::fill(p, end(), value);
+      etl::fill(p, end(), value);
     }
 
     //*************************************************************************
@@ -412,7 +408,7 @@ namespace etl
     {
       iterator p = const_cast<iterator>(position);
 
-      etlstd::copy_backward(p, end() - 1, end());
+      etl::copy_backward(p, end() - 1, end());
       *p = value;
 
       return p;
@@ -442,18 +438,18 @@ namespace etl
       iterator p = const_cast<iterator>(position);
       iterator result(p);
 
-      size_t source_size       = etlstd::distance(first, last);
-      size_t destination_space = etlstd::distance(position, cend());
+      size_t source_size       = etl::distance(first, last);
+      size_t destination_space = etl::distance(position, cend());
 
       // Do we need to move anything?
       if (source_size < destination_space)
       {
-        size_t length = SIZE - (etlstd::distance(begin(), p) + source_size);
-        etlstd::copy_backward(p, p + length, end());
+        size_t length = SIZE - (etl::distance(begin(), p) + source_size);
+        etl::copy_backward(p, p + length, end());
       }
 
       // Copy from the range.
-      etlstd::copy(first, last, p, end());
+      etl::copy_s(first, last, p, end());
 
       return result;
     }
@@ -476,7 +472,7 @@ namespace etl
     iterator erase(const_iterator position)
     {
       iterator p = const_cast<iterator>(position);
-      etlstd::copy(p + 1, end(), p);
+      etl::copy(p + 1, end(), p);
 
       return p;
     }
@@ -501,7 +497,7 @@ namespace etl
     iterator erase(const_iterator first, const_iterator last)
     {
       iterator p = const_cast<iterator>(first);
-      etlstd::copy(last, cend(), p);
+      etl::copy(last, cend(), p);
       return p;
     }
 
@@ -524,7 +520,7 @@ namespace etl
     {
       iterator p = const_cast<iterator>(position);
 
-      etlstd::copy(p + 1, end(), p);
+      etl::copy(p + 1, end(), p);
       back() = value;
 
       return p;
@@ -550,8 +546,8 @@ namespace etl
     {
       iterator p = const_cast<iterator>(first);
 
-      p = etlstd::copy(last, cend(), p);
-      etlstd::fill(p, end(), value);
+      p = etl::copy(last, cend(), p);
+      etl::fill(p, end(), value);
 
       return const_cast<iterator>(first);
     }
@@ -580,7 +576,7 @@ namespace etl
   template <typename T, size_t SIZE>
   bool operator ==(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
-    return etlstd::equal(lhs.cbegin(), lhs.cend(), rhs.cbegin());
+    return etl::equal(lhs.cbegin(), lhs.cend(), rhs.cbegin());
   }
 
   //*************************************************************************
@@ -604,7 +600,7 @@ namespace etl
   template <typename T, size_t SIZE>
   bool operator <(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
-    return etlstd::lexicographical_compare(lhs.cbegin(),
+    return etl::lexicographical_compare(lhs.cbegin(),
                                         lhs.cend(),
                                         rhs.cbegin(),
                                         rhs.cend());

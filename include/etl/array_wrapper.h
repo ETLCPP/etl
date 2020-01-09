@@ -310,21 +310,17 @@ namespace etl
     //*************************************************************************
     void fill(parameter_t value)
     {
-      etlstd::fill(begin(), end(), value);
+      etl::fill(begin(), end(), value);
     }
 
     //*************************************************************************
     /// Swaps the contents of arrays.
     //*************************************************************************
     template <typename U, U(&ARRAYOTHER)[SIZE_]>
-    typename etlstd::enable_if<etlstd::is_same<T, U>::value, void>::type
+    typename etl::enable_if<etl::is_same<T, U>::value, void>::type
      swap(etl::array_wrapper<U, SIZE_, ARRAYOTHER>& other)
     {
-#if defined(ETL_NO_STL)
-      using etlstd::swap;
-#else
-      using std::swap;
-#endif
+      using ETL_OR_STD::swap; // Allow ADL
 
       for (size_t i = 0; i < SIZE; ++i)
       {
@@ -340,7 +336,7 @@ namespace etl
   bool operator == (const etl::array_wrapper<TL, SIZEL, ARRAYL>& lhs,
                     const etl::array_wrapper<TR, SIZER, ARRAYR>& rhs)
   {
-    return (SIZEL == SIZER) && etlstd::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (SIZEL == SIZER) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //*************************************************************************
@@ -360,7 +356,7 @@ namespace etl
   bool operator < (const etl::array_wrapper<TL, SIZEL, ARRAYL>& lhs,
                    const etl::array_wrapper<TR, SIZER, ARRAYR>& rhs)
   {
-    return etlstd::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    return etl::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
 
   //*************************************************************************

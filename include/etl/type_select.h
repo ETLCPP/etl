@@ -73,22 +73,22 @@ namespace etl
     template <const size_t ID>
     struct select
     {
-      typedef typename etlstd::conditional<ID == 0, T0,
-              typename etlstd::conditional<ID == 1, T1,
-              typename etlstd::conditional<ID == 2, T2,
-              typename etlstd::conditional<ID == 3, T3,
-              typename etlstd::conditional<ID == 4, T4,
-              typename etlstd::conditional<ID == 5, T5,
-              typename etlstd::conditional<ID == 6, T6,
-              typename etlstd::conditional<ID == 7, T7,
-              typename etlstd::conditional<ID == 8, T8,
-              typename etlstd::conditional<ID == 9, T9,
-              typename etlstd::conditional<ID == 10, T10,
-              typename etlstd::conditional<ID == 11, T11,
-              typename etlstd::conditional<ID == 12, T12,
-              typename etlstd::conditional<ID == 13, T13,
-              typename etlstd::conditional<ID == 14, T14,
-              typename etlstd::conditional<ID == 15, T15,
+      typedef typename etl::conditional<ID == 0, T0,
+              typename etl::conditional<ID == 1, T1,
+              typename etl::conditional<ID == 2, T2,
+              typename etl::conditional<ID == 3, T3,
+              typename etl::conditional<ID == 4, T4,
+              typename etl::conditional<ID == 5, T5,
+              typename etl::conditional<ID == 6, T6,
+              typename etl::conditional<ID == 7, T7,
+              typename etl::conditional<ID == 8, T8,
+              typename etl::conditional<ID == 9, T9,
+              typename etl::conditional<ID == 10, T10,
+              typename etl::conditional<ID == 11, T11,
+              typename etl::conditional<ID == 12, T12,
+              typename etl::conditional<ID == 13, T13,
+              typename etl::conditional<ID == 14, T14,
+              typename etl::conditional<ID == 15, T15,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type>::type>::type>::type>::type>::type>::type type;
@@ -121,21 +121,21 @@ namespace etl
     template <const size_t ID>
     struct select
     {
-      typedef typename etlstd::conditional<ID == 0, T0,
-              typename etlstd::conditional<ID == 1, T1,
-              typename etlstd::conditional<ID == 2, T2,
-              typename etlstd::conditional<ID == 3, T3,
-              typename etlstd::conditional<ID == 4, T4,
-              typename etlstd::conditional<ID == 5, T5,
-              typename etlstd::conditional<ID == 6, T6,
-              typename etlstd::conditional<ID == 7, T7,
-              typename etlstd::conditional<ID == 8, T8,
-              typename etlstd::conditional<ID == 9, T9,
-              typename etlstd::conditional<ID == 10, T10,
-              typename etlstd::conditional<ID == 11, T11,
-              typename etlstd::conditional<ID == 12, T12,
-              typename etlstd::conditional<ID == 13, T13,
-              typename etlstd::conditional<ID == 14, T14,
+      typedef typename etl::conditional<ID == 0, T0,
+              typename etl::conditional<ID == 1, T1,
+              typename etl::conditional<ID == 2, T2,
+              typename etl::conditional<ID == 3, T3,
+              typename etl::conditional<ID == 4, T4,
+              typename etl::conditional<ID == 5, T5,
+              typename etl::conditional<ID == 6, T6,
+              typename etl::conditional<ID == 7, T7,
+              typename etl::conditional<ID == 8, T8,
+              typename etl::conditional<ID == 9, T9,
+              typename etl::conditional<ID == 10, T10,
+              typename etl::conditional<ID == 11, T11,
+              typename etl::conditional<ID == 12, T12,
+              typename etl::conditional<ID == 13, T13,
+              typename etl::conditional<ID == 14, T14,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type>::type>::type>::type>::type>::type type;
@@ -167,20 +167,20 @@ namespace etl
     template <const size_t ID>
     struct select
     {
-      typedef typename etlstd::conditional<ID == 0, T0,
-              typename etlstd::conditional<ID == 1, T1,
-              typename etlstd::conditional<ID == 2, T2,
-              typename etlstd::conditional<ID == 3, T3,
-              typename etlstd::conditional<ID == 4, T4,
-              typename etlstd::conditional<ID == 5, T5,
-              typename etlstd::conditional<ID == 6, T6,
-              typename etlstd::conditional<ID == 7, T7,
-              typename etlstd::conditional<ID == 8, T8,
-              typename etlstd::conditional<ID == 9, T9,
-              typename etlstd::conditional<ID == 10, T10,
-              typename etlstd::conditional<ID == 11, T11,
-              typename etlstd::conditional<ID == 12, T12,
-              typename etlstd::conditional<ID == 13, T13,
+      typedef typename etl::conditional<ID == 0, T0,
+              typename etl::conditional<ID == 1, T1,
+              typename etl::conditional<ID == 2, T2,
+              typename etl::conditional<ID == 3, T3,
+              typename etl::conditional<ID == 4, T4,
+              typename etl::conditional<ID == 5, T5,
+              typename etl::conditional<ID == 6, T6,
+              typename etl::conditional<ID == 7, T7,
+              typename etl::conditional<ID == 8, T8,
+              typename etl::conditional<ID == 9, T9,
+              typename etl::conditional<ID == 10, T10,
+              typename etl::conditional<ID == 11, T11,
+              typename etl::conditional<ID == 12, T12,
+              typename etl::conditional<ID == 13, T13,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type>::type>::type>::type>::type type;
@@ -211,19 +211,19 @@ namespace etl
     template <const size_t ID>
     struct select
     {
-      typedef typename etlstd::conditional<ID == 0, T0,
-              typename etlstd::conditional<ID == 1, T1,
-              typename etlstd::conditional<ID == 2, T2,
-              typename etlstd::conditional<ID == 3, T3,
-              typename etlstd::conditional<ID == 4, T4,
-              typename etlstd::conditional<ID == 5, T5,
-              typename etlstd::conditional<ID == 6, T6,
-              typename etlstd::conditional<ID == 7, T7,
-              typename etlstd::conditional<ID == 8, T8,
-              typename etlstd::conditional<ID == 9, T9,
-              typename etlstd::conditional<ID == 10, T10,
-              typename etlstd::conditional<ID == 11, T11,
-              typename etlstd::conditional<ID == 12, T12,
+      typedef typename etl::conditional<ID == 0, T0,
+              typename etl::conditional<ID == 1, T1,
+              typename etl::conditional<ID == 2, T2,
+              typename etl::conditional<ID == 3, T3,
+              typename etl::conditional<ID == 4, T4,
+              typename etl::conditional<ID == 5, T5,
+              typename etl::conditional<ID == 6, T6,
+              typename etl::conditional<ID == 7, T7,
+              typename etl::conditional<ID == 8, T8,
+              typename etl::conditional<ID == 9, T9,
+              typename etl::conditional<ID == 10, T10,
+              typename etl::conditional<ID == 11, T11,
+              typename etl::conditional<ID == 12, T12,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type>::type>::type>::type type;
@@ -253,18 +253,18 @@ namespace etl
     template <const size_t ID>
     struct select
     {
-      typedef typename etlstd::conditional<ID == 0, T0,
-              typename etlstd::conditional<ID == 1, T1,
-              typename etlstd::conditional<ID == 2, T2,
-              typename etlstd::conditional<ID == 3, T3,
-              typename etlstd::conditional<ID == 4, T4,
-              typename etlstd::conditional<ID == 5, T5,
-              typename etlstd::conditional<ID == 6, T6,
-              typename etlstd::conditional<ID == 7, T7,
-              typename etlstd::conditional<ID == 8, T8,
-              typename etlstd::conditional<ID == 9, T9,
-              typename etlstd::conditional<ID == 10, T10,
-              typename etlstd::conditional<ID == 11, T11,
+      typedef typename etl::conditional<ID == 0, T0,
+              typename etl::conditional<ID == 1, T1,
+              typename etl::conditional<ID == 2, T2,
+              typename etl::conditional<ID == 3, T3,
+              typename etl::conditional<ID == 4, T4,
+              typename etl::conditional<ID == 5, T5,
+              typename etl::conditional<ID == 6, T6,
+              typename etl::conditional<ID == 7, T7,
+              typename etl::conditional<ID == 8, T8,
+              typename etl::conditional<ID == 9, T9,
+              typename etl::conditional<ID == 10, T10,
+              typename etl::conditional<ID == 11, T11,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type>::type>::type type;
@@ -293,17 +293,17 @@ namespace etl
     template <const size_t ID>
     struct select
     {
-      typedef typename etlstd::conditional<ID == 0, T0,
-              typename etlstd::conditional<ID == 1, T1,
-              typename etlstd::conditional<ID == 2, T2,
-              typename etlstd::conditional<ID == 3, T3,
-              typename etlstd::conditional<ID == 4, T4,
-              typename etlstd::conditional<ID == 5, T5,
-              typename etlstd::conditional<ID == 6, T6,
-              typename etlstd::conditional<ID == 7, T7,
-              typename etlstd::conditional<ID == 8, T8,
-              typename etlstd::conditional<ID == 9, T9,
-              typename etlstd::conditional<ID == 10, T10,
+      typedef typename etl::conditional<ID == 0, T0,
+              typename etl::conditional<ID == 1, T1,
+              typename etl::conditional<ID == 2, T2,
+              typename etl::conditional<ID == 3, T3,
+              typename etl::conditional<ID == 4, T4,
+              typename etl::conditional<ID == 5, T5,
+              typename etl::conditional<ID == 6, T6,
+              typename etl::conditional<ID == 7, T7,
+              typename etl::conditional<ID == 8, T8,
+              typename etl::conditional<ID == 9, T9,
+              typename etl::conditional<ID == 10, T10,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type>::type type;
@@ -331,16 +331,16 @@ namespace etl
     template <const size_t ID>
     struct select
     {
-      typedef typename etlstd::conditional<ID == 0, T0,
-              typename etlstd::conditional<ID == 1, T1,
-              typename etlstd::conditional<ID == 2, T2,
-              typename etlstd::conditional<ID == 3, T3,
-              typename etlstd::conditional<ID == 4, T4,
-              typename etlstd::conditional<ID == 5, T5,
-              typename etlstd::conditional<ID == 6, T6,
-              typename etlstd::conditional<ID == 7, T7,
-              typename etlstd::conditional<ID == 8, T8,
-              typename etlstd::conditional<ID == 9, T9,
+      typedef typename etl::conditional<ID == 0, T0,
+              typename etl::conditional<ID == 1, T1,
+              typename etl::conditional<ID == 2, T2,
+              typename etl::conditional<ID == 3, T3,
+              typename etl::conditional<ID == 4, T4,
+              typename etl::conditional<ID == 5, T5,
+              typename etl::conditional<ID == 6, T6,
+              typename etl::conditional<ID == 7, T7,
+              typename etl::conditional<ID == 8, T8,
+              typename etl::conditional<ID == 9, T9,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type type;
@@ -367,15 +367,15 @@ namespace etl
     template <const size_t ID>
     struct select
     {
-      typedef typename etlstd::conditional<ID == 0, T0,
-              typename etlstd::conditional<ID == 1, T1,
-              typename etlstd::conditional<ID == 2, T2,
-              typename etlstd::conditional<ID == 3, T3,
-              typename etlstd::conditional<ID == 4, T4,
-              typename etlstd::conditional<ID == 5, T5,
-              typename etlstd::conditional<ID == 6, T6,
-              typename etlstd::conditional<ID == 7, T7,
-              typename etlstd::conditional<ID == 8, T8,
+      typedef typename etl::conditional<ID == 0, T0,
+              typename etl::conditional<ID == 1, T1,
+              typename etl::conditional<ID == 2, T2,
+              typename etl::conditional<ID == 3, T3,
+              typename etl::conditional<ID == 4, T4,
+              typename etl::conditional<ID == 5, T5,
+              typename etl::conditional<ID == 6, T6,
+              typename etl::conditional<ID == 7, T7,
+              typename etl::conditional<ID == 8, T8,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type type;
@@ -401,14 +401,14 @@ namespace etl
     template <const size_t ID>
     struct select
     {
-      typedef typename etlstd::conditional<ID == 0, T0,
-              typename etlstd::conditional<ID == 1, T1,
-              typename etlstd::conditional<ID == 2, T2,
-              typename etlstd::conditional<ID == 3, T3,
-              typename etlstd::conditional<ID == 4, T4,
-              typename etlstd::conditional<ID == 5, T5,
-              typename etlstd::conditional<ID == 6, T6,
-              typename etlstd::conditional<ID == 7, T7,
+      typedef typename etl::conditional<ID == 0, T0,
+              typename etl::conditional<ID == 1, T1,
+              typename etl::conditional<ID == 2, T2,
+              typename etl::conditional<ID == 3, T3,
+              typename etl::conditional<ID == 4, T4,
+              typename etl::conditional<ID == 5, T5,
+              typename etl::conditional<ID == 6, T6,
+              typename etl::conditional<ID == 7, T7,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type type;
 
@@ -432,13 +432,13 @@ namespace etl
     template <const size_t ID>
     struct select
     {
-      typedef typename etlstd::conditional<ID == 0, T0,
-              typename etlstd::conditional<ID == 1, T1,
-              typename etlstd::conditional<ID == 2, T2,
-              typename etlstd::conditional<ID == 3, T3,
-              typename etlstd::conditional<ID == 4, T4,
-              typename etlstd::conditional<ID == 5, T5,
-              typename etlstd::conditional<ID == 6, T6,
+      typedef typename etl::conditional<ID == 0, T0,
+              typename etl::conditional<ID == 1, T1,
+              typename etl::conditional<ID == 2, T2,
+              typename etl::conditional<ID == 3, T3,
+              typename etl::conditional<ID == 4, T4,
+              typename etl::conditional<ID == 5, T5,
+              typename etl::conditional<ID == 6, T6,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type type;
 
@@ -461,12 +461,12 @@ namespace etl
     template <const size_t ID>
     struct select
     {
-      typedef typename etlstd::conditional<ID == 0, T0,
-              typename etlstd::conditional<ID == 1, T1,
-              typename etlstd::conditional<ID == 2, T2,
-              typename etlstd::conditional<ID == 3, T3,
-              typename etlstd::conditional<ID == 4, T4,
-              typename etlstd::conditional<ID == 5, T5,
+      typedef typename etl::conditional<ID == 0, T0,
+              typename etl::conditional<ID == 1, T1,
+              typename etl::conditional<ID == 2, T2,
+              typename etl::conditional<ID == 3, T3,
+              typename etl::conditional<ID == 4, T4,
+              typename etl::conditional<ID == 5, T5,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type type;
 
@@ -488,11 +488,11 @@ namespace etl
     template <const size_t ID>
     struct select
     {
-      typedef typename etlstd::conditional<ID == 0, T0,
-              typename etlstd::conditional<ID == 1, T1,
-              typename etlstd::conditional<ID == 2, T2,
-              typename etlstd::conditional<ID == 3, T3,
-              typename etlstd::conditional<ID == 4, T4,
+      typedef typename etl::conditional<ID == 0, T0,
+              typename etl::conditional<ID == 1, T1,
+              typename etl::conditional<ID == 2, T2,
+              typename etl::conditional<ID == 3, T3,
+              typename etl::conditional<ID == 4, T4,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type type;
 
@@ -513,10 +513,10 @@ namespace etl
     template <const size_t ID>
     struct select
     {
-      typedef typename etlstd::conditional<ID == 0, T0,
-              typename etlstd::conditional<ID == 1, T1,
-              typename etlstd::conditional<ID == 2, T2,
-              typename etlstd::conditional<ID == 3, T3,
+      typedef typename etl::conditional<ID == 0, T0,
+              typename etl::conditional<ID == 1, T1,
+              typename etl::conditional<ID == 2, T2,
+              typename etl::conditional<ID == 3, T3,
               etl::null_type<0> >
               ::type>::type>::type>::type type;
 
@@ -536,9 +536,9 @@ namespace etl
     template <const size_t ID>
     struct select
     {
-      typedef typename etlstd::conditional<ID == 0, T0,
-              typename etlstd::conditional<ID == 1, T1,
-              typename etlstd::conditional<ID == 2, T2,
+      typedef typename etl::conditional<ID == 0, T0,
+              typename etl::conditional<ID == 1, T1,
+              typename etl::conditional<ID == 2, T2,
               etl::null_type<0> >
               ::type>::type>::type type;
 
@@ -557,8 +557,8 @@ namespace etl
     template <const size_t ID>
     struct select
     {
-      typedef typename etlstd::conditional<ID == 0, T0,
-              typename etlstd::conditional<ID == 1, T1,
+      typedef typename etl::conditional<ID == 0, T0,
+              typename etl::conditional<ID == 1, T1,
               etl::null_type<0> >
               ::type>::type type;
 
@@ -576,7 +576,7 @@ namespace etl
     template <const size_t ID>
     struct select
     {
-      typedef typename etlstd::conditional<ID == 0, T0,
+      typedef typename etl::conditional<ID == 0, T0,
               etl::null_type<0> >
               ::type type;
 

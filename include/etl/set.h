@@ -457,7 +457,7 @@ namespace etl
   /// A templated base for all etl::set types.
   ///\ingroup set
   //***************************************************************************
-  template <typename T, typename TCompare = etlstd::less<T> >
+  template <typename T, typename TCompare = etl::less<T> >
   class iset : public etl::set_base
   {
   public:
@@ -761,7 +761,7 @@ namespace etl
     };
     friend class const_iterator;
 
-    typedef typename etlstd::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
     typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
     typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
@@ -913,7 +913,7 @@ namespace etl
     //*************************************************************************
     ETL_OR_STD::pair<iterator, iterator> equal_range(const value_type& value)
     {
-      return ETL_MAKE_PAIR<iterator, iterator>(
+      return ETL_OR_STD::make_pair<iterator, iterator>(
         iterator(*this, find_lower_node(root_node, value)),
         iterator(*this, find_upper_node(root_node, value)));
     }
@@ -924,7 +924,7 @@ namespace etl
     //*************************************************************************
     ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const value_type& value) const
     {
-      return ETL_MAKE_PAIR<const_iterator, const_iterator>(
+      return ETL_OR_STD::make_pair<const_iterator, const_iterator>(
         const_iterator(*this, find_lower_node(root_node, value)),
         const_iterator(*this, find_upper_node(root_node, value)));
     }
@@ -1031,7 +1031,7 @@ namespace etl
       inserted = inserted_node == &node;
 
       // Insert node into tree and return iterator to new node location in tree
-      return ETL_MAKE_PAIR(iterator(*this, inserted_node), inserted);
+      return ETL_OR_STD::make_pair(iterator(*this, inserted_node), inserted);
     }
 
     //*********************************************************************
@@ -1950,7 +1950,7 @@ namespace etl
   //*************************************************************************
   /// A templated set implementation that uses a fixed size buffer.
   //*************************************************************************
-  template <typename T, const size_t MAX_SIZE_, typename TCompare = etlstd::less<T> >
+  template <typename T, const size_t MAX_SIZE_, typename TCompare = etl::less<T> >
   class set : public etl::iset<T, TCompare>
   {
   public:
@@ -2037,7 +2037,7 @@ namespace etl
   template <typename T, typename TCompare>
   bool operator ==(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>& rhs)
   {
-    return (lhs.size() == rhs.size()) && etlstd::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //***************************************************************************
@@ -2063,7 +2063,7 @@ namespace etl
   template <typename T, typename TCompare>
   bool operator <(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>& rhs)
   {
-    return etlstd::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    return etl::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
 
   //*************************************************************************

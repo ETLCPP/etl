@@ -140,7 +140,7 @@ namespace etl
     {
       if (p != 0)
       {
-        etlstd::fill_n(p, n, c);
+        etl::fill_n(p, n, c);
       }
 
       return p;

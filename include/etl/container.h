@@ -273,7 +273,7 @@ namespace etl
   char(&array_size(T(&array)[ARRAY_SIZE]))[ARRAY_SIZE];
 }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_CPP11_SUPPORTED  && !defined(ETL_FORCE_NO_ADVANCED_CPP)
   #define ETL_ARRAY_SIZE(a) (etl::size(a))
 #else
   #define ETL_ARRAY_SIZE(a) sizeof(etl::array_size(a))

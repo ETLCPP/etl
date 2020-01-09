@@ -330,7 +330,7 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
 #endif
-      ::new (&p_buffer[in]) T(etlstd::forward<Args>(args)...);
+      ::new (&p_buffer[in]) T(etl::forward<Args>(args)...);
       add_in();
     }
 #else
@@ -582,7 +582,7 @@ namespace etl
   private:
 
     /// The uninitialised buffer of T used in the stack.
-    typename etl::aligned_storage<sizeof(T), etlstd::alignment_of<T>::value>::type buffer[SIZE];
+    typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[SIZE];
   };
 }
 

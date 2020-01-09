@@ -382,8 +382,8 @@ namespace etl
       cog.outl("T%s>::value ||" % int(NTypes))
 
       for n in range(1, int(NTypes)):
-          cog.outl("               etlstd::is_base_of<T, T%s>::value ||" % n)
-      cog.outl("               etlstd::is_base_of<T, T%s>::value), \"Invalid type\");" % int(NTypes))
+          cog.outl("               etl::is_base_of<T, T%s>::value ||" % n)
+      cog.outl("               etl::is_base_of<T, T%s>::value), \"Invalid type\");" % int(NTypes))
 
       ]]]*/
       /*[[[end]]]*/

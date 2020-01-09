@@ -56,7 +56,7 @@ namespace etl
     template <typename TIString>
     void add_alignment(TIString& str, typename TIString::iterator position, const etl::basic_format_spec<TIString>& format)
     {
-      uint32_t length = static_cast<uint32_t>(etlstd::distance(position, str.end()));
+      uint32_t length = static_cast<uint32_t>(etl::distance(position, str.end()));
 
       if (length < format.get_width())
       {
@@ -165,7 +165,7 @@ namespace etl
         }
 
         // Reverse the string we appended.
-        etlstd::reverse(start, str.end());
+        etl::reverse(start, str.end());
       }
 
       etl::private_to_string::add_alignment(str, start, format);
@@ -241,7 +241,7 @@ namespace etl
       else
       {
         // Make sure we format the two halves correctly.
-        uint32_t max_precision = etlstd::numeric_limits<T>::digits10;
+        uint32_t max_precision = etl::numeric_limits<T>::digits10;
 
         etl::basic_format_spec<TIString> integral_format = format;
         integral_format.decimal().width(0).precision(format.get_precision() > max_precision ? max_precision : format.get_precision());
@@ -354,10 +354,10 @@ namespace etl
     /// For signed integrals less than 64 bits. Default format spec.
     //***************************************************************************
     template <typename T, typename TIString>
-    typename etlstd::enable_if<etlstd::is_integral<T>::value &&
-                            etlstd::is_signed<T>::value &&
-                            !etlstd::is_same<T, bool>::value &&
-                            !etlstd::is_same<T, int64_t>::value, const TIString&>::type
+    typename etl::enable_if<etl::is_integral<T>::value &&
+                            etl::is_signed<T>::value &&
+                            !etl::is_same<T, bool>::value &&
+                            !etl::is_same<T, int64_t>::value, const TIString&>::type
      to_string(const T value, TIString& str, const bool append = false)
     {
       etl::basic_format_spec<TIString> format;
@@ -371,10 +371,10 @@ namespace etl
     /// For signed integrals less than 64 bits. Supplied format spec.
     //***************************************************************************
     template <typename T, typename TIString>
-    typename etlstd::enable_if<etlstd::is_integral<T>::value &&
-                            etlstd::is_signed<T>::value &&
-                            !etlstd::is_same<T, bool>::value &&
-                            !etlstd::is_same<T, int64_t>::value, const TIString&>::type
+    typename etl::enable_if<etl::is_integral<T>::value &&
+                            etl::is_signed<T>::value &&
+                            !etl::is_same<T, bool>::value &&
+                            !etl::is_same<T, int64_t>::value, const TIString&>::type
       to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
     {
       etl::private_to_string::add_integral(int32_t(value), str, format, append);
@@ -386,10 +386,10 @@ namespace etl
     /// For unsigned integrals less then 64 bits. Default format spec.
     //***************************************************************************
     template <typename T, typename TIString>
-    typename etlstd::enable_if<etlstd::is_integral<T>::value &&
-                            etlstd::is_unsigned<T>::value &&
-                            !etlstd::is_same<T, bool>::value &&
-                            !etlstd::is_same<T, uint64_t>::value, const TIString&>::type
+    typename etl::enable_if<etl::is_integral<T>::value &&
+                            etl::is_unsigned<T>::value &&
+                            !etl::is_same<T, bool>::value &&
+                            !etl::is_same<T, uint64_t>::value, const TIString&>::type
       to_string(const T value, TIString& str, const bool append = false)
     {
       etl::basic_format_spec<TIString> format;
@@ -403,10 +403,10 @@ namespace etl
     /// For unsigned integrals less than 64 bits. Supplied format spec.
     //***************************************************************************
     template <typename T, typename TIString>
-    typename etlstd::enable_if<etlstd::is_integral<T>::value &&
-                            etlstd::is_unsigned<T>::value &&
-                            !etlstd::is_same<T, bool>::value &&
-                            !etlstd::is_same<T, uint64_t>::value, const TIString&>::type
+    typename etl::enable_if<etl::is_integral<T>::value &&
+                            etl::is_unsigned<T>::value &&
+                            !etl::is_same<T, bool>::value &&
+                            !etl::is_same<T, uint64_t>::value, const TIString&>::type
       to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
     {
       etl::private_to_string::add_integral(uint32_t(value), str, format, append);
@@ -418,10 +418,10 @@ namespace etl
     /// For signed 64 bit integrals. Default format spec.
     //***************************************************************************
     template <typename T, typename TIString>
-    typename etlstd::enable_if<etlstd::is_integral<T>::value &&
-                            etlstd::is_signed<T>::value &&
-                            !etlstd::is_same<T, bool>::value &&
-                            etlstd::is_same<T, int64_t>::value, const TIString&>::type
+    typename etl::enable_if<etl::is_integral<T>::value &&
+                            etl::is_signed<T>::value &&
+                            !etl::is_same<T, bool>::value &&
+                            etl::is_same<T, int64_t>::value, const TIString&>::type
       to_string(const T value, TIString& str, const bool append = false)
     {
       etl::basic_format_spec<TIString> format;
@@ -435,10 +435,10 @@ namespace etl
     /// For signed 64 bit integrals. Supplied format spec.
     //***************************************************************************
     template <typename T, typename TIString>
-    typename etlstd::enable_if<etlstd::is_integral<T>::value &&
-                            etlstd::is_signed<T>::value &&
-                            !etlstd::is_same<T, bool>::value &&
-                            etlstd::is_same<T, int64_t>::value, const TIString&>::type
+    typename etl::enable_if<etl::is_integral<T>::value &&
+                            etl::is_signed<T>::value &&
+                            !etl::is_same<T, bool>::value &&
+                            etl::is_same<T, int64_t>::value, const TIString&>::type
       to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
     {
       etl::private_to_string::add_integral(int64_t(value), str, format, append);
@@ -450,10 +450,10 @@ namespace etl
     /// For unsigned 64 bit integrals. Default format spec.
     //***************************************************************************
     template <typename T, typename TIString>
-    typename etlstd::enable_if<etlstd::is_integral<T>::value &&
-                            etlstd::is_unsigned<T>::value &&
-                            !etlstd::is_same<T, bool>::value &&
-                            etlstd::is_same<T, uint64_t>::value, const TIString&>::type
+    typename etl::enable_if<etl::is_integral<T>::value &&
+                            etl::is_unsigned<T>::value &&
+                            !etl::is_same<T, bool>::value &&
+                            etl::is_same<T, uint64_t>::value, const TIString&>::type
       to_string(const T value, TIString& str, const bool append = false)
     {
       etl::basic_format_spec<TIString> format;
@@ -467,10 +467,10 @@ namespace etl
     /// For unsigned 64 bit integrals. Supplied format spec.
     //***************************************************************************
     template <typename T, typename TIString>
-    typename etlstd::enable_if<etlstd::is_integral<T>::value &&
-                            etlstd::is_unsigned<T>::value &&
-                            !etlstd::is_same<T, bool>::value &&
-                            etlstd::is_same<T, uint64_t>::value, const TIString&>::type
+    typename etl::enable_if<etl::is_integral<T>::value &&
+                            etl::is_unsigned<T>::value &&
+                            !etl::is_same<T, bool>::value &&
+                            etl::is_same<T, uint64_t>::value, const TIString&>::type
       to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
     {
       etl::private_to_string::add_integral(uint64_t(value), str, format, append);
@@ -482,7 +482,7 @@ namespace etl
     /// For floating point. Default format spec.
     //***************************************************************************
     template <typename T, typename TIString>
-    typename etlstd::enable_if<etlstd::is_floating_point<T>::value, const TIString&>::type
+    typename etl::enable_if<etl::is_floating_point<T>::value, const TIString&>::type
       to_string(const T value, TIString& str, const bool append = false)
     {
       etl::basic_format_spec<TIString> format;
@@ -496,7 +496,7 @@ namespace etl
     /// For floating point. Supplied format spec.
     //***************************************************************************
     template <typename T, typename TIString>
-    typename etlstd::enable_if<etlstd::is_floating_point<T>::value, const TIString&>::type
+    typename etl::enable_if<etl::is_floating_point<T>::value, const TIString&>::type
       to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
     {
       etl::private_to_string::add_floating_point(value, str, format, append);

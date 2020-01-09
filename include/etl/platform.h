@@ -72,7 +72,7 @@ SOFTWARE.
 #endif
 
 // The macros below are dependent on the profile.
-#if ETL_CPP11_SUPPORTED
+#if ETL_CPP11_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)
   #define ETL_CONSTEXPR constexpr
   #define ETL_CONST_OR_CONSTEXPR constexpr
   #define ETL_DELETE    = delete
@@ -86,7 +86,7 @@ SOFTWARE.
   #define ETL_NOEXCEPT_EXPR(expression)
 #endif
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_CPP17_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)
   #define ETL_CONSTEXPR17 constexpr
   #define ETL_IF_CONSTEXPR constexpr
   #define ETL_NODISCARD [[nodiscard]]
@@ -102,7 +102,7 @@ SOFTWARE.
   #define ETL_EXPLICIT_STRING_FROM_CHAR
 #endif
 
-// Sort out names for STL/No STL options.
+// Sort out namespaces for STL/No STL options.
 #include "private/choose_namespace.h"
 
 #endif

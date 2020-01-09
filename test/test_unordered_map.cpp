@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include <sstream>
 
@@ -444,7 +444,7 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.insert(ETL_MAKE_PAIR(K10, N10)), etl::unordered_map_full);
+      CHECK_THROW(data.insert(ETL_OR_STD::make_pair(K10, N10)), etl::unordered_map_full);
     }
 
     //*************************************************************************

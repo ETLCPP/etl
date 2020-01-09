@@ -133,7 +133,7 @@ namespace etl
     void assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      intmax_t d = etlstd::distance(first, last);
+      intmax_t d = etl::distance(first, last);
       ETL_ASSERT(d >= 0, ETL_ERROR(intrusive_list_iterator_exception));
 #endif
 
@@ -580,7 +580,7 @@ namespace etl
       const value_type* p_value;
     };
 
-    typedef typename etlstd::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
     //*************************************************************************
     /// Constructor.
@@ -734,7 +734,7 @@ namespace etl
       // Join the ends.
       etl::link<link_type>(p_first->etl_previous, p_last);
 
-      this->current_size -= etlstd::distance(first, last);
+      this->current_size -= etl::distance(first, last);
 
       if (p_last == &this->terminal_link)
       {
@@ -781,7 +781,7 @@ namespace etl
     //*************************************************************************
     void sort()
     {
-      sort(etlstd::less<value_type>());
+      sort(etl::less<value_type>());
     }
 
     //*************************************************************************
@@ -1013,7 +1013,7 @@ namespace etl
       {
         if (&other != this)
         {
-          size_t n = etlstd::distance(begin_, end_);
+          size_t n = etl::distance(begin_, end_);
           this->current_size += n;
           other.current_size -= n;
         }
@@ -1036,7 +1036,7 @@ namespace etl
     //*************************************************************************
     void merge(list_type& other)
     {
-      merge(other, etlstd::less<value_type>());
+      merge(other, etl::less<value_type>());
     }
 
     //*************************************************************************

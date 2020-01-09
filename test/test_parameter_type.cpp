@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include <string>
 #include <ostream>
@@ -77,13 +77,13 @@ namespace
     {
       bool b;
 
-      b = !etlstd::is_reference<etl::parameter_type<int>::type>::value;
+      b = !etl::is_reference<etl::parameter_type<int>::type>::value;
       CHECK(b);
 
-      b = etlstd::is_reference<etl::parameter_type<Test>::type>::value;
+      b = etl::is_reference<etl::parameter_type<Test>::type>::value;
       CHECK(b);
 
-      b = !etlstd::is_reference<etl::parameter_type<Test2>::type>::value;
+      b = !etl::is_reference<etl::parameter_type<Test2>::type>::value;
       CHECK(b);
     }
   };

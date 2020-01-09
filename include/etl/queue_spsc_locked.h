@@ -83,7 +83,7 @@ namespace etl
     template <typename ... Args>
     bool emplace_from_unlocked(Args&&... args)
     {
-      return emplace_implementation(etlstd::forward<Args>(args)...);
+      return emplace_implementation(etl::forward<Args>(args)...);
     }
 #endif
 
@@ -208,7 +208,7 @@ namespace etl
     {
       if (current_size != MAX_SIZE)
       {
-        ::new (&p_buffer[write_index]) T(etlstd::forward<Args>(args)...);
+        ::new (&p_buffer[write_index]) T(etl::forward<Args>(args)...);
 
         write_index = get_next_index(write_index, MAX_SIZE);
 
@@ -437,7 +437,7 @@ namespace etl
     {
       lock();
 
-      bool result = this->emplace_implementation(etlstd::forward<Args>(args)...);
+      bool result = this->emplace_implementation(etl::forward<Args>(args)...);
 
       unlock();
 
@@ -677,7 +677,7 @@ namespace etl
     queue_spsc_locked& operator = (const queue_spsc_locked&);
 
     /// The uninitialised buffer of T used in the queue_spsc_locked.
-    typename etl::aligned_storage<sizeof(T), etlstd::alignment_of<T>::value>::type buffer[MAX_SIZE];
+    typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[MAX_SIZE];
   };
 }
 

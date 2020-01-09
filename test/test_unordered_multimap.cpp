@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include <map>
 #include <array>
@@ -350,7 +350,7 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.insert(ETL_MAKE_PAIR(K10, N10)), etl::unordered_multimap_full);
+      CHECK_THROW(data.insert(ETL_OR_STD::make_pair(K10, N10)), etl::unordered_multimap_full);
     }
 
     //*************************************************************************
@@ -620,10 +620,10 @@ namespace
     {
       etl::unordered_multimap<uint32_t, char, 5> map;
 
-      map.insert(ETL_MAKE_PAIR(1, 'b'));
-      map.insert(ETL_MAKE_PAIR(2, 'c'));
-      map.insert(ETL_MAKE_PAIR(3, 'd'));
-      map.insert(ETL_MAKE_PAIR(4, 'e'));
+      map.insert(ETL_OR_STD::make_pair(1, 'b'));
+      map.insert(ETL_OR_STD::make_pair(2, 'c'));
+      map.insert(ETL_OR_STD::make_pair(3, 'd'));
+      map.insert(ETL_OR_STD::make_pair(4, 'e'));
 
       auto it = map.find(1);
       map.erase(it);

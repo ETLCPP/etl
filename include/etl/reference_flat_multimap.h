@@ -78,7 +78,7 @@ namespace etl
   /// Can be used as a reference type for all reference_flat_multimaps containing a specific type.
   ///\ingroup reference_flat_multimap
   //***************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare = etlstd::less<TKey> >
+  template <typename TKey, typename TMapped, typename TKeyCompare = etl::less<TKey> >
   class ireference_flat_multimap
   {
   public:
@@ -294,7 +294,7 @@ namespace etl
 
     typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
     typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
-    typedef typename etlstd::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
   protected:
 
@@ -443,7 +443,7 @@ namespace etl
     void assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      difference_type d = etlstd::distance(first, last);
+      difference_type d = etl::distance(first, last);
       ETL_ASSERT(d <= difference_type(capacity()), ETL_ERROR(flat_multimap_full));
 #endif
 
@@ -513,7 +513,7 @@ namespace etl
       }
       else
       {
-        size_t d = etlstd::distance(range.first, range.second);
+        size_t d = etl::distance(range.first, range.second);
         erase(range.first, range.second);
         return d;
       }
@@ -605,7 +605,7 @@ namespace etl
     {
       ETL_OR_STD::pair<const_iterator, const_iterator> range = equal_range(key);
 
-      return etlstd::distance(range.first, range.second);
+      return etl::distance(range.first, range.second);
     }
 
     //*********************************************************************
@@ -615,7 +615,7 @@ namespace etl
     //*********************************************************************
     iterator lower_bound(key_parameter_t key)
     {
-      return etlstd::lower_bound(begin(), end(), key, compare);
+      return etl::lower_bound(begin(), end(), key, compare);
     }
 
     //*********************************************************************
@@ -625,7 +625,7 @@ namespace etl
     //*********************************************************************
     const_iterator lower_bound(key_parameter_t key) const
     {
-      return etlstd::lower_bound(cbegin(), cend(), key, compare);
+      return etl::lower_bound(cbegin(), cend(), key, compare);
     }
 
     //*********************************************************************
@@ -635,7 +635,7 @@ namespace etl
     //*********************************************************************
     iterator upper_bound(key_parameter_t key)
     {
-      return etlstd::upper_bound(begin(), end(), key, compare);
+      return etl::upper_bound(begin(), end(), key, compare);
     }
 
     //*********************************************************************
@@ -645,7 +645,7 @@ namespace etl
     //*********************************************************************
     const_iterator upper_bound(key_parameter_t key) const
     {
-      return etlstd::upper_bound(begin(), end(), key, compare);
+      return etl::upper_bound(begin(), end(), key, compare);
     }
 
     //*********************************************************************
@@ -655,9 +655,9 @@ namespace etl
     //*********************************************************************
     ETL_OR_STD::pair<iterator, iterator> equal_range(key_parameter_t key)
     {
-      iterator i_lower = etlstd::lower_bound(begin(), end(), key, compare);
+      iterator i_lower = etl::lower_bound(begin(), end(), key, compare);
 
-      return ETL_MAKE_PAIR(i_lower, etlstd::upper_bound(i_lower, end(), key, compare));
+      return ETL_OR_STD::make_pair(i_lower, etl::upper_bound(i_lower, end(), key, compare));
     }
 
     //*********************************************************************
@@ -667,9 +667,9 @@ namespace etl
     //*********************************************************************
     ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(key_parameter_t key) const
     {
-      const_iterator i_lower = etlstd::lower_bound(cbegin(), cend(), key, compare);
+      const_iterator i_lower = etl::lower_bound(cbegin(), cend(), key, compare);
 
-      return ETL_MAKE_PAIR(i_lower, etlstd::upper_bound(i_lower, cend(), key, compare));
+      return ETL_OR_STD::make_pair(i_lower, etl::upper_bound(i_lower, cend(), key, compare));
     }
 
     //*************************************************************************
@@ -799,7 +799,7 @@ namespace etl
   template <typename TKey, typename TMapped, typename TKeyCompare>
   bool operator ==(const etl::ireference_flat_multimap<TKey, TMapped, TKeyCompare>& lhs, const etl::ireference_flat_multimap<TKey, TMapped, TKeyCompare>& rhs)
   {
-    return (lhs.size() == rhs.size()) && etlstd::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //***************************************************************************
@@ -819,11 +819,11 @@ namespace etl
   /// A reference_flat_multimap implementation that uses a fixed size buffer.
   ///\tparam TKey     The key type.
   ///\tparam TValue   The value type.
-  ///\tparam TCompare The type to compare keys. Default = etlstd::less<TKey>
+  ///\tparam TCompare The type to compare keys. Default = etl::less<TKey>
   ///\tparam MAX_SIZE_ The maximum number of elements that can be stored.
   ///\ingroup reference_flat_multimap
   //***************************************************************************
-  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename TCompare = etlstd::less<TKey> >
+  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename TCompare = etl::less<TKey> >
   class reference_flat_multimap : public ireference_flat_multimap<TKey, TValue, TCompare>
   {
   public:

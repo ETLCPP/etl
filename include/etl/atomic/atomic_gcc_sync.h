@@ -66,7 +66,7 @@ namespace etl
   {
   public:
 
-    ETL_STATIC_ASSERT(etlstd::is_integral<T>::value, "Only integral types are supported");
+    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Only integral types are supported");
 
     atomic()
       : value(0)

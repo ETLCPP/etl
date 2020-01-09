@@ -75,9 +75,9 @@ namespace etl
   cog.outl("  template <const size_t ID>")
   cog.outl("  struct select")
   cog.outl("  {")
-  cog.outl("    typedef typename etlstd::conditional<ID == 0, T0,")
+  cog.outl("    typedef typename etl::conditional<ID == 0, T0,")
   for n in range(1, int(NTypes)) :
-      cog.outl("            typename etlstd::conditional<ID == %s, T%s," % (n, n))
+      cog.outl("            typename etl::conditional<ID == %s, T%s," % (n, n))
   cog.outl("            etl::null_type<0> >")
   cog.out("            ")
   for n in range(1, int(NTypes)) :
@@ -110,9 +110,9 @@ namespace etl
       cog.outl("  template <const size_t ID>")
       cog.outl("  struct select")
       cog.outl("  {")
-      cog.outl("    typedef typename etlstd::conditional<ID == 0, T0,")
+      cog.outl("    typedef typename etl::conditional<ID == 0, T0,")
       for n in range(1, s) :
-          cog.outl("            typename etlstd::conditional<ID == %s, T%s," % (n, n))
+          cog.outl("            typename etl::conditional<ID == %s, T%s," % (n, n))
       cog.outl("            etl::null_type<0> >")
       cog.out("            ")
       for n in range(1, s) :

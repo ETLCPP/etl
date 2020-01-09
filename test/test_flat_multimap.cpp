@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include <map>
 #include <array>
@@ -449,7 +449,7 @@ namespace
       DataNDC data;
 
       data.insert(DataNDC::value_type(0, N0));
-      compare_data.insert(ETL_MAKE_PAIR(0, N0));
+      compare_data.insert(ETL_OR_STD::make_pair(0, N0));
 
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),
@@ -457,8 +457,8 @@ namespace
 
       CHECK(isEqual);
 
-      data.insert(ETL_MAKE_PAIR(2, N2));
-      compare_data.insert(ETL_MAKE_PAIR(2, N2));
+      data.insert(ETL_OR_STD::make_pair(2, N2));
+      compare_data.insert(ETL_OR_STD::make_pair(2, N2));
 
       isEqual = Check_Equal(data.begin(),
                             data.end(),
@@ -466,8 +466,8 @@ namespace
 
       CHECK(isEqual);
 
-      data.insert(ETL_MAKE_PAIR(1, N1));
-      compare_data.insert(ETL_MAKE_PAIR(1, N1));
+      data.insert(ETL_OR_STD::make_pair(1, N1));
+      compare_data.insert(ETL_OR_STD::make_pair(1, N1));
 
       isEqual = Check_Equal(data.begin(),
                             data.end(),
@@ -484,24 +484,24 @@ namespace
       Compare_DataNDC compare_data;
       DataNDC data;
 
-      data.insert(ETL_MAKE_PAIR(0, N0));
-      compare_data.insert(ETL_MAKE_PAIR(0, N0));
+      data.insert(ETL_OR_STD::make_pair(0, N0));
+      compare_data.insert(ETL_OR_STD::make_pair(0, N0));
 
-      data.insert(ETL_MAKE_PAIR(1, N1));
-      compare_data.insert(ETL_MAKE_PAIR(1, N1));
+      data.insert(ETL_OR_STD::make_pair(1, N1));
+      compare_data.insert(ETL_OR_STD::make_pair(1, N1));
 
-      data.insert(ETL_MAKE_PAIR(2, N2));
-      compare_data.insert(ETL_MAKE_PAIR(2, N2));
+      data.insert(ETL_OR_STD::make_pair(2, N2));
+      compare_data.insert(ETL_OR_STD::make_pair(2, N2));
 
       // Do it again.
-      data.insert(ETL_MAKE_PAIR(0, N0));
-      compare_data.insert(ETL_MAKE_PAIR(0, N0));
+      data.insert(ETL_OR_STD::make_pair(0, N0));
+      compare_data.insert(ETL_OR_STD::make_pair(0, N0));
 
-      data.insert(ETL_MAKE_PAIR(1, N1));
-      compare_data.insert(ETL_MAKE_PAIR(1, N1));
+      data.insert(ETL_OR_STD::make_pair(1, N1));
+      compare_data.insert(ETL_OR_STD::make_pair(1, N1));
 
-      data.insert(ETL_MAKE_PAIR(2, N2));
-      compare_data.insert(ETL_MAKE_PAIR(2, N2));
+      data.insert(ETL_OR_STD::make_pair(2, N2));
+      compare_data.insert(ETL_OR_STD::make_pair(2, N2));
 
       CHECK_EQUAL(compare_data.size(), data.size());
 
@@ -519,7 +519,7 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.insert(ETL_MAKE_PAIR(10, N10)), etl::flat_multimap_full);
+      CHECK_THROW(data.insert(ETL_OR_STD::make_pair(10, N10)), etl::flat_multimap_full);
 
       CHECK(std::is_sorted(data.begin(), data.end()));
     }
@@ -564,8 +564,8 @@ namespace
       data.emplace(1, D1("1"));
       compare.emplace(1, D1("1"));
 
-      data.emplace(ETL_MAKE_PAIR(2, D1("2")));
-      compare.emplace(ETL_MAKE_PAIR(2, D1("2")));
+      data.emplace(ETL_OR_STD::make_pair(2, D1("2")));
+      compare.emplace(ETL_OR_STD::make_pair(2, D1("2")));
 
       // Do it again.
       data.emplace(0, "0");
@@ -574,8 +574,8 @@ namespace
       data.emplace(1, D1("1"));
       compare.emplace(1, D1("1"));
 
-      data.emplace(ETL_MAKE_PAIR(2, D1("2")));
-      compare.emplace(ETL_MAKE_PAIR(2, D1("2")));
+      data.emplace(ETL_OR_STD::make_pair(2, D1("2")));
+      compare.emplace(ETL_OR_STD::make_pair(2, D1("2")));
 
       CHECK_EQUAL(compare.size(), data.size());
 
@@ -598,8 +598,8 @@ namespace
       data.emplace(1, D2("1", "2"));
       compare.emplace(1, D2("1", "2"));
 
-      data.emplace(ETL_MAKE_PAIR(2, D2("2", "3")));
-      compare.emplace(ETL_MAKE_PAIR(2, D2("2", "3")));
+      data.emplace(ETL_OR_STD::make_pair(2, D2("2", "3")));
+      compare.emplace(ETL_OR_STD::make_pair(2, D2("2", "3")));
 
       // Do it again.
       data.emplace(0, "0", "1");
@@ -608,8 +608,8 @@ namespace
       data.emplace(1, D2("1", "2"));
       compare.emplace(1, D2("1", "2"));
 
-      data.emplace(ETL_MAKE_PAIR(2, D2("2", "3")));
-      compare.emplace(ETL_MAKE_PAIR(2, D2("2", "3")));
+      data.emplace(ETL_OR_STD::make_pair(2, D2("2", "3")));
+      compare.emplace(ETL_OR_STD::make_pair(2, D2("2", "3")));
 
       CHECK_EQUAL(compare.size(), data.size());
 
@@ -632,8 +632,8 @@ namespace
       data.emplace(1, D3("1", "2", "3"));
       compare.emplace(1, D3("1", "2", "3"));
 
-      data.emplace(ETL_MAKE_PAIR(2, D3("2", "3", "4")));
-      compare.emplace(ETL_MAKE_PAIR(2, D3("2", "3", "4")));
+      data.emplace(ETL_OR_STD::make_pair(2, D3("2", "3", "4")));
+      compare.emplace(ETL_OR_STD::make_pair(2, D3("2", "3", "4")));
 
       // Do it again.
       data.emplace(0, "0", "1", "2");
@@ -642,8 +642,8 @@ namespace
       data.emplace(1, D3("1", "2", "3"));
       compare.emplace(1, D3("1", "2", "3"));
 
-      data.emplace(ETL_MAKE_PAIR(2, D3("2", "3", "4")));
-      compare.emplace(ETL_MAKE_PAIR(2, D3("2", "3", "4")));
+      data.emplace(ETL_OR_STD::make_pair(2, D3("2", "3", "4")));
+      compare.emplace(ETL_OR_STD::make_pair(2, D3("2", "3", "4")));
 
       CHECK_EQUAL(compare.size(), data.size());
 
@@ -666,8 +666,8 @@ namespace
       data.emplace(1, D4("1", "2", "3", "4"));
       compare.emplace(1, D4("1", "2", "3", "4"));
 
-      data.emplace(ETL_MAKE_PAIR(2, D4("2", "3", "4", "5")));
-      compare.emplace(ETL_MAKE_PAIR(2, D4("2", "3", "4", "5")));
+      data.emplace(ETL_OR_STD::make_pair(2, D4("2", "3", "4", "5")));
+      compare.emplace(ETL_OR_STD::make_pair(2, D4("2", "3", "4", "5")));
 
       // Do it again.
       data.emplace(0, "0", "1", "2", "3");
@@ -676,8 +676,8 @@ namespace
       data.emplace(1, D4("1", "2", "3", "4"));
       compare.emplace(1, D4("1", "2", "3", "4"));
 
-      data.emplace(ETL_MAKE_PAIR(2, D4("2", "3", "4", "5")));
-      compare.emplace(ETL_MAKE_PAIR(2, D4("2", "3", "4", "5")));
+      data.emplace(ETL_OR_STD::make_pair(2, D4("2", "3", "4", "5")));
+      compare.emplace(ETL_OR_STD::make_pair(2, D4("2", "3", "4", "5")));
 
       CHECK_EQUAL(compare.size(), data.size());
 

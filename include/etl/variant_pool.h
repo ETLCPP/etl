@@ -290,7 +290,7 @@ namespace etl
 
         if (p != nullptr)
         {
-          new (p) T(etlstd::forward<Args>(args)...);
+          new (p) T(etl::forward<Args>(args)...);
         }
       }
 
@@ -305,22 +305,22 @@ namespace etl
     bool destroy(const T* const p)
     {
       ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value ||
-                     etlstd::is_base_of<T, T1>::value ||
-                     etlstd::is_base_of<T, T2>::value ||
-                     etlstd::is_base_of<T, T3>::value ||
-                     etlstd::is_base_of<T, T4>::value ||
-                     etlstd::is_base_of<T, T5>::value ||
-                     etlstd::is_base_of<T, T6>::value ||
-                     etlstd::is_base_of<T, T7>::value ||
-                     etlstd::is_base_of<T, T8>::value ||
-                     etlstd::is_base_of<T, T9>::value ||
-                     etlstd::is_base_of<T, T10>::value ||
-                     etlstd::is_base_of<T, T11>::value ||
-                     etlstd::is_base_of<T, T12>::value ||
-                     etlstd::is_base_of<T, T13>::value ||
-                     etlstd::is_base_of<T, T14>::value ||
-                     etlstd::is_base_of<T, T15>::value ||
-                     etlstd::is_base_of<T, T16>::value), "Invalid type");
+                     etl::is_base_of<T, T1>::value ||
+                     etl::is_base_of<T, T2>::value ||
+                     etl::is_base_of<T, T3>::value ||
+                     etl::is_base_of<T, T4>::value ||
+                     etl::is_base_of<T, T5>::value ||
+                     etl::is_base_of<T, T6>::value ||
+                     etl::is_base_of<T, T7>::value ||
+                     etl::is_base_of<T, T8>::value ||
+                     etl::is_base_of<T, T9>::value ||
+                     etl::is_base_of<T, T10>::value ||
+                     etl::is_base_of<T, T11>::value ||
+                     etl::is_base_of<T, T12>::value ||
+                     etl::is_base_of<T, T13>::value ||
+                     etl::is_base_of<T, T14>::value ||
+                     etl::is_base_of<T, T15>::value ||
+                     etl::is_base_of<T, T16>::value), "Invalid type");
 
       p->~T();
 

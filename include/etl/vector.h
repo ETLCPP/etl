@@ -95,7 +95,7 @@ namespace etl
     typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
     typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
     typedef size_t                                size_type;
-    typedef typename etlstd::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
   protected:
 
@@ -365,17 +365,17 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-      ETL_STATIC_ASSERT((etlstd::is_same<typename etlstd::remove_cv<T>::type, typename etlstd::remove_cv<typename etlstd::iterator_traits<TIterator>::value_type>::type>::value), "Iterator type does not match container type");
+      ETL_STATIC_ASSERT((etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::iterator_traits<TIterator>::value_type>::type>::value), "Iterator type does not match container type");
 
 #if defined(ETL_DEBUG)
-      difference_type d = etlstd::distance(first, last);
+      difference_type d = etl::distance(first, last);
       ETL_ASSERT(static_cast<size_t>(d) <= CAPACITY, ETL_ERROR(vector_full));
 #endif
 
       initialise();
 
       p_end = etl::uninitialized_copy(first, last, p_buffer);
-      ETL_ADD_DEBUG_COUNT(uint32_t(etlstd::distance(first, last)))
+      ETL_ADD_DEBUG_COUNT(uint32_t(etl::distance(first, last)))
     }
 
     //*********************************************************************
@@ -426,7 +426,7 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
 #endif
-      create_back(etlstd::move(value));
+      create_back(etl::move(value));
     }
 #endif
 
@@ -442,7 +442,7 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
 #endif
-      ::new (p_end) T(etlstd::forward<Args>(args)...);
+      ::new (p_end) T(etl::forward<Args>(args)...);
       ++p_end;
       ETL_INCREMENT_DEBUG_COUNT
     }
@@ -541,7 +541,7 @@ namespace etl
       else
       {
         create_back(back());
-        etlstd::copy_backward(position, p_end - 2, p_end - 1);
+        etl::copy_backward(position, p_end - 2, p_end - 1);
         *position = value;
       }
 
@@ -561,13 +561,13 @@ namespace etl
 
       if (position == end())
       {
-        create_back(etlstd::move(value));
+        create_back(etl::move(value));
       }
       else
       {
-        create_back(etlstd::move(back()));
-        etlstd::move_backward(position, p_end - 2, p_end - 1);
-        *position = etlstd::move(value);
+        create_back(etl::move(back()));
+        etl::move_backward(position, p_end - 2, p_end - 1);
+        *position = etl::move(value);
       }
 
       return position;
@@ -594,11 +594,11 @@ namespace etl
       {
         p = etl::addressof(*position);
         create_back(back());
-        etlstd::copy_backward(position, p_end - 2, p_end - 1);
+        etl::copy_backward(position, p_end - 2, p_end - 1);
         (*position).~T();
       }
 
-      ::new (p) T(etlstd::forward<Args>(args)...);
+      ::new (p) T(etl::forward<Args>(args)...);
 
       return position;
     }
@@ -619,7 +619,7 @@ namespace etl
       {
         p = etl::addressof(*position);
         create_back(back());
-        etlstd::copy_backward(position, p_end - 2, p_end - 1);
+        etl::copy_backward(position, p_end - 2, p_end - 1);
         (*position).~T();
       }
 
@@ -644,7 +644,7 @@ namespace etl
       {
         p = etl::addressof(*position);
         create_back(back());
-        etlstd::copy_backward(position, p_end - 2, p_end - 1);
+        etl::copy_backward(position, p_end - 2, p_end - 1);
         (*position).~T();
       }
 
@@ -669,7 +669,7 @@ namespace etl
       {
         p = etl::addressof(*position);
         create_back(back());
-        etlstd::copy_backward(position, p_end - 2, p_end - 1);
+        etl::copy_backward(position, p_end - 2, p_end - 1);
         (*position).~T();
       }
 
@@ -694,7 +694,7 @@ namespace etl
       {
         p = etl::addressof(*position);
         create_back(back());
-        etlstd::copy_backward(position, p_end - 2, p_end - 1);
+        etl::copy_backward(position, p_end - 2, p_end - 1);
         (*position).~T();
       }
 
@@ -716,7 +716,7 @@ namespace etl
       ETL_ASSERT((size() + n) <= CAPACITY, ETL_ERROR(vector_full));
 
       size_t insert_n = n;
-      size_t insert_begin = etlstd::distance(begin(), position);
+      size_t insert_begin = etl::distance(begin(), position);
       size_t insert_end = insert_begin + insert_n;
 
       // Copy old data.
@@ -745,14 +745,14 @@ namespace etl
       ETL_ADD_DEBUG_COUNT(construct_old_n)
 
       // Copy old.
-      etlstd::copy_backward(p_buffer + insert_begin, p_buffer + insert_begin + copy_old_n, p_buffer + insert_end + copy_old_n);
+      etl::copy_backward(p_buffer + insert_begin, p_buffer + insert_begin + copy_old_n, p_buffer + insert_end + copy_old_n);
 
       // Construct new.
       etl::uninitialized_fill_n(p_end, construct_new_n, value);
       ETL_ADD_DEBUG_COUNT(construct_new_n)
 
         // Copy new.
-        etlstd::fill_n(p_buffer + insert_begin, copy_new_n, value);
+        etl::fill_n(p_buffer + insert_begin, copy_new_n, value);
 
       p_end += n;
     }
@@ -768,12 +768,12 @@ namespace etl
     template <class TIterator>
     void insert(iterator position, TIterator first, TIterator last)
     {
-      size_t count = etlstd::distance(first, last);
+      size_t count = etl::distance(first, last);
 
       ETL_ASSERT((size() + count) <= CAPACITY, ETL_ERROR(vector_full));
 
       size_t insert_n = count;
-      size_t insert_begin = etlstd::distance(begin(), position);
+      size_t insert_begin = etl::distance(begin(), position);
       size_t insert_end = insert_begin + insert_n;
 
       // Copy old data.
@@ -802,7 +802,7 @@ namespace etl
       ETL_ADD_DEBUG_COUNT(construct_old_n)
 
       // Copy old.
-      etlstd::copy_backward(p_buffer + insert_begin, p_buffer + insert_begin + copy_old_n, p_buffer + insert_end + copy_old_n);
+      etl::copy_backward(p_buffer + insert_begin, p_buffer + insert_begin + copy_old_n, p_buffer + insert_end + copy_old_n);
 
       // Construct new.
       etl::uninitialized_copy_n(first + copy_new_n, construct_new_n, p_end);
@@ -821,7 +821,7 @@ namespace etl
     //*********************************************************************
     iterator erase(iterator i_element)
     {
-      etlstd::copy(i_element + 1, end(), i_element);
+      etl::copy(i_element + 1, end(), i_element);
       destroy_back();
 
       return i_element;
@@ -843,8 +843,8 @@ namespace etl
       }
       else
       {
-        etlstd::copy(last, end(), first);
-        size_t n_delete = etlstd::distance(first, last);
+        etl::copy(last, end(), first);
+        size_t n_delete = etl::distance(first, last);
 
         // Destroy the elements left over at the end.
         etl::destroy(p_end - n_delete, p_end);
@@ -880,7 +880,7 @@ namespace etl
         iterator itr = rhs.begin();
         while (itr != rhs.end())
         {
-          push_back(etlstd::move(*itr));
+          push_back(etl::move(*itr));
           ++itr;
         }
 
@@ -952,7 +952,7 @@ namespace etl
     void initialise()
     {
       etl::destroy(p_buffer, p_end);
-      ETL_SUBTRACT_DEBUG_COUNT(int32_t(etlstd::distance(p_buffer, p_end)))
+      ETL_SUBTRACT_DEBUG_COUNT(int32_t(etl::distance(p_buffer, p_end)))
 
       p_end = p_buffer;
     }
@@ -962,7 +962,7 @@ namespace etl
     //*********************************************************************
     void initialise_source_external_buffer_after_move()
     {
-      ETL_SUBTRACT_DEBUG_COUNT(int32_t(etlstd::distance(p_buffer, p_end)))
+      ETL_SUBTRACT_DEBUG_COUNT(int32_t(etl::distance(p_buffer, p_end)))
 
       p_end = p_buffer;
     }
@@ -972,7 +972,7 @@ namespace etl
     //*********************************************************************
     void initialise_destination_external_buffer_after_move()
     {
-      ETL_ADD_DEBUG_COUNT(int32_t(etlstd::distance(p_buffer, p_end)))
+      ETL_ADD_DEBUG_COUNT(int32_t(etl::distance(p_buffer, p_end)))
     }
 
     //*************************************************************************
@@ -1018,7 +1018,7 @@ namespace etl
     //*********************************************************************
     inline void create_back(rvalue_reference value)
     {
-      etl::create_copy_at(p_end, etlstd::move(value));
+      etl::create_copy_at(p_end, etl::move(value));
       ETL_INCREMENT_DEBUG_COUNT
 
       ++p_end;
@@ -1065,7 +1065,7 @@ namespace etl
   template <typename T>
   bool operator ==(const etl::ivector<T>& lhs, const etl::ivector<T>& rhs)
   {
-    return (lhs.size() == rhs.size()) && etlstd::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //***************************************************************************
@@ -1091,7 +1091,7 @@ namespace etl
   template <typename T>
   bool operator <(const etl::ivector<T>& lhs, const etl::ivector<T>& rhs)
   {
-    return etlstd::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    return etl::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
 
   //***************************************************************************
@@ -1243,7 +1243,7 @@ namespace etl
         typename etl::ivector<T>::iterator itr = other.begin();
         while (itr != other.end())
         {
-          this->push_back(etlstd::move(*itr));
+          this->push_back(etl::move(*itr));
           ++itr;
         }
 
@@ -1262,7 +1262,7 @@ namespace etl
         typename etl::ivector<T>::iterator itr = rhs.begin();
         while (itr != rhs.end())
         {
-          this->push_back(etlstd::move(*itr));
+          this->push_back(etl::move(*itr));
           ++itr;
         }
 
@@ -1298,7 +1298,7 @@ namespace etl
 
   private:
 
-    typename etl::aligned_storage<sizeof(T) * MAX_SIZE, etlstd::alignment_of<T>::value>::type buffer;
+    typename etl::aligned_storage<sizeof(T) * MAX_SIZE, etl::alignment_of<T>::value>::type buffer;
   };
 
   //***************************************************************************
@@ -1560,7 +1560,7 @@ namespace etl
         typename etl::ivector<T*>::iterator itr = other.begin();
         while (itr != other.end())
         {
-          this->push_back(etlstd::move(*itr));
+          this->push_back(etl::move(*itr));
           ++itr;
         }
 
@@ -1579,7 +1579,7 @@ namespace etl
         typename etl::ivector<T*>::iterator itr = rhs.begin();
         while (itr != rhs.end())
         {
-          this->push_back(etlstd::move(*itr));
+          this->push_back(etl::move(*itr));
           ++itr;
         }
 
@@ -1600,7 +1600,7 @@ namespace etl
 
   private:
 
-    typename etl::aligned_storage<sizeof(T*) * MAX_SIZE, etlstd::alignment_of<T*>::value>::type buffer;
+    typename etl::aligned_storage<sizeof(T*) * MAX_SIZE, etl::alignment_of<T*>::value>::type buffer;
   };
 
   //***************************************************************************

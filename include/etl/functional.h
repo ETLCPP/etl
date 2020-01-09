@@ -39,7 +39,7 @@ SOFTWARE.
 ///\defgroup reference_wrapper reference_wrapper
 ///\ingroup functional
 
-namespace etlstd
+namespace etl
 {
   //***************************************************************************
   /// A definition of reference_wrapper for those that don't have C++ 0x11 support.
@@ -110,6 +110,8 @@ namespace etlstd
   template <typename T = void>
   struct less
   {
+    typedef T value_type;
+
     ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
     {
       return lhs < rhs;
@@ -120,6 +122,8 @@ namespace etlstd
   template <typename T = void>
   struct greater
   {
+    typedef T value_type;
+
     ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
     {
       return lhs > rhs;
@@ -130,6 +134,8 @@ namespace etlstd
   template <typename T = void>
   struct equal_to
   {
+    typedef T value_type;
+
     ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
     {
       return lhs == rhs;
@@ -140,6 +146,8 @@ namespace etlstd
   template <typename T = void>
   struct not_equal_to
   {
+    typedef T value_type;
+
     ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
     {
       return lhs != rhs;
@@ -168,7 +176,7 @@ namespace etlstd
   //***************************************************************************
 
   template <typename TFunction>
-  class binder1st : public etlstd::unary_function<typename TFunction::second_argument_type, typename TFunction::result_type>
+  class binder1st : public etl::unary_function<typename TFunction::second_argument_type, typename TFunction::result_type>
   {
   protected:
 
@@ -202,7 +210,7 @@ namespace etlstd
   //***************************************************************************
 
   template <typename TFunction >
-  class binder2nd : public etlstd::unary_function<typename TFunction::first_argument_type, typename TFunction::result_type>
+  class binder2nd : public etl::unary_function<typename TFunction::first_argument_type, typename TFunction::result_type>
   {
   protected:
     TFunction operation;

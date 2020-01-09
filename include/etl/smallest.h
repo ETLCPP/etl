@@ -82,7 +82,7 @@ namespace etl
 
     // Set 'type' to be the smallest of the first parameter and any of the others.
     // This is recursive.
-    using type = typename etlstd::conditional<(etl::size_of<T1>::value < etl::size_of<smallest_other>::value), // Boolean
+    using type = typename etl::conditional<(etl::size_of<T1>::value < etl::size_of<smallest_other>::value), // Boolean
                                             T1,                                                             // TrueType
                                             smallest_other>                                                 // FalseType
                                             ::type;                                                         // The smallest type of the two.

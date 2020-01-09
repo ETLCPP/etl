@@ -60,7 +60,7 @@ namespace etl
   /// Can be used as a reference type for all flat_maps containing a specific type.
   ///\ingroup flat_map
   //***************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare = etlstd::less<TKey> >
+  template <typename TKey, typename TMapped, typename TKeyCompare = etl::less<TKey> >
   class iflat_map : private etl::ireference_flat_map<TKey, TMapped, TKeyCompare>
   {
   private:
@@ -87,7 +87,7 @@ namespace etl
 
     typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
     typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
-    typedef typename etlstd::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
   protected:
 
@@ -232,7 +232,7 @@ namespace etl
     //*********************************************************************
     mapped_type& operator [](key_parameter_t key)
     {
-      return insert(ETL_MAKE_PAIR(key, mapped_type())).first->second;
+      return insert(ETL_OR_STD::make_pair(key, mapped_type())).first->second;
     }
 
     //*********************************************************************
@@ -268,7 +268,7 @@ namespace etl
     void assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      difference_type d = etlstd::distance(first, last);
+      difference_type d = etl::distance(first, last);
       ETL_ASSERT(d <= difference_type(capacity()), ETL_ERROR(flat_map_full));
 #endif
 
@@ -352,7 +352,7 @@ namespace etl
       // Create it.
       value_type* pvalue = storage.allocate<value_type>();
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
-      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(etlstd::forward<Args>(args)...);
+      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(etl::forward<Args>(args)...);
 
       iterator i_element = lower_bound(key);
 
@@ -793,7 +793,7 @@ namespace etl
   template <typename TKey, typename TMapped, typename TKeyCompare>
   bool operator ==(const etl::iflat_map<TKey, TMapped, TKeyCompare>& lhs, const etl::iflat_map<TKey, TMapped, TKeyCompare>& rhs)
   {
-    return (lhs.size() == rhs.size()) && etlstd::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //***************************************************************************
@@ -813,11 +813,11 @@ namespace etl
   /// A flat_map implementation that uses a fixed size buffer.
   ///\tparam TKey     The key type.
   ///\tparam TValue   The value type.
-  ///\tparam TCompare The type to compare keys. Default = etlstd::less<TKey>
+  ///\tparam TCompare The type to compare keys. Default = etl::less<TKey>
   ///\tparam MAX_SIZE_ The maximum number of elements that can be stored.
   ///\ingroup flat_map
   //***************************************************************************
-  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename TCompare = etlstd::less<TKey> >
+  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename TCompare = etl::less<TKey> >
   class flat_map : public etl::iflat_map<TKey, TValue, TCompare>
   {
   public:

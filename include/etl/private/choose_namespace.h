@@ -36,8 +36,8 @@ SOFTWARE.
 #undef ETL_OR_STD
 
 #if defined(ETL_NO_STL) && !defined(ETL_IN_UNIT_TEST)
-  // If we're not using the STL and we are not unit testing, then use the ETL's definitions under the etlstd namespace
-  #define ETL_OR_STD etlstd
+  // If we're not using the STL and we are not unit testing, then use the ETL's definitions under the etl namespace
+  #define ETL_OR_STD etl
 #else
   // We will use the STL's definitions under the std namespace
   #define ETL_OR_STD std

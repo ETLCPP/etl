@@ -110,7 +110,7 @@ namespace etl
 
   // Reference, Reference
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
   link(TLink& lhs, TLink& rhs)
   {
     lhs.etl_next = &rhs;
@@ -118,7 +118,7 @@ namespace etl
 
   // Reference, Reference
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
   link_splice(TLink& lhs, TLink& rhs)
   {
     rhs.etl_next = lhs.etl_next;
@@ -127,7 +127,7 @@ namespace etl
 
   // Pointer, Pointer
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
   link(TLink* lhs, TLink* rhs)
   {
     if (lhs != nullptr)
@@ -138,7 +138,7 @@ namespace etl
 
   // Pointer, Pointer
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
   link_splice(TLink* lhs, TLink* rhs)
   {
     if (lhs != nullptr)
@@ -154,7 +154,7 @@ namespace etl
 
   // Reference, Pointer
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
   link(TLink& lhs, TLink* rhs)
   {
     lhs.etl_next = rhs;
@@ -162,7 +162,7 @@ namespace etl
 
   // Reference, Pointer
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
   link_splice(TLink& lhs, TLink* rhs)
   {
     if (rhs != nullptr)
@@ -175,7 +175,7 @@ namespace etl
 
   // Pointer, Reference
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
   link(TLink* lhs, TLink& rhs)
   {
     if (lhs != nullptr)
@@ -186,7 +186,7 @@ namespace etl
 
   // Pointer, Reference
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
   link_splice(TLink* lhs, TLink& rhs)
   {
     if (lhs != nullptr)
@@ -198,7 +198,7 @@ namespace etl
 
   // Reference, Reference, Reference
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
   link_splice(TLink& lhs, TLink& first, TLink& last)
   {
     last.etl_next = lhs.etl_next;
@@ -207,7 +207,7 @@ namespace etl
 
   // Pointer, Reference, Reference
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
   link_splice(TLink* lhs, TLink& first, TLink& last)
   {
     if (lhs != nullptr)
@@ -223,7 +223,7 @@ namespace etl
 
   // Reference
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
   unlink_after(TLink& node)
   {
     if (node.etl_next != nullptr)
@@ -235,7 +235,7 @@ namespace etl
 
   // Reference, Reference
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
   unlink_after(TLink& before, TLink& last)
   {
     before.etl_next = last.etl_next;
@@ -265,11 +265,7 @@ namespace etl
 
     void reverse()
     {
-#if defined(ETL_NO_STL)
-      using etlstd::swap;
-#else
-      using std::swap;
-#endif
+      using ETL_OR_STD::swap; // Allow ADL
 
       swap(etl_previous, etl_next);
     }
@@ -295,7 +291,7 @@ namespace etl
 
   // Reference, Reference
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
   link(TLink& lhs, TLink& rhs)
   {
     lhs.etl_next     = &rhs;
@@ -304,7 +300,7 @@ namespace etl
 
   // Reference, Reference
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
   link_splice(TLink& lhs, TLink& rhs)
   {
     rhs.etl_next     = lhs.etl_next;
@@ -320,7 +316,7 @@ namespace etl
 
   // Pointer, Pointer
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
   link(TLink* lhs, TLink* rhs)
   {
     if (lhs != nullptr)
@@ -336,7 +332,7 @@ namespace etl
 
   // Pointer, Pointer
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
   link_splice(TLink* lhs, TLink* rhs)
   {
     if (rhs != nullptr)
@@ -362,7 +358,7 @@ namespace etl
 
   // Reference, Pointer
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
   link(TLink& lhs, TLink* rhs)
   {
     lhs.etl_next = rhs;
@@ -375,7 +371,7 @@ namespace etl
 
   // Reference, Pointer
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
   link_splice(TLink& lhs, TLink* rhs)
   {
     if (rhs != nullptr)
@@ -394,7 +390,7 @@ namespace etl
 
   // Pointer, Reference
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
   link(TLink* lhs, TLink& rhs)
   {
     if (lhs != nullptr)
@@ -407,7 +403,7 @@ namespace etl
 
   // Pointer, Reference
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
   link_splice(TLink* lhs, TLink& rhs)
   {
     if (lhs != nullptr)
@@ -430,7 +426,7 @@ namespace etl
 
   // Reference, Reference, Reference
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
   link_splice(TLink& lhs, TLink& first, TLink& last)
   {
     last.etl_next = lhs.etl_next;
@@ -446,7 +442,7 @@ namespace etl
 
   // Pointer, Reference, Reference
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
   link_splice(TLink* lhs, TLink& first, TLink& last)
   {
     if (lhs != nullptr)
@@ -473,7 +469,7 @@ namespace etl
 
   // Reference
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
   unlink(TLink& node)
   {
     node.unlink();
@@ -481,7 +477,7 @@ namespace etl
 
   // Reference Reference
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
   unlink(TLink& first, TLink& last)
   {
     if (&first == &last)
@@ -532,7 +528,7 @@ namespace etl
 
   // Reference, Reference
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_left(TLink& parent, TLink& leaf)
   {
     parent.etl_left = &leaf;
@@ -540,7 +536,7 @@ namespace etl
   }
 
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_right(TLink& parent, TLink& leaf)
   {
     parent.etl_right = &leaf;
@@ -549,7 +545,7 @@ namespace etl
 
   // Pointer, Pointer
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_left(TLink* parent, TLink* leaf)
   {
     if (parent != nullptr)
@@ -564,7 +560,7 @@ namespace etl
   }
 
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_right(TLink* parent, TLink* leaf)
   {
     if (parent != nullptr)
@@ -580,7 +576,7 @@ namespace etl
 
   // Reference, Pointer
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_left(TLink& parent, TLink* leaf)
   {
     parent.etl_left = leaf;
@@ -592,7 +588,7 @@ namespace etl
   }
 
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_right(TLink& parent, TLink* leaf)
   {
     parent.etl_right = leaf;
@@ -605,7 +601,7 @@ namespace etl
 
   // Pointer, Reference
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_left(TLink* parent, TLink& leaf)
   {
     if (parent != nullptr)
@@ -617,7 +613,7 @@ namespace etl
   }
 
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_right(TLink* parent, TLink& leaf)
   {
     if (parent != nullptr)
@@ -630,7 +626,7 @@ namespace etl
 
   // Reference, Reference
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_rotate_left(TLink& parent, TLink& leaf)
   {
      parent.etl_right = leaf.etl_left;
@@ -646,7 +642,7 @@ namespace etl
   }
 
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_rotate_right(TLink& parent, TLink& leaf)
   {
      parent.etl_left = leaf.etl_right;
@@ -663,7 +659,7 @@ namespace etl
 
   // Pointer, Pointer
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_rotate_left(TLink* parent, TLink* leaf)
   {
     if ((parent != nullptr) && (leaf != nullptr))
@@ -673,7 +669,7 @@ namespace etl
   }
 
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_rotate_right(TLink* parent, TLink* leaf)
   {
     if ((parent != nullptr) && (leaf != nullptr))
@@ -684,7 +680,7 @@ namespace etl
 
   // Reference, Pointer
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_rotate_left(TLink& parent, TLink* leaf)
   {
     if (leaf != nullptr)
@@ -694,7 +690,7 @@ namespace etl
   }
 
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_rotate_right(TLink& parent, TLink* leaf)
   {
     if (leaf != nullptr)
@@ -705,7 +701,7 @@ namespace etl
 
   // Pointer, Reference
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_rotate_left(TLink* parent, TLink& leaf)
   {
     if (parent != nullptr)
@@ -715,7 +711,7 @@ namespace etl
   }
 
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_rotate_right(TLink* parent, TLink& leaf)
   {
     if (parent != nullptr)
@@ -727,7 +723,7 @@ namespace etl
   // Reference, Reference
   /// Automatically detects whether a left or right rotate is expected.
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_rotate(TLink& parent, TLink& leaf)
   {
     if (parent.etl_left == &leaf)
@@ -743,7 +739,7 @@ namespace etl
   // Pointer, Pointer
   /// Automatically detects whether a left or right rotate is expected.
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_rotate(TLink* parent, TLink* leaf)
   {
     if ((parent != nullptr) && (leaf != nullptr))
@@ -762,7 +758,7 @@ namespace etl
   // Reference, Pointer
   /// Automatically detects whether a left or right rotate is expected.
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_rotate(TLink& parent, TLink* leaf)
   {
     if (leaf != nullptr)
@@ -781,7 +777,7 @@ namespace etl
   // Pointer, Reference
   /// Automatically detects whether a left or right rotate is expected.
   template <typename TLink>
-  typename etlstd::enable_if<etlstd::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_rotate(TLink* parent, TLink& leaf)
   {
     if (parent != nullptr)

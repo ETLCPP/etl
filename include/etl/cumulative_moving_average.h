@@ -44,8 +44,8 @@ namespace etl
   template <typename T,
             const size_t SAMPLE_SIZE,
             const size_t SCALING  = 1U,
-            const bool IsIntegral = etlstd::is_integral<T>::value,
-            const bool IsFloat    = etlstd::is_floating_point<T>::value>
+            const bool IsIntegral = etl::is_integral<T>::value,
+            const bool IsFloat    = etl::is_floating_point<T>::value>
   class cumulative_moving_average;
 
   //***************************************************************************
@@ -58,8 +58,8 @@ namespace etl
   template <typename T, const size_t SAMPLE_SIZE_, const size_t SCALING_>
   class cumulative_moving_average<T, SAMPLE_SIZE_, SCALING_, true, false>
   {
-    typedef typename etlstd::conditional<etlstd::is_signed<T>::value, int32_t, uint32_t>::type scale_t;
-    typedef typename etlstd::conditional<etlstd::is_signed<T>::value, int32_t, uint32_t>::type sample_t;
+    typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type scale_t;
+    typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type sample_t;
 
     static const sample_t SAMPLES = static_cast<sample_t>(SAMPLE_SIZE_);
     static const scale_t  SCALE   = static_cast<scale_t>(SCALING_);
@@ -121,8 +121,8 @@ namespace etl
   template <typename T, const size_t SCALING_>
   class cumulative_moving_average<T, 0, SCALING_, true, false>
   {
-    typedef typename etlstd::conditional<etlstd::is_signed<T>::value, int32_t, uint32_t>::type scale_t;
-    typedef typename etlstd::conditional<etlstd::is_signed<T>::value, int32_t, uint32_t>::type sample_t;
+    typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type scale_t;
+    typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type sample_t;
 
     static const scale_t SCALE = static_cast<scale_t>(SCALING_);
 

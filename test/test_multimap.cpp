@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include <map>
 #include <array>
@@ -375,28 +375,28 @@ namespace
       Data::iterator data_result =
         data.insert(Data::value_type(std::string("2"), 1));
       Compare_Data::iterator compare_result =
-        compare_data.insert(ETL_MAKE_PAIR(std::string("2"), 1));
+        compare_data.insert(ETL_OR_STD::make_pair(std::string("2"), 1));
 
       // Check that both return successful return results
       CHECK_EQUAL(compare_result->first, data_result->first);
       CHECK_EQUAL(compare_result->second, data_result->second);
 
       data_result = data.insert(Data::value_type(std::string("1"), 1));
-      compare_result = compare_data.insert(ETL_MAKE_PAIR(std::string("1"), 1));
+      compare_result = compare_data.insert(ETL_OR_STD::make_pair(std::string("1"), 1));
 
       // Check that both return successful return results
       CHECK_EQUAL(compare_result->first, data_result->first);
       CHECK_EQUAL(compare_result->second, data_result->second);
 
       data_result = data.insert(Data::value_type(std::string("2"), 2));
-      compare_result = compare_data.insert(ETL_MAKE_PAIR(std::string("2"), 2));
+      compare_result = compare_data.insert(ETL_OR_STD::make_pair(std::string("2"), 2));
 
       // Check that both return successful return results
       CHECK_EQUAL(compare_result->first, data_result->first);
       CHECK_EQUAL(compare_result->second, data_result->second);
 
       data_result = data.insert(Data::value_type(std::string("3"), 3));
-      compare_result = compare_data.insert(ETL_MAKE_PAIR(std::string("3"), 3));
+      compare_result = compare_data.insert(ETL_OR_STD::make_pair(std::string("3"), 3));
 
       // Check that both return successful return results
       CHECK_EQUAL(compare_result->first, data_result->first);
@@ -404,7 +404,7 @@ namespace
 
       // Adding this next 2 will trigger a 3 node rotate RL on insert
       data_result = data.insert(Data::value_type(std::string("2"), 3));
-      compare_result = compare_data.insert(ETL_MAKE_PAIR(std::string("2"), 3));
+      compare_result = compare_data.insert(ETL_OR_STD::make_pair(std::string("2"), 3));
 
       // Check that both return successful return results
       CHECK_EQUAL(compare_result->first, data_result->first);
@@ -412,14 +412,14 @@ namespace
 
       // Adding this next 4 will trigger a 2 node rotate left on insert
       data_result = data.insert(Data::value_type(std::string("4"), 4));
-      compare_result = compare_data.insert(ETL_MAKE_PAIR(std::string("4"), 4));
+      compare_result = compare_data.insert(ETL_OR_STD::make_pair(std::string("4"), 4));
 
       // Check that both return successful return results
       CHECK_EQUAL(compare_result->first, data_result->first);
       CHECK_EQUAL(compare_result->second, data_result->second);
 
       data_result = data.insert(Data::value_type(std::string("0"), 0));
-      compare_result = compare_data.insert(ETL_MAKE_PAIR(std::string("0"), 0));
+      compare_result = compare_data.insert(ETL_OR_STD::make_pair(std::string("0"), 0));
 
       // Check that both return successful return results
       CHECK_EQUAL(compare_result->first, data_result->first);
@@ -441,7 +441,7 @@ namespace
       Data::iterator data_result =
         data.insert(Data::value_type(std::string("0"), 0));
       Compare_Data::iterator compare_result =
-        compare_data.insert(ETL_MAKE_PAIR(std::string("0"), 0));
+        compare_data.insert(ETL_OR_STD::make_pair(std::string("0"), 0));
 
       // Check that both return successful return results
       CHECK_EQUAL(compare_result->first, data_result->first);
@@ -453,8 +453,8 @@ namespace
         compare_data.begin());
       CHECK(isEqual);
 
-      data.insert(data_result, ETL_MAKE_PAIR(std::string("1"), 1));
-      compare_data.insert(compare_result, ETL_MAKE_PAIR(std::string("1"), 1));
+      data.insert(data_result, ETL_OR_STD::make_pair(std::string("1"), 1));
+      compare_data.insert(compare_result, ETL_OR_STD::make_pair(std::string("1"), 1));
 
       isEqual = Check_Equal(data.begin(),
         data.end(),
@@ -472,7 +472,7 @@ namespace
       Data::iterator data_result =
         data.insert(Data::value_type(std::string("2"), 0));
       Compare_Data::iterator compare_result =
-        compare_data.insert(ETL_MAKE_PAIR(std::string("2"), 0));
+        compare_data.insert(ETL_OR_STD::make_pair(std::string("2"), 0));
 
       // Check that both return successful return results
       CHECK_EQUAL(compare_result->first, data_result->first);
@@ -485,9 +485,9 @@ namespace
       CHECK(isEqual);
 
       data.insert(Data::const_iterator(data_result),
-        ETL_MAKE_PAIR(std::string("1"), 1));
+        ETL_OR_STD::make_pair(std::string("1"), 1));
       compare_data.insert(Compare_Data::const_iterator(compare_result),
-        ETL_MAKE_PAIR(std::string("1"), 1));
+        ETL_OR_STD::make_pair(std::string("1"), 1));
 
       isEqual = Check_Equal(data.begin(),
         data.end(),
@@ -501,7 +501,7 @@ namespace
     {
       Data data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.insert(ETL_MAKE_PAIR(std::string("10"), 10)), etl::multimap_full);
+      CHECK_THROW(data.insert(ETL_OR_STD::make_pair(std::string("10"), 10)), etl::multimap_full);
     }
 
     //*************************************************************************

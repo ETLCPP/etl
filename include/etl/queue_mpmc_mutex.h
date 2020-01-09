@@ -179,7 +179,7 @@ namespace etl
     {
       access.lock();
 
-      bool result = emplace_implementation(etlstd::forward<Args>(args)...);
+      bool result = emplace_implementation(etl::forward<Args>(args)...);
 
       access.unlock();
 
@@ -392,7 +392,7 @@ namespace etl
     {
       if (current_size != MAX_SIZE)
       {
-        ::new (&p_buffer[write_index]) T(etlstd::forward<Args>(args)...);
+        ::new (&p_buffer[write_index]) T(etl::forward<Args>(args)...);
 
         write_index = get_next_index(write_index, MAX_SIZE);
 
@@ -585,7 +585,7 @@ namespace etl
     queue_mpmc_mutex& operator = (const queue_mpmc_mutex&);
 
     /// The uninitialised buffer of T used in the queue_mpmc_mutex.
-    typename etl::aligned_storage<sizeof(T), etlstd::alignment_of<T>::value>::type buffer[MAX_SIZE];
+    typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[MAX_SIZE];
   };
 }
 

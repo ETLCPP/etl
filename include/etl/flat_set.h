@@ -59,7 +59,7 @@ namespace etl
   /// Can be used as a reference type for all flat_sets containing a specific type.
   ///\ingroup flat_set
   //***************************************************************************
-  template <typename T, typename TKeyCompare = etlstd::less<T> >
+  template <typename T, typename TKeyCompare = etl::less<T> >
   class iflat_set : private etl::ireference_flat_set<T, TKeyCompare>
   {
   private:
@@ -84,7 +84,7 @@ namespace etl
 
     typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
     typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
-    typedef typename etlstd::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
   protected:
 
@@ -211,7 +211,7 @@ namespace etl
     void assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      difference_type d = etlstd::distance(first, last);
+      difference_type d = etl::distance(first, last);
       ETL_ASSERT(d <= difference_type(capacity()), ETL_ERROR(flat_set_full));
 #endif
 
@@ -296,7 +296,7 @@ namespace etl
 
       // Create it.
       value_type* pvalue = storage.allocate<value_type>();
-      ::new (pvalue) value_type(etlstd::forward<Args>(args)...);
+      ::new (pvalue) value_type(etl::forward<Args>(args)...);
 
       iterator i_element = lower_bound(*pvalue);
 
@@ -739,7 +739,7 @@ namespace etl
   template <typename T, typename TKeyCompare>
   bool operator ==(const etl::iflat_set<T, TKeyCompare>& lhs, const etl::iflat_set<T, TKeyCompare>& rhs)
   {
-    return (lhs.size() == rhs.size()) && etlstd::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //***************************************************************************
@@ -758,11 +758,11 @@ namespace etl
   //***************************************************************************
   /// A flat_set implementation that uses a fixed size buffer.
   ///\tparam T        The value type.
-  ///\tparam TCompare The type to compare keys. Default = etlstd::less<T>
+  ///\tparam TCompare The type to compare keys. Default = etl::less<T>
   ///\tparam MAX_SIZE_ The maximum number of elements that can be stored.
   ///\ingroup flat_set
   //***************************************************************************
-  template <typename T, const size_t MAX_SIZE_, typename TCompare = etlstd::less<T> >
+  template <typename T, const size_t MAX_SIZE_, typename TCompare = etl::less<T> >
   class flat_set : public etl::iflat_set<T, TCompare>
   {
   public:

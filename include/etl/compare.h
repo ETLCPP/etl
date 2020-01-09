@@ -47,7 +47,7 @@ namespace etl
   /// Defines <=, >, >= interms of <
   /// Default
   //***************************************************************************
-  template <typename T, typename TLess = etlstd::less<T> >
+  template <typename T, typename TLess = etl::less<T> >
   struct compare
   {
     typedef typename etl::parameter_type<T>::type first_argument_type;
