@@ -2316,7 +2316,7 @@ namespace etl
     return function;
   }
 
-    //***************************************************************************
+  //***************************************************************************
   /// Like std::for_each but for 'n' iterations.
   ///\ingroup algorithm
   //***************************************************************************
@@ -2551,12 +2551,12 @@ namespace etl
             typename TUnaryFunctionTrue, typename TUnaryFunctionFalse,
             typename TUnaryPredicate>
   ETL_OR_STD::pair<TDestinationTrue, TDestinationFalse> partition_transform(TSource             begin,
-                                                                    TSource             end,
-                                                                    TDestinationTrue    destination_true,
-                                                                    TDestinationFalse   destination_false,
-                                                                    TUnaryFunctionTrue  function_true,
-                                                                    TUnaryFunctionFalse function_false,
-                                                                    TUnaryPredicate     predicate)
+                                                                            TSource             end,
+                                                                            TDestinationTrue    destination_true,
+                                                                            TDestinationFalse   destination_false,
+                                                                            TUnaryFunctionTrue  function_true,
+                                                                            TUnaryFunctionFalse function_false,
+                                                                            TUnaryPredicate     predicate)
   {
     while (begin != end)
     {
@@ -2586,13 +2586,13 @@ namespace etl
             typename TBinaryFunctionFalse,
             typename TBinaryPredicate>
   ETL_OR_STD::pair<TDestinationTrue, TDestinationFalse> partition_transform(TSource1             begin1,
-                                                                     TSource1             end1,
-                                                                     TSource2             begin2,
-                                                                     TDestinationTrue     destination_true,
-                                                                     TDestinationFalse    destination_false,
-                                                                     TBinaryFunctionTrue  function_true,
-                                                                     TBinaryFunctionFalse function_false,
-                                                                     TBinaryPredicate     predicate)
+                                                                            TSource1             end1,
+                                                                            TSource2             begin2,
+                                                                            TDestinationTrue     destination_true,
+                                                                            TDestinationFalse    destination_false,
+                                                                            TBinaryFunctionTrue  function_true,
+                                                                            TBinaryFunctionFalse function_false,
+                                                                            TBinaryPredicate     predicate)
   {
     while (begin1 != end1)
     {
