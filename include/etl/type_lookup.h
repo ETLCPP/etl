@@ -117,7 +117,7 @@ namespace etl
             typename etl::conditional<ID == T14::ID, typename T14::type,
             typename etl::conditional<ID == T15::ID, typename T15::type,
             typename etl::conditional<ID == T16::ID, typename T16::type,
-            etl::null_type<0>>::type>::type>::type>::type>
+            etl::null_type<0> >::type>::type>::type>::type>
                               ::type>::type>::type>::type>
                               ::type>::type>::type>::type>
                               ::type>::type>::type>::type type;
@@ -218,7 +218,7 @@ namespace etl
             typename etl::conditional<etl::is_same<T, typename T14::type1>::value, typename T14::type2,
             typename etl::conditional<etl::is_same<T, typename T15::type1>::value, typename T15::type2,
             typename etl::conditional<etl::is_same<T, typename T16::type1>::value, typename T16::type2,
-            etl::null_type<0>>::type>::type>::type>::type>::type>::type>::type>::type>
+            etl::null_type<0> >::type>::type>::type>::type>::type>::type>::type>::type>
                               ::type>::type>::type>::type>::type>::type>::type>::type type;
 
       ETL_STATIC_ASSERT(!(etl::is_same<etl::null_type<0>, type>::value), "Invalid type");

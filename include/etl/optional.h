@@ -39,7 +39,7 @@ SOFTWARE.
 #include "exception.h"
 #include "error_handler.h"
 
-#include "stl/utility.h"
+#include "utility.h"
 
 namespace etl
 {
@@ -343,7 +343,7 @@ namespace etl
         storage.template get_reference<T>().~T();
       }
 
-      ::new (storage.template get_address<T>()) T(ETL_STD::forward<Args>(args)...);
+      ::new (storage.template get_address<T>()) T(ETL_OR_STD::forward<Args>(args)...);
       valid = true;
     }
 #else

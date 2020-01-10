@@ -330,7 +330,7 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
 #endif
-      ::new (&p_buffer[in]) T(ETL_STD::forward<Args>(args)...);
+      ::new (&p_buffer[in]) T(etl::forward<Args>(args)...);
       add_in();
     }
 #else

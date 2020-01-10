@@ -93,8 +93,8 @@ namespace etl
     typedef const T*                              const_pointer;
     typedef T*                                    iterator;
     typedef const T*                              const_iterator;
-    typedef ETL_STD::reverse_iterator<iterator>       reverse_iterator;
-    typedef ETL_STD::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
 
     typedef typename etl::parameter_type<T>::type parameter_t;
 
@@ -310,7 +310,7 @@ namespace etl
     //*************************************************************************
     void fill(parameter_t value)
     {
-      ETL_STD::fill(begin(), end(), value);
+      etl::fill(begin(), end(), value);
     }
 
     //*************************************************************************
@@ -320,9 +320,11 @@ namespace etl
     typename etl::enable_if<etl::is_same<T, U>::value, void>::type
      swap(etl::array_wrapper<U, SIZE_, ARRAYOTHER>& other)
     {
+      using ETL_OR_STD::swap; // Allow ADL
+
       for (size_t i = 0; i < SIZE; ++i)
       {
-        ETL_STD::swap(ARRAY_[i], other.begin()[i]);
+        swap(ARRAY_[i], other.begin()[i]);
       }
     }
   };
@@ -334,7 +336,7 @@ namespace etl
   bool operator == (const etl::array_wrapper<TL, SIZEL, ARRAYL>& lhs,
                     const etl::array_wrapper<TR, SIZER, ARRAYR>& rhs)
   {
-    return (SIZEL == SIZER) && ETL_STD::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (SIZEL == SIZER) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //*************************************************************************
@@ -354,7 +356,7 @@ namespace etl
   bool operator < (const etl::array_wrapper<TL, SIZEL, ARRAYL>& lhs,
                    const etl::array_wrapper<TR, SIZER, ARRAYR>& rhs)
   {
-    return ETL_STD::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    return etl::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
 
   //*************************************************************************

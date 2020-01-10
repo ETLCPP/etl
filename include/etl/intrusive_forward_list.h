@@ -33,9 +33,9 @@ SOFTWARE.
 
 #include "platform.h"
 
-#include "stl/algorithm.h"
-#include "stl/iterator.h"
-#include "stl/functional.h"
+#include "algorithm.h"
+#include "iterator.h"
+#include "functional.h"
 
 #include "private/minmax_push.h"
 
@@ -153,7 +153,7 @@ namespace etl
     void assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      intmax_t d = ETL_STD::distance(first, last);
+      intmax_t d = etl::distance(first, last);
       ETL_ASSERT(d >= 0, ETL_ERROR(intrusive_forward_list_iterator_exception));
 #endif
 
@@ -328,7 +328,7 @@ namespace etl
     //*************************************************************************
     /// iterator.
     //*************************************************************************
-    class iterator : public etl::iterator<ETL_FORWARD_ITERATOR_TAG, value_type>
+    class iterator : public etl::iterator<ETL_OR_STD::forward_iterator_tag, value_type>
     {
     public:
 
@@ -418,7 +418,7 @@ namespace etl
     //*************************************************************************
     /// const_iterator
     //*************************************************************************
-    class const_iterator : public etl::iterator<ETL_FORWARD_ITERATOR_TAG, const value_type>
+    class const_iterator : public etl::iterator<ETL_OR_STD::forward_iterator_tag, const value_type>
     {
     public:
 
@@ -495,7 +495,7 @@ namespace etl
       const value_type* p_value;
     };
 
-    typedef typename ETL_STD::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
     //*************************************************************************
     /// Constructor.
@@ -651,7 +651,7 @@ namespace etl
     {
       if (first != end() && (first != last))
       {
-        this->current_size -= ETL_STD::distance(first, last) - 1;
+        this->current_size -= etl::distance(first, last) - 1;
 
         link_type* p_first = first.p_value;
         link_type* p_last = last.p_value;
@@ -712,7 +712,7 @@ namespace etl
     //*************************************************************************
     void sort()
     {
-      sort(ETL_STD::less<value_type>());
+      sort(etl::less<value_type>());
     }
 
     //*************************************************************************
@@ -958,7 +958,7 @@ namespace etl
       {
         if (&other != this)
         {
-          size_t n = ETL_STD::distance(begin_, end_) - 1;
+          size_t n = etl::distance(begin_, end_) - 1;
           this->current_size += n;
           other.current_size -= n;
         }
@@ -987,7 +987,7 @@ namespace etl
     //*************************************************************************
     void merge(list_type& other)
     {
-      merge(other, ETL_STD::less<value_type>());
+      merge(other, etl::less<value_type>());
     }
 
     //*************************************************************************

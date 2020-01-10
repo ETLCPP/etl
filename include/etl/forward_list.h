@@ -37,10 +37,10 @@ SOFTWARE.
 
 #include "platform.h"
 
-#include "stl/algorithm.h"
-#include "stl/iterator.h"
-#include "stl/functional.h"
-#include "stl/utility.h"
+#include "algorithm.h"
+#include "iterator.h"
+#include "functional.h"
+#include "utility.h"
 
 #include "pool.h"
 #include "container.h"
@@ -404,7 +404,7 @@ namespace etl
     //*************************************************************************
     /// iterator.
     //*************************************************************************
-    class iterator : public etl::iterator<ETL_FORWARD_ITERATOR_TAG, T>
+    class iterator : public etl::iterator<ETL_OR_STD::forward_iterator_tag, T>
     {
     public:
 
@@ -492,7 +492,7 @@ namespace etl
     //*************************************************************************
     /// const_iterator
     //*************************************************************************
-    class const_iterator : public etl::iterator<ETL_FORWARD_ITERATOR_TAG, const T>
+    class const_iterator : public etl::iterator<ETL_OR_STD::forward_iterator_tag, const T>
     {
     public:
 
@@ -572,7 +572,7 @@ namespace etl
       const node_t* p_node;
     };
 
-    typedef typename ETL_STD::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
     //*************************************************************************
     /// Gets the beginning of the forward_list.
@@ -671,7 +671,7 @@ namespace etl
     void assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      difference_type d = ETL_STD::distance(first, last);
+      difference_type d = etl::distance(first, last);
       ETL_ASSERT(d >= 0, ETL_ERROR(forward_list_iterator));
 #endif
 
@@ -735,7 +735,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 #endif
 
-      data_node_t& data_node = allocate_data_node(ETL_STD::move(value));
+      data_node_t& data_node = allocate_data_node(etl::move(value));
       insert_node_after(start_node, data_node);
     }
 #endif
@@ -751,7 +751,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 #endif
       data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
-      ::new (&(p_data_node->value)) T(ETL_STD::forward<Args>(args)...);
+      ::new (&(p_data_node->value)) T(etl::forward<Args>(args)...);
       ETL_INCREMENT_DEBUG_COUNT
       insert_node_after(start_node, *p_data_node);
     }
@@ -907,7 +907,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 
       data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
-      ::new (&(p_data_node->value)) T(ETL_STD::forward<Args>(args)...);
+      ::new (&(p_data_node->value)) T(etl::forward<Args>(args)...);
       ETL_INCREMENT_DEBUG_COUNT
       insert_node_after(*position.p_node, *p_data_node);
 
@@ -1001,7 +1001,7 @@ namespace etl
     void insert_after(iterator position, TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      difference_type d = ETL_STD::distance(first, last);
+      difference_type d = etl::distance(first, last);
       ETL_ASSERT((d + size()) <= MAX_SIZE, ETL_ERROR(forward_list_full));
 #endif
 
@@ -1141,7 +1141,7 @@ namespace etl
     //*************************************************************************
     void unique()
     {
-      unique(ETL_STD::equal_to<T>());
+      unique(etl::equal_to<T>());
     }
 
     //*************************************************************************
@@ -1182,7 +1182,7 @@ namespace etl
     //*************************************************************************
     void sort()
     {
-      sort(ETL_STD::less<T>());
+      sort(etl::less<T>());
     }
 
     //*************************************************************************
@@ -1386,7 +1386,7 @@ namespace etl
     //*************************************************************************
     iforward_list& operator = (iforward_list&& rhs)
     {
-      move_container(ETL_STD::move(rhs));
+      move_container(etl::move(rhs));
 
       return *this;
     }
@@ -1460,7 +1460,7 @@ namespace etl
     data_node_t& allocate_data_node(rvalue_reference value)
     {
       data_node_t* p_node = p_node_pool->allocate<data_node_t>();
-      ::new (&(p_node->value)) T(ETL_STD::move(value));
+      ::new (&(p_node->value)) T(etl::move(value));
       ETL_INCREMENT_DEBUG_COUNT
 
       return *p_node;
@@ -1487,7 +1487,7 @@ namespace etl
         {
           ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 
-          data_node_t& data_node = this->allocate_data_node(ETL_STD::move(*first++));
+          data_node_t& data_node = this->allocate_data_node(etl::move(*first++));
           join(p_last_node, &data_node);
           data_node.next = nullptr;
           p_last_node = &data_node;
@@ -1633,7 +1633,7 @@ namespace etl
     forward_list(forward_list&& other)
       : etl::iforward_list<T>(node_pool, MAX_SIZE, false)
     {
-      this->move_container(ETL_STD::move(other));
+      this->move_container(etl::move(other));
     }
 #endif
 
@@ -1686,7 +1686,7 @@ namespace etl
     forward_list& operator = (forward_list&& rhs)
     {
 
-      this->move_container(ETL_STD::move(rhs));
+      this->move_container(etl::move(rhs));
 
       return *this;
     }
@@ -1774,7 +1774,7 @@ namespace etl
         typename etl::iforward_list<T>::iterator itr = other.begin();
         while (itr != other.end())
         {
-          this->push_back(ETL_STD::move(*itr));
+          this->push_back(etl::move(*itr));
           ++itr;
         }
 
@@ -1831,7 +1831,7 @@ namespace etl
     //*************************************************************************
     forward_list& operator = (forward_list&& rhs)
     {
-      this->move_container(ETL_STD::move(rhs));
+      this->move_container(etl::move(rhs));
 
       return *this;
     }
@@ -1862,7 +1862,7 @@ namespace etl
   bool operator ==(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& rhs)
   {
     return (lhs.size() == rhs.size()) &&
-      ETL_STD::equal(lhs.begin(), lhs.end(), rhs.begin());
+      etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //*************************************************************************
@@ -1887,10 +1887,7 @@ namespace etl
   template <typename T>
   bool operator <(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& rhs)
   {
-    return ETL_STD::lexicographical_compare(lhs.begin(),
-      lhs.end(),
-      rhs.begin(),
-      rhs.end());
+    return etl::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
 
   //*************************************************************************

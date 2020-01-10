@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include "etl/functional.h"
 
@@ -36,8 +36,68 @@ SOFTWARE.
 
 namespace
 {
+  template <typename TCompare>
+  bool compare(int a, int b)
+  {
+    return TCompare()(a, b);
+  }
+
+  struct test : etl::binary_function<int, int, bool>
+  {
+    bool operator()(int a, int b) const
+    {
+      return a < b;
+    }
+  };
+
   SUITE(test_functional)
   {
+    //*************************************************************************
+    TEST(test_less)
+    {
+      CHECK((compare<etl::less<int>>(1, 2)));
+      CHECK(!(compare<etl::less<int>>(2, 1)));
+      CHECK(!(compare<etl::less<int>>(1, 1)));
+    }
+
+    //*************************************************************************
+    TEST(test_greater)
+    {
+      CHECK(!(compare<etl::greater<int>>(1, 2)));
+      CHECK((compare<etl::greater<int>>(2, 1)));
+      CHECK(!(compare<etl::greater<int>>(1, 1)));
+    }
+
+    //*************************************************************************
+    TEST(test_equal_to)
+    {
+      CHECK((compare<etl::equal_to<int>>(1, 1)));
+      CHECK(!(compare<etl::equal_to<int>>(1, 2)));
+      CHECK(!(compare<etl::equal_to<int>>(2, 1)));
+    }
+
+    //*************************************************************************
+    TEST(test_not_equal_to)
+    {
+      CHECK(!(compare<etl::not_equal_to<int>>(1, 1)));
+      CHECK((compare<etl::not_equal_to<int>>(1, 2)));
+      CHECK((compare<etl::not_equal_to<int>>(2, 1)));
+    }
+
+    //*************************************************************************
+    TEST(test_bind1st)
+    {
+      CHECK((etl::bind1st(test(), 1)(2)));
+      CHECK(!(etl::bind1st(test(), 2)(1)));
+    }
+
+    //*************************************************************************
+    TEST(test_bind2nd)
+    {
+      CHECK(!(etl::bind2nd(test(), 1)(2)));
+      CHECK((etl::bind2nd(test(), 2)(1)));
+    }
+
     //*************************************************************************
     TEST(test_reference_wrapper)
     {

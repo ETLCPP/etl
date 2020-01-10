@@ -235,9 +235,9 @@ namespace etl
       }
       else
       {
-        return ETL_STD::find_if(state_table.begin(),
-                            state_table.end(),
-                            is_state(state_id));
+        return etl::find_if(state_table.begin(),
+                               state_table.end(),
+                               is_state(state_id));
       }
     }
 
@@ -280,9 +280,9 @@ namespace etl
         while (t != transition_table.end())
         {
           // Scan the transition table from the latest position.
-          t = ETL_STD::find_if(t,
-                           transition_table.end(),
-                           is_transition(event_id, current_state_id));
+          t = etl::find_if(t,
+                              transition_table.end(),
+                              is_transition(event_id, current_state_id));
 
           // Found an entry?
           if (t != transition_table.end())

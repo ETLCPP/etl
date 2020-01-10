@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 #include "ExtraCheckMacros.h"
 
 #include "etl/message_router.h"
@@ -201,7 +201,7 @@ namespace
 
   SUITE(test_message_router)
   {
-    //=========================================================================
+    //*************************************************************************
     TEST(message_router)
     {
       Router1 r1;
@@ -272,7 +272,7 @@ namespace
       CHECK_EQUAL(4, r1.callback_count);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_null_router)
     {
       Router2 router;
@@ -329,7 +329,7 @@ namespace
       CHECK_EQUAL(1, router.message_unknown_count);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_router_accepts)
     {
       Router2 r2;
@@ -350,7 +350,7 @@ namespace
       CHECK(r2.accepts(message5.message_id));
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_router_queue)
     {
       Router1 r1;
@@ -418,7 +418,7 @@ namespace
       queue.pop();
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_router_successor)
     {
       Router1 r1;

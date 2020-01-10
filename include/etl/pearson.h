@@ -81,7 +81,7 @@ namespace etl
     pearson(TIterator begin, const TIterator end)
       : first(true)
     {
-      ETL_STATIC_ASSERT(sizeof(typename ETL_STD::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
+      ETL_STATIC_ASSERT(sizeof(typename etl::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
 
       reset();
       add(begin, end);
@@ -103,7 +103,7 @@ namespace etl
     template<typename TIterator>
     void add(TIterator begin, const TIterator end)
     {
-      ETL_STATIC_ASSERT(sizeof(typename ETL_STD::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
+      ETL_STATIC_ASSERT(sizeof(typename etl::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
 
       while (begin != end)
       {

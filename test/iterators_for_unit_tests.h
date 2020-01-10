@@ -34,10 +34,8 @@ SOFTWARE.
 #include "etl/platform.h"
 #include "etl/iterator.h"
 
-#include "etl/stl/iterator.h"
-
 template <typename T>
-struct non_random_iterator : public etl::iterator<ETL_BIDIRECTIONAL_ITERATOR_TAG, T>
+struct non_random_iterator : public etl::iterator<ETL_OR_STD::bidirectional_iterator_tag, T>
 {
   non_random_iterator()
     : ptr(nullptr)
@@ -116,7 +114,7 @@ bool operator !=(const non_random_iterator<T>& lhs, const non_random_iterator<T>
 }
 
 template <typename T>
-struct random_iterator : public etl::iterator<ETL_RANDOM_ACCESS_ITERATOR_TAG, T>
+struct random_iterator : public etl::iterator<ETL_OR_STD::random_access_iterator_tag, T>
 {
   random_iterator()
     : ptr(nullptr)

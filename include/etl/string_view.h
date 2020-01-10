@@ -109,7 +109,7 @@ namespace etl
     typedef const T&                              const_reference;
     typedef const T*                              const_pointer;
     typedef const T*                              const_iterator;
-    typedef ETL_STD::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
 
     enum
     {
@@ -310,10 +310,10 @@ namespace etl
     //*************************************************************************
     template <typename TIterator,
               typename TDummy = typename etl::enable_if<etl::is_random_iterator<TIterator>::value, void>::type>
-      void assign(TIterator begin_, TIterator end_)
+    void assign(TIterator begin_, TIterator end_)
     {
       mbegin = etl::addressof(*begin_);
-      mend = etl::addressof(*begin_) + ETL_STD::distance(begin_, end_);
+      mend = etl::addressof(*begin_) + etl::distance(begin_, end_);
     }
 
     //*************************************************************************
@@ -321,8 +321,8 @@ namespace etl
     //*************************************************************************
     template <typename TIterator,
               typename TSize,
-              typename TDummy = typename etl::enable_if<etl::is_random_iterator<TIterator>::value, void>::type>
-      void assign(TIterator begin_, TSize size_)
+              typename TDummy = typename etl::enable_if<etl::is_integral<TSize>::value, void>::type>
+    void assign(TIterator begin_, TSize size_)
     {
       mbegin = etl::addressof(*begin_);
       mend = etl::addressof(*begin_) + size_;
@@ -351,8 +351,10 @@ namespace etl
     //*************************************************************************
     void swap(basic_string_view& other)
     {
-      ETL_STD::swap(mbegin, other.mbegin);
-      ETL_STD::swap(mend, other.mend);
+      using ETL_OR_STD::swap; // Allow ADL
+
+      swap(mbegin, other.mbegin);
+      swap(mend, other.mend);
     }
 
     //*************************************************************************
@@ -364,9 +366,9 @@ namespace etl
 
       if (position < size())
       {
-        n = ETL_STD::min(count, size() - position);
+        n = etl::min(count, size() - position);
 
-        ETL_STD::copy(mbegin + position, mbegin + position + n, destination);
+        etl::copy(mbegin + position, mbegin + position + n, destination);
       }
 
       return n;
@@ -381,7 +383,7 @@ namespace etl
 
       if (position < size())
       {
-        size_t n = ETL_STD::min(count, size() - position);
+        size_t n = etl::min(count, size() - position);
 
         view = basic_string_view(mbegin + position, mbegin + position + n);
       }
@@ -495,7 +497,7 @@ namespace etl
         return npos;
       }
 
-      const_iterator iposition = ETL_STD::search(begin() + position, end(), view.begin(), view.end());
+      const_iterator iposition = etl::search(begin() + position, end(), view.begin(), view.end());
 
       if (iposition == end())
       {
@@ -503,7 +505,7 @@ namespace etl
       }
       else
       {
-        return ETL_STD::distance(begin(), iposition);
+        return etl::distance(begin(), iposition);
       }
     }
 
@@ -532,9 +534,9 @@ namespace etl
         return npos;
       }
 
-      position = ETL_STD::min(position, size());
+      position = etl::min(position, size());
 
-      const_iterator iposition = ETL_STD::find_end(begin(),
+      const_iterator iposition = etl::find_end(begin(),
                                                    begin() + position,
                                                    view.begin(),
                                                    view.end());
@@ -545,7 +547,7 @@ namespace etl
       }
       else
       {
-        return ETL_STD::distance(begin(), iposition);
+        return etl::distance(begin(), iposition);
       }
     }
 
@@ -615,7 +617,7 @@ namespace etl
         return npos;
       }
 
-      position = ETL_STD::min(position, size() - 1);
+      position = etl::min(position, size() - 1);
 
       const_reverse_iterator it = rbegin() + size() - position - 1;
 
@@ -711,7 +713,7 @@ namespace etl
         return npos;
       }
 
-      position = ETL_STD::min(position, size() - 1);
+      position = etl::min(position, size() - 1);
 
       const_reverse_iterator it = rbegin() + size() - position - 1;
 
@@ -762,7 +764,7 @@ namespace etl
     friend bool operator == (const etl::basic_string_view<T, TTraits>& lhs, const etl::basic_string_view<T, TTraits>& rhs)
     {
       return (lhs.size() == rhs.size()) &&
-        ETL_STD::equal(lhs.begin(), lhs.end(), rhs.begin());
+        etl::equal(lhs.begin(), lhs.end(), rhs.begin());
     }
 
     //*************************************************************************
@@ -778,7 +780,7 @@ namespace etl
     //*************************************************************************
     friend bool operator < (const etl::basic_string_view<T, TTraits>& lhs, const etl::basic_string_view<T, TTraits>& rhs)
     {
-      return ETL_STD::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+      return etl::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
     }
 
     //*************************************************************************

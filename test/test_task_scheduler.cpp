@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include <stdint.h>
 #include <string>
@@ -160,7 +160,7 @@ namespace
 {
   SUITE(test_task_scheduler)
   {
-    //=========================================================================
+    //*************************************************************************
     TEST(test_scheduler_sequencial_single)
     {
       SchedulerSequencialSingle s;
@@ -185,7 +185,7 @@ namespace
       CHECK(common.watchdog_called);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_scheduler_sequencial_multiple)
     {
       SchedulerSequencialMultiple s;
@@ -210,7 +210,7 @@ namespace
       CHECK(common.watchdog_called);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_scheduler_highest_priority)
     {
       SchedulerHighestPriority s;
@@ -235,7 +235,7 @@ namespace
       CHECK(common.watchdog_called);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_scheduler_most_work)
     {
       SchedulerMostWork s;

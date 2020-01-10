@@ -28,19 +28,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_STL_CHOOSE_NAMESPACE_INCLUDED
-#define ETL_STL_CHOOSE_NAMESPACE_INCLUDED
+#ifndef ETL_CHOOSE_NAMESPACE_INCLUDED
+#define ETL_CHOOSE_NAMESPACE_INCLUDED
 
 #include "../platform.h"
 
-#if defined(ETL_NO_STL)
-  #ifndef ETL_STD
-    #define ETL_STD etlstd /// Namespace for the alternate STL.
-  #endif
+#undef ETL_OR_STD
+
+#if defined(ETL_NO_STL) && !defined(ETL_IN_UNIT_TEST)
+  // If we're not using the STL and we are not unit testing, then use the ETL's definitions under the etl namespace
+  #define ETL_OR_STD etl
 #else
-  #ifndef ETL_STD
-    #define ETL_STD std    /// Namespace for conventional STL
-  #endif
+  // We will use the STL's definitions under the std namespace
+  #define ETL_OR_STD std
 #endif
 
 #endif

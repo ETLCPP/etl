@@ -1,4 +1,12 @@
 ===============================================================================
+16.0.0
+Refactored the ETL's relationship with the STL
+Many reverse engineered STL algorithms and traits are now available through the
+ETL namespace.
+When ETL_NO_STL is defined, the ETL implements its own versions of the STL code.
+When ETL_NO_STL is *not* defined, the ETL act as a wrapper around the STL implementations.
+
+===============================================================================
 15.5.0
 Added the ability to self determine the compiler type, version and language support
 by defining ETL_AUTO_DETERMINE_COMPILER_INFO or including the 'auto.h' profile.

@@ -75,7 +75,7 @@ cog.outl("//********************************************************************
 #include "type_lookup.h"
 #include "pool.h"
 
-#include "stl/utility.h"
+#include "utility.h"
 
 #undef ETL_FILE
 #define ETL_FILE "40"
@@ -357,7 +357,7 @@ namespace etl
 
         if (p != nullptr)
         {
-          new (p) T(ETL_STD::forward<Args>(args)...);
+          new (p) T(ETL_OR_STD::forward<Args>(args)...);
         }
       }
 

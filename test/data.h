@@ -30,6 +30,7 @@ SOFTWARE.
 #define ETL_TEST_DATA_INCLUDED
 
 #include <ostream>
+#include <utility>
 
 #include "etl/instance_count.h"
 
@@ -257,6 +258,5 @@ std::ostream& operator << (std::ostream& s, const TestDataM<T>& rhs)
   s << rhs.value;
   return s;
 }
-
 
 #endif

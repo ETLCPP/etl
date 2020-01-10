@@ -239,7 +239,7 @@ namespace etl
 
       if (next_index != read.load(etl::memory_order_acquire))
       {
-        ::new (&p_buffer[write_index]) T(ETL_STD::forward<Args>(args)...);
+        ::new (&p_buffer[write_index]) T(etl::forward<Args>(args)...);
 
         write.store(next_index, etl::memory_order_release);
 

@@ -39,8 +39,8 @@ SOFTWARE.
 #include "exception.h"
 #include "error_handler.h"
 
-#include "stl/utility.h"
-#include "stl/algorithm.h"
+#include "utility.h"
+#include "algorithm.h"
 
 #undef ETL_FILE
 #define ETL_FILE "22"
@@ -265,7 +265,9 @@ namespace etl
 
     void reverse()
     {
-      ETL_STD::swap(etl_previous, etl_next);
+      using ETL_OR_STD::swap; // Allow ADL
+
+      swap(etl_previous, etl_next);
     }
 
     bidirectional_link* etl_previous;

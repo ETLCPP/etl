@@ -26,19 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
-
-#define IN_TYPE_TRAITS_TEST
-
-#if defined(ETL_COMPILER_GCC)
-namespace std
-{
-  template <typename T>
-  struct add_reference : public std::add_lvalue_reference<T>
-  {
-  };
-}
-#endif
+#include "UnitTest++/UnitTest++.h"
 
 #include "etl/type_traits.h"
 #include <type_traits>
@@ -51,10 +39,7 @@ namespace
 namespace etl
 {
   template <>
-  constexpr size_t size_of<TestData>()
-  {
-    return 20;
-  }
+  struct size_of<TestData> : integral_constant<size_t, 20U> {};
 }
 
 namespace
@@ -217,8 +202,8 @@ namespace
     //*************************************************************************
     TEST(test_is_same)
     {
-      CHECK((etl::is_same<int, int>::value  == std::is_same<int, int>::value));
-      CHECK((etl::is_same<char, int>::value == std::is_same<char, int>::value));
+      CHECK((etl::is_same<int, int>::value  == etl::is_same<int, int>::value));
+      CHECK((etl::is_same<char, int>::value == etl::is_same<char, int>::value));
     }
 
     //*************************************************************************
@@ -231,72 +216,61 @@ namespace
     //*************************************************************************
     TEST(test_remove_pointer)
     {
-      CHECK((std::is_same<etl::remove_pointer<int>::type,                       std::remove_pointer<int>::type>::value));
-      CHECK((std::is_same<etl::remove_pointer<const int>::type,                 std::remove_pointer<const int>::type>::value));
-      CHECK((std::is_same<etl::remove_pointer<int*>::type,                      std::remove_pointer<int*>::type>::value));
-      CHECK((std::is_same<etl::remove_pointer<int* const>::type,                std::remove_pointer<int*>::type>::value));
-      CHECK((std::is_same<etl::remove_pointer<const int*>::type,                std::remove_pointer<const int*>::type>::value));
-      CHECK((std::is_same<etl::remove_pointer<const int* const>::type,          std::remove_pointer<const int* const>::type>::value));
+      CHECK((etl::is_same<etl::remove_pointer<int>::type,                       std::remove_pointer<int>::type>::value));
+      CHECK((etl::is_same<etl::remove_pointer<const int>::type,                 std::remove_pointer<const int>::type>::value));
+      CHECK((etl::is_same<etl::remove_pointer<int*>::type,                      std::remove_pointer<int*>::type>::value));
+      CHECK((etl::is_same<etl::remove_pointer<int* const>::type,                std::remove_pointer<int*>::type>::value));
+      CHECK((etl::is_same<etl::remove_pointer<const int*>::type,                std::remove_pointer<const int*>::type>::value));
+      CHECK((etl::is_same<etl::remove_pointer<const int* const>::type,          std::remove_pointer<const int* const>::type>::value));
 
-      CHECK((std::is_same<etl::remove_pointer<volatile int>::type,              std::remove_pointer<volatile int>::type>::value));
-      CHECK((std::is_same<etl::remove_pointer<volatile const int>::type,        std::remove_pointer<volatile const int>::type>::value));
-      CHECK((std::is_same<etl::remove_pointer<volatile int*>::type,             std::remove_pointer<volatile int*>::type>::value));
-      CHECK((std::is_same<etl::remove_pointer<volatile int*const >::type,       std::remove_pointer<volatile int*>::type>::value));
-      CHECK((std::is_same<etl::remove_pointer<const volatile int*>::type,       std::remove_pointer<const volatile int*>::type>::value));
-      CHECK((std::is_same<etl::remove_pointer<const volatile int* const>::type, std::remove_pointer<const volatile int* const>::type>::value));
+      CHECK((etl::is_same<etl::remove_pointer<volatile int>::type,              std::remove_pointer<volatile int>::type>::value));
+      CHECK((etl::is_same<etl::remove_pointer<volatile const int>::type,        std::remove_pointer<volatile const int>::type>::value));
+      CHECK((etl::is_same<etl::remove_pointer<volatile int*>::type,             std::remove_pointer<volatile int*>::type>::value));
+      CHECK((etl::is_same<etl::remove_pointer<volatile int*const >::type,       std::remove_pointer<volatile int*>::type>::value));
+      CHECK((etl::is_same<etl::remove_pointer<const volatile int*>::type,       std::remove_pointer<const volatile int*>::type>::value));
+      CHECK((etl::is_same<etl::remove_pointer<const volatile int* const>::type, std::remove_pointer<const volatile int* const>::type>::value));
     }
 
     //*************************************************************************
     TEST(test_add_pointer)
     {
-      CHECK((std::is_same<etl::add_pointer<int>::type,                       std::add_pointer<int>::type>::value));
-      CHECK((std::is_same<etl::add_pointer<const int>::type,                 std::add_pointer<const int>::type>::value));
-      CHECK((std::is_same<etl::add_pointer<int*>::type,                      std::add_pointer<int*>::type>::value));
-      CHECK((std::is_same<etl::add_pointer<int* const >::type,               std::add_pointer<int* const>::type>::value));
-      CHECK((std::is_same<etl::add_pointer<const int*>::type,                std::add_pointer<const int*>::type>::value));
-      CHECK((std::is_same<etl::add_pointer<const int* const>::type,          std::add_pointer<const int* const>::type>::value));
-      CHECK((std::is_same<etl::add_pointer<volatile int*>::type,             std::add_pointer<volatile int*>::type>::value));
-      CHECK((std::is_same<etl::add_pointer<const volatile int*>::type,       std::add_pointer<const volatile int*>::type>::value));
-      CHECK((std::is_same<etl::add_pointer<volatile int* const>::type,       std::add_pointer<volatile int* const>::type>::value));
-      CHECK((std::is_same<etl::add_pointer<const volatile int* const>::type, std::add_pointer<const volatile int* const>::type>::value));
+      CHECK((etl::is_same<etl::add_pointer<int>::type,                       std::add_pointer<int>::type>::value));
+      CHECK((etl::is_same<etl::add_pointer<const int>::type,                 std::add_pointer<const int>::type>::value));
+      CHECK((etl::is_same<etl::add_pointer<int*>::type,                      std::add_pointer<int*>::type>::value));
+      CHECK((etl::is_same<etl::add_pointer<int* const >::type,               std::add_pointer<int* const>::type>::value));
+      CHECK((etl::is_same<etl::add_pointer<const int*>::type,                std::add_pointer<const int*>::type>::value));
+      CHECK((etl::is_same<etl::add_pointer<const int* const>::type,          std::add_pointer<const int* const>::type>::value));
+      CHECK((etl::is_same<etl::add_pointer<volatile int*>::type,             std::add_pointer<volatile int*>::type>::value));
+      CHECK((etl::is_same<etl::add_pointer<const volatile int*>::type,       std::add_pointer<const volatile int*>::type>::value));
+      CHECK((etl::is_same<etl::add_pointer<volatile int* const>::type,       std::add_pointer<volatile int* const>::type>::value));
+      CHECK((etl::is_same<etl::add_pointer<const volatile int* const>::type, std::add_pointer<const volatile int* const>::type>::value));
 
     }
 
     //*************************************************************************
     TEST(test_remove_reference)
     {
-      CHECK((std::is_same<etl::remove_reference<int>::type,                 std::remove_reference<int>::type>::value));
-      CHECK((std::is_same<etl::remove_reference<int&>::type,                std::remove_reference<int&>::type>::value));
-      CHECK((std::is_same<etl::remove_reference<const int&>::type,          std::remove_reference<const int&>::type>::value));
-      CHECK((std::is_same<etl::remove_reference<volatile int&>::type,       std::remove_reference<volatile int&>::type>::value));
-      CHECK((std::is_same<etl::remove_reference<const volatile int&>::type, std::remove_reference<const volatile int&>::type>::value));
-    }
-
-    //*************************************************************************
-    TEST(test_add_reference)
-    {
-      CHECK((std::is_same<etl::add_reference<int>::type,                 std::add_lvalue_reference<int>::type>::value));
-      CHECK((std::is_same<etl::add_reference<int&>::type,                std::add_lvalue_reference<int&>::type>::value));
-      CHECK((std::is_same<etl::add_reference<const int&>::type,          std::add_lvalue_reference<const int&>::type>::value));
-      CHECK((std::is_same<etl::add_reference<volatile int&>::type,       std::add_lvalue_reference<volatile int&>::type>::value));
-      CHECK((std::is_same<etl::add_reference<const volatile int&>::type, std::add_lvalue_reference<const volatile int&>::type>::value));
-
+      CHECK((etl::is_same<etl::remove_reference<int>::type,                 std::remove_reference<int>::type>::value));
+      CHECK((etl::is_same<etl::remove_reference<int&>::type,                std::remove_reference<int&>::type>::value));
+      CHECK((etl::is_same<etl::remove_reference<const int&>::type,          std::remove_reference<const int&>::type>::value));
+      CHECK((etl::is_same<etl::remove_reference<volatile int&>::type,       std::remove_reference<volatile int&>::type>::value));
+      CHECK((etl::is_same<etl::remove_reference<const volatile int&>::type, std::remove_reference<const volatile int&>::type>::value));
     }
 
     //*************************************************************************
     TEST(test_remove_const)
     {
-      CHECK((std::is_same<etl::remove_const<int>::type,                std::remove_const<int>::type>::value));
-      CHECK((std::is_same<etl::remove_const<const int>::type,          std::remove_const<const int>::type>::value));
-      CHECK((std::is_same<etl::remove_const<const volatile int>::type, std::remove_const<const volatile int>::type>::value));
+      CHECK((etl::is_same<etl::remove_const<int>::type,                std::remove_const<int>::type>::value));
+      CHECK((etl::is_same<etl::remove_const<const int>::type,          std::remove_const<const int>::type>::value));
+      CHECK((etl::is_same<etl::remove_const<const volatile int>::type, std::remove_const<const volatile int>::type>::value));
     }
 
     //*************************************************************************
     TEST(test_add_const)
     {
-      CHECK((std::is_same<etl::add_const<int>::type,                std::add_const<int>::type>::value));
-      CHECK((std::is_same<etl::add_const<const int>::type,          std::add_const<const int>::type>::value));
-      CHECK((std::is_same<etl::add_const<const volatile int>::type, std::add_const<const volatile int>::type>::value));
+      CHECK((etl::is_same<etl::add_const<int>::type,                std::add_const<int>::type>::value));
+      CHECK((etl::is_same<etl::add_const<const int>::type,          std::add_const<const int>::type>::value));
+      CHECK((etl::is_same<etl::add_const<const volatile int>::type, std::add_const<const volatile int>::type>::value));
     }
 
     //*************************************************************************
@@ -318,26 +292,26 @@ namespace
     //*************************************************************************
     TEST(test_remove_volatile)
     {
-      CHECK((std::is_same<etl::remove_volatile<int>::type,                std::remove_volatile<int>::type>::value));
-      CHECK((std::is_same<etl::remove_volatile<volatile int>::type,       std::remove_volatile<volatile int>::type>::value));
-      CHECK((std::is_same<etl::remove_volatile<const volatile int>::type, std::remove_volatile<const volatile int>::type>::value));
+      CHECK((etl::is_same<etl::remove_volatile<int>::type,                std::remove_volatile<int>::type>::value));
+      CHECK((etl::is_same<etl::remove_volatile<volatile int>::type,       std::remove_volatile<volatile int>::type>::value));
+      CHECK((etl::is_same<etl::remove_volatile<const volatile int>::type, std::remove_volatile<const volatile int>::type>::value));
     }
 
     //*************************************************************************
     TEST(test_add_volatile)
     {
-      CHECK((std::is_same<etl::add_volatile<int>::type,                std::add_volatile<int>::type>::value));
-      CHECK((std::is_same<etl::add_volatile<volatile int>::type,       std::add_volatile<volatile int>::type>::value));
-      CHECK((std::is_same<etl::add_volatile<const volatile int>::type, std::add_volatile<const volatile int>::type>::value));
+      CHECK((etl::is_same<etl::add_volatile<int>::type,                std::add_volatile<int>::type>::value));
+      CHECK((etl::is_same<etl::add_volatile<volatile int>::type,       std::add_volatile<volatile int>::type>::value));
+      CHECK((etl::is_same<etl::add_volatile<const volatile int>::type, std::add_volatile<const volatile int>::type>::value));
     }
 
     //*************************************************************************
     TEST(test_remove_cv)
     {
-      CHECK((std::is_same<etl::remove_cv<int>::type,                std::remove_cv<int>::type>::value));
-      CHECK((std::is_same<etl::remove_cv<const int>::type,          std::remove_cv<const int>::type>::value));
-      CHECK((std::is_same<etl::remove_cv<volatile int>::type,       std::remove_cv<volatile int>::type>::value));
-      CHECK((std::is_same<etl::remove_cv<const volatile int>::type, std::remove_cv<const volatile int>::type>::value));
+      CHECK((etl::is_same<etl::remove_cv<int>::type,                std::remove_cv<int>::type>::value));
+      CHECK((etl::is_same<etl::remove_cv<const int>::type,          std::remove_cv<const int>::type>::value));
+      CHECK((etl::is_same<etl::remove_cv<volatile int>::type,       std::remove_cv<volatile int>::type>::value));
+      CHECK((etl::is_same<etl::remove_cv<const volatile int>::type, std::remove_cv<const volatile int>::type>::value));
     }
 
     //*************************************************************************
@@ -347,13 +321,13 @@ namespace
       typedef etl::add_cv<int>::type t1;
       typedef std::add_cv<int>::type t2;
 
-      bool pass = std::is_same<t1, t2>::value;
-        //std::is_same<etl::add_cv<int>::type,                std::add_cv<int>::type>::value;
+      bool pass = etl::is_same<t1, t2>::value;
+        //etl::is_same<etl::add_cv<int>::type,                std::add_cv<int>::type>::value;
 
       CHECK(pass);
-      CHECK((std::is_same<etl::add_cv<const int>::type,          std::add_cv<const int>::type>::value));
-      CHECK((std::is_same<etl::add_cv<volatile int>::type,       std::add_cv<volatile int>::type>::value));
-      CHECK((std::is_same<etl::add_cv<const volatile int>::type, std::add_cv<const volatile int>::type>::value));
+      CHECK((etl::is_same<etl::add_cv<const int>::type,          std::add_cv<const int>::type>::value));
+      CHECK((etl::is_same<etl::add_cv<volatile int>::type,       std::add_cv<volatile int>::type>::value));
+      CHECK((etl::is_same<etl::add_cv<const volatile int>::type, std::add_cv<const volatile int>::type>::value));
     }
 
     //*************************************************************************
@@ -458,53 +432,53 @@ namespace
     //*************************************************************************
     TEST(test_make_signed)
     {
-      CHECK((std::is_same<etl::make_signed<char>::type,               std::make_signed<char>::type>::value));
-      CHECK((std::is_same<etl::make_signed<signed char>::type,        std::make_signed<signed char>::type>::value));
-      CHECK((std::is_same<etl::make_signed<unsigned char>::type,      std::make_signed<unsigned char>::type>::value));
-      CHECK(std::is_signed<etl::make_signed<wchar_t>::type>::value && (sizeof(wchar_t) == sizeof(etl::make_signed<wchar_t>::type)));
-      CHECK((std::is_same<etl::make_signed<short>::type,              std::make_signed<short>::type>::value));
-      CHECK((std::is_same<etl::make_signed<signed short>::type,       std::make_signed<signed short>::type>::value));
-      CHECK((std::is_same<etl::make_signed<unsigned short>::type,     std::make_signed<unsigned short>::type>::value));
-      CHECK((std::is_same<etl::make_signed<int>::type,                std::make_signed<int>::type>::value));
-      CHECK((std::is_same<etl::make_signed<signed int>::type,         std::make_signed<signed int>::type>::value));
-      CHECK((std::is_same<etl::make_signed<unsigned int>::type,       std::make_signed<unsigned int>::type>::value));
-      CHECK((std::is_same<etl::make_signed<long>::type,               std::make_signed<long>::type>::value));
-      CHECK((std::is_same<etl::make_signed<signed long>::type,        std::make_signed<signed long>::type>::value));
-      CHECK((std::is_same<etl::make_signed<unsigned long>::type,      std::make_signed<unsigned long>::type>::value));
-      CHECK((std::is_same<etl::make_signed<long long>::type,          std::make_signed<long long>::type>::value));
-      CHECK((std::is_same<etl::make_signed<signed long long>::type,   std::make_signed<signed long long>::type>::value));
-      CHECK((std::is_same<etl::make_signed<unsigned long long>::type, std::make_signed<unsigned long long>::type>::value));
-      CHECK((std::is_same<etl::make_signed<const int>::type,          std::make_signed<const int>::type>::value));
-      CHECK((std::is_same<etl::make_signed<volatile int>::type,       std::make_signed<volatile int>::type>::value));
-      CHECK((std::is_same<etl::make_signed<const int>::type,          std::make_signed<const int>::type>::value));
-      CHECK((std::is_same<etl::make_signed<const volatile int>::type, std::make_signed<const volatile int>::type>::value));
-      CHECK((std::is_same<etl::make_signed<size_t>::type,             std::make_signed<size_t>::type>::value));
+      CHECK((etl::is_same<etl::make_signed<char>::type,               std::make_signed<char>::type>::value));
+      CHECK((etl::is_same<etl::make_signed<signed char>::type,        std::make_signed<signed char>::type>::value));
+      CHECK((etl::is_same<etl::make_signed<unsigned char>::type,      std::make_signed<unsigned char>::type>::value));
+      CHECK(etl::is_signed<etl::make_signed<wchar_t>::type>::value && (sizeof(wchar_t) == sizeof(etl::make_signed<wchar_t>::type)));
+      CHECK((etl::is_same<etl::make_signed<short>::type,              std::make_signed<short>::type>::value));
+      CHECK((etl::is_same<etl::make_signed<signed short>::type,       std::make_signed<signed short>::type>::value));
+      CHECK((etl::is_same<etl::make_signed<unsigned short>::type,     std::make_signed<unsigned short>::type>::value));
+      CHECK((etl::is_same<etl::make_signed<int>::type,                std::make_signed<int>::type>::value));
+      CHECK((etl::is_same<etl::make_signed<signed int>::type,         std::make_signed<signed int>::type>::value));
+      CHECK((etl::is_same<etl::make_signed<unsigned int>::type,       std::make_signed<unsigned int>::type>::value));
+      CHECK((etl::is_same<etl::make_signed<long>::type,               std::make_signed<long>::type>::value));
+      CHECK((etl::is_same<etl::make_signed<signed long>::type,        std::make_signed<signed long>::type>::value));
+      CHECK((etl::is_same<etl::make_signed<unsigned long>::type,      std::make_signed<unsigned long>::type>::value));
+      CHECK((etl::is_same<etl::make_signed<long long>::type,          std::make_signed<long long>::type>::value));
+      CHECK((etl::is_same<etl::make_signed<signed long long>::type,   std::make_signed<signed long long>::type>::value));
+      CHECK((etl::is_same<etl::make_signed<unsigned long long>::type, std::make_signed<unsigned long long>::type>::value));
+      CHECK((etl::is_same<etl::make_signed<const int>::type,          std::make_signed<const int>::type>::value));
+      CHECK((etl::is_same<etl::make_signed<volatile int>::type,       std::make_signed<volatile int>::type>::value));
+      CHECK((etl::is_same<etl::make_signed<const int>::type,          std::make_signed<const int>::type>::value));
+      CHECK((etl::is_same<etl::make_signed<const volatile int>::type, std::make_signed<const volatile int>::type>::value));
+      CHECK((etl::is_same<etl::make_signed<size_t>::type,             std::make_signed<size_t>::type>::value));
     }
 
     //*************************************************************************
     TEST(test_make_unsigned)
     {
-      CHECK((std::is_same<etl::make_unsigned<char>::type,               std::make_unsigned<char>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<signed char>::type,        std::make_unsigned<signed char>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<unsigned char>::type,      std::make_unsigned<unsigned char>::type>::value));
-      CHECK(std::is_unsigned<etl::make_unsigned<wchar_t>::type>::value && (sizeof(wchar_t) == sizeof(etl::make_unsigned<wchar_t>::type)));
-      CHECK((std::is_same<etl::make_unsigned<short>::type,              std::make_unsigned<short>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<signed short>::type,       std::make_unsigned<signed short>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<unsigned short>::type,     std::make_unsigned<unsigned short>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<int>::type,                std::make_unsigned<int>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<signed int>::type,         std::make_unsigned<signed int>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<unsigned int>::type,       std::make_unsigned<unsigned int>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<long>::type,               std::make_unsigned<long>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<signed long>::type,        std::make_unsigned<signed long>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<unsigned long>::type,      std::make_unsigned<unsigned long>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<long long>::type,          std::make_unsigned<long long>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<signed long long>::type,   std::make_unsigned<signed long long>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<unsigned long long>::type, std::make_unsigned<unsigned long long>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<const int>::type,          std::make_unsigned<const int>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<volatile int>::type,       std::make_unsigned<volatile int>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<const int>::type,          std::make_unsigned<const int>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<const volatile int>::type, std::make_unsigned<const volatile int>::type>::value));
-      CHECK((std::is_same<etl::make_unsigned<size_t>::type,             std::make_unsigned<size_t>::type>::value));
+      CHECK((etl::is_same<etl::make_unsigned<char>::type,               std::make_unsigned<char>::type>::value));
+      CHECK((etl::is_same<etl::make_unsigned<signed char>::type,        std::make_unsigned<signed char>::type>::value));
+      CHECK((etl::is_same<etl::make_unsigned<unsigned char>::type,      std::make_unsigned<unsigned char>::type>::value));
+      CHECK(etl::is_unsigned<etl::make_unsigned<wchar_t>::type>::value && (sizeof(wchar_t) == sizeof(etl::make_unsigned<wchar_t>::type)));
+      CHECK((etl::is_same<etl::make_unsigned<short>::type,              std::make_unsigned<short>::type>::value));
+      CHECK((etl::is_same<etl::make_unsigned<signed short>::type,       std::make_unsigned<signed short>::type>::value));
+      CHECK((etl::is_same<etl::make_unsigned<unsigned short>::type,     std::make_unsigned<unsigned short>::type>::value));
+      CHECK((etl::is_same<etl::make_unsigned<int>::type,                std::make_unsigned<int>::type>::value));
+      CHECK((etl::is_same<etl::make_unsigned<signed int>::type,         std::make_unsigned<signed int>::type>::value));
+      CHECK((etl::is_same<etl::make_unsigned<unsigned int>::type,       std::make_unsigned<unsigned int>::type>::value));
+      CHECK((etl::is_same<etl::make_unsigned<long>::type,               std::make_unsigned<long>::type>::value));
+      CHECK((etl::is_same<etl::make_unsigned<signed long>::type,        std::make_unsigned<signed long>::type>::value));
+      CHECK((etl::is_same<etl::make_unsigned<unsigned long>::type,      std::make_unsigned<unsigned long>::type>::value));
+      CHECK((etl::is_same<etl::make_unsigned<long long>::type,          std::make_unsigned<long long>::type>::value));
+      CHECK((etl::is_same<etl::make_unsigned<signed long long>::type,   std::make_unsigned<signed long long>::type>::value));
+      CHECK((etl::is_same<etl::make_unsigned<unsigned long long>::type, std::make_unsigned<unsigned long long>::type>::value));
+      CHECK((etl::is_same<etl::make_unsigned<const int>::type,          std::make_unsigned<const int>::type>::value));
+      CHECK((etl::is_same<etl::make_unsigned<volatile int>::type,       std::make_unsigned<volatile int>::type>::value));
+      CHECK((etl::is_same<etl::make_unsigned<const int>::type,          std::make_unsigned<const int>::type>::value));
+      CHECK((etl::is_same<etl::make_unsigned<const volatile int>::type, std::make_unsigned<const volatile int>::type>::value));
+      CHECK((etl::is_same<etl::make_unsigned<size_t>::type,             std::make_unsigned<size_t>::type>::value));
     }
 
     //*************************************************************************
@@ -518,17 +492,17 @@ namespace
     //*************************************************************************
     TEST(test_remove_extent)
     {
-      CHECK((std::is_same<etl::remove_extent<int>::type,     std::remove_extent<int>::type>::value));
-      CHECK((std::is_same<etl::remove_extent<int[]>::type,   std::remove_extent<int[]>::type>::value));
-      CHECK((std::is_same<etl::remove_extent<int[10]>::type, std::remove_extent<int[10]>::type>::value));
+      CHECK((etl::is_same<etl::remove_extent<int>::type,     std::remove_extent<int>::type>::value));
+      CHECK((etl::is_same<etl::remove_extent<int[]>::type,   std::remove_extent<int[]>::type>::value));
+      CHECK((etl::is_same<etl::remove_extent<int[10]>::type, std::remove_extent<int[10]>::type>::value));
     }
 
     //*************************************************************************
     TEST(test_remove_all_extents)
     {
-      CHECK((std::is_same<etl::remove_all_extents<int>::type,         std::remove_all_extents<int>::type>::value));
-      CHECK((std::is_same<etl::remove_all_extents<int[10]>::type,     std::remove_all_extents<int[10]>::type>::value));
-      CHECK((std::is_same<etl::remove_all_extents<int[10][10]>::type, std::remove_all_extents<int[10][10]>::type>::value));
+      CHECK((etl::is_same<etl::remove_all_extents<int>::type,         std::remove_all_extents<int>::type>::value));
+      CHECK((etl::is_same<etl::remove_all_extents<int[10]>::type,     std::remove_all_extents<int[10]>::type>::value));
+      CHECK((etl::is_same<etl::remove_all_extents<int[10][10]>::type, std::remove_all_extents<int[10][10]>::type>::value));
     }
 
     //*************************************************************************
@@ -621,117 +595,117 @@ namespace
     //*************************************************************************
     TEST(test_types)
     {
-      CHECK((std::is_same<int,              etl::types<int>::type>::value));
-      CHECK((std::is_same<int&,             etl::types<int>::reference>::value));
-      CHECK((std::is_same<const int&,       etl::types<int>::const_reference>::value));
-      CHECK((std::is_same<int*,             etl::types<int>::pointer>::value));
-      CHECK((std::is_same<const int*,       etl::types<int>::const_pointer>::value));
-      CHECK((std::is_same<const int* const, etl::types<int>::const_pointer_const>::value));
+      CHECK((etl::is_same<int,              etl::types<int>::type>::value));
+      CHECK((etl::is_same<int&,             etl::types<int>::reference>::value));
+      CHECK((etl::is_same<const int&,       etl::types<int>::const_reference>::value));
+      CHECK((etl::is_same<int*,             etl::types<int>::pointer>::value));
+      CHECK((etl::is_same<const int*,       etl::types<int>::const_pointer>::value));
+      CHECK((etl::is_same<const int* const, etl::types<int>::const_pointer_const>::value));
 
-      CHECK((std::is_same<int,              etl::types<const int>::type>::value));
-      CHECK((std::is_same<int&,             etl::types<const int>::reference>::value));
-      CHECK((std::is_same<const int&,       etl::types<const int>::const_reference>::value));
-      CHECK((std::is_same<int*,             etl::types<const int>::pointer>::value));
-      CHECK((std::is_same<const int*,       etl::types<const int>::const_pointer>::value));
-      CHECK((std::is_same<const int* const, etl::types<const int>::const_pointer_const>::value));
+      CHECK((etl::is_same<int,              etl::types<const int>::type>::value));
+      CHECK((etl::is_same<int&,             etl::types<const int>::reference>::value));
+      CHECK((etl::is_same<const int&,       etl::types<const int>::const_reference>::value));
+      CHECK((etl::is_same<int*,             etl::types<const int>::pointer>::value));
+      CHECK((etl::is_same<const int*,       etl::types<const int>::const_pointer>::value));
+      CHECK((etl::is_same<const int* const, etl::types<const int>::const_pointer_const>::value));
 
-      CHECK((std::is_same<int,              etl::types<int*>::type>::value));
-      CHECK((std::is_same<int&,             etl::types<int*>::reference>::value));
-      CHECK((std::is_same<const int&,       etl::types<int*>::const_reference>::value));
-      CHECK((std::is_same<int*,             etl::types<int*>::pointer>::value));
-      CHECK((std::is_same<const int*,       etl::types<int*>::const_pointer>::value));
-      CHECK((std::is_same<const int* const, etl::types<int*>::const_pointer_const>::value));
+      CHECK((etl::is_same<int,              etl::types<int*>::type>::value));
+      CHECK((etl::is_same<int&,             etl::types<int*>::reference>::value));
+      CHECK((etl::is_same<const int&,       etl::types<int*>::const_reference>::value));
+      CHECK((etl::is_same<int*,             etl::types<int*>::pointer>::value));
+      CHECK((etl::is_same<const int*,       etl::types<int*>::const_pointer>::value));
+      CHECK((etl::is_same<const int* const, etl::types<int*>::const_pointer_const>::value));
 
-      CHECK((std::is_same<int,              etl::types<int* const>::type>::value));
-      CHECK((std::is_same<int&,             etl::types<int* const>::reference>::value));
-      CHECK((std::is_same<const int&,       etl::types<int* const>::const_reference>::value));
-      CHECK((std::is_same<int*,             etl::types<int* const>::pointer>::value));
-      CHECK((std::is_same<const int*,       etl::types<int* const>::const_pointer>::value));
-      CHECK((std::is_same<const int* const, etl::types<int* const>::const_pointer_const>::value));
+      CHECK((etl::is_same<int,              etl::types<int* const>::type>::value));
+      CHECK((etl::is_same<int&,             etl::types<int* const>::reference>::value));
+      CHECK((etl::is_same<const int&,       etl::types<int* const>::const_reference>::value));
+      CHECK((etl::is_same<int*,             etl::types<int* const>::pointer>::value));
+      CHECK((etl::is_same<const int*,       etl::types<int* const>::const_pointer>::value));
+      CHECK((etl::is_same<const int* const, etl::types<int* const>::const_pointer_const>::value));
 
-      CHECK((std::is_same<int,              etl::types<const int*>::type>::value));
-      CHECK((std::is_same<int&,             etl::types<const int*>::reference>::value));
-      CHECK((std::is_same<const int&,       etl::types<const int*>::const_reference>::value));
-      CHECK((std::is_same<int*,             etl::types<const int*>::pointer>::value));
-      CHECK((std::is_same<const int*,       etl::types<const int*>::const_pointer>::value));
-      CHECK((std::is_same<const int* const, etl::types<const int*>::const_pointer_const>::value));
+      CHECK((etl::is_same<int,              etl::types<const int*>::type>::value));
+      CHECK((etl::is_same<int&,             etl::types<const int*>::reference>::value));
+      CHECK((etl::is_same<const int&,       etl::types<const int*>::const_reference>::value));
+      CHECK((etl::is_same<int*,             etl::types<const int*>::pointer>::value));
+      CHECK((etl::is_same<const int*,       etl::types<const int*>::const_pointer>::value));
+      CHECK((etl::is_same<const int* const, etl::types<const int*>::const_pointer_const>::value));
 
-      CHECK((std::is_same<int,              etl::types<const int* const>::type>::value));
-      CHECK((std::is_same<int&,             etl::types<const int* const>::reference>::value));
-      CHECK((std::is_same<const int&,       etl::types<const int* const>::const_reference>::value));
-      CHECK((std::is_same<int*,             etl::types<const int* const>::pointer>::value));
-      CHECK((std::is_same<const int*,       etl::types<const int* const>::const_pointer>::value));
-      CHECK((std::is_same<const int* const, etl::types<const int* const>::const_pointer_const>::value));
+      CHECK((etl::is_same<int,              etl::types<const int* const>::type>::value));
+      CHECK((etl::is_same<int&,             etl::types<const int* const>::reference>::value));
+      CHECK((etl::is_same<const int&,       etl::types<const int* const>::const_reference>::value));
+      CHECK((etl::is_same<int*,             etl::types<const int* const>::pointer>::value));
+      CHECK((etl::is_same<const int*,       etl::types<const int* const>::const_pointer>::value));
+      CHECK((etl::is_same<const int* const, etl::types<const int* const>::const_pointer_const>::value));
 
-      CHECK((std::is_same<int,              etl::types<int&>::type>::value));
-      CHECK((std::is_same<int&,             etl::types<int&>::reference>::value));
-      CHECK((std::is_same<const int&,       etl::types<int&>::const_reference>::value));
-      CHECK((std::is_same<int*,             etl::types<int&>::pointer>::value));
-      CHECK((std::is_same<const int*,       etl::types<int&>::const_pointer>::value));
-      CHECK((std::is_same<const int* const, etl::types<int&>::const_pointer_const>::value));
+      CHECK((etl::is_same<int,              etl::types<int&>::type>::value));
+      CHECK((etl::is_same<int&,             etl::types<int&>::reference>::value));
+      CHECK((etl::is_same<const int&,       etl::types<int&>::const_reference>::value));
+      CHECK((etl::is_same<int*,             etl::types<int&>::pointer>::value));
+      CHECK((etl::is_same<const int*,       etl::types<int&>::const_pointer>::value));
+      CHECK((etl::is_same<const int* const, etl::types<int&>::const_pointer_const>::value));
 
-      CHECK((std::is_same<int,              etl::types<const int&>::type>::value));
-      CHECK((std::is_same<int&,             etl::types<const int&>::reference>::value));
-      CHECK((std::is_same<const int&,       etl::types<const int&>::const_reference>::value));
-      CHECK((std::is_same<int*,             etl::types<const int&>::pointer>::value));
-      CHECK((std::is_same<const int*,       etl::types<const int&>::const_pointer>::value));
-      CHECK((std::is_same<const int* const, etl::types<const int&>::const_pointer_const>::value));
+      CHECK((etl::is_same<int,              etl::types<const int&>::type>::value));
+      CHECK((etl::is_same<int&,             etl::types<const int&>::reference>::value));
+      CHECK((etl::is_same<const int&,       etl::types<const int&>::const_reference>::value));
+      CHECK((etl::is_same<int*,             etl::types<const int&>::pointer>::value));
+      CHECK((etl::is_same<const int*,       etl::types<const int&>::const_pointer>::value));
+      CHECK((etl::is_same<const int* const, etl::types<const int&>::const_pointer_const>::value));
 
-      CHECK((std::is_same<int,              etl::types<volatile int>::type>::value));
-      CHECK((std::is_same<int&,             etl::types<volatile int>::reference>::value));
-      CHECK((std::is_same<const int&,       etl::types<volatile int>::const_reference>::value));
-      CHECK((std::is_same<int*,             etl::types<volatile int>::pointer>::value));
-      CHECK((std::is_same<const int*,       etl::types<volatile int>::const_pointer>::value));
-      CHECK((std::is_same<const int* const, etl::types<volatile int>::const_pointer_const>::value));
+      CHECK((etl::is_same<int,              etl::types<volatile int>::type>::value));
+      CHECK((etl::is_same<int&,             etl::types<volatile int>::reference>::value));
+      CHECK((etl::is_same<const int&,       etl::types<volatile int>::const_reference>::value));
+      CHECK((etl::is_same<int*,             etl::types<volatile int>::pointer>::value));
+      CHECK((etl::is_same<const int*,       etl::types<volatile int>::const_pointer>::value));
+      CHECK((etl::is_same<const int* const, etl::types<volatile int>::const_pointer_const>::value));
 
-      CHECK((std::is_same<int,              etl::types<const volatile int>::type>::value));
-      CHECK((std::is_same<int&,             etl::types<const volatile int>::reference>::value));
-      CHECK((std::is_same<const int&,       etl::types<const int>::const_reference>::value));
-      CHECK((std::is_same<int*,             etl::types<const volatile int>::pointer>::value));
-      CHECK((std::is_same<const int*,       etl::types<const volatile int>::const_pointer>::value));
-      CHECK((std::is_same<const int* const, etl::types<const volatile int>::const_pointer_const>::value));
+      CHECK((etl::is_same<int,              etl::types<const volatile int>::type>::value));
+      CHECK((etl::is_same<int&,             etl::types<const volatile int>::reference>::value));
+      CHECK((etl::is_same<const int&,       etl::types<const int>::const_reference>::value));
+      CHECK((etl::is_same<int*,             etl::types<const volatile int>::pointer>::value));
+      CHECK((etl::is_same<const int*,       etl::types<const volatile int>::const_pointer>::value));
+      CHECK((etl::is_same<const int* const, etl::types<const volatile int>::const_pointer_const>::value));
 
-      CHECK((std::is_same<int,              etl::types<volatile int*>::type>::value));
-      CHECK((std::is_same<int&,             etl::types<volatile int*>::reference>::value));
-      CHECK((std::is_same<const int&,       etl::types<volatile int*>::const_reference>::value));
-      CHECK((std::is_same<int*,             etl::types<volatile int*>::pointer>::value));
-      CHECK((std::is_same<const int*,       etl::types<volatile int*>::const_pointer>::value));
-      CHECK((std::is_same<const int* const, etl::types<volatile int*>::const_pointer_const>::value));
+      CHECK((etl::is_same<int,              etl::types<volatile int*>::type>::value));
+      CHECK((etl::is_same<int&,             etl::types<volatile int*>::reference>::value));
+      CHECK((etl::is_same<const int&,       etl::types<volatile int*>::const_reference>::value));
+      CHECK((etl::is_same<int*,             etl::types<volatile int*>::pointer>::value));
+      CHECK((etl::is_same<const int*,       etl::types<volatile int*>::const_pointer>::value));
+      CHECK((etl::is_same<const int* const, etl::types<volatile int*>::const_pointer_const>::value));
 
-      CHECK((std::is_same<int,              etl::types<volatile int* const>::type>::value));
-      CHECK((std::is_same<int&,             etl::types<volatile int* const>::reference>::value));
-      CHECK((std::is_same<const int&,       etl::types<volatile int* const>::const_reference>::value));
-      CHECK((std::is_same<int*,             etl::types<volatile int* const>::pointer>::value));
-      CHECK((std::is_same<const int*,       etl::types<volatile int* const>::const_pointer>::value));
-      CHECK((std::is_same<const int* const, etl::types<volatile int* const>::const_pointer_const>::value));
+      CHECK((etl::is_same<int,              etl::types<volatile int* const>::type>::value));
+      CHECK((etl::is_same<int&,             etl::types<volatile int* const>::reference>::value));
+      CHECK((etl::is_same<const int&,       etl::types<volatile int* const>::const_reference>::value));
+      CHECK((etl::is_same<int*,             etl::types<volatile int* const>::pointer>::value));
+      CHECK((etl::is_same<const int*,       etl::types<volatile int* const>::const_pointer>::value));
+      CHECK((etl::is_same<const int* const, etl::types<volatile int* const>::const_pointer_const>::value));
 
-      CHECK((std::is_same<int,              etl::types<const volatile int*>::type>::value));
-      CHECK((std::is_same<int&,             etl::types<const volatile int*>::reference>::value));
-      CHECK((std::is_same<const int&,       etl::types<const volatile int*>::const_reference>::value));
-      CHECK((std::is_same<int*,             etl::types<const volatile int*>::pointer>::value));
-      CHECK((std::is_same<const int*,       etl::types<const volatile int*>::const_pointer>::value));
-      CHECK((std::is_same<const int* const, etl::types<const volatile int*>::const_pointer_const>::value));
+      CHECK((etl::is_same<int,              etl::types<const volatile int*>::type>::value));
+      CHECK((etl::is_same<int&,             etl::types<const volatile int*>::reference>::value));
+      CHECK((etl::is_same<const int&,       etl::types<const volatile int*>::const_reference>::value));
+      CHECK((etl::is_same<int*,             etl::types<const volatile int*>::pointer>::value));
+      CHECK((etl::is_same<const int*,       etl::types<const volatile int*>::const_pointer>::value));
+      CHECK((etl::is_same<const int* const, etl::types<const volatile int*>::const_pointer_const>::value));
 
-      CHECK((std::is_same<int,              etl::types<const volatile int* const>::type>::value));
-      CHECK((std::is_same<int&,             etl::types<const volatile int* const>::reference>::value));
-      CHECK((std::is_same<const int&,       etl::types<const volatile int* const>::const_reference>::value));
-      CHECK((std::is_same<int*,             etl::types<const volatile int* const>::pointer>::value));
-      CHECK((std::is_same<const int*,       etl::types<const volatile int* const>::const_pointer>::value));
-      CHECK((std::is_same<const int* const, etl::types<const volatile int* const>::const_pointer_const>::value));
+      CHECK((etl::is_same<int,              etl::types<const volatile int* const>::type>::value));
+      CHECK((etl::is_same<int&,             etl::types<const volatile int* const>::reference>::value));
+      CHECK((etl::is_same<const int&,       etl::types<const volatile int* const>::const_reference>::value));
+      CHECK((etl::is_same<int*,             etl::types<const volatile int* const>::pointer>::value));
+      CHECK((etl::is_same<const int*,       etl::types<const volatile int* const>::const_pointer>::value));
+      CHECK((etl::is_same<const int* const, etl::types<const volatile int* const>::const_pointer_const>::value));
 
-      CHECK((std::is_same<int,              etl::types<volatile int&>::type>::value));
-      CHECK((std::is_same<int&,             etl::types<volatile int&>::reference>::value));
-      CHECK((std::is_same<const int&,       etl::types<volatile int&>::const_reference>::value));
-      CHECK((std::is_same<int*,             etl::types<volatile int&>::pointer>::value));
-      CHECK((std::is_same<const int*,       etl::types<volatile int&>::const_pointer>::value));
-      CHECK((std::is_same<const int* const, etl::types<volatile int&>::const_pointer_const>::value));
+      CHECK((etl::is_same<int,              etl::types<volatile int&>::type>::value));
+      CHECK((etl::is_same<int&,             etl::types<volatile int&>::reference>::value));
+      CHECK((etl::is_same<const int&,       etl::types<volatile int&>::const_reference>::value));
+      CHECK((etl::is_same<int*,             etl::types<volatile int&>::pointer>::value));
+      CHECK((etl::is_same<const int*,       etl::types<volatile int&>::const_pointer>::value));
+      CHECK((etl::is_same<const int* const, etl::types<volatile int&>::const_pointer_const>::value));
 
-      CHECK((std::is_same<int,              etl::types<const volatile int&>::type>::value));
-      CHECK((std::is_same<int&,             etl::types<const volatile int&>::reference>::value));
-      CHECK((std::is_same<const int&,       etl::types<const volatile int&>::const_reference>::value));
-      CHECK((std::is_same<int*,             etl::types<const volatile int&>::pointer>::value));
-      CHECK((std::is_same<const int*,       etl::types<const volatile int&>::const_pointer>::value));
-      CHECK((std::is_same<const int* const, etl::types<const volatile int&>::const_pointer_const>::value));
+      CHECK((etl::is_same<int,              etl::types<const volatile int&>::type>::value));
+      CHECK((etl::is_same<int&,             etl::types<const volatile int&>::reference>::value));
+      CHECK((etl::is_same<const int&,       etl::types<const volatile int&>::const_reference>::value));
+      CHECK((etl::is_same<int*,             etl::types<const volatile int&>::pointer>::value));
+      CHECK((etl::is_same<const int*,       etl::types<const volatile int&>::const_pointer>::value));
+      CHECK((etl::is_same<const int* const, etl::types<const volatile int&>::const_pointer_const>::value));
     }
   };
 
@@ -748,10 +722,62 @@ namespace
   //*************************************************************************
   TEST(size_of)
   {
-    CHECK_EQUAL(1, etl::size_of<void>());
-    CHECK_EQUAL(1, etl::size_of<char>());
-    CHECK_EQUAL(2, etl::size_of<short>());
-    CHECK_EQUAL(4, etl::size_of<int>());
-    CHECK_EQUAL(20, etl::size_of<TestData>());
+    CHECK_EQUAL(1, etl::size_of<void>::value);
+    CHECK_EQUAL(1, etl::size_of<char>::value);
+    CHECK_EQUAL(2, etl::size_of<short>::value);
+    CHECK_EQUAL(4, etl::size_of<int>::value);
+    CHECK_EQUAL(20, etl::size_of<TestData>::value);
+
+    CHECK_EQUAL(1, etl::size_of_v<void>);
+    CHECK_EQUAL(1, etl::size_of_v<char>);
+    CHECK_EQUAL(2, etl::size_of_v<short>);
+    CHECK_EQUAL(4, etl::size_of_v<int>);
+    CHECK_EQUAL(20, etl::size_of_v<TestData>);
+  }
+
+  //*************************************************************************
+  TEST(is_convertible)
+  {
+    CHECK((etl::is_convertible<char, int>::value));
+    CHECK((etl::is_convertible<int,  char>::value));
+    CHECK((etl::is_convertible<unsigned char, int>::value));
+    CHECK((etl::is_convertible<int, unsigned char>::value));
+    CHECK((etl::is_convertible<double, int>::value));
+    CHECK((etl::is_convertible<int, double>::value));
+    CHECK((etl::is_convertible<int*,  void*>::value));
+    CHECK(!(etl::is_convertible<int(*)(), void(*)()>::value));
+    CHECK(!(etl::is_convertible<int(*)(), int*>::value));
+    CHECK(!(etl::is_convertible<int*, int(*)()>::value));
+    CHECK(!(etl::is_convertible<void*, int*>::value));
+  }
+
+  //*************************************************************************
+  TEST(add_lvalue_reference)
+  {
+    CHECK(!std::is_lvalue_reference_v<etl::add_lvalue_reference<void>::type>);
+    CHECK(std::is_lvalue_reference_v<etl::add_lvalue_reference<int>::type>);
+    CHECK(std::is_lvalue_reference_v<etl::add_lvalue_reference<int*>::type>);
+    CHECK(std::is_lvalue_reference_v<etl::add_lvalue_reference<int&>::type>);
+    CHECK(std::is_lvalue_reference_v<etl::add_lvalue_reference<int&&>::type>);
+  }
+
+  //*************************************************************************
+  TEST(add_rvalue_reference)
+  {
+    CHECK(!std::is_rvalue_reference_v<etl::add_rvalue_reference<void>::type>);
+    CHECK(std::is_rvalue_reference_v<etl::add_rvalue_reference<int>::type>);
+    CHECK(std::is_rvalue_reference_v<etl::add_rvalue_reference<int*>::type>);
+    CHECK(!std::is_rvalue_reference_v<etl::add_rvalue_reference<int&>::type>);
+    CHECK(std::is_rvalue_reference_v<etl::add_rvalue_reference<int&&>::type>);
+  }
+
+  //*************************************************************************
+  TEST(is_lvalue_reference)
+  {
+    CHECK_EQUAL(std::is_lvalue_reference_v<void>,  etl::is_lvalue_reference_v<void>);
+    CHECK_EQUAL(std::is_lvalue_reference_v<int>,   etl::is_lvalue_reference_v<int>);
+    CHECK_EQUAL(std::is_lvalue_reference_v<int*>,  etl::is_lvalue_reference_v<int*>);
+    CHECK_EQUAL(std::is_lvalue_reference_v<int&>,  etl::is_lvalue_reference_v<int&>);
+    CHECK_EQUAL(std::is_lvalue_reference_v<int&&>, etl::is_lvalue_reference_v<int&&>);
   }
 }

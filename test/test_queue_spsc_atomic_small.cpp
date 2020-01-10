@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include <thread>
 #include <chrono>
@@ -319,7 +319,7 @@ namespace
       CHECK(queue.full());
     }
 
-    //=========================================================================
+    //*************************************************************************
 #if REALTIME_TEST && defined(ETL_COMPILER_MICROSOFT)
     #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported
       #define FIX_PROCESSOR_AFFINITY1 SetThreadAffinityMask(GetCurrentThread(), 1);

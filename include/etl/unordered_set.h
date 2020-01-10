@@ -37,10 +37,10 @@ SOFTWARE.
 
 #include "platform.h"
 
-#include "stl/algorithm.h"
-#include "stl/iterator.h"
-#include "stl/functional.h"
-#include "stl/utility.h"
+#include "algorithm.h"
+#include "iterator.h"
+#include "functional.h"
+#include "utility.h"
 
 #include "container.h"
 #include "pool.h"
@@ -127,7 +127,7 @@ namespace etl
   /// Can be used as a reference type for all unordered_set containing a specific type.
   ///\ingroup unordered_set
   //***************************************************************************
-  template <typename TKey, typename THash = etl::hash<TKey>, typename TKeyEqual = ETL_STD::equal_to<TKey> >
+  template <typename TKey, typename THash = etl::hash<TKey>, typename TKeyEqual = etl::equal_to<TKey> >
   class iunordered_set
   {
   public:
@@ -169,7 +169,7 @@ namespace etl
     typedef typename bucket_t::const_iterator local_const_iterator;
 
     //*********************************************************************
-    class iterator : public etl::iterator<ETL_FORWARD_ITERATOR_TAG, TKey>
+    class iterator : public etl::iterator<ETL_OR_STD::forward_iterator_tag, TKey>
     {
     public:
 
@@ -328,7 +328,7 @@ namespace etl
     };
 
     //*********************************************************************
-    class const_iterator : public etl::iterator<ETL_FORWARD_ITERATOR_TAG, const TKey>
+    class const_iterator : public etl::iterator<ETL_OR_STD::forward_iterator_tag, const TKey>
     {
     public:
 
@@ -478,7 +478,7 @@ namespace etl
       local_iterator       inode;
     };
 
-    typedef typename ETL_STD::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
     //*********************************************************************
     /// Returns an iterator to the beginning of the unordered_set.
@@ -605,7 +605,7 @@ namespace etl
     {
       size_t index = bucket(key);
 
-      return ETL_STD::distance(pbuckets[index].begin(), pbuckets[index].end());
+      return etl::distance(pbuckets[index].begin(), pbuckets[index].end());
     }
 
     //*********************************************************************
@@ -637,7 +637,7 @@ namespace etl
     void assign(TIterator first_, TIterator last_)
     {
 #if defined(ETL_DEBUG)
-      difference_type d = ETL_STD::distance(first_, last_);
+      difference_type d = etl::distance(first_, last_);
       ETL_ASSERT(d >= 0, ETL_ERROR(unordered_set_iterator));
       ETL_ASSERT(size_t(d) <= max_size(), ETL_ERROR(unordered_set_full));
 #endif
@@ -655,9 +655,9 @@ namespace etl
     /// If asserts or exceptions are enabled, emits unordered_set_full if the unordered_set is already full.
     ///\param value The value to insert.
     //*********************************************************************
-    ETL_PAIR<iterator, bool> insert(const value_type& key)
+    ETL_OR_STD::pair<iterator, bool> insert(const value_type& key)
     {
-      ETL_PAIR<iterator, bool> result(end(), false);
+      ETL_OR_STD::pair<iterator, bool> result(end(), false);
 
       ETL_ASSERT(!full(), ETL_ERROR(unordered_set_full));
 
@@ -964,7 +964,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair to the range of elements if the key exists, otherwise end().
     //*********************************************************************
-    ETL_PAIR<iterator, iterator> equal_range(key_parameter_t key)
+    ETL_OR_STD::pair<iterator, iterator> equal_range(key_parameter_t key)
     {
       iterator f = find(key);
       iterator l = f;
@@ -974,7 +974,7 @@ namespace etl
         ++l;
       }
 
-      return ETL_PAIR<iterator, iterator>(f, l);
+      return ETL_OR_STD::pair<iterator, iterator>(f, l);
     }
 
     //*********************************************************************
@@ -985,7 +985,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return A const iterator pair to the range of elements if the key exists, otherwise end().
     //*********************************************************************
-    ETL_PAIR<const_iterator, const_iterator> equal_range(key_parameter_t key) const
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(key_parameter_t key) const
     {
       const_iterator f = find(key);
       const_iterator l = f;
@@ -995,7 +995,7 @@ namespace etl
         ++l;
       }
 
-      return ETL_PAIR<const_iterator, const_iterator>(f, l);
+      return ETL_OR_STD::pair<const_iterator, const_iterator>(f, l);
     }
 
     //*************************************************************************
@@ -1251,7 +1251,7 @@ namespace etl
   template <typename TKey, typename TMapped, typename TKeyCompare>
   bool operator ==(const etl::iunordered_set<TKey, TMapped, TKeyCompare>& lhs, const etl::iunordered_set<TKey, TMapped, TKeyCompare>& rhs)
   {
-    return (lhs.size() == rhs.size()) && ETL_STD::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //***************************************************************************
@@ -1270,7 +1270,7 @@ namespace etl
   //*************************************************************************
   /// A templated unordered_set implementation that uses a fixed size buffer.
   //*************************************************************************
-  template <typename TKey, const size_t MAX_SIZE_, size_t MAX_BUCKETS_ = MAX_SIZE_, typename THash = etl::hash<TKey>, typename TKeyEqual = ETL_STD::equal_to<TKey> >
+  template <typename TKey, const size_t MAX_SIZE_, size_t MAX_BUCKETS_ = MAX_SIZE_, typename THash = etl::hash<TKey>, typename TKeyEqual = etl::equal_to<TKey> >
   class unordered_set : public etl::iunordered_set<TKey, THash, TKeyEqual>
   {
   private:

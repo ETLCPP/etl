@@ -35,8 +35,8 @@ SOFTWARE.
 
 #include "platform.h"
 
-#include "stl/algorithm.h"
-#include "stl/functional.h"
+#include "algorithm.h"
+#include "functional.h"
 
 #include "container.h"
 #include "vector.h"
@@ -115,7 +115,7 @@ namespace etl
   /// \tparam TContainer to hold the T queue values
   /// \tparam TCompare to use in comparing T values
   //***************************************************************************
-  template <typename T, typename TContainer, typename TCompare = ETL_STD::less<T> >
+  template <typename T, typename TContainer, typename TCompare = etl::less<T> >
   class ipriority_queue
   {
   public:
@@ -126,7 +126,7 @@ namespace etl
     typedef T&                    reference;          ///< A reference to the type used in the queue.
     typedef const T&              const_reference;    ///< A const reference to the type used in the queue.
     typedef typename TContainer::size_type size_type; ///< The type used for determining the size of the queue.
-    typedef typename ETL_STD::iterator_traits<typename TContainer::iterator>::difference_type difference_type;
+    typedef typename etl::iterator_traits<typename TContainer::iterator>::difference_type difference_type;
 
   private:
 
@@ -165,7 +165,7 @@ namespace etl
       // Put element at end
       container.push_back(value);
       // Make elements in container into heap
-      ETL_STD::push_heap(container.begin(), container.end(), compare);
+      etl::push_heap(container.begin(), container.end(), compare);
     }
 
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_PRIORITY_QUEUE_FORCE_CPP03)
@@ -181,9 +181,9 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(etl::priority_queue_full));
 
       // Put element at end
-      container.emplace_back(ETL_STD::forward<Args>(args)...);
+      container.emplace_back(etl::forward<Args>(args)...);
       // Make elements in container into heap
-      ETL_STD::push_heap(container.begin(), container.end(), compare);
+      etl::push_heap(container.begin(), container.end(), compare);
     }
 #else
     //*************************************************************************
@@ -200,7 +200,7 @@ namespace etl
       // Put element at end
       container.emplace_back(value1);
       // Make elements in container into heap
-      ETL_STD::push_heap(container.begin(), container.end(), compare);
+      etl::push_heap(container.begin(), container.end(), compare);
     }
 
     //*************************************************************************
@@ -217,7 +217,7 @@ namespace etl
       // Put element at end
       container.emplace_back(value1, value2);
       // Make elements in container into heap
-      ETL_STD::push_heap(container.begin(), container.end(), compare);
+      etl::push_heap(container.begin(), container.end(), compare);
     }
 
     //*************************************************************************
@@ -234,7 +234,7 @@ namespace etl
       // Put element at end
       container.emplace_back(value1, value2, value3);
       // Make elements in container into heap
-      ETL_STD::push_heap(container.begin(), container.end(), compare);
+      etl::push_heap(container.begin(), container.end(), compare);
     }
 
     //*************************************************************************
@@ -251,7 +251,7 @@ namespace etl
       // Put element at end
       container.emplace_back(value1, value2, value3, value4);
       // Make elements in container into heap
-      ETL_STD::push_heap(container.begin(), container.end(), compare);
+      etl::push_heap(container.begin(), container.end(), compare);
     }
 #endif
 
@@ -268,14 +268,14 @@ namespace etl
     void assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      difference_type d = ETL_STD::distance(first, last);
+      difference_type d = etl::distance(first, last);
       ETL_ASSERT(d >= 0, ETL_ERROR(etl::priority_queue_iterator));
       ETL_ASSERT(static_cast<size_t>(d) <= max_size(), ETL_ERROR(etl::priority_queue_full));
 #endif
 
       clear();
       container.assign(first, last);
-      ETL_STD::make_heap(container.begin(), container.end(), compare);
+      etl::make_heap(container.begin(), container.end(), compare);
     }
 
     //*************************************************************************
@@ -285,7 +285,7 @@ namespace etl
     void pop()
     {
       // Move largest element to end
-      ETL_STD::pop_heap(container.begin(), container.end(), compare);
+      etl::pop_heap(container.begin(), container.end(), compare);
       // Actually remove largest element at end
       container.pop_back();
     }
@@ -386,7 +386,7 @@ namespace etl
   /// \tparam T    The type this queue should support.
   /// \tparam SIZE The maximum capacity of the queue.
   //***************************************************************************
-  template <typename T, const size_t SIZE, typename TContainer = etl::vector<T, SIZE>, typename TCompare = ETL_STD::less<typename TContainer::value_type> >
+  template <typename T, const size_t SIZE, typename TContainer = etl::vector<T, SIZE>, typename TCompare = etl::less<typename TContainer::value_type> >
   class priority_queue : public etl::ipriority_queue<T, TContainer, TCompare>
   {
   public:

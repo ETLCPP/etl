@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 #include "ExtraCheckMacros.h"
 
 #include "etl/message_router.h"
@@ -207,7 +207,7 @@ namespace
 
   SUITE(test_message_router)
   {
-    //=========================================================================
+    //*************************************************************************
     TEST(message_bus_subscribe_unsubscribe)
     {
       etl::message_bus<2> bus1;
@@ -243,7 +243,7 @@ namespace
       CHECK_EQUAL(0U, bus1.size());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_bus_subscribe_unsubscribe_sub_bus)
     {
       etl::message_bus<4> bus1;
@@ -272,7 +272,7 @@ namespace
       CHECK_EQUAL(0U, bus1.size());
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_bus_broadcast)
     {
       etl::message_bus<2> bus1;
@@ -354,7 +354,7 @@ namespace
       CHECK_EQUAL(7, sender.message5_count);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_bus_broadcast_as_router)
     {
       etl::message_bus<2> bus1;
@@ -439,7 +439,7 @@ namespace
       CHECK_EQUAL(7, sender.message5_count);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_bus_addressed)
     {
       etl::message_bus<2> bus1;
@@ -539,7 +539,7 @@ namespace
       CHECK_EQUAL(4, sender.message5_count);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_bus_addressed_duplicate_router_id)
     {
       etl::message_bus<3> bus1;
@@ -577,7 +577,7 @@ namespace
       CHECK_EQUAL(2, sender.message5_count);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_bus_broadcast_addressed_sub_bus)
     {
       etl::message_bus<3> bus1;
@@ -688,7 +688,7 @@ namespace
       CHECK_EQUAL(6, sender.message5_count);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_bus_broadcast_order)
     {
       etl::message_bus<4> bus1;

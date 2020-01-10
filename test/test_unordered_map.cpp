@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include <sstream>
 
@@ -79,8 +79,8 @@ namespace
     typedef TestDataDC<std::string>  DC;
     typedef TestDataNDC<std::string> NDC;
 
-    typedef ETL_PAIR<std::string, DC>  ElementDC;
-    typedef ETL_PAIR<std::string, NDC> ElementNDC;
+    typedef ETL_OR_STD::pair<std::string, DC>  ElementDC;
+    typedef ETL_OR_STD::pair<std::string, NDC> ElementNDC;
 
     typedef etl::unordered_map<std::string, DC,  SIZE, SIZE / 2, simple_hash> DataDC;
     typedef etl::unordered_map<std::string, NDC, SIZE, SIZE / 2, simple_hash> DataNDC;
@@ -444,7 +444,7 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.insert(ETL_MAKE_PAIR(K10, N10)), etl::unordered_map_full);
+      CHECK_THROW(data.insert(ETL_OR_STD::make_pair(K10, N10)), etl::unordered_map_full);
     }
 
     //*************************************************************************
@@ -580,7 +580,7 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      ETL_PAIR<DataNDC::iterator, DataNDC::iterator> result;
+      ETL_OR_STD::pair<DataNDC::iterator, DataNDC::iterator> result;
 
       result = data.equal_range(K0);
       CHECK(result.first  == data.begin());
@@ -606,7 +606,7 @@ namespace
     {
       const DataNDC data(initial_data.begin(), initial_data.end());
 
-      ETL_PAIR<DataNDC::const_iterator, DataNDC::const_iterator> result;
+      ETL_OR_STD::pair<DataNDC::const_iterator, DataNDC::const_iterator> result;
 
       result = data.equal_range(K0);
       CHECK(result.first == data.begin());

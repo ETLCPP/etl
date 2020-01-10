@@ -63,7 +63,7 @@ SOFTWARE.
 #include "type_lookup.h"
 #include "pool.h"
 
-#include "stl/utility.h"
+#include "utility.h"
 
 #undef ETL_FILE
 #define ETL_FILE "40"
@@ -105,21 +105,21 @@ namespace etl
 
   //***************************************************************************
   template <const size_t MAX_SIZE_,
-            typename T1, 
-            typename T2 = void, 
-            typename T3 = void, 
-            typename T4 = void, 
-            typename T5 = void, 
-            typename T6 = void, 
-            typename T7 = void, 
-            typename T8 = void, 
-            typename T9 = void, 
-            typename T10 = void, 
-            typename T11 = void, 
-            typename T12 = void, 
-            typename T13 = void, 
-            typename T14 = void, 
-            typename T15 = void, 
+            typename T1,
+            typename T2 = void,
+            typename T3 = void,
+            typename T4 = void,
+            typename T5 = void,
+            typename T6 = void,
+            typename T7 = void,
+            typename T8 = void,
+            typename T9 = void,
+            typename T10 = void,
+            typename T11 = void,
+            typename T12 = void,
+            typename T13 = void,
+            typename T14 = void,
+            typename T15 = void,
             typename T16 = void>
   class variant_pool
   {
@@ -290,7 +290,7 @@ namespace etl
 
         if (p != nullptr)
         {
-          new (p) T(ETL_STD::forward<Args>(args)...);
+          new (p) T(etl::forward<Args>(args)...);
         }
       }
 

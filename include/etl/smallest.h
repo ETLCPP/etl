@@ -82,15 +82,15 @@ namespace etl
 
     // Set 'type' to be the smallest of the first parameter and any of the others.
     // This is recursive.
-    using type = typename etl::conditional<(etl::size_of<T1>() < etl::size_of<smallest_other>()), // Boolean
-                                            T1,                                                   // TrueType
-                                            smallest_other>                                       // FalseType
-                                            ::type;                                               // The smallest type of the two.
+    using type = typename etl::conditional<(etl::size_of<T1>::value < etl::size_of<smallest_other>::value), // Boolean
+                                            T1,                                                             // TrueType
+                                            smallest_other>                                                 // FalseType
+                                            ::type;                                                         // The smallest type of the two.
 
     // The size of the smallest type.
     enum
     {
-      size = etl::size_of<type>()
+      size = etl::size_of<type>::value
     };
   };
 
@@ -106,7 +106,7 @@ namespace etl
 
     enum
     {
-      size = etl::size_of<type>()
+      size = etl::size_of<type>::value
     };
   };
 #else

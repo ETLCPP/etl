@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include "etl/queue_spsc_locked.h"
 #include "etl/function.h"
@@ -534,7 +534,7 @@ namespace
       CHECK(!access.called_unlock);
     }
 
-    //=========================================================================
+    //*************************************************************************
 #if REALTIME_TEST && defined(ETL_COMPILER_MICROSOFT)
   #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported
     #define RAISE_THREAD_PRIORITY  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST)

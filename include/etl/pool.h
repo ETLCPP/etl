@@ -35,8 +35,8 @@ SOFTWARE.
 
 #include <new>
 
-#include "stl/algorithm.h"
-#include "stl/iterator.h"
+#include "algorithm.h"
+#include "iterator.h"
 
 #include "error_handler.h"
 #include "alignment.h"
@@ -224,7 +224,7 @@ namespace etl
 
       if (p)
       {
-        ::new (p) T(ETL_STD::forward<Args>(args)...);
+        ::new (p) T(etl::forward<Args>(args)...);
       }
 
       return p;
@@ -571,7 +571,7 @@ namespace etl
     {
       ETL_STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT_, "Type has incompatible alignment");
       ETL_STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
-      return ipool::create<U>(ETL_STD::forward<Args>(args)...);
+      return ipool::create<U>(etl::forward<Args>(args)...);
     }
 #endif
 
@@ -724,7 +724,7 @@ namespace etl
     {
       ETL_STATIC_ASSERT(etl::alignment_of<U>::value <= ALIGNMENT, "Type has incompatible alignment");
       ETL_STATIC_ASSERT(sizeof(U) <= TYPE_SIZE, "Type too large for pool");
-      return base_t::template create<U>(ETL_STD::forward<Args>(args)...);
+      return base_t::template create<U>(etl::forward<Args>(args)...);
     }
 #endif
 

@@ -40,7 +40,7 @@ SOFTWARE.
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
   #include <initializer_list>
 #endif
-#include "stl/utility.h"
+#include "utility.h"
 
 #undef ETL_FILE
 #define ETL_FILE "2"
@@ -60,7 +60,7 @@ namespace etl
   /// Can be used as a reference type for all flat_maps containing a specific type.
   ///\ingroup flat_map
   //***************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare = ETL_STD::less<TKey> >
+  template <typename TKey, typename TMapped, typename TKeyCompare = etl::less<TKey> >
   class iflat_map : private etl::ireference_flat_map<TKey, TMapped, TKeyCompare>
   {
   private:
@@ -72,7 +72,7 @@ namespace etl
   public:
 
 
-    typedef ETL_PAIR<const TKey, TMapped> value_type;
+    typedef ETL_OR_STD::pair<const TKey, TMapped> value_type;
     typedef TKey              key_type;
     typedef TMapped           mapped_type;
     typedef TKeyCompare       key_compare;
@@ -85,9 +85,9 @@ namespace etl
     typedef typename refmap_t::iterator       iterator;
     typedef typename refmap_t::const_iterator const_iterator;
 
-    typedef ETL_STD::reverse_iterator<iterator>       reverse_iterator;
-    typedef ETL_STD::reverse_iterator<const_iterator> const_reverse_iterator;
-    typedef typename ETL_STD::iterator_traits<iterator>::difference_type difference_type;
+    typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
   protected:
 
@@ -232,7 +232,7 @@ namespace etl
     //*********************************************************************
     mapped_type& operator [](key_parameter_t key)
     {
-      return insert(ETL_MAKE_PAIR(key, mapped_type())).first->second;
+      return insert(ETL_OR_STD::make_pair(key, mapped_type())).first->second;
     }
 
     //*********************************************************************
@@ -268,7 +268,7 @@ namespace etl
     void assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      difference_type d = ETL_STD::distance(first, last);
+      difference_type d = etl::distance(first, last);
       ETL_ASSERT(d <= difference_type(capacity()), ETL_ERROR(flat_map_full));
 #endif
 
@@ -285,11 +285,11 @@ namespace etl
     /// If asserts or exceptions are enabled, emits flat_map_full if the flat_map is already full.
     ///\param value    The value to insert.
     //*********************************************************************
-    ETL_PAIR<iterator, bool> insert(const_reference value)
+    ETL_OR_STD::pair<iterator, bool> insert(const_reference value)
     {
       iterator i_element = lower_bound(value.first);
 
-      ETL_PAIR<iterator, bool> result(i_element, false);
+      ETL_OR_STD::pair<iterator, bool> result(i_element, false);
 
       // Doesn't already exist?
       if ((i_element == end()) || compare(value.first, i_element->first))
@@ -335,7 +335,7 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the map.
     //*************************************************************************
-    ETL_PAIR<iterator, bool> emplace(const value_type& value)
+    ETL_OR_STD::pair<iterator, bool> emplace(const value_type& value)
     {
       return emplace(value.first, value.second);
     }
@@ -345,18 +345,18 @@ namespace etl
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename ... Args>
-    ETL_PAIR<iterator, bool> emplace(const key_type& key, Args && ... args)
+    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, Args && ... args)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
 
       // Create it.
       value_type* pvalue = storage.allocate<value_type>();
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
-      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(ETL_STD::forward<Args>(args)...);
+      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(etl::forward<Args>(args)...);
 
       iterator i_element = lower_bound(key);
 
-      ETL_PAIR<iterator, bool> result(i_element, false);
+      ETL_OR_STD::pair<iterator, bool> result(i_element, false);
 
       // Doesn't already exist?
       if ((i_element == end()) || compare(key, i_element->first))
@@ -379,7 +379,7 @@ namespace etl
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename T1>
-    ETL_PAIR<iterator, bool> emplace(const key_type& key, const T1& value1)
+    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, const T1& value1)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
 
@@ -390,7 +390,7 @@ namespace etl
 
       iterator i_element = lower_bound(key);
 
-      ETL_PAIR<iterator, bool> result(i_element, false);
+      ETL_OR_STD::pair<iterator, bool> result(i_element, false);
 
       // Doesn't already exist?
       if ((i_element == end()) || compare(key, i_element->first))
@@ -411,7 +411,7 @@ namespace etl
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename T1, typename T2>
-    ETL_PAIR<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2)
+    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
 
@@ -422,7 +422,7 @@ namespace etl
 
       iterator i_element = lower_bound(key);
 
-      ETL_PAIR<iterator, bool> result(i_element, false);
+      ETL_OR_STD::pair<iterator, bool> result(i_element, false);
 
       // Doesn't already exist?
       if ((i_element == end()) || compare(key, i_element->first))
@@ -443,7 +443,7 @@ namespace etl
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename T1, typename T2, typename T3>
-    ETL_PAIR<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3)
+    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
 
@@ -454,7 +454,7 @@ namespace etl
 
       iterator i_element = lower_bound(key);
 
-      ETL_PAIR<iterator, bool> result(i_element, false);
+      ETL_OR_STD::pair<iterator, bool> result(i_element, false);
 
       // Doesn't already exist?
       if ((i_element == end()) || compare(key, i_element->first))
@@ -475,7 +475,7 @@ namespace etl
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
-    ETL_PAIR<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
 
@@ -486,7 +486,7 @@ namespace etl
 
       iterator i_element = lower_bound(key);
 
-      ETL_PAIR<iterator, bool> result(i_element, false);
+      ETL_OR_STD::pair<iterator, bool> result(i_element, false);
 
       // Doesn't already exist?
       if ((i_element == end()) || compare(key, i_element->first))
@@ -662,7 +662,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    ETL_PAIR<iterator, iterator> equal_range(key_parameter_t key)
+    ETL_OR_STD::pair<iterator, iterator> equal_range(key_parameter_t key)
     {
       return refmap_t::equal_range(key);
     }
@@ -672,7 +672,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    ETL_PAIR<const_iterator, const_iterator> equal_range(key_parameter_t key) const
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(key_parameter_t key) const
     {
       return refmap_t::equal_range(key);
     }
@@ -793,7 +793,7 @@ namespace etl
   template <typename TKey, typename TMapped, typename TKeyCompare>
   bool operator ==(const etl::iflat_map<TKey, TMapped, TKeyCompare>& lhs, const etl::iflat_map<TKey, TMapped, TKeyCompare>& rhs)
   {
-    return (lhs.size() == rhs.size()) && ETL_STD::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //***************************************************************************
@@ -813,11 +813,11 @@ namespace etl
   /// A flat_map implementation that uses a fixed size buffer.
   ///\tparam TKey     The key type.
   ///\tparam TValue   The value type.
-  ///\tparam TCompare The type to compare keys. Default = ETL_STD::less<TKey>
+  ///\tparam TCompare The type to compare keys. Default = etl::less<TKey>
   ///\tparam MAX_SIZE_ The maximum number of elements that can be stored.
   ///\ingroup flat_map
   //***************************************************************************
-  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename TCompare = ETL_STD::less<TKey> >
+  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename TCompare = etl::less<TKey> >
   class flat_map : public etl::iflat_map<TKey, TValue, TCompare>
   {
   public:

@@ -38,7 +38,7 @@ SOFTWARE.
 
 #include "platform.h"
 
-#include "stl/algorithm.h"
+#include "algorithm.h"
 
 #include "container.h"
 #include "alignment.h"
@@ -278,7 +278,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(stack_full));
 #endif
       base_t::add_in();
-      ::new (&p_buffer[top_index]) T(ETL_STD::forward<Args>(args)...);
+      ::new (&p_buffer[top_index]) T(etl::forward<Args>(args)...);
     }
 #else
     //*************************************************************************
@@ -408,7 +408,7 @@ namespace etl
     //*************************************************************************
     void reverse()
     {
-      ETL_STD::reverse(p_buffer, p_buffer + current_size);
+      etl::reverse(p_buffer, p_buffer + current_size);
     }
 
     //*************************************************************************
