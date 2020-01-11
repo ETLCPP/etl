@@ -53,6 +53,22 @@ SOFTWARE.
   #include <functional>
 #endif
 
+namespace etl
+{
+  // Declare prototypes of the ETL's sort functions
+  template <typename TIterator>
+  void shell_sort(TIterator first, TIterator last);
+
+  template <typename TIterator, typename TCompare>
+  void shell_sort(TIterator first, TIterator last, TCompare compare);
+
+  template <typename TIterator>
+  void insertion_sort(TIterator first, TIterator last);
+
+  template <typename TIterator, typename TCompare>
+  void insertion_sort(TIterator first, TIterator last, TCompare compare);
+}
+
 //*****************************************************************************
 // Algorithms defined by the ETL
 //*****************************************************************************
@@ -2084,6 +2100,96 @@ namespace etl
     return std::none_of(begin, end, predicate);
   }
 #endif
+
+#if defined(ETL_NO_STL)
+  //***************************************************************************
+  /// Sorts the elements.
+  /// Uses user defined comparison.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename TCompare>
+  void sort(TIterator first, TIterator last, TCompare compare)
+  {
+    etl::shell_sort(first, last, compare);
+  }
+
+  //***************************************************************************
+  /// Sorts the elements.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator>
+  void sort(TIterator first, TIterator last)
+  {
+    etl::shell_sort(first, last, etl::less<typename etl::iterator_traits<TIterator>::value_type>());
+  }
+
+  //***************************************************************************
+  /// Sorts the elements.
+  /// Stable.
+  /// Uses user defined comparison.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename TCompare>
+  void stable_sort(TIterator first, TIterator last, TCompare compare)
+  {
+    etl::insertion_sort(first, last, compare);
+  }
+
+  //***************************************************************************
+  /// Sorts the elements.
+  /// Stable.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator>
+  void stable_sort(TIterator first, TIterator last)
+  {
+    etl::insertion_sort(first, last, etl::less<typename etl::iterator_traits<TIterator>::value_type>());
+  }
+#else
+  //***************************************************************************
+  /// Sorts the elements.
+  /// Uses user defined comparison.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename TCompare>
+  void sort(TIterator first, TIterator last, TCompare compare)
+  {
+    std::sort(first, last, compare);
+  }
+
+  //***************************************************************************
+  /// Sorts the elements.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator>
+  void sort(TIterator first, TIterator last)
+  {
+    std::sort(first, last);
+  }
+
+  //***************************************************************************
+  /// Sorts the elements.
+  /// Stable.
+  /// Uses user defined comparison.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename TCompare>
+  void stable_sort(TIterator first, TIterator last, TCompare compare)
+  {
+    std::stable_sort(first, last, compare);
+  }
+
+  //***************************************************************************
+  /// Sorts the elements.
+  /// Stable.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator>
+  void stable_sort(TIterator first, TIterator last)
+  {
+    std::stable_sort(first, last);
+  }
+#endif
 }
 
 //*****************************************************************************
@@ -2677,50 +2783,6 @@ namespace etl
   //***************************************************************************
   template <typename TIterator>
   void insertion_sort(TIterator first, TIterator last)
-  {
-    etl::insertion_sort(first, last, etl::less<typename etl::iterator_traits<TIterator>::value_type>());
-  }
-
-  //***************************************************************************
-  /// Sorts the elements.
-  /// Uses user defined comparison.
-  ///\ingroup algorithm
-  //***************************************************************************
-  template <typename TIterator, typename TCompare>
-  void sort(TIterator first, TIterator last, TCompare compare)
-  {
-    etl::shell_sort(first, last, compare);
-  }
-
-  //***************************************************************************
-  /// Sorts the elements.
-  ///\ingroup algorithm
-  //***************************************************************************
-  template <typename TIterator>
-  void sort(TIterator first, TIterator last)
-  {
-    etl::shell_sort(first, last, etl::less<typename etl::iterator_traits<TIterator>::value_type>());
-  }
-
-  //***************************************************************************
-  /// Sorts the elements.
-  /// Stable.
-  /// Uses user defined comparison.
-  ///\ingroup algorithm
-  //***************************************************************************
-  template <typename TIterator, typename TCompare>
-  void stable_sort(TIterator first, TIterator last, TCompare compare)
-  {
-    etl::insertion_sort(first, last, compare);
-  }
-
-  //***************************************************************************
-  /// Sorts the elements.
-  /// Stable.
-  ///\ingroup algorithm
-  //***************************************************************************
-  template <typename TIterator>
-  void stable_sort(TIterator first, TIterator last)
   {
     etl::insertion_sort(first, last, etl::less<typename etl::iterator_traits<TIterator>::value_type>());
   }
