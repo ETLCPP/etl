@@ -1197,7 +1197,7 @@ namespace etl
   }
 
   // Search
-  template<typename TIterator1, class TIterator2>
+  template<typename TIterator1, typename TIterator2>
   ETL_NODISCARD
   TIterator1 search(TIterator1 first, TIterator1 last, TIterator2 search_first, TIterator2 search_last)
   {
@@ -1216,7 +1216,7 @@ namespace etl
   }
 
   // Search
-  template<typename TIterator1, class TIterator2>
+  template<typename TIterator1, typename TIterator2>
   ETL_NODISCARD
   TIterator1 search(TIterator1 first, TIterator1 last, TIterator2 search_first, TIterator2 search_last)
   {
