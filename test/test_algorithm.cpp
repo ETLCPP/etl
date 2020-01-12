@@ -170,6 +170,38 @@ namespace
     }
 
     //*************************************************************************
+    TEST(min_element)
+    {
+      Vector::iterator expected = std::min_element(data.begin(), data.end());
+      Vector::iterator result   = etl::min_element(data.begin(), data.end());
+      CHECK_EQUAL(std::distance(data.begin(), expected), std::distance(data.begin(), result));
+    }
+
+    //*************************************************************************
+    TEST(min_element_compare)
+    {
+      Vector::iterator expected = std::min_element(data.begin(), data.end(), std::greater<int>());
+      Vector::iterator result = etl::min_element(data.begin(), data.end(), std::greater<int>());
+      CHECK_EQUAL(std::distance(data.begin(), expected), std::distance(data.begin(), result));
+    }
+
+    //*************************************************************************
+    TEST(max_element)
+    {
+      Vector::iterator expected = std::max_element(data.begin(), data.end());
+      Vector::iterator result = etl::max_element(data.begin(), data.end());
+      CHECK_EQUAL(std::distance(data.begin(), expected), std::distance(data.begin(), result));
+    }
+
+    //*************************************************************************
+    TEST(max_element_compare)
+    {
+      Vector::iterator expected = std::max_element(data.begin(), data.end(), std::greater<int>());
+      Vector::iterator result = etl::max_element(data.begin(), data.end(), std::greater<int>());
+      CHECK_EQUAL(std::distance(data.begin(), expected), std::distance(data.begin(), result));
+    }
+
+    //*************************************************************************
     TEST(minmax_element)
     {
       std::pair<Vector::iterator, Vector::iterator> expected = std::minmax_element(data.begin(), data.end());
