@@ -74,14 +74,14 @@ namespace etl
 //*****************************************************************************
 namespace etl
 {
-// We can't have std::swap and etl::swap templates coexisting in the unit tests
-// as the compiler will be unable to decide of which one to use, due to ADL.
+  // We can't have std::swap and etl::swap templates coexisting in the unit tests
+  // as the compiler will be unable to decide of which one to use, due to ADL.
 #if defined(ETL_NO_STL) && !defined(ETL_IN_UNIT_TEST)
   //***************************************************************************
   // swap
 #if ETL_CPP11_SUPPORTED
   template <typename T>
-  void swap(T& a, T& b)
+  void swap(T& a, T& b) ETL_NOEXCEPT
   {
     T temp(etl::move(a));
     a = etl::move(b);
@@ -89,13 +89,22 @@ namespace etl
   }
 #else
   template <typename T>
-  void swap(T& a, T& b)
+  void swap(T& a, T& b) ETL_NOEXCEPT
   {
     T temp(a);
     a = b;
     b = temp;
   }
 #endif
+
+  template< class T, size_t N >
+  void swap(T(&a)[N], T(&b)[N]) ETL_NOEXCEPT
+  {
+    for (size_t i = 0; i < N; ++i)
+    {
+      swap(a[i], b[i]);
+    }
+}
 #endif
 
 #if defined(ETL_NO_STL)
@@ -104,9 +113,8 @@ namespace etl
   template <typename TIterator1, typename TIterator2>
   void iter_swap(TIterator1 a, TIterator2 b)
   {
-    typename etl::iterator_traits<TIterator1>::value_type c = *a;
-    *a = *b;
-    *b = c;
+    using ETL_OR_STD::swap; // Allow ADL
+    swap(*a, *b);
   }
 #else
   //***************************************************************************
@@ -296,6 +304,7 @@ namespace etl
   }
 #endif
 
+#if ETL_CPP11_SUPPORTED
 #if defined(ETL_NO_STL)
   //***************************************************************************
   // move
@@ -318,7 +327,9 @@ namespace etl
     return std::move(sb, se, db);
   }
 #endif
+#endif
 
+#if ETL_CPP11_SUPPORTED
 #if defined(ETL_NO_STL)
   //***************************************************************************
   // move_backward
@@ -340,6 +351,7 @@ namespace etl
   {
     return std::move_backward(sb, se, de);
   }
+#endif
 #endif
 
 #if defined(ETL_NO_STL)
@@ -1330,6 +1342,146 @@ namespace etl
   }
 #endif
 
+#if defined(ETL_NO_STL)
+  //***************************************************************************
+  /// Finds the iterator to the smallest element in the range (begin, end).<br>
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/min_element"></a>
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename TCompare>
+  ETL_NODISCARD
+  TIterator min_element(TIterator begin,
+                        TIterator end,
+                        TCompare  compare)
+  {
+    TIterator minimum = begin;
+
+    while (begin != end)
+    {
+      if (compare(*begin, *minimum))
+      {
+        minimum = begin;
+      }
+
+      ++begin;
+    }
+
+    return minimum;
+  }
+
+  //***************************************************************************
+  /// min_element
+  ///\ingroup algorithm
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/min_element"></a>
+  //***************************************************************************
+  template <typename TIterator>
+  ETL_NODISCARD
+  TIterator min_element(TIterator begin,
+                        TIterator end)
+  {
+    typedef typename etl::iterator_traits<TIterator>::value_type value_t;
+
+    return etl::min_element(begin, end, etl::less<value_t>());
+  }
+#else
+  //***************************************************************************
+  /// Finds the iterator to the smallest element in the range (begin, end).<br>
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/min_element"></a>
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename TCompare>
+  ETL_NODISCARD
+  TIterator min_element(TIterator begin,
+                        TIterator end,
+                        TCompare  compare)
+  {
+    return std::min_element(begin, end, compare);
+  }
+
+  //***************************************************************************
+  /// min_element
+  ///\ingroup algorithm
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/min_element"></a>
+  //***************************************************************************
+  template <typename TIterator>
+  ETL_NODISCARD
+  TIterator min_element(TIterator begin,
+                        TIterator end)
+  {
+    return std::min_element(begin, end);
+  }
+#endif
+
+#if defined(ETL_NO_STL)
+  //***************************************************************************
+  /// Finds the iterator to the largest element in the range (begin, end).<br>
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/max_element"></a>
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename TCompare>
+  ETL_NODISCARD
+    TIterator max_element(TIterator begin,
+                          TIterator end,
+                          TCompare  compare)
+  {
+    TIterator maximum = begin;
+
+    while (begin != end)
+    {
+      if (!compare(*begin, *maximum))
+      {
+        maximum = begin;
+      }
+
+      ++begin;
+    }
+
+    return maximum;
+  }
+
+  //***************************************************************************
+  /// max_element
+  ///\ingroup algorithm
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/max_element"></a>
+  //***************************************************************************
+  template <typename TIterator>
+  ETL_NODISCARD
+    TIterator max_element(TIterator begin,
+                          TIterator end)
+  {
+    typedef typename etl::iterator_traits<TIterator>::value_type value_t;
+
+    return etl::max_element(begin, end, etl::less<value_t>());
+  }
+#else
+  //***************************************************************************
+  /// Finds the iterator to the largest element in the range (begin, end).<br>
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/max_element"></a>
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename TCompare>
+  ETL_NODISCARD
+    TIterator max_element(TIterator begin,
+                          TIterator end,
+                          TCompare  compare)
+  {
+    return std::max_element(begin, end, compare);
+  }
+
+  //***************************************************************************
+  /// max_element
+  ///\ingroup algorithm
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/max_element"></a>
+  //***************************************************************************
+  template <typename TIterator>
+  ETL_NODISCARD
+    TIterator max_element(TIterator begin,
+                          TIterator end)
+  {
+    return std::max_element(begin, end);
+  }
+#endif
+
 #if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
   //***************************************************************************
   /// Finds the greatest and the smallest element in the range (begin, end).<br>
@@ -1391,7 +1543,6 @@ namespace etl
   {
     return std::minmax_element(begin, end, compare);
   }
-
 
   //***************************************************************************
   /// minmax_element
