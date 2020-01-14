@@ -935,7 +935,7 @@ namespace etl
     //*************************************************************************
     /// Splice an element from another list into this one.
     //*************************************************************************
-    void splice(iterator position, etl::intrusive_forward_list<TValue, TLink>& other, iterator isource)
+    void splice_after(iterator position, etl::intrusive_forward_list<TValue, TLink>& other, iterator isource)
     {
       link_type& before = *position.p_value;
 
