@@ -1,4 +1,8 @@
 ===============================================================================
+16.2.0
+Added etl::heap_sort to algorithms.
+
+===============================================================================
 16.1.0
 Added compile time option to make string truncation an error.
 Define ETL_STRING_TRUNCATION_IS_ERROR to enable.

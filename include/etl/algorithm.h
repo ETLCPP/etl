@@ -2939,6 +2939,43 @@ namespace etl
   }
 
   //***************************************************************************
+  /// Sorts the elements using heap sort.
+  /// Uses user defined comparison.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename TCompare >
+  void heap_sort(TIterator first, TIterator last, TCompare compare)
+  {
+    if (!etl::is_heap(first, last, compare))
+    {
+      etl::make_heap(first, last, compare);
+    }
+
+    while (first != last)
+    {
+      etl::pop_heap(first, last--, compare);
+    }
+  }
+
+  //***************************************************************************
+  /// Sorts the elements using heap sort.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator>
+  void heap_sort(TIterator first, TIterator last)
+  {
+    if (!etl::is_heap(first, last))
+    {
+      etl::make_heap(first, last);
+    }
+
+    while (first != last)
+    {
+      etl::pop_heap(first, last--);
+    }
+  }
+
+  //***************************************************************************
   /// Returns the maximum value.
   //***************************************************************************
 #if ETL_CPP11_SUPPORTED
