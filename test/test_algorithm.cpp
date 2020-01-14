@@ -1857,6 +1857,36 @@ namespace
     }
 
     //*************************************************************************
+    TEST(heap_sort_default)
+    {
+      std::vector<NDC> initial_data = { NDC(1, 1), NDC(2, 1), NDC(3, 1), NDC(2, 2), NDC(3, 2), NDC(4, 1), NDC(2, 3), NDC(3, 3), NDC(5, 1) };
+
+      std::vector<NDC> data1(initial_data);
+      std::vector<NDC> data2(initial_data);
+
+      std::sort(data1.begin(), data1.end());
+      etl::heap_sort(data2.begin(), data2.end());
+
+      bool is_same = std::equal(data1.begin(), data1.end(), data2.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(heap_sort_greater)
+    {
+      std::vector<NDC> initial_data = { NDC(1, 1), NDC(2, 1), NDC(3, 1), NDC(2, 2), NDC(3, 2), NDC(4, 1), NDC(2, 3), NDC(3, 3), NDC(5, 1) };
+
+      std::vector<NDC> data1(initial_data);
+      std::vector<NDC> data2(initial_data);
+
+      std::sort(data1.begin(), data1.end(), std::greater<NDC>());
+      etl::heap_sort(data2.begin(), data2.end(), std::greater<NDC>());
+
+      bool is_same = std::equal(data1.begin(), data1.end(), data2.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
     TEST(multimax)
     {
       CHECK_EQUAL(8, etl::multimax(1, 2, 3, 4, 5, 6, 7, 8));
