@@ -3,7 +3,6 @@ project(etl_unit_tests)
 
 add_definitions(-DETL_DEBUG)
 
-
 if(NOT UnitTest++_FOUND)
   # Add unittest-cpp as an ExternalProject
   include(cmake/unit-test_external_project.cmake)
@@ -117,11 +116,6 @@ set(TEST_SOURCE_FILES
   test_forward_list_shared_pool.cpp
   test_list_shared_pool.cpp
   test_multi_array.cpp
-  test_no_stl_algorithm.cpp
-  test_no_stl_functional.cpp
-  test_no_stl_iterator.cpp
-  test_no_stl_limits.cpp
-  test_no_stl_utility.cpp
   test_queue_memory_model_small.cpp
   test_queue_mpmc_mutex.cpp
   test_queue_mpmc_mutex_small.cpp
@@ -142,8 +136,6 @@ set(TEST_SOURCE_FILES
   test_vector_external_buffer.cpp
   test_vector_pointer_external_buffer.cpp
   )
-
-
 
 if (WIN32)
   # test_error_handler.cpp uses windows APIs that assume the microsoft project
