@@ -1,4 +1,9 @@
 ===============================================================================
+16.1.0
+Added compile time option to make string truncation an error.
+Define ETL_STRING_TRUNCATION_IS_ERROR to enable.
+
+===============================================================================
 16.0.0
 Refactored the ETL's relationship with the STL
 Many reverse engineered STL algorithms and traits are now available through the
