@@ -37,12 +37,11 @@ SOFTWARE.
 #define ETL_ISTRING_REPAIR_ENABLE
 #define ETL_IVECTOR_REPAIR_ENABLE
 #define ETL_IDEQUE_REPAIR_ENABLE
-#define ETL_IN_UNIT_TEST
 
 #ifdef _MSC_VER
-  #include "profiles/msvc_x86.h"
+  #include "etl/profiles/msvc_x86.h"
 #else
-  #include "profiles/gcc_windows_x86.h"
+  #include "etl/profiles/gcc_windows_x86.h"
 #endif
 
 #endif
