@@ -127,6 +127,20 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup string
+  /// String truncation exception.
+//***************************************************************************
+  class string_truncation : public etl::string_exception
+  {
+  public:
+
+    string_truncation(string_type file_name_, numeric_type line_number_)
+      : string_exception(ETL_ERROR_TEXT("string:iterator", ETL_FILE"D"), file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  ///\ingroup string
   /// The base class for all templated string types.
   //***************************************************************************
   class string_base
@@ -415,6 +429,10 @@ namespace etl
       if (new_size > CAPACITY)
       {
         is_truncated = true;
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
       }
 
       new_size = etl::min(new_size, CAPACITY);
@@ -540,6 +558,10 @@ namespace etl
       if (other.truncated())
       {
         is_truncated = true;
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
       }
 
       cleanup();
@@ -580,6 +602,10 @@ namespace etl
 
       is_truncated = (*other != 0);
 
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+      ETL_ASSERT(is_truncated == false, ETL_ERROR(string_truncation))
+#endif
+
       p_buffer[current_size] = 0;
     }
 
@@ -594,6 +620,10 @@ namespace etl
       initialise();
 
       is_truncated = (length_ > CAPACITY);
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+      ETL_ASSERT(is_truncated == false, ETL_ERROR(string_truncation))
+#endif
 
       length_ = etl::min(length_, CAPACITY);
 
@@ -628,6 +658,10 @@ namespace etl
       p_buffer[current_size] = 0;
 
       is_truncated = (first != last);
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+      ETL_ASSERT(is_truncated == false, ETL_ERROR(string_truncation))
+#endif
     }
 
     //*********************************************************************
@@ -641,6 +675,10 @@ namespace etl
       initialise();
 
       is_truncated = (n > CAPACITY);
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+      ETL_ASSERT(is_truncated == false, ETL_ERROR(string_truncation))
+#endif
 
       n = etl::min(n, CAPACITY);
 
@@ -672,6 +710,10 @@ namespace etl
       else
       {
         is_truncated = true;
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
       }
     }
 
@@ -698,6 +740,10 @@ namespace etl
       if (str.truncated())
       {
         is_truncated = true;
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
       }
 
       return *this;
@@ -800,6 +846,10 @@ namespace etl
         }
 
         is_truncated = true;
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
       }
 
       p_buffer[current_size] = 0;
@@ -828,6 +878,10 @@ namespace etl
       if (start >= CAPACITY)
       {
         is_truncated = true;
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
         return;
       }
 
@@ -837,6 +891,10 @@ namespace etl
         if ((current_size + n) > CAPACITY)
         {
           is_truncated = true;
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+          ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
         }
 
         current_size = CAPACITY;
@@ -856,6 +914,10 @@ namespace etl
         {
           current_size = CAPACITY;
           is_truncated = true;
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+          ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
         }
         else
         {
@@ -891,6 +953,10 @@ namespace etl
       if (start >= CAPACITY)
       {
         is_truncated = true;
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
         return;
       }
 
@@ -900,6 +966,10 @@ namespace etl
         if (((current_size + n) > CAPACITY))
         {
           is_truncated = true;
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+          ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
         }
 
         current_size = CAPACITY;
@@ -923,6 +993,10 @@ namespace etl
         {
           current_size = CAPACITY;
           is_truncated = true;
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+          ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
         }
         else
         {
@@ -954,6 +1028,10 @@ namespace etl
       if (str.truncated())
       {
         is_truncated = true;
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
       }
 
       return *this;
@@ -981,6 +1059,10 @@ namespace etl
       if (str.truncated())
       {
         is_truncated = true;
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
       }
 
       return *this;
@@ -1095,6 +1177,10 @@ namespace etl
       if ((pos + len > size()))
       {
         is_truncated = true;
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
       }
 
       size_t endpos = etl::min(pos + len, size());
@@ -1373,6 +1459,10 @@ namespace etl
       if (str.truncated())
       {
         is_truncated = true;
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
       }
 
       return *this;
@@ -1399,6 +1489,10 @@ namespace etl
       if (str.truncated())
       {
         is_truncated = true;
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
       }
 
       return *this;

@@ -27,11 +27,9 @@ SOFTWARE.
 ******************************************************************************/
 
 #include "UnitTest++/UnitTest++.h"
-  #if defined(_WINDOWS)
-#include <Windows.h>
-#endif
-#include <sstream>
+#include <iostream>
 #include <string>
+#include <string.h>
 
 #include "etl/error_handler.h"
 #include "etl/exception.h"
@@ -58,18 +56,7 @@ public:
 void receive_error(const etl::exception& e)
 {
   error_received = true;
-  std::ostringstream oss;
-  oss << "Error '" << e.what() << "' in " << e.file_name() << " at line " << e.line_number() << "\n";
-
-#if defined(_WINDOWS) && defined(ETL_COMPILER_MICROSOFT)
-  std::string stext = oss.str();
-
-  WCHAR text[200];
-  MultiByteToWideChar(0, 0, stext.c_str(), stext.size() + 1, text, 200);
-  LPCWSTR ltext = text;
-
-  OutputDebugString(ltext);
-#endif
+  CHECK(strcmp(e.what(), "test_exception") == 0);
 }
 
 //*****************************************************************************
@@ -83,18 +70,7 @@ public:
   void receive_error(const etl::exception& e)
   {
     error_received = true;
-    std::ostringstream oss;
-    oss << "Error '" << e.what() << "' in " << e.file_name() << " at line " << e.line_number() << "\n";
-
-#if defined(_WINDOWS) && defined(ETL_COMPILER_MICROSOFT)
-    std::string stext = oss.str();
-
-    WCHAR text[200];
-    MultiByteToWideChar(0, 0, stext.c_str(), stext.size() + 1, text, 200);
-    LPCWSTR ltext = text;
-
-    OutputDebugString(ltext);
-#endif
+    CHECK(strcmp(e.what(), "test_exception") == 0);
   }
 };
 

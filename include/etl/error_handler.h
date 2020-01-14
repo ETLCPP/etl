@@ -121,32 +121,32 @@ namespace etl
 ///\ingroup error_handler
 //***************************************************************************
 #if defined(ETL_NO_CHECKS)
-  #define ETL_ASSERT(b, e)                                                               // Does nothing.
-  #define ETL_ALWAYS_ASSERT(e)                                                           // Does nothing.
+  #define ETL_ASSERT(b, e)                                                                 // Does nothing.
+  #define ETL_ALWAYS_ASSERT(e)                                                             // Does nothing.
 #elif defined(ETL_THROW_EXCEPTIONS)
   #if defined(ETL_LOG_ERRORS)
-    #define ETL_ASSERT(b, e) {if (!(b)) {etl::error_handler::error((e)); throw((e));}}   // If the condition fails, calls the error handler then throws an exception.
-    #define ETL_ALWAYS_ASSERT(e) {etl::error_handler::error((e)); throw((e));}           // Calls the error handler then throws an exception.
+    #define ETL_ASSERT(b, e) {if (!(b)) {etl::error_handler::error((e)); throw((e));}}     // If the condition fails, calls the error handler then throws an exception.
+    #define ETL_ALWAYS_ASSERT(e) {etl::error_handler::error((e)); throw((e));}             // Calls the error handler then throws an exception.
   #else
-    #define ETL_ASSERT(b, e) {if (!(b)) {throw((e));}}                                   // If the condition fails, throws an exception.
-    #define ETL_ALWAYS_ASSERT(e) {throw((e));}                                           // Throws an exception.
+    #define ETL_ASSERT(b, e) {if (!(b)) {throw((e));}}                                     // If the condition fails, throws an exception.
+    #define ETL_ALWAYS_ASSERT(e) {throw((e));}                                             // Throws an exception.
   #endif
 #else
   #if defined(ETL_LOG_ERRORS)
     #if defined(NDEBUG)
-      #define ETL_ASSERT(b, e) {if(!(b)) {etl::error_handler::error((e));}}              // If the condition fails, calls the error handler
-      #define ETL_ALWAYS_ASSERT(e) {etl::error_handler::error((e));}                     // Calls the error handler
+      #define ETL_ASSERT(b, e) {if(!(b)) {etl::error_handler::error((e));}}                // If the condition fails, calls the error handler
+      #define ETL_ALWAYS_ASSERT(e) {etl::error_handler::error((e));}                       // Calls the error handler
     #else
-      #define ETL_ASSERT(b, e) {if(!(b)) {etl::error_handler::error((e)); assert((b));}} // If the condition fails, calls the error handler then asserts.
-      #define ETL_ALWAYS_ASSERT(e) {etl::error_handler::error((e)); assert(true);}      // Calls the error handler then asserts.
+      #define ETL_ASSERT(b, e) {if(!(b)) {etl::error_handler::error((e)); assert(false);}} // If the condition fails, calls the error handler then asserts.
+      #define ETL_ALWAYS_ASSERT(e) {etl::error_handler::error((e)); assert(false);}        // Calls the error handler then asserts.
     #endif
   #else
     #if defined(NDEBUG)
-      #define ETL_ASSERT(b, e)                                                           // Does nothing.
-      #define ETL_ALWAYS_ASSERT(e)                                                       // Does nothing.
+      #define ETL_ASSERT(b, e)                                                             // Does nothing.
+      #define ETL_ALWAYS_ASSERT(e)                                                         // Does nothing.
     #else
-      #define ETL_ASSERT(b, e) assert((b))                                               // If the condition fails, asserts.
-      #define ETL_ALWAYS_ASSERT(e) assert(true)                                          // Asserts.
+      #define ETL_ASSERT(b, e) assert((b))                                                 // If the condition fails, asserts.
+      #define ETL_ALWAYS_ASSERT(e) assert(false)                                           // Asserts.
     #endif
   #endif
 #endif
