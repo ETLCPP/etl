@@ -512,6 +512,7 @@
 		<Unit filename="../test_optional.cpp" />
 		<Unit filename="../test_packet.cpp" />
 		<Unit filename="../test_parameter_type.cpp" />
+		<Unit filename="../test_parity_checksum.cpp" />
 		<Unit filename="../test_pearson.cpp" />
 		<Unit filename="../test_pool.cpp" />
 		<Unit filename="../test_priority_queue.cpp" />

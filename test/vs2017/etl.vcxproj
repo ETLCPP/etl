@@ -1377,6 +1377,7 @@
     <ClCompile Include="..\test_optional.cpp" />
     <ClCompile Include="..\test_packet.cpp" />
     <ClCompile Include="..\test_parameter_type.cpp" />
+    <ClCompile Include="..\test_parity_checksum.cpp" />
     <ClCompile Include="..\test_pearson.cpp" />
     <ClCompile Include="..\test_pool.cpp" />
     <ClCompile Include="..\test_priority_queue.cpp" />
