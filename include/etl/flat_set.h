@@ -75,6 +75,9 @@ namespace etl
     typedef TKeyCompare       key_compare;
     typedef value_type&       reference;
     typedef const value_type& const_reference;
+#if ETL_CPP11_SUPPORTED
+    typedef value_type&&      rvalue_reference;
+#endif
     typedef value_type*       pointer;
     typedef const value_type* const_pointer;
     typedef size_t            size_type;
@@ -248,6 +251,33 @@ namespace etl
       return result;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    /// Inserts a value to the flat_set.
+    /// If asserts or exceptions are enabled, emits flat_set_full if the flat_set is already full.
+    ///\param value    The value to insert.
+    //*********************************************************************
+    ETL_OR_STD::pair<iterator, bool> insert(rvalue_reference value)
+    {
+      iterator i_element = lower_bound(value);
+
+      ETL_OR_STD::pair<iterator, bool> result(i_element, false);
+
+      // Doesn't already exist?
+      if ((i_element == end()) || compare(value, *i_element))
+      {
+        ETL_ASSERT(!refset_t::full(), ETL_ERROR(flat_set_full));
+
+        value_type* pvalue = storage.allocate<value_type>();
+        ::new (pvalue) value_type(ETL_OR_STD::move(value));
+        ETL_INCREMENT_DEBUG_COUNT
+          result = refset_t::insert_at(i_element, *pvalue);
+      }
+
+      return result;
+    }
+#endif
+
     //*********************************************************************
     /// Inserts a value to the flat_set.
     /// If asserts or exceptions are enabled, emits flat_set_full if the flat_set is already full.
@@ -258,6 +288,19 @@ namespace etl
     {
       return insert(value).first;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    /// Inserts a value to the flat_set.
+    /// If asserts or exceptions are enabled, emits flat_set_full if the flat_set is already full.
+    ///\param position The position to insert at.
+    ///\param value    The value to insert.
+    //*********************************************************************
+    iterator insert(iterator position, rvalue_reference value)
+    {
+      return insert(ETL_OR_STD::move(value)).first;
+    }
+#endif
 
     //*********************************************************************
     /// Inserts a range of values to the flat_set.
@@ -636,6 +679,18 @@ namespace etl
       return *this;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    iflat_set& operator = (iflat_set&& rhs)
+    {
+      move_container(ETL_OR_STD::move(rhs));
+
+      return *this;
+    }
+#endif
+
     //*************************************************************************
     /// Gets the current size of the flat_set.
     ///\return The current size of the flat_set.
@@ -700,6 +755,31 @@ namespace etl
         storage(storage_)
     {
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move a flat_set.
+    /// Assumes the rhs is initialised and empty.
+    //*************************************************************************
+    void move_container(iflat_set&& rhs)
+    {
+      if (&rhs != this)
+      {
+        this->clear();
+
+        etl::iflat_set<T, TKeyCompare>::iterator first = rhs.begin();
+        etl::iflat_set<T, TKeyCompare>::iterator last = rhs.end();
+
+        // Add all of the elements.
+        while (first != last)
+        {
+          this->insert(ETL_OR_STD::move(*first++));
+        }
+
+        rhs.clear();
+      }
+    }
+#endif
 
   private:
 
@@ -786,6 +866,20 @@ namespace etl
       this->assign(other.cbegin(), other.cend());
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move constructor.
+    //*************************************************************************
+    flat_set(flat_set&& other)
+      : etl::iflat_set<T, TCompare>(lookup, storage)
+    {
+      if (&other != this)
+      {
+        this->move_container(ETL_OR_STD::move(other));
+      }
+    }
+#endif
+
     //*************************************************************************
     /// Constructor, from an iterator range.
     ///\tparam TIterator The iterator type.
@@ -830,6 +924,21 @@ namespace etl
 
       return *this;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    flat_set& operator = (flat_set&& rhs)
+    {
+      if (&rhs != this)
+      {
+        this->move_container(ETL_OR_STD::move(rhs));
+      }
+
+      return *this;
+    }
+#endif
 
   private:
 

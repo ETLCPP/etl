@@ -46,12 +46,16 @@ namespace
 
   typedef TestDataDC<std::string>  DC;
   typedef TestDataNDC<std::string> NDC;
+  typedef TestDataM<std::string>   MC;
 
   typedef etl::flat_set<DC, SIZE>  DataDC;
   typedef etl::flat_set<NDC, SIZE> DataNDC;
   typedef etl::iflat_set<NDC>      IDataNDC;
 
   typedef etl::flat_set<int, SIZE>  DataInt;
+
+  typedef etl::flat_set<MC, SIZE>  DataM;
+  typedef etl::iflat_set<MC>       IDataM;
 
   typedef std::set<DC>  Compare_DataDC;
   typedef std::set<NDC> Compare_DataNDC;
@@ -311,6 +315,40 @@ namespace
       CHECK(isEqual);
     }
 #endif
+
+    //*************************************************************************
+    TEST(test_move_constructor)
+    {
+      using Item = MC;
+
+      Item p1(Item("1"));
+      Item p2("2");
+      Item p3("3");
+      Item p4(Item("4"));
+
+      DataM data1;
+      data1.insert(std::move(p1));
+      data1.insert(std::move(p2));
+      data1.insert(std::move(p3));
+      data1.insert(std::move(p4));
+
+      CHECK(!bool(p1));
+      CHECK(!bool(p2));
+      CHECK(!bool(p3));
+      CHECK(!bool(p4));
+
+      DataM data2(std::move(data1));
+
+      CHECK_EQUAL(0U, data1.size());
+      CHECK_EQUAL(4U, data2.size());
+
+      DataM::const_iterator itr = data2.begin();
+
+      CHECK_EQUAL("1", (*itr++).value);
+      CHECK_EQUAL("2", (*itr++).value);
+      CHECK_EQUAL("3", (*itr++).value);
+      CHECK_EQUAL("4", (*itr++).value);
+    }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assignment)

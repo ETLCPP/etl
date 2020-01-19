@@ -1,4 +1,9 @@
 ===============================================================================
+16.4.0
+Added rvalue references and 'move' API to flat_map, flat_multimap, flat_set
+and flat_multiset
+
+===============================================================================
 16.3.0
 Added parity checksum to checksum.h.
 

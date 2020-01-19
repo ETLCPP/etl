@@ -46,6 +46,7 @@ namespace
 
   typedef TestDataDC<std::string>  DC;
   typedef TestDataNDC<std::string> NDC;
+  typedef TestDataM<std::string>   MC;
 
   typedef ETL_OR_STD::pair<int, DC>  ElementDC;
   typedef ETL_OR_STD::pair<int, NDC> ElementNDC;
@@ -58,6 +59,9 @@ namespace
   typedef etl::iflat_multimap<int, NDC>      IDataNDC;
 
   typedef etl::flat_multimap<int, int, SIZE>  DataInt;
+
+  typedef etl::flat_multimap<int, MC, SIZE> DataM;
+  typedef etl::iflat_multimap<int, MC>      IDataM;
 
   typedef std::multimap<int, DC>  Compare_DataDC;
   typedef std::multimap<int, NDC> Compare_DataNDC;
@@ -336,6 +340,44 @@ namespace
       CHECK(isEqual);
     }
 #endif
+
+    //*************************************************************************
+    TEST(test_move_constructor)
+    {
+      using Item = ETL_OR_STD::pair<int, MC>;
+
+      Item p1(1, MC("1"));
+      Item p2a(2, "2a");
+      Item p2b(2, "2b");
+      Item p3(3, "3");
+      Item p4(4, MC("4"));
+
+      DataM data1;
+      data1.insert(std::move(p1));
+      data1.insert(std::move(p2a));
+      data1.insert(std::move(p3));
+      data1.insert(std::move(p4));
+      data1.insert(std::move(p2b));
+
+      CHECK(!bool(p1.second));
+      CHECK(!bool(p2a.second));
+      CHECK(!bool(p2b.second));
+      CHECK(!bool(p3.second));
+      CHECK(!bool(p4.second));
+
+      DataM data2(std::move(data1));
+
+      CHECK_EQUAL(0U, data1.size());
+      CHECK_EQUAL(5U, data2.size());
+
+      DataM::const_iterator itr = data2.begin();
+
+      CHECK_EQUAL("1", (*itr++).second.value);
+      CHECK_EQUAL("2a", (*itr++).second.value);
+      CHECK_EQUAL("2b", (*itr++).second.value);
+      CHECK_EQUAL("3", (*itr++).second.value);
+      CHECK_EQUAL("4", (*itr++).second.value);
+    }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assignment)

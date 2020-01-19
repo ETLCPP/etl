@@ -29,7 +29,7 @@ function (add_unittest_cpp)
     TEST_EXCLUDE_FROM_MAIN  TRUE # Don't run UnitTest++'s tests by default
   )
   
-  set(UTPP_INCLUDE_DIRS "${UTPP_INSATLL_DIR}/include/UnitTest++" PARENT_SCOPE)
+  set(UTPP_INCLUDE_DIRS "${UTPP_INSATLL_DIR}/include" PARENT_SCOPE)
   add_library(UnitTest++ STATIC IMPORTED)
   set_target_properties(UnitTest++ PROPERTIES IMPORTED_LOCATION "${UTPP_INSATLL_DIR}/lib/${UTPP_LIB_NAME}" )
   # Require the ExternalProject target to complete before importing the library

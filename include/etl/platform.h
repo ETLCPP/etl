@@ -44,19 +44,6 @@ SOFTWARE.
   #endif
 #endif
 
-// Undefine all of the macros.
-#undef ETL_PLATFORM_16BIT
-#undef ETL_PLATFORM_32BIT
-#undef ETL_PLATFORM_64BIT
-#undef ETL_CPP11_SUPPORTED
-#undef ETL_CPP14_SUPPORTED
-#undef ETL_CPP17_SUPPORTED
-#undef ETL_NO_NULLPTR_SUPPORT
-#undef ETL_NO_LARGE_CHAR_SUPPORT
-#undef ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
-#undef ETL_STD_ATOMIC_SUPPORTED
-#undef ETL_FORCE_EXPLICIT_STRING_CONVERSION_FROM_CHAR
-
 // Determine the bit width of the platform.
 #define ETL_PLATFORM_16BIT (UINT16_MAX == UINTPTR_MAX)
 #define ETL_PLATFORM_32BIT (UINT32_MAX == UINTPTR_MAX)
@@ -72,6 +59,7 @@ SOFTWARE.
 #endif
 
 // The macros below are dependent on the profile.
+// C++11
 #if ETL_CPP11_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)
   #define ETL_CONSTEXPR constexpr
   #define ETL_CONST_OR_CONSTEXPR constexpr
@@ -86,6 +74,14 @@ SOFTWARE.
   #define ETL_NOEXCEPT_EXPR(expression)
 #endif
 
+// C++14
+#if ETL_CPP14_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+  #define ETL_CONSTEXPR14 constexpr
+#else
+  #define ETL_CONSTEXPR14
+#endif
+
+// C++17
 #if ETL_CPP17_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)
   #define ETL_CONSTEXPR17 constexpr
   #define ETL_IF_CONSTEXPR constexpr
