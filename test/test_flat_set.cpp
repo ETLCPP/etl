@@ -321,10 +321,10 @@ namespace
     {
       using Item = MC;
 
-      Item p1(Item("1"));
+      Item p1("1");
       Item p2("2");
       Item p3("3");
-      Item p4(Item("4"));
+      Item p4("4");
 
       DataM data1;
       data1.insert(std::move(p1));
@@ -342,9 +342,11 @@ namespace
       CHECK_EQUAL(0U, data1.size());
       CHECK_EQUAL(4U, data2.size());
 
-      DataM::const_iterator itr = data2.begin();
+      DataM::iterator itr = data2.begin();
 
-      CHECK_EQUAL("1", (*itr++).value);
+      Item pr = std::move(*itr++);
+
+      CHECK_EQUAL("1", pr.value);
       CHECK_EQUAL("2", (*itr++).value);
       CHECK_EQUAL("3", (*itr++).value);
       CHECK_EQUAL("4", (*itr++).value);

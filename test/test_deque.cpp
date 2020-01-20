@@ -180,7 +180,9 @@ namespace
       CHECK_EQUAL(0U, deque1.size());
       CHECK_EQUAL(4U, deque2.size());
 
-      CHECK_EQUAL(1U, *deque2[0]);
+      std::unique_ptr<uint32_t> pr = std::move(*deque2.begin());
+
+      CHECK_EQUAL(1U, *pr);
       CHECK_EQUAL(2U, *deque2[1]);
       CHECK_EQUAL(3U, *deque2[2]);
       CHECK_EQUAL(4U, *deque2[3]);

@@ -93,7 +93,7 @@ namespace etl
 
   protected:
 
-    typedef typename etl::parameter_type<TKey>::type key_parameter_t;
+    typedef const key_type& key_parameter_t;
 
   private:
 
@@ -325,7 +325,7 @@ namespace etl
         ETL_ASSERT(!refmap_t::full(), ETL_ERROR(flat_map_full));
 
         value_type* pvalue = storage.allocate<value_type>();
-        ::new (pvalue) value_type(ETL_OR_STD::move(value));
+        ::new (pvalue) value_type(etl::move(value));
         ETL_INCREMENT_DEBUG_COUNT
         result = refmap_t::insert_at(i_element, *pvalue);
       }
@@ -354,7 +354,7 @@ namespace etl
     //*********************************************************************
     iterator insert(iterator position, rvalue_reference value)
     {
-      return insert(ETL_OR_STD::move(value)).first;
+      return insert(etl::move(value)).first;
     }
 #endif
 
@@ -738,7 +738,7 @@ namespace etl
     //*************************************************************************
     iflat_map& operator = (iflat_map&& rhs)
     {
-      move_container(ETL_OR_STD::move(rhs));
+      move_container(etl::move(rhs));
 
       return *this;
     }
@@ -826,7 +826,7 @@ namespace etl
         // Add all of the elements.
         while (first != last)
         {
-          this->insert(ETL_OR_STD::move(*first++));
+          this->insert(etl::move(*first++));
         }
 
         rhs.clear();
@@ -929,7 +929,7 @@ namespace etl
     {
       if (&other != this)
       {
-        this->move_container(ETL_OR_STD::move(other));
+        this->move_container(etl::move(other));
       }
     }
 #endif
@@ -987,7 +987,7 @@ namespace etl
     {
       if (&rhs != this)
       {
-        this->move_container(ETL_OR_STD::move(rhs));
+        this->move_container(etl::move(rhs));
       }
 
       return *this;

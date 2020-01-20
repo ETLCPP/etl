@@ -34,6 +34,8 @@ SOFTWARE.
 
 #include "etl/queue_spsc_atomic.h"
 
+#include "data.h"
+
 #if ETL_HAS_ATOMIC
 
 #if defined(ETL_COMPILER_MICROSOFT)
@@ -77,6 +79,8 @@ namespace
   typedef etl::iqueue_spsc_atomic<int, etl::memory_model::MEMORY_MODEL_SMALL>   IQueueInt;
 
   typedef etl::queue_spsc_atomic<int, 254, etl::memory_model::MEMORY_MODEL_SMALL> QueueInt254;
+
+  using ItemM = TestDataM<int>;
 
   SUITE(test_queue_atomic)
   {
@@ -138,6 +142,41 @@ namespace
 
       CHECK(!queue.pop(i));
       CHECK(!queue.pop(i));
+    }
+
+    //*************************************************************************
+    TEST(test_move_push_pop)
+    {
+      etl::queue_spsc_atomic<ItemM, 4, etl::memory_model::MEMORY_MODEL_SMALL> queue;
+
+      ItemM p1(1);
+      ItemM p2(2);
+      ItemM p3(3);
+      ItemM p4(4);
+
+      queue.push(std::move(p1));
+      queue.push(std::move(p2));
+      queue.push(std::move(p3));
+      queue.push(std::move(p4));
+
+      CHECK(!bool(p1));
+      CHECK(!bool(p2));
+      CHECK(!bool(p3));
+      CHECK(!bool(p4));
+
+      ItemM pr(0);
+
+      queue.pop(std::move(pr));
+      CHECK_EQUAL(1, pr.value);
+
+      queue.pop(std::move(pr));
+      CHECK_EQUAL(2, pr.value);
+
+      queue.pop(std::move(pr));
+      CHECK_EQUAL(3, pr.value);
+
+      queue.pop(std::move(pr));
+      CHECK_EQUAL(4, pr.value);
     }
 
     //*************************************************************************

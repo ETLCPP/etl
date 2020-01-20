@@ -38,6 +38,8 @@ SOFTWARE.
 #include <Windows.h>
 #endif
 
+#include "data.h"
+
 #define REALTIME_TEST 0
 
 namespace
@@ -102,6 +104,8 @@ namespace
   typedef etl::iqueue_spsc_isr<int, Access, etl::memory_model::MEMORY_MODEL_SMALL>   IQueueInt;
 
   typedef etl::queue_spsc_isr<int, 255, Access, etl::memory_model::MEMORY_MODEL_SMALL> QueueInt255;
+
+  using ItemM = TestDataM<int>;
 
   SUITE(test_queue_isr)
   {
@@ -226,6 +230,41 @@ namespace
 
       CHECK(!queue.pop(i));
       CHECK(!queue.pop_from_isr(i));
+    }
+
+    //*************************************************************************
+    TEST(test_move_push_pop)
+    {
+      etl::queue_spsc_isr<ItemM, 4, Access, etl::memory_model::MEMORY_MODEL_SMALL> queue;
+
+      ItemM p1(1);
+      ItemM p2(2);
+      ItemM p3(3);
+      ItemM p4(4);
+
+      queue.push(std::move(p1));
+      queue.push(std::move(p2));
+      queue.push(std::move(p3));
+      queue.push(std::move(p4));
+
+      CHECK(!bool(p1));
+      CHECK(!bool(p2));
+      CHECK(!bool(p3));
+      CHECK(!bool(p4));
+
+      ItemM pr(0);
+
+      queue.pop(std::move(pr));
+      CHECK_EQUAL(1, pr.value);
+
+      queue.pop(std::move(pr));
+      CHECK_EQUAL(2, pr.value);
+
+      queue.pop(std::move(pr));
+      CHECK_EQUAL(3, pr.value);
+
+      queue.pop(std::move(pr));
+      CHECK_EQUAL(4, pr.value);
     }
 
     //*************************************************************************

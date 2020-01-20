@@ -49,6 +49,7 @@ SOFTWARE.
 #define ETL_PLATFORM_32BIT (UINT32_MAX == UINTPTR_MAX)
 #define ETL_PLATFORM_64BIT (UINT64_MAX == UINTPTR_MAX)
 
+// Include the user's profile definition.
 #include "etl_profile.h"
 
 #if defined(ETL_AUTO_DETERMINE_COMPILER_INFO)
@@ -56,6 +57,12 @@ SOFTWARE.
   #include "profiles/determine_compiler.h"
   #include "profiles/determine_compiler_version.h"
   #include "profiles/determine_compiler_language_support.h"
+#endif
+
+#if defined(ETL_FORCE_EXPLICIT_STRING_CONVERSION_FROM_CHAR)
+#define ETL_EXPLICIT_STRING_FROM_CHAR explicit
+#else
+#define ETL_EXPLICIT_STRING_FROM_CHAR
 #endif
 
 // The macros below are dependent on the profile.
@@ -66,12 +73,14 @@ SOFTWARE.
   #define ETL_DELETE    = delete
   #define ETL_NOEXCEPT  noexcept
   #define ETL_NOEXCEPT_EXPR(expression) noexcept(expression)
+  #define ETL_EXPLICIT explicit
 #else
   #define ETL_CONSTEXPR
   #define ETL_CONST_OR_CONSTEXPR const
   #define ETL_DELETE
   #define ETL_NOEXCEPT
   #define ETL_NOEXCEPT_EXPR(expression)
+  #define ETL_EXPLICIT
 #endif
 
 // C++14
@@ -90,12 +99,6 @@ SOFTWARE.
   #define ETL_CONSTEXPR17
   #define ETL_IF_CONSTEXPR
   #define ETL_NODISCARD
-#endif
-
-#if defined(ETL_FORCE_EXPLICIT_STRING_CONVERSION_FROM_CHAR)
-  #define ETL_EXPLICIT_STRING_FROM_CHAR explicit
-#else
-  #define ETL_EXPLICIT_STRING_FROM_CHAR
 #endif
 
 // Sort out namespaces for STL/No STL options.

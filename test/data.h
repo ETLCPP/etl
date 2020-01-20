@@ -204,6 +204,8 @@ public:
 
     other.value = T();
     other.valid = false;
+
+    return *this;
   }
 
   bool operator < (const TestDataM& other) const

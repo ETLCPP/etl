@@ -45,7 +45,6 @@ SOFTWARE.
 #include "parameter_type.h"
 #include "memory_model.h"
 #include "integral_limits.h"
-
 #include "utility.h"
 
 #undef ETL_FILE
@@ -139,7 +138,6 @@ namespace etl
   {
   private:
 
-    typedef typename etl::parameter_type<T>::type             parameter_t;
     typedef etl::queue_mpmc_mutex_base<MEMORY_MODEL> base_t;
 
   public:
@@ -147,6 +145,7 @@ namespace etl
     typedef T                          value_type;      ///< The type stored in the queue.
     typedef T&                         reference;       ///< A reference to the type used in the queue.
     typedef const T&                   const_reference; ///< A const reference to the type used in the queue.
+    typedef T&&                        rvalue_reference;///< An rvalue reference to the type used in the queue.
     typedef typename base_t::size_type size_type;       ///< The type used for determining the size of the queue.
 
     using base_t::write_index;
@@ -158,7 +157,7 @@ namespace etl
     //*************************************************************************
     /// Push a value to the queue.
     //*************************************************************************
-    bool push(parameter_t value)
+    bool push(const_reference value)
     {
       access.lock();
 
@@ -168,6 +167,22 @@ namespace etl
 
       return result;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Push a value to the queue.
+    //*************************************************************************
+    bool push(rvalue_reference value)
+    {
+      access.lock();
+
+      bool result = push_implementation(etl::move(value));
+
+      access.unlock();
+
+      return result;
+    }
+#endif
 
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_QUEUE_MPMC_MUTEX_FORCE_CPP03)
     //*************************************************************************
@@ -259,6 +274,20 @@ namespace etl
       access.lock();
 
       bool result = pop_implementation(value);
+
+      access.unlock();
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// Pop a value from the queue.
+    //*************************************************************************
+    bool pop(rvalue_reference value)
+    {
+      access.lock();
+
+      bool result = pop_implementation(etl::move(value));
 
       access.unlock();
 
@@ -366,7 +395,7 @@ namespace etl
     //*************************************************************************
     /// Push a value to the queue.
     //*************************************************************************
-    bool push_implementation(parameter_t value)
+    bool push_implementation(const_reference value)
     {
       if (current_size != MAX_SIZE)
       {
@@ -382,6 +411,29 @@ namespace etl
       // Queue is full.
       return false;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Push a value to the queue.
+    //*************************************************************************
+    bool push_implementation(rvalue_reference value)
+    {
+      if (current_size != MAX_SIZE)
+      {
+        ::new (&p_buffer[write_index]) T(etl::move(value));
+
+        write_index = get_next_index(write_index, MAX_SIZE);
+
+        ++current_size;
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
+#endif
+
 
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_QUEUE_MPMC_MUTEX_FORCE_CPP03)
     //*************************************************************************
@@ -511,6 +563,29 @@ namespace etl
       return true;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Pop a value from the queue.
+    //*************************************************************************
+    bool pop_implementation(rvalue_reference value)
+    {
+      if (current_size == 0)
+      {
+        // Queue is empty
+        return false;
+      }
+
+      value = etl::move(p_buffer[read_index]);
+      p_buffer[read_index].~T();
+
+      read_index = get_next_index(read_index, MAX_SIZE);
+
+      --current_size;
+
+      return true;
+    }
+#endif
+
     //*************************************************************************
     /// Pop a value from the queue and discard.
     //*************************************************************************
@@ -581,8 +656,13 @@ namespace etl
 
   private:
 
-    queue_mpmc_mutex(const queue_mpmc_mutex&);
-    queue_mpmc_mutex& operator = (const queue_mpmc_mutex&);
+    queue_mpmc_mutex(const queue_mpmc_mutex&) ETL_DELETE;
+    queue_mpmc_mutex& operator = (const queue_mpmc_mutex&) ETL_DELETE;
+
+#if ETL_CPP11_SUPPORTED
+    queue_mpmc_mutex(queue_mpmc_mutex&&) = delete;
+    queue_mpmc_mutex& operator = (queue_mpmc_mutex&&) = delete;
+#endif
 
     /// The uninitialised buffer of T used in the queue_mpmc_mutex.
     typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[MAX_SIZE];
