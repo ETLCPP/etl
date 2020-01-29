@@ -93,6 +93,7 @@ namespace etl
       IFUNCTION,
       DELEGATE
     };
+
     //*******************************************
     callback_timer_data()
       : p_callback(nullptr),
@@ -146,10 +147,10 @@ namespace etl
     //*******************************************
     /// ETL delegate callback
     //*******************************************
-    callback_timer_data(etl::timer::id::type  id_,
+    callback_timer_data(etl::timer::id::type   id_,
                         etl::delegate<void()>& callback_,
-                        uint32_t              period_,
-                        bool                  repeating_)
+                        uint32_t               period_,
+                        bool                   repeating_)
             : p_callback(reinterpret_cast<void*>(&callback_)),
               period(period_),
               delta(etl::timer::state::INACTIVE),
@@ -538,7 +539,7 @@ namespace etl
 
       for (int i = 0; i < MAX_TIMERS; ++i)
       {
-        new (&timer_array[i]) callback_timer_data();
+        ::new (&timer_array[i]) callback_timer_data();
       }
 
       registered_timers = 0;
@@ -591,14 +592,10 @@ namespace etl
 #if ETL_CPP11_SUPPORTED
                 else if(timer.cbk_type == callback_timer_data::DELEGATE)
                 {
-                    // Call the function wrapper callback.
+                    // Call the delegate callback.
                     (*reinterpret_cast<etl::delegate<void()>*>(timer.p_callback))();
                 }
 #endif
-                else
-                {
-                    ETL_ALWAYS_ASSERT("Callback timer has incorrect callback type stored");
-                }
               }
 
               has_active = !active_list.empty();
