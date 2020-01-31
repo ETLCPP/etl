@@ -308,6 +308,8 @@ namespace etl
   template <typename TInputIterator, typename TOutputIterator, typename TCounter>
   TOutputIterator uninitialized_copy(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin, TCounter& count)
   {
+    count += int32_t(etl::distance(i_begin, i_end));
+
     return std::uninitialized_copy(i_begin, i_end, o_begin);
   }
 #endif
