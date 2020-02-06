@@ -828,8 +828,6 @@ namespace etl
         {
           this->insert(etl::move(*first++));
         }
-
-        rhs.clear();
       }
     }
 #endif

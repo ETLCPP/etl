@@ -367,7 +367,7 @@ namespace
 
       DataM data2(std::move(data1));
 
-      CHECK_EQUAL(0U, data1.size());
+      CHECK_EQUAL(5U, data1.size()); // Move does not clear the source.
       CHECK_EQUAL(5U, data2.size());
 
       DataM::const_iterator itr = data2.begin();

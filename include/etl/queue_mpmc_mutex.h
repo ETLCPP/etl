@@ -145,7 +145,9 @@ namespace etl
     typedef T                          value_type;      ///< The type stored in the queue.
     typedef T&                         reference;       ///< A reference to the type used in the queue.
     typedef const T&                   const_reference; ///< A const reference to the type used in the queue.
+#if ETL_CPP11_SUPPORTED
     typedef T&&                        rvalue_reference;///< An rvalue reference to the type used in the queue.
+#endif
     typedef typename base_t::size_type size_type;       ///< The type used for determining the size of the queue.
 
     using base_t::write_index;

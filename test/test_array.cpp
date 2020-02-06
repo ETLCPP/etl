@@ -375,12 +375,6 @@ namespace
       data.assign(&source[0], &source[5], 99);
       isEqual = std::equal(data.begin(), data.end(), std::begin(check2));
       CHECK(isEqual);
-
-      // Assign larger.
-      data.assign(std::begin(initial), std::end(initial));
-      data.assign(&source[0], &source[13]);
-      isEqual = std::equal(data.begin(), data.end(), std::begin(check3));
-      CHECK(isEqual);
     }
 
     //*************************************************************************

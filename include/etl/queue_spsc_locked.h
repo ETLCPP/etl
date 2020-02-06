@@ -60,7 +60,9 @@ namespace etl
     typedef T        value_type;      ///< The type stored in the queue.
     typedef T&       reference;       ///< A reference to the type used in the queue.
     typedef const T& const_reference; ///< A const reference to the type used in the queue.
+#if ETL_CPP11_SUPPORTED
     typedef T&&      rvalue_reference;///< An rvalue reference to the type used in the queue.
+#endif
 
     //*************************************************************************
     /// Push a value to the queue from an ISR.
@@ -471,7 +473,9 @@ namespace etl
     typedef typename base_t::value_type       value_type;      ///< The type stored in the queue.
     typedef typename base_t::reference        reference;       ///< A reference to the type used in the queue.
     typedef typename base_t::const_reference  const_reference; ///< A const reference to the type used in the queue.
+#if ETL_CPP11_SUPPORTED
     typedef typename base_t::rvalue_reference rvalue_reference;///< An rvalue reference to the type used in the queue.
+#endif
     typedef typename base_t::size_type        size_type;       ///< The type used for determining the size of the queue.
 
     //*************************************************************************

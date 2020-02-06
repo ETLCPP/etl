@@ -49,6 +49,7 @@ SOFTWARE.
 #include "debug_count.h"
 #include "nullptr.h"
 #include "type_traits.h"
+#include "utility.h"
 
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
   #include <initializer_list>
@@ -623,18 +624,23 @@ namespace etl
   /// A templated base for all etl::multiset types.
   ///\ingroup set
   //***************************************************************************
-  template <typename T, typename TCompare = ETL_OR_STD::less<T> >
+  template <typename TKey, typename TCompare = ETL_OR_STD::less<TKey> >
   class imultiset : public etl::multiset_base
   {
   public:
 
-    typedef const T                        key_type;
-    typedef const T                        value_type;
-    typedef TCompare                       key_compare;
-    typedef TCompare                       value_compare;
-    typedef value_type&                    const_reference;
-    typedef value_type*                    const_pointer;
-    typedef size_t                         size_type;
+    typedef TKey                key_type;
+    typedef TKey                value_type;
+    typedef TCompare            key_compare;
+    typedef TCompare            value_compare;
+    typedef value_type&         reference;
+    typedef const value_type&   const_reference;
+#if ETL_CPP11_SUPPORTED
+    typedef value_type&&        rvalue_reference;
+#endif
+    typedef value_type*         pointer;
+    typedef const value_type*   const_pointer;
+    typedef size_t              size_type;
 
   protected:
 
@@ -652,7 +658,7 @@ namespace etl
     };
 
     /// Defines the key value parameter type
-    typedef typename etl::parameter_type<T>::type key_parameter_t;
+    typedef typename etl::parameter_type<TKey>::type key_parameter_t;
 
     //*************************************************************************
     /// How to compare node elements.
@@ -780,12 +786,27 @@ namespace etl
         return *this;
       }
 
+      reference operator *()
+      {
+        return imultiset::data_cast(p_node)->value;
+      }
+
       const_reference operator *() const
       {
         return imultiset::data_cast(p_node)->value;
       }
 
+      pointer operator &()
+      {
+        return &(imultiset::data_cast(p_node)->value);
+      }
+
       const_pointer operator &() const
+      {
+        return &(imultiset::data_cast(p_node)->value);
+      }
+
+      pointer operator ->()
       {
         return &(imultiset::data_cast(p_node)->value);
       }
@@ -813,6 +834,7 @@ namespace etl
       // Pointer to the current node for this iterator
       Node* p_node;
     };
+
     friend class iterator;
 
     //*************************************************************************
@@ -923,6 +945,7 @@ namespace etl
       // Pointer to the current node for this iterator
       const Node* p_node;
     };
+
     friend class const_iterator;
 
     typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
@@ -1062,7 +1085,7 @@ namespace etl
     /// Returns two iterators with bounding (lower bound, upper bound) the key
     /// provided
     //*************************************************************************
-    ETL_OR_STD::pair<iterator, iterator> equal_range(const value_type& key)
+    ETL_OR_STD::pair<iterator, iterator> equal_range(const_reference key)
     {
       return ETL_OR_STD::make_pair<iterator, iterator>(
         iterator(*this, find_lower_node(root_node, key)),
@@ -1073,7 +1096,7 @@ namespace etl
     /// Returns two const iterators with bounding (lower bound, upper bound)
     /// the key provided.
     //*************************************************************************
-    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const value_type& key) const
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const_reference key) const
     {
       return ETL_OR_STD::make_pair<const_iterator, const_iterator>(
         const_iterator(*this, find_lower_node(root_node, key)),
@@ -1181,7 +1204,7 @@ namespace etl
     /// If asserts or exceptions are enabled, emits set_full if the multiset is already full.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(const value_type& value)
+    iterator insert(const_reference value)
     {
       // Default to no inserted node
       Node* inserted_node = nullptr;
@@ -1198,17 +1221,29 @@ namespace etl
       return iterator(*this, inserted_node);
     }
 
+#if ETL_CPP11_SUPPORTED
     //*********************************************************************
-    /// Inserts a value to the multiset starting at the position recommended.
+    /// Inserts a value to the multiset.
     /// If asserts or exceptions are enabled, emits set_full if the multiset is already full.
-    ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator /*position*/, const value_type& value)
+    iterator insert(rvalue_reference value)
     {
-      // Ignore position provided and just do a normal insert
-      return insert(value);
+      // Default to no inserted node
+      Node* inserted_node = nullptr;
+
+      ETL_ASSERT(!full(), ETL_ERROR(multiset_full));
+
+      // Get next available free node
+      Data_Node& node = allocate_data_node(etl::move(value));
+
+      // Obtain the inserted node (might be nullptr if node was a duplicate)
+      inserted_node = insert_node(root_node, node);
+
+      // Insert node into tree and return iterator to new node location in tree
+      return iterator(*this, inserted_node);
     }
+#endif
 
     //*********************************************************************
     /// Inserts a value to the multiset starting at the position recommended.
@@ -1216,11 +1251,51 @@ namespace etl
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(const_iterator /*position*/, const value_type& value)
+    iterator insert(iterator /*position*/, const_reference value)
     {
       // Ignore position provided and just do a normal insert
       return insert(value);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    /// Inserts a value to the multiset starting at the position recommended.
+    /// If asserts or exceptions are enabled, emits set_full if the multiset is already full.
+    ///\param position The position that would precede the value to insert.
+    ///\param value    The value to insert.
+    //*********************************************************************
+    iterator insert(iterator /*position*/, rvalue_reference value)
+    {
+      // Ignore position provided and just do a normal insert
+      return insert(etl::move(value));
+    }
+#endif
+
+    //*********************************************************************
+    /// Inserts a value to the multiset starting at the position recommended.
+    /// If asserts or exceptions are enabled, emits set_full if the multiset is already full.
+    ///\param position The position that would precede the value to insert.
+    ///\param value    The value to insert.
+    //*********************************************************************
+    iterator insert(const_iterator /*position*/, const_reference value)
+    {
+      // Ignore position provided and just do a normal insert
+      return insert(value);
+    }
+
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    /// Inserts a value to the multiset starting at the position recommended.
+    /// If asserts or exceptions are enabled, emits set_full if the multiset is already full.
+    ///\param position The position that would precede the value to insert.
+    ///\param value    The value to insert.
+    //*********************************************************************
+    iterator insert(const_iterator /*position*/, rvalue_reference value)
+    {
+      // Ignore position provided and just do a normal insert
+      return insert(etl::move(value));
+    }
+#endif
 
     //*********************************************************************
     /// Inserts a range of values to the multiset.
@@ -1296,6 +1371,27 @@ namespace etl
       return *this;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    imultiset& operator = (imultiset&& rhs)
+    {
+      // Skip if doing self assignment
+      if (this != &rhs)
+      {
+        typename etl::imultiset<TKey, TCompare>::iterator from = rhs.begin();
+
+        while (from != rhs.end())
+        {
+          insert(etl::move(*from++));
+        }
+      }
+
+      return *this;
+    }
+#endif
+
     //*************************************************************************
     /// How to compare two key elements.
     //*************************************************************************
@@ -1328,7 +1424,12 @@ namespace etl
     //*************************************************************************
     void initialise()
     {
-      erase(begin(), end());
+      const_iterator item = begin();
+
+      while (item != end())
+      {
+        item = erase(item);
+      }
     }
 
   private:
@@ -1336,13 +1437,26 @@ namespace etl
     //*************************************************************************
     /// Allocate a Data_Node.
     //*************************************************************************
-    Data_Node& allocate_data_node(value_type value)
+    Data_Node& allocate_data_node(const_reference value)
     {
       Data_Node& node = *p_node_pool->allocate<Data_Node>();
       ::new ((void*)&node.value) value_type(value);
       ETL_INCREMENT_DEBUG_COUNT
       return node;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Allocate a Data_Node.
+    //*************************************************************************
+    Data_Node& allocate_data_node(rvalue_reference value)
+    {
+      Data_Node& node = *p_node_pool->allocate<Data_Node>();
+      ::new ((void*)&node.value) value_type(etl::move(value));
+      ETL_INCREMENT_DEBUG_COUNT
+      return node;
+    }
+#endif
 
     //*************************************************************************
     /// Destroy a Data_Node.
@@ -1895,8 +2009,8 @@ namespace etl
   //*************************************************************************
   /// A templated multiset implementation that uses a fixed size buffer.
   //*************************************************************************
-  template <typename T, const size_t MAX_SIZE_, typename TCompare = ETL_OR_STD::less<T> >
-  class multiset : public etl::imultiset<T, TCompare>
+  template <typename TKey, const size_t MAX_SIZE_, typename TCompare = ETL_OR_STD::less<TKey> >
+  class multiset : public etl::imultiset<TKey, TCompare>
   {
   public:
 
@@ -1906,7 +2020,7 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     multiset()
-      : etl::imultiset<T, TCompare>(node_pool, MAX_SIZE)
+      : etl::imultiset<TKey, TCompare>(node_pool, MAX_SIZE)
     {
       this->initialise();
     }
@@ -1915,10 +2029,29 @@ namespace etl
     /// Copy constructor.
     //*************************************************************************
     multiset(const multiset& other)
-      : etl::imultiset<T, TCompare>(node_pool, MAX_SIZE)
+      : etl::imultiset<TKey, TCompare>(node_pool, MAX_SIZE)
     {
       this->assign(other.cbegin(), other.cend());
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move constructor.
+    //*************************************************************************
+    multiset(multiset&& other)
+      : etl::imultiset<TKey, TCompare>(node_pool, MAX_SIZE)
+    {
+      if (this != &other)
+      {
+        typename etl::imultiset<TKey, TCompare>::iterator from = other.begin();
+
+        while (from != other.end())
+        {
+          this->insert(etl::move(*from++));
+        }
+      }
+    }
+#endif
 
     //*************************************************************************
     /// Constructor, from an iterator range.
@@ -1928,7 +2061,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     multiset(TIterator first, TIterator last)
-      : etl::imultiset<T, TCompare>(node_pool, MAX_SIZE)
+      : etl::imultiset<TKey, TCompare>(node_pool, MAX_SIZE)
     {
       this->assign(first, last);
     }
@@ -1937,8 +2070,8 @@ namespace etl
     //*************************************************************************
     /// Constructor, from an initializer_list.
     //*************************************************************************
-    multiset(std::initializer_list<typename etl::imultiset<T, TCompare>::value_type> init)
-      : etl::imultiset<T, TCompare>(node_pool, MAX_SIZE)
+    multiset(std::initializer_list<typename etl::imultiset<TKey, TCompare>::value_type> init)
+      : etl::imultiset<TKey, TCompare>(node_pool, MAX_SIZE)
     {
       this->assign(init.begin(), init.end());
     }
@@ -1966,10 +2099,32 @@ namespace etl
       return *this;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    multiset& operator = (multiset&& rhs)
+    {
+      if (this != &rhs)
+      {
+        this->clear();
+
+        typename etl::imultiset<TKey, TCompare>::iterator from = rhs.begin();
+
+        while (from != rhs.end())
+        {
+          this->insert(etl::move(*from++));
+        }
+      }
+
+      return *this;
+    }
+#endif
+
   private:
 
     /// The pool of data nodes used for the multiset.
-    etl::pool<typename etl::imultiset<T, TCompare>::Data_Node, MAX_SIZE> node_pool;
+    etl::pool<typename etl::imultiset<TKey, TCompare>::Data_Node, MAX_SIZE> node_pool;
   };
 
   //***************************************************************************
@@ -1979,8 +2134,8 @@ namespace etl
   ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
   ///\ingroup lookup
   //***************************************************************************
-  template <typename T, typename TCompare>
-  bool operator ==(const etl::imultiset<T, TCompare>& lhs, const etl::imultiset<T, TCompare>& rhs)
+  template <typename TKey, typename TCompare>
+  bool operator ==(const etl::imultiset<TKey, TCompare>& lhs, const etl::imultiset<TKey, TCompare>& rhs)
   {
     return (lhs.size() == rhs.size()) && ETL_OR_STD::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
@@ -1992,8 +2147,8 @@ namespace etl
   ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
   ///\ingroup lookup
   //***************************************************************************
-  template <typename T, typename TCompare>
-  bool operator !=(const etl::imultiset<T, TCompare>& lhs, const etl::imultiset<T, TCompare>& rhs)
+  template <typename TKey, typename TCompare>
+  bool operator !=(const etl::imultiset<TKey, TCompare>& lhs, const etl::imultiset<TKey, TCompare>& rhs)
   {
     return !(lhs == rhs);
   }
@@ -2005,8 +2160,8 @@ namespace etl
   ///\return <b>true</b> if the first list is lexicographically less than the
   /// second, otherwise <b>false</b>.
   //*************************************************************************
-  template <typename T, typename TCompare>
-  bool operator <(const etl::imultiset<T, TCompare>& lhs, const etl::imultiset<T, TCompare>& rhs)
+  template <typename TKey, typename TCompare>
+  bool operator <(const etl::imultiset<TKey, TCompare>& lhs, const etl::imultiset<TKey, TCompare>& rhs)
   {
     return ETL_OR_STD::lexicographical_compare(lhs.begin(),
       lhs.end(),
@@ -2021,8 +2176,8 @@ namespace etl
   ///\return <b>true</b> if the first list is lexicographically greater than the
   /// second, otherwise <b>false</b>.
   //*************************************************************************
-  template <typename T, typename TCompare>
-  bool operator >(const etl::imultiset<T, TCompare>& lhs, const etl::imultiset<T, TCompare>& rhs)
+  template <typename TKey, typename TCompare>
+  bool operator >(const etl::imultiset<TKey, TCompare>& lhs, const etl::imultiset<TKey, TCompare>& rhs)
   {
     return (rhs < lhs);
   }
@@ -2034,8 +2189,8 @@ namespace etl
   ///\return <b>true</b> if the first list is lexicographically less than or equal
   /// to the second, otherwise <b>false</b>.
   //*************************************************************************
-  template <typename T, typename TCompare>
-  bool operator <=(const etl::imultiset<T, TCompare>& lhs, const etl::imultiset<T, TCompare>& rhs)
+  template <typename TKey, typename TCompare>
+  bool operator <=(const etl::imultiset<TKey, TCompare>& lhs, const etl::imultiset<TKey, TCompare>& rhs)
   {
     return !(lhs > rhs);
   }
@@ -2047,8 +2202,8 @@ namespace etl
   ///\return <b>true</b> if the first list is lexicographically greater than or
   /// equal to the second, otherwise <b>false</b>.
   //*************************************************************************
-  template <typename T, typename TCompare>
-  bool operator >=(const etl::imultiset<T, TCompare>& lhs, const etl::imultiset<T, TCompare>& rhs)
+  template <typename TKey, typename TCompare>
+  bool operator >=(const etl::imultiset<TKey, TCompare>& lhs, const etl::imultiset<TKey, TCompare>& rhs)
   {
     return !(lhs < rhs);
   }
