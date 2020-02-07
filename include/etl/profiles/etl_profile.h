@@ -57,7 +57,7 @@ SOFTWARE.
   #include "cpp17.h"
 #elif defined(PROFILE_CUSTOM)
   #include "custom_profile.h"
-#else
+#elif !defined(ETL_AUTO_DETERMINE_COMPILER_INFO)
   #error Must provide a profile header file when buiding ETL. See https://www.etlcpp.com/setup.html
 #endif
 
