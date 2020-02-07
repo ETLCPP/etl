@@ -58,7 +58,7 @@ SOFTWARE.
 #elif defined(PROFILE_CUSTOM)
   #include "custom_profile.h"
 #else
-  #error Must provide a profile header file when buiding ETL. See https://www.etlcpp.com/setup.html
+  #include "auto.h"
 #endif
 
 #endif // __ETL_PROFILE_H_
