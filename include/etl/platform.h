@@ -44,24 +44,12 @@ SOFTWARE.
   #endif
 #endif
 
-// Undefine all of the macros.
-#undef ETL_PLATFORM_16BIT
-#undef ETL_PLATFORM_32BIT
-#undef ETL_PLATFORM_64BIT
-#undef ETL_CPP11_SUPPORTED
-#undef ETL_CPP14_SUPPORTED
-#undef ETL_CPP17_SUPPORTED
-#undef ETL_NO_NULLPTR_SUPPORT
-#undef ETL_NO_LARGE_CHAR_SUPPORT
-#undef ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
-#undef ETL_STD_ATOMIC_SUPPORTED
-#undef ETL_FORCE_EXPLICIT_STRING_CONVERSION_FROM_CHAR
-
 // Determine the bit width of the platform.
 #define ETL_PLATFORM_16BIT (UINT16_MAX == UINTPTR_MAX)
 #define ETL_PLATFORM_32BIT (UINT32_MAX == UINTPTR_MAX)
 #define ETL_PLATFORM_64BIT (UINT64_MAX == UINTPTR_MAX)
 
+// Include the user's profile definition.
 #include "etl_profile.h"
 
 #if defined(ETL_AUTO_DETERMINE_COMPILER_INFO)
@@ -71,21 +59,38 @@ SOFTWARE.
   #include "profiles/determine_compiler_language_support.h"
 #endif
 
+#if defined(ETL_FORCE_EXPLICIT_STRING_CONVERSION_FROM_CHAR)
+#define ETL_EXPLICIT_STRING_FROM_CHAR explicit
+#else
+#define ETL_EXPLICIT_STRING_FROM_CHAR
+#endif
+
 // The macros below are dependent on the profile.
+// C++11
 #if ETL_CPP11_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)
   #define ETL_CONSTEXPR constexpr
   #define ETL_CONST_OR_CONSTEXPR constexpr
   #define ETL_DELETE    = delete
   #define ETL_NOEXCEPT  noexcept
   #define ETL_NOEXCEPT_EXPR(expression) noexcept(expression)
+  #define ETL_EXPLICIT explicit
 #else
   #define ETL_CONSTEXPR
   #define ETL_CONST_OR_CONSTEXPR const
   #define ETL_DELETE
   #define ETL_NOEXCEPT
   #define ETL_NOEXCEPT_EXPR(expression)
+  #define ETL_EXPLICIT
 #endif
 
+// C++14
+#if ETL_CPP14_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+  #define ETL_CONSTEXPR14 constexpr
+#else
+  #define ETL_CONSTEXPR14
+#endif
+
+// C++17
 #if ETL_CPP17_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)
   #define ETL_CONSTEXPR17 constexpr
   #define ETL_IF_CONSTEXPR constexpr
@@ -94,12 +99,6 @@ SOFTWARE.
   #define ETL_CONSTEXPR17
   #define ETL_IF_CONSTEXPR
   #define ETL_NODISCARD
-#endif
-
-#if defined(ETL_FORCE_EXPLICIT_STRING_CONVERSION_FROM_CHAR)
-  #define ETL_EXPLICIT_STRING_FROM_CHAR explicit
-#else
-  #define ETL_EXPLICIT_STRING_FROM_CHAR
 #endif
 
 // Sort out namespaces for STL/No STL options.

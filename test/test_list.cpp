@@ -230,9 +230,11 @@ namespace
       CHECK_EQUAL(0U, data1.size());
       CHECK_EQUAL(4U, data2.size());
 
-      DataM::const_iterator itr = data2.begin();
+      DataM::iterator itr = data2.begin();
 
-      CHECK_EQUAL(1U, (*itr++).value);
+      ItemM pr = std::move(*itr++);
+
+      CHECK_EQUAL(1U, pr.value);
       CHECK_EQUAL(2U, (*itr++).value);
       CHECK_EQUAL(3U, (*itr++).value);
       CHECK_EQUAL(4U, (*itr++).value);

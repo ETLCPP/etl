@@ -31,6 +31,8 @@ SOFTWARE.
 #include "etl/memory.h"
 #include "etl/debug_count.h"
 
+#include "data.h"
+
 #include <string>
 #include <array>
 #include <algorithm>
@@ -43,6 +45,7 @@ namespace
 {
   typedef std::string non_trivial_t;
   typedef uint32_t    trivial_t;
+  typedef TestDataM<int> moveable_t;
 
   const size_t SIZE = 10;
 
@@ -64,9 +67,11 @@ namespace
 
   char buffer_non_trivial[sizeof(non_trivial_t) * SIZE];
   char buffer_trivial[sizeof(trivial_t) * SIZE];
+  char buffer_moveable[sizeof(moveable_t) * SIZE];
 
   non_trivial_t* output_non_trivial = reinterpret_cast<non_trivial_t*>(buffer_non_trivial);
-  trivial_t*    output_trivial      = reinterpret_cast<trivial_t*>(buffer_trivial);
+  trivial_t*     output_trivial     = reinterpret_cast<trivial_t*>(buffer_trivial);
+  moveable_t*    output_moveable    = reinterpret_cast<moveable_t*>(buffer_moveable);
 
   struct overloaded
   {
@@ -312,6 +317,136 @@ namespace
       etl::uninitialized_copy_n(test_data_non_trivial.begin(), SIZE, p, count);
 
       is_equal = std::equal(output_non_trivial, output_non_trivial + SIZE, test_data_non_trivial.begin());
+      CHECK(is_equal);
+      CHECK_EQUAL(SIZE, count);
+      etl::destroy(p, p + SIZE, count);
+      CHECK_EQUAL(0U, count);
+    }
+
+    //*************************************************************************
+    TEST(test_uninitialized_move)
+    {
+      bool is_equal;
+
+      // Non count.
+      moveable_t* p = reinterpret_cast<moveable_t*>(buffer_moveable);
+
+      std::fill(std::begin(buffer_moveable), std::end(buffer_moveable), 0);
+
+      {
+        std::array<moveable_t, SIZE> test_data_moveable =
+        {
+          moveable_t(0), moveable_t(1), moveable_t(2), moveable_t(3), moveable_t(4),
+          moveable_t(5), moveable_t(6), moveable_t(7), moveable_t(8), moveable_t(9)
+        };
+
+        etl::uninitialized_move(test_data_moveable.begin(), test_data_moveable.end(), p);
+      }
+
+      is_equal = (output_moveable[0] == moveable_t(0)) &&
+                 (output_moveable[1] == moveable_t(1)) &&
+                 (output_moveable[2] == moveable_t(2)) &&
+                 (output_moveable[3] == moveable_t(3)) &&
+                 (output_moveable[4] == moveable_t(4)) &&
+                 (output_moveable[5] == moveable_t(5)) &&
+                 (output_moveable[6] == moveable_t(6)) &&
+                 (output_moveable[7] == moveable_t(7)) &&
+                 (output_moveable[8] == moveable_t(8)) &&
+                 (output_moveable[9] == moveable_t(9));
+
+      CHECK(is_equal);
+      etl::destroy(p, p + SIZE);
+
+      // Count.
+      size_t count = 0;
+      std::fill(std::begin(buffer_non_trivial), std::end(buffer_non_trivial), 0);
+
+      {
+        std::array<moveable_t, SIZE> test_data_moveable =
+        {
+          moveable_t(0), moveable_t(1), moveable_t(2), moveable_t(3), moveable_t(4),
+          moveable_t(5), moveable_t(6), moveable_t(7), moveable_t(8), moveable_t(9)
+        };
+
+        etl::uninitialized_move(test_data_moveable.begin(), test_data_moveable.end(), p, count);
+      }
+
+      is_equal = (output_moveable[0] == moveable_t(0)) &&
+                 (output_moveable[1] == moveable_t(1)) &&
+                 (output_moveable[2] == moveable_t(2)) &&
+                 (output_moveable[3] == moveable_t(3)) &&
+                 (output_moveable[4] == moveable_t(4)) &&
+                 (output_moveable[5] == moveable_t(5)) &&
+                 (output_moveable[6] == moveable_t(6)) &&
+                 (output_moveable[7] == moveable_t(7)) &&
+                 (output_moveable[8] == moveable_t(8)) &&
+                 (output_moveable[9] == moveable_t(9));
+
+      CHECK(is_equal);
+      CHECK_EQUAL(SIZE, count);
+      etl::destroy(p, p + SIZE, count);
+      CHECK_EQUAL(0U, count);
+    }
+
+    //*************************************************************************
+    TEST(test_uninitialized_move_n)
+    {
+      bool is_equal;
+
+      // Non count.
+      moveable_t* p = reinterpret_cast<moveable_t*>(buffer_moveable);
+
+      std::fill(std::begin(buffer_moveable), std::end(buffer_moveable), 0);
+
+      {
+        std::array<moveable_t, SIZE> test_data_moveable =
+        {
+          moveable_t(0), moveable_t(1), moveable_t(2), moveable_t(3), moveable_t(4),
+          moveable_t(5), moveable_t(6), moveable_t(7), moveable_t(8), moveable_t(9)
+        };
+
+        etl::uninitialized_move_n(test_data_moveable.begin(), SIZE, p);
+      }
+
+      is_equal = (output_moveable[0] == moveable_t(0)) &&
+                 (output_moveable[1] == moveable_t(1)) &&
+                 (output_moveable[2] == moveable_t(2)) &&
+                 (output_moveable[3] == moveable_t(3)) &&
+                 (output_moveable[4] == moveable_t(4)) &&
+                 (output_moveable[5] == moveable_t(5)) &&
+                 (output_moveable[6] == moveable_t(6)) &&
+                 (output_moveable[7] == moveable_t(7)) &&
+                 (output_moveable[8] == moveable_t(8)) &&
+                 (output_moveable[9] == moveable_t(9));
+
+      CHECK(is_equal);
+      etl::destroy(p, p + SIZE);
+
+      // Count.
+      size_t count = 0;
+      std::fill(std::begin(buffer_non_trivial), std::end(buffer_non_trivial), 0);
+
+      {
+        std::array<moveable_t, SIZE> test_data_moveable =
+        {
+          moveable_t(0), moveable_t(1), moveable_t(2), moveable_t(3), moveable_t(4),
+          moveable_t(5), moveable_t(6), moveable_t(7), moveable_t(8), moveable_t(9)
+        };
+
+        etl::uninitialized_move_n(test_data_moveable.begin(), SIZE, p, count);
+      }
+
+      is_equal = (output_moveable[0] == moveable_t(0)) &&
+                 (output_moveable[1] == moveable_t(1)) &&
+                 (output_moveable[2] == moveable_t(2)) &&
+                 (output_moveable[3] == moveable_t(3)) &&
+                 (output_moveable[4] == moveable_t(4)) &&
+                 (output_moveable[5] == moveable_t(5)) &&
+                 (output_moveable[6] == moveable_t(6)) &&
+                 (output_moveable[7] == moveable_t(7)) &&
+                 (output_moveable[8] == moveable_t(8)) &&
+                 (output_moveable[9] == moveable_t(9));
+
       CHECK(is_equal);
       CHECK_EQUAL(SIZE, count);
       etl::destroy(p, p + SIZE, count);

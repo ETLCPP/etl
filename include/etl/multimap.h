@@ -50,6 +50,7 @@ SOFTWARE.
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "iterator.h"
+#include "utility.h"
 
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
   #include <initializer_list>
@@ -635,6 +636,9 @@ namespace etl
     typedef TKeyCompare                    key_compare;
     typedef value_type&                    reference;
     typedef const value_type&              const_reference;
+#if ETL_CPP11_SUPPORTED
+    typedef value_type&&                   rvalue_reference;
+#endif
     typedef value_type*                    pointer;
     typedef const value_type*              const_pointer;
     typedef size_t                         size_type;
@@ -643,7 +647,7 @@ namespace etl
     {
     public:
 
-      bool operator()(const value_type& lhs, const value_type& rhs) const
+      bool operator()(const_reference lhs, const_reference rhs) const
       {
         return (kcompare(lhs.first, rhs.first));
       }
@@ -1216,7 +1220,7 @@ namespace etl
     /// If asserts or exceptions are enabled, emits map_full if the multimap is already full.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(const value_type& value)
+    iterator insert(const_reference value)
     {
       // Default to no inserted node
       Node* inserted_node = nullptr;
@@ -1233,13 +1237,37 @@ namespace etl
       return iterator(*this, inserted_node);
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    /// Inserts a value to the multimap.
+    /// If asserts or exceptions are enabled, emits map_full if the multimap is already full.
+    ///\param value    The value to insert.
+    //*********************************************************************
+    iterator insert(rvalue_reference value)
+    {
+      // Default to no inserted node
+      Node* inserted_node = nullptr;
+
+      ETL_ASSERT(!full(), ETL_ERROR(multimap_full));
+
+      // Get next available free node
+      Data_Node& node = allocate_data_node(etl::move(value));
+
+      // Obtain the inserted node (might be nullptr if node was a duplicate)
+      inserted_node = insert_node(root_node, node);
+
+      // Insert node into tree and return iterator to new node location in tree
+      return iterator(*this, inserted_node);
+    }
+#endif
+
     //*********************************************************************
     /// Inserts a value to the multimap starting at the position recommended.
     /// If asserts or exceptions are enabled, emits map_full if the multimap is already full.
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator /*position*/, const value_type& value)
+    iterator insert(iterator /*position*/, const_reference value)
     {
       // Ignore position provided and just do a normal insert
       return insert(value);
@@ -1251,11 +1279,37 @@ namespace etl
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(const_iterator /*position*/, const value_type& value)
+    iterator insert(const_iterator /*position*/, const_reference value)
     {
       // Ignore position provided and just do a normal insert
       return insert(value);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    /// Inserts a value to the multimap starting at the position recommended.
+    /// If asserts or exceptions are enabled, emits map_full if the multimap is already full.
+    ///\param position The position that would precede the value to insert.
+    ///\param value    The value to insert.
+    //*********************************************************************
+    iterator insert(iterator /*position*/, rvalue_reference value)
+    {
+      // Ignore position provided and just do a normal insert
+      return insert(etl::move(value));
+    }
+
+    //*********************************************************************
+    /// Inserts a value to the multimap starting at the position recommended.
+    /// If asserts or exceptions are enabled, emits map_full if the multimap is already full.
+    ///\param position The position that would precede the value to insert.
+    ///\param value    The value to insert.
+    //*********************************************************************
+    iterator insert(const_iterator /*position*/, rvalue_reference value)
+    {
+      // Ignore position provided and just do a normal insert
+      return insert(etl::move(value));
+    }
+#endif
 
     //*********************************************************************
     /// Inserts a range of values to the multimap.
@@ -1331,6 +1385,29 @@ namespace etl
       return *this;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    imultimap& operator = (imultimap&& rhs)
+    {
+      // Skip if doing self assignment
+      if (this != &rhs)
+      {
+        this->clear();
+
+        iterator from = rhs.begin();
+
+        while (from != rhs.end())
+        {
+          this->insert(etl::move(*from++));
+        }
+      }
+
+      return *this;
+    }
+#endif
+
     //*************************************************************************
     /// How to compare two key elements.
     //*************************************************************************
@@ -1363,7 +1440,12 @@ namespace etl
     //*************************************************************************
     void initialise()
     {
-      erase(begin(), end());
+      const_iterator item = begin();
+
+      while (item != end())
+      {
+        item = erase(item);
+      }
     }
 
   private:
@@ -1371,13 +1453,26 @@ namespace etl
     //*************************************************************************
     /// Allocate a Data_Node.
     //*************************************************************************
-    Data_Node& allocate_data_node(value_type value)
+    Data_Node& allocate_data_node(const_reference value)
     {
       Data_Node& node = *p_node_pool->allocate<Data_Node>();
       ::new (&node.value) const value_type(value);
       ETL_INCREMENT_DEBUG_COUNT
       return node;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Allocate a Data_Node.
+    //*************************************************************************
+    Data_Node& allocate_data_node(rvalue_reference value)
+    {
+      Data_Node& node = *p_node_pool->allocate<Data_Node>();
+      ::new (&node.value) const value_type(etl::move(value));
+      ETL_INCREMENT_DEBUG_COUNT
+      return node;
+    }
+#endif
 
     //*************************************************************************
     /// Destroy a Data_Node.
@@ -1953,8 +2048,30 @@ namespace etl
     multimap(const multimap& other)
       : etl::imultimap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
     {
-      this->assign(other.cbegin(), other.cend());
+      if (this != &other)
+      {
+        this->assign(other.cbegin(), other.cend());
+      }
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move constructor.
+    //*************************************************************************
+    multimap(multimap&& other)
+      : etl::imultimap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
+    {
+      if (this != &other)
+      {
+        typename etl::imultimap<TKey, TValue, TCompare>::iterator from = other.begin();
+
+        while (from != other.end())
+        {
+          this->insert(etl::move(*from++));
+        }
+      }
+    }
+#endif
 
     //*************************************************************************
     /// Constructor, from an iterator range.
@@ -2001,6 +2118,26 @@ namespace etl
 
       return *this;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    multimap& operator = (multimap&& rhs)
+    {
+      if (this != &rhs)
+      {
+        typename etl::imultimap<TKey, TValue, TCompare>::iterator from = rhs.begin();
+
+        while (from != rhs.end())
+        {
+          this->insert(etl::move(*from++));
+        }
+      }
+
+      return *this;
+    }
+#endif
 
   private:
 

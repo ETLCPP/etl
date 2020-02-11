@@ -41,6 +41,7 @@ namespace
   {
     base(int v_)
       : v(v_)
+      , was_moved(false)
     {
     }
 
@@ -50,9 +51,12 @@ namespace
 
     virtual int value() const = 0;
 
+    bool was_moved;
+
   protected:
 
     const int v;
+    
   };
 
   struct not_base
@@ -69,6 +73,18 @@ namespace
     {
     }
 
+    derived_1(const derived_1& other)
+      : base(other.value())
+    {
+      was_moved = false;
+    }
+
+    derived_1(derived_1&& other)
+      : base(other.value())
+    {
+      was_moved = true;
+    }
+
     int value() const
     {
       return v;
@@ -82,6 +98,18 @@ namespace
     derived_2(int value_)
       : base(value_)
     {
+    }
+
+    derived_2(const derived_2& other)
+      : base(other.value())
+    {
+      was_moved = false;
+    }
+
+    derived_2(derived_2&& other)
+      : base(other.value())
+    {
+      was_moved = true;
     }
 
     int value() const
@@ -104,8 +132,11 @@ namespace
       derived_1 d1(1);
       derived_2 d2(2);
 
-      packet1_t p11(d1);
-      packet1_t p12(d2);
+      packet1_t p11(d1);            // Uses copy constructor
+      CHECK(p11.get().was_moved == false);
+
+      packet1_t p12(derived_2(2));  // Uses move constructor
+      CHECK(p12.get().was_moved == true);
 
       base* b;
       b = &p11.get();
@@ -125,15 +156,18 @@ namespace
     {
       derived_1 d1(1);
       derived_2 d2(2);
+      derived_1 d3(3);
 
       packet1_t p(d1);
-
       base* b;
       b = &p.get();
       CHECK_EQUAL(d1.value(), b->value());
 
       p = d2;
       CHECK_EQUAL(d2.value(), b->value());
+
+      p = derived_1(3);
+      CHECK_EQUAL(d3.value(), b->value());
     }
 
     //*************************************************************************

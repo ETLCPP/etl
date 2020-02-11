@@ -541,7 +541,7 @@ namespace etl
       else
       {
         create_back(back());
-        etl::copy_backward(position, p_end - 2, p_end - 1);
+        etl::move_backward(position, p_end - 2, p_end - 1);
         *position = value;
       }
 
@@ -594,7 +594,7 @@ namespace etl
       {
         p = etl::addressof(*position);
         create_back(back());
-        etl::copy_backward(position, p_end - 2, p_end - 1);
+        etl::move_backward(position, p_end - 2, p_end - 1);
         (*position).~T();
       }
 
@@ -619,7 +619,7 @@ namespace etl
       {
         p = etl::addressof(*position);
         create_back(back());
-        etl::copy_backward(position, p_end - 2, p_end - 1);
+        etl::move_backward(position, p_end - 2, p_end - 1);
         (*position).~T();
       }
 
@@ -644,7 +644,7 @@ namespace etl
       {
         p = etl::addressof(*position);
         create_back(back());
-        etl::copy_backward(position, p_end - 2, p_end - 1);
+        etl::move_backward(position, p_end - 2, p_end - 1);
         (*position).~T();
       }
 
@@ -669,7 +669,7 @@ namespace etl
       {
         p = etl::addressof(*position);
         create_back(back());
-        etl::copy_backward(position, p_end - 2, p_end - 1);
+        etl::move_backward(position, p_end - 2, p_end - 1);
         (*position).~T();
       }
 
@@ -694,7 +694,7 @@ namespace etl
       {
         p = etl::addressof(*position);
         create_back(back());
-        etl::copy_backward(position, p_end - 2, p_end - 1);
+        etl::move_backward(position, p_end - 2, p_end - 1);
         (*position).~T();
       }
 
@@ -741,11 +741,11 @@ namespace etl
       size_t construct_new_n = insert_n - copy_new_n;
 
       // Construct old.
-      etl::uninitialized_copy_n(p_end - construct_old_n, construct_old_n, p_construct_old);
+      etl::uninitialized_move(p_end - construct_old_n, p_end, p_construct_old);
       ETL_ADD_DEBUG_COUNT(construct_old_n)
 
       // Copy old.
-      etl::copy_backward(p_buffer + insert_begin, p_buffer + insert_begin + copy_old_n, p_buffer + insert_end + copy_old_n);
+      etl::move_backward(p_buffer + insert_begin, p_buffer + insert_begin + copy_old_n, p_buffer + insert_end + copy_old_n);
 
       // Construct new.
       etl::uninitialized_fill_n(p_end, construct_new_n, value);
@@ -776,7 +776,7 @@ namespace etl
       size_t insert_begin = etl::distance(begin(), position);
       size_t insert_end = insert_begin + insert_n;
 
-      // Copy old data.
+      // Move old data.
       size_t copy_old_n;
       size_t construct_old_n;
       iterator p_construct_old;
@@ -797,19 +797,19 @@ namespace etl
       size_t copy_new_n = construct_old_n;
       size_t construct_new_n = insert_n - copy_new_n;
 
-      // Construct old.
-      etl::uninitialized_copy_n(p_end - construct_old_n, construct_old_n, p_construct_old);
+      // Move construct old.
+      etl::uninitialized_move(p_end - construct_old_n, p_end, p_construct_old);
       ETL_ADD_DEBUG_COUNT(construct_old_n)
 
-      // Copy old.
-      etl::copy_backward(p_buffer + insert_begin, p_buffer + insert_begin + copy_old_n, p_buffer + insert_end + copy_old_n);
+      // Move old.
+      etl::move_backward(p_buffer + insert_begin, p_buffer + insert_begin + copy_old_n, p_buffer + insert_end + copy_old_n);
 
-      // Construct new.
-      etl::uninitialized_copy_n(first + copy_new_n, construct_new_n, p_end);
+      // Copy construct new.
+      etl::uninitialized_copy(first + copy_new_n, first + copy_new_n + construct_new_n, p_end);
       ETL_ADD_DEBUG_COUNT(construct_new_n)
 
       // Copy new.
-      etl::copy_n(first, copy_new_n, p_buffer + insert_begin);
+      etl::copy(first, first + copy_new_n, p_buffer + insert_begin);
 
       p_end += count;
     }
@@ -821,7 +821,7 @@ namespace etl
     //*********************************************************************
     iterator erase(iterator i_element)
     {
-      etl::copy(i_element + 1, end(), i_element);
+      etl::move(i_element + 1, end(), i_element);
       destroy_back();
 
       return i_element;
@@ -843,7 +843,7 @@ namespace etl
       }
       else
       {
-        etl::copy(last, end(), first);
+        etl::move(last, end(), first);
         size_t n_delete = etl::distance(first, last);
 
         // Destroy the elements left over at the end.

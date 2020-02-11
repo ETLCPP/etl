@@ -30,6 +30,8 @@ SOFTWARE.
 
 #include "etl/utility.h"
 
+#include "data.h"
+
 namespace
 {
   bool nonConstCalled;
@@ -44,6 +46,9 @@ namespace
   {
     constCalled = true;
   }
+
+  using ItemM1 = TestDataM<int>;
+  using ItemM2 = TestDataM<double>;
 }
 
 namespace
@@ -69,6 +74,15 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_pair_move_parameter_construct)
+    {
+      etl::pair<ItemM1, ItemM2> p1(1, 2.3);
+
+      CHECK_EQUAL(1, p1.first.value);
+      CHECK_EQUAL(2.3, p1.second.value);
+    }
+
+    //*************************************************************************
     TEST(test_pair_copy_construct)
     {
       etl::pair<int, double> p1(1, 2.3);
@@ -76,6 +90,19 @@ namespace
 
       CHECK_EQUAL(p1.first, p2.first);
       CHECK_EQUAL(p1.second, p2.second);
+    }
+
+    //*************************************************************************
+    TEST(test_pair_move_construct)
+    {
+      etl::pair<ItemM1, ItemM2> p1(1, 2.3);
+      etl::pair<ItemM1, ItemM2> p2(std::move(p1));
+
+      CHECK(!bool(p1.first));
+      CHECK(!bool(p1.second));
+
+      CHECK_EQUAL(1, p2.first.value);
+      CHECK_EQUAL(2.3, p2.second.value);
     }
 
     //*************************************************************************
@@ -94,6 +121,18 @@ namespace
       etl::pair<int, double> p1(1, 2.3);
       etl::pair<int, double> p2;
       p2 = etl::make_pair(1, 2.3);
+
+      CHECK_EQUAL(p1.first, p2.first);
+      CHECK_EQUAL(p1.second, p2.second);
+    }
+
+    //*************************************************************************
+    TEST(test_make_pair_move)
+    {
+      etl::pair<ItemM1, ItemM2> p1(1, 2.3);
+      etl::pair<ItemM1, ItemM2> p2(0, 0);
+
+      p2 = etl::make_pair(std::move(ItemM1(1)), std::move(ItemM2(2.3)));
 
       CHECK_EQUAL(p1.first, p2.first);
       CHECK_EQUAL(p1.second, p2.second);

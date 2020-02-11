@@ -45,6 +45,7 @@ SOFTWARE.
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "iterator.h"
+#include "utility.h"
 
 #include "algorithm.h"
 #include "iterator.h"
@@ -457,18 +458,23 @@ namespace etl
   /// A templated base for all etl::set types.
   ///\ingroup set
   //***************************************************************************
-  template <typename T, typename TCompare = etl::less<T> >
+  template <typename TKey, typename TCompare = etl::less<TKey> >
   class iset : public etl::set_base
   {
   public:
 
-    typedef const T     key_type;
-    typedef const T     value_type;
-    typedef TCompare    key_compare;
-    typedef TCompare    value_compare;
-    typedef value_type& const_reference;
-    typedef value_type* const_pointer;
-    typedef size_t      size_type;
+    typedef TKey                key_type;
+    typedef TKey                value_type;
+    typedef TCompare            key_compare;
+    typedef TCompare            value_compare;
+    typedef value_type&         reference;
+    typedef const value_type&   const_reference;
+#if ETL_CPP11_SUPPORTED
+    typedef value_type&&        rvalue_reference;
+#endif
+    typedef value_type*         pointer;
+    typedef const value_type*   const_pointer;
+    typedef size_t              size_type;
 
   protected:
 
@@ -486,7 +492,7 @@ namespace etl
     };
 
     /// Defines the key value parameter type
-    typedef typename etl::parameter_type<T>::type key_parameter_t;
+    typedef typename etl::parameter_type<TKey>::type key_parameter_t;
 
     //*************************************************************************
     /// How to compare node elements.
@@ -500,6 +506,7 @@ namespace etl
     {
       return compare(node.value, key);
     }
+
     bool node_comp(key_parameter_t key, const Data_Node& node) const
 
     {
@@ -616,12 +623,27 @@ namespace etl
         return *this;
       }
 
+      reference operator *()
+      {
+        return iset::data_cast(p_node)->value;
+      }
+
       const_reference operator *() const
       {
         return iset::data_cast(p_node)->value;
       }
 
+      pointer operator &()
+      {
+        return &(iset::data_cast(p_node)->value);
+      }
+
       const_pointer operator &() const
+      {
+        return &(iset::data_cast(p_node)->value);
+      }
+
+      pointer operator ->()
       {
         return &(iset::data_cast(p_node)->value);
       }
@@ -771,6 +793,7 @@ namespace etl
     //*************************************************************************
     iset& operator = (const iset& rhs)
     {
+      // Skip if doing self assignment
       if (this != &rhs)
       {
         assign(rhs.cbegin(), rhs.cend());
@@ -778,6 +801,27 @@ namespace etl
 
       return *this;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    iset& operator = (iset&& rhs)
+    {
+      // Skip if doing self assignment
+      if (this != &rhs)
+      {
+        typename etl::iset<TKey, TCompare>::iterator from = rhs.begin();
+
+        while (from != rhs.end())
+        {
+          insert(etl::move(*from++));
+        }
+      }
+
+      return *this;
+    }
+#endif
 
     //*************************************************************************
     /// Gets the beginning of the set.
@@ -911,7 +955,7 @@ namespace etl
     /// Returns two iterators with bounding (lower bound, upper bound) the
     /// value provided
     //*************************************************************************
-    ETL_OR_STD::pair<iterator, iterator> equal_range(const value_type& value)
+    ETL_OR_STD::pair<iterator, iterator> equal_range(const_reference value)
     {
       return ETL_OR_STD::make_pair<iterator, iterator>(
         iterator(*this, find_lower_node(root_node, value)),
@@ -922,7 +966,7 @@ namespace etl
     /// Returns two const iterators with bounding (lower bound, upper bound)
     /// the value provided.
     //*************************************************************************
-    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const value_type& value) const
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const_reference value) const
     {
       return ETL_OR_STD::make_pair<const_iterator, const_iterator>(
         const_iterator(*this, find_lower_node(root_node, value)),
@@ -1015,7 +1059,7 @@ namespace etl
     /// If asserts or exceptions are enabled, emits set_full if the set is already full.
     ///\param value    The value to insert.
     //*********************************************************************
-    ETL_OR_STD::pair<iterator, bool> insert(value_type& value)
+    ETL_OR_STD::pair<iterator, bool> insert(const_reference value)
     {
       // Default to no inserted node
       Node* inserted_node = nullptr;
@@ -1034,13 +1078,39 @@ namespace etl
       return ETL_OR_STD::make_pair(iterator(*this, inserted_node), inserted);
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    /// Inserts a value to the set.
+    /// If asserts or exceptions are enabled, emits set_full if the set is already full.
+    ///\param value    The value to insert.
+    //*********************************************************************
+    ETL_OR_STD::pair<iterator, bool> insert(rvalue_reference value)
+    {
+      // Default to no inserted node
+      Node* inserted_node = nullptr;
+      bool inserted = false;
+
+      ETL_ASSERT(!full(), ETL_ERROR(set_full));
+
+      // Get next available free node
+      Data_Node& node = allocate_data_node(etl::move(value));
+
+      // Obtain the inserted node (might be nullptr if node was a duplicate)
+      inserted_node = insert_node(root_node, node);
+      inserted = inserted_node == &node;
+
+      // Insert node into tree and return iterator to new node location in tree
+      return ETL_OR_STD::make_pair(iterator(*this, inserted_node), inserted);
+    }
+#endif
+
     //*********************************************************************
     /// Inserts a value to the set starting at the position recommended.
     /// If asserts or exceptions are enabled, emits set_full if the set is already full.
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator, value_type& value)
+    iterator insert(iterator, const_reference value)
     {
       // Default to no inserted node
       Node* inserted_node = nullptr;
@@ -1057,13 +1127,38 @@ namespace etl
       return iterator(*this, inserted_node);
     }
 
+#if ETL_CPP11_SUPPORTED
     //*********************************************************************
     /// Inserts a value to the set starting at the position recommended.
     /// If asserts or exceptions are enabled, emits set_full if the set is already full.
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(const_iterator, value_type& value)
+    iterator insert(iterator, rvalue_reference value)
+    {
+      // Default to no inserted node
+      Node* inserted_node = nullptr;
+
+      ETL_ASSERT(!full(), ETL_ERROR(set_full));
+
+      // Get next available free node
+      Data_Node& node = allocate_data_node(etl::move(value));
+
+      // Obtain the inserted node (might be nullptr if node was a duplicate)
+      inserted_node = insert_node(root_node, node);
+
+      // Insert node into tree and return iterator to new node location in tree
+      return iterator(*this, inserted_node);
+    }
+#endif
+
+    //*********************************************************************
+    /// Inserts a value to the set starting at the position recommended.
+    /// If asserts or exceptions are enabled, emits set_full if the set is already full.
+    ///\param position The position that would precede the value to insert.
+    ///\param value    The value to insert.
+    //*********************************************************************
+    iterator insert(const_iterator, const_reference value)
     {
       // Default to no inserted node
       Node* inserted_node = nullptr;
@@ -1079,6 +1174,31 @@ namespace etl
       // Insert node into tree and return iterator to new node location in tree
       return iterator(*this, inserted_node);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    /// Inserts a value to the set starting at the position recommended.
+    /// If asserts or exceptions are enabled, emits set_full if the set is already full.
+    ///\param position The position that would precede the value to insert.
+    ///\param value    The value to insert.
+    //*********************************************************************
+    iterator insert(const_iterator, rvalue_reference value)
+    {
+      // Default to no inserted node
+      Node* inserted_node = nullptr;
+
+      ETL_ASSERT(!full(), ETL_ERROR(set_full));
+
+      // Get next available free node
+      Data_Node& node = allocate_data_node(etl::move(value));
+
+      // Obtain the inserted node (might be nullptr if node was a duplicate)
+      inserted_node = insert_node(root_node, node);
+
+      // Insert node into tree and return iterator to new node location in tree
+      return iterator(*this, inserted_node);
+    }
+#endif
 
     //*********************************************************************
     /// Inserts a range of values to the set.
@@ -1172,7 +1292,12 @@ namespace etl
     //*************************************************************************
     void initialise()
     {
-      erase(begin(), end());
+      const_iterator item = begin();
+
+      while (item != end())
+      {
+        item = erase(item);
+      }
     }
 
   private:
@@ -1180,13 +1305,26 @@ namespace etl
     //*************************************************************************
     /// Allocate a Data_Node.
     //*************************************************************************
-    Data_Node& allocate_data_node(value_type value)
+    Data_Node& allocate_data_node(const_reference value)
     {
       Data_Node& node = *p_node_pool->allocate<Data_Node>();
       ::new ((void*)&node.value) value_type(value);
       ETL_INCREMENT_DEBUG_COUNT
       return node;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Allocate a Data_Node.
+    //*************************************************************************
+    Data_Node& allocate_data_node(rvalue_reference value)
+    {
+      Data_Node& node = *p_node_pool->allocate<Data_Node>();
+      ::new ((void*)&node.value) value_type(etl::move(value));
+      ETL_INCREMENT_DEBUG_COUNT
+      return node;
+    }
+#endif
 
     //*************************************************************************
     /// Destroy a Data_Node.
@@ -1950,8 +2088,8 @@ namespace etl
   //*************************************************************************
   /// A templated set implementation that uses a fixed size buffer.
   //*************************************************************************
-  template <typename T, const size_t MAX_SIZE_, typename TCompare = etl::less<T> >
-  class set : public etl::iset<T, TCompare>
+  template <typename TKey, const size_t MAX_SIZE_, typename TCompare = etl::less<TKey> >
+  class set : public etl::iset<TKey, TCompare>
   {
   public:
 
@@ -1961,7 +2099,7 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     set()
-      : etl::iset<T, TCompare>(node_pool, MAX_SIZE)
+      : etl::iset<TKey, TCompare>(node_pool, MAX_SIZE)
     {
       this->initialise();
     }
@@ -1970,10 +2108,32 @@ namespace etl
     /// Copy constructor.
     //*************************************************************************
     set(const set& other)
-      : etl::iset<T, TCompare>(node_pool, MAX_SIZE)
+      : etl::iset<TKey, TCompare>(node_pool, MAX_SIZE)
     {
-      this->assign(other.cbegin(), other.cend());
+      if (this != &other)
+      {
+        this->assign(other.cbegin(), other.cend());
+      }
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move constructor.
+    //*************************************************************************
+    set(set&& other)
+      : etl::iset<TKey, TCompare>(node_pool, MAX_SIZE)
+    {
+      if (this != &other)
+      {
+        typename etl::iset<TKey, TCompare>::iterator from = other.begin();
+
+        while (from != other.end())
+        {
+          this->insert(etl::move(*from++));
+        }
+      }
+    }
+#endif
 
     //*************************************************************************
     /// Constructor, from an iterator range.
@@ -1983,7 +2143,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     set(TIterator first, TIterator last)
-      : etl::iset<T, TCompare>(node_pool, MAX_SIZE)
+      : etl::iset<TKey, TCompare>(node_pool, MAX_SIZE)
     {
       this->assign(first, last);
     }
@@ -1992,8 +2152,8 @@ namespace etl
     //*************************************************************************
     /// Constructor, from an initializer_list.
     //*************************************************************************
-    set(std::initializer_list<typename etl::iset<T, TCompare>::value_type> init)
-      : etl::iset<T, TCompare>(node_pool, MAX_SIZE)
+    set(std::initializer_list<typename etl::iset<TKey, TCompare>::value_type> init)
+      : etl::iset<TKey, TCompare>(node_pool, MAX_SIZE)
     {
       this->assign(init.begin(), init.end());
     }
@@ -2021,10 +2181,31 @@ namespace etl
       return *this;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    set& operator = (set&& rhs)
+    {
+      // Skip if doing self assignment
+      if (this != &rhs)
+      {
+        typename etl::iset<TKey, TCompare>::iterator from = rhs.begin();
+
+        while (from != rhs.end())
+        {
+          this->insert(etl::move(*from++));
+        }
+      }
+
+      return *this;
+    }
+#endif
+
   private:
 
     /// The pool of data nodes used for the set.
-    etl::pool<typename etl::iset<T, TCompare>::Data_Node, MAX_SIZE> node_pool;
+    etl::pool<typename etl::iset<TKey, TCompare>::Data_Node, MAX_SIZE> node_pool;
   };
 
   //***************************************************************************
@@ -2034,8 +2215,8 @@ namespace etl
   ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
   ///\ingroup lookup
   //***************************************************************************
-  template <typename T, typename TCompare>
-  bool operator ==(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>& rhs)
+  template <typename TKey, typename TCompare>
+  bool operator ==(const etl::iset<TKey, TCompare>& lhs, const etl::iset<TKey, TCompare>& rhs)
   {
     return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
@@ -2047,8 +2228,8 @@ namespace etl
   ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
   ///\ingroup lookup
   //***************************************************************************
-  template <typename T, typename TCompare>
-  bool operator !=(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>& rhs)
+  template <typename TKey, typename TCompare>
+  bool operator !=(const etl::iset<TKey, TCompare>& lhs, const etl::iset<TKey, TCompare>& rhs)
   {
     return !(lhs == rhs);
   }
@@ -2060,8 +2241,8 @@ namespace etl
   ///\return <b>true</b> if the first list is lexicographically less than the
   /// second, otherwise <b>false</b>.
   //*************************************************************************
-  template <typename T, typename TCompare>
-  bool operator <(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>& rhs)
+  template <typename TKey, typename TCompare>
+  bool operator <(const etl::iset<TKey, TCompare>& lhs, const etl::iset<TKey, TCompare>& rhs)
   {
     return etl::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
@@ -2073,8 +2254,8 @@ namespace etl
   ///\return <b>true</b> if the first list is lexicographically greater than the
   /// second, otherwise <b>false</b>.
   //*************************************************************************
-  template <typename T, typename TCompare>
-  bool operator >(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>& rhs)
+  template <typename TKey, typename TCompare>
+  bool operator >(const etl::iset<TKey, TCompare>& lhs, const etl::iset<TKey, TCompare>& rhs)
   {
     return (rhs < lhs);
   }
@@ -2086,8 +2267,8 @@ namespace etl
   ///\return <b>true</b> if the first list is lexicographically less than or equal
   /// to the second, otherwise <b>false</b>.
   //*************************************************************************
-  template <typename T, typename TCompare>
-  bool operator <=(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>& rhs)
+  template <typename TKey, typename TCompare>
+  bool operator <=(const etl::iset<TKey, TCompare>& lhs, const etl::iset<TKey, TCompare>& rhs)
   {
     return !(lhs > rhs);
   }
@@ -2099,8 +2280,8 @@ namespace etl
   ///\return <b>true</b> if the first list is lexicographically greater than or
   /// equal to the second, otherwise <b>false</b>.
   //*************************************************************************
-  template <typename T, typename TCompare>
-  bool operator >=(const etl::iset<T, TCompare>& lhs, const etl::iset<T, TCompare>& rhs)
+  template <typename TKey, typename TCompare>
+  bool operator >=(const etl::iset<TKey, TCompare>& lhs, const etl::iset<TKey, TCompare>& rhs)
   {
     return !(lhs < rhs);
   }

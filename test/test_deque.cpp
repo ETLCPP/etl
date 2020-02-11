@@ -180,10 +180,53 @@ namespace
       CHECK_EQUAL(0U, deque1.size());
       CHECK_EQUAL(4U, deque2.size());
 
-      CHECK_EQUAL(1U, *deque2[0]);
+      std::unique_ptr<uint32_t> pr = std::move(*deque2.begin());
+
+      CHECK_EQUAL(1U, *pr);
       CHECK_EQUAL(2U, *deque2[1]);
       CHECK_EQUAL(3U, *deque2[2]);
       CHECK_EQUAL(4U, *deque2[3]);
+    }
+
+    //*************************************************************************
+    TEST(test_move_insert_erase)
+    {
+      const size_t SIZE = 10U;
+      typedef etl::deque<std::unique_ptr<uint32_t>, SIZE> Data;
+
+      std::unique_ptr<uint32_t> p1(new uint32_t(1U));
+      std::unique_ptr<uint32_t> p2(new uint32_t(2U));
+      std::unique_ptr<uint32_t> p3(new uint32_t(3U));
+      std::unique_ptr<uint32_t> p4(new uint32_t(4U));
+
+      Data deque1;
+      deque1.push_back(std::move(p1));
+      deque1.push_back(std::move(p2));
+      deque1.push_back(std::move(p4));
+
+      deque1.insert(deque1.begin() + 2U, std::move(p3));
+
+      CHECK_EQUAL(4U, deque1.size());
+
+      CHECK(bool(deque1[0]));
+      CHECK(bool(deque1[1]));
+      CHECK(bool(deque1[2]));
+      CHECK(bool(deque1[3]));
+
+      CHECK_EQUAL(1U, *deque1[0]);
+      CHECK_EQUAL(2U, *deque1[1]);
+      CHECK_EQUAL(3U, *deque1[2]);
+      CHECK_EQUAL(4U, *deque1[3]);
+
+      deque1.erase(deque1.begin() + 1);
+
+      CHECK(bool(deque1[0]));
+      CHECK(bool(deque1[1]));
+      CHECK(bool(deque1[2]));
+
+      CHECK_EQUAL(1U, *deque1[0]);
+      CHECK_EQUAL(3U, *deque1[1]);
+      CHECK_EQUAL(4U, *deque1[2]);
     }
 
     //*************************************************************************

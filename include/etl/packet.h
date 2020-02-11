@@ -36,6 +36,7 @@ SOFTWARE.
 #include "platform.h"
 #include "static_assert.h"
 #include "alignment.h"
+#include "utility.h"
 
 #undef ETL_FILE
 #define ETL_FILE "38"
@@ -58,6 +59,24 @@ namespace etl
   {
   public:
 
+    typedef TBase base_t;
+
+#if ETL_CPP11_SUPPORTED
+    //***************************************************************************
+    /// Constructor that static asserts any types that do not conform to the max size and alignment.
+    //***************************************************************************
+    template <typename T>
+    explicit packet(T&& value)
+    {
+      typedef typename etl::types<T>::type type;
+
+      ETL_STATIC_ASSERT((etl::is_base_of<TBase, type>::value), "Unsupported type");
+      ETL_STATIC_ASSERT(sizeof(type) <= SIZE, "Unsupported size");
+      ETL_STATIC_ASSERT(etl::alignment_of<type>::value <= ALIGNMENT, "Unsupported alignment");
+
+      ::new (static_cast<type*>(data)) type(etl::forward<T>(value));
+    }
+#else
     //***************************************************************************
     /// Constructor that static asserts any types that do not conform to the max size and alignment.
     //***************************************************************************
@@ -70,6 +89,7 @@ namespace etl
 
       ::new (static_cast<T*>(data)) T(value);
     }
+#endif
 
     //***************************************************************************
     /// Destructor
@@ -79,6 +99,26 @@ namespace etl
       static_cast<TBase*>(data)->~TBase();
     }
 
+#if ETL_CPP11_SUPPORTED
+    //***************************************************************************
+    /// Assignment operator for type.
+    ///\param value The value to assign.
+    //***************************************************************************
+    template <typename T>
+    packet& operator =(T&& value)
+    {
+      typedef typename etl::types<T>::type type;
+
+      ETL_STATIC_ASSERT((etl::is_base_of<TBase, type>::value), "Unsupported type");
+      ETL_STATIC_ASSERT(sizeof(type) <= SIZE, "Unsupported size");
+      ETL_STATIC_ASSERT(etl::alignment_of<type>::value <= ALIGNMENT, "Unsupported alignment");
+
+      static_cast<TBase*>(data)->~TBase();
+      ::new (static_cast<type*>(data)) type(etl::forward<T>(value));
+
+      return *this;
+    }
+#else
     //***************************************************************************
     /// Assignment operator for type.
     ///\param value The value to assign.
@@ -95,6 +135,7 @@ namespace etl
 
       return *this;
     }
+#endif
 
     //***************************************************************************
     /// Get access to the contained object.

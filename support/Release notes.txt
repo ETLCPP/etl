@@ -1,6 +1,7 @@
 ===============================================================================
-16.3.1
-Removed incorrect ETL_ALWAYS_ASSERT from etl::callback_timer
+16.4.0
+Added rvalue references and 'move' API to all containers, except etl::priority_queue
+and etl::variant
 
 ===============================================================================
 16.3.0

@@ -266,7 +266,7 @@ namespace etl
     uninitialized_copy(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin, TCounter& count)
   {
     TOutputIterator o_end = etl::copy(i_begin, i_end, o_begin);
-    count += int32_t(etl::distance(o_begin, o_end));
+    count += int32_t(etl::distance(i_begin, i_end));
 
     return o_end;
   }
@@ -283,7 +283,7 @@ namespace etl
   {
     TOutputIterator o_end = etl::uninitialized_copy(i_begin, i_end, o_begin);
 
-    count += int32_t(etl::distance(o_begin, o_end));
+    count += int32_t(etl::distance(i_begin, i_end));
 
     return o_end;
   }
@@ -364,6 +364,256 @@ namespace etl
 
     return std::uninitialized_copy_n(i_begin, n, o_begin);
 }
+#endif
+
+#if ETL_CPP11_SUPPORTED
+#if defined(ETL_NO_STL) || !ETL_CPP17_SUPPORTED
+  //*****************************************************************************
+  /// Moves a range of objects to uninitialised memory.
+  /// https://en.cppreference.com/w/cpp/memory/uninitialized_move
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename TInputIterator, typename TOutputIterator>
+  typename etl::enable_if<etl::is_trivially_constructible<typename etl::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+    uninitialized_move(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin)
+  {
+    return etl::move(i_begin, i_end, o_begin);
+  }
+
+  //*****************************************************************************
+  /// Moves a range of objects to uninitialised memory.
+  /// https://en.cppreference.com/w/cpp/memory/uninitialized_move
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename TInputIterator, typename TOutputIterator>
+  typename etl::enable_if<!etl::is_trivially_constructible<typename etl::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+    uninitialized_move(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin)
+  {
+    typedef typename etl::iterator_traits<TOutputIterator>::value_type value_type;
+
+    TOutputIterator o_end = o_begin;
+
+    while (i_begin != i_end)
+    {
+      ::new (static_cast<void*>(etl::addressof(*o_end))) value_type(etl::move(*i_begin));
+      ++i_begin;
+      ++o_end;
+    }
+
+    return o_end;
+  }
+
+  //*****************************************************************************
+  /// Moves a range of objects to uninitialised memory.
+  /// Debug counter version.
+  /// https://en.cppreference.com/w/cpp/memory/uninitialized_move
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename TInputIterator, typename TOutputIterator, typename TCounter>
+  typename etl::enable_if<etl::is_trivially_constructible<typename etl::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+    uninitialized_move(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin, TCounter& count)
+  {
+    TOutputIterator o_end = etl::move(i_begin, i_end, o_begin);
+    count += int32_t(etl::distance(i_begin, i_end));
+
+    return o_end;
+  }
+
+  //*****************************************************************************
+  /// Moves a range of objects to uninitialised memory.
+  /// Debug counter version.
+  /// https://en.cppreference.com/w/cpp/memory/uninitialized_move
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename TInputIterator, typename TOutputIterator, typename TCounter>
+  typename etl::enable_if<!etl::is_trivially_constructible<typename etl::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+    uninitialized_move(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin, TCounter& count)
+  {
+    TOutputIterator o_end = etl::uninitialized_move(i_begin, i_end, o_begin);
+
+    count += int32_t(etl::distance(i_begin, i_end));
+
+    return o_end;
+  }
+#else
+  //*****************************************************************************
+  /// Moves a range of objects to uninitialised memory.
+  /// https://en.cppreference.com/w/cpp/memory/uninitialized_move
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename TInputIterator, typename TOutputIterator>
+  TOutputIterator  uninitialized_move(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin)
+  {
+    return std::uninitialized_move(i_begin, i_end, o_begin);
+  }
+
+  //*****************************************************************************
+  /// Moves a range of objects to uninitialised memory.
+  /// Debug counter version.
+  /// https://en.cppreference.com/w/cpp/memory/uninitialized_move
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename TInputIterator, typename TOutputIterator, typename TCounter>
+  TOutputIterator uninitialized_move(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin, TCounter& count)
+  {
+    count += int32_t(etl::distance(i_begin, i_end));
+
+    return std::uninitialized_move(i_begin, i_end, o_begin);
+  }
+#endif
+#else
+  // C++03
+  //*****************************************************************************
+  /// Moves a range of objects to uninitialised memory.
+  /// https://en.cppreference.com/w/cpp/memory/uninitialized_move
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename TInputIterator, typename TOutputIterator>
+  TOutputIterator  uninitialized_move(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin)
+  {
+    // Move not supported. Defer to copy.
+    return std::uninitialized_copy(i_begin, i_end, o_begin);
+  }
+
+  //*****************************************************************************
+  /// Moves a range of objects to uninitialised memory.
+  /// Debug counter version.
+  /// https://en.cppreference.com/w/cpp/memory/uninitialized_move
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename TInputIterator, typename TOutputIterator, typename TCounter>
+  TOutputIterator uninitialized_move(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin, TCounter& count)
+  {
+    count += int32_t(etl::distance(i_begin, i_end));
+
+    // Move not supported. Defer to copy.
+    return std::uninitialized_copy(i_begin, i_end, o_begin);
+  }
+#endif
+
+#if ETL_CPP11_SUPPORTED
+#if defined(ETL_NO_STL) || !ETL_CPP17_SUPPORTED
+  //*****************************************************************************
+  /// Moves a range of objects to uninitialised memory.
+  /// https://en.cppreference.com/w/cpp/memory/uninitialized_move_n
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename TInputIterator, typename TSize, typename TOutputIterator>
+  typename etl::enable_if<etl::is_trivially_constructible<typename etl::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+    uninitialized_move_n(TInputIterator i_begin, TSize n, TOutputIterator o_begin)
+  {
+    return etl::move(i_begin, i_begin + n, o_begin);
+  }
+
+  //*****************************************************************************
+  /// Moves a range of objects to uninitialised memory.
+  /// https://en.cppreference.com/w/cpp/memory/uninitialized_move_n
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename TInputIterator, typename TSize, typename TOutputIterator>
+  typename etl::enable_if<!etl::is_trivially_constructible<typename etl::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+    uninitialized_move_n(TInputIterator i_begin, TSize n, TOutputIterator o_begin)
+  {
+    typedef typename etl::iterator_traits<TOutputIterator>::value_type value_type;
+
+    TOutputIterator o_end = o_begin;
+
+    while (n-- != 0)
+    {
+      ::new (static_cast<void*>(etl::addressof(*o_end))) value_type(etl::move(*i_begin));
+      ++i_begin;
+      ++o_end;
+    }
+
+    return o_end;
+  }
+
+  //*****************************************************************************
+  /// Moves a range of objects to uninitialised memory.
+  /// Debug counter version.
+  /// https://en.cppreference.com/w/cpp/memory/uninitialized_move_n
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename TInputIterator, typename TSize, typename TOutputIterator, typename TCounter>
+  typename etl::enable_if<etl::is_trivially_constructible<typename etl::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+    uninitialized_move_n(TInputIterator i_begin, TSize n, TOutputIterator o_begin, TCounter& count)
+  {
+    TOutputIterator o_end = etl::move(i_begin, i_begin + n, o_begin);
+    count += TCounter(n);
+
+    return o_end;
+  }
+
+  //*****************************************************************************
+  /// Moves a range of objects to uninitialised memory.
+  /// Debug counter version.
+  /// https://en.cppreference.com/w/cpp/memory/uninitialized_move_n
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename TInputIterator, typename TSize, typename TOutputIterator, typename TCounter>
+  typename etl::enable_if<!etl::is_trivially_constructible<typename etl::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+    uninitialized_move_n(TInputIterator i_begin, TSize n, TOutputIterator o_begin, TCounter& count)
+  {
+    TOutputIterator o_end = etl::uninitialized_move(i_begin, i_begin + n, o_begin);
+
+    count += TCounter(n);
+
+    return o_end;
+  }
+#else
+  //*****************************************************************************
+  /// Moves a range of objects to uninitialised memory.
+  /// https://en.cppreference.com/w/cpp/memory/uninitialized_move_n
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename TInputIterator, typename TSize, typename TOutputIterator>
+  TOutputIterator  uninitialized_move_n(TInputIterator i_begin, TSize n, TOutputIterator o_begin)
+  {
+    return std::uninitialized_move(i_begin, i_begin + n, o_begin);
+  }
+
+  //*****************************************************************************
+  /// Moves a range of objects to uninitialised memory.
+  /// Debug counter version.
+  /// https://en.cppreference.com/w/cpp/memory/uninitialized_move_n
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename TInputIterator, typename TSize, typename TOutputIterator, typename TCounter>
+  TOutputIterator uninitialized_move_n(TInputIterator i_begin, TSize n, TOutputIterator o_begin, TCounter& count)
+  {
+    count += TCounter(n);
+
+    return std::uninitialized_move(i_begin, i_begin + n, o_begin);
+  }
+#endif
+#else
+  // C++03
+  //*****************************************************************************
+  /// Moves a range of objects to uninitialised memory.
+  /// https://en.cppreference.com/w/cpp/memory/uninitialized_move_n
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename TInputIterator, typename TOutputIterator>
+  TOutputIterator  uninitialized_move_n(TInputIterator i_begin, TSize n, TOutputIterator o_begin)
+  {
+    // Move not supported. Defer to copy.
+    return std::uninitialized_copy_n(i_begin, n, o_begin);
+  }
+
+  //*****************************************************************************
+  /// Moves a range of objects to uninitialised memory.
+  /// Debug counter version.
+  /// https://en.cppreference.com/w/cpp/memory/uninitialized_move
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename TInputIterator, typename TOutputIterator, typename TCounter>
+  TOutputIterator uninitialized_move_n(TInputIterator i_begin, TSize n, TOutputIterator o_begin, TCounter& count)
+  {
+    count += TCounter(n);
+
+    // Move not supported. Defer to copy.
+    return std::uninitialized_copy_n(i_begin, n, o_begin);
+  }
 #endif
 
 #if defined(ETL_NO_STL) || !ETL_CPP17_SUPPORTED

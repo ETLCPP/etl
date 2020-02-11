@@ -318,6 +318,19 @@ namespace etl
 
     return db;
   }
+
+  //***************************************************************************
+  // move_s
+  template <typename TIterator1, typename TIterator2>
+  TIterator2 move_s(TIterator1 sb, TIterator1 se, TIterator2 db, TIterator2 de)
+  {
+    while ((sb != se) && (db != de))
+    {
+      *db++ = etl::move(*sb++);
+    }
+
+    return db;
+  }
 #else
   //***************************************************************************
   // move
@@ -326,7 +339,39 @@ namespace etl
   {
     return std::move(sb, se, db);
   }
+
+  //***************************************************************************
+  // move_s
+  template <typename TIterator1, typename TIterator2>
+  TIterator2 move_s(TIterator1 sb, TIterator1 se, TIterator2 db, TIterator2 de)
+  {
+    while ((sb != se) && (db != de))
+    {
+      *db++ = etl::move(*sb++);
+    }
+
+    return db;
+  }
 #endif
+#else
+  // C++03
+  //***************************************************************************
+  // move
+  template <typename TIterator1, typename TIterator2>
+  TIterator2 move(TIterator1 sb, TIterator1 se, TIterator2 db)
+  {
+    // Move not supported. Defer to copy.
+    return etl::copy(sb, se, db);
+  }
+
+  //***************************************************************************
+  // move_s
+  template <typename TIterator1, typename TIterator2>
+  TIterator2 move_s(TIterator1 sb, TIterator1 se, TIterator2 db, TIterator2 de)
+  {
+    // Move not supported. Defer to copy.
+    return etl::copy_s(sb, se, db, de);
+  }
 #endif
 
 #if ETL_CPP11_SUPPORTED
@@ -352,6 +397,15 @@ namespace etl
     return std::move_backward(sb, se, de);
   }
 #endif
+#else
+  //***************************************************************************
+  // move_backward
+  template <typename TIterator1, typename TIterator2>
+  TIterator2 move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
+  {
+    // Move not supported. Defer to copy_backward.
+    return std::copy_backward(sb, se, de);
+  }
 #endif
 
 #if defined(ETL_NO_STL)
@@ -975,7 +1029,7 @@ namespace etl
       {
         if (compare(first[child2nd], first[child2nd - 1]))
         {
-          child2nd--;
+          --child2nd;
         }
 
         first[value_index] = first[child2nd];
@@ -1022,8 +1076,8 @@ namespace etl
     typedef typename etl::iterator_traits<TIterator>::value_type value_t;
     typedef typename etl::iterator_traits<TIterator>::difference_type distance_t;
 
-    value_t value = last[-1];
-    last[-1] = first[0];
+    value_t value = etl::move(last[-1]);
+    last[-1] = etl::move(first[0]);
 
     private_heap::adjust_heap(first, distance_t(0), distance_t(last - first - 1), value, compare);
   }
@@ -1095,7 +1149,7 @@ namespace etl
   // Is Heap
   template <typename TIterator>
   ETL_NODISCARD
-  bool is_heap(TIterator first, TIterator last)
+    bool is_heap(TIterator first, TIterator last)
   {
     typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
 
@@ -1109,6 +1163,27 @@ namespace etl
   {
     return private_heap::is_heap(first, last - first, compare);
   }
+
+  // Sort Heap
+  template <typename TIterator>
+  void sort_heap(TIterator first, TIterator last)
+  {
+    while (first != last)
+    {
+      etl::pop_heap(first, last--);
+    }
+  }
+
+  // Sort Heap
+  template <typename TIterator, typename TCompare>
+  void sort_heap(TIterator first, TIterator last, TCompare compare)
+  {
+    while (first != last)
+    {
+      etl::pop_heap(first, last--, compare);
+    }
+  }
+
 #else
   //***************************************************************************
   // Heap
@@ -1155,6 +1230,14 @@ namespace etl
   }
 
   // Is Heap
+  template <typename TIterator, typename TCompare>
+  ETL_NODISCARD
+    bool is_heap(TIterator first, TIterator last, TCompare compare)
+  {
+    return std::is_heap(first, last, compare);
+  }
+
+  // Is Heap
   template <typename TIterator>
   ETL_NODISCARD
   bool is_heap(TIterator first, TIterator last)
@@ -1162,13 +1245,20 @@ namespace etl
     return std::is_heap(first, last);
   }
 
-  // Is Heap
+  // Sort Heap
   template <typename TIterator, typename TCompare>
-  ETL_NODISCARD
-  bool is_heap(TIterator first, TIterator last, TCompare compare)
+  void sort_heap(TIterator first, TIterator last, TCompare compare)
   {
-    return std::is_heap(first, last, compare);
+    std::sort_heap(first, last, compare);
   }
+
+  // Sort Heap
+  template <typename TIterator>
+  void sort_heap(TIterator first, TIterator last)
+  {
+    std::sort_heap(first, last);
+  }
+
 #endif
 
 #if defined (ETL_NO_STL)
@@ -2951,10 +3041,7 @@ namespace etl
       etl::make_heap(first, last, compare);
     }
 
-    while (first != last)
-    {
-      etl::pop_heap(first, last--, compare);
-    }
+    etl::sort_heap(first, last, compare);
   }
 
   //***************************************************************************
@@ -2969,10 +3056,7 @@ namespace etl
       etl::make_heap(first, last);
     }
 
-    while (first != last)
-    {
-      etl::pop_heap(first, last--);
-    }
+    etl::sort_heap(first, last);
   }
 
   //***************************************************************************

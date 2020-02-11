@@ -361,7 +361,6 @@ namespace etl
 
     //*************************************************************************
     /// Fills the array from the range.
-    /// If the range is larger than the array then the extra data is ignored.
     /// If the range is smaller than the array then the unused array elements are left unmodified.
     ///\param first The iterator to the first item in the ramge.
     ///\param last  The iterator to one past the final item in the range.
@@ -374,7 +373,6 @@ namespace etl
 
     //*************************************************************************
     /// Fills the array from the range.
-    /// If the range is larger than the array then the extra data is ignored.
     /// If the range is smaller than the array then the unused array elements are initialised with the supplied value.
     ///\param first The iterator to the first item in the ramge.
     ///\param last  The iterator to one past the final item in the range.
@@ -383,9 +381,9 @@ namespace etl
     void assign(TIterator first, const TIterator last, parameter_t value)
     {
       // Copy from the range.
-      iterator p = etl::copy_s(first, last, begin(), end());
+      iterator p = etl::copy(first, last, begin());
 
-      // Default initialise any that are left.
+      // Initialise any that are left.
       etl::fill(p, end(), value);
     }
 
@@ -408,7 +406,7 @@ namespace etl
     {
       iterator p = const_cast<iterator>(position);
 
-      etl::copy_backward(p, end() - 1, end());
+      etl::move_backward(p, end() - 1, end());
       *p = value;
 
       return p;
@@ -445,7 +443,7 @@ namespace etl
       if (source_size < destination_space)
       {
         size_t length = SIZE - (etl::distance(begin(), p) + source_size);
-        etl::copy_backward(p, p + length, end());
+        etl::move_backward(p, p + length, end());
       }
 
       // Copy from the range.
@@ -472,7 +470,7 @@ namespace etl
     iterator erase(const_iterator position)
     {
       iterator p = const_cast<iterator>(position);
-      etl::copy(p + 1, end(), p);
+      etl::move(p + 1, end(), p);
 
       return p;
     }
@@ -497,7 +495,7 @@ namespace etl
     iterator erase(const_iterator first, const_iterator last)
     {
       iterator p = const_cast<iterator>(first);
-      etl::copy(last, cend(), p);
+      etl::move(last, cend(), p);
       return p;
     }
 
@@ -520,7 +518,7 @@ namespace etl
     {
       iterator p = const_cast<iterator>(position);
 
-      etl::copy(p + 1, end(), p);
+      etl::move(p + 1, end(), p);
       back() = value;
 
       return p;
@@ -546,7 +544,7 @@ namespace etl
     {
       iterator p = const_cast<iterator>(first);
 
-      p = etl::copy(last, cend(), p);
+      p = etl::move(last, cend(), p);
       etl::fill(p, end(), value);
 
       return const_cast<iterator>(first);

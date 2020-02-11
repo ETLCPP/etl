@@ -1464,6 +1464,9 @@ namespace etl
   using types_cr = typename types<T>::const_reference;
 
   template <typename T>
+  using types_rr = typename types<T>::rvalue_reference;
+
+  template <typename T>
   using types_p = typename types<T>::pointer;
 
   template <typename T>

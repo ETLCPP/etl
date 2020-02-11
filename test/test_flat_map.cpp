@@ -48,6 +48,7 @@ namespace
 
   typedef TestDataDC<std::string>  DC;
   typedef TestDataNDC<std::string> NDC;
+  typedef TestDataM<std::string>   MC;
 
   typedef ETL_OR_STD::pair<int, DC>  ElementDC;
   typedef ETL_OR_STD::pair<int, NDC> ElementNDC;
@@ -60,6 +61,9 @@ namespace
   typedef etl::iflat_map<int, NDC>      IDataNDC;
 
   typedef etl::flat_map<int, int, SIZE>  DataInt;
+
+  typedef etl::flat_map<int, MC, SIZE>  DataM;
+  typedef etl::iflat_map<int, MC>       IDataM;
 
   typedef std::map<int, DC>  Compare_DataDC;
   typedef std::map<int, NDC> Compare_DataNDC;
@@ -353,6 +357,40 @@ namespace
       CHECK(isEqual);
     }
 #endif
+
+    //*************************************************************************
+    TEST(test_move_constructor)
+    {
+      using Item = ETL_OR_STD::pair<int, MC>;
+
+      Item p1(1, MC("1"));
+      Item p2(2, "2");
+      Item p3(3, "3");
+      Item p4(4, MC("4"));
+
+      DataM data1;
+      data1.insert(std::move(p1));
+      data1.insert(std::move(p2));
+      data1.insert(std::move(p3));
+      data1.insert(std::move(p4));
+
+      CHECK(!bool(p1.second));
+      CHECK(!bool(p2.second));
+      CHECK(!bool(p3.second));
+      CHECK(!bool(p4.second));
+
+      DataM data2(std::move(data1));
+
+      CHECK_EQUAL(4U, data1.size()); // Move does not clear the source.
+      CHECK_EQUAL(4U, data2.size());
+
+      DataM::const_iterator itr = data2.begin();
+
+      CHECK_EQUAL("1", (*itr++).second.value);
+      CHECK_EQUAL("2", (*itr++).second.value);
+      CHECK_EQUAL("3", (*itr++).second.value);
+      CHECK_EQUAL("4", (*itr++).second.value);
+    }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assignment)

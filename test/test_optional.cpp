@@ -31,6 +31,9 @@ SOFTWARE.
 #include <string>
 #include <ostream>
 
+#include <optional>
+
+
 #include "etl/optional.h"
 #include "etl/vector.h"
 #include "data.h"
@@ -101,6 +104,22 @@ namespace
       CHECK_EQUAL(3U, data.value().value);
 
       CHECK_EQUAL(1, DataM::get_instance_count());
+    }
+
+    //*************************************************************************
+    TEST(test_moveable)
+    {
+      etl::optional<DataM> data(std::move(DataM(1)));
+      CHECK_EQUAL(1U, data.value().value);
+      CHECK(bool(data));
+
+      data = std::move(etl::optional<DataM>(std::move(DataM(2))));
+      CHECK_EQUAL(2U, data.value().value);
+      CHECK(bool(data));
+
+      etl::optional<DataM> data2(etl::move(data));
+      CHECK_EQUAL(2U, data2.value().value);
+      CHECK(bool(data2));
     }
 
     //*************************************************************************

@@ -38,23 +38,28 @@ SOFTWARE.
 
 #include "etl/map.h"
 
+#include "data.h"
+
 static const size_t MAX_SIZE = 10;
 
 #define TEST_GREATER_THAN
 #ifdef TEST_GREATER_THAN
-typedef etl::map<std::string, int, MAX_SIZE, std::greater<std::string> >  Data;
-typedef etl::imap<std::string, int, std::greater<std::string> >        IData;
-typedef std::map<std::string, int, std::greater<std::string> >        Compare_Data;
+using Data         = etl::map<std::string, int, MAX_SIZE, std::greater<std::string>>;
+using IData        = etl::imap<std::string, int, std::greater<std::string>>;
+using Compare_Data = std::map<std::string, int, std::greater<std::string>>;
 #else
-typedef etl::map<std::string, int, MAX_SIZE, std::less<std::string> >  Data;
-typedef etl::imap<std::string, int, std::less<std::string> >       IData;
-typedef std::map<std::string, int, std::less<std::string> >        Compare_Data;
+using Data = etl::map<std::string, int, MAX_SIZE, std::less<std::string>>;
+using IData = etl::imap<std::string, int, std::less<std::string>>;
+using Compare_Data = std::map<std::string, int, std::less<std::string>>;
 #endif
 
-typedef Data::iterator Data_iterator;
-typedef Data::const_iterator Data_const_iterator;
-typedef Compare_Data::iterator Compare_Data_iterator;
-typedef Compare_Data::const_iterator Compare_Data_const_iterator;
+using ItemM = TestDataM<int>;
+using DataM = etl::map<std::string, ItemM, MAX_SIZE>;
+
+using Data_iterator               = Data::iterator;
+using Data_const_iterator         = Data::const_iterator;
+using Compare_Data_iterator       = Compare_Data::iterator;
+using Compare_Data_const_iterator = Compare_Data::const_iterator;
 
 //*************************************************************************
 static std::ostream& operator << (std::ostream& os, const Data_iterator& it)
@@ -221,6 +226,53 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_copy_constructor)
+    {
+      Compare_Data compare_data(initial_data.begin(), initial_data.end());
+      Data data1(compare_data.begin(), compare_data.end());
+      Data data2(data1);
+
+      CHECK_EQUAL(initial_data.size(), data1.size());
+      CHECK(data1.size() == data2.size());
+
+      bool isEqual = false;
+
+      isEqual = Check_Equal(data1.begin(),
+                            data1.end(),
+                            compare_data.begin());
+      CHECK(isEqual);
+
+      isEqual = Check_Equal(data2.begin(),
+                            data2.end(),
+                            compare_data.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_move_constructor)
+    {
+      DataM data1;
+
+      ItemM d1(1);
+      ItemM d2(2);
+      ItemM d3(3);
+
+      data1.insert(DataM::value_type(std::string("1"), etl::move(d1)));
+      data1.insert(DataM::value_type(std::string("2"), etl::move(d2)));
+      data1.insert(DataM::value_type(std::string("3"), etl::move(d3)));
+      data1.insert(DataM::value_type(std::string("4"), ItemM(4)));
+
+      DataM data2(std::move(data1));
+
+      CHECK(!data1.empty()); // Move does not clear the source.
+
+      CHECK_EQUAL(1, data2.at("1").value);
+      CHECK_EQUAL(2, data2.at("2").value);
+      CHECK_EQUAL(3, data2.at("3").value);
+      CHECK_EQUAL(4, data2.at("4").value);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_destruct_via_imap)
     {
       Data* pdata = new Data(initial_data.begin(), initial_data.end());
@@ -310,6 +362,29 @@ namespace
                                 other_data.begin());
 
       CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_move_assignment)
+    {
+      DataM data1;
+      DataM data2;
+
+      ItemM d1(1);
+      ItemM d2(2);
+      ItemM d3(3);
+
+      data1.insert(DataM::value_type(std::string("1"), etl::move(d1)));
+      data1.insert(DataM::value_type(std::string("2"), etl::move(d2)));
+      data1.insert(DataM::value_type(std::string("3"), etl::move(d3)));
+      data1.insert(DataM::value_type(std::string("4"), ItemM(4)));
+
+      data2 = std::move(data1);
+
+      CHECK_EQUAL(1, data2.at("1").value);
+      CHECK_EQUAL(2, data2.at("2").value);
+      CHECK_EQUAL(3, data2.at("3").value);
+      CHECK_EQUAL(4, data2.at("4").value);
     }
 
     //*************************************************************************
@@ -521,6 +596,30 @@ namespace
                                  data.end(),
                                  compare_data.begin());
       CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_moved_value)
+    {
+      DataM data;
+
+      ItemM d1(1);
+      ItemM d2(2);
+      ItemM d3(3);
+
+      data.insert(DataM::value_type(std::string("1"), etl::move(d1)));
+      data.insert(DataM::value_type(std::string("2"), etl::move(d2)));
+      data.insert(DataM::value_type(std::string("3"), etl::move(d3)));
+      data.insert(DataM::value_type(std::string("4"), ItemM(4)));
+
+      CHECK(!bool(d1));
+      CHECK(!bool(d2));
+      CHECK(!bool(d3));
+
+      CHECK_EQUAL(1, data.at("1").value);
+      CHECK_EQUAL(2, data.at("2").value);
+      CHECK_EQUAL(3, data.at("3").value);
+      CHECK_EQUAL(4, data.at("4").value);
     }
 
     //*************************************************************************

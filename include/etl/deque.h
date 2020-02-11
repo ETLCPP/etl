@@ -901,7 +901,7 @@ namespace etl
           create_element_front(*_begin);
 
           // Move the values.
-          etl::copy(_begin + 1, position, _begin);
+          etl::move(_begin + 1, position, _begin);
 
           // Write the new value.
           *--position = value;
@@ -912,7 +912,7 @@ namespace etl
           create_element_back(*(_end - 1));
 
           // Move the values.
-          etl::copy_backward(position, _end - 2, _end - 1);
+          etl::move_backward(position, _end - 2, _end - 1);
 
           // Write the new value.
           *position = value;
@@ -1016,7 +1016,7 @@ namespace etl
           create_element_front(*_begin);
 
           // Move the values.
-          etl::copy(_begin + 1, position, _begin);
+          etl::move(_begin + 1, position, _begin);
 
           // Write the new value.
           --position;
@@ -1029,7 +1029,7 @@ namespace etl
           create_element_back(*(_end - 1));
 
           // Move the values.
-          etl::copy_backward(position, _end - 2, _end - 1);
+          etl::move_backward(position, _end - 2, _end - 1);
 
           // Write the new value.
           (*position).~T();
@@ -1083,7 +1083,7 @@ namespace etl
           create_element_front(*_begin);
 
           // Move the values.
-          etl::copy(_begin + 1, position, _begin);
+          etl::move(_begin + 1, position, _begin);
 
           // Write the new value.
           --position;
@@ -1096,7 +1096,7 @@ namespace etl
           create_element_back(*(_end - 1));
 
           // Move the values.
-          etl::copy_backward(position, _end - 2, _end - 1);
+          etl::move_backward(position, _end - 2, _end - 1);
 
           // Write the new value.
           (*position).~T();
@@ -1148,7 +1148,7 @@ namespace etl
           create_element_front(*_begin);
 
           // Move the values.
-          etl::copy(_begin + 1, position, _begin);
+          etl::move(_begin + 1, position, _begin);
 
           // Write the new value.
           --position;
@@ -1161,7 +1161,7 @@ namespace etl
           create_element_back(*(_end - 1));
 
           // Move the values.
-          etl::copy_backward(position, _end - 2, _end - 1);
+          etl::move_backward(position, _end - 2, _end - 1);
 
           // Write the new value.
           (*position).~T();
@@ -1213,7 +1213,7 @@ namespace etl
           create_element_front(*_begin);
 
           // Move the values.
-          etl::copy(_begin + 1, position, _begin);
+          etl::move(_begin + 1, position, _begin);
 
           // Write the new value.
           --position;
@@ -1226,7 +1226,7 @@ namespace etl
           create_element_back(*(_end - 1));
 
           // Move the values.
-          etl::copy_backward(position, _end - 2, _end - 1);
+          etl::move_backward(position, _end - 2, _end - 1);
 
           // Write the new value.
           (*position).~T();
@@ -1278,7 +1278,7 @@ namespace etl
           create_element_front(*_begin);
 
           // Move the values.
-          etl::copy(_begin + 1, position, _begin);
+          etl::move(_begin + 1, position, _begin);
 
           // Write the new value.
           --position;
@@ -1291,7 +1291,7 @@ namespace etl
           create_element_back(*(_end - 1));
 
           // Move the values.
-          etl::copy_backward(position, _end - 2, _end - 1);
+          etl::move_backward(position, _end - 2, _end - 1);
 
           // Write the new value.
           (*position).~T();
@@ -1367,10 +1367,10 @@ namespace etl
             create_element_front(*from--);
           }
 
-          // Copy old.
+          // Move old.
           from = position - n_copy_old;
           to = _begin + n_create_copy;
-          etl::copy_n(from, n_copy_old, to);
+          etl::move(from, from + n_copy_old, to);
 
           // Copy new.
           to = position - n_create_copy;
@@ -1401,8 +1401,8 @@ namespace etl
             create_element_back(*from++);
           }
 
-          // Copy old.
-          etl::copy_backward(position, position + n_copy_old, position + n_insert + n_copy_old);
+          // Move old.
+          etl::move_backward(position, position + n_copy_old, position + n_insert + n_copy_old);
 
           // Copy new.
           etl::fill_n(position, n_copy_new, value);
@@ -1469,15 +1469,15 @@ namespace etl
           // Create copy.
           create_element_front(n_create_copy, _begin + n_create_new);
 
-          // Copy old.
+          // Move old.
           from = position - n_copy_old;
           to = _begin + n_create_copy;
-          etl::copy_n(from, n_copy_old, to);
+          etl::move(from, from + n_copy_old, to);
 
           // Copy new.
           to = position - n_create_copy;
           range_begin += n_create_new;
-          etl::copy_n(range_begin, n_copy_new, to);
+          etl::copy(range_begin, range_begin + n_copy_new, to);
 
           position = _begin + n_move;
         }
@@ -1505,12 +1505,12 @@ namespace etl
             create_element_back(*from++);
           }
 
-          // Copy old.
-          etl::copy_backward(position, position + n_copy_old, position + n_insert + n_copy_old);
+          // Move old.
+          etl::move_backward(position, position + n_copy_old, position + n_insert + n_copy_old);
 
           // Copy new.
           item = range_begin;
-          etl::copy_n(item, n_copy_new, position);
+          etl::copy(item, item + n_copy_new, position);
         }
       }
 
@@ -1543,13 +1543,13 @@ namespace etl
         // Are we closer to the front?
         if (distance(_begin, position) < difference_type(current_size / 2))
         {
-          etl::copy_backward(_begin, position, position + 1);
+          etl::move_backward(_begin, position, position + 1);
           destroy_element_front();
           ++position;
         }
         else
         {
-          etl::copy(position + 1, _end, position);
+          etl::move(position + 1, _end, position);
           destroy_element_back();
         }
       }
@@ -1599,7 +1599,7 @@ namespace etl
         if (distance(_begin, position) < difference_type(current_size / 2))
         {
           // Move the items.
-          etl::copy_backward(_begin, position, position + length);
+          etl::move_backward(_begin, position, position + length);
 
           for (size_t i = 0; i < length; ++i)
           {
@@ -1612,7 +1612,7 @@ namespace etl
           // Must be closer to the back.
         {
           // Move the items.
-          etl::copy(position + length, _end, position);
+          etl::move(position + length, _end, position);
 
           for (size_t i = 0; i < length; ++i)
           {
