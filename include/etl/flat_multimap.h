@@ -36,6 +36,7 @@ SOFTWARE.
 #include "platform.h"
 #include "reference_flat_multimap.h"
 #include "pool.h"
+#include "utility.h"
 
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
   #include <initializer_list>

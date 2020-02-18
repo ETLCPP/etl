@@ -35,7 +35,7 @@ SOFTWARE.
 #include "vector.h"
 #include "pool.h"
 #include "iterator.h"
-#include "iterator.h"
+#include "utility.h"
 #include "functional.h"
 
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)

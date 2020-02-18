@@ -132,7 +132,7 @@ namespace etl
       swap(second, other.second);
     }
 
-    pair& operator =(const pair<T1, T2>& other)
+    pair<T1, T2>& operator =(const pair<T1, T2>& other)
     {
       first  = other.first;
       second = other.second;
@@ -141,7 +141,7 @@ namespace etl
     }
 
     template <typename U1, typename U2>
-    pair& operator =(const pair<U1, U2>& other)
+    pair<U1, U2>& operator =(const pair<U1, U2>& other)
     {
       first  = other.first;
       second = other.second;
@@ -150,7 +150,7 @@ namespace etl
     }
 
 #if ETL_CPP11_SUPPORTED
-    pair& operator =(pair<T1, T2>&& other)
+    pair<T1, T2>& operator =(pair<T1, T2>&& other)
     {
       first  = etl::move(other.first);
       second = etl::move(other.second);
@@ -159,7 +159,7 @@ namespace etl
     }
 
     template <typename U1, typename U2>
-    pair& operator =(pair<U1, U2>&& other)
+    pair<U1, U2>& operator =(pair<U1, U2>&& other)
     {
       first  = etl::move(other.first);
       second = etl::move(other.second);

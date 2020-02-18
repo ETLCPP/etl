@@ -37,9 +37,8 @@ SOFTWARE.
 #include <new>
 
 #include "platform.h"
-
 #include "algorithm.h"
-
+#include "utility.h"
 #include "container.h"
 #include "alignment.h"
 #include "array.h"
