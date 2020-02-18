@@ -2048,6 +2048,7 @@ namespace etl
     return std::is_permutation(begin1, end1, begin2, predicate);
   }
 
+  #if ETL_CPP14_SUPPORTED
   //***************************************************************************
   /// is_permutation
   ///\ingroup algorithm
@@ -2078,6 +2079,7 @@ namespace etl
   {
     return std::is_permutation(begin1, end1, begin2, end2, predicate);
   }
+  #endif
 #endif
 
 #if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
