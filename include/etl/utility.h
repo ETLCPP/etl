@@ -65,6 +65,39 @@ namespace etl
   }
 #endif
 
+  // We can't have std::swap and etl::swap templates coexisting in the unit tests
+  // as the compiler will be unable to decide of which one to use, due to ADL.
+#if defined(ETL_NO_STL) && !defined(ETL_IN_UNIT_TEST)
+  //***************************************************************************
+  // swap
+#if ETL_CPP11_SUPPORTED
+  template <typename T>
+  void swap(T& a, T& b) ETL_NOEXCEPT
+  {
+    T temp(etl::move(a));
+    a = etl::move(b);
+    b = etl::move(temp);
+  }
+#else
+  template <typename T>
+  void swap(T& a, T& b) ETL_NOEXCEPT
+  {
+    T temp(a);
+    a = b;
+    b = temp;
+  }
+#endif
+
+  template< class T, size_t N >
+  void swap(T(&a)[N], T(&b)[N]) ETL_NOEXCEPT
+  {
+    for (size_t i = 0; i < N; ++i)
+    {
+      swap(a[i], b[i]);
+    }
+  }
+#endif
+
   //******************************************************************************
   template <typename T1, typename T2>
   struct pair

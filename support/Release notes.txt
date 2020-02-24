@@ -1,4 +1,9 @@
 ===============================================================================
+16.4.3
+Rearranged where etl::swap is defined to fix issues with certain compilers
+Fixed most warnings for CLang
+
+===============================================================================
 16.4.2
 Fix etl::pair error and warning.
 
