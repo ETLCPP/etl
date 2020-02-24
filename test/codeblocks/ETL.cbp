@@ -348,9 +348,7 @@
 		<Unit filename="../../include/etl/private/ivectorpointer.h" />
 		<Unit filename="../../include/etl/private/minmax_pop.h" />
 		<Unit filename="../../include/etl/private/minmax_push.h" />
-		<Unit filename="../../include/etl/private/move.h" />
 		<Unit filename="../../include/etl/private/pvoidvector.h" />
-		<Unit filename="../../include/etl/private/swap.h" />
 		<Unit filename="../../include/etl/private/to_string_helper.h" />
 		<Unit filename="../../include/etl/private/vector_base.h" />
 		<Unit filename="../../include/etl/profiles/arduino_arm.h" />
