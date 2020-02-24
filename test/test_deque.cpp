@@ -1761,7 +1761,7 @@ namespace
 
       char buffer[sizeof(DataInt)];
 
-      memcpy(&buffer, &data, sizeof(data));
+      memcpy(&buffer, (const void*)&data, sizeof(data));
 
       DataInt& rdata(*reinterpret_cast<DataInt*>(buffer));
       rdata.repair();
@@ -1799,7 +1799,7 @@ namespace
 
       char buffer[sizeof(DataInt)];
 
-      memcpy(&buffer, &data, sizeof(data));
+      memcpy(&buffer, (const void*)&data, sizeof(data));
 
       IDataInt& idata(*reinterpret_cast<DataInt*>(buffer));
       idata.repair();

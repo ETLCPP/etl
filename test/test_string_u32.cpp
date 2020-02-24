@@ -3595,7 +3595,7 @@ namespace
 
       char buffer[sizeof(Text)];
 
-      memcpy(&buffer, &text, sizeof(text));
+      memcpy(&buffer, (const void*)&text, sizeof(text));
 
       Text& rtext(*reinterpret_cast<Text*>(buffer));
       rtext.repair();
@@ -3620,7 +3620,7 @@ namespace
 
       char buffer[sizeof(Text)];
 
-      memcpy(&buffer, &text, sizeof(text));
+      memcpy(&buffer, (const void*)&text, sizeof(text));
 
       IText& itext(*reinterpret_cast<IText*>(buffer));
       itext.repair();
@@ -3733,7 +3733,6 @@ namespace
       text.set_secure();
       text.assign(STR("ABCDEF"));
 
-      Text::pointer pb = text.begin();
       Text::pointer pe = text.end();
 
       text.assign(STR("ABC"));

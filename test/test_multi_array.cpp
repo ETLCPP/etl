@@ -44,13 +44,10 @@ namespace
     static const size_t SIZE1 = 4;
     static const size_t SIZE2 = 3;
 
-    int data1[4][3] = { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } };
-
     using Data         = etl::multi_array<int, SIZE1, SIZE2>;
     using Compare_Data = std::array<std::array<int, SIZE2>, SIZE1>;
 
     Compare_Data compare_data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-    Compare_Data swap_data    = { { { 12, 13, 14 }, { 15, 16, 17 }, { 18, 19, 20 }, { 21, 22, 23 } } };
 
     //*************************************************************************
     TEST(test_constructor)
@@ -365,7 +362,6 @@ namespace
       Data source  = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
       Data check1  = { { { 0, 1, 2 }, { 3, 4, 5 }, { -1, -1, -1 }, { -1, -1, -1 } } };
       Data check2  = { { { 0, 1, 2 }, { 3, 4, 5 }, { 99, 99, 99 }, { 99, 99, 99 } } };
-      Data check3  = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
 
       typedef etl::multi_array<int, SIZE2> Inner;
       const Inner ninetynine = { { 99, 99, 99 } };

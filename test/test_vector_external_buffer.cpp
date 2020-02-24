@@ -1016,7 +1016,7 @@ namespace
 
       char buffer[sizeof(Data)];
 
-      memcpy(&buffer, &data, sizeof(data));
+      memcpy(&buffer, (const void*)&data, sizeof(data));
 
       Data& rdata(*reinterpret_cast<Data*>(buffer));
       rdata.repair();
@@ -1040,7 +1040,7 @@ namespace
 
       char buffer[sizeof(Data)];
 
-      memcpy(&buffer, &data, sizeof(data));
+      memcpy(&buffer, (const void*)&data, sizeof(data));
 
       IData& idata(*reinterpret_cast<Data*>(buffer));
       idata.repair();
