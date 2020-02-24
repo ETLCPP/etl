@@ -36,6 +36,7 @@ SOFTWARE.
 #include <new>
 
 #include "platform.h"
+#include "utility.h"
 #include "array.h"
 #include "largest.h"
 #include "exception.h"

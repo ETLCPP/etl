@@ -40,8 +40,8 @@ namespace
   struct base
   {
     base(int v_)
-      : v(v_)
-      , was_moved(false)
+      : was_moved(false)
+      , v(v_)
     {
     }
 
@@ -89,8 +89,6 @@ namespace
     {
       return v;
     }
-
-    static int count;
   };
 
   struct derived_2 : public base

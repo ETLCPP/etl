@@ -65,6 +65,39 @@ namespace etl
   }
 #endif
 
+  // We can't have std::swap and etl::swap templates coexisting in the unit tests
+  // as the compiler will be unable to decide of which one to use, due to ADL.
+#if defined(ETL_NO_STL) && !defined(ETL_IN_UNIT_TEST)
+  //***************************************************************************
+  // swap
+#if ETL_CPP11_SUPPORTED
+  template <typename T>
+  void swap(T& a, T& b) ETL_NOEXCEPT
+  {
+    T temp(etl::move(a));
+    a = etl::move(b);
+    b = etl::move(temp);
+  }
+#else
+  template <typename T>
+  void swap(T& a, T& b) ETL_NOEXCEPT
+  {
+    T temp(a);
+    a = b;
+    b = temp;
+  }
+#endif
+
+  template< class T, size_t N >
+  void swap(T(&a)[N], T(&b)[N]) ETL_NOEXCEPT
+  {
+    for (size_t i = 0; i < N; ++i)
+    {
+      swap(a[i], b[i]);
+    }
+  }
+#endif
+
   //******************************************************************************
   template <typename T1, typename T2>
   struct pair
@@ -132,7 +165,7 @@ namespace etl
       swap(second, other.second);
     }
 
-    pair& operator =(const pair<T1, T2>& other)
+    pair<T1, T2>& operator =(const pair<T1, T2>& other)
     {
       first  = other.first;
       second = other.second;
@@ -141,7 +174,7 @@ namespace etl
     }
 
     template <typename U1, typename U2>
-    pair& operator =(const pair<U1, U2>& other)
+    pair<U1, U2>& operator =(const pair<U1, U2>& other)
     {
       first  = other.first;
       second = other.second;
@@ -150,7 +183,7 @@ namespace etl
     }
 
 #if ETL_CPP11_SUPPORTED
-    pair& operator =(pair<T1, T2>&& other)
+    pair<T1, T2>& operator =(pair<T1, T2>&& other)
     {
       first  = etl::move(other.first);
       second = etl::move(other.second);
@@ -159,7 +192,7 @@ namespace etl
     }
 
     template <typename U1, typename U2>
-    pair& operator =(pair<U1, U2>&& other)
+    pair<U1, U2>& operator =(pair<U1, U2>&& other)
     {
       first  = etl::move(other.first);
       second = etl::move(other.second);

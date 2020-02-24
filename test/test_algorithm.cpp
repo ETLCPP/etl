@@ -895,7 +895,7 @@ namespace
     //*************************************************************************
     TEST(fill_n)
     {
-      int* p1 = std::fill_n(std::begin(dataD1), SIZE, 5);
+      (void) std::fill_n(std::begin(dataD1), SIZE, 5);
       int* p2 = etl::fill_n(std::begin(dataD2), SIZE, 5);
 
       CHECK(p2 == std::end(dataD2));
@@ -915,7 +915,7 @@ namespace
         }
       };
 
-      int* p1 = std::transform(std::begin(dataS), std::end(dataS), std::begin(dataD1), Function());
+      (void) std::transform(std::begin(dataS), std::end(dataS), std::begin(dataD1), Function());
       int* p2 = etl::transform(std::begin(dataS), std::end(dataS), std::begin(dataD2), Function());
 
       CHECK(p2 == std::end(dataD2));
@@ -1894,6 +1894,7 @@ namespace
       CHECK_EQUAL(1, etl::multimax_compare(std::greater<int>(), 1, 2, 3, 4, 5, 6, 7, 8));
 
       int temp[etl::multimax(1, 2, 3, 4, 5, 6, 7, 8)] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+      (void)temp;
     }
 
     //*************************************************************************

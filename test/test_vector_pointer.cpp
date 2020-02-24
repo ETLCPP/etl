@@ -1725,7 +1725,7 @@ namespace
 
       char buffer[sizeof(Data)];
 
-      memcpy(&buffer, &data, sizeof(data));
+      memcpy(&buffer, (const void*)&data, sizeof(data));
 
       Data& rdata(*reinterpret_cast<Data*>(buffer));
       rdata.repair();
@@ -1756,7 +1756,7 @@ namespace
 
       char buffer[sizeof(CData)];
 
-      memcpy(&buffer, &data, sizeof(data));
+      memcpy(&buffer, (const void*)&data, sizeof(data));
 
       CData& rdata(*reinterpret_cast<CData*>(buffer));
       rdata.repair();

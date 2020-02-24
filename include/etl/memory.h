@@ -34,8 +34,8 @@ SOFTWARE.
 #include "platform.h"
 #include "algorithm.h"
 #include "type_traits.h"
-
 #include "iterator.h"
+#include "utility.h"
 
 #include <assert.h>
 

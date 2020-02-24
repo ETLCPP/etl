@@ -13,10 +13,10 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-std=c++14" />
-					<Add option="-std=c++17" />
 					<Add option="-std=c++11" />
 					<Add option="-m32" />
 					<Add option="-g" />
+					<Add option="-std=c++17" />
 					<Add option="-D_DEBUG" />
 					<Add directory="../../src" />
 				</Compiler>
@@ -33,9 +33,11 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-std=c++1z" />
+					<Add option="-std=c++03" />
+					<Add option="-std=c++14" />
 					<Add option="-m32" />
 					<Add option="-g" />
+					<Add option="-std=c++17" />
 					<Add option="-D_DEBUG" />
 					<Add option="-DETL_NO_STL" />
 					<Add directory="../../src" />
@@ -123,11 +125,11 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-Wunused-parameter" />
-			<Add option="-Wstrict-aliasing" />
 			<Add option="-Wshadow" />
 			<Add option="-Wundef" />
 			<Add option="-Wall" />
+			<Add option="-Wunused-parameter" />
+			<Add option="-Wstrict-aliasing" />
 			<Add option="-std=c++17" />
 			<Add option="-fexceptions" />
 			<Add directory="../../../unittest-cpp/" />
@@ -346,7 +348,9 @@
 		<Unit filename="../../include/etl/private/ivectorpointer.h" />
 		<Unit filename="../../include/etl/private/minmax_pop.h" />
 		<Unit filename="../../include/etl/private/minmax_push.h" />
+		<Unit filename="../../include/etl/private/move.h" />
 		<Unit filename="../../include/etl/private/pvoidvector.h" />
+		<Unit filename="../../include/etl/private/swap.h" />
 		<Unit filename="../../include/etl/private/to_string_helper.h" />
 		<Unit filename="../../include/etl/private/vector_base.h" />
 		<Unit filename="../../include/etl/profiles/arduino_arm.h" />
