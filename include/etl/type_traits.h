@@ -401,6 +401,7 @@ namespace etl
   inline constexpr bool is_lvalue_reference_v = etl::is_lvalue_reference<T>::value;
 #endif
 
+#if ETL_CPP11_SUPPORTED
   //***************************************************************************
   /// is_rvalue_reference
   template<typename T> struct is_rvalue_reference_helper : false_type {};
@@ -410,6 +411,7 @@ namespace etl
 #if ETL_CPP17_SUPPORTED
   template <typename T>
   inline constexpr bool is_rvalue_reference_v = etl::is_rvalue_reference<T>::value;
+#endif
 #endif
 
   //***************************************************************************
