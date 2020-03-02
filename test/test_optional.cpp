@@ -65,28 +65,39 @@ namespace
 
       CHECK(!bool(data1));
       CHECK(!bool(data2));
+      CHECK(!data1.has_value());
+      CHECK(!data2.has_value());
+
 
       data1 = Data("Hello");
       CHECK(bool(data1));
+      CHECK(data1.has_value());
       CHECK_EQUAL(Data("Hello"), data1);
 
       data1 = data2;
       CHECK(!bool(data1));
       CHECK(!bool(data2));
+      CHECK(!data1.has_value());
+      CHECK(!data2.has_value());
 
       data1 = Data("World");
       data2 = data1;
       CHECK(bool(data1));
       CHECK(bool(data2));
+      CHECK(data1.has_value());
+      CHECK(data2.has_value());
 
       etl::optional<Data> data3(data1);
       CHECK(bool(data3));
+      CHECK(data3.has_value());
       CHECK_EQUAL(data1, data3);
 
       etl::optional<Data> data4;
       data4 = Data("Hello");
       data4 = etl::nullopt;
       CHECK(!bool(data4));
+      CHECK(!data4.has_value());
+
     }
 
     //*************************************************************************
