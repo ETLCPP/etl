@@ -1,4 +1,9 @@
 ===============================================================================
+16.5.1
+Removed redundant include
+Moved move_s definitions to avoid forward declaration
+
+===============================================================================
 16.5.0
 has_value() added to etl::optional
 
