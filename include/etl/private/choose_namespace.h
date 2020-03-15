@@ -31,8 +31,6 @@ SOFTWARE.
 #ifndef ETL_CHOOSE_NAMESPACE_INCLUDED
 #define ETL_CHOOSE_NAMESPACE_INCLUDED
 
-#include "../platform.h"
-
 #undef ETL_OR_STD
 
 #if defined(ETL_NO_STL) && !defined(ETL_IN_UNIT_TEST)
