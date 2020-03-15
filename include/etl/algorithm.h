@@ -285,19 +285,6 @@ namespace etl
 
     return db;
   }
-
-  //***************************************************************************
-  // move_s
-  template <typename TIterator1, typename TIterator2>
-  TIterator2 move_s(TIterator1 sb, TIterator1 se, TIterator2 db, TIterator2 de)
-  {
-    while ((sb != se) && (db != de))
-    {
-      *db++ = etl::move(*sb++);
-    }
-
-    return db;
-  }
 #else
   //***************************************************************************
   // move
@@ -305,19 +292,6 @@ namespace etl
   TIterator2 move(TIterator1 sb, TIterator1 se, TIterator2 db)
   {
     return std::move(sb, se, db);
-  }
-
-  //***************************************************************************
-  // move_s
-  template <typename TIterator1, typename TIterator2>
-  TIterator2 move_s(TIterator1 sb, TIterator1 se, TIterator2 db, TIterator2 de)
-  {
-    while ((sb != se) && (db != de))
-    {
-      *db++ = etl::move(*sb++);
-    }
-
-    return db;
   }
 #endif
 #else
@@ -329,15 +303,6 @@ namespace etl
   {
     // Move not supported. Defer to copy.
     return etl::copy(sb, se, db);
-  }
-
-  //***************************************************************************
-  // move_s
-  template <typename TIterator1, typename TIterator2>
-  TIterator2 move_s(TIterator1 sb, TIterator1 se, TIterator2 db, TIterator2 de)
-  {
-    // Move not supported. Defer to copy.
-    return etl::copy_s(sb, se, db, de);
   }
 #endif
 
@@ -2421,7 +2386,7 @@ namespace etl
   template <typename TInputIterator,
             typename TOutputIterator>
   typename etl::enable_if<etl::is_random_iterator<TInputIterator>::value &&
-                             etl::is_random_iterator<TOutputIterator>::value, TOutputIterator>::type
+                          etl::is_random_iterator<TOutputIterator>::value, TOutputIterator>::type
    copy_s(TInputIterator  i_begin,
           TInputIterator  i_end,
           TOutputIterator o_begin,
@@ -2448,7 +2413,7 @@ namespace etl
   template <typename TInputIterator,
             typename TOutputIterator>
   typename etl::enable_if<!etl::is_random_iterator<TInputIterator>::value ||
-                             !etl::is_random_iterator<TOutputIterator>::value, TOutputIterator>::type
+                          !etl::is_random_iterator<TOutputIterator>::value, TOutputIterator>::type
    copy_s(TInputIterator  i_begin,
           TInputIterator  i_end,
           TOutputIterator o_begin,
@@ -2559,6 +2524,85 @@ namespace etl
 
     return o_begin;
   }
+
+#if ETL_CPP11_SUPPORTED
+  //***************************************************************************
+  /// move_s
+  /// A safer form of move where the smallest of the two ranges is used.
+  /// There is currently no STL equivalent.
+  /// Specialisation for random access iterators.
+  ///\param i_begin Beginning of the input range.
+  ///\param i_end   End of the input range.
+  ///\param o_begin Beginning of the output range.
+  ///\param o_end   End of the output range.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TInputIterator,
+  typename TOutputIterator>
+  typename etl::enable_if<etl::is_random_iterator<TInputIterator>::value &&
+                          etl::is_random_iterator<TOutputIterator>::value, TOutputIterator>::type
+  move_s(TInputIterator  i_begin,
+         TInputIterator  i_end,
+         TOutputIterator o_begin,
+         TOutputIterator o_end)
+  {
+    size_t s_size = etl::distance(i_begin, i_end);
+    size_t d_size = etl::distance(o_begin, o_end);
+    size_t size = (s_size < d_size) ? s_size : d_size;
+
+    return etl::move(i_begin, i_begin + size, o_begin);
+  }
+
+  //***************************************************************************
+  /// move_s
+  /// A safer form of move where the smallest of the two ranges is used.
+  /// There is currently no STL equivalent.
+  /// Specialisation for non random access iterators.
+  ///\param i_begin Beginning of the input range.
+  ///\param i_end   End of the input range.
+  ///\param o_begin Beginning of the output range.
+  ///\param o_end   End of the output range.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TInputIterator,
+  typename TOutputIterator>
+  typename etl::enable_if<!etl::is_random_iterator<TInputIterator>::value ||
+                          !etl::is_random_iterator<TOutputIterator>::value, TOutputIterator>::type
+  move_s(TInputIterator  i_begin,
+         TInputIterator  i_end,
+         TOutputIterator o_begin,
+         TOutputIterator o_end)
+  {
+    while ((i_begin != i_end) && (o_begin != o_end))
+    {
+      *o_begin++ = etl::move(*i_begin++);
+    }
+
+    return o_begin;
+  }
+#else
+  //***************************************************************************
+  /// move_s
+  /// C++03
+  /// A safer form of move where the smallest of the two ranges is used.
+  /// There is currently no STL equivalent.
+  /// Specialisation for non random access iterators.
+  ///\param i_begin Beginning of the input range.
+  ///\param i_end   End of the input range.
+  ///\param o_begin Beginning of the output range.
+  ///\param o_end   End of the output range.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TInputIterator, typename TOutputIterator>
+  TOutputIterator move_s(TInputIterator  i_begin,
+                         TInputIterator  i_end,
+                         TOutputIterator o_begin,
+                         TOutputIterator o_end)
+  {
+    // Move not supported. Defer to copy.
+    return etl::copy_s(i_begin, i_end, o_begin, o_end);
+  }
+#endif
 
   //***************************************************************************
   /// binary_find
