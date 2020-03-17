@@ -38,13 +38,11 @@ SOFTWARE.
 #include "algorithm.h"
 #include "iterator.h"
 #include "functional.h"
-
 #include "exception.h"
 #include "type_traits.h"
 #include "parameter_type.h"
 #include "static_assert.h"
 #include "error_handler.h"
-#include "algorithm.h"
 
 ///\defgroup array array
 /// A replacement for std::array if you haven't got C++0x11.
