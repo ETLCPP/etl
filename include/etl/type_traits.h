@@ -650,12 +650,14 @@ namespace etl
 
   //***************************************************************************
   /// add_lvalue_reference
+#if ETL_CPP11_SUPPORTED
   template <typename T> struct add_lvalue_reference { using type = T & ; };
   template <typename T> struct add_lvalue_reference<T&> { using type = T & ; };
   template <>           struct add_lvalue_reference<void> { using type = void; };
   template <>           struct add_lvalue_reference<const void> { using type = const void; };
   template <>           struct add_lvalue_reference<volatile void> { using type = volatile void; };
   template <>           struct add_lvalue_reference<const volatile void> { using type = const volatile void; };
+#endif
 
 #if ETL_CPP14_SUPPORTED
   template <typename T>
@@ -1328,22 +1330,22 @@ namespace etl
   struct is_one_of
   {
     static const bool value =
-        etlstd::is_same<T, T1>::value ||
-        etlstd::is_same<T, T2>::value ||
-        etlstd::is_same<T, T3>::value ||
-        etlstd::is_same<T, T4>::value ||
-        etlstd::is_same<T, T5>::value ||
-        etlstd::is_same<T, T6>::value ||
-        etlstd::is_same<T, T7>::value ||
-        etlstd::is_same<T, T8>::value ||
-        etlstd::is_same<T, T9>::value ||
-        etlstd::is_same<T, T10>::value ||
-        etlstd::is_same<T, T11>::value ||
-        etlstd::is_same<T, T12>::value ||
-        etlstd::is_same<T, T13>::value ||
-        etlstd::is_same<T, T14>::value ||
-        etlstd::is_same<T, T15>::value ||
-        etlstd::is_same<T, T16>::value;
+        etl::is_same<T, T1>::value ||
+        etl::is_same<T, T2>::value ||
+        etl::is_same<T, T3>::value ||
+        etl::is_same<T, T4>::value ||
+        etl::is_same<T, T5>::value ||
+        etl::is_same<T, T6>::value ||
+        etl::is_same<T, T7>::value ||
+        etl::is_same<T, T8>::value ||
+        etl::is_same<T, T9>::value ||
+        etl::is_same<T, T10>::value ||
+        etl::is_same<T, T11>::value ||
+        etl::is_same<T, T12>::value ||
+        etl::is_same<T, T13>::value ||
+        etl::is_same<T, T14>::value ||
+        etl::is_same<T, T15>::value ||
+        etl::is_same<T, T16>::value;
   };
 #endif
 
