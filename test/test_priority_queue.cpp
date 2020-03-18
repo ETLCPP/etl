@@ -32,9 +32,14 @@ SOFTWARE.
 
 #include "etl/priority_queue.h"
 #include <functional>
+#include <string>
+
+#include "data.h"
 
 namespace
 {
+  using ItemM = TestDataM<std::string>;
+
   struct Item
   {
     Item(char c_, int i_, double d_)
@@ -116,6 +121,32 @@ namespace
         priority_queue.pop();
         priority_queue2.pop();
       }
+    }
+
+    //*************************************************************************
+    TEST(test_move_constructor)
+    {
+      ItemM a("A"), b("B"), c("C"), d("D");
+
+      etl::priority_queue<ItemM, SIZE> priority_queue;
+
+      priority_queue.push(std::move(c));
+      priority_queue.push(std::move(d));
+      priority_queue.push(std::move(a));
+      priority_queue.push(std::move(b));
+
+      etl::priority_queue<ItemM, SIZE> priority_queue2(std::move(priority_queue));
+
+      CHECK_EQUAL(0U,   priority_queue.size());
+      CHECK_EQUAL(SIZE, priority_queue2.size());
+
+      CHECK_EQUAL(priority_queue2.top().value, "D");
+      priority_queue2.pop();
+      CHECK_EQUAL(priority_queue2.top().value, "C");
+      priority_queue2.pop();
+      CHECK_EQUAL(priority_queue2.top().value, "B");
+      priority_queue2.pop();
+      CHECK_EQUAL(priority_queue2.top().value, "A");
     }
 
     //*************************************************************************
@@ -282,6 +313,35 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_push_movable)
+    {
+      ItemM a("A"), b("B"), c("C"), d("D");
+
+      etl::priority_queue<ItemM, SIZE> priority_queue;
+      std::priority_queue<ItemM> compare_priority_queue;
+
+      priority_queue.push(std::move(c));
+      priority_queue.push(std::move(d));
+      priority_queue.push(std::move(a));
+      priority_queue.push(std::move(b));
+
+      compare_priority_queue.push(ItemM("C"));
+      compare_priority_queue.push(ItemM("D"));
+      compare_priority_queue.push(ItemM("A"));
+      compare_priority_queue.push(ItemM("B"));
+
+      CHECK_EQUAL(compare_priority_queue.size(), priority_queue.size());
+      CHECK(!priority_queue.empty());
+
+      while (!priority_queue.empty())
+      {
+        CHECK_EQUAL(compare_priority_queue.top(), priority_queue.top());
+        compare_priority_queue.pop();
+        priority_queue.pop();
+      }
+    }
+
+    //*************************************************************************
     TEST(test_emplace)
     {
       etl::priority_queue<Item, SIZE> priority_queue;
@@ -442,6 +502,34 @@ namespace
         priority_queue.pop();
         priority_queue2.pop();
       }
+    }
+
+    //*************************************************************************
+    TEST(test_move_assignment)
+    {
+      ItemM a("A"), b("B"), c("C"), d("D");
+
+      etl::priority_queue<ItemM, SIZE> priority_queue;
+
+      priority_queue.push(std::move(c));
+      priority_queue.push(std::move(d));
+      priority_queue.push(std::move(a));
+      priority_queue.push(std::move(b));
+
+      etl::priority_queue<ItemM, SIZE> priority_queue2;
+
+      priority_queue2 = std::move(priority_queue);
+
+      CHECK_EQUAL(0U, priority_queue.size());
+      CHECK_EQUAL(SIZE, priority_queue2.size());
+
+      CHECK_EQUAL(priority_queue2.top().value, "D");
+      priority_queue2.pop();
+      CHECK_EQUAL(priority_queue2.top().value, "C");
+      priority_queue2.pop();
+      CHECK_EQUAL(priority_queue2.top().value, "B");
+      priority_queue2.pop();
+      CHECK_EQUAL(priority_queue2.top().value, "A");
     }
 
     //*************************************************************************

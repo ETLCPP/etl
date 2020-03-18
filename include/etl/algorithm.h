@@ -942,12 +942,12 @@ namespace etl
 
       while ((value_index > top_index) && compare(first[parent], value))
       {
-        first[value_index] = first[parent];
+        first[value_index] = etl::move(first[parent]);
         value_index = parent;
         parent = (value_index - 1) / 2;
       }
 
-      first[value_index] = value;
+      first[value_index] = etl::move(value);
     }
 
     // Adjust Heap Helper
@@ -964,18 +964,18 @@ namespace etl
           --child2nd;
         }
 
-        first[value_index] = first[child2nd];
+        first[value_index] = etl::move(first[child2nd]);
         value_index = child2nd;
         child2nd = 2 * (child2nd + 1);
       }
 
       if (child2nd == length)
       {
-        first[value_index] = first[child2nd - 1];
+        first[value_index] = etl::move(first[child2nd - 1]);
         value_index = child2nd - 1;
       }
 
-      push_heap(first, value_index, top_index, value, compare);
+      push_heap(first, value_index, top_index, etl::move(value), compare);
     }
 
     // Is Heap Helper
@@ -1011,7 +1011,7 @@ namespace etl
     value_t value = etl::move(last[-1]);
     last[-1] = etl::move(first[0]);
 
-    private_heap::adjust_heap(first, distance_t(0), distance_t(last - first - 1), value, compare);
+    private_heap::adjust_heap(first, distance_t(0), distance_t(last - first - 1), etl::move(value), compare);
   }
 
   // Pop Heap
@@ -1030,7 +1030,7 @@ namespace etl
     typedef typename etl::iterator_traits<TIterator>::difference_type difference_t;
     typedef typename etl::iterator_traits<TIterator>::value_type      value_t;
 
-    private_heap::push_heap(first, difference_t(last - first - 1), difference_t(0), value_t(*(last - 1)), compare);
+    private_heap::push_heap(first, difference_t(last - first - 1), difference_t(0), value_t(etl::move(*(last - 1))), compare);
   }
 
   // Push Heap
@@ -1058,7 +1058,7 @@ namespace etl
 
     while (true)
     {
-      private_heap::adjust_heap(first, parent, length, *(first + parent), compare);
+      private_heap::adjust_heap(first, parent, length, etl::move(*(first + parent)), compare);
 
       if (parent == 0)
       {
