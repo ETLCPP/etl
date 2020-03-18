@@ -1,4 +1,9 @@
 ===============================================================================
+16.5.2
+Modified nullptr.h for better cross compiler compatibility
+Removed redundant includes for etl::array
+
+===============================================================================
 16.5.1
 Removed redundant include
 Moved move_s definitions to avoid forward declaration

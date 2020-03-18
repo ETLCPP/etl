@@ -40,33 +40,33 @@ SOFTWARE.
 #if (ETL_NO_NULLPTR_SUPPORT && !defined(ARDUINO)) || defined(ETL_COMPILER_ARM5)
 namespace std
 {
-  //*****************************************************************************
-  /// A null pointer type.
-  ///\ingroup nullptr
-  //*****************************************************************************
-  class nullptr_t
+//*****************************************************************************
+/// A null pointer type.
+///\ingroup nullptr
+//*****************************************************************************
+class nullptr_t
+{
+public:
+
+  // Convertible to any type of null non-member pointer.
+  template<typename T>
+  operator T*() const
   {
-  public:
+    return 0;
+  }
 
-    // Convertible to any type of null non-member pointer.
-    template<typename T>
-    operator T*() const
-    {
-      return 0;
-    }
+  // Or any type of null member pointer.
+  template<typename ANYCLASS, typename T>
+  operator T ANYCLASS::*() const
+  {
+    return 0;
+  }
 
-    // Or any type of null member pointer.
-    template<typename ANYCLASS, typename T>
-    operator T ANYCLASS::*() const
-    {
-      return 0;
-    }
+private:
 
-  private:
-
-    // Can't take address of nullptr.
-    void operator&() const;
-  };
+  // Can't take address of nullptr.
+  void operator&() const;
+};
 }
 
 //*****************************************************************************
@@ -78,7 +78,11 @@ const std::nullptr_t nullptr = {};
 #endif
 
 #else
+  #if defined(ARDUINO)
     #include <stddef.h>
+  #else
+    #include <cstddef>
+  #endif
 #endif
 
 #if defined(ARDUINO)
