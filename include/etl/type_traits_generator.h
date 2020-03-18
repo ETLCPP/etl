@@ -413,6 +413,7 @@ namespace etl
   inline constexpr bool is_lvalue_reference_v = etl::is_lvalue_reference<T>::value;
 #endif
 
+#if ETL_CPP11_SUPPORTED
   //***************************************************************************
   /// is_rvalue_reference
   template<typename T> struct is_rvalue_reference_helper : false_type {};
@@ -422,6 +423,7 @@ namespace etl
 #if ETL_CPP17_SUPPORTED
   template <typename T>
   inline constexpr bool is_rvalue_reference_v = etl::is_rvalue_reference<T>::value;
+#endif
 #endif
 
   //***************************************************************************
@@ -749,7 +751,7 @@ namespace etl
   inline constexpr size_t alignment_of_v = etl::alignment_of<T>::value;
 #endif
 
-#else // defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#else // Condition = !defined(ETL_NO_STL) && ETL_CPP11_SUPPORTED
 
   //*****************************************************************************
   // Traits are derived from the STL
@@ -1016,11 +1018,11 @@ namespace etl
   ///\ingroup type_traits
 #if ETL_CPP11_SUPPORTED
   template<typename T> struct is_rvalue_reference : std::is_rvalue_reference<T> {};
-#endif
 
 #if ETL_CPP17_SUPPORTED
   template <typename T>
   inline constexpr bool is_rvalue_reference_v = std::is_rvalue_reference_v<T>;
+#endif
 #endif
 
   //***************************************************************************
@@ -1283,7 +1285,7 @@ namespace etl
   inline constexpr size_t alignment_of_v = std::alignment_of_v<T>;
 #endif
 
-#endif // defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#endif // Condition = !defined(ETL_NO_STL) && ETL_CPP11_SUPPORTED
 
   //***************************************************************************
   // ETL extended type traits.
@@ -1318,7 +1320,7 @@ namespace etl
   struct is_one_of
   {
     static const bool value = etl::is_same<T, T1>::value ||
-      etl::is_one_of<T, TRest...>::value;
+                              etl::is_one_of<T, TRest...>::value;
   };
 
   template <typename T, typename T1>
@@ -1345,8 +1347,8 @@ namespace etl
   cog.outl("{")
   cog.outl("  static const bool value = ")
   for n in range(1, int(IsOneOf)):
-      cog.outl("      etlstd::is_same<T, T%s>::value ||" % n)
-  cog.outl("      etlstd::is_same<T, T%s>::value;" % IsOneOf)
+      cog.outl("      etl::is_same<T, T%s>::value ||" % n)
+  cog.outl("      etl::is_same<T, T%s>::value;" % IsOneOf)
   cog.outl("};")
   ]]]*/
   /*[[[end]]]*/
@@ -1377,6 +1379,10 @@ namespace etl
     typedef type_t*             pointer;
     typedef const type_t*       const_pointer;
     typedef const type_t* const const_pointer_const;
+
+#if ETL_CPP11_SUPPORTED
+    typedef type_t&&            rvalue_reference;
+#endif
   };
 
   // Pointers.
@@ -1395,6 +1401,10 @@ namespace etl
     typedef type_t*             pointer;
     typedef const type_t*       const_pointer;
     typedef const type_t* const const_pointer_const;
+
+#if ETL_CPP11_SUPPORTED
+    typedef type_t&&            rvalue_reference;
+#endif
   };
 
   // Pointers.
@@ -1413,6 +1423,10 @@ namespace etl
     typedef type_t*             pointer;
     typedef const type_t* const_pointer;
     typedef const type_t* const const_pointer_const;
+
+#if ETL_CPP11_SUPPORTED
+    typedef type_t&&            rvalue_reference;
+#endif
   };
 
   // References.
@@ -1431,6 +1445,10 @@ namespace etl
     typedef type_t*             pointer;
     typedef const type_t*       const_pointer;
     typedef const type_t* const const_pointer_const;
+
+#if ETL_CPP11_SUPPORTED
+    typedef type_t&&            rvalue_reference;
+#endif
   };
 
 #if ETL_CPP11_SUPPORTED
@@ -1450,6 +1468,10 @@ namespace etl
     typedef type_t*             pointer;
     typedef const type_t*       const_pointer;
     typedef const type_t* const const_pointer_const;
+
+#if ETL_CPP11_SUPPORTED
+    typedef type_t&&            rvalue_reference;
+#endif
   };
 #endif
 

@@ -739,7 +739,7 @@ namespace etl
   inline constexpr size_t alignment_of_v = etl::alignment_of<T>::value;
 #endif
 
-#else // defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#else // Condition = !defined(ETL_NO_STL) && ETL_CPP11_SUPPORTED
 
   //*****************************************************************************
   // Traits are derived from the STL
@@ -1006,11 +1006,11 @@ namespace etl
   ///\ingroup type_traits
 #if ETL_CPP11_SUPPORTED
   template<typename T> struct is_rvalue_reference : std::is_rvalue_reference<T> {};
-#endif
 
 #if ETL_CPP17_SUPPORTED
   template <typename T>
   inline constexpr bool is_rvalue_reference_v = std::is_rvalue_reference_v<T>;
+#endif
 #endif
 
   //***************************************************************************
@@ -1273,7 +1273,7 @@ namespace etl
   inline constexpr size_t alignment_of_v = std::alignment_of_v<T>;
 #endif
 
-#endif // defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#endif // Condition = !defined(ETL_NO_STL) && ETL_CPP11_SUPPORTED
 
   //***************************************************************************
   // ETL extended type traits.
@@ -1308,7 +1308,7 @@ namespace etl
   struct is_one_of
   {
     static const bool value = etl::is_same<T, T1>::value ||
-      etl::is_one_of<T, TRest...>::value;
+                              etl::is_one_of<T, TRest...>::value;
   };
 
   template <typename T, typename T1>
@@ -1321,10 +1321,11 @@ namespace etl
   /// Template to determine if a type is one of a specified list.
   ///\ingroup types
   template <typename T,
-            typename T1, typename T2 = void, typename T3 = void, typename T4 = void,
-            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void,
-            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void,
-            typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void>
+            typename T1, typename T2 = void, typename T3 = void, typename T4 = void, 
+            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void, 
+            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void, 
+            typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void, 
+            typename T17 = void>
   struct is_one_of
   {
     static const bool value =

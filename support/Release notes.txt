@@ -1,4 +1,8 @@
 ===============================================================================
+16.5.3
+type_traits.h is_one_of fix for C++03
+
+===============================================================================
 16.5.2
 Modified nullptr.h for better cross compiler compatibility
 Removed redundant includes for etl::array
