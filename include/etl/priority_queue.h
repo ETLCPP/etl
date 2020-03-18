@@ -125,14 +125,11 @@ namespace etl
     typedef TCompare              compare_type;       ///< The comparison type.
     typedef T&                    reference;          ///< A reference to the type used in the queue.
     typedef const T&              const_reference;    ///< A const reference to the type used in the queue.
+#if ETL_CPP11_SUPPORTED
+    typedef T&&                   rvalue_reference;   ///< An rvalue reference to the type used in the queue.
+#endif
     typedef typename TContainer::size_type size_type; ///< The type used for determining the size of the queue.
     typedef typename etl::iterator_traits<typename TContainer::iterator>::difference_type difference_type;
-
-  private:
-
-    typedef typename etl::parameter_type<T>::type parameter_t;
-
-  public:
 
     //*************************************************************************
     /// Gets a reference to the highest priority value in the priority queue.<br>
@@ -158,7 +155,7 @@ namespace etl
     /// is the priority queue is already full.
     ///\param value The value to push to the queue.
     //*************************************************************************
-    void push(parameter_t value)
+    void push(const_reference value)
     {
       ETL_ASSERT(!full(), ETL_ERROR(etl::priority_queue_full));
 
@@ -167,6 +164,24 @@ namespace etl
       // Make elements in container into heap
       etl::push_heap(container.begin(), container.end(), compare);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Moves a value to the queue.
+    /// If asserts or exceptions are enabled, throws an etl::priority_queue_full
+    /// is the priority queue is already full.
+    ///\param value The value to push to the queue.
+    //*************************************************************************
+    void push(rvalue_reference value)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(etl::priority_queue_full));
+
+      // Put element at end
+      container.push_back(etl::move(value));
+      // Make elements in container into heap
+      etl::push_heap(container.begin(), container.end(), compare);
+    }
+#endif
 
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_PRIORITY_QUEUE_FORCE_CPP03)
     //*************************************************************************
@@ -361,6 +376,20 @@ namespace etl
       assign(other.container.cbegin(), other.container.cend());
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Make this a moved version of the supplied priority queue
+    //*************************************************************************
+    void move(ipriority_queue&& other)
+    {
+      while (!other.empty())
+      {
+        push(etl::move(other.top()));
+        other.pop();
+      }
+    }
+#endif
+
     //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
@@ -412,6 +441,17 @@ namespace etl
       etl::ipriority_queue<T, TContainer, TCompare>::clone(rhs);
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move constructor
+    //*************************************************************************
+    priority_queue(priority_queue&& rhs)
+      : etl::ipriority_queue<T, TContainer, TCompare>()
+    {
+      etl::ipriority_queue<T, TContainer, TCompare>::move(etl::move(rhs));
+    }
+#endif
+
     //*************************************************************************
     /// Constructor, from an iterator range.
     ///\tparam TIterator The iterator type.
@@ -445,6 +485,21 @@ namespace etl
 
       return *this;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    priority_queue& operator = (priority_queue&& rhs)
+    {
+      if (&rhs != this)
+      {
+        etl::ipriority_queue<T, TContainer, TCompare>::move(etl::move(rhs));
+      }
+
+      return *this;
+    }
+#endif
   };
 }
 

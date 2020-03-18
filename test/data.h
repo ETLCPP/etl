@@ -189,7 +189,7 @@ public:
     : value(other.value)
     , valid(true)
   {
-    other.value = T();
+    other.value = std::move(T());
     other.valid = false;
   }
 
@@ -199,7 +199,7 @@ public:
 
   TestDataM& operator =(TestDataM&& other)
   {
-    value = other.value;
+    value = std::move(other.value);
     valid = true;
 
     other.value = T();

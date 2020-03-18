@@ -46,11 +46,14 @@ SOFTWARE.
 namespace
 {
   using NDC = TestDataNDC<int>;
+  using ItemM = TestDataM<std::string>;
   std::random_device rng;
   std::mt19937 urng(rng());
 
-  typedef std::vector<int> Vector;
+  using Vector = std::vector<int>;
   Vector data = { 2, 1, 4, 3, 6, 5, 8, 7, 10, 9 };
+
+  using VectorM = std::vector<ItemM>;
 
   constexpr size_t SIZE = 10;
 
@@ -59,7 +62,7 @@ namespace
   int dataS[SIZE] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
   std::list<int> dataSL = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
-  typedef std::list<int> List;
+  using List = std::list<int>;
   List dataL = { 2, 1, 4, 3, 6, 5, 8, 7, 10, 9 };
 
   int dataEQ[SIZE] = { 1, 1, 3, 3, 5, 5, 7, 7, 9, 9 };
@@ -753,8 +756,12 @@ namespace
     //*************************************************************************
     TEST(heap)
     {
-      Vector data1 = dataV;
-      Vector data2 = dataV;
+      using Vector = std::vector<std::string>;
+
+      std::string a("A"), b("B"), c("C"), d("D"), e("E"), f("F"), g("G"), h("H"), i("I"), j("J");
+
+      Vector data1 = { a, b, c, d, e, f, g, h, i, j };
+      Vector data2 = { a, b, c, d, e, f, g, h, i, j };
 
       std::make_heap(data1.begin(), data1.end());
       etl::make_heap(data2.begin(), data2.end());
@@ -762,6 +769,79 @@ namespace
       bool isEqual;
 
       CHECK(std::is_heap(data2.begin(), data2.end()));
+
+      isEqual = std::equal(std::begin(data1), std::end(data1), std::begin(data2));
+      CHECK(isEqual);
+
+      std::pop_heap(data1.begin(), data1.end());
+      etl::pop_heap(data2.begin(), data2.end());
+
+      data1.pop_back();
+      data2.pop_back();
+
+      CHECK(std::is_heap(data1.begin(), data1.end()));
+      CHECK(std::is_heap(data2.begin(), data2.end()));
+
+      CHECK_EQUAL(data1.size(), data2.size());
+
+      isEqual = std::equal(std::begin(data1), std::end(data1), std::begin(data2));
+      CHECK(isEqual);
+
+      CHECK(std::is_heap(data2.begin(), data2.end()));
+
+      isEqual = std::equal(std::begin(data1), std::end(data1), std::begin(data2));
+      CHECK(isEqual);
+
+      data1.push_back(std::string("K"));
+      data2.push_back(std::string("K"));
+
+      std::push_heap(data1.begin(), data1.end());
+      etl::push_heap(data2.begin(), data2.end());
+
+      CHECK(std::is_heap(data2.begin(), data2.end()));
+
+      isEqual = std::equal(std::begin(data1), std::end(data1), std::begin(data2));
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(heap_movable)
+    {
+      ItemM a("A"), b("B"), c("C"), d("D"), e("E"), f("F"), g("G"), h("H"), i("I"), j("J");
+
+      VectorM data1;
+      data1.emplace_back(std::move(b));
+      data1.emplace_back(std::move(a));
+      data1.emplace_back(std::move(d));
+      data1.emplace_back(std::move(c));
+      data1.emplace_back(std::move(f));
+      data1.emplace_back(std::move(e));
+      data1.emplace_back(std::move(h));
+      data1.emplace_back(std::move(g));
+      data1.emplace_back(std::move(j));
+      data1.emplace_back(std::move(i));
+
+      VectorM data2;
+      data2.emplace_back(ItemM("B"));
+      data2.emplace_back(ItemM("A"));
+      data2.emplace_back(ItemM("D"));
+      data2.emplace_back(ItemM("C"));
+      data2.emplace_back(ItemM("F"));
+      data2.emplace_back(ItemM("E"));
+      data2.emplace_back(ItemM("H"));
+      data2.emplace_back(ItemM("G"));
+      data2.emplace_back(ItemM("J"));
+      data2.emplace_back(ItemM("I"));
+
+      std::make_heap(data1.begin(), data1.end());
+      etl::make_heap(data2.begin(), data2.end());
+
+      bool isEqual;
+
+      CHECK(std::is_heap(data1.begin(), data1.end()));
+      CHECK(std::is_heap(data2.begin(), data2.end()));
+
+      CHECK_EQUAL(data1.size(), data2.size());
 
       isEqual = std::equal(std::begin(data1), std::end(data1), std::begin(data2));
       CHECK(isEqual);
@@ -783,8 +863,8 @@ namespace
       isEqual = std::equal(std::begin(data1), std::end(data1), std::begin(data2));
       CHECK(isEqual);
 
-      data1.push_back(5);
-      data2.push_back(5);
+      data1.push_back(ItemM("K"));
+      data2.push_back(ItemM("K"));
 
       std::push_heap(data1.begin(), data1.end());
       etl::push_heap(data2.begin(), data2.end());
