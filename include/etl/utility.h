@@ -266,7 +266,15 @@ namespace etl
   //***************************************************************************
   /// exchange (const)
   //***************************************************************************
-  template <typename T, typename U = T>
+  template <typename T>
+  T exchange(T& object, const T& new_value)
+  {
+    T old_value = object;
+    object = new_value;
+    return old_value;
+  }
+  
+  template <typename T, typename U>
   T exchange(T& object, const U& new_value)
   {
     T old_value = object;
