@@ -1,4 +1,10 @@
 ===============================================================================
+16.7.0
+Updates to make unique_ptr similar to std::unique_ptr
+Fixed unique_ptr swap() compilation issue
+Added mutex for FreeRTOS
+
+===============================================================================
 16.6.1
 etl::exchange modified for better C++03 compatibility
 

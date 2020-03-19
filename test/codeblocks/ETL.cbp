@@ -321,6 +321,10 @@
 		<Unit filename="../../include/etl/multiset.h" />
 		<Unit filename="../../include/etl/murmur3.h" />
 		<Unit filename="../../include/etl/mutex.h" />
+		<Unit filename="../../include/etl/mutex/mutex_arm.h" />
+		<Unit filename="../../include/etl/mutex/mutex_freertos.h" />
+		<Unit filename="../../include/etl/mutex/mutex_gcc_sync.h" />
+		<Unit filename="../../include/etl/mutex/mutex_std.h" />
 		<Unit filename="../../include/etl/negative.h" />
 		<Unit filename="../../include/etl/null_type.h" />
 		<Unit filename="../../include/etl/nullptr.h" />

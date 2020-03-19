@@ -819,6 +819,9 @@
     <ClInclude Include="..\iterators_for_unit_tests.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\mutex\mutex_freertos.h">
+      <Filter>ETL\Utilities\Mutex</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">

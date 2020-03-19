@@ -889,6 +889,7 @@
     <ClInclude Include="..\..\include\etl\limits.h" />
     <ClInclude Include="..\..\include\etl\macros.h" />
     <ClInclude Include="..\..\include\etl\multi_array.h" />
+    <ClInclude Include="..\..\include\etl\mutex\mutex_freertos.h" />
     <ClInclude Include="..\..\include\etl\negative.h" />
     <ClInclude Include="..\..\include\etl\private\choose_namespace.h" />
     <ClInclude Include="..\..\include\etl\private\crc16_poly_0x1021_.h" />
