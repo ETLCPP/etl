@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2018 jwellbelove
+Copyright(c) 2020 Phil Wise phil@phil-wise.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -26,25 +26,54 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_MUTEX_INCLUDED
-#define ETL_MUTEX_INCLUDED
+#ifndef ETL_MUTEX_FREERTOS_INCLUDED
+#define ETL_MUTEX_FREERTOS_INCLUDED
 
-#include "platform.h"
+#include "../platform.h"
 
-#if ETL_CPP11_SUPPORTED == 1 && !defined(ETL_NO_STL)
-  #include "mutex/mutex_std.h"
-  #define ETL_HAS_MUTEX 1
-#elif defined(ETL_TARGET_OS_FREERTOS)
-  #include "mutex/mutex_freertos.h"
-  #define ETL_HAS_MUTEX 1
-#elif defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) || defined(ETL_COMPILER_ARM7) || defined(ETL_COMPILER_ARM8)
-  #include "mutex/mutex_arm.h"
-  #define ETL_HAS_MUTEX 1
-#elif defined(ETL_COMPILER_GCC)
-  #include "mutex/mutex_gcc_sync.h"
-  #define ETL_HAS_MUTEX 1
-#else
-  #define ETL_HAS_MUTEX 0
-#endif
+#include "FreeRTOS.h"
+#include <semphr.h>
+
+namespace etl
+{
+//***************************************************************************
+///\ingroup mutex
+///\brief This mutex class is implemented using FreeRTOS's mutexes
+//***************************************************************************
+class mutex
+{
+ public:
+
+
+  mutex()
+  {
+    access = xSemaphoreCreateMutexStatic(&mutex_allocation);
+  }
+
+  void lock()
+  {
+    xSemaphoreTake(access, portMAX_DELAY); // portMAX_DELAY=block forever
+  }
+
+  bool try_lock()
+  {
+    return xSemaphoreTake(access, 0) == pdTRUE;
+  }
+
+  void unlock()
+  {
+    xSemaphoreGive(access);
+  }
+
+ private:
+  // Non-copyable
+  mutex(const mutex&);
+  mutex& operator=(const mutex&);
+  // Memory to hold the mutex
+  StaticSemaphore_t mutex_allocation;
+  // The mutex handle itself
+  SemaphoreHandle_t access;
+};
+}
 
 #endif
