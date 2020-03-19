@@ -46,20 +46,20 @@ namespace etl
 #if ETL_CPP11_SUPPORTED
   //******************************************************************************
   template <typename T>
-  constexpr typename etl::remove_reference<T>::type&& move(T&& t) noexcept
+  constexpr typename etl::remove_reference<T>::type&& move(T&& t) ETL_NOEXCEPT
   {
     return static_cast<typename etl::remove_reference<T>::type&&>(t);
   }
 
   //******************************************************************************
   template <typename T>
-  constexpr T&& forward(typename etl::remove_reference<T>::type& t) noexcept
+  constexpr T&& forward(typename etl::remove_reference<T>::type& t) ETL_NOEXCEPT
   {
     return static_cast<T&&>(t);
   }
 
   template <typename T>
-  constexpr T&& forward(typename etl::remove_reference<T>::type&& t) noexcept
+  constexpr T&& forward(typename etl::remove_reference<T>::type&& t) ETL_NOEXCEPT
   {
     return static_cast<T&&>(t);
   }
@@ -273,7 +273,7 @@ namespace etl
     object = new_value;
     return old_value;
   }
-  
+
   template <typename T, typename U>
   T exchange(T& object, const U& new_value)
   {

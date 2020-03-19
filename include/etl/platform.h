@@ -71,16 +71,21 @@ SOFTWARE.
   #define ETL_CONSTEXPR constexpr
   #define ETL_CONST_OR_CONSTEXPR constexpr
   #define ETL_DELETE    = delete
-  #define ETL_NOEXCEPT  noexcept
-  #define ETL_NOEXCEPT_EXPR(expression) noexcept(expression)
   #define ETL_EXPLICIT explicit
+  #if defined(ETL_EXCEPTIONS_DISABLED)
+    #define ETL_NOEXCEPT
+    #define ETL_NOEXCEPT_EXPR(expression)
+  #else
+    #define ETL_NOEXCEPT  noexcept
+    #define ETL_NOEXCEPT_EXPR(expression) noexcept(expression)
+  #endif
 #else
   #define ETL_CONSTEXPR
   #define ETL_CONST_OR_CONSTEXPR const
   #define ETL_DELETE
+  #define ETL_EXPLICIT
   #define ETL_NOEXCEPT
   #define ETL_NOEXCEPT_EXPR(expression)
-  #define ETL_EXPLICIT
 #endif
 
 // C++14

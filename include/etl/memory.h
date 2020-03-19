@@ -36,6 +36,7 @@ SOFTWARE.
 #include "type_traits.h"
 #include "iterator.h"
 #include "utility.h"
+#include "nullptr.h"
 
 #include <assert.h>
 
@@ -1232,44 +1233,52 @@ namespace etl
     typedef T* pointer;
     typedef T& reference;
 
-    ETL_CONSTEXPR unique_ptr()
+    //*********************************
+    ETL_CONSTEXPR unique_ptr() ETL_NOEXCEPT
       : p(nullptr)
     {
     }
 
-    ETL_CONSTEXPR explicit unique_ptr(pointer p_)
+    //*********************************
+    ETL_CONSTEXPR explicit unique_ptr(pointer p_) ETL_NOEXCEPT
       : p(p_)
     {
     }
 
 #if ETL_CPP11_SUPPORTED
-    unique_ptr(unique_ptr&& p_)
+    //*********************************
+    unique_ptr(unique_ptr&& p_) ETL_NOEXCEPT
       : p(p_.release())
     {
     }
 #endif
 
+    //*********************************
     ~unique_ptr()
     {
       deleter(p);
     }
 
-    ETL_CONSTEXPR pointer	get() const
+    //*********************************
+    ETL_CONSTEXPR pointer	get() const ETL_NOEXCEPT
     {
       return p;
     }
 
-    TDeleter& get_deleter()
+    //*********************************
+    TDeleter& get_deleter() ETL_NOEXCEPT
     {
       return deleter;
     }
 
-    const TDeleter& get_deleter() const
+    //*********************************
+    const TDeleter& get_deleter() const ETL_NOEXCEPT
     {
       return deleter;
     }
 
-    pointer	release()
+    //*********************************
+    pointer	release() ETL_NOEXCEPT
     {
       pointer value = p;
       p = nullptr;
@@ -1277,7 +1286,8 @@ namespace etl
       return value;
     }
 
-    void reset(pointer p_ = pointer())
+    //*********************************
+    void reset(pointer p_ = pointer()) ETL_NOEXCEPT
     {
       assert(p_ != p);
 
@@ -1286,25 +1296,31 @@ namespace etl
       deleter(value);
     }
 
-    void swap(unique_ptr& value)
+    //*********************************
+    void swap(unique_ptr& value) ETL_NOEXCEPT
     {
+      using ETL_OR_STD::swap;
+
       swap(p, value.p);
     }
 
-    ETL_CONSTEXPR operator bool() const
+    //*********************************
+    ETL_CONSTEXPR operator bool() const ETL_NOEXCEPT
     {
       return (p != nullptr);
     }
 
-    unique_ptr&	operator =(pointer p_)
+    //*********************************
+    unique_ptr&	operator =(std::nullptr_t) ETL_NOEXCEPT
     {
-      reset(p_);
+      reset(nullptr);
 
       return *this;
     }
 
 #if ETL_CPP11_SUPPORTED
-    unique_ptr&	operator =(unique_ptr&& p_)
+    //*********************************
+    unique_ptr&	operator =(unique_ptr&& p_) ETL_NOEXCEPT
     {
       reset(p_.release());
 
@@ -1312,41 +1328,29 @@ namespace etl
     }
 #endif
 
+    //*********************************
     ETL_CONSTEXPR reference	operator *() const
     {
       return *get();
     }
 
-    ETL_CONSTEXPR pointer	operator ->() const
+    //*********************************
+    ETL_CONSTEXPR pointer	operator ->() const ETL_NOEXCEPT
     {
       return get();
     }
 
+    //*********************************
     ETL_CONSTEXPR reference	operator [](size_t i) const
     {
-      return get()[i];
-    }
-
-    ETL_CONSTEXPR bool operator== (const pointer p_) const
-    {
-      return p == p_;
-    }
-
-    ETL_CONSTEXPR bool operator== (const unique_ptr& p_) const
-    {
-      return p == p_.p;
-    }
-
-    ETL_CONSTEXPR bool operator< (const unique_ptr& p_) const
-    {
-      return p < p_.p;
+      return p[i];
     }
 
   private:
 
     // Deleted.
-    unique_ptr(const unique_ptr&);
-    unique_ptr&	operator =(const unique_ptr&);
+    unique_ptr(const unique_ptr&) ETL_DELETE;
+    unique_ptr&	operator =(const unique_ptr&) ETL_DELETE;
 
     TDeleter deleter;
 
@@ -1368,51 +1372,60 @@ namespace etl
     typedef T* pointer;
     typedef T& reference;
 
-    ETL_CONSTEXPR		unique_ptr()
+    //*********************************
+    ETL_CONSTEXPR		unique_ptr() ETL_NOEXCEPT
       : p(nullptr)
     {
     }
 
-    ETL_CONSTEXPR explicit unique_ptr(pointer p_)
+    //*********************************
+    ETL_CONSTEXPR explicit unique_ptr(pointer p_) ETL_NOEXCEPT
       : p(p_)
     {
     }
 
 #if ETL_CPP11_SUPPORTED
-    unique_ptr(unique_ptr&& p_)
+    //*********************************
+    unique_ptr(unique_ptr&& p_) ETL_NOEXCEPT
       : p(p_.release())
     {
     }
 #endif
 
+    //*********************************
     ~unique_ptr()
     {
       deleter(p);
     }
 
-    ETL_CONSTEXPR pointer	get() const
+    //*********************************
+    ETL_CONSTEXPR pointer	get() const ETL_NOEXCEPT
     {
       return p;
     }
 
-    TDeleter& get_deleter()
+    //*********************************
+    TDeleter& get_deleter() ETL_NOEXCEPT
     {
       return deleter;
     }
 
-    const TDeleter& get_deleter() const
+    //*********************************
+    const TDeleter& get_deleter() const ETL_NOEXCEPT
     {
       return deleter;
     }
 
-    pointer	release()
+    //*********************************
+    pointer	release() ETL_NOEXCEPT
     {
       pointer value = p;
       p = nullptr;
       return value;
     }
 
-    void reset(pointer p_)
+    //*********************************
+    void reset(pointer p_) ETL_NOEXCEPT
     {
       assert(p_ != p);
 
@@ -1421,25 +1434,23 @@ namespace etl
       delete[] value;
     }
 
-    void swap(unique_ptr& v)
+    //*********************************
+    void swap(unique_ptr& v) ETL_NOEXCEPT
     {
+      using ETL_OR_STD::swap;
+
       swap(p, v.p);
     }
 
-    ETL_CONSTEXPR operator bool() const
+    //*********************************
+    ETL_CONSTEXPR operator bool() const ETL_NOEXCEPT
     {
       return (p != nullptr);
     }
 
-    unique_ptr& operator =(pointer p_)
-    {
-      reset(p_);
-
-      return *this;
-    }
-
 #if ETL_CPP11_SUPPORTED
-    unique_ptr& operator =(unique_ptr&& p_)
+    //*********************************
+    unique_ptr& operator =(unique_ptr&& p_) ETL_NOEXCEPT
     {
       reset(p_.release());
 
@@ -1447,46 +1458,141 @@ namespace etl
     }
 #endif
 
+    //*********************************
     ETL_CONSTEXPR reference	operator *() const
     {
       return *p;
     }
 
-    ETL_CONSTEXPR pointer	operator ->() const
+    //*********************************
+    ETL_CONSTEXPR pointer	operator ->() const ETL_NOEXCEPT
     {
       return p;
     }
 
+    //*********************************
     ETL_CONSTEXPR reference	operator [](size_t i) const
     {
       return p[i];
     }
 
-    ETL_CONSTEXPR bool operator ==(const pointer p_) const
-    {
-      return (p == p_);
-    }
-
-    ETL_CONSTEXPR bool operator ==(const unique_ptr& p_) const
-    {
-      return (p == p_.p);
-    }
-
-    ETL_CONSTEXPR bool operator <(const unique_ptr& p_) const
-    {
-      return (p < p_.p);
-    }
-
   private:
 
     // Deleted.
-    unique_ptr(const unique_ptr&);
-    unique_ptr&	operator =(const unique_ptr&);
+    unique_ptr(const unique_ptr&) ETL_DELETE;
+    unique_ptr&	operator =(const unique_ptr&) ETL_DELETE;
 
     TDeleter deleter;
 
     pointer	p;
   };
+}
+
+//*****************************************************************************
+// Global functions for unique_ptr
+//*****************************************************************************
+template<typename T1, typename D1, typename T2, typename D2>
+bool operator ==(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+{
+  return lhs.get() == rhs.get();
+}
+
+//*********************************
+template<typename T1, typename D1, typename T2, typename D2>
+bool operator <(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+{
+  return reinterpret_cast<char*>(lhs.get()) < reinterpret_cast<char*>(rhs.get());
+}
+
+//*********************************
+template<typename T1, typename D1, typename T2, typename D2>
+bool operator <=(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+{
+  return !(rhs < lhs);
+}
+
+//*********************************
+template<typename T1, typename D1, typename T2, typename D2>
+bool operator >(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+{
+  return (rhs < lhs);
+}
+
+//*********************************
+template<typename T1, typename D1, typename T2, typename D2>
+bool operator >=(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+{
+  return !(lhs < rhs);
+}
+
+//*********************************
+template <typename T, typename D>
+bool operator ==(const etl::unique_ptr<T, D>&lhs, std::nullptr_t)
+{
+  return !lhs;
+}
+
+//*********************************
+template <typename T, typename D>
+bool operator ==(std::nullptr_t, const etl::unique_ptr<T, D>&rhs)
+{
+  return !rhs;
+}
+
+//*********************************
+template <typename T, typename D>
+bool operator <(const etl::unique_ptr<T, D>&lhs, std::nullptr_t)
+{
+  return etl::less<typename etl::unique_ptr<T, D>::pointer>()(lhs.get(), nullptr);
+}
+
+//*********************************
+template <typename T, typename D>
+bool operator <(std::nullptr_t, const etl::unique_ptr<T, D>& rhs)
+{
+  return etl::less<typename etl::unique_ptr<T, D>::pointer>()(nullptr, rhs.get());
+}
+
+//*********************************
+template <typename T, typename D>
+bool operator <=(const etl::unique_ptr<T, D>&lhs, std::nullptr_t)
+{
+  return !(nullptr < lhs);
+}
+
+//*********************************
+template <typename T, typename D>
+bool operator <=(std::nullptr_t, const etl::unique_ptr<T, D>& rhs)
+{
+  return !(rhs < nullptr);
+}
+
+//*********************************
+template <typename T, typename D>
+bool operator >(const etl::unique_ptr<T, D>&lhs, std::nullptr_t)
+{
+  return nullptr < lhs;
+}
+
+//*********************************
+template <typename T, typename D>
+bool operator >(std::nullptr_t, const etl::unique_ptr<T, D>& rhs)
+{
+  return rhs < nullptr;
+}
+
+//*********************************
+template <typename T, typename D>
+bool operator >=(const etl::unique_ptr<T, D>&lhs, std::nullptr_t)
+{
+  return !(lhs < nullptr);
+}
+
+//*********************************
+template <typename T, typename D>
+bool operator >=(std::nullptr_t, const etl::unique_ptr<T, D>& rhs)
+{
+  return !(nullptr < rhs);
 }
 
 namespace etl
