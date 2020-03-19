@@ -37,6 +37,7 @@ SOFTWARE.
 #include <array>
 #include <algorithm>
 #include <iterator>
+#include <numeric>
 #include <stdint.h>
 
 #include <vector>
@@ -78,6 +79,33 @@ namespace
     overloaded* operator&()
     {
       return nullptr;
+    }
+  };
+
+  //***********************************
+  template <typename T>
+  struct NoDelete
+  {
+    NoDelete()
+    {
+    }
+
+    void operator()(T* p) const
+    {
+    }
+  };
+
+  //***********************************
+  template <typename T>
+  struct NoDelete<T[]>
+  {
+    NoDelete()
+    {
+    }
+
+    template <class U>
+    void operator()(U* p) const
+    {
     }
   };
 }
@@ -344,15 +372,15 @@ namespace
       }
 
       is_equal = (output_moveable[0] == moveable_t(0)) &&
-                 (output_moveable[1] == moveable_t(1)) &&
-                 (output_moveable[2] == moveable_t(2)) &&
-                 (output_moveable[3] == moveable_t(3)) &&
-                 (output_moveable[4] == moveable_t(4)) &&
-                 (output_moveable[5] == moveable_t(5)) &&
-                 (output_moveable[6] == moveable_t(6)) &&
-                 (output_moveable[7] == moveable_t(7)) &&
-                 (output_moveable[8] == moveable_t(8)) &&
-                 (output_moveable[9] == moveable_t(9));
+        (output_moveable[1] == moveable_t(1)) &&
+        (output_moveable[2] == moveable_t(2)) &&
+        (output_moveable[3] == moveable_t(3)) &&
+        (output_moveable[4] == moveable_t(4)) &&
+        (output_moveable[5] == moveable_t(5)) &&
+        (output_moveable[6] == moveable_t(6)) &&
+        (output_moveable[7] == moveable_t(7)) &&
+        (output_moveable[8] == moveable_t(8)) &&
+        (output_moveable[9] == moveable_t(9));
 
       CHECK(is_equal);
       etl::destroy(p, p + SIZE);
@@ -372,15 +400,15 @@ namespace
       }
 
       is_equal = (output_moveable[0] == moveable_t(0)) &&
-                 (output_moveable[1] == moveable_t(1)) &&
-                 (output_moveable[2] == moveable_t(2)) &&
-                 (output_moveable[3] == moveable_t(3)) &&
-                 (output_moveable[4] == moveable_t(4)) &&
-                 (output_moveable[5] == moveable_t(5)) &&
-                 (output_moveable[6] == moveable_t(6)) &&
-                 (output_moveable[7] == moveable_t(7)) &&
-                 (output_moveable[8] == moveable_t(8)) &&
-                 (output_moveable[9] == moveable_t(9));
+        (output_moveable[1] == moveable_t(1)) &&
+        (output_moveable[2] == moveable_t(2)) &&
+        (output_moveable[3] == moveable_t(3)) &&
+        (output_moveable[4] == moveable_t(4)) &&
+        (output_moveable[5] == moveable_t(5)) &&
+        (output_moveable[6] == moveable_t(6)) &&
+        (output_moveable[7] == moveable_t(7)) &&
+        (output_moveable[8] == moveable_t(8)) &&
+        (output_moveable[9] == moveable_t(9));
 
       CHECK(is_equal);
       CHECK_EQUAL(SIZE, count);
@@ -409,15 +437,15 @@ namespace
       }
 
       is_equal = (output_moveable[0] == moveable_t(0)) &&
-                 (output_moveable[1] == moveable_t(1)) &&
-                 (output_moveable[2] == moveable_t(2)) &&
-                 (output_moveable[3] == moveable_t(3)) &&
-                 (output_moveable[4] == moveable_t(4)) &&
-                 (output_moveable[5] == moveable_t(5)) &&
-                 (output_moveable[6] == moveable_t(6)) &&
-                 (output_moveable[7] == moveable_t(7)) &&
-                 (output_moveable[8] == moveable_t(8)) &&
-                 (output_moveable[9] == moveable_t(9));
+        (output_moveable[1] == moveable_t(1)) &&
+        (output_moveable[2] == moveable_t(2)) &&
+        (output_moveable[3] == moveable_t(3)) &&
+        (output_moveable[4] == moveable_t(4)) &&
+        (output_moveable[5] == moveable_t(5)) &&
+        (output_moveable[6] == moveable_t(6)) &&
+        (output_moveable[7] == moveable_t(7)) &&
+        (output_moveable[8] == moveable_t(8)) &&
+        (output_moveable[9] == moveable_t(9));
 
       CHECK(is_equal);
       etl::destroy(p, p + SIZE);
@@ -437,15 +465,15 @@ namespace
       }
 
       is_equal = (output_moveable[0] == moveable_t(0)) &&
-                 (output_moveable[1] == moveable_t(1)) &&
-                 (output_moveable[2] == moveable_t(2)) &&
-                 (output_moveable[3] == moveable_t(3)) &&
-                 (output_moveable[4] == moveable_t(4)) &&
-                 (output_moveable[5] == moveable_t(5)) &&
-                 (output_moveable[6] == moveable_t(6)) &&
-                 (output_moveable[7] == moveable_t(7)) &&
-                 (output_moveable[8] == moveable_t(8)) &&
-                 (output_moveable[9] == moveable_t(9));
+        (output_moveable[1] == moveable_t(1)) &&
+        (output_moveable[2] == moveable_t(2)) &&
+        (output_moveable[3] == moveable_t(3)) &&
+        (output_moveable[4] == moveable_t(4)) &&
+        (output_moveable[5] == moveable_t(5)) &&
+        (output_moveable[6] == moveable_t(6)) &&
+        (output_moveable[7] == moveable_t(7)) &&
+        (output_moveable[8] == moveable_t(8)) &&
+        (output_moveable[9] == moveable_t(9));
 
       CHECK(is_equal);
       CHECK_EQUAL(SIZE, count);
@@ -678,7 +706,7 @@ namespace
       etl::memory_clear(data);
 
       CHECK_EQUAL(0x00000000, data.d1);
-      CHECK_EQUAL(0x00,       data.d2);
+      CHECK_EQUAL(0x00, data.d2);
     }
 
     //*************************************************************************
@@ -741,7 +769,7 @@ namespace
       etl::memory_set(data, 0x5A);
 
       CHECK_EQUAL(0x5A5A5A5A, data.d1);
-      CHECK_EQUAL(0x5A,       data.d2);
+      CHECK_EQUAL(0x5A, data.d2);
     }
 
     //*************************************************************************
@@ -788,6 +816,231 @@ namespace
 
       CHECK_EQUAL(0x5A5A5A5A, data[2].d1);
       CHECK_EQUAL(0x5A, data[2].d2);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_default_construction)
+    {
+      etl::unique_ptr<int> up;
+
+      CHECK(up.get() == nullptr);
+      CHECK(!bool(up));
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_from_pointer_construction)
+    {
+      etl::unique_ptr<int> up(new int(1));
+
+      CHECK(up.get() != nullptr);
+      CHECK(bool(up));
+      CHECK_EQUAL(1, *up);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_move_construction)
+    {
+      etl::unique_ptr<int> up1(new int(1));
+      etl::unique_ptr<int> up2(std::move(up1));
+
+      CHECK(up1.get() == nullptr);
+      CHECK(!bool(up1));
+      CHECK(up2.get() != nullptr);
+      CHECK(bool(up2));
+      CHECK_EQUAL(1, *up2);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_release)
+    {
+      etl::unique_ptr<int> up(new int);
+
+      CHECK(up.release() != nullptr);
+      CHECK(!bool(up));
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_reset)
+    {
+      etl::unique_ptr<int> up(new int(1));
+      int* p = new int(2);
+
+      CHECK_EQUAL(1, *up);
+      up.reset(p);
+      CHECK_EQUAL(2, *up);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_swap)
+    {
+      etl::unique_ptr<int> up1(new int(1));
+      etl::unique_ptr<int> up2(new int(2));
+
+      up1.swap(up2);
+
+      CHECK_EQUAL(2, *up1);
+      CHECK_EQUAL(1, *up2);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_from_nullptr_assignment)
+    {
+      etl::unique_ptr<int> up(new int);
+
+      int* p = new int(1);
+      up = nullptr;
+
+      CHECK(up.get() == nullptr);
+      CHECK(!bool(up));
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_move_assignment)
+    {
+      etl::unique_ptr<int> up1(new int(1));
+      etl::unique_ptr<int> up2(new int(2));
+
+      up1 = std::move(up2);
+
+      CHECK(!bool(up2));
+      CHECK_EQUAL(2, *up1);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_comparison_tests)
+    {
+      int* p1 = (int*)1U;
+      int* p2 = (int*)2U;
+
+      etl::unique_ptr<int, NoDelete<int>> up1(p1);
+      etl::unique_ptr<int, NoDelete<int>> up2(p1);
+      etl::unique_ptr<int, NoDelete<int>> up3(p2);
+
+      CHECK(up1 == up2);
+      CHECK(!(up1 == up3));
+      CHECK(!(up1 < up2));
+      CHECK(up1 < up3);
+      CHECK(!(up3 <= up1));
+      CHECK(up1 <= up2);
+      CHECK(up1 <= up3);
+      CHECK(!(up1 > up2));
+      CHECK(up3 > up1);
+      CHECK(!(up1 >= up3));
+      CHECK(up2 >= up1);
+      CHECK(up3 >= up1);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_from_array_pointer_construction)
+    {
+      etl::unique_ptr<int> up(new int[4]);
+      std::iota(&up[0], &up[4], 0);
+
+      CHECK(up.get() != nullptr);
+      CHECK(bool(up));
+      CHECK_EQUAL(0, up[0]);
+      CHECK_EQUAL(1, up[1]);
+      CHECK_EQUAL(2, up[2]);
+      CHECK_EQUAL(3, up[3]);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_move_array_construction)
+    {
+      etl::unique_ptr<int> up1(new int[4]);
+      std::iota(&up1[0], &up1[4], 0);
+      etl::unique_ptr<int> up2(std::move(up1));
+
+      CHECK(up1.get() == nullptr);
+      CHECK(!bool(up1));
+      CHECK(up2.get() != nullptr);
+      CHECK(bool(up2));
+      CHECK_EQUAL(0, up2[0]);
+      CHECK_EQUAL(1, up2[1]);
+      CHECK_EQUAL(2, up2[2]);
+      CHECK_EQUAL(3, up2[3]);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_array_release)
+    {
+      etl::unique_ptr<int> up(new int[4]);
+      std::iota(&up[0], &up[4], 0);
+
+      CHECK(up.release() != nullptr);
+      CHECK(!bool(up));
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_array_reset)
+    {
+      etl::unique_ptr<int> up(new int[4]);
+      std::iota(&up[0], &up[4], 0);
+
+      int* p = new int[4];
+      std::iota(p, p + 4, 4);
+
+      CHECK_EQUAL(0, up[0]);
+      CHECK_EQUAL(1, up[1]);
+      CHECK_EQUAL(2, up[2]);
+      CHECK_EQUAL(3, up[3]);
+      up.reset(p);
+      CHECK_EQUAL(4, up[0]);
+      CHECK_EQUAL(5, up[1]);
+      CHECK_EQUAL(6, up[2]);
+      CHECK_EQUAL(7, up[3]);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_array_swap)
+    {
+      etl::unique_ptr<int> up1(new int[4]);
+      std::iota(&up1[0], &up1[4], 0);
+
+      etl::unique_ptr<int> up2(new int[4]);
+      std::iota(&up2[0], &up2[4], 4);
+
+      up1.swap(up2);
+
+      CHECK_EQUAL(4, up1[0]);
+      CHECK_EQUAL(5, up1[1]);
+      CHECK_EQUAL(6, up1[2]);
+      CHECK_EQUAL(7, up1[3]);
+
+      CHECK_EQUAL(0, up2[0]);
+      CHECK_EQUAL(1, up2[1]);
+      CHECK_EQUAL(2, up2[2]);
+      CHECK_EQUAL(3, up2[3]);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_array_from_nullptr_assignment)
+    {
+      etl::unique_ptr<int> up(new int[4]);
+
+      int* p = new int[4];
+      up = nullptr;
+
+      CHECK(up.get() == nullptr);
+      CHECK(!bool(up));
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_array_move_assignment)
+    {
+      etl::unique_ptr<int> up1(new int[4]);
+      std::iota(&up1[0], &up1[4], 0);
+
+      etl::unique_ptr<int> up2(new int[4]);
+      std::iota(&up2[0], &up2[4], 4);
+
+      up1 = std::move(up2);
+
+      CHECK(!bool(up2));
+      CHECK_EQUAL(4, up1[0]);
+      CHECK_EQUAL(5, up1[1]);
+      CHECK_EQUAL(6, up1[2]);
+      CHECK_EQUAL(7, up1[3]);
     }
   };
 }
