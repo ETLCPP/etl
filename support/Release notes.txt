@@ -1,4 +1,8 @@
 ===============================================================================
+16.6.1
+etl::exchange modified for better C++03 compatibility
+
+===============================================================================
 16.6.0
 rvalue reference support for heap functions and etl::priority_queue
 
