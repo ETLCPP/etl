@@ -473,7 +473,7 @@ namespace etl
   TOutputIterator  uninitialized_move(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin)
   {
     // Move not supported. Defer to copy.
-    return std::uninitialized_copy(i_begin, i_end, o_begin);
+    return ETL_OR_STD::uninitialized_copy(i_begin, i_end, o_begin);
   }
 
   //*****************************************************************************
@@ -488,7 +488,7 @@ namespace etl
     count += int32_t(etl::distance(i_begin, i_end));
 
     // Move not supported. Defer to copy.
-    return std::uninitialized_copy(i_begin, i_end, o_begin);
+    return ETL_OR_STD::uninitialized_copy(i_begin, i_end, o_begin);
   }
 #endif
 
@@ -594,11 +594,15 @@ namespace etl
   /// https://en.cppreference.com/w/cpp/memory/uninitialized_move_n
   ///\ingroup memory
   //*****************************************************************************
-  template <typename TInputIterator, typename TOutputIterator>
+  template <typename TInputIterator, typename TSize, typename TOutputIterator>
   TOutputIterator  uninitialized_move_n(TInputIterator i_begin, TSize n, TOutputIterator o_begin)
   {
     // Move not supported. Defer to copy.
+#if ETL_CPP11_SUPPORTED
     return std::uninitialized_copy_n(i_begin, n, o_begin);
+#else
+    return etl::uninitialized_copy_n(i_begin, n, o_begin);
+#endif
   }
 
   //*****************************************************************************
@@ -607,13 +611,17 @@ namespace etl
   /// https://en.cppreference.com/w/cpp/memory/uninitialized_move
   ///\ingroup memory
   //*****************************************************************************
-  template <typename TInputIterator, typename TOutputIterator, typename TCounter>
+  template <typename TInputIterator, typename TSize, typename TOutputIterator, typename TCounter>
   TOutputIterator uninitialized_move_n(TInputIterator i_begin, TSize n, TOutputIterator o_begin, TCounter& count)
   {
     count += TCounter(n);
 
     // Move not supported. Defer to copy.
+#if ETL_CPP11_SUPPORTED
     return std::uninitialized_copy_n(i_begin, n, o_begin);
+#else
+    return etl::uninitialized_copy_n(i_begin, n, o_begin);
+#endif
   }
 #endif
 

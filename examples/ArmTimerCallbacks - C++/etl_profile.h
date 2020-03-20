@@ -8,7 +8,7 @@
 #define ETL_IVECTOR_REPAIR_ENABLE
 #define ETL_IDEQUE_REPAIR_ENABLE
 #define ETL_CALLBACK_TIMER_USE_ATOMIC_LOCK
-//#define ETL_NO_STL
+#define ETL_NO_STL
 
 #include "etl/profiles/auto.h"
 

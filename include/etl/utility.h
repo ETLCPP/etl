@@ -35,7 +35,11 @@ SOFTWARE.
 #include "type_traits.h"
 
 #if !defined(ETL_NO_STL)
-  #include <utility>
+  #if ETL_CPP11_SUPPORTED
+    #include <utility>
+  #else
+    #include <algorithm>
+  #endif
 #endif
 
 ///\defgroup utility utility
