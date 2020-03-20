@@ -336,7 +336,7 @@ namespace etl
   TIterator2 move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
   {
     // Move not supported. Defer to copy_backward.
-    return std::copy_backward(sb, se, de);
+    return ETL_OR_STD::copy_backward(sb, se, de);
   }
 #endif
 
@@ -648,7 +648,13 @@ namespace etl
   template<typename TIterator, typename TSize, typename TValue>
   TIterator fill_n(TIterator first, TSize count, const TValue& value)
   {
-    return std::fill_n(first, count, value);;
+#if ETL_CPP11_SUPPORTED
+    return std::fill_n(first, count, value);
+#else
+    std::fill_n(first, count, value);
+    std::advance(first, count);
+    return first;
+#endif
   }
 #endif
 
@@ -929,7 +935,6 @@ namespace etl
   }
 #endif
 
-#if defined (ETL_NO_STL)
   //***************************************************************************
   // Heap
   namespace private_heap
@@ -1001,6 +1006,7 @@ namespace etl
     }
   }
 
+  #if defined (ETL_NO_STL)
   // Pop Heap
   template <typename TIterator, typename TCompare>
   void pop_heap(TIterator first, TIterator last, TCompare compare)
@@ -1166,7 +1172,11 @@ namespace etl
   ETL_NODISCARD
     bool is_heap(TIterator first, TIterator last, TCompare compare)
   {
+#if ETL_CPP11_SUPPORTED
     return std::is_heap(first, last, compare);
+#else
+    return private_heap::is_heap(first, last - first, compare());
+#endif
   }
 
   // Is Heap
@@ -1174,7 +1184,12 @@ namespace etl
   ETL_NODISCARD
   bool is_heap(TIterator first, TIterator last)
   {
+#if ETL_CPP11_SUPPORTED
     return std::is_heap(first, last);
+#else    
+    typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
+    return private_heap::is_heap(first, last - first, compare());
+#endif
   }
 
   // Sort Heap
