@@ -1,4 +1,8 @@
 ===============================================================================
+16.7.1
+Fix C++03 compatibility issues in memory.h and utility.h
+
+===============================================================================
 16.7.0
 Updates to make unique_ptr similar to std::unique_ptr
 Fixed unique_ptr swap() compilation issue
