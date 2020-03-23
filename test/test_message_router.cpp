@@ -32,7 +32,6 @@ SOFTWARE.
 #include "etl/message_router.h"
 #include "etl/queue.h"
 #include "etl/largest.h"
-#include "etl/packet.h"
 
 //***************************************************************************
 // The set of messages.

@@ -72,6 +72,7 @@ SOFTWARE.
   #define ETL_CONST_OR_CONSTEXPR constexpr
   #define ETL_DELETE    = delete
   #define ETL_EXPLICIT explicit
+  #define ETL_OVERRIDE override
   #if defined(ETL_EXCEPTIONS_DISABLED)
     #define ETL_NOEXCEPT
     #define ETL_NOEXCEPT_EXPR(expression)
@@ -84,6 +85,7 @@ SOFTWARE.
   #define ETL_CONST_OR_CONSTEXPR const
   #define ETL_DELETE
   #define ETL_EXPLICIT
+  #define ETL_OVERRIDE
   #define ETL_NOEXCEPT
   #define ETL_NOEXCEPT_EXPR(expression)
 #endif

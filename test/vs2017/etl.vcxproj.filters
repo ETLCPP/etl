@@ -822,6 +822,15 @@
     <ClInclude Include="..\..\include\etl\mutex\mutex_freertos.h">
       <Filter>ETL\Utilities\Mutex</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_packet_generator.h">
+      <Filter>ETL\Frameworks\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_packet temp.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_packet.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1277,6 +1286,9 @@
     <ClCompile Include="..\test_parity_checksum.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_message_packet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -1323,6 +1335,9 @@
     </None>
     <None Include="cpp.hint">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\include\etl\generate_message_packet.bat">
+      <Filter>Resource Files\Generators</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
