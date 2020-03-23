@@ -9,9 +9,12 @@ test/keil/Debug
 test/keil/Release
 test/keil/Objects
 test/keil/Listings
+test/cmake-windows/unittest++/src
+test/cmake/unittest++/src
 examples/ArmTimerCallbacks/Listings
 examples/ArmTimerCallbacks/Objects
 examples/ArmTimerCallbacks/DebugConfig
+build-test-Desktop_x86_windows_msvc2017_pe_32bit-Debug/unittest++/src
 
 #################
 ## Eclipse

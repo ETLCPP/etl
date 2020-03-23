@@ -888,6 +888,9 @@
     <ClInclude Include="..\..\include\etl\absolute.h" />
     <ClInclude Include="..\..\include\etl\limits.h" />
     <ClInclude Include="..\..\include\etl\macros.h" />
+    <ClInclude Include="..\..\include\etl\message_packet temp.h" />
+    <ClInclude Include="..\..\include\etl\message_packet.h" />
+    <ClInclude Include="..\..\include\etl\message_packet_generator.h" />
     <ClInclude Include="..\..\include\etl\multi_array.h" />
     <ClInclude Include="..\..\include\etl\mutex\mutex_freertos.h" />
     <ClInclude Include="..\..\include\etl\negative.h" />
@@ -1106,6 +1109,7 @@
     <ClCompile Include="..\test_limits.cpp" />
     <ClCompile Include="..\test_list_shared_pool.cpp" />
     <ClCompile Include="..\test_make_string.cpp" />
+    <ClCompile Include="..\test_message_packet.cpp" />
     <ClCompile Include="..\test_multi_array.cpp" />
     <ClCompile Include="..\test_array.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../unittest-cpp</AdditionalIncludeDirectories>
@@ -1442,6 +1446,7 @@
   <ItemGroup>
     <None Include="..\..\etl.pspimage" />
     <None Include="..\..\etl.xar" />
+    <None Include="..\..\include\etl\generate_message_packet.bat" />
     <None Include="..\..\include\etl\generate_type_select.bat" />
     <None Include="..\..\library.json" />
     <None Include="..\..\library.properties" />

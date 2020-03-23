@@ -1,4 +1,8 @@
 ===============================================================================
+16.8.0
+Extracted message_packet from etl::message_router for use as an independant class.
+
+===============================================================================
 16.7.1
 Fix C++03 compatibility issues in memory.h and utility.h
 
