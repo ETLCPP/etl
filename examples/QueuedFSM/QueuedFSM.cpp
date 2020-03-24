@@ -99,7 +99,7 @@ public:
   //***************************************************************************
   // The overridden virtual receive function.
   //***************************************************************************
-  void receive(etl::imessage_router& sender_, const etl::imessage& msg_)
+  void receive(etl::imessage_router& sender_, const etl::imessage& msg_) override
   {
     if (accepts(msg_))
     {
@@ -148,9 +148,10 @@ private:
     }
 
     etl::imessage_router* sender;
-    etl::message_packet< Message1, Message2, Message3> packet; // Defines a packet suitable for all handled messages.
+    etl::message_packet< Message1, Message2, Message3, Message4> packet; // Defines a packet suitable for all possible messages.
   };
 
+  // The queue of message items.
   etl::queue<Item, 10> queue;
 };
 
@@ -162,16 +163,18 @@ class State1 : public etl::fsm_state<Fsm, State1, STATE1, Message1, Message2, Me
 public:
 
   //***************************************************************************
-  etl::fsm_state_id_t on_enter_state()
+  // When we enter this state.
+  //***************************************************************************
+  etl::fsm_state_id_t on_enter_state() override
   {
-    std::cout << "  S1 : Enter" << std::endl;
+    std::cout << "  S1 : Enter state" << std::endl;
     return STATE1;
   }
 
   //***************************************************************************
-  void on_exit_state()
+  void on_exit_state() override
   {
-    std::cout << "  S1 : Exit" << std::endl;
+    std::cout << "  S1 : Exit state" << std::endl;
   }
 
   //***************************************************************************
@@ -215,16 +218,18 @@ class State2 : public etl::fsm_state<Fsm, State2, STATE2, Message1, Message2, Me
 public:
 
   //***************************************************************************
-  etl::fsm_state_id_t on_enter_state()
+  etl::fsm_state_id_t on_enter_state() override
   {
-    std::cout << "  S2 : Enter" << std::endl;
+    std::cout << "  S2 : Enter state" << std::endl;
     return STATE2;
   }
 
   //***************************************************************************
-  void on_exit_state()
+  // When we enter this state.
+  //***************************************************************************
+  void on_exit_state() override
   {
-    std::cout << "  S2 : Exit" << std::endl;
+    std::cout << "  S2 : Exit state" << std::endl;
   }
 
   //***************************************************************************

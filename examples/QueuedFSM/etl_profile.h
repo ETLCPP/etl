@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2020 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -33,15 +33,11 @@ SOFTWARE.
 
 #define ETL_THROW_EXCEPTIONS
 #define ETL_VERBOSE_ERRORS
-#define ETL_CHECK_PUSH_POP
-#define ETL_ISTRING_REPAIR_ENABLE
-#define ETL_IVECTOR_REPAIR_ENABLE
-#define ETL_IDEQUE_REPAIR_ENABLE
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER)
   #include "etl/profiles/msvc_x86.h"
-#else
-  #include "etl/profiles/gcc_windows_x86.h"
+#elif defined(__GNUC__)
+  #include "etl/profiles/gcc_generic.h"
 #endif
 
 #endif
