@@ -250,3 +250,4 @@ pip-log.txt
 cmake-build-*/
 
 unittest-cpp
+*.opendb
