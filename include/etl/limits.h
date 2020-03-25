@@ -562,18 +562,18 @@ namespace etl
 {
   enum float_round_style
   {
-    round_indeterminate       = std::float_round_style::round_indeterminate,
-    round_toward_zero         = std::float_round_style::round_toward_zero,
-    round_to_nearest          = std::float_round_style::round_to_nearest,
-    round_toward_infinity     = std::float_round_style::round_toward_infinity,
-    round_toward_neg_infinity = std::float_round_style::round_toward_neg_infinity,
+    round_indeterminate       = std::round_indeterminate,
+    round_toward_zero         = std::round_toward_zero,
+    round_to_nearest          = std::round_to_nearest,
+    round_toward_infinity     = std::round_toward_infinity,
+    round_toward_neg_infinity = std::round_toward_neg_infinity,
   };
 
   enum float_denorm_style
   {
-    denorm_indeterminate = std::float_denorm_style::denorm_indeterminate,
-    denorm_absent        = std::float_denorm_style::denorm_absent,
-    denorm_present       = std::float_denorm_style::denorm_present
+    denorm_indeterminate = std::denorm_indeterminate,
+    denorm_absent        = std::denorm_absent,
+    denorm_present       = std::denorm_present
   };
 
   template <typename T>
