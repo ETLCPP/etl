@@ -724,6 +724,7 @@ namespace etl
     public:
 
       friend class imultiset;
+      friend class const_iterator;
 
       iterator()
         : p_multiset(nullptr)

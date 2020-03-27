@@ -561,6 +561,7 @@ namespace etl
     public:
 
       friend class iset;
+      friend class const_iterator;
 
       iterator()
         : p_set(nullptr)

@@ -742,6 +742,7 @@ namespace etl
     public:
 
       friend class imultimap;
+      friend class const_iterator;
 
       iterator()
         : p_multimap(nullptr)

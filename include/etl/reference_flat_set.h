@@ -125,6 +125,7 @@ namespace etl
     public:
 
       friend class ireference_flat_set;
+      friend class const_iterator;
 
       iterator()
       {

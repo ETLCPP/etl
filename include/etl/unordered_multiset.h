@@ -183,6 +183,7 @@ namespace etl
       typedef typename iunordered_multiset::size_type       size_type;
 
       friend class iunordered_multiset;
+      friend class const_iterator;
 
       //*********************************
       iterator()
