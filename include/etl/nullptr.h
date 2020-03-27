@@ -67,6 +67,27 @@ namespace std
     // Can't take address of nullptr.
     void operator&() const ETL_DELETE;
   };
+
+	template<typename T>
+	bool operator==(const T* t, const std::nullptr_t nullptr) {
+		return t == (T*)0;
+	}
+	
+	template<typename T>
+	bool operator==(const std::nullptr_t nullptr, const T* t) {
+		return t == nullptr;
+	}
+	
+	template<typename T>
+	bool operator!=(const T* t, const std::nullptr_t nullptr) {
+		return !(t == nullptr);
+	}
+	
+	template<typename T>
+	bool operator!=(const std::nullptr_t nullptr, const T* t) {
+		return t != nullptr;
+	}
+
 }
 
 //*****************************************************************************
