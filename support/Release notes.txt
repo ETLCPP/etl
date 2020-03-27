@@ -13,7 +13,9 @@ Added code for ARM5 compiler compatibility in limits.h
 
 Simplified conditional compilation for nullptr definition.
 
-Compiler compatibility changes to assign() in etl::string_view
+Changes to assign() in etl::string_view for compiler compatibility
+
+Changes to container iterators fo compiler compatibility.
 
 ===============================================================================
 16.8.1
