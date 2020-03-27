@@ -186,6 +186,7 @@ namespace etl
       return put_integral(static_cast<uint32_t>(value), width);
     }
 
+#if !defined(ETL_NO_64BIT_TYPES)
     //***************************************************************************
     /// For 64bit integral types
     //***************************************************************************
@@ -201,6 +202,7 @@ namespace etl
     {
       return put_integral(value, width);
     }
+#endif
 
     //***************************************************************************
     /// For floating point types
@@ -396,6 +398,7 @@ namespace etl
       return success;
     }
 
+#if !defined(ETL_NO_64BIT_TYPES)
     //***************************************************************************
     /// For unsigned integral types. 64bit
     //***************************************************************************
@@ -428,6 +431,7 @@ namespace etl
 
       return success;
     }
+#endif
 
     //***************************************************************************
     /// Put a data chunk to the stream

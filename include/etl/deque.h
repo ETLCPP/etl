@@ -262,9 +262,9 @@ namespace etl
 
       //***************************************************
       iterator()
-        : index(0),
-        p_deque(0),
-        p_buffer(0)
+        : index(0)
+        , p_deque(0)
+        , p_buffer(0)
       {
       }
 
@@ -274,6 +274,16 @@ namespace etl
         p_deque(other.p_deque),
         p_buffer(other.p_buffer)
       {
+      }
+
+      //***************************************************
+      iterator& operator =(const iterator& other)
+      {
+        index    = other.index;
+        p_deque  = other.p_deque;
+        p_buffer = other.p_buffer;
+
+        return *this;
       }
 
       //***************************************************
@@ -430,9 +440,9 @@ namespace etl
 
       //***************************************************
       iterator(difference_type index_, ideque& the_deque, pointer p_buffer_)
-        : index(index_),
-          p_deque(&the_deque),
-          p_buffer(p_buffer_)
+        : index(index_)
+        , p_deque(&the_deque)
+        , p_buffer(p_buffer_)
       {
       }
 
@@ -450,26 +460,45 @@ namespace etl
 
       //***************************************************
       const_iterator()
-        : index(0),
-        p_deque(0),
-        p_buffer(0)
+        : index(0)
+        , p_deque(0)
+        , p_buffer(0)
       {
       }
 
       //***************************************************
       const_iterator(const const_iterator& other)
-        : index(other.index),
-        p_deque(other.p_deque),
-        p_buffer(other.p_buffer)
+        : index(other.index)
+        , p_deque(other.p_deque)
+        , p_buffer(other.p_buffer)
       {
       }
 
       //***************************************************
       const_iterator(const typename ideque::iterator& other)
-        : index(other.index),
-        p_deque(other.p_deque),
-        p_buffer(other.p_buffer)
+        : index(other.index)
+        , p_deque(other.p_deque)
+        , p_buffer(other.p_buffer)
       {
+      }
+
+      //***************************************************
+      const_iterator& operator =(const const_iterator& other)
+      {
+        index    = other.index;
+        p_deque  = other.p_deque;
+        p_buffer = other.p_buffer;
+
+        return *this;
+      }
+
+      const_iterator& operator =(const typename ideque::iterator& other)
+      {
+        index    = other.index;
+        p_deque  = other.p_deque;
+        p_buffer = other.p_buffer;
+
+        return *this;
       }
 
       //***************************************************
@@ -625,9 +654,9 @@ namespace etl
 
       //***************************************************
       const_iterator(difference_type index_, ideque& the_deque, pointer p_buffer_)
-        : index(index_),
-          p_deque(&the_deque),
-          p_buffer(p_buffer_)
+        : index(index_)
+        , p_deque(&the_deque)
+        , p_buffer(p_buffer_)
       {
       }
 

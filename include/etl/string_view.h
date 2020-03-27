@@ -40,8 +40,9 @@ SOFTWARE.
 #include "integral_limits.h"
 #include "hash.h"
 #include "basic_string.h"
-
 #include "algorithm.h"
+
+#include "stdint.h"
 
 ///\defgroup array array
 /// A wrapper for arrays
@@ -120,8 +121,8 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     ETL_CONSTEXPR17 basic_string_view()
-      : mbegin(nullptr),
-        mend(nullptr)
+      : mbegin(nullptr)
+      , mend(nullptr)
     {
     }
 
@@ -129,8 +130,8 @@ namespace etl
     /// Construct from string.
     //*************************************************************************
     ETL_CONSTEXPR17 basic_string_view(const etl::ibasic_string<T>& str)
-      : mbegin(str.begin()),
-        mend(str.end())
+      : mbegin(str.begin())
+      , mend(str.end())
     {
     }
 
@@ -138,8 +139,8 @@ namespace etl
     /// Construct from T*.
     //*************************************************************************
     ETL_EXPLICIT_STRING_FROM_CHAR ETL_CONSTEXPR17 basic_string_view(const T* begin_)
-      : mbegin(begin_),
-        mend(begin_ + TTraits::length(begin_))
+      : mbegin(begin_)
+      , mend(begin_ + TTraits::length(begin_))
     {
     }
 
@@ -147,18 +148,17 @@ namespace etl
     /// Construct from pointer range.
     //*************************************************************************
     ETL_CONSTEXPR17 basic_string_view(const T* begin_, const T* end_)
-      : mbegin(begin_),
-        mend(end_)
+      : mbegin(begin_)
+      , mend(end_)
     {
     }
 
     //*************************************************************************
     /// Construct from iterator/size.
     //*************************************************************************
-    template <typename TSize, typename TDummy = typename etl::enable_if<etl::is_integral<TSize>::value, void>::type>
-    ETL_CONSTEXPR17 basic_string_view(const T* begin_, TSize size_)
-      : mbegin(begin_),
-        mend(begin_ + size_)
+    ETL_CONSTEXPR17 basic_string_view(const T* begin_, size_t size_)
+      : mbegin(begin_)
+      , mend(begin_ + size_)
     {
     }
 
@@ -166,8 +166,8 @@ namespace etl
     /// Copy constructor
     //*************************************************************************
     ETL_CONSTEXPR17 basic_string_view(const basic_string_view& other)
-      : mbegin(other.mbegin),
-        mend(other.mend)
+      : mbegin(other.mbegin)
+      , mend(other.mend)
     {
     }
 
@@ -301,31 +301,28 @@ namespace etl
     etl::basic_string_view<T, TTraits>& operator=(const etl::basic_string_view<T, TTraits>& other)
     {
       mbegin = other.mbegin;
-      mend = other.mend;
+      mend   = other.mend;
       return *this;
     }
 
     //*************************************************************************
     /// Assign from iterators
     //*************************************************************************
-    template <typename TIterator,
-              typename TDummy = typename etl::enable_if<etl::is_random_iterator<TIterator>::value, void>::type>
-    void assign(TIterator begin_, TIterator end_)
+    template <typename TIterator>
+      void assign(TIterator begin_, TIterator end_)
     {
       mbegin = etl::addressof(*begin_);
-      mend = etl::addressof(*begin_) + etl::distance(begin_, end_);
+      mend   = etl::addressof(*begin_) + etl::distance(begin_, end_);
     }
 
     //*************************************************************************
     /// Assign from iterator and size.
     //*************************************************************************
-    template <typename TIterator,
-              typename TSize,
-              typename TDummy = typename etl::enable_if<etl::is_integral<TSize>::value, void>::type>
-    void assign(TIterator begin_, TSize size_)
+    template <typename TIterator>
+      void assign(TIterator begin_, size_t size_)
     {
       mbegin = etl::addressof(*begin_);
-      mend = etl::addressof(*begin_) + size_;
+      mend   = etl::addressof(*begin_) + size_;
     }
 
     //*************************************************************************

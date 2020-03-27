@@ -825,11 +825,11 @@
     <ClInclude Include="..\..\include\etl\message_packet_generator.h">
       <Filter>ETL\Frameworks\Generators</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\message_packet temp.h">
-      <Filter>ETL\Frameworks</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\message_packet.h">
       <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\null_type.h">
+      <Filter>ETL\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

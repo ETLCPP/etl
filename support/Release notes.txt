@@ -1,6 +1,28 @@
 ===============================================================================
+17.0.0
+Recoded binary_fill, has_zero_byte and has_byte_n as runtime functions to fix
+compiler compatibilty issues. All functions may be constexpr if the compiler supports it.
+Added tests for binary constextr functions.
+
+Added option to define ETL_NO_64BIT_TYPES macro if the compiler does not support 64bit types.
+Conditional compilation macros added to affected files.
+
+Added iterator copy constructors to etl::deque.
+
+Added code for ARM5 compiler compatibility in limits.h
+
+Simplified conditional compilation for nullptr definition.
+
+Compiler compatibility changes to assign() in etl::string_view
+
+===============================================================================
+16.8.1
+Fixed C++03 compatibility issues nullptr.h, binary.h & string_view.h
+Fixed warning
+
+===============================================================================
 16.8.0
-Extracted message_packet from etl::message_router for use as an independant class.
+Extracted message_packet from etl::message_router for use as an independent class.
 
 ===============================================================================
 16.7.1

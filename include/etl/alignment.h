@@ -99,7 +99,11 @@ namespace etl
   {
   public:
 
+#if defined(ETL_NO_64BIT_TYPES)
+    typedef typename private_alignment::type_with_alignment_helper<ALIGNMENT, int_least8_t, int_least16_t, int32_t, float, double, void*>::type type;
+#else
     typedef typename private_alignment::type_with_alignment_helper<ALIGNMENT, int_least8_t, int_least16_t, int32_t, int64_t, float, double, void*>::type type;
+#endif
   };
 
   //***************************************************************************
