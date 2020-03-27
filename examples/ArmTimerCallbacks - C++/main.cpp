@@ -17,6 +17,7 @@ extern "C"
 #include "etl/callback_timer.h"
 #include "etl/vector.h"
 #include "etl/iterator.h"
+#include "etl/binary.h"
 
 struct FP
 {

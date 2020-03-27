@@ -36,6 +36,13 @@ SOFTWARE.
 #include "etl/char_traits.h"
 #include "etl/integral_limits.h"
 
+#if defined(ETL_NO_STL) && defined(ETL_COMPILER_ARM5)
+  // Required for nan, nanf, nanl
+  #if !defined(__USE_C99_MATH)
+    #define __USE_C99_MATH
+  #endif
+#endif
+
 #include <limits.h>
 #include <stdint.h>
 #include <float.h>
@@ -108,7 +115,7 @@ namespace etl
     static const float_denorm_style has_denorm = denorm_indeterminate;
     static const float_round_style round_style = round_indeterminate;
 
-    static const float round_error() { return float(0.5); }
+    static float round_error() { return float(0.5); }
   };
 
   //***************************************************************************
@@ -137,15 +144,15 @@ namespace etl
     static const bool is_signed = false;
     static const bool is_modulo = false;
 
-    static const bool min() { return false; }
-    static const bool max() { return true; }
-    static const bool lowest() { return false; }
-    static const bool epsilon() { return false; }
-    static const bool round_error() { return false; }
-    static const bool denorm_min() { return false; }
-    static const bool infinity() { return false; }
-    static const bool quiet_NaN() { return false; }
-    static const bool signaling_NaN() { return false; }
+    static bool min() { return false; }
+    static bool max() { return true; }
+    static bool lowest() { return false; }
+    static bool epsilon() { return false; }
+    static bool round_error() { return false; }
+    static bool denorm_min() { return false; }
+    static bool infinity() { return false; }
+    static bool quiet_NaN() { return false; }
+    static bool signaling_NaN() { return false; }
   };
 
   //***************************************************************************
@@ -160,15 +167,15 @@ namespace etl
     static const bool is_signed = etl::is_signed<char>::value;
     static const bool is_modulo = false;
 
-    static const char min() { return char(CHAR_MIN); }
-    static const char max() { return char(CHAR_MAX); }
-    static const char lowest() { return char(CHAR_MIN); }
-    static const char epsilon() { return 0; }
-    static const char round_error() { return 0; }
-    static const char denorm_min() { return 0; }
-    static const char infinity() { return 0; }
-    static const char quiet_NaN() { return 0; }
-    static const char signaling_NaN() { return 0; }
+    static char min() { return char(CHAR_MIN); }
+    static char max() { return char(CHAR_MAX); }
+    static char lowest() { return char(CHAR_MIN); }
+    static char epsilon() { return 0; }
+    static char round_error() { return 0; }
+    static char denorm_min() { return 0; }
+    static char infinity() { return 0; }
+    static char quiet_NaN() { return 0; }
+    static char signaling_NaN() { return 0; }
   };
 
   //***************************************************************************
@@ -183,15 +190,15 @@ namespace etl
     static const bool is_signed = false;
     static const bool is_modulo = true;
 
-    static const unsigned char min() { return 0U; }
-    static const unsigned char max() { return UCHAR_MAX; }
-    static const unsigned char lowest() { return 0U; }
-    static const unsigned char epsilon() { return 0U; }
-    static const unsigned char round_error() { return 0U; }
-    static const unsigned char denorm_min() { return 0U; }
-    static const unsigned char infinity() { return 0U; }
-    static const unsigned char quiet_NaN() { return 0U; }
-    static const unsigned char signaling_NaN() { return 0U; }
+    static unsigned char min() { return 0U; }
+    static unsigned char max() { return UCHAR_MAX; }
+    static unsigned char lowest() { return 0U; }
+    static unsigned char epsilon() { return 0U; }
+    static unsigned char round_error() { return 0U; }
+    static unsigned char denorm_min() { return 0U; }
+    static unsigned char infinity() { return 0U; }
+    static unsigned char quiet_NaN() { return 0U; }
+    static unsigned char signaling_NaN() { return 0U; }
   };
 
   //***************************************************************************
@@ -206,15 +213,15 @@ namespace etl
     static const bool is_signed = true;
     static const bool is_modulo = false;
 
-    static const signed char min() { return SCHAR_MIN; }
-    static const signed char max() { return SCHAR_MAX; }
-    static const signed char lowest() { return SCHAR_MIN; }
-    static const signed char epsilon() { return 0; }
-    static const signed char round_error() { return 0; }
-    static const signed char denorm_min() { return 0; }
-    static const signed char infinity() { return 0; }
-    static const signed char quiet_NaN() { return 0; }
-    static const signed char signaling_NaN() { return 0; }
+    static signed char min() { return SCHAR_MIN; }
+    static signed char max() { return SCHAR_MAX; }
+    static signed char lowest() { return SCHAR_MIN; }
+    static signed char epsilon() { return 0; }
+    static signed char round_error() { return 0; }
+    static signed char denorm_min() { return 0; }
+    static signed char infinity() { return 0; }
+    static signed char quiet_NaN() { return 0; }
+    static signed char signaling_NaN() { return 0; }
   };
 
 #if (ETL_NO_LARGE_CHAR_SUPPORT == false)
@@ -230,15 +237,15 @@ namespace etl
     static const bool is_signed = false;
     static const bool is_modulo = true;
 
-    static const char16_t min() { return 0U; }
-    static const char16_t max() { return UINT_LEAST16_MAX; }
-    static const char16_t lowest() { return 0U; }
-    static const char16_t epsilon() { return 0U; }
-    static const char16_t round_error() { return 0U; }
-    static const char16_t denorm_min() { return 0U; }
-    static const char16_t infinity() { return 0U; }
-    static const char16_t quiet_NaN() { return 0U; }
-    static const char16_t signaling_NaN() { return 0U; }
+    static char16_t min() { return 0U; }
+    static char16_t max() { return UINT_LEAST16_MAX; }
+    static char16_t lowest() { return 0U; }
+    static char16_t epsilon() { return 0U; }
+    static char16_t round_error() { return 0U; }
+    static char16_t denorm_min() { return 0U; }
+    static char16_t infinity() { return 0U; }
+    static char16_t quiet_NaN() { return 0U; }
+    static char16_t signaling_NaN() { return 0U; }
   };
 
   //***************************************************************************
@@ -253,15 +260,15 @@ namespace etl
     static const bool is_signed = false;
     static const bool is_modulo = true;
 
-    static const char32_t min() { return 0U; }
-    static const char32_t max() { return UINT_LEAST32_MAX; }
-    static const char32_t lowest() { return 0U; }
-    static const char32_t epsilon() { return 0U; }
-    static const char32_t round_error() { return 0U; }
-    static const char32_t denorm_min() { return 0U; }
-    static const char32_t infinity() { return 0U; }
-    static const char32_t quiet_NaN() { return 0U; }
-    static const char32_t signaling_NaN() { return 0U; }
+    static char32_t min() { return 0U; }
+    static char32_t max() { return UINT_LEAST32_MAX; }
+    static char32_t lowest() { return 0U; }
+    static char32_t epsilon() { return 0U; }
+    static char32_t round_error() { return 0U; }
+    static char32_t denorm_min() { return 0U; }
+    static char32_t infinity() { return 0U; }
+    static char32_t quiet_NaN() { return 0U; }
+    static char32_t signaling_NaN() { return 0U; }
   };
 
 #endif
@@ -278,15 +285,15 @@ namespace etl
     static const bool is_signed = etl::is_signed<wchar_t>::value;
     static const bool is_modulo = etl::is_unsigned<wchar_t>::value;
 
-    static const wchar_t min() { return WCHAR_MIN; }
-    static const wchar_t max() { return WCHAR_MAX; }
-    static const wchar_t lowest() { return WCHAR_MIN; }
-    static const wchar_t epsilon() { return wchar_t(0); }
-    static const wchar_t round_error() { return wchar_t(0); }
-    static const wchar_t denorm_min() { return wchar_t(0); }
-    static const wchar_t infinity() { return wchar_t(0); }
-    static const wchar_t quiet_NaN() { return wchar_t(0); }
-    static const wchar_t signaling_NaN() { return wchar_t(0); }
+    static wchar_t min() { return WCHAR_MIN; }
+    static wchar_t max() { return WCHAR_MAX; }
+    static wchar_t lowest() { return WCHAR_MIN; }
+    static wchar_t epsilon() { return wchar_t(0); }
+    static wchar_t round_error() { return wchar_t(0); }
+    static wchar_t denorm_min() { return wchar_t(0); }
+    static wchar_t infinity() { return wchar_t(0); }
+    static wchar_t quiet_NaN() { return wchar_t(0); }
+    static wchar_t signaling_NaN() { return wchar_t(0); }
   };
 
   //***************************************************************************
@@ -301,15 +308,15 @@ namespace etl
     static const bool is_signed = true;
     static const bool is_modulo = false;
 
-    static const short min() { return SHRT_MIN; }
-    static const short max() { return SHRT_MAX; }
-    static const short lowest() { return SHRT_MIN; }
-    static const short epsilon() { return 0; }
-    static const short round_error() { return 0; }
-    static const short denorm_min() { return 0; }
-    static const short infinity() { return 0; }
-    static const short quiet_NaN() { return 0; }
-    static const short signaling_NaN() { return 0; }
+    static short min() { return SHRT_MIN; }
+    static short max() { return SHRT_MAX; }
+    static short lowest() { return SHRT_MIN; }
+    static short epsilon() { return 0; }
+    static short round_error() { return 0; }
+    static short denorm_min() { return 0; }
+    static short infinity() { return 0; }
+    static short quiet_NaN() { return 0; }
+    static short signaling_NaN() { return 0; }
   };
 
   //***************************************************************************
@@ -324,15 +331,15 @@ namespace etl
     static const bool is_signed = false;
     static const bool is_modulo = true;
 
-    static const unsigned short min() { return 0U; }
-    static const unsigned short max() { return USHRT_MAX; }
-    static const unsigned short lowest() { return 0U; }
-    static const unsigned short epsilon() { return 0U; }
-    static const unsigned short round_error() { return 0U; }
-    static const unsigned short denorm_min() { return 0U; }
-    static const unsigned short infinity() { return 0U; }
-    static const unsigned short quiet_NaN() { return 0U; }
-    static const unsigned short signaling_NaN() { return 0U; }
+    static unsigned short min() { return 0U; }
+    static unsigned short max() { return USHRT_MAX; }
+    static unsigned short lowest() { return 0U; }
+    static unsigned short epsilon() { return 0U; }
+    static unsigned short round_error() { return 0U; }
+    static unsigned short denorm_min() { return 0U; }
+    static unsigned short infinity() { return 0U; }
+    static unsigned short quiet_NaN() { return 0U; }
+    static unsigned short signaling_NaN() { return 0U; }
 
   };
 
@@ -348,15 +355,15 @@ namespace etl
     static const bool is_signed = true;
     static const bool is_modulo = false;
 
-    static const int min() { return INT_MIN; }
-    static const int max() { return INT_MAX; }
-    static const int lowest() { return INT_MIN; }
-    static const int epsilon() { return 0; }
-    static const int round_error() { return 0; }
-    static const int denorm_min() { return 0; }
-    static const int infinity() { return 0; }
-    static const int quiet_NaN() { return 0; }
-    static const int signaling_NaN() { return 0; }
+    static int min() { return INT_MIN; }
+    static int max() { return INT_MAX; }
+    static int lowest() { return INT_MIN; }
+    static int epsilon() { return 0; }
+    static int round_error() { return 0; }
+    static int denorm_min() { return 0; }
+    static int infinity() { return 0; }
+    static int quiet_NaN() { return 0; }
+    static int signaling_NaN() { return 0; }
   };
 
   //***************************************************************************
@@ -371,15 +378,15 @@ namespace etl
     static const bool is_signed = false;
     static const bool is_modulo = true;
 
-    static const unsigned int min() { return 0U; }
-    static const unsigned int max() { return UINT_MAX; }
-    static const unsigned int lowest() { return 0U; }
-    static const unsigned int epsilon() { return 0U; }
-    static const unsigned int round_error() { return 0U; }
-    static const unsigned int denorm_min() { return 0U; }
-    static const unsigned int infinity() { return 0U; }
-    static const unsigned int quiet_NaN() { return 0U; }
-    static const unsigned int signaling_NaN() { return 0U; }
+    static unsigned int min() { return 0U; }
+    static unsigned int max() { return UINT_MAX; }
+    static unsigned int lowest() { return 0U; }
+    static unsigned int epsilon() { return 0U; }
+    static unsigned int round_error() { return 0U; }
+    static unsigned int denorm_min() { return 0U; }
+    static unsigned int infinity() { return 0U; }
+    static unsigned int quiet_NaN() { return 0U; }
+    static unsigned int signaling_NaN() { return 0U; }
   };
 
   //***************************************************************************
@@ -394,15 +401,15 @@ namespace etl
     static const bool is_signed = true;
     static const bool is_modulo = false;
 
-    static const long min() { return LONG_MIN; }
-    static const long max() { return LONG_MAX; }
-    static const long lowest() { return LONG_MIN; }
-    static const long epsilon() { return 0; }
-    static const long round_error() { return 0; }
-    static const long denorm_min() { return 0; }
-    static const long infinity() { return 0; }
-    static const long quiet_NaN() { return 0; }
-    static const long signaling_NaN() { return 0; }
+    static long min() { return LONG_MIN; }
+    static long max() { return LONG_MAX; }
+    static long lowest() { return LONG_MIN; }
+    static long epsilon() { return 0; }
+    static long round_error() { return 0; }
+    static long denorm_min() { return 0; }
+    static long infinity() { return 0; }
+    static long quiet_NaN() { return 0; }
+    static long signaling_NaN() { return 0; }
   };
 
   //***************************************************************************
@@ -417,15 +424,15 @@ namespace etl
     static const bool is_signed = false;
     static const bool is_modulo = true;
 
-    static const unsigned long min() { return 0U; }
-    static const unsigned long max() { return ULONG_MAX; }
-    static const unsigned long lowest() { return 0U; }
-    static const unsigned long epsilon() { return 0U; }
-    static const unsigned long round_error() { return 0U; }
-    static const unsigned long denorm_min() { return 0U; }
-    static const unsigned long infinity() { return 0U; }
-    static const unsigned long quiet_NaN() { return 0U; }
-    static const unsigned long signaling_NaN() { return 0U; }
+    static unsigned long min() { return 0U; }
+    static unsigned long max() { return ULONG_MAX; }
+    static unsigned long lowest() { return 0U; }
+    static unsigned long epsilon() { return 0U; }
+    static unsigned long round_error() { return 0U; }
+    static unsigned long denorm_min() { return 0U; }
+    static unsigned long infinity() { return 0U; }
+    static unsigned long quiet_NaN() { return 0U; }
+    static unsigned long signaling_NaN() { return 0U; }
   };
 
   //***************************************************************************
@@ -440,15 +447,15 @@ namespace etl
     static const bool is_signed = true;
     static const bool is_modulo = false;
 
-    static const long long min() { return LLONG_MIN; }
-    static const long long max() { return LLONG_MAX; }
-    static const long long lowest() { return LLONG_MIN; }
-    static const long long epsilon() { return 0; }
-    static const long long round_error() { return 0; }
-    static const long long denorm_min() { return 0; }
-    static const long long infinity() { return 0; }
-    static const long long quiet_NaN() { return 0; }
-    static const long long signaling_NaN() { return 0; }
+    static long long min() { return LLONG_MIN; }
+    static long long max() { return LLONG_MAX; }
+    static long long lowest() { return LLONG_MIN; }
+    static long long epsilon() { return 0; }
+    static long long round_error() { return 0; }
+    static long long denorm_min() { return 0; }
+    static long long infinity() { return 0; }
+    static long long quiet_NaN() { return 0; }
+    static long long signaling_NaN() { return 0; }
   };
 
   //***************************************************************************
@@ -463,15 +470,15 @@ namespace etl
     static const bool is_signed = false;
     static const bool is_modulo = true;
 
-    static const unsigned long long min() { return 0U; }
-    static const unsigned long long max() { return ULLONG_MAX; }
-    static const unsigned long long lowest() { return 0U; }
-    static const unsigned long long epsilon() { return 0U; }
-    static const unsigned long long round_error() { return 0U; }
-    static const unsigned long long denorm_min() { return 0U; }
-    static const unsigned long long infinity() { return 0U; }
-    static const unsigned long long quiet_NaN() { return 0U; }
-    static const unsigned long long signaling_NaN() { return 0U; }
+    static unsigned long long min() { return 0U; }
+    static unsigned long long max() { return ULLONG_MAX; }
+    static unsigned long long lowest() { return 0U; }
+    static unsigned long long epsilon() { return 0U; }
+    static unsigned long long round_error() { return 0U; }
+    static unsigned long long denorm_min() { return 0U; }
+    static unsigned long long infinity() { return 0U; }
+    static unsigned long long quiet_NaN() { return 0U; }
+    static unsigned long long signaling_NaN() { return 0U; }
   };
 
   //***************************************************************************
@@ -481,14 +488,14 @@ namespace etl
   {
   public:
 
-    static const float min() { return FLT_MIN; }
-    static const float max() { return FLT_MAX; }
-    static const float lowest() { return -FLT_MAX; }
-    static const float epsilon() { return FLT_EPSILON; }
-    static const float denorm_min() { return FLT_MIN; }
-    static const float infinity() { return HUGE_VALF; }
-    static const float quiet_NaN() { return nanf(""); }
-    static const float signaling_NaN() { return nanf(""); }
+    static float min() { return FLT_MIN; }
+    static float max() { return FLT_MAX; }
+    static float lowest() { return -FLT_MAX; }
+    static float epsilon() { return FLT_EPSILON; }
+    static float denorm_min() { return FLT_MIN; }
+    static float infinity() { return HUGE_VALF; }
+    static float quiet_NaN() { return nanf(""); }
+    static float signaling_NaN() { return nanf(""); }
 
     static const int digits = FLT_MANT_DIG;
     static const int digits10 = FLT_DIG;
@@ -507,14 +514,14 @@ namespace etl
   {
   public:
 
-    static const double min() { return DBL_MIN; }
-    static const double max() { return DBL_MAX; }
-    static const double lowest() { return -DBL_MAX; }
-    static const double epsilon() { return DBL_EPSILON; }
-    static const double denorm_min() { return DBL_MIN; }
-    static const double infinity() { return HUGE_VAL; }
-    static const double quiet_NaN() { return nan(""); }
-    static const double signaling_NaN() { return nan(""); }
+    static double min() { return DBL_MIN; }
+    static double max() { return DBL_MAX; }
+    static double lowest() { return -DBL_MAX; }
+    static double epsilon() { return DBL_EPSILON; }
+    static double denorm_min() { return DBL_MIN; }
+    static double infinity() { return HUGE_VAL; }
+    static double quiet_NaN() { return nan(""); }
+    static double signaling_NaN() { return nan(""); }
 
     static const int digits = DBL_MANT_DIG;
     static const int digits10 = DBL_DIG;
@@ -533,14 +540,14 @@ namespace etl
   {
   public:
 
-    static const long double min() { return LDBL_MIN; }
-    static const long double max() { return LDBL_MAX; }
-    static const long double lowest() { return -LDBL_MAX; }
-    static const long double epsilon() { return LDBL_EPSILON; }
-    static const long double denorm_min() { return LDBL_MIN; }
-    static const long double infinity() { return HUGE_VALL; }
-    static const long double quiet_NaN() { return nanl(""); }
-    static const long double signaling_NaN() { return nanl(""); }
+    static long double min() { return LDBL_MIN; }
+    static long double max() { return LDBL_MAX; }
+    static long double lowest() { return -LDBL_MAX; }
+    static long double epsilon() { return LDBL_EPSILON; }
+    static long double denorm_min() { return LDBL_MIN; }
+    static long double infinity() { return HUGE_VALL; }
+    static long double quiet_NaN() { return nanl(""); }
+    static long double signaling_NaN() { return nanl(""); }
 
 
     static const int digits = LDBL_MANT_DIG;
