@@ -188,6 +188,7 @@ namespace etl
       typedef typename iunordered_map::size_type       size_type;
 
       friend class iunordered_map;
+      friend class const_iterator;
 
       //*********************************
       iterator()

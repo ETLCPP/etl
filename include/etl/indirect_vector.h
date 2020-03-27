@@ -187,6 +187,7 @@ namespace etl
     public:
 
       friend class iindirect_vector;
+      friend class const_iterator;
 
       iterator()
       {

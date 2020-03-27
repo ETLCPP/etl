@@ -187,6 +187,7 @@ namespace etl
       typedef typename iunordered_multimap::size_type       size_type;
 
       friend class iunordered_multimap;
+      friend class const_iterator;
 
       //*********************************
       iterator()

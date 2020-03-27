@@ -388,6 +388,7 @@ namespace etl
     public:
 
       friend class intrusive_list;
+      friend class const_iterator;
 
       iterator()
         : p_value(nullptr)

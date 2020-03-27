@@ -489,6 +489,7 @@ namespace etl
     public:
 
       friend class ilist;
+      friend class const_iterator;
 
       iterator()
         : p_node(nullptr)

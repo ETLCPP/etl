@@ -106,6 +106,7 @@ namespace etl
     public:
 
       friend class ireference_flat_multimap;
+      friend class const_iterator;
 
       iterator()
       {

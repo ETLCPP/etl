@@ -409,6 +409,7 @@ namespace etl
     public:
 
       friend class iforward_list;
+      friend class const_iterator;
 
       iterator()
         : p_node(nullptr)

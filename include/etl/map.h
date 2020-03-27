@@ -584,6 +584,7 @@ namespace etl
     public:
 
       friend class imap;
+      friend class const_iterator;
 
       iterator()
         : p_map(nullptr)

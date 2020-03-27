@@ -184,6 +184,7 @@ namespace etl
       typedef typename iunordered_set::size_type       size_type;
 
       friend class iunordered_set;
+      friend class const_iterator;
 
       //*********************************
       iterator()

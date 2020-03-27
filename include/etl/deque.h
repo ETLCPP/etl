@@ -259,6 +259,7 @@ namespace etl
     struct iterator : public etl::iterator<ETL_OR_STD::random_access_iterator_tag, T>
     {
       friend class ideque;
+      friend struct const_iterator;
 
       //***************************************************
       iterator()
