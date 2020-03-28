@@ -146,7 +146,7 @@ namespace etl
     //********************************************
     bool has_successor() const
     {
-      return (successor != nullptr);
+      return (successor != ETL_NULLPTR);
     }
 
     enum
@@ -160,7 +160,7 @@ namespace etl
   protected:
 
     imessage_router(etl::message_router_id_t id_)
-      : successor(nullptr),
+      : successor(ETL_NULLPTR),
         message_router_id(id_)
     {
     }

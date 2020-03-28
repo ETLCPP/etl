@@ -96,7 +96,7 @@ namespace etl
 
     //*******************************************
     callback_timer_data()
-      : p_callback(nullptr),
+      : p_callback(ETL_NULLPTR),
         period(0),
         delta(etl::timer::state::INACTIVE),
         id(etl::timer::id::NO_TIMER),
@@ -577,7 +577,7 @@ namespace etl
                 active_list.insert(timer.id);
               }
 
-              if (timer.p_callback != nullptr)
+              if (timer.p_callback != ETL_NULLPTR)
               {
                 if (timer.cbk_type == callback_timer_data::C_CALLBACK)
                 {

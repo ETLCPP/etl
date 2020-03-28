@@ -121,8 +121,8 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     ETL_CONSTEXPR17 basic_string_view()
-      : mbegin(nullptr)
-      , mend(nullptr)
+      : mbegin(ETL_NULLPTR)
+      , mend(ETL_NULLPTR)
     {
     }
 
@@ -338,7 +338,7 @@ namespace etl
     //*************************************************************************
     const_reference at(size_t i) const
     {
-      ETL_ASSERT((mbegin != nullptr && mend != nullptr), ETL_ERROR(string_view_uninitialised));
+      ETL_ASSERT((mbegin != ETL_NULLPTR && mend != ETL_NULLPTR), ETL_ERROR(string_view_uninitialised));
       ETL_ASSERT(i < size(), ETL_ERROR(string_view_bounds));
       return mbegin[i];
     }
@@ -864,8 +864,14 @@ namespace etl
 //*************************************************************************
 /// Swaps the values.
 //*************************************************************************
-template <typename T, typename TTraits = etl::char_traits<T> >
+template <typename T, typename TTraits >
 void swap(etl::basic_string_view<T, TTraits>& lhs, etl::basic_string_view<T, TTraits>& rhs)
+{
+  lhs.swap(rhs);
+}
+
+template <typename T>
+void swap(etl::basic_string_view<T, etl::char_traits<T> >& lhs, etl::basic_string_view<T, etl::char_traits<T> >& rhs)
 {
   lhs.swap(rhs);
 }

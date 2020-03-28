@@ -153,7 +153,7 @@ namespace etl
     struct node_t
     {
       node_t()
-        : next(nullptr)
+        : next(ETL_NULLPTR)
       {
       }
 
@@ -184,7 +184,7 @@ namespace etl
 
         node_t* p_node = start_node.next;
 
-        while (p_node != nullptr)
+        while (p_node != ETL_NULLPTR)
         {
           ++count;
           p_node = p_node->next;
@@ -194,7 +194,7 @@ namespace etl
       }
       else
       {
-        ETL_ASSERT(p_node_pool != nullptr, ETL_ERROR(forward_list_no_pool));
+        ETL_ASSERT(p_node_pool != ETL_NULLPTR, ETL_ERROR(forward_list_no_pool));
         return p_node_pool->size();
       }
     }
@@ -218,7 +218,7 @@ namespace etl
       }
       else
       {
-        ETL_ASSERT(p_node_pool != nullptr, ETL_ERROR(forward_list_no_pool));
+        ETL_ASSERT(p_node_pool != ETL_NULLPTR, ETL_ERROR(forward_list_no_pool));
         return p_node_pool->empty();
       }
     }
@@ -228,7 +228,7 @@ namespace etl
     //*************************************************************************
     bool full() const
     {
-      ETL_ASSERT(p_node_pool != nullptr, ETL_ERROR(forward_list_no_pool));
+      ETL_ASSERT(p_node_pool != ETL_NULLPTR, ETL_ERROR(forward_list_no_pool));
       return p_node_pool->full();
     }
 
@@ -238,7 +238,7 @@ namespace etl
     //*************************************************************************
     size_t available() const
     {
-      ETL_ASSERT(p_node_pool != nullptr, ETL_ERROR(forward_list_no_pool));
+      ETL_ASSERT(p_node_pool != ETL_NULLPTR, ETL_ERROR(forward_list_no_pool));
       return p_node_pool->available();
     }
 
@@ -256,9 +256,9 @@ namespace etl
       node_t* p_current = p_last->next;
       node_t* p_next = p_current->next;
 
-      p_current->next = nullptr;
+      p_current->next = ETL_NULLPTR;
 
-      while (p_next != nullptr)
+      while (p_next != ETL_NULLPTR)
       {
         p_last = p_current;
         p_current = p_next;
@@ -276,7 +276,7 @@ namespace etl
     /// The constructor that is called from derived classes.
     //*************************************************************************
     forward_list_base(bool pool_is_shared_)
-      : p_node_pool(nullptr),
+      : p_node_pool(ETL_NULLPTR),
         MAX_SIZE(0),
         pool_is_shared(pool_is_shared_)
     {
@@ -412,7 +412,7 @@ namespace etl
       friend class const_iterator;
 
       iterator()
-        : p_node(nullptr)
+        : p_node(ETL_NULLPTR)
       {
       }
 
@@ -500,7 +500,7 @@ namespace etl
       friend class iforward_list;
 
       const_iterator()
-        : p_node(nullptr)
+        : p_node(ETL_NULLPTR)
       {
       }
 
@@ -687,7 +687,7 @@ namespace etl
 
         data_node_t& data_node = allocate_data_node(*first++);
         join(p_last_node, &data_node);
-        data_node.next = nullptr;
+        data_node.next = ETL_NULLPTR;
         p_last_node = &data_node;
       }
     }
@@ -708,7 +708,7 @@ namespace etl
       {
         data_node_t& data_node = allocate_data_node(value);
         join(p_last_node, &data_node);
-        data_node.next = nullptr;
+        data_node.next = ETL_NULLPTR;
         p_last_node = &data_node;
       }
     }
@@ -751,7 +751,7 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 #endif
-      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      data_node_t* p_data_node = create_data_node();
       ::new (&(p_data_node->value)) T(etl::forward<Args>(args)...);
       ETL_INCREMENT_DEBUG_COUNT
       insert_node_after(start_node, *p_data_node);
@@ -766,7 +766,7 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 #endif
-      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      data_node_t* p_data_node = create_data_node();
       ::new (&(p_data_node->value)) T(value1);
       ETL_INCREMENT_DEBUG_COUNT
       insert_node_after(start_node, *p_data_node);
@@ -781,7 +781,7 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 #endif
-      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      data_node_t* p_data_node = create_data_node();
       ::new (&(p_data_node->value)) T(value1, value2);
       ETL_INCREMENT_DEBUG_COUNT
       insert_node_after(start_node, *p_data_node);
@@ -796,7 +796,7 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 #endif
-      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      data_node_t* p_data_node = create_data_node();
       ::new (&(p_data_node->value)) T(value1, value2, value3);
       ETL_INCREMENT_DEBUG_COUNT
       insert_node_after(start_node, *p_data_node);
@@ -811,7 +811,7 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 #endif
-      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      data_node_t* p_data_node = create_data_node();
       ::new (&(p_data_node->value)) T(value1, value2, value3, value4);
       ETL_INCREMENT_DEBUG_COUNT
       insert_node_after(start_node, *p_data_node);
@@ -907,7 +907,7 @@ namespace etl
     {
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 
-      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      data_node_t* p_data_node = create_data_node();
       ::new (&(p_data_node->value)) T(etl::forward<Args>(args)...);
       ETL_INCREMENT_DEBUG_COUNT
       insert_node_after(*position.p_node, *p_data_node);
@@ -923,7 +923,7 @@ namespace etl
     {
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 
-      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      data_node_t* p_data_node = create_data_node();
       ::new (&(p_data_node->value)) T(value1);
       ETL_INCREMENT_DEBUG_COUNT
       insert_node_after(*position.p_node, *p_data_node);
@@ -939,7 +939,7 @@ namespace etl
     {
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 
-      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      data_node_t* p_data_node = create_data_node();
       ::new (&(p_data_node->value)) T(value1, value2);
       ETL_INCREMENT_DEBUG_COUNT
       insert_node_after(*position.p_node, *p_data_node);
@@ -955,7 +955,7 @@ namespace etl
     {
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 
-      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      data_node_t* p_data_node = create_data_node();
       ::new (&(p_data_node->value)) T(value1, value2, value3);
       ETL_INCREMENT_DEBUG_COUNT
       insert_node_after(*position.p_node, *p_data_node);
@@ -971,7 +971,7 @@ namespace etl
     {
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 
-      data_node_t* p_data_node = p_node_pool->allocate<data_node_t>();
+      data_node_t* p_data_node = create_data_node();
       ::new (&(p_data_node->value)) T(value1, value2, value3, value4);
       ETL_INCREMENT_DEBUG_COUNT
       insert_node_after(*position.p_node, *p_data_node);
@@ -1058,7 +1058,7 @@ namespace etl
           p_first = p_next;                                       // Move to the next node.
         }
 
-        if (p_next == nullptr)
+        if (p_next == ETL_NULLPTR)
         {
           return end();
         }
@@ -1160,7 +1160,7 @@ namespace etl
       node_t* last = get_head();
       node_t* current = last->next;
 
-      while (current != nullptr)
+      while (current != ETL_NULLPTR)
       {
         // Is this value the same as the last?
         if (isEqual(data_cast(current)->value, data_cast(last)->value))
@@ -1305,7 +1305,7 @@ namespace etl
               p_tail = p_node;
             }
 
-            p_tail.p_node->next = nullptr;
+            p_tail.p_node->next = ETL_NULLPTR;
           }
 
           // Now left has stepped `list_size' places along, and right has too.
@@ -1420,7 +1420,7 @@ namespace etl
       {
         if (etl::is_trivially_destructible<T>::value && !has_shared_pool())
         {
-          ETL_ASSERT(p_node_pool != nullptr, ETL_ERROR(forward_list_no_pool));
+          ETL_ASSERT(p_node_pool != ETL_NULLPTR, ETL_ERROR(forward_list_no_pool));
           p_node_pool->release_all();
           ETL_RESET_DEBUG_COUNT
         }
@@ -1430,7 +1430,7 @@ namespace etl
           node_t* p_next;
 
           // Erase the ones in between.
-          while (p_first != nullptr)
+          while (p_first != ETL_NULLPTR)
           {
             p_next = p_first->next;                                 // Remember the next node.
             destroy_data_node(static_cast<data_node_t&>(*p_first)); // Destroy the pool object.
@@ -1439,7 +1439,7 @@ namespace etl
         }
       }
 
-      start_node.next = nullptr;
+      start_node.next = ETL_NULLPTR;
     }
 
     //*************************************************************************
@@ -1447,7 +1447,7 @@ namespace etl
     //*************************************************************************
     data_node_t& allocate_data_node(const_reference value)
     {
-      data_node_t* p_node = p_node_pool->allocate<data_node_t>();
+      data_node_t* p_node = create_data_node();
       ::new (&(p_node->value)) T(value);
       ETL_INCREMENT_DEBUG_COUNT
 
@@ -1460,7 +1460,7 @@ namespace etl
     //*************************************************************************
     data_node_t& allocate_data_node(rvalue_reference value)
     {
-      data_node_t* p_node = p_node_pool->allocate<data_node_t>();
+      data_node_t* p_node = create_data_node();
       ::new (&(p_node->value)) T(etl::move(value));
       ETL_INCREMENT_DEBUG_COUNT
 
@@ -1490,7 +1490,7 @@ namespace etl
 
           data_node_t& data_node = this->allocate_data_node(etl::move(*first++));
           join(p_last_node, &data_node);
-          data_node.next = nullptr;
+          data_node.next = ETL_NULLPTR;
           p_last_node = &data_node;
         }
 
@@ -1541,7 +1541,7 @@ namespace etl
       // The node to erase.
       node_t* p_node = node.next;
 
-      if (p_node != nullptr)
+      if (p_node != ETL_NULLPTR)
       {
         // Disconnect the node from the forward_list.
         join(&node, p_node->next);
@@ -1549,6 +1549,15 @@ namespace etl
         // Destroy the pool object.
         destroy_data_node(static_cast<data_node_t&>(*p_node));
       }
+    }
+
+    //*************************************************************************
+    /// Create a node.
+    //*************************************************************************
+    data_node_t* create_data_node()
+    {
+      data_node_t* (etl::ipool::*func)() = &etl::ipool::allocate<data_node_t>;
+      return (p_node_pool->*func)();
     }
 
     //*************************************************************************
@@ -1844,7 +1853,7 @@ namespace etl
     void set_pool(etl::ipool& pool)
     {
       // Clear the list of any current elements.
-      if (this->get_node_pool() != nullptr)
+      if (this->get_node_pool() != ETL_NULLPTR)
       {
         this->clear();
       }

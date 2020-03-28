@@ -86,8 +86,8 @@ namespace etl
   {
     //*******************************************
     message_timer_data()
-      : p_message(nullptr),
-        p_router(nullptr),
+      : p_message(ETL_NULLPTR),
+        p_router(ETL_NULLPTR),
         period(0),
         delta(etl::timer::state::INACTIVE),
         destination_router_id(etl::imessage_bus::ALL_MESSAGE_ROUTERS),
@@ -471,7 +471,7 @@ namespace etl
                 active_list.insert(timer.id);
               }
 
-              if (timer.p_router != nullptr)
+              if (timer.p_router != ETL_NULLPTR)
               {
                 static etl::null_message_router nmr;
                 timer.p_router->receive(nmr, timer.destination_router_id, *(timer.p_message));

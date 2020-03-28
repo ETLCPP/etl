@@ -61,7 +61,7 @@ namespace etl
   template <typename T>
   T* addressof(T& t)
   {
-#if ETL_CPP11_SUPPORTED
+#if ETL_CPP11_SUPPORTED && !defined(ETL_NO_STL)
     return std::addressof(t);
 #else
     return reinterpret_cast<T*>(&const_cast<char&>(reinterpret_cast<const volatile char&>(t)));
@@ -1243,7 +1243,7 @@ namespace etl
 
     //*********************************
     ETL_CONSTEXPR unique_ptr() ETL_NOEXCEPT
-      : p(nullptr)
+      : p(ETL_NULLPTR)
     {
     }
 
@@ -1289,7 +1289,7 @@ namespace etl
     pointer	release() ETL_NOEXCEPT
     {
       pointer value = p;
-      p = nullptr;
+      p = ETL_NULLPTR;
 
       return value;
     }
@@ -1315,9 +1315,10 @@ namespace etl
     //*********************************
     ETL_CONSTEXPR operator bool() const ETL_NOEXCEPT
     {
-      return (p != nullptr);
+      return (p != ETL_NULLPTR);
     }
 
+#if ETL_CPP11_SUPPORTED && !defined(ETL_NO_STL)
     //*********************************
     unique_ptr&	operator =(std::nullptr_t) ETL_NOEXCEPT
     {
@@ -1325,6 +1326,15 @@ namespace etl
 
       return *this;
     }
+#else
+    //*********************************
+    unique_ptr&	operator =(void*) ETL_NOEXCEPT
+    {
+      reset(NULL);
+
+      return *this;
+    }
+#endif
 
 #if ETL_CPP11_SUPPORTED
     //*********************************
@@ -1382,7 +1392,7 @@ namespace etl
 
     //*********************************
     ETL_CONSTEXPR		unique_ptr() ETL_NOEXCEPT
-      : p(nullptr)
+      : p(ETL_NULLPTR)
     {
     }
 
@@ -1428,7 +1438,7 @@ namespace etl
     pointer	release() ETL_NOEXCEPT
     {
       pointer value = p;
-      p = nullptr;
+      p = ETL_NULLPTR;
       return value;
     }
 
@@ -1453,7 +1463,7 @@ namespace etl
     //*********************************
     ETL_CONSTEXPR operator bool() const ETL_NOEXCEPT
     {
-      return (p != nullptr);
+      return (p != ETL_NULLPTR);
     }
 
 #if ETL_CPP11_SUPPORTED
@@ -1531,76 +1541,6 @@ template<typename T1, typename D1, typename T2, typename D2>
 bool operator >=(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
 {
   return !(lhs < rhs);
-}
-
-//*********************************
-template <typename T, typename D>
-bool operator ==(const etl::unique_ptr<T, D>&lhs, std::nullptr_t)
-{
-  return !lhs;
-}
-
-//*********************************
-template <typename T, typename D>
-bool operator ==(std::nullptr_t, const etl::unique_ptr<T, D>&rhs)
-{
-  return !rhs;
-}
-
-//*********************************
-template <typename T, typename D>
-bool operator <(const etl::unique_ptr<T, D>&lhs, std::nullptr_t)
-{
-  return etl::less<typename etl::unique_ptr<T, D>::pointer>()(lhs.get(), nullptr);
-}
-
-//*********************************
-template <typename T, typename D>
-bool operator <(std::nullptr_t, const etl::unique_ptr<T, D>& rhs)
-{
-  return etl::less<typename etl::unique_ptr<T, D>::pointer>()(nullptr, rhs.get());
-}
-
-//*********************************
-template <typename T, typename D>
-bool operator <=(const etl::unique_ptr<T, D>&lhs, std::nullptr_t)
-{
-  return !(nullptr < lhs);
-}
-
-//*********************************
-template <typename T, typename D>
-bool operator <=(std::nullptr_t, const etl::unique_ptr<T, D>& rhs)
-{
-  return !(rhs < nullptr);
-}
-
-//*********************************
-template <typename T, typename D>
-bool operator >(const etl::unique_ptr<T, D>&lhs, std::nullptr_t)
-{
-  return nullptr < lhs;
-}
-
-//*********************************
-template <typename T, typename D>
-bool operator >(std::nullptr_t, const etl::unique_ptr<T, D>& rhs)
-{
-  return rhs < nullptr;
-}
-
-//*********************************
-template <typename T, typename D>
-bool operator >=(const etl::unique_ptr<T, D>&lhs, std::nullptr_t)
-{
-  return !(lhs < nullptr);
-}
-
-//*********************************
-template <typename T, typename D>
-bool operator >=(std::nullptr_t, const etl::unique_ptr<T, D>& rhs)
-{
-  return !(nullptr < rhs);
 }
 
 namespace etl

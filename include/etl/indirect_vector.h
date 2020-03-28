@@ -972,7 +972,7 @@ namespace etl
 
       // Make space for the new lookup pointers.
       typename etl::ivector<T*>::iterator lookup_itr = position.lookup_itr;
-      lookup.insert(lookup_itr, n, nullptr);
+      lookup.insert(lookup_itr, n, ETL_NULLPTR);
 
       while (n-- != 0U)
       {
@@ -997,7 +997,7 @@ namespace etl
 
       // Make space for the new lookup pointers.
       typename etl::ivector<T*>::iterator lookup_itr = position.lookup_itr;
-      lookup.insert(lookup_itr, count, nullptr);
+      lookup.insert(lookup_itr, count, ETL_NULLPTR);
 
       while (first != last)
       {
