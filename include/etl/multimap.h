@@ -1456,7 +1456,7 @@ namespace etl
     //*************************************************************************
     Data_Node& allocate_data_node(const_reference value)
     {
-      Data_Node& node = *p_node_pool->allocate<Data_Node>();
+      Data_Node& node = create_data_node();
       ::new (&node.value) const value_type(value);
       ETL_INCREMENT_DEBUG_COUNT
       return node;
@@ -1468,12 +1468,21 @@ namespace etl
     //*************************************************************************
     Data_Node& allocate_data_node(rvalue_reference value)
     {
-      Data_Node& node = *p_node_pool->allocate<Data_Node>();
+      Data_Node& node = create_data_node();
       ::new (&node.value) const value_type(etl::move(value));
       ETL_INCREMENT_DEBUG_COUNT
       return node;
     }
 #endif
+
+    //*************************************************************************
+    /// Create a Data_Node.
+    //*************************************************************************
+    Data_Node& create_data_node()
+    {
+      Data_Node* (etl::ipool::*func)() = &etl::ipool::allocate<Data_Node>;
+      return *(p_node_pool->*func)();
+    }
 
     //*************************************************************************
     /// Destroy a Data_Node.

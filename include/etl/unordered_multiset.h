@@ -672,7 +672,7 @@ namespace etl
       if (bucket.empty())
       {
         // Get a new node.
-        node_t& node = *pnodepool->allocate<node_t>();
+        node_t& node = create_data_node();
         ::new (&node.key) value_type(key);
         ETL_INCREMENT_DEBUG_COUNT
 
@@ -702,7 +702,7 @@ namespace etl
         }
 
         // Get a new node.
-        node_t& node = *pnodepool->allocate<node_t>();
+        node_t& node = create_data_node();
         ::new (&node.key) value_type(key);
         ETL_INCREMENT_DEBUG_COUNT
 
@@ -1155,6 +1155,15 @@ namespace etl
     }
 
   private:
+
+    //*************************************************************************
+    /// Create a node.
+    //*************************************************************************
+    node_t& create_data_node()
+    {
+      node_t* (etl::ipool::*func)() = &etl::ipool::allocate<node_t>;
+      return *(pnodepool->*func)();
+    }
 
     //*********************************************************************
     /// Adjust the first and last markers according to the new entry.
