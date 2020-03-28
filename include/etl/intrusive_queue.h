@@ -92,7 +92,7 @@ namespace etl
     {
       value.clear();
 
-      if (p_back != nullptr)
+      if (p_back != ETL_NULLPTR)
       {
         etl::link(p_back, value);
       }
@@ -120,9 +120,9 @@ namespace etl
       p_front = p_next;
 
       // Now empty?
-      if (p_front == nullptr)
+      if (p_front == ETL_NULLPTR)
       {
-        p_back = nullptr;
+        p_back = ETL_NULLPTR;
       }
 
       --current_size;
@@ -176,8 +176,8 @@ namespace etl
     /// Constructor
     //*************************************************************************
     intrusive_queue_base()
-      : p_front(nullptr),
-        p_back(nullptr),
+      : p_front(ETL_NULLPTR),
+        p_back(ETL_NULLPTR),
         current_size(0)
     {
     }

@@ -391,7 +391,7 @@ namespace etl
       friend class const_iterator;
 
       iterator()
-        : p_value(nullptr)
+        : p_value(ETL_NULLPTR)
       {
       }
 
@@ -496,7 +496,7 @@ namespace etl
       friend class intrusive_list;
 
       const_iterator()
-        : p_value(nullptr)
+        : p_value(ETL_NULLPTR)
       {
       }
 

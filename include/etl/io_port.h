@@ -347,7 +347,7 @@ namespace etl
 
     /// Default constructor.
     io_port_rw()
-      : address(nullptr)
+      : address(ETL_NULLPTR)
     {
     }
 
@@ -458,7 +458,7 @@ namespace etl
 
     /// Default constructor.
     io_port_ro()
-      : address(nullptr)
+      : address(ETL_NULLPTR)
     {
     }
 
@@ -547,7 +547,7 @@ namespace etl
 
     /// Default constructor.
     io_port_wo()
-      : address(nullptr)
+      : address(ETL_NULLPTR)
     {
     }
 
@@ -699,7 +699,7 @@ namespace etl
 
     /// Default constructor.
     io_port_wos()
-      : address(nullptr)
+      : address(ETL_NULLPTR)
     {
     }
 

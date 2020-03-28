@@ -83,7 +83,7 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Bitset nullptr exception.
+  /// Bitset null pointer exception.
   ///\ingroup bitset
   //***************************************************************************
   class bitset_nullptr : public bitset_exception
@@ -91,7 +91,7 @@ namespace etl
   public:
 
     bitset_nullptr(string_type file_name_, numeric_type line_number_)
-      : bitset_exception(ETL_ERROR_TEXT("bitset:nullptr", ETL_FILE"A"), file_name_, line_number_)
+      : bitset_exception(ETL_ERROR_TEXT("bitset:null pointer", ETL_FILE"A"), file_name_, line_number_)
     {
     }
   };
@@ -195,7 +195,7 @@ namespace etl
       /// Default constructor.
       //*******************************
       bit_reference()
-        : p_bitset(nullptr),
+        : p_bitset(ETL_NULLPTR),
         position(0)
       {
       }

@@ -121,8 +121,8 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     ETL_CONSTEXPR17 basic_string_view()
-      : mbegin(nullptr)
-      , mend(nullptr)
+      : mbegin(ETL_NULLPTR)
+      , mend(ETL_NULLPTR)
     {
     }
 
@@ -338,7 +338,7 @@ namespace etl
     //*************************************************************************
     const_reference at(size_t i) const
     {
-      ETL_ASSERT((mbegin != nullptr && mend != nullptr), ETL_ERROR(string_view_uninitialised));
+      ETL_ASSERT((mbegin != ETL_NULLPTR && mend != ETL_NULLPTR), ETL_ERROR(string_view_uninitialised));
       ETL_ASSERT(i < size(), ETL_ERROR(string_view_bounds));
       return mbegin[i];
     }

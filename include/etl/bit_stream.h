@@ -56,7 +56,7 @@ namespace etl
     /// Default constructor.
     //***************************************************************************
     bit_stream()
-      : pdata(nullptr),
+      : pdata(ETL_NULLPTR),
         length(0U)
     {
       restart();
@@ -163,7 +163,7 @@ namespace etl
     {
       bool success = false;
 
-      if (pdata != nullptr)
+      if (pdata != ETL_NULLPTR)
       {
         if (bits_remaining > 0)
         {
@@ -234,7 +234,7 @@ namespace etl
     {
       bool success = false;
 
-      if (pdata != nullptr)
+      if (pdata != ETL_NULLPTR)
       {
         // Do we have enough bits?
         if (bits_remaining > 0)
@@ -257,7 +257,7 @@ namespace etl
       bool success = false;
       uint_least8_t bits = width;
 
-      if (pdata != nullptr)
+      if (pdata != ETL_NULLPTR)
       {
         // Do we have enough bits?
         if (bits_remaining >= width)
@@ -297,7 +297,7 @@ namespace etl
     {
       bool success = false;
 
-      if (pdata != nullptr)
+      if (pdata != ETL_NULLPTR)
       {
         uint_least8_t width = CHAR_BIT * sizeof(T);
 
@@ -372,7 +372,7 @@ namespace etl
     {
       bool success = false;
 
-      if (pdata != nullptr)
+      if (pdata != ETL_NULLPTR)
       {
         // Do we have enough bits?
         if (bits_remaining >= width)
@@ -406,7 +406,7 @@ namespace etl
     {
       bool success = false;
 
-      if (pdata != nullptr)
+      if (pdata != ETL_NULLPTR)
       {
         // Do we have enough bits?
         if (bits_remaining >= width)

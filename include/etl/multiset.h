@@ -213,9 +213,9 @@ namespace etl
       {
         weight = kNeither;
         dir = kNeither;
-        parent = nullptr;
-        children[0] = nullptr;
-        children[1] = nullptr;
+        parent = ETL_NULLPTR;
+        children[0] = ETL_NULLPTR;
+        children[1] = ETL_NULLPTR;
       }
 
       Node* parent;
@@ -230,7 +230,7 @@ namespace etl
     multiset_base(size_type max_size_)
       : current_size(0)
       , CAPACITY(max_size_)
-      , root_node(nullptr)
+      , root_node(ETL_NULLPTR)
     {
     }
 
@@ -277,7 +277,7 @@ namespace etl
       // otherwise we might lose the other child of the swap node
       replacement = swap->children[1 - swap->dir];
 
-      if (replacement != nullptr)
+      if (replacement != ETL_NULLPTR)
       {
         replacement->parent = swap->parent;
       }
@@ -727,14 +727,14 @@ namespace etl
       friend class const_iterator;
 
       iterator()
-        : p_multiset(nullptr)
-        , p_node(nullptr)
+        : p_multiset(ETL_NULLPTR)
+        , p_node(ETL_NULLPTR)
       {
       }
 
       iterator(imultiset& multiset)
         : p_multiset(&multiset)
-        , p_node(nullptr)
+        , p_node(ETL_NULLPTR)
       {
       }
 
@@ -848,14 +848,14 @@ namespace etl
       friend class imultiset;
 
       const_iterator()
-        : p_multiset(nullptr)
-        , p_node(nullptr)
+        : p_multiset(ETL_NULLPTR)
+        , p_node(ETL_NULLPTR)
       {
       }
 
       const_iterator(const imultiset& multiset)
         : p_multiset(&multiset)
-        , p_node(nullptr)
+        , p_node(ETL_NULLPTR)
       {
       }
 
@@ -1208,14 +1208,14 @@ namespace etl
     iterator insert(const_reference value)
     {
       // Default to no inserted node
-      Node* inserted_node = nullptr;
+      Node* inserted_node = ETL_NULLPTR;
 
       ETL_ASSERT(!full(), ETL_ERROR(multiset_full));
 
       // Get next available free node
       Data_Node& node = allocate_data_node(value);
 
-      // Obtain the inserted node (might be nullptr if node was a duplicate)
+      // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
       inserted_node = insert_node(root_node, node);
 
       // Insert node into tree and return iterator to new node location in tree
@@ -1231,14 +1231,14 @@ namespace etl
     iterator insert(rvalue_reference value)
     {
       // Default to no inserted node
-      Node* inserted_node = nullptr;
+      Node* inserted_node = ETL_NULLPTR;
 
       ETL_ASSERT(!full(), ETL_ERROR(multiset_full));
 
       // Get next available free node
       Data_Node& node = allocate_data_node(etl::move(value));
 
-      // Obtain the inserted node (might be nullptr if node was a duplicate)
+      // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
       inserted_node = insert_node(root_node, node);
 
       // Insert node into tree and return iterator to new node location in tree
@@ -1515,7 +1515,7 @@ namespace etl
     //*************************************************************************
     Node* find_node(Node* position, key_parameter_t key) const
     {
-      Node* found = nullptr;
+      Node* found = ETL_NULLPTR;
       while (position)
       {
         // Downcast found to Data_Node class for comparison and other operations
@@ -1539,7 +1539,7 @@ namespace etl
         }
       }
 
-      // Return the node found (might be nullptr)
+      // Return the node found (might be ETL_NULLPTR)
       return found;
     }
 
@@ -1548,7 +1548,7 @@ namespace etl
     //*************************************************************************
     const Node* find_node(const Node* position, key_parameter_t key) const
     {
-      const Node* found = nullptr;
+      const Node* found = ETL_NULLPTR;
       while (position)
       {
         // Downcast found to Data_Node class for comparison and other operations
@@ -1572,7 +1572,7 @@ namespace etl
         }
       }
 
-      // Return the node found (might be nullptr)
+      // Return the node found (might be ETL_NULLPTR)
       return found;
     }
 
@@ -1582,7 +1582,7 @@ namespace etl
     Node* find_lower_node(Node* position, key_parameter_t key) const
     {
       // Something at this position? keep going
-      Node* lower_node = nullptr;
+      Node* lower_node = ETL_NULLPTR;
       while (position)
       {
         // Downcast lower node to Data_Node reference for key comparisons
@@ -1623,7 +1623,7 @@ namespace etl
     Node* find_upper_node(Node* position, key_parameter_t key) const
     {
       // Keep track of parent of last upper node
-      Node* upper_node = nullptr;
+      Node* upper_node = ETL_NULLPTR;
       // Has an equal node been found? start with no
       bool found = false;
       while (position)
@@ -1656,7 +1656,7 @@ namespace etl
         }
       }
 
-      // Return the upper node position found (might be nullptr)
+      // Return the upper node position found (might be ETL_NULLPTR)
       return upper_node;
     }
 
@@ -1671,8 +1671,8 @@ namespace etl
       // Was position provided not empty? then find where the node belongs
       if (position)
       {
-        // Find the critical parent node (default to nullptr)
-        Node* critical_parent_node = nullptr;
+        // Find the critical parent node (default to ETL_NULLPTR)
+        Node* critical_parent_node = ETL_NULLPTR;
         Node* critical_node = root_node;
 
         while (found)
@@ -1735,30 +1735,33 @@ namespace etl
         // Was a critical node found that should be checked for balance?
         if (critical_node)
         {
-          if (critical_parent_node == nullptr && critical_node == root_node)
+          if (critical_parent_node == ETL_NULLPTR && critical_node == root_node)
           {
             balance_node(root_node);
           }
-          else if (critical_parent_node == nullptr && critical_node == position)
+          else if (critical_parent_node == ETL_NULLPTR && critical_node == position)
           {
             balance_node(position);
           }
           else
           {
-            balance_node(critical_parent_node->children[critical_parent_node->dir]);
+            if (critical_parent_node != ETL_NULLPTR)
+            {
+              balance_node(critical_parent_node->children[critical_parent_node->dir]);
+            }
           }
         }
       }
       else
       {
         // Attatch node to current position (which is assumed to be root)
-        attach_node(nullptr, position, node);
+        attach_node(ETL_NULLPTR, position, node);
 
         // Return newly added node at current position
         found = position;
       }
 
-      // Return the node found (might be nullptr)
+      // Return the node found (might be ETL_NULLPTR)
       return found;
     }
 
@@ -1832,9 +1835,9 @@ namespace etl
             node = node->children[node->dir];
           }
         }
-        // The value for node should not be nullptr at this point otherwise
+        // The value for node should not be ETL_NULLPTR at this point otherwise
         // step 1 failed to provide the correct path to found. Step 5 will fail
-        // (probably subtly) if node should be nullptr at this point
+        // (probably subtly) if node should be ETL_NULLPTR at this point
 
         // Step 3: Find the node (node should be equal to found at this point)
         // to replace found with (might end up equal to found) while also
@@ -1843,7 +1846,7 @@ namespace etl
         {
           // Replacement node found if its missing a child in the replace->dir
           // value set at the end of step 2 above
-          if (node->children[node->dir] == nullptr)
+          if (node->children[node->dir] == ETL_NULLPTR)
           {
             // Exit loop once node to replace found is determined
             break;
@@ -1890,7 +1893,7 @@ namespace etl
         while (balance)
         {
           // Break when balance node reaches the parent of replacement node
-          if (balance->children[balance->dir] == nullptr)
+          if (balance->children[balance->dir] == ETL_NULLPTR)
           {
             break;
           }
@@ -1915,7 +1918,7 @@ namespace etl
             if (weight == balance->dir)
             {
               // Is the root node being rebalanced (no parent)
-              if (balance->parent == nullptr)
+              if (balance->parent == ETL_NULLPTR)
               {
                 rotate_3node(root_node, 1 - balance->dir,
                   balance->children[1 - balance->dir]->children[balance->dir]->weight);
@@ -1931,7 +1934,7 @@ namespace etl
             else if (weight == kNeither)
             {
               // Is the root node being rebalanced (no parent)
-              if (balance->parent == nullptr)
+              if (balance->parent == ETL_NULLPTR)
               {
                 rotate_2node(root_node, 1 - balance->dir);
                 root_node->weight = balance->dir;
@@ -1952,7 +1955,7 @@ namespace etl
             else
             {
               // Is the root node being rebalanced (no parent)
-              if (balance->parent == nullptr)
+              if (balance->parent == ETL_NULLPTR)
               {
                 rotate_2node(root_node, 1 - balance->dir);
               }

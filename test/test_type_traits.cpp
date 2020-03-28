@@ -389,7 +389,9 @@ namespace
       CHECK(etl::is_fundamental<double>::value             == std::is_fundamental<double>::value);
       CHECK(etl::is_fundamental<long double>::value        == std::is_fundamental<long double>::value);
       CHECK(etl::is_fundamental<Test>::value               == std::is_fundamental<Test>::value);
+#if !defined(ETL_NO_STL)
       CHECK(etl::is_fundamental<std::nullptr_t>::value     == std::is_fundamental<std::nullptr_t>::value);
+#endif
     }
 
     //*************************************************************************

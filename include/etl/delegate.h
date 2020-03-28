@@ -119,7 +119,7 @@ namespace etl
     template <TReturn(*Method)(TParams...)>
     static delegate create()
     {
-      return delegate(nullptr, function_stub<Method>);
+      return delegate(ETL_NULLPTR, function_stub<Method>);
     }
 
     //*************************************************************************
@@ -238,7 +238,7 @@ namespace etl
     //*************************************************************************
     bool is_valid() const
     {
-      return invocation.stub != nullptr;
+      return invocation.stub != ETL_NULLPTR;
     }
 
     //*************************************************************************
@@ -280,8 +280,8 @@ namespace etl
       }
 
       //***********************************************************************
-      void*     object = nullptr;
-      stub_type stub   = nullptr;
+      void*     object = ETL_NULLPTR;
+      stub_type stub   = ETL_NULLPTR;
     };
 
     //*************************************************************************
@@ -298,7 +298,7 @@ namespace etl
     //*************************************************************************
     delegate(stub_type stub)
     {
-      invocation.object = nullptr;
+      invocation.object = ETL_NULLPTR;
       invocation.stub   = stub;
     }
 

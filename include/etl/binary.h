@@ -390,6 +390,21 @@ namespace etl
     return TResult(unsigned_v_t(value) * (unsigned_r_t(~unsigned_r_t(0U)) / unsigned_v_t(~unsigned_v_t(0U))));
   }
 
+  //***************************************************************************
+  /// Fills a value with a bit pattern. Partial compile time.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename TResult, typename TValue, const TValue N>
+  ETL_CONSTEXPR TResult binary_fill()
+  {
+    ETL_STATIC_ASSERT(sizeof(TResult) >= sizeof(TValue), "Result must be at least as large as the fill value");
+
+    typedef typename etl::make_unsigned<TResult>::type unsigned_r_t;
+    typedef typename etl::make_unsigned<TValue>::type unsigned_v_t;
+
+    return TResult(unsigned_v_t(N) * (unsigned_r_t(~unsigned_r_t(0U)) / unsigned_v_t(~unsigned_v_t(0U))));
+  }
+
 #if ETL_8BIT_SUPPORT
   //***************************************************************************
   /// Detects the presence of zero bytes.
@@ -406,6 +421,20 @@ namespace etl
   }
 
   //***************************************************************************
+  /// Detects the presence of zero bytes. Partial compile time.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename TValue, const TValue N>
+  ETL_CONSTEXPR14 bool has_zero_byte()
+  {
+    typedef typename etl::make_unsigned<TValue>::type unsigned_t;
+    const unsigned_t mask = etl::binary_fill<unsigned_t, uint8_t>(0x7FU);
+    const unsigned_t temp = unsigned_t(~((((unsigned_t(N) & mask) + mask) | unsigned_t(N)) | mask));
+
+    return (temp != 0U);
+  }
+
+  //***************************************************************************
   /// Detects the presence of a byte of value N. Run time.
   ///\ingroup binary
   //***************************************************************************
@@ -416,7 +445,7 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Detects the presence of a byte of value N. Partial time.
+  /// Detects the presence of a byte of value N. Partial compile time.
   ///\ingroup binary
   //***************************************************************************
   template <typename TValue, const TValue N>

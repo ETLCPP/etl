@@ -1,4 +1,12 @@
 ===============================================================================
+17.1.0
+Removed ETL's implementation of nullptr for pre C++11 compilers and created the macro
+ETL_NULLPTR for internal use. Equates to NULL or nullptr, dependent on the compiler
+version and project profile.
+
+Added partial compile time versions of binary_fill and has_zero_byte.
+
+===============================================================================
 17.0.0
 Recoded binary_fill, has_zero_byte and has_byte_n as runtime functions to fix
 compiler compatibilty issues. All functions may be constexpr if the compiler supports it.

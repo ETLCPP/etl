@@ -160,7 +160,7 @@ namespace etl
       ]]]*/
       /*[[[end]]]*/
 
-      T* p = nullptr;
+      T* p = ETL_NULLPTR;
 
       if (pool.full())
       {
@@ -170,7 +170,7 @@ namespace etl
       {
         p = pool.template allocate<T>();
 
-        if (p != nullptr)
+        if (p != ETL_NULLPTR)
         {
           new (p) T();
         }
@@ -197,7 +197,7 @@ namespace etl
       ]]]*/
       /*[[[end]]]*/
 
-      T* p = nullptr;
+      T* p = ETL_NULLPTR;
 
       if (pool.full())
       {
@@ -207,7 +207,7 @@ namespace etl
       {
         p = pool.template allocate<T>();
 
-        if (p != nullptr)
+        if (p != ETL_NULLPTR)
         {
           new (p) T(p1);
         }
@@ -234,7 +234,7 @@ namespace etl
       ]]]*/
       /*[[[end]]]*/
 
-      T* p = nullptr;
+      T* p = ETL_NULLPTR;
 
       if (pool.full())
       {
@@ -244,7 +244,7 @@ namespace etl
       {
         p = pool.template allocate<T>();
 
-        if (p != nullptr)
+        if (p != ETL_NULLPTR)
         {
           new (p) T(p1, p2);
         }
@@ -271,7 +271,7 @@ namespace etl
       ]]]*/
       /*[[[end]]]*/
 
-      T* p = nullptr;
+      T* p = ETL_NULLPTR;
 
       if (pool.full())
       {
@@ -281,7 +281,7 @@ namespace etl
       {
         p = pool.template allocate<T>();
 
-        if (p != nullptr)
+        if (p != ETL_NULLPTR)
         {
           new (p) T(p1, p2, p3);
         }
@@ -308,7 +308,7 @@ namespace etl
       ]]]*/
       /*[[[end]]]*/
 
-      T* p = nullptr;
+      T* p = ETL_NULLPTR;
 
       if (pool.full())
       {
@@ -318,7 +318,7 @@ namespace etl
       {
         p = pool.template allocate<T>();
 
-        if (p != nullptr)
+        if (p != ETL_NULLPTR)
         {
           new (p) T(p1, p2, p3, p4);
         }
@@ -345,7 +345,7 @@ namespace etl
       ]]]*/
       /*[[[end]]]*/
 
-      T* p = nullptr;
+      T* p = ETL_NULLPTR;
 
       if (pool.full())
       {
@@ -355,7 +355,7 @@ namespace etl
       {
         p = pool.template allocate<T>();
 
-        if (p != nullptr)
+        if (p != ETL_NULLPTR)
         {
           new (p) T(ETL_OR_STD::forward<Args>(args)...);
         }

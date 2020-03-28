@@ -92,7 +92,7 @@ namespace etl
     {
       value.clear();
 
-      if (p_top != nullptr)
+      if (p_top != ETL_NULLPTR)
       {
         etl::link(value, p_top);
       }
@@ -134,11 +134,11 @@ namespace etl
     //*************************************************************************
     void reverse()
     {
-      link_type* previous = nullptr;
+      link_type* previous = ETL_NULLPTR;
       link_type* current = p_top;
       link_type* next;
 
-      while (current != nullptr)
+      while (current != ETL_NULLPTR)
       {
         next = current->etl_next;
         current->etl_next = previous;
@@ -184,7 +184,7 @@ namespace etl
     /// Constructor
     //*************************************************************************
     intrusive_stack_base()
-      : p_top(nullptr),
+      : p_top(ETL_NULLPTR),
         current_size(0)
     {
     }

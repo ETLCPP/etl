@@ -41,6 +41,7 @@ SOFTWARE.
 #include "platform.h"
 #include "exception.h"
 #include "function.h"
+#include "nullptr.h"
 
 namespace etl
 {
@@ -53,7 +54,7 @@ namespace etl
     };
 
     template <class dummy>
-    etl::ifunction<const etl::exception&>* wrapper<dummy>::p_ifunction = nullptr;
+    etl::ifunction<const etl::exception&>* wrapper<dummy>::p_ifunction = ETL_NULLPTR;
   }
 
   //***************************************************************************
@@ -102,7 +103,7 @@ namespace etl
     //*****************************************************************************
     static void error(const etl::exception& e)
     {
-      if (private_error_handler::wrapper<void>::p_ifunction != nullptr)
+      if (private_error_handler::wrapper<void>::p_ifunction != ETL_NULLPTR)
       {
         (*private_error_handler::wrapper<void>::p_ifunction)(e);
       }

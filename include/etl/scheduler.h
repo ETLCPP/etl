@@ -304,7 +304,7 @@ namespace etl
     {
       for (TSize i = 0; i < size; ++i)
       {
-        ETL_ASSERT((p_tasks[i] != nullptr), ETL_ERROR(etl::scheduler_null_task_exception));
+        ETL_ASSERT((p_tasks[i] != ETL_NULLPTR), ETL_ERROR(etl::scheduler_null_task_exception));
         add_task(*(p_tasks[i]));
       }
     }
@@ -317,8 +317,8 @@ namespace etl
     ischeduler(etl::ivector<etl::task*>& task_list_)
       : scheduler_running(false),
         scheduler_exit(false),
-        p_idle_callback(nullptr),
-        p_watchdog_callback(nullptr),
+        p_idle_callback(ETL_NULLPTR),
+        p_watchdog_callback(ETL_NULLPTR),
         task_list(task_list_)
     {
     }

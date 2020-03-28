@@ -200,7 +200,7 @@ namespace etl
         return;
       }
 
-      link_type* first = nullptr;             // To keep first link
+      link_type* first = ETL_NULLPTR;             // To keep first link
       link_type* second = start_link.etl_next; // To keep second link
       link_type* track = start_link.etl_next; // Track the list
 
@@ -220,7 +220,7 @@ namespace etl
     //*************************************************************************
     bool empty() const
     {
-      return start_link.etl_next == nullptr;
+      return start_link.etl_next == ETL_NULLPTR;
     }
 
     //*************************************************************************
@@ -249,7 +249,7 @@ namespace etl
     //*************************************************************************
     bool is_trivial_list() const
     {
-      return (start_link.link_type::etl_next == nullptr) || (start_link.link_type::etl_next->etl_next == nullptr);
+      return (start_link.link_type::etl_next == ETL_NULLPTR) || (start_link.link_type::etl_next->etl_next == ETL_NULLPTR);
     }
 
     //*************************************************************************
@@ -269,7 +269,7 @@ namespace etl
     {
       link_type* p_next = link.etl_next;
 
-      if (p_next != nullptr)
+      if (p_next != ETL_NULLPTR)
       {
         etl::unlink_after<link_type>(link);
         --current_size;
@@ -297,7 +297,7 @@ namespace etl
     //*************************************************************************
     void initialise()
     {
-      start_link.etl_next = nullptr;
+      start_link.etl_next = ETL_NULLPTR;
       current_size = 0;
     }
   };
@@ -336,7 +336,7 @@ namespace etl
       friend class const_iterator;
 
       iterator()
-        : p_value(nullptr)
+        : p_value(ETL_NULLPTR)
       {
       }
 
@@ -426,7 +426,7 @@ namespace etl
       friend class intrusive_forward_list;
 
       const_iterator()
-        : p_value(nullptr)
+        : p_value(ETL_NULLPTR)
       {
       }
 
@@ -661,7 +661,7 @@ namespace etl
         // Join the ends.
         etl::link<link_type>(p_first, p_last);
 
-        if (p_next == nullptr)
+        if (p_next == ETL_NULLPTR)
         {
           return end();
         }
@@ -691,7 +691,7 @@ namespace etl
       link_type* last    = this->get_head();
       link_type* current = last->etl_next;
 
-      while (current != nullptr)
+      while (current != ETL_NULLPTR)
       {
         // Is this value the same as the last?
         if (isEqual(*static_cast<value_type*>(current), *static_cast<value_type*>(last)))
@@ -835,7 +835,7 @@ namespace etl
               i_tail = i_link;
             }
 
-            i_tail.p_value->link_type::etl_next = nullptr;
+            i_tail.p_value->link_type::etl_next = ETL_NULLPTR;
           }
 
           // Now left has stepped `list_size' places along, and right has too.
@@ -921,7 +921,7 @@ namespace etl
           etl::link<link_type>(before, first);
 
           link_type* last = &before;
-          while (last->link_type::etl_next != nullptr)
+          while (last->link_type::etl_next != ETL_NULLPTR)
           {
             last = last->link_type::etl_next;
           }
@@ -1005,11 +1005,11 @@ namespace etl
 #endif
 
         value_type* other_begin    = static_cast<value_type*>(other.get_head());
-        value_type* other_terminal = nullptr;
+        value_type* other_terminal = ETL_NULLPTR;
 
         value_type* before      = static_cast<value_type*>(&this->start_link);
         value_type* before_next = get_next(before);
-        value_type* terminal    = nullptr;
+        value_type* terminal    = ETL_NULLPTR;
 
         while ((before->link_type::etl_next != terminal) && (other_begin != other_terminal))
         {
