@@ -33,12 +33,8 @@ SOFTWARE.
 
 #define ETL_THROW_EXCEPTIONS
 #define ETL_VERBOSE_ERRORS
-#define ETL_CHECK_PUSH_POP
-#define ETL_ISTRING_REPAIR_ENABLE
-#define ETL_IVECTOR_REPAIR_ENABLE
-#define ETL_IDEQUE_REPAIR_ENABLE
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER)
   #include "etl/profiles/msvc_x86.h"
 #else
   #include "etl/profiles/gcc_windows_x86.h"

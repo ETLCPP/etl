@@ -150,7 +150,7 @@
     <ClCompile Include="..\QueuedMessageRouter.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="etl_profile.h" />
+    <ClInclude Include="..\etl_profile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

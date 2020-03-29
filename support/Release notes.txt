@@ -1,4 +1,8 @@
 ===============================================================================
+17.1.1
+Created CMakeLists.txt files for QueuedFSM and QueuedMessageRouter example projects.
+
+===============================================================================
 17.1.0
 Removed ETL's implementation of nullptr for pre C++11 compilers and created the macro
 ETL_NULLPTR for internal use. Equates to NULL or nullptr, dependent on the compiler
