@@ -364,8 +364,7 @@ namespace etl
     }
 
     //*******************************************
-    /// Start the scheduler. SEQUENCIAL_SINGLE
-    /// Only calls the task to process work once, if it has work to do.
+    /// Start the scheduler.
     //*******************************************
     void start()
     {

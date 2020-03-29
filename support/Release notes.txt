@@ -1,4 +1,8 @@
 ===============================================================================
+17.1.2
+Created scheduler example project.
+
+===============================================================================
 17.1.1
 Created CMakeLists.txt files for QueuedFSM and QueuedMessageRouter example projects.
 
