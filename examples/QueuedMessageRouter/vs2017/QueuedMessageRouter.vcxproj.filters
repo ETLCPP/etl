@@ -20,7 +20,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="etl_profile.h">
+    <ClInclude Include="..\etl_profile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
