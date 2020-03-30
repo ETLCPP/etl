@@ -36,12 +36,10 @@ SOFTWARE.
 #include <new>
 
 #include "platform.h"
-
 #include "algorithm.h"
 #include "iterator.h"
 #include "functional.h"
 #include "utility.h"
-
 #include "container.h"
 #include "pool.h"
 #include "vector.h"
@@ -140,10 +138,12 @@ namespace etl
     typedef TKeyEqual         key_equal;
     typedef value_type&       reference;
     typedef const value_type& const_reference;
+#if ETL_CPP11_SUPPORTED
+    typedef value_type&&      rvalue_reference;
+#endif
     typedef value_type*       pointer;
     typedef const value_type* const_pointer;
     typedef size_t            size_type;
-
 
     typedef typename etl::parameter_type<TKey>::type key_parameter_t;
 
@@ -151,7 +151,7 @@ namespace etl
 
     struct node_t : public link_t // The nodes that store the elements.
     {
-      node_t(const value_type& key_value_pair_)
+      node_t(const_reference key_value_pair_)
         : key_value_pair(key_value_pair_)
       {
       }
@@ -655,12 +655,31 @@ namespace etl
       }
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move from a range
+    //*************************************************************************
+    void move(iterator first, iterator last)
+    {
+#if defined(ETL_DEBUG)
+      difference_type d = etl::distance(first, last);
+      ETL_ASSERT(d >= 0, ETL_ERROR(unordered_multimap_iterator));
+      ETL_ASSERT(size_t(d) <= max_size(), ETL_ERROR(unordered_multimap_full));
+#endif
+
+      while (first != last)
+      {
+        insert(etl::move(*first++));
+      }
+    }
+#endif
+
     //*********************************************************************
     /// Inserts a value to the unordered_multimap.
     /// If asserts or exceptions are enabled, emits unordered_multimap_full if the unordered_multimap is already full.
     ///\param value The value to insert.
     //*********************************************************************
-    iterator insert(const value_type& key_value_pair)
+    iterator insert(const_reference key_value_pair)
     {
       iterator result = end();
 
@@ -723,16 +742,99 @@ namespace etl
       return result;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    /// Inserts a value to the unordered_multimap.
+    /// If asserts or exceptions are enabled, emits unordered_multimap_full if the unordered_multimap is already full.
+    ///\param value The value to insert.
+    //*********************************************************************
+    iterator insert(rvalue_reference key_value_pair)
+    {
+      iterator result = end();
+
+      ETL_ASSERT(!full(), ETL_ERROR(unordered_multimap_full));
+
+      const key_type&    key = key_value_pair.first;
+
+      // Get the hash index.
+      size_t index = get_bucket_index(key);
+
+      // Get the bucket & bucket iterator.
+      bucket_t* pbucket = pbuckets + index;
+      bucket_t& bucket = *pbucket;
+
+      // The first one in the bucket?
+      if (bucket.empty())
+      {
+        // Get a new node.
+        node_t& node = create_data_node();
+        ::new (&node.key_value_pair) value_type(etl::move(key_value_pair));
+        ETL_INCREMENT_DEBUG_COUNT
+
+          // Just add the pointer to the bucket;
+          bucket.insert_after(bucket.before_begin(), node);
+        adjust_first_last_markers_after_insert(pbucket);
+
+        result = iterator((pbuckets + number_of_buckets), pbucket, pbucket->begin());
+      }
+      else
+      {
+        // Step though the bucket looking for a place to insert.
+        local_iterator inode_previous = bucket.before_begin();
+        local_iterator inode = bucket.begin();
+
+        while (inode != bucket.end())
+        {
+          // Do we already have this key?
+          if (inode->key_value_pair.first == key)
+          {
+            break;
+          }
+
+          ++inode_previous;
+          ++inode;
+        }
+
+        // Get a new node.
+        node_t& node = create_data_node();
+        ::new (&node.key_value_pair) value_type(etl::move(key_value_pair));
+        ETL_INCREMENT_DEBUG_COUNT
+
+          // Add the node to the end of the bucket;
+          bucket.insert_after(inode_previous, node);
+        adjust_first_last_markers_after_insert(&bucket);
+        ++inode_previous;
+
+        result = iterator((pbuckets + number_of_buckets), pbucket, inode_previous);
+      }
+
+      return result;
+    }
+#endif
+
     //*********************************************************************
     /// Inserts a value to the unordered_multimap.
     /// If asserts or exceptions are enabled, emits unordered_multimap_full if the unordered_multimap is already full.
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(const_iterator, const value_type& key_value_pair)
+    iterator insert(const_iterator, const_reference key_value_pair)
     {
       return insert(key_value_pair);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    /// Inserts a value to the unordered_multimap.
+    /// If asserts or exceptions are enabled, emits unordered_multimap_full if the unordered_multimap is already full.
+    ///\param position The position to insert at.
+    ///\param value    The value to insert.
+    //*********************************************************************
+    iterator insert(const_iterator, rvalue_reference key_value_pair)
+    {
+      return insert(etl::move(key_value_pair));
+    }
+#endif
 
     //*********************************************************************
     /// Inserts a range of values to the unordered_multimap.
@@ -1109,6 +1211,22 @@ namespace etl
       return *this;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    iunordered_multimap& operator = (iunordered_multimap&& rhs)
+    {
+      // Skip if doing self assignment
+      if (this != &rhs)
+      {
+        move(rhs.begin(), rhs.end());
+      }
+
+      return *this;
+    }
+#endif
+
   protected:
 
     //*********************************************************************
@@ -1335,8 +1453,27 @@ namespace etl
     unordered_multimap(const unordered_multimap& other)
       : base(node_pool, buckets, MAX_BUCKETS)
     {
-      base::assign(other.cbegin(), other.cend());
+      // Skip if doing self assignment
+      if (this != &other)
+      {
+        base::assign(other.cbegin(), other.cend());
+      }
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move constructor.
+    //*************************************************************************
+    unordered_multimap(unordered_multimap&& other)
+      : base(node_pool, buckets, MAX_BUCKETS)
+    {
+      // Skip if doing self assignment
+      if (this != &other)
+      {
+        base::move(other.begin(), other.end());
+      }
+    }
+#endif
 
     //*************************************************************************
     /// Constructor, from an iterator range.
@@ -1372,6 +1509,23 @@ namespace etl
 
       return *this;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    unordered_multimap& operator = (unordered_multimap&& rhs)
+    {
+      // Skip if doing self assignment
+      if (this != &rhs)
+      {
+        base::clear();
+        base::move(rhs.begin(), rhs.end());
+      }
+
+      return *this;
+    }
+#endif
 
   private:
 

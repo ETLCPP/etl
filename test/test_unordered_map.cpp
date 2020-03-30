@@ -38,6 +38,7 @@ SOFTWARE.
 #include <string>
 #include <vector>
 #include <numeric>
+#include <functional>
 
 #include "data.h"
 
@@ -78,6 +79,9 @@ namespace
 
     typedef TestDataDC<std::string>  DC;
     typedef TestDataNDC<std::string> NDC;
+
+    using ItemM = TestDataM<int>;
+    using DataM = etl::unordered_map<std::string, ItemM, SIZE, SIZE, std::hash<std::string>>;
 
     typedef ETL_OR_STD::pair<std::string, DC>  ElementDC;
     typedef ETL_OR_STD::pair<std::string, NDC> ElementNDC;
@@ -234,6 +238,30 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_move_constructor)
+    {
+      DataM data1;
+
+      ItemM d1(1);
+      ItemM d2(2);
+      ItemM d3(3);
+
+      data1.insert(DataM::value_type(std::string("1"), etl::move(d1)));
+      data1.insert(DataM::value_type(std::string("2"), etl::move(d2)));
+      data1.insert(DataM::value_type(std::string("3"), etl::move(d3)));
+      data1.insert(DataM::value_type(std::string("4"), ItemM(4)));
+
+      DataM data2(std::move(data1));
+
+      CHECK(!data1.empty()); // Move does not clear the source.
+
+      CHECK_EQUAL(1, data2.at("1").value);
+      CHECK_EQUAL(2, data2.at("2").value);
+      CHECK_EQUAL(3, data2.at("3").value);
+      CHECK_EQUAL(4, data2.at("4").value);
+    }
+
+    //*************************************************************************
     TEST(test_destruct_via_iunordered_map)
     {
       int current_count = NDC::get_instance_count();
@@ -292,6 +320,29 @@ namespace
                                 other_data.begin());
 
       CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_move_assignment)
+    {
+      DataM data1;
+      DataM data2;
+
+      ItemM d1(1);
+      ItemM d2(2);
+      ItemM d3(3);
+
+      data1.insert(DataM::value_type(std::string("1"), etl::move(d1)));
+      data1.insert(DataM::value_type(std::string("2"), etl::move(d2)));
+      data1.insert(DataM::value_type(std::string("3"), etl::move(d3)));
+      data1.insert(DataM::value_type(std::string("4"), ItemM(4)));
+
+      data2 = std::move(data1);
+
+      CHECK_EQUAL(1, data2.at("1").value);
+      CHECK_EQUAL(2, data2.at("2").value);
+      CHECK_EQUAL(3, data2.at("3").value);
+      CHECK_EQUAL(4, data2.at("4").value);
     }
 
     //*************************************************************************
@@ -467,6 +518,30 @@ namespace
       DataNDC data;
 
       CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::unordered_map_full);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_moved_value)
+    {
+      DataM data;
+
+      ItemM d1(1);
+      ItemM d2(2);
+      ItemM d3(3);
+
+      data.insert(DataM::value_type(std::string("1"), etl::move(d1)));
+      data.insert(DataM::value_type(std::string("2"), etl::move(d2)));
+      data.insert(DataM::value_type(std::string("3"), etl::move(d3)));
+      data.insert(DataM::value_type(std::string("4"), ItemM(4)));
+
+      CHECK(!bool(d1));
+      CHECK(!bool(d2));
+      CHECK(!bool(d3));
+
+      CHECK_EQUAL(1, data.at("1").value);
+      CHECK_EQUAL(2, data.at("2").value);
+      CHECK_EQUAL(3, data.at("3").value);
+      CHECK_EQUAL(4, data.at("4").value);
     }
 
     //*************************************************************************
