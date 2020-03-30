@@ -37,6 +37,7 @@ SOFTWARE.
 #include <vector>
 
 #include "etl/multiset.h"
+#include "etl/checksum.h"
 
 #include "data.h"
 
@@ -54,6 +55,20 @@ using Compare_Data = std::multiset<int, std::less<int>>;
 #endif
 
 using ItemM = TestDataM<int>;
+
+struct simple_hash
+{
+  size_t operator ()(const ItemM& value) const
+  {
+    etl::checksum<size_t> sum;
+
+    sum.add(value.valid);
+    sum.add(value.value);
+
+    return sum.value();
+  }
+};
+
 using DataM = etl::multiset<ItemM, MAX_SIZE>;
 
 using Data_iterator               = Data::iterator;
@@ -245,25 +260,25 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_move_constructor)
     {
-      //DataM data1;
+      DataM data1;
 
-      //ItemM d1(1);
-      //ItemM d2(2);
-      //ItemM d3(3);
+      ItemM d1(1);
+      ItemM d2(2);
+      ItemM d3(3);
 
-      //data1.insert(etl::move(d1));
-      //data1.insert(etl::move(d2));
-      //data1.insert(etl::move(d3));
-      //data1.insert(ItemM(4));
+      data1.insert(etl::move(d1));
+      data1.insert(etl::move(d2));
+      data1.insert(etl::move(d3));
+      data1.insert(ItemM(4));
 
-      //DataM data2(std::move(data1));
+      DataM data2(std::move(data1));
 
-      //CHECK(data1.empty());
+      CHECK(!data1.empty()); // Move does not clear the source.
 
-      //CHECK_EQUAL(1, ItemM(1).value);
-      //CHECK_EQUAL(2, ItemM(2).value);
-      //CHECK_EQUAL(3, ItemM(3).value);
-      //CHECK_EQUAL(4, ItemM(4).value);
+      CHECK_EQUAL(1, ItemM(1).value);
+      CHECK_EQUAL(2, ItemM(2).value);
+      CHECK_EQUAL(3, ItemM(3).value);
+      CHECK_EQUAL(4, ItemM(4).value);
     }
 
     //*************************************************************************
@@ -353,27 +368,27 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_move_assignment)
     {
-      //DataM data1;
+      DataM data1;
 
-      //ItemM d1(1);
-      //ItemM d2(2);
-      //ItemM d3(3);
+      ItemM d1(1);
+      ItemM d2(2);
+      ItemM d3(3);
 
-      //data1.insert(etl::move(d1));
-      //data1.insert(etl::move(d2));
-      //data1.insert(etl::move(d3));
-      //data1.insert(ItemM(4));
+      data1.insert(etl::move(d1));
+      data1.insert(etl::move(d2));
+      data1.insert(etl::move(d3));
+      data1.insert(ItemM(4));
 
-      //DataM data2;
+      DataM data2;
 
-      //data2 = std::move(data1);
+      data2 = std::move(data1);
 
-      //CHECK(data1.empty());
+      CHECK(!data1.empty()); // Move does not clear the source.
 
-      //CHECK_EQUAL(1, ItemM(1).value);
-      //CHECK_EQUAL(2, ItemM(2).value);
-      //CHECK_EQUAL(3, ItemM(3).value);
-      //CHECK_EQUAL(4, ItemM(4).value);
+      CHECK_EQUAL(1, ItemM(1).value);
+      CHECK_EQUAL(2, ItemM(2).value);
+      CHECK_EQUAL(3, ItemM(3).value);
+      CHECK_EQUAL(4, ItemM(4).value);
     }
 
     //*************************************************************************
@@ -590,6 +605,30 @@ namespace
       Data data;
 
       CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::multiset_full);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_moved_value)
+    {
+      DataM data;
+
+      ItemM d1(1);
+      ItemM d2(2);
+      ItemM d3(3);
+
+      data.insert(etl::move(d1));
+      data.insert(etl::move(d2));
+      data.insert(etl::move(d3));
+      data.insert(ItemM(4));
+
+      CHECK(!bool(d1));
+      CHECK(!bool(d2));
+      CHECK(!bool(d3));
+
+      CHECK_EQUAL(1, data.find(ItemM(1))->value);
+      CHECK_EQUAL(2, data.find(ItemM(2))->value);
+      CHECK_EQUAL(3, data.find(ItemM(3))->value);
+      CHECK_EQUAL(4, data.find(ItemM(4))->value);
     }
 
     //*************************************************************************

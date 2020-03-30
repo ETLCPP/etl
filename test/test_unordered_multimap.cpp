@@ -36,6 +36,7 @@ SOFTWARE.
 #include <string>
 #include <vector>
 #include <numeric>
+#include <functional>
 
 #include "data.h"
 
@@ -83,6 +84,9 @@ namespace
     typedef etl::unordered_multimap<std::string, DC,  SIZE, SIZE / 2, simple_hash> DataDC;
     typedef etl::unordered_multimap<std::string, NDC, SIZE, SIZE / 2, simple_hash> DataNDC;
     typedef etl::iunordered_multimap<std::string, NDC, simple_hash> IDataNDC;
+
+    using ItemM = TestDataM<int>;
+    using DataM = etl::unordered_multimap<std::string, ItemM, SIZE, SIZE, std::hash<std::string>>;
 
     NDC N0 = NDC("A");
     NDC N1 = NDC("B");
@@ -209,6 +213,30 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_move_constructor)
+    {
+      DataM data1;
+
+      ItemM d1(1);
+      ItemM d2(2);
+      ItemM d3(3);
+
+      data1.insert(DataM::value_type(std::string("1"), etl::move(d1)));
+      data1.insert(DataM::value_type(std::string("2"), etl::move(d2)));
+      data1.insert(DataM::value_type(std::string("3"), etl::move(d3)));
+      data1.insert(DataM::value_type(std::string("4"), ItemM(4)));
+
+      DataM data2(std::move(data1));
+
+      CHECK(!data1.empty()); // Move does not clear the source.
+
+      CHECK_EQUAL(1, data2.find("1")->second.value);
+      CHECK_EQUAL(2, data2.find("2")->second.value);
+      CHECK_EQUAL(3, data2.find("3")->second.value);
+      CHECK_EQUAL(4, data2.find("4")->second.value);
+    }
+
+    //*************************************************************************
     TEST(test_destruct_via_iunordered_multimap)
     {
       int current_count = NDC::get_instance_count();
@@ -267,6 +295,29 @@ namespace
                                 other_data.begin());
 
       CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_move_assignment)
+    {
+      DataM data1;
+      DataM data2;
+
+      ItemM d1(1);
+      ItemM d2(2);
+      ItemM d3(3);
+
+      data1.insert(DataM::value_type(std::string("1"), etl::move(d1)));
+      data1.insert(DataM::value_type(std::string("2"), etl::move(d2)));
+      data1.insert(DataM::value_type(std::string("3"), etl::move(d3)));
+      data1.insert(DataM::value_type(std::string("4"), ItemM(4)));
+
+      data2 = std::move(data1);
+
+      CHECK_EQUAL(1, data2.find("1")->second.value);
+      CHECK_EQUAL(2, data2.find("2")->second.value);
+      CHECK_EQUAL(3, data2.find("3")->second.value);
+      CHECK_EQUAL(4, data2.find("4")->second.value);
     }
 
     //*************************************************************************
@@ -373,6 +424,30 @@ namespace
       DataNDC data;
 
       CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::unordered_multimap_full);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_moved_value)
+    {
+      DataM data;
+
+      ItemM d1(1);
+      ItemM d2(2);
+      ItemM d3(3);
+
+      data.insert(DataM::value_type(std::string("1"), etl::move(d1)));
+      data.insert(DataM::value_type(std::string("2"), etl::move(d2)));
+      data.insert(DataM::value_type(std::string("3"), etl::move(d3)));
+      data.insert(DataM::value_type(std::string("4"), ItemM(4)));
+
+      CHECK(!bool(d1));
+      CHECK(!bool(d2));
+      CHECK(!bool(d3));
+
+      CHECK_EQUAL(1, data.find("1")->second.value);
+      CHECK_EQUAL(2, data.find("2")->second.value);
+      CHECK_EQUAL(3, data.find("3")->second.value);
+      CHECK_EQUAL(4, data.find("4")->second.value);
     }
 
     //*************************************************************************

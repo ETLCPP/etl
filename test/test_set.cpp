@@ -37,6 +37,7 @@ SOFTWARE.
 #include <vector>
 
 #include "etl/set.h"
+#include "etl/checksum.h"
 
 #include "data.h"
 
@@ -53,6 +54,20 @@ using Compare_Data = std::set<int, std::less<int>>;
 #endif
 
 using ItemM = TestDataM<int>;
+
+struct simple_hash
+{
+  size_t operator ()(const ItemM& value) const
+  {
+    etl::checksum<size_t> sum;
+
+    sum.add(value.valid);
+    sum.add(value.value);
+
+    return sum.value();
+  }
+};
+
 using DataM = etl::set<ItemM, MAX_SIZE>;
 
 using Data_iterator               = Data::iterator;
@@ -599,6 +614,30 @@ namespace
       Data data;
 
       CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::set_full);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_moved_value)
+    {
+      DataM data;
+
+      ItemM d1(1);
+      ItemM d2(2);
+      ItemM d3(3);
+
+      data.insert(etl::move(d1));
+      data.insert(etl::move(d2));
+      data.insert(etl::move(d3));
+      data.insert(ItemM(4));
+
+      CHECK(!bool(d1));
+      CHECK(!bool(d2));
+      CHECK(!bool(d3));
+
+      CHECK_EQUAL(1, data.find(ItemM(1))->value);
+      CHECK_EQUAL(2, data.find(ItemM(2))->value);
+      CHECK_EQUAL(3, data.find(ItemM(3))->value);
+      CHECK_EQUAL(4, data.find(ItemM(4))->value);
     }
 
     //*************************************************************************

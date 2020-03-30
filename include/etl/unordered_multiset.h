@@ -137,6 +137,9 @@ namespace etl
     typedef TKeyEqual         key_equal;
     typedef value_type&       reference;
     typedef const value_type& const_reference;
+#if ETL_CPP11_SUPPORTED
+    typedef value_type&&      rvalue_reference;
+#endif
     typedef value_type*       pointer;
     typedef const value_type* const_pointer;
     typedef size_t            size_type;
@@ -148,7 +151,7 @@ namespace etl
     // The nodes that store the elements.
     struct node_t : public link_t
     {
-      node_t(const value_type& key_)
+      node_t(const_reference key_)
         : key(key_)
       {
       }
@@ -650,12 +653,31 @@ namespace etl
       }
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move from a range
+    //*************************************************************************
+    void move(iterator first, iterator last)
+    {
+#if defined(ETL_DEBUG)
+      difference_type d = etl::distance(first, last);
+      ETL_ASSERT(d >= 0, ETL_ERROR(unordered_multiset_iterator));
+      ETL_ASSERT(size_t(d) <= max_size(), ETL_ERROR(unordered_multiset_full));
+#endif
+
+      while (first != last)
+      {
+        insert(etl::move(*first++));
+      }
+    }
+#endif
+
     //*********************************************************************
     /// Inserts a value to the unordered_multiset.
     /// If asserts or exceptions are enabled, emits unordered_multiset_full if the unordered_multiset is already full.
     ///\param value The value to insert.
     //*********************************************************************
-    ETL_OR_STD::pair<iterator, bool> insert(const value_type& key)
+    ETL_OR_STD::pair<iterator, bool> insert(const_reference key)
     {
       ETL_OR_STD::pair<iterator, bool> result(end(), false);
 
@@ -718,13 +740,83 @@ namespace etl
       return result;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    /// Inserts a value to the unordered_multiset.
+    /// If asserts or exceptions are enabled, emits unordered_multiset_full if the unordered_multiset is already full.
+    ///\param value The value to insert.
+    //*********************************************************************
+    ETL_OR_STD::pair<iterator, bool> insert(rvalue_reference key)
+    {
+      ETL_OR_STD::pair<iterator, bool> result(end(), false);
+
+      ETL_ASSERT(!full(), ETL_ERROR(unordered_multiset_full));
+
+      // Get the hash index.
+      size_t index = get_bucket_index(key);
+
+      // Get the bucket & bucket iterator.
+      bucket_t* pbucket = pbuckets + index;
+      bucket_t& bucket = *pbucket;
+
+      // The first one in the bucket?
+      if (bucket.empty())
+      {
+        // Get a new node.
+        node_t& node = create_data_node();
+        ::new (&node.key) value_type(etl::move(key));
+        ETL_INCREMENT_DEBUG_COUNT
+
+          // Just add the pointer to the bucket;
+          bucket.insert_after(bucket.before_begin(), node);
+        adjust_first_last_markers_after_insert(&bucket);
+
+        result.first = iterator((pbuckets + number_of_buckets), pbucket, pbucket->begin());
+        result.second = true;
+      }
+      else
+      {
+        // Step though the bucket looking for a place to insert.
+        local_iterator inode_previous = bucket.before_begin();
+        local_iterator inode = bucket.begin();
+
+        while (inode != bucket.end())
+        {
+          // Do we already have this key?
+          if (inode->key == key)
+          {
+            break;
+          }
+
+          ++inode_previous;
+          ++inode;
+        }
+
+        // Get a new node.
+        node_t& node = create_data_node();
+        ::new (&node.key) value_type(etl::move(key));
+        ETL_INCREMENT_DEBUG_COUNT
+
+          // Add the node to the end of the bucket;
+          bucket.insert_after(inode_previous, node);
+        adjust_first_last_markers_after_insert(&bucket);
+        ++inode_previous;
+
+        result.first = iterator((pbuckets + number_of_buckets), pbucket, inode_previous);
+        result.second = true;
+      }
+
+      return result;
+    }
+#endif
+
     //*********************************************************************
     /// Inserts a value to the unordered_multiset.
     /// If asserts or exceptions are enabled, emits unordered_multiset_full if the unordered_multiset is already full.
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(const_iterator position, const value_type& key)
+    iterator insert(const_iterator position, const_reference key)
     {
       return insert(key).first;
     }
@@ -1104,6 +1196,23 @@ namespace etl
       return *this;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    iunordered_multiset& operator = (iunordered_multiset&& rhs)
+    {
+      // Skip if doing self assignment
+      if (this != &rhs)
+      {
+        clear();
+        move(rhs.begin(), rhs.end());
+      }
+
+      return *this;
+    }
+#endif
+
   protected:
 
     //*********************************************************************
@@ -1331,8 +1440,28 @@ namespace etl
     unordered_multiset(const unordered_multiset& other)
       : base(node_pool, buckets, MAX_BUCKETS)
     {
-      base::assign(other.cbegin(), other.cend());
+      // Skip if doing self assignment
+      if (this != &other)
+      {
+        base::assign(other.cbegin(), other.cend());
+      }
     }
+
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move constructor.
+    //*************************************************************************
+    unordered_multiset(unordered_multiset&& other)
+      : base(node_pool, buckets, MAX_BUCKETS)
+    {
+      // Skip if doing self assignment
+      if (this != &other)
+      {
+        base::move(other.begin(), other.end());
+      }
+    }
+#endif
 
     //*************************************************************************
     /// Constructor, from an iterator range.
@@ -1368,6 +1497,23 @@ namespace etl
 
       return *this;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    unordered_multiset& operator = (unordered_multiset&& rhs)
+    {
+      // Skip if doing self assignment
+      if (this != &rhs)
+      {
+        base::clear();
+        base::move(rhs.begin(), rhs.end());
+      }
+
+      return *this;
+    }
+#endif
 
   private:
 
