@@ -2313,8 +2313,6 @@ namespace etl
           this->push_back(etl::move(*itr));
           ++itr;
         }
-
-        other.initialise();
       }
     }
 #endif
@@ -2377,8 +2375,6 @@ namespace etl
           this->push_back(etl::move(*itr));
           ++itr;
         }
-
-        rhs.initialise();
       }
 
       return *this;

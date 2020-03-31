@@ -177,7 +177,6 @@ namespace
 
       Data deque2(std::move(deque1));
 
-      CHECK_EQUAL(0U, deque1.size());
       CHECK_EQUAL(4U, deque2.size());
 
       std::unique_ptr<uint32_t> pr = std::move(*deque2.begin());
@@ -261,7 +260,6 @@ namespace
       Data deque2;
       deque2 = std::move(deque1);
 
-      CHECK_EQUAL(0U, deque1.size());
       CHECK_EQUAL(4U, deque2.size());
 
       CHECK_EQUAL(1U, *deque2[0]);
@@ -1869,7 +1867,6 @@ namespace
       CHECK_EQUAL(2U, *(*(data2.begin() + 3)));
       CHECK_EQUAL(5U, *(*(data2.begin() + 4)));
 
-      CHECK(data1.empty());
       CHECK_EQUAL(ACTUAL_SIZE, data2.size());
 
       // Move assignment.
@@ -1882,7 +1879,6 @@ namespace
       CHECK_EQUAL(2U, *(*(data3.begin() + 3)));
       CHECK_EQUAL(5U, *(*(data3.begin() + 4)));
 
-      CHECK(data2.empty());
       CHECK_EQUAL(ACTUAL_SIZE, data3.size());
     }
   };
