@@ -653,25 +653,6 @@ namespace etl
       }
     }
 
-#if ETL_CPP11_SUPPORTED
-    //*************************************************************************
-    /// Move from a range
-    //*************************************************************************
-    void move(iterator first, iterator last)
-    {
-#if defined(ETL_DEBUG)
-      difference_type d = etl::distance(first, last);
-      ETL_ASSERT(d >= 0, ETL_ERROR(unordered_multiset_iterator));
-      ETL_ASSERT(size_t(d) <= max_size(), ETL_ERROR(unordered_multiset_full));
-#endif
-
-      while (first != last)
-      {
-        insert(etl::move(*first++));
-      }
-    }
-#endif
-
     //*********************************************************************
     /// Inserts a value to the unordered_multiset.
     /// If asserts or exceptions are enabled, emits unordered_multiset_full if the unordered_multiset is already full.
@@ -1262,6 +1243,19 @@ namespace etl
       first = pbuckets;
       last = first;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move from a range
+    //*************************************************************************
+    void move(iterator first, iterator last)
+    {
+      while (first != last)
+      {
+        insert(etl::move(*first++));
+      }
+    }
+#endif
 
   private:
 
