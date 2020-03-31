@@ -1,7 +1,10 @@
 ===============================================================================
+17.3.0
+Added move_iterator wrapper class.
+
+===============================================================================
 17.2.0
 Added move API to unordered map and set containers.
-Added a 'move' member function that moves items into the containers.
 
 ===============================================================================
 17.1.2
