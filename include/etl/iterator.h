@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "type_traits.h"
+#include "utility.h"
 
 #if !defined(ETL_NO_STL)
   #include <iterator>
@@ -426,13 +427,182 @@ namespace etl
     typedef TCategory  iterator_category;
   };
 
-}
-
-namespace etl
-{
+#if ETL_CPP11_SUPPORTED
   //***************************************************************************
-// Helper templates.
-//***************************************************************************
+  // move_iterator
+  template <typename TIterator>
+  class move_iterator
+  {
+  public:
+
+    typedef typename iterator_traits<TIterator>::iterator_category iterator_category;
+    typedef typename iterator_traits<TIterator>::value_type        value_type;
+    typedef typename iterator_traits<TIterator>::difference_type   difference_type;
+    typedef TIterator    iterator_type;
+    typedef TIterator    pointer;
+    typedef value_type&& reference;
+
+    move_iterator()
+    {
+    }
+
+    explicit move_iterator(TIterator itr)
+      : current(itr)
+    {
+    }
+
+    template <typename U>
+    move_iterator(const move_iterator<U>& itr)
+      : current(itr.base())
+    {
+    }
+
+    template <typename U>
+    move_iterator& operator =(const move_iterator<U>& itr)
+    {
+      current = itr.current;
+    }
+
+    iterator_type base() const
+    {
+      return current;
+    }
+
+    pointer operator ->() const
+    {
+      return current;
+    }
+
+    reference operator *() const
+    {
+      return etl::move(*current);
+    }
+
+    move_iterator& operator++()
+    {
+      ++current;
+      return *this;
+    }
+
+    move_iterator& operator--()
+    {
+      --current;
+      return *this;
+    }
+
+    move_iterator operator++(int)
+    {
+      move_iterator temp = *this;
+      ++current;
+      return temp;
+    }
+
+    move_iterator operator--(int)
+    {
+      move_iterator temp = *this;
+      --current;
+      return temp;
+    }
+
+    move_iterator operator +(difference_type n) const
+    {
+      return move_iterator(current + n);
+    }
+
+    move_iterator operator -(difference_type n) const
+    {
+      return move_iterator(current - n);
+    }
+
+    move_iterator operator +=(difference_type n)
+    {
+      current += n;
+      return *this;
+    }
+
+    move_iterator operator -=(difference_type n)
+    {
+      current -= n;
+      return *this;
+    }
+
+    reference operator [](difference_type n) const
+    {
+      return etl::move(current[n]);
+    }
+
+  private:
+
+    TIterator current;
+  };
+
+  template <typename TIterator>
+  bool operator ==(const etl::move_iterator<TIterator>& lhs,
+                   const etl::move_iterator<TIterator>& rhs)
+  {
+    return lhs.base() == rhs.base();
+  }
+
+  template <typename TIterator>
+  bool operator !=(const etl::move_iterator<TIterator>& lhs,
+                   const etl::move_iterator<TIterator>& rhs)
+  {
+    return !(lhs == rhs);
+  }
+
+  template <typename TIterator>
+  bool operator <(const etl::move_iterator<TIterator>& lhs,
+                  const etl::move_iterator<TIterator>& rhs)
+  {
+    return lhs.base() < rhs.base();
+  }
+
+  template <typename TIterator>
+  bool operator <=(const etl::move_iterator<TIterator>& lhs,
+                   const etl::move_iterator<TIterator>& rhs)
+  {
+    return !(rhs < lhs);
+  }
+
+  template <typename TIterator>
+  bool operator >(const etl::move_iterator<TIterator>& lhs,
+                  const etl::move_iterator<TIterator>& rhs)
+  {
+    return (rhs < lhs);
+  }
+
+  template <typename TIterator>
+  bool operator >=(const etl::move_iterator<TIterator>& lhs,
+                   const etl::move_iterator<TIterator>& rhs)
+  {
+    return !(lhs < rhs);
+  }
+
+  template <typename TIterator>
+  move_iterator<TIterator> operator +(typename move_iterator<TIterator>::difference_type n,
+                                      const move_iterator<TIterator>& rhs)
+  {
+    return rhs + n;
+  }
+
+  template <typename  TIterator1, typename TIterator2 >
+  auto operator -(const move_iterator<TIterator1>& lhs,
+                  const move_iterator<TIterator2>& rhs) -> decltype(lhs.base() - rhs.base())
+  {
+    return lhs.base() - rhs.base();
+  }
+
+  template <typename TIterator>
+  etl::move_iterator<TIterator> make_move_iterator(TIterator itr)
+  {
+    return etl::move_iterator<TIterator>(itr);
+  }
+
+#endif
+
+  //***************************************************************************
+  // Helper templates.
+  //***************************************************************************
   template <typename T>
   struct is_input_iterator
   {
