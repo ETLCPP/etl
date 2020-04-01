@@ -73,6 +73,7 @@ SOFTWARE.
   #define ETL_DELETE    = delete
   #define ETL_EXPLICIT explicit
   #define ETL_OVERRIDE override
+  #define ETL_FINAL final
   #if defined(ETL_EXCEPTIONS_DISABLED)
     #define ETL_NOEXCEPT
     #define ETL_NOEXCEPT_EXPR(expression)
@@ -86,6 +87,7 @@ SOFTWARE.
   #define ETL_DELETE
   #define ETL_EXPLICIT
   #define ETL_OVERRIDE
+  #define ETL_FINAL
   #define ETL_NOEXCEPT
   #define ETL_NOEXCEPT_EXPR(expression)
 #endif

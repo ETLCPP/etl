@@ -831,6 +831,9 @@
     <ClInclude Include="..\..\include\etl\null_type.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\span.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1287,6 +1290,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_message_packet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_span.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
