@@ -10,6 +10,7 @@
 #define ETL_NOEXCEPT_EXPR
 #define ETL_NODISCARD
 #define ETL_OVERRIDE
+#define ETL_FINAL
 #define ETL_ERROR_TEXT
 #define ETL_ASSERT
 #define ETL_ERROR

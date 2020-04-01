@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2020 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include "UnitTest++/UnitTest++.h"
 
-#include "etl/array_view.h"
+#include "etl/span.h"
 #include "etl/array.h"
 
 #include <array>
@@ -38,7 +38,7 @@ SOFTWARE.
 
 namespace
 {
-  SUITE(test_array_view)
+  SUITE(test_span)
   {
     static const size_t SIZE = 10;
 
@@ -46,8 +46,8 @@ namespace
     typedef std::array<int, SIZE> StlData;
     typedef std::vector<int> StlVData;
 
-    typedef etl::array_view<int> View;
-    typedef etl::array_view<const int> CView;
+    typedef etl::span<int> View;
+    typedef etl::span<const int> CView;
 
     EtlData etldata = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     StlData stldata = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -260,7 +260,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_assign_from_array_view)
+    TEST(test_assign_from_span)
     {
       View view1(etldata);
       View view2;
@@ -283,54 +283,6 @@ namespace
       CHECK(isEqual);
 
       isEqual = std::equal(cview1.begin(), cview1.end(), cview2.begin());
-      CHECK(isEqual);
-    }
-
-    //*************************************************************************
-    TEST(test_assign_from_iterator_range)
-    {
-      View view;
-      CView cview;
-
-      view.assign(etldata.begin(), etldata.end());
-      cview.assign(cetldata.begin(), cetldata.end());
-
-      CHECK_EQUAL(etldata.size(), view.size());
-      CHECK_EQUAL(etldata.max_size(), view.max_size());
-
-      CHECK_EQUAL(cetldata.size(), cview.size());
-      CHECK_EQUAL(cetldata.max_size(), cview.max_size());
-
-      bool isEqual;
-
-      isEqual = std::equal(etldata.begin(), etldata.end(), view.begin());
-      CHECK(isEqual);
-
-      isEqual = std::equal(cetldata.begin(), cetldata.end(), cview.begin());
-      CHECK(isEqual);
-    }
-
-    //*************************************************************************
-    TEST(test_assign_from_iterator_size)
-    {
-      View view;
-      CView cview;
-
-      view.assign(etldata.begin(), etldata.size());
-      cview.assign(cetldata.begin(), cetldata.size());
-
-      CHECK_EQUAL(etldata.size(), view.size());
-      CHECK_EQUAL(etldata.max_size(), view.max_size());
-
-      CHECK_EQUAL(cetldata.size(), cview.size());
-      CHECK_EQUAL(cetldata.max_size(), cview.max_size());
-
-      bool isEqual;
-
-      isEqual = std::equal(etldata.begin(), etldata.end(), view.begin());
-      CHECK(isEqual);
-
-      isEqual = std::equal(cetldata.begin(), cetldata.end(), cview.begin());
       CHECK(isEqual);
     }
 
@@ -359,17 +311,17 @@ namespace
       View  view(etldata.begin(), etldata.end());
       CView cview(etldata.begin(), etldata.end());
 
-      CHECK_EQUAL(view.begin(),  view.cbegin());
-      CHECK_EQUAL(cview.begin(), cview.cbegin());
+      CHECK_EQUAL(etldata.begin(), view.begin());
+      CHECK_EQUAL(etldata.begin(), cview.begin());
 
-      CHECK_EQUAL(view.rbegin().base(),  view.crbegin().base());
-      CHECK_EQUAL(cview.rbegin().base(), cview.crbegin().base());
+      CHECK_EQUAL(etldata.end(), view.rbegin().base());
+      CHECK_EQUAL(etldata.end(), cview.rbegin().base());
 
-      CHECK_EQUAL(view.end(),  view.cend());
-      CHECK_EQUAL(cview.end(), cview.cend());
+      CHECK_EQUAL(etldata.end(), view.end());
+      CHECK_EQUAL(etldata.end(), cview.end());
 
-      CHECK_EQUAL(view.rend().base(),  view.crend().base());
-      CHECK_EQUAL(cview.rend().base(), cview.crend().base());
+      CHECK_EQUAL(etldata.begin(), view.rend().base());
+      CHECK_EQUAL(etldata.begin(), cview.rend().base());
     }
 
     //*************************************************************************
@@ -409,138 +361,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_at)
-    {
-      View  view(etldata.begin(), etldata.end());
-      CView cview(etldata.begin(), etldata.end());
-
-      for (size_t i = 0; i < etldata.size(); ++i)
-      {
-        CHECK_EQUAL(etldata[i], view.at(i));
-        CHECK_EQUAL(etldata[i], cview.at(i));
-      }
-    }
-
-    //*************************************************************************
-    TEST(test_at_uninitialised_exception)
-    {
-      View  view;
-      CView cview;
-
-      CHECK_THROW(view.at(0),  etl::array_view_uninitialised);
-      CHECK_THROW(cview.at(0), etl::array_view_uninitialised);
-    }
-
-    //*************************************************************************
-    TEST(test_at_bounds_exception)
-    {
-      View  view(etldata.begin(), etldata.end());
-      CView cview(etldata.begin(), etldata.end());
-
-      CHECK_THROW(view.at(view.size()), etl::array_view_bounds);
-      CHECK_THROW(cview.at(cview.size()), etl::array_view_bounds);
-    }
-
-    //*************************************************************************
-    TEST(test_non_member_same)
-    {
-      View  view1(etldata.begin(), etldata.end());
-      View  view2(etldata.begin(), etldata.end());
-
-      CView cview1(etldata.begin(), etldata.end());
-      CView cview2(etldata.begin(), etldata.end());
-
-      CHECK(view1 == view2);
-      CHECK(cview1 == cview2);
-
-      CHECK(view1 <= view2);
-      CHECK(cview1 <= cview2);
-
-      CHECK(view1 >= view2);
-      CHECK(cview1 >= cview2);
-
-      CHECK(!(view1 > view2));
-      CHECK(!(cview1 > cview2));
-
-      CHECK(!(view1 < view2));
-      CHECK(!(cview1 < cview2));
-    }
-
-    //*************************************************************************
-    TEST(test_non_member_smaller)
-    {
-      View  view1(etldata.begin(), etldata.end());
-      View  view2(etldatasmaller.begin(), etldatasmaller.end());
-
-      CView cview1(etldata.begin(), etldata.end());
-      CView cview2(etldatasmaller.begin(), etldatasmaller.end());
-
-      CHECK(!(view1  == view2));
-      CHECK(!(cview1 == cview2));
-
-      CHECK(!(view1  <= view2));
-      CHECK(!(cview1 <= cview2));
-
-      CHECK(view2  <= view1);
-      CHECK(cview2 <= cview1);
-
-      CHECK(view1  >= view2);
-      CHECK(cview1 >= cview2);
-
-      CHECK(!(view2  >= view1));
-      CHECK(!(cview2 >= cview1));
-
-      CHECK(view1  > view2);
-      CHECK(cview1 > cview2);
-
-      CHECK(!(view2  > view1));
-      CHECK(!(cview2 > cview1));
-
-      CHECK(!(view1  < view2));
-      CHECK(!(cview1 < cview2));
-
-      CHECK(view2  < view1);
-      CHECK(cview2 < cview1);
-    }
-
-    //*************************************************************************
-    TEST(test_non_member_shorter)
-    {
-      View  view1(etldata.begin(), etldata.end());
-      View  view2(etldatashorter.begin(), etldatashorter.end());
-
-      CView cview1(etldata.begin(), etldata.end());
-      CView cview2(etldatashorter.begin(), etldatashorter.end());
-
-      CHECK(!(view1 == view2));
-      CHECK(!(cview1 == cview2));
-
-      CHECK(!(view1 <= view2));
-      CHECK(!(cview1 <= cview2));
-
-      CHECK(view2 <= view1);
-      CHECK(cview2 <= cview1);
-
-      CHECK(view1 >= view2);
-      CHECK(cview1 >= cview2);
-
-      CHECK(!(view2 >= view1));
-      CHECK(!(cview2 >= cview1));
-
-      CHECK(view1  > view2);
-      CHECK(cview1 > cview2);
-
-      CHECK(!(view2  > view1));
-      CHECK(!(cview2 > cview1));
-
-      CHECK(!(view1  < view2));
-      CHECK(!(cview1 < cview2));
-
-      CHECK(view2  < view1);
-      CHECK(cview2 < cview1);
-    }
-
-    //*************************************************************************
     TEST(test_empty)
     {
       View view1(etldata.begin(), etldata.begin());
@@ -548,6 +368,22 @@ namespace
 
       View view2(etldata.begin(), etldata.begin() + 1);
       CHECK(!view2.empty());
+    }
+
+    //*************************************************************************
+    TEST(test_size)
+    {
+      View view(etldata);
+
+      CHECK_EQUAL(etldata.size(), view.size());
+    }
+
+    //*************************************************************************
+    TEST(test_size_bytes)
+    {
+      View view(etldata);
+
+      CHECK_EQUAL(etldata.size() * sizeof(EtlData::value_type), view.size_bytes());
     }
 
     //*************************************************************************
@@ -571,31 +407,85 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_remove_prefix_suffix)
+    TEST(test_first)
     {
-      std::vector<int> original     = { 1, 2, 3, 4, 5, 6, 7, 8 };
-      std::vector<int> prefix       = { 3, 4, 5, 6, 7, 8 };
-      std::vector<int> prefixsuffix = { 3, 4, 5, 6 };
+      std::vector<int> original = { 1, 2, 3, 4, 5, 6, 7, 8 };
+      std::vector<int> first    = { 1, 2, 3, 4, 5, 6 };
       View view(original);
       CView cview(original);
 
       bool isEqual;
 
-      view.remove_prefix(2);
-      isEqual = std::equal(view.begin(), view.end(), prefix.begin());
+      auto result = view.first<6>();
+      isEqual = std::equal(result.begin(), result.end(), first.begin());
       CHECK(isEqual);
+      CHECK_EQUAL(first.size(), result.extent);
+      CHECK_EQUAL(first.size(), result.size());
 
-      cview.remove_prefix(2);
-      isEqual = std::equal(cview.begin(), cview.end(), prefix.begin());
+      auto cresult = cview.first<6>();
+      isEqual = std::equal(cresult.begin(), cresult.end(), first.begin());
       CHECK(isEqual);
+      CHECK_EQUAL(first.size(), cresult.extent);
+      CHECK_EQUAL(first.size(), cresult.size());
+    }
 
-      view.remove_suffix(2);
-      isEqual = std::equal(view.begin(), view.end(), prefixsuffix.begin());
-      CHECK(isEqual);
+    //*************************************************************************
+    TEST(test_last)
+    {
+      std::vector<int> original = { 1, 2, 3, 4, 5, 6, 7, 8 };
+      std::vector<int> last     = { 3, 4, 5, 6, 7, 8 };
+      View view(original);
+      CView cview(original);
 
-      cview.remove_suffix(2);
-      isEqual = std::equal(cview.begin(), cview.end(), prefixsuffix.begin());
+      bool isEqual;
+
+      auto result = view.last<6>();
+      isEqual = std::equal(result.begin(), result.end(), last.begin());
       CHECK(isEqual);
+      CHECK_EQUAL(last.size(), result.extent);
+      CHECK_EQUAL(last.size(), result.size());
+
+      auto cresult = cview.last<6>();
+      isEqual = std::equal(cresult.begin(), cresult.end(), last.begin());
+      CHECK(isEqual);
+      CHECK_EQUAL(last.size(), cresult.extent);
+      CHECK_EQUAL(last.size(), cresult.size());
+    }
+
+    //*************************************************************************
+    TEST(test_subspan)
+    {
+      std::vector<int> original = { 1, 2, 3, 4, 5, 6, 7, 8 };
+      std::vector<int> sub1 = { 3, 4, 5, 6 };
+      std::vector<int> sub2 = { 3, 4, 5, 6, 7, 8 };
+      View view(original);
+      CView cview(original);
+
+      bool isEqual;
+
+      auto span1 = view.subspan<2, 4>();
+      isEqual = std::equal(span1.begin(), span1.end(), sub1.begin());
+      CHECK(isEqual);
+      CHECK_EQUAL(sub1.size(), span1.extent);
+      CHECK_EQUAL(sub1.size(), span1.size());
+
+      auto cspan1 = cview.subspan<2, 4>();
+      isEqual = std::equal(cspan1.begin(), cspan1.end(), sub1.begin());
+      CHECK(isEqual);
+      CHECK_EQUAL(sub1.size(), cspan1.extent);
+      CHECK_EQUAL(sub1.size(), cspan1.size());
+
+      auto span2 = view.subspan<2>();
+      isEqual = std::equal(span2.begin(), span2.end(), sub2.begin());
+      CHECK(isEqual);
+      CHECK_EQUAL(etl::dynamic_extent, span2.extent);
+      CHECK_EQUAL(sub2.size(), span2.size());
+
+      auto cspan2 = cview.subspan<2>();
+      isEqual = std::equal(cspan2.begin(), cspan2.end(), sub2.begin());
+      CHECK(isEqual);
+      CHECK_EQUAL(etl::dynamic_extent, cspan2.extent);
+      CHECK_EQUAL(sub2.size(), cspan2.size());
     }
 
     //*************************************************************************
@@ -605,7 +495,7 @@ namespace
       CView cview(etldata.begin(), etldata.end());
 
       size_t hashdata = etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&etldata[0]),
-                                                                    reinterpret_cast<const uint8_t*>(&etldata[etldata.size()]));
+                                                                reinterpret_cast<const uint8_t*>(&etldata[etldata.size()]));
 
       size_t hashview  = etl::hash<View>()(view);
       size_t hashcview = etl::hash<CView>()(cview);

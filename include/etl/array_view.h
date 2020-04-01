@@ -39,8 +39,7 @@ SOFTWARE.
 #include "nullptr.h"
 #include "hash.h"
 #include "algorithm.h"
-
-#include "algorithm.h"
+#include "memory.h"
 
 ///\defgroup array array
 /// A wrapper for arrays
@@ -100,14 +99,14 @@ namespace etl
   {
   public:
 
-    typedef T                                     value_type;
-    typedef size_t                           size_type;
-    typedef T&                                    reference;
-    typedef const T&                              const_reference;
-    typedef T*                                    pointer;
-    typedef const T*                              const_pointer;
-    typedef T*                                    iterator;
-    typedef const T*                              const_iterator;
+    typedef T        value_type;
+    typedef size_t   size_type;
+    typedef T&       reference;
+    typedef const T& const_reference;
+    typedef T*       pointer;
+    typedef const T* const_pointer;
+    typedef T*       iterator;
+    typedef const T* const_iterator;
     typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
     typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
 
