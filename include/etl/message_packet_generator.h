@@ -109,7 +109,7 @@ namespace etl
         cog.out("      case T%d::ID:" %n)
         cog.out(" ::new (p) T%d(static_cast<const T%d&>(msg));" % (n, n))
         cog.outl(" break;")
-    cog.outl("      default: default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;")
+    cog.outl("      default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;")
     cog.outl("    }")
     cog.outl("  }")
     cog.outl("")

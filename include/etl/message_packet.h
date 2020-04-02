@@ -100,7 +100,7 @@ namespace etl
         case T14::ID: ::new (p) T14(static_cast<const T14&>(msg)); break;
         case T15::ID: ::new (p) T15(static_cast<const T15&>(msg)); break;
         case T16::ID: ::new (p) T16(static_cast<const T16&>(msg)); break;
-        default: default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
       }
     }
 
