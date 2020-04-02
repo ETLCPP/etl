@@ -232,9 +232,9 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Assign from a view.
+    /// Assign from a span.
     //*************************************************************************
-    ETL_CONSTEXPR14 span& operator =(const span& other) ETL_NOEXCEPT
+    ETL_CONSTEXPR span& operator =(const span& other) ETL_NOEXCEPT
     {
       mbegin = other.mbegin;
       mend   = other.mend;
@@ -276,10 +276,7 @@ namespace etl
     typename etl::enable_if<COUNT == etl::dynamic_extent, etl::span<element_type, ((EXTENT != etl::dynamic_extent) ? EXTENT - OFFSET : etl::dynamic_extent)> >::type
       subspan() const
     {
-      element_type* pb = mbegin + OFFSET;
-      element_type* pe = mend;
-
-      return etl::span<element_type, ((EXTENT != etl::dynamic_extent) ? EXTENT - OFFSET : etl::dynamic_extent)>(pb, pe);
+      return etl::span<element_type, ((EXTENT != etl::dynamic_extent) ? EXTENT - OFFSET : etl::dynamic_extent)>(mbegin + OFFSET, mend);
     }
 
     //*************************************************************************
@@ -291,10 +288,7 @@ namespace etl
     typename etl::enable_if<COUNT != etl::dynamic_extent, etl::span<element_type, COUNT> >::type
       subspan() const
     {
-      element_type* pb = mbegin + OFFSET;
-      element_type* pe = pb + COUNT;
-
-      return etl::span<element_type, COUNT>(pb, pe);
+      return etl::span<element_type, COUNT>(mbegin + OFFSET, mbegin + OFFSET + COUNT);
     }
 
     //*************************************************************************

@@ -1,4 +1,8 @@
 ===============================================================================
+17.4.2
+Make etl::span::subspan functions compatible with C++11 constexpr
+
+===============================================================================
 17.4.1
 Removed double definition of default case in switch.
 
