@@ -144,12 +144,12 @@ void WatchdogCallback()
 // Maximum of two tasks.
 //
 // Try the other scheduler policies to see how scheduling differs.
-// etl::scheduler_policy_sequencial_single
-// etl::scheduler_policy_sequencial_multiple
+// etl::scheduler_policy_sequential_single
+// etl::scheduler_policy_sequential_multiple
 // etl::scheduler_policy_highest_priority
 // etl::scheduler_policy_most_work
 //*****************************************************************************
-class Scheduler : public etl::scheduler<etl::scheduler_policy_sequencial_single, 2>
+class Scheduler : public etl::scheduler<etl::scheduler_policy_sequential_single, 2>
 {
 };
 
