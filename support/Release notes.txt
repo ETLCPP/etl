@@ -1,4 +1,9 @@
 ===============================================================================
+17.4.3
+Changed local 'work' variables from uint_least8_t to uint32_t to avoid possible overflow.
+Fixed miss-spelt scheduler policies. Typedef'd old names for backwards compatibility.
+
+===============================================================================
 17.4.2
 Make etl::span::subspan functions compatible with C++11 constexpr
 

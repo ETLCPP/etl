@@ -151,8 +151,8 @@ Task task3(3, work3, common);
 
 etl::task* taskList[] = { &task1, &task2, &task3 };
 
-typedef etl::scheduler<etl::scheduler_policy_sequencial_single,   sizeof(etl::array_size(taskList))> SchedulerSequencialSingle;
-typedef etl::scheduler<etl::scheduler_policy_sequencial_multiple, sizeof(etl::array_size(taskList))> SchedulerSequencialMultiple;
+typedef etl::scheduler<etl::scheduler_policy_sequential_single,   sizeof(etl::array_size(taskList))> SchedulerSequentialSingle;
+typedef etl::scheduler<etl::scheduler_policy_sequential_multiple, sizeof(etl::array_size(taskList))> SchedulerSequentialMultiple;
 typedef etl::scheduler<etl::scheduler_policy_highest_priority,    sizeof(etl::array_size(taskList))> SchedulerHighestPriority;
 typedef etl::scheduler<etl::scheduler_policy_most_work,           sizeof(etl::array_size(taskList))> SchedulerMostWork;
 
@@ -163,7 +163,7 @@ namespace
     //*************************************************************************
     TEST(test_scheduler_sequencial_single)
     {
-      SchedulerSequencialSingle s;
+      SchedulerSequentialSingle s;
 
       task1.Reset();
       task2.Reset();
@@ -188,7 +188,7 @@ namespace
     //*************************************************************************
     TEST(test_scheduler_sequencial_multiple)
     {
-      SchedulerSequencialMultiple s;
+      SchedulerSequentialMultiple s;
 
       task1.Reset();
       task2.Reset();

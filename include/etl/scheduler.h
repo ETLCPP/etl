@@ -98,11 +98,11 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Sequencial Single.
+  /// Sequential Single.
   /// A policy the scheduler can use to decide what to do next.
   /// Only calls the task to process work once, if it has work to do.
   //***************************************************************************
-  struct scheduler_policy_sequencial_single
+  struct scheduler_policy_sequential_single
   {
     bool schedule_tasks(etl::ivector<etl::task*>& task_list)
     {
@@ -123,12 +123,16 @@ namespace etl
     }
   };
 
+  /// Typedef for backwards compatibility with miss-spelt struct name.
+  /// Deprecated.
+  typedef scheduler_policy_sequential_single scheduler_policy_sequencial_single;
+
   //***************************************************************************
-  /// Sequencial Multiple.
+  /// Sequential Multiple.
   /// A policy the scheduler can use to decide what to do next.
   /// Calls the task to process work until it reports that it has no more.
   //***************************************************************************
-  struct scheduler_policy_sequencial_multiple
+  struct scheduler_policy_sequential_multiple
   {
     bool schedule_tasks(etl::ivector<etl::task*>& task_list)
     {
@@ -148,6 +152,10 @@ namespace etl
       return idle;
     }
   };
+
+  /// Typedef for backwards compatibility with miss-spelt struct name.
+  /// Deprecated.
+  typedef scheduler_policy_sequential_multiple scheduler_policy_sequencial_multiple;
 
   //***************************************************************************
   /// Highest Priority.
@@ -194,13 +202,13 @@ namespace etl
       bool idle = true;
 
       size_t most_index = 0;
-      uint_least8_t most_work = 0;
+      uint32_t most_work = 0;
 
       for (size_t index = 0; index < task_list.size(); ++index)
       {
         etl::task& task = *(task_list[index]);
 
-        uint_least8_t n_work = task.task_request_work();
+        uint32_t n_work = task.task_request_work();
 
         if (n_work > most_work)
         {
