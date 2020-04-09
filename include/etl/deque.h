@@ -635,7 +635,7 @@ namespace etl
       //***************************************************
       void swap(const_iterator& other)
       {
-        swap(index, other.index);
+        ETL_OR_STD::swap(index, other.index);
       }
 
     private:
