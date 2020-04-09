@@ -50,30 +50,126 @@ namespace
   {
     Message1(int x_)
       : x(x_)
+      , moved(false)
+      , copied(false)
     {
     }
 
+    Message1(const Message1& other)
+      : x(other.x)
+      , moved(false)
+      , copied(true)
+    {
+    }
+
+    Message1(Message1&& other)
+      : x(other.x)
+      , moved(true)
+      , copied(false)
+    {
+    }
+
+    Message1& operator =(const Message1& other)
+    {
+      x = other.x;
+      moved = false;
+      copied = true;
+    }
+
+    Message1& operator =(Message1&& other)
+    {
+      x = other.x;
+      moved = true;
+      copied = false;
+    }
+
     int x;
+    bool moved;
+    bool copied;
   };
 
   struct Message2 : public etl::message<MESSAGE2>
   {
     Message2(double x_)
       : x(x_)
+      , moved(false)
+      , copied(false)
     {
     }
 
+    Message2(const Message2& other)
+      : x(other.x)
+      , moved(false)
+      , copied(true)
+    {
+    }
+
+    Message2(Message2&& other)
+      : x(other.x)
+      , moved(true)
+      , copied(false)
+    {
+    }
+
+    Message2& operator =(const Message2& other)
+    {
+      x = other.x;
+      moved = false;
+      copied = true;
+    }
+
+    Message2& operator =(Message2&& other)
+    {
+      x = other.x;
+      moved = true;
+      copied = false;
+    }
+
     double x;
+    bool moved;
+    bool copied;
   };
 
   struct Message3 : public etl::message<MESSAGE3>
   {
     Message3(std::string x_)
       : x(x_)
+      , moved(false)
+      , copied(false)
     {
     }
 
+    Message3(const Message3& other)
+      : x(other.x)
+      , moved(false)
+      , copied(true)
+    {
+    }
+
+    Message3(Message3&& other)
+      : x(other.x)
+      , moved(true)
+      , copied(false)
+    {
+    }
+
+    Message3& operator =(const Message3& other)
+    {
+      x = other.x;
+      moved = false;
+      copied = true;
+    }
+
+    Message3& operator =(Message3&& other)
+    {
+      x = other.x;
+      moved = true;
+      copied = false;
+    }
+
     std::string x;
+    bool moved;
+    bool copied;
   };
 
   struct Message4 : public etl::message<MESSAGE4>
@@ -103,9 +199,39 @@ namespace
       CHECK_EQUAL(MESSAGE2, packet2.get().message_id);
       CHECK_EQUAL(MESSAGE3, packet3.get().message_id);
 
+      CHECK(!static_cast<Message1&>(packet1.get()).moved);
+      CHECK(!static_cast<Message2&>(packet2.get()).moved);
+      CHECK(!static_cast<Message3&>(packet3.get()).moved);
+
+      CHECK(static_cast<Message1&>(packet1.get()).copied);
+      CHECK(static_cast<Message2&>(packet2.get()).copied);
+      CHECK(static_cast<Message3&>(packet3.get()).copied);
+
       CHECK_EQUAL(1,   static_cast<Message1&>(packet1.get()).x);
       CHECK_EQUAL(2.2, static_cast<Message2&>(packet2.get()).x);
       CHECK_EQUAL("3", static_cast<Message3&>(packet3.get()).x);
+    }
+
+    //*************************************************************************
+    TEST(message_packet_move_construction)
+    {
+      Message1 message1(1);
+      Message2 message2(2.2);
+
+      Packet packet1(message1);
+      Packet packet2(std::move(message2));
+
+      CHECK_EQUAL(MESSAGE1, packet1.get().message_id);
+      CHECK_EQUAL(MESSAGE2, packet2.get().message_id);
+
+      CHECK(!static_cast<Message1&>(packet1.get()).moved);
+      CHECK(static_cast<Message2&>(packet2.get()).moved);
+
+      CHECK(static_cast<Message1&>(packet1.get()).copied);
+      CHECK(!static_cast<Message2&>(packet2.get()).copied);
+
+      CHECK_EQUAL(1, static_cast<Message1&>(packet1.get()).x);
+      CHECK_EQUAL(2.2, static_cast<Message2&>(packet2.get()).x);
     }
 
     //*************************************************************************
@@ -153,6 +279,98 @@ namespace
       CHECK_EQUAL(1,   static_cast<Message1&>(packet1.get()).x);
       CHECK_EQUAL(2.2, static_cast<Message2&>(packet2.get()).x);
       CHECK_EQUAL("3", static_cast<Message3&>(packet3.get()).x);
+    }
+
+    //*************************************************************************
+    TEST(message_packet_copy_consructor)
+    {
+      Message1 message1(1);
+      Message2 message2(2.2);
+
+      Packet packet1(message1);
+      Packet packet2(packet1);
+
+      CHECK_EQUAL(MESSAGE1, packet1.get().message_id);
+      CHECK_EQUAL(MESSAGE1, packet2.get().message_id);
+
+      CHECK(!static_cast<Message1&>(packet1.get()).moved);
+      CHECK(!static_cast<Message1&>(packet2.get()).moved);
+
+      CHECK(static_cast<Message1&>(packet1.get()).copied);
+      CHECK(static_cast<Message1&>(packet2.get()).copied);
+
+      CHECK_EQUAL(1, static_cast<Message1&>(packet1.get()).x);
+      CHECK_EQUAL(1, static_cast<Message1&>(packet2.get()).x);
+    }
+
+    //*************************************************************************
+    TEST(message_packet_move_consructor)
+    {
+      Message1 message1(1);
+      Message2 message2(2.2);
+
+      Packet packet1(message1);
+      Packet packet2(std::move(Packet(message1)));
+
+      CHECK_EQUAL(MESSAGE1, packet1.get().message_id);
+      CHECK_EQUAL(MESSAGE1, packet2.get().message_id);
+
+      CHECK(!static_cast<Message1&>(packet1.get()).moved);
+      CHECK(static_cast<Message1&>(packet2.get()).moved);
+
+      CHECK(static_cast<Message1&>(packet1.get()).copied);
+      CHECK(!static_cast<Message1&>(packet2.get()).copied);
+
+      CHECK_EQUAL(1, static_cast<Message1&>(packet1.get()).x);
+      CHECK_EQUAL(1, static_cast<Message1&>(packet2.get()).x);
+    }
+
+    //*************************************************************************
+    TEST(message_packet_assignment)
+    {
+      Message1 message1(1);
+      Message2 message2(2.2);
+
+      Packet packet1(message1);
+      Packet packet2;
+
+      packet2 = packet1;
+
+      CHECK_EQUAL(MESSAGE1, packet1.get().message_id);
+      CHECK_EQUAL(MESSAGE1, packet2.get().message_id);
+
+      CHECK(!static_cast<Message1&>(packet1.get()).moved);
+      CHECK(!static_cast<Message1&>(packet2.get()).moved);
+
+      CHECK(static_cast<Message1&>(packet1.get()).copied);
+      CHECK(static_cast<Message1&>(packet2.get()).copied);
+
+      CHECK_EQUAL(1, static_cast<Message1&>(packet1.get()).x);
+      CHECK_EQUAL(1, static_cast<Message1&>(packet2.get()).x);
+    }
+
+    //*************************************************************************
+    TEST(message_packet_move_assignment)
+    {
+      Message1 message1(1);
+      Message2 message2(2.2);
+
+      Packet packet1(message1);
+      Packet packet2;
+
+      packet2 = std::move(packet1);
+
+      CHECK_EQUAL(MESSAGE1, packet1.get().message_id);
+      CHECK_EQUAL(MESSAGE1, packet2.get().message_id);
+
+      CHECK(!static_cast<Message1&>(packet1.get()).moved);
+      CHECK(static_cast<Message1&>(packet2.get()).moved);
+
+      CHECK(static_cast<Message1&>(packet1.get()).copied);
+      CHECK(!static_cast<Message1&>(packet2.get()).copied);
+
+      CHECK_EQUAL(1, static_cast<Message1&>(packet1.get()).x);
+      CHECK_EQUAL(1, static_cast<Message1&>(packet2.get()).x);
     }
   };
 }

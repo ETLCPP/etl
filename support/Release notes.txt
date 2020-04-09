@@ -1,4 +1,9 @@
 ===============================================================================
+17.5.0
+Modified etl::message_packet to allow default construction, copy/move construction
+and copy/move assignment.
+
+===============================================================================
 17.4.3
 Changed local 'work' variables from uint_least8_t to uint32_t to avoid possible overflow.
 Fixed miss-spelt scheduler policies. Typedef'd old names for backwards compatibility.
