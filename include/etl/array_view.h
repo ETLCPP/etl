@@ -101,14 +101,22 @@ namespace etl
 
     typedef T        value_type;
     typedef size_t   size_type;
-    typedef T&       reference;
     typedef const T& const_reference;
-    typedef T*       pointer;
     typedef const T* const_pointer;
-    typedef T*       iterator;
     typedef const T* const_iterator;
-    typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
     typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
+
+#if defined(ETL_ARRAY_VIEW_IS_MUTABLE)
+    typedef T* pointer;
+    typedef T& reference;
+    typedef T* iterator;
+    typedef ETL_OR_STD::reverse_iterator<iterator> reverse_iterator;
+#else
+    typedef const_pointer   pointer;
+    typedef const_reference reference;
+    typedef const_pointer   iterator;
+    typedef const_reverse_iterator reverse_iterator;
+#endif
 
     //*************************************************************************
     /// Default constructor.
@@ -369,6 +377,7 @@ namespace etl
       mend   = etl::addressof(*begin_) + size_;
     }
 
+#if defined(ETL_ARRAY_VIEW_IS_MUTABLE)
     //*************************************************************************
     /// Returns a reference to the indexed value.
     //*************************************************************************
@@ -376,6 +385,7 @@ namespace etl
     {
       return mbegin[i];
     }
+#endif
 
     //*************************************************************************
     /// Returns a const reference to the indexed value.
@@ -385,6 +395,7 @@ namespace etl
       return mbegin[i];
     }
 
+#if defined(ETL_ARRAY_VIEW_IS_MUTABLE)
     //*************************************************************************
     /// Returns a reference to the indexed value.
     //*************************************************************************
@@ -394,6 +405,7 @@ namespace etl
       ETL_ASSERT(i < size(), ETL_ERROR(array_view_bounds));
       return mbegin[i];
     }
+#endif
 
     //*************************************************************************
     /// Returns a const reference to the indexed value.
