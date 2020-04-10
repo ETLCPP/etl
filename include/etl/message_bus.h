@@ -103,9 +103,9 @@ namespace etl
         if (ok)
         {
           router_list_t::iterator irouter = etl::upper_bound(router_list.begin(),
-                                                                router_list.end(),
-                                                                router.get_message_router_id(),
-                                                                compare_router_id());
+                                                             router_list.end(),
+                                                             router.get_message_router_id(),
+                                                             compare_router_id());
 
           router_list.insert(irouter, &router);
         }
@@ -126,9 +126,9 @@ namespace etl
       else
       {
         ETL_OR_STD::pair<router_list_t::iterator, router_list_t::iterator> range = etl::equal_range(router_list.begin(),
-                                                                                               router_list.end(),
-                                                                                               id,
-                                                                                               compare_router_id());
+                                                                                                    router_list.end(),
+                                                                                                    id,
+                                                                                                    compare_router_id());
 
         router_list.erase(range.first, range.second);
       }
@@ -138,8 +138,8 @@ namespace etl
     void unsubscribe(etl::imessage_router& router)
     {
       router_list_t::iterator irouter = etl::find(router_list.begin(),
-                                                     router_list.end(),
-                                                     &router);
+                                                  router_list.end(),
+                                                  &router);
 
       if (irouter != router_list.end())
       {
@@ -196,7 +196,7 @@ namespace etl
 
             if (router.accepts(message.message_id))
             {
-              router.receive(source, destination_router_id, message);
+              router.receive(source, message);
             }
 
             ++irouter;
@@ -213,9 +213,9 @@ namespace etl
 
           // Find routers with the id.
           ETL_OR_STD::pair<router_list_t::iterator, router_list_t::iterator> range = etl::equal_range(router_list.begin(),
-                                                                                                 router_list.end(),
-                                                                                                 destination_router_id,
-                                                                                                 compare_router_id());
+                                                                                                      router_list.end(),
+                                                                                                      destination_router_id,
+                                                                                                      compare_router_id());
 
           // Call all of them.
           while (range.first != range.second)

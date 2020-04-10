@@ -1,4 +1,8 @@
 ===============================================================================
+17.7.0
+Added etl::message_producer type.
+
+===============================================================================
 17.6.0
 etl::array_view is non-mutable by default.
 Mutable functionality is enabled by defining ETL_ARRAY_VIEW_IS_MUTABLE

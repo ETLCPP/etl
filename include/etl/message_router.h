@@ -172,8 +172,7 @@ namespace etl
   };
 
   //***************************************************************************
-  /// This router can be used either as a sink for messages
-  /// or as a producer-only of messages such an interrupt routine.
+  /// This router can be used as a sink for messages or a 'null source' router.
   //***************************************************************************
   class null_message_router : public imessage_router
   {
@@ -216,6 +215,46 @@ namespace etl
     {
       static null_message_router nmr;
       return nmr;
+    }
+  };
+
+  //***************************************************************************
+  /// This router can be used as a producer-only of messages, such an interrupt routine.
+  //***************************************************************************
+  class message_producer : public imessage_router
+  {
+  public:
+
+    message_producer(etl::message_router_id_t id_)
+      : imessage_router(id_)
+    {
+    }
+
+    //********************************************
+    void receive(const etl::imessage&)
+    {
+    }
+
+    //********************************************
+    void receive(etl::imessage_router&, const etl::imessage&)
+    {
+    }
+
+    //********************************************
+    void receive(imessage_router&, etl::message_router_id_t, const etl::imessage&)
+    {
+    }
+
+    //********************************************
+    bool accepts(etl::message_id_t) const
+    {
+      return false;
+    }
+
+    //********************************************
+    bool is_null_router() const
+    {
+      return true;
     }
   };
 
