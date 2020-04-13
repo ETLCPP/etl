@@ -1,4 +1,9 @@
 ===============================================================================
+17.7.1
+Fix etl::make_pair for C++11. Replaced etl::move with etl::forward
+Added implicit conversions between etl::pair and std::pair
+
+===============================================================================
 17.7.0
 Added etl::message_producer type.
 

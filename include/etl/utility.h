@@ -161,17 +161,41 @@ namespace etl
     }
 #endif
 
+#if defined(ETL_IN_UNIT_TEST) || !defined(ETL_NO_STL)
+    /// Converting from etl::pair to std::pair
+    operator std::pair<T1, T2>()
+    {
+      return std::make_pair(first, second);
+    }
+
+    /// Constructing from std::pair
+    pair(const std::pair<T1, T2>& other)
+      : first(other.first)
+      , second(other.second)
+    {
+    }
+
+#if ETL_CPP11_SUPPORTED
+    /// Constructing from std::pair
+    pair(std::pair<T1, T2>&& other)
+      : first(etl::move(other.first))
+      , second(etl::move(other.second))
+    {
+    }
+#endif
+#endif
+
     void swap(pair<T1, T2>& other)
     {
       using ETL_OR_STD::swap;
 
-      swap(first,  other.first);
+      swap(first, other.first);
       swap(second, other.second);
     }
 
     pair<T1, T2>& operator =(const pair<T1, T2>& other)
     {
-      first  = other.first;
+      first = other.first;
       second = other.second;
 
       return *this;
@@ -180,7 +204,7 @@ namespace etl
     template <typename U1, typename U2>
     pair<U1, U2>& operator =(const pair<U1, U2>& other)
     {
-      first  = other.first;
+      first = other.first;
       second = other.second;
 
       return *this;
@@ -189,7 +213,7 @@ namespace etl
 #if ETL_CPP11_SUPPORTED
     pair<T1, T2>& operator =(pair<T1, T2>&& other)
     {
-      first  = etl::move(other.first);
+      first = etl::move(other.first);
       second = etl::move(other.second);
 
       return *this;
@@ -198,7 +222,7 @@ namespace etl
     template <typename U1, typename U2>
     pair<U1, U2>& operator =(pair<U1, U2>&& other)
     {
-      first  = etl::move(other.first);
+      first = etl::move(other.first);
       second = etl::move(other.second);
 
       return *this;
@@ -211,7 +235,7 @@ namespace etl
   template <typename T1, typename T2>
   inline pair<T1, T2> make_pair(T1&& a, T2&& b)
   {
-    return pair<T1, T2>(etl::move(a), etl::move(b));
+    return pair<T1, T2>(etl::forward<T1>(a), etl::forward<T2>(b));
   }
 #else
   template <typename T1, typename T2>

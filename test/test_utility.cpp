@@ -191,6 +191,41 @@ namespace
       CHECK(p3 > p1);
     }
 
+
+    //*************************************************************************
+    TEST(test_pair_conversion)
+    {
+#if ETL_CPP11_SUPPORTED
+      etl::pair<int, std::string> ep1(1, "Hello");
+      std::pair<int, std::string> sp1(2, "World");
+
+      etl::pair<int, std::string> ep2(sp1);
+      std::pair<int, std::string> sp2(ep1);
+
+      CHECK_EQUAL(2, ep2.first);
+      CHECK_EQUAL(std::string("World"), ep2.second);
+
+      CHECK_EQUAL(1, sp2.first);
+      CHECK_EQUAL(std::string("Hello"), sp2.second);
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_pair_move_conversion)
+    {
+      etl::pair<int, std::string> ep1(1, "Hello");
+      std::pair<int, std::string> sp1(2, "World");
+
+      etl::pair<int, std::string> ep2(std::move(sp1));
+      std::pair<int, std::string> sp2(std::move(ep1));
+
+      CHECK_EQUAL(2, ep2.first);
+      CHECK_EQUAL(std::string("World"), ep2.second);
+
+      CHECK_EQUAL(1, sp2.first);
+      CHECK_EQUAL(std::string("Hello"), sp2.second);
+    }
+
     //*************************************************************************
     TEST(test_exchange)
     {
