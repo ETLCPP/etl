@@ -1,4 +1,9 @@
 ===============================================================================
+17.8.0
+Added is_producer() and is_consumer() to the message router interface.
+Deprecated is_null_router()
+
+===============================================================================
 17.7.1
 Fix etl::make_pair for C++11. Replaced etl::move with etl::forward
 Added implicit conversions between etl::pair and std::pair

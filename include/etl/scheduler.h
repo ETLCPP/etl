@@ -124,8 +124,7 @@ namespace etl
   };
 
   /// Typedef for backwards compatibility with miss-spelt struct name.
-  /// Deprecated.
-  typedef scheduler_policy_sequential_single scheduler_policy_sequencial_single;
+  ETL_DEPRECATED_REASON("Misspelt class name") typedef scheduler_policy_sequential_single scheduler_policy_sequencial_single;
 
   //***************************************************************************
   /// Sequential Multiple.
@@ -154,8 +153,7 @@ namespace etl
   };
 
   /// Typedef for backwards compatibility with miss-spelt struct name.
-  /// Deprecated.
-  typedef scheduler_policy_sequential_multiple scheduler_policy_sequencial_multiple;
+  ETL_DEPRECATED typedef scheduler_policy_sequential_multiple scheduler_policy_sequencial_multiple;
 
   //***************************************************************************
   /// Highest Priority.

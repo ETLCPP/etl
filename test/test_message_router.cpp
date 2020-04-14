@@ -215,6 +215,10 @@ namespace
 
       p_router = &r1;
 
+      // CHECK(!r1.is_null_router());
+      CHECK(r1.is_producer());
+      CHECK(r1.is_consumer());
+
       p_router->receive(r2, message1);
       CHECK_EQUAL(1, r1.message1_count);
       CHECK_EQUAL(0, r1.message2_count);
@@ -284,6 +288,10 @@ namespace
       Router2 router;
       etl::null_message_router null_router;
 
+      // CHECK(null_router.is_null_router());
+      CHECK(!null_router.is_producer());
+      CHECK(!null_router.is_consumer());
+
       // Send from the null router.
       etl::send_message(null_router, router, message1);
       CHECK_EQUAL(1, router.message1_count);
@@ -340,6 +348,10 @@ namespace
     {
       Router2 router;
       etl::message_producer producer(ROUTER3);
+
+      // CHECK(!producer.is_null_router());
+      CHECK(producer.is_producer());
+      CHECK(!producer.is_consumer());
 
       CHECK_EQUAL(0, router.sender_id);
 

@@ -74,6 +74,8 @@ SOFTWARE.
   #define ETL_EXPLICIT explicit
   #define ETL_OVERRIDE override
   #define ETL_FINAL final
+  #define ETL_NORETURN [[noreturn]]
+
   #if defined(ETL_EXCEPTIONS_DISABLED)
     #define ETL_NOEXCEPT
     #define ETL_NOEXCEPT_EXPR(expression)
@@ -88,6 +90,7 @@ SOFTWARE.
   #define ETL_EXPLICIT
   #define ETL_OVERRIDE
   #define ETL_FINAL
+  #define ETL_NORETURN
   #define ETL_NOEXCEPT
   #define ETL_NOEXCEPT_EXPR(expression)
 #endif
@@ -95,8 +98,12 @@ SOFTWARE.
 // C++14
 #if ETL_CPP14_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)
   #define ETL_CONSTEXPR14 constexpr
+  #define ETL_DEPRECATED [[deprecated]]
+  #define ETL_DEPRECATED_REASON(reason) [[deprecated(reason)]]
 #else
   #define ETL_CONSTEXPR14
+  #define ETL_DEPRECATED
+  #define ETL_DEPRECATED_REASON(reason)
 #endif
 
 // C++17
@@ -104,10 +111,21 @@ SOFTWARE.
   #define ETL_CONSTEXPR17 constexpr
   #define ETL_IF_CONSTEXPR constexpr
   #define ETL_NODISCARD [[nodiscard]]
+  #define ETL_FALLTHROUGH [[fallthrough]]
 #else
   #define ETL_CONSTEXPR17
   #define ETL_IF_CONSTEXPR
   #define ETL_NODISCARD
+  #define ETL_FALLTHROUGH
+#endif
+
+// C++20
+#if ETL_CPP20_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+  #define ETL_LIKELY [[likely]]
+  #define ETL_UNLIKELY [[unlikely]]
+#else
+  #define ETL_LIKELY
+  #define ETL_UNLIKELY
 #endif
 
 // Sort out namespaces for STL/No STL options.
