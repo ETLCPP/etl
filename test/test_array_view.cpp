@@ -598,6 +598,49 @@ namespace
       CHECK(isEqual);
     }
 
+	TEST(test_remove_prefix_boundary)
+	{
+		// On-point test
+		std::vector<int> original = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+		View view(original);
+
+		view.remove_prefix(original.size());
+
+		CHECK(view.empty());
+
+		// Off-point test
+
+		std::vector<int> original2 = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+		View view2(original2);
+
+		view2.remove_prefix(original.size() + 1);
+
+		CHECK(view2.empty());
+	}
+
+	TEST(test_remove_suffix_boundary)
+	{
+		// On-point test
+		std::vector<int> original = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+		View view(original);
+
+		view.remove_suffix(original.size());
+
+		CHECK(view.empty());
+
+		// Off-point test
+
+		std::vector<int> original2 = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+		View view2(original2);
+
+		view2.remove_suffix(original.size() + 1);
+
+		CHECK(view2.empty());
+	}
     //*************************************************************************
     TEST(test_hash)
     {
