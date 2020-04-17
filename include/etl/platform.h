@@ -52,17 +52,17 @@ SOFTWARE.
 // Include the user's profile definition.
 #include "etl_profile.h"
 
-#if defined(ETL_AUTO_DETERMINE_COMPILER_INFO)
-  // Figure out things about the compiler.
-  #include "profiles/determine_compiler.h"
-  #include "profiles/determine_compiler_version.h"
-  #include "profiles/determine_compiler_language_support.h"
-#endif
+// Figure out things about the compiler, if haven't already done so in etl_profile.h
+#include "profiles/determine_compiler_version.h"
+#include "profiles/determine_compiler_language_support.h"
+
+// See if we can determine the OS we're compiling on, if haven't already done so in etl_profile.h
+#include "profiles/determine_development_os.h"
 
 #if defined(ETL_FORCE_EXPLICIT_STRING_CONVERSION_FROM_CHAR)
-#define ETL_EXPLICIT_STRING_FROM_CHAR explicit
+  #define ETL_EXPLICIT_STRING_FROM_CHAR explicit
 #else
-#define ETL_EXPLICIT_STRING_FROM_CHAR
+  #define ETL_EXPLICIT_STRING_FROM_CHAR
 #endif
 
 // The macros below are dependent on the profile.
@@ -70,7 +70,7 @@ SOFTWARE.
 #if ETL_CPP11_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)
   #define ETL_CONSTEXPR constexpr
   #define ETL_CONST_OR_CONSTEXPR constexpr
-  #define ETL_DELETE    = delete
+  #define ETL_DELETE = delete
   #define ETL_EXPLICIT explicit
   #define ETL_OVERRIDE override
   #define ETL_FINAL final

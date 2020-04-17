@@ -37,7 +37,6 @@ SOFTWARE.
 
 #define ETL_TARGET_DEVICE_GENERIC
 #define ETL_TARGET_OS_NONE
-#define ETL_COMPILER_GCC
 #ifdef __cplusplus
   #define ETL_CPP11_SUPPORTED                      (__cplusplus >= 201103L)
   #define ETL_CPP14_SUPPORTED                      (__cplusplus >= 201402L)

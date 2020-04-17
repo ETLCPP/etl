@@ -28,14 +28,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_MSVC_X86_INCLUDED
-#define ETL_MSVC_X86_INCLUDED
+#ifndef ETL_GCC_GENERIC_NO_STL_INCLUDED
+#define ETL_GCC_GENERIC_NO_STL_INCLUDED
 
 //*****************************************************************************
-// Microsoft Visual Studio
+// GCC
 //*****************************************************************************
 
-#define ETL_TARGET_DEVICE_X86
-#define ETL_TARGET_OS_WINDOWS
+#define ETL_TARGET_DEVICE_GENERIC
+#define ETL_TARGET_OS_NONE
+#define ETL_NO_STL
 
 #endif

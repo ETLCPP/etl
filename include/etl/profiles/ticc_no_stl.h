@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2020 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,14 +28,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_MSVC_X86_INCLUDED
-#define ETL_MSVC_X86_INCLUDED
+#ifndef ETL_TICC_NO_STL_INCLUDED
+#define ETL_TICC_NO_STL_INCLUDED
 
 //*****************************************************************************
-// Microsoft Visual Studio
+// Texas Instruments Code Composer
 //*****************************************************************************
 
-#define ETL_TARGET_DEVICE_X86
-#define ETL_TARGET_OS_WINDOWS
+#define ETL_TARGET_DEVICE_GENERIC
+#define ETL_TARGET_OS_NONE
+#define ETL_CPP11_SUPPORTED 0
+#define ETL_CPP14_SUPPORTED 0
+#define ETL_CPP17_SUPPORTED 0
+#define ETL_NO_NULLPTR_SUPPORT    1
+#define ETL_NO_LARGE_CHAR_SUPPORT 1
+#define ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED 0
+#define ETL_NO_STL
 
 #endif

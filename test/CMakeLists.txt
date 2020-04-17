@@ -74,10 +74,22 @@ set(TEST_SOURCE_FILES
   test_optional.cpp
   test_packet.cpp
   test_parameter_type.cpp
+  test_parity_checksum.cpp
   test_pearson.cpp
   test_pool.cpp
   test_priority_queue.cpp
   test_queue.cpp
+  test_queue_memory_model_small.cpp
+  test_queue_mpmc_mutex.cpp
+  test_queue_mpmc_mutex_small.cpp
+  test_queue_spsc_isr.cpp
+  test_queue_spsc_isr_small.cpp
+  test_queue_spsc_atomic.cpp
+  test_queue_spsc_atomic_small.cpp
+  test_queue_spsc_isr.cpp
+  test_queue_spsc_isr_small.cpp
+  test_queue_spsc_locked.cpp
+  test_queue_spsc_locked_small.cpp
   test_random.cpp
   test_reference_flat_map.cpp
   test_reference_flat_multimap.cpp

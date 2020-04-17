@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove, scott-eddy
+Copyright(c) 2017 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -27,38 +27,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
-#ifndef __ETL_PROFILE_H__
-#define __ETL_PROFILE_H__
-#if defined(PROFILE_MSVC)
-  #include "msvc_x86.h"
-#elif defined(PROFILE_GCC_GENERIC)
-  #include "gcc_generic.h"
-#elif defined(PROFILE_GCC_LINUX_X86)
-  #include "gcc_linux_x86.h"
-#elif defined(PROFILE_GCC_WINDOWS_X86)
-  #include "gcc_windows_x86.h"
-#elif defined(PROFILE_CLANG_GENERIC)
-  #include "clang_generic.h"
-#elif defined(PROFILE_ARM_V5_GENERIC)
-  #include "armv5.h"
-#elif defined(PROFILE_ARM_V6_GENERIC)
-  #include "armv6.h"
-#elif defined(PROFILE_ARDUINO)
-  #include "arduino_arm.h"
-#elif defined(PROFILE_TICC)
-  #include "ticc.h"
-#elif defined(PROFILE_CPP03_GENERIC)
-  #include "cpp03.h"
-#elif defined(PROFILE_CPP11_GENERIC)
-  #include "cpp11.h"
-#elif defined(PROFILE_CPP14_GENERIC)
-  #include "cpp14.h"
-#elif defined(PROFILE_CPP17_GENERIC)
-  #include "cpp17.h"
-#elif defined(PROFILE_CUSTOM)
-  #include "custom_profile.h"
-#else
-  #include "auto.h"
-#endif
 
-#endif // __ETL_PROFILE_H_
+#ifndef ETL_GCC_WINDOWS_X86_NO_STL_INCLUDED
+#define ETL_GCC_WINDOWS_X86_NO_STL_INCLUDED
+
+//*****************************************************************************
+// GCC
+//*****************************************************************************
+
+#define ETL_TARGET_DEVICE_X86
+#define ETL_TARGET_OS_WINDOWS
+#define ETL_NO_STL
+
+#endif

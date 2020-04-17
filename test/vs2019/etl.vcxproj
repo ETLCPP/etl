@@ -1058,13 +1058,19 @@
     <ClInclude Include="..\..\include\etl\private\to_string_helper.h" />
     <ClInclude Include="..\..\include\etl\profiles\armv7.h" />
     <ClInclude Include="..\..\include\etl\profiles\armv7_no_stl.h" />
-    <ClInclude Include="..\..\include\etl\profiles\auto.h" />
     <ClInclude Include="..\..\include\etl\profiles\clang_generic.h" />
+    <ClInclude Include="..\..\include\etl\profiles\clang_generic_no_stl.h" />
     <ClInclude Include="..\..\include\etl\profiles\cpp17.h" />
     <ClInclude Include="..\..\include\etl\profiles\cpp17_no_stl.h" />
     <ClInclude Include="..\..\include\etl\profiles\determine_compiler.h" />
     <ClInclude Include="..\..\include\etl\profiles\determine_compiler_language_support.h" />
     <ClInclude Include="..\..\include\etl\profiles\determine_compiler_version.h" />
+    <ClInclude Include="..\..\include\etl\profiles\determine_development_os.h" />
+    <ClInclude Include="..\..\include\etl\profiles\gcc_generic_no_stl.h" />
+    <ClInclude Include="..\..\include\etl\profiles\gcc_linux_x86_no_stl.h" />
+    <ClInclude Include="..\..\include\etl\profiles\gcc_windows_x86_no_stl.h" />
+    <ClInclude Include="..\..\include\etl\profiles\msvc_x86_no_stl.h" />
+    <ClInclude Include="..\..\include\etl\profiles\ticc_no_stl.h" />
     <ClInclude Include="..\..\include\etl\queue_spsc_locked.h" />
     <ClInclude Include="..\..\include\etl\scaled_rounding.h" />
     <ClInclude Include="..\..\include\etl\span.h" />
@@ -1658,7 +1664,6 @@
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\..\CMakeLists.txt" />
     <Text Include="..\..\include\etl\file_error_numbers.txt" />
     <Text Include="..\..\support\Release notes.txt" />
     <Text Include="..\..\todo.txt" />

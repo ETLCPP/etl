@@ -804,9 +804,6 @@
     <ClInclude Include="..\..\include\etl\profiles\determine_compiler.h">
       <Filter>ETL\Profiles</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\profiles\auto.h">
-      <Filter>ETL\Profiles</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\profiles\determine_compiler_language_support.h">
       <Filter>ETL\Profiles</Filter>
     </ClInclude>
@@ -833,6 +830,27 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\span.h">
       <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\determine_development_os.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\msvc_x86_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\ticc_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\gcc_windows_x86_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\gcc_linux_x86_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\gcc_generic_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\clang_generic_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1352,9 +1370,6 @@
     </Text>
     <Text Include="..\..\support\Release notes.txt">
       <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="..\..\CMakeLists.txt">
-      <Filter>Resource Files\Make</Filter>
     </Text>
     <Text Include="..\CMakeLists.txt">
       <Filter>Source Files</Filter>
