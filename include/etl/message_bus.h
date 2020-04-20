@@ -247,7 +247,7 @@ namespace etl
     /// Does this message bus accept the message id?
     /// Yes!, it accepts everything!
     //*******************************************
-    bool accepts(etl::message_id_t) const
+    bool accepts(etl::message_id_t) const ETL_OVERRIDE
     {
       return true;
     }
