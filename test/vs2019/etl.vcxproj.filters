@@ -345,21 +345,6 @@
     <ClInclude Include="..\..\include\etl\packet.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\fsm_generator.h">
-      <Filter>ETL\Frameworks\Generators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\message_router_generator.h">
-      <Filter>ETL\Frameworks\Generators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\largest_generator.h">
-      <Filter>ETL\Utilities\Generators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\type_traits_generator.h">
-      <Filter>ETL\Utilities\Generators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\smallest_generator.h">
-      <Filter>ETL\Utilities\Generators</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\message.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
@@ -389,9 +374,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\type_lookup.h">
       <Filter>ETL\Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\type_lookup_generator.h">
-      <Filter>ETL\Utilities\Generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\compare.h">
       <Filter>ETL\Utilities</Filter>
@@ -456,9 +438,6 @@
     <ClInclude Include="..\..\include\etl\array_wrapper.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\variant_pool_generator.h">
-      <Filter>ETL\Containers\Generators</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\version.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
@@ -497,9 +476,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\type_select.h">
       <Filter>ETL\Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\type_select_generator.h">
-      <Filter>ETL\Utilities\Generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\memory_model.h">
       <Filter>ETL\Utilities</Filter>
@@ -819,9 +795,6 @@
     <ClInclude Include="..\..\include\etl\mutex\mutex_freertos.h">
       <Filter>ETL\Utilities\Mutex</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\message_packet_generator.h">
-      <Filter>ETL\Frameworks\Generators</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\message_packet.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
@@ -851,6 +824,33 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\profiles\clang_generic_no_stl.h">
       <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\largest_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\smallest_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\type_lookup_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\type_select_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\type_traits_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\fsm_generator.h">
+      <Filter>ETL\Frameworks\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\message_packet_generator.h">
+      <Filter>ETL\Frameworks\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\message_router_generator.h">
+      <Filter>ETL\Frameworks\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\variant_pool_generator.h">
+      <Filter>ETL\Containers\Generators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1318,38 +1318,11 @@
     <None Include="..\..\library.properties">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\..\include\etl\generate.bat">
-      <Filter>Resource Files\Generators</Filter>
-    </None>
-    <None Include="..\..\include\etl\generate_fsm.bat">
-      <Filter>Resource Files\Generators</Filter>
-    </None>
-    <None Include="..\..\include\etl\generate_largest.bat">
-      <Filter>Resource Files\Generators</Filter>
-    </None>
-    <None Include="..\..\include\etl\generate_message_router.bat">
-      <Filter>Resource Files\Generators</Filter>
-    </None>
-    <None Include="..\..\include\etl\generate_smallest.bat">
-      <Filter>Resource Files\Generators</Filter>
-    </None>
-    <None Include="..\..\include\etl\generate_type_lookup.bat">
-      <Filter>Resource Files\Generators</Filter>
-    </None>
-    <None Include="..\..\include\etl\generate_type_traits.bat">
-      <Filter>Resource Files\Generators</Filter>
-    </None>
-    <None Include="..\..\include\etl\generate_variant_pool.bat">
-      <Filter>Resource Files\Generators</Filter>
-    </None>
     <None Include="..\..\etl.pspimage">
       <Filter>Resource Files\Images</Filter>
     </None>
     <None Include="..\..\etl.xar">
       <Filter>Resource Files\Images</Filter>
-    </None>
-    <None Include="..\..\include\etl\generate_type_select.bat">
-      <Filter>Resource Files\Generators</Filter>
     </None>
     <None Include="..\..\library.json">
       <Filter>Resource Files</Filter>
@@ -1360,7 +1333,34 @@
     <None Include="cpp.hint">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\..\include\etl\generate_message_packet.bat">
+    <None Include="..\..\include\etl\generators\generate_variant_pool.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_type_traits.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_type_select.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_type_lookup.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_smallest.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_message_router.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_message_packet.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_largest.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_fsm.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate.bat">
       <Filter>Resource Files\Generators</Filter>
     </None>
   </ItemGroup>
