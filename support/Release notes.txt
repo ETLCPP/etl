@@ -1,11 +1,15 @@
 ===============================================================================
+17.8.2
+Added check for NAN, nan(), nanf() or nanl() support.
+
+===============================================================================
 17.8.1
 Added determine_development_os.h to platform.h to attempt to automatically deduce the OS that the developer is using.
 Added subsequent changes to unit test's etl_profile.h
 Removed CMakeLists.txt that auto selected profiles header (this should be done in the project's etl_profile)
 Removed profiles/etl_profile.h
 Added missing tests to unit test's CMakelists.txt
-Changed the wording on the website to indicate that the suuplied profiles in the ETL are to be seen as examples only.
+Changed the wording on the website to indicate that the supplied profiles in the ETL are to be seen as examples only.
 
 ===============================================================================
 17.8.0
