@@ -31,10 +31,10 @@ SOFTWARE.
 #ifndef ETL_LIMITS_INCLUDED
 #define ETL_LIMITS_INCLUDED
 
-#include "etl/platform.h"
-#include "etl/type_traits.h"
-#include "etl/char_traits.h"
-#include "etl/integral_limits.h"
+#include "platform.h"
+#include "type_traits.h"
+#include "char_traits.h"
+#include "integral_limits.h"
 
 #if defined(ETL_NO_STL) && defined(ETL_COMPILER_ARM5)
   // Required for nan, nanf, nanl
@@ -50,6 +50,25 @@ SOFTWARE.
 
 #if defined(ETL_NO_STL)
 #define ETL_LOG10_OF_2(x) (((x) * 301) / 1000)
+
+#if defined(ETL_NO_CPP_NAN_SUPPORT)
+  #if defined(NAN)
+    #define ETL_NAN  (double)NAN
+    #define ETL_NANF (float)NAN
+    #define ETL_NANL (long double)NAN
+    #define ETL_HAS_NAN true
+  #else
+    #define ETL_NAN  (double)0.0
+    #define ETL_NANF (float)0.0
+    #define ETL_NANL (long double)0.0
+    #define ETL_HAS_NAN false
+  #endif
+#else
+  #define ETL_NAN  nan("")
+  #define ETL_NANF nanf("")
+  #define ETL_NANL nanl("")
+  #define ETL_HAS_NAN true
+#endif
 
 namespace etl
 {
@@ -98,20 +117,20 @@ namespace etl
   {
   public:
 
-    static const bool is_specialized = true;
-    static const bool is_signed = true;
-    static const bool is_integer = false;
-    static const bool is_exact = false;
-    static const int radix = 2;
-    static const bool has_infinity = true;
-    static const bool has_quiet_NaN = true;
-    static const bool has_signaling_NaN = true;
-    static const bool has_denorm_loss = false;
-    static const bool is_iec559 = false;
-    static const bool is_bounded = true;
-    static const bool is_modulo = false;
-    static const bool traps = false;
-    static const bool tinyness_before = false;
+    static const bool is_specialized    = true;
+    static const bool is_signed         = true;
+    static const bool is_integer        = false;
+    static const bool is_exact          = false;
+    static const int radix              = 2;
+    static const bool has_infinity      = true;
+    static const bool has_quiet_NaN     = ETL_HAS_NAN;
+    static const bool has_signaling_NaN = ETL_HAS_NAN;
+    static const bool has_denorm_loss   = false;
+    static const bool is_iec559         = false;
+    static const bool is_bounded        = true;
+    static const bool is_modulo         = false;
+    static const bool traps             = false;
+    static const bool tinyness_before   = false;
     static const float_denorm_style has_denorm = denorm_indeterminate;
     static const float_round_style round_style = round_indeterminate;
 
@@ -494,8 +513,8 @@ namespace etl
     static float epsilon() { return FLT_EPSILON; }
     static float denorm_min() { return FLT_MIN; }
     static float infinity() { return HUGE_VALF; }
-    static float quiet_NaN() { return nanf(""); }
-    static float signaling_NaN() { return nanf(""); }
+    static float quiet_NaN() { return ETL_NANF; }
+    static float signaling_NaN() { return ETL_NANF; }
 
     static const int digits = FLT_MANT_DIG;
     static const int digits10 = FLT_DIG;
@@ -520,8 +539,8 @@ namespace etl
     static double epsilon() { return DBL_EPSILON; }
     static double denorm_min() { return DBL_MIN; }
     static double infinity() { return HUGE_VAL; }
-    static double quiet_NaN() { return nan(""); }
-    static double signaling_NaN() { return nan(""); }
+    static double quiet_NaN() { return ETL_NAN; }
+    static double signaling_NaN() { return ETL_NAN; }
 
     static const int digits = DBL_MANT_DIG;
     static const int digits10 = DBL_DIG;
@@ -546,8 +565,8 @@ namespace etl
     static long double epsilon() { return LDBL_EPSILON; }
     static long double denorm_min() { return LDBL_MIN; }
     static long double infinity() { return HUGE_VALL; }
-    static long double quiet_NaN() { return nanl(""); }
-    static long double signaling_NaN() { return nanl(""); }
+    static long double quiet_NaN() { return ETL_NANL; }
+    static long double signaling_NaN() { return ETL_NANL; }
 
 
     static const int digits = LDBL_MANT_DIG;

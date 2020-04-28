@@ -1,4 +1,8 @@
 ===============================================================================
+17.8.2
+Added check for NAN, nan(), nanf() or nanl() support.
+
+===============================================================================
 17.8.1
 Added determine_development_os.h to platform.h to attempt to automatically deduce the OS that the developer is using.
 Added subsequent changes to unit test's etl_profile.h
