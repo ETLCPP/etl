@@ -3,7 +3,7 @@
 Modified etl::delegate for better lambda support.
 Added etl::is_class to type_traits.h
 Added missing return statement in etl::move_iterator in 'operator ='
-Added upport for compilers that do not support LDBL_xxx macros
+Added support for compilers that do not support LDBL_xxx macros
 
 ===============================================================================
 17.8.2
