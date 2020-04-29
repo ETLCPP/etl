@@ -617,17 +617,17 @@ namespace etl
   //***************************************************************************
   /// is_base_of
   template<typename TBase,
-    typename TDerived,
-    const bool IsFundamental = (etl::is_fundamental<TBase>::value || etl::is_fundamental<TDerived>::value)>
-    struct is_base_of
+           typename TDerived,
+           const bool IsFundamental = (etl::is_fundamental<TBase>::value || etl::is_fundamental<TDerived>::value)>
+  struct is_base_of
   {
   private:
 
     template<typename T> struct dummy {};
-  struct internal: TDerived, dummy<int>{};
+    struct internal: TDerived, dummy<int>{};
 
-  static TBase* check(TBase*);
-  template<typename T> static char check(dummy<T>*);
+    static TBase* check(TBase*);
+    template<typename T> static char check(dummy<T>*);
 
   public:
 
@@ -644,6 +644,24 @@ namespace etl
 #if ETL_CPP17_SUPPORTED
   template <typename T1, typename T2>
   inline constexpr bool is_base_of_v = is_base_of<T1, T2>::value;
+#endif
+
+  //***************************************************************************
+  /// is_class
+  namespace private_type_traits
+  {
+    template <typename T> char test(int T::*); // Match for classes.
+
+    struct dummy { char c[2]; };
+    template <typename T> dummy test(...);     // Match for non-classes.
+  }
+
+  template <typename T>
+  struct is_class : etl::integral_constant<bool, sizeof(private_type_traits::test<T>(0)) == 1U> {};
+
+#if ETL_CPP17_SUPPORTED
+  template <typename T>
+  inline constexpr bool is_class_v = is_class<T>::value;
 #endif
 
   //***************************************************************************
@@ -1218,6 +1236,15 @@ namespace etl
 #if ETL_CPP17_SUPPORTED
   template <typename TBase, typename TDerived>
   inline constexpr bool is_base_of_v = std::is_base_of_v<TBase, TDerived>;
+#endif
+
+  //***************************************************************************
+  /// is_class
+  template <typename T> struct is_class : std::is_class<T>{};
+
+#if ETL_CPP17_SUPPORTED
+  template <typename T>
+  inline constexpr bool is_class_v = is_class<T>::value;
 #endif
 
   //***************************************************************************

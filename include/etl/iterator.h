@@ -461,6 +461,7 @@ namespace etl
     move_iterator& operator =(const move_iterator<U>& itr)
     {
       current = itr.current;
+      return *this;
     }
 
     iterator_type base() const

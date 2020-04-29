@@ -51,6 +51,7 @@ Original publication: https://www.codeproject.com/Articles/1170503/The-Impossibl
 #include "platform.h"
 #include "error_handler.h"
 #include "exception.h"
+#include "type_traits.h"
 
 #if ETL_CPP11_SUPPORTED == 0
 #error NOT SUPPORTED FOR C++03 OR BELOW
@@ -107,7 +108,7 @@ namespace etl
     //*************************************************************************
     // Constructor from lambda or functor.
     //*************************************************************************
-    template <typename TLambda>
+    template <typename TLambda, typename = typename etl::enable_if<etl::is_class<TLambda>::value, void>::type>
     delegate(const TLambda& instance)
     {
       assign((void*)(&instance), lambda_stub<TLambda>);
@@ -125,7 +126,7 @@ namespace etl
     //*************************************************************************
     /// Create from Lambda or Functor.
     //*************************************************************************
-    template <typename TLambda>
+    template <typename TLambda, typename = typename etl::enable_if<etl::is_class<TLambda>::value, void>::type>
     static delegate create(const TLambda& instance)
     {
       return delegate((void*)(&instance), lambda_stub<TLambda>);
@@ -210,7 +211,7 @@ namespace etl
     //*************************************************************************
     /// Create from Lambda or Functor.
     //*************************************************************************
-    template <typename TLambda>
+    template <typename TLambda, typename = typename etl::enable_if<etl::is_class<TLambda>::value, void>::type>
     delegate& operator =(const TLambda& instance)
     {
       assign((void*)(&instance), lambda_stub<TLambda>);

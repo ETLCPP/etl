@@ -70,6 +70,21 @@ SOFTWARE.
   #define ETL_HAS_NAN true
 #endif
 
+#if !defined(LDBL_MIN) && defined(DBL_MIN)
+  // Looks like we don't have those macros defined.
+  // That probably means that 'long double' is the same size as 'double'.
+  #define LDBL_MIN        DBL_MIN
+  #define LDBL_MAX        DBL_MAX
+  #define LDBL_EPSILON    DBL_EPSILON
+  #define HUGE_VALL       HUGE_VAL
+  #define LDBL_MANT_DIG   DBL_MANT_DIG
+  #define LDBL_DIG        DBL_DIG
+  #define LDBL_MIN_EXP    DBL_MIN_EXP
+  #define LDBL_MIN_10_EXP DBL_MIN_10_EXP
+  #define LDBL_MAX_EXP    DBL_MAX_EXP
+  #define LDBL_MAX_10_EXP DBL_MAX_10_EXP
+#endif
+
 namespace etl
 {
   enum float_round_style
@@ -516,13 +531,13 @@ namespace etl
     static float quiet_NaN() { return ETL_NANF; }
     static float signaling_NaN() { return ETL_NANF; }
 
-    static const int digits = FLT_MANT_DIG;
-    static const int digits10 = FLT_DIG;
+    static const int digits       = FLT_MANT_DIG;
+    static const int digits10     = FLT_DIG;
     static const int max_digits10 = ETL_LOG10_OF_2(FLT_MANT_DIG) + 2;
 
-    static const int min_exponent = FLT_MIN_EXP;
+    static const int min_exponent   = FLT_MIN_EXP;
     static const int min_exponent10 = FLT_MIN_10_EXP;
-    static const int max_exponent = FLT_MAX_EXP;
+    static const int max_exponent   = FLT_MAX_EXP;
     static const int max_exponent10 = FLT_MAX_10_EXP;
   };
 
@@ -542,13 +557,13 @@ namespace etl
     static double quiet_NaN() { return ETL_NAN; }
     static double signaling_NaN() { return ETL_NAN; }
 
-    static const int digits = DBL_MANT_DIG;
-    static const int digits10 = DBL_DIG;
+    static const int digits       = DBL_MANT_DIG;
+    static const int digits10     = DBL_DIG;
     static const int max_digits10 = ETL_LOG10_OF_2(DBL_MANT_DIG) + 2;
 
-    static const int min_exponent = DBL_MIN_EXP;
+    static const int min_exponent   = DBL_MIN_EXP;
     static const int min_exponent10 = DBL_MIN_10_EXP;
-    static const int max_exponent = DBL_MAX_EXP;
+    static const int max_exponent   = DBL_MAX_EXP;
     static const int max_exponent10 = DBL_MAX_10_EXP;
   };
 
@@ -568,14 +583,13 @@ namespace etl
     static long double quiet_NaN() { return ETL_NANL; }
     static long double signaling_NaN() { return ETL_NANL; }
 
-
-    static const int digits = LDBL_MANT_DIG;
-    static const int digits10 = LDBL_DIG;
+    static const int digits       = LDBL_MANT_DIG;
+    static const int digits10     = LDBL_DIG;
     static const int max_digits10 = ETL_LOG10_OF_2(LDBL_MANT_DIG) + 2;
 
-    static const int min_exponent = LDBL_MIN_EXP;
+    static const int min_exponent   = LDBL_MIN_EXP;
     static const int min_exponent10 = LDBL_MIN_10_EXP;
-    static const int max_exponent = LDBL_MAX_EXP;
+    static const int max_exponent   = LDBL_MAX_EXP;
     static const int max_exponent10 = LDBL_MAX_10_EXP;
   };
 }
