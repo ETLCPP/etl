@@ -72,7 +72,6 @@ namespace etl
     }
 
     state_id_t current_state_id; ///< The current state id.
-    state_id_t next_state_id;    ///< The next state id.
   };
 
   //***************************************************************************
@@ -236,8 +235,8 @@ namespace etl
       else
       {
         return etl::find_if(state_table.begin(),
-                               state_table.end(),
-                               is_state(state_id));
+                            state_table.end(),
+                            is_state(state_id));
       }
     }
 
@@ -281,8 +280,8 @@ namespace etl
         {
           // Scan the transition table from the latest position.
           t = etl::find_if(t,
-                              transition_table.end(),
-                              is_transition(event_id, current_state_id));
+                           transition_table.end(),
+                           is_transition(event_id, current_state_id));
 
           // Found an entry?
           if (t != transition_table.end())
@@ -290,9 +289,6 @@ namespace etl
             // Shall we execute the transition?
             if ((t->guard == ETL_NULLPTR) || ((object.*t->guard)()))
             {
-              // Remember the next state.
-              next_state_id = t->next_state_id;
-
               // Shall we execute the action?
               if (t->action != ETL_NULLPTR)
               {
@@ -300,7 +296,7 @@ namespace etl
               }
 
               // Changing state?
-              if (current_state_id != next_state_id)
+              if (current_state_id != t->next_state_id)
               {
                 const state* s;
 
@@ -313,10 +309,10 @@ namespace etl
                   (object.*(s->on_exit))();
                 }
 
-                current_state_id = next_state_id;
+                current_state_id = t->next_state_id;
 
-                // See if we have a state item for the next state.
-                s = find_state(next_state_id);
+                // See if we have a state item for the new state.
+                s = find_state(current_state_id);
 
                 // If the new state has an 'on_entry' then call it.
                 if ((s != state_table.end()) && (s->on_entry != ETL_NULLPTR))
