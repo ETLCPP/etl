@@ -136,6 +136,18 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_log_1000_base)
+    {
+      int actual;
+
+      actual = etl::log<1000, 2>::value;
+      CHECK_EQUAL(9, actual);
+
+      actual = etl::log<1000, 10>::value;
+      CHECK_EQUAL(3, actual);
+    }
+
+    //*************************************************************************
     TEST(test_log_2)
     {
       int actual;
