@@ -1394,7 +1394,7 @@ namespace etl
   {
   private:
 
-    typedef typename etl::remove_cv<T>::type type_t;
+    typedef typename etl::remove_reference<typename etl::remove_cv<T>::type>::type type_t;
 
   public:
 
@@ -1416,7 +1416,7 @@ namespace etl
   {
   private:
 
-    typedef typename etl::remove_cv<T>::type type_t;
+    typedef typename etl::remove_reference<typename etl::remove_cv<T>::type>::type type_t;
 
   public:
 
@@ -1438,7 +1438,7 @@ namespace etl
   {
   private:
 
-    typedef typename etl::remove_cv<T>::type type_t;
+    typedef typename etl::remove_reference<typename etl::remove_cv<T>::type>::type type_t;
 
   public:
 
@@ -1460,7 +1460,7 @@ namespace etl
   {
   private:
 
-    typedef typename etl::remove_cv<T>::type type_t;
+    typedef typename etl::remove_reference<typename etl::remove_cv<T>::type>::type type_t;
 
   public:
 
@@ -1483,7 +1483,7 @@ namespace etl
   {
   private:
 
-    typedef typename etl::remove_cv<T>::type type_t;
+    typedef typename etl::remove_reference<typename etl::remove_cv<T>::type>::type type_t;
 
   public:
 
