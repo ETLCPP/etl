@@ -18,7 +18,7 @@ def get_version_from_git_tag():
 
 class EmbeddedTemplateLibraryConan(ConanFile):
     name = "embedded-template-library"
-    version = get_version_from_git_tag()
+    version = "17.4.2"
     license = "MIT"
     author = "John Wellbelove <john.wellbelove@etlcpp.com>"
     url = "https://github.com/ETLCPP/etl"
