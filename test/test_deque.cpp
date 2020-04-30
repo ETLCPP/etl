@@ -788,6 +788,24 @@ namespace
       CHECK(data.empty());
     }
 
+
+
+    //*************************************************************************
+    TEST(test_insert_to_empty)
+    {
+      const int value(5);
+      const size_t insertCount = 2;
+      etl::deque<int, 2> valuesToInsert(insertCount, value);
+      etl::deque<int, 10> data;
+
+      data.insert(data.begin(), valuesToInsert.begin(), valuesToInsert.end());
+
+      CHECK(data.size() == insertCount);
+      CHECK(data[0] == value);
+      CHECK(data[1] == value);
+      CHECK(std::equal(data.begin(), data.end(), valuesToInsert.begin()));
+    }
+
     //*************************************************************************
     TEST(test_insert_value_begin)
     {

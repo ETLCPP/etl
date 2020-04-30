@@ -2090,13 +2090,9 @@ namespace etl
       if (!empty())
       {
         --_begin;
-        --n;
       }
 
-      if (n > 0)
-      {
-        _begin -= n;
-      }
+      _begin -= n - 1;
 
       iterator item = _begin;
 
@@ -2106,7 +2102,7 @@ namespace etl
         ++from;
         ++current_size;
         ETL_INCREMENT_DEBUG_COUNT
-      } while (n-- != 0);
+      } while (--n != 0);
     }
 
     //*********************************************************************
