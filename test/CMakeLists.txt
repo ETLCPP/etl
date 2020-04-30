@@ -149,14 +149,6 @@ set(TEST_SOURCE_FILES
   test_vector_pointer_external_buffer.cpp
   )
 
-if (WIN32)
-  # test_error_handler.cpp uses windows APIs that assume the microsoft project
-  # is setup for unicode support.  Note: This may have adverse effects on client
-  # projects and the tests should be updated to be independent of project setup
-  ADD_DEFINITIONS(-DUNICODE)
-  ADD_DEFINITIONS(-D_UNICODE)
-endif()
-
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   list(APPEND TEST_SOURCE_FILES "test_atomic_gcc_sync.cpp")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
