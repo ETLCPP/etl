@@ -74,6 +74,7 @@ namespace
       x = other.x;
       moved = false;
       copied = true;
+      return *this;
     }
 
     Message1& operator =(Message1&& other)
@@ -81,6 +82,7 @@ namespace
       x = other.x;
       moved = true;
       copied = false;
+      return *this;
     }
 
     int x;
@@ -116,6 +118,7 @@ namespace
       x = other.x;
       moved = false;
       copied = true;
+      return *this;
     }
 
     Message2& operator =(Message2&& other)
@@ -123,6 +126,7 @@ namespace
       x = other.x;
       moved = true;
       copied = false;
+      return *this;
     }
 
     double x;
