@@ -40,7 +40,6 @@ SOFTWARE.
 #include "algorithm.h"
 #include "iterator.h"
 #include "functional.h"
-
 #include "container.h"
 #include "pool.h"
 #include "exception.h"
@@ -51,6 +50,7 @@ SOFTWARE.
 #include "algorithm.h"
 #include "memory.h"
 #include "iterator.h"
+#include "parameter_type.h"
 
 #if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
   #include <initializer_list>

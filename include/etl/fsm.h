@@ -211,8 +211,10 @@ namespace etl
     /// Constructor.
     //*******************************************
     fsm(etl::message_router_id_t id)
-      : imessage_router(id),
-        p_state(ETL_NULLPTR)
+      : imessage_router(id)
+      , p_state(ETL_NULLPTR)
+      , state_list(ETL_NULLPTR)
+      , number_of_states(0U)
     {
     }
 
@@ -434,7 +436,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::message_id_t event_id = message.message_id;
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -499,7 +501,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::message_id_t event_id = message.message_id;
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -563,7 +565,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::message_id_t event_id = message.message_id;
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -626,7 +628,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::message_id_t event_id = message.message_id;
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -687,7 +689,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::message_id_t event_id = message.message_id;
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -747,7 +749,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::message_id_t event_id = message.message_id;
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -806,7 +808,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::message_id_t event_id = message.message_id;
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -864,7 +866,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::message_id_t event_id = message.message_id;
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -920,7 +922,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::message_id_t event_id = message.message_id;
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -975,7 +977,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::message_id_t event_id = message.message_id;
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -1029,7 +1031,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::message_id_t event_id = message.message_id;
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -1082,7 +1084,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::message_id_t event_id = message.message_id;
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -1133,7 +1135,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::message_id_t event_id = message.message_id;
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -1183,7 +1185,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::message_id_t event_id = message.message_id;
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -1232,7 +1234,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::message_id_t event_id = message.message_id;
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {
@@ -1280,7 +1282,7 @@ namespace etl
     etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::message_id_t event_id = message.message_id;
+      etl::message_id_t event_id = message.get_message_id();
 
       switch (event_id)
       {

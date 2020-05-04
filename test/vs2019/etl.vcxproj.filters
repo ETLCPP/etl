@@ -852,6 +852,18 @@
     <ClInclude Include="..\..\include\etl\generators\variant_pool_generator.h">
       <Filter>ETL\Containers\Generators</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\generic_pool.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\ipool.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\shared_message.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_pool.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1311,6 +1323,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_span.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_pool_message.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -35,6 +35,7 @@ SOFTWARE.
 #include "error_handler.h"
 #include "exception.h"
 #include "message_types.h"
+#include "reference_counted_object.h"
 
 #undef ETL_FILE
 #define ETL_FILE "38"
@@ -68,39 +69,90 @@ namespace etl
   {
   public:
 
-    imessage(etl::message_id_t id)
-      : message_id(id)
-    {
-    }
-
-    const etl::message_id_t message_id;
-
-#if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
     virtual ~imessage()
     {
     }
-#else
-    ~imessage()
-    {
-    }
-#endif
+
+    ETL_NODISCARD virtual etl::message_id_t get_message_id() const ETL_NOEXCEPT = 0;
   };
 
   //***************************************************************************
-  template <const etl::message_id_t ID_>
-  class message : public imessage
+  class ireference_counted_message : public etl::imessage, public etl::ireference_counted_object
+  {
+  };
+
+  //***************************************************************************
+  template <typename TCounter>
+  class reference_counted_message : public etl::ireference_counted_message
+  {
+  private:
+
+    //***************************************************************************
+    void set_reference_count(uint32_t value) ETL_OVERRIDE
+    {
+      reference_count = value;
+    }
+
+    //***************************************************************************
+    void increment_reference_count() ETL_OVERRIDE
+    {
+      ++reference_count;
+    }
+
+    //***************************************************************************
+    ETL_NODISCARD uint32_t decrement_reference_count() ETL_OVERRIDE
+    {
+      return uint32_t(--reference_count);
+    }
+
+    //***************************************************************************
+    ETL_NODISCARD uint32_t get_reference_count() const ETL_OVERRIDE
+    {
+      return uint32_t(reference_count);
+    }
+
+  private:
+
+    /// The reference counter.
+    TCounter reference_count;
+  };
+
+  //***************************************************************************
+  // Reference counted message.
+  //***************************************************************************
+  template <etl::message_id_t ID_, typename TCounter = void>
+  class message : public reference_counted_message<TCounter>
   {
   public:
-
-    message()
-      : imessage(ID_)
-    {
-    }
 
     enum
     {
       ID = ID_
     };
+
+    ETL_NODISCARD etl::message_id_t get_message_id() const ETL_NOEXCEPT
+    {
+      return ID;
+    }
+  };
+
+  //***************************************************************************
+  // Non-reference counted message.
+  //***************************************************************************
+  template <etl::message_id_t ID_>
+  class message<ID_, void> : public imessage
+  {
+  public:
+
+    enum
+    {
+      ID = ID_
+    };
+
+    ETL_NODISCARD etl::message_id_t get_message_id() const ETL_NOEXCEPT
+    {
+      return ID;
+    }
   };
 }
 

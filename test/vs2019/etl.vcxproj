@@ -1045,11 +1045,14 @@
     <ClInclude Include="..\..\include\etl\generators\type_select_generator.h" />
     <ClInclude Include="..\..\include\etl\generators\type_traits_generator.h" />
     <ClInclude Include="..\..\include\etl\generators\variant_pool_generator.h" />
+    <ClInclude Include="..\..\include\etl\generic_pool.h" />
     <ClInclude Include="..\..\include\etl\indirect_vector.h" />
     <ClInclude Include="..\..\include\etl\absolute.h" />
+    <ClInclude Include="..\..\include\etl\ipool.h" />
     <ClInclude Include="..\..\include\etl\limits.h" />
     <ClInclude Include="..\..\include\etl\macros.h" />
     <ClInclude Include="..\..\include\etl\message_packet.h" />
+    <ClInclude Include="..\..\include\etl\message_pool.h" />
     <ClInclude Include="..\..\include\etl\multi_array.h" />
     <ClInclude Include="..\..\include\etl\mutex\mutex_freertos.h" />
     <ClInclude Include="..\..\include\etl\negative.h" />
@@ -1079,6 +1082,7 @@
     <ClInclude Include="..\..\include\etl\profiles\ticc_no_stl.h" />
     <ClInclude Include="..\..\include\etl\queue_spsc_locked.h" />
     <ClInclude Include="..\..\include\etl\scaled_rounding.h" />
+    <ClInclude Include="..\..\include\etl\shared_message.h" />
     <ClInclude Include="..\..\include\etl\span.h" />
     <ClInclude Include="..\..\include\etl\state_chart.h" />
     <ClInclude Include="..\..\include\etl\math_constants.h" />
@@ -1586,6 +1590,7 @@
     <ClCompile Include="..\test_parity_checksum.cpp" />
     <ClCompile Include="..\test_pearson.cpp" />
     <ClCompile Include="..\test_pool.cpp" />
+    <ClCompile Include="..\test_pool_message.cpp" />
     <ClCompile Include="..\test_priority_queue.cpp" />
     <ClCompile Include="..\test_queue.cpp" />
     <ClCompile Include="..\test_queue_memory_model_small.cpp" />

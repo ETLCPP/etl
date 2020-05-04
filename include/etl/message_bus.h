@@ -187,7 +187,7 @@ namespace etl
           {
             etl::imessage_router& router = **irouter;
 
-            if (router.accepts(message.message_id))
+            if (router.accepts(message.get_message_id()))
             {
               router.receive(source, message);
             }
@@ -213,7 +213,7 @@ namespace etl
           // Call all of them.
           while (range.first != range.second)
           {
-            if ((*(range.first))->accepts(message.message_id))
+            if ((*(range.first))->accepts(message.get_message_id()))
             {
               (*(range.first))->receive(source, message);
             }

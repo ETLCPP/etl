@@ -369,7 +369,7 @@ namespace etl
     /// Destroys the object.
     //*************************************************************************
     template <typename T>
-    bool destroy(const T* const p)
+    void destroy(const T* const p)
     {
       /*[[[cog
       import cog
@@ -395,12 +395,10 @@ namespace etl
       if (pool.is_in_pool(vp))
       {
         pool.release(vp);
-        return true;
       }
       else
       {
         ETL_ASSERT(false, ETL_ERROR(variant_pool_did_not_create));
-        return false;
       }
     }
 
