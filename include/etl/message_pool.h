@@ -126,6 +126,10 @@ namespace etl
         {
           ::new(p) TMessage();
         }
+        else
+        {
+          ETL_ALWAYS_ASSERT(ETL_ERROR(etl::message_pool_allocation_failure));
+        }
       }
 
       return reinterpret_cast<TMessage*>(p);
@@ -148,6 +152,10 @@ namespace etl
         if (p != ETL_NULLPTR)
         {
           ::new(p) TMessage(t1);
+        }
+        else
+        {
+          ETL_ALWAYS_ASSERT(ETL_ERROR(etl::message_pool_allocation_failure));
         }
       }
 
@@ -172,6 +180,10 @@ namespace etl
         {
           ::new(p) TMessage(t1, t2);
         }
+        else
+        {
+          ETL_ALWAYS_ASSERT(ETL_ERROR(etl::message_pool_allocation_failure));
+        }
       }
 
       return reinterpret_cast<TMessage*>(p);
@@ -194,6 +206,10 @@ namespace etl
         if (p != ETL_NULLPTR)
         {
           ::new(p) TMessage(t1, t2, t3);
+        }
+        else
+        {
+          ETL_ALWAYS_ASSERT(ETL_ERROR(etl::message_pool_allocation_failure));
         }
       }
       
@@ -218,6 +234,10 @@ namespace etl
         {
           ::new(p) TMessage(t1, t2, t3, t4);
         }
+        else
+        {
+          ETL_ALWAYS_ASSERT(ETL_ERROR(etl::message_pool_allocation_failure));
+        }
       }
 
       return reinterpret_cast<TMessage*>(p)
@@ -229,8 +249,11 @@ namespace etl
     //*************************************************************************
     void destroy(const etl::imessage* const pmsg)
     {
-      pmsg->~imessage();
-      memory_block_pool.release_memory_block(pmsg);
+      if (pmsg != ETL_NULLPTR)
+      {
+        pmsg->~imessage();
+        memory_block_pool.release_memory_block(pmsg);
+      }
     }
 
     //*************************************************************************
