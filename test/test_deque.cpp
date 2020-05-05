@@ -94,6 +94,10 @@ namespace
     {
       DataDC data;
 
+      CHECK(data.empty());
+      CHECK(!data.full());
+      CHECK(data.begin() == data.end());
+      CHECK_EQUAL(0U, data.size());
       CHECK_EQUAL(SIZE, data.max_size());
     }
 
@@ -788,8 +792,6 @@ namespace
       CHECK(data.empty());
     }
 
-
-
     //*************************************************************************
     TEST(test_insert_to_empty)
     {
@@ -800,6 +802,7 @@ namespace
 
       data.insert(data.begin(), valuesToInsert.begin(), valuesToInsert.end());
 
+      CHECK_EQUAL(insertCount, std::distance(data.begin(), data.end()));
       CHECK(data.size() == insertCount);
       CHECK(data[0] == value);
       CHECK(data[1] == value);
@@ -815,6 +818,7 @@ namespace
       Compare_Data::iterator cposition = compare_data.insert(compare_data.begin(), N14);
       DataNDC::iterator      position  = data.insert(data.begin(), N14);
 
+      CHECK_EQUAL(compare_data.size(), std::distance(data.begin(), data.end()));
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
       CHECK_EQUAL(std::distance(compare_data.begin(), cposition), std::distance(data.begin(), position));
@@ -829,6 +833,7 @@ namespace
       Compare_Data::iterator cposition = compare_data.emplace(compare_data.begin(), N14.value);
       DataNDC::iterator      position  = data.emplace(data.begin(), N14.value);
 
+      CHECK_EQUAL(compare_data.size(), std::distance(data.begin(), data.end()));
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
       CHECK_EQUAL(std::distance(compare_data.begin(), cposition), std::distance(data.begin(), position));
@@ -843,6 +848,7 @@ namespace
       Compare_Data::iterator cposition = compare_data.insert(compare_data.end(), N14);
       DataNDC::iterator      position  = data.insert(data.end(), N14);
 
+      CHECK_EQUAL(compare_data.size(), std::distance(data.begin(), data.end()));
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
       CHECK_EQUAL(std::distance(compare_data.begin(), cposition), std::distance(data.begin(), position));
@@ -857,6 +863,7 @@ namespace
       Compare_Data::iterator cposition = compare_data.emplace(compare_data.end(), N14.value);
       DataNDC::iterator      position  = data.emplace(data.end(), N14.value);
 
+      CHECK_EQUAL(compare_data.size(), std::distance(data.begin(), data.end()));
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
       CHECK_EQUAL(std::distance(compare_data.begin(), cposition), std::distance(data.begin(), position));
@@ -871,6 +878,7 @@ namespace
       Compare_Data::iterator cposition = compare_data.insert(compare_data.begin() + 3, N14);
       DataNDC::iterator         position  = data.insert(data.begin() + 3, N14);
 
+      CHECK_EQUAL(compare_data.size(), std::distance(data.begin(), data.end()));
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
       CHECK_EQUAL(std::distance(compare_data.begin(), cposition), std::distance(data.begin(), position));
@@ -881,6 +889,7 @@ namespace
       cposition = compare_data.insert(compare_data.begin() + 4, N14);
       position  = data.insert(data.begin() + 4, N14);
 
+      CHECK_EQUAL(compare_data.size(), std::distance(data.begin(), data.end()));
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
       CHECK_EQUAL(std::distance(compare_data.begin(), cposition), std::distance(data.begin(), position));
@@ -895,6 +904,7 @@ namespace
       Compare_Data::iterator cposition = compare_data.emplace(compare_data.begin() + 3, N14.value);
       DataNDC::iterator         position = data.emplace(data.begin() + 3, N14.value);
 
+      CHECK_EQUAL(compare_data.size(), std::distance(data.begin(), data.end()));
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
       CHECK_EQUAL(std::distance(compare_data.begin(), cposition), std::distance(data.begin(), position));
@@ -905,6 +915,7 @@ namespace
       cposition = compare_data.emplace(compare_data.begin() + 4, N14.value);
       position = data.emplace(data.begin() + 4, N14.value);
 
+      CHECK_EQUAL(compare_data.size(), std::distance(data.begin(), data.end()));
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
       CHECK_EQUAL(std::distance(compare_data.begin(), cposition), std::distance(data.begin(), position));
@@ -961,6 +972,7 @@ namespace
           compare_data.insert(compare_data.begin() + offset, range.begin(), range.end());
           data.insert(data.begin() + offset, range.begin(), range.end());
 
+          CHECK_EQUAL(compare_data.size(), std::distance(data.begin(), data.end()));
           CHECK_EQUAL(compare_data.size(), data.size());
           CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
         }

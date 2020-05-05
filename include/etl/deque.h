@@ -696,9 +696,6 @@ namespace etl
 
       initialise();
 
-      _begin.index = 0;
-      _end.index = 0;
-
       while (n > 0)
       {
         create_element_back(value);
@@ -2087,12 +2084,7 @@ namespace etl
         return;
       }
 
-      if (!empty())
-      {
-        --_begin;
-      }
-
-      _begin -= n - 1;
+      _begin -= n;
 
       iterator item = _begin;
 
