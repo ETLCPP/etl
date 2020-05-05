@@ -85,6 +85,13 @@ namespace etl
   template <typename TCounter>
   class reference_counted_message : public etl::ireference_counted_message
   {
+  public:
+
+    reference_counted_message()
+      : reference_count(TCounter())
+    {
+    }
+
   private:
 
     //***************************************************************************
@@ -110,8 +117,6 @@ namespace etl
     {
       return uint32_t(reference_count);
     }
-
-  private:
 
     /// The reference counter.
     TCounter reference_count;

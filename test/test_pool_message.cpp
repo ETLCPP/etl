@@ -35,11 +35,75 @@ SOFTWARE.
 #include "etl/message.h"
 #include "etl/atomic.h"
 
+#include "etl/queue.h"
+#include "etl/ishared_message_processor.h"
+
 namespace
 {
+  //*************************************************************************
   struct Message1 : public etl::message<1, uint32_t>
   {
   };
+
+  //*************************************************************************
+  struct Router : public etl::message_router<Router, Message1>
+  {
+    Router()
+      : message_router(1)
+    {
+
+    }
+
+    void on_receive(const Message1& message)
+    {
+
+    }
+
+    void on_receive(etl::imessage_router& source, const Message1& message)
+    {
+
+    }
+
+    void on_receive_unknown(etl::imessage_router& source, const etl::imessage& message)
+    {
+
+    }
+  };
+
+  //*************************************************************************
+  struct Processor : public etl::ishared_message_processor
+  {
+    Processor(etl::imessage_router& router_)
+      : router(router_)
+    {
+    }
+
+    void receive(etl::shared_message message)
+    {
+      uint32_t count1 = message.get_reference_count();
+
+      smqueue.push(message);
+
+      uint32_t count2 = message.get_reference_count();
+    }
+
+    void receive(etl::imessage_router& source, etl::shared_message message)
+    {
+
+    }
+
+    void Process()
+    {
+      router.receive(smqueue.front().get_message());
+      smqueue.pop();
+    }
+
+    etl::imessage_router& router;
+    etl::queue<etl::shared_message, 10> smqueue;
+  };
+
+  Router    router;
+  Processor processor(router);
 
   SUITE(test_shared_message)
   {
@@ -60,6 +124,14 @@ namespace
         {
           etl::shared_message sm(mpool, *mpool.create<Message1>());
           uint32_t count1 = sm.get_reference_count();
+
+          processor.receive(sm);
+
+          uint32_t count1b = sm.get_reference_count();
+
+          processor.Process();
+
+          uint32_t count1c = sm.get_reference_count();
 
           pbuffered_sm = new etl::shared_message(sm);
           //uint32_t count2 = sm.get_reference_count();
