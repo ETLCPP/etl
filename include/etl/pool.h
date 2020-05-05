@@ -176,8 +176,8 @@ namespace etl
   private:
 
     // Should not be copied.
-    pool(const pool&);
-    pool& operator =(const pool&);
+    pool(const pool&) ETL_DELETE;
+    pool& operator =(const pool&) ETL_DELETE;
   };
 }
 

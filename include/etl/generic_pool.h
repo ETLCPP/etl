@@ -200,8 +200,8 @@ namespace etl
     static ETL_CONST_OR_CONSTEXPR uint32_t ELEMENT_SIZE = sizeof(Element);
 
     // Should not be copied.
-    generic_pool(const generic_pool&);
-    generic_pool& operator =(const generic_pool&);
+    generic_pool(const generic_pool&) ETL_DELETE;
+    generic_pool& operator =(const generic_pool&) ETL_DELETE;
   };
 }
 

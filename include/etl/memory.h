@@ -1594,7 +1594,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-   void create_value_at(T* p)
+  void create_value_at(T* p)
   {
     ::new (p) T();
   }
@@ -1604,7 +1604,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T, typename TCounter>
-   void create_value_at(T* p, TCounter& count)
+  void create_value_at(T* p, TCounter& count)
   {
     ::new (p) T();
     ++count;
@@ -1615,7 +1615,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-   void create_copy_at(T* p, const T& value)
+  void create_copy_at(T* p, const T& value)
   {
     ::new (p) T(value);
   }

@@ -203,8 +203,8 @@ namespace etl
 
   private:
 
-    variant_pool(const variant_pool&);
-    variant_pool& operator =(const variant_pool&);
+    variant_pool(const variant_pool&) ETL_DELETE;
+    variant_pool& operator =(const variant_pool&) ETL_DELETE;
   };
 }
 
