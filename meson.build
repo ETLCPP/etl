@@ -134,7 +134,6 @@ etl_test_sources = files(
 	'test/test_queue_spsc_locked_small.cpp',
 	'test/test_scaled_rounding.cpp',
 	'test/test_state_chart.cpp',
-
 	'test/test_type_select.cpp',
 	'test/test_vector_external_buffer.cpp',
 	'test/test_vector_pointer_external_buffer.cpp',
@@ -197,7 +196,12 @@ etl_unit_tests = executable('etl_unit_tests',
 		'-DETL_DEBUG',
 	],
 	native: true,
-	install: false
+	install: false,
+	# Don't build tests by default if we are a subproject
+	build_by_default: meson.is_subproject() == false
 )
 
-test('ETL Unit Tests', etl_unit_tests)
+# Only register tests with the test runner when built as a primary project
+if meson.is_subproject() == false
+	test('ETL Unit Tests', etl_unit_tests)
+endif
