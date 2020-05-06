@@ -140,8 +140,8 @@ etl_test_sources = files(
 )
 
 # These files currently fail to compile with OS X clang at the very least
-if meson.get_compiler('cpp').get_id() == 'clang'
-	message('Some test files fail to compile with clang and are disabled.')
+if meson.get_compiler('cpp').get_id() == 'clang' and build_machine.system() == 'darwin'
+	message('Some test files fail to compile with OS X clang and are disabled.')
 else
 	etl_test_sources += files(
 		'test/test_deque.cpp',
