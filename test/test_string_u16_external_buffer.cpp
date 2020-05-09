@@ -3052,48 +3052,6 @@ namespace
       CHECK_EQUAL(IText::npos, position2);
     }
 
-    ////*************************************************************************
-    //TEST_FIXTURE(SetupFixture, test_substr)
-    //{
-    //  Compare_Text compare_text(initial_text.c_str());
-
-    //  TextBuffer buffer;
-    //  Text text(initial_text.c_str());
-
-    //  Compare_Text compare_result;
-
-    //  TextBuffer buffer2;
-    //  Text result;
-
-    //  // Equal.
-    //  compare_result = compare_text.substr(compare_text.size());
-    //  result = text.substr(text.size());
-    //  CHECK(Equal(compare_result, result));
-
-    //  // Whole string.
-    //  compare_result = compare_text.substr();
-    //  result = text.substr();
-    //  CHECK(Equal(compare_result, result));
-
-    //  // Starting from position 2.
-    //  compare_result = compare_text.substr(2);
-    //  result = text.substr(2);
-    //  CHECK(Equal(compare_result, result));
-
-    //  // Starting from position 2 for 3 characters.
-    //  compare_result = compare_text.substr(2, 3);
-    //  result = text.substr(2, 3);
-    //  CHECK(Equal(compare_result, result));
-
-    //  // Starting from position 2 for too many characters.
-    //  compare_result = compare_text.substr(2, compare_text.size());
-    //  result = text.substr(2, text.size());
-    //  CHECK(Equal(compare_result, result));
-
-    //  // Starting from beyond the end of the string.
-    //  CHECK_THROW(text.substr(text.size() + 1), etl::u16string_out_of_bounds);
-    //}
-
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_compare_string)
     {
