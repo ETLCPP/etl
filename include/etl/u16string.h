@@ -229,10 +229,10 @@ namespace etl
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
-#ifdef ETL_ISTRING_REPAIR_ENABLE
-    virtual
-#endif
     void repair()
+#ifdef ETL_ISTRING_REPAIR_ENABLE
+      ETL_OVERRIDE
+#endif
     {
       etl::iu16string::repair_buffer(buffer);
     }
@@ -240,6 +240,188 @@ namespace etl
   private:
 
     value_type buffer[MAX_SIZE + 1];
+  };
+
+  //***************************************************************************
+  /// A u16string implementation that uses a fixed size buffer.
+  /// A specilisation that requires an external buffer to be specified.
+  ///\ingroup u16string
+  //***************************************************************************
+  template <>
+  class u16string<0U> : public iu16string
+  {
+  public:
+
+    typedef iu16string base_type;
+    typedef iu16string interface_type;
+
+    typedef iu16string::value_type value_type;
+
+    //*************************************************************************
+    /// Constructor.
+    //*************************************************************************
+    u16string(value_type* buffer, size_t max_size)
+      : iu16string(buffer, max_size - 1)
+    {
+      this->initialise();
+    }
+
+    //*************************************************************************
+    /// Copy constructor.
+    ///\param other The other u16string.
+    //*************************************************************************
+    u16string(const etl::u16string<0U>& other, value_type* buffer, size_t max_size)
+      : iu16string(buffer, max_size - 1)
+    {
+      this->assign(other);
+    }
+
+    //*************************************************************************
+    /// From other iu16string.
+    ///\param other The other iu16string.
+    //*************************************************************************
+    u16string(const etl::iu16string& other, value_type* buffer, size_t max_size)
+      : iu16string(buffer, max_size - 1)
+    {
+      this->assign(other);
+    }
+
+    //*************************************************************************
+    /// From other u16string, position, length.
+    ///\param other The other u16string.
+    ///\param position The position of the first character.
+    ///\param length   The number of characters. Default = npos.
+    //*************************************************************************
+    u16string(const etl::iu16string& other, value_type* buffer, size_t max_size, size_t position, size_t length_ = npos)
+      : iu16string(buffer, max_size - 1)
+    {
+      ETL_ASSERT(position < other.size(), ETL_ERROR(string_out_of_bounds));
+
+      this->assign(other.begin() + position, other.begin() + position + length_);
+
+      if (other.truncated())
+      {
+        this->is_truncated = true;
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+        ETL_ALWAYS_ASSERT(ETL_ERROR(u16string_truncation));
+#endif
+      }
+    }
+
+    //*************************************************************************
+    /// Constructor, from null terminated text.
+    ///\param text The initial text of the u16string.
+    //*************************************************************************
+    ETL_EXPLICIT_STRING_FROM_CHAR u16string(const value_type* text, value_type* buffer, size_t max_size)
+      : iu16string(buffer, max_size - 1)
+    {
+      this->assign(text, text + etl::char_traits<value_type>::length(text));
+    }
+
+    //*************************************************************************
+    /// Constructor, from null terminated text and count.
+    ///\param text  The initial text of the u16string.
+    ///\param count The number of characters to copy.
+    //*************************************************************************
+    u16string(const value_type* text, size_t count, value_type* buffer, size_t max_size)
+      : iu16string(buffer, max_size - 1)
+    {
+      this->assign(text, text + count);
+    }
+
+    //*************************************************************************
+    /// Constructor, from initial size and value.
+    ///\param initialSize  The initial size of the u16string.
+    ///\param value        The value to fill the u16string with.
+    //*************************************************************************
+    u16string(size_t count, value_type c, value_type* buffer, size_t max_size)
+      : iu16string(buffer, max_size - 1)
+    {
+      this->initialise();
+      this->resize(count, c);
+    }
+
+    //*************************************************************************
+    /// Constructor, from an iterator range.
+    ///\tparam TIterator The iterator type.
+    ///\param first The iterator to the first element.
+    ///\param last  The iterator to the last element + 1.
+    //*************************************************************************
+    template <typename TIterator>
+    u16string(TIterator first, TIterator last, value_type* buffer, size_t max_size)
+      : iu16string(buffer, max_size - 1)
+    {
+      this->assign(first, last);
+    }
+
+#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+    //*************************************************************************
+    /// Construct from initializer_list.
+    //*************************************************************************
+    u16string(std::initializer_list<value_type> init, value_type* buffer, size_t max_size)
+      : iu16string(buffer, max_size - 1)
+    {
+      this->assign(init.begin(), init.end());
+    }
+#endif
+
+    //*************************************************************************
+    /// From u16string_view.
+    ///\param view The u16string_view.
+    //*************************************************************************
+    explicit u16string(const etl::u16string_view& view, value_type* buffer, size_t max_size)
+      : iu16string(buffer, max_size - 1)
+    {
+      this->assign(view.begin(), view.end());
+    }
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    u16string& operator = (const u16string& rhs)
+    {
+      if (&rhs != this)
+      {
+        this->assign(rhs);
+      }
+
+      return *this;
+    }
+
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    u16string& operator = (const iu16string& rhs)
+    {
+      if (&rhs != this)
+      {
+        this->assign(rhs);
+      }
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    u16string& operator = (const value_type* text)
+    {
+      this->assign(text);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Fix the internal pointers after a low level memory copy.
+    //*************************************************************************
+    void repair()
+#ifdef ETL_ISTRING_REPAIR_ENABLE
+      ETL_OVERRIDE
+#endif
+    {
+    }
   };
 
   //*************************************************************************

@@ -1284,10 +1284,10 @@ namespace etl
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
-#ifdef ETL_IVECTOR_REPAIR_ENABLE
-    virtual
-#endif
     void repair()
+#ifdef ETL_IVECTOR_REPAIR_ENABLE
+      ETL_OVERRIDE
+#endif
     {
       #if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
       ETL_ASSERT(etl::is_trivially_copyable<T>::value, ETL_ERROR(etl::vector_incompatible_type));
@@ -1439,10 +1439,10 @@ namespace etl
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
+    void repair()
 #ifdef ETL_IVECTOR_REPAIR_ENABLE
-    virtual
+      ETL_OVERRIDE
 #endif
-      void repair()
     {
 #if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
       ETL_ASSERT(etl::is_trivially_copyable<T>::value, ETL_ERROR(etl::vector_incompatible_type));
@@ -1594,6 +1594,9 @@ namespace etl
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
     void repair()
+#ifdef ETL_IVECTOR_REPAIR_ENABLE
+      ETL_OVERRIDE
+#endif
     {
       etl::ivector<T*>::repair_buffer(buffer);
     }
@@ -1739,10 +1742,10 @@ namespace etl
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
+    void repair()
 #ifdef ETL_IVECTOR_REPAIR_ENABLE
-    virtual
+      ETL_OVERRIDE
 #endif
-      void repair()
     {
       etl::ivector<T*>::repair_buffer(this->p_buffer);
     }

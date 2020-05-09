@@ -426,6 +426,13 @@ namespace etl
       return *this;
     }
 
+#ifdef ETL_IVECTOR_REPAIR_ENABLE
+    //*************************************************************************
+    /// Fix the internal pointers after a low level memory copy.
+    //*************************************************************************
+    virtual void repair() = 0;
+#endif
+
   protected:
 
     //*********************************************************************
@@ -836,6 +843,13 @@ namespace etl
 
       return *this;
     }
+
+#ifdef ETL_IVECTOR_REPAIR_ENABLE
+    //*************************************************************************
+    /// Fix the internal pointers after a low level memory copy.
+    //*************************************************************************
+    virtual void repair() = 0;
+#endif
 
   protected:
 

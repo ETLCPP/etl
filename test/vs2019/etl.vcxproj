@@ -1615,10 +1615,14 @@
     <ClCompile Include="..\test_smallest.cpp" />
     <ClCompile Include="..\test_stack.cpp" />
     <ClCompile Include="..\test_string_char.cpp" />
+    <ClCompile Include="..\test_string_char_external_buffer.cpp" />
     <ClCompile Include="..\test_string_u16.cpp" />
+    <ClCompile Include="..\test_string_u16_external_buffer.cpp" />
     <ClCompile Include="..\test_string_u32.cpp" />
+    <ClCompile Include="..\test_string_u32_external_buffer.cpp" />
     <ClCompile Include="..\test_string_view.cpp" />
     <ClCompile Include="..\test_string_wchar_t.cpp" />
+    <ClCompile Include="..\test_string_wchar_t_external_buffer.cpp" />
     <ClCompile Include="..\test_task_scheduler.cpp" />
     <ClCompile Include="..\test_to_string.cpp" />
     <ClCompile Include="..\test_to_u16string.cpp" />

@@ -1,4 +1,8 @@
 ===============================================================================
+18.1.0
+Strings may use external buffers if the 'max size' template parameter is zero.
+
+===============================================================================
 18.0.1
 Fixed 'insert to empty container' bug in etl::deque.
 

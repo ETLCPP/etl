@@ -38,10 +38,8 @@ SOFTWARE.
 #define ETL_8BIT_SUPPORT (CHAR_BIT == 8)
 
 // Define a debug macro
-#if !defined(ETL_DEBUG)
-  #if defined(_DEBUG) || defined(DEBUG)
-    #define ETL_DEBUG
-  #endif
+#if defined(_DEBUG) || defined(DEBUG)
+  #define ETL_DEBUG
 #endif
 
 // Determine the bit width of the platform.
@@ -52,6 +50,11 @@ SOFTWARE.
 // Include the user's profile definition.
 #include "etl_profile.h"
 
+// Helper macro, so we don't have to use double negatives.
+// The ETL will use the STL, unless ETL_NO_STL is defined.
+// With this macro we can use '#if ETL_USING_STL' instead of '#if !defined(ETL_NO_STL)' in the code.
+#define ETL_USING_STL (!defined(ETL_NO_STL))
+
 // Figure out things about the compiler, if haven't already done so in etl_profile.h
 #include "profiles/determine_compiler_version.h"
 #include "profiles/determine_compiler_language_support.h"
@@ -59,6 +62,7 @@ SOFTWARE.
 // See if we can determine the OS we're compiling on, if haven't already done so in etl_profile.h
 #include "profiles/determine_development_os.h"
 
+// Option to force string construction from a character pointer to be explicit.
 #if defined(ETL_FORCE_EXPLICIT_STRING_CONVERSION_FROM_CHAR)
   #define ETL_EXPLICIT_STRING_FROM_CHAR explicit
 #else
@@ -76,12 +80,12 @@ SOFTWARE.
   #define ETL_FINAL final
   #define ETL_NORETURN [[noreturn]]
 
-  #if defined(ETL_EXCEPTIONS_DISABLED)
-    #define ETL_NOEXCEPT
-    #define ETL_NOEXCEPT_EXPR(expression)
-  #else
+  #if defined(ETL_THROW_EXCEPTIONS)
     #define ETL_NOEXCEPT  noexcept
     #define ETL_NOEXCEPT_EXPR(expression) noexcept(expression)
+  #else
+    #define ETL_NOEXCEPT
+    #define ETL_NOEXCEPT_EXPR(expression)
   #endif
 #else
   #define ETL_CONSTEXPR

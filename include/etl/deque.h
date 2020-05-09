@@ -2372,10 +2372,10 @@ namespace etl
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
-#ifdef ETL_IDEQUE_REPAIR_ENABLE
-    virtual
-#endif
     void repair()
+#ifdef ETL_ISTRING_REPAIR_ENABLE
+      ETL_OVERRIDE
+#endif
     {
 #if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
       ETL_ASSERT(etl::is_trivially_copyable<T>::value, ETL_ERROR(etl::deque_incompatible_type));
