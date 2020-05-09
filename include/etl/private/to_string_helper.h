@@ -50,7 +50,7 @@ namespace etl
 {
   namespace private_to_string
   {
-#if defined(ETL_NO_64BIT_TYPES)
+#if ETL_NOT_USING_64BIT_TYPES
     typedef int32_t workspace_t;
 #else
     typedef int64_t workspace_t;
@@ -356,7 +356,7 @@ namespace etl
       return str;
     }
 
-#if defined(ETL_NO_64BIT_TYPES)
+#if ETL_NOT_USING_64BIT_TYPES
     //***************************************************************************
     /// For signed integrals less than 64 bits. Default format spec.
     //***************************************************************************

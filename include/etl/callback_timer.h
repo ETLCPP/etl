@@ -48,7 +48,7 @@ SOFTWARE.
 #undef ETL_FILE
 #define ETL_FILE "43"
 
-#if defined(ETL_IN_UNIT_TEST) && defined(ETL_NO_STL)
+#if defined(ETL_IN_UNIT_TEST) && ETL_NOT_USING_STL
   #define ETL_DISABLE_TIMER_UPDATES
   #define ETL_ENABLE_TIMER_UPDATES
   #define ETL_TIMER_UPDATES_ENABLED true

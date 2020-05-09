@@ -92,13 +92,13 @@ SOFTWARE.
 //#define ETL_OPTIONAL_FORCE_CPP03
 //#define ETL_LARGEST_TYPE_FORCE_CPP03
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   #define ETL_TIMER_SEMAPHORE_TYPE uint32_t
 #endif
 
 #include "../include/etl/profiles/determine_compiler_language_support.h"
 
-#if !ETL_CPP17_SUPPORTED
+#if ETL_CPP17_NOT_SUPPORTED
   #error THE UNIT TESTS REQUIRE C++17 SUPPORT
 #endif
 

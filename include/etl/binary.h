@@ -534,7 +534,7 @@ namespace etl
     return int32_t(reverse_bits(uint32_t(value)));
   }
 
-#if !defined(ETL_NO_64BIT_TYPES)
+#if ETL_USING_64BIT_TYPES
   //***************************************************************************
   /// Reverse 64 bits.
   ///\ingroup binary
@@ -604,7 +604,7 @@ namespace etl
     return int32_t(reverse_bytes(uint32_t(value)));
   }
 
-#if !defined(ETL_NO_64BIT_TYPES)
+#if ETL_USING_64BIT_TYPES
   //***************************************************************************
   /// Reverse bytes 64 bit.
   ///\ingroup binary
@@ -683,7 +683,7 @@ namespace etl
     return int32_t(gray_to_binary(uint32_t(value)));
   }
 
-#if !defined(ETL_NO_64BIT_TYPES)
+#if ETL_USING_64BIT_TYPES
   //***************************************************************************
   /// Converts Gray code to binary.
   ///\ingroup binary
@@ -772,7 +772,7 @@ namespace etl
     return count_bits(uint32_t(value));
   }
 
-#if !defined(ETL_NO_64BIT_TYPES)
+#if ETL_USING_64BIT_TYPES
   //***************************************************************************
   /// Count set bits. 64 bits.
   ///\ingroup binary
@@ -850,7 +850,7 @@ namespace etl
     return parity(uint32_t(value));
   }
 
-#if !defined(ETL_NO_64BIT_TYPES)
+#if ETL_USING_64BIT_TYPES
   //***************************************************************************
   /// Parity. 64bits. 0 = even, 1 = odd
   ///\ingroup binary
@@ -1011,7 +1011,7 @@ namespace etl
     return count_trailing_zeros(uint32_t(value));
   }
 
-#if !defined(ETL_NO_64BIT_TYPES)
+#if ETL_USING_64BIT_TYPES
   //***************************************************************************
   /// Count trailing zeros. 64bit.
   /// Uses a binary search.
@@ -1125,7 +1125,7 @@ namespace etl
     return int32_t(binary_interleave(uint16_t(first), uint16_t(second)));
   }
 
-#if !defined(ETL_NO_64BIT_TYPES)
+#if ETL_USING_64BIT_TYPES
   //*****************************************************************************
   /// Binary interleave
   ///\ingroup binary

@@ -36,11 +36,9 @@ SOFTWARE.
 #include "char_traits.h"
 #include "integral_limits.h"
 
-#if defined(ETL_NO_STL) && defined(ETL_COMPILER_ARM5)
+#if ETL_NOT_USING_STL && defined(ETL_COMPILER_ARM5)
   // Required for nan, nanf, nanl
-  #if !defined(__USE_C99_MATH)
-    #define __USE_C99_MATH
-  #endif
+  #define __USE_C99_MATH
 #endif
 
 #include <limits.h>
@@ -48,7 +46,7 @@ SOFTWARE.
 #include <float.h>
 #include <math.h>
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
 #define ETL_LOG10_OF_2(x) (((x) * 301) / 1000)
 
 #if defined(ETL_NO_CPP_NAN_SUPPORT)

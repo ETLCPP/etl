@@ -49,7 +49,7 @@ SOFTWARE.
 
 namespace etl
 {
-#if !defined(ETL_NO_64BIT_TYPES)
+#if ETL_USING_64BIT_TYPES
   //***************************************************************************
   /// fnv_1 policy.
   /// Calculates FNV1.

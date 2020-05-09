@@ -52,12 +52,26 @@ SOFTWARE.
 
 // Helper macro, so we don't have to use double negatives.
 // The ETL will use the STL, unless ETL_NO_STL is defined.
-// With this macro we can use '#if ETL_USING_STL' instead of '#if !defined(ETL_NO_STL)' in the code.
-#define ETL_USING_STL (!defined(ETL_NO_STL))
+// With this macro we can use '#if ETL_USING_STL' instead of '#if ETL_USING_STL' in the code.
+#define ETL_USING_STL     (!defined(ETL_NO_STL))
+#define ETL_NOT_USING_STL (defined(ETL_NO_STL))
+
+// Helper macro for ETL_STLPORT.
+#define ETL_USING_STLPORT     (defined(ETL_STLPORT))
+#define ETL_NOT_USING_STLPORT (!defined(ETL_STLPORT))
+
+// Helper macro for ETL_NO_64BIT_TYPES.
+#define ETL_USING_64BIT_TYPES     !defined(ETL_NO_64BIT_TYPES)
+#define ETL_NOT_USING_64BIT_TYPES defined(ETL_NO_64BIT_TYPES)
 
 // Figure out things about the compiler, if haven't already done so in etl_profile.h
 #include "profiles/determine_compiler_version.h"
 #include "profiles/determine_compiler_language_support.h"
+
+// Helper macros
+#define ETL_CPP11_NOT_SUPPORTED ETL_CPP11_NOT_SUPPORTED
+#define ETL_CPP14_NOT_SUPPORTED ETL_CPP14_NOT_SUPPORTED
+#define ETL_CPP17_NOT_SUPPORTED ETL_CPP17_NOT_SUPPORTED
 
 // See if we can determine the OS we're compiling on, if haven't already done so in etl_profile.h
 #include "profiles/determine_development_os.h"

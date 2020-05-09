@@ -44,7 +44,7 @@ SOFTWARE.
 
 #include <new>
 
-#if !defined(ETL_NO_STL)
+#if ETL_USING_STL
   #include <memory>
 #endif
 
@@ -61,14 +61,14 @@ namespace etl
   template <typename T>
   T* addressof(T& t)
   {
-#if ETL_CPP11_SUPPORTED && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && ETL_USING_STL
     return std::addressof(t);
 #else
     return reinterpret_cast<T*>(&const_cast<char&>(reinterpret_cast<const volatile char&>(t)));
 #endif
   }
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //*****************************************************************************
   /// Fills uninitialised memory range with a value.
   /// https://en.cppreference.com/w/cpp/memory/uninitialized_fill
@@ -168,7 +168,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //*****************************************************************************
   /// Fills uninitialised memory with N values.
   /// https://en.cppreference.com/w/cpp/memory/uninitialized_fill_n
@@ -220,7 +220,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //*****************************************************************************
   /// Copies a range of objects to uninitialised memory.
   /// https://en.cppreference.com/w/cpp/memory/uninitialized_copy
@@ -315,7 +315,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //*****************************************************************************
   /// Copies N objects to uninitialised memory.
   /// https://en.cppreference.com/w/cpp/memory/uninitialized_copy_n
@@ -368,7 +368,7 @@ namespace etl
 #endif
 
 #if ETL_CPP11_SUPPORTED
-#if defined(ETL_NO_STL) || !ETL_CPP17_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP17_NOT_SUPPORTED
   //*****************************************************************************
   /// Moves a range of objects to uninitialised memory.
   /// https://en.cppreference.com/w/cpp/memory/uninitialized_move
@@ -493,7 +493,7 @@ namespace etl
 #endif
 
 #if ETL_CPP11_SUPPORTED
-#if defined(ETL_NO_STL) || !ETL_CPP17_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP17_NOT_SUPPORTED
   //*****************************************************************************
   /// Moves a range of objects to uninitialised memory.
   /// https://en.cppreference.com/w/cpp/memory/uninitialized_move_n
@@ -625,7 +625,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP17_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP17_NOT_SUPPORTED
   //*****************************************************************************
   /// Default initialises a range of objects to uninitialised memory.
   /// https://en.cppreference.com/w/cpp/memory/uninitialized_default_construct
@@ -713,7 +713,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP17_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP17_NOT_SUPPORTED
   //*****************************************************************************
   /// Default initialises N objects to uninitialised memory.
   /// https://en.cppreference.com/w/cpp/memory/uninitialized_default_construct_n
@@ -805,7 +805,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP17_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP17_NOT_SUPPORTED
   //*****************************************************************************
   /// Default initialises a range of objects to uninitialised memory.
   /// https://en.cppreference.com/w/cpp/memory/uninitialized_value_construct
@@ -879,7 +879,7 @@ namespace etl
 
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP17_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP17_NOT_SUPPORTED
   //*****************************************************************************
   /// Default initialises N objects to uninitialised memory.
   /// https://en.cppreference.com/w/cpp/memory/uninitialized_value_construct_n
@@ -939,7 +939,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP17_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP17_NOT_SUPPORTED
   //*****************************************************************************
   /// Destroys an item at address p.
   /// https://en.cppreference.com/w/cpp/memory/destroy_at
@@ -1015,7 +1015,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP17_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP17_NOT_SUPPORTED
   //*****************************************************************************
   /// Destroys a range of items.
   /// https://en.cppreference.com/w/cpp/memory/destroy
@@ -1101,7 +1101,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP17_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP17_NOT_SUPPORTED
   //*****************************************************************************
   /// Destroys a number of items.
   /// https://en.cppreference.com/w/cpp/memory/destroy_n
@@ -1318,7 +1318,7 @@ namespace etl
       return (p != ETL_NULLPTR);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && ETL_USING_STL
     //*********************************
     unique_ptr&	operator =(std::nullptr_t) ETL_NOEXCEPT
     {

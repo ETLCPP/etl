@@ -57,7 +57,7 @@ namespace etl
   {
   public:
 
-#if defined(ETL_NO_64BIT_TYPES)
+#if ETL_NOT_USING_64BIT_TYPES
     ETL_STATIC_ASSERT((etl::is_same<THash, uint32_t>::value), "Only 32 bit types supported");
 #else
     ETL_STATIC_ASSERT((etl::is_same<THash, uint32_t>::value || etl::is_same<THash, uint64_t>::value), "Only 32 & 64 bit types supported");

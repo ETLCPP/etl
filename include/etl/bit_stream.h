@@ -186,7 +186,7 @@ namespace etl
       return put_integral(static_cast<uint32_t>(value), width);
     }
 
-#if !defined(ETL_NO_64BIT_TYPES)
+#if ETL_USING_64BIT_TYPES
     //***************************************************************************
     /// For 64bit integral types
     //***************************************************************************
@@ -398,7 +398,7 @@ namespace etl
       return success;
     }
 
-#if !defined(ETL_NO_64BIT_TYPES)
+#if ETL_USING_64BIT_TYPES
     //***************************************************************************
     /// For unsigned integral types. 64bit
     //***************************************************************************

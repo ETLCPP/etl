@@ -52,7 +52,7 @@ SOFTWARE.
 #include "memory.h"
 #include "iterator.h"
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>
 #endif
 
@@ -741,7 +741,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT
     //*************************************************************************
     /// Emplaces a value to the front of the list..
     //*************************************************************************
@@ -816,7 +816,7 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT
       insert_node_after(start_node, *p_data_node);
     }
-#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
+#endif // ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT
 
     //*************************************************************************
     /// Removes a value from the front of the forward_list.
@@ -898,7 +898,7 @@ namespace etl
       return iterator(&data_node);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT
     //*************************************************************************
     /// Emplaces a value to the forward_list after the specified position.
     //*************************************************************************
@@ -978,7 +978,7 @@ namespace etl
 
       return iterator(p_data_node);
     }
-#endif // ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
+#endif // ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT
 
     //*************************************************************************
     /// Inserts 'n' copies of a value to the forward_list after the specified position.
@@ -1657,7 +1657,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
@@ -1803,7 +1803,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************

@@ -45,7 +45,7 @@ namespace etl
 {
   namespace private_power
   {
-#if defined(ETL_NO_64BIT_TYPES)
+#if ETL_NOT_USING_64BIT_TYPES
     typedef uint32_t type;
 #else
     typedef uint64_t type;

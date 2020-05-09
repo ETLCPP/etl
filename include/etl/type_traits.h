@@ -65,13 +65,13 @@ SOFTWARE.
 /// Derived from either the standard or alternate definitions, dependant on whether or not ETL_NO_STL is defined.
 /// \ingroup utilities
 
-#if !defined(ETL_NO_STL) && ETL_CPP11_SUPPORTED
+#if ETL_USING_STL && ETL_CPP11_SUPPORTED
   #include <type_traits>
 #endif
 
 namespace etl
 {
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
 
   //*****************************************************************************
   // Traits are defined by the ETL
@@ -755,7 +755,7 @@ namespace etl
   inline constexpr size_t alignment_of_v = etl::alignment_of<T>::value;
 #endif
 
-#else // Condition = !defined(ETL_NO_STL) && ETL_CPP11_SUPPORTED
+#else // Condition = ETL_USING_STL && ETL_CPP11_SUPPORTED
 
   //*****************************************************************************
   // Traits are derived from the STL
@@ -1039,7 +1039,7 @@ namespace etl
   inline constexpr bool is_pod_v = std::is_pod_v<T>;
 #endif
 
-#if !defined(ARDUINO) && !defined(ETL_STLPORT)
+#if !defined(ARDUINO) && ETL_NOT_USING_STLPORT
   //***************************************************************************
   /// is_trivially_constructible
   ///\ingroup type_traits
@@ -1298,7 +1298,7 @@ namespace etl
   inline constexpr size_t alignment_of_v = std::alignment_of_v<T>;
 #endif
 
-#endif // Condition = !defined(ETL_NO_STL) && ETL_CPP11_SUPPORTED
+#endif // Condition = ETL_USING_STL && ETL_CPP11_SUPPORTED
 
   //***************************************************************************
   // ETL extended type traits.

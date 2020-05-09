@@ -39,7 +39,7 @@ SOFTWARE.
   #include <cstddef>
 #endif
 
-#if (ETL_CPP11_SUPPORTED == 0) || defined(ETL_NO_STL)
+#if (ETL_CPP11_SUPPORTED == 0) || ETL_NOT_USING_STL
   // Use the old style NULL definition.
   #define ETL_NULLPTR NULL
 #else

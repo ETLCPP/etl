@@ -34,7 +34,7 @@ SOFTWARE.
 #include "platform.h"
 #include "type_traits.h"
 
-#if !defined(ETL_NO_STL)
+#if ETL_USING_STL
   #if ETL_CPP11_SUPPORTED
     #include <utility>
   #else
@@ -71,7 +71,7 @@ namespace etl
 
   // We can't have std::swap and etl::swap templates coexisting in the unit tests
   // as the compiler will be unable to decide of which one to use, due to ADL.
-#if defined(ETL_NO_STL) && !defined(ETL_IN_UNIT_TEST)
+#if ETL_NOT_USING_STL && !defined(ETL_IN_UNIT_TEST)
   //***************************************************************************
   // swap
 #if ETL_CPP11_SUPPORTED
@@ -161,7 +161,7 @@ namespace etl
     }
 #endif
 
-#if defined(ETL_IN_UNIT_TEST) || !defined(ETL_NO_STL)
+#if defined(ETL_IN_UNIT_TEST) || ETL_USING_STL
     /// Converting from etl::pair to std::pair
     operator std::pair<T1, T2>()
     {
@@ -290,7 +290,7 @@ namespace etl
     return !(a < b);
   }
 
-#if defined(ETL_NO_STL) || !ETL_CPP14_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP14_NOT_SUPPORTED
   //***************************************************************************
   /// exchange (const)
   //***************************************************************************

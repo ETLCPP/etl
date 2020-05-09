@@ -46,7 +46,7 @@ SOFTWARE.
 #include "functional.h"
 #include "utility.h"
 
-#if !defined(ETL_NO_STL)
+#if ETL_USING_STL
   #include <algorithm>
   #include <utility>
   #include <iterator>
@@ -74,7 +74,7 @@ namespace etl
 //*****************************************************************************
 namespace etl
 {
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // iter_swap
   template <typename TIterator1, typename TIterator2>
@@ -93,7 +93,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // swap_ranges
   template <typename T1terator1, typename TIterator2>
@@ -120,7 +120,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // copy
   // Pointer
@@ -162,7 +162,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // reverse_copy
   template <typename TIterator1, typename TIterator2>
@@ -185,7 +185,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   // copy_n
   // Pointer
@@ -230,7 +230,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // copy_backward
   // Pointer
@@ -272,7 +272,7 @@ namespace etl
 #endif
 
 #if ETL_CPP11_SUPPORTED
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // move
   template <typename TIterator1, typename TIterator2>
@@ -307,7 +307,7 @@ namespace etl
 #endif
 
 #if ETL_CPP11_SUPPORTED
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // move_backward
   template <typename TIterator1, typename TIterator2>
@@ -340,7 +340,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // reverse
   // Pointers
@@ -378,7 +378,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // lower_bound
   template<typename TIterator, typename TValue, typename TCompare>
@@ -436,7 +436,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // upper_bound
   template<typename TIterator, typename TValue, typename TCompare>
@@ -494,7 +494,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // equal_range
   template<typename TIterator, typename TValue, typename TCompare>
@@ -532,7 +532,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // find_if
   template <typename TIterator, typename TUnaryPredicate>
@@ -562,7 +562,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // find
   template <typename TIterator, typename T>
@@ -592,7 +592,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // fill
   template<typename TIterator, typename TValue>
@@ -621,7 +621,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // fill_n
   template<typename TIterator, typename TSize, typename TValue>
@@ -658,7 +658,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // count
   template <typename TIterator, typename T>
@@ -1379,7 +1379,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   /// Finds the iterator to the smallest element in the range (begin, end).<br>
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/min_element"></a>
@@ -1449,7 +1449,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   /// Finds the iterator to the largest element in the range (begin, end).<br>
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/max_element"></a>
@@ -1519,7 +1519,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// Finds the greatest and the smallest element in the range (begin, end).<br>
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/minmax_element"></a>
@@ -1595,7 +1595,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// minmax
   ///\ingroup algorithm
@@ -1651,7 +1651,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// is_sorted_until
   ///\ingroup algorithm
@@ -1737,7 +1737,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// is_sorted
   ///\ingroup algorithm
@@ -1793,7 +1793,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// find_if_not
   ///\ingroup algorithm
@@ -1833,7 +1833,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// is_permutation
   ///\ingroup algorithm
@@ -2029,7 +2029,7 @@ namespace etl
   #endif
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// is_partitioned
   ///\ingroup algorithm
@@ -2075,7 +2075,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// partition_point
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/partition_point"></a>
@@ -2115,7 +2115,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// Copies the elements from the range (begin, end) to two different ranges
   /// depending on the value returned by the predicate.<br>
@@ -2161,7 +2161,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// copy_if
   ///\ingroup algorithm
@@ -2201,7 +2201,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// all_of
   ///\ingroup algorithm
@@ -2231,7 +2231,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// any_of
   ///\ingroup algorithm
@@ -2261,7 +2261,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// none_of
   ///\ingroup algorithm
@@ -2291,7 +2291,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   /// Sorts the elements.
   /// Uses user defined comparison.
