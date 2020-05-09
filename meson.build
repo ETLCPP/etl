@@ -134,15 +134,14 @@ etl_test_sources = files(
 	'test/test_queue_spsc_locked_small.cpp',
 	'test/test_scaled_rounding.cpp',
 	'test/test_state_chart.cpp',
-
 	'test/test_type_select.cpp',
 	'test/test_vector_external_buffer.cpp',
 	'test/test_vector_pointer_external_buffer.cpp',
 )
 
 # These files currently fail to compile with OS X clang at the very least
-if meson.get_compiler('cpp').get_id() == 'clang'
-	message('Some test files fail to compile with clang and are disabled.')
+if meson.get_compiler('cpp').get_id() == 'clang' and build_machine.system() == 'darwin'
+	message('Some test files fail to compile with OS X clang and are disabled.')
 else
 	etl_test_sources += files(
 		'test/test_deque.cpp',
@@ -197,7 +196,12 @@ etl_unit_tests = executable('etl_unit_tests',
 		'-DETL_DEBUG',
 	],
 	native: true,
-	install: false
+	install: false,
+	# Don't build tests by default if we are a subproject
+	build_by_default: meson.is_subproject() == false
 )
 
-test('ETL Unit Tests', etl_unit_tests)
+# Only register tests with the test runner when built as a primary project
+if meson.is_subproject() == false
+	test('ETL Unit Tests', etl_unit_tests)
+endif
