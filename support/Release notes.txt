@@ -1,4 +1,8 @@
 ===============================================================================
+18.1.1
+Fixed bug for when merging a list to itself for etl::list, etl::intrusive_list & etl::intrusive_forward_list.
+
+===============================================================================
 18.1.0
 Strings may use external buffers if the 'max size' template parameter is zero.
 
@@ -22,7 +26,7 @@ Added constexpr in place of enum for C++11 in sqrt.h
 Replaced 'typedef typename etl::remove_cv<T>::type type_t' with 'typedef typename etl::remove_reference<typename etl::remove_cv<T>::type>::type type_t' in type_traits.h
 Removed Windows Unicode dependency in CMakeLists.txt
 Added test_log_1000_base test
-Updated how conan get the library version
+Updated how conan gets the library version
 
 ===============================================================================
 17.8.3
