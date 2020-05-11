@@ -1497,7 +1497,7 @@ namespace etl
     template <typename TCompare>
     void merge(ilist& other, TCompare compare)
     {
-      if (!other.empty())
+      if ((this != &other) && !other.empty())
       {
 #if defined(ETL_DEBUG)
         ETL_ASSERT(etl::is_sorted(other.begin(), other.end(), compare), ETL_ERROR(list_unsorted));
