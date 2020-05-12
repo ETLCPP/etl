@@ -17,6 +17,9 @@ jobs:
           name: Listing0
           command: 'ls'
       - run:
+          name: Git Fetch
+          command: 'git fetch'
+      - run:
           name: Git Checkout
           command: 'git checkout feature/add_circle-ci_support'
       - run:
