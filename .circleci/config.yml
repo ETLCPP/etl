@@ -5,7 +5,7 @@ jobs:
       - image: "rikorose/gcc-cmake:latest"
     branches:
       only:
-      - feature/add_circle-ci_support
+      - master
     steps:
       - checkout:
       - run:
