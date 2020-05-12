@@ -10,7 +10,7 @@ jobs:
       - checkout:
       - run:
           name: Listing0
-          command: 'ls'
+          command: 'ls -lrt'
       - run:
           name: Creating Build Files
           command: 'cmake -Bbuild test/'

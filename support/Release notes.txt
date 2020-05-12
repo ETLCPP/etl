@@ -1,4 +1,8 @@
 ===============================================================================
+18.1.3
+Added CircleCI yml file for master branch
+
+===============================================================================
 18.1.2
 Fixed undefined behaviour warning for #define that contained 'define'.
 Restored CMakeLists.txt to root directory.
