@@ -8,6 +8,9 @@ jobs:
       - feature/add_circle-ci_support
     steps:
       - run:
+          name: Listing
+          command: 'ls -lrt'
+      - run:
           name: Creating Build Files
           command: 'cmake -Bbuild etlcpp/test/'
       - run:
