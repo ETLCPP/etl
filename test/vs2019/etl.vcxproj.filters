@@ -1375,6 +1375,9 @@
     <None Include="..\..\include\etl\generators\generate.bat">
       <Filter>Resource Files\Generators</Filter>
     </None>
+    <None Include="..\..\.circleci\config.yml">
+      <Filter>Resource Files\CI\CircleCI</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\include\etl\file_error_numbers.txt">

@@ -54,29 +54,29 @@ SOFTWARE.
 // The ETL will use the STL, unless ETL_NO_STL is defined.
 // With this macro we can use '#if ETL_USING_STL' instead of '#if !ETL_NO_STL' in the code.
 #if defined(ETL_NO_STL)
-#define ETL_USING_STL     0
-#define ETL_NOT_USING_STL 1
+  #define ETL_USING_STL     0
+  #define ETL_NOT_USING_STL 1
 #else
-#define ETL_USING_STL     1
-#define ETL_NOT_USING_STL 0
+  #define ETL_USING_STL     1
+  #define ETL_NOT_USING_STL 0
 #endif
 
 // Helper macros for ETL_STLPORT.
 #if defined(ETL_STLPORT)
-#define ETL_USING_STLPORT     1
-#define ETL_NOT_USING_STLPORT 0
+  #define ETL_USING_STLPORT     1
+  #define ETL_NOT_USING_STLPORT 0
 #else
-#define ETL_USING_STLPORT     0
-#define ETL_NOT_USING_STLPORT 1
+  #define ETL_USING_STLPORT     0
+  #define ETL_NOT_USING_STLPORT 1
 #endif
 
 // Helper macro for ETL_NO_64BIT_TYPES.
 #if defined(ETL_NO_64BIT_TYPES)
-#define ETL_USING_64BIT_TYPES     0
-#define ETL_NOT_USING_64BIT_TYPES 1
+  #define ETL_USING_64BIT_TYPES     0
+  #define ETL_NOT_USING_64BIT_TYPES 1
 #else
-#define ETL_USING_64BIT_TYPES     1
-#define ETL_NOT_USING_64BIT_TYPES 0
+  #define ETL_USING_64BIT_TYPES     1
+  #define ETL_NOT_USING_64BIT_TYPES 0
 #endif
 
 // Figure out things about the compiler, if haven't already done so in etl_profile.h

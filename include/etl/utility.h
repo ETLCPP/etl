@@ -155,8 +155,8 @@ namespace etl
     /// Move constructor
     template <typename U1, typename U2>
     ETL_CONSTEXPR14 pair(pair<U1, U2>&& other)
-      : first(etl::move(other.first))
-      , second(etl::move(other.second))
+      : first(etl::forward<U1>(other.first))
+      , second(etl::forward<U2>(other.second))
     {
     }
 #endif
@@ -178,8 +178,8 @@ namespace etl
 #if ETL_CPP11_SUPPORTED
     /// Constructing from std::pair
     pair(std::pair<T1, T2>&& other)
-      : first(etl::move(other.first))
-      , second(etl::move(other.second))
+      : first(etl::forward<T1>(other.first))
+      , second(etl::forward<T2>(other.second))
     {
     }
 #endif
@@ -213,8 +213,8 @@ namespace etl
 #if ETL_CPP11_SUPPORTED
     pair<T1, T2>& operator =(pair<T1, T2>&& other)
     {
-      first = etl::move(other.first);
-      second = etl::move(other.second);
+      first = etl::forward<T1>(other.first);
+      second = etl::forward<T2>(other.second);
 
       return *this;
     }
@@ -222,8 +222,8 @@ namespace etl
     template <typename U1, typename U2>
     pair<U1, U2>& operator =(pair<U1, U2>&& other)
     {
-      first = etl::move(other.first);
-      second = etl::move(other.second);
+      first = etl::forward<U1>(other.first);
+      second = etl::forward<U2>(other.second);
 
       return *this;
     }
