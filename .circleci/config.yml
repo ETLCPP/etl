@@ -9,7 +9,7 @@ jobs:
     steps:
       - run:
           name: Listing0
-          command: 'ls -lrt'
+          command: 'ls'
       - run:
           name: Creating Build Files
           command: 'cmake -Bbuild etlcpp/test/'
