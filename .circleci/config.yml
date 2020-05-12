@@ -7,24 +7,16 @@ jobs:
       only:
       - feature/add_circle-ci_support
     steps:
-      - run:
-          name: Git Init
-          command: 'git init'
-      - run:
-          name: Git Clone
-          command: 'git clone https://github.com/ETLCPP/etl.git'
+      - checkout:
       - run:
           name: Listing0
           command: 'ls'
-      - run:
-          name: Git Fetch
-          command: 'git fetch'
       - run:
           name: Git Checkout
           command: 'git checkout --track origin/feature/add_circle-ci_support'
       - run:
           name: Creating Build Files
-          command: 'cmake -Bbuild etlcpp/test/'
+          command: 'cmake -Bbuild etl/test/'
       - run:
           name: Creating Binary Files
           command: 'cmake --build build'
