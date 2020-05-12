@@ -8,6 +8,12 @@ jobs:
       - feature/add_circle-ci_support
     steps:
       - run:
+          name: Git Clone
+          command: 'git clone https://github.com/ETLCPP/etl.git'
+      - run:
+          name: Git Checkout
+          command: 'git checkout feature/add_circle-ci_support'
+      - run:
           name: Git Pull
           command: 'git pull'
       - run:
