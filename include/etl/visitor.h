@@ -74,6 +74,8 @@ namespace etl
   {
   public:
 
+    virtual ~visitable() {}
+
     virtual void accept(T1&) = 0;
   };
 
@@ -88,6 +90,8 @@ namespace etl
   class visitable
   {
   public:
+
+    virtual ~visitable() {}
 
     virtual void accept(T1&) = 0;
     virtual void accept(T2&) = 0;
@@ -105,6 +109,8 @@ namespace etl
   {
   public:
 
+    virtual ~visitable() {}
+
     virtual void accept(T1&) = 0;
     virtual void accept(T2&) = 0;
     virtual void accept(T3&) = 0;
@@ -120,6 +126,8 @@ namespace etl
   {
   public:
 
+    virtual ~visitable() {}
+
     virtual void accept(T1&) = 0;
     virtual void accept(T2&) = 0;
   };
@@ -133,6 +141,8 @@ namespace etl
   class visitable<T1>
   {
   public:
+
+    virtual ~visitable() {}
 
     virtual void accept(T1&) = 0;
   };
@@ -163,6 +173,8 @@ namespace etl
   {
   public:
 
+    virtual ~visitor() {}
+
     virtual void visit(T1&) = 0;
   };
 
@@ -180,6 +192,8 @@ namespace etl
   class visitor
   {
   public:
+
+    virtual ~visitor() {}
 
     virtual void visit(T1&) = 0;
     virtual void visit(T2&) = 0;
@@ -212,6 +226,8 @@ namespace etl
   {
   public:
 
+    virtual ~visitor() {}
+
     virtual void visit(T1&) = 0;
     virtual void visit(T2&) = 0;
     virtual void visit(T3&) = 0;
@@ -242,6 +258,8 @@ namespace etl
   {
   public:
 
+    virtual ~visitor() {}
+
     virtual void visit(T1&) = 0;
     virtual void visit(T2&) = 0;
     virtual void visit(T3&) = 0;
@@ -271,6 +289,8 @@ namespace etl
   {
   public:
 
+    virtual ~visitor() {}
+
     virtual void visit(T1&) = 0;
     virtual void visit(T2&) = 0;
     virtual void visit(T3&) = 0;
@@ -298,6 +318,8 @@ namespace etl
   {
   public:
 
+    virtual ~visitor() {}
+
     virtual void visit(T1&) = 0;
     virtual void visit(T2&) = 0;
     virtual void visit(T3&) = 0;
@@ -324,6 +346,8 @@ namespace etl
   {
   public:
 
+    virtual ~visitor() {}
+
     virtual void visit(T1&) = 0;
     virtual void visit(T2&) = 0;
     virtual void visit(T3&) = 0;
@@ -349,6 +373,8 @@ namespace etl
   {
   public:
 
+    virtual ~visitor() {}
+
     virtual void visit(T1&) = 0;
     virtual void visit(T2&) = 0;
     virtual void visit(T3&) = 0;
@@ -373,6 +399,8 @@ namespace etl
   {
   public:
 
+    virtual ~visitor() {}
+
     virtual void visit(T1&) = 0;
     virtual void visit(T2&) = 0;
     virtual void visit(T3&) = 0;
@@ -395,6 +423,8 @@ namespace etl
   {
   public:
 
+    virtual ~visitor() {}
+
     virtual void visit(T1&) = 0;
     virtual void visit(T2&) = 0;
     virtual void visit(T3&) = 0;
@@ -416,13 +446,15 @@ namespace etl
   {
   public:
 
-      virtual void visit(T1&) = 0;
-      virtual void visit(T2&) = 0;
-      virtual void visit(T3&) = 0;
-      virtual void visit(T4&) = 0;
-      virtual void visit(T5&) = 0;
-      virtual void visit(T6&) = 0;
-      virtual void visit(T7&) = 0;
+    virtual ~visitor() {}
+
+    virtual void visit(T1&) = 0;
+    virtual void visit(T2&) = 0;
+    virtual void visit(T3&) = 0;
+    virtual void visit(T4&) = 0;
+    virtual void visit(T5&) = 0;
+    virtual void visit(T6&) = 0;
+    virtual void visit(T7&) = 0;
   };
 
   //*****************************************************************
@@ -436,12 +468,14 @@ namespace etl
   {
   public:
 
-      virtual void visit(T1&) = 0;
-      virtual void visit(T2&) = 0;
-      virtual void visit(T3&) = 0;
-      virtual void visit(T4&) = 0;
-      virtual void visit(T5&) = 0;
-      virtual void visit(T6&) = 0;
+    virtual ~visitor() {}
+
+    virtual void visit(T1&) = 0;
+    virtual void visit(T2&) = 0;
+    virtual void visit(T3&) = 0;
+    virtual void visit(T4&) = 0;
+    virtual void visit(T5&) = 0;
+    virtual void visit(T6&) = 0;
   };
 
   //*****************************************************************
@@ -455,11 +489,13 @@ namespace etl
   {
   public:
 
-      virtual void visit(T1&) = 0;
-      virtual void visit(T2&) = 0;
-      virtual void visit(T3&) = 0;
-      virtual void visit(T4&) = 0;
-      virtual void visit(T5&) = 0;
+    virtual ~visitor() {}
+
+    virtual void visit(T1&) = 0;
+    virtual void visit(T2&) = 0;
+    virtual void visit(T3&) = 0;
+    virtual void visit(T4&) = 0;
+    virtual void visit(T5&) = 0;
   };
 
   //*****************************************************************
@@ -472,10 +508,12 @@ namespace etl
   {
   public:
 
-      virtual void visit(T1&) = 0;
-      virtual void visit(T2&) = 0;
-      virtual void visit(T3&) = 0;
-      virtual void visit(T4&) = 0;
+    virtual ~visitor() {}
+
+    virtual void visit(T1&) = 0;
+    virtual void visit(T2&) = 0;
+    virtual void visit(T3&) = 0;
+    virtual void visit(T4&) = 0;
   };
 
   //*****************************************************************
@@ -488,9 +526,11 @@ namespace etl
   {
   public:
 
-      virtual void visit(T1&) = 0;
-      virtual void visit(T2&) = 0;
-      virtual void visit(T3&) = 0;
+    virtual ~visitor() {}
+
+    virtual void visit(T1&) = 0;
+    virtual void visit(T2&) = 0;
+    virtual void visit(T3&) = 0;
   };
 
   //*****************************************************************
@@ -503,8 +543,10 @@ namespace etl
   {
   public:
 
-      virtual void visit(T1&) = 0;
-      virtual void visit(T2&) = 0;
+    virtual ~visitor() {}
+
+    virtual void visit(T1&) = 0;
+    virtual void visit(T2&) = 0;
   };
 
   //*****************************************************************
@@ -517,7 +559,9 @@ namespace etl
   {
   public:
 
-      virtual void visit(T1&) = 0;
+    virtual ~visitor() {}
+
+    virtual void visit(T1&) = 0;
   };
 
 #endif

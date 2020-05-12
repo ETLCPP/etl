@@ -1543,6 +1543,7 @@
     <ClCompile Include="..\test_xor_rotate_checksum.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\.circleci\config.yml" />
     <None Include="..\..\etl.pspimage" />
     <None Include="..\..\etl.xar" />
     <None Include="..\..\include\etl\generate_message_packet.bat" />
