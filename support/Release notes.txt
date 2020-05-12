@@ -1,4 +1,9 @@
 ===============================================================================
+18.1.2
+Fixed undefined behaviour warning for #define that contained 'define'.
+Restored CMakeLists.txt to root directory.
+
+===============================================================================
 18.1.1
 Fixed bug for when merging a list to itself for etl::list, etl::intrusive_list & etl::intrusive_forward_list.
 
