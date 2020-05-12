@@ -115,9 +115,9 @@ namespace etl
     void add_observer(TObserver& observer)
     {
 		  // See if we already have it in our list.
-      typename Observer_List::const_iterator i_observer = ETL_STD::find(observer_list.begin(),
-                                                                        observer_list.end(),
-                                                                        &observer);
+      typename Observer_List::const_iterator i_observer = etl::find(observer_list.begin(),
+                                                                       observer_list.end(),
+                                                                       &observer);
 
 		  // Not there?
       if (i_observer == observer_list.end())
@@ -138,9 +138,9 @@ namespace etl
     bool remove_observer(TObserver& observer)
     {
       // See if we have it in our list.
-      typename Observer_List::iterator i_observer = ETL_STD::find(observer_list.begin(),
-                                                                  observer_list.end(),
-                                                                  &observer);
+      typename Observer_List::iterator i_observer = etl::find(observer_list.begin(),
+                                                                 observer_list.end(),
+                                                                 &observer);
 
       // Found it?
       if (i_observer != observer_list.end())

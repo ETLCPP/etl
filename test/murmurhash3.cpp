@@ -63,10 +63,12 @@ FORCE_INLINE uint32_t getblock32(const uint32_t * p, int i)
   return p[i];
 }
 
+#if ETL_USING_64BIT_TYPES
 FORCE_INLINE uint64_t getblock64(const uint64_t * p, int i)
 {
   return p[i];
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Finalization mix - force all bits of a hash block to avalanche
@@ -84,6 +86,7 @@ FORCE_INLINE uint32_t fmix32(uint32_t h)
 
 //----------
 
+#if ETL_USING_64BIT_TYPES
 FORCE_INLINE uint64_t fmix64(uint64_t k)
 {
   k ^= k >> 33;
@@ -94,6 +97,7 @@ FORCE_INLINE uint64_t fmix64(uint64_t k)
 
   return k;
 }
+#endif
 
 //-----------------------------------------------------------------------------
 
@@ -257,6 +261,7 @@ void MurmurHash3_x86_128(const void * key, const int len,
 
 //-----------------------------------------------------------------------------
 
+#if ETL_USING_64BIT_TYPES
 void MurmurHash3_x64_128(const void * key, const int len,
   const uint32_t seed, void * out)
 {
@@ -335,4 +340,4 @@ void MurmurHash3_x64_128(const void * key, const int len,
   ((uint64_t*)out)[0] = h1;
   ((uint64_t*)out)[1] = h2;
 }
-
+#endif

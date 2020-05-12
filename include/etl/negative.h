@@ -49,7 +49,7 @@ namespace etl
   // For unsigned types.
   //***************************************************************************
   template <typename T>
-  typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
+  typename etl::enable_if<etl::is_unsigned<T>::value, bool>::type
     is_negative(const T)
   {
     return false;

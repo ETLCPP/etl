@@ -33,9 +33,10 @@ SOFTWARE.
 
 #include "platform.h"
 #include "basic_string.h"
+#include "string_view.h"
 #include "hash.h"
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>
 #endif
 
@@ -107,6 +108,10 @@ namespace etl
       if (other.truncated())
       {
         this->is_truncated = true;
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
       }
     }
 
@@ -156,7 +161,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
@@ -166,6 +171,16 @@ namespace etl
       this->assign(init.begin(), init.end());
     }
 #endif
+
+    //*************************************************************************
+    /// From string_view.
+    ///\param view The string_view.
+    //*************************************************************************
+    explicit string(const etl::string_view& view)
+      : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
+    {
+      this->assign(view.begin(), view.end());
+    }
 
     //*************************************************************************
     /// Returns a sub-string.
@@ -180,13 +195,27 @@ namespace etl
       {
         ETL_ASSERT(position < this->size(), ETL_ERROR(string_out_of_bounds));
 
-        length_ = ETL_STD::min(length_, this->size() - position);
+        length_ = etl::min(length_, this->size() - position);
 
         new_string.assign(buffer + position, buffer + position + length_);
       }
 
       return new_string;
     }
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    string& operator = (const string& rhs)
+    {
+      if (&rhs != this)
+      {
+       this->assign(rhs);
+      }
+
+      return *this;
+    }
+
 
     //*************************************************************************
     /// Assignment operator.
@@ -214,10 +243,10 @@ namespace etl
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
-#ifdef ETL_ISTRING_REPAIR_ENABLE
-    virtual
-#endif
     void repair()
+#ifdef ETL_ISTRING_REPAIR_ENABLE
+      ETL_OVERRIDE
+#endif
     {
       etl::istring::repair_buffer(buffer);
     }
@@ -225,6 +254,188 @@ namespace etl
   private:
 
     value_type buffer[MAX_SIZE + 1];
+  };
+
+  //***************************************************************************
+  /// A string implementation that uses a fixed size buffer.
+  /// A specilisation that requires an external buffer to be specified.
+  ///\ingroup string
+  //***************************************************************************
+  template <>
+  class string<0U> : public istring
+  {
+  public:
+
+    typedef istring base_type;
+    typedef istring interface_type;
+
+    typedef istring::value_type value_type;
+
+    //*************************************************************************
+    /// Constructor.
+    //*************************************************************************
+    string(value_type* buffer, size_t max_size)
+      : istring(buffer, max_size - 1)
+    {
+      this->initialise();
+    }
+
+    //*************************************************************************
+    /// Copy constructor.
+    ///\param other The other string.
+    //*************************************************************************
+    string(const etl::string<0U>& other, value_type* buffer, size_t max_size)
+      : istring(buffer, max_size - 1)
+    {
+      this->assign(other);
+    }
+
+    //*************************************************************************
+    /// From other istring.
+    ///\param other The other istring.
+    //*************************************************************************
+    string(const etl::istring& other, value_type* buffer, size_t max_size)
+      : istring(buffer, max_size - 1)
+    {
+      this->assign(other);
+    }
+
+    //*************************************************************************
+    /// From other string, position, length.
+    ///\param other The other string.
+    ///\param position The position of the first character.
+    ///\param length   The number of characters. Default = npos.
+    //*************************************************************************
+    string(const etl::istring& other, value_type* buffer, size_t max_size, size_t position, size_t length_ = npos)
+      : istring(buffer, max_size - 1)
+    {
+      ETL_ASSERT(position < other.size(), ETL_ERROR(string_out_of_bounds));
+
+      this->assign(other.begin() + position, other.begin() + position + length_);
+
+      if (other.truncated())
+      {
+        this->is_truncated = true;
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
+      }
+    }
+
+    //*************************************************************************
+    /// Constructor, from null terminated text.
+    ///\param text The initial text of the string.
+    //*************************************************************************
+    ETL_EXPLICIT_STRING_FROM_CHAR string(const value_type* text, value_type* buffer, size_t max_size)
+      : istring(buffer, max_size - 1)
+    {
+      this->assign(text, text + etl::char_traits<value_type>::length(text));
+    }
+
+    //*************************************************************************
+    /// Constructor, from null terminated text and count.
+    ///\param text  The initial text of the string.
+    ///\param count The number of characters to copy.
+    //*************************************************************************
+    string(const value_type* text, size_t count, value_type* buffer, size_t max_size)
+      : istring(buffer, max_size - 1)
+    {
+      this->assign(text, text + count);
+    }
+
+    //*************************************************************************
+    /// Constructor, from initial size and value.
+    ///\param initialSize  The initial size of the string.
+    ///\param value        The value to fill the string with.
+    //*************************************************************************
+    string(size_t count, value_type c, value_type* buffer, size_t max_size)
+      : istring(buffer, max_size - 1)
+    {
+      this->initialise();
+      this->resize(count, c);
+    }
+
+    //*************************************************************************
+    /// Constructor, from an iterator range.
+    ///\tparam TIterator The iterator type.
+    ///\param first The iterator to the first element.
+    ///\param last  The iterator to the last element + 1.
+    //*************************************************************************
+    template <typename TIterator>
+    string(TIterator first, TIterator last, value_type* buffer, size_t max_size)
+      : istring(buffer, max_size - 1)
+    {
+      this->assign(first, last);
+    }
+
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+    //*************************************************************************
+    /// Construct from initializer_list.
+    //*************************************************************************
+    string(std::initializer_list<value_type> init, value_type* buffer, size_t max_size)
+      : istring(buffer, max_size - 1)
+    {
+      this->assign(init.begin(), init.end());
+    }
+#endif
+
+    //*************************************************************************
+    /// From string_view.
+    ///\param view The string_view.
+    //*************************************************************************
+    explicit string(const etl::string_view& view, value_type* buffer, size_t max_size)
+      : istring(buffer, max_size - 1)
+    {
+      this->assign(view.begin(), view.end());
+    }
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    string& operator = (const string& rhs)
+    {
+      if (&rhs != this)
+      {
+        this->assign(rhs);
+      }
+
+      return *this;
+    }
+
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    string& operator = (const istring& rhs)
+    {
+      if (&rhs != this)
+      {
+        this->assign(rhs);
+      }
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    string& operator = (const value_type* text)
+    {
+      this->assign(text);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Fix the internal pointers after a low level memory copy.
+    //*************************************************************************
+    void repair()
+#ifdef ETL_ISTRING_REPAIR_ENABLE
+      ETL_OVERRIDE
+#endif
+    {
+    }
   };
 
   //*************************************************************************

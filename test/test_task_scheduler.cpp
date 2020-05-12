@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2017 jwellbelove
 
@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include <stdint.h>
 #include <string>
@@ -151,8 +151,8 @@ Task task3(3, work3, common);
 
 etl::task* taskList[] = { &task1, &task2, &task3 };
 
-typedef etl::scheduler<etl::scheduler_policy_sequencial_single,   sizeof(etl::array_size(taskList))> SchedulerSequencialSingle;
-typedef etl::scheduler<etl::scheduler_policy_sequencial_multiple, sizeof(etl::array_size(taskList))> SchedulerSequencialMultiple;
+typedef etl::scheduler<etl::scheduler_policy_sequential_single,   sizeof(etl::array_size(taskList))> SchedulerSequentialSingle;
+typedef etl::scheduler<etl::scheduler_policy_sequential_multiple, sizeof(etl::array_size(taskList))> SchedulerSequentialMultiple;
 typedef etl::scheduler<etl::scheduler_policy_highest_priority,    sizeof(etl::array_size(taskList))> SchedulerHighestPriority;
 typedef etl::scheduler<etl::scheduler_policy_most_work,           sizeof(etl::array_size(taskList))> SchedulerMostWork;
 
@@ -160,10 +160,10 @@ namespace
 {
   SUITE(test_task_scheduler)
   {
-    //=========================================================================
+    //*************************************************************************
     TEST(test_scheduler_sequencial_single)
     {
-      SchedulerSequencialSingle s;
+      SchedulerSequentialSingle s;
 
       task1.Reset();
       task2.Reset();
@@ -185,10 +185,10 @@ namespace
       CHECK(common.watchdog_called);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_scheduler_sequencial_multiple)
     {
-      SchedulerSequencialMultiple s;
+      SchedulerSequentialMultiple s;
 
       task1.Reset();
       task2.Reset();
@@ -210,7 +210,7 @@ namespace
       CHECK(common.watchdog_called);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_scheduler_highest_priority)
     {
       SchedulerHighestPriority s;
@@ -235,7 +235,7 @@ namespace
       CHECK(common.watchdog_called);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(test_scheduler_most_work)
     {
       SchedulerMostWork s;

@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include <string>
 
@@ -113,6 +113,12 @@ namespace
       constexpr size_t CAPACITY = 10;
       size_t length = strlen("Hello World");
 
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+      CHECK_THROW(auto ctext   = etl::make_string_with_capacity<CAPACITY>("Hello World"),  etl::string_truncation);
+      CHECK_THROW(auto wtext   = etl::make_string_with_capacity<CAPACITY>(L"Hello World"), etl::string_truncation);;
+      CHECK_THROW(auto u16text = etl::make_string_with_capacity<CAPACITY>(u"Hello World"), etl::string_truncation);;
+      CHECK_THROW(auto u32text = etl::make_string_with_capacity<CAPACITY>(U"Hello World"), etl::string_truncation);;
+#else
       auto ctext   = etl::make_string_with_capacity<CAPACITY>("Hello World");
       auto wtext   = etl::make_string_with_capacity<CAPACITY>(L"Hello World");
       auto u16text = etl::make_string_with_capacity<CAPACITY>(u"Hello World");
@@ -138,6 +144,7 @@ namespace
       CHECK(Equal(std::wstring(L"Hello Worl"), ctext));
       CHECK(Equal(std::u16string(u"Hello Worl"), ctext));
       CHECK(Equal(std::u32string(U"Hello Worl"), ctext));
+#endif
     }
   };
 }

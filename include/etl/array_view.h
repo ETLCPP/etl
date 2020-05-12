@@ -39,8 +39,7 @@ SOFTWARE.
 #include "nullptr.h"
 #include "hash.h"
 #include "algorithm.h"
-
-#include "stl/algorithm.h"
+#include "memory.h"
 
 ///\defgroup array array
 /// A wrapper for arrays
@@ -100,23 +99,31 @@ namespace etl
   {
   public:
 
-    typedef T                                     value_type;
-    typedef size_t                           size_type;
-    typedef T&                                    reference;
-    typedef const T&                              const_reference;
-    typedef T*                                    pointer;
-    typedef const T*                              const_pointer;
-    typedef T*                                    iterator;
-    typedef const T*                              const_iterator;
-    typedef ETL_STD::reverse_iterator<iterator>       reverse_iterator;
-    typedef ETL_STD::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef T        value_type;
+    typedef size_t   size_type;
+    typedef const T& const_reference;
+    typedef const T* const_pointer;
+    typedef const T* const_iterator;
+    typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
+
+#if defined(ETL_ARRAY_VIEW_IS_MUTABLE)
+    typedef T* pointer;
+    typedef T& reference;
+    typedef T* iterator;
+    typedef ETL_OR_STD::reverse_iterator<iterator> reverse_iterator;
+#else
+    typedef const_pointer   pointer;
+    typedef const_reference reference;
+    typedef const_pointer   iterator;
+    typedef const_reverse_iterator reverse_iterator;
+#endif
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
     ETL_CONSTEXPR array_view()
-      : mbegin(nullptr),
-        mend(nullptr)
+      : mbegin(ETL_NULLPTR),
+        mend(ETL_NULLPTR)
     {
     }
 
@@ -137,7 +144,7 @@ namespace etl
     template <typename TIterator>
     ETL_CONSTEXPR array_view(const TIterator begin_, const TIterator end_)
       : mbegin(etl::addressof(*begin_)),
-        mend(etl::addressof(*begin_) + ETL_STD::distance(begin_, end_))
+        mend(etl::addressof(*begin_) + etl::distance(begin_, end_))
     {
     }
 
@@ -356,7 +363,7 @@ namespace etl
     void assign(const TIterator begin_, const TIterator end_)
     {
       mbegin = etl::addressof(*begin_);
-      mend   = etl::addressof(*begin_) + ETL_STD::distance(begin_, end_);
+      mend   = etl::addressof(*begin_) + etl::distance(begin_, end_);
     }
 
     //*************************************************************************
@@ -370,6 +377,7 @@ namespace etl
       mend   = etl::addressof(*begin_) + size_;
     }
 
+#if defined(ETL_ARRAY_VIEW_IS_MUTABLE)
     //*************************************************************************
     /// Returns a reference to the indexed value.
     //*************************************************************************
@@ -377,6 +385,7 @@ namespace etl
     {
       return mbegin[i];
     }
+#endif
 
     //*************************************************************************
     /// Returns a const reference to the indexed value.
@@ -386,22 +395,24 @@ namespace etl
       return mbegin[i];
     }
 
+#if defined(ETL_ARRAY_VIEW_IS_MUTABLE)
     //*************************************************************************
     /// Returns a reference to the indexed value.
     //*************************************************************************
     reference at(const size_t i)
     {
-      ETL_ASSERT((mbegin != nullptr && mend != nullptr), ETL_ERROR(array_view_uninitialised));
+      ETL_ASSERT((mbegin != ETL_NULLPTR && mend != ETL_NULLPTR), ETL_ERROR(array_view_uninitialised));
       ETL_ASSERT(i < size(), ETL_ERROR(array_view_bounds));
       return mbegin[i];
     }
+#endif
 
     //*************************************************************************
     /// Returns a const reference to the indexed value.
     //*************************************************************************
     const_reference at(const size_t i) const
     {
-      ETL_ASSERT((mbegin != nullptr && mend != nullptr), ETL_ERROR(array_view_uninitialised));
+      ETL_ASSERT((mbegin != ETL_NULLPTR && mend != ETL_NULLPTR), ETL_ERROR(array_view_uninitialised));
       ETL_ASSERT(i < size(), ETL_ERROR(array_view_bounds));
       return mbegin[i];
     }
@@ -411,8 +422,10 @@ namespace etl
     //*************************************************************************
     void swap(array_view& other)
     {
-      ETL_STD::swap(mbegin, other.mbegin);
-      ETL_STD::swap(mend, other.mend);
+      using ETL_OR_STD::swap; // Allow ADL
+
+      swap(mbegin, other.mbegin);
+      swap(mend, other.mend);
     }
 
     //*************************************************************************
@@ -420,7 +433,10 @@ namespace etl
     //*************************************************************************
     void remove_prefix(const size_type n)
     {
-      mbegin += n;
+		if (n < size())
+			mbegin += n;
+		else
+			mbegin = mend;
     }
 
     //*************************************************************************
@@ -428,7 +444,10 @@ namespace etl
     //*************************************************************************
     void remove_suffix(const size_type n)
     {
-      mend -= n;
+		if (n < size())
+			mend -= n;
+		else
+			mend = mbegin;
     }
 
     //*************************************************************************
@@ -437,7 +456,7 @@ namespace etl
     friend bool operator == (const array_view<T>& lhs, const array_view<T>& rhs)
     {
       return (lhs.size() == rhs.size()) &&
-             ETL_STD::equal(lhs.begin(), lhs.end(), rhs.begin());
+             etl::equal(lhs.begin(), lhs.end(), rhs.begin());
     }
 
     //*************************************************************************
@@ -453,7 +472,7 @@ namespace etl
     //*************************************************************************
     friend bool operator < (const array_view<T>& lhs, const array_view<T>& rhs)
     {
-      return ETL_STD::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+      return etl::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
     }
 
     //*************************************************************************

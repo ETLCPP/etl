@@ -57,7 +57,11 @@ namespace etl
   {
   public:
 
+#if ETL_NOT_USING_64BIT_TYPES
+    ETL_STATIC_ASSERT((etl::is_same<THash, uint32_t>::value), "Only 32 bit types supported");
+#else
     ETL_STATIC_ASSERT((etl::is_same<THash, uint32_t>::value || etl::is_same<THash, uint64_t>::value), "Only 32 & 64 bit types supported");
+#endif
 
     typedef THash value_type;
 
@@ -81,7 +85,7 @@ namespace etl
     murmur3(TIterator begin, const TIterator end, value_type seed_ = 0)
       : seed(seed_)
     {
-      ETL_STATIC_ASSERT(sizeof(typename ETL_STD::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
+      ETL_STATIC_ASSERT(sizeof(typename etl::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
 
       reset();
       while (begin != end)
@@ -119,7 +123,7 @@ namespace etl
     template<typename TIterator>
     void add(TIterator begin, const TIterator end)
     {
-      ETL_STATIC_ASSERT(sizeof(typename ETL_STD::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
+      ETL_STATIC_ASSERT(sizeof(typename etl::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
       ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised));
 
       while (begin != end)

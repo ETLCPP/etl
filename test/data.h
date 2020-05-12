@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -30,6 +30,7 @@ SOFTWARE.
 #define ETL_TEST_DATA_INCLUDED
 
 #include <ostream>
+#include <utility>
 
 #include "etl/instance_count.h"
 
@@ -188,7 +189,7 @@ public:
     : value(other.value)
     , valid(true)
   {
-    other.value = T();
+    other.value = std::move(T());
     other.valid = false;
   }
 
@@ -198,11 +199,13 @@ public:
 
   TestDataM& operator =(TestDataM&& other)
   {
-    value = other.value;
+    value = std::move(other.value);
     valid = true;
 
     other.value = T();
     other.valid = false;
+
+    return *this;
   }
 
   bool operator < (const TestDataM& other) const
@@ -257,6 +260,5 @@ std::ostream& operator << (std::ostream& s, const TestDataM<T>& rhs)
   s << rhs.value;
   return s;
 }
-
 
 #endif

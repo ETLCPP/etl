@@ -34,8 +34,7 @@ SOFTWARE.
 #include <stddef.h>
 
 #include "platform.h"
-
-#include "stl/iterator.h"
+#include "iterator.h"
 
 ///\defgroup container container
 ///\ingroup utilities
@@ -177,9 +176,9 @@ namespace etl
   ///\ingroup container
   //*****************************************************************************
   template<typename TValue, const size_t ARRAY_SIZE>
-  ETL_CONSTEXPR ETL_STD::reverse_iterator<TValue*> rbegin(const TValue(&data)[ARRAY_SIZE])
+  ETL_OR_STD::reverse_iterator<TValue*> rbegin(const TValue(&data)[ARRAY_SIZE])
   {
-    return ETL_STD::reverse_iterator<TValue*>(&data[ARRAY_SIZE]);
+    return ETL_OR_STD::reverse_iterator<TValue*>(&data[ARRAY_SIZE]);
   }
 
   //*****************************************************************************
@@ -187,9 +186,9 @@ namespace etl
   ///\ingroup container
   //*****************************************************************************
   template<typename TValue, const size_t ARRAY_SIZE>
-  ETL_CONSTEXPR ETL_STD::reverse_iterator<const TValue*> crbegin(const TValue(&data)[ARRAY_SIZE])
+  ETL_CONSTEXPR ETL_OR_STD::reverse_iterator<const TValue*> crbegin(const TValue(&data)[ARRAY_SIZE])
   {
-    return ETL_STD::reverse_iterator<const TValue*>(&data[ARRAY_SIZE]);
+    return ETL_OR_STD::reverse_iterator<const TValue*>(&data[ARRAY_SIZE]);
   }
 
 	//*****************************************************************************
@@ -227,9 +226,9 @@ namespace etl
   ///\ingroup container
   //*****************************************************************************
   template<typename TValue, const size_t ARRAY_SIZE>
-  ETL_CONSTEXPR ETL_STD::reverse_iterator<TValue*> rend(const TValue(&data)[ARRAY_SIZE])
+  ETL_CONSTEXPR ETL_OR_STD::reverse_iterator<TValue*> rend(const TValue(&data)[ARRAY_SIZE])
   {
-    return ETL_STD::reverse_iterator<TValue*>(&data[0]);
+    return ETL_OR_STD::reverse_iterator<TValue*>(&data[0]);
   }
 
   //*****************************************************************************
@@ -237,31 +236,9 @@ namespace etl
   ///\ingroup container
   //*****************************************************************************
   template<typename TValue, const size_t ARRAY_SIZE>
-  ETL_CONSTEXPR ETL_STD::reverse_iterator<const TValue*> crend(const TValue(&data)[ARRAY_SIZE])
+  ETL_CONSTEXPR ETL_OR_STD::reverse_iterator<const TValue*> crend(const TValue(&data)[ARRAY_SIZE])
   {
-    return ETL_STD::reverse_iterator<const TValue*>(&data[0]);
-  }
-
-  //*****************************************************************************
-	/// Get the next iterator.
-  ///\ingroup container
-	//*****************************************************************************
-  template<class TIterator>
-  TIterator next(TIterator iterator, ptrdiff_t n = 1)
-  {
-      ETL_STD::advance(iterator, n);
-      return iterator;
-  }
-
-  //*****************************************************************************
-	/// Get the previous iterator.
-  ///\ingroup container
-	//*****************************************************************************
-  template<class TIterator>
-  TIterator prev(TIterator iterator, ptrdiff_t n = 1)
-  {
-      ETL_STD::advance(iterator, -n);
-      return iterator;
+    return ETL_OR_STD::reverse_iterator<const TValue*>(&data[0]);
   }
 
   ///**************************************************************************
@@ -296,7 +273,7 @@ namespace etl
   char(&array_size(T(&array)[ARRAY_SIZE]))[ARRAY_SIZE];
 }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_CPP11_SUPPORTED  && !defined(ETL_FORCE_NO_ADVANCED_CPP)
   #define ETL_ARRAY_SIZE(a) (etl::size(a))
 #else
   #define ETL_ARRAY_SIZE(a) sizeof(etl::array_size(a))

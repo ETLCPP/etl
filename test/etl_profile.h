@@ -39,6 +39,7 @@ SOFTWARE.
 #define ETL_IDEQUE_REPAIR_ENABLE
 #define ETL_IN_UNIT_TEST
 #define ETL_DEBUG_COUNT
+#define ETL_ARRAY_VIEW_IS_MUTABLE
 
 #define ETL_MESSAGE_TIMER_USE_ATOMIC_LOCK
 #define ETL_CALLBACK_TIMER_USE_ATOMIC_LOCK
@@ -91,14 +92,24 @@ SOFTWARE.
 //#define ETL_OPTIONAL_FORCE_CPP03
 //#define ETL_LARGEST_TYPE_FORCE_CPP03
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   #define ETL_TIMER_SEMAPHORE_TYPE uint32_t
 #endif
 
-#ifdef _MSC_VER
-  #include "etl/profiles/msvc_x86.h"
+#include "../include/etl/profiles/determine_compiler_language_support.h"
+
+#if ETL_CPP17_NOT_SUPPORTED
+  #error THE UNIT TESTS REQUIRE C++17 SUPPORT
+#endif
+
+#include "../include/etl/profiles/determine_development_os.h"
+
+#if defined(ETL_DEVELOPMENT_OS_WINDOWS)
+  #define ETL_TARGET_OS_WINDOWS
+#elif defined(ETL_DEVELOPMENT_OS_LINUX)
+  #define ETL_TARGET_OS_LINUX
 #else
-  #include "etl/profiles/gcc_windows_x86.h"
+  #define ETL_TARGET_OS_GENERIC
 #endif
 
 #endif

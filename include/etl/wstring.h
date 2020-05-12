@@ -33,9 +33,10 @@ SOFTWARE.
 
 #include "platform.h"
 #include "basic_string.h"
+#include "string_view.h"
 #include "hash.h"
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>
 #endif
 
@@ -108,6 +109,10 @@ namespace etl
       if (other.truncated())
       {
         this->is_truncated = true;
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
       }
     }
 
@@ -157,7 +162,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
@@ -167,6 +172,16 @@ namespace etl
       this->assign(init.begin(), init.end());
     }
 #endif
+
+    //*************************************************************************
+    /// From string_view.
+    ///\param view The string_view.
+    //*************************************************************************
+    explicit wstring(const etl::wstring_view& view)
+      : iwstring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
+    {
+      this->assign(view.begin(), view.end());
+    }
 
     //*************************************************************************
     /// Returns a sub-string.
@@ -181,7 +196,7 @@ namespace etl
       {
         ETL_ASSERT(position < size(), ETL_ERROR(string_out_of_bounds));
 
-        length_ = ETL_STD::min(length_, size() - position);
+        length_ = etl::min(length_, size() - position);
 
         new_string.assign(buffer + position, buffer + position + length_);
       }
@@ -226,6 +241,188 @@ namespace etl
   private:
 
     value_type buffer[MAX_SIZE + 1];
+  };
+
+  //***************************************************************************
+  /// A wstring implementation that uses a fixed size buffer.
+  /// A specilisation that requires an external buffer to be specified.
+  ///\ingroup wstring
+  //***************************************************************************
+  template <>
+  class wstring<0U> : public iwstring
+  {
+  public:
+
+    typedef iwstring base_type;
+    typedef iwstring interface_type;
+
+    typedef iwstring::value_type value_type;
+
+    //*************************************************************************
+    /// Constructor.
+    //*************************************************************************
+    wstring(value_type* buffer, size_t max_size)
+      : iwstring(buffer, max_size - 1)
+    {
+      this->initialise();
+    }
+
+    //*************************************************************************
+    /// Copy constructor.
+    ///\param other The other wstring.
+    //*************************************************************************
+    wstring(const etl::wstring<0U>& other, value_type* buffer, size_t max_size)
+      : iwstring(buffer, max_size - 1)
+    {
+      this->assign(other);
+    }
+
+    //*************************************************************************
+    /// From other iwstring.
+    ///\param other The other iwstring.
+    //*************************************************************************
+    wstring(const etl::iwstring& other, value_type* buffer, size_t max_size)
+      : iwstring(buffer, max_size - 1)
+    {
+      this->assign(other);
+    }
+
+    //*************************************************************************
+    /// From other wstring, position, length.
+    ///\param other The other wstring.
+    ///\param position The position of the first character.
+    ///\param length   The number of characters. Default = npos.
+    //*************************************************************************
+    wstring(const etl::iwstring& other, value_type* buffer, size_t max_size, size_t position, size_t length_ = npos)
+      : iwstring(buffer, max_size - 1)
+    {
+      ETL_ASSERT(position < other.size(), ETL_ERROR(string_out_of_bounds));
+
+      this->assign(other.begin() + position, other.begin() + position + length_);
+
+      if (other.truncated())
+      {
+        this->is_truncated = true;
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+        ETL_ALWAYS_ASSERT(ETL_ERROR(wstring_truncation));
+#endif
+      }
+    }
+
+    //*************************************************************************
+    /// Constructor, from null terminated text.
+    ///\param text The initial text of the wstring.
+    //*************************************************************************
+    ETL_EXPLICIT_STRING_FROM_CHAR wstring(const value_type* text, value_type* buffer, size_t max_size)
+      : iwstring(buffer, max_size - 1)
+    {
+      this->assign(text, text + etl::char_traits<value_type>::length(text));
+    }
+
+    //*************************************************************************
+    /// Constructor, from null terminated text and count.
+    ///\param text  The initial text of the wstring.
+    ///\param count The number of characters to copy.
+    //*************************************************************************
+    wstring(const value_type* text, size_t count, value_type* buffer, size_t max_size)
+      : iwstring(buffer, max_size - 1)
+    {
+      this->assign(text, text + count);
+    }
+
+    //*************************************************************************
+    /// Constructor, from initial size and value.
+    ///\param initialSize  The initial size of the wstring.
+    ///\param value        The value to fill the wstring with.
+    //*************************************************************************
+    wstring(size_t count, value_type c, value_type* buffer, size_t max_size)
+      : iwstring(buffer, max_size - 1)
+    {
+      this->initialise();
+      this->resize(count, c);
+    }
+
+    //*************************************************************************
+    /// Constructor, from an iterator range.
+    ///\tparam TIterator The iterator type.
+    ///\param first The iterator to the first element.
+    ///\param last  The iterator to the last element + 1.
+    //*************************************************************************
+    template <typename TIterator>
+    wstring(TIterator first, TIterator last, value_type* buffer, size_t max_size)
+      : iwstring(buffer, max_size - 1)
+    {
+      this->assign(first, last);
+    }
+
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+    //*************************************************************************
+    /// Construct from initializer_list.
+    //*************************************************************************
+    wstring(std::initializer_list<value_type> init, value_type* buffer, size_t max_size)
+      : iwstring(buffer, max_size - 1)
+    {
+      this->assign(init.begin(), init.end());
+    }
+#endif
+
+    //*************************************************************************
+    /// From wstring_view.
+    ///\param view The wstring_view.
+    //*************************************************************************
+    explicit wstring(const etl::wstring_view& view, value_type* buffer, size_t max_size)
+      : iwstring(buffer, max_size - 1)
+    {
+      this->assign(view.begin(), view.end());
+    }
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    wstring& operator = (const wstring& rhs)
+    {
+      if (&rhs != this)
+      {
+        this->assign(rhs);
+      }
+
+      return *this;
+    }
+
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    wstring& operator = (const iwstring& rhs)
+    {
+      if (&rhs != this)
+      {
+        this->assign(rhs);
+      }
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    wstring& operator = (const value_type* text)
+    {
+      this->assign(text);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Fix the internal pointers after a low level memory copy.
+    //*************************************************************************
+    void repair()
+#ifdef ETL_ISTRING_REPAIR_ENABLE
+      ETL_OVERRIDE
+#endif
+    {
+    }
   };
 
   //*************************************************************************

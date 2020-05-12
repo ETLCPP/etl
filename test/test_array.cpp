@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include "etl/array.h"
 
@@ -355,7 +355,6 @@ namespace
       int source[]  = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
       int check1[]  = { 0, 1, 2, 3, 4, -1, -1, -1, -1, -1 };
       int check2[]  = { 0, 1, 2, 3, 4, 99, 99, 99, 99, 99 };
-      int check3[]  = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
       Data data;
 
@@ -374,12 +373,6 @@ namespace
       data.assign(std::begin(initial), std::end(initial));
       data.assign(&source[0], &source[5], 99);
       isEqual = std::equal(data.begin(), data.end(), std::begin(check2));
-      CHECK(isEqual);
-
-      // Assign larger.
-      data.assign(std::begin(initial), std::end(initial));
-      data.assign(&source[0], &source[13]);
-      isEqual = std::equal(data.begin(), data.end(), std::begin(check3));
       CHECK(isEqual);
     }
 

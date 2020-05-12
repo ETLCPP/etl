@@ -3,7 +3,7 @@
 //
 //Embedded Template Library.
 //https://github.com/ETLCPP/etl
-//http://www.etlcpp.com
+//https://www.etlcpp.com
 //
 //Copyright(c) 2014 jwellbelove
 //
@@ -26,7 +26,7 @@
 //SOFTWARE.
 //******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include <vector>
 #include <array>
@@ -168,7 +168,7 @@ namespace
       CHECK(!data.empty());
     }
 
-#if !defined(ETL_NO_STL)
+#if ETL_USING_STL
     //*************************************************************************
     TEST(test_constructor_initializer_list)
     {
@@ -756,7 +756,10 @@ namespace
         Data(std::string w, size_t x, double y, const char *z) : a(w), b(x), c(y), d(z){}
         bool operator == (const Data &other) const
         {
-          return (a == other.a) && (b == other.b) && (c == other.c) && (d == other.d);
+          return (a == other.a) &&
+                 (b == other.b) &&
+                 (c == other.c) &&
+                 (((d == nullptr) && (other.d == nullptr)) || (strcmp(d, other.d) == 0));
         }
       };
 
@@ -802,7 +805,7 @@ namespace
     // So this is only tested on C++11 onwards
     TEST_FIXTURE(SetupFixture, test_emplace_back_non_const_references)
     {
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_VECTOR_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_VECTOR_FORCE_CPP03)
       class Data
       {
       public:

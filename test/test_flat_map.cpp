@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include <map>
 #include <array>
@@ -48,11 +48,12 @@ namespace
 
   typedef TestDataDC<std::string>  DC;
   typedef TestDataNDC<std::string> NDC;
+  typedef TestDataM<std::string>   MC;
 
-  typedef ETL_PAIR<int, DC>  ElementDC;
-  typedef ETL_PAIR<int, NDC> ElementNDC;
+  typedef ETL_OR_STD::pair<int, DC>  ElementDC;
+  typedef ETL_OR_STD::pair<int, NDC> ElementNDC;
 
-  typedef ETL_PAIR<int, int>  ElementInt;
+  typedef ETL_OR_STD::pair<int, int>  ElementInt;
 
   typedef etl::flat_map<int, DC, SIZE>  DataDC;
   typedef etl::flat_map<int, NDC, SIZE> DataNDC;
@@ -60,6 +61,9 @@ namespace
   typedef etl::iflat_map<int, NDC>      IDataNDC;
 
   typedef etl::flat_map<int, int, SIZE>  DataInt;
+
+  typedef etl::flat_map<int, MC, SIZE>  DataM;
+  typedef etl::iflat_map<int, MC>       IDataM;
 
   typedef std::map<int, DC>  Compare_DataDC;
   typedef std::map<int, NDC> Compare_DataNDC;
@@ -156,10 +160,10 @@ namespace
     return !(lhs == rhs);
   }
 
-  typedef ETL_PAIR<const int, D1> Element1;
-  typedef ETL_PAIR<const int, D2> Element2;
-  typedef ETL_PAIR<const int, D3> Element3;
-  typedef ETL_PAIR<const int, D4> Element4;
+  typedef ETL_OR_STD::pair<const int, D1> Element1;
+  typedef ETL_OR_STD::pair<const int, D2> Element2;
+  typedef ETL_OR_STD::pair<const int, D3> Element3;
+  typedef ETL_OR_STD::pair<const int, D4> Element4;
 
   typedef etl::flat_map<int, D1, SIZE> Data1;
   typedef etl::flat_map<int, D2, SIZE> Data2;
@@ -336,7 +340,7 @@ namespace
       CHECK(!data.empty());
     }
 
-#if !defined(ETL_NO_STL)
+#if ETL_USING_STL
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
@@ -353,6 +357,40 @@ namespace
       CHECK(isEqual);
     }
 #endif
+
+    //*************************************************************************
+    TEST(test_move_constructor)
+    {
+      using Item = ETL_OR_STD::pair<int, MC>;
+
+      Item p1(1, MC("1"));
+      Item p2(2, "2");
+      Item p3(3, "3");
+      Item p4(4, MC("4"));
+
+      DataM data1;
+      data1.insert(std::move(p1));
+      data1.insert(std::move(p2));
+      data1.insert(std::move(p3));
+      data1.insert(std::move(p4));
+
+      CHECK(!bool(p1.second));
+      CHECK(!bool(p2.second));
+      CHECK(!bool(p3.second));
+      CHECK(!bool(p4.second));
+
+      DataM data2(std::move(data1));
+
+      CHECK_EQUAL(4U, data1.size()); // Move does not clear the source.
+      CHECK_EQUAL(4U, data2.size());
+
+      DataM::const_iterator itr = data2.begin();
+
+      CHECK_EQUAL("1", (*itr++).second.value);
+      CHECK_EQUAL("2", (*itr++).second.value);
+      CHECK_EQUAL("3", (*itr++).second.value);
+      CHECK_EQUAL("4", (*itr++).second.value);
+    }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assignment)
@@ -592,10 +630,10 @@ namespace
       Compare_DataNDC compare_data;
       DataNDC data;
 
-      ETL_PAIR<DataNDC::iterator, bool> result;
+      ETL_OR_STD::pair<DataNDC::iterator, bool> result;
 
-      result = data.insert(ETL_MAKE_PAIR(0, N0));
-      compare_data.insert(ETL_MAKE_PAIR(0, N0));
+      result = data.insert(ETL_OR_STD::make_pair(0, N0));
+      compare_data.insert(ETL_OR_STD::make_pair(0, N0));
 
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),
@@ -605,8 +643,8 @@ namespace
       CHECK(result.second);
       CHECK(*result.first == DataNDC::value_type(0, N0));
 
-      result = data.insert(ETL_MAKE_PAIR(2, N2));
-      compare_data.insert(ETL_MAKE_PAIR(2, N2));
+      result = data.insert(ETL_OR_STD::make_pair(2, N2));
+      compare_data.insert(ETL_OR_STD::make_pair(2, N2));
 
       isEqual = Check_Equal(data.begin(),
                             data.end(),
@@ -616,8 +654,8 @@ namespace
       CHECK(result.second);
       CHECK(*result.first == DataNDC::value_type(2, N2));
 
-      result = data.insert(ETL_MAKE_PAIR(1, N1));
-      compare_data.insert(ETL_MAKE_PAIR(1, N1));
+      result = data.insert(ETL_OR_STD::make_pair(1, N1));
+      compare_data.insert(ETL_OR_STD::make_pair(1, N1));
 
       isEqual = Check_Equal(data.begin(),
                             data.end(),
@@ -636,11 +674,11 @@ namespace
       Compare_DataNDC compare_data;
       DataNDC data;
 
-      ETL_PAIR<DataNDC::iterator, bool> result1;
-      ETL_PAIR<Compare_DataNDC::iterator, bool> result2;
+      ETL_OR_STD::pair<DataNDC::iterator, bool> result1;
+      ETL_OR_STD::pair<Compare_DataNDC::iterator, bool> result2;
 
       result1 = data.insert(DataNDC::value_type(0, N0));
-      result2 = compare_data.insert(ETL_MAKE_PAIR(0, N0));
+      result2 = compare_data.insert(ETL_OR_STD::make_pair(0, N0));
 
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),
@@ -650,8 +688,8 @@ namespace
       CHECK(result1.second);
       CHECK(*result1.first == DataNDC::value_type(0, N0));
 
-      result1 = data.insert(ETL_MAKE_PAIR(0, N2));
-      result2 = compare_data.insert(ETL_MAKE_PAIR(0, N2));
+      result1 = data.insert(ETL_OR_STD::make_pair(0, N2));
+      result2 = compare_data.insert(ETL_OR_STD::make_pair(0, N2));
 
       isEqual = Check_Equal(data.begin(),
                             data.end(),
@@ -668,37 +706,37 @@ namespace
       Compare_DataNDC compare_data;
       DataNDC data;
 
-      ETL_PAIR<DataNDC::iterator, bool> dr;
-      ETL_PAIR<Compare_DataNDC::iterator, bool> cr;
+      ETL_OR_STD::pair<DataNDC::iterator, bool> dr;
+      ETL_OR_STD::pair<Compare_DataNDC::iterator, bool> cr;
 
-      dr = data.insert(ETL_MAKE_PAIR(0, N0));
-      cr = compare_data.insert(ETL_MAKE_PAIR(0, N0));
+      dr = data.insert(ETL_OR_STD::make_pair(0, N0));
+      cr = compare_data.insert(ETL_OR_STD::make_pair(0, N0));
       CHECK(dr.first->first == cr.first->first);
       CHECK(dr.second == cr.second);
 
-      dr = data.insert(ETL_MAKE_PAIR(1, N1));
-      cr = compare_data.insert(ETL_MAKE_PAIR(1, N1));
+      dr = data.insert(ETL_OR_STD::make_pair(1, N1));
+      cr = compare_data.insert(ETL_OR_STD::make_pair(1, N1));
       CHECK(dr.first->first == cr.first->first);
       CHECK(dr.second == cr.second);
 
-      dr = data.insert(ETL_MAKE_PAIR(2, N2));
-      cr = compare_data.insert(ETL_MAKE_PAIR(2, N2));
+      dr = data.insert(ETL_OR_STD::make_pair(2, N2));
+      cr = compare_data.insert(ETL_OR_STD::make_pair(2, N2));
       CHECK(dr.first->first == cr.first->first);
       CHECK(dr.second == cr.second);
 
       // Do it again.
-      dr = data.insert(ETL_MAKE_PAIR(0, N0));
-      cr = compare_data.insert(ETL_MAKE_PAIR(0, N0));
+      dr = data.insert(ETL_OR_STD::make_pair(0, N0));
+      cr = compare_data.insert(ETL_OR_STD::make_pair(0, N0));
       CHECK(dr.first->first == cr.first->first);
       CHECK(dr.second == cr.second);
 
-      dr = data.insert(ETL_MAKE_PAIR(1, N1));
-      cr = compare_data.insert(ETL_MAKE_PAIR(1, N1));
+      dr = data.insert(ETL_OR_STD::make_pair(1, N1));
+      cr = compare_data.insert(ETL_OR_STD::make_pair(1, N1));
       CHECK(dr.first->first == cr.first->first);
       CHECK(dr.second == cr.second);
 
-      dr = data.insert(ETL_MAKE_PAIR(2, N2));
-      cr = compare_data.insert(ETL_MAKE_PAIR(2, N2));
+      dr = data.insert(ETL_OR_STD::make_pair(2, N2));
+      cr = compare_data.insert(ETL_OR_STD::make_pair(2, N2));
       CHECK(dr.first->first == cr.first->first);
       CHECK(dr.second == cr.second);
 
@@ -716,7 +754,7 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.insert(ETL_MAKE_PAIR(10, N10)), etl::flat_map_full);
+      CHECK_THROW(data.insert(ETL_OR_STD::make_pair(10, N10)), etl::flat_map_full);
     }
 
     //*************************************************************************
@@ -749,7 +787,7 @@ namespace
       Compare1 compare;
       Data1    data;
 
-      ETL_PAIR<Data1::iterator, bool> result;
+      ETL_OR_STD::pair<Data1::iterator, bool> result;
 
       result = data.emplace(0, "0");
       compare.emplace(0, D1("0"));
@@ -762,8 +800,8 @@ namespace
       CHECK(result.second);
       CHECK(*result.first == Element1(0, D1("0")));
 
-      result = data.emplace(ETL_MAKE_PAIR(2, D1("2")));
-      compare.emplace(ETL_MAKE_PAIR(2, D1("2")));
+      result = data.emplace(ETL_OR_STD::make_pair(2, D1("2")));
+      compare.emplace(ETL_OR_STD::make_pair(2, D1("2")));
 
       isEqual = Check_Equal(data.begin(),
                             data.end(),
@@ -794,7 +832,7 @@ namespace
       Compare2 compare;
       Data2    data;
 
-      ETL_PAIR<Data2::iterator, bool> result;
+      ETL_OR_STD::pair<Data2::iterator, bool> result;
 
       result = data.emplace(0, "0", "1");
       compare.emplace(0, D2("0", "1"));
@@ -807,8 +845,8 @@ namespace
       CHECK(result.second);
       CHECK(*result.first == Element2(0, D2("0", "1")));
 
-      result = data.emplace(ETL_MAKE_PAIR(2, D2("2", "3")));
-      compare.emplace(ETL_MAKE_PAIR(2, D2("2", "3")));
+      result = data.emplace(ETL_OR_STD::make_pair(2, D2("2", "3")));
+      compare.emplace(ETL_OR_STD::make_pair(2, D2("2", "3")));
 
       isEqual = Check_Equal(data.begin(),
                             data.end(),
@@ -839,7 +877,7 @@ namespace
       Compare3 compare;
       Data3    data;
 
-      ETL_PAIR<Data3::iterator, bool> result;
+      ETL_OR_STD::pair<Data3::iterator, bool> result;
 
       result = data.emplace(0, "0", "1", "2");
       compare.emplace(0, D3("0", "1", "2"));
@@ -852,8 +890,8 @@ namespace
       CHECK(result.second);
       CHECK(*result.first == Element3(0, D3("0", "1", "2")));
 
-      result = data.emplace(ETL_MAKE_PAIR(2, D3("2", "3", "4")));
-      compare.emplace(ETL_MAKE_PAIR(2, D3("2", "3", "4")));
+      result = data.emplace(ETL_OR_STD::make_pair(2, D3("2", "3", "4")));
+      compare.emplace(ETL_OR_STD::make_pair(2, D3("2", "3", "4")));
 
       isEqual = Check_Equal(data.begin(),
         data.end(),
@@ -884,7 +922,7 @@ namespace
       Compare4 compare;
       Data4    data;
 
-      ETL_PAIR<Data4::iterator, bool> result;
+      ETL_OR_STD::pair<Data4::iterator, bool> result;
 
       result = data.emplace(0, "0", "1", "2", "3");
       compare.emplace(0, D4("0", "1", "2", "3"));
@@ -897,8 +935,8 @@ namespace
       CHECK(result.second);
       CHECK(*result.first == Element4(0, D4("0", "1", "2", "3")));
 
-      result = data.emplace(ETL_MAKE_PAIR(2, D4("2", "3", "4", "5")));
-      compare.emplace(ETL_MAKE_PAIR(2, D4("2", "3", "4", "5")));
+      result = data.emplace(ETL_OR_STD::make_pair(2, D4("2", "3", "4", "5")));
+      compare.emplace(ETL_OR_STD::make_pair(2, D4("2", "3", "4", "5")));
 
       isEqual = Check_Equal(data.begin(),
                             data.end(),
@@ -1149,8 +1187,8 @@ namespace
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      ETL_PAIR<Compare_DataNDC::iterator, Compare_DataNDC::iterator> i_compare = compare_data.equal_range(5);
-      ETL_PAIR<DataNDC::iterator, DataNDC::iterator> i_data = data.equal_range(5);
+      ETL_OR_STD::pair<Compare_DataNDC::iterator, Compare_DataNDC::iterator> i_compare = compare_data.equal_range(5);
+      ETL_OR_STD::pair<DataNDC::iterator, DataNDC::iterator> i_data = data.equal_range(5);
 
       CHECK_EQUAL(std::distance(compare_data.begin(), i_compare.first),  std::distance(data.begin(), i_data.first));
       CHECK_EQUAL(std::distance(compare_data.begin(), i_compare.second), std::distance(data.begin(), i_data.second));
@@ -1162,9 +1200,9 @@ namespace
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      ETL_PAIR<Compare_DataNDC::iterator, Compare_DataNDC::iterator> i_compare;
+      ETL_OR_STD::pair<Compare_DataNDC::iterator, Compare_DataNDC::iterator> i_compare;
 
-      ETL_PAIR<DataNDC::iterator, DataNDC::iterator> i_data;
+      ETL_OR_STD::pair<DataNDC::iterator, DataNDC::iterator> i_data;
 
       i_data = data.equal_range(-1);
       CHECK_EQUAL(data.begin(), i_data.first);

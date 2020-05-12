@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -26,12 +26,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
-  #if defined(_WINDOWS)
-#include <Windows.h>
-#endif
-#include <sstream>
+#include "UnitTest++/UnitTest++.h"
+#include <iostream>
 #include <string>
+#include <string.h>
 
 #include "etl/error_handler.h"
 #include "etl/exception.h"
@@ -58,18 +56,7 @@ public:
 void receive_error(const etl::exception& e)
 {
   error_received = true;
-  std::ostringstream oss;
-  oss << "Error '" << e.what() << "' in " << e.file_name() << " at line " << e.line_number() << "\n";
-
-#if defined(_WINDOWS) && defined(ETL_COMPILER_MICROSOFT)
-  std::string stext = oss.str();
-
-  WCHAR text[200];
-  MultiByteToWideChar(0, 0, stext.c_str(), stext.size() + 1, text, 200);
-  LPCWSTR ltext = text;
-
-  OutputDebugString(ltext);
-#endif
+  CHECK(strcmp(e.what(), "test_exception") == 0);
 }
 
 //*****************************************************************************
@@ -83,18 +70,7 @@ public:
   void receive_error(const etl::exception& e)
   {
     error_received = true;
-    std::ostringstream oss;
-    oss << "Error '" << e.what() << "' in " << e.file_name() << " at line " << e.line_number() << "\n";
-
-#if defined(_WINDOWS) && defined(ETL_COMPILER_MICROSOFT)
-    std::string stext = oss.str();
-
-    WCHAR text[200];
-    MultiByteToWideChar(0, 0, stext.c_str(), stext.size() + 1, text, 200);
-    LPCWSTR ltext = text;
-
-    OutputDebugString(ltext);
-#endif
+    CHECK(strcmp(e.what(), "test_exception") == 0);
   }
 };
 

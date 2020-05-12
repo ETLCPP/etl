@@ -40,7 +40,7 @@ SOFTWARE.
 #include "ihash.h"
 #include "frame_check_sequence.h"
 
-#include "stl/iterator.h"
+#include "iterator.h"
 
 #if defined(ETL_COMPILER_KEIL)
 #pragma diag_suppress 1300

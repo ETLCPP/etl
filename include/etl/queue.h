@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove, Mark Kitson
 
@@ -47,6 +47,7 @@ SOFTWARE.
 #include "parameter_type.h"
 #include "memory_model.h"
 #include "integral_limits.h"
+#include "utility.h"
 
 #undef ETL_FILE
 #define ETL_FILE "13"
@@ -247,7 +248,6 @@ namespace etl
   {
   private:
 
-    typedef typename etl::parameter_type<T>::type  parameter_t;
     typedef typename etl::queue_base<MEMORY_MODEL> base_t;
 
   public:
@@ -255,6 +255,9 @@ namespace etl
     typedef T                          value_type;      ///< The type stored in the queue.
     typedef T&                         reference;       ///< A reference to the type used in the queue.
     typedef const T&                   const_reference; ///< A const reference to the type used in the queue.
+#if ETL_CPP11_SUPPORTED
+    typedef T&&                        rvalue_reference;///< An rvalue reference to the type used in the queue.
+#endif
     typedef T*                         pointer;         ///< A pointer to the type used in the queue.
     typedef const T*                   const_pointer;   ///< A const pointer to the type used in the queue.
     typedef typename base_t::size_type size_type;       ///< The type used for determining the size of the queue.
@@ -309,7 +312,7 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
     ///\param value The value to push to the queue.
     //*************************************************************************
-    void push(parameter_t value)
+    void push(const_reference value)
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
@@ -318,7 +321,23 @@ namespace etl
       add_in();
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_QUEUE_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Adds a value to the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    ///\param value The value to push to the queue.
+    //*************************************************************************
+    void push(rvalue_reference value)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(queue_full));
+#endif
+      ::new (&p_buffer[in]) T(etl::move(value));
+      add_in();
+    }
+#endif
+
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_FORCE_CPP03)
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
@@ -330,7 +349,7 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(queue_full));
 #endif
-      ::new (&p_buffer[in]) T(ETL_STD::forward<Args>(args)...);
+      ::new (&p_buffer[in]) T(etl::forward<Args>(args)...);
       add_in();
     }
 #else
@@ -468,6 +487,22 @@ namespace etl
       return *this;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    iqueue& operator = (iqueue&& rhs)
+    {
+      if (&rhs != this)
+      {
+        clear();
+        move_clone(rhs);
+      }
+
+      return *this;
+    }
+#endif
+
   protected:
 
     //*************************************************************************
@@ -485,6 +520,24 @@ namespace etl
         index = (index == (CAPACITY - 1)) ? 0 : index + 1;
       }
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Make this a moved clone of the supplied queue
+    //*************************************************************************
+    void move_clone(iqueue&& other)
+    {
+      clear();
+
+      size_type index = other.out;
+
+      for (size_type i = 0; i < other.size(); ++i)
+      {
+        push(etl::move(other.p_buffer[index]));
+        index = (index == (CAPACITY - 1)) ? 0 : index + 1;
+      }
+    }
+#endif
 
     //*************************************************************************
     /// The constructor that is called from derived classes.
@@ -558,6 +611,17 @@ namespace etl
       base_t::clone(rhs);
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Copy constructor
+    //*************************************************************************
+    queue(queue&& rhs)
+      : base_t(reinterpret_cast<T*>(&buffer[0]), SIZE)
+    {
+      base_t::move_clone(std::move(rhs));
+    }
+#endif
+
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
@@ -579,9 +643,24 @@ namespace etl
       return *this;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    queue& operator = (queue&& rhs)
+    {
+      if (&rhs != this)
+      {
+        base_t::move_clone(rhs);
+      }
+
+      return *this;
+    }
+#endif
+
   private:
 
-    /// The uninitialised buffer of T used in the stack.
+    /// The uninitialised buffer of T used in the queue.
     typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[SIZE];
   };
 }

@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2015 jwellbelove
 
@@ -37,7 +37,7 @@ SOFTWARE.
 #include "reference_flat_set.h"
 #include "pool.h"
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>
 #endif
 
@@ -59,7 +59,7 @@ namespace etl
   /// Can be used as a reference type for all flat_sets containing a specific type.
   ///\ingroup flat_set
   //***************************************************************************
-  template <typename T, typename TKeyCompare = ETL_STD::less<T> >
+  template <typename T, typename TKeyCompare = etl::less<T> >
   class iflat_set : private etl::ireference_flat_set<T, TKeyCompare>
   {
   private:
@@ -75,6 +75,9 @@ namespace etl
     typedef TKeyCompare       key_compare;
     typedef value_type&       reference;
     typedef const value_type& const_reference;
+#if ETL_CPP11_SUPPORTED
+    typedef value_type&&      rvalue_reference;
+#endif
     typedef value_type*       pointer;
     typedef const value_type* const_pointer;
     typedef size_t            size_type;
@@ -82,13 +85,9 @@ namespace etl
     typedef typename refset_t::iterator       iterator;
     typedef typename refset_t::const_iterator const_iterator;
 
-    typedef ETL_STD::reverse_iterator<iterator>       reverse_iterator;
-    typedef ETL_STD::reverse_iterator<const_iterator> const_reverse_iterator;
-    typedef typename ETL_STD::iterator_traits<iterator>::difference_type difference_type;
-
-  protected:
-
-    typedef typename etl::parameter_type<T>::type parameter_t;
+    typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
   public:
 
@@ -211,7 +210,7 @@ namespace etl
     void assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      difference_type d = ETL_STD::distance(first, last);
+      difference_type d = etl::distance(first, last);
       ETL_ASSERT(d <= difference_type(capacity()), ETL_ERROR(flat_set_full));
 #endif
 
@@ -228,11 +227,11 @@ namespace etl
     /// If asserts or exceptions are enabled, emits flat_set_full if the flat_set is already full.
     ///\param value    The value to insert.
     //*********************************************************************
-    ETL_PAIR<iterator, bool> insert(parameter_t value)
+    ETL_OR_STD::pair<iterator, bool> insert(const_reference value)
     {
       iterator i_element = lower_bound(value);
 
-      ETL_PAIR<iterator, bool> result(i_element, false);
+      ETL_OR_STD::pair<iterator, bool> result(i_element, false);
 
       // Doesn't already exist?
       if ((i_element == end()) || compare(value, *i_element))
@@ -248,16 +247,56 @@ namespace etl
       return result;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    /// Inserts a value to the flat_set.
+    /// If asserts or exceptions are enabled, emits flat_set_full if the flat_set is already full.
+    ///\param value    The value to insert.
+    //*********************************************************************
+    ETL_OR_STD::pair<iterator, bool> insert(rvalue_reference value)
+    {
+      iterator i_element = lower_bound(value);
+
+      ETL_OR_STD::pair<iterator, bool> result(i_element, false);
+
+      // Doesn't already exist?
+      if ((i_element == end()) || compare(value, *i_element))
+      {
+        ETL_ASSERT(!refset_t::full(), ETL_ERROR(flat_set_full));
+
+        value_type* pvalue = storage.allocate<value_type>();
+        ::new (pvalue) value_type(etl::move(value));
+        ETL_INCREMENT_DEBUG_COUNT
+          result = refset_t::insert_at(i_element, *pvalue);
+      }
+
+      return result;
+    }
+#endif
+
     //*********************************************************************
     /// Inserts a value to the flat_set.
     /// If asserts or exceptions are enabled, emits flat_set_full if the flat_set is already full.
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, parameter_t value)
+    iterator insert(iterator position, const_reference value)
     {
       return insert(value).first;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    /// Inserts a value to the flat_set.
+    /// If asserts or exceptions are enabled, emits flat_set_full if the flat_set is already full.
+    ///\param position The position to insert at.
+    ///\param value    The value to insert.
+    //*********************************************************************
+    iterator insert(iterator position, rvalue_reference value)
+    {
+      return insert(etl::move(value)).first;
+    }
+#endif
 
     //*********************************************************************
     /// Inserts a range of values to the flat_set.
@@ -278,7 +317,7 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the set.
     //*************************************************************************
-    ETL_PAIR<iterator, bool> emplace(parameter_t value)
+    ETL_OR_STD::pair<iterator, bool> emplace(const_reference value)
     {
       return insert(value);
     }
@@ -286,17 +325,17 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the set.
     //*************************************************************************
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT
     template <typename ... Args>
-    ETL_PAIR<iterator, bool> emplace(Args && ... args)
+    ETL_OR_STD::pair<iterator, bool> emplace(Args && ... args)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_set_full));
 
-      ETL_PAIR<iterator, bool> result;
+      ETL_OR_STD::pair<iterator, bool> result;
 
       // Create it.
       value_type* pvalue = storage.allocate<value_type>();
-      ::new (pvalue) value_type(ETL_STD::forward<Args>(args)...);
+      ::new (pvalue) value_type(etl::forward<Args>(args)...);
 
       iterator i_element = lower_bound(*pvalue);
 
@@ -311,7 +350,7 @@ namespace etl
         // Destroy it.
         pvalue->~value_type();
         storage.release(pvalue);
-        result = ETL_PAIR<iterator, bool>(end(), false);
+        result = ETL_OR_STD::pair<iterator, bool>(end(), false);
       }
 
       return result;
@@ -321,11 +360,11 @@ namespace etl
     /// Emplaces a value to the set.
     //*************************************************************************
     template <typename T1>
-    ETL_PAIR<iterator, bool> emplace(const T1& value1)
+    ETL_OR_STD::pair<iterator, bool> emplace(const T1& value1)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_set_full));
 
-      ETL_PAIR<iterator, bool> result;
+      ETL_OR_STD::pair<iterator, bool> result;
 
       // Create it.
       value_type* pvalue = storage.allocate<value_type>();
@@ -344,7 +383,7 @@ namespace etl
         // Destroy it.
         pvalue->~value_type();
         storage.release(pvalue);
-        result = ETL_PAIR<iterator, bool>(end(), false);
+        result = ETL_OR_STD::pair<iterator, bool>(end(), false);
       }
 
       return result;
@@ -354,11 +393,11 @@ namespace etl
     /// Emplaces a value to the set.
     //*************************************************************************
     template <typename T1, typename T2>
-    ETL_PAIR<iterator, bool> emplace(const T1& value1, const T2& value2)
+    ETL_OR_STD::pair<iterator, bool> emplace(const T1& value1, const T2& value2)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_set_full));
 
-      ETL_PAIR<iterator, bool> result;
+      ETL_OR_STD::pair<iterator, bool> result;
 
       // Create it.
       value_type* pvalue = storage.allocate<value_type>();
@@ -377,7 +416,7 @@ namespace etl
         // Destroy it.
         pvalue->~value_type();
         storage.release(pvalue);
-        result = ETL_PAIR<iterator, bool>(end(), false);
+        result = ETL_OR_STD::pair<iterator, bool>(end(), false);
       }
 
       return result;
@@ -387,11 +426,11 @@ namespace etl
     /// Emplaces a value to the set.
     //*************************************************************************
     template <typename T1, typename T2, typename T3>
-    ETL_PAIR<iterator, bool> emplace(const T1& value1, const T2& value2, const T3& value3)
+    ETL_OR_STD::pair<iterator, bool> emplace(const T1& value1, const T2& value2, const T3& value3)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_set_full));
 
-      ETL_PAIR<iterator, bool> result;
+      ETL_OR_STD::pair<iterator, bool> result;
 
       // Create it.
       value_type* pvalue = storage.allocate<value_type>();
@@ -410,7 +449,7 @@ namespace etl
         // Destroy it.
         pvalue->~value_type();
         storage.release(pvalue);
-        result = ETL_PAIR<iterator, bool>(end(), false);
+        result = ETL_OR_STD::pair<iterator, bool>(end(), false);
       }
 
       return result;
@@ -420,11 +459,11 @@ namespace etl
     /// Emplaces a value to the set.
     //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
-    ETL_PAIR<iterator, bool> emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    ETL_OR_STD::pair<iterator, bool> emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_set_full));
 
-      ETL_PAIR<iterator, bool> result;
+      ETL_OR_STD::pair<iterator, bool> result;
 
       // Create it.
       value_type* pvalue = storage.allocate<value_type>();
@@ -443,7 +482,7 @@ namespace etl
         // Destroy it.
         pvalue->~value_type();
         storage.release(pvalue);
-        result = ETL_PAIR<iterator, bool>(end(), false);
+        result = ETL_OR_STD::pair<iterator, bool>(end(), false);
       }
 
       return result;
@@ -455,7 +494,7 @@ namespace etl
     ///\param key The key to erase.
     ///\return The number of elements erased. 0 or 1.
     //*********************************************************************
-    size_t erase(parameter_t key)
+    size_t erase(const_reference key)
     {
       iterator i_element = find(key);
 
@@ -538,7 +577,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pointing to the element or end() if not found.
     //*********************************************************************
-    iterator find(parameter_t key)
+    iterator find(const_reference key)
     {
       return refset_t::find(key);
     }
@@ -548,7 +587,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pointing to the element or end() if not found.
     //*********************************************************************
-    const_iterator find(parameter_t key) const
+    const_iterator find(const_reference key) const
     {
       return refset_t::find(key);
     }
@@ -558,7 +597,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return 1 if the key exists, otherwise 0.
     //*********************************************************************
-    size_t count(parameter_t key) const
+    size_t count(const_reference key) const
     {
       return refset_t::count(key);
     }
@@ -568,7 +607,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    iterator lower_bound(parameter_t key)
+    iterator lower_bound(const_reference key)
     {
       return refset_t::lower_bound(key);
     }
@@ -578,7 +617,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    const_iterator lower_bound(parameter_t key) const
+    const_iterator lower_bound(const_reference key) const
     {
       return refset_t::lower_bound(key);
     }
@@ -588,7 +627,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    iterator upper_bound(parameter_t key)
+    iterator upper_bound(const_reference key)
     {
       return refset_t::upper_bound(key);
     }
@@ -598,7 +637,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    const_iterator upper_bound(parameter_t key) const
+    const_iterator upper_bound(const_reference key) const
     {
       return refset_t::upper_bound(key);
     }
@@ -608,7 +647,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    ETL_PAIR<iterator, iterator> equal_range(parameter_t key)
+    ETL_OR_STD::pair<iterator, iterator> equal_range(const_reference key)
     {
       return refset_t::equal_range(key);
     }
@@ -618,7 +657,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    ETL_PAIR<const_iterator, const_iterator> equal_range(parameter_t key) const
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const_reference key) const
     {
       return refset_t::upper_bound(key);
     }
@@ -635,6 +674,18 @@ namespace etl
 
       return *this;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    iflat_set& operator = (iflat_set&& rhs)
+    {
+      move_container(etl::move(rhs));
+
+      return *this;
+    }
+#endif
 
     //*************************************************************************
     /// Gets the current size of the flat_set.
@@ -701,6 +752,29 @@ namespace etl
     {
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move a flat_set.
+    /// Assumes the rhs is initialised and empty.
+    //*************************************************************************
+    void move_container(iflat_set&& rhs)
+    {
+      if (&rhs != this)
+      {
+        this->clear();
+
+        etl::iflat_set<T, TKeyCompare>::iterator first = rhs.begin();
+        etl::iflat_set<T, TKeyCompare>::iterator last = rhs.end();
+
+        // Add all of the elements.
+        while (first != last)
+        {
+          this->insert(etl::move(*first++));
+        }
+      }
+    }
+#endif
+
   private:
 
     // Disable copy construction.
@@ -739,7 +813,7 @@ namespace etl
   template <typename T, typename TKeyCompare>
   bool operator ==(const etl::iflat_set<T, TKeyCompare>& lhs, const etl::iflat_set<T, TKeyCompare>& rhs)
   {
-    return (lhs.size() == rhs.size()) && ETL_STD::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //***************************************************************************
@@ -758,11 +832,11 @@ namespace etl
   //***************************************************************************
   /// A flat_set implementation that uses a fixed size buffer.
   ///\tparam T        The value type.
-  ///\tparam TCompare The type to compare keys. Default = ETL_STD::less<T>
+  ///\tparam TCompare The type to compare keys. Default = etl::less<T>
   ///\tparam MAX_SIZE_ The maximum number of elements that can be stored.
   ///\ingroup flat_set
   //***************************************************************************
-  template <typename T, const size_t MAX_SIZE_, typename TCompare = ETL_STD::less<T> >
+  template <typename T, const size_t MAX_SIZE_, typename TCompare = etl::less<T> >
   class flat_set : public etl::iflat_set<T, TCompare>
   {
   public:
@@ -786,6 +860,20 @@ namespace etl
       this->assign(other.cbegin(), other.cend());
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move constructor.
+    //*************************************************************************
+    flat_set(flat_set&& other)
+      : etl::iflat_set<T, TCompare>(lookup, storage)
+    {
+      if (&other != this)
+      {
+        this->move_container(etl::move(other));
+      }
+    }
+#endif
+
     //*************************************************************************
     /// Constructor, from an iterator range.
     ///\tparam TIterator The iterator type.
@@ -799,7 +887,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
@@ -830,6 +918,21 @@ namespace etl
 
       return *this;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    flat_set& operator = (flat_set&& rhs)
+    {
+      if (&rhs != this)
+      {
+        this->move_container(etl::move(rhs));
+      }
+
+      return *this;
+    }
+#endif
 
   private:
 

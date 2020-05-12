@@ -51,6 +51,7 @@ Original publication: https://www.codeproject.com/Articles/1170503/The-Impossibl
 #include "platform.h"
 #include "error_handler.h"
 #include "exception.h"
+#include "type_traits.h"
 
 #if ETL_CPP11_SUPPORTED == 0
 #error NOT SUPPORTED FOR C++03 OR BELOW
@@ -107,7 +108,7 @@ namespace etl
     //*************************************************************************
     // Constructor from lambda or functor.
     //*************************************************************************
-    template <typename TLambda>
+    template <typename TLambda, typename = typename etl::enable_if<etl::is_class<TLambda>::value, void>::type>
     delegate(const TLambda& instance)
     {
       assign((void*)(&instance), lambda_stub<TLambda>);
@@ -119,13 +120,13 @@ namespace etl
     template <TReturn(*Method)(TParams...)>
     static delegate create()
     {
-      return delegate(nullptr, function_stub<Method>);
+      return delegate(ETL_NULLPTR, function_stub<Method>);
     }
 
     //*************************************************************************
     /// Create from Lambda or Functor.
     //*************************************************************************
-    template <typename TLambda>
+    template <typename TLambda, typename = typename etl::enable_if<etl::is_class<TLambda>::value, void>::type>
     static delegate create(const TLambda& instance)
     {
       return delegate((void*)(&instance), lambda_stub<TLambda>);
@@ -210,7 +211,7 @@ namespace etl
     //*************************************************************************
     /// Create from Lambda or Functor.
     //*************************************************************************
-    template <typename TLambda>
+    template <typename TLambda, typename = typename etl::enable_if<etl::is_class<TLambda>::value, void>::type>
     delegate& operator =(const TLambda& instance)
     {
       assign((void*)(&instance), lambda_stub<TLambda>);
@@ -238,7 +239,7 @@ namespace etl
     //*************************************************************************
     bool is_valid() const
     {
-      return invocation.stub != nullptr;
+      return invocation.stub != ETL_NULLPTR;
     }
 
     //*************************************************************************
@@ -280,8 +281,8 @@ namespace etl
       }
 
       //***********************************************************************
-      void*     object = nullptr;
-      stub_type stub   = nullptr;
+      void*     object = ETL_NULLPTR;
+      stub_type stub   = ETL_NULLPTR;
     };
 
     //*************************************************************************
@@ -298,7 +299,7 @@ namespace etl
     //*************************************************************************
     delegate(stub_type stub)
     {
-      invocation.object = nullptr;
+      invocation.object = ETL_NULLPTR;
       invocation.stub   = stub;
     }
 

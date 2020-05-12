@@ -336,7 +336,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define></Define>
+              <Define>__STDC_LIMIT_MACROS</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\include;..\ArmTimerCallbacks - C++</IncludePath>
             </VariousControls>

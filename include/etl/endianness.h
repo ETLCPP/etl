@@ -135,6 +135,7 @@ namespace etl
     }
   }
 
+#if ETL_USING_64BIT_TYPES
   //***************************************************************************
   inline uint64_t ntoh(const uint64_t network)
   {
@@ -147,6 +148,7 @@ namespace etl
       return network;
     }
   }
+#endif
 
   //***************************************************************************
   inline uint8_t hton(const uint8_t host)
@@ -180,6 +182,7 @@ namespace etl
     }
   }
 
+#if ETL_USING_64BIT_TYPES
   //***************************************************************************
   inline uint64_t hton(const uint64_t host)
   {
@@ -192,6 +195,7 @@ namespace etl
       return host;
     }
   }
+#endif
 }
 
 #endif

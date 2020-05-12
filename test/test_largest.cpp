@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include "etl/largest.h"
 
@@ -43,13 +43,13 @@ namespace
       bool   type;
 
       size = etl::largest_type<char, short, int>::size;
-      type = std::is_same<int, etl::largest_type<char, short, int>::type>::value;
+      type = etl::is_same<int, etl::largest_type<char, short, int>::type>::value;
 
       CHECK_EQUAL(sizeof(int), size);
       CHECK(type);
 
       size = etl::largest_type<int, char, short>::size;
-      type = std::is_same<int, etl::largest_type<char, short, int>::type>::value;
+      type = etl::is_same<int, etl::largest_type<char, short, int>::type>::value;
 
       CHECK_EQUAL(sizeof(int), size);
       CHECK(type);
@@ -66,13 +66,13 @@ namespace
       struct S3 { int  a; short b; char c; };
 
       size = etl::largest_type<S1, S2, S3>::size;
-      type = std::is_same<S3, etl::largest_type<S1, S2, S3>::type>::value;
+      type = etl::is_same<S3, etl::largest_type<S1, S2, S3>::type>::value;
 
       CHECK_EQUAL(sizeof(S3), size);
       CHECK(type);
 
       size = etl::largest_type<S2, S3, S1>::size;
-      type = std::is_same<S3, etl::largest_type<S2, S3, S1>::type>::value;
+      type = etl::is_same<S3, etl::largest_type<S2, S3, S1>::type>::value;
 
       CHECK_EQUAL(sizeof(S3), size);
       CHECK(type);
@@ -101,43 +101,43 @@ namespace
     //*************************************************************************
     TEST(test_larger_int_type)
     {
-      CHECK(bool(std::is_same<etl::larger_int_type<int8_t>::type,  int16_t>::value));
-      CHECK(bool(std::is_same<etl::larger_int_type<int16_t>::type, int32_t>::value));
-      CHECK(bool(std::is_same<etl::larger_int_type<int32_t>::type, int64_t>::value));
-      CHECK(bool(std::is_same<etl::larger_int_type<int64_t>::type, int64_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_int_type<int8_t>::type,  int16_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_int_type<int16_t>::type, int32_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_int_type<int32_t>::type, int64_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_int_type<int64_t>::type, int64_t>::value));
 
-      CHECK(bool(std::is_same<etl::larger_int_type<uint8_t>::type,  int16_t>::value));
-      CHECK(bool(std::is_same<etl::larger_int_type<uint16_t>::type, int32_t>::value));
-      CHECK(bool(std::is_same<etl::larger_int_type<uint32_t>::type, int64_t>::value));
-      CHECK(bool(std::is_same<etl::larger_int_type<uint64_t>::type, int64_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_int_type<uint8_t>::type,  int16_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_int_type<uint16_t>::type, int32_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_int_type<uint32_t>::type, int64_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_int_type<uint64_t>::type, int64_t>::value));
     }
 
     //*************************************************************************
     TEST(test_larger_uint_type)
     {
-      CHECK(bool(std::is_same<etl::larger_uint_type<int8_t>::type,  uint16_t>::value));
-      CHECK(bool(std::is_same<etl::larger_uint_type<int16_t>::type, uint32_t>::value));
-      CHECK(bool(std::is_same<etl::larger_uint_type<int32_t>::type, uint64_t>::value));
-      CHECK(bool(std::is_same<etl::larger_uint_type<int64_t>::type, uint64_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_uint_type<int8_t>::type,  uint16_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_uint_type<int16_t>::type, uint32_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_uint_type<int32_t>::type, uint64_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_uint_type<int64_t>::type, uint64_t>::value));
 
-      CHECK(bool(std::is_same<etl::larger_uint_type<uint8_t>::type,  uint16_t>::value));
-      CHECK(bool(std::is_same<etl::larger_uint_type<uint16_t>::type, uint32_t>::value));
-      CHECK(bool(std::is_same<etl::larger_uint_type<uint32_t>::type, uint64_t>::value));
-      CHECK(bool(std::is_same<etl::larger_uint_type<uint64_t>::type, uint64_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_uint_type<uint8_t>::type,  uint16_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_uint_type<uint16_t>::type, uint32_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_uint_type<uint32_t>::type, uint64_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_uint_type<uint64_t>::type, uint64_t>::value));
     }
 
     //*************************************************************************
     TEST(test_larger_type)
     {
-      CHECK(bool(std::is_same<etl::larger_type<int8_t>::type,  int16_t>::value));
-      CHECK(bool(std::is_same<etl::larger_type<int16_t>::type, int32_t>::value));
-      CHECK(bool(std::is_same<etl::larger_type<int32_t>::type, int64_t>::value));
-      CHECK(bool(std::is_same<etl::larger_type<int64_t>::type, int64_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_type<int8_t>::type,  int16_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_type<int16_t>::type, int32_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_type<int32_t>::type, int64_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_type<int64_t>::type, int64_t>::value));
 
-      CHECK(bool(std::is_same<etl::larger_type<uint8_t>::type,  uint16_t>::value));
-      CHECK(bool(std::is_same<etl::larger_type<uint16_t>::type, uint32_t>::value));
-      CHECK(bool(std::is_same<etl::larger_type<uint32_t>::type, uint64_t>::value));
-      CHECK(bool(std::is_same<etl::larger_type<uint64_t>::type, uint64_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_type<uint8_t>::type,  uint16_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_type<uint16_t>::type, uint32_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_type<uint32_t>::type, uint64_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_type<uint64_t>::type, uint64_t>::value));
     }
   };
 }

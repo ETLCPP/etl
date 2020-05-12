@@ -67,14 +67,14 @@
     <Filter Include="ETL\Utilities\Mutex">
       <UniqueIdentifier>{0bcdf7f9-8e2b-4f70-932b-bde56404f421}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ETL\STL">
-      <UniqueIdentifier>{86dc2850-2ddf-4582-9908-2436a1aa6e86}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ETL\STL\Alternate">
-      <UniqueIdentifier>{0d093ee6-686c-4c9e-856e-bdf7075ff7a6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ETL\Strings">
       <UniqueIdentifier>{da88d71d-e5ea-4c26-9807-94616d31addb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\CI">
+      <UniqueIdentifier>{0eaad66f-3ce3-4952-8ae8-c935e6aa7c1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\CI\CircleCI">
+      <UniqueIdentifier>{0d5824b1-3ef9-43e0-b2d5-15d6246b843e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -345,21 +345,6 @@
     <ClInclude Include="..\..\include\etl\packet.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\fsm_generator.h">
-      <Filter>ETL\Frameworks\Generators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\message_router_generator.h">
-      <Filter>ETL\Frameworks\Generators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\largest_generator.h">
-      <Filter>ETL\Utilities\Generators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\type_traits_generator.h">
-      <Filter>ETL\Utilities\Generators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\smallest_generator.h">
-      <Filter>ETL\Utilities\Generators</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\message.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
@@ -389,9 +374,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\type_lookup.h">
       <Filter>ETL\Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\type_lookup_generator.h">
-      <Filter>ETL\Utilities\Generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\compare.h">
       <Filter>ETL\Utilities</Filter>
@@ -456,9 +438,6 @@
     <ClInclude Include="..\..\include\etl\array_wrapper.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\variant_pool_generator.h">
-      <Filter>ETL\Containers\Generators</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\version.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
@@ -497,9 +476,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\type_select.h">
       <Filter>ETL\Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\type_select_generator.h">
-      <Filter>ETL\Utilities\Generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\memory_model.h">
       <Filter>ETL\Utilities</Filter>
@@ -612,15 +588,6 @@
     <ClInclude Include="..\..\include\etl\private\vector_base.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\stl\alternate\limits.h">
-      <Filter>ETL\STL\Alternate</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\stl\alternate\iterator.h">
-      <Filter>ETL\STL\Alternate</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\stl\iterator.h">
-      <Filter>ETL\STL</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\profiles\armv5_no_stl.h">
       <Filter>ETL\Profiles</Filter>
     </ClInclude>
@@ -636,32 +603,8 @@
     <ClInclude Include="..\..\include\etl\profiles\cpp14_no_stl.h">
       <Filter>ETL\Profiles</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\stl\alternate\algorithm.h">
-      <Filter>ETL\STL\Alternate</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\stl\algorithm.h">
-      <Filter>ETL\STL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\stl\functional.h">
-      <Filter>ETL\STL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\stl\alternate\functional.h">
-      <Filter>ETL\STL\Alternate</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\stl\utility.h">
-      <Filter>ETL\STL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\stl\alternate\utility.h">
-      <Filter>ETL\STL\Alternate</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\stl\limits.h">
-      <Filter>ETL\STL</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\math_constants.h">
       <Filter>ETL\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="..\no_stl_test_iterators.h">
-      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\atomic\atomic_llvm_sync.h">
       <Filter>ETL\Utilities\Atomic</Filter>
@@ -786,14 +729,128 @@
     <ClInclude Include="..\..\include\etl\indirect_vector.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\crc8_poly_0x07.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\crc16_poly_0x1021_.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\crc16_poly_0x8005.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\crc32_poly_0x1edc6f41.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\crc32_poly_0x04c11db7.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\crc64_poly_0x42f0e1eba9ea3693.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc8_rohc.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_aug_ccitt.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_genibus.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_usb.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_x25.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_xmodem.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc32_bzip2.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc32_mpeg2.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc32_posix.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\determine_compiler_version.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\determine_compiler.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\determine_compiler_language_support.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\include\etl\private\choose_namespace.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\choose_tag_types.h">
-      <Filter>ETL\Private</Filter>
+    <ClInclude Include="..\..\include\etl\limits.h">
+      <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\choose_pair_types.h">
-      <Filter>ETL\Private</Filter>
+    <ClInclude Include="..\iterators_for_unit_tests.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\mutex\mutex_freertos.h">
+      <Filter>ETL\Utilities\Mutex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_packet.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\null_type.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\span.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\determine_development_os.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\msvc_x86_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\ticc_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\gcc_windows_x86_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\gcc_linux_x86_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\gcc_generic_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\clang_generic_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\largest_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\smallest_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\type_lookup_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\type_select_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\type_traits_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\fsm_generator.h">
+      <Filter>ETL\Frameworks\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\message_packet_generator.h">
+      <Filter>ETL\Frameworks\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\message_router_generator.h">
+      <Filter>ETL\Frameworks\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\variant_pool_generator.h">
+      <Filter>ETL\Containers\Generators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -828,9 +885,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_container.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_type_traits.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_cyclic_value.cpp">
@@ -1166,18 +1220,6 @@
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\Win32\TimeHelpers.cpp">
       <Filter>UnitTest++\Win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_no_stl_algorithm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_no_stl_utility.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_no_stl_functional.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_no_stl_limits.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_queue_memory_model_small.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1194,9 +1236,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_forward_list_shared_pool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_no_stl_iterator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_bit_stream.cpp">
@@ -1259,34 +1298,37 @@
     <ClCompile Include="..\test_make_string.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_type_traits.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_limits.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_parity_checksum.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_message_packet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_span.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_char_external_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_wchar_t_external_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_u16_external_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_u32_external_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\..\include\etl\generate.bat">
-      <Filter>Resource Files\Generators</Filter>
-    </None>
-    <None Include="..\..\include\etl\generate_fsm.bat">
-      <Filter>Resource Files\Generators</Filter>
-    </None>
-    <None Include="..\..\include\etl\generate_largest.bat">
-      <Filter>Resource Files\Generators</Filter>
-    </None>
-    <None Include="..\..\include\etl\generate_message_router.bat">
-      <Filter>Resource Files\Generators</Filter>
-    </None>
-    <None Include="..\..\include\etl\generate_smallest.bat">
-      <Filter>Resource Files\Generators</Filter>
-    </None>
-    <None Include="..\..\include\etl\generate_type_lookup.bat">
-      <Filter>Resource Files\Generators</Filter>
-    </None>
-    <None Include="..\..\include\etl\generate_type_traits.bat">
-      <Filter>Resource Files\Generators</Filter>
-    </None>
-    <None Include="..\..\include\etl\generate_variant_pool.bat">
-      <Filter>Resource Files\Generators</Filter>
     </None>
     <None Include="..\..\etl.pspimage">
       <Filter>Resource Files\Images</Filter>
@@ -1294,12 +1336,44 @@
     <None Include="..\..\etl.xar">
       <Filter>Resource Files\Images</Filter>
     </None>
-    <None Include="..\..\include\etl\generate_type_select.bat">
-      <Filter>Resource Files\Generators</Filter>
-    </None>
-    <None Include="cpp.hint" />
     <None Include="..\..\library.json">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\README.md">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="cpp.hint">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_variant_pool.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_type_traits.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_type_select.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_type_lookup.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_smallest.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_message_router.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_message_packet.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_largest.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_fsm.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate.bat">
+      <Filter>Resource Files\Generators</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -1308,9 +1382,6 @@
     </Text>
     <Text Include="..\..\support\Release notes.txt">
       <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="..\..\CMakeLists.txt">
-      <Filter>Resource Files\Make</Filter>
     </Text>
     <Text Include="..\CMakeLists.txt">
       <Filter>Source Files</Filter>

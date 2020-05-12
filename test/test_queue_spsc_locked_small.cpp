@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include "etl/queue_spsc_locked.h"
 
@@ -37,6 +37,8 @@ SOFTWARE.
 #if defined(ETL_COMPILER_MICROSOFT)
 #include <Windows.h>
 #endif
+
+#include "data.h"
 
 #define REALTIME_TEST 0
 
@@ -104,6 +106,8 @@ namespace
   typedef etl::iqueue_spsc_locked<int, etl::memory_model::MEMORY_MODEL_SMALL>   IQueueInt;
 
   typedef etl::queue_spsc_locked<int, 255, etl::memory_model::MEMORY_MODEL_SMALL> QueueInt255;
+
+  using ItemM = TestDataM<int>;
 
   SUITE(test_queue_locked)
   {
@@ -228,6 +232,41 @@ namespace
 
       CHECK(!queue.pop(i));
       CHECK(!queue.pop_from_unlocked(i));
+    }
+
+    //*************************************************************************
+    TEST(test_move_push_pop)
+    {
+      etl::queue_spsc_locked<ItemM, 4, etl::memory_model::MEMORY_MODEL_SMALL> queue(lock, unlock);
+
+      ItemM p1(1);
+      ItemM p2(2);
+      ItemM p3(3);
+      ItemM p4(4);
+
+      queue.push(std::move(p1));
+      queue.push(std::move(p2));
+      queue.push(std::move(p3));
+      queue.push(std::move(p4));
+
+      CHECK(!bool(p1));
+      CHECK(!bool(p2));
+      CHECK(!bool(p3));
+      CHECK(!bool(p4));
+
+      ItemM pr(0);
+
+      queue.pop(std::move(pr));
+      CHECK_EQUAL(1, pr.value);
+
+      queue.pop(std::move(pr));
+      CHECK_EQUAL(2, pr.value);
+
+      queue.pop(std::move(pr));
+      CHECK_EQUAL(3, pr.value);
+
+      queue.pop(std::move(pr));
+      CHECK_EQUAL(4, pr.value);
     }
 
     //*************************************************************************
@@ -551,7 +590,7 @@ namespace
       CHECK(!access.called_unlock);
     }
 
-    //=========================================================================
+    //*************************************************************************
 #if REALTIME_TEST && defined(ETL_COMPILER_MICROSOFT)
   #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported
     #define RAISE_THREAD_PRIORITY  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST)

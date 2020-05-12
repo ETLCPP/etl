@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2015 jwellbelove
 
@@ -26,10 +26,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include <string>
 #include <ostream>
+
+#include <optional>
+
 
 #include "etl/optional.h"
 #include "etl/vector.h"
@@ -62,28 +65,39 @@ namespace
 
       CHECK(!bool(data1));
       CHECK(!bool(data2));
+      CHECK(!data1.has_value());
+      CHECK(!data2.has_value());
+
 
       data1 = Data("Hello");
       CHECK(bool(data1));
+      CHECK(data1.has_value());
       CHECK_EQUAL(Data("Hello"), data1);
 
       data1 = data2;
       CHECK(!bool(data1));
       CHECK(!bool(data2));
+      CHECK(!data1.has_value());
+      CHECK(!data2.has_value());
 
       data1 = Data("World");
       data2 = data1;
       CHECK(bool(data1));
       CHECK(bool(data2));
+      CHECK(data1.has_value());
+      CHECK(data2.has_value());
 
       etl::optional<Data> data3(data1);
       CHECK(bool(data3));
+      CHECK(data3.has_value());
       CHECK_EQUAL(data1, data3);
 
       etl::optional<Data> data4;
       data4 = Data("Hello");
       data4 = etl::nullopt;
       CHECK(!bool(data4));
+      CHECK(!data4.has_value());
+
     }
 
     //*************************************************************************
@@ -101,6 +115,22 @@ namespace
       CHECK_EQUAL(3U, data.value().value);
 
       CHECK_EQUAL(1, DataM::get_instance_count());
+    }
+
+    //*************************************************************************
+    TEST(test_moveable)
+    {
+      etl::optional<DataM> data(std::move(DataM(1)));
+      CHECK_EQUAL(1U, data.value().value);
+      CHECK(bool(data));
+
+      data = std::move(etl::optional<DataM>(std::move(DataM(2))));
+      CHECK_EQUAL(2U, data.value().value);
+      CHECK(bool(data));
+
+      etl::optional<DataM> data2(etl::move(data));
+      CHECK_EQUAL(2U, data2.value().value);
+      CHECK(bool(data2));
     }
 
     //*************************************************************************

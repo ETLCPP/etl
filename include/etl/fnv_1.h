@@ -49,6 +49,7 @@ SOFTWARE.
 
 namespace etl
 {
+#if ETL_USING_64BIT_TYPES
   //***************************************************************************
   /// fnv_1 policy.
   /// Calculates FNV1.
@@ -164,6 +165,7 @@ namespace etl
       this->add(begin, end);
     }
   };
+#endif
 
   //***************************************************************************
   /// fnv_1 policy.

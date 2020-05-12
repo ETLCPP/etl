@@ -435,7 +435,7 @@ SOFTWARE.
 //  public:
 //
 //    atomic()
-//      : value(nullptr)
+//      : value(ETL_NULLPTR)
 //    {
 //    }
 //

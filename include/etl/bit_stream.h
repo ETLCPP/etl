@@ -29,15 +29,14 @@ SOFTWARE.
 #include <stdint.h>
 #include <limits.h>
 
-#include "etl/platform.h"
-#include "etl/type_traits.h"
-#include "etl/nullptr.h"
-#include "etl/endianness.h"
-#include "etl/integral_limits.h"
-#include "etl/binary.h"
-
-#include "etl/stl/algorithm.h"
-#include "etl/stl/iterator.h"
+#include "platform.h"
+#include "type_traits.h"
+#include "nullptr.h"
+#include "endianness.h"
+#include "integral_limits.h"
+#include "binary.h"
+#include "algorithm.h"
+#include "iterator.h"
 
 #include "private/minmax_push.h"
 
@@ -57,7 +56,7 @@ namespace etl
     /// Default constructor.
     //***************************************************************************
     bit_stream()
-      : pdata(nullptr),
+      : pdata(ETL_NULLPTR),
         length(0U)
     {
       restart();
@@ -68,7 +67,7 @@ namespace etl
     //***************************************************************************
     bit_stream(char* begin_, char* end_)
       : pdata(reinterpret_cast<unsigned char*>(begin_)),
-        length(ETL_STD::distance(begin_, end_))
+        length(etl::distance(begin_, end_))
     {
       restart();
     }
@@ -78,7 +77,7 @@ namespace etl
     //***************************************************************************
     bit_stream(unsigned char* begin_, unsigned char* end_)
       : pdata(begin_),
-        length(ETL_STD::distance(begin_, end_))
+        length(etl::distance(begin_, end_))
     {
       restart();
     }
@@ -128,7 +127,7 @@ namespace etl
     //***************************************************************************
     void set_stream(char* begin_, char* end_)
     {
-      set_stream(begin_, ETL_STD::distance(begin_, end_));
+      set_stream(begin_, etl::distance(begin_, end_));
     }
 
     //***************************************************************************
@@ -136,7 +135,7 @@ namespace etl
     //***************************************************************************
     void set_stream(unsigned char* begin_, unsigned char* end_)
     {
-      set_stream(begin_, ETL_STD::distance(begin_, end_));
+      set_stream(begin_, etl::distance(begin_, end_));
     }
 
     //***************************************************************************
@@ -164,7 +163,7 @@ namespace etl
     {
       bool success = false;
 
-      if (pdata != nullptr)
+      if (pdata != ETL_NULLPTR)
       {
         if (bits_remaining > 0)
         {
@@ -187,6 +186,7 @@ namespace etl
       return put_integral(static_cast<uint32_t>(value), width);
     }
 
+#if ETL_USING_64BIT_TYPES
     //***************************************************************************
     /// For 64bit integral types
     //***************************************************************************
@@ -202,6 +202,7 @@ namespace etl
     {
       return put_integral(value, width);
     }
+#endif
 
     //***************************************************************************
     /// For floating point types
@@ -233,7 +234,7 @@ namespace etl
     {
       bool success = false;
 
-      if (pdata != nullptr)
+      if (pdata != ETL_NULLPTR)
       {
         // Do we have enough bits?
         if (bits_remaining > 0)
@@ -256,7 +257,7 @@ namespace etl
       bool success = false;
       uint_least8_t bits = width;
 
-      if (pdata != nullptr)
+      if (pdata != ETL_NULLPTR)
       {
         // Do we have enough bits?
         if (bits_remaining >= width)
@@ -266,7 +267,7 @@ namespace etl
           // Get the bits from the stream.
           while (width != 0)
           {
-            unsigned char mask_width = static_cast<unsigned char>(ETL_STD::min(width, bits_in_byte));
+            unsigned char mask_width = static_cast<unsigned char>(etl::min(width, bits_in_byte));
             unsigned char chunk = get_chunk(mask_width);
 
             width -= mask_width;
@@ -296,7 +297,7 @@ namespace etl
     {
       bool success = false;
 
-      if (pdata != nullptr)
+      if (pdata != ETL_NULLPTR)
       {
         uint_least8_t width = CHAR_BIT * sizeof(T);
 
@@ -371,7 +372,7 @@ namespace etl
     {
       bool success = false;
 
-      if (pdata != nullptr)
+      if (pdata != ETL_NULLPTR)
       {
         // Do we have enough bits?
         if (bits_remaining >= width)
@@ -379,7 +380,7 @@ namespace etl
           // Send the bits to the stream.
           while (width != 0)
           {
-            unsigned char mask_width = static_cast<unsigned char>(ETL_STD::min(width, bits_in_byte));
+            unsigned char mask_width = static_cast<unsigned char>(etl::min(width, bits_in_byte));
             width -= mask_width;
             uint32_t mask = ((uint32_t(1U) << mask_width) - 1U) << width;
 
@@ -397,6 +398,7 @@ namespace etl
       return success;
     }
 
+#if ETL_USING_64BIT_TYPES
     //***************************************************************************
     /// For unsigned integral types. 64bit
     //***************************************************************************
@@ -404,7 +406,7 @@ namespace etl
     {
       bool success = false;
 
-      if (pdata != nullptr)
+      if (pdata != ETL_NULLPTR)
       {
         // Do we have enough bits?
         if (bits_remaining >= width)
@@ -412,7 +414,7 @@ namespace etl
           // Send the bits to the stream.
           while (width != 0)
           {
-            unsigned char mask_width = static_cast<unsigned char>(ETL_STD::min(width, bits_in_byte));
+            unsigned char mask_width = static_cast<unsigned char>(etl::min(width, bits_in_byte));
             width -= mask_width;
             uint64_t mask = ((uint64_t(1U) << mask_width) - 1U) << width;
 
@@ -429,6 +431,7 @@ namespace etl
 
       return success;
     }
+#endif
 
     //***************************************************************************
     /// Put a data chunk to the stream
@@ -495,11 +498,11 @@ namespace etl
       // Network to host.
       if (etl::endianness::value() == etl::endian::little)
       {
-        ETL_STD::reverse_copy(data, data + sizeof(T), temp);
+        etl::reverse_copy(data, data + sizeof(T), temp);
       }
       else
       {
-        ETL_STD::copy(data, data + sizeof(T), temp);
+        etl::copy(data, data + sizeof(T), temp);
       }
 
       value = *reinterpret_cast<T*>(temp);
@@ -516,11 +519,11 @@ namespace etl
       // Host to network.
       if (etl::endianness::value() == etl::endian::little)
       {
-        ETL_STD::reverse_copy(pf, pf + sizeof(T), data);
+        etl::reverse_copy(pf, pf + sizeof(T), data);
       }
       else
       {
-        ETL_STD::copy(pf, pf + sizeof(T), data);
+        etl::copy(pf, pf + sizeof(T), data);
       }
     }
 
