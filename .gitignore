@@ -253,3 +253,4 @@ cmake-build-*/
 unittest-cpp
 *.opendb
 build-test-Desktop_x86_windows_msvc2017_pe_32bit-Debug
+test/Logs
