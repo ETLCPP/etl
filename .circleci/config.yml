@@ -9,7 +9,7 @@ jobs:
     steps:
       - run:
           name: Creating Build Files
-          command: 'cmake -Bbuild /root/project/'
+          command: 'cmake -Bbuild etlcpp/test/'
       - run:
           name: Creating Binary Files
           command: 'cmake --build build'
