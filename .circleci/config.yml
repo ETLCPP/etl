@@ -9,7 +9,7 @@ jobs:
     steps:
       - run:
           name: Creating Build Files
-          command: 'cmake -H. -Bbuild'
+          command: 'cmake -Bbuild'
       - run:
           name: Creating Binary Files
           command: 'cmake --build build'
