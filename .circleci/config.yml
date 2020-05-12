@@ -12,11 +12,8 @@ jobs:
           name: Listing0
           command: 'ls'
       - run:
-          name: Git Checkout
-          command: 'git checkout --track origin/feature/add_circle-ci_support'
-      - run:
           name: Creating Build Files
-          command: 'cmake -Bbuild etl/test/'
+          command: 'cmake -Bbuild test/'
       - run:
           name: Creating Binary Files
           command: 'cmake --build build'
