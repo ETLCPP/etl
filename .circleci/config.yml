@@ -22,7 +22,7 @@ jobs:
           command: 'apt-get update && apt-get install -y cmake'
       - run:
           name: Creating Build Files
-          command: 'cmake -Bbuild test/'
+          command: 'cmake -H. -Bbuild test/'
       - run:
           name: Creating Binary Files
           command: 'cmake --build build'
