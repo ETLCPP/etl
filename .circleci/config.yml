@@ -8,7 +8,7 @@ jobs:
       - feature/add_circle-ci_support
     steps:
       - run:
-          name: Listing
+          name: Listing0
           command: 'ls -lrt'
       - run:
           name: Creating Build Files
@@ -17,7 +17,7 @@ jobs:
           name: Creating Binary Files
           command: 'cmake --build build'
       - run:
-          name: Listing
+          name: Listing1
           command: 'ls -lrt /root/project/build'
       - run:
           name: Listing2
