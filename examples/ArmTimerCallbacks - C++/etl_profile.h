@@ -10,6 +10,6 @@
 #define ETL_CALLBACK_TIMER_USE_ATOMIC_LOCK
 #define ETL_NO_STL
 
-#include "etl/profiles/auto.h"
+//#include "etl/profiles/auto.h"
 
 #endif
