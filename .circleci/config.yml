@@ -28,4 +28,4 @@ jobs:
           command: 'cat /root/project/build/CMakeFiles/CMakeOutput.log' 
       - run:
           name: ETL Unit Testing
-          command: './bin/etl'
+          command: './build/etl_tests'
