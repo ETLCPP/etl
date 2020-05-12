@@ -21,7 +21,7 @@ jobs:
           command: 'git fetch'
       - run:
           name: Git Checkout
-          command: 'git checkout feature/add_circle-ci_support'
+          command: 'git checkout --track origin/feature/add_circle-ci_support'
       - run:
           name: Creating Build Files
           command: 'cmake -Bbuild etlcpp/test/'
