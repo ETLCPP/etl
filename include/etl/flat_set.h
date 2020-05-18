@@ -47,7 +47,7 @@ SOFTWARE.
 //*****************************************************************************
 ///\defgroup flat_set flat_set
 /// A flat_set with the capacity defined at compile time.
-/// Has insertion of O(N) and flat_set of O(logN)
+/// Has insertion of O(N) and find of O(logN)
 /// Duplicate entries and not allowed.
 ///\ingroup containers
 //*****************************************************************************

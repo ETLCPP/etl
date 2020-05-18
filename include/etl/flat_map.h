@@ -47,8 +47,10 @@ SOFTWARE.
 
 //*****************************************************************************
 ///\defgroup flat_map flat_map
-/// A flat_map with the capacity defined at compile time.
-/// Has insertion of O(N) and flat_map of O(logN)
+/// A flat_map based on a sorted vector with the capacity defined at
+/// compile time. This container is best used for tables that are occasionally
+/// updated and spend most of their time being searched.
+/// Has insertion of O(N) and find of O(logN).
 /// Duplicate entries are not allowed.
 ///\ingroup containers
 //*****************************************************************************
