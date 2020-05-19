@@ -395,9 +395,9 @@ namespace etl
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
         case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: case T15::ID: case T16::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
@@ -510,9 +510,9 @@ namespace etl
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
         case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: case T15::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
@@ -624,9 +624,9 @@ namespace etl
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
         case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
@@ -737,9 +737,9 @@ namespace etl
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
         case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
@@ -848,9 +848,9 @@ namespace etl
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
         case T9::ID: case T10::ID: case T11::ID: case T12::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
@@ -958,9 +958,9 @@ namespace etl
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
         case T9::ID: case T10::ID: case T11::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
@@ -1067,9 +1067,9 @@ namespace etl
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
         case T9::ID: case T10::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
@@ -1175,9 +1175,9 @@ namespace etl
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
         case T9::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
@@ -1281,9 +1281,9 @@ namespace etl
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
         
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
@@ -1385,9 +1385,9 @@ namespace etl
       switch (id)
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
@@ -1488,9 +1488,9 @@ namespace etl
       switch (id)
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
@@ -1590,9 +1590,9 @@ namespace etl
       switch (id)
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
@@ -1690,9 +1690,9 @@ namespace etl
       switch (id)
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
@@ -1789,9 +1789,9 @@ namespace etl
       switch (id)
       {
         case T1::ID: case T2::ID: case T3::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
@@ -1887,9 +1887,9 @@ namespace etl
       switch (id)
       {
         case T1::ID: case T2::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
@@ -1984,9 +1984,9 @@ namespace etl
       switch (id)
       {
         case T1::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
