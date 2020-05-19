@@ -162,6 +162,7 @@ namespace
       x = other.x;
       moved = false;
       copied = true;
+      return *this;
     }
 
     Message3& operator =(Message3&& other)
@@ -169,6 +170,7 @@ namespace
       x = other.x;
       moved = true;
       copied = false;
+      return *this;
     }
 
     std::string x;

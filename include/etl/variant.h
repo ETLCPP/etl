@@ -45,6 +45,7 @@ SOFTWARE.
 #include "static_assert.h"
 #include "alignment.h"
 #include "error_handler.h"
+#include "null_type.h"
 
 #if defined(ETL_COMPILER_KEIL)
   #pragma diag_suppress 940
@@ -106,13 +107,13 @@ namespace etl
   ///\ingroup variant
   //***************************************************************************
   template <typename T1,
-            typename T2 = private_variant::no_type<2>,
-            typename T3 = private_variant::no_type<3>,
-            typename T4 = private_variant::no_type<4>,
-            typename T5 = private_variant::no_type<5>,
-            typename T6 = private_variant::no_type<6>,
-            typename T7 = private_variant::no_type<7>,
-            typename T8 = private_variant::no_type<8> >
+            typename T2 = etl::null_type<2>,
+            typename T3 = etl::null_type<3>,
+            typename T4 = etl::null_type<4>,
+            typename T5 = etl::null_type<5>,
+            typename T6 = etl::null_type<6>,
+            typename T7 = etl::null_type<7>,
+            typename T8 = etl::null_type<8> >
   class variant
   {
   public:
@@ -151,13 +152,13 @@ namespace etl
     //***************************************************************************
     /// Short form of no_type placeholders.
     //***************************************************************************
-    typedef private_variant::no_type<2> no_type2;
-    typedef private_variant::no_type<3> no_type3;
-    typedef private_variant::no_type<4> no_type4;
-    typedef private_variant::no_type<5> no_type5;
-    typedef private_variant::no_type<6> no_type6;
-    typedef private_variant::no_type<7> no_type7;
-    typedef private_variant::no_type<8> no_type8;
+    typedef etl::null_type<2> no_type2;
+    typedef etl::null_type<3> no_type3;
+    typedef etl::null_type<4> no_type4;
+    typedef etl::null_type<5> no_type5;
+    typedef etl::null_type<6> no_type6;
+    typedef etl::null_type<7> no_type7;
+    typedef etl::null_type<8> no_type8;
 
     //***************************************************************************
     /// Lookup the id of type.

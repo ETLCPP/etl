@@ -1,4 +1,8 @@
 ===============================================================================
+18.2.0
+Variadic versions of etl::type_id_lookup and etl::type_type_lookup for C++11 and above.
+
+===============================================================================
 18.1.3
 Added CircleCI yml file for master branch
 

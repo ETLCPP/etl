@@ -35,7 +35,7 @@ SOFTWARE.
 #include "type_traits.h"
 #include "utility.h"
 
-#if ETL_USING_STL
+#if ETL_USING_STL || defined(ETL_IN_UNIT_TEST)
   #include <iterator>
 #endif
 
