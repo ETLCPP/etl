@@ -105,6 +105,30 @@ namespace etl
 #endif
 
   //***************************************************************************
+  /// bool_constant
+  template <bool B>
+  struct bool_constant :etl::integral_constant<bool, B>
+  {
+  };
+
+#if ETL_CPP17_SUPPORTED
+  template <bool B>
+  inline constexpr bool bool_constant_v = bool_constant<B>::value;
+#endif
+
+  //***************************************************************************
+  /// negation
+  template <typename T>
+  struct negation : etl::bool_constant<!bool(T::value)>
+  {
+  };
+
+#if ETL_CPP17_SUPPORTED
+  template <typename T>
+  inline constexpr bool negation_v = negation<T>::value;
+#endif
+
+  //***************************************************************************
   /// remove_reference
   template <typename T> struct remove_reference { typedef T type; };
   template <typename T> struct remove_reference<T&> { typedef T type; };
@@ -1493,7 +1517,6 @@ namespace etl
   };
 #endif
 
-#if ETL_CPP14_SUPPORTED
   template <typename T>
   using types_t = typename types<T>::type;
 
@@ -1514,7 +1537,6 @@ namespace etl
 
   template <typename T>
   using types_cpc = typename types<T>::const_pointer_const;
-#endif
 
   //***************************************************************************
   /// size_of
@@ -1526,6 +1548,44 @@ namespace etl
   template <typename T>
   inline constexpr size_t size_of_v = etl::size_of<T>::value;
 #endif
+
+  //***************************************************************************
+  /// index_of
+  template <typename T, typename... TTypes>
+  struct index_of
+  {
+  private:
+
+    template <typename T, typename... TTypes>
+    struct index_of_helper;
+
+    template <typename T, typename T1, typename... TRest>
+    struct index_of_helper<T, T1, TRest...>
+    {
+      enum
+      {
+        value = etl::is_same<T, T1>::value ? 1 : 1 + index_of_helper<T, TRest...>::value
+      };
+    };
+
+    template <typename T, typename T1>
+    struct index_of_helper<T, T1>
+    {
+      enum
+      {
+        value = 1
+      };
+    };
+
+  public:
+
+    static ETL_CONST_OR_CONSTEXPR size_t npos = -1;
+
+    enum
+    {
+      value = etl::is_one_of<T, TTypes...>::value ? private_type_traits::index_of_helper<T, TTypes...>::value - 1 : npos
+    };
+  };
 }
 
 #endif // ETL_TYPE_TRAITS_INCLUDED

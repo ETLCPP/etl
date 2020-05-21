@@ -1524,7 +1524,6 @@ namespace etl
   };
 #endif
 
-#if ETL_CPP14_SUPPORTED
   template <typename T>
   using types_t = typename types<T>::type;
 
@@ -1545,7 +1544,6 @@ namespace etl
 
   template <typename T>
   using types_cpc = typename types<T>::const_pointer_const;
-#endif
 
   //***************************************************************************
   /// size_of
@@ -1560,8 +1558,11 @@ namespace etl
 
   //***************************************************************************
   /// index_of
-  namespace private_type_traits
+  template <typename T, typename... TTypes>
+  struct index_of
   {
+  private:
+
     template <typename T, typename... TTypes>
     struct index_of_helper;
 
@@ -1582,11 +1583,9 @@ namespace etl
         value = 1
       };
     };
-  }
 
-  template <typename T, typename... TTypes>
-  struct index_of
-  {
+  public:
+
     static ETL_CONST_OR_CONSTEXPR size_t npos = -1;
 
     enum
