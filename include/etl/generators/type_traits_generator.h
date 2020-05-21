@@ -801,7 +801,10 @@ namespace etl
   using bool_constant = std::bool_constant<B>;
 #endif
 
-#if ETTL_CPP17_SUPPORTED
+  //***************************************************************************
+  /// negation
+  ///\ingroup type_traits
+#if ETL_CPP17_SUPPORTED
   template <typename T>
   struct negation : std::negation<T>
   {
@@ -1556,38 +1559,37 @@ namespace etl
 
   //***************************************************************************
   /// index_of
+  //***************************************************************************
   template <typename T, typename... TTypes>
-  struct index_of
+  class index_of
   {
   private:
 
-    template <typename T1, typename... TRest>
+    //***********************************
+    template <typename Type, typename T1, typename... TRest>
     struct index_of_helper
     {
-      enum
-      {
-        value = etl::is_same<T, T1>::value ? 1 : 1 + index_of_helper<T, TRest...>::value
-      };
+      static const size_t value = etl::is_same<Type, T1>::value ? 1 : 1 + index_of_helper<Type, TRest...>::value;
     };
 
-    template <typename T1>
-    struct index_of_helper<T1>
+    //***********************************
+    template <typename Type, typename T1>
+    struct index_of_helper<Type, T1>
     {
-      enum
-      {
-        value = 1
-      };
+      static const size_t value = 1;
     };
 
   public:
 
-    static ETL_CONST_OR_CONSTEXPR size_t npos = -1;
+    static_assert(etl::is_one_of<T, TTypes...>::value, "T is not in typelist");
 
-    enum
-    {
-      value = etl::is_one_of<T, TTypes...>::value ? index_of_helper<TTypes...>::value - 1 : npos
-    };
+    static const size_t value = index_of_helper<T, TTypes...>::value - 1;
   };
+
+#if ETL_CPP17_SUPPORTED
+  template <typename T, typename... TTypes>
+  inline constexpr size_t index_of_v = index_of<T, TTypes...>::value;
+#endif
 }
 
 #endif // ETL_TYPE_TRAITS_INCLUDED

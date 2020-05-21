@@ -83,11 +83,6 @@ SOFTWARE.
 #include "profiles/determine_compiler_version.h"
 #include "profiles/determine_compiler_language_support.h"
 
-// Helper macros
-#define ETL_CPP11_NOT_SUPPORTED !ETL_CPP11_SUPPORTED
-#define ETL_CPP14_NOT_SUPPORTED !ETL_CPP14_SUPPORTED
-#define ETL_CPP17_NOT_SUPPORTED !ETL_CPP17_SUPPORTED
-
 // See if we can determine the OS we're compiling on, if haven't already done so in etl_profile.h
 #include "profiles/determine_development_os.h"
 

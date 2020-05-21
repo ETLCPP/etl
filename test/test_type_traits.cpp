@@ -807,4 +807,15 @@ namespace
     CHECK_EQUAL(std::is_lvalue_reference_v<int&>,  etl::is_lvalue_reference_v<int&>);
     CHECK_EQUAL(std::is_lvalue_reference_v<int&&>, etl::is_lvalue_reference_v<int&&>);
   }
+
+  //*************************************************************************
+  TEST(index_of)
+  {
+    CHECK_EQUAL(0U, (etl::index_of<char, char, short, int>::value));
+    CHECK_EQUAL(1U, (etl::index_of<short, char, short, int>::value));
+    CHECK_EQUAL(2U, (etl::index_of<int, char, short, int>::value));
+
+    // Static assert
+    //CHECK_EQUAL(0U, (etl::index_of<long, char, short, int>::value));
+  }
 }
