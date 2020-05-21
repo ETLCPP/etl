@@ -111,21 +111,9 @@ namespace etl
   template <typename T, const T VALUE>
   const T integral_constant<T, VALUE>::value;
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_CPP11_SUPPORTED
   template <bool B>
   using bool_constant = integral_constant<bool, B>;
-#endif
-
-  //***************************************************************************
-  /// bool_constant
-  template <bool B>
-  struct bool_constant :etl::integral_constant<bool, B>
-  {
-  };
-
-#if ETL_CPP17_SUPPORTED
-  template <bool B>
-  inline constexpr bool bool_constant_v = bool_constant<B>::value;
 #endif
 
   //***************************************************************************
@@ -811,6 +799,16 @@ namespace etl
 #if ETL_CPP17_SUPPORTED
   template <bool B>
   using bool_constant = std::bool_constant<B>;
+#endif
+
+#if ETTL_CPP17_SUPPORTED
+  template <typename T>
+  struct negation : std::negation<T>
+  {
+  };
+
+  template <typename T>
+  inline constexpr bool negation_v = std::negation_v<T>;
 #endif
 
   //***************************************************************************
@@ -1563,11 +1561,8 @@ namespace etl
   {
   private:
 
-    template <typename T, typename... TTypes>
-    struct index_of_helper;
-
-    template <typename T, typename T1, typename... TRest>
-    struct index_of_helper<T, T1, TRest...>
+    template <typename T1, typename... TRest>
+    struct index_of_helper
     {
       enum
       {
@@ -1575,8 +1570,8 @@ namespace etl
       };
     };
 
-    template <typename T, typename T1>
-    struct index_of_helper<T, T1>
+    template <typename T1>
+    struct index_of_helper<T1>
     {
       enum
       {
@@ -1590,7 +1585,7 @@ namespace etl
 
     enum
     {
-      value = etl::is_one_of<T, TTypes...>::value ? private_type_traits::index_of_helper<T, TTypes...>::value - 1 : npos
+      value = etl::is_one_of<T, TTypes...>::value ? index_of_helper<TTypes...>::value - 1 : npos
     };
   };
 }
