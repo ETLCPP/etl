@@ -1553,6 +1553,7 @@ namespace etl
   //***************************************************************************
   /// index_of
   //***************************************************************************
+#if ETL_CPP11_SUPPORTED
   template <typename T, typename... TTypes>
   class index_of
   {
@@ -1562,26 +1563,27 @@ namespace etl
     template <typename Type, typename T1, typename... TRest>
     struct index_of_helper
     {
-      static const size_t value = etl::is_same<Type, T1>::value ? 1 : 1 + index_of_helper<Type, TRest...>::value;
+      static constexpr size_t value = etl::is_same<Type, T1>::value ? 1 : 1 + index_of_helper<Type, TRest...>::value;
     };
 
     //***********************************
     template <typename Type, typename T1>
     struct index_of_helper<Type, T1>
     {
-      static const size_t value = 1;
+      static constexpr size_t value = 1;
     };
 
   public:
 
     static_assert(etl::is_one_of<T, TTypes...>::value, "T is not in typelist");
 
-    static const size_t value = index_of_helper<T, TTypes...>::value - 1;
+    static constexpr size_t value = index_of_helper<T, TTypes...>::value - 1;
   };
 
 #if ETL_CPP17_SUPPORTED
   template <typename T, typename... TTypes>
   inline constexpr size_t index_of_v = index_of<T, TTypes...>::value;
+#endif
 #endif
 }
 
