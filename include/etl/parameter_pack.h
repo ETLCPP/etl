@@ -66,8 +66,8 @@ namespace etl
       };
 
       //***********************************
-      template <typename T, typename T1>
-      struct index_of_type_helper<T, T1>
+      template <typename Type, typename T1>
+      struct index_of_type_helper<Type, T1>
       {
         static constexpr size_t value = 1;
       };
@@ -94,15 +94,15 @@ namespace etl
     private:
 
       //***********************************
-      template <size_t I, size_t N, typename T1, typename... TRest>
+      template <size_t II, size_t N, typename T1, typename... TRest>
       struct type_from_index_helper
       {
-        using type = typename std::conditional<I == N, T1, typename type_from_index_helper<I, N + 1, TRest...>::type>::type;
+        using type = typename std::conditional<II == N, T1, typename type_from_index_helper<II, N + 1, TRest...>::type>::type;
       };
 
       //***********************************
-      template <size_t I, size_t N, typename T1>
-      struct type_from_index_helper<I, N, T1>
+      template <size_t II, size_t N, typename T1>
+      struct type_from_index_helper<II, N, T1>
       {
         using type = T1;
       };
