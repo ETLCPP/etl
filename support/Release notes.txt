@@ -1,4 +1,9 @@
 ===============================================================================
+18.3.0
+Added etl::parameter_pack to easily extract information about the types in a 
+template parameter pack.
+
+===============================================================================
 18.2.0
 Variadic versions of etl::type_id_lookup and etl::type_type_lookup for C++11 and above.
 
