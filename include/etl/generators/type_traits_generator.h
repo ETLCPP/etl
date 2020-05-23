@@ -1556,42 +1556,6 @@ namespace etl
   template <typename T>
   inline constexpr size_t size_of_v = etl::size_of<T>::value;
 #endif
-
-  //***************************************************************************
-  /// index_of
-  //***************************************************************************
-#if ETL_CPP11_SUPPORTED
-  template <typename T, typename... TTypes>
-  class index_of
-  {
-  private:
-
-    //***********************************
-    template <typename Type, typename T1, typename... TRest>
-    struct index_of_helper
-    {
-      static constexpr size_t value = etl::is_same<Type, T1>::value ? 1 : 1 + index_of_helper<Type, TRest...>::value;
-    };
-
-    //***********************************
-    template <typename Type, typename T1>
-    struct index_of_helper<Type, T1>
-    {
-      static constexpr size_t value = 1;
-    };
-
-  public:
-
-    static_assert(etl::is_one_of<T, TTypes...>::value, "T is not in typelist");
-
-    static constexpr size_t value = index_of_helper<T, TTypes...>::value - 1;
-  };
-
-#if ETL_CPP17_SUPPORTED
-  template <typename T, typename... TTypes>
-  inline constexpr size_t index_of_v = index_of<T, TTypes...>::value;
-#endif
-#endif
 }
 
 #endif // ETL_TYPE_TRAITS_INCLUDED

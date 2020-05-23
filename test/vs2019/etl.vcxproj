@@ -1054,6 +1054,7 @@
     <ClInclude Include="..\..\include\etl\mutex\mutex_freertos.h" />
     <ClInclude Include="..\..\include\etl\negative.h" />
     <ClInclude Include="..\..\include\etl\null_type.h" />
+    <ClInclude Include="..\..\include\etl\parameter_pack.h" />
     <ClInclude Include="..\..\include\etl\private\choose_namespace.h" />
     <ClInclude Include="..\..\include\etl\private\crc16_poly_0x1021_.h" />
     <ClInclude Include="..\..\include\etl\private\crc16_poly_0x8005.h" />
@@ -1582,6 +1583,7 @@
     </ClCompile>
     <ClCompile Include="..\test_optional.cpp" />
     <ClCompile Include="..\test_packet.cpp" />
+    <ClCompile Include="..\test_parameter_pack.cpp" />
     <ClCompile Include="..\test_parameter_type.cpp" />
     <ClCompile Include="..\test_parity_checksum.cpp" />
     <ClCompile Include="..\test_pearson.cpp" />

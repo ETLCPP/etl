@@ -852,6 +852,9 @@
     <ClInclude Include="..\..\include\etl\generators\variant_pool_generator.h">
       <Filter>ETL\Containers\Generators</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\parameter_pack.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1323,6 +1326,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_string_u32_external_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_parameter_pack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

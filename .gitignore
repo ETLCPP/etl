@@ -255,3 +255,4 @@ unittest-cpp
 build-test-Desktop_x86_windows_msvc2017_pe_32bit-Debug
 test/Logs
 build-test-Desktop_x86_windows_msvc2019_pe_32bit-Debug
+test/vs2019/.vs
