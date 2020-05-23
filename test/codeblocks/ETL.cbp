@@ -349,6 +349,7 @@
 		<Unit filename="../../include/etl/observer.h" />
 		<Unit filename="../../include/etl/optional.h" />
 		<Unit filename="../../include/etl/packet.h" />
+		<Unit filename="../../include/etl/parameter_pack.h" />
 		<Unit filename="../../include/etl/parameter_type.h" />
 		<Unit filename="../../include/etl/pearson.h" />
 		<Unit filename="../../include/etl/permutations.h" />
@@ -542,6 +543,7 @@
 		<Unit filename="../test_observer.cpp" />
 		<Unit filename="../test_optional.cpp" />
 		<Unit filename="../test_packet.cpp" />
+		<Unit filename="../test_parameter_pack.cpp" />
 		<Unit filename="../test_parameter_type.cpp" />
 		<Unit filename="../test_parity_checksum.cpp" />
 		<Unit filename="../test_pearson.cpp" />

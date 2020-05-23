@@ -809,13 +809,12 @@ namespace
   }
 
   //*************************************************************************
-  TEST(index_of)
+  TEST(is_rvalue_reference)
   {
-    CHECK_EQUAL(0U, (etl::index_of<char, char, short, int>::value));
-    CHECK_EQUAL(1U, (etl::index_of<short, char, short, int>::value));
-    CHECK_EQUAL(2U, (etl::index_of<int, char, short, int>::value));
-
-    // Static assert
-    //CHECK_EQUAL(0U, (etl::index_of<long, char, short, int>::value));
+    CHECK_EQUAL(std::is_rvalue_reference_v<void>,  etl::is_rvalue_reference_v<void>);
+    CHECK_EQUAL(std::is_rvalue_reference_v<int>,   etl::is_rvalue_reference_v<int>);
+    CHECK_EQUAL(std::is_rvalue_reference_v<int*>,  etl::is_rvalue_reference_v<int*>);
+    CHECK_EQUAL(std::is_rvalue_reference_v<int&>,  etl::is_rvalue_reference_v<int&>);
+    CHECK_EQUAL(std::is_rvalue_reference_v<int&&>, etl::is_rvalue_reference_v<int&&>);
   }
 }

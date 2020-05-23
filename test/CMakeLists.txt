@@ -137,6 +137,7 @@ set(TEST_SOURCE_FILES
   test_queue_spsc_isr_small.cpp
   test_queue_spsc_locked.cpp
   test_queue_spsc_locked_small.cpp
+  test_parameter_pack
   test_scaled_rounding.cpp
   test_state_chart.cpp
   test_string_view.cpp
