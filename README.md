@@ -2,7 +2,7 @@ Embedded Template Library (ETL)
 -------------------------
 
 [![Build status](https://ci.appveyor.com/api/projects/status/b7jgecv7unqjw4u0/branch/master?svg=true)](https://ci.appveyor.com/project/jwellbelove/etl/branch/master)
-[![ETLCPP](https://circleci.com/gh/ETLCPP/etl.svg?style=svg)](https://app.circleci.com/pipelines/github/ETLCPP/etl)
+[![ETLCPP](https://circleci.com/gh/ETLCPP/etl.svg?style=shield)](https://app.circleci.com/pipelines/github/ETLCPP/etl)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3c14cd918ccf40008d0bcd7b083d5946)](https://www.codacy.com/manual/jwellbelove/etl?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ETLCPP/etl&amp;utm_campaign=Badge_Grade)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/jwellbelove/etl)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
