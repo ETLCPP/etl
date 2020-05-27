@@ -102,6 +102,9 @@ namespace etl
 #if ETL_CPP11_SUPPORTED
   template <bool B>
   using bool_constant = integral_constant<bool, B>;
+#else
+  template <bool B>
+  struct bool_constant : etl::integral_constant<bool, B> { };
 #endif
 
   //***************************************************************************
@@ -787,6 +790,9 @@ namespace etl
 #if ETL_CPP17_SUPPORTED
   template <bool B>
   using bool_constant = std::bool_constant<B>;
+#else
+  template <bool B>
+  struct bool_constant : std::integral_constant<bool, B> { };
 #endif
 
   //***************************************************************************

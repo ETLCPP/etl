@@ -1,4 +1,8 @@
 ===============================================================================
+18.3.1
+C++03 compatibility fix for type_traits.h
+
+===============================================================================
 18.3.0
 Added etl::parameter_pack to easily extract information about the types in a 
 template parameter pack.
