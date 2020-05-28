@@ -41,8 +41,8 @@ SOFTWARE.
 #include "../type_traits.h"
 #include "../error_handler.h"
 
-#include "../stl/functional.h"
-#include "../stl/iterator.h"
+#include "../functional.h"
+#include "../iterator.h"
 
 #ifdef ETL_COMPILER_GCC
 #pragma GCC diagnostic ignored "-Wunused-variable"
@@ -67,10 +67,10 @@ namespace etl
     typedef const value_type*                     const_pointer;
     typedef value_type*                           iterator;
     typedef const value_type*                     const_iterator;
-    typedef ETL_STD::reverse_iterator<iterator>       reverse_iterator;
-    typedef ETL_STD::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
     typedef size_t                                size_type;
-    typedef ETL_STD::iterator_traits<iterator>::difference_type difference_type;
+    typedef etl::iterator_traits<iterator>::difference_type difference_type;
 
   public:
 
@@ -211,7 +211,7 @@ namespace etl
       // Size up if necessary.
       if (p_end < p_new_end)
       {
-        ETL_STD::fill(p_end, p_new_end, value);
+        etl::fill(p_end, p_new_end, value);
       }
 
       p_end = p_new_end;
@@ -326,7 +326,7 @@ namespace etl
     void assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      difference_type d = ETL_STD::distance(first, last);
+      difference_type d = etl::distance(first, last);
       ETL_ASSERT(static_cast<size_t>(d) <= CAPACITY, ETL_ERROR(vector_full));
 #endif
 
@@ -402,7 +402,7 @@ namespace etl
       if (position != end())
       {
         ++p_end;
-        ETL_STD::copy_backward(position, end() - 1, end());
+        etl::copy_backward(position, end() - 1, end());
         *position = value;
       }
       else
@@ -424,8 +424,8 @@ namespace etl
     {
       ETL_ASSERT((size() + 1) <= CAPACITY, ETL_ERROR(vector_full));
 
-      ETL_STD::copy_backward(position, p_end, p_end + n);
-      ETL_STD::fill_n(position, n, value);
+      etl::copy_backward(position, p_end, p_end + n);
+      etl::fill_n(position, n, value);
 
       p_end += n;
     }
@@ -441,12 +441,12 @@ namespace etl
     template <typename TIterator>
     void insert(iterator position, TIterator first, TIterator last)
     {
-      size_t count = ETL_STD::distance(first, last);
+      size_t count = etl::distance(first, last);
 
       ETL_ASSERT((size() + count) <= CAPACITY, ETL_ERROR(vector_full));
 
-      ETL_STD::copy_backward(position, p_end, p_end + count);
-      ETL_STD::copy(first, last, position);
+      etl::copy_backward(position, p_end, p_end + count);
+      etl::copy(first, last, position);
       p_end += count;
     }
 
@@ -457,7 +457,7 @@ namespace etl
     //*********************************************************************
     iterator erase(iterator i_element)
     {
-      ETL_STD::copy(i_element + 1, end(), i_element);
+      etl::copy(i_element + 1, end(), i_element);
       --p_end;
 
       return i_element;
@@ -473,8 +473,8 @@ namespace etl
     //*********************************************************************
     iterator erase(iterator first, iterator last)
     {
-      ETL_STD::copy(last, end(), first);
-      size_t n_delete = ETL_STD::distance(first, last);
+      etl::copy(last, end(), first);
+      size_t n_delete = etl::distance(first, last);
 
       // Just adjust the count.
       p_end -= n_delete;
@@ -580,7 +580,7 @@ namespace etl
   //***************************************************************************
   inline bool operator ==(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
-    return (lhs.size() == rhs.size()) && ETL_STD::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //***************************************************************************
@@ -604,7 +604,7 @@ namespace etl
   //***************************************************************************
   inline bool operator <(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
-    return ETL_STD::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    return etl::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
 
   //***************************************************************************

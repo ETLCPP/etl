@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove, rlindeman
 
@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include <set>
 #include <array>
@@ -37,24 +37,44 @@ SOFTWARE.
 #include <vector>
 
 #include "etl/multiset.h"
+#include "etl/checksum.h"
+
+#include "data.h"
 
 static const size_t MAX_SIZE = 10;
 
 #define TEST_GREATER_THAN
 #ifdef TEST_GREATER_THAN
-typedef etl::multiset<int, MAX_SIZE, std::greater<int> > Data;
-typedef etl::imultiset<int, std::greater<int> >      IData;
-typedef std::multiset<int, std::greater<int> >       Compare_Data;
+using Data = etl::multiset<int, MAX_SIZE, std::greater<int>>;
+using IData = etl::imultiset<int, std::greater<int>>;
+using Compare_Data = std::multiset<int, std::greater<int>>;
 #else
-typedef etl::multiset<int, MAX_SIZE, std::less<int> > Data;
-typedef etl::multiset<int, std::less<int> >       IData;
-typedef std::multiset<int, std::less<int> >       Compare_Data;
+using Data = etl::multiset<int, MAX_SIZE, std::less<int>>;
+using IData = etl::multiset<int, std::less<int>>;
+using Compare_Data = std::multiset<int, std::less<int>>;
 #endif
 
-typedef Data::iterator Data_iterator;
-typedef Data::const_iterator Data_const_iterator;
-typedef Compare_Data::iterator Compare_Data_iterator;
-typedef Compare_Data::const_iterator Compare_Data_const_iterator;
+using ItemM = TestDataM<int>;
+
+struct simple_hash
+{
+  size_t operator ()(const ItemM& value) const
+  {
+    etl::checksum<size_t> sum;
+
+    sum.add(value.valid);
+    sum.add(value.value);
+
+    return sum.value();
+  }
+};
+
+using DataM = etl::multiset<ItemM, MAX_SIZE>;
+
+using Data_iterator               = Data::iterator;
+using Data_const_iterator         = Data::const_iterator;
+using Compare_Data_iterator       = Compare_Data::iterator;
+using Compare_Data_const_iterator = Compare_Data::const_iterator;
 
 //*************************************************************************
 static std::ostream& operator << (std::ostream& os, const Data_iterator& it)
@@ -215,6 +235,53 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_copy_constructor)
+    {
+      Compare_Data compare_data(initial_data.begin(), initial_data.end());
+      Data data1(compare_data.begin(), compare_data.end());
+      Data data2(data1);
+
+      CHECK_EQUAL(initial_data.size(), data1.size());
+      CHECK(data1.size() == data2.size());
+
+      bool isEqual = false;
+
+      isEqual = Check_Equal(data1.begin(),
+                            data1.end(),
+                            compare_data.begin());
+      CHECK(isEqual);
+
+      isEqual = Check_Equal(data2.begin(),
+                            data2.end(),
+                            compare_data.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_move_constructor)
+    {
+      DataM data1;
+
+      ItemM d1(1);
+      ItemM d2(2);
+      ItemM d3(3);
+
+      data1.insert(etl::move(d1));
+      data1.insert(etl::move(d2));
+      data1.insert(etl::move(d3));
+      data1.insert(ItemM(4));
+
+      DataM data2(std::move(data1));
+
+      CHECK(!data1.empty()); // Move does not clear the source.
+
+      CHECK_EQUAL(1, ItemM(1).value);
+      CHECK_EQUAL(2, ItemM(2).value);
+      CHECK_EQUAL(3, ItemM(3).value);
+      CHECK_EQUAL(4, ItemM(4).value);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_destruct_via_imultiset)
     {
       Data* pdata = new Data(initial_data.begin(), initial_data.end());
@@ -234,7 +301,7 @@ namespace
       CHECK(!data.empty());
     }
 
-#if !defined(ETL_NO_STL)
+#if ETL_USING_STL
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
@@ -296,6 +363,32 @@ namespace
                                 other_data.begin());
 
       CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_move_assignment)
+    {
+      DataM data1;
+
+      ItemM d1(1);
+      ItemM d2(2);
+      ItemM d3(3);
+
+      data1.insert(etl::move(d1));
+      data1.insert(etl::move(d2));
+      data1.insert(etl::move(d3));
+      data1.insert(ItemM(4));
+
+      DataM data2;
+
+      data2 = std::move(data1);
+
+      CHECK(!data1.empty()); // Move does not clear the source.
+
+      CHECK_EQUAL(1, ItemM(1).value);
+      CHECK_EQUAL(2, ItemM(2).value);
+      CHECK_EQUAL(3, ItemM(3).value);
+      CHECK_EQUAL(4, ItemM(4).value);
     }
 
     //*************************************************************************
@@ -515,15 +608,39 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_moved_value)
+    {
+      DataM data;
+
+      ItemM d1(1);
+      ItemM d2(2);
+      ItemM d3(3);
+
+      data.insert(etl::move(d1));
+      data.insert(etl::move(d2));
+      data.insert(etl::move(d3));
+      data.insert(ItemM(4));
+
+      CHECK(!bool(d1));
+      CHECK(!bool(d2));
+      CHECK(!bool(d3));
+
+      CHECK_EQUAL(1, data.find(ItemM(1))->value);
+      CHECK_EQUAL(2, data.find(ItemM(2))->value);
+      CHECK_EQUAL(3, data.find(ItemM(3))->value);
+      CHECK_EQUAL(4, data.find(ItemM(4))->value);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_equal_range)
     {
       Compare_Data compare_data(random_data.begin(), random_data.end());
       Data data(random_data.begin(), random_data.end());
 
       // Test a number not available
-      ETL_PAIR<Data::iterator, Data::iterator> data_result =
+      ETL_OR_STD::pair<Data::iterator, Data::iterator> data_result =
         data.equal_range(1);
-      ETL_PAIR<Compare_Data::iterator, Compare_Data::iterator> compare_result =
+      ETL_OR_STD::pair<Compare_Data::iterator, Compare_Data::iterator> compare_result =
         compare_data.equal_range(1);
 
       // Check that both return the same return results
@@ -544,9 +661,9 @@ namespace
       const Data data(initial_data.begin(), initial_data.end());
 
       // Test a number with several of the same key
-      ETL_PAIR<Data::const_iterator, Data::const_iterator> data_result =
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> data_result =
         data.equal_range(2);
-      ETL_PAIR<Compare_Data::const_iterator, Compare_Data::const_iterator> compare_result =
+      ETL_OR_STD::pair<Compare_Data::const_iterator, Compare_Data::const_iterator> compare_result =
         compare_data.equal_range(2);
 
       // Check that both return the same return results
@@ -1076,8 +1193,8 @@ namespace
                     CHECK((*compare.lower_bound(i)) == (*data.lower_bound(i)));
                 }
 
-                ETL_PAIR<Compare_Data::const_iterator, Compare_Data::const_iterator> stlret = compare.equal_range(i);
-                ETL_PAIR<Data::const_iterator, Data::const_iterator> etlret = data.equal_range(i);
+                ETL_OR_STD::pair<Compare_Data::const_iterator, Compare_Data::const_iterator> stlret = compare.equal_range(i);
+                ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> etlret = data.equal_range(i);
 
                 CHECK_EQUAL(stlret.first == compare.end(), etlret.first == data.end());
                 if((stlret.first != compare.end()) && (etlret.first != data.end()))

@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 #include "ExtraCheckMacros.h"
 
 #include "etl/list.h"
@@ -168,7 +168,7 @@ namespace
       CHECK(!data.empty());
     }
 
-#if !defined(ETL_NO_STL)
+#if ETL_USING_STL
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
@@ -230,9 +230,11 @@ namespace
       CHECK_EQUAL(0U, data1.size());
       CHECK_EQUAL(4U, data2.size());
 
-      DataM::const_iterator itr = data2.begin();
+      DataM::iterator itr = data2.begin();
 
-      CHECK_EQUAL(1U, (*itr++).value);
+      ItemM pr = std::move(*itr++);
+
+      CHECK_EQUAL(1U, pr.value);
       CHECK_EQUAL(2U, (*itr++).value);
       CHECK_EQUAL(3U, (*itr++).value);
       CHECK_EQUAL(4U, (*itr++).value);

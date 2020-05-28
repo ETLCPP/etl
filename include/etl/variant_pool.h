@@ -63,7 +63,7 @@ SOFTWARE.
 #include "type_lookup.h"
 #include "pool.h"
 
-#include "stl/utility.h"
+#include "utility.h"
 
 #undef ETL_FILE
 #define ETL_FILE "40"
@@ -105,21 +105,21 @@ namespace etl
 
   //***************************************************************************
   template <const size_t MAX_SIZE_,
-            typename T1, 
-            typename T2 = void, 
-            typename T3 = void, 
-            typename T4 = void, 
-            typename T5 = void, 
-            typename T6 = void, 
-            typename T7 = void, 
-            typename T8 = void, 
-            typename T9 = void, 
-            typename T10 = void, 
-            typename T11 = void, 
-            typename T12 = void, 
-            typename T13 = void, 
-            typename T14 = void, 
-            typename T15 = void, 
+            typename T1,
+            typename T2 = void,
+            typename T3 = void,
+            typename T4 = void,
+            typename T5 = void,
+            typename T6 = void,
+            typename T7 = void,
+            typename T8 = void,
+            typename T9 = void,
+            typename T10 = void,
+            typename T11 = void,
+            typename T12 = void,
+            typename T13 = void,
+            typename T14 = void,
+            typename T15 = void,
             typename T16 = void>
   class variant_pool
   {
@@ -134,7 +134,7 @@ namespace etl
     {
     }
 
-#if !ETL_CPP11_SUPPORTED || defined(ETL_STLPORT)
+#if ETL_CPP11_NOT_SUPPORTED || ETL_USING_STLPORT
     //*************************************************************************
     /// Creates the object. Default constructor.
     //*************************************************************************
@@ -143,7 +143,7 @@ namespace etl
     {
       ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
 
-      T* p = nullptr;
+      T* p = ETL_NULLPTR;
 
       if (pool.full())
       {
@@ -153,7 +153,7 @@ namespace etl
       {
         p = pool.template allocate<T>();
 
-        if (p != nullptr)
+        if (p != ETL_NULLPTR)
         {
           new (p) T();
         }
@@ -170,7 +170,7 @@ namespace etl
     {
       ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
 
-      T* p = nullptr;
+      T* p = ETL_NULLPTR;
 
       if (pool.full())
       {
@@ -180,7 +180,7 @@ namespace etl
       {
         p = pool.template allocate<T>();
 
-        if (p != nullptr)
+        if (p != ETL_NULLPTR)
         {
           new (p) T(p1);
         }
@@ -197,7 +197,7 @@ namespace etl
     {
       ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
 
-      T* p = nullptr;
+      T* p = ETL_NULLPTR;
 
       if (pool.full())
       {
@@ -207,7 +207,7 @@ namespace etl
       {
         p = pool.template allocate<T>();
 
-        if (p != nullptr)
+        if (p != ETL_NULLPTR)
         {
           new (p) T(p1, p2);
         }
@@ -224,7 +224,7 @@ namespace etl
     {
       ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
 
-      T* p = nullptr;
+      T* p = ETL_NULLPTR;
 
       if (pool.full())
       {
@@ -234,7 +234,7 @@ namespace etl
       {
         p = pool.template allocate<T>();
 
-        if (p != nullptr)
+        if (p != ETL_NULLPTR)
         {
           new (p) T(p1, p2, p3);
         }
@@ -251,7 +251,7 @@ namespace etl
     {
       ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
 
-      T* p = nullptr;
+      T* p = ETL_NULLPTR;
 
       if (pool.full())
       {
@@ -261,7 +261,7 @@ namespace etl
       {
         p = pool.template allocate<T>();
 
-        if (p != nullptr)
+        if (p != ETL_NULLPTR)
         {
           new (p) T(p1, p2, p3, p4);
         }
@@ -278,7 +278,7 @@ namespace etl
     {
       ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
 
-      T* p = nullptr;
+      T* p = ETL_NULLPTR;
 
       if (pool.full())
       {
@@ -288,9 +288,9 @@ namespace etl
       {
         p = pool.template allocate<T>();
 
-        if (p != nullptr)
+        if (p != ETL_NULLPTR)
         {
-          new (p) T(ETL_STD::forward<Args>(args)...);
+          new (p) T(etl::forward<Args>(args)...);
         }
       }
 

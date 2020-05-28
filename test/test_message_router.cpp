@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2017 jwellbelove
 
@@ -26,13 +26,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 #include "ExtraCheckMacros.h"
 
 #include "etl/message_router.h"
 #include "etl/queue.h"
 #include "etl/largest.h"
-#include "etl/packet.h"
 
 //***************************************************************************
 // The set of messages.
@@ -51,7 +50,8 @@ namespace
   enum
   {
     ROUTER1,
-    ROUTER2
+    ROUTER2,
+    ROUTER3
   };
 
   struct Message1 : public etl::message<MESSAGE1>
@@ -155,7 +155,8 @@ namespace
         message2_count(0),
         message4_count(0),
         message_unknown_count(0),
-        callback_count(0)
+        callback_count(0),
+        sender_id(0)
     {
 
     }
@@ -163,29 +164,34 @@ namespace
     void on_receive(etl::imessage_router& sender, const Message1&)
     {
       ++message1_count;
+      sender_id = sender.get_message_router_id();
       etl::send_message(sender, message5);
     }
 
     void on_receive(etl::imessage_router& sender, const Message2&)
     {
       ++message2_count;
+      sender_id = sender.get_message_router_id();
       etl::send_message(sender, message5);
     }
 
     void on_receive(etl::imessage_router& sender, const Message4&)
     {
       ++message4_count;
+      sender_id = sender.get_message_router_id();
       etl::send_message(sender, message5);
     }
 
-    void on_receive(etl::imessage_router&, const Message5&)
+    void on_receive(etl::imessage_router& sender, const Message5&)
     {
+      sender_id = sender.get_message_router_id();
       ++callback_count;
     }
 
     void on_receive_unknown(etl::imessage_router& sender, const etl::imessage&)
     {
       ++message_unknown_count;
+      sender_id = 0;
       etl::send_message(sender, message5);
     }
 
@@ -194,20 +200,24 @@ namespace
     int message4_count;
     int message_unknown_count;
     int callback_count;
+    int sender_id;
   };
-
 
   etl::imessage_router* p_router;
 
   SUITE(test_message_router)
   {
-    //=========================================================================
+    //*************************************************************************
     TEST(message_router)
     {
       Router1 r1;
       Router2 r2;
 
       p_router = &r1;
+
+      // CHECK(!r1.is_null_router());
+      CHECK(r1.is_producer());
+      CHECK(r1.is_consumer());
 
       p_router->receive(r2, message1);
       CHECK_EQUAL(1, r1.message1_count);
@@ -272,64 +282,135 @@ namespace
       CHECK_EQUAL(4, r1.callback_count);
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_null_router)
     {
       Router2 router;
       etl::null_message_router null_router;
 
+      // CHECK(null_router.is_null_router());
+      CHECK(!null_router.is_producer());
+      CHECK(!null_router.is_consumer());
+
       // Send from the null router.
-      etl::send_message(router, message1);
+      etl::send_message(null_router, router, message1);
       CHECK_EQUAL(1, router.message1_count);
       CHECK_EQUAL(0, router.message2_count);
       CHECK_EQUAL(0, router.message4_count);
       CHECK_EQUAL(0, router.message_unknown_count);
 
-      etl::send_message(router, message2);
+      etl::send_message(null_router, router, message2);
       CHECK_EQUAL(1, router.message1_count);
       CHECK_EQUAL(1, router.message2_count);
       CHECK_EQUAL(0, router.message4_count);
       CHECK_EQUAL(0, router.message_unknown_count);
 
-      etl::send_message(router, message3);
+      etl::send_message(null_router, router, message3);
       CHECK_EQUAL(1, router.message1_count);
       CHECK_EQUAL(1, router.message2_count);
       CHECK_EQUAL(0, router.message4_count);
       CHECK_EQUAL(1, router.message_unknown_count);
 
-      etl::send_message(router, message4);
+      etl::send_message(null_router, router, message4);
       CHECK_EQUAL(1, router.message1_count);
       CHECK_EQUAL(1, router.message2_count);
       CHECK_EQUAL(1, router.message4_count);
       CHECK_EQUAL(1, router.message_unknown_count);
 
       // Send to the null router.
-      etl::send_message(null_router, message1);
+      etl::send_message(router, null_router, message1);
       CHECK_EQUAL(1, router.message1_count);
       CHECK_EQUAL(1, router.message2_count);
       CHECK_EQUAL(1, router.message4_count);
       CHECK_EQUAL(1, router.message_unknown_count);
 
-      etl::send_message(null_router, message2);
+      etl::send_message(router, null_router, message2);
       CHECK_EQUAL(1, router.message1_count);
       CHECK_EQUAL(1, router.message2_count);
       CHECK_EQUAL(1, router.message4_count);
       CHECK_EQUAL(1, router.message_unknown_count);
 
-      etl::send_message(null_router, message3);
+      etl::send_message(router, null_router, message3);
       CHECK_EQUAL(1, router.message1_count);
       CHECK_EQUAL(1, router.message2_count);
       CHECK_EQUAL(1, router.message4_count);
       CHECK_EQUAL(1, router.message_unknown_count);
 
-      etl::send_message(null_router, message4);
+      etl::send_message(router, null_router, message4);
       CHECK_EQUAL(1, router.message1_count);
       CHECK_EQUAL(1, router.message2_count);
       CHECK_EQUAL(1, router.message4_count);
       CHECK_EQUAL(1, router.message_unknown_count);
     }
 
-    //=========================================================================
+    //*************************************************************************
+    TEST(message_producer)
+    {
+      Router2 router;
+      etl::message_producer producer(ROUTER3);
+
+      // CHECK(!producer.is_null_router());
+      CHECK(producer.is_producer());
+      CHECK(!producer.is_consumer());
+
+      CHECK_EQUAL(0, router.sender_id);
+
+      // Send from the producer.
+      etl::send_message(producer, router, message1);
+      CHECK_EQUAL(1, router.message1_count);
+      CHECK_EQUAL(0, router.message2_count);
+      CHECK_EQUAL(0, router.message4_count);
+      CHECK_EQUAL(0, router.message_unknown_count);
+      CHECK_EQUAL(ROUTER3, router.sender_id);
+
+      etl::send_message(producer, router, message2);
+      CHECK_EQUAL(1, router.message1_count);
+      CHECK_EQUAL(1, router.message2_count);
+      CHECK_EQUAL(0, router.message4_count);
+      CHECK_EQUAL(0, router.message_unknown_count);
+      CHECK_EQUAL(ROUTER3, router.sender_id);
+
+      etl::send_message(producer, router, message3);
+      CHECK_EQUAL(1, router.message1_count);
+      CHECK_EQUAL(1, router.message2_count);
+      CHECK_EQUAL(0, router.message4_count);
+      CHECK_EQUAL(1, router.message_unknown_count);
+      CHECK_EQUAL(0, router.sender_id);
+
+      etl::send_message(producer, router, message4);
+      CHECK_EQUAL(1, router.message1_count);
+      CHECK_EQUAL(1, router.message2_count);
+      CHECK_EQUAL(1, router.message4_count);
+      CHECK_EQUAL(1, router.message_unknown_count);
+      CHECK_EQUAL(ROUTER3, router.sender_id);
+
+      // Send to the producer.
+      etl::send_message(router, producer, message1);
+      CHECK_EQUAL(1, router.message1_count);
+      CHECK_EQUAL(1, router.message2_count);
+      CHECK_EQUAL(1, router.message4_count);
+      CHECK_EQUAL(1, router.message_unknown_count);
+
+      etl::send_message(router, producer, message2);
+      CHECK_EQUAL(1, router.message1_count);
+      CHECK_EQUAL(1, router.message2_count);
+      CHECK_EQUAL(1, router.message4_count);
+      CHECK_EQUAL(1, router.message_unknown_count);
+
+      etl::send_message(router, producer, message3);
+      CHECK_EQUAL(1, router.message1_count);
+      CHECK_EQUAL(1, router.message2_count);
+      CHECK_EQUAL(1, router.message4_count);
+      CHECK_EQUAL(1, router.message_unknown_count);
+
+      etl::send_message(router, producer, message4);
+      CHECK_EQUAL(1, router.message1_count);
+      CHECK_EQUAL(1, router.message2_count);
+      CHECK_EQUAL(1, router.message4_count);
+      CHECK_EQUAL(1, router.message_unknown_count);
+    }
+
+    //*************************************************************************
     TEST(message_router_accepts)
     {
       Router2 r2;
@@ -350,7 +431,7 @@ namespace
       CHECK(r2.accepts(message5.message_id));
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_router_queue)
     {
       Router1 r1;
@@ -418,7 +499,7 @@ namespace
       queue.pop();
     }
 
-    //=========================================================================
+    //*************************************************************************
     TEST(message_router_successor)
     {
       Router1 r1;

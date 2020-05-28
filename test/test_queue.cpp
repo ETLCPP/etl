@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -26,11 +26,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include <queue>
 
 #include "etl/queue.h"
+#include "data.h"
 
 namespace
 {
@@ -73,6 +74,8 @@ namespace
     char* p;
   };
 
+  using ItemM = TestDataM<int>;
+
   SUITE(test_queue)
   {
     //*************************************************************************
@@ -92,6 +95,39 @@ namespace
       while (!queue.empty())
       {
         CHECK_EQUAL(queue.front(), queue2.front());
+        queue.pop();
+        queue2.pop();
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_move_constructor)
+    {
+      etl::queue<ItemM, 4> queue;
+
+      ItemM p1(1);
+      ItemM p2(2);
+      ItemM p3(3);
+      ItemM p4(4);
+
+      queue.push(std::move(p1));
+      queue.push(std::move(p2));
+      queue.push(std::move(p3));
+      queue.push(std::move(p4));
+
+      CHECK(!bool(p1));
+      CHECK(!bool(p2));
+      CHECK(!bool(p3));
+      CHECK(!bool(p4));
+
+      etl::queue<ItemM, 4> queue2(std::move(queue));
+
+      CHECK(queue.size() == queue2.size());
+
+      while (!queue.empty())
+      {
+        CHECK(!bool(queue.front())); // Queue1 entry is invalid.
+        CHECK(bool(queue2.front())); // Queue2 value is valid.
         queue.pop();
         queue2.pop();
       }

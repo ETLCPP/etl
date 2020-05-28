@@ -31,7 +31,6 @@ SOFTWARE.
 #ifndef ETL_INTEGRAL_LIMITS_INCLUDED
 #define ETL_INTEGRAL_LIMITS_INCLUDED
 
-#include <limits.h>
 #include <stddef.h>
 
 #include "platform.h"

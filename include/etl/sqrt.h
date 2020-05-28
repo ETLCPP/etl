@@ -49,11 +49,15 @@ namespace etl
                                       etl::constant<intmax_t, I - 1>,
                                       etl::sqrt<VALUE, I + 1> >::type type;
 
-    enum value_type
+#if ETL_CPP11_SUPPORTED
+    static constexpr size_t value = type::value;
+#else
+    enum
     {
       // Recursive definition.
       value = type::value
     };
+#endif
   };
 }
 

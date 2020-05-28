@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove, Mark Kitson
 
@@ -37,17 +37,14 @@ SOFTWARE.
 #include <new>
 
 #include "platform.h"
-
-#include "stl/algorithm.h"
-
+#include "algorithm.h"
+#include "utility.h"
 #include "container.h"
 #include "alignment.h"
 #include "array.h"
 #include "exception.h"
 #include "error_handler.h"
 #include "debug_count.h"
-#include "type_traits.h"
-#include "parameter_type.h"
 #include "type_traits.h"
 
 #undef ETL_FILE
@@ -231,13 +228,15 @@ namespace etl
     typedef T                     value_type;      ///< The type stored in the stack.
     typedef T&                    reference;       ///< A reference to the type used in the stack.
     typedef const T&              const_reference; ///< A const reference to the type used in the stack.
+#if ETL_CPP11_SUPPORTED
+    typedef T&&                   rvalue_reference;///< An rvalue reference to the type used in the stack.
+#endif
     typedef T*                    pointer;         ///< A pointer to the type used in the stack.
     typedef const T*              const_pointer;   ///< A const pointer to the type used in the stack.
     typedef stack_base::size_type size_type;       ///< The type used for determining the size of the stack.
 
   private:
 
-    typedef typename etl::parameter_type<T>::type parameter_t;
     typedef typename etl::stack_base              base_t;
 
   public:
@@ -256,7 +255,7 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
     ///\param value The value to push to the stack.
     //*************************************************************************
-    void push(parameter_t value)
+    void push(const_reference value)
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!full(), ETL_ERROR(stack_full));
@@ -265,7 +264,23 @@ namespace etl
       ::new (&p_buffer[top_index]) T(value);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Adds a value to the stack.
+    /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
+    ///\param value The value to push to the stack.
+    //*************************************************************************
+    void push(rvalue_reference value)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(stack_full));
+#endif
+      base_t::add_in();
+      ::new (&p_buffer[top_index]) T(etl::move(value));
+    }
+#endif
+
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT
     //*************************************************************************
     /// Constructs a value in the stack place'.
     /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
@@ -278,7 +293,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(stack_full));
 #endif
       base_t::add_in();
-      ::new (&p_buffer[top_index]) T(ETL_STD::forward<Args>(args)...);
+      ::new (&p_buffer[top_index]) T(etl::forward<Args>(args)...);
     }
 #else
     //*************************************************************************
@@ -408,7 +423,7 @@ namespace etl
     //*************************************************************************
     void reverse()
     {
-      ETL_STD::reverse(p_buffer, p_buffer + current_size);
+      etl::reverse(p_buffer, p_buffer + current_size);
     }
 
     //*************************************************************************
@@ -425,6 +440,22 @@ namespace etl
       return *this;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    istack& operator = (istack&& rhs)
+    {
+      if (&rhs != this)
+      {
+        clear();
+        clone(etl::move(rhs));
+      }
+
+      return *this;
+    }
+#endif
+
   protected:
 
     //*************************************************************************
@@ -439,6 +470,21 @@ namespace etl
         push(other.p_buffer[index++]);
       }
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Make this a clone of the supplied stack
+    //*************************************************************************
+    void clone(istack&& other)
+    {
+      size_t index = 0;
+
+      for (size_t i = 0; i < other.size(); ++i)
+      {
+        push(etl::move(other.p_buffer[index++]));
+      }
+    }
+#endif
 
     //*************************************************************************
     /// The constructor that is called from derived classes.
@@ -503,6 +549,17 @@ namespace etl
       etl::istack<T>::clone(rhs);
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Copy constructor
+    //*************************************************************************
+    stack(stack&& rhs)
+      : etl::istack<T>(reinterpret_cast<T*>(&buffer[0]), SIZE)
+    {
+      etl::istack<T>::clone(etl::move(rhs));
+    }
+#endif
+
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
@@ -523,6 +580,21 @@ namespace etl
 
       return *this;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    stack& operator = (stack&& rhs)
+    {
+      if (&rhs != this)
+      {
+        etl::istack<T>::clone(etl::move(rhs));
+      }
+
+      return *this;
+    }
+#endif
 
   private:
 

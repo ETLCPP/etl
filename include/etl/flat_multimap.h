@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2015 jwellbelove
 
@@ -36,8 +36,9 @@ SOFTWARE.
 #include "platform.h"
 #include "reference_flat_multimap.h"
 #include "pool.h"
+#include "utility.h"
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>
 #endif
 
@@ -46,7 +47,7 @@ SOFTWARE.
 
 //*****************************************************************************
 ///\defgroup flat_multimap flat_multimap
-/// A flat_multimapmap with the capacity defined at compile time.
+/// A flat_multimap with the capacity defined at compile time.
 /// Has insertion of O(N) and find of O(logN)
 /// Duplicate entries and not allowed.
 ///\ingroup containers
@@ -59,12 +60,12 @@ namespace etl
   /// Can be used as a reference type for all flat_multimaps containing a specific type.
   ///\ingroup flat_multimap
   //***************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare = ETL_STD::less<TKey> >
+  template <typename TKey, typename TMapped, typename TKeyCompare = etl::less<TKey> >
   class iflat_multimap : public etl::ireference_flat_multimap<TKey, TMapped, TKeyCompare>
   {
   public:
 
-    typedef ETL_PAIR<const TKey, TMapped> value_type;
+    typedef ETL_OR_STD::pair<const TKey, TMapped> value_type;
 
   private:
 
@@ -79,6 +80,9 @@ namespace etl
     typedef TKeyCompare       key_compare;
     typedef value_type&       reference;
     typedef const value_type& const_reference;
+#if ETL_CPP11_SUPPORTED
+    typedef value_type&&      rvalue_reference;
+#endif
     typedef value_type*       pointer;
     typedef const value_type* const_pointer;
     typedef size_t            size_type;
@@ -86,13 +90,13 @@ namespace etl
     typedef typename refmap_t::iterator       iterator;
     typedef typename refmap_t::const_iterator const_iterator;
 
-    typedef ETL_STD::reverse_iterator<iterator>       reverse_iterator;
-    typedef ETL_STD::reverse_iterator<const_iterator> const_reverse_iterator;
-    typedef typename ETL_STD::iterator_traits<iterator>::difference_type difference_type;
+    typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
   protected:
 
-    typedef typename etl::parameter_type<TKey>::type key_parameter_t;
+    typedef const key_type& key_parameter_t;
 
   private:
 
@@ -237,7 +241,7 @@ namespace etl
     void assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
-      difference_type d = ETL_STD::distance(first, last);
+      difference_type d = etl::distance(first, last);
       ETL_ASSERT(d <= difference_type(capacity()), ETL_ERROR(flat_multimap_full));
 #endif
 
@@ -254,11 +258,11 @@ namespace etl
     /// If asserts or exceptions are enabled, emits flat_multimap_full if the flat_multimap is already full.
     ///\param value    The value to insert.
     //*********************************************************************
-    ETL_PAIR<iterator, bool> insert(const value_type& value)
+    ETL_OR_STD::pair<iterator, bool> insert(const value_type& value)
     {
       ETL_ASSERT(!refmap_t::full(), ETL_ERROR(flat_multimap_full));
 
-      ETL_PAIR<iterator, bool> result(end(), false);
+      ETL_OR_STD::pair<iterator, bool> result(end(), false);
 
       iterator i_element = lower_bound(value.first);
 
@@ -270,9 +274,32 @@ namespace etl
       return result;
     }
 
+#if ETL_CPP11_SUPPORTED
     //*********************************************************************
-    /// Inserts a value to the flast_multi.
-    /// If asserts or exceptions are enabled, emits flat_multimap_full if the flat_map is already full.
+    /// Inserts a value to the flat_multimap.
+    /// If asserts or exceptions are enabled, emits flat_multimap_full if the flat_multimap is already full.
+    ///\param value    The value to insert.
+    //*********************************************************************
+    ETL_OR_STD::pair<iterator, bool> insert(rvalue_reference value)
+    {
+      ETL_ASSERT(!refmap_t::full(), ETL_ERROR(flat_multimap_full));
+
+      ETL_OR_STD::pair<iterator, bool> result(end(), false);
+
+      iterator i_element = lower_bound(value.first);
+
+      value_type* pvalue = storage.allocate<value_type>();
+      ::new (pvalue) value_type(etl::move(value));
+      ETL_INCREMENT_DEBUG_COUNT
+      result = refmap_t::insert_at(i_element, *pvalue);
+
+      return result;
+    }
+#endif
+
+    //*********************************************************************
+    /// Inserts a value to the flat_multimap.
+    /// If asserts or exceptions are enabled, emits flat_multimap_full if the flat_multimap_full is already full.
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -280,6 +307,19 @@ namespace etl
     {
       return insert(value).first;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    /// Moves a value to the flat_multimap.
+    /// If asserts or exceptions are enabled, emits flat_multimap_full if the flat_multimap_full is already full.
+    ///\param position The position to insert at.
+    ///\param value    The value to insert.
+    //*********************************************************************
+    iterator insert(iterator position, rvalue_reference value)
+    {
+      return insert(etl::move(value)).first;
+    }
+#endif
 
     //*********************************************************************
     /// Inserts a range of values to the flat_multimap.
@@ -300,7 +340,7 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the map.
     //*************************************************************************
-    ETL_PAIR<iterator, bool> emplace(const value_type& value)
+    ETL_OR_STD::pair<iterator, bool> emplace(const value_type& value)
     {
       return insert(value);
     }
@@ -308,7 +348,7 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the map.
     //*************************************************************************
-    ETL_PAIR<iterator, bool> emplace(const key_type& key, const mapped_type& value)
+    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, const mapped_type& value)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_multimap_full));
 
@@ -322,19 +362,19 @@ namespace etl
       return refmap_t::insert_at(i_element, *pvalue);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT
     //*************************************************************************
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename ... Args>
-    ETL_PAIR<iterator, bool> emplace(const key_type& key, Args && ... args)
+    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, Args && ... args)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_multimap_full));
 
       // Create it.
       value_type* pvalue = storage.allocate<value_type>();
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
-      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(ETL_STD::forward<Args>(args)...);
+      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(etl::forward<Args>(args)...);
       iterator i_element = lower_bound(key);
       ETL_INCREMENT_DEBUG_COUNT
 
@@ -346,7 +386,7 @@ namespace etl
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename T1>
-    ETL_PAIR<iterator, bool> emplace(const key_type& key, const T1& value1)
+    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, const T1& value1)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_multimap_full));
 
@@ -364,7 +404,7 @@ namespace etl
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename T1, typename T2>
-    ETL_PAIR<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2)
+    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_multimap_full));
 
@@ -382,7 +422,7 @@ namespace etl
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename T1, typename T2, typename T3>
-    ETL_PAIR<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3)
+    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_multimap_full));
 
@@ -400,7 +440,7 @@ namespace etl
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
-    ETL_PAIR<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_multimap_full));
 
@@ -423,7 +463,7 @@ namespace etl
     //*********************************************************************
     size_t erase(key_parameter_t key)
     {
-      ETL_PAIR<iterator, iterator> range = equal_range(key);
+      ETL_OR_STD::pair<iterator, iterator> range = equal_range(key);
 
       if (range.first == end())
       {
@@ -431,7 +471,7 @@ namespace etl
       }
       else
       {
-        size_t d = ETL_STD::distance(range.first, range.second);
+        size_t d = etl::distance(range.first, range.second);
         erase(range.first, range.second);
         return d;
       }
@@ -571,7 +611,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    ETL_PAIR<iterator, iterator> equal_range(key_parameter_t key)
+    ETL_OR_STD::pair<iterator, iterator> equal_range(key_parameter_t key)
     {
       return refmap_t::equal_range(key);
     }
@@ -581,7 +621,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    ETL_PAIR<const_iterator, const_iterator> equal_range(key_parameter_t key) const
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(key_parameter_t key) const
     {
       return refmap_t::equal_range(key);
     }
@@ -598,6 +638,18 @@ namespace etl
 
       return *this;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    iflat_multimap& operator = (iflat_multimap&& rhs)
+    {
+      move_container(etl::move(rhs));
+
+      return *this;
+    }
+#endif
 
     //*************************************************************************
     /// Gets the current size of the flat_multiset.
@@ -664,6 +716,29 @@ namespace etl
     {
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move a flat_multimap.
+    /// Assumes the rhs is initialised and empty.
+    //*************************************************************************
+    void move_container(iflat_multimap&& rhs)
+    {
+      if (&rhs != this)
+      {
+        this->clear();
+
+        etl::iflat_multimap<TKey, TMapped, TKeyCompare>::iterator first = rhs.begin();
+        etl::iflat_multimap<TKey, TMapped, TKeyCompare>::iterator last = rhs.end();
+
+        // Add all of the elements.
+        while (first != last)
+        {
+          this->insert(etl::move(*first++));
+        }
+      }
+    }
+#endif
+
   private:
 
     // Disable copy construction.
@@ -700,7 +775,7 @@ namespace etl
   template <typename TKey, typename TMapped, typename TKeyCompare>
   bool operator ==(const etl::iflat_multimap<TKey, TMapped, TKeyCompare>& lhs, const etl::iflat_multimap<TKey, TMapped, TKeyCompare>& rhs)
   {
-    return (lhs.size() == rhs.size()) && ETL_STD::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //***************************************************************************
@@ -720,11 +795,11 @@ namespace etl
   /// A flat_multimap implementation that uses a fixed size buffer.
   ///\tparam TKey     The key type.
   ///\tparam TValue   The value type.
-  ///\tparam TCompare The type to compare keys. Default = ETL_STD::less<TKey>
+  ///\tparam TCompare The type to compare keys. Default = etl::less<TKey>
   ///\tparam MAX_SIZE_ The maximum number of elements that can be stored.
   ///\ingroup flat_multimap
   //***************************************************************************
-  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename TCompare = ETL_STD::less<TKey> >
+  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename TCompare = etl::less<TKey> >
   class flat_multimap : public etl::iflat_multimap<TKey, TValue, TCompare>
   {
   public:
@@ -748,6 +823,20 @@ namespace etl
       this->assign(other.cbegin(), other.cend());
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move constructor.
+    //*************************************************************************
+    flat_multimap(flat_multimap&& other)
+      : etl::iflat_multimap<TKey, TValue, TCompare>(lookup, storage)
+    {
+      if (&other != this)
+      {
+        this->move_container(etl::move(other));
+      }
+    }
+#endif
+
     //*************************************************************************
     /// Constructor, from an iterator range.
     ///\tparam TIterator The iterator type.
@@ -761,7 +850,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
@@ -792,6 +881,21 @@ namespace etl
 
       return *this;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    flat_multimap& operator = (flat_multimap&& rhs)
+    {
+      if (&rhs != this)
+      {
+        this->move_container(etl::move(rhs));
+      }
+
+      return *this;
+    }
+#endif
 
   private:
 

@@ -43,7 +43,7 @@ SOFTWARE.
 #include "static_assert.h"
 #include "type_traits.h"
 
-#include "stl/algorithm.h"
+#include "algorithm.h"
 
 namespace etl
 {
@@ -257,7 +257,9 @@ namespace etl
     //*************************************************************************
     void swap(cyclic_value<T, FIRST, LAST>& other)
     {
-      ETL_STD::swap(value, other.value);
+      using ETL_OR_STD::swap; // Allow ADL
+
+      swap(value, other.value);
     }
 
     //*************************************************************************
@@ -531,9 +533,11 @@ namespace etl
     //*************************************************************************
     void swap(cyclic_value<T, FIRST, LAST>& other)
     {
-      ETL_STD::swap(first_value, other.first_value);
-      ETL_STD::swap(last_value, other.last_value);
-      ETL_STD::swap(value, other.value);
+      using ETL_OR_STD::swap; // Allow ADL
+
+      swap(first_value, other.first_value);
+      swap(last_value, other.last_value);
+      swap(value, other.value);
     }
 
     //*************************************************************************

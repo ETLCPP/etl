@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2016 jwellbelove
 
@@ -39,8 +39,8 @@ SOFTWARE.
 #include "exception.h"
 #include "error_handler.h"
 
-#include "stl/utility.h"
-#include "stl/algorithm.h"
+#include "utility.h"
+#include "algorithm.h"
 
 #undef ETL_FILE
 #define ETL_FILE "22"
@@ -97,12 +97,12 @@ namespace etl
 
     void clear()
     {
-      etl_next = nullptr;
+      etl_next = ETL_NULLPTR;
     }
 
     bool is_linked() const
     {
-      return etl_next != nullptr;
+      return etl_next != ETL_NULLPTR;
     }
 
     forward_link* etl_next;
@@ -130,7 +130,7 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
   link(TLink* lhs, TLink* rhs)
   {
-    if (lhs != nullptr)
+    if (lhs != ETL_NULLPTR)
     {
       lhs->etl_next = rhs;
     }
@@ -141,9 +141,9 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
   link_splice(TLink* lhs, TLink* rhs)
   {
-    if (lhs != nullptr)
+    if (lhs != ETL_NULLPTR)
     {
-      if (rhs != nullptr)
+      if (rhs != ETL_NULLPTR)
       {
           rhs->etl_next = lhs->etl_next;
       }
@@ -165,7 +165,7 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
   link_splice(TLink& lhs, TLink* rhs)
   {
-    if (rhs != nullptr)
+    if (rhs != ETL_NULLPTR)
     {
       rhs->etl_next = lhs.etl_next;
     }
@@ -178,7 +178,7 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
   link(TLink* lhs, TLink& rhs)
   {
-    if (lhs != nullptr)
+    if (lhs != ETL_NULLPTR)
     {
       lhs->etl_next = &rhs;
     }
@@ -189,7 +189,7 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
   link_splice(TLink* lhs, TLink& rhs)
   {
-    if (lhs != nullptr)
+    if (lhs != ETL_NULLPTR)
     {
       rhs.etl_next  = lhs->etl_next;
       lhs->etl_next = &rhs;
@@ -210,14 +210,14 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
   link_splice(TLink* lhs, TLink& first, TLink& last)
   {
-    if (lhs != nullptr)
+    if (lhs != ETL_NULLPTR)
     {
       last.etl_next = lhs->etl_next;
       lhs->etl_next  = &first;
     }
     else
     {
-      last.etl_next = nullptr;
+      last.etl_next = ETL_NULLPTR;
     }
   }
 
@@ -226,7 +226,7 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
   unlink_after(TLink& node)
   {
-    if (node.etl_next != nullptr)
+    if (node.etl_next != ETL_NULLPTR)
     {
       TLink* unlinked_node = node.etl_next;
       node.etl_next = unlinked_node->etl_next;
@@ -254,18 +254,20 @@ namespace etl
 
     void clear()
     {
-      etl_previous = nullptr;
-      etl_next     = nullptr;
+      etl_previous = ETL_NULLPTR;
+      etl_next     = ETL_NULLPTR;
     }
 
     bool is_linked() const
     {
-      return (etl_previous != nullptr) || (etl_next != nullptr);
+      return (etl_previous != ETL_NULLPTR) || (etl_next != ETL_NULLPTR);
     }
 
     void reverse()
     {
-      ETL_STD::swap(etl_previous, etl_next);
+      using ETL_OR_STD::swap; // Allow ADL
+
+      swap(etl_previous, etl_next);
     }
 
     bidirectional_link* etl_previous;
@@ -274,13 +276,13 @@ namespace etl
     void unlink()
     {
         // Connect the previous link with the next.
-        if (etl_previous != nullptr)
+        if (etl_previous != ETL_NULLPTR)
         {
           etl_previous->etl_next = etl_next;
         }
 
         // Connect the next link with the previous.
-        if (etl_next != nullptr)
+        if (etl_next != ETL_NULLPTR)
         {
           etl_next->etl_previous = etl_previous;
         }
@@ -304,7 +306,7 @@ namespace etl
     rhs.etl_next     = lhs.etl_next;
     rhs.etl_previous = &lhs;
 
-    if (lhs.etl_next != nullptr)
+    if (lhs.etl_next != ETL_NULLPTR)
     {
       lhs.etl_next->etl_previous = &rhs;
     }
@@ -317,12 +319,12 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
   link(TLink* lhs, TLink* rhs)
   {
-    if (lhs != nullptr)
+    if (lhs != ETL_NULLPTR)
     {
       lhs->etl_next = rhs;
     }
 
-    if (rhs != nullptr)
+    if (rhs != ETL_NULLPTR)
     {
       rhs->etl_previous = lhs;
     }
@@ -333,9 +335,9 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
   link_splice(TLink* lhs, TLink* rhs)
   {
-    if (rhs != nullptr)
+    if (rhs != ETL_NULLPTR)
     {
-      if (lhs != nullptr)
+      if (lhs != ETL_NULLPTR)
       {
         rhs->etl_next = lhs->etl_next;
       }
@@ -343,9 +345,9 @@ namespace etl
       rhs->etl_previous = lhs;
     }
 
-    if (lhs != nullptr)
+    if (lhs != ETL_NULLPTR)
     {
-      if (lhs->etl_next != nullptr)
+      if (lhs->etl_next != ETL_NULLPTR)
       {
         lhs->etl_next->etl_previous = rhs;
       }
@@ -361,7 +363,7 @@ namespace etl
   {
     lhs.etl_next = rhs;
 
-    if (rhs != nullptr)
+    if (rhs != ETL_NULLPTR)
     {
       rhs->etl_previous = &lhs;
     }
@@ -372,13 +374,13 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
   link_splice(TLink& lhs, TLink* rhs)
   {
-    if (rhs != nullptr)
+    if (rhs != ETL_NULLPTR)
     {
       rhs->etl_next     = lhs.etl_next;
       rhs->etl_previous = &lhs;
     }
 
-    if (lhs.etl_next != nullptr)
+    if (lhs.etl_next != ETL_NULLPTR)
     {
       lhs.etl_next->etl_previous = rhs;
     }
@@ -391,7 +393,7 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
   link(TLink* lhs, TLink& rhs)
   {
-    if (lhs != nullptr)
+    if (lhs != ETL_NULLPTR)
     {
       lhs->etl_next = &rhs;
     }
@@ -404,16 +406,16 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
   link_splice(TLink* lhs, TLink& rhs)
   {
-    if (lhs != nullptr)
+    if (lhs != ETL_NULLPTR)
     {
       rhs.etl_next = lhs->etl_next;
     }
 
     rhs.etl_previous = lhs;
 
-    if (lhs != nullptr)
+    if (lhs != ETL_NULLPTR)
     {
-      if (lhs->etl_next != nullptr)
+      if (lhs->etl_next != ETL_NULLPTR)
       {
         lhs->etl_next->etl_previous = &rhs;
       }
@@ -430,7 +432,7 @@ namespace etl
     last.etl_next = lhs.etl_next;
     first.etl_previous = &lhs;
 
-    if (last.etl_next != nullptr)
+    if (last.etl_next != ETL_NULLPTR)
     {
       last.etl_next->etl_previous = &last;
     }
@@ -443,23 +445,23 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
   link_splice(TLink* lhs, TLink& first, TLink& last)
   {
-    if (lhs != nullptr)
+    if (lhs != ETL_NULLPTR)
     {
       last.etl_next = lhs->etl_next;
     }
     else
     {
-      last.etl_next = nullptr;
+      last.etl_next = ETL_NULLPTR;
     }
 
     first.etl_previous = lhs;
 
-    if (last.etl_next != nullptr)
+    if (last.etl_next != ETL_NULLPTR)
     {
       last.etl_next->etl_previous = &last;
     }
 
-    if (lhs != nullptr)
+    if (lhs != ETL_NULLPTR)
     {
       lhs->etl_next = &first;
     }
@@ -484,12 +486,12 @@ namespace etl
     }
     else
     {
-      if (last.etl_next != nullptr)
+      if (last.etl_next != ETL_NULLPTR)
       {
         last.etl_next->etl_previous = first.etl_previous;
       }
 
-      if (first.etl_previous != nullptr)
+      if (first.etl_previous != ETL_NULLPTR)
       {
         first.etl_previous->etl_next = last.etl_next;
       }
@@ -509,14 +511,14 @@ namespace etl
 
       void clear()
       {
-        etl_parent = nullptr;
-        etl_left   = nullptr;
-        etl_right  = nullptr;
+        etl_parent = ETL_NULLPTR;
+        etl_left   = ETL_NULLPTR;
+        etl_right  = ETL_NULLPTR;
       }
 
       bool is_linked() const
       {
-        return (etl_parent != nullptr) || (etl_left != nullptr) || (etl_right != nullptr);
+        return (etl_parent != ETL_NULLPTR) || (etl_left != ETL_NULLPTR) || (etl_right != ETL_NULLPTR);
       }
 
       tree_link* etl_parent;
@@ -546,12 +548,12 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_left(TLink* parent, TLink* leaf)
   {
-    if (parent != nullptr)
+    if (parent != ETL_NULLPTR)
     {
       parent->etl_left = leaf;
     }
 
-    if (leaf != nullptr)
+    if (leaf != ETL_NULLPTR)
     {
       leaf->etl_parent = parent;
     }
@@ -561,12 +563,12 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_right(TLink* parent, TLink* leaf)
   {
-    if (parent != nullptr)
+    if (parent != ETL_NULLPTR)
     {
       parent->etl_right = leaf;
     }
 
-    if (leaf != nullptr)
+    if (leaf != ETL_NULLPTR)
     {
       leaf->etl_parent = parent;
     }
@@ -579,7 +581,7 @@ namespace etl
   {
     parent.etl_left = leaf;
 
-    if (leaf != nullptr)
+    if (leaf != ETL_NULLPTR)
     {
       leaf->etl_parent = &parent;
     }
@@ -591,7 +593,7 @@ namespace etl
   {
     parent.etl_right = leaf;
 
-    if (leaf != nullptr)
+    if (leaf != ETL_NULLPTR)
     {
       leaf->etl_parent = &parent;
     }
@@ -602,7 +604,7 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_left(TLink* parent, TLink& leaf)
   {
-    if (parent != nullptr)
+    if (parent != ETL_NULLPTR)
     {
       parent->etl_left = &leaf;
     }
@@ -614,7 +616,7 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_right(TLink* parent, TLink& leaf)
   {
-    if (parent != nullptr)
+    if (parent != ETL_NULLPTR)
     {
       parent->etl_right = &leaf;
     }
@@ -629,7 +631,7 @@ namespace etl
   {
      parent.etl_right = leaf.etl_left;
 
-     if (parent.etl_right != nullptr)
+     if (parent.etl_right != ETL_NULLPTR)
      {
        parent.etl_right->etl_parent = &parent;
      }
@@ -645,7 +647,7 @@ namespace etl
   {
      parent.etl_left = leaf.etl_right;
 
-     if (parent.etl_left != nullptr)
+     if (parent.etl_left != ETL_NULLPTR)
      {
        parent.etl_left->etl_parent = &parent;
      }
@@ -660,7 +662,7 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_rotate_left(TLink* parent, TLink* leaf)
   {
-    if ((parent != nullptr) && (leaf != nullptr))
+    if ((parent != ETL_NULLPTR) && (leaf != ETL_NULLPTR))
     {
       link_rotate_left(*parent, *leaf);
     }
@@ -670,7 +672,7 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_rotate_right(TLink* parent, TLink* leaf)
   {
-    if ((parent != nullptr) && (leaf != nullptr))
+    if ((parent != ETL_NULLPTR) && (leaf != ETL_NULLPTR))
     {
       link_rotate_right(*parent, *leaf);
     }
@@ -681,7 +683,7 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_rotate_left(TLink& parent, TLink* leaf)
   {
-    if (leaf != nullptr)
+    if (leaf != ETL_NULLPTR)
     {
       link_rotate_left(parent, *leaf);
     }
@@ -691,7 +693,7 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_rotate_right(TLink& parent, TLink* leaf)
   {
-    if (leaf != nullptr)
+    if (leaf != ETL_NULLPTR)
     {
       link_rotate_right(parent, *leaf);
     }
@@ -702,7 +704,7 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_rotate_left(TLink* parent, TLink& leaf)
   {
-    if (parent != nullptr)
+    if (parent != ETL_NULLPTR)
     {
       link_rotate_left(*parent, leaf);
     }
@@ -712,7 +714,7 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_rotate_right(TLink* parent, TLink& leaf)
   {
-    if (parent != nullptr)
+    if (parent != ETL_NULLPTR)
     {
       link_rotate_right(*parent, leaf);
     }
@@ -740,7 +742,7 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_rotate(TLink* parent, TLink* leaf)
   {
-    if ((parent != nullptr) && (leaf != nullptr))
+    if ((parent != ETL_NULLPTR) && (leaf != ETL_NULLPTR))
     {
       if (parent->etl_left == leaf)
       {
@@ -759,7 +761,7 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_rotate(TLink& parent, TLink* leaf)
   {
-    if (leaf != nullptr)
+    if (leaf != ETL_NULLPTR)
     {
       if (parent.etl_left == leaf)
       {
@@ -778,7 +780,7 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
   link_rotate(TLink* parent, TLink& leaf)
   {
-    if (parent != nullptr)
+    if (parent != ETL_NULLPTR)
     {
       if (parent->etl_left == &leaf)
       {

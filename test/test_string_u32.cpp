@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include <string>
 #include <array>
@@ -340,7 +340,7 @@ namespace
       CHECK(text2.truncated());
     }
 
-#if !defined(ETL_NO_STL)
+#if ETL_USING_STL
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_construct_initializer_list)
     {
@@ -3595,7 +3595,7 @@ namespace
 
       char buffer[sizeof(Text)];
 
-      memcpy(&buffer, &text, sizeof(text));
+      memcpy(&buffer, (const void*)&text, sizeof(text));
 
       Text& rtext(*reinterpret_cast<Text*>(buffer));
       rtext.repair();
@@ -3620,7 +3620,7 @@ namespace
 
       char buffer[sizeof(Text)];
 
-      memcpy(&buffer, &text, sizeof(text));
+      memcpy(&buffer, (const void*)&text, sizeof(text));
 
       IText& itext(*reinterpret_cast<IText*>(buffer));
       itext.repair();
@@ -3733,7 +3733,6 @@ namespace
       text.set_secure();
       text.assign(STR("ABCDEF"));
 
-      Text::pointer pb = text.begin();
       Text::pointer pe = text.end();
 
       text.assign(STR("ABC"));

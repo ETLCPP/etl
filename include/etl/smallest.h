@@ -82,15 +82,15 @@ namespace etl
 
     // Set 'type' to be the smallest of the first parameter and any of the others.
     // This is recursive.
-    using type = typename etl::conditional<(etl::size_of<T1>() < etl::size_of<smallest_other>()), // Boolean
-                                            T1,                                                   // TrueType
-                                            smallest_other>                                       // FalseType
-                                            ::type;                                               // The smallest type of the two.
+    using type = typename etl::conditional<(etl::size_of<T1>::value < etl::size_of<smallest_other>::value), // Boolean
+                                            T1,                                                             // TrueType
+                                            smallest_other>                                                 // FalseType
+                                            ::type;                                                         // The smallest type of the two.
 
     // The size of the smallest type.
     enum
     {
-      size = etl::size_of<type>()
+      size = etl::size_of<type>::value
     };
   };
 
@@ -106,7 +106,7 @@ namespace etl
 
     enum
     {
-      size = etl::size_of<type>()
+      size = etl::size_of<type>::value
     };
   };
 #else
@@ -342,9 +342,9 @@ namespace etl
   private:
 
     // Determines the index of the best signed type for the required value.
-    static const int TYPE_INDEX = (((VALUE > INT_LEAST8_MAX)  || (VALUE < INT_LEAST8_MIN))  ? 1 : 0) +
-                                  (((VALUE > INT16_MAX) || (VALUE < INT16_MIN)) ? 1 : 0) +
-                                  (((VALUE > INT32_MAX) || (VALUE < INT32_MIN)) ? 1 : 0);
+    static const int TYPE_INDEX = (((VALUE > intmax_t(INT_LEAST8_MAX))  || (VALUE < intmax_t(INT_LEAST8_MIN)))  ? 1 : 0) +
+                                  (((VALUE > intmax_t(INT16_MAX)) || (VALUE < intmax_t(INT16_MIN))) ? 1 : 0) +
+                                  (((VALUE > intmax_t(INT32_MAX)) || (VALUE < intmax_t(INT32_MIN))) ? 1 : 0);
 
   public:
 

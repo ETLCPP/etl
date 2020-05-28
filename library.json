@@ -1,9 +1,9 @@
 {
   "name": "Embedded Template Library",
-  "version": "15.5.0",
+  "version": "18.3.2",
   "authors": {
     "name": "John Wellbelove",
-    "email": "<john.wellbelove@etlcpp.com>"
+    "email": "john.wellbelove@etlcpp.com"
   },
   "homepage": "https://www.etlcpp.com/",
   "license": "MIT",

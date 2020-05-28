@@ -3,20 +3,10 @@ project(etl_unit_tests)
 
 add_definitions(-DETL_DEBUG)
 
-
 if(NOT UnitTest++_FOUND)
   # Add unittest-cpp as an ExternalProject
   include(cmake/unit-test_external_project.cmake)
   add_unittest_cpp()
-else()
-  include(${UnitTest++_CONFIG})
-  # The CMake install of UnitTest++ puts the include directory to ${CMAKE_INSTALL_PREFIX}/include
-  # under the assumptions that clients will consume the headers via
-  # #include<UnitTest++/UnitTest++.h>
-  # However the tests in etl include the headers directly, e.g.
-  # #include "UnitTest++.h"
-  # Therefore we update the provide UTPP_INCLUDE_DIRS here
-  set(UTPP_INCLUDE_DIRS "${UTPP_INCLUDE_DIRS}/UnitTest++")
 endif()
 
 include_directories(${UTPP_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/../include)
@@ -84,10 +74,22 @@ set(TEST_SOURCE_FILES
   test_optional.cpp
   test_packet.cpp
   test_parameter_type.cpp
+  test_parity_checksum.cpp
   test_pearson.cpp
   test_pool.cpp
   test_priority_queue.cpp
   test_queue.cpp
+  test_queue_memory_model_small.cpp
+  test_queue_mpmc_mutex.cpp
+  test_queue_mpmc_mutex_small.cpp
+  test_queue_spsc_isr.cpp
+  test_queue_spsc_isr_small.cpp
+  test_queue_spsc_atomic.cpp
+  test_queue_spsc_atomic_small.cpp
+  test_queue_spsc_isr.cpp
+  test_queue_spsc_isr_small.cpp
+  test_queue_spsc_locked.cpp
+  test_queue_spsc_locked_small.cpp
   test_random.cpp
   test_reference_flat_map.cpp
   test_reference_flat_multimap.cpp
@@ -126,11 +128,6 @@ set(TEST_SOURCE_FILES
   test_forward_list_shared_pool.cpp
   test_list_shared_pool.cpp
   test_multi_array.cpp
-  test_no_stl_algorithm.cpp
-  test_no_stl_functional.cpp
-  test_no_stl_iterator.cpp
-  test_no_stl_limits.cpp
-  test_no_stl_utility.cpp
   test_queue_memory_model_small.cpp
   test_queue_mpmc_mutex.cpp
   test_queue_mpmc_mutex_small.cpp
@@ -140,6 +137,7 @@ set(TEST_SOURCE_FILES
   test_queue_spsc_isr_small.cpp
   test_queue_spsc_locked.cpp
   test_queue_spsc_locked_small.cpp
+  test_parameter_pack
   test_scaled_rounding.cpp
   test_state_chart.cpp
   test_string_view.cpp
@@ -151,16 +149,6 @@ set(TEST_SOURCE_FILES
   test_vector_external_buffer.cpp
   test_vector_pointer_external_buffer.cpp
   )
-
-
-
-if (WIN32)
-  # test_error_handler.cpp uses windows APIs that assume the microsoft project
-  # is setup for unicode support.  Note: This may have adverse effects on client
-  # projects and the tests should be updated to be independent of project setup
-  ADD_DEFINITIONS(-DUNICODE)
-  ADD_DEFINITIONS(-D_UNICODE)
-endif()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   list(APPEND TEST_SOURCE_FILES "test_atomic_gcc_sync.cpp")

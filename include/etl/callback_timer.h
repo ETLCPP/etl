@@ -48,7 +48,7 @@ SOFTWARE.
 #undef ETL_FILE
 #define ETL_FILE "43"
 
-#if defined(ETL_IN_UNIT_TEST) && defined(ETL_NO_STL)
+#if defined(ETL_IN_UNIT_TEST) && ETL_NOT_USING_STL
   #define ETL_DISABLE_TIMER_UPDATES
   #define ETL_ENABLE_TIMER_UPDATES
   #define ETL_TIMER_UPDATES_ENABLED true
@@ -93,9 +93,10 @@ namespace etl
       IFUNCTION,
       DELEGATE
     };
+
     //*******************************************
     callback_timer_data()
-      : p_callback(nullptr),
+      : p_callback(ETL_NULLPTR),
         period(0),
         delta(etl::timer::state::INACTIVE),
         id(etl::timer::id::NO_TIMER),
@@ -146,10 +147,10 @@ namespace etl
     //*******************************************
     /// ETL delegate callback
     //*******************************************
-    callback_timer_data(etl::timer::id::type  id_,
+    callback_timer_data(etl::timer::id::type   id_,
                         etl::delegate<void()>& callback_,
-                        uint32_t              period_,
-                        bool                  repeating_)
+                        uint32_t               period_,
+                        bool                   repeating_)
             : p_callback(reinterpret_cast<void*>(&callback_)),
               period(period_),
               delta(etl::timer::state::INACTIVE),
@@ -538,7 +539,7 @@ namespace etl
 
       for (int i = 0; i < MAX_TIMERS; ++i)
       {
-        new (&timer_array[i]) callback_timer_data();
+        ::new (&timer_array[i]) callback_timer_data();
       }
 
       registered_timers = 0;
@@ -576,7 +577,7 @@ namespace etl
                 active_list.insert(timer.id);
               }
 
-              if (timer.p_callback != nullptr)
+              if (timer.p_callback != ETL_NULLPTR)
               {
                 if (timer.cbk_type == callback_timer_data::C_CALLBACK)
                 {
@@ -591,14 +592,10 @@ namespace etl
 #if ETL_CPP11_SUPPORTED
                 else if(timer.cbk_type == callback_timer_data::DELEGATE)
                 {
-                    // Call the function wrapper callback.
+                    // Call the delegate callback.
                     (*reinterpret_cast<etl::delegate<void()>*>(timer.p_callback))();
                 }
 #endif
-                else
-                {
-                    ETL_ALWAYS_ASSERT("Callback timer has incorrect callback type stored");
-                }
               }
 
               has_active = !active_list.empty();

@@ -35,7 +35,7 @@ SOFTWARE.
 
 #include "platform.h"
 
-#include "stl/utility.h"
+#include "utility.h"
 
 #include "exception.h"
 #include "error_handler.h"

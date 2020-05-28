@@ -13,10 +13,10 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-std=c++14" />
-					<Add option="-std=c++17" />
 					<Add option="-std=c++11" />
 					<Add option="-m32" />
 					<Add option="-g" />
+					<Add option="-std=c++17" />
 					<Add option="-D_DEBUG" />
 					<Add directory="../../src" />
 				</Compiler>
@@ -33,9 +33,11 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-std=c++1z" />
+					<Add option="-std=c++03" />
+					<Add option="-std=c++14" />
 					<Add option="-m32" />
 					<Add option="-g" />
+					<Add option="-std=c++17" />
 					<Add option="-D_DEBUG" />
 					<Add option="-DETL_NO_STL" />
 					<Add directory="../../src" />
@@ -100,6 +102,27 @@
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
+			<Target title="Windows No STL - Force No Advanced">
+				<Option output="bin/Debug No STL/ETL" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-m32" />
+					<Add option="-g" />
+					<Add option="-std=c++1z" />
+					<Add option="-D_DEBUG" />
+					<Add option="-DETL_NO_STL" />
+					<Add option="-DETL_FORCE_NO_ADVANCED_CPP" />
+					<Add directory="../../src" />
+				</Compiler>
+				<Linker>
+					<Add option="-m32" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="${TARGET_OUTPUT_DIR}${TARGET_OUTPUT_BASENAME}" />
+				</ExtraCommands>
+			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wshadow" />
@@ -109,7 +132,7 @@
 			<Add option="-Wstrict-aliasing" />
 			<Add option="-std=c++17" />
 			<Add option="-fexceptions" />
-			<Add directory="../../../unittest-cpp/UnitTest++/" />
+			<Add directory="../../../unittest-cpp/" />
 			<Add directory="../../src" />
 			<Add directory="../" />
 			<Add directory="../../src/c" />
@@ -183,12 +206,14 @@
 			<Option target="Windows" />
 			<Option target="Windows 64" />
 			<Option target="Windows No STL" />
+			<Option target="Windows No STL - Force No Advanced" />
 		</Unit>
 		<Unit filename="../../../unittest-cpp/UnitTest++/Win32/TimeHelpers.h">
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Unit filename="../../../unittest-cpp/UnitTest++/XmlTestReporter.cpp" />
 		<Unit filename="../../../unittest-cpp/UnitTest++/XmlTestReporter.h" />
+		<Unit filename="../../include/etl/absolute.h" />
 		<Unit filename="../../include/etl/algorithm.h" />
 		<Unit filename="../../include/etl/alignment.h" />
 		<Unit filename="../../include/etl/array.h" />
@@ -214,13 +239,24 @@
 		<Unit filename="../../include/etl/constant.h" />
 		<Unit filename="../../include/etl/container.h" />
 		<Unit filename="../../include/etl/crc16.h" />
+		<Unit filename="../../include/etl/crc16_aug_ccitt.h" />
 		<Unit filename="../../include/etl/crc16_ccitt.h" />
+		<Unit filename="../../include/etl/crc16_genibus.h" />
 		<Unit filename="../../include/etl/crc16_kermit.h" />
+		<Unit filename="../../include/etl/crc16_modbus.h" />
+		<Unit filename="../../include/etl/crc16_usb.h" />
+		<Unit filename="../../include/etl/crc16_x25.h" />
+		<Unit filename="../../include/etl/crc16_xmodem.h" />
 		<Unit filename="../../include/etl/crc32.h" />
+		<Unit filename="../../include/etl/crc32_bzip2.h" />
 		<Unit filename="../../include/etl/crc32_c.h" />
+		<Unit filename="../../include/etl/crc32_mpeg2.h" />
+		<Unit filename="../../include/etl/crc32_posix.h" />
 		<Unit filename="../../include/etl/crc64_ecma.h" />
 		<Unit filename="../../include/etl/crc8_ccitt.h" />
+		<Unit filename="../../include/etl/crc8_rohc.h" />
 		<Unit filename="../../include/etl/cstring.h" />
+		<Unit filename="../../include/etl/cumulative_moving_average.h" />
 		<Unit filename="../../include/etl/cyclic_value.h" />
 		<Unit filename="../../include/etl/debounce.h" />
 		<Unit filename="../../include/etl/debug_count.h" />
@@ -250,6 +286,25 @@
 		<Unit filename="../../include/etl/fsm_generator.h" />
 		<Unit filename="../../include/etl/function.h" />
 		<Unit filename="../../include/etl/functional.h" />
+		<Unit filename="../../include/etl/generators/fsm_generator.h" />
+		<Unit filename="../../include/etl/generators/generate.bat" />
+		<Unit filename="../../include/etl/generators/generate_fsm.bat" />
+		<Unit filename="../../include/etl/generators/generate_largest.bat" />
+		<Unit filename="../../include/etl/generators/generate_message_packet.bat" />
+		<Unit filename="../../include/etl/generators/generate_message_router.bat" />
+		<Unit filename="../../include/etl/generators/generate_smallest.bat" />
+		<Unit filename="../../include/etl/generators/generate_type_lookup.bat" />
+		<Unit filename="../../include/etl/generators/generate_type_select.bat" />
+		<Unit filename="../../include/etl/generators/generate_type_traits.bat" />
+		<Unit filename="../../include/etl/generators/generate_variant_pool.bat" />
+		<Unit filename="../../include/etl/generators/largest_generator.h" />
+		<Unit filename="../../include/etl/generators/message_packet_generator.h" />
+		<Unit filename="../../include/etl/generators/message_router_generator.h" />
+		<Unit filename="../../include/etl/generators/smallest_generator.h" />
+		<Unit filename="../../include/etl/generators/type_lookup_generator.h" />
+		<Unit filename="../../include/etl/generators/type_select_generator.h" />
+		<Unit filename="../../include/etl/generators/type_traits_generator.h" />
+		<Unit filename="../../include/etl/generators/variant_pool_generator.h" />
 		<Unit filename="../../include/etl/hash.h" />
 		<Unit filename="../../include/etl/icache.h" />
 		<Unit filename="../../include/etl/ihash.h" />
@@ -265,16 +320,17 @@
 		<Unit filename="../../include/etl/iterator.h" />
 		<Unit filename="../../include/etl/jenkins.h" />
 		<Unit filename="../../include/etl/largest.h" />
-		<Unit filename="../../include/etl/largest_generator.h" />
+		<Unit filename="../../include/etl/limits.h" />
 		<Unit filename="../../include/etl/list.h" />
 		<Unit filename="../../include/etl/log.h" />
+		<Unit filename="../../include/etl/macros.h" />
 		<Unit filename="../../include/etl/map.h" />
 		<Unit filename="../../include/etl/math_constants.h" />
 		<Unit filename="../../include/etl/memory.h" />
+		<Unit filename="../../include/etl/memory_model.h" />
 		<Unit filename="../../include/etl/message.h" />
 		<Unit filename="../../include/etl/message_bus.h" />
 		<Unit filename="../../include/etl/message_router.h" />
-		<Unit filename="../../include/etl/message_router_generator.h" />
 		<Unit filename="../../include/etl/message_timer.h" />
 		<Unit filename="../../include/etl/message_types.h" />
 		<Unit filename="../../include/etl/multi_array.h" />
@@ -282,12 +338,18 @@
 		<Unit filename="../../include/etl/multiset.h" />
 		<Unit filename="../../include/etl/murmur3.h" />
 		<Unit filename="../../include/etl/mutex.h" />
+		<Unit filename="../../include/etl/mutex/mutex_arm.h" />
+		<Unit filename="../../include/etl/mutex/mutex_freertos.h" />
+		<Unit filename="../../include/etl/mutex/mutex_gcc_sync.h" />
+		<Unit filename="../../include/etl/mutex/mutex_std.h" />
+		<Unit filename="../../include/etl/negative.h" />
 		<Unit filename="../../include/etl/null_type.h" />
 		<Unit filename="../../include/etl/nullptr.h" />
 		<Unit filename="../../include/etl/numeric.h" />
 		<Unit filename="../../include/etl/observer.h" />
 		<Unit filename="../../include/etl/optional.h" />
 		<Unit filename="../../include/etl/packet.h" />
+		<Unit filename="../../include/etl/parameter_pack.h" />
 		<Unit filename="../../include/etl/parameter_type.h" />
 		<Unit filename="../../include/etl/pearson.h" />
 		<Unit filename="../../include/etl/permutations.h" />
@@ -296,8 +358,6 @@
 		<Unit filename="../../include/etl/power.h" />
 		<Unit filename="../../include/etl/priority_queue.h" />
 		<Unit filename="../../include/etl/private/choose_namespace.h" />
-		<Unit filename="../../include/etl/private/choose_pair_types.h" />
-		<Unit filename="../../include/etl/private/choose_tag_types.h" />
 		<Unit filename="../../include/etl/private/crc16_poly_0x1021_.h" />
 		<Unit filename="../../include/etl/private/crc16_poly_0x8005.h" />
 		<Unit filename="../../include/etl/private/crc32_poly_0x04c11db7.h" />
@@ -310,15 +370,21 @@
 		<Unit filename="../../include/etl/private/ivectorpointer.h" />
 		<Unit filename="../../include/etl/private/minmax_pop.h" />
 		<Unit filename="../../include/etl/private/minmax_push.h" />
+		<Unit filename="../../include/etl/private/move.h" />
 		<Unit filename="../../include/etl/private/pvoidvector.h" />
+		<Unit filename="../../include/etl/private/swap.h" />
 		<Unit filename="../../include/etl/private/to_string_helper.h" />
 		<Unit filename="../../include/etl/private/vector_base.h" />
 		<Unit filename="../../include/etl/profiles/arduino_arm.h" />
 		<Unit filename="../../include/etl/profiles/armv5.h" />
+		<Unit filename="../../include/etl/profiles/armv5_no_stl.h" />
 		<Unit filename="../../include/etl/profiles/armv6.h" />
+		<Unit filename="../../include/etl/profiles/armv6_no_stl.h" />
 		<Unit filename="../../include/etl/profiles/armv7.h" />
 		<Unit filename="../../include/etl/profiles/armv7_no_stl.h" />
+		<Unit filename="../../include/etl/profiles/auto.h" />
 		<Unit filename="../../include/etl/profiles/clang_generic.h" />
+		<Unit filename="../../include/etl/profiles/clang_generic_no_stl.h" />
 		<Unit filename="../../include/etl/profiles/cpp03.h" />
 		<Unit filename="../../include/etl/profiles/cpp03_no_stl.h" />
 		<Unit filename="../../include/etl/profiles/cpp11.h" />
@@ -328,18 +394,26 @@
 		<Unit filename="../../include/etl/profiles/cpp17.h" />
 		<Unit filename="../../include/etl/profiles/cpp17_no_stl.h" />
 		<Unit filename="../../include/etl/profiles/determine_compiler.h" />
+		<Unit filename="../../include/etl/profiles/determine_compiler_language_support.h" />
 		<Unit filename="../../include/etl/profiles/determine_compiler_version.h" />
+		<Unit filename="../../include/etl/profiles/determine_development_os.h" />
 		<Unit filename="../../include/etl/profiles/etl_profile.h" />
 		<Unit filename="../../include/etl/profiles/gcc_generic.h" />
+		<Unit filename="../../include/etl/profiles/gcc_generic_no_stl.h" />
 		<Unit filename="../../include/etl/profiles/gcc_linux_x86.h" />
+		<Unit filename="../../include/etl/profiles/gcc_linux_x86_no_stl.h" />
 		<Unit filename="../../include/etl/profiles/gcc_windows_x86.h" />
+		<Unit filename="../../include/etl/profiles/gcc_windows_x86_no_stl.h" />
 		<Unit filename="../../include/etl/profiles/msvc_x86.h" />
+		<Unit filename="../../include/etl/profiles/msvc_x86_no_stl.h" />
 		<Unit filename="../../include/etl/profiles/segger_gcc_stlport.h" />
 		<Unit filename="../../include/etl/profiles/ticc.h" />
+		<Unit filename="../../include/etl/profiles/ticc_no_stl.h" />
 		<Unit filename="../../include/etl/queue.h" />
 		<Unit filename="../../include/etl/queue_mpmc_mutex.h" />
 		<Unit filename="../../include/etl/queue_spsc_atomic.h" />
 		<Unit filename="../../include/etl/queue_spsc_isr.h" />
+		<Unit filename="../../include/etl/queue_spsc_locked.h" />
 		<Unit filename="../../include/etl/radix.h" />
 		<Unit filename="../../include/etl/random.h" />
 		<Unit filename="../../include/etl/ratio.h" />
@@ -347,10 +421,10 @@
 		<Unit filename="../../include/etl/reference_flat_multimap.h" />
 		<Unit filename="../../include/etl/reference_flat_multiset.h" />
 		<Unit filename="../../include/etl/reference_flat_set.h" />
+		<Unit filename="../../include/etl/scaled_rounding.h" />
 		<Unit filename="../../include/etl/scheduler.h" />
 		<Unit filename="../../include/etl/set.h" />
 		<Unit filename="../../include/etl/smallest.h" />
-		<Unit filename="../../include/etl/smallest_generator.h" />
 		<Unit filename="../../include/etl/spsc_queue.h" />
 		<Unit filename="../../include/etl/spsc_queue_atomic.h" />
 		<Unit filename="../../include/etl/spsc_queue_isr.h" />
@@ -359,17 +433,6 @@
 		<Unit filename="../../include/etl/stack.h" />
 		<Unit filename="../../include/etl/state_chart.h" />
 		<Unit filename="../../include/etl/static_assert.h" />
-		<Unit filename="../../include/etl/stl/algorithm.h" />
-		<Unit filename="../../include/etl/stl/alternate/algorithm.h" />
-		<Unit filename="../../include/etl/stl/alternate/choose_namespace.h" />
-		<Unit filename="../../include/etl/stl/alternate/functional.h" />
-		<Unit filename="../../include/etl/stl/alternate/iterator.h" />
-		<Unit filename="../../include/etl/stl/alternate/limits.h" />
-		<Unit filename="../../include/etl/stl/alternate/utility.h" />
-		<Unit filename="../../include/etl/stl/functional.h" />
-		<Unit filename="../../include/etl/stl/iterator.h" />
-		<Unit filename="../../include/etl/stl/limits.h" />
-		<Unit filename="../../include/etl/stl/utility.h" />
 		<Unit filename="../../include/etl/string_view.h" />
 		<Unit filename="../../include/etl/task.h" />
 		<Unit filename="../../include/etl/temp.h" />
@@ -380,10 +443,9 @@
 		<Unit filename="../../include/etl/to_wstring.h" />
 		<Unit filename="../../include/etl/type_def.h" />
 		<Unit filename="../../include/etl/type_lookup.h" />
-		<Unit filename="../../include/etl/type_lookup_generator.h" />
 		<Unit filename="../../include/etl/type_select.h" />
+		<Unit filename="../../include/etl/type_traits - Copy.h" />
 		<Unit filename="../../include/etl/type_traits.h" />
-		<Unit filename="../../include/etl/type_traits_generator.h" />
 		<Unit filename="../../include/etl/u16format_spec.h" />
 		<Unit filename="../../include/etl/u16string.h" />
 		<Unit filename="../../include/etl/u32format_spec.h" />
@@ -396,7 +458,6 @@
 		<Unit filename="../../include/etl/utility.h" />
 		<Unit filename="../../include/etl/variant.h" />
 		<Unit filename="../../include/etl/variant_pool.h" />
-		<Unit filename="../../include/etl/variant_pool_generator.h" />
 		<Unit filename="../../include/etl/vector.h" />
 		<Unit filename="../../include/etl/version.h" />
 		<Unit filename="../../include/etl/visitor.h" />
@@ -404,12 +465,11 @@
 		<Unit filename="../../include/etl/wstring.h" />
 		<Unit filename="../ExtraCheckMacros.h" />
 		<Unit filename="../data.h" />
-		<Unit filename="../ecl_user.h" />
 		<Unit filename="../etl_profile.h" />
+		<Unit filename="../iterators_for_unit_tests.h" />
 		<Unit filename="../main.cpp" />
 		<Unit filename="../murmurhash3.cpp" />
 		<Unit filename="../murmurhash3.h" />
-		<Unit filename="../no_stl_test_iterators.h" />
 		<Unit filename="../test_algorithm.cpp" />
 		<Unit filename="../test_alignment.cpp" />
 		<Unit filename="../test_array.cpp" />
@@ -430,6 +490,7 @@
 		<Unit filename="../test_constant.cpp" />
 		<Unit filename="../test_container.cpp" />
 		<Unit filename="../test_crc.cpp" />
+		<Unit filename="../test_cumulative_moving_average.cpp" />
 		<Unit filename="../test_cyclic_value.cpp" />
 		<Unit filename="../test_debounce.cpp" />
 		<Unit filename="../test_delegate.cpp" />
@@ -452,6 +513,7 @@
 		<Unit filename="../test_functional.cpp" />
 		<Unit filename="../test_hash.cpp" />
 		<Unit filename="../test_indirect_vector.cpp" />
+		<Unit filename="../test_indirect_vector_external_buffer.cpp" />
 		<Unit filename="../test_instance_count.cpp" />
 		<Unit filename="../test_integral_limits.cpp" />
 		<Unit filename="../test_intrusive_forward_list.cpp" />
@@ -463,6 +525,7 @@
 		<Unit filename="../test_iterator.cpp" />
 		<Unit filename="../test_jenkins.cpp" />
 		<Unit filename="../test_largest.cpp" />
+		<Unit filename="../test_limits.cpp" />
 		<Unit filename="../test_list.cpp" />
 		<Unit filename="../test_list_shared_pool.cpp" />
 		<Unit filename="../test_make_string.cpp" />
@@ -476,15 +539,13 @@
 		<Unit filename="../test_multimap.cpp" />
 		<Unit filename="../test_multiset.cpp" />
 		<Unit filename="../test_murmur3.cpp" />
-		<Unit filename="../test_no_stl_algorithm.cpp" />
-		<Unit filename="../test_no_stl_functional.cpp" />
-		<Unit filename="../test_no_stl_limits.cpp" />
-		<Unit filename="../test_no_stl_utility.cpp" />
 		<Unit filename="../test_numeric.cpp" />
 		<Unit filename="../test_observer.cpp" />
 		<Unit filename="../test_optional.cpp" />
 		<Unit filename="../test_packet.cpp" />
+		<Unit filename="../test_parameter_pack.cpp" />
 		<Unit filename="../test_parameter_type.cpp" />
+		<Unit filename="../test_parity_checksum.cpp" />
 		<Unit filename="../test_pearson.cpp" />
 		<Unit filename="../test_pool.cpp" />
 		<Unit filename="../test_priority_queue.cpp" />

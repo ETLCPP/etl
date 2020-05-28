@@ -56,6 +56,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "message.h"
+#include "message_packet.h"
 #include "message_types.h"
 #include "alignment.h"
 #include "error_handler.h"
@@ -95,6 +96,8 @@ namespace etl
   };
 
   //***************************************************************************
+  /// This is the base of all message routers.
+  //***************************************************************************
   class imessage_router
   {
   public:
@@ -105,6 +108,8 @@ namespace etl
     virtual void receive(imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& message) = 0;
     virtual bool accepts(etl::message_id_t id) const = 0;
     virtual bool is_null_router() const = 0;
+    virtual bool is_producer() const = 0;
+    virtual bool is_consumer() const = 0;
 
     //********************************************
     bool accepts(const etl::imessage& msg) const
@@ -133,7 +138,7 @@ namespace etl
     //********************************************
     bool has_successor() const
     {
-      return (successor != nullptr);
+      return (successor != ETL_NULLPTR);
     }
 
     enum
@@ -147,7 +152,7 @@ namespace etl
   protected:
 
     imessage_router(etl::message_router_id_t id_)
-      : successor(nullptr),
+      : successor(ETL_NULLPTR),
         message_router_id(id_)
     {
     }
@@ -171,8 +176,7 @@ namespace etl
   };
 
   //***************************************************************************
-  /// This router can be used either as a sink for messages
-  /// or as a producer-only of messages such an interrupt routine.
+  /// This router can be used as a sink for messages or a 'null source' router.
   //***************************************************************************
   class null_message_router : public imessage_router
   {
@@ -184,30 +188,42 @@ namespace etl
     }
 
     //********************************************
-    void receive(const etl::imessage&)
+    void receive(const etl::imessage&) ETL_OVERRIDE
     {
     }
 
     //********************************************
-    void receive(etl::imessage_router&, const etl::imessage&)
+    void receive(etl::imessage_router&, const etl::imessage&) ETL_OVERRIDE
     {
     }
 
     //********************************************
-    void receive(imessage_router&, etl::message_router_id_t, const etl::imessage&)
+    void receive(imessage_router&, etl::message_router_id_t, const etl::imessage&) ETL_OVERRIDE
     {
     }
 
     //********************************************
-    bool accepts(etl::message_id_t) const
+    bool accepts(etl::message_id_t) const ETL_OVERRIDE
     {
       return false;
     }
 
     //********************************************
-    bool is_null_router() const
+    ETL_DEPRECATED bool is_null_router() const ETL_OVERRIDE
     {
       return true;
+    }
+
+    //********************************************
+    bool is_producer() const ETL_OVERRIDE
+    {
+      return false;
+    }
+
+    //********************************************
+    bool is_consumer() const ETL_OVERRIDE
+    {
+      return false;
     }
 
     //********************************************
@@ -218,6 +234,57 @@ namespace etl
     }
   };
 
+  //***************************************************************************
+  /// This router can be used as a producer-only of messages, such an interrupt routine.
+  //***************************************************************************
+  class message_producer : public imessage_router
+  {
+  public:
+
+    message_producer(etl::message_router_id_t id_)
+      : imessage_router(id_)
+    {
+    }
+
+    //********************************************
+    void receive(const etl::imessage&) ETL_OVERRIDE
+    {
+    }
+
+    //********************************************
+    void receive(etl::imessage_router&, const etl::imessage&) ETL_OVERRIDE
+    {
+    }
+
+    //********************************************
+    void receive(imessage_router&, etl::message_router_id_t, const etl::imessage&) ETL_OVERRIDE
+    {
+    }
+
+    //********************************************
+    bool accepts(etl::message_id_t) const ETL_OVERRIDE
+    {
+      return false;
+    }
+
+    //********************************************
+    ETL_DEPRECATED bool is_null_router() const ETL_OVERRIDE
+    {
+      return false;
+    }
+
+    //********************************************
+    bool is_producer() const ETL_OVERRIDE
+    {
+      return true;
+    }
+
+    //********************************************
+    bool is_consumer() const ETL_OVERRIDE
+    {
+      return false;
+    }
+  };
   //***************************************************************************
   /// Send a message to a router.
   /// Sets the 'sender' to etl::null_message_router type.
@@ -250,105 +317,7 @@ namespace etl
   {
   public:
 
-    //**********************************************
-    class message_packet
-    {
-    public:
-
-      //********************************************
-      explicit message_packet(const etl::imessage& msg)
-      {
-        const size_t id = msg.message_id;
-
-        void* p = data;
-
-        switch (id)
-        {
-          case T1::ID: ::new (p) T1(static_cast<const T1&>(msg)); break;
-          case T2::ID: ::new (p) T2(static_cast<const T2&>(msg)); break;
-          case T3::ID: ::new (p) T3(static_cast<const T3&>(msg)); break;
-          case T4::ID: ::new (p) T4(static_cast<const T4&>(msg)); break;
-          case T5::ID: ::new (p) T5(static_cast<const T5&>(msg)); break;
-          case T6::ID: ::new (p) T6(static_cast<const T6&>(msg)); break;
-          case T7::ID: ::new (p) T7(static_cast<const T7&>(msg)); break;
-          case T8::ID: ::new (p) T8(static_cast<const T8&>(msg)); break;
-          case T9::ID: ::new (p) T9(static_cast<const T9&>(msg)); break;
-          case T10::ID: ::new (p) T10(static_cast<const T10&>(msg)); break;
-          case T11::ID: ::new (p) T11(static_cast<const T11&>(msg)); break;
-          case T12::ID: ::new (p) T12(static_cast<const T12&>(msg)); break;
-          case T13::ID: ::new (p) T13(static_cast<const T13&>(msg)); break;
-          case T14::ID: ::new (p) T14(static_cast<const T14&>(msg)); break;
-          case T15::ID: ::new (p) T15(static_cast<const T15&>(msg)); break;
-          case T16::ID: ::new (p) T16(static_cast<const T16&>(msg)); break;
-          default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
-        }
-      }
-
-      //********************************************
-      template <typename T>
-      explicit message_packet(const T& msg)
-      {
-        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type for this message packet");
-
-        void* p = data;
-        ::new (p) T(static_cast<const T&>(msg));
-      }
-
-      //********************************************
-      ~message_packet()
-      {
-        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-        pmsg->~imessage();
-  #else
-        size_t id = pmsg->message_id;
-
-        switch (id)
-        {
-          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
-          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
-          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
-          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
-          case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
-          case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
-          case T11::ID: static_cast<T11*>(pmsg)->~T11(); break;
-          case T12::ID: static_cast<T12*>(pmsg)->~T12(); break;
-          case T13::ID: static_cast<T13*>(pmsg)->~T13(); break;
-          case T14::ID: static_cast<T14*>(pmsg)->~T14(); break;
-          case T15::ID: static_cast<T15*>(pmsg)->~T15(); break;
-          case T16::ID: static_cast<T16*>(pmsg)->~T16(); break;
-          default: assert(false); break;
-        }
-  #endif
-      }
-
-      //********************************************
-      etl::imessage& get()
-      {
-        return *static_cast<etl::imessage*>(data);
-      }
-
-      //********************************************
-      const etl::imessage& get() const
-      {
-        return *static_cast<const etl::imessage*>(data);
-      }
-
-      enum
-      {
-        SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::size,
-        ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::alignment
-      };
-
-    private:
-
-      typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-    };
+    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15,  T16> message_packet;
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -365,13 +334,13 @@ namespace etl
     }
 
     //**********************************************
-    void receive(const etl::imessage& msg)
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
       receive(etl::null_message_router::instance(), msg);
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg) ETL_OVERRIDE
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {
@@ -380,7 +349,7 @@ namespace etl
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg) ETL_OVERRIDE
     {
       const etl::message_id_t id = msg.message_id;
 
@@ -420,22 +389,34 @@ namespace etl
     using imessage_router::accepts;
 
     //**********************************************
-    bool accepts(etl::message_id_t id) const
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
       switch (id)
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
         case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: case T15::ID: case T16::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
     //********************************************
-    bool is_null_router() const
+    ETL_DEPRECATED bool is_null_router() const ETL_OVERRIDE
     {
       return false;
+    }
+
+    //********************************************
+    bool is_producer() const ETL_OVERRIDE
+    {
+      return true;
+    }
+
+    //********************************************
+    bool is_consumer() const ETL_OVERRIDE
+    {
+      return true;
     }
   };
 
@@ -452,103 +433,7 @@ namespace etl
   {
   public:
 
-    //**********************************************
-    class message_packet
-    {
-    public:
-
-      //********************************************
-      explicit message_packet(const etl::imessage& msg)
-      {
-        const size_t id = msg.message_id;
-
-        void* p = data;
-
-        switch (id)
-        {
-          case T1::ID: ::new (p) T1(static_cast<const T1&>(msg)); break;
-          case T2::ID: ::new (p) T2(static_cast<const T2&>(msg)); break;
-          case T3::ID: ::new (p) T3(static_cast<const T3&>(msg)); break;
-          case T4::ID: ::new (p) T4(static_cast<const T4&>(msg)); break;
-          case T5::ID: ::new (p) T5(static_cast<const T5&>(msg)); break;
-          case T6::ID: ::new (p) T6(static_cast<const T6&>(msg)); break;
-          case T7::ID: ::new (p) T7(static_cast<const T7&>(msg)); break;
-          case T8::ID: ::new (p) T8(static_cast<const T8&>(msg)); break;
-          case T9::ID: ::new (p) T9(static_cast<const T9&>(msg)); break;
-          case T10::ID: ::new (p) T10(static_cast<const T10&>(msg)); break;
-          case T11::ID: ::new (p) T11(static_cast<const T11&>(msg)); break;
-          case T12::ID: ::new (p) T12(static_cast<const T12&>(msg)); break;
-          case T13::ID: ::new (p) T13(static_cast<const T13&>(msg)); break;
-          case T14::ID: ::new (p) T14(static_cast<const T14&>(msg)); break;
-          case T15::ID: ::new (p) T15(static_cast<const T15&>(msg)); break;
-          default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
-        }
-      }
-
-      //********************************************
-      template <typename T>
-      explicit message_packet(const T& msg)
-      {
-        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::value), "Unsupported type for this message packet");
-
-        void* p = data;
-        ::new (p) T(static_cast<const T&>(msg));
-      }
-
-      //********************************************
-      ~message_packet()
-      {
-        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-        pmsg->~imessage();
-  #else
-        size_t id = pmsg->message_id;
-
-        switch (id)
-        {
-          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
-          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
-          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
-          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
-          case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
-          case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
-          case T11::ID: static_cast<T11*>(pmsg)->~T11(); break;
-          case T12::ID: static_cast<T12*>(pmsg)->~T12(); break;
-          case T13::ID: static_cast<T13*>(pmsg)->~T13(); break;
-          case T14::ID: static_cast<T14*>(pmsg)->~T14(); break;
-          case T15::ID: static_cast<T15*>(pmsg)->~T15(); break;
-          default: assert(false); break;
-        }
-  #endif
-      }
-
-      //********************************************
-      etl::imessage& get()
-      {
-        return *static_cast<etl::imessage*>(data);
-      }
-
-      //********************************************
-      const etl::imessage& get() const
-      {
-        return *static_cast<const etl::imessage*>(data);
-      }
-
-      enum
-      {
-        SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::size,
-        ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::alignment
-      };
-
-    private:
-
-      typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-    };
+    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14,  T15> message_packet;
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -565,13 +450,13 @@ namespace etl
     }
 
     //**********************************************
-    void receive(const etl::imessage& msg)
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
       receive(etl::null_message_router::instance(), msg);
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg) ETL_OVERRIDE
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {
@@ -580,7 +465,7 @@ namespace etl
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg) ETL_OVERRIDE
     {
       const size_t id = msg.message_id;
 
@@ -619,22 +504,34 @@ namespace etl
     using imessage_router::accepts;
 
     //**********************************************
-    bool accepts(etl::message_id_t id) const
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
       switch (id)
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
         case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: case T15::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
     //********************************************
-    bool is_null_router() const
+    ETL_DEPRECATED bool is_null_router() const ETL_OVERRIDE
     {
       return false;
+    }
+
+    //********************************************
+    bool is_producer() const ETL_OVERRIDE
+    {
+      return true;
+    }
+
+    //********************************************
+    bool is_consumer() const ETL_OVERRIDE
+    {
+      return true;
     }
   };
 
@@ -651,101 +548,7 @@ namespace etl
   {
   public:
 
-    //**********************************************
-    class message_packet
-    {
-    public:
-
-      //********************************************
-      explicit message_packet(const etl::imessage& msg)
-      {
-        const size_t id = msg.message_id;
-
-        void* p = data;
-
-        switch (id)
-        {
-          case T1::ID: ::new (p) T1(static_cast<const T1&>(msg)); break;
-          case T2::ID: ::new (p) T2(static_cast<const T2&>(msg)); break;
-          case T3::ID: ::new (p) T3(static_cast<const T3&>(msg)); break;
-          case T4::ID: ::new (p) T4(static_cast<const T4&>(msg)); break;
-          case T5::ID: ::new (p) T5(static_cast<const T5&>(msg)); break;
-          case T6::ID: ::new (p) T6(static_cast<const T6&>(msg)); break;
-          case T7::ID: ::new (p) T7(static_cast<const T7&>(msg)); break;
-          case T8::ID: ::new (p) T8(static_cast<const T8&>(msg)); break;
-          case T9::ID: ::new (p) T9(static_cast<const T9&>(msg)); break;
-          case T10::ID: ::new (p) T10(static_cast<const T10&>(msg)); break;
-          case T11::ID: ::new (p) T11(static_cast<const T11&>(msg)); break;
-          case T12::ID: ::new (p) T12(static_cast<const T12&>(msg)); break;
-          case T13::ID: ::new (p) T13(static_cast<const T13&>(msg)); break;
-          case T14::ID: ::new (p) T14(static_cast<const T14&>(msg)); break;
-          default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
-        }
-      }
-
-      //********************************************
-      template <typename T>
-      explicit message_packet(const T& msg)
-      {
-        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::value), "Unsupported type for this message packet");
-
-        void* p = data;
-        ::new (p) T(static_cast<const T&>(msg));
-      }
-
-      //********************************************
-      ~message_packet()
-      {
-        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-        pmsg->~imessage();
-  #else
-        size_t id = pmsg->message_id;
-
-        switch (id)
-        {
-          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
-          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
-          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
-          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
-          case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
-          case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
-          case T11::ID: static_cast<T11*>(pmsg)->~T11(); break;
-          case T12::ID: static_cast<T12*>(pmsg)->~T12(); break;
-          case T13::ID: static_cast<T13*>(pmsg)->~T13(); break;
-          case T14::ID: static_cast<T14*>(pmsg)->~T14(); break;
-          default: assert(false); break;
-        }
-  #endif
-      }
-
-      //********************************************
-      etl::imessage& get()
-      {
-        return *static_cast<etl::imessage*>(data);
-      }
-
-      //********************************************
-      const etl::imessage& get() const
-      {
-        return *static_cast<const etl::imessage*>(data);
-      }
-
-      enum
-      {
-        SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::size,
-        ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::alignment
-      };
-
-    private:
-
-      typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-    };
+    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,  T14> message_packet;
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -762,13 +565,13 @@ namespace etl
     }
 
     //**********************************************
-    void receive(const etl::imessage& msg)
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
       receive(etl::null_message_router::instance(), msg);
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg) ETL_OVERRIDE
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {
@@ -777,7 +580,7 @@ namespace etl
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg) ETL_OVERRIDE
     {
       const size_t id = msg.message_id;
 
@@ -815,22 +618,34 @@ namespace etl
     using imessage_router::accepts;
 
     //**********************************************
-    bool accepts(etl::message_id_t id) const
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
       switch (id)
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
         case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
     //********************************************
-    bool is_null_router() const
+    ETL_DEPRECATED bool is_null_router() const ETL_OVERRIDE
     {
       return false;
+    }
+
+    //********************************************
+    bool is_producer() const ETL_OVERRIDE
+    {
+      return true;
+    }
+
+    //********************************************
+    bool is_consumer() const ETL_OVERRIDE
+    {
+      return true;
     }
   };
 
@@ -847,99 +662,7 @@ namespace etl
   {
   public:
 
-    //**********************************************
-    class message_packet
-    {
-    public:
-
-      //********************************************
-      explicit message_packet(const etl::imessage& msg)
-      {
-        const size_t id = msg.message_id;
-
-        void* p = data;
-
-        switch (id)
-        {
-          case T1::ID: ::new (p) T1(static_cast<const T1&>(msg)); break;
-          case T2::ID: ::new (p) T2(static_cast<const T2&>(msg)); break;
-          case T3::ID: ::new (p) T3(static_cast<const T3&>(msg)); break;
-          case T4::ID: ::new (p) T4(static_cast<const T4&>(msg)); break;
-          case T5::ID: ::new (p) T5(static_cast<const T5&>(msg)); break;
-          case T6::ID: ::new (p) T6(static_cast<const T6&>(msg)); break;
-          case T7::ID: ::new (p) T7(static_cast<const T7&>(msg)); break;
-          case T8::ID: ::new (p) T8(static_cast<const T8&>(msg)); break;
-          case T9::ID: ::new (p) T9(static_cast<const T9&>(msg)); break;
-          case T10::ID: ::new (p) T10(static_cast<const T10&>(msg)); break;
-          case T11::ID: ::new (p) T11(static_cast<const T11&>(msg)); break;
-          case T12::ID: ::new (p) T12(static_cast<const T12&>(msg)); break;
-          case T13::ID: ::new (p) T13(static_cast<const T13&>(msg)); break;
-          default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
-        }
-      }
-
-      //********************************************
-      template <typename T>
-      explicit message_packet(const T& msg)
-      {
-        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::value), "Unsupported type for this message packet");
-
-        void* p = data;
-        ::new (p) T(static_cast<const T&>(msg));
-      }
-
-      //********************************************
-      ~message_packet()
-      {
-        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-        pmsg->~imessage();
-  #else
-        size_t id = pmsg->message_id;
-
-        switch (id)
-        {
-          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
-          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
-          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
-          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
-          case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
-          case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
-          case T11::ID: static_cast<T11*>(pmsg)->~T11(); break;
-          case T12::ID: static_cast<T12*>(pmsg)->~T12(); break;
-          case T13::ID: static_cast<T13*>(pmsg)->~T13(); break;
-          default: assert(false); break;
-        }
-  #endif
-      }
-
-      //********************************************
-      etl::imessage& get()
-      {
-        return *static_cast<etl::imessage*>(data);
-      }
-
-      //********************************************
-      const etl::imessage& get() const
-      {
-        return *static_cast<const etl::imessage*>(data);
-      }
-
-      enum
-      {
-        SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::size,
-        ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::alignment
-      };
-
-    private:
-
-      typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-    };
+    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12,  T13> message_packet;
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -956,13 +679,13 @@ namespace etl
     }
 
     //**********************************************
-    void receive(const etl::imessage& msg)
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
       receive(etl::null_message_router::instance(), msg);
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg) ETL_OVERRIDE
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {
@@ -971,7 +694,7 @@ namespace etl
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg) ETL_OVERRIDE
     {
       const size_t id = msg.message_id;
 
@@ -1008,22 +731,34 @@ namespace etl
     using imessage_router::accepts;
 
     //**********************************************
-    bool accepts(etl::message_id_t id) const
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
       switch (id)
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
         case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
     //********************************************
-    bool is_null_router() const
+    ETL_DEPRECATED bool is_null_router() const ETL_OVERRIDE
     {
       return false;
+    }
+
+    //********************************************
+    bool is_producer() const ETL_OVERRIDE
+    {
+      return true;
+    }
+
+    //********************************************
+    bool is_consumer() const ETL_OVERRIDE
+    {
+      return true;
     }
   };
 
@@ -1039,97 +774,7 @@ namespace etl
   {
   public:
 
-    //**********************************************
-    class message_packet
-    {
-    public:
-
-      //********************************************
-      explicit message_packet(const etl::imessage& msg)
-      {
-        const size_t id = msg.message_id;
-
-        void* p = data;
-
-        switch (id)
-        {
-          case T1::ID: ::new (p) T1(static_cast<const T1&>(msg)); break;
-          case T2::ID: ::new (p) T2(static_cast<const T2&>(msg)); break;
-          case T3::ID: ::new (p) T3(static_cast<const T3&>(msg)); break;
-          case T4::ID: ::new (p) T4(static_cast<const T4&>(msg)); break;
-          case T5::ID: ::new (p) T5(static_cast<const T5&>(msg)); break;
-          case T6::ID: ::new (p) T6(static_cast<const T6&>(msg)); break;
-          case T7::ID: ::new (p) T7(static_cast<const T7&>(msg)); break;
-          case T8::ID: ::new (p) T8(static_cast<const T8&>(msg)); break;
-          case T9::ID: ::new (p) T9(static_cast<const T9&>(msg)); break;
-          case T10::ID: ::new (p) T10(static_cast<const T10&>(msg)); break;
-          case T11::ID: ::new (p) T11(static_cast<const T11&>(msg)); break;
-          case T12::ID: ::new (p) T12(static_cast<const T12&>(msg)); break;
-          default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
-        }
-      }
-
-      //********************************************
-      template <typename T>
-      explicit message_packet(const T& msg)
-      {
-        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::value), "Unsupported type for this message packet");
-
-        void* p = data;
-        ::new (p) T(static_cast<const T&>(msg));
-      }
-
-      //********************************************
-      ~message_packet()
-      {
-        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-        pmsg->~imessage();
-  #else
-        size_t id = pmsg->message_id;
-
-        switch (id)
-        {
-          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
-          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
-          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
-          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
-          case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
-          case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
-          case T11::ID: static_cast<T11*>(pmsg)->~T11(); break;
-          case T12::ID: static_cast<T12*>(pmsg)->~T12(); break;
-          default: assert(false); break;
-        }
-  #endif
-      }
-
-      //********************************************
-      etl::imessage& get()
-      {
-        return *static_cast<etl::imessage*>(data);
-      }
-
-      //********************************************
-      const etl::imessage& get() const
-      {
-        return *static_cast<const etl::imessage*>(data);
-      }
-
-      enum
-      {
-        SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::size,
-        ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::alignment
-      };
-
-    private:
-
-      typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-    };
+    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,  T12> message_packet;
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -1146,13 +791,13 @@ namespace etl
     }
 
     //**********************************************
-    void receive(const etl::imessage& msg)
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
       receive(etl::null_message_router::instance(), msg);
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg) ETL_OVERRIDE
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {
@@ -1161,7 +806,7 @@ namespace etl
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg) ETL_OVERRIDE
     {
       const size_t id = msg.message_id;
 
@@ -1197,22 +842,34 @@ namespace etl
     using imessage_router::accepts;
 
     //**********************************************
-    bool accepts(etl::message_id_t id) const
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
       switch (id)
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
         case T9::ID: case T10::ID: case T11::ID: case T12::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
     //********************************************
-    bool is_null_router() const
+    ETL_DEPRECATED bool is_null_router() const ETL_OVERRIDE
     {
       return false;
+    }
+
+    //********************************************
+    bool is_producer() const ETL_OVERRIDE
+    {
+      return true;
+    }
+
+    //********************************************
+    bool is_consumer() const ETL_OVERRIDE
+    {
+      return true;
     }
   };
 
@@ -1228,95 +885,7 @@ namespace etl
   {
   public:
 
-    //**********************************************
-    class message_packet
-    {
-    public:
-
-      //********************************************
-      explicit message_packet(const etl::imessage& msg)
-      {
-        const size_t id = msg.message_id;
-
-        void* p = data;
-
-        switch (id)
-        {
-          case T1::ID: ::new (p) T1(static_cast<const T1&>(msg)); break;
-          case T2::ID: ::new (p) T2(static_cast<const T2&>(msg)); break;
-          case T3::ID: ::new (p) T3(static_cast<const T3&>(msg)); break;
-          case T4::ID: ::new (p) T4(static_cast<const T4&>(msg)); break;
-          case T5::ID: ::new (p) T5(static_cast<const T5&>(msg)); break;
-          case T6::ID: ::new (p) T6(static_cast<const T6&>(msg)); break;
-          case T7::ID: ::new (p) T7(static_cast<const T7&>(msg)); break;
-          case T8::ID: ::new (p) T8(static_cast<const T8&>(msg)); break;
-          case T9::ID: ::new (p) T9(static_cast<const T9&>(msg)); break;
-          case T10::ID: ::new (p) T10(static_cast<const T10&>(msg)); break;
-          case T11::ID: ::new (p) T11(static_cast<const T11&>(msg)); break;
-          default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
-        }
-      }
-
-      //********************************************
-      template <typename T>
-      explicit message_packet(const T& msg)
-      {
-        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>::value), "Unsupported type for this message packet");
-
-        void* p = data;
-        ::new (p) T(static_cast<const T&>(msg));
-      }
-
-      //********************************************
-      ~message_packet()
-      {
-        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-        pmsg->~imessage();
-  #else
-        size_t id = pmsg->message_id;
-
-        switch (id)
-        {
-          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
-          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
-          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
-          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
-          case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
-          case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
-          case T11::ID: static_cast<T11*>(pmsg)->~T11(); break;
-          default: assert(false); break;
-        }
-  #endif
-      }
-
-      //********************************************
-      etl::imessage& get()
-      {
-        return *static_cast<etl::imessage*>(data);
-      }
-
-      //********************************************
-      const etl::imessage& get() const
-      {
-        return *static_cast<const etl::imessage*>(data);
-      }
-
-      enum
-      {
-        SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>::size,
-        ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>::alignment
-      };
-
-    private:
-
-      typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-    };
+    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10,  T11> message_packet;
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -1333,13 +902,13 @@ namespace etl
     }
 
     //**********************************************
-    void receive(const etl::imessage& msg)
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
       receive(etl::null_message_router::instance(), msg);
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg) ETL_OVERRIDE
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {
@@ -1348,7 +917,7 @@ namespace etl
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg) ETL_OVERRIDE
     {
       const size_t id = msg.message_id;
 
@@ -1383,22 +952,34 @@ namespace etl
     using imessage_router::accepts;
 
     //**********************************************
-    bool accepts(etl::message_id_t id) const
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
       switch (id)
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
         case T9::ID: case T10::ID: case T11::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
     //********************************************
-    bool is_null_router() const
+    ETL_DEPRECATED bool is_null_router() const ETL_OVERRIDE
     {
       return false;
+    }
+
+    //********************************************
+    bool is_producer() const ETL_OVERRIDE
+    {
+      return true;
+    }
+
+    //********************************************
+    bool is_consumer() const ETL_OVERRIDE
+    {
+      return true;
     }
   };
 
@@ -1414,93 +995,7 @@ namespace etl
   {
   public:
 
-    //**********************************************
-    class message_packet
-    {
-    public:
-
-      //********************************************
-      explicit message_packet(const etl::imessage& msg)
-      {
-        const size_t id = msg.message_id;
-
-        void* p = data;
-
-        switch (id)
-        {
-          case T1::ID: ::new (p) T1(static_cast<const T1&>(msg)); break;
-          case T2::ID: ::new (p) T2(static_cast<const T2&>(msg)); break;
-          case T3::ID: ::new (p) T3(static_cast<const T3&>(msg)); break;
-          case T4::ID: ::new (p) T4(static_cast<const T4&>(msg)); break;
-          case T5::ID: ::new (p) T5(static_cast<const T5&>(msg)); break;
-          case T6::ID: ::new (p) T6(static_cast<const T6&>(msg)); break;
-          case T7::ID: ::new (p) T7(static_cast<const T7&>(msg)); break;
-          case T8::ID: ::new (p) T8(static_cast<const T8&>(msg)); break;
-          case T9::ID: ::new (p) T9(static_cast<const T9&>(msg)); break;
-          case T10::ID: ::new (p) T10(static_cast<const T10&>(msg)); break;
-          default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
-        }
-      }
-
-      //********************************************
-      template <typename T>
-      explicit message_packet(const T& msg)
-      {
-        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>::value), "Unsupported type for this message packet");
-
-        void* p = data;
-        ::new (p) T(static_cast<const T&>(msg));
-      }
-
-      //********************************************
-      ~message_packet()
-      {
-        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-        pmsg->~imessage();
-  #else
-        size_t id = pmsg->message_id;
-
-        switch (id)
-        {
-          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
-          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
-          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
-          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
-          case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
-          case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
-          default: assert(false); break;
-        }
-  #endif
-      }
-
-      //********************************************
-      etl::imessage& get()
-      {
-        return *static_cast<etl::imessage*>(data);
-      }
-
-      //********************************************
-      const etl::imessage& get() const
-      {
-        return *static_cast<const etl::imessage*>(data);
-      }
-
-      enum
-      {
-        SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>::size,
-        ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>::alignment
-      };
-
-    private:
-
-      typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-    };
+    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9,  T10> message_packet;
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -1517,13 +1012,13 @@ namespace etl
     }
 
     //**********************************************
-    void receive(const etl::imessage& msg)
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
       receive(etl::null_message_router::instance(), msg);
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg) ETL_OVERRIDE
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {
@@ -1532,7 +1027,7 @@ namespace etl
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg) ETL_OVERRIDE
     {
       const size_t id = msg.message_id;
 
@@ -1566,22 +1061,34 @@ namespace etl
     using imessage_router::accepts;
 
     //**********************************************
-    bool accepts(etl::message_id_t id) const
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
       switch (id)
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
         case T9::ID: case T10::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
     //********************************************
-    bool is_null_router() const
+    ETL_DEPRECATED bool is_null_router() const ETL_OVERRIDE
     {
       return false;
+    }
+
+    //********************************************
+    bool is_producer() const ETL_OVERRIDE
+    {
+      return true;
+    }
+
+    //********************************************
+    bool is_consumer() const ETL_OVERRIDE
+    {
+      return true;
     }
   };
 
@@ -1597,91 +1104,7 @@ namespace etl
   {
   public:
 
-    //**********************************************
-    class message_packet
-    {
-    public:
-
-      //********************************************
-      explicit message_packet(const etl::imessage& msg)
-      {
-        const size_t id = msg.message_id;
-
-        void* p = data;
-
-        switch (id)
-        {
-          case T1::ID: ::new (p) T1(static_cast<const T1&>(msg)); break;
-          case T2::ID: ::new (p) T2(static_cast<const T2&>(msg)); break;
-          case T3::ID: ::new (p) T3(static_cast<const T3&>(msg)); break;
-          case T4::ID: ::new (p) T4(static_cast<const T4&>(msg)); break;
-          case T5::ID: ::new (p) T5(static_cast<const T5&>(msg)); break;
-          case T6::ID: ::new (p) T6(static_cast<const T6&>(msg)); break;
-          case T7::ID: ::new (p) T7(static_cast<const T7&>(msg)); break;
-          case T8::ID: ::new (p) T8(static_cast<const T8&>(msg)); break;
-          case T9::ID: ::new (p) T9(static_cast<const T9&>(msg)); break;
-          default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
-        }
-      }
-
-      //********************************************
-      template <typename T>
-      explicit message_packet(const T& msg)
-      {
-        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9>::value), "Unsupported type for this message packet");
-
-        void* p = data;
-        ::new (p) T(static_cast<const T&>(msg));
-      }
-
-      //********************************************
-      ~message_packet()
-      {
-        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-        pmsg->~imessage();
-  #else
-        size_t id = pmsg->message_id;
-
-        switch (id)
-        {
-          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
-          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
-          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
-          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
-          case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
-          default: assert(false); break;
-        }
-  #endif
-      }
-
-      //********************************************
-      etl::imessage& get()
-      {
-        return *static_cast<etl::imessage*>(data);
-      }
-
-      //********************************************
-      const etl::imessage& get() const
-      {
-        return *static_cast<const etl::imessage*>(data);
-      }
-
-      enum
-      {
-        SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9>::size,
-        ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9>::alignment
-      };
-
-    private:
-
-      typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-    };
+    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8,  T9> message_packet;
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -1698,13 +1121,13 @@ namespace etl
     }
 
     //**********************************************
-    void receive(const etl::imessage& msg)
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
       receive(etl::null_message_router::instance(), msg);
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg) ETL_OVERRIDE
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {
@@ -1713,7 +1136,7 @@ namespace etl
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg) ETL_OVERRIDE
     {
       const size_t id = msg.message_id;
 
@@ -1746,22 +1169,34 @@ namespace etl
     using imessage_router::accepts;
 
     //**********************************************
-    bool accepts(etl::message_id_t id) const
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
       switch (id)
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
         case T9::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
     //********************************************
-    bool is_null_router() const
+    ETL_DEPRECATED bool is_null_router() const ETL_OVERRIDE
     {
       return false;
+    }
+
+    //********************************************
+    bool is_producer() const ETL_OVERRIDE
+    {
+      return true;
+    }
+
+    //********************************************
+    bool is_consumer() const ETL_OVERRIDE
+    {
+      return true;
     }
   };
 
@@ -1776,89 +1211,7 @@ namespace etl
   {
   public:
 
-    //**********************************************
-    class message_packet
-    {
-    public:
-
-      //********************************************
-      explicit message_packet(const etl::imessage& msg)
-      {
-        const size_t id = msg.message_id;
-
-        void* p = data;
-
-        switch (id)
-        {
-          case T1::ID: ::new (p) T1(static_cast<const T1&>(msg)); break;
-          case T2::ID: ::new (p) T2(static_cast<const T2&>(msg)); break;
-          case T3::ID: ::new (p) T3(static_cast<const T3&>(msg)); break;
-          case T4::ID: ::new (p) T4(static_cast<const T4&>(msg)); break;
-          case T5::ID: ::new (p) T5(static_cast<const T5&>(msg)); break;
-          case T6::ID: ::new (p) T6(static_cast<const T6&>(msg)); break;
-          case T7::ID: ::new (p) T7(static_cast<const T7&>(msg)); break;
-          case T8::ID: ::new (p) T8(static_cast<const T8&>(msg)); break;
-          default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
-        }
-      }
-
-      //********************************************
-      template <typename T>
-      explicit message_packet(const T& msg)
-      {
-        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8>::value), "Unsupported type for this message packet");
-
-        void* p = data;
-        ::new (p) T(static_cast<const T&>(msg));
-      }
-
-      //********************************************
-      ~message_packet()
-      {
-        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-        pmsg->~imessage();
-  #else
-        size_t id = pmsg->message_id;
-
-        switch (id)
-        {
-          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
-          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
-          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
-          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
-          default: assert(false); break;
-        }
-  #endif
-      }
-
-      //********************************************
-      etl::imessage& get()
-      {
-        return *static_cast<etl::imessage*>(data);
-      }
-
-      //********************************************
-      const etl::imessage& get() const
-      {
-        return *static_cast<const etl::imessage*>(data);
-      }
-
-      enum
-      {
-        SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8>::size,
-        ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8>::alignment
-      };
-
-    private:
-
-      typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-    };
+    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7,  T8> message_packet;
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -1875,13 +1228,13 @@ namespace etl
     }
 
     //**********************************************
-    void receive(const etl::imessage& msg)
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
       receive(etl::null_message_router::instance(), msg);
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg) ETL_OVERRIDE
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {
@@ -1890,7 +1243,7 @@ namespace etl
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg) ETL_OVERRIDE
     {
       const size_t id = msg.message_id;
 
@@ -1922,22 +1275,34 @@ namespace etl
     using imessage_router::accepts;
 
     //**********************************************
-    bool accepts(etl::message_id_t id) const
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
       switch (id)
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
         
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
     //********************************************
-    bool is_null_router() const
+    ETL_DEPRECATED bool is_null_router() const ETL_OVERRIDE
     {
       return false;
+    }
+
+    //********************************************
+    bool is_producer() const ETL_OVERRIDE
+    {
+      return true;
+    }
+
+    //********************************************
+    bool is_consumer() const ETL_OVERRIDE
+    {
+      return true;
     }
   };
 
@@ -1952,87 +1317,7 @@ namespace etl
   {
   public:
 
-    //**********************************************
-    class message_packet
-    {
-    public:
-
-      //********************************************
-      explicit message_packet(const etl::imessage& msg)
-      {
-        const size_t id = msg.message_id;
-
-        void* p = data;
-
-        switch (id)
-        {
-          case T1::ID: ::new (p) T1(static_cast<const T1&>(msg)); break;
-          case T2::ID: ::new (p) T2(static_cast<const T2&>(msg)); break;
-          case T3::ID: ::new (p) T3(static_cast<const T3&>(msg)); break;
-          case T4::ID: ::new (p) T4(static_cast<const T4&>(msg)); break;
-          case T5::ID: ::new (p) T5(static_cast<const T5&>(msg)); break;
-          case T6::ID: ::new (p) T6(static_cast<const T6&>(msg)); break;
-          case T7::ID: ::new (p) T7(static_cast<const T7&>(msg)); break;
-          default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
-        }
-      }
-
-      //********************************************
-      template <typename T>
-      explicit message_packet(const T& msg)
-      {
-        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7>::value), "Unsupported type for this message packet");
-
-        void* p = data;
-        ::new (p) T(static_cast<const T&>(msg));
-      }
-
-      //********************************************
-      ~message_packet()
-      {
-        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-        pmsg->~imessage();
-  #else
-        size_t id = pmsg->message_id;
-
-        switch (id)
-        {
-          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
-          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
-          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
-          default: assert(false); break;
-        }
-  #endif
-      }
-
-      //********************************************
-      etl::imessage& get()
-      {
-        return *static_cast<etl::imessage*>(data);
-      }
-
-      //********************************************
-      const etl::imessage& get() const
-      {
-        return *static_cast<const etl::imessage*>(data);
-      }
-
-      enum
-      {
-        SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7>::size,
-        ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7>::alignment
-      };
-
-    private:
-
-      typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-    };
+    typedef etl::message_packet<T1, T2, T3, T4, T5, T6,  T7> message_packet;
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -2049,13 +1334,13 @@ namespace etl
     }
 
     //**********************************************
-    void receive(const etl::imessage& msg)
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
       receive(etl::null_message_router::instance(), msg);
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg) ETL_OVERRIDE
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {
@@ -2064,7 +1349,7 @@ namespace etl
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg) ETL_OVERRIDE
     {
       const size_t id = msg.message_id;
 
@@ -2095,21 +1380,33 @@ namespace etl
     using imessage_router::accepts;
 
     //**********************************************
-    bool accepts(etl::message_id_t id) const
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
       switch (id)
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
     //********************************************
-    bool is_null_router() const
+    ETL_DEPRECATED bool is_null_router() const ETL_OVERRIDE
     {
       return false;
+    }
+
+    //********************************************
+    bool is_producer() const ETL_OVERRIDE
+    {
+      return true;
+    }
+
+    //********************************************
+    bool is_consumer() const ETL_OVERRIDE
+    {
+      return true;
     }
   };
 
@@ -2124,85 +1421,7 @@ namespace etl
   {
   public:
 
-    //**********************************************
-    class message_packet
-    {
-    public:
-
-      //********************************************
-      explicit message_packet(const etl::imessage& msg)
-      {
-        const size_t id = msg.message_id;
-
-        void* p = data;
-
-        switch (id)
-        {
-          case T1::ID: ::new (p) T1(static_cast<const T1&>(msg)); break;
-          case T2::ID: ::new (p) T2(static_cast<const T2&>(msg)); break;
-          case T3::ID: ::new (p) T3(static_cast<const T3&>(msg)); break;
-          case T4::ID: ::new (p) T4(static_cast<const T4&>(msg)); break;
-          case T5::ID: ::new (p) T5(static_cast<const T5&>(msg)); break;
-          case T6::ID: ::new (p) T6(static_cast<const T6&>(msg)); break;
-          default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
-        }
-      }
-
-      //********************************************
-      template <typename T>
-      explicit message_packet(const T& msg)
-      {
-        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6>::value), "Unsupported type for this message packet");
-
-        void* p = data;
-        ::new (p) T(static_cast<const T&>(msg));
-      }
-
-      //********************************************
-      ~message_packet()
-      {
-        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-        pmsg->~imessage();
-  #else
-        size_t id = pmsg->message_id;
-
-        switch (id)
-        {
-          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
-          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
-          default: assert(false); break;
-        }
-  #endif
-      }
-
-      //********************************************
-      etl::imessage& get()
-      {
-        return *static_cast<etl::imessage*>(data);
-      }
-
-      //********************************************
-      const etl::imessage& get() const
-      {
-        return *static_cast<const etl::imessage*>(data);
-      }
-
-      enum
-      {
-        SIZE      = etl::largest<T1, T2, T3, T4, T5, T6>::size,
-        ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6>::alignment
-      };
-
-    private:
-
-      typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-    };
+    typedef etl::message_packet<T1, T2, T3, T4, T5,  T6> message_packet;
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -2219,13 +1438,13 @@ namespace etl
     }
 
     //**********************************************
-    void receive(const etl::imessage& msg)
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
       receive(etl::null_message_router::instance(), msg);
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg) ETL_OVERRIDE
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {
@@ -2234,7 +1453,7 @@ namespace etl
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg) ETL_OVERRIDE
     {
       const size_t id = msg.message_id;
 
@@ -2264,21 +1483,33 @@ namespace etl
     using imessage_router::accepts;
 
     //**********************************************
-    bool accepts(etl::message_id_t id) const
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
       switch (id)
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
     //********************************************
-    bool is_null_router() const
+    ETL_DEPRECATED bool is_null_router() const ETL_OVERRIDE
     {
       return false;
+    }
+
+    //********************************************
+    bool is_producer() const ETL_OVERRIDE
+    {
+      return true;
+    }
+
+    //********************************************
+    bool is_consumer() const ETL_OVERRIDE
+    {
+      return true;
     }
   };
 
@@ -2293,83 +1524,7 @@ namespace etl
   {
   public:
 
-    //**********************************************
-    class message_packet
-    {
-    public:
-
-      //********************************************
-      explicit message_packet(const etl::imessage& msg)
-      {
-        const size_t id = msg.message_id;
-
-        void* p = data;
-
-        switch (id)
-        {
-          case T1::ID: ::new (p) T1(static_cast<const T1&>(msg)); break;
-          case T2::ID: ::new (p) T2(static_cast<const T2&>(msg)); break;
-          case T3::ID: ::new (p) T3(static_cast<const T3&>(msg)); break;
-          case T4::ID: ::new (p) T4(static_cast<const T4&>(msg)); break;
-          case T5::ID: ::new (p) T5(static_cast<const T5&>(msg)); break;
-          default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
-        }
-      }
-
-      //********************************************
-      template <typename T>
-      explicit message_packet(const T& msg)
-      {
-        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5>::value), "Unsupported type for this message packet");
-
-        void* p = data;
-        ::new (p) T(static_cast<const T&>(msg));
-      }
-
-      //********************************************
-      ~message_packet()
-      {
-        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-        pmsg->~imessage();
-  #else
-        size_t id = pmsg->message_id;
-
-        switch (id)
-        {
-          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
-          default: assert(false); break;
-        }
-  #endif
-      }
-
-      //********************************************
-      etl::imessage& get()
-      {
-        return *static_cast<etl::imessage*>(data);
-      }
-
-      //********************************************
-      const etl::imessage& get() const
-      {
-        return *static_cast<const etl::imessage*>(data);
-      }
-
-      enum
-      {
-        SIZE      = etl::largest<T1, T2, T3, T4, T5>::size,
-        ALIGNMENT = etl::largest<T1, T2, T3, T4, T5>::alignment
-      };
-
-    private:
-
-      typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-    };
+    typedef etl::message_packet<T1, T2, T3, T4,  T5> message_packet;
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -2386,13 +1541,13 @@ namespace etl
     }
 
     //**********************************************
-    void receive(const etl::imessage& msg)
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
       receive(etl::null_message_router::instance(), msg);
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg) ETL_OVERRIDE
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {
@@ -2401,7 +1556,7 @@ namespace etl
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg) ETL_OVERRIDE
     {
       const size_t id = msg.message_id;
 
@@ -2430,21 +1585,33 @@ namespace etl
     using imessage_router::accepts;
 
     //**********************************************
-    bool accepts(etl::message_id_t id) const
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
       switch (id)
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
     //********************************************
-    bool is_null_router() const
+    ETL_DEPRECATED bool is_null_router() const ETL_OVERRIDE
     {
       return false;
+    }
+
+    //********************************************
+    bool is_producer() const ETL_OVERRIDE
+    {
+      return true;
+    }
+
+    //********************************************
+    bool is_consumer() const ETL_OVERRIDE
+    {
+      return true;
     }
   };
 
@@ -2458,81 +1625,7 @@ namespace etl
   {
   public:
 
-    //**********************************************
-    class message_packet
-    {
-    public:
-
-      //********************************************
-      explicit message_packet(const etl::imessage& msg)
-      {
-        const size_t id = msg.message_id;
-
-        void* p = data;
-
-        switch (id)
-        {
-          case T1::ID: ::new (p) T1(static_cast<const T1&>(msg)); break;
-          case T2::ID: ::new (p) T2(static_cast<const T2&>(msg)); break;
-          case T3::ID: ::new (p) T3(static_cast<const T3&>(msg)); break;
-          case T4::ID: ::new (p) T4(static_cast<const T4&>(msg)); break;
-          default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
-        }
-      }
-
-      //********************************************
-      template <typename T>
-      explicit message_packet(const T& msg)
-      {
-        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4>::value), "Unsupported type for this message packet");
-
-        void* p = data;
-        ::new (p) T(static_cast<const T&>(msg));
-      }
-
-      //********************************************
-      ~message_packet()
-      {
-        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-        pmsg->~imessage();
-  #else
-        size_t id = pmsg->message_id;
-
-        switch (id)
-        {
-          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-          default: assert(false); break;
-        }
-  #endif
-      }
-
-      //********************************************
-      etl::imessage& get()
-      {
-        return *static_cast<etl::imessage*>(data);
-      }
-
-      //********************************************
-      const etl::imessage& get() const
-      {
-        return *static_cast<const etl::imessage*>(data);
-      }
-
-      enum
-      {
-        SIZE      = etl::largest<T1, T2, T3, T4>::size,
-        ALIGNMENT = etl::largest<T1, T2, T3, T4>::alignment
-      };
-
-    private:
-
-      typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-    };
+    typedef etl::message_packet<T1, T2, T3,  T4> message_packet;
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -2549,13 +1642,13 @@ namespace etl
     }
 
     //**********************************************
-    void receive(const etl::imessage& msg)
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
       receive(etl::null_message_router::instance(), msg);
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg) ETL_OVERRIDE
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {
@@ -2564,7 +1657,7 @@ namespace etl
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg) ETL_OVERRIDE
     {
       const size_t id = msg.message_id;
 
@@ -2592,21 +1685,33 @@ namespace etl
     using imessage_router::accepts;
 
     //**********************************************
-    bool accepts(etl::message_id_t id) const
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
       switch (id)
       {
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
     //********************************************
-    bool is_null_router() const
+    ETL_DEPRECATED bool is_null_router() const ETL_OVERRIDE
     {
       return false;
+    }
+
+    //********************************************
+    bool is_producer() const ETL_OVERRIDE
+    {
+      return true;
+    }
+
+    //********************************************
+    bool is_consumer() const ETL_OVERRIDE
+    {
+      return true;
     }
   };
 
@@ -2620,79 +1725,7 @@ namespace etl
   {
   public:
 
-    //**********************************************
-    class message_packet
-    {
-    public:
-
-      //********************************************
-      explicit message_packet(const etl::imessage& msg)
-      {
-        const size_t id = msg.message_id;
-
-        void* p = data;
-
-        switch (id)
-        {
-          case T1::ID: ::new (p) T1(static_cast<const T1&>(msg)); break;
-          case T2::ID: ::new (p) T2(static_cast<const T2&>(msg)); break;
-          case T3::ID: ::new (p) T3(static_cast<const T3&>(msg)); break;
-          default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
-        }
-      }
-
-      //********************************************
-      template <typename T>
-      explicit message_packet(const T& msg)
-      {
-        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3>::value), "Unsupported type for this message packet");
-
-        void* p = data;
-        ::new (p) T(static_cast<const T&>(msg));
-      }
-
-      //********************************************
-      ~message_packet()
-      {
-        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-        pmsg->~imessage();
-  #else
-        size_t id = pmsg->message_id;
-
-        switch (id)
-        {
-          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-          default: assert(false); break;
-        }
-  #endif
-      }
-
-      //********************************************
-      etl::imessage& get()
-      {
-        return *static_cast<etl::imessage*>(data);
-      }
-
-      //********************************************
-      const etl::imessage& get() const
-      {
-        return *static_cast<const etl::imessage*>(data);
-      }
-
-      enum
-      {
-        SIZE      = etl::largest<T1, T2, T3>::size,
-        ALIGNMENT = etl::largest<T1, T2, T3>::alignment
-      };
-
-    private:
-
-      typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-    };
+    typedef etl::message_packet<T1, T2,  T3> message_packet;
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -2709,13 +1742,13 @@ namespace etl
     }
 
     //**********************************************
-    void receive(const etl::imessage& msg)
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
       receive(etl::null_message_router::instance(), msg);
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg) ETL_OVERRIDE
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {
@@ -2724,7 +1757,7 @@ namespace etl
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg) ETL_OVERRIDE
     {
       const size_t id = msg.message_id;
 
@@ -2751,21 +1784,33 @@ namespace etl
     using imessage_router::accepts;
 
     //**********************************************
-    bool accepts(etl::message_id_t id) const
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
       switch (id)
       {
         case T1::ID: case T2::ID: case T3::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
     //********************************************
-    bool is_null_router() const
+    ETL_DEPRECATED bool is_null_router() const ETL_OVERRIDE
     {
       return false;
+    }
+
+    //********************************************
+    bool is_producer() const ETL_OVERRIDE
+    {
+      return true;
+    }
+
+    //********************************************
+    bool is_consumer() const ETL_OVERRIDE
+    {
+      return true;
     }
   };
 
@@ -2779,77 +1824,7 @@ namespace etl
   {
   public:
 
-    //**********************************************
-    class message_packet
-    {
-    public:
-
-      //********************************************
-      explicit message_packet(const etl::imessage& msg)
-      {
-        const size_t id = msg.message_id;
-
-        void* p = data;
-
-        switch (id)
-        {
-          case T1::ID: ::new (p) T1(static_cast<const T1&>(msg)); break;
-          case T2::ID: ::new (p) T2(static_cast<const T2&>(msg)); break;
-          default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
-        }
-      }
-
-      //********************************************
-      template <typename T>
-      explicit message_packet(const T& msg)
-      {
-        ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2>::value), "Unsupported type for this message packet");
-
-        void* p = data;
-        ::new (p) T(static_cast<const T&>(msg));
-      }
-
-      //********************************************
-      ~message_packet()
-      {
-        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-        pmsg->~imessage();
-  #else
-        size_t id = pmsg->message_id;
-
-        switch (id)
-        {
-          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-          default: assert(false); break;
-        }
-  #endif
-      }
-
-      //********************************************
-      etl::imessage& get()
-      {
-        return *static_cast<etl::imessage*>(data);
-      }
-
-      //********************************************
-      const etl::imessage& get() const
-      {
-        return *static_cast<const etl::imessage*>(data);
-      }
-
-      enum
-      {
-        SIZE      = etl::largest<T1, T2>::size,
-        ALIGNMENT = etl::largest<T1, T2>::alignment
-      };
-
-    private:
-
-      typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-    };
+    typedef etl::message_packet<T1,  T2> message_packet;
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -2866,13 +1841,13 @@ namespace etl
     }
 
     //**********************************************
-    void receive(const etl::imessage& msg)
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
       receive(etl::null_message_router::instance(), msg);
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg) ETL_OVERRIDE
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {
@@ -2881,7 +1856,7 @@ namespace etl
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg) ETL_OVERRIDE
     {
       const size_t id = msg.message_id;
 
@@ -2907,21 +1882,33 @@ namespace etl
     using imessage_router::accepts;
 
     //**********************************************
-    bool accepts(etl::message_id_t id) const
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
       switch (id)
       {
         case T1::ID: case T2::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
     //********************************************
-    bool is_null_router() const
+    ETL_DEPRECATED bool is_null_router() const ETL_OVERRIDE
     {
       return false;
+    }
+
+    //********************************************
+    bool is_producer() const ETL_OVERRIDE
+    {
+      return true;
+    }
+
+    //********************************************
+    bool is_consumer() const ETL_OVERRIDE
+    {
+      return true;
     }
   };
 
@@ -2935,75 +1922,7 @@ namespace etl
   {
   public:
 
-    //**********************************************
-    class message_packet
-    {
-    public:
-
-      //********************************************
-      explicit message_packet(const etl::imessage& msg)
-      {
-        const size_t id = msg.message_id;
-
-        void* p = data;
-
-        switch (id)
-        {
-          case T1::ID: ::new (p) T1(static_cast<const T1&>(msg)); break;
-          default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
-        }
-      }
-
-      //********************************************
-      template <typename T>
-      explicit message_packet(const T& msg)
-      {
-        ETL_STATIC_ASSERT((etl::is_one_of<T, T1>::value), "Unsupported type for this message packet");
-
-        void* p = data;
-        ::new (p) T(static_cast<const T&>(msg));
-      }
-
-      //********************************************
-      ~message_packet()
-      {
-        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-        pmsg->~imessage();
-  #else
-        size_t id = pmsg->message_id;
-
-        switch (id)
-        {
-          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-          default: assert(false); break;
-        }
-  #endif
-      }
-
-      //********************************************
-      etl::imessage& get()
-      {
-        return *static_cast<etl::imessage*>(data);
-      }
-
-      //********************************************
-      const etl::imessage& get() const
-      {
-        return *static_cast<const etl::imessage*>(data);
-      }
-
-      enum
-      {
-        SIZE      = etl::largest<T1>::size,
-        ALIGNMENT = etl::largest<T1>::alignment
-      };
-
-    private:
-
-      typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-    };
+    typedef etl::message_packet< T1> message_packet;
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -3020,13 +1939,13 @@ namespace etl
     }
 
     //**********************************************
-    void receive(const etl::imessage& msg)
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
       receive(etl::null_message_router::instance(), msg);
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg) ETL_OVERRIDE
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {
@@ -3035,7 +1954,7 @@ namespace etl
     }
 
     //**********************************************
-    void receive(etl::imessage_router& source, const etl::imessage& msg)
+    void receive(etl::imessage_router& source, const etl::imessage& msg) ETL_OVERRIDE
     {
       const size_t id = msg.message_id;
 
@@ -3060,21 +1979,33 @@ namespace etl
     using imessage_router::accepts;
 
     //**********************************************
-    bool accepts(etl::message_id_t id) const
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
       switch (id)
       {
         case T1::ID: 
-          return true; break;
+          return true;
         default:
-          return false; break;
+          return false;
       }
     }
 
     //********************************************
-    bool is_null_router() const
+    ETL_DEPRECATED bool is_null_router() const ETL_OVERRIDE
     {
       return false;
+    }
+
+    //********************************************
+    bool is_producer() const ETL_OVERRIDE
+    {
+      return true;
+    }
+
+    //********************************************
+    bool is_consumer() const ETL_OVERRIDE
+    {
+      return true;
     }
   };
 }

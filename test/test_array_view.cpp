@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include "etl/array_view.h"
 #include "etl/array.h"
@@ -356,8 +356,8 @@ namespace
     //*************************************************************************
     TEST(test_begin_end)
     {
-      View  view(etldata.begin(), etldata.begin());
-      CView cview(etldata.begin(), etldata.begin());
+      View  view(etldata.begin(), etldata.end());
+      CView cview(etldata.begin(), etldata.end());
 
       CHECK_EQUAL(view.begin(),  view.cbegin());
       CHECK_EQUAL(cview.begin(), cview.cbegin());
@@ -598,6 +598,49 @@ namespace
       CHECK(isEqual);
     }
 
+	TEST(test_remove_prefix_boundary)
+	{
+		// On-point test
+		std::vector<int> original = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+		View view(original);
+
+		view.remove_prefix(original.size());
+
+		CHECK(view.empty());
+
+		// Off-point test
+
+		std::vector<int> original2 = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+		View view2(original2);
+
+		view2.remove_prefix(original.size() + 1);
+
+		CHECK(view2.empty());
+	}
+
+	TEST(test_remove_suffix_boundary)
+	{
+		// On-point test
+		std::vector<int> original = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+		View view(original);
+
+		view.remove_suffix(original.size());
+
+		CHECK(view.empty());
+
+		// Off-point test
+
+		std::vector<int> original2 = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+		View view2(original2);
+
+		view2.remove_suffix(original.size() + 1);
+
+		CHECK(view2.empty());
+	}
     //*************************************************************************
     TEST(test_hash)
     {

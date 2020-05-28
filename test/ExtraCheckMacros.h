@@ -1,14 +1,14 @@
-#ifndef UNITTEST_EXTRA_CHECKMACROS_H 
+#ifndef UNITTEST_EXTRA_CHECKMACROS_H
 #define UNITTEST_EXTRA_CHECKMACROS_H
 
-#include "HelperMacros.h"
-#include "ExceptionMacros.h"
-#include "Checks.h"
-#include "AssertException.h"
-#include "MemoryOutStream.h"
-#include "TestDetails.h"
-#include "CurrentTest.h"
-#include "ReportAssertImpl.h"
+#include "UnitTest++/HelperMacros.h"
+#include "UnitTest++/ExceptionMacros.h"
+#include "UnitTest++/Checks.h"
+#include "UnitTest++/AssertException.h"
+#include "UnitTest++/MemoryOutStream.h"
+#include "UnitTest++/TestDetails.h"
+#include "UnitTest++/CurrentTest.h"
+#include "UnitTest++/ReportAssertImpl.h"
 
 #ifndef CHECK_NO_THROW
 #define CHECK_NO_THROW(expression) \

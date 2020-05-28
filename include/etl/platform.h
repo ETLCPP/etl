@@ -38,68 +38,125 @@ SOFTWARE.
 #define ETL_8BIT_SUPPORT (CHAR_BIT == 8)
 
 // Define a debug macro
-#if !defined(ETL_DEBUG)
-  #if defined(_DEBUG) || defined(DEBUG)
-    #define ETL_DEBUG
-  #endif
+#if defined(_DEBUG) || defined(DEBUG)
+#define ETL_DEBUG
 #endif
-
-// Undefine all of the macros.
-#undef ETL_PLATFORM_16BIT
-#undef ETL_PLATFORM_32BIT
-#undef ETL_PLATFORM_64BIT
-#undef ETL_CPP11_SUPPORTED
-#undef ETL_CPP14_SUPPORTED
-#undef ETL_CPP17_SUPPORTED
-#undef ETL_NO_NULLPTR_SUPPORT
-#undef ETL_NO_LARGE_CHAR_SUPPORT
-#undef ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
-#undef ETL_STD_ATOMIC_SUPPORTED
-#undef ETL_FORCE_EXPLICIT_STRING_CONVERSION_FROM_CHAR
 
 // Determine the bit width of the platform.
 #define ETL_PLATFORM_16BIT (UINT16_MAX == UINTPTR_MAX)
 #define ETL_PLATFORM_32BIT (UINT32_MAX == UINTPTR_MAX)
 #define ETL_PLATFORM_64BIT (UINT64_MAX == UINTPTR_MAX)
 
+// Include the user's profile definition.
 #include "etl_profile.h"
 
-#if defined(ETL_AUTO_DETERMINE_COMPILER_INFO)
-  // Figure out things about the compiler.
-  #include "profiles/determine_compiler.h"
-  #include "profiles/determine_compiler_version.h"
-  #include "profiles/determine_compiler_language_support.h"
+// Helper macro, so we don't have to use double negatives.
+// The ETL will use the STL, unless ETL_NO_STL is defined.
+// With this macro we can use '#if ETL_USING_STL' instead of '#if !ETL_NO_STL' in the code.
+#if defined(ETL_NO_STL)
+  #define ETL_USING_STL     0
+  #define ETL_NOT_USING_STL 1
+#else
+  #define ETL_USING_STL     1
+  #define ETL_NOT_USING_STL 0
+#endif
+
+// Helper macros for ETL_STLPORT.
+#if defined(ETL_STLPORT)
+  #define ETL_USING_STLPORT     1
+  #define ETL_NOT_USING_STLPORT 0
+#else
+  #define ETL_USING_STLPORT     0
+  #define ETL_NOT_USING_STLPORT 1
+#endif
+
+// Helper macro for ETL_NO_64BIT_TYPES.
+#if defined(ETL_NO_64BIT_TYPES)
+  #define ETL_USING_64BIT_TYPES     0
+  #define ETL_NOT_USING_64BIT_TYPES 1
+#else
+  #define ETL_USING_64BIT_TYPES     1
+  #define ETL_NOT_USING_64BIT_TYPES 0
+#endif
+
+// Figure out things about the compiler, if haven't already done so in etl_profile.h
+#include "profiles/determine_compiler_version.h"
+#include "profiles/determine_compiler_language_support.h"
+
+// See if we can determine the OS we're compiling on, if haven't already done so in etl_profile.h
+#include "profiles/determine_development_os.h"
+
+// Option to force string construction from a character pointer to be explicit.
+#if defined(ETL_FORCE_EXPLICIT_STRING_CONVERSION_FROM_CHAR)
+#define ETL_EXPLICIT_STRING_FROM_CHAR explicit
+#else
+#define ETL_EXPLICIT_STRING_FROM_CHAR
 #endif
 
 // The macros below are dependent on the profile.
-#if ETL_CPP11_SUPPORTED
-  #define ETL_CONSTEXPR constexpr
-  #define ETL_CONST_OR_CONSTEXPR constexpr
-  #define ETL_DELETE    = delete
-  #define ETL_NOEXCEPT  noexcept
-  #define ETL_NOEXCEPT_EXPR(expression) noexcept(expression)
+// C++11
+#if ETL_CPP11_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#define ETL_CONSTEXPR constexpr
+#define ETL_CONST_OR_CONSTEXPR constexpr
+#define ETL_DELETE = delete
+#define ETL_EXPLICIT explicit
+#define ETL_OVERRIDE override
+#define ETL_FINAL final
+#define ETL_NORETURN [[noreturn]]
+
+#if defined(ETL_THROW_EXCEPTIONS)
+#define ETL_NOEXCEPT  noexcept
+#define ETL_NOEXCEPT_EXPR(expression) noexcept(expression)
 #else
-  #define ETL_CONSTEXPR
-  #define ETL_CONST_OR_CONSTEXPR const
-  #define ETL_DELETE
-  #define ETL_NOEXCEPT
-  #define ETL_NOEXCEPT_EXPR(expression)
+#define ETL_NOEXCEPT
+#define ETL_NOEXCEPT_EXPR(expression)
+#endif
+#else
+#define ETL_CONSTEXPR
+#define ETL_CONST_OR_CONSTEXPR const
+#define ETL_DELETE
+#define ETL_EXPLICIT
+#define ETL_OVERRIDE
+#define ETL_FINAL
+#define ETL_NORETURN
+#define ETL_NOEXCEPT
+#define ETL_NOEXCEPT_EXPR(expression)
 #endif
 
-#if ETL_CPP17_SUPPORTED
-  #define ETL_CONSTEXPR17 constexpr
-  #define ETL_IF_CONSTEXPR constexpr
-  #define ETL_NODISCARD [[nodiscard]]
+// C++14
+#if ETL_CPP14_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#define ETL_CONSTEXPR14 constexpr
+#define ETL_DEPRECATED [[deprecated]]
+#define ETL_DEPRECATED_REASON(reason) [[deprecated(reason)]]
 #else
-  #define ETL_CONSTEXPR17
-  #define ETL_IF_CONSTEXPR
-  #define ETL_NODISCARD
+#define ETL_CONSTEXPR14
+#define ETL_DEPRECATED
+#define ETL_DEPRECATED_REASON(reason)
 #endif
 
-#if defined(ETL_FORCE_EXPLICIT_STRING_CONVERSION_FROM_CHAR)
-  #define ETL_EXPLICIT_STRING_FROM_CHAR explicit
+// C++17
+#if ETL_CPP17_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#define ETL_CONSTEXPR17 constexpr
+#define ETL_IF_CONSTEXPR constexpr
+#define ETL_NODISCARD [[nodiscard]]
+#define ETL_FALLTHROUGH [[fallthrough]]
 #else
-  #define ETL_EXPLICIT_STRING_FROM_CHAR
+#define ETL_CONSTEXPR17
+#define ETL_IF_CONSTEXPR
+#define ETL_NODISCARD
+#define ETL_FALLTHROUGH
 #endif
+
+// C++20
+#if ETL_CPP20_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#define ETL_LIKELY [[likely]]
+#define ETL_UNLIKELY [[unlikely]]
+#else
+#define ETL_LIKELY
+#define ETL_UNLIKELY
+#endif
+
+// Sort out namespaces for STL/No STL options.
+#include "private/choose_namespace.h"
 
 #endif

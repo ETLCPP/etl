@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include "etl/log.h"
 #include "etl/power.h"
@@ -133,6 +133,18 @@ namespace
 
       actual = etl::log<100, 10>::value;
       CHECK_EQUAL(2, actual);
+    }
+
+    //*************************************************************************
+    TEST(test_log_1000_base)
+    {
+      int actual;
+
+      actual = etl::log<1000, 2>::value;
+      CHECK_EQUAL(9, actual);
+
+      actual = etl::log<1000, 10>::value;
+      CHECK_EQUAL(3, actual);
     }
 
     //*************************************************************************

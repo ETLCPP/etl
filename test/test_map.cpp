@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove, rlindeman
 
@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include <map>
 #include <array>
@@ -38,23 +38,28 @@ SOFTWARE.
 
 #include "etl/map.h"
 
+#include "data.h"
+
 static const size_t MAX_SIZE = 10;
 
 #define TEST_GREATER_THAN
 #ifdef TEST_GREATER_THAN
-typedef etl::map<std::string, int, MAX_SIZE, std::greater<std::string> >  Data;
-typedef etl::imap<std::string, int, std::greater<std::string> >        IData;
-typedef std::map<std::string, int, std::greater<std::string> >        Compare_Data;
+using Data         = etl::map<std::string, int, MAX_SIZE, std::greater<std::string>>;
+using IData        = etl::imap<std::string, int, std::greater<std::string>>;
+using Compare_Data = std::map<std::string, int, std::greater<std::string>>;
 #else
-typedef etl::map<std::string, int, MAX_SIZE, std::less<std::string> >  Data;
-typedef etl::imap<std::string, int, std::less<std::string> >       IData;
-typedef std::map<std::string, int, std::less<std::string> >        Compare_Data;
+using Data = etl::map<std::string, int, MAX_SIZE, std::less<std::string>>;
+using IData = etl::imap<std::string, int, std::less<std::string>>;
+using Compare_Data = std::map<std::string, int, std::less<std::string>>;
 #endif
 
-typedef Data::iterator Data_iterator;
-typedef Data::const_iterator Data_const_iterator;
-typedef Compare_Data::iterator Compare_Data_iterator;
-typedef Compare_Data::const_iterator Compare_Data_const_iterator;
+using ItemM = TestDataM<int>;
+using DataM = etl::map<std::string, ItemM, MAX_SIZE>;
+
+using Data_iterator               = Data::iterator;
+using Data_const_iterator         = Data::const_iterator;
+using Compare_Data_iterator       = Compare_Data::iterator;
+using Compare_Data_const_iterator = Compare_Data::const_iterator;
 
 //*************************************************************************
 static std::ostream& operator << (std::ostream& os, const Data_iterator& it)
@@ -221,6 +226,53 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_copy_constructor)
+    {
+      Compare_Data compare_data(initial_data.begin(), initial_data.end());
+      Data data1(compare_data.begin(), compare_data.end());
+      Data data2(data1);
+
+      CHECK_EQUAL(initial_data.size(), data1.size());
+      CHECK(data1.size() == data2.size());
+
+      bool isEqual = false;
+
+      isEqual = Check_Equal(data1.begin(),
+                            data1.end(),
+                            compare_data.begin());
+      CHECK(isEqual);
+
+      isEqual = Check_Equal(data2.begin(),
+                            data2.end(),
+                            compare_data.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_move_constructor)
+    {
+      DataM data1;
+
+      ItemM d1(1);
+      ItemM d2(2);
+      ItemM d3(3);
+
+      data1.insert(DataM::value_type(std::string("1"), etl::move(d1)));
+      data1.insert(DataM::value_type(std::string("2"), etl::move(d2)));
+      data1.insert(DataM::value_type(std::string("3"), etl::move(d3)));
+      data1.insert(DataM::value_type(std::string("4"), ItemM(4)));
+
+      DataM data2(std::move(data1));
+
+      CHECK(!data1.empty()); // Move does not clear the source.
+
+      CHECK_EQUAL(1, data2.at("1").value);
+      CHECK_EQUAL(2, data2.at("2").value);
+      CHECK_EQUAL(3, data2.at("3").value);
+      CHECK_EQUAL(4, data2.at("4").value);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_destruct_via_imap)
     {
       Data* pdata = new Data(initial_data.begin(), initial_data.end());
@@ -243,7 +295,7 @@ namespace
       CHECK(!data.empty());
     }
 
-#if !defined(ETL_NO_STL)
+#if ETL_USING_STL
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
@@ -310,6 +362,29 @@ namespace
                                 other_data.begin());
 
       CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_move_assignment)
+    {
+      DataM data1;
+      DataM data2;
+
+      ItemM d1(1);
+      ItemM d2(2);
+      ItemM d3(3);
+
+      data1.insert(DataM::value_type(std::string("1"), etl::move(d1)));
+      data1.insert(DataM::value_type(std::string("2"), etl::move(d2)));
+      data1.insert(DataM::value_type(std::string("3"), etl::move(d3)));
+      data1.insert(DataM::value_type(std::string("4"), ItemM(4)));
+
+      data2 = std::move(data1);
+
+      CHECK_EQUAL(1, data2.at("1").value);
+      CHECK_EQUAL(2, data2.at("2").value);
+      CHECK_EQUAL(3, data2.at("3").value);
+      CHECK_EQUAL(4, data2.at("4").value);
     }
 
     //*************************************************************************
@@ -459,10 +534,10 @@ namespace
       Compare_Data compare_data;
       Data data;
 
-      ETL_PAIR<Data::iterator, bool> data_result =
+      ETL_OR_STD::pair<Data::iterator, bool> data_result =
         data.insert(Data::value_type(std::string("0"), 0));
-      ETL_PAIR<Compare_Data::iterator, bool> compare_result =
-        compare_data.insert(ETL_MAKE_PAIR(std::string("0"), 0));
+      ETL_OR_STD::pair<Compare_Data::iterator, bool> compare_result =
+        compare_data.insert(ETL_OR_STD::make_pair(std::string("0"), 0));
 
       // Check that both return successful return results
       CHECK_EQUAL(data_result.first->first, compare_result.first->first);
@@ -470,7 +545,7 @@ namespace
 
       // Try adding a duplicate (should return iterator pointing to duplicate)
       data_result = data.insert(Data::value_type(std::string("0"), 0));
-      compare_result = compare_data.insert(ETL_MAKE_PAIR(std::string("0"), 0));
+      compare_result = compare_data.insert(ETL_OR_STD::make_pair(std::string("0"), 0));
 
       // Check that both return successful return results
       CHECK_EQUAL(data_result.first->first, compare_result.first->first);
@@ -482,8 +557,8 @@ namespace
                                  compare_data.begin());
       CHECK(isEqual);
 
-      data.insert(ETL_MAKE_PAIR(std::string("2"), 2));
-      compare_data.insert(ETL_MAKE_PAIR(std::string("2"), 2));
+      data.insert(ETL_OR_STD::make_pair(std::string("2"), 2));
+      compare_data.insert(ETL_OR_STD::make_pair(std::string("2"), 2));
 
       isEqual = Check_Equal(data.begin(),
                             data.end(),
@@ -491,8 +566,8 @@ namespace
 
       CHECK(isEqual);
 
-      data.insert(ETL_MAKE_PAIR(std::string("1"), 1));
-      compare_data.insert(ETL_MAKE_PAIR(std::string("1"), 1));
+      data.insert(ETL_OR_STD::make_pair(std::string("1"), 1));
+      compare_data.insert(ETL_OR_STD::make_pair(std::string("1"), 1));
 
       isEqual = Check_Equal(data.begin(),
                             data.end(),
@@ -508,13 +583,13 @@ namespace
       Data data;
 
       data.insert(Data::value_type(std::string("0"), 0));
-      compare_data.insert(ETL_MAKE_PAIR(std::string("0"), 0));
+      compare_data.insert(ETL_OR_STD::make_pair(std::string("0"), 0));
 
       data.insert(Data::value_type(std::string("1"), 1));
-      compare_data.insert(ETL_MAKE_PAIR(std::string("1"), 1));
+      compare_data.insert(ETL_OR_STD::make_pair(std::string("1"), 1));
 
       data.insert(Data::value_type(std::string("-1"), -1));
-      compare_data.insert(ETL_MAKE_PAIR(std::string("-1"), -1));
+      compare_data.insert(ETL_OR_STD::make_pair(std::string("-1"), -1));
 
       // Check that elements in map are the same
       bool isEqual = Check_Equal(data.begin(),
@@ -524,13 +599,37 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_moved_value)
+    {
+      DataM data;
+
+      ItemM d1(1);
+      ItemM d2(2);
+      ItemM d3(3);
+
+      data.insert(DataM::value_type(std::string("1"), etl::move(d1)));
+      data.insert(DataM::value_type(std::string("2"), etl::move(d2)));
+      data.insert(DataM::value_type(std::string("3"), etl::move(d3)));
+      data.insert(DataM::value_type(std::string("4"), ItemM(4)));
+
+      CHECK(!bool(d1));
+      CHECK(!bool(d2));
+      CHECK(!bool(d3));
+
+      CHECK_EQUAL(1, data.at("1").value);
+      CHECK_EQUAL(2, data.at("2").value);
+      CHECK_EQUAL(3, data.at("3").value);
+      CHECK_EQUAL(4, data.at("4").value);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_value_changed)
     {
       Compare_Data compare_data;
       Data data;
 
       data.insert(Data::value_type(std::string("0"), 0));
-      compare_data.insert(ETL_MAKE_PAIR(std::string("0"), 0));
+      compare_data.insert(ETL_OR_STD::make_pair(std::string("0"), 0));
 
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),
@@ -538,8 +637,8 @@ namespace
 
       CHECK(isEqual);
 
-      data.insert(ETL_MAKE_PAIR(std::string("0"), 1));
-      compare_data.insert(ETL_MAKE_PAIR(std::string("0"), 1));
+      data.insert(ETL_OR_STD::make_pair(std::string("0"), 1));
+      compare_data.insert(ETL_OR_STD::make_pair(std::string("0"), 1));
 
       isEqual = Check_Equal(data.begin(),
                             data.end(),
@@ -554,10 +653,10 @@ namespace
       Compare_Data compare_data;
       Data data;
 
-      ETL_PAIR<Data::iterator, bool> data_result =
+      ETL_OR_STD::pair<Data::iterator, bool> data_result =
         data.insert(Data::value_type(std::string("2"), 2));
-      ETL_PAIR<Compare_Data::iterator, bool> compare_result =
-        compare_data.insert(ETL_MAKE_PAIR(std::string("2"), 2));
+      ETL_OR_STD::pair<Compare_Data::iterator, bool> compare_result =
+        compare_data.insert(ETL_OR_STD::make_pair(std::string("2"), 2));
 
       // Check that both return successful return results
       CHECK_EQUAL(data_result.first->first, compare_result.first->first);
@@ -569,8 +668,8 @@ namespace
         compare_data.begin());
       CHECK(isEqual);
 
-      data.insert(data_result.first, ETL_MAKE_PAIR(std::string("1"), 1));
-      compare_data.insert(compare_result.first, ETL_MAKE_PAIR(std::string("1"), 1));
+      data.insert(data_result.first, ETL_OR_STD::make_pair(std::string("1"), 1));
+      compare_data.insert(compare_result.first, ETL_OR_STD::make_pair(std::string("1"), 1));
 
       isEqual = Check_Equal(data.begin(),
         data.end(),
@@ -585,10 +684,10 @@ namespace
       Compare_Data compare_data;
       Data data;
 
-      ETL_PAIR<Data::iterator, bool> data_result =
+      ETL_OR_STD::pair<Data::iterator, bool> data_result =
         data.insert(Data::value_type(std::string("2"), 2));
-      ETL_PAIR<Compare_Data::iterator, bool> compare_result =
-        compare_data.insert(ETL_MAKE_PAIR(std::string("2"), 2));
+      ETL_OR_STD::pair<Compare_Data::iterator, bool> compare_result =
+        compare_data.insert(ETL_OR_STD::make_pair(std::string("2"), 2));
 
       // Check that both return successful return results
       CHECK_EQUAL(data_result.first->first, compare_result.first->first);
@@ -601,9 +700,9 @@ namespace
       CHECK(isEqual);
 
       data.insert(Data::const_iterator(data_result.first),
-        ETL_MAKE_PAIR(std::string("1"), 1));
+        ETL_OR_STD::make_pair(std::string("1"), 1));
       compare_data.insert(Compare_Data::const_iterator(compare_result.first),
-        ETL_MAKE_PAIR(std::string("1"), 1));
+        ETL_OR_STD::make_pair(std::string("1"), 1));
 
       isEqual = Check_Equal(data.begin(),
         data.end(),
@@ -617,7 +716,7 @@ namespace
     {
       Data data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.insert(ETL_MAKE_PAIR(std::string("10"), 10)), etl::map_full);
+      CHECK_THROW(data.insert(ETL_OR_STD::make_pair(std::string("10"), 10)), etl::map_full);
     }
 
     //*************************************************************************
@@ -666,10 +765,10 @@ namespace
       Compare_Data compare_data(random_data.begin(), random_data.end());
       Data data(random_data.begin(), random_data.end());
 
-      ETL_PAIR<Data::iterator, Data::iterator> data_result =
+      ETL_OR_STD::pair<Data::iterator, Data::iterator> data_result =
         data.equal_range("2");
       Data::iterator data_lb = data.lower_bound("2");
-      ETL_PAIR<Compare_Data::iterator, Compare_Data::iterator> compare_result =
+      ETL_OR_STD::pair<Compare_Data::iterator, Compare_Data::iterator> compare_result =
         compare_data.equal_range("2");
       Compare_Data::iterator compare_data_lb = compare_data.lower_bound("2");
 
@@ -694,9 +793,9 @@ namespace
       const Compare_Data compare_data(initial_data.begin(), initial_data.end());
       const Data data(initial_data.begin(), initial_data.end());
 
-      ETL_PAIR<Data::const_iterator, Data::const_iterator> data_result =
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> data_result =
         data.equal_range("2");
-      ETL_PAIR<Compare_Data::const_iterator, Compare_Data::const_iterator> compare_result =
+      ETL_OR_STD::pair<Compare_Data::const_iterator, Compare_Data::const_iterator> compare_result =
         compare_data.equal_range("2");
 
       // Check that both return the same return results
@@ -1137,16 +1236,16 @@ namespace
         Data data(initial_data_even.begin(), initial_data_even.end());
         Compare_Data compare(initial_data_even.begin(), initial_data_even.end());
 
-        std::vector<ETL_PAIR<std::string, int> > tab(test_data.begin(), test_data.end());
+        std::vector<ETL_OR_STD::pair<std::string, int> > tab(test_data.begin(), test_data.end());
 
         //make sure both data and compare contain same elements
-        std::vector<ETL_PAIR<std::string, int> > data_elements(data.begin(), data.end());
-        std::vector<ETL_PAIR<std::string, int> > compare_data_elements(compare.begin(), compare.end());
+        std::vector<ETL_OR_STD::pair<std::string, int> > data_elements(data.begin(), data.end());
+        std::vector<ETL_OR_STD::pair<std::string, int> > compare_data_elements(compare.begin(), compare.end());
 
         CHECK(data_elements == compare_data_elements);
         CHECK_EQUAL(data_elements.size(), MAX_SIZE);
 
-        for(std::vector<ETL_PAIR<std::string, int> >::iterator it = tab.begin() ; it != tab.end() ; ++it)
+        for(std::vector<ETL_OR_STD::pair<std::string, int> >::iterator it = tab.begin() ; it != tab.end() ; ++it)
         {
             std::string i = it->first;
 
@@ -1161,8 +1260,8 @@ namespace
                     CHECK((*compare.lower_bound(i)) == (*data.lower_bound(i)));
                 }
 
-                ETL_PAIR<Compare_Data::const_iterator, Compare_Data::const_iterator> stlret = compare.equal_range(i);
-                ETL_PAIR<Data::const_iterator, Data::const_iterator> etlret = data.equal_range(i);
+                ETL_OR_STD::pair<Compare_Data::const_iterator, Compare_Data::const_iterator> stlret = compare.equal_range(i);
+                ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> etlret = data.equal_range(i);
 
                 CHECK_EQUAL(stlret.first == compare.end(), etlret.first == data.end());
                 if((stlret.first != compare.end()) && (etlret.first != data.end()))
