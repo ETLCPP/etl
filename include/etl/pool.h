@@ -661,7 +661,7 @@ namespace etl
     /// If asserts or exceptions are enabled and there are no more free items an
     /// etl::pool_no_allocation if thrown, otherwise a null pointer is returned.
     //*************************************************************************
-    template <typename T, typename T1>
+    template <typename T1>
     T* create(const T1& value1)
     {
       return base_t::template create<T>(value1);
