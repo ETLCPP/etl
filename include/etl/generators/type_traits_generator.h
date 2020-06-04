@@ -1531,6 +1531,7 @@ namespace etl
   };
 #endif
 
+#if ETL_CPP11_SUPPORTED
   template <typename T>
   using types_t = typename types<T>::type;
 
@@ -1551,6 +1552,7 @@ namespace etl
 
   template <typename T>
   using types_cpc = typename types<T>::const_pointer_const;
+#endif
 
   //***************************************************************************
   /// size_of
