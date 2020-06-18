@@ -167,7 +167,7 @@ namespace etl
     //***************************************************************************
     optional(T&& value_)
     {
-      ::new (storage.template get_address<T>()) T(std::move(value_));
+      ::new (storage.template get_address<T>()) T(etl::move(value_));
       valid = true;
     }
 #endif

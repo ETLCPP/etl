@@ -618,7 +618,7 @@ namespace etl
     queue(queue&& rhs)
       : base_t(reinterpret_cast<T*>(&buffer[0]), SIZE)
     {
-      base_t::move_clone(std::move(rhs));
+      base_t::move_clone(etl::move(rhs));
     }
 #endif
 
