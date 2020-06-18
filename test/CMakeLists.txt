@@ -97,6 +97,7 @@ set(TEST_SOURCE_FILES
   test_reference_flat_set.cpp
   test_set.cpp
   test_smallest.cpp
+  test_span.cpp
   test_stack.cpp
   test_string_char.cpp
   test_string_u16.cpp
