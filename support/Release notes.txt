@@ -1,4 +1,9 @@
 ===============================================================================
+18.3.4
+Changed std::move to etl::move in std::optional and std::queue
+Fixed etl::span subspan with etl::dynamic_extent
+
+===============================================================================
 18.3.3
 C++03 compatibility fix for type_traits.h
 
