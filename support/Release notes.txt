@@ -1,4 +1,9 @@
 ===============================================================================
+18.4.0
+Refactored etl::error_handler to use etl::delegate style implementation.
+Allows set_callback() function to be given run-time and compile-time pointers to free and member functions without using etl::ifunction.
+
+===============================================================================
 18.3.4
 Changed std::move to etl::move in std::optional and std::queue
 Fixed etl::span subspan with etl::dynamic_extent
