@@ -53,9 +53,16 @@ typedef etl::visitor<Square, Circle, const Triangle> DrawVisitorType;
 typedef etl::visitor<Square, const Triangle> LogVisitorType;
 
 //*****************************************************************************
+// Base shape.
+//*****************************************************************************
+class ShapeBase : public etl::visitable<DrawVisitorType, LogVisitorType>
+{
+};
+
+//*****************************************************************************
 // Square accepts draw & log visitors.
 //*****************************************************************************
-class Square : public etl::visitable<DrawVisitorType, LogVisitorType>
+class Square : public ShapeBase
 {
 public:
 
@@ -73,7 +80,7 @@ public:
 //*****************************************************************************
 // Circle only accepts draw visitors.
 //*****************************************************************************
-class Circle : public etl::visitable<DrawVisitorType>
+class Circle : public ShapeBase
 {
 public:
 
@@ -81,12 +88,16 @@ public:
   {
     visitor.visit(*this);
   }
+
+  void accept(LogVisitorType& visitor)
+  {
+  }
 };
 
 //*****************************************************************************
 // Triangle accepts draw & log visitors.
 //*****************************************************************************
-class Triangle : public etl::visitable<DrawVisitorType, LogVisitorType>
+class Triangle : public ShapeBase
 {
 public:
 
@@ -195,6 +206,8 @@ namespace
       Circle   circle;
       Triangle triangle;
 
+      ShapeBase* pShapeBase;
+
       CHECK_EQUAL(false, draw_visitor.square_called);
       CHECK_EQUAL(false, draw_visitor.circle_called);
       CHECK_EQUAL(false, draw_visitor.triangle_called);
@@ -221,8 +234,9 @@ namespace
       CHECK_EQUAL(false, log_visitor.circle_called);
       CHECK_EQUAL(false, log_visitor.triangle_called);
 
-      triangle.accept(draw_visitor);
-      triangle.accept(log_visitor);
+      pShapeBase = &triangle;
+      pShapeBase->accept(draw_visitor);
+      pShapeBase->accept(log_visitor);
 
       CHECK_EQUAL(true,  draw_visitor.square_called);
       CHECK_EQUAL(true,  draw_visitor.circle_called);
