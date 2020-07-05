@@ -43,6 +43,7 @@ namespace etl
 {
   //***************************************************************************
   /// Default format spec.
+  /// !etl::iu32string && !etl::u32string_view
   //***************************************************************************
   template <typename T>
   typename etl::enable_if<!etl::is_same<T, etl::iu32string>::value && !etl::is_same<T, etl::u32string_view>::value, const etl::iu32string&>::type
@@ -54,7 +55,8 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Supplied format spec..
+  /// Supplied format spec.
+  /// !etl::iu32string && !etl::u32string_view
   //***************************************************************************
   template <typename T>
   typename etl::enable_if<!etl::is_same<T, etl::iu32string>::value && !etl::is_same<T, etl::u32string_view>::value, const etl::iu32string&>::type
@@ -65,6 +67,7 @@ namespace etl
 
   //***************************************************************************
   /// Default format spec.
+  /// etl::iu32string
   //***************************************************************************
   template <typename T>
   typename etl::enable_if<etl::is_same<T, etl::iu32string>::value, const etl::iu32string&>::type
@@ -78,7 +81,8 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Supplied format spec..
+  /// Supplied format spec.
+  /// etl::iu32string
   //***************************************************************************
   template <typename T>
   typename etl::enable_if<etl::is_same<T, etl::iu32string>::value, const etl::iu32string&>::type
@@ -91,6 +95,7 @@ namespace etl
 
   //***************************************************************************
   /// Default format spec.
+  /// etl::u32string_view
   //***************************************************************************
   template <typename T>
   typename etl::enable_if<etl::is_same<T, etl::u32string_view>::value, const etl::iu32string&>::type
@@ -104,7 +109,8 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Supplied format spec..
+  /// Supplied format spec.
+  /// etl::u32string_view
   //***************************************************************************
   template <typename T>
   typename etl::enable_if<etl::is_same<T, etl::u32string_view>::value, const etl::iu32string&>::type
