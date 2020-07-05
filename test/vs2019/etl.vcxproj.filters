@@ -855,6 +855,18 @@
     <ClInclude Include="..\..\include\etl\parameter_pack.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\string_stream.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\wstring_stream.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\u16string_stream.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\u32string_stream.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1329,6 +1341,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_parameter_pack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_stream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_wstring_stream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_u16string_stream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_u32string_stream.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
