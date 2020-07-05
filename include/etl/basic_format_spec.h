@@ -248,6 +248,28 @@ namespace etl
       return boolalpha_;
     }
 
+    //***************************************************************************
+    /// Equality operator.
+    //***************************************************************************
+    friend bool operator ==(const basic_format_spec& lhs, const basic_format_spec& rhs)
+    {
+      return (lhs.base_ == rhs.base_) &&
+             (lhs.width_ == rhs.width_) &&
+             (lhs.precision_ == rhs.precision_) &&
+             (lhs.upper_case_ == rhs.upper_case_) &&
+             (lhs.left_justified_ == rhs.left_justified_) &&
+             (lhs.boolalpha_ == rhs.boolalpha_) &&
+             (lhs.fill_ == rhs.fill_);
+    }
+
+    //***************************************************************************
+    /// Inequality operator.
+    //***************************************************************************
+    friend bool operator !=(const basic_format_spec& lhs, const basic_format_spec& rhs)
+    {
+      return !(lhs == rhs);
+    }
+
   private:
 
     uint_least8_t base_;

@@ -1,4 +1,18 @@
 ===============================================================================
+18.5.0
+Added string streams
+etl::string_stream
+etl::wstring_stream
+etl::u16string_stream
+etl::u32string_stream
+
+Added string formatting to etl::to_string from
+etl::string etl::string_view
+etl::wstring etl::wstring_view
+etl::u16string etl::u16string_view
+etl::u32string etl::u32string_view
+
+===============================================================================
 18.4.0
 Refactored etl::error_handler to use etl::delegate style implementation.
 Allows set_callback() function to be given run-time and compile-time pointers to free and member functions without using etl::ifunction.
