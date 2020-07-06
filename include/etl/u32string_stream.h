@@ -60,7 +60,7 @@ namespace etl
     //*************************************************************************
     /// Construct from text and format spec.
     //*************************************************************************
-    u32string_stream(etl::iu32string& text_, etl::u32format_spec spec_)
+    u32string_stream(etl::iu32string& text_, const etl::u32format_spec& spec_)
       : text(text_)
       , spec(spec_)
     {
@@ -69,7 +69,7 @@ namespace etl
     //*************************************************************************
     /// Set the format spec.
     //*************************************************************************
-    void set_format(etl::u32format_spec spec_)
+    void set_format(const etl::u32format_spec& spec_)
     {
       spec = spec_;
     }
@@ -125,7 +125,7 @@ namespace etl
     //*************************************************************************
     /// Stream operators.
     //*************************************************************************
-    friend u32string_stream& operator <<(u32string_stream& ss, etl::u32format_spec spec)
+    friend u32string_stream& operator <<(u32string_stream& ss, const etl::u32format_spec& spec)
     {
       ss.spec = spec;
       return ss;
@@ -174,6 +174,9 @@ namespace etl
 
     etl::iu32string&    text;
     etl::u32format_spec spec;
+
+    u32string_stream(const u32string_stream&) ETL_DELETE;
+    u32string_stream& operator =(const u32string_stream&) ETL_DELETE;
   };
 }
 
