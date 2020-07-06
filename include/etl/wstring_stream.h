@@ -60,7 +60,7 @@ namespace etl
     //*************************************************************************
     /// Construct from text and format spec.
     //*************************************************************************
-    wstring_stream(etl::iwstring& text_, etl::wformat_spec spec_)
+    wstring_stream(etl::iwstring& text_, const etl::wformat_spec& spec_)
       : text(text_)
       , spec(spec_)
     {
@@ -69,7 +69,7 @@ namespace etl
     //*************************************************************************
     /// Set the format spec.
     //*************************************************************************
-    void set_format(etl::wformat_spec spec_)
+    void set_format(const etl::wformat_spec& spec_)
     {
       spec = spec_;
     }
@@ -125,7 +125,7 @@ namespace etl
     //*************************************************************************
     /// Stream operators.
     //*************************************************************************
-    friend wstring_stream& operator <<(wstring_stream& ss, etl::wformat_spec spec)
+    friend wstring_stream& operator <<(wstring_stream& ss, const etl::wformat_spec& spec)
     {
       ss.spec = spec;
       return ss;
@@ -174,6 +174,9 @@ namespace etl
 
     etl::iwstring&    text;
     etl::wformat_spec spec;
+
+    wstring_stream(const wstring_stream&) ETL_DELETE;
+    wstring_stream& operator =(const wstring_stream&) ETL_DELETE;
   };
 }
 
