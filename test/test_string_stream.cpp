@@ -126,6 +126,27 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_custom_multi_inline_format)
+    {
+      String str;
+      Format format1 = Format().base(10).width(10).fill(STR('#'));
+      Format format2 = Format().base(10).width(8).fill(STR('*')).left();
+      Format format3 = Format().base(16).width(4).fill(STR(' ')).right();
+
+      Stream ss(str);
+
+      int value = 123;
+      String hello(STR("Hello"));
+      ss << etl::set_base(10) << etl::set_width(10) << etl::set_fill(STR('#')) << hello
+         << etl::set_width(8) << etl::set_fill(STR('*')) << etl::set_left() << STR("World")
+         << etl::set_base(16) << etl::set_width(4) << etl::set_fill(STR(' ')) << etl::set_right() << value;
+
+      String result = ss.str();
+
+      CHECK_EQUAL(String(STR("#####HelloWorld***  7B")), result);
+    }
+
+    //*************************************************************************
     TEST(test_custom_class_default_format)
     {
       String str;

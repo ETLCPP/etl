@@ -132,6 +132,63 @@ namespace etl
     }
 
     //*********************************
+    friend string_stream& operator <<(string_stream& ss, etl::private_basic_format_spec::base_spec spec)
+    {
+      ss.spec.base(spec.base);
+      return ss;
+    }
+
+    //*********************************
+    friend string_stream& operator <<(string_stream& ss, etl::private_basic_format_spec::width_spec spec)
+    {
+      ss.spec.width(spec.width);
+      return ss;
+    }
+
+    //*********************************
+    template <typename TChar>
+    friend string_stream& operator <<(string_stream& ss, etl::private_basic_format_spec::fill_spec<TChar> spec)
+    {
+      ss.spec.fill(spec.fill);
+      return ss;
+    }
+
+    //*********************************
+    friend string_stream& operator <<(string_stream& ss, etl::private_basic_format_spec::precision_spec spec)
+    {
+      ss.spec.precision(spec.precision);
+      return ss;
+    }
+
+    //*********************************
+    friend string_stream& operator <<(string_stream& ss, etl::private_basic_format_spec::boolalpha_spec spec)
+    {
+      ss.spec.boolalpha(spec.boolalpha);
+      return ss;
+    }
+
+    //*********************************
+    friend string_stream& operator <<(string_stream& ss, etl::private_basic_format_spec::upper_case_spec spec)
+    {
+      ss.spec.upper_case(spec.upper_case);
+      return ss;
+    }
+
+    //*********************************
+    friend string_stream& operator <<(string_stream& ss, etl::private_basic_format_spec::left_spec spec)
+    {
+      ss.spec.left();
+      return ss;
+    }
+
+    //*********************************
+    friend string_stream& operator <<(string_stream& ss, etl::private_basic_format_spec::right_spec spec)
+    {
+      ss.spec.right();
+      return ss;
+    }
+
+    //*********************************
     friend string_stream& operator <<(string_stream& ss, etl::string_view view)
     {
       etl::to_string(view, ss.text, ss.spec, true);
