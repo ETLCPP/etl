@@ -225,6 +225,7 @@
 		<Unit filename="../../include/etl/atomic/atomic_std.h" />
 		<Unit filename="../../include/etl/basic_format_spec.h" />
 		<Unit filename="../../include/etl/basic_string.h" />
+		<Unit filename="../../include/etl/basic_string_stream.h" />
 		<Unit filename="../../include/etl/binary.h" />
 		<Unit filename="../../include/etl/bit_stream.h" />
 		<Unit filename="../../include/etl/bitset.h" />
@@ -433,6 +434,7 @@
 		<Unit filename="../../include/etl/stack.h" />
 		<Unit filename="../../include/etl/state_chart.h" />
 		<Unit filename="../../include/etl/static_assert.h" />
+		<Unit filename="../../include/etl/string_stream.h" />
 		<Unit filename="../../include/etl/string_view.h" />
 		<Unit filename="../../include/etl/task.h" />
 		<Unit filename="../../include/etl/temp.h" />
@@ -448,8 +450,10 @@
 		<Unit filename="../../include/etl/type_traits.h" />
 		<Unit filename="../../include/etl/u16format_spec.h" />
 		<Unit filename="../../include/etl/u16string.h" />
+		<Unit filename="../../include/etl/u16string_stream.h" />
 		<Unit filename="../../include/etl/u32format_spec.h" />
 		<Unit filename="../../include/etl/u32string.h" />
+		<Unit filename="../../include/etl/u32string_stream.h" />
 		<Unit filename="../../include/etl/unordered_map.h" />
 		<Unit filename="../../include/etl/unordered_multimap.h" />
 		<Unit filename="../../include/etl/unordered_multiset.h" />
@@ -463,6 +467,7 @@
 		<Unit filename="../../include/etl/visitor.h" />
 		<Unit filename="../../include/etl/wformat_spec.h" />
 		<Unit filename="../../include/etl/wstring.h" />
+		<Unit filename="../../include/etl/wstring_stream.h" />
 		<Unit filename="../ExtraCheckMacros.h" />
 		<Unit filename="../data.h" />
 		<Unit filename="../etl_profile.h" />
@@ -570,6 +575,7 @@
 		<Unit filename="../test_stack.cpp" />
 		<Unit filename="../test_state_chart.cpp" />
 		<Unit filename="../test_string_char.cpp" />
+		<Unit filename="../test_string_stream.cpp" />
 		<Unit filename="../test_string_u16.cpp" />
 		<Unit filename="../test_string_u32.cpp" />
 		<Unit filename="../test_string_view.cpp" />
@@ -583,6 +589,8 @@
 		<Unit filename="../test_type_lookup.cpp" />
 		<Unit filename="../test_type_select.cpp" />
 		<Unit filename="../test_type_traits.cpp" />
+		<Unit filename="../test_u16string_stream.cpp" />
+		<Unit filename="../test_u32string_stream.cpp" />
 		<Unit filename="../test_unordered_map.cpp" />
 		<Unit filename="../test_unordered_multimap.cpp" />
 		<Unit filename="../test_unordered_multiset.cpp" />
@@ -597,6 +605,7 @@
 		<Unit filename="../test_vector_pointer.cpp" />
 		<Unit filename="../test_vector_pointer_external_buffer.cpp" />
 		<Unit filename="../test_visitor.cpp" />
+		<Unit filename="../test_wstring_stream.cpp" />
 		<Unit filename="../test_xor_checksum.cpp" />
 		<Unit filename="../test_xor_rotate_checksum.cpp" />
 		<Extensions>
