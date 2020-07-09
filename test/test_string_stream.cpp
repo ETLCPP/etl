@@ -126,20 +126,59 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_custom_inline_format)
+    {
+      String str;
+      Stream ss(str);
+
+      int value = 123456;
+
+      ss << etl::setbase(10U) << etl::setw(20) << etl::setfill(STR('-')) << etl::left;
+
+      ss << etl::bin << value;
+      CHECK_EQUAL(String(STR("11110001001000000---")), ss.str());
+
+      ss.clear();
+      ss << etl::oct << value;
+      CHECK_EQUAL(String(STR("361100--------------")), ss.str());
+
+      ss.clear();
+      ss << etl::dec << value;
+      CHECK_EQUAL(String(STR("123456--------------")), ss.str());
+
+      ss.clear();
+      ss << etl::hex << etl::uppercase << value;
+      CHECK_EQUAL(String(STR("1E240---------------")), ss.str());
+
+      ss.clear();
+      ss << etl::hex << etl::nouppercase << value;
+      CHECK_EQUAL(String(STR("1e240---------------")), ss.str());
+
+      ss.clear();
+      ss << etl::setw(0);
+      ss << etl::noboolalpha << false << STR(" ") << true << STR(" ") << etl::boolalpha << false << STR(" ") << true;
+      CHECK_EQUAL(String(STR("0 1 false true")), ss.str());
+
+      ss.clear();
+      ss << etl::setprecision(4) << 3.1415927;
+      CHECK_EQUAL(String(STR("3.1416")), ss.str());
+
+      ss.clear();
+      ss << STR("abcdef") << STR(" ") << etl::uppercase << STR("abcdef");
+      CHECK_EQUAL(String(STR("abcdef abcdef")), ss.str());
+    }
+
+    //*************************************************************************
     TEST(test_custom_multi_inline_format)
     {
       String str;
-      Format format1 = Format().base(10).width(10).fill(STR('#'));
-      Format format2 = Format().base(10).width(8).fill(STR('*')).left();
-      Format format3 = Format().base(16).width(4).fill(STR(' ')).right();
-
       Stream ss(str);
 
       int value = 123;
       String hello(STR("Hello"));
-      ss << etl::set_base(10) << etl::set_width(10) << etl::set_fill(STR('#')) << hello
-         << etl::set_width(8) << etl::set_fill(STR('*')) << etl::set_left() << STR("World")
-         << etl::set_base(16) << etl::set_width(4) << etl::set_fill(STR(' ')) << etl::set_right() << value;
+      ss << etl::dec << etl::setw(10) << etl::setfill(STR('#')) << hello
+         << etl::setw(8) << etl::setfill(STR('*')) << etl::left << STR("World")
+         << etl::hex << etl::setw(4) << etl::setfill(STR(' ')) << etl::right << value;
 
       String result = ss.str();
 

@@ -39,15 +39,14 @@ SOFTWARE.
 
 namespace etl
 {
-  //***************************************************************************
-  // Stream formatting manipulators.
-  //***************************************************************************
   namespace private_basic_format_spec
   {
-    //*********************************
+    //*******************************************************
+    // Structures returned by stream formatting manipulators.
+    //*******************************************************
     struct base_spec
     {
-      base_spec(uint_least8_t base_)
+      ETL_CONSTEXPR base_spec(uint_least8_t base_)
         : base(base_)
       {
       }
@@ -58,7 +57,7 @@ namespace etl
     //*********************************
     struct width_spec
     {
-      width_spec(uint_least8_t width_)
+      ETL_CONSTEXPR width_spec(uint_least8_t width_)
         : width(width_)
       {
       }
@@ -70,7 +69,7 @@ namespace etl
     template <typename TChar>
     struct fill_spec
     {
-      fill_spec(TChar fill_)
+      ETL_CONSTEXPR fill_spec(TChar fill_)
         : fill(fill_)
       {
       }
@@ -81,7 +80,7 @@ namespace etl
     //*********************************
     struct precision_spec
     {
-      precision_spec(uint_least8_t precision_)
+      ETL_CONSTEXPR precision_spec(uint_least8_t precision_)
         : precision(precision_)
       {
       }
@@ -90,9 +89,9 @@ namespace etl
     };
 
     //*********************************
-    struct upper_case_spec
+    struct uppercase_spec
     {
-      upper_case_spec(bool upper_case_)
+      ETL_CONSTEXPR uppercase_spec(bool upper_case_)
         : upper_case(upper_case_)
       {
       }
@@ -103,7 +102,7 @@ namespace etl
     //*********************************
     struct boolalpha_spec
     {
-      boolalpha_spec(bool boolalpha_)
+      ETL_CONSTEXPR boolalpha_spec(bool boolalpha_)
         : boolalpha(boolalpha_)
       {
       }
@@ -122,78 +121,62 @@ namespace etl
     };
   }
 
-  //*********************************
-  static private_basic_format_spec::base_spec set_base(uint32_t base)
+  //***************************************************************************
+  // Stream formatting manipulators.
+  //***************************************************************************
+  static ETL_CONSTEXPR private_basic_format_spec::base_spec setbase(uint32_t base)
   {
     return private_basic_format_spec::base_spec(base);
   }
 
   //*********************************
-  static private_basic_format_spec::base_spec binary()
-  {
-    return private_basic_format_spec::base_spec(2U);
-  }
-
-  //*********************************
-  static private_basic_format_spec::base_spec octal()
-  {
-    return private_basic_format_spec::base_spec(8U);
-  }
-
-  //*********************************
-  static private_basic_format_spec::base_spec decimal()
-  {
-    return private_basic_format_spec::base_spec(10U);
-  }
-
-  //*********************************
-  static private_basic_format_spec::base_spec hex()
-  {
-    return private_basic_format_spec::base_spec(16U);
-  }
-
-  //*********************************
-  static private_basic_format_spec::width_spec set_width(uint32_t width)
+  static ETL_CONSTEXPR private_basic_format_spec::width_spec setw(uint32_t width)
   {
     return private_basic_format_spec::width_spec(width);
   }
 
   //*********************************
   template <typename TChar>
-  static private_basic_format_spec::fill_spec<TChar> set_fill(TChar fill)
+  static ETL_CONSTEXPR private_basic_format_spec::fill_spec<TChar> setfill(TChar fill)
   {
     return private_basic_format_spec::fill_spec<TChar>(fill);
   }
 
   //*********************************
-  static private_basic_format_spec::left_spec set_left()
-  {
-    return private_basic_format_spec::left_spec();
-  }
-
-  //*********************************
-  static private_basic_format_spec::right_spec set_right()
-  {
-    return private_basic_format_spec::right_spec();
-  }
-
-  //*********************************
-  static private_basic_format_spec::precision_spec set_precision(uint32_t precision)
+  static ETL_CONSTEXPR private_basic_format_spec::precision_spec setprecision(uint32_t precision)
   {
     return private_basic_format_spec::precision_spec(precision);
   }
 
   //*********************************
-  static private_basic_format_spec::upper_case_spec set_upper_case(bool upper_case)
-  {
-    return private_basic_format_spec::upper_case_spec(upper_case);
-  }
+  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::base_spec bin = { 2U };
 
   //*********************************
-  static private_basic_format_spec::boolalpha_spec set_boolalpha(bool boolalpha)
-  {
-    return private_basic_format_spec::boolalpha_spec(boolalpha);
-  }
+  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::base_spec oct = { 8U };
+
+  //*********************************
+  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::base_spec dec = { 10U };
+
+  //*********************************
+  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::base_spec hex = { 16U };
+
+  //*********************************
+  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::left_spec left;
+
+  //*********************************
+  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::right_spec right;
+
+  //*********************************
+  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::boolalpha_spec boolalpha = { true };
+
+  //*********************************
+  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::boolalpha_spec noboolalpha = { false };
+
+  //*********************************
+  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::uppercase_spec uppercase = { true };
+
+  //*********************************
+  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::uppercase_spec nouppercase = { false };
 
   //***************************************************************************
   /// basic_format_spec
@@ -212,15 +195,22 @@ namespace etl
     /// Left Justified = false
     //***************************************************************************
     basic_format_spec()
-      : base_(10U)
-      , width_(0U)
-      , precision_(0U)
-      , upper_case_(true)
-      , left_justified_(false)
-      , boolalpha_(false)
-      , fill_(typename TString::value_type(' '))
     {
+      clear();
+    }
 
+    //***************************************************************************
+    /// Clears the format spec back to default.
+    //***************************************************************************
+    void clear()
+    {
+      base_           = 10U;
+      width_          = 0U;
+      precision_      = 0U;
+      upper_case_     = true;
+      left_justified_ = false;
+      boolalpha_      = false;
+      fill_           = typename TString::value_type(' ');
     }
 
     //***************************************************************************
