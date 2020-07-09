@@ -165,9 +165,40 @@ namespace etl
         }
 
         // If number is negative, append '-'
-        if ((format.get_base() == 10) && negative)
+        if ((format.get_base() == 10U) && negative)
         {
           str.push_back(type('-'));
+        }
+
+        if (format.is_show_base())
+        {
+          switch (format.get_base())
+          {
+            case 2U:
+            {
+              str.push_back(format.is_upper_case() ? type('B') : type('b'));
+              str.push_back(type('0'));
+              break;
+            }
+
+            case 8U:
+            {
+              str.push_back(type('0'));
+              break;
+            }
+
+            case 16U:
+            {
+              str.push_back(format.is_upper_case() ? type('X') : type('x'));
+              str.push_back(type('0'));
+              break;
+            }
+
+            default:
+            {
+              break;
+            }
+          }
         }
 
         // Reverse the string we appended.
@@ -318,8 +349,8 @@ namespace etl
     }
 
     //***************************************************************************
-/// Helper function for string views.
-//***************************************************************************
+    /// Helper function for string views.
+    //***************************************************************************
     template <typename TSringView, typename TIString>
     void add_string_view(const TSringView& value,
                          TIString& str,

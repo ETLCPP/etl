@@ -111,6 +111,17 @@ namespace etl
     };
 
     //*********************************
+    struct showbase_spec
+    {
+      ETL_CONSTEXPR showbase_spec(bool show_base_)
+        : show_base(show_base_)
+      {
+      }
+
+      const bool show_base;
+    };
+
+    //*********************************
     struct left_spec
     {
     };
@@ -178,6 +189,12 @@ namespace etl
   //*********************************
   static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::uppercase_spec nouppercase = { false };
 
+  //*********************************
+  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::showbase_spec showbase = { true };
+
+  //*********************************
+  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::showbase_spec noshowbase = { false };
+
   //***************************************************************************
   /// basic_format_spec
   //***************************************************************************
@@ -207,9 +224,10 @@ namespace etl
       base_           = 10U;
       width_          = 0U;
       precision_      = 0U;
-      upper_case_     = true;
+      upper_case_     = false;
       left_justified_ = false;
       boolalpha_      = false;
+      show_base_      = false;
       fill_           = typename TString::value_type(' ');
     }
 
@@ -269,6 +287,24 @@ namespace etl
     uint32_t get_base() const
     {
       return base_;
+    }
+
+    //***************************************************************************
+    /// Sets the show base flag.
+    /// \return A reference to the basic_format_spec.
+    //***************************************************************************
+    basic_format_spec& show_base(bool b)
+    {
+      show_base_ = b;
+      return *this;
+    }
+
+    //***************************************************************************
+    /// Gets the show base flag.
+    //***************************************************************************
+    bool is_show_base() const
+    {
+      return show_base_;
     }
 
     //***************************************************************************
@@ -408,6 +444,7 @@ namespace etl
              (lhs.upper_case_ == rhs.upper_case_) &&
              (lhs.left_justified_ == rhs.left_justified_) &&
              (lhs.boolalpha_ == rhs.boolalpha_) &&
+             (lhs.show_base_ == rhs.show_base_) &&
              (lhs.fill_ == rhs.fill_);
     }
 
@@ -427,6 +464,7 @@ namespace etl
     bool upper_case_;
     bool left_justified_;
     bool boolalpha_;
+    bool show_base_;
     typename TString::value_type fill_;
   };
 }

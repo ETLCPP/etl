@@ -122,7 +122,7 @@ namespace
 
       String result = ss.str();
 
-      CHECK_EQUAL(String(STR("#####HelloWorld***  7B")), result);
+      CHECK_EQUAL(String(STR("#####HelloWorld***  7b")), result);
     }
 
     //*************************************************************************
@@ -169,6 +169,46 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_custom_inline_format_showbase)
+    {
+      String str;
+      Stream ss(str);
+
+      int value = 123456;
+
+      ss << etl::bin << etl::noshowbase << value;
+      CHECK_EQUAL(String(STR("11110001001000000")), ss.str());
+
+      ss.clear();
+      ss << etl::bin << etl::showbase << value;
+      CHECK_EQUAL(String(STR("0b11110001001000000")), ss.str());
+
+      ss.clear();
+      ss << etl::oct << etl::noshowbase << value;
+      CHECK_EQUAL(String(STR("361100")), ss.str());
+
+      ss.clear();
+      ss << etl::oct << etl::showbase << value;
+      CHECK_EQUAL(String(STR("0361100")), ss.str());
+
+      ss.clear();
+      ss << etl::dec << etl::noshowbase << value;
+      CHECK_EQUAL(String(STR("123456")), ss.str());
+
+      ss.clear();
+      ss << etl::dec << etl::showbase << value;
+      CHECK_EQUAL(String(STR("123456")), ss.str());
+
+      ss.clear();
+      ss << etl::hex << etl::noshowbase << value;
+      CHECK_EQUAL(String(STR("1e240")), ss.str());
+
+      ss.clear();
+      ss << etl::hex << etl::showbase << value;
+      CHECK_EQUAL(String(STR("0x1e240")), ss.str());
+    }
+
+    //*************************************************************************
     TEST(test_custom_multi_inline_format)
     {
       String str;
@@ -182,7 +222,7 @@ namespace
 
       String result = ss.str();
 
-      CHECK_EQUAL(String(STR("#####HelloWorld***  7B")), result);
+      CHECK_EQUAL(String(STR("#####HelloWorld***  7b")), result);
     }
 
     //*************************************************************************

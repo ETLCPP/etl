@@ -197,6 +197,15 @@ namespace etl
     }
 
     //*********************************
+    /// etl::showbase_spec from etl::showbase & etl::noshowbase stream manipulators
+    //*********************************
+    friend basic_string_stream& operator <<(basic_string_stream& ss, etl::private_basic_format_spec::showbase_spec spec)
+    {
+      ss.spec.show_base(spec.show_base);
+      return ss;
+    }
+
+    //*********************************
     /// etl::left_spec from etl::left stream manipulator
     //*********************************
     friend basic_string_stream& operator <<(basic_string_stream& ss, etl::private_basic_format_spec::left_spec spec)

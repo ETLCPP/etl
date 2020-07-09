@@ -122,7 +122,7 @@ namespace
 
       String result = ss.str();
 
-      CHECK_EQUAL(String(STR("#####HelloWorld***  7B")), result);
+      CHECK_EQUAL(String(STR("#####HelloWorld***  7b")), result);
     }
 
     //*************************************************************************
@@ -182,7 +182,7 @@ namespace
 
       String result = ss.str();
 
-      CHECK_EQUAL(String(STR("#####HelloWorld***  7B")), result);
+      CHECK_EQUAL(String(STR("#####HelloWorld***  7b")), result);
     }
 
     //*************************************************************************
