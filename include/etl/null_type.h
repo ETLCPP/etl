@@ -37,11 +37,6 @@ namespace etl
   template <size_t N>
   class null_type
   {
-  private:
-
-    null_type();
-    null_type(const null_type&);
-    null_type& operator=(const null_type&);
   };
 }
 

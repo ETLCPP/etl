@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -26,15 +26,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include <cstdint>
 #include <type_traits>
+#include <limits>
 
 #include "etl/binary.h"
 #include "etl/bitset.h"
 #include "etl/fnv_1.h"
 #include "etl/integral_limits.h"
+#include "etl/type_traits.h"
 
 // Count bits the easy way.
 template <typename T>
@@ -171,6 +173,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_rotate_left8_constexpr)
+    {
+      char temp[etl::rotate_left(uint8_t(0xAA))];
+
+      CHECK_EQUAL(etl::rotate_left(uint8_t(0xAA)), sizeof(temp));
+    }
+
+    //*************************************************************************
     TEST(test_rotate_left16)
     {
       uint16_t value;
@@ -261,6 +271,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_rotate_left16_constexpr)
+    {
+      char temp[etl::rotate_left(uint16_t(0xAA))];
+
+      CHECK_EQUAL(etl::rotate_left(uint16_t(0xAA)), sizeof(temp));
+    }
+
+    //*************************************************************************
     TEST(test_rotate_right8)
     {
       uint8_t value;
@@ -312,6 +330,14 @@ namespace
       value = 0xB7;
       value = etl::rotate_right(value, 9);
       CHECK_EQUAL(0xDB, int(value));
+    }
+
+    //*************************************************************************
+    TEST(test_rotate_right8_constexpr)
+    {
+      char temp[etl::rotate_right(uint8_t(0xAA))];
+
+      CHECK_EQUAL(etl::rotate_right(uint8_t(0xAA)), sizeof(temp));
     }
 
     //*************************************************************************
@@ -405,6 +431,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_rotate_right16_constexpr)
+    {
+      char temp[etl::rotate_right(uint16_t(0xAA))];
+
+      CHECK_EQUAL(etl::rotate_right(uint16_t(0xAA)), sizeof(temp));
+    }
+
+    //*************************************************************************
     TEST(test_rotate16)
     {
       uint16_t value;
@@ -419,6 +453,14 @@ namespace
       value = 0xB73C;
       value = etl::rotate(value, offset);
       CHECK_EQUAL(0xCB73, int(value));
+    }
+
+    //*************************************************************************
+    TEST(test_rotate16_constexpr)
+    {
+      char temp[etl::rotate(uint16_t(0xAA), 1)];
+
+      CHECK_EQUAL(etl::rotate(uint16_t(0xAA), 1), sizeof(temp));
     }
 
     //*************************************************************************
@@ -452,6 +494,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_reverse_bits8_constexpr)
+    {
+      char temp[etl::reverse_bits(uint8_t(0xA5))];
+
+      CHECK_EQUAL(etl::reverse_bits(uint8_t(0xA5)), sizeof(temp));
+    }
+
+    //*************************************************************************
     TEST(test_reverse_bits16)
     {
       uint16_t value;
@@ -467,6 +517,14 @@ namespace
       value = 0xA5A5;
       value = etl::reverse_bits(value);
       CHECK_EQUAL(0xA5A5, value);
+    }
+
+    //*************************************************************************
+    TEST(test_reverse_bits16_constexpr)
+    {
+      char temp[etl::reverse_bits(uint16_t(0xA500))];
+
+      CHECK_EQUAL(etl::reverse_bits(uint16_t(0xA500)), sizeof(temp));
     }
 
     //*************************************************************************
@@ -488,6 +546,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_reverse_bits32_constexpr)
+    {
+      char temp[etl::reverse_bits(uint32_t(0xA5000000))];
+
+      CHECK_EQUAL(etl::reverse_bits(uint32_t(0xA5000000)), sizeof(temp));
+    }
+
+    //*************************************************************************
     TEST(test_reverse_bits64)
     {
       uint64_t value;
@@ -503,6 +569,14 @@ namespace
       value = 0x5A5A5A5A5A5A5A5A;
       value = etl::reverse_bits(value);
       CHECK_EQUAL(uint64_t(0x5A5A5A5A5A5A5A5A), value);
+    }
+
+    //*************************************************************************
+    TEST(test_reverse_bits64_constexpr)
+    {
+      char temp[etl::reverse_bits(uint64_t(0xA500000000000000))];
+
+      CHECK_EQUAL(etl::reverse_bits(uint64_t(0xA500000000000000)), sizeof(temp));
     }
 
     //*************************************************************************
@@ -524,6 +598,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_reverse_bytes16_constexpr)
+    {
+      char temp[etl::reverse_bytes(uint16_t(0xA500))];
+
+      CHECK_EQUAL(etl::reverse_bytes(uint16_t(0xA500)), sizeof(temp));
+    }
+
+    //*************************************************************************
     TEST(test_reverse_bytes32)
     {
       uint32_t value;
@@ -539,6 +621,14 @@ namespace
       value = 0x5A5AA5A5;
       value = etl::reverse_bytes(value);
       CHECK_EQUAL(0xA5A55A5AU, value);
+    }
+
+    //*************************************************************************
+    TEST(test_reverse_bytes32_constexpr)
+    {
+      char temp[etl::reverse_bytes(uint32_t(0xA5000000))];
+
+      CHECK_EQUAL(etl::reverse_bytes(uint32_t(0xA5000000)), sizeof(temp));
     }
 
     //*************************************************************************
@@ -560,6 +650,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_reverse_bytes64_constexpr)
+    {
+      char temp[etl::reverse_bytes(uint64_t(0xA500000000000000))];
+
+      CHECK_EQUAL(etl::reverse_bytes(uint64_t(0xA500000000000000)), sizeof(temp));
+    }
+
+    //*************************************************************************
     TEST(test_binary_to_gray8)
     {
       uint8_t last_gray = 0;
@@ -578,6 +676,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_binary_to_gray8_constexpr)
+    {
+      char temp[etl::binary_to_gray(uint8_t(0xFF))];
+
+      CHECK_EQUAL(etl::binary_to_gray(uint8_t(0xFF)), sizeof(temp));
+    }
+
+    //*************************************************************************
     TEST(test_binary_to_gray16)
     {
       uint16_t last_gray = 0;
@@ -593,6 +699,14 @@ namespace
         // Only one bit should be set.
         CHECK(pass);
       }
+    }
+
+    //*************************************************************************
+    TEST(test_binary_to_gray16_constexpr)
+    {
+      char temp[etl::binary_to_gray(uint16_t(0xFF))];
+
+      CHECK_EQUAL(etl::binary_to_gray(uint16_t(0xFF)), sizeof(temp));
     }
 
     //*************************************************************************
@@ -620,6 +734,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_binary_to_gray32_constexpr)
+    {
+      char temp[etl::binary_to_gray(uint32_t(0xFF))];
+
+      CHECK_EQUAL(etl::binary_to_gray(uint32_t(0xFF)), sizeof(temp));
+    }
+
+    //*************************************************************************
     TEST(test_binary_to_gray64)
     {
       etl::fnv_1a_64 hash;
@@ -644,6 +766,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_binary_to_gray64_constexpr)
+    {
+      char temp[etl::binary_to_gray(uint64_t(0xFF))];
+
+      CHECK_EQUAL(etl::binary_to_gray(uint64_t(0xFF)), sizeof(temp));
+    }
+
+    //*************************************************************************
     TEST(test_gray_to_binary8)
     {
       for (size_t i = 1; i <= std::numeric_limits<uint8_t>::max(); ++i)
@@ -654,6 +784,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_gray_to_binary8_constexpr)
+    {
+      char temp[etl::gray_to_binary(uint8_t(0xFF))];
+
+      CHECK_EQUAL(etl::gray_to_binary(uint8_t(0xFF)), sizeof(temp));
+    }
+
+    //*************************************************************************
     TEST(test_gray_to_binary16)
     {
       for (size_t i = 1; i <= std::numeric_limits<uint16_t>::max(); ++i)
@@ -661,6 +799,14 @@ namespace
         CHECK_EQUAL(compare_gray_to_binary(uint16_t(i)), etl::gray_to_binary(uint16_t(i)));
         CHECK_EQUAL(compare_gray_to_binary(int16_t(i)), etl::gray_to_binary(int16_t(i)));
       }
+    }
+
+    //*************************************************************************
+    TEST(test_gray_to_binary16_constexpr)
+    {
+      char temp[etl::gray_to_binary(uint16_t(0xFF))];
+
+      CHECK_EQUAL(etl::gray_to_binary(uint16_t(0xFF)), sizeof(temp));
     }
 
     //*************************************************************************
@@ -679,6 +825,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_gray_to_binary32_constexpr)
+    {
+      char temp[etl::gray_to_binary(uint32_t(0xFF))];
+
+      CHECK_EQUAL(etl::gray_to_binary(uint32_t(0xFF)), sizeof(temp));
+    }
+
+    //*************************************************************************
     TEST(test_gray_to_binary64)
     {
       etl::fnv_1a_64 hash;
@@ -694,6 +848,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_gray_to_binary64_constexpr)
+    {
+      char temp[etl::gray_to_binary(uint64_t(0xFF))];
+
+      CHECK_EQUAL(etl::gray_to_binary(uint64_t(0xFF)), sizeof(temp));
+    }
+
+    //*************************************************************************
     TEST(test_count_bits_8)
     {
       for (size_t i = 1; i <= std::numeric_limits<uint8_t>::max(); ++i)
@@ -704,6 +866,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_count_bits_8_constexpr)
+    {
+      char temp[etl::count_bits(uint8_t(0xFF))];
+
+      CHECK_EQUAL(etl::count_bits(uint8_t(0xFF)), sizeof(temp));
+    }
+
+    //*************************************************************************
     TEST(test_count_bits_16)
     {
       for (size_t i = 1; i <= std::numeric_limits<uint16_t>::max(); ++i)
@@ -711,6 +881,14 @@ namespace
         CHECK_EQUAL(test_count(i), etl::count_bits(uint16_t(i)));
         CHECK_EQUAL(test_count(i), etl::count_bits(int16_t(i)));
       }
+    }
+
+    //*************************************************************************
+    TEST(test_count_bits_16_constexpr)
+    {
+      char temp[etl::count_bits(uint16_t(0xFF))];
+
+      CHECK_EQUAL(etl::count_bits(uint16_t(0xFF)), sizeof(temp));
     }
 
     //*************************************************************************
@@ -730,6 +908,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_count_bits_32_constexpr)
+    {
+      char temp[etl::count_bits(uint32_t(0xFF))];
+
+      CHECK_EQUAL(etl::count_bits(uint32_t(0xFF)), sizeof(temp));
+    }
+
+    //*************************************************************************
     TEST(test_count_bits_64)
     {
       etl::fnv_1a_64 hash;
@@ -746,6 +932,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_count_bits_64_constexpr)
+    {
+      char temp[etl::count_bits(uint64_t(0xFF))];
+
+      CHECK_EQUAL(etl::count_bits(uint64_t(0xFF)), sizeof(temp));
+    }
+
+    //*************************************************************************
     TEST(test_parity_8)
     {
       for (size_t i = 1; i <= std::numeric_limits<uint8_t>::max(); ++i)
@@ -756,6 +950,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_parity_8_constexpr)
+    {
+      char temp[etl::parity(uint8_t(0xFE))];
+
+      CHECK_EQUAL(etl::parity(uint8_t(0xFE)), sizeof(temp));
+    }
+
+    //*************************************************************************
     TEST(test_parity_16)
     {
       for (size_t i = 1; i <= std::numeric_limits<uint16_t>::max(); ++i)
@@ -763,6 +965,14 @@ namespace
         CHECK_EQUAL(test_parity(i), etl::parity(uint16_t(i)));
         CHECK_EQUAL(test_parity(i), etl::parity(int16_t(i)));
       }
+    }
+
+    //*************************************************************************
+    TEST(test_parity_16_constexpr)
+    {
+      char temp[etl::parity(uint16_t(0xFE))];
+
+      CHECK_EQUAL(etl::parity(uint16_t(0xFE)), sizeof(temp));
     }
 
     //*************************************************************************
@@ -782,6 +992,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_parity_32_constexpr)
+    {
+      char temp[etl::parity(uint32_t(0xFE))];
+
+      CHECK_EQUAL(etl::parity(uint32_t(0xFE)), sizeof(temp));
+    }
+
+    //*************************************************************************
     TEST(test_parity_64)
     {
       etl::fnv_1a_64 hash;
@@ -795,6 +1013,14 @@ namespace
         CHECK_EQUAL(test_parity(value), etl::parity(value));
         CHECK_EQUAL(test_parity(value), etl::parity(int64_t(value)));
       }
+    }
+
+    //*************************************************************************
+    TEST(test_parity_64_constexpr)
+    {
+      char temp[etl::parity(uint64_t(0xFE))];
+
+      CHECK_EQUAL(etl::parity(uint64_t(0xFE)), sizeof(temp));
     }
 
     //*************************************************************************
@@ -868,6 +1094,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_fold_bits_constexpr)
+    {
+      char temp[etl::fold_bits<int64_t, 7>(0xE8C9AACCBC3D9A8F)];
+
+      CHECK_EQUAL((etl::fold_bits<int64_t, 7>(0xE8C9AACCBC3D9A8F)), sizeof(temp));
+    }
+
+    //*************************************************************************
     TEST(test_max_value_for_bits)
     {
         // Check that the values are correct.
@@ -938,71 +1172,71 @@ namespace
         CHECK_EQUAL(18446744073709551615U, etl::max_value_for_nbits<64>::value);
 
         // Check that the value types are correct.
-        CHECK((std::is_same<uint8_t,  etl::max_value_for_nbits<0>::value_type>::value));
-        CHECK((std::is_same<uint8_t,  etl::max_value_for_nbits<1>::value_type>::value));
-        CHECK((std::is_same<uint8_t,  etl::max_value_for_nbits<2>::value_type>::value));
-        CHECK((std::is_same<uint8_t,  etl::max_value_for_nbits<3>::value_type>::value));
-        CHECK((std::is_same<uint8_t,  etl::max_value_for_nbits<4>::value_type>::value));
-        CHECK((std::is_same<uint8_t,  etl::max_value_for_nbits<5>::value_type>::value));
-        CHECK((std::is_same<uint8_t,  etl::max_value_for_nbits<6>::value_type>::value));
-        CHECK((std::is_same<uint8_t,  etl::max_value_for_nbits<7>::value_type>::value));
-        CHECK((std::is_same<uint8_t,  etl::max_value_for_nbits<8>::value_type>::value));
-        CHECK((std::is_same<uint16_t, etl::max_value_for_nbits<9>::value_type>::value));
-        CHECK((std::is_same<uint16_t, etl::max_value_for_nbits<10>::value_type>::value));
-        CHECK((std::is_same<uint16_t, etl::max_value_for_nbits<11>::value_type>::value));
-        CHECK((std::is_same<uint16_t, etl::max_value_for_nbits<12>::value_type>::value));
-        CHECK((std::is_same<uint16_t, etl::max_value_for_nbits<13>::value_type>::value));
-        CHECK((std::is_same<uint16_t, etl::max_value_for_nbits<14>::value_type>::value));
-        CHECK((std::is_same<uint16_t, etl::max_value_for_nbits<15>::value_type>::value));
-        CHECK((std::is_same<uint16_t, etl::max_value_for_nbits<16>::value_type>::value));
-        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<17>::value_type>::value));
-        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<18>::value_type>::value));
-        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<19>::value_type>::value));
-        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<20>::value_type>::value));
-        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<21>::value_type>::value));
-        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<22>::value_type>::value));
-        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<23>::value_type>::value));
-        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<24>::value_type>::value));
-        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<25>::value_type>::value));
-        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<26>::value_type>::value));
-        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<27>::value_type>::value));
-        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<28>::value_type>::value));
-        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<29>::value_type>::value));
-        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<30>::value_type>::value));
-        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<31>::value_type>::value));
-        CHECK((std::is_same<uint32_t, etl::max_value_for_nbits<32>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<33>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<34>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<35>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<36>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<37>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<38>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<39>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<40>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<41>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<42>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<43>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<44>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<45>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<46>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<47>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<48>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<49>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<50>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<51>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<52>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<53>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<54>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<55>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<56>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<57>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<58>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<59>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<60>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<61>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<62>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<63>::value_type>::value));
-        CHECK((std::is_same<uint64_t, etl::max_value_for_nbits<64>::value_type>::value));
+        CHECK((etl::is_same<uint8_t,  etl::max_value_for_nbits<0>::value_type>::value));
+        CHECK((etl::is_same<uint8_t,  etl::max_value_for_nbits<1>::value_type>::value));
+        CHECK((etl::is_same<uint8_t,  etl::max_value_for_nbits<2>::value_type>::value));
+        CHECK((etl::is_same<uint8_t,  etl::max_value_for_nbits<3>::value_type>::value));
+        CHECK((etl::is_same<uint8_t,  etl::max_value_for_nbits<4>::value_type>::value));
+        CHECK((etl::is_same<uint8_t,  etl::max_value_for_nbits<5>::value_type>::value));
+        CHECK((etl::is_same<uint8_t,  etl::max_value_for_nbits<6>::value_type>::value));
+        CHECK((etl::is_same<uint8_t,  etl::max_value_for_nbits<7>::value_type>::value));
+        CHECK((etl::is_same<uint8_t,  etl::max_value_for_nbits<8>::value_type>::value));
+        CHECK((etl::is_same<uint16_t, etl::max_value_for_nbits<9>::value_type>::value));
+        CHECK((etl::is_same<uint16_t, etl::max_value_for_nbits<10>::value_type>::value));
+        CHECK((etl::is_same<uint16_t, etl::max_value_for_nbits<11>::value_type>::value));
+        CHECK((etl::is_same<uint16_t, etl::max_value_for_nbits<12>::value_type>::value));
+        CHECK((etl::is_same<uint16_t, etl::max_value_for_nbits<13>::value_type>::value));
+        CHECK((etl::is_same<uint16_t, etl::max_value_for_nbits<14>::value_type>::value));
+        CHECK((etl::is_same<uint16_t, etl::max_value_for_nbits<15>::value_type>::value));
+        CHECK((etl::is_same<uint16_t, etl::max_value_for_nbits<16>::value_type>::value));
+        CHECK((etl::is_same<uint32_t, etl::max_value_for_nbits<17>::value_type>::value));
+        CHECK((etl::is_same<uint32_t, etl::max_value_for_nbits<18>::value_type>::value));
+        CHECK((etl::is_same<uint32_t, etl::max_value_for_nbits<19>::value_type>::value));
+        CHECK((etl::is_same<uint32_t, etl::max_value_for_nbits<20>::value_type>::value));
+        CHECK((etl::is_same<uint32_t, etl::max_value_for_nbits<21>::value_type>::value));
+        CHECK((etl::is_same<uint32_t, etl::max_value_for_nbits<22>::value_type>::value));
+        CHECK((etl::is_same<uint32_t, etl::max_value_for_nbits<23>::value_type>::value));
+        CHECK((etl::is_same<uint32_t, etl::max_value_for_nbits<24>::value_type>::value));
+        CHECK((etl::is_same<uint32_t, etl::max_value_for_nbits<25>::value_type>::value));
+        CHECK((etl::is_same<uint32_t, etl::max_value_for_nbits<26>::value_type>::value));
+        CHECK((etl::is_same<uint32_t, etl::max_value_for_nbits<27>::value_type>::value));
+        CHECK((etl::is_same<uint32_t, etl::max_value_for_nbits<28>::value_type>::value));
+        CHECK((etl::is_same<uint32_t, etl::max_value_for_nbits<29>::value_type>::value));
+        CHECK((etl::is_same<uint32_t, etl::max_value_for_nbits<30>::value_type>::value));
+        CHECK((etl::is_same<uint32_t, etl::max_value_for_nbits<31>::value_type>::value));
+        CHECK((etl::is_same<uint32_t, etl::max_value_for_nbits<32>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<33>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<34>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<35>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<36>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<37>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<38>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<39>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<40>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<41>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<42>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<43>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<44>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<45>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<46>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<47>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<48>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<49>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<50>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<51>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<52>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<53>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<54>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<55>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<56>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<57>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<58>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<59>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<60>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<61>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<62>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<63>::value_type>::value));
+        CHECK((etl::is_same<uint64_t, etl::max_value_for_nbits<64>::value_type>::value));
     }
 
     //*************************************************************************
@@ -1049,6 +1283,14 @@ namespace
 
       CHECK_EQUAL(178956970, (etl::sign_extend<int32_t, 30>(value32)));
       CHECK_EQUAL(178956970, (etl::sign_extend<int64_t, 30>(value32)));
+    }
+
+    //*************************************************************************
+    TEST(test_sign_extend_template1_constexpr)
+    {
+      char temp[etl::sign_extend<int8_t, 6>(0x1A)];
+
+      CHECK_EQUAL((etl::sign_extend<int8_t, 6>(0x1A)), sizeof(temp));
     }
 
     //*************************************************************************
@@ -1103,6 +1345,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_sign_extend_template1b_constexpr)
+    {
+      char temp[etl::sign_extend<int8_t, 6, 0>(0x1A)];
+
+      CHECK_EQUAL((etl::sign_extend<int8_t, 6, 0>(0x1A)), sizeof(temp));
+    }
+
+    //*************************************************************************
     TEST(test_sign_extend_template2)
     {
       uint8_t value8 = 0x2A;
@@ -1146,6 +1396,14 @@ namespace
 
       CHECK_EQUAL(178956970, (etl::sign_extend<int32_t>(value32, 30)));
       CHECK_EQUAL(178956970, (etl::sign_extend<int64_t>(value32, 30)));
+    }
+
+    //*************************************************************************
+    TEST(test_sign_extend_template2_constexpr)
+    {
+      char temp[etl::sign_extend<int8_t>(0x1A, 6)];
+
+      CHECK_EQUAL((etl::sign_extend<int8_t>(0x1A, 6)), sizeof(temp));
     }
 
     //*************************************************************************
@@ -1197,6 +1455,14 @@ namespace
 
       CHECK_EQUAL(-22, (etl::sign_extend<int32_t>(value, 6, 26)));
       CHECK_EQUAL(-22, (etl::sign_extend<int64_t>(value, 6, 26)));
+    }
+
+    //*************************************************************************
+    TEST(test_sign_extend_template2b_constexpr)
+    {
+      char temp[etl::sign_extend<int8_t>(0x1A, 6, 0)];
+
+      CHECK_EQUAL((etl::sign_extend<int8_t>(0x1A, 6, 0)), sizeof(temp));
     }
 
     //*************************************************************************
@@ -1278,246 +1544,218 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_binary_fill_compile_time)
+    TEST(test_binary_fill)
     {
-      CHECK_EQUAL(0x12U, (etl::binary_fill<uint8_t, uint8_t, 0x12>::value));
-      CHECK_EQUAL(0x1212U, (etl::binary_fill<uint16_t, uint8_t, 0x12>::value));
-      CHECK_EQUAL(0x12121212U, (etl::binary_fill<uint32_t, uint8_t, 0x12>::value));
-      CHECK_EQUAL(0x1212121212121212U, (etl::binary_fill<uint64_t, uint8_t, 0x12>::value));
+      CHECK_EQUAL(0x12U, (etl::binary_fill<uint8_t>(uint8_t(0x12))));
+      CHECK_EQUAL(0x1212U, (etl::binary_fill<uint16_t>(uint8_t(0x12))));
+      CHECK_EQUAL(0x12121212U, (etl::binary_fill<uint32_t>(uint8_t(0x12))));
+      CHECK_EQUAL(0x1212121212121212U, (etl::binary_fill<uint64_t>(uint8_t(0x12))));
 
-      CHECK_EQUAL(0x12, (etl::binary_fill<int8_t, int8_t, 0x12>::value));
-      CHECK_EQUAL(0x1212, (etl::binary_fill<int16_t, int8_t, 0x12>::value));
-      CHECK_EQUAL(0x12121212, (etl::binary_fill<int32_t, int8_t, 0x12>::value));
-      CHECK_EQUAL(0x1212121212121212, (etl::binary_fill<int64_t, int8_t, 0x12>::value));
+      CHECK_EQUAL(0x12, (etl::binary_fill<int8_t>(int8_t(0x12))));
+      CHECK_EQUAL(0x1212, (etl::binary_fill<int16_t>(int8_t(0x12))));
+      CHECK_EQUAL(0x12121212, (etl::binary_fill<int32_t>(int8_t(0x12))));
+      CHECK_EQUAL(0x1212121212121212, (etl::binary_fill<int64_t>(int8_t(0x12))));
 
-      CHECK_EQUAL(0x1234U, (etl::binary_fill<uint16_t, uint16_t, 0x1234>::value));
-      CHECK_EQUAL(0x12341234U, (etl::binary_fill<uint32_t, uint16_t, 0x1234>::value));
-      CHECK_EQUAL(0x1234123412341234U, (etl::binary_fill<uint64_t, uint16_t, 0x1234>::value));
+      CHECK_EQUAL(0x1234U, (etl::binary_fill<uint16_t>(uint16_t(0x1234))));
+      CHECK_EQUAL(0x12341234U, (etl::binary_fill<uint32_t>(uint16_t(0x1234))));
+      CHECK_EQUAL(0x1234123412341234U, (etl::binary_fill<uint64_t>(uint16_t(0x1234))));
 
-      CHECK_EQUAL(0x1234, (etl::binary_fill<int16_t, int16_t, 0x1234>::value));
-      CHECK_EQUAL(0x12341234, (etl::binary_fill<int32_t, int16_t, 0x1234>::value));
-      CHECK_EQUAL(0x1234123412341234, (etl::binary_fill<int64_t, int16_t, 0x1234>::value));
+      CHECK_EQUAL(0x1234, (etl::binary_fill<int16_t>(int16_t(0x1234))));
+      CHECK_EQUAL(0x12341234, (etl::binary_fill<int32_t>(int16_t(0x1234))));
+      CHECK_EQUAL(0x1234123412341234, (etl::binary_fill<int64_t>(int16_t(0x1234))));
 
-      CHECK_EQUAL(0x12345678U, (etl::binary_fill<uint32_t, uint32_t, 0x12345678>::value));
-      CHECK_EQUAL(0x1234567812345678U, (etl::binary_fill<uint64_t, uint32_t, 0x12345678>::value));
+      CHECK_EQUAL(0x12345678U, (etl::binary_fill<uint32_t>(uint32_t(0x12345678))));
+      CHECK_EQUAL(0x1234567812345678U, (etl::binary_fill<uint64_t>(uint32_t(0x12345678))));
 
-      CHECK_EQUAL(0x12345678, (etl::binary_fill<int32_t, int32_t, 0x12345678>::value));
-      CHECK_EQUAL(0x1234567812345678, (etl::binary_fill<int64_t, int32_t, 0x12345678>::value));
+      CHECK_EQUAL(int32_t(0x12345678), int32_t(etl::binary_fill<uint32_t>(int32_t(0x12345678))));
+      CHECK_EQUAL(int64_t(0x1234567812345678), int64_t(etl::binary_fill<int64_t>(uint32_t(0x12345678))));
 
-      CHECK_EQUAL(0x123456789ABCDEF0U, (etl::binary_fill<uint64_t, uint64_t, 0x123456789ABCDEF0>::value));
+      CHECK_EQUAL(0x123456789ABCDEF0U, (etl::binary_fill<uint64_t>(uint64_t(0x123456789ABCDEF0))));
 
-      CHECK_EQUAL(0x123456789ABCDEF0, (etl::binary_fill<int64_t, int64_t, 0x123456789ABCDEF0>::value));
+      CHECK_EQUAL(int64_t(0x123456789ABCDEF0), int64_t(etl::binary_fill<int64_t>(int64_t(0x123456789ABCDEF0))));
     }
 
     //*************************************************************************
-    TEST(test_binary_fill_run_time)
+    TEST(test_binary_fill_partial_compile_time)
     {
-      CHECK_EQUAL(0x12U, (etl::binary_fill<uint8_t>::value<uint8_t>(0x12)));
-      CHECK_EQUAL(0x1212U, (etl::binary_fill<uint16_t>::value<uint8_t>(0x12)));
-      CHECK_EQUAL(0x12121212U, (etl::binary_fill<uint32_t>::value<uint8_t>(0x12)));
-      CHECK_EQUAL(0x1212121212121212U, (etl::binary_fill<uint64_t>::value<uint8_t>(0x12)));
+      CHECK_EQUAL(0x12U, (etl::binary_fill<uint8_t, uint8_t, 0x12>()));
+      CHECK_EQUAL(0x1212U, (etl::binary_fill<uint16_t, uint8_t, 0x12>()));
+      CHECK_EQUAL(0x12121212U, (etl::binary_fill<uint32_t, uint8_t, 0x12>()));
+      CHECK_EQUAL(0x1212121212121212U, (etl::binary_fill<uint64_t, uint8_t, 0x12>()));
 
-      CHECK_EQUAL(0x12, (etl::binary_fill<int8_t>::value<int8_t>(0x12)));
-      CHECK_EQUAL(0x1212, (etl::binary_fill<int16_t>::value<int8_t>(0x12)));
-      CHECK_EQUAL(0x12121212, (etl::binary_fill<int32_t>::value<int8_t>(0x12)));
-      CHECK_EQUAL(0x1212121212121212, (etl::binary_fill<int64_t>::value<int8_t>(0x12)));
+      CHECK_EQUAL(0x12U, (etl::binary_fill<int8_t, int8_t, 0x12>()));
+      CHECK_EQUAL(0x1212U, (etl::binary_fill<int16_t, int8_t, 0x12>()));
+      CHECK_EQUAL(0x12121212U, (etl::binary_fill<int32_t, int8_t, 0x12>()));
+      CHECK_EQUAL(0x1212121212121212U, (etl::binary_fill<int64_t, int8_t, 0x12>()));
 
-      CHECK_EQUAL(0x1234U, (etl::binary_fill<uint16_t>::value<uint16_t>(0x1234)));
-      CHECK_EQUAL(0x12341234U, (etl::binary_fill<uint32_t>::value<uint16_t>(0x1234)));
-      CHECK_EQUAL(0x1234123412341234U, (etl::binary_fill<uint64_t>::value<uint16_t>(0x1234)));
+      CHECK_EQUAL(0x1234U, (etl::binary_fill<uint16_t, uint16_t, 0x1234>()));
+      CHECK_EQUAL(0x12341234U, (etl::binary_fill<uint32_t, uint16_t, 0x1234>()));
+      CHECK_EQUAL(0x1234123412341234U, (etl::binary_fill<uint64_t, uint16_t, 0x1234>()));
 
-      CHECK_EQUAL(0x1234, (etl::binary_fill<int16_t>::value<int16_t>(0x1234)));
-      CHECK_EQUAL(0x12341234, (etl::binary_fill<int32_t>::value<int16_t>(0x1234)));
-      CHECK_EQUAL(0x1234123412341234, (etl::binary_fill<int64_t>::value<int16_t>(0x1234)));
+      CHECK_EQUAL(0x1234U, (etl::binary_fill<int16_t, int16_t, 0x1234>()));
+      CHECK_EQUAL(0x12341234U, (etl::binary_fill<int32_t, int16_t, 0x1234>()));
+      CHECK_EQUAL(0x1234123412341234U, (etl::binary_fill<int64_t, int16_t, 0x1234>()));
 
-      CHECK_EQUAL(0x12345678U, (etl::binary_fill<uint32_t>::value<uint32_t>(0x12345678)));
-      CHECK_EQUAL(0x1234567812345678U, (etl::binary_fill<uint64_t>::value<uint32_t>(0x12345678)));
+      CHECK_EQUAL(0x12345678U, (etl::binary_fill<uint32_t, uint32_t, 0x12345678>()));
+      CHECK_EQUAL(0x1234567812345678U, (etl::binary_fill<uint64_t, uint32_t, 0x12345678>()));
 
-      CHECK_EQUAL(int32_t(0x12345678), int32_t(etl::binary_fill<int32_t>::value<int32_t>(0x12345678)));
-      CHECK_EQUAL(int64_t(0x1234567812345678), int64_t(etl::binary_fill<int64_t>::value<int32_t>(0x12345678)));
+      CHECK_EQUAL(0x12345678U, (etl::binary_fill<int32_t, int32_t, 0x12345678>()));
+      CHECK_EQUAL(0x1234567812345678U, (etl::binary_fill<int64_t, int32_t, 0x12345678>()));
 
-      CHECK_EQUAL(0x123456789ABCDEF0U, (etl::binary_fill<uint64_t>::value<uint64_t>(0x123456789ABCDEF0)));
+      CHECK_EQUAL(0x123456789ABCDEF0U, (etl::binary_fill<uint64_t, uint64_t, 0x123456789ABCDEF0>()));
 
-      CHECK_EQUAL(int64_t(0x123456789ABCDEF0), int64_t(etl::binary_fill<int64_t>::value<int64_t>(0x123456789ABCDEF0)));
+      CHECK_EQUAL(int64_t(0x123456789ABCDEF0), int64_t(etl::binary_fill<int64_t, int64_t, 0x123456789ABCDEF0>()));
     }
 
     //*************************************************************************
-    TEST(test_has_zero_compile_time)
+    TEST(test_has_zero_byte)
     {
-      CHECK(!(etl::has_zero_byte<uint8_t, 0x01>::test));
-      CHECK((etl::has_zero_byte<uint8_t, 0x00>::test));
+      CHECK(!(etl::has_zero_byte(uint8_t(0x01))));
+      CHECK((etl::has_zero_byte(uint8_t(0x00))));
 
-      CHECK(!(etl::has_zero_byte<int8_t, 0x01>::test));
-      CHECK((etl::has_zero_byte<int8_t, 0x00>::test));
+      CHECK(!(etl::has_zero_byte(int8_t(0x01))));
+      CHECK((etl::has_zero_byte(int8_t(0x00))));
 
-      CHECK(!(etl::has_zero_byte<uint16_t, 0x0123>::test));
-      CHECK((etl::has_zero_byte<uint16_t, 0x0100>::test));
+      CHECK(!(etl::has_zero_byte(uint16_t(0x0123))));
+      CHECK((etl::has_zero_byte(uint16_t(0x0100))));
 
-      CHECK(!(etl::has_zero_byte<int16_t, 0x0123>::test));
-      CHECK((etl::has_zero_byte<int16_t, 0x0100>::test));
+      CHECK(!(etl::has_zero_byte(int16_t(0x0123))));
+      CHECK((etl::has_zero_byte(int16_t(0x0100))));
 
-      CHECK(!(etl::has_zero_byte<uint32_t, 0x01234567>::test));
-      CHECK((etl::has_zero_byte<uint32_t, 0x01230067>::test));
+      CHECK(!(etl::has_zero_byte(uint32_t(0x01234567))));
+      CHECK((etl::has_zero_byte(uint32_t(0x01230067))));
 
-      CHECK(!(etl::has_zero_byte<int32_t, 0x01234567>::test));
-      CHECK((etl::has_zero_byte<int32_t, 0x01230067>::test));
+      CHECK(!(etl::has_zero_byte(int32_t(0x01234567))));
+      CHECK((etl::has_zero_byte(int32_t(0x01230067))));
 
-      CHECK(!(etl::has_zero_byte<uint64_t, 0x0123456789ABCDEF>::test));
-      CHECK((etl::has_zero_byte<uint64_t, 0x012345678900CDEF>::test));
+      CHECK(!(etl::has_zero_byte(uint64_t(0x0123456789ABCDEF))));
+      CHECK((etl::has_zero_byte(uint64_t(0x012345678900CDEF))));
 
-      CHECK(!(etl::has_zero_byte<int64_t, 0x0123456789ABCDEF>::test));
-      CHECK((etl::has_zero_byte<int64_t, 0x012345678900CDEF>::test));
+      CHECK(!(etl::has_zero_byte(int64_t(0x0123456789ABCDEF))));
+      CHECK((etl::has_zero_byte(int64_t(0x012345678900CDEF))));
     }
 
     //*************************************************************************
-    TEST(test_has_zero_run_time)
+    TEST(test_has_zero_byte_partial_compile_time)
     {
-      CHECK(!(etl::has_zero_byte<>::test(uint8_t(0x01))));
-      CHECK((etl::has_zero_byte<>::test(uint8_t(0x00))));
+      CHECK(!(etl::has_zero_byte<uint8_t, 0x01>()));
+      CHECK((etl::has_zero_byte<uint8_t, 0x00>()));
 
-      CHECK(!(etl::has_zero_byte<>::test(int8_t(0x01))));
-      CHECK((etl::has_zero_byte<>::test(int8_t(0x00))));
+      CHECK(!(etl::has_zero_byte<int8_t, 0x01>()));
+      CHECK((etl::has_zero_byte<int8_t, 0x00>()));
 
-      CHECK(!(etl::has_zero_byte<>::test(uint16_t(0x0123))));
-      CHECK((etl::has_zero_byte<>::test(uint16_t(0x0100))));
+      CHECK(!(etl::has_zero_byte<uint16_t, 0x0123>()));
+      CHECK((etl::has_zero_byte<uint16_t, 0x0100>()));
 
-      CHECK(!(etl::has_zero_byte<>::test(int16_t(0x0123))));
-      CHECK((etl::has_zero_byte<>::test(int16_t(0x0100))));
+      CHECK(!(etl::has_zero_byte<int16_t, 0x0123>()));
+      CHECK((etl::has_zero_byte<int16_t, 0x0100>()));
 
-      CHECK(!(etl::has_zero_byte<>::test(uint32_t(0x01234567))));
-      CHECK((etl::has_zero_byte<>::test(uint32_t(0x01230067))));
+      CHECK(!(etl::has_zero_byte<uint32_t, 0x01234567>()));
+      CHECK((etl::has_zero_byte<uint32_t, 0x01230067>()));
 
-      CHECK(!(etl::has_zero_byte<>::test(int32_t(0x01234567))));
-      CHECK((etl::has_zero_byte<>::test(int32_t(0x01230067))));
+      CHECK(!(etl::has_zero_byte<int32_t, 0x01234567>()));
+      CHECK((etl::has_zero_byte<int32_t, 0x01230067>()));
 
-      CHECK(!(etl::has_zero_byte<>::test(uint64_t(0x0123456789ABCDEF))));
-      CHECK((etl::has_zero_byte<>::test(uint64_t(0x012345678900CDEF))));
+      CHECK(!(etl::has_zero_byte<uint64_t, 0x0123456789ABCDEF>()));
+      CHECK((etl::has_zero_byte<uint64_t, 0x012345678900CDEF>()));
 
-      CHECK(!(etl::has_zero_byte<>::test(int64_t(0x0123456789ABCDEF))));
-      CHECK((etl::has_zero_byte<>::test(int64_t(0x012345678900CDEF))));
+      CHECK(!(etl::has_zero_byte<int64_t, 0x0123456789ABCDEF>()));
+      CHECK((etl::has_zero_byte<int64_t, 0x012345678900CDEF>()));
     }
 
     //*************************************************************************
-    TEST(test_has_n_compile_time)
+    TEST(test_has_byte_n_run_time)
     {
-      CHECK(!(etl::has_byte_n<0x12, uint8_t, 0x01>::test));
-      CHECK((etl::has_byte_n<0x01, uint8_t, 0x01>::test));
+      CHECK(!(etl::has_byte_n(uint8_t(0x01), 0x12)));
+      CHECK((etl::has_byte_n(uint8_t(0x01), 0x01)));
 
-      CHECK(!(etl::has_byte_n<0x12, int8_t, 0x01>::test));
-      CHECK((etl::has_byte_n<0x01, int8_t, 0x01>::test));
+      CHECK(!(etl::has_byte_n(uint8_t(0x01), 0x12)));
+      CHECK((etl::has_byte_n(uint8_t(0x01), 0x01)));
 
-      CHECK(!(etl::has_byte_n<0x12, uint16_t, 0x0123>::test));
-      CHECK((etl::has_byte_n<0x23, uint16_t, 0x0123>::test));
+      CHECK(!(etl::has_byte_n(uint16_t(0x0123), 0x12)));
+      CHECK((etl::has_byte_n(uint16_t(0x0123), 0x23)));
 
-      CHECK(!(etl::has_byte_n<0x12, int16_t, 0x0123>::test));
-      CHECK((etl::has_byte_n<0x23, int16_t, 0x0123>::test));
+      CHECK(!(etl::has_byte_n(int16_t(0x0123), 0x12)));
+      CHECK((etl::has_byte_n(int16_t(0x0123), 0x23)));
 
-      CHECK(!(etl::has_byte_n<0x12, uint32_t, 0x01234567>::test));
-      CHECK((etl::has_byte_n<0x45, uint32_t, 0x01234567>::test));
+      CHECK(!(etl::has_byte_n(uint32_t(0x01234567), 0x12)));
+      CHECK((etl::has_byte_n(uint32_t(0x01234567), 0x45)));
 
-      CHECK(!(etl::has_byte_n<0x12, int32_t, 0x01234567>::test));
-      CHECK((etl::has_byte_n<0x45, int32_t, 0x01234567>::test));
+      CHECK(!(etl::has_byte_n(int32_t(0x01234567), 0x12)));
+      CHECK((etl::has_byte_n(int32_t(0x01234567), 0x45)));
 
-      CHECK(!(etl::has_byte_n<0x12, uint64_t, 0x0123456789ABCDEF>::test));
-      CHECK((etl::has_byte_n<0xAB, uint64_t, 0x0123456789ABCDEF>::test));
+      CHECK(!(etl::has_byte_n(uint64_t(0x0123456789ABCDEF), 0x12)));
+      CHECK((etl::has_byte_n(uint64_t(0x0123456789ABCDEF), 0xAB)));
 
-      CHECK(!(etl::has_byte_n<0x12, int64_t, 0x0123456789ABCDEF>::test));
-      CHECK((etl::has_byte_n<0xAB, int64_t, 0x0123456789ABCDEF>::test));
+      CHECK(!(etl::has_byte_n(int64_t(0x0123456789ABCDEF), 0x12)));
+      CHECK((etl::has_byte_n(int64_t(0x0123456789ABCDEF), 0xAB)));
     }
 
     //*************************************************************************
-    TEST(test_has_n_partial_run_time)
+    TEST(test_has_byte_n_partial_run_time)
     {
-      CHECK(!(etl::has_byte_n<0x12>::test(uint8_t(0x01))));
-      CHECK((etl::has_byte_n<0x01>::test(uint8_t(0x01))));
+      CHECK(!(etl::has_byte_n<uint8_t, 0x12>(uint8_t(0x01))));
+      CHECK((etl::has_byte_n<uint8_t, 0x01>(uint8_t(0x01))));
 
-      CHECK(!(etl::has_byte_n<0x12>::test(int8_t(0x01))));
-      CHECK((etl::has_byte_n<0x01>::test(int8_t(0x01))));
+      CHECK(!(etl::has_byte_n<int8_t, 0x12>(int8_t(0x01))));
+      CHECK((etl::has_byte_n<int8_t, 0x01>(int8_t(0x01))));
 
-      CHECK(!(etl::has_byte_n<0x12>::test(uint16_t(0x0123))));
-      CHECK((etl::has_byte_n<0x23>::test(uint16_t(0x0123))));
+      CHECK(!(etl::has_byte_n<uint16_t, 0x12>(uint16_t(0x0123))));
+      CHECK((etl::has_byte_n<uint16_t, 0x23>(uint16_t(0x0123))));
 
-      CHECK(!(etl::has_byte_n<0x12>::test(int16_t(0x0123))));
-      CHECK((etl::has_byte_n<0x23>::test(int16_t(0x0123))));
+      CHECK(!(etl::has_byte_n<int16_t, 0x12>(int16_t(0x0123))));
+      CHECK((etl::has_byte_n<int16_t, 0x23>(int16_t(0x0123))));
 
-      CHECK(!(etl::has_byte_n<0x12>::test(uint32_t(0x01234567))));
-      CHECK((etl::has_byte_n<0x45>::test(uint32_t(0x01234567))));
+      CHECK(!(etl::has_byte_n<uint32_t, 0x12>(uint32_t(0x01234567))));
+      CHECK((etl::has_byte_n<uint32_t, 0x45>(uint32_t(0x01234567))));
 
-      CHECK(!(etl::has_byte_n<0x12>::test(int32_t(0x01234567))));
-      CHECK((etl::has_byte_n<0x45>::test(int32_t(0x01234567))));
+      CHECK(!(etl::has_byte_n<int32_t, 0x12>(int32_t(0x01234567))));
+      CHECK((etl::has_byte_n<int32_t, 0x45>(int32_t(0x01234567))));
 
-      CHECK(!(etl::has_byte_n<0x12>::test(uint64_t(0x0123456789ABCDEF))));
-      CHECK((etl::has_byte_n<0xAB>::test(uint64_t(0x0123456789ABCDEF))));
+      CHECK(!(etl::has_byte_n<uint64_t, 0x12>(uint64_t(0x0123456789ABCDEF))));
+      CHECK((etl::has_byte_n<uint64_t, 0xAB>(uint64_t(0x0123456789ABCDEF))));
 
-      CHECK(!(etl::has_byte_n<0x12>::test(int64_t(0x0123456789ABCDEF))));
-      CHECK((etl::has_byte_n<0xAB>::test(int64_t(0x0123456789ABCDEF))));
+      CHECK(!(etl::has_byte_n<int64_t, 0x12>(int64_t(0x0123456789ABCDEF))));
+      CHECK((etl::has_byte_n<int64_t, 0xAB>(int64_t(0x0123456789ABCDEF))));
     }
 
-    //*************************************************************************
-    TEST(test_has_n_run_time)
-    {
-      CHECK(!(etl::has_byte_n<>::test(uint8_t(0x01), 0x12)));
-      CHECK((etl::has_byte_n<>::test(uint8_t(0x01), 0x01)));
+	  //*************************************************************************
+	  TEST(test_binary_merge)
+	  {
+		  CHECK_EQUAL((etl::binary_merge(uint8_t(0x12), uint8_t(0x34), uint8_t(0xF0))), uint8_t(0x14));
+		  CHECK_EQUAL((etl::binary_merge<uint8_t, 0xF0>(uint8_t(0x12), uint8_t(0x34))), uint8_t(0x14));
 
-      CHECK(!(etl::has_byte_n<>::test(uint8_t(0x01), 0x12)));
-      CHECK((etl::has_byte_n<>::test(uint8_t(0x01), 0x01)));
+		  CHECK_EQUAL((etl::binary_merge(uint16_t(0x1234), uint16_t(0x3456), uint16_t(0xF0F0))), uint16_t(0x1436));
+		  CHECK_EQUAL((etl::binary_merge<uint16_t, 0xF0F0>(uint16_t(0x1234), uint16_t(0x3456))), uint16_t(0x1436));
 
-      CHECK(!(etl::has_byte_n<>::test(uint16_t(0x0123), 0x12)));
-      CHECK((etl::has_byte_n<>::test(uint16_t(0x0123), 0x23)));
+		  CHECK_EQUAL((etl::binary_merge(uint32_t(0x12345678), uint32_t(0x3456789A), uint32_t(0xF0F0F0F0))), uint32_t(0x1436587A));
+		  CHECK_EQUAL((etl::binary_merge<uint32_t, 0xF0F0F0F0>(uint32_t(0x12345678), uint32_t(0x3456789A))), uint32_t(0x1436587A));
 
-      CHECK(!(etl::has_byte_n<>::test(int16_t(0x0123), 0x12)));
-      CHECK((etl::has_byte_n<>::test(int16_t(0x0123), 0x23)));
+		  CHECK_EQUAL((etl::binary_merge(uint64_t(0x123456789ABCDEF0), uint64_t(0x3456789ABCDEF012), uint64_t(0xF0F0F0F0F0F0F0F0))), uint64_t(0x1436587A9CBED0F2));
+		  CHECK_EQUAL((etl::binary_merge<uint64_t, 0xF0F0F0F0F0F0F0F0>(uint64_t(0x123456789ABCDEF0), uint64_t(0x3456789ABCDEF012))), uint64_t(0x1436587A9CBED0F2));
+	  }
 
-      CHECK(!(etl::has_byte_n<>::test(uint32_t(0x01234567), 0x12)));
-      CHECK((etl::has_byte_n<>::test(uint32_t(0x01234567), 0x45)));
+	  //*************************************************************************
+	  TEST(test_binary_interleave)
+	  {
+		  CHECK_EQUAL((etl::binary_interleave(uint8_t(0x5A), uint8_t(0xA5))), uint16_t(0x9966));
+		  CHECK_EQUAL((etl::binary_interleave(uint16_t(0x5A5A), uint16_t(0xA5A5))), uint32_t(0x99669966));
+		  CHECK_EQUAL((etl::binary_interleave(uint32_t(0x5A5A5A5A), uint32_t(0xA5A5A5A5))), uint64_t(0x9966996699669966));
+	  }
 
-      CHECK(!(etl::has_byte_n<>::test(int32_t(0x01234567), 0x12)));
-      CHECK((etl::has_byte_n<>::test(int32_t(0x01234567), 0x45)));
+	  //*************************************************************************
+	  TEST(test_is_odd)
+	  {
+		  CHECK(etl::is_odd(1));
+		  CHECK(!etl::is_odd(2));
+	  }
 
-      CHECK(!(etl::has_byte_n<>::test(uint64_t(0x0123456789ABCDEF), 0x12)));
-      CHECK((etl::has_byte_n<>::test(uint64_t(0x0123456789ABCDEF), 0xAB)));
-
-      CHECK(!(etl::has_byte_n<>::test(int64_t(0x0123456789ABCDEF), 0x12)));
-      CHECK((etl::has_byte_n<>::test(int64_t(0x0123456789ABCDEF), 0xAB)));
-    }
-
-	//*************************************************************************
-	TEST(test_binary_merge)
-	{
-		CHECK_EQUAL((etl::binary_merge(uint8_t(0x12), uint8_t(0x34), uint8_t(0xF0))), uint8_t(0x14));
-		CHECK_EQUAL((etl::binary_merge<uint8_t, 0xF0>(uint8_t(0x12), uint8_t(0x34))), uint8_t(0x14));
-
-		CHECK_EQUAL((etl::binary_merge(uint16_t(0x1234), uint16_t(0x3456), uint16_t(0xF0F0))), uint16_t(0x1436));
-		CHECK_EQUAL((etl::binary_merge<uint16_t, 0xF0F0>(uint16_t(0x1234), uint16_t(0x3456))), uint16_t(0x1436));
-
-		CHECK_EQUAL((etl::binary_merge(uint32_t(0x12345678), uint32_t(0x3456789A), uint32_t(0xF0F0F0F0))), uint32_t(0x1436587A));
-		CHECK_EQUAL((etl::binary_merge<uint32_t, 0xF0F0F0F0>(uint32_t(0x12345678), uint32_t(0x3456789A))), uint32_t(0x1436587A));
-
-		CHECK_EQUAL((etl::binary_merge(uint64_t(0x123456789ABCDEF0), uint64_t(0x3456789ABCDEF012), uint64_t(0xF0F0F0F0F0F0F0F0))), uint64_t(0x1436587A9CBED0F2));
-		CHECK_EQUAL((etl::binary_merge<uint64_t, 0xF0F0F0F0F0F0F0F0>(uint64_t(0x123456789ABCDEF0), uint64_t(0x3456789ABCDEF012))), uint64_t(0x1436587A9CBED0F2));
-	}
-
-	//*************************************************************************
-	TEST(test_binary_interleave)
-	{
-		CHECK_EQUAL((etl::binary_interleave(uint8_t(0x5A), uint8_t(0xA5))), uint16_t(0x9966));
-		CHECK_EQUAL((etl::binary_interleave(uint16_t(0x5A5A), uint16_t(0xA5A5))), uint32_t(0x99669966));
-		CHECK_EQUAL((etl::binary_interleave(uint32_t(0x5A5A5A5A), uint32_t(0xA5A5A5A5))), uint64_t(0x9966996699669966));
-	}
-
-	//*************************************************************************
-	TEST(test_is_odd)
-	{
-		CHECK(etl::is_odd(1));
-		CHECK(!etl::is_odd(2));
-	}
-
-	//*************************************************************************
-	TEST(test_is_even)
-	{
-		CHECK(!etl::is_even(1));
-		CHECK(etl::is_even(2));
-	}
+	  //*************************************************************************
+	  TEST(test_is_even)
+	  {
+		  CHECK(!etl::is_even(1));
+		  CHECK(etl::is_even(2));
+	  }
   };
 }
 

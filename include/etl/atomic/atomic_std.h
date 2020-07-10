@@ -343,7 +343,7 @@ namespace etl
   public:
 
     atomic()
-      : value(nullptr)
+      : value(ETL_NULLPTR)
     {
     }
 
@@ -576,24 +576,30 @@ namespace etl
   typedef std::atomic<int16_t>             atomic_int16_t;
   typedef std::atomic<uint32_t>            atomic_uint32_t;
   typedef std::atomic<int32_t>             atomic_int32_t;
+#if ETL_USING_64BIT_TYPES
   typedef std::atomic<uint64_t>            atomic_uint64_t;
   typedef std::atomic<int64_t>             atomic_int64_t;
+#endif
   typedef std::atomic<int_least8_t>        atomic_int_least8_t;
   typedef std::atomic<uint_least8_t>       atomic_uint_least8_t;
   typedef std::atomic<int_least16_t>       atomic_int_least16_t;
   typedef std::atomic<uint_least16_t>      atomic_uint_least16_t;
   typedef std::atomic<int_least32_t>       atomic_int_least32_t;
   typedef std::atomic<uint_least32_t>      atomic_uint_least32_t;
+#if ETL_USING_64BIT_TYPES
   typedef std::atomic<int_least64_t>       atomic_int_least64_t;
   typedef std::atomic<uint_least64_t>      atomic_uint_least64_t;
+#endif
   typedef std::atomic<int_fast8_t>         atomic_int_fast8_t;
   typedef std::atomic<uint_fast8_t>        atomic_uint_fast8_t;
   typedef std::atomic<int_fast16_t>        atomic_int_fast16_t;
   typedef std::atomic<uint_fast16_t>       atomic_uint_fast16_t;
   typedef std::atomic<int_fast32_t>        atomic_int_fast32_t;
   typedef std::atomic<uint_fast32_t>       atomic_uint_fast32_t;
+#if ETL_USING_64BIT_TYPES
   typedef std::atomic<int_fast64_t>        atomic_int_fast64_t;
   typedef std::atomic<uint_fast64_t>       atomic_uint_fast64_t;
+#endif
   typedef std::atomic<intptr_t>            atomic_intptr_t;
   typedef std::atomic<uintptr_t>           atomic_uintptr_t;
   typedef std::atomic<size_t>              atomic_size_t;

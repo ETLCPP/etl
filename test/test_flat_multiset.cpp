@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2015 jwellbelove
 
@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include <set>
 #include <array>
@@ -46,12 +46,16 @@ namespace
 
   typedef TestDataDC<std::string>  DC;
   typedef TestDataNDC<std::string> NDC;
+  typedef TestDataM<std::string>   MC;
 
   typedef etl::flat_multiset<DC, SIZE>  DataDC;
   typedef etl::flat_multiset<NDC, SIZE> DataNDC;
   typedef etl::iflat_multiset<NDC>      IDataNDC;
 
   typedef etl::flat_multiset<int, SIZE> DataInt;
+
+  typedef etl::flat_multiset<MC, SIZE>  DataM;
+  typedef etl::iflat_multiset<MC>       IDataM;
 
   typedef std::multiset<DC>  Compare_DataDC;
   typedef std::multiset<NDC> Compare_DataNDC;
@@ -282,7 +286,7 @@ namespace
       CHECK(!data.empty());
     }
 
-#if !defined(ETL_NO_STL)
+#if ETL_USING_STL
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
@@ -299,6 +303,46 @@ namespace
       CHECK(isEqual);
     }
 #endif
+
+    //*************************************************************************
+    TEST(test_move_constructor)
+    {
+      using Item = MC;
+
+      Item p1(Item("1"));
+      Item p2a("2a");
+      Item p2b("2b");
+      Item p3("3");
+      Item p4(Item("4"));
+
+      DataM data1;
+      data1.insert(std::move(p1));
+      data1.insert(std::move(p2a));
+      data1.insert(std::move(p3));
+      data1.insert(std::move(p4));
+      data1.insert(std::move(p2b));
+
+      CHECK(!bool(p1));
+      CHECK(!bool(p2a));
+      CHECK(!bool(p2b));
+      CHECK(!bool(p3));
+      CHECK(!bool(p4));
+
+      DataM data2(std::move(data1));
+
+      CHECK_EQUAL(5U, data1.size());  // Move does not clear the source.
+      CHECK_EQUAL(5U, data2.size());
+
+      DataM::iterator itr = data2.begin();
+
+      Item pr = std::move(*itr++);
+
+      CHECK_EQUAL("1", pr.value);
+      CHECK_EQUAL("2a", (*itr++).value);
+      CHECK_EQUAL("2b", (*itr++).value);
+      CHECK_EQUAL("3", (*itr++).value);
+      CHECK_EQUAL("4", (*itr++).value);
+    }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assignment)
@@ -884,8 +928,8 @@ namespace
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      ETL_PAIR<Compare_DataNDC::iterator, Compare_DataNDC::iterator> i_compare = compare_data.equal_range(N5);
-      ETL_PAIR<DataNDC::iterator, DataNDC::iterator> i_data = data.equal_range(N5);
+      ETL_OR_STD::pair<Compare_DataNDC::iterator, Compare_DataNDC::iterator> i_compare = compare_data.equal_range(N5);
+      ETL_OR_STD::pair<DataNDC::iterator, DataNDC::iterator> i_data = data.equal_range(N5);
 
       CHECK_EQUAL(std::distance(compare_data.begin(), i_compare.first),  std::distance(data.begin(), i_data.first));
       CHECK_EQUAL(std::distance(compare_data.begin(), i_compare.second), std::distance(data.begin(), i_data.second));
@@ -896,7 +940,7 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      ETL_PAIR<DataNDC::iterator, DataNDC::iterator> i_data;
+      ETL_OR_STD::pair<DataNDC::iterator, DataNDC::iterator> i_data;
 
       i_data = data.equal_range(NX);
       CHECK_EQUAL(data.begin(), i_data.first);
@@ -939,8 +983,8 @@ namespace
       Compare_DataNDC compare_data(multi_data.begin(), multi_data.end());
       DataNDC data(multi_data.begin(), multi_data.end());
 
-      ETL_PAIR<Compare_DataNDC::iterator, Compare_DataNDC::iterator> compare_range;
-      ETL_PAIR<DataNDC::iterator, DataNDC::iterator> test_range;
+      ETL_OR_STD::pair<Compare_DataNDC::iterator, Compare_DataNDC::iterator> compare_range;
+      ETL_OR_STD::pair<DataNDC::iterator, DataNDC::iterator> test_range;
 
       compare_range = compare_data.equal_range(N0);
       test_range = data.equal_range(N0);

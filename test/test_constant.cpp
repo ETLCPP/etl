@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include "etl/constant.h"
 #include "etl/integral_limits.h"
@@ -51,15 +51,15 @@ namespace
 
       CHECK_EQUAL((char)etl::integral_limits<char>::max, c1.value);
       CHECK_EQUAL((char)etl::integral_limits<char>::max, C1::value);
-      CHECK((std::is_same<char, C1::value_type>::value));
+      CHECK((etl::is_same<char, C1::value_type>::value));
 
       CHECK_EQUAL((uint32_t)etl::integral_limits<uint32_t>::max, c2.value);
       CHECK_EQUAL((uint32_t)etl::integral_limits<uint32_t>::max, C2::value);
-      CHECK((std::is_same<uint32_t, C2::value_type>::value));
+      CHECK((etl::is_same<uint32_t, C2::value_type>::value));
 
       CHECK_EQUAL((int64_t)etl::integral_limits<int64_t>::max, c3.value);
       CHECK_EQUAL((int64_t)etl::integral_limits<int64_t>::max, C3::value);
-      CHECK((std::is_same<int64_t, C3::value_type>::value));
+      CHECK((etl::is_same<int64_t, C3::value_type>::value));
     }
   };
 }

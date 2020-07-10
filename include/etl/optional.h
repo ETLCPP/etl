@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2015 jwellbelove
 
@@ -39,7 +39,7 @@ SOFTWARE.
 #include "exception.h"
 #include "error_handler.h"
 
-#include "stl/utility.h"
+#include "utility.h"
 
 namespace etl
 {
@@ -138,6 +138,20 @@ namespace etl
       }
     }
 
+#if ETL_CPP11_SUPPORTED
+    //***************************************************************************
+    /// Move constructor.
+    //***************************************************************************
+    optional(optional&& other)
+      : valid(bool(other))
+    {
+      if (valid)
+      {
+        ::new (storage.template get_address<T>()) T(etl::move(other.value()));
+      }
+    }
+#endif
+
     //***************************************************************************
     /// Constructor from value type.
     //***************************************************************************
@@ -146,6 +160,17 @@ namespace etl
      ::new (storage.template get_address<T>()) T(value_);
       valid = true;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //***************************************************************************
+    /// Constructor from value type.
+    //***************************************************************************
+    optional(T&& value_)
+    {
+      ::new (storage.template get_address<T>()) T(etl::move(value_));
+      valid = true;
+    }
+#endif
 
     //***************************************************************************
     /// Destructor.
@@ -201,6 +226,37 @@ namespace etl
       return *this;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //***************************************************************************
+    /// Assignment operator from optional.
+    //***************************************************************************
+    optional& operator =(optional&& other)
+    {
+      if (this != &other)
+      {
+        if (valid && !bool(other))
+        {
+          storage.template get_reference<T>().~T();
+          valid = false;
+        }
+        else if (bool(other))
+        {
+          if (valid)
+          {
+            storage.template get_reference<T>() = etl::move(other.value());
+          }
+          else
+          {
+            ::new (storage.template get_address<T>()) T(etl::move(other.value()));
+            valid = true;
+          }
+        }
+      }
+
+      return *this;
+    }
+#endif
+
     //***************************************************************************
     /// Assignment operator from value type.
     //***************************************************************************
@@ -218,6 +274,26 @@ namespace etl
 
       return *this;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //***************************************************************************
+    /// Assignment operator from value type.
+    //***************************************************************************
+    optional& operator =(T&& value_)
+    {
+      if (valid)
+      {
+        storage.template get_reference<T>() = etl::move(value_);
+      }
+      else
+      {
+        ::new (storage.template get_address<T>()) T(etl::move(value_));
+        valid = true;
+      }
+
+      return *this;
+    }
+#endif
 
     //***************************************************************************
     /// Pointer operator.
@@ -270,10 +346,19 @@ namespace etl
     //***************************************************************************
     /// Bool conversion operator.
     //***************************************************************************
-    explicit operator bool() const
+    ETL_EXPLICIT operator bool() const
     {
       return valid;
     }
+
+    //***************************************************************************
+    // Check whether optional contains value
+    //***************************************************************************
+    ETL_CONSTEXPR bool has_value() const ETL_NOEXCEPT
+    {
+      return valid;
+    }
+
 
     //***************************************************************************
     /// Get a reference to the value.
@@ -329,7 +414,7 @@ namespace etl
       }
     }
 
-#if ETL_CPP11_SUPPORTED  && !defined(ETL_STLPORT) && !defined(ETL_OPTIONAL_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED  && ETL_NOT_USING_STLPORT && !defined(ETL_OPTIONAL_FORCE_CPP03)
     //*************************************************************************
     /// Emplaces a value.
     ///\param args The arguments to construct with.
@@ -343,7 +428,7 @@ namespace etl
         storage.template get_reference<T>().~T();
       }
 
-      ::new (storage.template get_address<T>()) T(ETL_STD::forward<Args>(args)...);
+      ::new (storage.template get_address<T>()) T(ETL_OR_STD::forward<Args>(args)...);
       valid = true;
     }
 #else

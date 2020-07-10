@@ -134,6 +134,30 @@ namespace etl
     }
   };
 
+  //***************************************************************************
+  /// Parity checksum policy.
+  //***************************************************************************
+  template <typename T>
+  struct checksum_policy_parity
+  {
+    typedef T value_type;
+
+    inline T initial() const
+    {
+      return 0;
+    }
+
+    inline T add(T sum, uint8_t value) const
+    {
+      return sum ^ etl::parity(value);
+    }
+
+    inline T final(T sum) const
+    {
+      return sum;
+    }
+  };
+
   //*************************************************************************
   /// Standard Checksum.
   //*************************************************************************
@@ -244,6 +268,35 @@ namespace etl
     //*************************************************************************
     template<typename TIterator>
     xor_rotate_checksum(TIterator begin, const TIterator end)
+    {
+      this->reset();
+      this->add(begin, end);
+    }
+  };
+
+  //*************************************************************************
+  /// Parity Checksum.
+  //*************************************************************************
+  template <typename T>
+  class parity_checksum : public etl::frame_check_sequence<etl::checksum_policy_parity<T> >
+  {
+  public:
+
+    //*************************************************************************
+    /// Default constructor.
+    //*************************************************************************
+    parity_checksum()
+    {
+      this->reset();
+    }
+
+    //*************************************************************************
+    /// Constructor from range.
+    /// \param begin Start of the range.
+    /// \param end   End of the range.
+    //*************************************************************************
+    template<typename TIterator>
+    parity_checksum(TIterator begin, const TIterator end)
     {
       this->reset();
       this->add(begin, end);

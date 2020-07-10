@@ -98,11 +98,11 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Sequencial Single.
+  /// Sequential Single.
   /// A policy the scheduler can use to decide what to do next.
   /// Only calls the task to process work once, if it has work to do.
   //***************************************************************************
-  struct scheduler_policy_sequencial_single
+  struct scheduler_policy_sequential_single
   {
     bool schedule_tasks(etl::ivector<etl::task*>& task_list)
     {
@@ -123,12 +123,15 @@ namespace etl
     }
   };
 
+  /// Typedef for backwards compatibility with miss-spelt struct name.
+  ETL_DEPRECATED_REASON("Misspelt class name") typedef scheduler_policy_sequential_single scheduler_policy_sequencial_single;
+
   //***************************************************************************
-  /// Sequencial Multiple.
+  /// Sequential Multiple.
   /// A policy the scheduler can use to decide what to do next.
   /// Calls the task to process work until it reports that it has no more.
   //***************************************************************************
-  struct scheduler_policy_sequencial_multiple
+  struct scheduler_policy_sequential_multiple
   {
     bool schedule_tasks(etl::ivector<etl::task*>& task_list)
     {
@@ -148,6 +151,9 @@ namespace etl
       return idle;
     }
   };
+
+  /// Typedef for backwards compatibility with miss-spelt struct name.
+  ETL_DEPRECATED typedef scheduler_policy_sequential_multiple scheduler_policy_sequencial_multiple;
 
   //***************************************************************************
   /// Highest Priority.
@@ -194,13 +200,13 @@ namespace etl
       bool idle = true;
 
       size_t most_index = 0;
-      uint_least8_t most_work = 0;
+      uint32_t most_work = 0;
 
       for (size_t index = 0; index < task_list.size(); ++index)
       {
         etl::task& task = *(task_list[index]);
 
-        uint_least8_t n_work = task.task_request_work();
+        uint32_t n_work = task.task_request_work();
 
         if (n_work > most_work)
         {
@@ -285,10 +291,10 @@ namespace etl
 
       if (!task_list.full())
       {
-        typename task_list_t::iterator itask = ETL_STD::upper_bound(task_list.begin(),
-                                                                task_list.end(),
-                                                                task.get_task_priority(),
-                                                                compare_priority());
+        typename task_list_t::iterator itask = etl::upper_bound(task_list.begin(),
+                                                                   task_list.end(),
+                                                                   task.get_task_priority(),
+                                                                   compare_priority());
 
         task_list.insert(itask, &task);
       }
@@ -304,7 +310,7 @@ namespace etl
     {
       for (TSize i = 0; i < size; ++i)
       {
-        ETL_ASSERT((p_tasks[i] != nullptr), ETL_ERROR(etl::scheduler_null_task_exception));
+        ETL_ASSERT((p_tasks[i] != ETL_NULLPTR), ETL_ERROR(etl::scheduler_null_task_exception));
         add_task(*(p_tasks[i]));
       }
     }
@@ -317,8 +323,8 @@ namespace etl
     ischeduler(etl::ivector<etl::task*>& task_list_)
       : scheduler_running(false),
         scheduler_exit(false),
-        p_idle_callback(nullptr),
-        p_watchdog_callback(nullptr),
+        p_idle_callback(ETL_NULLPTR),
+        p_watchdog_callback(ETL_NULLPTR),
         task_list(task_list_)
     {
     }
@@ -335,11 +341,6 @@ namespace etl
     //*******************************************
     struct compare_priority
     {
-      bool operator()(etl::task* ptask, etl::task_priority_t priority) const
-      {
-        return ptask->get_task_priority() > priority;
-      }
-
       bool operator()(etl::task_priority_t priority, etl::task* ptask) const
       {
         return priority > ptask->get_task_priority();
@@ -369,8 +370,7 @@ namespace etl
     }
 
     //*******************************************
-    /// Start the scheduler. SEQUENCIAL_SINGLE
-    /// Only calls the task to process work once, if it has work to do.
+    /// Start the scheduler.
     //*******************************************
     void start()
     {

@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2017 jwellbelove
 
@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include <map>
 #include <array>
@@ -49,8 +49,8 @@ namespace
   typedef TestDataDC<std::string>  DC;
   typedef TestDataNDC<std::string> NDC;
 
-  typedef ETL_PAIR<const int, DC>  ElementDC;
-  typedef ETL_PAIR<const int, NDC> ElementNDC;
+  typedef ETL_OR_STD::pair<const int, DC>  ElementDC;
+  typedef ETL_OR_STD::pair<const int, NDC> ElementNDC;
 
   typedef etl::reference_flat_map<int, DC, SIZE>  DataDC;
   typedef etl::reference_flat_map<int, NDC, SIZE> DataNDC;
@@ -386,7 +386,7 @@ namespace
       Compare_DataNDC compare_data;
       DataNDC data;
 
-      ETL_PAIR<DataNDC::iterator, bool> result;
+      ETL_OR_STD::pair<DataNDC::iterator, bool> result;
 
       DataNDC::value_type item(0, N0);
       result = data.insert(item);
@@ -433,8 +433,8 @@ namespace
       Compare_DataNDC compare_data;
       DataNDC data;
 
-      ETL_PAIR<DataNDC::iterator, bool> result1;
-      ETL_PAIR<Compare_DataNDC::iterator, bool> result2;
+      ETL_OR_STD::pair<DataNDC::iterator, bool> result1;
+      ETL_OR_STD::pair<Compare_DataNDC::iterator, bool> result2;
 
       DataNDC::value_type item(0, N0);
       result1 = data.insert(item);
@@ -738,8 +738,8 @@ namespace
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      ETL_PAIR<Compare_DataNDC::iterator, Compare_DataNDC::iterator> i_compare = compare_data.equal_range(5);
-      ETL_PAIR<DataNDC::iterator, DataNDC::iterator> i_data = data.equal_range(5);
+      ETL_OR_STD::pair<Compare_DataNDC::iterator, Compare_DataNDC::iterator> i_compare = compare_data.equal_range(5);
+      ETL_OR_STD::pair<DataNDC::iterator, DataNDC::iterator> i_data = data.equal_range(5);
 
       CHECK_EQUAL(std::distance(compare_data.begin(), i_compare.first),  std::distance(data.begin(), i_data.first));
       CHECK_EQUAL(std::distance(compare_data.begin(), i_compare.second), std::distance(data.begin(), i_data.second));
@@ -751,9 +751,9 @@ namespace
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      ETL_PAIR<Compare_DataNDC::iterator, Compare_DataNDC::iterator> i_compare;
+      ETL_OR_STD::pair<Compare_DataNDC::iterator, Compare_DataNDC::iterator> i_compare;
 
-      ETL_PAIR<DataNDC::iterator, DataNDC::iterator> i_data;
+      ETL_OR_STD::pair<DataNDC::iterator, DataNDC::iterator> i_data;
 
       i_data = data.equal_range(-1);
       CHECK_EQUAL(data.begin(), i_data.first);

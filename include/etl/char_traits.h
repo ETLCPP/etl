@@ -31,12 +31,11 @@ SOFTWARE.
 #ifndef ETL_CHAR_TRAITS_INCLUDED
 #define ETL_CHAR_TRAITS_INCLUDED
 
-#include "platform.h"
-#include "stdint.h"
-#include "algorithm.h"
+#include <stdint.h>
 
-#include "stl/algorithm.h"
-#include "stl/iterator.h"
+#include "platform.h"
+#include "algorithm.h"
+#include "iterator.h"
 
 //*****************************************************************************
 ///\defgroup char_traits char_traits
@@ -141,7 +140,7 @@ namespace etl
     {
       if (p != 0)
       {
-        ETL_STD::fill_n(p, n, c);
+        etl::fill_n(p, n, c);
       }
 
       return p;
@@ -156,9 +155,9 @@ namespace etl
       }
       else
       {
-        etl::copy_n(ETL_STD::reverse_iterator<char_type*>(src + count),
+        etl::copy_n(ETL_OR_STD::reverse_iterator<char_type*>(src + count),
                     count,
-                    ETL_STD::reverse_iterator<char_type*>(dest + count));
+                    ETL_OR_STD::reverse_iterator<char_type*>(dest + count));
       }
 
       return dest;

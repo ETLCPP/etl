@@ -56,10 +56,10 @@ namespace etl
     typedef const value_type*                     const_pointer;
     typedef value_type*                           iterator;
     typedef const value_type*                     const_iterator;
-    typedef ETL_STD::reverse_iterator<iterator>       reverse_iterator;
-    typedef ETL_STD::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
     typedef size_t                                size_type;
-    typedef typename ETL_STD::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
   protected:
 
@@ -426,6 +426,13 @@ namespace etl
       return *this;
     }
 
+#ifdef ETL_IVECTOR_REPAIR_ENABLE
+    //*************************************************************************
+    /// Fix the internal pointers after a low level memory copy.
+    //*************************************************************************
+    virtual void repair() = 0;
+#endif
+
   protected:
 
     //*********************************************************************
@@ -441,7 +448,7 @@ namespace etl
     //*********************************************************************
     void initialise_source_external_buffer_after_move()
     {
-      ETL_SUBTRACT_DEBUG_COUNT(int32_t(ETL_STD::distance(p_buffer, p_end)))
+      ETL_SUBTRACT_DEBUG_COUNT(int32_t(etl::distance(p_buffer, p_end)))
 
         p_end = p_buffer;
     }
@@ -451,7 +458,7 @@ namespace etl
     //*********************************************************************
     void initialise_destination_external_buffer_after_move()
     {
-      ETL_ADD_DEBUG_COUNT(int32_t(ETL_STD::distance(p_buffer, p_end)))
+      ETL_ADD_DEBUG_COUNT(int32_t(etl::distance(p_buffer, p_end)))
     }
   };
 
@@ -467,10 +474,10 @@ namespace etl
     typedef const value_type*                     const_pointer;
     typedef value_type*                           iterator;
     typedef const value_type*                     const_iterator;
-    typedef ETL_STD::reverse_iterator<iterator>       reverse_iterator;
-    typedef ETL_STD::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
     typedef size_t                                size_type;
-    typedef typename ETL_STD::iterator_traits<iterator>::difference_type difference_type;
+    typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
   protected:
 
@@ -837,6 +844,13 @@ namespace etl
       return *this;
     }
 
+#ifdef ETL_IVECTOR_REPAIR_ENABLE
+    //*************************************************************************
+    /// Fix the internal pointers after a low level memory copy.
+    //*************************************************************************
+    virtual void repair() = 0;
+#endif
+
   protected:
 
     //*********************************************************************
@@ -852,7 +866,7 @@ namespace etl
     //*********************************************************************
     void initialise_source_external_buffer_after_move()
     {
-      ETL_SUBTRACT_DEBUG_COUNT(int32_t(ETL_STD::distance(p_buffer, p_end)))
+      ETL_SUBTRACT_DEBUG_COUNT(int32_t(etl::distance(p_buffer, p_end)))
 
         p_end = p_buffer;
     }
@@ -862,7 +876,7 @@ namespace etl
     //*********************************************************************
     void initialise_destination_external_buffer_after_move()
     {
-      ETL_ADD_DEBUG_COUNT(int32_t(ETL_STD::distance(p_buffer, p_end)))
+      ETL_ADD_DEBUG_COUNT(int32_t(etl::distance(p_buffer, p_end)))
     }
   };
 

@@ -99,7 +99,11 @@ namespace etl
   {
   public:
 
+#if ETL_NOT_USING_64BIT_TYPES
+    typedef typename private_alignment::type_with_alignment_helper<ALIGNMENT, int_least8_t, int_least16_t, int32_t, float, double, void*>::type type;
+#else
     typedef typename private_alignment::type_with_alignment_helper<ALIGNMENT, int_least8_t, int_least16_t, int32_t, int64_t, float, double, void*>::type type;
+#endif
   };
 
   //***************************************************************************
@@ -180,11 +184,15 @@ namespace etl
         return reinterpret_cast<const T*>(data);
       }
 
+#if ETL_CPP11_SUPPORTED
+      alignas(ALIGNMENT) char data[LENGTH];
+#else
       union
       {
         char data[LENGTH];
         typename etl::type_with_alignment<ALIGNMENT>::type etl_alignment_type; // A POD type that has the same alignment as ALIGNMENT.
       };
+#endif
     };
   };
 

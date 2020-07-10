@@ -56,7 +56,7 @@ namespace etl
     //*************************************************************************
     callback_service()
       : unhandled_callback(*this),
-        p_unhandled(nullptr)
+        p_unhandled(ETL_NULLPTR)
     {
       lookup.fill(&unhandled_callback);
     }
@@ -137,7 +137,7 @@ namespace etl
     //*************************************************************************
     void unhandled(size_t id)
     {
-      if (p_unhandled != nullptr)
+      if (p_unhandled != ETL_NULLPTR)
       {
         (*p_unhandled)(id);
       }

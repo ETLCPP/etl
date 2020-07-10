@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -26,46 +26,256 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
+
+#include <string>
 
 #include "etl/iterator.h"
 
+#include "iterators_for_unit_tests.h"
+#include "data.h"
+
 namespace
 {
-  struct input : public etl::iterator<ETL_INPUT_ITERATOR_TAG, int>
+  using Item = TestDataM<std::string>;
+
+  struct input : public etl::iterator<ETL_OR_STD::input_iterator_tag, int>
   {
 
   };
 
-  struct output : public etl::iterator<ETL_OUTPUT_ITERATOR_TAG, int>
+  struct output : public etl::iterator<ETL_OR_STD::output_iterator_tag, int>
   {
 
   };
 
-  struct forward : public etl::iterator<ETL_FORWARD_ITERATOR_TAG, int>
+  struct forward : public etl::iterator<ETL_OR_STD::forward_iterator_tag, int>
   {
 
   };
 
-  struct bidirectional : public etl::iterator<ETL_BIDIRECTIONAL_ITERATOR_TAG, int>
+  struct bidirectional : public etl::iterator<ETL_OR_STD::bidirectional_iterator_tag, int>
   {
 
   };
 
-  struct random : public etl::iterator<ETL_RANDOM_ACCESS_ITERATOR_TAG, int>
+  struct random : public etl::iterator<ETL_OR_STD::random_access_iterator_tag, int>
   {
 
   };
 
   typedef int* pointer;
   typedef const int* const_pointer;
-}
 
-namespace
-{
+  const size_t SIZE = 10;
+  int dataA[SIZE] = { 2, 1, 4, 3, 6, 5, 8, 7, 10, 9 };
+
   SUITE(test_iterator)
   {
     // NOTE '!!' is required to keep GCC happy.
+
+    //*************************************************************************
+    TEST(distance_non_random)
+    {
+      ptrdiff_t d = etl::distance(non_random_iterator<int>(&dataA[0]), non_random_iterator<int>(&dataA[SIZE]));
+
+      CHECK_EQUAL(SIZE, d);
+    }
+
+    //*************************************************************************
+    TEST(distance_random)
+    {
+      ptrdiff_t d = etl::distance(random_iterator<int>(&dataA[0]), random_iterator<int>(&dataA[SIZE]));
+
+      CHECK_EQUAL(SIZE, d);
+    }
+
+    //*************************************************************************
+    TEST(advance_non_random)
+    {
+      int* itr1 = std::begin(dataA);
+      non_random_iterator<int> itr2 = std::begin(dataA);
+
+      std::advance(itr1, 4);
+      etl::advance(itr2, 4);
+      CHECK_EQUAL(*itr1, *itr2);
+
+      std::advance(itr1, -3);
+      etl::advance(itr2, -3);
+      CHECK_EQUAL(*itr1, *itr2);
+    }
+
+    //*************************************************************************
+    TEST(advance_random)
+    {
+      int* itr1 = std::begin(dataA);
+      random_iterator<int> itr2 = std::begin(dataA);
+
+      std::advance(itr1, 4);
+      etl::advance(itr2, 4);
+      CHECK_EQUAL(*itr1, *itr2);
+
+      std::advance(itr1, -3);
+      etl::advance(itr2, -3);
+      CHECK_EQUAL(*itr1, *itr2);
+    }
+
+    //*************************************************************************
+    TEST(prev)
+    {
+      int data[] = { 1, 2, 3, 4, 5, 6, 7 };
+
+      size_t length = 6U;
+
+      int* itr = &data[0] + length;
+
+      for (size_t i = 1; i <= length; ++i)
+      {
+        CHECK_EQUAL(data[length - i], *etl::prev(itr, i));
+      }
+    }
+
+    //*************************************************************************
+    TEST(next)
+    {
+      int data[] = { 1, 2, 3, 4, 5, 6, 7 };
+
+      size_t length = 6U;
+
+      int* itr = &data[0];
+
+      for (size_t i = 1; i <= length; ++i)
+      {
+        CHECK_EQUAL(data[i], *etl::next(itr, i));
+      }
+    }
+
+    //*************************************************************************
+    TEST(reverse_iterator)
+    {
+      int data[] = { 1, 2, 3, 4, 5, 6, 7 };
+
+      std::reverse_iterator<int*> sri(&data[7]);
+      etl::reverse_iterator<int*> eri(&data[7]);
+
+      CHECK_EQUAL(*sri++, *eri++);
+      CHECK_EQUAL(*sri++, *eri++);
+      CHECK_EQUAL(*sri++, *eri++);
+
+      CHECK(etl::reverse_iterator<int*>(&data[5]) < eri);
+      CHECK(etl::reverse_iterator<int*>(&data[3]) > eri);
+      CHECK(etl::reverse_iterator<int*>(&data[4]) <= eri);
+      CHECK(etl::reverse_iterator<int*>(&data[5]) <= eri);
+      CHECK(etl::reverse_iterator<int*>(&data[4]) >= eri);
+      CHECK(etl::reverse_iterator<int*>(&data[3]) >= eri);
+
+      CHECK_EQUAL(*sri++, *eri++);
+      CHECK_EQUAL(*sri++, *eri++);
+      CHECK_EQUAL(*sri++, *eri++);
+      CHECK_EQUAL(*sri, *eri);
+
+      CHECK(etl::reverse_iterator<int*>(&data[1]) == eri);
+      CHECK(etl::reverse_iterator<int*>(&data[2]) != eri);
+      CHECK(etl::reverse_iterator<int*>(&data[3]) != eri);
+      CHECK(etl::reverse_iterator<int*>(&data[4]) != eri);
+      CHECK(etl::reverse_iterator<int*>(&data[5]) != eri);
+      CHECK(etl::reverse_iterator<int*>(&data[6]) != eri);
+      CHECK(etl::reverse_iterator<int*>(&data[7]) != eri);
+
+      sri = std::reverse_iterator<int*>(&data[7]);
+      eri = etl::reverse_iterator<int*>(&data[7]);
+      CHECK_EQUAL(sri[0], eri[0]);
+      CHECK_EQUAL(sri[1], eri[1]);
+      CHECK_EQUAL(sri[2], eri[2]);
+      CHECK_EQUAL(sri[3], eri[3]);
+      CHECK_EQUAL(sri[4], eri[4]);
+      CHECK_EQUAL(sri[5], eri[5]);
+      CHECK_EQUAL(sri[6], eri[6]);
+
+      sri += 4;
+      eri += 4;
+      CHECK_EQUAL(*sri, *eri);
+
+      sri -= 2;
+      eri -= 2;
+      CHECK_EQUAL(*sri, *eri);
+
+      std::reverse_iterator<int*>    sri2 = sri + 3;
+      etl::reverse_iterator<int*> eri2 = eri + 3;
+      CHECK_EQUAL(*sri, *eri);
+
+      sri2 = sri - 3;
+      eri2 = eri - 3;
+      CHECK_EQUAL(*sri, *eri);
+    }
+
+    //*************************************************************************
+    TEST(reverse_iterator_const)
+    {
+      const int data[] = { 1, 2, 3, 4, 5, 6, 7 };
+
+      std::reverse_iterator<const int*> sri(&data[7]);
+      etl::reverse_iterator<const int*> eri(&data[7]);
+
+      CHECK_EQUAL(*sri++, *eri++);
+      CHECK_EQUAL(*sri++, *eri++);
+      CHECK_EQUAL(*sri++, *eri++);
+
+      CHECK(etl::reverse_iterator<const int*>(&data[5]) < eri);
+      CHECK(etl::reverse_iterator<const int*>(&data[3]) > eri);
+      CHECK(etl::reverse_iterator<const int*>(&data[4]) <= eri);
+      CHECK(etl::reverse_iterator<const int*>(&data[5]) <= eri);
+      CHECK(etl::reverse_iterator<const int*>(&data[4]) >= eri);
+      CHECK(etl::reverse_iterator<const int*>(&data[3]) >= eri);
+
+      CHECK_EQUAL(*sri++, *eri++);
+      CHECK_EQUAL(*sri++, *eri++);
+      CHECK_EQUAL(*sri++, *eri++);
+      CHECK_EQUAL(*sri, *eri);
+
+      CHECK(etl::reverse_iterator<const int*>(&data[1]) == eri);
+      CHECK(etl::reverse_iterator<const int*>(&data[2]) != eri);
+      CHECK(etl::reverse_iterator<const int*>(&data[3]) != eri);
+      CHECK(etl::reverse_iterator<const int*>(&data[4]) != eri);
+      CHECK(etl::reverse_iterator<const int*>(&data[5]) != eri);
+      CHECK(etl::reverse_iterator<const int*>(&data[6]) != eri);
+      CHECK(etl::reverse_iterator<const int*>(&data[7]) != eri);
+
+      sri = std::reverse_iterator<const int*>(&data[7]);
+      eri = etl::reverse_iterator<const int*>(&data[7]);
+      CHECK_EQUAL(sri[0], eri[0]);
+      CHECK_EQUAL(sri[1], eri[1]);
+      CHECK_EQUAL(sri[2], eri[2]);
+      CHECK_EQUAL(sri[3], eri[3]);
+      CHECK_EQUAL(sri[4], eri[4]);
+      CHECK_EQUAL(sri[5], eri[5]);
+      CHECK_EQUAL(sri[6], eri[6]);
+
+      CHECK_EQUAL(*sri, *eri);
+      CHECK_EQUAL(*(sri + 1), *(eri + 1));
+      CHECK_EQUAL(*(sri + 2), *(eri + 2));
+      CHECK_EQUAL(*(sri + 3), *(eri + 3));
+      CHECK_EQUAL(*(sri + 4), *(eri + 4));
+      CHECK_EQUAL(*(sri + 5), *(eri + 5));
+      CHECK_EQUAL(*(sri + 6), *(eri + 6));
+
+      sri += 4;
+      eri += 4;
+      CHECK_EQUAL(*sri, *eri);
+
+      sri -= 2;
+      eri -= 2;
+      CHECK_EQUAL(*sri, *eri);
+
+      std::reverse_iterator<const int*>    sri2 = sri + 3;
+      etl::reverse_iterator<const int*> eri2 = eri + 3;
+      CHECK_EQUAL(*sri, *eri);
+
+      sri2 = sri - 3;
+      eri2 = eri - 3;
+      CHECK_EQUAL(*sri, *eri);
+    }
+
 
     TEST(test_input)
     {
@@ -170,6 +380,142 @@ namespace
       CHECK(!!etl::is_forward_iterator_concept<const_pointer>::value);
       CHECK(!!etl::is_bidirectional_iterator_concept<const_pointer>::value);
       CHECK(!!etl::is_random_iterator_concept<const_pointer>::value);
+    }
+
+    //*************************************************************************
+    TEST(move_iterator_constructors)
+    {
+      Item list[] = { Item("1"), Item("2"), Item("3") };
+
+      etl::move_iterator<Item*> mitr1(&list[0]);
+      etl::move_iterator<Item*> mitr2(&list[1]);
+      etl::move_iterator<Item*> mitr3(&list[1]);
+
+      etl::move_iterator<Item*> mitr4 = etl::make_move_iterator(&list[2]);
+      etl::move_iterator<Item*> mitr5(mitr4);
+
+      CHECK(mitr1.base() == &list[0]);
+      CHECK(mitr2.base() == &list[1]);
+      CHECK(mitr3.base() == &list[1]);
+      CHECK(mitr4.base() == &list[2]);
+      CHECK(mitr5.base() == &list[2]);
+    }
+
+    //*************************************************************************
+    TEST(move_iterator_relational_operators)
+    {
+      Item list[] = { Item("1"), Item("2"), Item("3") };
+
+      etl::move_iterator<Item*> mitr1(&list[0]);
+      etl::move_iterator<Item*> mitr2(&list[1]);
+      etl::move_iterator<Item*> mitr3(&list[1]);
+
+      etl::move_iterator<Item*> mitr4 = etl::make_move_iterator(&list[2]);
+      etl::move_iterator<Item*> mitr5(mitr4);
+
+      CHECK(mitr1 < mitr2);
+      CHECK(!(mitr2 < mitr1));
+      CHECK(!(mitr2 < mitr3));
+
+      CHECK(mitr1 <= mitr2);
+      CHECK(mitr2 <= mitr3);
+      CHECK(!(mitr2 <= mitr1));
+
+      CHECK(mitr2 > mitr1);
+      CHECK(!(mitr1 > mitr2));
+      CHECK(!(mitr3 > mitr2));
+
+      CHECK(mitr2 >= mitr1);
+      CHECK(mitr3 >= mitr2);
+      CHECK(!(mitr1 >= mitr2));
+
+      CHECK(mitr4 == mitr5);
+      CHECK(mitr3 != mitr5);
+    }
+
+    //*************************************************************************
+    TEST(move_iterator_access_operators)
+    {
+      Item item1("1");
+
+      etl::move_iterator<Item*> mitr(&item1);
+
+      CHECK_EQUAL("1", mitr->value);
+      CHECK_EQUAL(true, mitr->valid);
+
+      CHECK_EQUAL("1", (*mitr).value);
+      CHECK_EQUAL(true, (*mitr).valid);
+
+      Item item2 = *mitr; // Move item1
+
+      CHECK_EQUAL(false, item1.valid);
+
+      CHECK_EQUAL("1", item2.value);
+      CHECK_EQUAL(true, item2.valid);
+    }
+
+    //*************************************************************************
+    TEST(move_iterator_index)
+    {
+      Item list[] = { Item("1"), Item("2"), Item("3") };
+
+      etl::move_iterator<Item*> mitr(&list[0]);
+
+      CHECK_EQUAL("3", mitr[2].value);
+      CHECK_EQUAL(true, mitr[2].valid);
+    }
+
+    //*************************************************************************
+    TEST(move_iterator_increment_decrement)
+    {
+      Item list[] = { Item("1"), Item("2"), Item("3") };
+
+      etl::move_iterator<Item*> mitr(&list[0]);
+
+      mitr++;
+      ++mitr;
+
+      CHECK_EQUAL("3", mitr->value);
+      CHECK_EQUAL(true, mitr->valid);
+
+      mitr--;
+      --mitr;
+
+      CHECK_EQUAL("1", mitr->value);
+      CHECK_EQUAL(true, mitr->valid);
+
+      mitr += 1;
+
+      CHECK_EQUAL("2", mitr->value);
+      CHECK_EQUAL(true, mitr->valid);
+
+      mitr -= 1;
+
+      CHECK_EQUAL("1", mitr->value);
+      CHECK_EQUAL(true, mitr->valid);
+
+      mitr = mitr + 1;
+
+      CHECK_EQUAL("2", mitr->value);
+      CHECK_EQUAL(true, mitr->valid);
+
+      mitr = mitr - 1;
+
+      CHECK_EQUAL("1", mitr->value);
+      CHECK_EQUAL(true, mitr->valid);
+    }
+
+    //*************************************************************************
+    TEST(move_iterator_subtraction)
+    {
+      Item list[] = { Item("1"), Item("2"), Item("3") };
+
+      etl::move_iterator<Item*> mitr1(&list[0]);
+      etl::move_iterator<Item*> mitr2(&list[1]);
+
+      etl::move_iterator<Item*>::difference_type d = mitr2 - mitr1;
+
+      CHECK_EQUAL(1, d);
     }
   };
 }

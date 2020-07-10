@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -26,84 +26,74 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
-  #if defined(_WINDOWS)
-#include <Windows.h>
-#endif
-#include <sstream>
+#include "UnitTest++/UnitTest++.h"
+#include <iostream>
 #include <string>
+#include <string.h>
 
 #include "etl/error_handler.h"
 #include "etl/exception.h"
 
-bool error_received;
-
-//*****************************************************************************
-// An exception.
-//*****************************************************************************
-class test_exception : public etl::exception
+namespace
 {
-public:
+  bool error_received;
 
-  test_exception(string_type file_name_, numeric_type line_number_)
-    : exception(ETL_ERROR_TEXT("test_exception", "123"), file_name_, line_number_)
+  //*****************************************************************************
+  // An exception.
+  //*****************************************************************************
+  class test_exception : public etl::exception
   {
-    error_received = false;
-  }
-};
+  public:
 
-//*****************************************************************************
-// A free error handler function.
-//*****************************************************************************
-void receive_error(const etl::exception& e)
-{
-  error_received = true;
-  std::ostringstream oss;
-  oss << "Error '" << e.what() << "' in " << e.file_name() << " at line " << e.line_number() << "\n";
+    test_exception(string_type file_name_, numeric_type line_number_)
+      : exception(ETL_ERROR_TEXT("test_exception", "123"), file_name_, line_number_)
+    {
+      error_received = false;
+    }
+  };
 
-#if defined(_WINDOWS) && defined(ETL_COMPILER_MICROSOFT)
-  std::string stext = oss.str();
-
-  WCHAR text[200];
-  MultiByteToWideChar(0, 0, stext.c_str(), stext.size() + 1, text, 200);
-  LPCWSTR ltext = text;
-
-  OutputDebugString(ltext);
-#endif
-}
-
-//*****************************************************************************
-class test_class
-{
-public:
-
-  //***************************************************************************
-  // A member error handler function.
-  //***************************************************************************
+  //*****************************************************************************
+  // A free error handler function.
+  //*****************************************************************************
   void receive_error(const etl::exception& e)
   {
     error_received = true;
-    std::ostringstream oss;
-    oss << "Error '" << e.what() << "' in " << e.file_name() << " at line " << e.line_number() << "\n";
-
-#if defined(_WINDOWS) && defined(ETL_COMPILER_MICROSOFT)
-    std::string stext = oss.str();
-
-    WCHAR text[200];
-    MultiByteToWideChar(0, 0, stext.c_str(), stext.size() + 1, text, 200);
-    LPCWSTR ltext = text;
-
-    OutputDebugString(ltext);
-#endif
+    CHECK(strcmp(e.what(), "test_exception") == 0);
   }
-};
+
+  //*****************************************************************************
+  class test_class
+  {
+  public:
+
+    //***************************************************************************
+    // A member error handler function.
+    //***************************************************************************
+    void receive_error(const etl::exception& e)
+    {
+      error_received = true;
+      CHECK(strcmp(e.what(), "test_exception") == 0);
+    }
+
+    //***************************************************************************
+    // A const member error handler function.
+    //***************************************************************************
+    void receive_error_const(const etl::exception& e) const
+    {
+      error_received = true;
+      CHECK(strcmp(e.what(), "test_exception") == 0);
+    }
+  };
+
+  test_class static_test;
+}
 
 namespace
 {
   SUITE(test_error_handler)
   {
     //*************************************************************************
-    TEST(test_free_handler_function)
+    TEST(test_free_handler_function_deprecated)
     {
       // Create the function callback object.
       etl::error_handler::free_function error_callback(receive_error);
@@ -118,7 +108,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_member_handler_function)
+    TEST(test_member_handler_function_deprecated)
     {
       // Create the class that contains the handler.
       test_class test;
@@ -128,6 +118,70 @@ namespace
 
       // Tell the error handler about it.
       etl::error_handler::set_callback(error_callback);
+
+      // Log an error.
+      etl::error_handler::error(ETL_ERROR(test_exception));
+
+      CHECK(error_received);
+    }
+
+    //*************************************************************************
+    TEST(test_free_handler_function_compile_time)
+    {
+      // Tell the error handler about it.
+      etl::error_handler::set_callback<receive_error>();
+
+      // Log an error.
+      etl::error_handler::error(ETL_ERROR(test_exception));
+
+      CHECK(error_received);
+    }
+
+    //*************************************************************************
+    TEST(test_member_handler_function_run_time)
+    {
+      test_class test;
+
+      // Tell the error handler about it.
+      etl::error_handler::set_callback<test_class, &test_class::receive_error>(test);
+
+      // Log an error.
+      etl::error_handler::error(ETL_ERROR(test_exception));
+
+      CHECK(error_received);
+    }
+
+    //*************************************************************************
+    TEST(test_const_member_handler_function_run_time)
+    {
+      test_class test;
+
+      // Tell the error handler about it.
+      etl::error_handler::set_callback<test_class, &test_class::receive_error_const>(test);
+
+      // Log an error.
+      etl::error_handler::error(ETL_ERROR(test_exception));
+
+      CHECK(error_received);
+    }
+
+    //*************************************************************************
+    TEST(test_member_handler_function_compile_time)
+    {
+      // Tell the error handler about it.
+      etl::error_handler::set_callback<test_class, static_test, &test_class::receive_error>();
+
+      // Log an error.
+      etl::error_handler::error(ETL_ERROR(test_exception));
+
+      CHECK(error_received);
+    }
+
+    //*************************************************************************
+    TEST(test_const_member_handler_function_compile_time)
+    {
+      // Tell the error handler about it.
+      etl::error_handler::set_callback<test_class, static_test, &test_class::receive_error_const>();
 
       // Log an error.
       etl::error_handler::error(ETL_ERROR(test_exception));

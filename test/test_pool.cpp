@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 #include "ExtraCheckMacros.h"
 
 #include "data.h"
@@ -173,10 +173,10 @@ namespace
       Test_Data* p3 = nullptr;
       Test_Data* p4 = nullptr;
 
-      CHECK_NO_THROW(p1 = pool.allocate<Test_Data>());
-      CHECK_NO_THROW(p2 = pool.allocate<Test_Data>());
-      CHECK_NO_THROW(p3 = pool.allocate<Test_Data>());
-      CHECK_NO_THROW(p4 = pool.allocate<Test_Data>());
+      CHECK_NO_THROW(p1 = pool.allocate());
+      CHECK_NO_THROW(p2 = pool.allocate());
+      CHECK_NO_THROW(p3 = pool.allocate());
+      CHECK_NO_THROW(p4 = pool.allocate());
 
       CHECK(p1 != p2);
       CHECK(p1 != p3);
@@ -185,7 +185,7 @@ namespace
       CHECK(p2 != p4);
       CHECK(p3 != p4);
 
-      CHECK_THROW(pool.allocate<Test_Data>(), etl::pool_no_allocation);
+      CHECK_THROW(pool.allocate(), etl::pool_no_allocation);
     }
 
     //*************************************************************************
@@ -193,10 +193,10 @@ namespace
     {
       etl::pool<Test_Data, 4> pool;
 
-      Test_Data* p1 = pool.allocate<Test_Data>();
-      Test_Data* p2 = pool.allocate<Test_Data>();
-      Test_Data* p3 = pool.allocate<Test_Data>();
-      Test_Data* p4 = pool.allocate<Test_Data>();
+      Test_Data* p1 = pool.allocate();
+      Test_Data* p2 = pool.allocate();
+      Test_Data* p3 = pool.allocate();
+      Test_Data* p4 = pool.allocate();
 
       CHECK_NO_THROW(pool.release(p2));
       CHECK_NO_THROW(pool.release(p3));
@@ -215,10 +215,10 @@ namespace
     {
       etl::pool<Test_Data, 4> pool;
 
-      Test_Data* p1 = pool.allocate<Test_Data>();
-      Test_Data* p2 = pool.allocate<Test_Data>();
-      Test_Data* p3 = pool.allocate<Test_Data>();
-      Test_Data* p4 = pool.allocate<Test_Data>();
+      Test_Data* p1 = pool.allocate();
+      Test_Data* p2 = pool.allocate();
+      Test_Data* p3 = pool.allocate();
+      Test_Data* p4 = pool.allocate();
 
       // Allocated p1, p2, p3, p4
 
@@ -231,8 +231,8 @@ namespace
 
       CHECK_EQUAL(2U, pool.available());
 
-      Test_Data* p5 = pool.allocate<Test_Data>();
-      Test_Data* p6 = pool.allocate<Test_Data>();
+      Test_Data* p5 = pool.allocate();
+      Test_Data* p6 = pool.allocate();
 
       // Allocated p1, p4, p5, p6
 
@@ -250,7 +250,7 @@ namespace
 
       CHECK_EQUAL(1U, pool.available());
 
-      Test_Data* p7 = pool.allocate<Test_Data>();
+      Test_Data* p7 = pool.allocate();
 
       // Allocated p1, p4, p6, p7
 
@@ -269,16 +269,16 @@ namespace
 
       Test_Data* p;
 
-      p = pool.allocate<Test_Data>();
+      p = pool.allocate();
       CHECK_EQUAL(3U, pool.available());
 
-      p = pool.allocate<Test_Data>();
+      p = pool.allocate();
       CHECK_EQUAL(2U, pool.available());
 
-      p = pool.allocate<Test_Data>();
+      p = pool.allocate();
       CHECK_EQUAL(1U, pool.available());
 
-      p = pool.allocate<Test_Data>();
+      p = pool.allocate();
       CHECK_EQUAL(0U, pool.available());
     }
 
@@ -298,16 +298,16 @@ namespace
 
       Test_Data* p;
 
-      p = pool.allocate<Test_Data>();
+      p = pool.allocate();
       CHECK_EQUAL(1U, pool.size());
 
-      p = pool.allocate<Test_Data>();
+      p = pool.allocate();
       CHECK_EQUAL(2U, pool.size());
 
-      p = pool.allocate<Test_Data>();
+      p = pool.allocate();
       CHECK_EQUAL(3U, pool.size());
 
-      p = pool.allocate<Test_Data>();
+      p = pool.allocate();
       CHECK_EQUAL(4U, pool.size());
     }
 
@@ -320,19 +320,19 @@ namespace
 
       Test_Data* p;
 
-      p = pool.allocate<Test_Data>();
+      p = pool.allocate();
       CHECK(!pool.empty());
       CHECK(!pool.full());
 
-      p = pool.allocate<Test_Data>();
+      p = pool.allocate();
       CHECK(!pool.empty());
       CHECK(!pool.full());
 
-      p = pool.allocate<Test_Data>();
+      p = pool.allocate();
       CHECK(!pool.empty());
       CHECK(!pool.full());
 
-      p = pool.allocate<Test_Data>();
+      p = pool.allocate();
       CHECK(!pool.empty());
       CHECK(pool.full());
     }
@@ -343,41 +343,10 @@ namespace
       etl::pool<Test_Data, 4> pool;
       Test_Data not_in_pool;
 
-      Test_Data* p1 = pool.allocate<Test_Data>();
+      Test_Data* p1 = pool.allocate();
 
       CHECK(pool.is_in_pool(p1));
       CHECK(!pool.is_in_pool(&not_in_pool));
-    }
-
-    //*************************************************************************
-    TEST(test_generic_storage)
-    {
-      union Storage
-      {
-        uint64_t dummy; // For alignment purposes.
-        char buffer[1000];
-      };
-
-      etl::pool<Storage, 4> pool;
-
-      Test_Data* pdata = pool.allocate<Test_Data>();
-      new (pdata) Test_Data("ABC", 3);
-
-      etl::array<int, 10>* parray = pool.allocate<etl::array<int, 10>>();
-      new (parray) etl::array<int, 10>();
-      parray->fill(0x12345678);
-
-      etl::array<int, 10> compare;
-      compare.fill(0x12345678);
-
-      CHECK(pdata->value == "ABC");
-      CHECK(pdata->index == 3);
-      CHECK(*parray == compare);
-
-      pool.release(parray);
-      pool.release(pdata);
-
-      CHECK_EQUAL(4U, pool.available());
     }
 
     //*************************************************************************
@@ -424,11 +393,11 @@ namespace
     etl::pool<D3, 4> pool3;
     etl::pool<D4, 4> pool4;
 
-    D0* p0 = pool0.create<D0>();
-    D1* p1 = pool1.create<D1>("1");
-    D2* p2 = pool2.create<D2>("1", "2");
-    D3* p3 = pool3.create<D3>("1", "2", "3");
-    D4* p4 = pool4.create<D4>("1", "2", "3", "4");
+    D0* p0 = pool0.create();
+    D1* p1 = pool1.create("1");
+    D2* p2 = pool2.create("1", "2");
+    D3* p3 = pool3.create("1", "2", "3");
+    D4* p4 = pool4.create("1", "2", "3", "4");
 
     CHECK_EQUAL(pool0.max_size() - 1, pool0.available());
     CHECK_EQUAL(1U, pool0.size());

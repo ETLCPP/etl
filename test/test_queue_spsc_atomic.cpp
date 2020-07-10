@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2018 jwellbelove
 
@@ -26,13 +26,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
+#include "UnitTest++/UnitTest++.h"
 
 #include <thread>
 #include <chrono>
 #include <vector>
 
 #include "etl/queue_spsc_atomic.h"
+
+#include "data.h"
 
 #if ETL_HAS_ATOMIC
 
@@ -72,6 +74,8 @@ namespace
   {
     return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
   }
+
+  using ItemM = TestDataM<int>;
 
   SUITE(test_queue_atomic)
   {
@@ -133,6 +137,41 @@ namespace
 
       CHECK(!queue.pop(i));
       CHECK(!queue.pop(i));
+    }
+
+    //*************************************************************************
+    TEST(test_move_push_pop)
+    {
+      etl::queue_spsc_atomic<ItemM, 4, etl::memory_model::MEMORY_MODEL_SMALL> queue;
+
+      ItemM p1(1);
+      ItemM p2(2);
+      ItemM p3(3);
+      ItemM p4(4);
+
+      queue.push(std::move(p1));
+      queue.push(std::move(p2));
+      queue.push(std::move(p3));
+      queue.push(std::move(p4));
+
+      CHECK(!bool(p1));
+      CHECK(!bool(p2));
+      CHECK(!bool(p3));
+      CHECK(!bool(p4));
+
+      ItemM pr(0);
+
+      queue.pop(std::move(pr));
+      CHECK_EQUAL(1, pr.value);
+
+      queue.pop(std::move(pr));
+      CHECK_EQUAL(2, pr.value);
+
+      queue.pop(std::move(pr));
+      CHECK_EQUAL(3, pr.value);
+
+      queue.pop(std::move(pr));
+      CHECK_EQUAL(4, pr.value);
     }
 
     //*************************************************************************
@@ -301,7 +340,7 @@ namespace
       CHECK(queue.full());
     }
 
-    //=========================================================================
+    //*************************************************************************
 #if REALTIME_TEST && defined(ETL_COMPILER_MICROSOFT)
     #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported
       #define FIX_PROCESSOR_AFFINITY1 SetThreadAffinityMask(GetCurrentThread(), 1);

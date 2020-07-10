@@ -10,20 +10,6 @@
 #define ETL_CALLBACK_TIMER_USE_ATOMIC_LOCK
 #define ETL_NO_STL
 
-#if (__CC_ARM == 1)
-  // ARM5 compiler
-  #if defined(ETL_NO_STL)
-  #include "etl/profiles/armv5_no_stl.h"
-  #else
-  #include "etl/profiles/armv5.h"
-  #endif
-#else
-  // ARM6 compiler
-  #if defined(ETL_NO_STL)
-  #include "etl/profiles/armv6_no_stl.h"
-  #else
-  #include "etl/profiles/armv6.h"
-  #endif
-#endif
+//#include "etl/profiles/auto.h"
 
 #endif
