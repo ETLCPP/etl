@@ -177,8 +177,8 @@ namespace
       int value = 123;
       String hello(STR("Hello"));
       ss << etl::dec << etl::setw(10) << etl::setfill(STR('#')) << hello
-        << etl::setw(8) << etl::setfill(STR('*')) << etl::left << STR("World")
-        << etl::hex << etl::setw(4) << etl::setfill(STR(' ')) << etl::right << value;
+         << etl::setw(8) << etl::setfill(STR('*')) << etl::left << STR("World")
+         << etl::hex << etl::setw(4) << etl::setfill(STR(' ')) << etl::right << value;
 
       String result = ss.str();
 
