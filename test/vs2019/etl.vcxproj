@@ -1063,6 +1063,7 @@
     <ClInclude Include="..\..\include\etl\private\crc32_poly_0x1edc6f41.h" />
     <ClInclude Include="..\..\include\etl\private\crc64_poly_0x42f0e1eba9ea3693.h" />
     <ClInclude Include="..\..\include\etl\private\crc8_poly_0x07.h" />
+    <ClInclude Include="..\..\include\etl\private\string_utilities_helper.h" />
     <ClInclude Include="..\..\include\etl\private\to_string_helper.h" />
     <ClInclude Include="..\..\include\etl\profiles\armv7.h" />
     <ClInclude Include="..\..\include\etl\profiles\armv7_no_stl.h" />
@@ -1123,6 +1124,7 @@
     <ClInclude Include="..\..\include\etl\queue_mpmc_mutex.h" />
     <ClInclude Include="..\..\include\etl\sqrt.h" />
     <ClInclude Include="..\..\include\etl\string_stream.h" />
+    <ClInclude Include="..\..\include\etl\string_utilities.h" />
     <ClInclude Include="..\..\include\etl\string_view.h" />
     <ClInclude Include="..\..\include\etl\task.h" />
     <ClInclude Include="..\..\include\etl\timer.h" />
@@ -1628,6 +1630,7 @@
     <ClCompile Include="..\test_string_u16_external_buffer.cpp" />
     <ClCompile Include="..\test_string_u32.cpp" />
     <ClCompile Include="..\test_string_u32_external_buffer.cpp" />
+    <ClCompile Include="..\test_string_utilities_char.cpp" />
     <ClCompile Include="..\test_string_view.cpp" />
     <ClCompile Include="..\test_string_wchar_t.cpp" />
     <ClCompile Include="..\test_string_wchar_t_external_buffer.cpp" />

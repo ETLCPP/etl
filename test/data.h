@@ -185,7 +185,7 @@ public:
   {
   }
 
-  TestDataM(TestDataM&& other)
+  TestDataM(TestDataM&& other) noexcept
     : value(other.value)
     , valid(true)
   {
@@ -197,7 +197,7 @@ public:
   {
   }
 
-  TestDataM& operator =(TestDataM&& other)
+  TestDataM& operator =(TestDataM&& other) noexcept
   {
     value = std::move(other.value);
     valid = true;
