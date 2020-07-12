@@ -46,36 +46,153 @@ namespace
     typedef etl::string_view  StringView;
 
     //*************************************************************************
-    TEST(test_trim_left_empty)
+    TEST(test_trim_whitespace_left_empty)
     {
       String text(STR(""));
       String expected(STR(""));
 
-      etl::trim_left(text);
+      etl::trim_whitespace_left(text);
 
       CHECK(expected == text);
     }
 
     //*************************************************************************
-    TEST(test_trim_left)
+    TEST(test_view_trim_whitespace_left_empty)
     {
-      String text(STR(" \t\n\r\f\vHello World \t\n\r\f\v "));
-      String expected(STR("Hello World \t\n\r\f\v "));
+      String text(STR(""));
+      String expected(STR(""));
 
-      etl::trim_left(text);
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_whitespace_left(textview);
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_whitespace_left)
+    {
+      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
+      String expected(STR("Hello World\t\n\r\f\v "));
+
+      etl::trim_whitespace_left(text);
 
       CHECK(expected == text);
     }
 
     //*************************************************************************
-    TEST(test_trim_left_nothing_to_trim)
+    TEST(test_view_trim_whitespace_left)
     {
-      String text(STR("Hello World \t\n\r\f\v "));
-      String expected(STR("Hello World \t\n\r\f\v "));
+      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
+      String expected(STR("Hello World\t\n\r\f\v "));
 
-      etl::trim_left(text);
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_whitespace_left(textview);
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_whitespace_left_nothing_to_trim)
+    {
+      String text(STR("Hello World\t\n\r\f\v "));
+      String expected(STR("Hello World\t\n\r\f\v "));
+
+      etl::trim_whitespace_left(text);
 
       CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_whitespace_left_nothing_to_trim)
+    {
+      String text(STR("Hello World\t\n\r\f\v "));
+      String expected(STR("Hello World\t\n\r\f\v "));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_whitespace_left(textview);
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_from_left_empty)
+    {
+      String text(STR(""));
+      String expected(STR(""));
+
+      etl::trim_from_left(text, STR(" \t\n\r\f\v"));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_from_left_empty)
+    {
+      String text(STR(""));
+      String expected(STR(""));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_from_left(textview, STR(" \t\n\r\f\v"));
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_from_left)
+    {
+      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
+      String expected(STR("Hello World\t\n\r\f\v "));
+
+      etl::trim_from_left(text, STR(" \t\n\r\f\v"));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_from_left)
+    {
+      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
+      String expected(STR("Hello World\t\n\r\f\v "));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_from_left(textview, STR(" \t\n\r\f\v"));
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_from_left_nothing_to_trim)
+    {
+      String text(STR("Hello World\t\n\r\f\v "));
+      String expected(STR("Hello World\t\n\r\f\v "));
+
+      etl::trim_from_left(text, STR(" \t\n\r\f\v"));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_from_left_nothing_to_trim)
+    {
+      String text(STR("Hello World\t\n\r\f\v "));
+      String expected(STR("Hello World\t\n\r\f\v "));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_from_left(textview, STR(" \t\n\r\f\v"));
+
+      CHECK(expectedview == view);
     }
 
     //*************************************************************************
@@ -90,6 +207,20 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_view_trim_left_pointer_delimiters)
+    {
+      String text(STR("qztfpHello Worldqztfp"));
+      String expected(STR("Hello Worldqztfp"));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_left(textview, STR("Hel"));
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
     TEST(test_trim_left_pointer_delimiters_nothing_to_trim)
     {
       String text(STR("Hello Worldqztfp"));
@@ -98,6 +229,20 @@ namespace
       etl::trim_left(text, STR("Hel"));
 
       CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_left_pointer_delimiters_nothing_to_trim)
+    {
+      String text(STR("Hello Worldqztfp"));
+      String expected(STR("Hello Worldqztfp"));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_left(textview, STR("Hel"));
+
+      CHECK(expectedview == view);
     }
 
     //*************************************************************************
@@ -112,6 +257,20 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_view_trim_left_string_delimiters)
+    {
+      String text(STR("qztfpHello Worldqztfp"));
+      String expected("Hello Worldqztfp");
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_left(textview, STR("Hel"));
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
     TEST(test_trim_left_string_delimiters_nothing_to_trim)
     {
       String text(STR("Hello Worldqztfp"));
@@ -123,73 +282,167 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_trim_left_string_view_pointer_delimiters)
-    {
-      String text(STR("qztfpHello Worldqztfp"));
-      String expected("Hello Worldqztfp");
-      StringView view("Hel");
-
-      etl::trim_left(text, view.begin(), view.size());
-
-      CHECK(expected == text);
-    }
-
-    //*************************************************************************
-    TEST(test_trim_left_string_view_pointer_delimiters_nothing_to_trim)
+    TEST(test_view_trim_left_string_delimiters_nothing_to_trim)
     {
       String text(STR("Hello Worldqztfp"));
       String expected("Hello Worldqztfp");
-      StringView view("Hel");
 
-      etl::trim_left(text, view);
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_left(textview, String(STR("Hel")));
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_whitespace_right_empty)
+    {
+      String text(STR(""));
+      String expected(STR(""));
+
+      etl::trim_whitespace_right(text);
 
       CHECK(expected == text);
     }
 
     //*************************************************************************
-    TEST(test_trim_left_string_view_delimiters)
+    TEST(test_view_trim_whitespace_right_empty)
     {
-      String text(STR("qztfpHello Worldqztfp"));
-      String expected("Hello Worldqztfp");
-      StringView view("Hel");
+      String text(STR(""));
+      String expected(STR(""));
 
-      etl::trim_left(text, view);
+      StringView textview(text);
+      StringView expectedview(expected);
 
-      CHECK(expected == text);
+      StringView view = etl::trim_whitespace_right(textview);
+
+      CHECK(expectedview == view);
     }
 
     //*************************************************************************
-    TEST(test_trim_left_string_view_delimiters_nothing_to_trim)
+    TEST(test_trim_whitespace_right)
     {
-      String text(STR("Hello Worldqztfp"));
-      String expected("Hello Worldqztfp");
-      StringView view("Hel");
-
-      etl::trim_left(text, view.begin(), view.size());
-
-      CHECK(expected == text);
-    }
-
-    //*************************************************************************
-    TEST(test_trim_right)
-    {
-      String text(STR(" \t\n\r\f\vHello World \t\n\r\f\v "));
+      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
       String expected(STR(" \t\n\r\f\vHello World"));
 
-      etl::trim_right(text);
+      etl::trim_whitespace_right(text);
 
       CHECK(expected == text);
     }
 
     //*************************************************************************
-    TEST(test_trim_right_nothing_to_trim)
+    TEST(test_view_trim_whitespace_right)
+    {
+      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
+      String expected(STR(" \t\n\r\f\vHello World"));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_whitespace_right(textview);
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_whitespace_right_nothing_to_trim)
     {
       String text(STR(" \t\n\r\f\vHello World"));
       String expected(STR(" \t\n\r\f\vHello World"));
 
-      etl::trim_right(text);
+      etl::trim_whitespace_right(text);
 
       CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_whitespace_right_nothing_to_trim)
+    {
+      String text(STR(" \t\n\r\f\vHello World"));
+      String expected(STR(" \t\n\r\f\vHello World"));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_whitespace_right(textview);
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_from_right_empty)
+    {
+      String text(STR(""));
+      String expected(STR(""));
+
+      etl::trim_from_right(text, STR(" \t\n\r\f\v"));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_from_right_empty)
+    {
+      String text(STR(""));
+      String expected(STR(""));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_from_right(textview, STR(" \t\n\r\f\v"));
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_from_right)
+    {
+      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
+      String expected(STR(" \t\n\r\f\vHello World"));
+
+      etl::trim_from_right(text, STR(" \t\n\r\f\v"));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_from_right)
+    {
+      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
+      String expected(STR(" \t\n\r\f\vHello World"));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_from_right(textview, STR(" \t\n\r\f\v"));
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_from_right_nothing_to_trim)
+    {
+      String text(STR(" \t\n\r\f\vHello World"));
+      String expected(STR(" \t\n\r\f\vHello World"));
+
+      etl::trim_from_right(text, STR(" \t\n\r\f\v"));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_from_right_nothing_to_trim)
+    {
+      String text(STR(" \t\n\r\f\vHello World"));
+      String expected(STR(" \t\n\r\f\vHello World"));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_from_right(textview, STR(" \t\n\r\f\v"));
+
+      CHECK(expectedview == view);
     }
 
     //*************************************************************************
@@ -198,9 +451,23 @@ namespace
       String text(STR("qztfpHello Worldqztfp"));
       String expected(STR("qztfpHello World"));
 
-      etl::trim_right(text, "rld");
+      etl::trim_right(text, STR("rld"));
 
       CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_right_pointer_delimiters)
+    {
+      String text(STR("qztfpHello Worldqztfp"));
+      String expected(STR("qztfpHello World"));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_right(textview, STR("rld"));
+
+      CHECK(expectedview == view);
     }
 
     //*************************************************************************
@@ -209,9 +476,23 @@ namespace
       String text(STR("qztfpHello World"));
       String expected(STR("qztfpHello World"));
 
-      etl::trim_right(text, "rld");
+      etl::trim_right(text, STR("rld"));
 
       CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_right_pointer_delimiters_nothing_to_trim)
+    {
+      String text(STR("qztfpHello World"));
+      String expected(STR("qztfpHello World"));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_right(textview, STR("rld"));
+
+      CHECK(expectedview == view);
     }
 
     //*************************************************************************
@@ -226,9 +507,23 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_view_trim_right_string_delimiters)
+    {
+      String text(STR("qztfpHello Worldqztfp"));
+      String expected("qztfpHello World");
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_right(textview, STR("rld"));
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
     TEST(test_trim_right_string_delimiters_nothing_to_trim)
     {
-      String text(STR("qztfpHello Worldq"));
+      String text(STR("qztfpHello World"));
       String expected("qztfpHello World");
 
       etl::trim_right(text, String(STR("rld")));
@@ -237,84 +532,278 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_trim_right_string_view_delimiters)
-    {
-      String text(STR("qztfpHello Worldqztfp"));
-      String expected("qztfpHello World");
-      StringView view("rld");
-
-      etl::trim_right(text, view.begin(), view.size());
-
-      CHECK(expected == text);
-    }
-
-    //*************************************************************************
-    TEST(test_trim_right_string_view_delimiters_nothing_to_trim)
+    TEST(test_view_trim_right_string_delimiters_nothing_to_trim)
     {
       String text(STR("qztfpHello World"));
       String expected("qztfpHello World");
-      StringView view("rld");
 
-      etl::trim_right(text, view.begin(), view.size());
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_right(textview, String(STR("rld")));
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_whitespace_empty)
+    {
+      String text(STR(""));
+      String expected(STR(""));
+
+      etl::trim_whitespace(text);
 
       CHECK(expected == text);
     }
 
     //*************************************************************************
-    TEST(test_trim)
+    TEST(test_view_trim_whitespace_empty)
     {
-      String text(STR(" \t\n\r\f\vHello World \t\n\r\f\v "));
+      String text(STR(""));
+      String expected(STR(""));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_whitespace(textview);
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_whitespace)
+    {
+      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
       String expected(STR("Hello World"));
 
-      etl::trim(text);
+      etl::trim_whitespace(text);
 
       CHECK(expected == text);
     }
 
     //*************************************************************************
-    TEST(test_trim_nothing_to_trim)
+    TEST(test_view_trim_whitespace)
+    {
+      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
+      String expected(STR("Hello World"));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_whitespace(textview);
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_whitespace_nothing_to_trim)
     {
       String text(STR("Hello World"));
       String expected(STR("Hello World"));
 
-      etl::trim(text);
+      etl::trim_whitespace(text);
 
       CHECK(expected == text);
     }
 
-    ////*************************************************************************
-    //TEST(test_trim_view)
-    //{
-    //  String text(STR(" \t\n\r\f\vHello World \t\n\r\f\v "));
-    //  String expected(STR("Hello World"));
+    //*************************************************************************
+    TEST(test_view_trim_whitespace_nothing_to_trim)
+    {
+      String text(STR("Hello World"));
+      String expected(STR("Hello World"));
 
-    //  StringView view = etl::trim_view(text);
+      StringView textview(text);
+      StringView expectedview(expected);
 
-    //  String view_text(view.begin(), view.end());
-    //  CHECK(expected == view_text);
-    //}
+      StringView view = etl::trim_whitespace(textview);
 
-    ////*************************************************************************
-    //TEST(test_trim_view_nothing_to_trim)
-    //{
-    //  String text(STR("Hello World"));
-    //  String expected(STR("Hello World"));
+      CHECK(expectedview == view);
+    }
 
-    //  StringView view = etl::trim_view(text);
+    //*************************************************************************
+    TEST(test_trim_from_empty)
+    {
+      String text(STR(""));
+      String expected(STR(""));
 
-    //  String view_text(view.begin(), view.end());
-    //  CHECK(expected == view_text);
-    //}
+      etl::trim_from(text, STR(" \t\n\r\f\v"));
 
-    ////*************************************************************************
-    //TEST(test_reverse)
-    //{
-    //  String text(STR("Hello World"));
-    //  String expected(STR("dlroW olleH"));
+      CHECK(expected == text);
+    }
 
-    //  etl::reverse(text);
+    //*************************************************************************
+    TEST(test_view_trim_from_empty)
+    {
+      String text(STR(""));
+      String expected(STR(""));
 
-    //  CHECK(expected == text);
-    //}
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_from(textview, STR(" \t\n\r\f\v"));
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_from)
+    {
+      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
+      String expected(STR("Hello World"));
+
+      etl::trim_from(text, STR(" \t\n\r\f\v"));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_from)
+    {
+      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
+      String expected(STR("Hello World"));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_from(textview, STR(" \t\n\r\f\v"));
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_from_nothing_to_trim)
+    {
+      String text(STR("Hello World"));
+      String expected(STR("Hello World"));
+
+      etl::trim_from(text, STR(" \t\n\r\f\v"));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_from_nothing_to_trim)
+    {
+      String text(STR("Hello World"));
+      String expected(STR("Hello World"));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_from(textview, STR(" \t\n\r\f\v"));
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_pointer_delimiters)
+    {
+      String text(STR("qztfpHello Worldqztfp"));
+      String expected(STR("Hello World"));
+
+      etl::trim(text, STR("Hd"));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_pointer_delimiters)
+    {
+      String text(STR("qztfpHello Worldqztfp"));
+      String expected(STR("Hello World"));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim(textview, STR("Hd"));
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_pointer_delimiters_nothing_to_trim)
+    {
+      String text(STR("Hello World"));
+      String expected(STR("Hello World"));
+
+      etl::trim(text, STR("Hd"));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_pointer_delimiters_nothing_to_trim)
+    {
+      String text(STR("Hello World"));
+      String expected(STR("Hello World"));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim(textview, STR("Hd"));
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_string_delimiters)
+    {
+      String text(STR("qztfpHello Worldqztfp"));
+      String expected("Hello World");
+
+      etl::trim(text, String(STR("Hd")));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_string_delimiters)
+    {
+      String text(STR("qztfpHello Worldqztfp"));
+      String expected("Hello World");
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim(textview, STR("Hd"));
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_string_delimiters_nothing_to_trim)
+    {
+      String text(STR("Hello World"));
+      String expected("Hello World");
+
+      etl::trim(text, String(STR("Hd")));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_string_delimiters_nothing_to_trim)
+    {
+      String text(STR("Hello World"));
+      String expected("Hello World");
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim(textview, String(STR("Hd")));
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_reverse)
+    {
+      String text(STR("Hello World"));
+      String expected(STR("dlroW olleH"));
+
+      etl::reverse(text);
+
+      CHECK(expected == text);
+    }
   };
 }
