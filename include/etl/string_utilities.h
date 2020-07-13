@@ -604,6 +604,14 @@ namespace etl
   {
     etl::private_string_utilities::transform_strings<etl::istring>(s, pairsbegin, pairsend);
   }
+
+  //***************************************************************************
+  /// get_token
+  //***************************************************************************
+  etl::string_view get_token(const etl::istring& s, etl::istring::const_pointer delimiters, const string_view& last_view)
+  {
+    return etl::private_string_utilities::get_token(s, delimiters, last_view);
+  }
 }
 
 #endif

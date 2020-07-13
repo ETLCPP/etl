@@ -31,6 +31,7 @@ SOFTWARE.
 #include "etl/cstring.h"
 #include "etl/string_view.h"
 #include "etl/string_utilities.h"
+#include "etl/vector.h"
 
 #undef STR
 #define STR(x) x
@@ -45,6 +46,7 @@ namespace
     typedef etl::istring             IString;
     typedef etl::string_view         StringView;
     typedef etl::istring::value_type Char;
+    typedef etl::vector<String, 10>  Vector;
 
     //*************************************************************************
     TEST(test_trim_whitespace_left_empty)
@@ -1185,6 +1187,29 @@ namespace
       etl::transform(text, etl::begin(lookup), etl::end(lookup));
 
       CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_get_token_pointer_delimiters)
+    {
+      String text(STR("  The cat.sat,  on;the:mat  "));
+      Vector tokens;
+
+      StringView token;
+      
+      do
+      { 
+        token = etl::get_token(text, STR(" .,;:"), token);
+
+        if (!token.empty())
+        {
+          String s(token.begin(), token.end());
+          tokens.push_back(s);
+        }
+
+      } while (!token.empty());
+
+      CHECK_EQUAL(6U, tokens.size());
     }
   };
 }

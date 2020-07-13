@@ -493,6 +493,39 @@ namespace etl
       }
     }
 
+    //***************************************************************************
+    /// get_token
+    //***************************************************************************
+    template <typename TStringView, typename TIString>
+    TStringView get_token(const TIString& s, typename TIString::const_pointer delimiters, const TStringView& last_view)
+    {
+      typename TIString::const_iterator first = last_view.end();
+      typename TIString::const_iterator last  = last_view.end();
+
+      // The last view was default constructed, so we must be looking for the first token.
+      if (last_view.data() == ETL_NULLPTR)
+      {
+        first = s.begin();
+        last  = s.begin();
+      }
+
+      // Look for the start of the next token.
+      size_t first_position = s.find_first_not_of(delimiters, std::distance(s.begin(), last));
+      size_t last_position  = s.find_first_of(delimiters, first_position);
+
+      if (first_position == TIString::npos)
+      {
+        first_position = s.size();
+      }
+
+      if (last_position == TIString::npos)
+      {
+        last_position = s.size();
+      }
+
+      return TStringView(s.begin() + first_position, s.begin() + last_position);
+    }
+
     ////***************************************************************************
     ///// 
     ////***************************************************************************
