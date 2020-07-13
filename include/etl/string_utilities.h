@@ -34,7 +34,10 @@ SOFTWARE.
 #include "platform.h"
 #include "cstring.h"
 #include "string_view.h"
+#include "algorithm.h"
 #include "private/string_utilities_helper.h"
+
+#include <ctype.h>
 
 namespace etl
 {
@@ -72,6 +75,42 @@ namespace etl
   inline etl::string_view trim_from_left(const etl::string_view& view, etl::istring::const_pointer trim_characters)
   {
     return etl::private_string_utilities::view_trim_from_left<etl::string_view>(view, trim_characters);
+  }
+
+  //***************************************************************************
+  /// trim_from_left
+  /// Trim left of specified characters
+  //***************************************************************************
+  inline void trim_from_left(etl::istring& s, etl::istring::const_pointer trim_characters, size_t length)
+  {
+    etl::private_string_utilities::trim_from_left<etl::istring>(s, trim_characters, length);
+  }
+
+  //***************************************************************************
+  /// trim_from_left
+  /// View trim left of specified characters
+  //***************************************************************************
+  inline etl::string_view trim_from_left(const etl::string_view& view, etl::istring::const_pointer trim_characters, size_t length)
+  {
+    return etl::private_string_utilities::view_trim_from_left<etl::string_view>(view, trim_characters, length);
+  }
+
+  //***************************************************************************
+  /// trim_from_left
+  /// Trim left of specified characters
+  //***************************************************************************
+  inline void trim_from_left(etl::istring& s, const etl::istring& trim_characters)
+  {
+    etl::private_string_utilities::trim_from_left<etl::istring>(s, trim_characters.c_str());
+  }
+
+  //***************************************************************************
+  /// trim_from_left
+  /// View trim left of specified characters
+  //***************************************************************************
+  inline etl::string_view trim_from_left(const etl::string_view& view, const etl::istring& trim_characters)
+  {
+    return etl::private_string_utilities::view_trim_from_left<etl::string_view>(view, trim_characters.c_str());
   }
 
   //***************************************************************************
@@ -167,6 +206,42 @@ namespace etl
   }
 
   //***************************************************************************
+  /// trim_from_right
+  /// Trim right of specified characters
+  //***************************************************************************
+  inline void trim_from_right(etl::istring& s, etl::istring::const_pointer trim_characters, size_t length)
+  {
+    etl::private_string_utilities::trim_from_right<etl::istring>(s, trim_characters, length);
+  }
+
+  //***************************************************************************
+  /// trim_from_right
+  /// Trim right of specified characters
+  //***************************************************************************
+  inline etl::string_view trim_from_right(const etl::string_view& view, etl::istring::const_pointer trim_characters, size_t length)
+  {
+    return etl::private_string_utilities::view_trim_from_right<etl::string_view>(view, trim_characters, length);
+  }
+
+  //***************************************************************************
+  /// trim_from_right
+  /// Trim right of specified characters
+  //***************************************************************************
+  inline void trim_from_right(etl::istring& s, const etl::istring& trim_characters)
+  {
+    etl::private_string_utilities::trim_from_right<etl::istring>(s, trim_characters.c_str());
+  }
+
+  //***************************************************************************
+  /// trim_from_right
+  /// Trim right of specified characters
+  //***************************************************************************
+  inline etl::string_view trim_from_right(const etl::string_view& view, const etl::istring& trim_characters)
+  {
+    return etl::private_string_utilities::view_trim_from_right<etl::string_view>(view, trim_characters.c_str());
+  }
+
+  //***************************************************************************
   /// trim_right
   //***************************************************************************
   inline void trim_right(etl::istring& s, etl::istring::const_pointer delimiters)
@@ -222,7 +297,7 @@ namespace etl
 
   //***************************************************************************
   /// trim_whitespace
-  /// Trim right of whitespace
+  /// Trim both ends of whitespace
   //***************************************************************************
   inline void trim_whitespace(etl::istring& s)
   {
@@ -231,7 +306,7 @@ namespace etl
 
   //***************************************************************************
   /// trim_whitespace
-  /// Trim right of whitespace
+  /// Trim both ends of whitespace
   //***************************************************************************
   inline etl::string_view trim_whitespace(const etl::string_view& view)
   {
@@ -254,6 +329,42 @@ namespace etl
   inline etl::string_view trim_from(const etl::string_view& view, etl::istring::const_pointer trim_characters)
   {
     return etl::private_string_utilities::view_trim_from<etl::string_view>(view, trim_characters);
+  }
+
+  //***************************************************************************
+  /// trim_from
+  /// Trim right of specified characters
+  //***************************************************************************
+  inline void trim_from(etl::istring& s, etl::istring::const_pointer trim_characters, size_t length)
+  {
+    etl::private_string_utilities::trim_from<etl::istring>(s, trim_characters, length);
+  }
+
+  //***************************************************************************
+  /// trim_from
+  /// Trim right of specified characters
+  //***************************************************************************
+  inline etl::string_view trim_from(const etl::string_view& view, etl::istring::const_pointer trim_characters, size_t length)
+  {
+    return etl::private_string_utilities::view_trim_from<etl::string_view>(view, trim_characters, length);
+  }
+
+  //***************************************************************************
+  /// trim_from
+  /// Trim right of specified characters
+  //***************************************************************************
+  inline void trim_from(etl::istring& s, const etl::istring& trim_characters)
+  {
+    etl::private_string_utilities::trim_from<etl::istring>(s, trim_characters.c_str());
+  }
+
+  //***************************************************************************
+  /// trim_from
+  /// Trim right of specified characters
+  //***************************************************************************
+  inline etl::string_view trim_from(const etl::string_view& view, const etl::istring& trim_characters)
+  {
+    return etl::private_string_utilities::view_trim_from<etl::string_view>(view, trim_characters.c_str());
   }
 
   //***************************************************************************
@@ -317,23 +428,25 @@ namespace etl
     etl::private_string_utilities::reverse<etl::istring>(s);
   }
 
-  ////***************************************************************************
-  ///// 
-  ////***************************************************************************
-  //template<size_t max_len>
-  //etl::string<max_len> left(etl::string<max_len> const& s, size_t n_chars)
-  //{
-  //  return s.substr(0, n_chars);
-  //}
+  //***************************************************************************
+  /// Get a view of up to the first n characters.
+  //***************************************************************************
+  etl::string_view left(const etl::istring& s, size_t n)
+  {
+    n = (n > s.size()) ? s.size() : n;
 
-  ////***************************************************************************
-  ///// 
-  ////***************************************************************************
-  //template<size_t max_len>
-  //etl::string<max_len> right(etl::string<max_len> const& s, size_t start)
-  //{
-  //  return s.substr(start);
-  //}
+    return etl::string_view(s.begin(), s.begin() + n);
+  }
+
+  //***************************************************************************
+  /// Get a view of up to the last n characters. 
+  //***************************************************************************
+  etl::string_view right(const etl::istring& s, size_t n)
+  {
+    n = (n > s.size()) ? s.size() : n;
+
+    return etl::string_view(s.end() - n, s.end());
+  }
 
   //template<size_t max_len, size_t max_num_tokens>
   //void tokenize(etl::string<max_len> const& s, etl::vector<etl::string<max_len>, max_num_tokens>& tokens, char const* delims, bool ignore_empty_strings)
@@ -388,30 +501,6 @@ namespace etl
   //}
 
   //template<size_t max_len>
-  //float to_float(etl::string<max_len> const& s)
-  //{
-  //  return strtof(s.c_str(), 0);
-  //}
-
-  //template<size_t max_len>
-  //unsigned to_unsigned(etl::string<max_len> const& s, int radix)
-  //{
-  //  return strtoul(s.c_str(), 0, radix);
-  //}
-
-  //template<size_t max_len>
-  //int to_int(etl::string<max_len> const& s, int radix)
-  //{
-  //  return strtol(s.c_str(), 0, radix);
-  //}
-
-  //template<size_t max_len>
-  //bool to_bool(etl::string<max_len> const& s)
-  //{
-  //  return s[0] == 't' || s[0] == 'T';
-  //}
-
-  //template<size_t max_len>
   //etl::string<max_len> substr_between(etl::string<max_len> const& s, const etl::string<max_len> brackets)
   //{
   //  size_t l = s.find_first_of(brackets[0]);
@@ -420,64 +509,6 @@ namespace etl
   //  if (l != etl::string<max_len>::npos && r != etl::string<max_len>::npos && r - l > 1)
   //    return s.substr(l + 1, r - l - 1);
   //  return etl::string<max_len>();
-  //}
-
-  //template<size_t max_len>
-  //int array_subscript(etl::string<max_len> const& s)
-  //{
-  //  etl::string<max_len> n = substr_between(s);
-  //  return n.empty() ? -1 : to_int(n);
-  //}
-
-  //template<size_t max_len>
-  //etl::string<max_len> from_float(float f, int digits)
-  //{
-  //  char buf[32];
-  //  char format[] = { '%','9','.',char('0' + char(digits)),'f',0 };
-  //  sprintf(buf, format, f);
-  //  return etl::string<max_len>(buf);
-  //}
-
-  //template<size_t max_len>
-  //etl::string<max_len> from_float(float f, char const* format_string)
-  //{
-  //  char buf[32];
-  //  sprintf(buf, format_string, f);
-  //  return etl::string<max_len>(buf);
-  //}
-
-  //template<size_t max_len>
-  //etl::string<max_len> from_unsigned(unsigned u, bool hex = false)
-  //{
-  //  char buf[16];
-  //  char format[] = { '%',hex ? 'x' : 'u',0 };
-  //  sprintf(buf, format, u);
-  //  return etl::string<max_len>(buf);
-  //}
-
-  //template<size_t max_len>
-  //etl::string<max_len> from_int(int i, bool hex = false)
-  //{
-  //  char buf[16];
-  //  char format[] = { '%',hex ? 'x' : 'i',0 };
-  //  sprintf(buf, format, i);
-  //  return etl::string<max_len>(buf);
-  //}
-
-  //template<size_t max_len>
-  //etl::string<max_len> from_bool(bool b, bool verbose)
-  //{
-  //  if (verbose)
-  //    return b ? "true" : "false";
-  //  else
-  //    return b ? "t" : "f";
-  //}
-
-
-  //template<size_t max_len>
-  //void reverse(etl::string<max_len>& s)
-  //{
-  //  std::reverse(s.begin(), s.end());
   //}
 
   //enum pad_dir_t
@@ -510,37 +541,69 @@ namespace etl
   //  }
   //}
 
-  //template<size_t max_len>
-  //void to_uppercase(etl::string<max_len>& s)
-  //{
-  //  for (typename etl::string<max_len>::iterator iter = s.begin(); iter != s.end(); ++iter)
-  //    *iter = char(toupper(*iter));
-  //}
+  //***************************************************************************
+  /// to_upper_case
+  //***************************************************************************
+  void to_upper_case(etl::istring& s)
+  {
+    etl::istring::iterator itr = s.begin();
 
-  //template<size_t max_len>
-  //void to_lowercase(etl::string<max_len>& s)
-  //{
-  //  for (typename etl::string<max_len>::iterator iter = s.begin(); iter != s.end(); ++iter)
-  //    *iter = char(tolower(*iter));
-  //}
+    while (itr != s.end())
+    {
+      *itr = etl::istring::value_type(::toupper(*itr));
+      ++itr;
+    }
+  }
 
-  //template<size_t max_len>
-  //void namify(etl::string<max_len>& s)
-  //{
-  //  replace(s.begin(), s.end(), ' ', '_');
-  //  replace(s.begin(), s.end(), '/', '_');
-  //  replace(s.begin(), s.end(), '-', '_');
-  //  replace(s.begin(), s.end(), '.', '_');
-  //  replace(s.begin(), s.end(), '(', '_');
-  //  replace(s.begin(), s.end(), ')', '_');
-  //  replace(s.begin(), s.end(), ',', '_');
-  //  replace(s.begin(), s.end(), '[', '_');
-  //  replace(s.begin(), s.end(), ']', '_');
-  //  while (!s.empty() && s.back() == '_')
-  //    s.pop_back();
-  //}
+  //***************************************************************************
+  /// to_lower_case
+  //***************************************************************************
+  void to_lower_case(etl::istring& s)
+  {
+    etl::istring::iterator itr = s.begin();
+
+    while (itr != s.end())
+    {
+      *itr = etl::istring::value_type(::tolower(*itr));
+      ++itr;
+    }
+  }
+
+  //***************************************************************************
+  /// to_sentence_case
+  //***************************************************************************
+  void to_sentence_case(etl::istring& s)
+  {
+    etl::istring::iterator itr = s.begin();
+
+    *itr = etl::istring::value_type(::toupper(*itr));
+    ++itr;
+
+    while (itr != s.end())
+    {
+      *itr = etl::istring::value_type(::tolower(*itr));
+    }
+  }
+
+  //***************************************************************************
+  /// transform
+  //***************************************************************************
+  void transform(etl::istring& s, 
+                 const etl::pair<etl::istring::value_type, etl::istring::value_type>* pairsbegin, 
+                 const etl::pair<etl::istring::value_type, etl::istring::value_type>* pairsend)
+  {
+    etl::private_string_utilities::transform_characters<etl::istring>(s, pairsbegin, pairsend);
+  }
+
+  //***************************************************************************
+  /// transform
+  //***************************************************************************
+  void transform(etl::istring& s,
+                 const etl::pair<const etl::istring::value_type*, const etl::istring::value_type*>* pairsbegin,
+                 const etl::pair<const etl::istring::value_type*, const etl::istring::value_type*>* pairsend)
+  {
+    etl::private_string_utilities::transform_strings<etl::istring>(s, pairsbegin, pairsend);
+  }
 }
-
-#undef ETL_ENABLE_IF_STRING
 
 #endif

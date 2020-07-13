@@ -935,6 +935,56 @@ namespace etl
   }
 #endif
 
+#if defined (ETL_NO_STL)
+  //***************************************************************************
+  // replace
+  template <typename TIterator, typename T>
+  void replace(TIterator first, TIterator last, const T& old_value, const T& new_value)
+  {
+    while (first != last) 
+    {
+      if (*first == old_value) 
+      {
+        *first = new_value;
+      }
+
+      ++first;
+    }
+  }
+
+  //***************************************************************************
+  // replace_if
+  template <typename TIterator, typename TPredicate, typename T>
+  void replace(TIterator first, TIterator last, TPredicate predicate, const T& new_value)
+  {
+    while (first != last)
+    {
+      if (predicate(*first))
+      {
+        *first = new_value;
+      }
+
+      ++first
+    }
+  }
+#else
+  //***************************************************************************
+  // replace
+  template <typename TIterator, typename T>
+  void replace(TIterator first, TIterator last, const T& old_value, const T& new_value)
+  {
+    std::replace(first, last, old_value, new_value);
+  }
+
+  //***************************************************************************
+  // replace_if
+  template <typename TIterator, typename TPredicate, typename T>
+  void replace(TIterator first, TIterator last, TPredicate predicate, const T& new_value)
+  {
+    std::replace_if(first, last, predicate, new_value);
+  }
+#endif
+
   //***************************************************************************
   // Heap
   namespace private_heap

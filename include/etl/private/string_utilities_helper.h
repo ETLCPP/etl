@@ -35,6 +35,7 @@ SOFTWARE.
 #include "../basic_string.h"
 #include "../string_view.h"
 #include "../algorithm.h"
+#include "../utility.h"
 
 #include <stdint.h>
 
@@ -61,6 +62,36 @@ namespace etl
     TStringView view_trim_from_left(const TStringView& view, typename TStringView::const_pointer trim_characters)
     {
       size_t first = view.find_first_not_of(trim_characters);
+
+      typename TStringView::const_pointer pbegin = view.end();
+
+      if (first != TStringView::npos)
+      {
+        pbegin = view.begin() + first;
+      }
+
+      return TStringView(pbegin, view.end());
+    }
+
+    //***************************************************************************
+    /// trim_from_left
+    /// Trim left of trim_characters
+    //***************************************************************************
+    template <typename TIString>
+    void trim_from_left(TIString& s, typename TIString::const_pointer trim_characters, size_t length)
+    {
+      size_t position = s.find_first_not_of(trim_characters, 0, length);
+      s.erase(0U, position);
+    }
+
+    //***************************************************************************
+    /// view_trim_left_of
+    /// Trim left of whitespace
+    //***************************************************************************
+    template <typename TStringView>
+    TStringView view_trim_from_left(const TStringView& view, typename TStringView::const_pointer trim_characters, size_t length)
+    {
+      size_t first = view.find_first_not_of(trim_characters, 0, length);
 
       typename TStringView::const_pointer pbegin = view.end();
 
@@ -160,6 +191,35 @@ namespace etl
     TStringView view_trim_from_right(const TStringView& view, typename TStringView::const_pointer trim_characters)
     {
       size_t last = view.find_last_not_of(trim_characters) + 1;
+
+      typename TStringView::const_pointer pend = view.begin();
+
+      if (last != TStringView::npos)
+      {
+        pend += last;
+      }
+
+      return TStringView(view.begin(), pend);
+    }
+
+    //***************************************************************************
+    /// trim_from_right
+    /// Trim right of trim_characters
+    //***************************************************************************
+    template <typename TIString>
+    void trim_from_right(TIString& s, typename TIString::const_pointer trim_characters, size_t length)
+    {
+      s.erase(s.find_last_not_of(trim_characters, TIString::npos, length) + 1);
+    }
+
+    //***************************************************************************
+    /// view_trim_from_right
+    /// Trim right of trim_characters
+    //***************************************************************************
+    template <typename TStringView>
+    TStringView view_trim_from_right(const TStringView& view, typename TStringView::const_pointer trim_characters, size_t length)
+    {
+      size_t last = view.find_last_not_of(trim_characters, TStringView::npos, length) + 1;
 
       typename TStringView::const_pointer pend = view.begin();
 
@@ -285,6 +345,43 @@ namespace etl
     }
 
     //***************************************************************************
+    /// trim_from
+    /// Trim left and right of trim_characters
+    //***************************************************************************
+    template <typename TIString>
+    void trim_from(TIString& s, typename TIString::const_pointer trim_characters, size_t length)
+    {
+      trim_from_left(s, trim_characters, length);
+      trim_from_right(s, trim_characters, length);
+    }
+
+    //***************************************************************************
+    /// trim_from
+    /// Trim left and right of trim_characters
+    //***************************************************************************
+    template <typename TStringView>
+    TStringView view_trim_from(const TStringView& view, typename TStringView::const_pointer trim_characters, size_t length)
+    {
+      size_t first = view.find_first_not_of(trim_characters, 0, length);
+      size_t last = view.find_last_not_of(trim_characters, 0, length) + 1;
+
+      typename TStringView::const_pointer pbegin = view.begin();
+      typename TStringView::const_pointer pend = view.begin();
+
+      if (first != TStringView::npos)
+      {
+        pbegin += first;
+      }
+
+      if (last != TStringView::npos)
+      {
+        pend += last;
+      }
+
+      return TStringView(pbegin, pend);
+    }
+
+    //***************************************************************************
     /// trim_delimiters
     /// Trim left and right of trim_characters
     //***************************************************************************
@@ -350,6 +447,50 @@ namespace etl
     void reverse(TIString& s)
     {
       etl::reverse(s.begin(), s.end());
+    }
+
+    //***************************************************************************
+    /// transform_characters
+    //***************************************************************************
+    template <typename TIString>
+    void transform_characters(TIString& s,
+                              const etl::pair<typename TIString::value_type, typename TIString::value_type>* pairsbegin,
+                              const etl::pair<typename TIString::value_type, typename TIString::value_type>* pairsend)
+    {
+      while (pairsbegin != pairsend)
+      {
+        etl::replace(s.begin(), s.end(), pairsbegin->first, pairsbegin->second);
+        ++pairsbegin;
+      }
+    }
+
+    //***************************************************************************
+    /// transform_strings
+    //***************************************************************************
+    template <typename TIString>
+    void transform_strings(TIString& s,
+                           const etl::pair<const typename TIString::value_type*, const typename TIString::value_type*>* pairsbegin,
+                           const etl::pair<const typename TIString::value_type*, const typename TIString::value_type*>* pairsend)
+    {
+      while (pairsbegin != pairsend)
+      {
+        const typename TIString::value_type* p_old = pairsbegin->first;
+        const typename TIString::value_type* p_new = pairsbegin->second;
+
+        size_t position = 0U;
+
+        do
+        {
+          position = s.find(p_old, position);
+          if (position != etl::istring::npos)
+          {
+            s.replace(position, etl::strlen(p_old), p_new, etl::strlen(p_new));
+            position += etl::strlen(p_new);
+          }
+        } while (position != etl::istring::npos);
+
+        ++pairsbegin;
+      }
     }
 
     ////***************************************************************************

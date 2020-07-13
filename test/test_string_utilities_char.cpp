@@ -41,9 +41,10 @@ namespace
   {
     static const size_t SIZE = 50;
 
-    typedef etl::string<SIZE> String;
-    typedef etl::istring      IString;
-    typedef etl::string_view  StringView;
+    typedef etl::string<SIZE>        String;
+    typedef etl::istring             IString;
+    typedef etl::string_view         StringView;
+    typedef etl::istring::value_type Char;
 
     //*************************************************************************
     TEST(test_trim_whitespace_left_empty)
@@ -121,7 +122,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_trim_from_left_empty)
+    TEST(test_trim_from_left_pointer_empty)
     {
       String text(STR(""));
       String expected(STR(""));
@@ -132,7 +133,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_from_left_empty)
+    TEST(test_view_trim_from_left_pointer_empty)
     {
       String text(STR(""));
       String expected(STR(""));
@@ -146,7 +147,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_trim_from_left)
+    TEST(test_trim_from_left_pointer)
     {
       String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
       String expected(STR("Hello World\t\n\r\f\v "));
@@ -157,7 +158,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_from_left)
+    TEST(test_view_trim_from_left_pointer)
     {
       String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
       String expected(STR("Hello World\t\n\r\f\v "));
@@ -171,7 +172,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_trim_from_left_nothing_to_trim)
+    TEST(test_trim_from_left_pointer_nothing_to_trim)
     {
       String text(STR("Hello World\t\n\r\f\v "));
       String expected(STR("Hello World\t\n\r\f\v "));
@@ -182,7 +183,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_from_left_nothing_to_trim)
+    TEST(test_view_trim_from_left_pointer_nothing_to_trim)
     {
       String text(STR("Hello World\t\n\r\f\v "));
       String expected(STR("Hello World\t\n\r\f\v "));
@@ -191,6 +192,156 @@ namespace
       StringView expectedview(expected);
 
       StringView view = etl::trim_from_left(textview, STR(" \t\n\r\f\v"));
+
+      CHECK(expectedview == view);
+    }
+    
+    //*************************************************************************
+    TEST(test_trim_from_left_pointer_length_empty)
+    {
+      String text(STR(""));
+      String expected(STR(""));
+
+      etl::trim_from_left(text, STR(" \t\n\r\f\v"));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_from_left_pointer_length_empty)
+    {
+      String text(STR(""));
+      String expected(STR(""));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_from_left(textview, STR(" \t\n\r\f\v"), 6U);
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_from_left_pointer_length)
+    {
+      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
+      String expected(STR("Hello World\t\n\r\f\v "));
+
+      etl::trim_from_left(text, STR(" \t\n\r\f\v"), 6U);
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_from_left_pointer_length)
+    {
+      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
+      String expected(STR("Hello World\t\n\r\f\v "));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_from_left(textview, STR(" \t\n\r\f\v"), 6U);
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_from_left_pointer_length_nothing_to_trim)
+    {
+      String text(STR("Hello World\t\n\r\f\v "));
+      String expected(STR("Hello World\t\n\r\f\v "));
+
+      etl::trim_from_left(text, STR(" \t\n\r\f\v"), 6U);
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_from_left_pointer_length_nothing_to_trim)
+    {
+      String text(STR("Hello World\t\n\r\f\v "));
+      String expected(STR("Hello World\t\n\r\f\v "));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_from_left(textview, STR(" \t\n\r\f\v"), 6U);
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_from_left_string_empty)
+    {
+      String text(STR(""));
+      String expected(STR(""));
+
+      etl::trim_from_left(text, String(STR(" \t\n\r\f\v")));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_from_left_string_empty)
+    {
+      String text(STR(""));
+      String expected(STR(""));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_from_left(textview, String(STR(" \t\n\r\f\v")));
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_from_left_string)
+    {
+      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
+      String expected(STR("Hello World\t\n\r\f\v "));
+
+      etl::trim_from_left(text, String(STR(" \t\n\r\f\v")));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_from_left_string)
+    {
+      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
+      String expected(STR("Hello World\t\n\r\f\v "));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_from_left(textview, String(STR(" \t\n\r\f\v")));
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_from_left_string_nothing_to_trim)
+    {
+      String text(STR("Hello World\t\n\r\f\v "));
+      String expected(STR("Hello World\t\n\r\f\v "));
+
+      etl::trim_from_left(text, String(STR(" \t\n\r\f\v")));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_from_left_string_nothing_to_trim)
+    {
+      String text(STR("Hello World\t\n\r\f\v "));
+      String expected(STR("Hello World\t\n\r\f\v "));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_from_left(textview, String(STR(" \t\n\r\f\v")));
 
       CHECK(expectedview == view);
     }
@@ -371,7 +522,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_trim_from_right_empty)
+    TEST(test_trim_from_right_pointer_empty)
     {
       String text(STR(""));
       String expected(STR(""));
@@ -382,7 +533,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_from_right_empty)
+    TEST(test_view_trim_from_right_pointer_empty)
     {
       String text(STR(""));
       String expected(STR(""));
@@ -396,7 +547,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_trim_from_right)
+    TEST(test_trim_from_right_pointer)
     {
       String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
       String expected(STR(" \t\n\r\f\vHello World"));
@@ -407,7 +558,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_from_right)
+    TEST(test_view_trim_from_right_pointer)
     {
       String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
       String expected(STR(" \t\n\r\f\vHello World"));
@@ -421,7 +572,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_trim_from_right_nothing_to_trim)
+    TEST(test_trim_from_right_pointer_nothing_to_trim)
     {
       String text(STR(" \t\n\r\f\vHello World"));
       String expected(STR(" \t\n\r\f\vHello World"));
@@ -432,7 +583,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_from_right_nothing_to_trim)
+    TEST(test_view_trim_from_right_pointer_nothing_to_trim)
     {
       String text(STR(" \t\n\r\f\vHello World"));
       String expected(STR(" \t\n\r\f\vHello World"));
@@ -441,6 +592,156 @@ namespace
       StringView expectedview(expected);
 
       StringView view = etl::trim_from_right(textview, STR(" \t\n\r\f\v"));
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_from_right_pointer_length_empty)
+    {
+      String text(STR(""));
+      String expected(STR(""));
+
+      etl::trim_from_right(text, STR(" \t\n\r\f\v"), 6U);
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_from_right_pointer_length_empty)
+    {
+      String text(STR(""));
+      String expected(STR(""));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_from_right(textview, STR(" \t\n\r\f\v"), 6U);
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_from_right_pointer_length)
+    {
+      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
+      String expected(STR(" \t\n\r\f\vHello World"));
+
+      etl::trim_from_right(text, STR(" \t\n\r\f\v"), 6U);
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_from_right_pointer_length)
+    {
+      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
+      String expected(STR(" \t\n\r\f\vHello World"));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_from_right(textview, STR(" \t\n\r\f\v"), 6U);
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_from_right_pointer_length_nothing_to_trim)
+    {
+      String text(STR(" \t\n\r\f\vHello World"));
+      String expected(STR(" \t\n\r\f\vHello World"));
+
+      etl::trim_from_right(text, STR(" \t\n\r\f\v"), 6U);
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_from_right_pointer_length_nothing_to_trim)
+    {
+      String text(STR(" \t\n\r\f\vHello World"));
+      String expected(STR(" \t\n\r\f\vHello World"));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_from_right(textview, STR(" \t\n\r\f\v"), 6U);
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_from_right_string_empty)
+    {
+      String text(STR(""));
+      String expected(STR(""));
+
+      etl::trim_from_right(text, String(STR(" \t\n\r\f\v")));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_from_right_string_empty)
+    {
+      String text(STR(""));
+      String expected(STR(""));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_from_right(textview, String(STR(" \t\n\r\f\v")));
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_from_right_string)
+    {
+      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
+      String expected(STR(" \t\n\r\f\vHello World"));
+
+      etl::trim_from_right(text, String(STR(" \t\n\r\f\v")));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_from_right_string)
+    {
+      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
+      String expected(STR(" \t\n\r\f\vHello World"));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_from_right(textview, String(STR(" \t\n\r\f\v")));
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_from_right_string_nothing_to_trim)
+    {
+      String text(STR(" \t\n\r\f\vHello World"));
+      String expected(STR(" \t\n\r\f\vHello World"));
+
+      etl::trim_from_right(text, String(STR(" \t\n\r\f\v")));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_view_trim_from_right_string_nothing_to_trim)
+    {
+      String text(STR(" \t\n\r\f\vHello World"));
+      String expected(STR(" \t\n\r\f\vHello World"));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_from_right(textview, String(STR(" \t\n\r\f\v")));
 
       CHECK(expectedview == view);
     }
@@ -802,6 +1103,86 @@ namespace
       String expected(STR("dlroW olleH"));
 
       etl::reverse(text);
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_transform_characters)
+    {
+      String text(STR("This+++is a  *file//name:"));
+      String expected(STR("This---is_a__-file__name_"));
+
+      etl::pair<Char, Char> lookup[] =
+      {
+        { STR('+'), STR('-') },
+        { STR(' '), STR('_') },
+        { STR('*'), STR('-') },
+        { STR('/'), STR('_') },
+        { STR(':'), STR('_') }
+      };
+
+      etl::transform(text, etl::begin(lookup), etl::end(lookup));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_transform_characters_empty_string)
+    {
+      String text(STR(""));
+      String expected(STR(""));
+
+      etl::pair<Char, Char> lookup[] =
+      {
+        { STR('+'), STR('-') },
+        { STR(' '), STR('_') },
+        { STR('*'), STR('-') },
+        { STR('/'), STR('_') },
+        { STR(':'), STR('_') }
+      };
+
+      etl::transform(text, etl::begin(lookup), etl::end(lookup));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_transform_strings)
+    {
+      String text(STR("This+++is a  *file//name:"));
+      String expected(STR("Thisxyis%20a%20%20-file_name.txt"));
+
+      etl::pair<const Char*, const Char*> lookup[] =
+      {
+        { STR("+++"), STR("xy") },
+        { STR(" "),   STR("%20") },
+        { STR("*"),   STR("-") },
+        { STR("//"),  STR("_") },
+        { STR(":"),   STR(".txt") }
+      };
+
+      etl::transform(text, etl::begin(lookup), etl::end(lookup));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_transform_strings_empty_strings)
+    {
+      String text(STR(""));
+      String expected(STR(""));
+
+      etl::pair<const Char*, const Char*> lookup[] =
+      {
+        { STR("+++"), STR("xy") },
+        { STR(" "),   STR("%20") },
+        { STR("*"),   STR("-") },
+        { STR("//"),  STR("_") },
+        { STR(":"),   STR(".txt") }
+      };
+
+      etl::transform(text, etl::begin(lookup), etl::end(lookup));
 
       CHECK(expected == text);
     }
