@@ -51,7 +51,7 @@ namespace etl
     template <typename TDummy>
     struct wrapper
     {
-      using stub_type = void(*)(void* object, const etl::exception&);
+      typedef void(*stub_type)(void* object, const etl::exception&);
 
       //*************************************************************************
       /// The internal invocation object.
@@ -176,7 +176,7 @@ namespace etl
 
   private:
 
-    using stub_type = void(*)(void* object, const etl::exception&);
+    typedef void(*stub_type)(void* object, const etl::exception&);
 
     //*************************************************************************
     /// The internal invocation object.
