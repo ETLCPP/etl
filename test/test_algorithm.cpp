@@ -2004,5 +2004,31 @@ namespace
       CHECK_EQUAL(1, *etl::multimin_iter_compare(std::less<int>(), &i[0], &i[1], &i[2], &i[3], &i[4], &i[5], &i[6], &i[7]));
       CHECK_EQUAL(8, *etl::multimin_iter_compare(std::greater<int>(), &i[0], &i[1], &i[2], &i[3], &i[4], &i[5], &i[6], &i[7]));
     }
+
+    //*************************************************************************
+    TEST(replace)
+    {
+      int data[]     = { 1, 8, 2, 7, 2, 6, 2, 2, 10, 9 };
+      int expected[] = { 1, 8, 0, 7, 0, 6, 0, 0, 10, 9 };
+
+      // Replace 2 with 0
+      etl::replace(std::begin(data), std::end(data), 2, 0);
+
+      bool is_same = std::equal(std::begin(data), std::end(data), std::begin(expected));
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(replace_if)
+    {
+      int data[]     = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
+      int expected[] = { 0, 8, 0, 7, 0, 6, 0, 0, 10, 9 };
+
+      // Replace <=5 with 0
+      etl::replace_if(std::begin(data), std::end(data), std::bind(std::less_equal<int>(), std::placeholders::_1, 5), 0);
+
+      bool is_same = std::equal(std::begin(data), std::end(data), std::begin(expected));
+      CHECK(is_same);
+    }
   };
 }

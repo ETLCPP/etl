@@ -939,11 +939,11 @@ namespace etl
   //***************************************************************************
   // replace
   template <typename TIterator, typename T>
-  void replace(TIterator first, TIterator last, const T& old_value, const T& new_value)
+  ETL_CONSTEXPR14 void replace(TIterator first, TIterator last, const T& old_value, const T& new_value)
   {
-    while (first != last) 
+    while (first != last)
     {
-      if (*first == old_value) 
+      if (*first == old_value)
       {
         *first = new_value;
       }
@@ -955,7 +955,7 @@ namespace etl
   //***************************************************************************
   // replace_if
   template <typename TIterator, typename TPredicate, typename T>
-  void replace(TIterator first, TIterator last, TPredicate predicate, const T& new_value)
+  ETL_CONSTEXPR14 void replace_if(TIterator first, TIterator last, TPredicate predicate, const T& new_value)
   {
     while (first != last)
     {
@@ -964,14 +964,14 @@ namespace etl
         *first = new_value;
       }
 
-      ++first
+      ++first;
     }
   }
 #else
   //***************************************************************************
   // replace
   template <typename TIterator, typename T>
-  void replace(TIterator first, TIterator last, const T& old_value, const T& new_value)
+  ETL_CONSTEXPR14 void replace(TIterator first, TIterator last, const T& old_value, const T& new_value)
   {
     std::replace(first, last, old_value, new_value);
   }
@@ -979,7 +979,7 @@ namespace etl
   //***************************************************************************
   // replace_if
   template <typename TIterator, typename TPredicate, typename T>
-  void replace(TIterator first, TIterator last, TPredicate predicate, const T& new_value)
+  ETL_CONSTEXPR14 void replace_if(TIterator first, TIterator last, TPredicate predicate, const T& new_value)
   {
     std::replace_if(first, last, predicate, new_value);
   }
@@ -1236,7 +1236,7 @@ namespace etl
   {
 #if ETL_CPP11_SUPPORTED
     return std::is_heap(first, last);
-#else    
+#else
     typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
     return private_heap::is_heap(first, last - first, compare());
 #endif

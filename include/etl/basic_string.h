@@ -1148,6 +1148,11 @@ namespace etl
     //*********************************************************************
     iterator erase(iterator first, iterator last)
     {
+      if (first == last)
+      {
+        return first;
+      }
+
       etl::copy(last, end(), first);
       size_t n_delete = etl::distance(first, last);
 

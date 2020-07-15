@@ -373,6 +373,7 @@
 		<Unit filename="../../include/etl/private/minmax_push.h" />
 		<Unit filename="../../include/etl/private/move.h" />
 		<Unit filename="../../include/etl/private/pvoidvector.h" />
+		<Unit filename="../../include/etl/private/string_utilities_helper.h" />
 		<Unit filename="../../include/etl/private/swap.h" />
 		<Unit filename="../../include/etl/private/to_string_helper.h" />
 		<Unit filename="../../include/etl/private/vector_base.h" />
@@ -435,6 +436,7 @@
 		<Unit filename="../../include/etl/state_chart.h" />
 		<Unit filename="../../include/etl/static_assert.h" />
 		<Unit filename="../../include/etl/string_stream.h" />
+		<Unit filename="../../include/etl/string_utilities.h" />
 		<Unit filename="../../include/etl/string_view.h" />
 		<Unit filename="../../include/etl/task.h" />
 		<Unit filename="../../include/etl/temp.h" />
@@ -578,6 +580,7 @@
 		<Unit filename="../test_string_stream.cpp" />
 		<Unit filename="../test_string_u16.cpp" />
 		<Unit filename="../test_string_u32.cpp" />
+		<Unit filename="../test_string_utilities_char.cpp" />
 		<Unit filename="../test_string_view.cpp" />
 		<Unit filename="../test_string_wchar_t.cpp" />
 		<Unit filename="../test_task_scheduler.cpp" />

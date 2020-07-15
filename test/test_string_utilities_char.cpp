@@ -210,145 +210,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_from_left_pointer_length_empty)
-    {
-      String text(STR(""));
-      String expected(STR(""));
-
-      StringView textview(text);
-      StringView expectedview(expected);
-
-      StringView view = etl::trim_from_left(textview, STR(" \t\n\r\f\v"), 6U);
-
-      CHECK(expectedview == view);
-    }
-
-    //*************************************************************************
-    TEST(test_trim_from_left_pointer_length)
-    {
-      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
-      String expected(STR("Hello World\t\n\r\f\v "));
-
-      etl::trim_from_left(text, STR(" \t\n\r\f\v"), 6U);
-
-      CHECK(expected == text);
-    }
-
-    //*************************************************************************
-    TEST(test_view_trim_from_left_pointer_length)
-    {
-      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
-      String expected(STR("Hello World\t\n\r\f\v "));
-
-      StringView textview(text);
-      StringView expectedview(expected);
-
-      StringView view = etl::trim_from_left(textview, STR(" \t\n\r\f\v"), 6U);
-
-      CHECK(expectedview == view);
-    }
-
-    //*************************************************************************
-    TEST(test_trim_from_left_pointer_length_nothing_to_trim)
-    {
-      String text(STR("Hello World\t\n\r\f\v "));
-      String expected(STR("Hello World\t\n\r\f\v "));
-
-      etl::trim_from_left(text, STR(" \t\n\r\f\v"), 6U);
-
-      CHECK(expected == text);
-    }
-
-    //*************************************************************************
-    TEST(test_view_trim_from_left_pointer_length_nothing_to_trim)
-    {
-      String text(STR("Hello World\t\n\r\f\v "));
-      String expected(STR("Hello World\t\n\r\f\v "));
-
-      StringView textview(text);
-      StringView expectedview(expected);
-
-      StringView view = etl::trim_from_left(textview, STR(" \t\n\r\f\v"), 6U);
-
-      CHECK(expectedview == view);
-    }
-
-    //*************************************************************************
-    TEST(test_trim_from_left_string_empty)
-    {
-      String text(STR(""));
-      String expected(STR(""));
-
-      etl::trim_from_left(text, String(STR(" \t\n\r\f\v")));
-
-      CHECK(expected == text);
-    }
-
-    //*************************************************************************
-    TEST(test_view_trim_from_left_string_empty)
-    {
-      String text(STR(""));
-      String expected(STR(""));
-
-      StringView textview(text);
-      StringView expectedview(expected);
-
-      StringView view = etl::trim_from_left(textview, String(STR(" \t\n\r\f\v")));
-
-      CHECK(expectedview == view);
-    }
-
-    //*************************************************************************
-    TEST(test_trim_from_left_string)
-    {
-      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
-      String expected(STR("Hello World\t\n\r\f\v "));
-
-      etl::trim_from_left(text, String(STR(" \t\n\r\f\v")));
-
-      CHECK(expected == text);
-    }
-
-    //*************************************************************************
-    TEST(test_view_trim_from_left_string)
-    {
-      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
-      String expected(STR("Hello World\t\n\r\f\v "));
-
-      StringView textview(text);
-      StringView expectedview(expected);
-
-      StringView view = etl::trim_from_left(textview, String(STR(" \t\n\r\f\v")));
-
-      CHECK(expectedview == view);
-    }
-
-    //*************************************************************************
-    TEST(test_trim_from_left_string_nothing_to_trim)
-    {
-      String text(STR("Hello World\t\n\r\f\v "));
-      String expected(STR("Hello World\t\n\r\f\v "));
-
-      etl::trim_from_left(text, String(STR(" \t\n\r\f\v")));
-
-      CHECK(expected == text);
-    }
-
-    //*************************************************************************
-    TEST(test_view_trim_from_left_string_nothing_to_trim)
-    {
-      String text(STR("Hello World\t\n\r\f\v "));
-      String expected(STR("Hello World\t\n\r\f\v "));
-
-      StringView textview(text);
-      StringView expectedview(expected);
-
-      StringView view = etl::trim_from_left(textview, String(STR(" \t\n\r\f\v")));
-
-      CHECK(expectedview == view);
-    }
-
-    //*************************************************************************
     TEST(test_trim_left_pointer_delimiters)
     {
       String text(STR("qztfpHello Worldqztfp"));
@@ -399,17 +260,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_trim_left_string_delimiters)
-    {
-      String text(STR("qztfpHello Worldqztfp"));
-      String expected("Hello Worldqztfp");
-
-      etl::trim_left(text, String(STR("Hel")));
-
-      CHECK(expected == text);
-    }
-
-    //*************************************************************************
     TEST(test_view_trim_left_string_delimiters)
     {
       String text(STR("qztfpHello Worldqztfp"));
@@ -419,31 +269,6 @@ namespace
       StringView expectedview(expected);
 
       StringView view = etl::trim_left(textview, STR("Hel"));
-
-      CHECK(expectedview == view);
-    }
-
-    //*************************************************************************
-    TEST(test_trim_left_string_delimiters_nothing_to_trim)
-    {
-      String text(STR("Hello Worldqztfp"));
-      String expected("Hello Worldqztfp");
-
-      etl::trim_left(text, String(STR("Hel")));
-
-      CHECK(expected == text);
-    }
-
-    //*************************************************************************
-    TEST(test_view_trim_left_string_delimiters_nothing_to_trim)
-    {
-      String text(STR("Hello Worldqztfp"));
-      String expected("Hello Worldqztfp");
-
-      StringView textview(text);
-      StringView expectedview(expected);
-
-      StringView view = etl::trim_left(textview, String(STR("Hel")));
 
       CHECK(expectedview == view);
     }
@@ -599,156 +424,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_trim_from_right_pointer_length_empty)
-    {
-      String text(STR(""));
-      String expected(STR(""));
-
-      etl::trim_from_right(text, STR(" \t\n\r\f\v"), 6U);
-
-      CHECK(expected == text);
-    }
-
-    //*************************************************************************
-    TEST(test_view_trim_from_right_pointer_length_empty)
-    {
-      String text(STR(""));
-      String expected(STR(""));
-
-      StringView textview(text);
-      StringView expectedview(expected);
-
-      StringView view = etl::trim_from_right(textview, STR(" \t\n\r\f\v"), 6U);
-
-      CHECK(expectedview == view);
-    }
-
-    //*************************************************************************
-    TEST(test_trim_from_right_pointer_length)
-    {
-      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
-      String expected(STR(" \t\n\r\f\vHello World"));
-
-      etl::trim_from_right(text, STR(" \t\n\r\f\v"), 6U);
-
-      CHECK(expected == text);
-    }
-
-    //*************************************************************************
-    TEST(test_view_trim_from_right_pointer_length)
-    {
-      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
-      String expected(STR(" \t\n\r\f\vHello World"));
-
-      StringView textview(text);
-      StringView expectedview(expected);
-
-      StringView view = etl::trim_from_right(textview, STR(" \t\n\r\f\v"), 6U);
-
-      CHECK(expectedview == view);
-    }
-
-    //*************************************************************************
-    TEST(test_trim_from_right_pointer_length_nothing_to_trim)
-    {
-      String text(STR(" \t\n\r\f\vHello World"));
-      String expected(STR(" \t\n\r\f\vHello World"));
-
-      etl::trim_from_right(text, STR(" \t\n\r\f\v"), 6U);
-
-      CHECK(expected == text);
-    }
-
-    //*************************************************************************
-    TEST(test_view_trim_from_right_pointer_length_nothing_to_trim)
-    {
-      String text(STR(" \t\n\r\f\vHello World"));
-      String expected(STR(" \t\n\r\f\vHello World"));
-
-      StringView textview(text);
-      StringView expectedview(expected);
-
-      StringView view = etl::trim_from_right(textview, STR(" \t\n\r\f\v"), 6U);
-
-      CHECK(expectedview == view);
-    }
-
-    //*************************************************************************
-    TEST(test_trim_from_right_string_empty)
-    {
-      String text(STR(""));
-      String expected(STR(""));
-
-      etl::trim_from_right(text, String(STR(" \t\n\r\f\v")));
-
-      CHECK(expected == text);
-    }
-
-    //*************************************************************************
-    TEST(test_view_trim_from_right_string_empty)
-    {
-      String text(STR(""));
-      String expected(STR(""));
-
-      StringView textview(text);
-      StringView expectedview(expected);
-
-      StringView view = etl::trim_from_right(textview, String(STR(" \t\n\r\f\v")));
-
-      CHECK(expectedview == view);
-    }
-
-    //*************************************************************************
-    TEST(test_trim_from_right_string)
-    {
-      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
-      String expected(STR(" \t\n\r\f\vHello World"));
-
-      etl::trim_from_right(text, String(STR(" \t\n\r\f\v")));
-
-      CHECK(expected == text);
-    }
-
-    //*************************************************************************
-    TEST(test_view_trim_from_right_string)
-    {
-      String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
-      String expected(STR(" \t\n\r\f\vHello World"));
-
-      StringView textview(text);
-      StringView expectedview(expected);
-
-      StringView view = etl::trim_from_right(textview, String(STR(" \t\n\r\f\v")));
-
-      CHECK(expectedview == view);
-    }
-
-    //*************************************************************************
-    TEST(test_trim_from_right_string_nothing_to_trim)
-    {
-      String text(STR(" \t\n\r\f\vHello World"));
-      String expected(STR(" \t\n\r\f\vHello World"));
-
-      etl::trim_from_right(text, String(STR(" \t\n\r\f\v")));
-
-      CHECK(expected == text);
-    }
-
-    //*************************************************************************
-    TEST(test_view_trim_from_right_string_nothing_to_trim)
-    {
-      String text(STR(" \t\n\r\f\vHello World"));
-      String expected(STR(" \t\n\r\f\vHello World"));
-
-      StringView textview(text);
-      StringView expectedview(expected);
-
-      StringView view = etl::trim_from_right(textview, String(STR(" \t\n\r\f\v")));
-
-      CHECK(expectedview == view);
-    }
-
-    //*************************************************************************
     TEST(test_trim_right_pointer_delimiters)
     {
       String text(STR("qztfpHello Worldqztfp"));
@@ -794,56 +469,6 @@ namespace
       StringView expectedview(expected);
 
       StringView view = etl::trim_right(textview, STR("rld"));
-
-      CHECK(expectedview == view);
-    }
-
-    //*************************************************************************
-    TEST(test_trim_right_string_delimiters)
-    {
-      String text(STR("qztfpHello Worldqztfp"));
-      String expected("qztfpHello World");
-
-      etl::trim_right(text, String(STR("rld")));
-
-      CHECK(expected == text);
-    }
-
-    //*************************************************************************
-    TEST(test_view_trim_right_string_delimiters)
-    {
-      String text(STR("qztfpHello Worldqztfp"));
-      String expected("qztfpHello World");
-
-      StringView textview(text);
-      StringView expectedview(expected);
-
-      StringView view = etl::trim_right(textview, STR("rld"));
-
-      CHECK(expectedview == view);
-    }
-
-    //*************************************************************************
-    TEST(test_trim_right_string_delimiters_nothing_to_trim)
-    {
-      String text(STR("qztfpHello World"));
-      String expected("qztfpHello World");
-
-      etl::trim_right(text, String(STR("rld")));
-
-      CHECK(expected == text);
-    }
-
-    //*************************************************************************
-    TEST(test_view_trim_right_string_delimiters_nothing_to_trim)
-    {
-      String text(STR("qztfpHello World"));
-      String expected("qztfpHello World");
-
-      StringView textview(text);
-      StringView expectedview(expected);
-
-      StringView view = etl::trim_right(textview, String(STR("rld")));
 
       CHECK(expectedview == view);
     }
@@ -1049,62 +674,112 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_trim_string_delimiters)
-    {
-      String text(STR("qztfpHello Worldqztfp"));
-      String expected("Hello World");
-
-      etl::trim(text, String(STR("Hd")));
-
-      CHECK(expected == text);
-    }
-
-    //*************************************************************************
-    TEST(test_view_trim_string_delimiters)
-    {
-      String text(STR("qztfpHello Worldqztfp"));
-      String expected("Hello World");
-
-      StringView textview(text);
-      StringView expectedview(expected);
-
-      StringView view = etl::trim(textview, STR("Hd"));
-
-      CHECK(expectedview == view);
-    }
-
-    //*************************************************************************
-    TEST(test_trim_string_delimiters_nothing_to_trim)
-    {
-      String text(STR("Hello World"));
-      String expected("Hello World");
-
-      etl::trim(text, String(STR("Hd")));
-
-      CHECK(expected == text);
-    }
-
-    //*************************************************************************
-    TEST(test_view_trim_string_delimiters_nothing_to_trim)
-    {
-      String text(STR("Hello World"));
-      String expected("Hello World");
-
-      StringView textview(text);
-      StringView expectedview(expected);
-
-      StringView view = etl::trim(textview, String(STR("Hd")));
-
-      CHECK(expectedview == view);
-    }
-
-    //*************************************************************************
     TEST(test_reverse)
     {
       String text(STR("Hello World"));
       String expected(STR("dlroW olleH"));
 
       etl::reverse(text);
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_right_n_view)
+    {
+      String text(STR("Hello World"));
+      String expected(STR("World"));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::right_n(textview, expected.size());
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_right_n_view_excess)
+    {
+      String text(STR("Hello World"));
+      String expected(STR("Hello World"));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::right_n(textview, text.size() * 2U);
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_right_n_string)
+    {
+      String text(STR("Hello World"));
+      String expected(STR("World"));
+
+      etl::right_n(text, 5U);
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_right_n_string_excess)
+    {
+      String text(STR("Hello World"));
+      String expected(STR("Hello World"));
+
+      etl::right_n(text, text.size() * 2U);
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_left_n_view)
+    {
+      String text(STR("Hello World"));
+      String expected(STR("Hello"));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::left_n(textview, expected.size());
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_left_n_view_excess)
+    {
+      String text(STR("Hello World"));
+      String expected(STR("Hello World"));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::left_n(textview, text.size() * 2U);
+
+      CHECK(expectedview == view);
+    }
+
+    //*************************************************************************
+    TEST(test_left_n_string)
+    {
+      String text(STR("Hello World"));
+      String expected(STR("Hello"));
+
+      etl::left_n(text, expected.size());
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_left_n_string_excess)
+    {
+      String text(STR("Hello World"));
+      String expected(STR("Hello World"));
+
+      etl::left_n(text, text.size() * 2U);
 
       CHECK(expected == text);
     }
@@ -1192,24 +867,565 @@ namespace
     //*************************************************************************
     TEST(test_get_token_pointer_delimiters)
     {
-      String text(STR("  The cat.sat,  on;the:mat  "));
+      String text(STR("  The cat.sat,  on;the:mat .,;:"));
       Vector tokens;
 
       StringView token;
       
-      do
+      while (token.end() != text.end())
       { 
         token = etl::get_token(text, STR(" .,;:"), token);
 
         if (!token.empty())
         {
-          String s(token.begin(), token.end());
-          tokens.push_back(s);
+          tokens.emplace_back(token.begin(), token.end());
         }
-
-      } while (!token.empty());
+      }
 
       CHECK_EQUAL(6U, tokens.size());
+    }
+
+    //*************************************************************************
+    TEST(test_pad_left)
+    {
+      String text(STR("Hello World"));
+      String expected(STR("xxxxHello World"));
+
+      etl::pad_left(text, expected.size(), STR('x'));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_pad_left_smaller)
+    {
+      String text(STR("Hello World"));
+      String expected(STR("Hello World"));
+
+      etl::pad_left(text, text.size() - 1U, STR('x'));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_pad_left_greater_than_capacity)
+    {
+      String text(STR("Hello World"));
+      String expected(text);
+      expected.insert(0U, text.capacity() - expected.size(), STR('x'));
+
+      etl::pad_left(text, text.capacity() + 1U, STR('x'));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_pad_right)
+    {
+      String text(STR("Hello World"));
+      String expected(STR("Hello Worldxxxx"));
+
+      etl::pad_right(text, expected.size(), STR('x'));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_pad_right_smaller)
+    {
+      String text(STR("Hello World"));
+      String expected(STR("Hello World"));
+
+      etl::pad_right(text, text.size() - 1U, STR('x'));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_pad_right_greater_than_capacity)
+    {
+      String text(STR("Hello World"));
+      String expected(text);
+      expected.insert(text.size(), text.capacity() - expected.size(), STR('x'));
+
+      etl::pad_right(text, text.capacity() + 1U, STR('x'));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_pad_select_left)
+    {
+      String text(STR("Hello World"));
+      String expected(STR("xxxxHello World"));
+
+      etl::pad(text, expected.size(), etl::string_pad_direction::LEFT, STR('x'));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_pad_select_left_smaller)
+    {
+      String text(STR("Hello World"));
+      String expected(STR("Hello World"));
+
+      etl::pad(text, text.size() - 1U, etl::string_pad_direction::LEFT, STR('x'));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_pad_select_left_greater_than_capacity)
+    {
+      String text(STR("Hello World"));
+      String expected(text);
+      expected.insert(0U, text.capacity() - expected.size(), STR('x'));
+
+      etl::pad(text, text.capacity() + 1U, etl::string_pad_direction::LEFT, STR('x'));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_pad_select_right)
+    {
+      String text(STR("Hello World"));
+      String expected(STR("Hello Worldxxxx"));
+
+      etl::pad(text, expected.size(), etl::string_pad_direction::RIGHT, STR('x'));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_pad_select_right_smaller)
+    {
+      String text(STR("Hello World"));
+      String expected(STR("Hello World"));
+
+      etl::pad(text, text.size() - 1U, etl::string_pad_direction::RIGHT, STR('x'));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_pad_select_right_greater_than_capacity)
+    {
+      String text(STR("Hello World"));
+      String expected(text);
+      expected.insert(text.size(), text.capacity() - expected.size(), STR('x'));
+
+      etl::pad(text, text.capacity() + 1U, etl::string_pad_direction::RIGHT, STR('x'));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_find_first_of_iterator_iterator)
+    {
+      String text(STR("abcHello Worldabc"));
+
+      String::iterator itr = etl::find_first_of(text.begin(), text.end(), STR("Hel"));
+
+      CHECK_EQUAL(STR('H'), *itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_first_of_iterator_iterator_not_found)
+    {
+      String text(STR("abcHello Worldabc"));
+
+      String::iterator itr = etl::find_first_of(text.begin(), text.end(), STR("xyz"));
+
+      CHECK(text.end() == itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_first_of_const_iterator_const_iterator)
+    {
+      const String text(STR("abcHello Worldabc"));
+
+      String::const_iterator itr = etl::find_first_of(text.cbegin(), text.cend(), STR("Hel"));
+
+      CHECK_EQUAL(STR('H'), *itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_first_of_const_iterator_const_iterator_not_found)
+    {
+      String text(STR("abcHello Worldabc"));
+
+      String::const_iterator itr = etl::find_first_of(text.begin(), text.end(), STR("xyz"));
+
+      CHECK(text.end() == itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_first_of_string)
+    {
+      String text(STR("abcHello Worldabc"));
+
+      String::iterator itr = etl::find_first_of(text, STR("Hel"));
+
+      CHECK_EQUAL(STR('H'), *itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_first_of_string_not_found)
+    {
+      String text(STR("abcHello Worldabc"));
+
+      String::iterator itr = etl::find_first_of(text, STR("xyz"));
+
+      CHECK(text.end() == itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_first_of_const_string)
+    {
+      const String text(STR("abcHello Worldabc"));
+
+      String::const_iterator itr = etl::find_first_of(text, STR("Hel"));
+
+      CHECK_EQUAL(STR('H'), *itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_first_of_const_string_not_found)
+    {
+      const String text(STR("abcHello Worldabc"));
+
+      String::const_iterator itr = etl::find_first_of(text, STR("xyz"));
+
+      CHECK(text.end() == itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_first_of_string_view)
+    {
+      const String text(STR("abcHello Worldabc"));
+      StringView textview(text);
+
+      String::const_iterator itr = etl::find_first_of(textview, STR("Hel"));
+
+      CHECK_EQUAL(STR('H'), *itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_first_of_string_view_not_found)
+    {
+      const String text(STR("abcHello Worldabc"));
+      StringView textview(text);
+
+      String::const_iterator itr = etl::find_first_of(textview, STR("xyz"));
+
+      CHECK(text.end() == itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_first_not_of_iterator_iterator)
+    {
+      String text(STR("abcHello Worldabc"));
+
+      String::iterator itr = etl::find_first_not_of(text.begin(), text.end(), STR("abc"));
+
+      CHECK_EQUAL(STR('H'), *itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_first_not_of_iterator_iterator_not_found)
+    {
+      String text(STR("abcHello Worldabc"));
+      String::iterator itr = etl::find_first_not_of(text.begin(), text.end(), STR("abcHello World"));
+
+      CHECK(text.end() == itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_first_not_of_const_iterator_const_iterator)
+    {
+      const String text(STR("abcHello Worldabc"));
+
+      String::const_iterator itr = etl::find_first_not_of(text.cbegin(), text.cend(), STR("abc"));
+
+      CHECK_EQUAL(STR('H'), *itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_first_not_of_const_iterator_const_iterator_not_found)
+    {
+      const String text(STR("abcHello Worldabc"));
+
+      String::const_iterator itr = etl::find_first_not_of(text.cbegin(), text.cend(), STR("abcHello World"));
+
+      CHECK(text.end() == itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_first_not_of_string)
+    {
+      String text(STR("abcHello Worldabc"));
+
+      String::iterator itr = etl::find_first_not_of(text, STR("abc"));
+
+      CHECK_EQUAL(STR('H'), *itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_first_not_of_string_not_found)
+    {
+      String text(STR("abcHello Worldabc"));
+
+      String::iterator itr = etl::find_first_not_of(text, STR("abcHello World"));
+
+      CHECK(text.end() == itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_first_not_of_const_string)
+    {
+      const String text(STR("abcHello Worldabc"));
+
+      String::const_iterator itr = etl::find_first_not_of(text, STR("abc"));
+
+      CHECK_EQUAL(STR('H'), *itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_first_not_of_const_string_not_found)
+    {
+      const String text(STR("abcHello Worldabc"));
+
+      String::const_iterator itr = etl::find_first_not_of(text, STR("abcHello World"));
+
+      CHECK(text.end() == itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_first_not_of_string_view)
+    {
+      const String text(STR("abcHello Worldabc"));
+      StringView textview(text);
+
+      String::const_iterator itr = etl::find_first_not_of(textview, STR("abc"));
+
+      CHECK_EQUAL(STR('H'), *itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_first_not_of_string_view_not_found)
+    {
+      const String text(STR("abcHello Worldabc"));
+      StringView textview(text);
+
+      String::const_iterator itr = etl::find_first_not_of(textview, STR("abcHello World"));
+
+      CHECK(text.end() == itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_last_of_iterator_iterator)
+    {
+      String text(STR("abcHello Worldabc"));
+
+      String::iterator itr = etl::find_last_of(text.begin(), text.end(), STR("rld"));
+
+      CHECK_EQUAL(STR('d'), *itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_last_of_iterator_iterator_not_found)
+    {
+      String text(STR("abcHello Worldabc"));
+
+      String::iterator itr = etl::find_last_of(text.begin(), text.end(), STR("xyz"));
+
+      CHECK(text.end() == itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_last_of_const_iterator_const_iterator)
+    {
+      const String text(STR("abcHello Worldabc"));
+
+      String::const_iterator itr = etl::find_last_of(text.cbegin(), text.cend(), STR("rld"));
+
+      CHECK_EQUAL(STR('d'), *itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_last_of_const_iterator_const_iterator_not_found)
+    {
+      const String text(STR("abcHello Worldabc"));
+
+      String::const_iterator itr = etl::find_last_of(text.cbegin(), text.cend(), STR("xyz"));
+
+      CHECK(text.end() == itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_last_of_string)
+    {
+      String text(STR("abcHello Worldabc"));
+
+      String::iterator itr = etl::find_last_of(text, STR("rld"));
+
+      CHECK_EQUAL(STR('d'), *itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_last_of_string_not_found)
+    {
+      String text(STR("abcHello Worldabc"));
+
+      String::iterator itr = etl::find_last_of(text, STR("xyz"));
+
+      CHECK(text.end() == itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_last_of_const_string)
+    {
+      const String text(STR("abcHello Worldabc"));
+
+      String::const_iterator itr = etl::find_last_of(text, STR("rld"));
+
+      CHECK_EQUAL(STR('d'), *itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_last_of_const_string_not_found)
+    {
+      const String text(STR("abcHello Worldabc"));
+
+      String::const_iterator itr = etl::find_last_of(text, STR("xyz"));
+
+      CHECK(text.end() == itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_last_of_string_view)
+    {
+      String text(STR("abcHello Worldabc"));
+      StringView textview(text);
+
+      String::const_iterator itr = etl::find_last_of(textview, STR("rld"));
+
+      CHECK_EQUAL(STR('d'), *itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_last_of_string_view_not_found)
+    {
+      String text(STR("abcHello Worldabc"));
+      StringView textview(text);
+
+      String::const_iterator itr = etl::find_last_of(textview, STR("xyz"));
+
+      CHECK(text.end() == itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_last_not_of_iterator_iterator)
+    {
+      String text(STR("abcHello Worldabc"));
+
+      String::iterator itr = etl::find_last_not_of(text.begin(), text.end(), STR("abc"));
+
+      CHECK_EQUAL(STR('d'), *itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_last_not_of_iterator_iterator_not_found)
+    {
+      String text(STR("abcHello Worldabc"));
+
+      String::iterator itr = etl::find_last_not_of(text.begin(), text.end(), STR("abcHello World"));
+
+      CHECK(text.end() == itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_last_not_of_const_iterator_const_iterator)
+    {
+      const String text(STR("abcHello Worldabc"));
+
+      String::const_iterator itr = etl::find_last_not_of(text.cbegin(), text.cend(), STR("abc"));
+
+      CHECK_EQUAL(STR('d'), *itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_last_not_of_const_iterator_const_iterator_not_found)
+    {
+      const String text(STR("abcHello Worldabc"));
+
+      String::const_iterator itr = etl::find_last_not_of(text.cbegin(), text.cend(), STR("abcHello World"));
+
+      CHECK(text.end() == itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_last_not_of_string)
+    {
+      String text(STR("abcHello Worldabc"));
+
+      String::iterator itr = etl::find_last_not_of(text, STR("abc"));
+
+      CHECK_EQUAL(STR('d'), *itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_last_not_of_string_not_found)
+    {
+      String text(STR("abcHello Worldabc"));
+
+      String::iterator itr = etl::find_last_not_of(text, STR("abcHello World"));
+
+      CHECK(text.end() == itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_last_not_of_const_string)
+    {
+      const String text(STR("abcHello Worldabc"));
+
+      String::const_iterator itr = etl::find_last_not_of(text, STR("abc"));
+
+      CHECK_EQUAL(STR('d'), *itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_last_not_of_const_string_not_found)
+    {
+      const String text(STR("abcHello Worldabc"));
+
+      String::const_iterator itr = etl::find_last_not_of(text, STR("abcHello World"));
+
+      CHECK(text.end() == itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_last_not_of_string_view)
+    {
+      String text(STR("abcHello Worldabc"));
+      StringView textview(text);
+
+      String::const_iterator itr = etl::find_last_not_of(textview, STR("abc"));
+
+      CHECK_EQUAL(STR('d'), *itr);
+    }
+
+    //*************************************************************************
+    TEST(test_find_last_not_of_string_view_not_found)
+    {
+      String text(STR("abcHello Worldabc"));
+      StringView textview(text);
+
+      String::const_iterator itr = etl::find_last_not_of(textview, STR("abcHello World"));
+
+      CHECK(text.end() == itr);
     }
   };
 }
