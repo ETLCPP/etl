@@ -305,12 +305,12 @@ namespace etl
         do
         {
           position = s.find(p_old, position);
-          if (position != etl::istring::npos)
+          if (position != TIString::npos)
           {
             s.replace(position, etl::strlen(p_old), p_new, etl::strlen(p_new));
             position += etl::strlen(p_new);
           }
-        } while (position != etl::istring::npos);
+        } while (position != TIString::npos);
 
         ++pairsbegin;
       }

@@ -1136,8 +1136,10 @@
     <ClInclude Include="..\..\include\etl\type_select.h" />
     <ClInclude Include="..\..\include\etl\u16format_spec.h" />
     <ClInclude Include="..\..\include\etl\u16string_stream.h" />
+    <ClInclude Include="..\..\include\etl\u16string_utilities.h" />
     <ClInclude Include="..\..\include\etl\u32format_spec.h" />
     <ClInclude Include="..\..\include\etl\u32string_stream.h" />
+    <ClInclude Include="..\..\include\etl\u32string_utilities.h" />
     <ClInclude Include="..\..\include\etl\variant_pool.h" />
     <ClInclude Include="..\..\include\etl\version.h" />
     <ClInclude Include="..\..\include\etl\algorithm.h" />
@@ -1235,6 +1237,7 @@
     <ClInclude Include="..\..\include\etl\wformat_spec.h" />
     <ClInclude Include="..\..\include\etl\wstring.h" />
     <ClInclude Include="..\..\include\etl\wstring_stream.h" />
+    <ClInclude Include="..\..\include\etl\wstring_utilities.h" />
     <ClInclude Include="..\data.h" />
     <ClInclude Include="..\etl_profile.h" />
     <ClInclude Include="..\murmurhash3.h" />
@@ -1630,7 +1633,10 @@
     <ClCompile Include="..\test_string_u16_external_buffer.cpp" />
     <ClCompile Include="..\test_string_u32.cpp" />
     <ClCompile Include="..\test_string_u32_external_buffer.cpp" />
-    <ClCompile Include="..\test_string_utilities_char.cpp" />
+    <ClCompile Include="..\test_string_utilities.cpp" />
+    <ClCompile Include="..\test_string_utilities_u16.cpp" />
+    <ClCompile Include="..\test_string_utilities_u32.cpp" />
+    <ClCompile Include="..\test_string_utilities_wchar_t.cpp" />
     <ClCompile Include="..\test_string_view.cpp" />
     <ClCompile Include="..\test_string_wchar_t.cpp" />
     <ClCompile Include="..\test_string_wchar_t_external_buffer.cpp" />
@@ -1643,8 +1649,8 @@
     <ClCompile Include="..\test_type_lookup.cpp" />
     <ClCompile Include="..\test_type_select.cpp" />
     <ClCompile Include="..\test_type_traits.cpp" />
-    <ClCompile Include="..\test_u16string_stream.cpp" />
-    <ClCompile Include="..\test_u32string_stream.cpp" />
+    <ClCompile Include="..\test_string_stream_u16.cpp" />
+    <ClCompile Include="..\test_string_stream_u32.cpp" />
     <ClCompile Include="..\test_unordered_map.cpp" />
     <ClCompile Include="..\test_unordered_multimap.cpp" />
     <ClCompile Include="..\test_unordered_multiset.cpp" />
@@ -1659,7 +1665,7 @@
     <ClCompile Include="..\test_vector_pointer.cpp" />
     <ClCompile Include="..\test_vector_pointer_external_buffer.cpp" />
     <ClCompile Include="..\test_visitor.cpp" />
-    <ClCompile Include="..\test_wstring_stream.cpp" />
+    <ClCompile Include="..\test_string_stream_wchar_t.cpp" />
     <ClCompile Include="..\test_xor_checksum.cpp" />
     <ClCompile Include="..\test_xor_rotate_checksum.cpp" />
   </ItemGroup>

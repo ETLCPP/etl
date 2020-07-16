@@ -263,7 +263,7 @@ namespace
     TEST(test_view_trim_left_string_delimiters)
     {
       String text(STR("qztfpHello Worldqztfp"));
-      String expected("Hello Worldqztfp");
+      String expected(STR("Hello Worldqztfp"));
 
       StringView textview(text);
       StringView expectedview(expected);
