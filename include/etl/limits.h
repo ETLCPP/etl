@@ -48,7 +48,7 @@ SOFTWARE.
 
 #if defined(ETL_COMPILER_MICROSOFT)
   #pragma warning(push)
-  #pragma warning(disable : 4100)
+  #pragma warning(disable : 26812)
 #endif
 
 #if ETL_NOT_USING_STL
