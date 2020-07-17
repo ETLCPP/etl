@@ -273,12 +273,12 @@ namespace etl
     }
 
     //***************************************************************************
-    /// transform_characters
+    /// replace_characters
     //***************************************************************************
     template <typename TIString>
-    void transform_characters(TIString& s,
-                              const etl::pair<typename TIString::value_type, typename TIString::value_type>* pairsbegin,
-                              const etl::pair<typename TIString::value_type, typename TIString::value_type>* pairsend)
+    void replace_characters(TIString& s,
+                            const etl::pair<typename TIString::value_type, typename TIString::value_type>* pairsbegin,
+                            const etl::pair<typename TIString::value_type, typename TIString::value_type>* pairsend)
     {
       while (pairsbegin != pairsend)
       {
@@ -288,12 +288,12 @@ namespace etl
     }
 
     //***************************************************************************
-    /// transform_strings
+    /// replace_strings
     //***************************************************************************
     template <typename TIString>
-    void transform_strings(TIString& s,
-                           const etl::pair<const typename TIString::value_type*, const typename TIString::value_type*>* pairsbegin,
-                           const etl::pair<const typename TIString::value_type*, const typename TIString::value_type*>* pairsend)
+    void replace_strings(TIString& s,
+                         const etl::pair<const typename TIString::value_type*, const typename TIString::value_type*>* pairsbegin,
+                         const etl::pair<const typename TIString::value_type*, const typename TIString::value_type*>* pairsend)
     {
       while (pairsbegin != pairsend)
       {

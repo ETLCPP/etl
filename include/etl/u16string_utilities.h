@@ -273,23 +273,23 @@ namespace etl
   }
 
   //***************************************************************************
-  /// transform
+  /// replace
   //***************************************************************************
-  inline void transform(etl::iu16string& s,
-                        const etl::pair<etl::iu16string::value_type, etl::iu16string::value_type>* pairsbegin, 
-                        const etl::pair<etl::iu16string::value_type, etl::iu16string::value_type>* pairsend)
+  inline void replace(etl::iu16string& s,
+                      const etl::pair<etl::iu16string::value_type, etl::iu16string::value_type>* pairsbegin, 
+                      const etl::pair<etl::iu16string::value_type, etl::iu16string::value_type>* pairsend)
   {
-    etl::private_string_utilities::transform_characters<etl::iu16string>(s, pairsbegin, pairsend);
+    etl::private_string_utilities::replace_characters<etl::iu16string>(s, pairsbegin, pairsend);
   }
 
   //***************************************************************************
-  /// transform
+  /// replace
   //***************************************************************************
-  inline void transform(etl::iu16string& s,
-                        const etl::pair<const etl::iu16string::value_type*, const etl::iu16string::value_type*>* pairsbegin,
-                        const etl::pair<const etl::iu16string::value_type*, const etl::iu16string::value_type*>* pairsend)
+  inline void replace(etl::iu16string& s,
+                      const etl::pair<const etl::iu16string::value_type*, const etl::iu16string::value_type*>* pairsbegin,
+                      const etl::pair<const etl::iu16string::value_type*, const etl::iu16string::value_type*>* pairsend)
   {
-    etl::private_string_utilities::transform_strings<etl::iu16string>(s, pairsbegin, pairsend);
+    etl::private_string_utilities::replace_strings<etl::iu16string>(s, pairsbegin, pairsend);
   }
 
   //***************************************************************************

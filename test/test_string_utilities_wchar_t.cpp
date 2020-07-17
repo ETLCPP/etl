@@ -785,7 +785,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_transform_characters)
+    TEST(test_replace_characters)
     {
       String text(STR("This+++is a  *file//name:"));
       String expected(STR("This---is_a__-file__name_"));
@@ -799,13 +799,13 @@ namespace
         { STR(':'), STR('_') }
       };
 
-      etl::transform(text, etl::begin(lookup), etl::end(lookup));
+      etl::replace(text, etl::begin(lookup), etl::end(lookup));
 
       CHECK(expected == text);
     }
 
     //*************************************************************************
-    TEST(test_transform_characters_empty_string)
+    TEST(test_replace_characters_empty_string)
     {
       String text(STR(""));
       String expected(STR(""));
@@ -819,13 +819,13 @@ namespace
         { STR(':'), STR('_') }
       };
 
-      etl::transform(text, etl::begin(lookup), etl::end(lookup));
+      etl::replace(text, etl::begin(lookup), etl::end(lookup));
 
       CHECK(expected == text);
     }
 
     //*************************************************************************
-    TEST(test_transform_strings)
+    TEST(test_replace_strings)
     {
       String text(STR("This+++is a  *file//name:"));
       String expected(STR("Thisxyis%20a%20%20-file_name.txt"));
@@ -839,13 +839,13 @@ namespace
         { STR(":"),   STR(".txt") }
       };
 
-      etl::transform(text, etl::begin(lookup), etl::end(lookup));
+      etl::replace(text, etl::begin(lookup), etl::end(lookup));
 
       CHECK(expected == text);
     }
 
     //*************************************************************************
-    TEST(test_transform_strings_empty_strings)
+    TEST(test_replace_strings_empty_strings)
     {
       String text(STR(""));
       String expected(STR(""));
@@ -859,7 +859,7 @@ namespace
         { STR(":"),   STR(".txt") }
       };
 
-      etl::transform(text, etl::begin(lookup), etl::end(lookup));
+      etl::replace(text, etl::begin(lookup), etl::end(lookup));
 
       CHECK(expected == text);
     }
