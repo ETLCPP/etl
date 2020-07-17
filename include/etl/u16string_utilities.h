@@ -273,50 +273,6 @@ namespace etl
   }
 
   //***************************************************************************
-  /// to_upper_case
-  //***************************************************************************
-  inline void to_upper_case(etl::iu16string& s)
-  {
-    etl::iu16string::iterator itr = s.begin();
-
-    while (itr != s.end())
-    {
-      *itr = etl::iu16string::value_type(::toupper(*itr));
-      ++itr;
-    }
-  }
-
-  //***************************************************************************
-  /// to_lower_case
-  //***************************************************************************
-  inline void to_lower_case(etl::iu16string& s)
-  {
-    etl::iu16string::iterator itr = s.begin();
-
-    while (itr != s.end())
-    {
-      *itr = etl::iu16string::value_type(::tolower(*itr));
-      ++itr;
-    }
-  }
-
-  //***************************************************************************
-  /// to_sentence_case
-  //***************************************************************************
-  inline void to_sentence_case(etl::iu16string& s)
-  {
-    etl::iu16string::iterator itr = s.begin();
-
-    *itr = etl::iu16string::value_type(::toupper(*itr));
-    ++itr;
-
-    while (itr != s.end())
-    {
-      *itr = etl::iu16string::value_type(::tolower(*itr));
-    }
-  }
-
-  //***************************************************************************
   /// transform
   //***************************************************************************
   inline void transform(etl::iu16string& s,

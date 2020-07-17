@@ -1,4 +1,9 @@
 ===============================================================================
+18.7.1
+Removed to_upper_case, to_lower_case & to_sentence_case from
+wstring_utilities, u16string_utilities & u32string_utilities
+
+===============================================================================
 18.7.0
 String utilities added.
 Fixed C++03 compatibility issue in error_handler.h
