@@ -32,186 +32,351 @@ SOFTWARE.
 #define ETL_STRING_UTILITIES_INCLUDED
 
 #include "platform.h"
-#include "cstring.h"
-#include "string_view.h"
 #include "algorithm.h"
-#include "private/string_utilities_helper.h"
+#include "enum_type.h"
+#include "memory.h"
+#include "char_traits.h"
 
-#include <ctype.h>
+#include <stdint.h>
 
 namespace etl
 {
+  struct string_pad_direction
+  {
+    enum enum_type
+    {
+      LEFT,
+      RIGHT,
+    };
+
+    ETL_DECLARE_ENUM_TYPE(string_pad_direction, int)
+    ETL_ENUM_TYPE(LEFT,  "left")
+    ETL_ENUM_TYPE(RIGHT, "right")
+    ETL_END_ENUM_TYPE
+  };
+
+  template <typename TChar>
+  struct whitespace;
+
+  template <>
+  struct whitespace<char>
+  {
+    static const char* value()
+    {
+      return " \t\n\r\f\v";
+    }
+  };
+
+  template <>
+  struct whitespace<wchar_t>
+  {
+    static const wchar_t* value()
+    {
+      return L" \t\n\r\f\v";
+    }
+  };
+
+  template <>
+  struct whitespace<char16_t>
+  {
+    static const char16_t* value()
+    {
+      return u" \t\n\r\f\v";
+    }
+  };
+
+  template <>
+  struct whitespace<char32_t>
+  {
+    static const char32_t* value()
+    {
+      return U" \t\n\r\f\v";
+    }
+  };
+
+  //***************************************************************************
+  /// trim_from_left
+  /// Trim left of trim_characters
+  //***************************************************************************
+  template <typename TIString>
+  void trim_from_left(TIString& s, typename TIString::const_pointer trim_characters)
+  {
+    size_t position = s.find_first_not_of(trim_characters);
+    s.erase(0U, position);
+  }
+
   //***************************************************************************
   /// trim_whitespace_left
   /// Trim left of whitespace
   //***************************************************************************
-  inline void trim_whitespace_left(etl::istring& s)
+  template <typename TIString>
+  void trim_whitespace_left(TIString& s)
   {
-    etl::private_string_utilities::trim_from_left<etl::istring>(s, " \t\n\r\f\v");
+    trim_from_left(s, whitespace<typename TIString::value_type>::value());
   }
 
   //***************************************************************************
-  /// trim_whitespace_left
-  /// View trim left of whitespace
+  /// trim_from_view_left
+  /// Trim left of trim_characters
   //***************************************************************************
-  inline etl::string_view trim_whitespace_left(const etl::string_view& view)
+  template <typename TStringView>
+  TStringView trim_from_view_left(const TStringView& view, typename TStringView::const_pointer trim_characters)
   {
-    return etl::private_string_utilities::view_trim_from_left<etl::string_view>(view, " \t\n\r\f\v");
+    size_t first = view.find_first_not_of(trim_characters);
+
+    typename TStringView::const_pointer pbegin = view.data() + view.size();
+
+    if (first != TStringView::npos)
+    {
+      pbegin = view.data() + first;
+    }
+
+    return TStringView(pbegin, etl::distance(pbegin, view.data() + view.size()));
   }
 
   //***************************************************************************
-  /// trim_from_left
-  /// Trim left of specified characters
+  /// trim_view_whitespace_left
+  /// Trim left of whitespace
   //***************************************************************************
-  inline void trim_from_left(etl::istring& s, etl::istring::const_pointer trim_characters)
+  template <typename TStringView>
+  TStringView trim_view_whitespace_left(TStringView& s)
   {
-    etl::private_string_utilities::trim_from_left<etl::istring>(s, trim_characters);
-  }
-
-  //***************************************************************************
-  /// trim_from_left
-  /// View trim left of specified characters
-  //***************************************************************************
-  inline etl::string_view trim_from_left(const etl::string_view& view, etl::istring::const_pointer trim_characters)
-  {
-    return etl::private_string_utilities::view_trim_from_left<etl::string_view>(view, trim_characters);
-  }
-
-  //***************************************************************************
-  /// trim_left
-  /// Trim left, up to, but not including, delimiters.
-  //***************************************************************************
-  inline void trim_left(etl::istring& s, etl::istring::const_pointer delimiters)
-  {
-    etl::private_string_utilities::trim_left_delimiters<etl::istring>(s, delimiters);
+    return trim_from_view_left(s, whitespace<typename TStringView::value_type>::value());
   }
 
   //***************************************************************************
   /// trim_left
   /// Trim left, up to, but not including, delimiters.
   //***************************************************************************
-  inline etl::string_view trim_left(etl::string_view& s, etl::string_view::const_pointer delimiters)
+  template <typename TIString>
+  void trim_left(TIString& s, typename TIString::const_pointer delimiters)
   {
-    return etl::private_string_utilities::view_trim_left_delimiters<etl::string_view>(s, delimiters);
+    size_t p = s.find_first_of(delimiters);
+
+    if (p == TIString::npos)
+    {
+      s.clear();
+    }
+    else
+    {
+      s.erase(0, p);
+    }
   }
 
   //***************************************************************************
-  /// trim_whitespace_right
-  /// Trim right of whitespace
+  /// trim_view_left
+  /// View trim left, up to, but not including, delimiters.
   //***************************************************************************
-  inline void trim_whitespace_right(etl::istring& s)
+  template <typename TStringView>
+  TStringView trim_view_left(const TStringView& view, typename TStringView::const_pointer delimiters)
   {
-    etl::private_string_utilities::trim_from_right<etl::istring>(s, " \t\n\r\f\v");
-  }
+    size_t first = view.find_first_of(delimiters);
 
-  //***************************************************************************
-  /// trim_whitespace_right
-  /// Trim right of whitespace
-  //***************************************************************************
-  inline etl::string_view trim_whitespace_right(const etl::string_view& view)
-  {
-    return etl::private_string_utilities::view_trim_from_right<etl::string_view>(view, " \t\n\r\f\v");
+    typename TStringView::const_pointer pbegin = view.data();
+
+    if (first != TStringView::npos)
+    {
+      pbegin += first;
+      return TStringView(pbegin, view.size() - first);
+    }
+    else
+    {
+      return TStringView(pbegin, size_t(0U));
+    }
   }
 
   //***************************************************************************
   /// trim_from_right
-  /// Trim right of specified characters
+  /// Trim right of trim_characters
   //***************************************************************************
-  inline void trim_from_right(etl::istring& s, etl::istring::const_pointer trim_characters)
+  template <typename TIString>
+  void trim_from_right(TIString& s, typename TIString::const_pointer trim_characters)
   {
-    etl::private_string_utilities::trim_from_right<etl::istring>(s, trim_characters);
+    s.erase(s.find_last_not_of(trim_characters) + 1);
   }
 
   //***************************************************************************
-  /// trim_from_right
-  /// Trim right of specified characters
+  /// trim_whitespace_right
+  /// Trim firght of whitespace
   //***************************************************************************
-  inline etl::string_view trim_from_right(const etl::string_view& view, etl::istring::const_pointer trim_characters)
+  template <typename TIString>
+  void trim_whitespace_right(TIString& s)
   {
-    return etl::private_string_utilities::view_trim_from_right<etl::string_view>(view, trim_characters);
+    trim_from_right(s, whitespace<typename TIString::value_type>::value());
+  }
+
+  //***************************************************************************
+  /// trim_from_view_right
+  /// Trim right of trim_characters
+  //***************************************************************************
+  template <typename TStringView>
+  TStringView trim_from_view_right(const TStringView& view, typename TStringView::const_pointer trim_characters)
+  {
+    size_t last = view.find_last_not_of(trim_characters) + 1;
+
+    typename TStringView::const_pointer pend = view.data();
+
+    if (last != TStringView::npos)
+    {
+      pend += last;
+    }
+
+    return TStringView(view.data(), etl::distance(view.data(), pend));
+  }
+
+  //***************************************************************************
+  /// trim_view_whitespace_right
+  /// Trim right of whitespace
+  //***************************************************************************
+  template <typename TStringView>
+  TStringView trim_view_whitespace_right(TStringView& view)
+  {
+    return trim_from_view_right(view, whitespace<typename TStringView::value_type>::value());
   }
 
   //***************************************************************************
   /// trim_right
   //***************************************************************************
-  inline void trim_right(etl::istring& s, etl::istring::const_pointer delimiters)
+  template <typename TIString>
+  void trim_right(TIString& s, typename TIString::const_pointer delimiters)
   {
-    etl::private_string_utilities::trim_right_delimiters<etl::istring>(s, delimiters);
+    size_t p = s.find_last_of(delimiters);
+
+    if (p == TIString::npos)
+    {
+      s.clear();
+    }
+    else
+    {
+      ++p;
+
+      if (p != s.size())
+      {
+        s.erase(p);
+      }
+    }
   }
 
   //***************************************************************************
-  /// trim_right
+  /// trim_view_right
   //***************************************************************************
-  inline etl::string_view trim_right(const etl::string_view& view, etl::istring::const_pointer delimiters)
+  template <typename TStringView>
+  TStringView trim_view_right(const TStringView& view, typename TStringView::const_pointer delimiters)
   {
-    return etl::private_string_utilities::view_trim_right_delimiters<etl::string_view>(view, delimiters);
+    size_t last = view.find_last_of(delimiters) + 1;
+
+    typename TStringView::const_pointer pend = view.data();
+
+    if (last != TStringView::npos)
+    {
+      pend += last;
+      return TStringView(view.data(), etl::distance(view.data(), pend));
+    }
+    else
+    {
+      return TStringView(view.data(), size_t(0U));
+    }
+  }
+
+  //***************************************************************************
+  /// trim_from
+  /// Trim left and right of trim_characters
+  //***************************************************************************
+  template <typename TIString>
+  void trim_from(TIString& s, typename TIString::const_pointer trim_characters)
+  {
+    trim_from_left(s, trim_characters);
+    trim_from_right(s, trim_characters);
   }
 
   //***************************************************************************
   /// trim_whitespace
   /// Trim both ends of whitespace
   //***************************************************************************
-  inline void trim_whitespace(etl::istring& s)
+  template <typename TIString>
+  void trim_whitespace(TIString& s)
   {
-    etl::private_string_utilities::trim_from<etl::istring>(s, " \t\n\r\f\v");
+    trim_from(s, whitespace<typename TIString::value_type>::value());
   }
 
   //***************************************************************************
-  /// trim_whitespace
+  /// trim_from_view
+  /// Trim left and right of trim_characters
+  //***************************************************************************
+  template <typename TStringView>
+  TStringView trim_from_view(const TStringView& view, typename TStringView::const_pointer trim_characters)
+  {
+    size_t first = view.find_first_not_of(trim_characters);
+    size_t last  = view.find_last_not_of(trim_characters) + 1;
+
+    typename TStringView::const_pointer pbegin = view.data();
+    typename TStringView::const_pointer pend   = view.data();
+
+    if (first != TStringView::npos)
+    {
+      pbegin += first;
+    }
+
+    if (last != TStringView::npos)
+    {
+      pend += last;
+    }
+
+    return TStringView(pbegin, etl::distance(pbegin, pend));
+  }
+
+  //***************************************************************************
+  /// trim_view_whitespace
   /// Trim both ends of whitespace
   //***************************************************************************
-  inline etl::string_view trim_whitespace(const etl::string_view& view)
+  template <typename TStringView>
+  TStringView trim_view_whitespace(const TStringView& view)
   {
-    return etl::private_string_utilities::view_trim_from<etl::string_view>(view, " \t\n\r\f\v");
+    return trim_from_view(view, whitespace<typename TStringView::value_type>::value());
   }
 
   //***************************************************************************
-  /// trim_from
-  /// Trim right of specified characters
+  /// trim_delimiters
+  /// Trim left and right of trim_characters
   //***************************************************************************
-  inline void trim_from(etl::istring& s, etl::istring::const_pointer trim_characters)
+  template <typename TIString>
+  void trim(TIString& s, typename TIString::const_pointer delimiters)
   {
-    etl::private_string_utilities::trim_from<etl::istring>(s, trim_characters);
+    trim_left(s, delimiters);
+    trim_right(s, delimiters);
   }
 
   //***************************************************************************
-  /// trim_from
-  /// Trim right of specified characters
+  /// trim_view
+  /// Trim left and right of trim_characters
   //***************************************************************************
-  inline etl::string_view trim_from(const etl::string_view& view, etl::istring::const_pointer trim_characters)
+  template <typename TStringView>
+  TStringView trim_view(const TStringView& view, typename TStringView::const_pointer delimiters)
   {
-    return etl::private_string_utilities::view_trim_from<etl::string_view>(view, trim_characters);
-  }
+    size_t first = view.find_first_of(delimiters);
+    size_t last  = view.find_last_of(delimiters) + 1;
 
-  //***************************************************************************
-  /// trim
-  //***************************************************************************
-  inline void trim(etl::istring& s, etl::istring::const_pointer delimiters)
-  {
-    etl::private_string_utilities::trim_delimiters<etl::istring>(s, delimiters);
-  }
+    typename TStringView::const_pointer pbegin = view.data();
+    typename TStringView::const_pointer pend   = view.data();
 
-  //***************************************************************************
-  /// trim
-  //***************************************************************************
-  inline etl::string_view trim(const etl::string_view& view, etl::istring::const_pointer delimiters)
-  {
-    return etl::private_string_utilities::view_trim_delimiters<etl::string_view>(view, delimiters);
-  }
+    if (first != TStringView::npos)
+    {
+      pbegin += first;
+    }
 
-  //***************************************************************************
-  /// reverse
-  /// Reverse the string
-  //***************************************************************************
-  inline void reverse(etl::istring& s)
-  {
-    etl::private_string_utilities::reverse<etl::istring>(s);
+    if (last != TStringView::npos)
+    {
+      pend += last;
+    }
+
+    return TStringView(pbegin, etl::distance(pbegin, pend));
   }
 
   //***************************************************************************
   /// Get up to the first n characters.
   //***************************************************************************
-  inline void left_n(etl::istring& s, size_t n)
+  template <typename TIString>
+  void left_n(TIString& s, size_t n)
   {
     n = (n > s.size()) ? s.size() : n;
 
@@ -221,17 +386,19 @@ namespace etl
   //***************************************************************************
   /// Get a view of up to the first n characters.
   //***************************************************************************
-  inline etl::string_view left_n(etl::string_view view, size_t n)
+  template <typename TStringView>
+  TStringView left_n_view(const TStringView& view, size_t n)
   {
     n = (n > view.size()) ? view.size() : n;
 
-    return etl::string_view(view.begin(), view.begin() + n);
+    return TStringView(etl::addressof(*view.begin()), n);
   }
 
   //***************************************************************************
   /// Get up to the last n characters.
   //***************************************************************************
-  inline void right_n(etl::istring& s, size_t n)
+  template <typename TIString>
+  void right_n(TIString& s, size_t n)
   {
     n = (n > s.size()) ? s.size() : n;
 
@@ -241,267 +408,368 @@ namespace etl
   //***************************************************************************
   /// Get a view of up to the last n characters.
   //***************************************************************************
-  inline etl::string_view right_n(etl::string_view view, size_t n)
+  template <typename TStringView>
+  TStringView right_n_view(const TStringView& view, size_t n)
   {
     n = (n > view.size()) ? view.size() : n;
 
-    return etl::string_view(view.end() - n, view.end());
+    return TStringView(view.data() + view.size() - n, n);
   }
 
   //***************************************************************************
-  /// pad_left
+  /// reverse
+  /// Reverse a string
   //***************************************************************************
-  inline void pad_left(etl::istring& s, size_t required_size, etl::istring::value_type pad_char)
+  template <typename TIString>
+  void reverse(TIString& s)
   {
-    etl::private_string_utilities::pad_left(s, required_size, pad_char);
+    etl::reverse(s.begin(), s.end());
   }
 
   //***************************************************************************
-  /// pad_right
+  /// replace_characters
   //***************************************************************************
-  inline void pad_right(etl::istring& s, size_t required_size, etl::istring::value_type pad_char)
+  template <typename TIString, typename TPair>
+  void replace_characters(TIString& s,
+                          const TPair* pairsbegin,
+                          const TPair* pairsend)
   {
-    etl::private_string_utilities::pad_right(s, required_size, pad_char);
-  }
-
-  //***************************************************************************
-  /// pad
-  //***************************************************************************
-  void pad(etl::istring& s, size_t required_size, string_pad_direction pad_direction, etl::istring::value_type pad_char)
-  {
-    etl::private_string_utilities::pad(s, required_size, pad_direction, pad_char);
-  }
-
-  //***************************************************************************
-  /// to_upper_case
-  //***************************************************************************
-  inline void to_upper_case(etl::istring& s)
-  {
-    etl::istring::iterator itr = s.begin();
-
-    while (itr != s.end())
+    while (pairsbegin != pairsend)
     {
-      *itr = etl::istring::value_type(::toupper(*itr));
+      etl::replace(s.begin(), s.end(), pairsbegin->first, pairsbegin->second);
+      ++pairsbegin;
+    }
+  }
+
+  //***************************************************************************
+  /// replace_strings
+  //***************************************************************************
+  template <typename TIString, typename TPair>
+  void replace_strings(TIString& s,
+                        const TPair* pairsbegin,
+                        const TPair* pairsend)
+  {
+    while (pairsbegin != pairsend)
+    {
+      const typename TIString::value_type* p_old = pairsbegin->first;
+      const typename TIString::value_type* p_new = pairsbegin->second;
+
+      size_t position = 0U;
+
+      do
+      {
+        position = s.find(p_old, position);
+        if (position != TIString::npos)
+        {
+          s.replace(position, etl::strlen(p_old), p_new, etl::strlen(p_new));
+          position += etl::strlen(p_new);
+        }
+      } while (position != TIString::npos);
+
+      ++pairsbegin;
+    }
+  }
+
+  //*********************************************************************
+  /// Find first of any of delimiters within the string
+  //*********************************************************************
+  template <typename TIterator, typename TPointer>
+  TIterator find_first_of(TIterator first, TIterator last, TPointer delimiters)
+  {
+    TIterator itr(first);
+
+    while (itr != last)
+    {
+      TPointer pd = delimiters;
+
+      while (*pd != 0)
+      {
+        if (*itr == *pd)
+        {
+          return itr;
+        }
+
+        ++pd;
+      }
+
       ++itr;
     }
+
+    return last;
   }
 
-  //***************************************************************************
-  /// to_lower_case
-  //***************************************************************************
-  inline void to_lower_case(etl::istring& s)
+  //*********************************************************************
+  /// Find first of any of delimiters within the string
+  //*********************************************************************
+  template <typename TIString, typename TPointer>
+  typename TIString::iterator find_first_of(TIString& s, TPointer delimiters)
   {
-    etl::istring::iterator itr = s.begin();
+    return find_first_of(s.begin(), s.end(), delimiters);
+  }
 
-    while (itr != s.end())
+  //*********************************************************************
+  /// Find first of any of delimiters within the string
+  //*********************************************************************
+  template <typename TIString, typename TPointer>
+  typename TIString::const_iterator find_first_of(const TIString& s, TPointer delimiters)
+  {
+    return find_first_of(s.begin(), s.end(), delimiters);
+  }
+
+  //*********************************************************************
+  /// Find first not of any of delimiters within the string
+  //*********************************************************************
+  template <typename TIterator, typename TPointer>
+  TIterator find_first_not_of(TIterator first, TIterator last, TPointer delimiters)
+  {
+    TIterator itr(first);
+
+    while (itr != last)
     {
-      *itr = etl::istring::value_type(::tolower(*itr));
+      TPointer pd = delimiters;
+
+      bool found = false;
+
+      while (*pd != 0)
+      {
+        if (*itr == *pd)
+        {
+          found = true;
+          break;
+        }
+
+        ++pd;
+      }
+
+      if (!found)
+      {
+        return itr;
+      }
+
       ++itr;
     }
+
+    return last;
   }
 
-  //***************************************************************************
-  /// to_sentence_case
-  //***************************************************************************
-  inline void to_sentence_case(etl::istring& s)
+  //*********************************************************************
+  /// Find first not of any of delimiters within the string
+  //*********************************************************************
+  template <typename TIString, typename TPointer>
+  typename TIString::iterator find_first_not_of(TIString& s, TPointer delimiters)
   {
-    etl::istring::iterator itr = s.begin();
+    return find_first_not_of(s.begin(), s.end(), delimiters);
+  }
 
-    *itr = etl::istring::value_type(::toupper(*itr));
-    ++itr;
+  //*********************************************************************
+  /// Find first not of any of delimiters within the string
+  //*********************************************************************
+  template <typename TIString, typename TPointer>
+  typename TIString::const_iterator find_first_not_of(const TIString& s, TPointer delimiters)
+  {
+    return find_first_not_of(s.begin(), s.end(), delimiters);
+  }
 
-    while (itr != s.end())
+  //*********************************************************************
+  /// Find last of any of delimiters within the string
+  //*********************************************************************
+  template <typename TIterator, typename TPointer>
+  TIterator find_last_of(TIterator first, TIterator last, TPointer delimiters)
+  {
+    if (first == last)
     {
-      *itr = etl::istring::value_type(::tolower(*itr));
+      return last;
     }
+
+    TIterator itr(last);
+    TIterator end(first);
+
+    do
+    {
+      --itr;
+
+      TPointer pd = delimiters;
+
+      while (*pd != 0)
+      {
+        if (*itr == *pd)
+        {
+          return itr;
+        }
+
+        ++pd;
+      }
+    } while (itr != end);
+
+    return last;
   }
 
-  //***************************************************************************
-  /// replace
-  //***************************************************************************
-  inline void replace(etl::istring& s,
-                      const etl::pair<etl::istring::value_type, etl::istring::value_type>* pairsbegin, 
-                      const etl::pair<etl::istring::value_type, etl::istring::value_type>* pairsend)
+  //*********************************************************************
+  /// Find last of any of delimiters within the string
+  //*********************************************************************
+  template <typename TIString, typename TPointer>
+  typename TIString::iterator find_last_of(TIString& s, TPointer delimiters)
   {
-    etl::private_string_utilities::replace_characters<etl::istring>(s, pairsbegin, pairsend);
+    return find_last_of(s.begin(), s.end(), delimiters);
   }
 
-  //***************************************************************************
-  /// replace
-  //***************************************************************************
-  inline void replace(etl::istring& s,
-                      const etl::pair<const etl::istring::value_type*, const etl::istring::value_type*>* pairsbegin,
-                      const etl::pair<const etl::istring::value_type*, const etl::istring::value_type*>* pairsend)
+  //*********************************************************************
+  /// Find last of any of delimiters within the string
+  //*********************************************************************
+  template <typename TIString, typename TPointer>
+  typename TIString::const_iterator find_last_of(const TIString& s, TPointer delimiters)
   {
-    etl::private_string_utilities::replace_strings<etl::istring>(s, pairsbegin, pairsend);
+    return find_last_of(s.begin(), s.end(), delimiters);
+  }
+
+  //*********************************************************************
+  /// Find last not of any of delimiters within the string
+  //*********************************************************************
+  template <typename TIterator, typename TPointer>
+  TIterator find_last_not_of(TIterator first, TIterator last, TPointer delimiters)
+  {
+    if (first == last)
+    {
+      return last;
+    }
+
+    TIterator itr(last);
+    TIterator end(first);
+
+    do
+    {
+      --itr;
+
+      TPointer pd = delimiters;
+
+      bool found = false;
+
+      while (*pd != 0)
+      {
+        if (*itr == *pd)
+        {
+          found = true;
+          break;
+        }
+
+        ++pd;
+      }
+
+      if (!found)
+      {
+        return itr;
+      }
+    } while (itr != end);
+
+    return last;
+  }
+
+  //*********************************************************************
+  /// Find last not of any of delimiters within the string
+  //*********************************************************************
+  template <typename TIString, typename TPointer>
+  typename TIString::iterator find_last_not_of(TIString& s, TPointer delimiters)
+  {
+    return find_last_not_of(s.begin(), s.end(), delimiters);
+  }
+
+  //*********************************************************************
+  /// Find last not of any of delimiters within the string
+  //*********************************************************************
+  template <typename TIString, typename TPointer>
+  typename TIString::const_iterator find_last_not_of(const TIString& s, TPointer delimiters)
+  {
+    return find_last_not_of(s.begin(), s.end(), delimiters);
   }
 
   //***************************************************************************
   /// get_token
   //***************************************************************************
-  inline etl::string_view get_token(const etl::istring& s, etl::istring::const_pointer delimiters, const string_view& last_view)
+  template <typename TIString, typename TStringView>
+  TStringView get_token(const TIString& s, typename TIString::const_pointer delimiters, const TStringView& last_view)
   {
-    return etl::private_string_utilities::get_token(s, delimiters, last_view);
+    size_t position = 0U;
+
+    // Does the last_view have valid data?
+    if (last_view.data() != ETL_NULLPTR)
+    {
+      position = etl::distance(etl::addressof(*s.begin()), addressof(*last_view.begin()) + last_view.size());
+    }
+
+    typename TIString::const_iterator first = s.begin() + position;
+    typename TIString::const_iterator last;
+
+    // Look for the start of the next token.
+    first = find_first_not_of(first, s.end(), delimiters);
+    last  = find_first_of(first, s.end(), delimiters);
+
+    size_t view_length = etl::distance(first, last);
+
+    if (view_length != 0)
+    {
+      return TStringView(etl::addressof(*first), view_length);
+    }
+    else
+    {
+      return TStringView();
+    }
   }
 
-  //*********************************************************************
-  /// Find first of any of delimiters within the string
-  //*********************************************************************
-  inline etl::istring::iterator find_first_of(etl::istring::iterator first, etl::istring::iterator last, etl::istring::const_pointer delimiters)
+  //***************************************************************************
+  /// pad_left
+  //***************************************************************************
+  template <typename TIString>
+  void pad_left(TIString& s, size_t required_size, typename TIString::value_type pad_char)
   {
-    return etl::private_string_utilities::find_first_of(first, last, delimiters);
+    required_size = etl::min(required_size, s.max_size());
+
+    if (required_size > s.size())
+    {
+      required_size -= s.size();
+      s.insert(0U, required_size, pad_char);
+    }
   }
 
-  //*********************************************************************
-  /// Find first of any of delimiters within the string
-  //*********************************************************************
-  inline etl::istring::const_iterator find_first_of(etl::istring::const_iterator first, etl::istring::const_iterator last, etl::istring::const_pointer delimiters)
+  //***************************************************************************
+  /// pad_right
+  //***************************************************************************
+  template <typename TIString>
+  void pad_right(TIString& s, size_t required_size, typename TIString::value_type pad_char)
   {
-    return etl::private_string_utilities::find_first_of(first, last, delimiters);
+    required_size = etl::min(required_size, s.max_size());
+
+    if (required_size > s.size())
+    {
+      required_size -= s.size();
+      s.insert(s.size(), required_size, pad_char);
+    }
   }
 
-  //*********************************************************************
-  /// Find first of any of delimiters within the string
-  //*********************************************************************
-  inline etl::istring::iterator find_first_of(etl::istring& s, etl::istring::const_pointer delimiters)
+  //***************************************************************************
+  /// pad
+  //***************************************************************************
+  template <typename TIString>
+  void pad(TIString& s, size_t required_size, string_pad_direction pad_direction, typename TIString::value_type pad_char)
   {
-    return etl::private_string_utilities::find_first_of(s.begin(), s.end(), delimiters);
-  }
+    switch (int(pad_direction))
+    {
+      case string_pad_direction::LEFT:
+      {
+        pad_left(s, required_size, pad_char);
+        break;
+      }
 
-  //*********************************************************************
-  /// Find first of any of delimiters within the string
-  //*********************************************************************
-  inline etl::istring::const_iterator find_first_of(const etl::istring& s, etl::istring::const_pointer delimiters)
-  {
-    return etl::private_string_utilities::find_first_of(s.cbegin(), s.cend(), delimiters);
-  }
+      case string_pad_direction::RIGHT:
+      {
+        pad_right(s, required_size, pad_char);
+        break;
+      }
 
-  //*********************************************************************
-  /// Find first of any of delimiters within the string
-  //*********************************************************************
-  inline etl::istring::const_iterator find_first_of(const etl::string_view& s, etl::istring::const_pointer delimiters)
-  {
-    return etl::private_string_utilities::find_first_of(s.cbegin(), s.cend(), delimiters);
-  }
-
-  //*********************************************************************
-  /// Find first not of delimiters within the string
-  //*********************************************************************
-  inline etl::istring::iterator find_first_not_of(etl::istring::iterator first, etl::istring::iterator last, etl::istring::const_pointer delimiters)
-  {
-    return etl::private_string_utilities::find_first_not_of(first, last, delimiters);
-  }
-
-  //*********************************************************************
-  /// Find first not of delimiters within the string
-  //*********************************************************************
-  inline etl::istring::const_iterator find_first_not_of(etl::istring::const_iterator first, etl::istring::const_iterator last, etl::istring::const_pointer delimiters)
-  {
-    return etl::private_string_utilities::find_first_not_of(first, last, delimiters);
-  }
-
-  //*********************************************************************
-  /// Find first not of delimiters within the string
-  //*********************************************************************
-  inline etl::istring::iterator find_first_not_of(etl::istring& s, etl::istring::const_pointer delimiters)
-  {
-    return etl::private_string_utilities::find_first_not_of(s.begin(), s.end(), delimiters);
-  }
-
-  //*********************************************************************
-  /// Find first not of delimiters within the string
-  //*********************************************************************
-  inline etl::istring::const_iterator find_first_not_of(const etl::istring& s, etl::istring::const_pointer delimiters)
-  {
-    return etl::private_string_utilities::find_first_not_of(s.cbegin(), s.cend(), delimiters);
-  }
-
-  //*********************************************************************
-  /// Find first not of delimiters within the string
-  //*********************************************************************
-  inline etl::istring::const_iterator find_first_not_of(const etl::string_view& view, etl::istring::const_pointer delimiters)
-  {
-    return etl::private_string_utilities::find_first_not_of(view.cbegin(), view.cend(), delimiters);
-  }
-
-  //*********************************************************************
-  /// Find last of any of delimiters within the string
-  //*********************************************************************
-  inline etl::istring::iterator find_last_of(etl::istring::iterator first, etl::istring::iterator last, etl::istring::const_pointer delimiters)
-  {
-    return etl::private_string_utilities::find_last_of(first, last, delimiters);
-  }
-
-  //*********************************************************************
-  /// Find last of any of delimiters within the string
-  //*********************************************************************
-  inline etl::istring::const_iterator find_last_of(etl::istring::const_iterator first, etl::istring::const_iterator last, etl::istring::const_pointer delimiters)
-  {
-    return etl::private_string_utilities::find_last_of(first, last, delimiters);
-  }
-
-  //*********************************************************************
-  /// Find last of any of delimiters within the string
-  //*********************************************************************
-  inline etl::istring::iterator find_last_of(etl::istring& s, etl::istring::const_pointer delimiters)
-  {
-    return etl::private_string_utilities::find_last_of(s.begin(), s.end(), delimiters);
-  }
-
-  //*********************************************************************
-  /// Find last of any of delimiters within the string
-  //*********************************************************************
-  inline etl::istring::const_iterator find_last_of(const etl::istring& s, etl::istring::const_pointer delimiters)
-  {
-    return etl::private_string_utilities::find_last_of(s.cbegin(), s.cend(), delimiters);
-  }
-
-  //*********************************************************************
-  /// Find last of any of delimiters within the string
-  //*********************************************************************
-  inline etl::istring::const_iterator find_last_of(const etl::string_view& view, etl::istring::const_pointer delimiters)
-  {
-    return etl::private_string_utilities::find_last_of(view.cbegin(), view.cend(), delimiters);
-  }
-
-  //*********************************************************************
-  /// Find last of any of delimiters within the string
-  //*********************************************************************
-  inline etl::istring::iterator find_last_not_of(etl::istring::iterator first, etl::istring::iterator last, etl::istring::const_pointer delimiters)
-  {
-    return etl::private_string_utilities::find_last_not_of(first, last, delimiters);
-  }
-
-  //*********************************************************************
-  /// Find last of any of delimiters within the string
-  //*********************************************************************
-  inline etl::istring::const_iterator find_last_not_of(etl::istring::const_iterator first, etl::istring::const_iterator last, etl::istring::const_pointer delimiters)
-  {
-    return etl::private_string_utilities::find_last_not_of(first, last, delimiters);
-  }
-
-  //*********************************************************************
-  /// Find last of any of delimiters within the string
-  //*********************************************************************
-  inline etl::istring::iterator find_last_not_of(etl::istring& s, etl::istring::const_pointer delimiters)
-  {
-    return etl::private_string_utilities::find_last_not_of(s.begin(), s.end(), delimiters);
-  }
-
-  //*********************************************************************
-  /// Find last of any of delimiters within the string
-  //*********************************************************************
-  inline etl::istring::const_iterator find_last_not_of(const etl::istring& s, etl::istring::const_pointer delimiters)
-  {
-    return etl::private_string_utilities::find_last_not_of(s.cbegin(), s.cend(), delimiters);
-  }
-
-  //*********************************************************************
-  /// Find last of any of delimiters within the string
-  //*********************************************************************
-  inline etl::istring::const_iterator find_last_not_of(const etl::string_view& view, etl::istring::const_pointer delimiters)
-  {
-    return etl::private_string_utilities::find_last_not_of(view.cbegin(), view.cend(), delimiters);
+      default:
+      {
+        break;
+      }
+    }
   }
 }
 

@@ -873,18 +873,6 @@
     <ClInclude Include="..\..\include\etl\string_utilities.h">
       <Filter>ETL\Strings</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\string_utilities_helper.h">
-      <Filter>ETL\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\wstring_utilities.h">
-      <Filter>ETL\Strings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\u16string_utilities.h">
-      <Filter>ETL\Strings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\u32string_utilities.h">
-      <Filter>ETL\Strings</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1383,6 +1371,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_string_utilities_u32.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_std.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_std_wchar_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_std_u16.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_std_u32.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

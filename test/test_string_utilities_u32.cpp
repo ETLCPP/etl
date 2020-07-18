@@ -30,7 +30,7 @@ SOFTWARE.
 
 #include "etl/u32string.h"
 #include "etl/string_view.h"
-#include "etl/u32string_utilities.h"
+#include "etl/string_utilities.h"
 #include "etl/vector.h"
 
 #undef STR
@@ -38,15 +38,15 @@ SOFTWARE.
 
 namespace
 {
-  SUITE(test_wstring_utilities_char)
+  SUITE(test_string_utilities_u32)
   {
     static const size_t SIZE = 50;
 
-    typedef etl::u32string<SIZE>        String;
-    typedef etl::iu32string             IString;
-    typedef etl::u32string_view         StringView;
-    typedef etl::iu32string::value_type Char;
-    typedef etl::vector<String, 10>     Vector;
+    using String     = etl::u32string<SIZE>;
+    using IString    = etl::iu32string;
+    using StringView = etl::u32string_view;
+    using Char       = etl::iu32string::value_type;
+    using Vector     = etl::vector<String, 10>;
 
     //*************************************************************************
     TEST(test_trim_whitespace_left_empty)
@@ -60,7 +60,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_whitespace_left_empty)
+    TEST(test_trim_view_whitespace_left_empty)
     {
       String text(STR(""));
       String expected(STR(""));
@@ -68,9 +68,10 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim_whitespace_left(textview);
+      StringView view = etl::trim_view_whitespace_left(textview);
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
@@ -85,7 +86,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_whitespace_left)
+    TEST(test_trim_view_whitespace_left)
     {
       String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
       String expected(STR("Hello World\t\n\r\f\v "));
@@ -93,9 +94,10 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim_whitespace_left(textview);
+      StringView view = etl::trim_view_whitespace_left(textview);
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
@@ -110,7 +112,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_whitespace_left_nothing_to_trim)
+    TEST(test_trim_view_whitespace_left_nothing_to_trim)
     {
       String text(STR("Hello World\t\n\r\f\v "));
       String expected(STR("Hello World\t\n\r\f\v "));
@@ -118,9 +120,10 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim_whitespace_left(textview);
+      StringView view = etl::trim_view_whitespace_left(textview);
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
@@ -135,7 +138,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_from_left_pointer_empty)
+    TEST(test_trim_from_view_left_pointer_empty)
     {
       String text(STR(""));
       String expected(STR(""));
@@ -143,9 +146,10 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim_from_left(textview, STR(" \t\n\r\f\v"));
+      StringView view = etl::trim_from_view_left(textview, STR(" \t\n\r\f\v"));
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
@@ -160,7 +164,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_from_left_pointer)
+    TEST(test_trim_from_view_left_pointer)
     {
       String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
       String expected(STR("Hello World\t\n\r\f\v "));
@@ -168,9 +172,10 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim_from_left(textview, STR(" \t\n\r\f\v"));
+      StringView view = etl::trim_from_view_left(textview, STR(" \t\n\r\f\v"));
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
@@ -185,7 +190,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_from_left_pointer_nothing_to_trim)
+    TEST(test_trim_from_view_left_pointer_nothing_to_trim)
     {
       String text(STR("Hello World\t\n\r\f\v "));
       String expected(STR("Hello World\t\n\r\f\v "));
@@ -193,11 +198,12 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim_from_left(textview, STR(" \t\n\r\f\v"));
+      StringView view = etl::trim_from_view_left(textview, STR(" \t\n\r\f\v"));
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
-    
+
     //*************************************************************************
     TEST(test_trim_from_left_pointer_length_empty)
     {
@@ -210,7 +216,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_trim_left_pointer_delimiters)
+    TEST(test_trim_left_delimiters)
     {
       String text(STR("qztfpHello Worldqztfp"));
       String expected(STR("Hello Worldqztfp"));
@@ -221,7 +227,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_left_pointer_delimiters)
+    TEST(test_trim_view_left_delimiters)
     {
       String text(STR("qztfpHello Worldqztfp"));
       String expected(STR("Hello Worldqztfp"));
@@ -229,13 +235,14 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim_left(textview, STR("Hel"));
+      StringView view = etl::trim_view_left(textview, STR("Hel"));
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
-    TEST(test_trim_left_pointer_delimiters_nothing_to_trim)
+    TEST(test_trim_left_delimiters_nothing_to_trim)
     {
       String text(STR("Hello Worldqztfp"));
       String expected(STR("Hello Worldqztfp"));
@@ -246,7 +253,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_left_pointer_delimiters_nothing_to_trim)
+    TEST(test_trim_view_left_delimiters_nothing_to_trim)
     {
       String text(STR("Hello Worldqztfp"));
       String expected(STR("Hello Worldqztfp"));
@@ -254,13 +261,40 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim_left(textview, STR("Hel"));
+      StringView view = etl::trim_view_left(textview, STR("Hel"));
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
-    TEST(test_view_trim_left_string_delimiters)
+    TEST(test_trim_left_delimiters_no_delimiters)
+    {
+      String text(STR("Hello Worldqztfp"));
+      String expected(STR(""));
+
+      etl::trim_left(text, STR("XYZ"));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_view_left_delimiters_no_delimiters)
+    {
+      String text(STR("Hello Worldqztfp"));
+      String expected(STR(""));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_view_left(textview, STR("XYZ"));
+
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_trim_view_left_string_delimiters)
     {
       String text(STR("qztfpHello Worldqztfp"));
       String expected(STR("Hello Worldqztfp"));
@@ -268,9 +302,11 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim_left(textview, STR("Hel"));
+      StringView view = etl::trim_view_left(textview, STR("Hel"));
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
@@ -285,7 +321,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_whitespace_right_empty)
+    TEST(test_trim_view_whitespace_right_empty)
     {
       String text(STR(""));
       String expected(STR(""));
@@ -293,9 +329,10 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim_whitespace_right(textview);
+      StringView view = etl::trim_view_whitespace_right(textview);
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
@@ -310,7 +347,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_whitespace_right)
+    TEST(test_trim_view_whitespace_right)
     {
       String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
       String expected(STR(" \t\n\r\f\vHello World"));
@@ -318,9 +355,10 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim_whitespace_right(textview);
+      StringView view = etl::trim_view_whitespace_right(textview);
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
@@ -335,7 +373,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_whitespace_right_nothing_to_trim)
+    TEST(test_trim_view_whitespace_right_nothing_to_trim)
     {
       String text(STR(" \t\n\r\f\vHello World"));
       String expected(STR(" \t\n\r\f\vHello World"));
@@ -343,9 +381,10 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim_whitespace_right(textview);
+      StringView view = etl::trim_view_whitespace_right(textview);
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
@@ -360,7 +399,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_from_right_pointer_empty)
+    TEST(test_trim_from_view_right_pointer_empty)
     {
       String text(STR(""));
       String expected(STR(""));
@@ -368,9 +407,10 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim_from_right(textview, STR(" \t\n\r\f\v"));
+      StringView view = etl::trim_from_view_right(textview, STR(" \t\n\r\f\v"));
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
@@ -385,7 +425,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_from_right_pointer)
+    TEST(test_trim_from_view_right_pointer)
     {
       String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
       String expected(STR(" \t\n\r\f\vHello World"));
@@ -393,9 +433,10 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim_from_right(textview, STR(" \t\n\r\f\v"));
+      StringView view = etl::trim_from_view_right(textview, STR(" \t\n\r\f\v"));
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
@@ -410,7 +451,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_from_right_pointer_nothing_to_trim)
+    TEST(test_trim_from_view_right_pointer_nothing_to_trim)
     {
       String text(STR(" \t\n\r\f\vHello World"));
       String expected(STR(" \t\n\r\f\vHello World"));
@@ -418,13 +459,14 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim_from_right(textview, STR(" \t\n\r\f\v"));
+      StringView view = etl::trim_from_view_right(textview, STR(" \t\n\r\f\v"));
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
-    TEST(test_trim_right_pointer_delimiters)
+    TEST(test_trim_right_delimiters)
     {
       String text(STR("qztfpHello Worldqztfp"));
       String expected(STR("qztfpHello World"));
@@ -435,7 +477,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_right_pointer_delimiters)
+    TEST(test_trim_view_right_delimiters)
     {
       String text(STR("qztfpHello Worldqztfp"));
       String expected(STR("qztfpHello World"));
@@ -443,13 +485,14 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim_right(textview, STR("rld"));
+      StringView view = etl::trim_view_right(textview, STR("rld"));
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
-    TEST(test_trim_right_pointer_delimiters_nothing_to_trim)
+    TEST(test_trim_right_delimiters_nothing_to_trim)
     {
       String text(STR("qztfpHello World"));
       String expected(STR("qztfpHello World"));
@@ -460,7 +503,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_right_pointer_delimiters_nothing_to_trim)
+    TEST(test_trim_view_right_delimiters_nothing_to_trim)
     {
       String text(STR("qztfpHello World"));
       String expected(STR("qztfpHello World"));
@@ -468,9 +511,36 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim_right(textview, STR("rld"));
+      StringView view = etl::trim_view_right(textview, STR("rld"));
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_trim_right_delimiters_no_delimiters)
+    {
+      String text(STR("qztfpHello World"));
+      String expected(STR(""));
+
+      etl::trim_right(text, STR("XYZ"));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_view_right_delimiters_no_delimiters)
+    {
+      String text(STR("qztfpHello World"));
+      String expected(STR(""));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_view_right(textview, STR("XYZ"));
+
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
@@ -485,7 +555,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_whitespace_empty)
+    TEST(test_trim_view_whitespace_empty)
     {
       String text(STR(""));
       String expected(STR(""));
@@ -493,9 +563,10 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim_whitespace(textview);
+      StringView view = etl::trim_view_whitespace(textview);
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
@@ -510,7 +581,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_whitespace)
+    TEST(test_trim_view_whitespace)
     {
       String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
       String expected(STR("Hello World"));
@@ -518,9 +589,10 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim_whitespace(textview);
+      StringView view = etl::trim_view_whitespace(textview);
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
@@ -535,7 +607,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_whitespace_nothing_to_trim)
+    TEST(test_trim_view_whitespace_nothing_to_trim)
     {
       String text(STR("Hello World"));
       String expected(STR("Hello World"));
@@ -543,9 +615,10 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim_whitespace(textview);
+      StringView view = etl::trim_view_whitespace(textview);
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
@@ -560,7 +633,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_from_empty)
+    TEST(test_trim_from_view_empty)
     {
       String text(STR(""));
       String expected(STR(""));
@@ -568,9 +641,10 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim_from(textview, STR(" \t\n\r\f\v"));
+      StringView view = etl::trim_from_view(textview, STR(" \t\n\r\f\v"));
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
@@ -585,7 +659,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_from)
+    TEST(test_trim_from_view)
     {
       String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
       String expected(STR("Hello World"));
@@ -593,9 +667,10 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim_from(textview, STR(" \t\n\r\f\v"));
+      StringView view = etl::trim_from_view(textview, STR(" \t\n\r\f\v"));
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
@@ -610,7 +685,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_from_nothing_to_trim)
+    TEST(test_trim_from_view_nothing_to_trim)
     {
       String text(STR("Hello World"));
       String expected(STR("Hello World"));
@@ -618,13 +693,14 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim_from(textview, STR(" \t\n\r\f\v"));
+      StringView view = etl::trim_from_view(textview, STR(" \t\n\r\f\v"));
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
-    TEST(test_trim_pointer_delimiters)
+    TEST(test_trim_delimiters)
     {
       String text(STR("qztfpHello Worldqztfp"));
       String expected(STR("Hello World"));
@@ -635,7 +711,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_pointer_delimiters)
+    TEST(test_trim_view_delimiters)
     {
       String text(STR("qztfpHello Worldqztfp"));
       String expected(STR("Hello World"));
@@ -643,13 +719,14 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim(textview, STR("Hd"));
+      StringView view = etl::trim_view(textview, STR("Hd"));
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
-    TEST(test_trim_pointer_delimiters_nothing_to_trim)
+    TEST(test_trim_delimiters_nothing_to_trim)
     {
       String text(STR("Hello World"));
       String expected(STR("Hello World"));
@@ -660,7 +737,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_view_trim_pointer_delimiters_nothing_to_trim)
+    TEST(test_trim_view_delimiters_nothing_to_trim)
     {
       String text(STR("Hello World"));
       String expected(STR("Hello World"));
@@ -668,9 +745,36 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::trim(textview, STR("Hd"));
+      StringView view = etl::trim_view(textview, STR("Hd"));
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_trim_delimiters_no_delimiters)
+    {
+      String text(STR("Hello World"));
+      String expected(STR(""));
+
+      etl::trim(text, STR("XYZ"));
+
+      CHECK(expected == text);
+    }
+
+    //*************************************************************************
+    TEST(test_trim_view_delimiters_no_delimiters)
+    {
+      String text(STR("Hello World"));
+      String expected(STR(""));
+
+      StringView textview(text);
+      StringView expectedview(expected);
+
+      StringView view = etl::trim_view(textview, STR("XYZ"));
+
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
@@ -693,9 +797,10 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::right_n(textview, expected.size());
+      StringView view = etl::right_n_view(textview, expected.size());
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
@@ -707,9 +812,10 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::right_n(textview, text.size() * 2U);
+      StringView view = etl::right_n_view(textview, text.size() * 2U);
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
@@ -743,9 +849,10 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::left_n(textview, expected.size());
+      StringView view = etl::left_n_view(textview, expected.size());
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
@@ -757,9 +864,10 @@ namespace
       StringView textview(text);
       StringView expectedview(expected);
 
-      StringView view = etl::left_n(textview, text.size() * 2U);
+      StringView view = etl::left_n_view(textview, text.size() * 2U);
 
-      CHECK(expectedview == view);
+      CHECK_EQUAL(expectedview.size(), view.size());
+      CHECK(std::equal(expectedview.begin(), expectedview.end(), view.begin()));
     }
 
     //*************************************************************************
@@ -799,7 +907,7 @@ namespace
         { STR(':'), STR('_') }
       };
 
-      etl::replace(text, etl::begin(lookup), etl::end(lookup));
+      etl::replace_characters(text, etl::begin(lookup), etl::end(lookup));
 
       CHECK(expected == text);
     }
@@ -819,7 +927,7 @@ namespace
         { STR(':'), STR('_') }
       };
 
-      etl::replace(text, etl::begin(lookup), etl::end(lookup));
+      etl::replace_characters(text, etl::begin(lookup), etl::end(lookup));
 
       CHECK(expected == text);
     }
@@ -839,7 +947,7 @@ namespace
         { STR(":"),   STR(".txt") }
       };
 
-      etl::replace(text, etl::begin(lookup), etl::end(lookup));
+      etl::replace_strings(text, etl::begin(lookup), etl::end(lookup));
 
       CHECK(expected == text);
     }
@@ -859,30 +967,97 @@ namespace
         { STR(":"),   STR(".txt") }
       };
 
-      etl::replace(text, etl::begin(lookup), etl::end(lookup));
+      etl::replace_strings(text, etl::begin(lookup), etl::end(lookup));
 
       CHECK(expected == text);
     }
 
     //*************************************************************************
-    TEST(test_get_token_pointer_delimiters)
+    TEST(test_get_token_delimiters)
     {
       String text(STR("  The cat.sat,  on;the:mat .,;:"));
       Vector tokens;
 
+      StringView textview(text);
       StringView token;
-      
-      while (token.end() != text.end())
-      { 
+
+      do
+      {
         token = etl::get_token(text, STR(" .,;:"), token);
 
         if (!token.empty())
         {
           tokens.emplace_back(token.begin(), token.end());
         }
-      }
+      } while (!token.empty());
 
       CHECK_EQUAL(6U, tokens.size());
+    }
+
+    //*************************************************************************
+    TEST(test_get_token_delimiters_nothing_to_do)
+    {
+      String text(STR(""));
+      Vector tokens;
+
+      StringView textview(text);
+      StringView token;
+
+      do
+      {
+        token = etl::get_token(text, STR(" .,;:"), token);
+
+        if (!token.empty())
+        {
+          tokens.emplace_back(token.begin(), token.end());
+        }
+      } while (!token.empty());
+
+      CHECK_EQUAL(0U, tokens.size());
+    }
+
+    //*************************************************************************
+    TEST(test_get_token_delimiters_no_tokens)
+    {
+      String text(STR("   .,  ;: .,;:"));
+      Vector tokens;
+
+      StringView textview(text);
+      StringView token;
+
+      do
+      {
+        token = etl::get_token(text, STR(" .,;:"), token);
+
+        if (!token.empty())
+        {
+          tokens.emplace_back(token.begin(), token.end());
+        }
+      } while (!token.empty());
+
+      CHECK_EQUAL(0U, tokens.size());
+    }
+
+    //*************************************************************************
+    TEST(test_get_token_delimiters_no_delimiters)
+    {
+      String text(STR("The cat sat on the mat"));
+      Vector tokens;
+
+      StringView textview(text);
+      StringView token;
+
+      do
+      {
+        token = etl::get_token(text, STR(".,;:"), token);
+
+        if (!token.empty())
+        {
+          tokens.emplace_back(token.begin(), token.end());
+        }
+      } while (!token.empty());
+
+      CHECK_EQUAL(1U, tokens.size());
     }
 
     //*************************************************************************
@@ -1107,7 +1282,7 @@ namespace
       const String text(STR("abcHello Worldabc"));
       StringView textview(text);
 
-      String::const_iterator itr = etl::find_first_of(textview, STR("Hel"));
+      StringView::const_iterator itr = etl::find_first_of(textview, STR("Hel"));
 
       CHECK_EQUAL(STR('H'), *itr);
     }
@@ -1118,9 +1293,9 @@ namespace
       const String text(STR("abcHello Worldabc"));
       StringView textview(text);
 
-      String::const_iterator itr = etl::find_first_of(textview, STR("xyz"));
+      StringView::const_iterator itr = etl::find_first_of(textview, STR("xyz"));
 
-      CHECK(text.end() == itr);
+      CHECK(textview.end() == itr);
     }
 
     //*************************************************************************
@@ -1208,7 +1383,7 @@ namespace
       const String text(STR("abcHello Worldabc"));
       StringView textview(text);
 
-      String::const_iterator itr = etl::find_first_not_of(textview, STR("abc"));
+      StringView::const_iterator itr = etl::find_first_not_of(textview, STR("abc"));
 
       CHECK_EQUAL(STR('H'), *itr);
     }
@@ -1219,9 +1394,9 @@ namespace
       const String text(STR("abcHello Worldabc"));
       StringView textview(text);
 
-      String::const_iterator itr = etl::find_first_not_of(textview, STR("abcHello World"));
+      StringView::const_iterator itr = etl::find_first_not_of(textview, STR("abcHello World"));
 
-      CHECK(text.end() == itr);
+      CHECK(textview.end() == itr);
     }
 
     //*************************************************************************
@@ -1310,7 +1485,7 @@ namespace
       String text(STR("abcHello Worldabc"));
       StringView textview(text);
 
-      String::const_iterator itr = etl::find_last_of(textview, STR("rld"));
+      StringView::const_iterator itr = etl::find_last_of(textview, STR("rld"));
 
       CHECK_EQUAL(STR('d'), *itr);
     }
@@ -1321,9 +1496,9 @@ namespace
       String text(STR("abcHello Worldabc"));
       StringView textview(text);
 
-      String::const_iterator itr = etl::find_last_of(textview, STR("xyz"));
+      StringView::const_iterator itr = etl::find_last_of(textview, STR("xyz"));
 
-      CHECK(text.end() == itr);
+      CHECK(textview.end() == itr);
     }
 
     //*************************************************************************
@@ -1412,7 +1587,7 @@ namespace
       String text(STR("abcHello Worldabc"));
       StringView textview(text);
 
-      String::const_iterator itr = etl::find_last_not_of(textview, STR("abc"));
+      StringView::const_iterator itr = etl::find_last_not_of(textview, STR("abc"));
 
       CHECK_EQUAL(STR('d'), *itr);
     }
@@ -1423,9 +1598,9 @@ namespace
       String text(STR("abcHello Worldabc"));
       StringView textview(text);
 
-      String::const_iterator itr = etl::find_last_not_of(textview, STR("abcHello World"));
+      StringView::const_iterator itr = etl::find_last_not_of(textview, STR("abcHello World"));
 
-      CHECK(text.end() == itr);
+      CHECK(textview.end() == itr);
     }
   };
 }

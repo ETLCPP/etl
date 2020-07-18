@@ -1063,7 +1063,6 @@
     <ClInclude Include="..\..\include\etl\private\crc32_poly_0x1edc6f41.h" />
     <ClInclude Include="..\..\include\etl\private\crc64_poly_0x42f0e1eba9ea3693.h" />
     <ClInclude Include="..\..\include\etl\private\crc8_poly_0x07.h" />
-    <ClInclude Include="..\..\include\etl\private\string_utilities_helper.h" />
     <ClInclude Include="..\..\include\etl\private\to_string_helper.h" />
     <ClInclude Include="..\..\include\etl\profiles\armv7.h" />
     <ClInclude Include="..\..\include\etl\profiles\armv7_no_stl.h" />
@@ -1136,10 +1135,8 @@
     <ClInclude Include="..\..\include\etl\type_select.h" />
     <ClInclude Include="..\..\include\etl\u16format_spec.h" />
     <ClInclude Include="..\..\include\etl\u16string_stream.h" />
-    <ClInclude Include="..\..\include\etl\u16string_utilities.h" />
     <ClInclude Include="..\..\include\etl\u32format_spec.h" />
     <ClInclude Include="..\..\include\etl\u32string_stream.h" />
-    <ClInclude Include="..\..\include\etl\u32string_utilities.h" />
     <ClInclude Include="..\..\include\etl\variant_pool.h" />
     <ClInclude Include="..\..\include\etl\version.h" />
     <ClInclude Include="..\..\include\etl\algorithm.h" />
@@ -1237,7 +1234,6 @@
     <ClInclude Include="..\..\include\etl\wformat_spec.h" />
     <ClInclude Include="..\..\include\etl\wstring.h" />
     <ClInclude Include="..\..\include\etl\wstring_stream.h" />
-    <ClInclude Include="..\..\include\etl\wstring_utilities.h" />
     <ClInclude Include="..\data.h" />
     <ClInclude Include="..\etl_profile.h" />
     <ClInclude Include="..\murmurhash3.h" />
@@ -1626,6 +1622,7 @@
     <ClCompile Include="..\test_state_chart.cpp" />
     <ClCompile Include="..\test_smallest.cpp" />
     <ClCompile Include="..\test_stack.cpp" />
+    <ClCompile Include="..\test_string_utilities_std.cpp" />
     <ClCompile Include="..\test_string_char.cpp" />
     <ClCompile Include="..\test_string_char_external_buffer.cpp" />
     <ClCompile Include="..\test_string_stream.cpp" />
@@ -1634,6 +1631,9 @@
     <ClCompile Include="..\test_string_u32.cpp" />
     <ClCompile Include="..\test_string_u32_external_buffer.cpp" />
     <ClCompile Include="..\test_string_utilities.cpp" />
+    <ClCompile Include="..\test_string_utilities_std_u16.cpp" />
+    <ClCompile Include="..\test_string_utilities_std_u32.cpp" />
+    <ClCompile Include="..\test_string_utilities_std_wchar_t.cpp" />
     <ClCompile Include="..\test_string_utilities_u16.cpp" />
     <ClCompile Include="..\test_string_utilities_u32.cpp" />
     <ClCompile Include="..\test_string_utilities_wchar_t.cpp" />
