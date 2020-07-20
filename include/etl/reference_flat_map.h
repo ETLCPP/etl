@@ -467,7 +467,7 @@ namespace etl
     {
       iterator i_element = lower_bound(key);
 
-      ETL_ASSERT(i_element != end(), ETL_ERROR(flat_map_out_of_bounds));
+      ETL_ASSERT((i_element != end()) && keys_are_equal(i_element->first, key), ETL_ERROR(flat_map_out_of_bounds));
 
       return i_element->second;
     }
@@ -481,7 +481,7 @@ namespace etl
     {
       iterator i_element = lower_bound(key);
 
-      ETL_ASSERT(i_element != end(), ETL_ERROR(flat_map_out_of_bounds));
+      ETL_ASSERT((i_element != end()) && keys_are_equal(i_element->first, key), ETL_ERROR(flat_map_out_of_bounds));
 
       return i_element->second;
     }
@@ -496,7 +496,7 @@ namespace etl
     {
       iterator i_element = lower_bound(key);
 
-      ETL_ASSERT(i_element != end(), ETL_ERROR(flat_map_out_of_bounds));
+      ETL_ASSERT((i_element != end()) && keys_are_equal(i_element->first, key), ETL_ERROR(flat_map_out_of_bounds));
 
       return i_element->second;
     }
@@ -511,7 +511,7 @@ namespace etl
     {
       const_iterator i_element = lower_bound(key);
 
-      ETL_ASSERT(i_element != end(), ETL_ERROR(flat_map_out_of_bounds));
+      ETL_ASSERT((i_element != end()) && keys_are_equal(i_element->first, key), ETL_ERROR(flat_map_out_of_bounds));
 
       return i_element->second;
     }
@@ -591,12 +591,12 @@ namespace etl
 
       if (i_element == end())
       {
-        return 0;
+        return 0U;
       }
       else
       {
         lookup.erase(i_element.ilookup);
-        return 1;
+        return 1U;
       }
     }
 
@@ -640,7 +640,7 @@ namespace etl
 
       if (itr != end())
       {
-        if (!key_compare()(itr->first, key) && !key_compare()(key, itr->first))
+        if (keys_are_equal(itr->first, key))
         {
           return itr;
         }
@@ -664,7 +664,7 @@ namespace etl
 
       if (itr != end())
       {
-        if (!key_compare()(itr->first, key) && !key_compare()(key, itr->first))
+        if (keys_are_equal(itr->first, key))
         {
           return itr;
         }
@@ -684,7 +684,7 @@ namespace etl
     //*********************************************************************
     size_t count(key_parameter_t key) const
     {
-      return (find(key) == end()) ? 0 : 1;
+      return (find(key) == end()) ? 0U : 1U;
     }
 
     //*********************************************************************
@@ -838,8 +838,8 @@ namespace etl
         // Not at the end.
         result.first = i_element;
 
-        // Existing element?
-        if (TKeyCompare()(value.first, i_element->first) || TKeyCompare()(i_element->first, value.first))
+        //Not an existing element?
+        if (!keys_are_equal(i_element->first, value.first))
         {
           // A new one.
           ETL_ASSERT(!lookup.full(), ETL_ERROR(flat_map_full));
@@ -849,6 +849,14 @@ namespace etl
       }
 
       return result;
+    }
+
+    //*********************************************************************
+    /// Check to see if the keys are equal.
+    //*********************************************************************
+    bool keys_are_equal(key_parameter_t key1, key_parameter_t key2) const
+    {
+      return !key_compare()(key1, key2) && !key_compare()(key2, key1);
     }
 
   private:

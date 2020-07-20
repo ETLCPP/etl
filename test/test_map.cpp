@@ -482,7 +482,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_at_exception)
     {
       Data data(initial_data.begin(), initial_data.end());
+      data.erase("5");
 
+      CHECK_THROW(data.at("-1"), etl::map_out_of_bounds);
+      CHECK_THROW(data.at("5"), etl::map_out_of_bounds);
       CHECK_THROW(data.at("10"), etl::map_out_of_bounds);
     }
 

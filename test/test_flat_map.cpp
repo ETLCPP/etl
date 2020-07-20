@@ -575,7 +575,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_at_out_of_bounds)
     {
       DataNDC data(initial_data.begin(), initial_data.end());
+      data.erase(5);
 
+      CHECK_THROW(data.at(-1), etl::flat_map_out_of_bounds);
+      CHECK_THROW(data.at(5), etl::flat_map_out_of_bounds);
       CHECK_THROW(data.at(10), etl::flat_map_out_of_bounds);
     }
 
