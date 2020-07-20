@@ -183,9 +183,15 @@ namespace etl
     //*************************************************************************
     struct invocation_element
     {
+      invocation_element()
+        : object(ETL_NULLPTR)
+        , stub(ETL_NULLPTR)
+      {
+      }
+      
       //***********************************************************************
-      void* object   = ETL_NULLPTR;
-      stub_type stub = ETL_NULLPTR;
+      void* object;
+      stub_type stub;
     };
 
     //*************************************************************************

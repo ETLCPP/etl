@@ -1,4 +1,8 @@
 ===============================================================================
+18.8.1
+Fix C++03 error_handler compatibility
+
+===============================================================================
 18.8.0
 Re-coded string utilities to allow any string-like container to use it.
 
