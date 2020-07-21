@@ -234,7 +234,7 @@ namespace etl
     //*************************************************************************
     /// Assign from a span.
     //*************************************************************************
-    ETL_CONSTEXPR span& operator =(const span& other) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 span& operator =(const span& other) ETL_NOEXCEPT
     {
       mbegin = other.mbegin;
       mend   = other.mend;
