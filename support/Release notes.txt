@@ -1,4 +1,8 @@
 ===============================================================================
+18.9.0
+Added enable/disable observer interface to observable class.
+
+===============================================================================
 18.8.2
 Fixed incorrect return in find() and at() for non-existent key.
 
