@@ -489,12 +489,31 @@ namespace etl
     {
       if (&rhs != this)
       {
-        assign(rhs.cbegin(), rhs.cend());
+        this->initialise();
+        this->resize(rhs.size());
+        etl::copy_n(rhs.data(), rhs.size(), this->data());
       }
 
       return *this;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    etl::pvoidvector& operator = (etl::pvoidvector&& rhs)
+    {
+      if (&rhs != this)
+      {
+        this->initialise();
+        this->resize(rhs.size());
+        etl::copy_n(rhs.data(), rhs.size(), this->data());
+        rhs.initialise();
+      }
+
+      return *this;
+    }
+#endif
     //*************************************************************************
     /// Gets the current size of the vector.
     ///\return The current size of the vector.

@@ -957,24 +957,6 @@ namespace etl
       p_end = p_buffer;
     }
 
-    //*********************************************************************
-    /// Initialise the source vector after a move.
-    //*********************************************************************
-    void initialise_source_external_buffer_after_move()
-    {
-      ETL_SUBTRACT_DEBUG_COUNT(int32_t(etl::distance(p_buffer, p_end)))
-
-      p_end = p_buffer;
-    }
-
-    //*********************************************************************
-    /// Initialise the destination vector after a move.
-    //*********************************************************************
-    void initialise_destination_external_buffer_after_move()
-    {
-      ETL_ADD_DEBUG_COUNT(int32_t(etl::distance(p_buffer, p_end)))
-    }
-
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
@@ -1404,11 +1386,14 @@ namespace etl
       {
         this->initialise();
 
-        this->p_buffer = other.p_buffer;
-        this->p_end    = other.p_end;
+        typename etl::ivector<T>::iterator itr = other.begin();
+        while (itr != other.end())
+        {
+          this->push_back(etl::move(*itr));
+          ++itr;
+        }
 
-        this->initialise_destination_external_buffer_after_move();
-        other.initialise_source_external_buffer_after_move();
+        other.initialise();
       }
     }
 
@@ -1420,11 +1405,15 @@ namespace etl
       if (&rhs != this)
       {
         this->clear();
-        this->p_buffer = rhs.p_buffer;
-        this->p_end    = rhs.p_end;
 
-        this->initialise_destination_external_buffer_after_move();
-        rhs.initialise_source_external_buffer_after_move();
+        typename etl::ivector<T>::iterator itr = rhs.begin();
+        while (itr != rhs.end())
+        {
+          this->push_back(etl::move(*itr));
+          ++itr;
+        }
+
+        rhs.initialise();
       }
 
       return *this;
@@ -1530,10 +1519,7 @@ namespace etl
     vector(const vector& other)
       : etl::ivector<T*>(reinterpret_cast<T**>(&buffer), MAX_SIZE)
     {
-      if (this != &other)
-      {
-        this->assign(other.begin(), other.end());
-      }
+      (void)etl::ivector<T*>::operator = (other);
     }
 
     //*************************************************************************
@@ -1541,10 +1527,7 @@ namespace etl
     //*************************************************************************
     vector& operator = (const vector& rhs)
     {
-      if (&rhs != this)
-      {
-        this->assign(rhs.cbegin(), rhs.cend());
-      }
+      (void)etl::ivector<T*>::operator = (rhs);
 
       return *this;
     }
@@ -1556,19 +1539,7 @@ namespace etl
     vector(vector&& other)
       : etl::ivector<T*>(reinterpret_cast<T**>(&buffer), MAX_SIZE)
     {
-      if (this != &other)
-      {
-        this->initialise();
-
-        typename etl::ivector<T*>::iterator itr = other.begin();
-        while (itr != other.end())
-        {
-          this->push_back(etl::move(*itr));
-          ++itr;
-        }
-
-        other.initialise_source_external_buffer_after_move();
-      }
+      (void)etl::ivector<T*>::operator = (etl::move(other));
     }
 
     //*************************************************************************
@@ -1576,18 +1547,7 @@ namespace etl
     //*************************************************************************
     vector& operator = (vector&& rhs)
     {
-      if (&rhs != this)
-      {
-        this->clear();
-        typename etl::ivector<T*>::iterator itr = rhs.begin();
-        while (itr != rhs.end())
-        {
-          this->push_back(etl::move(*itr));
-          ++itr;
-        }
-
-        rhs.initialise_source_external_buffer_after_move();
-      }
+      (void)etl::ivector<T*>::operator = (etl::move(rhs));
 
       return *this;
     }
@@ -1682,7 +1642,7 @@ namespace etl
     vector(const vector& other, void* buffer, size_t max_size)
       : etl::ivector<T*>(reinterpret_cast<T**>(buffer), max_size)
     {
-      this->assign(other.begin(), other.end());
+      (void)etl::ivector<T*>::operator = (other);
     }
 
     //*************************************************************************
@@ -1690,10 +1650,7 @@ namespace etl
     //*************************************************************************
     vector& operator = (const vector& rhs)
     {
-      if (&rhs != this)
-      {
-        this->assign(rhs.cbegin(), rhs.cend());
-      }
+      (void)etl::ivector<T*>::operator = (rhs);
 
       return *this;
     }
@@ -1705,14 +1662,7 @@ namespace etl
     vector(vector&& other, void* buffer, size_t max_size)
       : etl::ivector<T*>(reinterpret_cast<T**>(buffer), max_size)
     {
-      if (this != &other)
-      {
-        this->p_buffer = other.p_buffer;
-        this->p_end    = other.p_end;
-
-        this->initialise_destination_external_buffer_after_move();
-        other.initialise_source_external_buffer_after_move();
-      }
+      (void)etl::ivector<T*>::operator = (etl::move(other));
     }
 
     //*************************************************************************
@@ -1720,15 +1670,7 @@ namespace etl
     //*************************************************************************
     vector& operator = (vector&& rhs)
     {
-      if (&rhs != this)
-      {
-        this->clear();
-        this->p_buffer = rhs.p_buffer;
-        this->p_end    = rhs.p_end;
-
-        this->initialise_destination_external_buffer_after_move();
-        rhs.initialise_source_external_buffer_after_move();
-      }
+      (void)etl::ivector<T*>::operator = (etl::move(rhs));
 
       return *this;
     }

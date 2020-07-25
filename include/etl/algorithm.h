@@ -191,8 +191,8 @@ namespace etl
   // Pointer
   template <typename TIterator1, typename TSize, typename TIterator2>
   typename etl::enable_if<etl::is_pointer<TIterator1>::value &&
-                             etl::is_pointer<TIterator2>::value &&
-                             etl::is_pod<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+                          etl::is_pointer<TIterator2>::value &&
+                          etl::is_pod<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
     copy_n(TIterator1 sb, TSize count, TIterator2 db)
   {
     typedef typename etl::iterator_traits<TIterator1>::value_type value_t;
@@ -203,8 +203,8 @@ namespace etl
   // Other iterator
   template <typename TIterator1, typename TSize, typename TIterator2>
   typename etl::enable_if<!etl::is_pointer<TIterator1>::value ||
-                             !etl::is_pointer<TIterator2>::value ||
-                             !etl::is_pod<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+                          !etl::is_pointer<TIterator2>::value ||
+                          !etl::is_pod<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
     copy_n(TIterator1 sb, TSize count, TIterator2 db)
   {
     while (count != 0)
