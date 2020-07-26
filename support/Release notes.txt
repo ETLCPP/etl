@@ -1,4 +1,9 @@
 ===============================================================================
+18.10.0
+Fixed pointer vector move operators.
+Optimised constructors and assignments for pointer vectors.
+
+===============================================================================
 18.9.0
 Added enable/disable observer interface to observable class.
 
