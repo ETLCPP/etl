@@ -308,12 +308,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-      base_t::initialise();
-
-      while (first != last)
-      {
-        *p_end++ = (void*)*first++;
-      }
+      base_t::assign(first, last);
     }
 
     //*********************************************************************
@@ -717,12 +712,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-      base_t::initialise();
-
-      while (first != last)
-      {
-        *p_end++ = (void*)*first++;
-      }
+      base_t::assign(first, last);
     }
 
     //*********************************************************************

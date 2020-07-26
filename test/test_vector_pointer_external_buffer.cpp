@@ -316,6 +316,19 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assignment_from_pointer_range)
+    {
+      Data data(initial_data.data(), initial_data.data() + initial_data.size(), buffer1, SIZE);
+      Data other_data(buffer2, SIZE);
+
+      other_data = data;
+
+      bool is_equal = std::equal(data.begin(), data.end(), other_data.begin());
+
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_assignment)
     {
       CData data(initial_data.begin(), initial_data.end(), buffer1, SIZE);

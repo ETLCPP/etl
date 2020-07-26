@@ -940,9 +940,9 @@ namespace etl
     /// Constructor.
     //*********************************************************************
     ivector(T* p_buffer_, size_t MAX_SIZE)
-      : vector_base(MAX_SIZE),
-      p_buffer(p_buffer_),
-      p_end(p_buffer_)
+      : vector_base(MAX_SIZE)
+      , p_buffer(p_buffer_)
+      , p_end(p_buffer_)
     {
     }
 
