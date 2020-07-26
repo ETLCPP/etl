@@ -1,0 +1,22 @@
+name: CI
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup cmake
+      run: cmake -DBUILD_TESTS=ON ./
+
+    - name: Compile
+      run: make
+    
+    - name: Run tests
+      run: ./test/etl_tests
