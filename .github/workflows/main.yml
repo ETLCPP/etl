@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: [ master ]
+    branches: [ master, clang-9 ]
   pull_request:
     branches: [ master ]
 
