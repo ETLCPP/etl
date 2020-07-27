@@ -29,3 +29,12 @@ jobs:
       with:
         name: Testfile
         path: test/etl_tests
+
+  build-clang-9-Linux:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build with Clang 9
+        run: |
+          cmake -D BUILD_TESTS=ON -D CMAKE_C_COMPILER=clang-9 -D CMAKE_CXX_COMPILER=clang++-9 ./
+          make
