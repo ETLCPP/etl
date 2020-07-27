@@ -36,5 +36,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build with Clang 9
         run: |
-          cmake -D BUILD_TESTS=ON -D CMAKE_C_COMPILER=clang-9 -D CMAKE_CXX_COMPILER=clang++-9 ./
+          export CC=clang-9
+          export CXX=clang++-9
+          cmake -D BUILD_TESTS=ON ./
           make
