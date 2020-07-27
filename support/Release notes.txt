@@ -1,4 +1,8 @@
 ===============================================================================
+18.11.0
+Added etl::ibitset::span() member function to return a span of the underlying binary data.
+
+===============================================================================
 18.10.0
 Fixed pointer vector move operators.
 Optimised constructors and assignments for pointer vectors.

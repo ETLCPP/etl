@@ -50,6 +50,7 @@ SOFTWARE.
 #include "char_traits.h"
 #include "static_assert.h"
 #include "error_handler.h"
+#include "span.h"
 
 #include "private/minmax_push.h"
 
@@ -131,6 +132,9 @@ namespace etl
     static const element_t ALL_CLEAR = 0;
 
     static const size_t    BITS_PER_ELEMENT = etl::integral_limits<element_t>::bits;
+
+    typedef etl::span<element_t>       span_type;
+    typedef etl::span<const element_t> const_span_type;
 
     enum
     {
@@ -747,6 +751,24 @@ namespace etl
     void swap(ibitset& other)
     {
       etl::swap_ranges(pdata, pdata + SIZE, other.pdata);
+    }
+
+    //*************************************************************************
+    /// span
+    /// Returns a span of the underlying data.
+    //*************************************************************************
+    span_type span()
+    {
+      return span_type(pdata, pdata + SIZE);
+    }
+
+    //*************************************************************************
+    /// span
+    /// Returns a const span of the underlying data.
+    //*************************************************************************
+    const_span_type span() const
+    {
+      return const_span_type(pdata, pdata + SIZE);
     }
 
   protected:

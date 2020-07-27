@@ -76,6 +76,9 @@
     <Filter Include="Resource Files\CI\CircleCI">
       <UniqueIdentifier>{0d5824b1-3ef9-43e0-b2d5-15d6246b843e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\CI\Github">
+      <UniqueIdentifier>{c25471f3-451a-4279-925d-cbdcec912ef8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -1437,6 +1440,9 @@
     </None>
     <None Include="..\..\.circleci\config.yml">
       <Filter>Resource Files\CI\CircleCI</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\main.yml">
+      <Filter>Resource Files\CI\Github</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
