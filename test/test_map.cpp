@@ -393,8 +393,8 @@ namespace
       Data data(initial_data.begin(), initial_data.end());
       const Data constData(data);
 
-      CHECK_EQUAL(data.begin(), std::begin(data));
-      CHECK_EQUAL(constData.begin(), std::begin(constData));
+      CHECK(data.begin() == std::begin(data));
+      CHECK(constData.begin() == std::begin(constData));
     }
 
     //*************************************************************************
@@ -403,8 +403,8 @@ namespace
       Data data(initial_data.begin(), initial_data.end());
       const Data constData(data);
 
-      CHECK_EQUAL(data.end(), std::end(data));
-      CHECK_EQUAL(constData.end(), std::end(constData));
+      CHECK(data.end() == std::end(data));
+      CHECK(constData.end() == std::end(constData));
     }
 
     //*************************************************************************
@@ -1016,10 +1016,10 @@ namespace
       CHECK_EQUAL(3, it->second);
 
       it = data.find("A");
-      CHECK_EQUAL(data.end(), it);
+      CHECK(data.end() == it);
 
       it = data.find("!");
-      CHECK_EQUAL(data.end(), it);
+      CHECK(data.end() == it);
     }
 
     //*************************************************************************
@@ -1031,10 +1031,10 @@ namespace
       CHECK_EQUAL(3, it->second);
 
       it = data.find("A");
-      CHECK_EQUAL(data.end(), it);
+      CHECK(data.end() == it);
 
       it = data.find("!");
-      CHECK_EQUAL(data.end(), it);
+      CHECK(data.end() == it);
     }
 
     //*************************************************************************

@@ -446,8 +446,8 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
       const DataNDC constData(data);
 
-      CHECK_EQUAL(data.begin(), std::begin(data));
-      CHECK_EQUAL(constData.begin(), std::begin(constData));
+      CHECK(data.begin() == std::begin(data));
+      CHECK(constData.begin() == std::begin(constData));
     }
 
     //*************************************************************************
@@ -456,8 +456,8 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
       const DataNDC constData(data);
 
-      CHECK_EQUAL(data.end(), std::end(data));
-      CHECK_EQUAL(constData.end(), std::end(constData));
+      CHECK(data.end() == std::end(data));
+      CHECK(constData.end() == std::end(constData));
     }
 
     //*************************************************************************

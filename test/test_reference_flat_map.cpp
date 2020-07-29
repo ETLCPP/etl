@@ -230,8 +230,8 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
       const DataNDC constData(initial_data.begin(), initial_data.end());
 
-      CHECK_EQUAL(data.begin(), std::begin(data));
-      CHECK_EQUAL(constData.begin(), std::begin(constData));
+      CHECK(data.begin() == std::begin(data));
+      CHECK(constData.begin() == std::begin(constData));
     }
 
     //*************************************************************************
@@ -240,8 +240,8 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
       const DataNDC constData(initial_data.begin(), initial_data.end());
 
-      CHECK_EQUAL(data.end(), std::end(data));
-      CHECK_EQUAL(constData.end(), std::end(constData));
+      CHECK(data.end() == std::end(data));
+      CHECK(constData.end() == std::end(constData));
     }
 
     //*************************************************************************
@@ -681,10 +681,10 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
 
       DataNDC::iterator it = data.find(-1);
-      CHECK_EQUAL(data.end(), it);
+      CHECK(data.end() == it);
 
       it = data.find(10);
-      CHECK_EQUAL(data.end(), it);
+      CHECK(data.end() == it);
     }
 
     //*************************************************************************
@@ -702,10 +702,10 @@ namespace
       const DataNDC data(initial_data.begin(), initial_data.end());
 
       DataNDC::const_iterator it = data.find(-1);
-      CHECK_EQUAL(data.end(), it);
+      CHECK(data.end() == it);
 
       it = data.find(10);
-      CHECK_EQUAL(data.end(), it);
+      CHECK(data.end() == it);
     }
 
     //*************************************************************************
@@ -756,12 +756,12 @@ namespace
       ETL_OR_STD::pair<DataNDC::iterator, DataNDC::iterator> i_data;
 
       i_data = data.equal_range(-1);
-      CHECK_EQUAL(data.begin(), i_data.first);
-      CHECK_EQUAL(data.begin(), i_data.second);
+      CHECK(data.begin() == i_data.first);
+      CHECK(data.begin() == i_data.second);
 
       i_data = data.equal_range(99);
-      CHECK_EQUAL(data.end(), i_data.first);
-      CHECK_EQUAL(data.end(), i_data.second);
+      CHECK(data.end() == i_data.first);
+      CHECK(data.end() == i_data.second);
     }
 
     //*************************************************************************
