@@ -65,7 +65,7 @@ SOFTWARE.
   #endif
 
   #if !defined(ETL_COMPILER_TYPE_DETECTED) && !defined(ETL_COMPILER_GCC)
-    #if defined(__GNUC__)
+    #if defined(__GNUC__) && !defined(__clang__) && !defined(__llvm__)
       #define ETL_COMPILER_GCC
       #define ETL_COMPILER_TYPE_DETECTED
     #endif
