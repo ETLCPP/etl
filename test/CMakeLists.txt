@@ -158,8 +158,14 @@ endif()
 add_executable(etl_tests
   ${TEST_SOURCE_FILES}
   )
-#target_link_libraries(etl_tests etl UnitTest++)
-target_link_libraries(etl_tests UnitTest++)
+
+if(UNIX AND NOT APPLE)
+  # atomic is need on Linux with Clang
+  target_link_libraries(etl_tests UnitTest++ atomic)
+else()
+  target_link_libraries(etl_tests UnitTest++)
+endif()
+
 target_include_directories(etl_tests
   PUBLIC
   ${CMAKE_CURRENT_LIST_DIR}
