@@ -1789,7 +1789,16 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Copy constructor.
+    /// Copy constructor. Implicit pool.
+    //*************************************************************************
+    forward_list(const forward_list& other)
+      : etl::iforward_list<T>(*other.p_node_pool, other.p_node_pool->max_size(), true)
+    {
+      this->assign(other.cbegin(), other.cend());
+    }
+
+    //*************************************************************************
+    /// Copy constructor. Explicit pool.
     //*************************************************************************
     forward_list(const forward_list& other, etl::ipool& node_pool)
       : etl::iforward_list<T>(node_pool, node_pool.max_size(), true)
@@ -1799,27 +1808,21 @@ namespace etl
 
 #if ETL_CPP11_SUPPORTED
     //*************************************************************************
-    /// Move constructor.
+    /// Move constructor. Implicit pool
+    //*************************************************************************
+    forward_list(forward_list&& other)
+      : etl::iforward_list<T>(*other.p_node_pool, other.p_node_pool->max_size(), true)
+    {
+      this->move_container(std::move(other));
+    }
+
+    //*************************************************************************
+    /// Move constructor. Explicit pool
     //*************************************************************************
     forward_list(forward_list&& other, etl::ipool& node_pool)
       : etl::iforward_list<T>(node_pool, node_pool.max_size(), true)
     {
-      if (this != &other)
-      {
-        this->move_container(std::move(other));
-      }
-    }
-
-    //*************************************************************************
-    /// Move constructor.
-    //*************************************************************************
-    forward_list(iforward_list&& other, etl::ipool& node_pool)
-      : etl::iforward_list<T>(node_pool, node_pool.max_size(), true)
-    {
-      if (this != &other)
-      {
-        this->move_container(std::move(other));
-      }
+      this->move_container(std::move(other));
     }
 #endif
 
@@ -1871,10 +1874,7 @@ namespace etl
     //*************************************************************************
     forward_list& operator = (forward_list&& rhs)
     {
-      if (&rhs != this)
-      {
-        this->move_container(etl::move(rhs));
-      }
+      this->move_container(etl::move(rhs));
 
       return *this;
     }

@@ -215,7 +215,20 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_copy_constructor)
+    TEST_FIXTURE(SetupFixture, test_copy_constructor_implicit_pool)
+    {
+      PoolNDC2 pool;
+      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC data2(unsorted_data.begin(), unsorted_data.end(), pool);
+      DataNDC other_data1(data1);
+      DataNDC other_data2(data2);
+
+      CHECK(std::equal(data1.begin(), data1.end(), other_data1.begin()));
+      CHECK(std::equal(data2.begin(), data2.end(), other_data2.begin()));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_copy_constructor_explicit_pool)
     {
       PoolNDC2 pool;
       DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
@@ -228,7 +241,33 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_move_constructor)
+    TEST_FIXTURE(SetupFixture, test_move_constructor_implicit_pool)
+    {
+      PoolNDC2 pool;
+      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC data2(unsorted_data.begin(), unsorted_data.end(), data1.get_pool());
+      DataNDC other_data1(std::move(data1));
+      DataNDC other_data2(std::move(data2));
+
+      CHECK_EQUAL(0U, data1.size());
+      CHECK(data1.empty());
+      CHECK_EQUAL(pool.max_size(), data1.max_size());
+      CHECK(data1.begin() == data1.end());
+
+      CHECK_EQUAL(0U, data2.size());
+      CHECK(data2.empty());
+      CHECK_EQUAL(pool.max_size(), data2.max_size());
+      CHECK(data2.begin() == data2.end());
+
+      CHECK_EQUAL(sorted_data.size(), other_data1.size());
+      CHECK_EQUAL(unsorted_data.size(), other_data2.size());
+
+      CHECK(std::equal(sorted_data.begin(), sorted_data.end(), other_data1.begin()));
+      CHECK(std::equal(unsorted_data.begin(), unsorted_data.end(), other_data2.begin()));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_move_constructor_explicit_pool)
     {
       PoolNDC2 pool;
       DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
@@ -1206,7 +1245,6 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_move_assignment)
     {
-      CompareDataNDC compare_data(sorted_data.begin(), sorted_data.end());
       PoolNDC4 pool;
       DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
       DataNDC data2(sorted_data.begin(), sorted_data.end(), data1.get_pool());
@@ -1239,7 +1277,6 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_move_assignment_through_interface)
     {
-      CompareDataNDC compare_data(sorted_data.begin(), sorted_data.end());
       PoolNDC4 pool;
       DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
       DataNDC data2(sorted_data.begin(), sorted_data.end(), data1.get_pool());
