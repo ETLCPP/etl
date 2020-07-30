@@ -1492,8 +1492,8 @@ namespace etl
               node_t* p_node = p_rhs_node;
               p_rhs_node = p_rhs_node->next;
 
-              join(p_last_node, p_node);
-              p_node->next = ETL_NULLPTR;
+              insert_node_after(*p_last_node, *p_node);
+
               p_last_node = p_node;
 
               ETL_INCREMENT_DEBUG_COUNT;
@@ -1899,7 +1899,7 @@ namespace etl
     //*************************************************************************
     etl::ipool& get_pool() const
     {
-      return *p_node_pool;
+      return *this->p_node_pool;
     }
   };
 

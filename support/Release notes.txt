@@ -1,4 +1,8 @@
 ===============================================================================
+18.11.1
+Fix and optimise etl::list and etl::forward_list move constructors and assignment operators.
+
+===============================================================================
 18.11.0
 Added etl::ibitset::span() member function to return a span of the underlying binary data.
 
