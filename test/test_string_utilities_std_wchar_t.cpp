@@ -985,7 +985,7 @@ namespace
       StringView textview(text.data(), text.size());
       etl::optional<StringView> token;
 
-      while (token = etl::get_token(text, STR(","), token, true))
+      while ((token = etl::get_token(text, STR(","), token, true)))
       {
         tokens.emplace_back(token.value());
       }
@@ -1002,7 +1002,7 @@ namespace
       StringView textview(text.data(), text.size());
       etl::optional<StringView> token;
 
-      while (token = etl::get_token(text, STR(","), token, false))
+      while ((token = etl::get_token(text, STR(","), token, false)))
       {
         tokens.emplace_back(token.value());
       }
@@ -1019,7 +1019,7 @@ namespace
       StringView textview(text.data(), text.size());
       etl::optional<StringView> token;
 
-      while (token = etl::get_token(text, Whitespace, token, true))
+      while ((token = etl::get_token(text, Whitespace, token, true)))
       {
         tokens.emplace_back(token.value());
       }
@@ -1036,7 +1036,7 @@ namespace
       StringView textview(text.data(), text.size());
       etl::optional<StringView> token;
 
-      while (token = etl::get_token(text, STR(" .,;:"), token, true))
+      while ((token = etl::get_token(text, STR(" .,;:"), token, true)))
       {
         tokens.emplace_back(token.value());
       }
@@ -1053,7 +1053,7 @@ namespace
       StringView textview(text.data(), text.size());
       etl::optional<StringView> token;
 
-      while (token = etl::get_token(text, STR(","), token, false))
+      while ((token = etl::get_token(text, STR(","), token, false)))
       {
         tokens.emplace_back(token.value());
       }
