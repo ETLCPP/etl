@@ -67,8 +67,8 @@ namespace
     {
       View view;
 
-      CHECK_EQUAL(0U, view.size());
-      CHECK_EQUAL(0U, view.max_size());
+      CHECK(0U == view.size());
+      CHECK(0U == view.max_size());
       CHECK(view.empty());
     }
 
@@ -77,8 +77,8 @@ namespace
     {
       View view(pctext, pctext + strlen(pctext));
 
-      CHECK_EQUAL(text.size(), view.size());
-      CHECK_EQUAL(text.size(), view.max_size());
+      CHECK(text.size() == view.size());
+      CHECK(text.size() == view.max_size());
 
       bool isEqual = std::equal(view.begin(), view.end(), text.begin());
       CHECK(isEqual);
@@ -89,8 +89,8 @@ namespace
     {
       View view(etltext);
 
-      CHECK_EQUAL(etltext.size(), view.size());
-      CHECK_EQUAL(etltext.size(), view.max_size());
+      CHECK(etltext.size() == view.size());
+      CHECK(etltext.size() == view.max_size());
 
       bool isEqual = std::equal(view.begin(), view.end(), etltext.begin());
       CHECK(isEqual);
@@ -101,8 +101,8 @@ namespace
     {
       View view(pctext, strlen(pctext));
 
-      CHECK_EQUAL(text.size(), view.size());
-      CHECK_EQUAL(text.size(), view.max_size());
+      CHECK(text.size() == view.size());
+      CHECK(text.size() == view.max_size());
 
       bool isEqual = std::equal(view.begin(), view.end(), text.begin());
       CHECK(isEqual);
@@ -113,8 +113,8 @@ namespace
     {
       View view(pctext);
 
-      CHECK_EQUAL(text.size(), view.size());
-      CHECK_EQUAL(text.size(), view.max_size());
+      CHECK(text.size() == view.size());
+      CHECK(text.size() == view.max_size());
 
       bool isEqual = std::equal(view.begin(), view.end(), text.begin());
       CHECK(isEqual);
@@ -125,8 +125,8 @@ namespace
     {
       View view("Hello World");
 
-      CHECK_EQUAL(text.size(), view.size());
-      CHECK_EQUAL(text.size(), view.max_size());
+      CHECK(text.size() == view.size());
+      CHECK(text.size() == view.max_size());
 
       bool isEqual = std::equal(view.begin(), view.end(), text.begin());
       CHECK(isEqual);
@@ -140,8 +140,8 @@ namespace
 
       view2 = view1;
 
-      CHECK_EQUAL(view1.size(), view2.size());
-      CHECK_EQUAL(view1.max_size(), view2.max_size());
+      CHECK(view1.size() == view2.size());
+      CHECK(view1.max_size() == view2.max_size());
 
       bool isEqual;
 
@@ -156,8 +156,8 @@ namespace
 
       view.assign(text.c_str(), text.size());
 
-      CHECK_EQUAL(text.size(), view.size());
-      CHECK_EQUAL(text.size(), view.max_size());
+      CHECK(text.size() == view.size());
+      CHECK(text.size() == view.max_size());
 
       bool isEqual;
 
@@ -170,10 +170,10 @@ namespace
     {
       View  view(text.c_str(), text.size());
 
-      CHECK_EQUAL(view.begin(),         view.cbegin());
-      CHECK_EQUAL(view.rbegin().base(), view.crbegin().base());
-      CHECK_EQUAL(view.end(),           view.cend());
-      CHECK_EQUAL(view.rend().base(),   view.crend().base());
+      CHECK(view.begin() ==         view.cbegin());
+      CHECK(view.rbegin().base() == view.crbegin().base());
+      CHECK(view.end() ==           view.cend());
+      CHECK(view.rend().base() ==   view.crend().base());
     }
 
     //*************************************************************************
@@ -181,8 +181,8 @@ namespace
     {
       View  view(text.c_str(), text.size());
 
-      CHECK_EQUAL(text.front(), view.front());
-      CHECK_EQUAL(text.back(),  view.back());
+      CHECK(text.front() == view.front());
+      CHECK(text.back() ==  view.back());
     }
 
     //*************************************************************************
@@ -190,7 +190,7 @@ namespace
     {
       View  view(text.c_str(), text.size());
 
-      CHECK_EQUAL(text.data(), view.data());
+      CHECK(text.data() == view.data());
     }
 
     //*************************************************************************
@@ -200,7 +200,7 @@ namespace
 
       for (size_t i = 0; i < text.size(); ++i)
       {
-        CHECK_EQUAL(text[i], view[i]);
+        CHECK(text[i] == view[i]);
       }
     }
 
@@ -211,7 +211,7 @@ namespace
 
       for (size_t i = 0; i < text.size(); ++i)
       {
-        CHECK_EQUAL(text[i], view.at(i));
+        CHECK(text[i] == view.at(i));
       }
     }
 
@@ -296,8 +296,8 @@ namespace
 
       std::swap(view1, view2);
 
-      CHECK_EQUAL(text.size(), view1.size());
-      CHECK_EQUAL(text_smaller.size(), view2.size());
+      CHECK(text.size() == view1.size());
+      CHECK(text_smaller.size() == view2.size());
 
       bool isEqual;
 
@@ -340,35 +340,35 @@ namespace
       // Full text.
       destination.fill(0);
       count = view.copy(destination.data(), text.size(), 0);
-      CHECK_EQUAL(text.size(), count);
-      CHECK_EQUAL(text.size(), strlen(destination.data()));
+      CHECK(text.size() == count);
+      CHECK(text.size() == strlen(destination.data()));
       CHECK_ARRAY_EQUAL(text.data(), destination.data(), text.size());
 
       // From position 2, count OK.
       destination.fill(0);
       count = view.copy(destination.data(), text.size() - 2, 2);
-      CHECK_EQUAL(text.size() - 2, count);
-      CHECK_EQUAL(text.size() - 2, strlen(destination.data()));
+      CHECK(text.size() - 2 == count);
+      CHECK(text.size() - 2 == strlen(destination.data()));
       CHECK_ARRAY_EQUAL(text.data() + 2, destination.data(), text.size() - 2);
 
       // From position 2, count too large.
       destination.fill(0);
       count = view.copy(destination.data(), text.size(), 2);
-      CHECK_EQUAL(text.size() - 2, count);
-      CHECK_EQUAL(text.size() - 2, strlen(destination.data()));
+      CHECK(text.size() - 2 == count);
+      CHECK(text.size() - 2 == strlen(destination.data()));
       CHECK_ARRAY_EQUAL(text.data() + 2, destination.data(), text.size() - 2);
 
       // Position too large.
       destination.fill(0);
       count = view.copy(destination.data(), text.size(), 11);
-      CHECK_EQUAL(0U, count);
+      CHECK(0U == count);
       CHECK_ARRAY_EQUAL(blank.data(), destination.data(), text.size());
 
       // From position 2, short range.
       destination.fill(0);
       count = view.copy(destination.data(), text.size() - 4, 2);
-      CHECK_EQUAL(text.size() - 4, count);
-      CHECK_EQUAL(text.size() - 4, strlen(destination.data()));
+      CHECK(text.size() - 4 == count);
+      CHECK(text.size() - 4 == strlen(destination.data()));
       CHECK_ARRAY_EQUAL(text.data() + 2, destination.data(), text.size() - 4);
     }
 
@@ -383,19 +383,19 @@ namespace
 
       // Whole string.
       sub = view1.substr(0, text.size());
-      CHECK_EQUAL(view1, sub);
+      CHECK(view1 == sub);
 
       // From from +2 to -2.
       sub = view1.substr(2, text.size() - 2);
-      CHECK_EQUAL(view2, sub);
+      CHECK(view2 == sub);
 
       // Position too large.
       sub = view1.substr(text.size(), 2);
-      CHECK_EQUAL(view3, sub);
+      CHECK(view3 == sub);
 
       // Count too large.
       sub = view1.substr(2, text.size());
-      CHECK_EQUAL(view4, sub);
+      CHECK(view4 == sub);
     }
 
     //*************************************************************************
@@ -405,11 +405,11 @@ namespace
       View view_smaller(text_smaller.c_str());
       View view_shorter(text_shorter.c_str());
 
-      CHECK_EQUAL(0,  view.compare(view));
-      CHECK_EQUAL(-1, view_smaller.compare(view));
-      CHECK_EQUAL(-1, view_shorter.compare(view));
-      CHECK_EQUAL(1,  view.compare(view_smaller));
-      CHECK_EQUAL(1,  view.compare(view_shorter));
+      CHECK(0 ==  view.compare(view));
+      CHECK(-1 == view_smaller.compare(view));
+      CHECK(-1 == view_shorter.compare(view));
+      CHECK(1 ==  view.compare(view_smaller));
+      CHECK(1 ==  view.compare(view_shorter));
     }
 
     //*************************************************************************
@@ -428,10 +428,10 @@ namespace
       std::string text_shorter_long = std::string("xx") + text_shorter + std::string("xx");
       View view_shorter_long(text_shorter_long.c_str());
 
-      CHECK_EQUAL(0,  view_long.compare(2, view.size(), view));
-      CHECK_EQUAL(-1, view_smaller_long.compare(2, view.size(), view));
-      CHECK_EQUAL(1,  view_long.compare(2, view.size(), view_smaller));
-      CHECK_EQUAL(1,  view_long.compare(2, view.size(), view_shorter));
+      CHECK(0 ==  view_long.compare(2, view.size(), view));
+      CHECK(-1 == view_smaller_long.compare(2, view.size(), view));
+      CHECK(1 ==  view_long.compare(2, view.size(), view_smaller));
+      CHECK(1 ==  view_long.compare(2, view.size(), view_shorter));
     }
 
     //*************************************************************************
@@ -448,11 +448,11 @@ namespace
       std::string text_shorter_long = std::string("xx") + text_shorter + std::string("xx");
       View view_shorter_long(text_shorter_long.c_str());
 
-      CHECK_EQUAL(0,  view_long.compare(2, view.size(), view_long, 2, view.size()));
-      CHECK_EQUAL(-1, view_smaller_long.compare(2, view.size(), view_long, 2, view.size()));
-      CHECK_EQUAL(-1, view_shorter_long.compare(2, text_shorter.size(), view_long, 2, view.size()));
-      CHECK_EQUAL(1,  view_long.compare(2, view.size(), view_smaller_long, 2, view.size()));
-      CHECK_EQUAL(1,  view_long.compare(2, view.size(), view_shorter_long, 2, text_shorter.size()));
+      CHECK(0 ==  view_long.compare(2, view.size(), view_long, 2, view.size()));
+      CHECK(-1 == view_smaller_long.compare(2, view.size(), view_long, 2, view.size()));
+      CHECK(-1 == view_shorter_long.compare(2, text_shorter.size(), view_long, 2, view.size()));
+      CHECK(1 ==  view_long.compare(2, view.size(), view_smaller_long, 2, view.size()));
+      CHECK(1 ==  view_long.compare(2, view.size(), view_shorter_long, 2, text_shorter.size()));
     }
 
     //*************************************************************************
@@ -462,11 +462,11 @@ namespace
       View view_smaller(text_smaller.c_str());
       View view_shorter(text_shorter.c_str());
 
-      CHECK_EQUAL(0,  view.compare(view.data()));
-      CHECK_EQUAL(-1, view_smaller.compare(view.data()));
-      CHECK_EQUAL(1,  view.compare(view_smaller.data()));
-      CHECK_EQUAL(-1, view_shorter.compare(view.data()));
-      CHECK_EQUAL(1,  view.compare(view_shorter.data()));
+      CHECK(0 ==  view.compare(view.data()));
+      CHECK(-1 == view_smaller.compare(view.data()));
+      CHECK(1 ==  view.compare(view_smaller.data()));
+      CHECK(-1 == view_shorter.compare(view.data()));
+      CHECK(1 ==  view.compare(view_shorter.data()));
     }
 
     //*************************************************************************
@@ -485,11 +485,11 @@ namespace
       std::string text_shorter_long = std::string("xx") + text_shorter + std::string("xx");
       View view_shorter_long(text_shorter_long.c_str());
 
-      CHECK_EQUAL(0, view_long.compare(2, view.size(), view.data()));
-      CHECK_EQUAL(-1, view_smaller_long.compare(2, view.size(), view_long.data()));
-      CHECK_EQUAL(-1, view_shorter_long.compare(2, text_shorter.size(), view_long.data()));
-      CHECK_EQUAL(1, view_long.compare(2, view.size(), view_smaller.data()));
-      CHECK_EQUAL(1, view_long.compare(2, view.size(), view_shorter.data()));
+      CHECK(0 == view_long.compare(2, view.size(), view.data()));
+      CHECK(-1 == view_smaller_long.compare(2, view.size(), view_long.data()));
+      CHECK(-1 == view_shorter_long.compare(2, text_shorter.size(), view_long.data()));
+      CHECK(1 == view_long.compare(2, view.size(), view_smaller.data()));
+      CHECK(1 == view_long.compare(2, view.size(), view_shorter.data()));
     }
 
     //*************************************************************************
@@ -508,11 +508,11 @@ namespace
       std::string text_shorter_long = std::string("xx") + text_shorter + std::string("xx");
       View view_shorter_long(text_shorter_long.c_str());
 
-      CHECK_EQUAL(0, view_long.compare(2, view.size(), view.data(), view.size()));
-      CHECK_EQUAL(-1, view_smaller_long.compare(2, view.size(), view_long.data(), view_long.size()));
-      CHECK_EQUAL(-1, view_shorter_long.compare(2, text_shorter.size(), view_long.data(), view_long.size()));
-      CHECK_EQUAL(1, view_long.compare(2, view.size(), view_smaller.data(), view_smaller.size()));
-      CHECK_EQUAL(1, view_long.compare(2, view.size(), view_shorter.data(), view_shorter.size()));
+      CHECK(0 == view_long.compare(2, view.size(), view.data(), view.size()));
+      CHECK(-1 == view_smaller_long.compare(2, view.size(), view_long.data(), view_long.size()));
+      CHECK(-1 == view_shorter_long.compare(2, text_shorter.size(), view_long.data(), view_long.size()));
+      CHECK(1 == view_long.compare(2, view.size(), view_smaller.data(), view_smaller.size()));
+      CHECK(1 == view_long.compare(2, view.size(), view_shorter.data(), view_shorter.size()));
     }
 
     //*************************************************************************
@@ -571,34 +571,34 @@ namespace
       View v4(s4);
       View v5(s5);
 
-      CHECK_EQUAL(0U, view.find(v1));
-      CHECK_EQUAL(2U, view.find(v2));
-      CHECK_EQUAL(2U, view.find(v2, 2));
-      CHECK_EQUAL(6U, view.find(v3));
-      CHECK_EQUAL(View::npos, view.find(v3, 7));
-      CHECK_EQUAL(View::npos, view.find(v4));
-      CHECK_EQUAL(View::npos, view.find(v5));
+      CHECK(0U == view.find(v1));
+      CHECK(2U == view.find(v2));
+      CHECK(2U == view.find(v2, 2));
+      CHECK(6U == view.find(v3));
+      CHECK(View::npos == view.find(v3, 7));
+      CHECK(View::npos == view.find(v4));
+      CHECK(View::npos == view.find(v5));
 
-      CHECK_EQUAL(0U, view.find('H'));
-      CHECK_EQUAL(2U, view.find('l'));
-      CHECK_EQUAL(2U, view.find('l', 2));
-      CHECK_EQUAL(View::npos, view.find('X'));
+      CHECK(0U == view.find('H'));
+      CHECK(2U == view.find('l'));
+      CHECK(2U == view.find('l', 2));
+      CHECK(View::npos == view.find('X'));
 
-      CHECK_EQUAL(0U, view.find(s1));
-      CHECK_EQUAL(2U, view.find(s2));
-      CHECK_EQUAL(2U, view.find(s2, 2));
-      CHECK_EQUAL(6U, view.find(s3));
-      CHECK_EQUAL(View::npos, view.find(s3, 7));
-      CHECK_EQUAL(View::npos, view.find(s4));
-      CHECK_EQUAL(View::npos, view.find(s5));
+      CHECK(0U == view.find(s1));
+      CHECK(2U == view.find(s2));
+      CHECK(2U == view.find(s2, 2));
+      CHECK(6U == view.find(s3));
+      CHECK(View::npos == view.find(s3, 7));
+      CHECK(View::npos == view.find(s4));
+      CHECK(View::npos == view.find(s5));
 
-      CHECK_EQUAL(0U, view.find(s1, 0, 3));
-      CHECK_EQUAL(2U, view.find(s2, 0, 3));
-      CHECK_EQUAL(2U, view.find(s2, 2, 3));
-      CHECK_EQUAL(6U, view.find(s3, 0, 3));
-      CHECK_EQUAL(View::npos, view.find(s3, 7, 3));
-      CHECK_EQUAL(View::npos, view.find(s4, 0, 3));
-      CHECK_EQUAL(View::npos, view.find(s5, 0, 15));
+      CHECK(0U == view.find(s1, 0, 3));
+      CHECK(2U == view.find(s2, 0, 3));
+      CHECK(2U == view.find(s2, 2, 3));
+      CHECK(6U == view.find(s3, 0, 3));
+      CHECK(View::npos == view.find(s3, 7, 3));
+      CHECK(View::npos == view.find(s4, 0, 3));
+      CHECK(View::npos == view.find(s5, 0, 15));
     }
 
     //*************************************************************************
@@ -615,22 +615,22 @@ namespace
       View v3(s3);
       View v4(s4);
 
-      CHECK_EQUAL(8U, view.rfind(v1));
-      CHECK_EQUAL(6U, view.rfind(v2));
-      CHECK_EQUAL(2U, view.rfind(v2, 5));
-      CHECK_EQUAL(View::npos, view.rfind(v4));
+      CHECK(8U == view.rfind(v1));
+      CHECK(6U == view.rfind(v2));
+      CHECK(2U == view.rfind(v2, 5));
+      CHECK(View::npos == view.rfind(v4));
 
-      CHECK_EQUAL(8U, view.rfind('a'));
-      CHECK_EQUAL(6U, view.rfind('c'));
-      CHECK_EQUAL(2U, view.rfind('c', 5));
+      CHECK(8U == view.rfind('a'));
+      CHECK(6U == view.rfind('c'));
+      CHECK(2U == view.rfind('c', 5));
 
-      CHECK_EQUAL(8U, view.rfind(s1));
-      CHECK_EQUAL(6U, view.rfind(s2));
-      CHECK_EQUAL(2U, view.rfind(s2, 5));
-      CHECK_EQUAL(View::npos, view.rfind(s4));
+      CHECK(8U == view.rfind(s1));
+      CHECK(6U == view.rfind(s2));
+      CHECK(2U == view.rfind(s2, 5));
+      CHECK(View::npos == view.rfind(s4));
 
-      CHECK_EQUAL(1U, view.rfind(s3, 5, 2));
-      CHECK_EQUAL(View::npos, view.rfind(s4, 0, 11));
+      CHECK(1U == view.rfind(s3, 5, 2));
+      CHECK(View::npos == view.rfind(s4, 0, 11));
     }
 
     //*************************************************************************
@@ -649,40 +649,40 @@ namespace
       View v4(s4);
       View v5(s5);
 
-      CHECK_EQUAL(2U, view.find_first_of(v1));
-      CHECK_EQUAL(4U, view.find_first_of(v2));
-      CHECK_EQUAL(6U, view.find_first_of(v3));
-      CHECK_EQUAL(2U, view.find_first_of(v4));
-      CHECK_EQUAL(View::npos, view.find_first_of(v5));
+      CHECK(2U == view.find_first_of(v1));
+      CHECK(4U == view.find_first_of(v2));
+      CHECK(6U == view.find_first_of(v3));
+      CHECK(2U == view.find_first_of(v4));
+      CHECK(View::npos == view.find_first_of(v5));
 
-      CHECK_EQUAL(3U, view.find_first_of(v1, 3));
-      CHECK_EQUAL(4U, view.find_first_of(v2, 2));
-      CHECK_EQUAL(View::npos, view.find_first_of(v3, 7));
-      CHECK_EQUAL(6U, view.find_first_of(v4, 5));
-      CHECK_EQUAL(View::npos, view.find_first_of(v5, 2));
+      CHECK(3U == view.find_first_of(v1, 3));
+      CHECK(4U == view.find_first_of(v2, 2));
+      CHECK(View::npos == view.find_first_of(v3, 7));
+      CHECK(6U == view.find_first_of(v4, 5));
+      CHECK(View::npos == view.find_first_of(v5, 2));
 
-      CHECK_EQUAL(2U, view.find_first_of('l'));
-      CHECK_EQUAL(4U, view.find_first_of('o'));
-      CHECK_EQUAL(6U, view.find_first_of('W'));
-      CHECK_EQUAL(View::npos, view.find_first_of('w'));
+      CHECK(2U == view.find_first_of('l'));
+      CHECK(4U == view.find_first_of('o'));
+      CHECK(6U == view.find_first_of('W'));
+      CHECK(View::npos == view.find_first_of('w'));
 
-      CHECK_EQUAL(2U, view.find_first_of(s1));
-      CHECK_EQUAL(4U, view.find_first_of(s2));
-      CHECK_EQUAL(6U, view.find_first_of(s3));
-      CHECK_EQUAL(2U, view.find_first_of(s4));
-      CHECK_EQUAL(View::npos, view.find_first_of(s5));
+      CHECK(2U == view.find_first_of(s1));
+      CHECK(4U == view.find_first_of(s2));
+      CHECK(6U == view.find_first_of(s3));
+      CHECK(2U == view.find_first_of(s4));
+      CHECK(View::npos == view.find_first_of(s5));
 
-      CHECK_EQUAL(3U, view.find_first_of(s1, 3));
-      CHECK_EQUAL(4U, view.find_first_of(s2, 2));
-      CHECK_EQUAL(View::npos, view.find_first_of(s3, 7));
-      CHECK_EQUAL(6U, view.find_first_of(s4, 5));
-      CHECK_EQUAL(View::npos, view.find_first_of(s5, 2));
+      CHECK(3U == view.find_first_of(s1, 3));
+      CHECK(4U == view.find_first_of(s2, 2));
+      CHECK(View::npos == view.find_first_of(s3, 7));
+      CHECK(6U == view.find_first_of(s4, 5));
+      CHECK(View::npos == view.find_first_of(s5, 2));
 
-      CHECK_EQUAL(3U, view.find_first_of(s1, 3, 1));
-      CHECK_EQUAL(4U, view.find_first_of(s2, 2, 1));
-      CHECK_EQUAL(View::npos, view.find_first_of(s3, 7, 1));
-      CHECK_EQUAL(4U, view.find_first_of(s4, 0, 2));
-      CHECK_EQUAL(View::npos, view.find_first_of(s5, 2, 3));
+      CHECK(3U == view.find_first_of(s1, 3, 1));
+      CHECK(4U == view.find_first_of(s2, 2, 1));
+      CHECK(View::npos == view.find_first_of(s3, 7, 1));
+      CHECK(4U == view.find_first_of(s4, 0, 2));
+      CHECK(View::npos == view.find_first_of(s5, 2, 3));
     }
 
     //*************************************************************************
@@ -701,40 +701,40 @@ namespace
       View v4(s4);
       View v5(s5);
 
-      CHECK_EQUAL(9U, view.find_last_of(v1));
-      CHECK_EQUAL(7U, view.find_last_of(v2));
-      CHECK_EQUAL(6U, view.find_last_of(v3));
-      CHECK_EQUAL(9U, view.find_last_of(v4));
-      CHECK_EQUAL(View::npos, view.find_last_of(v5));
+      CHECK(9U == view.find_last_of(v1));
+      CHECK(7U == view.find_last_of(v2));
+      CHECK(6U == view.find_last_of(v3));
+      CHECK(9U == view.find_last_of(v4));
+      CHECK(View::npos == view.find_last_of(v5));
 
-      CHECK_EQUAL(3U, view.find_last_of(v1, 3));
-      CHECK_EQUAL(View::npos, view.find_last_of(v2, 2));
-      CHECK_EQUAL(6U, view.find_last_of(v3, 7));
-      CHECK_EQUAL(4U, view.find_last_of(v4, 5));
-      CHECK_EQUAL(View::npos, view.find_last_of(v5, 2));
+      CHECK(3U == view.find_last_of(v1, 3));
+      CHECK(View::npos == view.find_last_of(v2, 2));
+      CHECK(6U == view.find_last_of(v3, 7));
+      CHECK(4U == view.find_last_of(v4, 5));
+      CHECK(View::npos == view.find_last_of(v5, 2));
 
-      CHECK_EQUAL(9U, view.find_last_of('l'));
-      CHECK_EQUAL(7U, view.find_last_of('o'));
-      CHECK_EQUAL(6U, view.find_last_of('W'));
-      CHECK_EQUAL(View::npos, view.find_last_of('w'));
+      CHECK(9U == view.find_last_of('l'));
+      CHECK(7U == view.find_last_of('o'));
+      CHECK(6U == view.find_last_of('W'));
+      CHECK(View::npos == view.find_last_of('w'));
 
-      CHECK_EQUAL(9U, view.find_last_of(s1));
-      CHECK_EQUAL(7U, view.find_last_of(s2));
-      CHECK_EQUAL(6U, view.find_last_of(s3));
-      CHECK_EQUAL(9U, view.find_last_of(s4));
-      CHECK_EQUAL(View::npos, view.find_last_of(s5));
+      CHECK(9U == view.find_last_of(s1));
+      CHECK(7U == view.find_last_of(s2));
+      CHECK(6U == view.find_last_of(s3));
+      CHECK(9U == view.find_last_of(s4));
+      CHECK(View::npos == view.find_last_of(s5));
 
-      CHECK_EQUAL(3U, view.find_last_of(s1, 3));
-      CHECK_EQUAL(View::npos, view.find_last_of(s2, 2));
-      CHECK_EQUAL(6U, view.find_last_of(s3, 7));
-      CHECK_EQUAL(4U, view.find_last_of(s4, 5));
-      CHECK_EQUAL(View::npos, view.find_last_of(s5, 2));
+      CHECK(3U == view.find_last_of(s1, 3));
+      CHECK(View::npos == view.find_last_of(s2, 2));
+      CHECK(6U == view.find_last_of(s3, 7));
+      CHECK(4U == view.find_last_of(s4, 5));
+      CHECK(View::npos == view.find_last_of(s5, 2));
 
-      CHECK_EQUAL(3U, view.find_last_of(s1, 3, 1));
-      CHECK_EQUAL(View::npos, view.find_last_of(s2, 2, 1));
-      CHECK_EQUAL(6U, view.find_last_of(s3, 7, 1));
-      CHECK_EQUAL(4U, view.find_last_of(s4, 5, 2));
-      CHECK_EQUAL(View::npos, view.find_last_of(s5, 2, 3));
+      CHECK(3U == view.find_last_of(s1, 3, 1));
+      CHECK(View::npos == view.find_last_of(s2, 2, 1));
+      CHECK(6U == view.find_last_of(s3, 7, 1));
+      CHECK(4U == view.find_last_of(s4, 5, 2));
+      CHECK(View::npos == view.find_last_of(s5, 2, 3));
     }
 
     //*************************************************************************
@@ -755,43 +755,43 @@ namespace
       View v5(s5);
       View v6(s6);
 
-      CHECK_EQUAL(1U, view.find_first_not_of(v1));
-      CHECK_EQUAL(2U, view.find_first_not_of(v2));
-      CHECK_EQUAL(4U, view.find_first_not_of(v3));
-      CHECK_EQUAL(6U, view.find_first_not_of(v4));
-      CHECK_EQUAL(0U, view.find_first_not_of(v5));
-      CHECK_EQUAL(View::npos, view.find_first_not_of(v6));
+      CHECK(1U == view.find_first_not_of(v1));
+      CHECK(2U == view.find_first_not_of(v2));
+      CHECK(4U == view.find_first_not_of(v3));
+      CHECK(6U == view.find_first_not_of(v4));
+      CHECK(0U == view.find_first_not_of(v5));
+      CHECK(View::npos == view.find_first_not_of(v6));
 
-      CHECK_EQUAL(3U, view.find_first_not_of(v1, 3));
-      CHECK_EQUAL(2U, view.find_first_not_of(v2, 2));
-      CHECK_EQUAL(7U, view.find_first_not_of(v3, 7));
-      CHECK_EQUAL(6U, view.find_first_not_of(v4, 5));
-      CHECK_EQUAL(2U, view.find_first_not_of(v5, 2));
-      CHECK_EQUAL(View::npos, view.find_first_not_of(v6, 0));
+      CHECK(3U == view.find_first_not_of(v1, 3));
+      CHECK(2U == view.find_first_not_of(v2, 2));
+      CHECK(7U == view.find_first_not_of(v3, 7));
+      CHECK(6U == view.find_first_not_of(v4, 5));
+      CHECK(2U == view.find_first_not_of(v5, 2));
+      CHECK(View::npos == view.find_first_not_of(v6, 0));
 
-      CHECK_EQUAL(1U, view.find_first_not_of('H'));
-      CHECK_EQUAL(0U, view.find_first_not_of('e'));
+      CHECK(1U == view.find_first_not_of('H'));
+      CHECK(0U == view.find_first_not_of('e'));
 
-      CHECK_EQUAL(1U, view.find_first_not_of(s1));
-      CHECK_EQUAL(2U, view.find_first_not_of(s2));
-      CHECK_EQUAL(4U, view.find_first_not_of(s3));
-      CHECK_EQUAL(6U, view.find_first_not_of(s4));
-      CHECK_EQUAL(0U, view.find_first_not_of(s5));
-      CHECK_EQUAL(View::npos, view.find_first_not_of(s6));
+      CHECK(1U == view.find_first_not_of(s1));
+      CHECK(2U == view.find_first_not_of(s2));
+      CHECK(4U == view.find_first_not_of(s3));
+      CHECK(6U == view.find_first_not_of(s4));
+      CHECK(0U == view.find_first_not_of(s5));
+      CHECK(View::npos == view.find_first_not_of(s6));
 
-      CHECK_EQUAL(3U, view.find_first_not_of(s1, 3));
-      CHECK_EQUAL(2U, view.find_first_not_of(s2, 2));
-      CHECK_EQUAL(7U, view.find_first_not_of(s3, 7));
-      CHECK_EQUAL(6U, view.find_first_not_of(s4, 5));
-      CHECK_EQUAL(2U, view.find_first_not_of(s5, 2));
-      CHECK_EQUAL(View::npos, view.find_first_not_of(s6, 0));
+      CHECK(3U == view.find_first_not_of(s1, 3));
+      CHECK(2U == view.find_first_not_of(s2, 2));
+      CHECK(7U == view.find_first_not_of(s3, 7));
+      CHECK(6U == view.find_first_not_of(s4, 5));
+      CHECK(2U == view.find_first_not_of(s5, 2));
+      CHECK(View::npos == view.find_first_not_of(s6, 0));
 
-      CHECK_EQUAL(3U, view.find_first_not_of(s1, 3, 1));
-      CHECK_EQUAL(2U, view.find_first_not_of(s2, 2, 1));
-      CHECK_EQUAL(7U, view.find_first_not_of(s3, 7, 1));
-      CHECK_EQUAL(6U, view.find_first_not_of(s4, 5, 2));
-      CHECK_EQUAL(2U, view.find_first_not_of(s5, 2, 3));
-      CHECK_EQUAL(View::npos, view.find_first_not_of(s6, 0, 8));
+      CHECK(3U == view.find_first_not_of(s1, 3, 1));
+      CHECK(2U == view.find_first_not_of(s2, 2, 1));
+      CHECK(7U == view.find_first_not_of(s3, 7, 1));
+      CHECK(6U == view.find_first_not_of(s4, 5, 2));
+      CHECK(2U == view.find_first_not_of(s5, 2, 3));
+      CHECK(View::npos == view.find_first_not_of(s6, 0, 8));
     }
 
     //*************************************************************************
@@ -812,43 +812,43 @@ namespace
       View v5(s5);
       View v6(s6);
 
-      CHECK_EQUAL(9U, view.find_last_not_of(v1));
-      CHECK_EQUAL(8U, view.find_last_not_of(v2));
-      CHECK_EQUAL(7U, view.find_last_not_of(v3));
-      CHECK_EQUAL(5U, view.find_last_not_of(v4));
-      CHECK_EQUAL(10U, view.find_last_not_of(v5));
-      CHECK_EQUAL(View::npos, view.find_last_not_of(v6));
+      CHECK(9U == view.find_last_not_of(v1));
+      CHECK(8U == view.find_last_not_of(v2));
+      CHECK(7U == view.find_last_not_of(v3));
+      CHECK(5U == view.find_last_not_of(v4));
+      CHECK(10U == view.find_last_not_of(v5));
+      CHECK(View::npos == view.find_last_not_of(v6));
 
-      CHECK_EQUAL(9U, view.find_last_not_of(v1, 10));
-      CHECK_EQUAL(8U, view.find_last_not_of(v2, 9));
-      CHECK_EQUAL(7U, view.find_last_not_of(v3, 8));
-      CHECK_EQUAL(5U, view.find_last_not_of(v4, 8));
-      CHECK_EQUAL(8U, view.find_last_not_of(v5, 8));
-      CHECK_EQUAL(View::npos, view.find_last_not_of(v6, 10));
+      CHECK(9U == view.find_last_not_of(v1, 10));
+      CHECK(8U == view.find_last_not_of(v2, 9));
+      CHECK(7U == view.find_last_not_of(v3, 8));
+      CHECK(5U == view.find_last_not_of(v4, 8));
+      CHECK(8U == view.find_last_not_of(v5, 8));
+      CHECK(View::npos == view.find_last_not_of(v6, 10));
 
-      CHECK_EQUAL(9U, view.find_last_not_of('d'));
-      CHECK_EQUAL(10U, view.find_last_not_of('l'));
+      CHECK(9U == view.find_last_not_of('d'));
+      CHECK(10U == view.find_last_not_of('l'));
 
-      CHECK_EQUAL(9U, view.find_last_not_of(s1));
-      CHECK_EQUAL(8U, view.find_last_not_of(s2));
-      CHECK_EQUAL(7U, view.find_last_not_of(s3));
-      CHECK_EQUAL(5U, view.find_last_not_of(s4));
-      CHECK_EQUAL(10U, view.find_last_not_of(s5));
-      CHECK_EQUAL(View::npos, view.find_last_not_of(s6));
+      CHECK(9U == view.find_last_not_of(s1));
+      CHECK(8U == view.find_last_not_of(s2));
+      CHECK(7U == view.find_last_not_of(s3));
+      CHECK(5U == view.find_last_not_of(s4));
+      CHECK(10U == view.find_last_not_of(s5));
+      CHECK(View::npos == view.find_last_not_of(s6));
 
-      CHECK_EQUAL(9U, view.find_last_not_of(s1, 10));
-      CHECK_EQUAL(8U, view.find_last_not_of(s2, 9));
-      CHECK_EQUAL(7U, view.find_last_not_of(s3, 8));
-      CHECK_EQUAL(5U, view.find_last_not_of(s4, 8));
-      CHECK_EQUAL(8U, view.find_last_not_of(s5, 8));
-      CHECK_EQUAL(View::npos, view.find_last_not_of(s6, 10));
+      CHECK(9U == view.find_last_not_of(s1, 10));
+      CHECK(8U == view.find_last_not_of(s2, 9));
+      CHECK(7U == view.find_last_not_of(s3, 8));
+      CHECK(5U == view.find_last_not_of(s4, 8));
+      CHECK(8U == view.find_last_not_of(s5, 8));
+      CHECK(View::npos == view.find_last_not_of(s6, 10));
 
-      CHECK_EQUAL(9U, view.find_last_not_of(s1, 10, 1));
-      CHECK_EQUAL(9U, view.find_last_not_of(s2, 9, 1));
-      CHECK_EQUAL(8U, view.find_last_not_of(s3, 9, 2));
-      CHECK_EQUAL(7U, view.find_last_not_of(s4, 8, 3));
-      CHECK_EQUAL(8U, view.find_last_not_of(s5, 8, 5));
-      CHECK_EQUAL(View::npos, view.find_last_not_of(s6, 10, 8));
+      CHECK(9U == view.find_last_not_of(s1, 10, 1));
+      CHECK(9U == view.find_last_not_of(s2, 9, 1));
+      CHECK(8U == view.find_last_not_of(s3, 9, 2));
+      CHECK(7U == view.find_last_not_of(s4, 8, 3));
+      CHECK(8U == view.find_last_not_of(s5, 8, 5));
+      CHECK(View::npos == view.find_last_not_of(s6, 10, 8));
     }
 
     //*************************************************************************
@@ -874,10 +874,10 @@ namespace
       U16View u16view(u16text.data());
       U32View u32view(u32text.data());
 
-      CHECK_EQUAL(etl::hash<Text>()(text), etl::hash<View>()(view));
-      CHECK_EQUAL(etl::hash<WText>()(wtext), etl::hash<WView>()(wview));
-      CHECK_EQUAL(etl::hash<U16Text>()(u16text), etl::hash<U16View>()(u16view));
-      CHECK_EQUAL(etl::hash<U32Text>()(u32text), etl::hash<U32View>()(u32view));
+      CHECK(etl::hash<Text>()(text) == etl::hash<View>()(view));
+      CHECK(etl::hash<WText>()(wtext) == etl::hash<WView>()(wview));
+      CHECK(etl::hash<U16Text>()(u16text) == etl::hash<U16View>()(u16view));
+      CHECK(etl::hash<U32Text>()(u32text) == etl::hash<U32View>()(u32view));
     }
   };
 }

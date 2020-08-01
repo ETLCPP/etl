@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: [ master ]
+    branches: [ master, clang-9 ]
   pull_request:
     branches: [ master ]
 
@@ -29,3 +29,14 @@ jobs:
       with:
         name: Testfile
         path: test/etl_tests
+
+  build-clang-9-Linux:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build with Clang 9
+        run: |
+          export CC=clang-9
+          export CXX=clang++-9
+          cmake -D BUILD_TESTS=ON ./
+          make

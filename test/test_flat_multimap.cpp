@@ -286,10 +286,10 @@ namespace
     {
       DataDC data;
 
-      CHECK_EQUAL(data.size(), size_t(0));
+      CHECK(data.size() == size_t(0));
       CHECK(data.empty());
-      CHECK_EQUAL(data.capacity(), SIZE);
-      CHECK_EQUAL(data.max_size(), SIZE);
+      CHECK(data.capacity() == SIZE);
+      CHECK(data.max_size() == SIZE);
       CHECK(data.begin() == data.end());
     }
 
@@ -299,11 +299,11 @@ namespace
       int current_count = NDC::get_instance_count();
 
       DataNDC* pdata = new DataNDC(initial_data.begin(), initial_data.end());
-      CHECK_EQUAL(int(current_count + initial_data.size()), NDC::get_instance_count());
+      CHECK(int(current_count + initial_data.size()) == NDC::get_instance_count());
 
       IDataNDC* pidata = pdata;
       delete pidata;
-      CHECK_EQUAL(current_count, NDC::get_instance_count());
+      CHECK(current_count == NDC::get_instance_count());
     }
 
     //*************************************************************************
@@ -331,7 +331,7 @@ namespace
 
       DataNDC data = { ElementNDC(0, N0), ElementNDC(1, N1), ElementNDC(2, N2), ElementNDC(3, N3), ElementNDC(4, N4) };
 
-      CHECK_EQUAL(compare_data.size(), data.size());
+      CHECK(compare_data.size() == data.size());
       CHECK(!data.empty());
 
       bool isEqual = std::equal(data.begin(),
@@ -367,16 +367,16 @@ namespace
 
       DataM data2(std::move(data1));
 
-      CHECK_EQUAL(5U, data1.size()); // Move does not clear the source.
-      CHECK_EQUAL(5U, data2.size());
+      CHECK(5U == data1.size()); // Move does not clear the source.
+      CHECK(5U == data2.size());
 
       DataM::const_iterator itr = data2.begin();
 
-      CHECK_EQUAL("1", (*itr++).second.value);
-      CHECK_EQUAL("2a", (*itr++).second.value);
-      CHECK_EQUAL("2b", (*itr++).second.value);
-      CHECK_EQUAL("3", (*itr++).second.value);
-      CHECK_EQUAL("4", (*itr++).second.value);
+      CHECK("1" == (*itr++).second.value);
+      CHECK("2a" == (*itr++).second.value);
+      CHECK("2b" == (*itr++).second.value);
+      CHECK("3" == (*itr++).second.value);
+      CHECK("4" == (*itr++).second.value);
     }
 
     //*************************************************************************
@@ -433,8 +433,8 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
       const DataNDC constData(data);
 
-      CHECK_EQUAL(data.begin(), std::begin(data));
-      CHECK_EQUAL(constData.begin(), std::begin(constData));
+      CHECK(data.begin() == std::begin(data));
+      CHECK(constData.begin() == std::begin(constData));
     }
 
     //*************************************************************************
@@ -443,8 +443,8 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
       const DataNDC constData(data);
 
-      CHECK_EQUAL(data.end(), std::end(data));
-      CHECK_EQUAL(constData.end(), std::end(constData));
+      CHECK(data.end() == std::end(data));
+      CHECK(constData.end() == std::end(constData));
     }
 
     //*************************************************************************
@@ -545,7 +545,7 @@ namespace
       data.insert(ETL_OR_STD::make_pair(2, N2));
       compare_data.insert(ETL_OR_STD::make_pair(2, N2));
 
-      CHECK_EQUAL(compare_data.size(), data.size());
+      CHECK(compare_data.size() == data.size());
 
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),
@@ -619,7 +619,7 @@ namespace
       data.emplace(ETL_OR_STD::make_pair(2, D1("2")));
       compare.emplace(ETL_OR_STD::make_pair(2, D1("2")));
 
-      CHECK_EQUAL(compare.size(), data.size());
+      CHECK(compare.size() == data.size());
 
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),
@@ -653,7 +653,7 @@ namespace
       data.emplace(ETL_OR_STD::make_pair(2, D2("2", "3")));
       compare.emplace(ETL_OR_STD::make_pair(2, D2("2", "3")));
 
-      CHECK_EQUAL(compare.size(), data.size());
+      CHECK(compare.size() == data.size());
 
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),
@@ -687,7 +687,7 @@ namespace
       data.emplace(ETL_OR_STD::make_pair(2, D3("2", "3", "4")));
       compare.emplace(ETL_OR_STD::make_pair(2, D3("2", "3", "4")));
 
-      CHECK_EQUAL(compare.size(), data.size());
+      CHECK(compare.size() == data.size());
 
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),
@@ -721,7 +721,7 @@ namespace
       data.emplace(ETL_OR_STD::make_pair(2, D4("2", "3", "4", "5")));
       compare.emplace(ETL_OR_STD::make_pair(2, D4("2", "3", "4", "5")));
 
-      CHECK_EQUAL(compare.size(), data.size());
+      CHECK(compare.size() == data.size());
 
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),
@@ -739,7 +739,7 @@ namespace
       size_t count_compare = compare_data.erase(5);
       size_t count         = data.erase(5);
 
-      CHECK_EQUAL(count_compare, count);
+      CHECK(count_compare == count);
 
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),
@@ -805,13 +805,13 @@ namespace
 
       DataNDC data(compare_data.begin(), compare_data.end());
       data.clear();
-      CHECK_EQUAL(data.size(), size_t(0));
+      CHECK(data.size() == size_t(0));
 
       // Do it again to check that clear() didn't screw up the internals.
       data.assign(compare_data.begin(), compare_data.end());
-      CHECK_EQUAL(data.size(), compare_data.size());
+      CHECK(data.size() == compare_data.size());
       data.clear();
-      CHECK_EQUAL(data.size(), size_t(0));
+      CHECK(data.size() == size_t(0));
     }
 
     //*************************************************************************
@@ -820,13 +820,13 @@ namespace
       DataInt data(int_data.begin(), int_data.end());
 
       data.clear();
-      CHECK_EQUAL(data.size(), size_t(0));
+      CHECK(data.size() == size_t(0));
 
       // Do it again to check that clear() didn't screw up the internals.
       data.assign(int_data.begin(), int_data.end());
-      CHECK_EQUAL(data.size(), int_data.size());
+      CHECK(data.size() == int_data.size());
       data.clear();
-      CHECK_EQUAL(data.size(), size_t(0));
+      CHECK(data.size() == size_t(0));
     }
 
     //*************************************************************************
@@ -891,10 +891,10 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
 
       DataNDC::iterator it = data.find(3);
-      CHECK_EQUAL(N3, it->second);
+      CHECK(N3 == it->second);
 
       it = data.find(19);
-      CHECK_EQUAL(data.end(), it);
+      CHECK(data.end() == it);
     }
 
     //*************************************************************************
@@ -903,10 +903,10 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
 
       DataNDC::iterator it = data.find(-1);
-      CHECK_EQUAL(data.end(), it);
+      CHECK(data.end() == it);
 
       it = data.find(10);
-      CHECK_EQUAL(data.end(), it);
+      CHECK(data.end() == it);
     }
 
     //*************************************************************************
@@ -915,10 +915,10 @@ namespace
       const DataNDC data(initial_data.begin(), initial_data.end());
 
       DataNDC::const_iterator it = data.find(3);
-      CHECK_EQUAL(N3, it->second);
+      CHECK(N3 == it->second);
 
       it = data.find(19);
-      CHECK_EQUAL(data.end(), it);
+      CHECK(data.end() == it);
     }
 
     //*************************************************************************
@@ -927,10 +927,10 @@ namespace
       const DataNDC data(initial_data.begin(), initial_data.end());
 
       DataNDC::const_iterator it = data.find(-1);
-      CHECK_EQUAL(data.end(), it);
+      CHECK(data.end() == it);
 
       it = data.find(10);
-      CHECK_EQUAL(data.end(), it);
+      CHECK(data.end() == it);
     }
 
     //*************************************************************************
@@ -942,7 +942,7 @@ namespace
       Compare_DataNDC::iterator i_compare = compare_data.lower_bound(5);
       DataNDC::iterator         i_data    = data.lower_bound(5);
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), i_compare), std::distance(data.begin(), i_data));
+      CHECK(std::distance(compare_data.begin(), i_compare) == std::distance(data.begin(), i_data));
     }
 
     //*************************************************************************
@@ -954,7 +954,7 @@ namespace
       Compare_DataNDC::iterator i_compare = compare_data.upper_bound(5);
       DataNDC::iterator         i_data    = data.upper_bound(5);
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), i_compare), std::distance(data.begin(), i_data));
+      CHECK(std::distance(compare_data.begin(), i_compare) == std::distance(data.begin(), i_data));
     }
 
     //*************************************************************************
@@ -966,8 +966,8 @@ namespace
       ETL_OR_STD::pair<Compare_DataNDC::iterator, Compare_DataNDC::iterator> i_compare = compare_data.equal_range(5);
       ETL_OR_STD::pair<DataNDC::iterator, DataNDC::iterator> i_data = data.equal_range(5);
 
-      CHECK_EQUAL(std::distance(compare_data.begin(), i_compare.first),  std::distance(data.begin(), i_data.first));
-      CHECK_EQUAL(std::distance(compare_data.begin(), i_compare.second), std::distance(data.begin(), i_data.second));
+      CHECK(std::distance(compare_data.begin(), i_compare.first) ==  std::distance(data.begin(), i_data.first));
+      CHECK(std::distance(compare_data.begin(), i_compare.second) == std::distance(data.begin(), i_data.second));
     }
 
     //*************************************************************************
@@ -978,12 +978,12 @@ namespace
       ETL_OR_STD::pair<DataNDC::iterator, DataNDC::iterator> i_data;
 
       i_data = data.equal_range(-1);
-      CHECK_EQUAL(data.begin(), i_data.first);
-      CHECK_EQUAL(data.begin(), i_data.second);
+      CHECK(data.begin() == i_data.first);
+      CHECK(data.begin() == i_data.second);
 
       i_data = data.equal_range(99);
-      CHECK_EQUAL(data.end(), i_data.first);
-      CHECK_EQUAL(data.end(), i_data.second);
+      CHECK(data.end() == i_data.first);
+      CHECK(data.end() == i_data.second);
     }
 
     //*************************************************************************
@@ -1023,27 +1023,27 @@ namespace
 
       compare_range = compare_data.equal_range(0);
       test_range    = data.equal_range(0);
-      CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
+      CHECK(std::distance(compare_range.first, compare_range.second) == std::distance(test_range.first, test_range.second));
 
       compare_range = compare_data.equal_range(1);
       test_range    = data.equal_range(1);
-      CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
+      CHECK(std::distance(compare_range.first, compare_range.second) == std::distance(test_range.first, test_range.second));
 
       compare_range = compare_data.equal_range(2);
       test_range    = data.equal_range(2);
-      CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
+      CHECK(std::distance(compare_range.first, compare_range.second) == std::distance(test_range.first, test_range.second));
 
       compare_range = compare_data.equal_range(3);
       test_range    = data.equal_range(3);
-      CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
+      CHECK(std::distance(compare_range.first, compare_range.second) == std::distance(test_range.first, test_range.second));
 
       compare_range = compare_data.equal_range(4);
       test_range    = data.equal_range(4);
-      CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
+      CHECK(std::distance(compare_range.first, compare_range.second) == std::distance(test_range.first, test_range.second));
 
       compare_range = compare_data.equal_range(5);
       test_range    = data.equal_range(5);
-      CHECK_EQUAL(std::distance(compare_range.first, compare_range.second), std::distance(test_range.first, test_range.second));
+      CHECK(std::distance(compare_range.first, compare_range.second) == std::distance(test_range.first, test_range.second));
     }
 
     //*************************************************************************
@@ -1052,12 +1052,12 @@ namespace
       Compare_DataNDC compare_data(multi_data.begin(), multi_data.end());
       DataNDC data(multi_data.begin(), multi_data.end());
 
-      CHECK_EQUAL(compare_data.count(0), data.count(0));
-      CHECK_EQUAL(compare_data.count(1), data.count(1));
-      CHECK_EQUAL(compare_data.count(2), data.count(2));
-      CHECK_EQUAL(compare_data.count(3), data.count(3));
-      CHECK_EQUAL(compare_data.count(4), data.count(4));
-      CHECK_EQUAL(compare_data.count(5), data.count(5));
+      CHECK(compare_data.count(0) == data.count(0));
+      CHECK(compare_data.count(1) == data.count(1));
+      CHECK(compare_data.count(2) == data.count(2));
+      CHECK(compare_data.count(3) == data.count(3));
+      CHECK(compare_data.count(4) == data.count(4));
+      CHECK(compare_data.count(5) == data.count(5));
     }
   };
 }
