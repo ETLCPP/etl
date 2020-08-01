@@ -50,6 +50,8 @@ namespace
     using Char       = std::wstring::value_type;
     using Vector     = std::vector<String>;
 
+    constexpr auto Whitespace = etl::whitespace_v<String::value_type>;
+
     //*************************************************************************
     TEST(test_trim_whitespace_left_empty)
     {
@@ -67,8 +69,8 @@ namespace
       String text(STR(""));
       String expected(STR(""));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_view_whitespace_left(textview);
 
@@ -93,8 +95,8 @@ namespace
       String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
       String expected(STR("Hello World\t\n\r\f\v "));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_view_whitespace_left(textview);
 
@@ -119,8 +121,8 @@ namespace
       String text(STR("Hello World\t\n\r\f\v "));
       String expected(STR("Hello World\t\n\r\f\v "));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_view_whitespace_left(textview);
 
@@ -145,8 +147,8 @@ namespace
       String text(STR(""));
       String expected(STR(""));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_from_view_left(textview, STR(" \t\n\r\f\v"));
 
@@ -171,8 +173,8 @@ namespace
       String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
       String expected(STR("Hello World\t\n\r\f\v "));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_from_view_left(textview, STR(" \t\n\r\f\v"));
 
@@ -197,8 +199,8 @@ namespace
       String text(STR("Hello World\t\n\r\f\v "));
       String expected(STR("Hello World\t\n\r\f\v "));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_from_view_left(textview, STR(" \t\n\r\f\v"));
 
@@ -234,8 +236,8 @@ namespace
       String text(STR("qztfpHello Worldqztfp"));
       String expected(STR("Hello Worldqztfp"));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_view_left(textview, STR("Hel"));
 
@@ -260,8 +262,8 @@ namespace
       String text(STR("Hello Worldqztfp"));
       String expected(STR("Hello Worldqztfp"));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_view_left(textview, STR("Hel"));
 
@@ -286,8 +288,8 @@ namespace
       String text(STR("Hello Worldqztfp"));
       String expected(STR(""));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_view_left(textview, STR("XYZ"));
 
@@ -301,8 +303,8 @@ namespace
       String text(STR("qztfpHello Worldqztfp"));
       String expected(STR("Hello Worldqztfp"));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_view_left(textview, STR("Hel"));
 
@@ -328,8 +330,8 @@ namespace
       String text(STR(""));
       String expected(STR(""));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_view_whitespace_right(textview);
 
@@ -354,8 +356,8 @@ namespace
       String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
       String expected(STR(" \t\n\r\f\vHello World"));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_view_whitespace_right(textview);
 
@@ -380,8 +382,8 @@ namespace
       String text(STR(" \t\n\r\f\vHello World"));
       String expected(STR(" \t\n\r\f\vHello World"));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_view_whitespace_right(textview);
 
@@ -406,8 +408,8 @@ namespace
       String text(STR(""));
       String expected(STR(""));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_from_view_right(textview, STR(" \t\n\r\f\v"));
 
@@ -432,8 +434,8 @@ namespace
       String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
       String expected(STR(" \t\n\r\f\vHello World"));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_from_view_right(textview, STR(" \t\n\r\f\v"));
 
@@ -458,8 +460,8 @@ namespace
       String text(STR(" \t\n\r\f\vHello World"));
       String expected(STR(" \t\n\r\f\vHello World"));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_from_view_right(textview, STR(" \t\n\r\f\v"));
 
@@ -484,8 +486,8 @@ namespace
       String text(STR("qztfpHello Worldqztfp"));
       String expected(STR("qztfpHello World"));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_view_right(textview, STR("rld"));
 
@@ -510,8 +512,8 @@ namespace
       String text(STR("qztfpHello World"));
       String expected(STR("qztfpHello World"));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_view_right(textview, STR("rld"));
 
@@ -536,8 +538,8 @@ namespace
       String text(STR("qztfpHello World"));
       String expected(STR(""));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_view_right(textview, STR("XYZ"));
 
@@ -562,8 +564,8 @@ namespace
       String text(STR(""));
       String expected(STR(""));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_view_whitespace(textview);
 
@@ -588,8 +590,8 @@ namespace
       String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
       String expected(STR("Hello World"));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_view_whitespace(textview);
 
@@ -614,8 +616,8 @@ namespace
       String text(STR("Hello World"));
       String expected(STR("Hello World"));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_view_whitespace(textview);
 
@@ -640,8 +642,8 @@ namespace
       String text(STR(""));
       String expected(STR(""));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_from_view(textview, STR(" \t\n\r\f\v"));
 
@@ -666,8 +668,8 @@ namespace
       String text(STR(" \t\n\r\f\vHello World\t\n\r\f\v "));
       String expected(STR("Hello World"));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_from_view(textview, STR(" \t\n\r\f\v"));
 
@@ -692,8 +694,8 @@ namespace
       String text(STR("Hello World"));
       String expected(STR("Hello World"));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_from_view(textview, STR(" \t\n\r\f\v"));
 
@@ -718,8 +720,8 @@ namespace
       String text(STR("qztfpHello Worldqztfp"));
       String expected(STR("Hello World"));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_view(textview, STR("Hd"));
 
@@ -744,8 +746,8 @@ namespace
       String text(STR("Hello World"));
       String expected(STR("Hello World"));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_view(textview, STR("Hd"));
 
@@ -770,8 +772,8 @@ namespace
       String text(STR("Hello World"));
       String expected(STR(""));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::trim_view(textview, STR("XYZ"));
 
@@ -796,8 +798,8 @@ namespace
       String text(STR("Hello World"));
       String expected(STR("World"));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::right_n_view(textview, expected.size());
 
@@ -811,8 +813,8 @@ namespace
       String text(STR("Hello World"));
       String expected(STR("Hello World"));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::right_n_view(textview, text.size() * 2U);
 
@@ -848,8 +850,8 @@ namespace
       String text(STR("Hello World"));
       String expected(STR("Hello"));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::left_n_view(textview, expected.size());
 
@@ -863,8 +865,8 @@ namespace
       String text(STR("Hello World"));
       String expected(STR("Hello World"));
 
-      StringView textview(text);
-      StringView expectedview(expected);
+      StringView textview(text.data(), text.size());
+      StringView expectedview(expected.data(), expected.size());
 
       StringView view = etl::left_n_view(textview, text.size() * 2U);
 
@@ -975,25 +977,37 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_get_token_delimiters)
+    TEST(test_get_token_delimiters_ignore_empty_tokens)
     {
-      String text(STR("  The cat.sat,  on;the:mat .,;:"));
+      String text(STR(",,,The,cat,sat,,on,the,mat,,,"));
       Vector tokens;
 
-      StringView textview(text);
-      StringView token;
+      StringView textview(text.data(), text.size());
+      etl::optional<StringView> token;
 
-      do
+      while (token = etl::get_token(text, STR(","), token, true))
       {
-        token = etl::get_token(text, STR(" .,;:"), token);
-
-        if (!token.empty())
-        {
-          tokens.emplace_back(token.begin(), token.end());
-        }
-      } while (!token.empty());
+        tokens.emplace_back(token.value());
+      }
 
       CHECK_EQUAL(6U, tokens.size());
+    }
+
+    //*************************************************************************
+    TEST(test_get_token_delimiters_keep_empty_tokens)
+    {
+      String text(STR(",,,The,cat,sat,,on,the,mat,,,"));
+      Vector tokens;
+
+      StringView textview(text.data(), text.size());
+      etl::optional<StringView> token;
+
+      while (token = etl::get_token(text, STR(","), token, false))
+      {
+        tokens.emplace_back(token.value());
+      }
+
+      CHECK_EQUAL(13U, tokens.size());
     }
 
     //*************************************************************************
@@ -1002,18 +1016,13 @@ namespace
       String text(STR(""));
       Vector tokens;
 
-      StringView textview(text);
-      StringView token;
+      StringView textview(text.data(), text.size());
+      etl::optional<StringView> token;
 
-      do
+      while (token = etl::get_token(text, Whitespace, token, true))
       {
-        token = etl::get_token(text, STR(" .,;:"), token);
-
-        if (!token.empty())
-        {
-          tokens.emplace_back(token.begin(), token.end());
-        }
-      } while (!token.empty());
+        tokens.emplace_back(token.value());
+      }
 
       CHECK_EQUAL(0U, tokens.size());
     }
@@ -1024,18 +1033,13 @@ namespace
       String text(STR("   .,  ;: .,;:"));
       Vector tokens;
 
-      StringView textview(text);
-      StringView token;
+      StringView textview(text.data(), text.size());
+      etl::optional<StringView> token;
 
-      do
+      while (token = etl::get_token(text, STR(" .,;:"), token, true))
       {
-        token = etl::get_token(text, STR(" .,;:"), token);
-
-        if (!token.empty())
-        {
-          tokens.emplace_back(token.begin(), token.end());
-        }
-      } while (!token.empty());
+        tokens.emplace_back(token.value());
+      }
 
       CHECK_EQUAL(0U, tokens.size());
     }
@@ -1046,18 +1050,13 @@ namespace
       String text(STR("The cat sat on the mat"));
       Vector tokens;
 
-      StringView textview(text);
-      StringView token;
+      StringView textview(text.data(), text.size());
+      etl::optional<StringView> token;
 
-      do
+      while (token = etl::get_token(text, STR(","), token, false))
       {
-        token = etl::get_token(text, STR(".,;:"), token);
-
-        if (!token.empty())
-        {
-          tokens.emplace_back(token.begin(), token.end());
-        }
-      } while (!token.empty());
+        tokens.emplace_back(token.value());
+      }
 
       CHECK_EQUAL(1U, tokens.size());
     }
@@ -1234,7 +1233,7 @@ namespace
     TEST(test_find_first_of_string_view)
     {
       const String text(STR("abcHello Worldabc"));
-      StringView textview(text);
+      StringView textview(text.data(), text.size());
 
       StringView::const_iterator itr = etl::find_first_of(textview, STR("Hel"));
 
@@ -1245,7 +1244,7 @@ namespace
     TEST(test_find_first_of_string_view_not_found)
     {
       const String text(STR("abcHello Worldabc"));
-      StringView textview(text);
+      StringView textview(text.data(), text.size());
 
       StringView::const_iterator itr = etl::find_first_of(textview, STR("xyz"));
 
@@ -1335,7 +1334,7 @@ namespace
     TEST(test_find_first_not_of_string_view)
     {
       const String text(STR("abcHello Worldabc"));
-      StringView textview(text);
+      StringView textview(text.data(), text.size());
 
       StringView::const_iterator itr = etl::find_first_not_of(textview, STR("abc"));
 
@@ -1346,7 +1345,7 @@ namespace
     TEST(test_find_first_not_of_string_view_not_found)
     {
       const String text(STR("abcHello Worldabc"));
-      StringView textview(text);
+      StringView textview(text.data(), text.size());
 
       StringView::const_iterator itr = etl::find_first_not_of(textview, STR("abcHello World"));
 
@@ -1437,7 +1436,7 @@ namespace
     TEST(test_find_last_of_string_view)
     {
       String text(STR("abcHello Worldabc"));
-      StringView textview(text);
+      StringView textview(text.data(), text.size());
 
       StringView::const_iterator itr = etl::find_last_of(textview, STR("rld"));
 
@@ -1448,7 +1447,7 @@ namespace
     TEST(test_find_last_of_string_view_not_found)
     {
       String text(STR("abcHello Worldabc"));
-      StringView textview(text);
+      StringView textview(text.data(), text.size());
 
       StringView::const_iterator itr = etl::find_last_of(textview, STR("xyz"));
 
@@ -1539,7 +1538,7 @@ namespace
     TEST(test_find_last_not_of_string_view)
     {
       String text(STR("abcHello Worldabc"));
-      StringView textview(text);
+      StringView textview(text.data(), text.size());
 
       StringView::const_iterator itr = etl::find_last_not_of(textview, STR("abc"));
 
@@ -1550,7 +1549,7 @@ namespace
     TEST(test_find_last_not_of_string_view_not_found)
     {
       String text(STR("abcHello Worldabc"));
-      StringView textview(text);
+      StringView textview(text.data(), text.size());
 
       StringView::const_iterator itr = etl::find_last_not_of(textview, STR("abcHello World"));
 
