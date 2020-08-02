@@ -1,4 +1,8 @@
 ===============================================================================
+18.12.1
+Fixed compiler compatibility issues in etl::forward_list and etl::list
+
+===============================================================================
 18.12.0
 Recoded string utility get_token()
 clang 9 compatibility changes

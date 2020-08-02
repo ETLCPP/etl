@@ -1859,7 +1859,7 @@ namespace etl
 
             } while (p_rhs_node != &rhs.terminal_node);
 
-            rhs.ETL_RESET_DEBUG_COUNT;
+            ETL_OBJECT_RESET_DEBUG_COUNT(rhs);
             rhs.join(rhs.terminal_node, rhs.terminal_node);
           }
           else
