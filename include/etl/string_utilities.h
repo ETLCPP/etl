@@ -745,7 +745,7 @@ namespace etl
     if (required_size > s.size())
     {
       required_size -= s.size();
-      s.insert(0U, required_size, pad_char);
+      s.insert(size_t(0U), required_size, pad_char);
     }
   }
 
