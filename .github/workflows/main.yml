@@ -14,7 +14,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup cmake
+    - name: Build and run
       run: |
         cmake -DBUILD_TESTS=ON ./
         make
@@ -29,7 +29,7 @@ jobs:
     runs-on: macos-10.15
     steps:
       - uses: actions/checkout@v2
-      - name: Build with Clang
+      - name: Build and run
         run: |
           export CC=clang
           export CXX=clang++
@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
-      - name: Build with Clang 9
+      - name: Build and run
         run: |
           export CC=clang-9
           export CXX=clang++-9
