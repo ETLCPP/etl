@@ -29,10 +29,10 @@ jobs:
     runs-on: macos-10.15
     steps:
       - uses: actions/checkout@v2
-      - name: Build with Clang 9
+      - name: Build with Clang
         run: |
-          export CC=clang-10
-          export CXX=clang++-10
+          export CC=clang
+          export CXX=clang++
           cmake -D BUILD_TESTS=ON ./
           make
           ./test/etl_tests
