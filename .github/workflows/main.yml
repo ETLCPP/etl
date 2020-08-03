@@ -33,10 +33,21 @@ jobs:
   build-clang-9-Linux:
     runs-on: ubuntu-18.04
     steps:
-      - uses: actions/checkout@v2
-      - name: Build with Clang 9
-        run: |
-          export CC=clang-9
-          export CXX=clang++-9
-          cmake -D BUILD_TESTS=ON ./
-          make
+    - uses: actions/checkout@v2
+
+    - name: Setup cmake
+      run:  export CC=clang-9
+            export CXX=clang++-9
+            cmake -DBUILD_TESTS=ON ./
+
+    - name: Compile
+      run: make
+    
+    - name: Run tests
+      run: ./test/etl_tests
+    
+    - name: Save artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Testfile
+        path: test/etl_tests
