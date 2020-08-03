@@ -52,3 +52,15 @@ jobs:
       with:
         name: Testfile
         path: test/etl_tests
+
+  build-clang-10-osx:
+    runs-on: macos-10.15
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build and run
+      run: |
+        export CC=clang
+        export CXX=clang++
+        cmake -D BUILD_TESTS=ON ./
+        make
+        ./test/etl_tests
