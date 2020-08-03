@@ -36,7 +36,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Setup cmake
-        run: |
+      run: |
           export CC=clang-9
           export CXX=clang++-9
           cmake -D BUILD_TESTS=ON ./
