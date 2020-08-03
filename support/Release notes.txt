@@ -1,4 +1,22 @@
 ===============================================================================
+18.12.3
+Resolve 0U constant ambiguity in string utility tests
+
+===============================================================================
+18.12.2
+Deleted unused file.
+Updated CMakeLists.txt
+
+===============================================================================
+18.12.1
+Fixed compiler compatibility issues in etl::forward_list and etl::list
+
+===============================================================================
+18.12.0
+Recoded string utility get_token()
+clang 9 compatibility changes
+
+===============================================================================
 18.11.1
 Fix and optimise etl::list and etl::forward_list move constructors and assignment operators.
 

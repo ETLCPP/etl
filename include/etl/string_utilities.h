@@ -36,11 +36,15 @@ SOFTWARE.
 #include "enum_type.h"
 #include "memory.h"
 #include "char_traits.h"
+#include "optional.h"
 
 #include <stdint.h>
 
 namespace etl
 {
+  //***************************************************************************
+  /// string_pad_direction
+  //***************************************************************************
   struct string_pad_direction
   {
     enum enum_type
@@ -55,13 +59,16 @@ namespace etl
     ETL_END_ENUM_TYPE
   };
 
+  //***************************************************************************
+  /// whitespace
+  //***************************************************************************
   template <typename TChar>
   struct whitespace;
 
   template <>
   struct whitespace<char>
   {
-    static const char* value()
+    static ETL_CONSTEXPR const char* value()
     {
       return " \t\n\r\f\v";
     }
@@ -70,7 +77,7 @@ namespace etl
   template <>
   struct whitespace<wchar_t>
   {
-    static const wchar_t* value()
+    static ETL_CONSTEXPR const wchar_t* value()
     {
       return L" \t\n\r\f\v";
     }
@@ -79,7 +86,7 @@ namespace etl
   template <>
   struct whitespace<char16_t>
   {
-    static const char16_t* value()
+    static ETL_CONSTEXPR const char16_t* value()
     {
       return u" \t\n\r\f\v";
     }
@@ -88,11 +95,16 @@ namespace etl
   template <>
   struct whitespace<char32_t>
   {
-    static const char32_t* value()
+    static ETL_CONSTEXPR const char32_t* value()
     {
       return U" \t\n\r\f\v";
     }
   };
+
+#if ETL_CPP17_SUPPORTED
+  template <typename TChar>
+  inline constexpr const TChar* whitespace_v = whitespace<TChar>::value();
+#endif
 
   //***************************************************************************
   /// trim_from_left
@@ -686,33 +698,40 @@ namespace etl
   /// get_token
   //***************************************************************************
   template <typename TIString, typename TStringView>
-  TStringView get_token(const TIString& s, typename TIString::const_pointer delimiters, const TStringView& last_view)
+  etl::optional<TStringView> get_token(const TIString& s, typename TIString::const_pointer delimiters, const etl::optional<TStringView>& last_view, bool ignore_empty_tokens)
   {
-    size_t position = 0U;
+    typedef typename TIString::const_pointer const_pointer;
 
-    // Does the last_view have valid data?
-    if (last_view.data() != ETL_NULLPTR)
+    bool token_found = false;
+    size_t position  = 0U;
+    TStringView view = last_view.value_or(TStringView());
+    const_pointer begin_ptr = s.data();
+    const_pointer end_ptr   = begin_ptr + s.size();
+
+    while (!token_found)
     {
-      position = etl::distance(etl::addressof(*s.begin()), addressof(*last_view.begin()) + last_view.size());
+      // Does the last view have valid data?
+      if (view.data() != ETL_NULLPTR)
+      {
+        position = etl::distance(begin_ptr, view.data() + view.size() + 1U);
+
+        // Have we reached the end of the string?
+        if (position > s.size())
+        {
+          return etl::optional<TStringView>();
+        }
+      }
+
+      // Look for the next token.
+      const_pointer first_ptr = begin_ptr + position;
+      const_pointer last_ptr  = find_first_of(first_ptr, end_ptr, delimiters);
+
+      view = TStringView(first_ptr, etl::distance(first_ptr, last_ptr));
+
+      token_found = ((view.size() != 0U) || !ignore_empty_tokens);
     }
 
-    typename TIString::const_iterator first = s.begin() + position;
-    typename TIString::const_iterator last;
-
-    // Look for the start of the next token.
-    first = find_first_not_of(first, s.end(), delimiters);
-    last  = find_first_of(first, s.end(), delimiters);
-
-    size_t view_length = etl::distance(first, last);
-
-    if (view_length != 0)
-    {
-      return TStringView(etl::addressof(*first), view_length);
-    }
-    else
-    {
-      return TStringView();
-    }
+    return etl::optional<TStringView>(view);
   }
 
   //***************************************************************************
@@ -726,7 +745,7 @@ namespace etl
     if (required_size > s.size())
     {
       required_size -= s.size();
-      s.insert(0U, required_size, pad_char);
+      s.insert(size_t(0U), required_size, pad_char);
     }
   }
 

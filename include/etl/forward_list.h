@@ -1500,7 +1500,7 @@ namespace etl
 
             } while (p_rhs_node != ETL_NULLPTR);
 
-            rhs.ETL_RESET_DEBUG_COUNT;
+            ETL_OBJECT_RESET_DEBUG_COUNT(rhs);
             rhs.start_node.next = ETL_NULLPTR;
           }
           else

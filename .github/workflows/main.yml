@@ -3,10 +3,10 @@ on:
   push:
     branches: [ master, hotfix/clang-9 ]
   pull_request:
-    branches: [ master, hotfix/clang-9 ]
+    branches: [ master ]
 
 jobs:
-  build-gcc-ubuntu:
+  build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -14,11 +14,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build and run
-      run: |
-        cmake -DBUILD_TESTS=ON ./
-        make
-        ./test/etl_tests
+
+    - name: Setup cmake
+      run: cmake -DBUILD_TESTS=ON ./
+
+    - name: Compile
+      run: make
+    
+    - name: Run tests
+      run: ./test/etl_tests
+    
     - name: Save artifacts
       uses: actions/upload-artifact@v2
       with:
@@ -37,14 +42,25 @@ jobs:
           make
           ./test/etl_tests
 
-  build-clang-9-ubuntu:
+  build-clang-9-Linux:
     runs-on: ubuntu-18.04
     steps:
-      - uses: actions/checkout@v2
-      - name: Build and run
-        run: |
+    - uses: actions/checkout@v2
+
+    - name: Setup cmake
+      run: |
           export CC=clang-9
           export CXX=clang++-9
           cmake -D BUILD_TESTS=ON ./
-          make
-          ./test/etl_tests
+
+    - name: Compile
+      run: make
+    
+    - name: Run tests
+      run: ./test/etl_tests
+    
+    - name: Save artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Testfile
+        path: test/etl_tests
