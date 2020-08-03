@@ -38,7 +38,7 @@ jobs:
     - name: Setup cmake
       run:  export CC=clang-9
             export CXX=clang++-9
-            cmake -DBUILD_TESTS=ON ./
+            cmake -DBUILD_TESTS=ON
 
     - name: Compile
       run: make
