@@ -607,12 +607,12 @@ namespace etl
     // Exchange
     T* exchange(T* v, etl::memory_order order = etl::memory_order_seq_cst)
     {
-      return (T*)__sync_lock_test_and_set(&value, v);
+      return (T*)__sync_lock_test_and_set(&value, uintptr_t(v));
     }
 
     T* exchange(T* v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
-      return (T*)__sync_lock_test_and_set(&value, v);
+      return (T*)__sync_lock_test_and_set(&value, uintptr_t(v));
     }
 
     // Compare exchange weak
