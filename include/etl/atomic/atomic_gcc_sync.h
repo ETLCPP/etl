@@ -475,7 +475,7 @@ namespace etl
     // Pre-increment
     T* operator ++()
     {
-      return (T*)__sync_add_and_fetch(&(volatile void*)value, sizeof(T));
+      return (T*)__sync_add_and_fetch(&value, sizeof(T));
     }
 
     T* operator ++() volatile
