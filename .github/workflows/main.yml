@@ -23,12 +23,6 @@ jobs:
     
     - name: Run tests
       run: ./test/etl_tests
-    
-    - name: Save artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: Testfile
-        path: test/etl_tests
 
   build-clang-10-osx:
     runs-on: macos-10.15
