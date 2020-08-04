@@ -86,7 +86,7 @@ namespace
 
       String result = ss.str();
 
-      CHECK_EQUAL(String(STR("Hello World 123")), result);
+      CHECK(String(STR("Hello World 123")) == result);
     }
 
     //*************************************************************************
@@ -103,7 +103,7 @@ namespace
 
       String result = ss.str();
 
-      CHECK_EQUAL(String(STR("#####Hello#####World#######123")), result);
+      CHECK(String(STR("#####Hello#####World#######123")) == result);
     }
 
     //*************************************************************************
@@ -122,7 +122,7 @@ namespace
 
       String result = ss.str();
 
-      CHECK_EQUAL(String(STR("#####HelloWorld***  7b")), result);
+      CHECK(String(STR("#####HelloWorld***  7b")) == result);
     }
 
     //*************************************************************************
@@ -136,36 +136,36 @@ namespace
       ss << etl::setw(20) << etl::setfill(STR('-')) << etl::left;
 
       ss << etl::bin << value;
-      CHECK_EQUAL(String(STR("11110001001000000---")), ss.str());
+      CHECK(String(STR("11110001001000000---")) == ss.str());
 
       ss.str().clear();
       ss << etl::oct << value;
-      CHECK_EQUAL(String(STR("361100--------------")), ss.str());
+      CHECK(String(STR("361100--------------")) == ss.str());
 
       ss.str().clear();
       ss << etl::dec << value;
-      CHECK_EQUAL(String(STR("123456--------------")), ss.str());
+      CHECK(String(STR("123456--------------")) == ss.str());
 
       ss.str().clear();
       ss << etl::hex << etl::uppercase << value;
-      CHECK_EQUAL(String(STR("1E240---------------")), ss.str());
+      CHECK(String(STR("1E240---------------")) == ss.str());
 
       ss.str().clear();
       ss << etl::hex << etl::nouppercase << value;
-      CHECK_EQUAL(String(STR("1e240---------------")), ss.str());
+      CHECK(String(STR("1e240---------------")) == ss.str());
 
       ss.str().clear();
       ss << etl::setw(0);
       ss << etl::noboolalpha << false << STR(" ") << true << STR(" ") << etl::boolalpha << false << STR(" ") << true;
-      CHECK_EQUAL(String(STR("0 1 false true")), ss.str());
+      CHECK(String(STR("0 1 false true")) == ss.str());
 
       ss.str().clear();
       ss << etl::setprecision(4) << 3.1415927;
-      CHECK_EQUAL(String(STR("3.1416")), ss.str());
+      CHECK(String(STR("3.1416")) == ss.str());
 
       ss.str().clear();
       ss << STR("abcdef") << STR(" ") << etl::uppercase << STR("abcdef");
-      CHECK_EQUAL(String(STR("abcdef abcdef")), ss.str());
+      CHECK(String(STR("abcdef abcdef")) == ss.str());
     }
 
     //*************************************************************************
@@ -182,7 +182,7 @@ namespace
 
       String result = ss.str();
 
-      CHECK_EQUAL(String(STR("#####HelloWorld***  7b")), result);
+      CHECK(String(STR("#####HelloWorld***  7b")) == result);
     }
 
     //*************************************************************************
@@ -200,7 +200,7 @@ namespace
 
       String result = ss.str();
 
-      CHECK_EQUAL(String(STR("Value: X = 1 : Y = 2")), result);
+      CHECK(String(STR("Value: X = 1 : Y = 2")) == result);
     }
 
     //*************************************************************************
@@ -224,7 +224,7 @@ namespace
 
       ss.str(STR("Hello"));
 
-      CHECK_EQUAL(String(STR("Hello")), ss.str());
+      CHECK(String(STR("Hello")) == ss.str());
     }
 
     //*************************************************************************
@@ -235,7 +235,7 @@ namespace
 
       ss.str(String(STR("Hello")));
 
-      CHECK_EQUAL(String(STR("Hello")), ss.str());
+      CHECK(String(STR("Hello")) == ss.str());
     }
 
     //*************************************************************************
@@ -249,7 +249,7 @@ namespace
       IString& istr = ss.str();
       istr.resize(istr.size() - 1);
 
-      CHECK_EQUAL(String(STR("Hell")), istr);
+      CHECK(String(STR("Hell")) == istr);
     }
 
     //*************************************************************************
@@ -262,7 +262,7 @@ namespace
 
       const IString& istr = ss.str();
 
-      CHECK_EQUAL(String(STR("Hello")), istr);
+      CHECK(String(STR("Hello")) == istr);
     }
   };
 }

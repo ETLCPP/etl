@@ -43,7 +43,7 @@ namespace
       std::atomic<int> compare;
       etl::atomic<int> test;
 
-      CHECK_EQUAL(compare.is_lock_free(), test.is_lock_free());
+      CHECK(compare.is_lock_free() == test.is_lock_free());
     }
 
     //=========================================================================
@@ -52,7 +52,7 @@ namespace
       std::atomic<int*> compare;
       etl::atomic<int*> test;
 
-      CHECK_EQUAL(compare.is_lock_free(), test.is_lock_free());
+      CHECK(compare.is_lock_free() == test.is_lock_free());
     }
 
     //=========================================================================
@@ -61,7 +61,7 @@ namespace
       std::atomic<int> compare(1);
       etl::atomic<int> test(1);
 
-      CHECK_EQUAL((int)compare.load(), (int)test.load());
+      CHECK((int)compare.load() == (int)test.load());
     }
 
     //=========================================================================
@@ -72,7 +72,7 @@ namespace
       std::atomic<int*> compare(&i);
       etl::atomic<int*> test(&i);
 
-      CHECK_EQUAL((int*)compare.load(), (int*)test.load());
+      CHECK((int*)compare.load() == (int*)test.load());
     }
 
     //=========================================================================
@@ -83,7 +83,7 @@ namespace
 
       compare.store(2);
       test.store(2);
-      CHECK_EQUAL((int)compare.load(), (int)test.load());
+      CHECK((int)compare.load() == (int)test.load());
     }
 
     //=========================================================================
@@ -97,7 +97,7 @@ namespace
 
       compare.store(&j);
       test.store(&j);
-      CHECK_EQUAL((int*)compare.load(), (int*)test.load());
+      CHECK((int*)compare.load() == (int*)test.load());
     }
 
     //=========================================================================
@@ -108,7 +108,7 @@ namespace
 
       compare = 2;
       test = 2;
-      CHECK_EQUAL((int)compare.load(), (int)test.load());
+      CHECK((int)compare.load() == (int)test.load());
     }
 
     //=========================================================================
@@ -122,7 +122,7 @@ namespace
 
       compare = &j;
       test = &j;
-      CHECK_EQUAL((int*)compare.load(), (int*)test.load());
+      CHECK((int*)compare.load() == (int*)test.load());
     }
 
     //=========================================================================
@@ -131,8 +131,8 @@ namespace
       std::atomic<int> compare(1);
       etl::atomic<int> test(1);
 
-      CHECK_EQUAL((int)++compare, (int)++test);
-      CHECK_EQUAL((int)++compare, (int)++test);
+      CHECK((int)++compare == (int)++test);
+      CHECK((int)++compare == (int)++test);
     }
 
     //=========================================================================
@@ -141,8 +141,8 @@ namespace
       std::atomic<int> compare(1);
       etl::atomic<int> test(1);
 
-      CHECK_EQUAL((int)compare++, (int)test++);
-      CHECK_EQUAL((int)compare++, (int)test++);
+      CHECK((int)compare++ == (int)test++);
+      CHECK((int)compare++ == (int)test++);
     }
 
     //=========================================================================
@@ -151,8 +151,8 @@ namespace
       std::atomic<int> compare(1);
       etl::atomic<int> test(1);
 
-      CHECK_EQUAL((int)--compare, (int)--test);
-      CHECK_EQUAL((int)--compare, (int)--test);
+      CHECK((int)--compare == (int)--test);
+      CHECK((int)--compare == (int)--test);
     }
 
     //=========================================================================
@@ -161,8 +161,8 @@ namespace
       std::atomic<int> compare(1);
       etl::atomic<int> test(1);
 
-      CHECK_EQUAL((int)compare--, (int)test--);
-      CHECK_EQUAL((int)compare--, (int)test--);
+      CHECK((int)compare-- == (int)test--);
+      CHECK((int)compare-- == (int)test--);
     }
 
     //=========================================================================
@@ -173,8 +173,8 @@ namespace
       std::atomic<int*> compare(&data[0]);
       etl::atomic<int*> test(&data[0]);
 
-        CHECK_EQUAL((int*)++compare, (int*)++test);
-        CHECK_EQUAL((int*)++compare, (int*)++test);
+        CHECK((int*)++compare == (int*)++test);
+        CHECK((int*)++compare == (int*)++test);
     }
 
     //=========================================================================
@@ -185,8 +185,8 @@ namespace
       std::atomic<int*> compare(&data[0]);
       etl::atomic<int*> test(&data[0]);
 
-      CHECK_EQUAL((int*)compare++, (int*)test++);
-      CHECK_EQUAL((int*)compare++, (int*)test++);
+      CHECK((int*)compare++ == (int*)test++);
+      CHECK((int*)compare++ == (int*)test++);
     }
 
     //=========================================================================
@@ -197,8 +197,8 @@ namespace
       std::atomic<int*> compare(&data[3]);
       etl::atomic<int*> test(&data[3]);
 
-      CHECK_EQUAL((int*)--compare, (int*)--test);
-      CHECK_EQUAL((int*)--compare, (int*)--test);
+      CHECK((int*)--compare == (int*)--test);
+      CHECK((int*)--compare == (int*)--test);
     }
 
     //=========================================================================
@@ -209,8 +209,8 @@ namespace
       std::atomic<int*> compare(&data[3]);
       etl::atomic<int*> test(&data[3]);
 
-      CHECK_EQUAL((int*)compare--, (int*)test--);
-      CHECK_EQUAL((int*)compare--, (int*)test--);
+      CHECK((int*)compare-- == (int*)test--);
+      CHECK((int*)compare-- == (int*)test--);
     }
 
     //=========================================================================
@@ -219,7 +219,7 @@ namespace
       std::atomic<int> compare(1);
       etl::atomic<int> test(1);
 
-      CHECK_EQUAL((int)compare.fetch_add(2), (int)test.fetch_add(2));
+      CHECK((int)compare.fetch_add(2) == (int)test.fetch_add(2));
     }
 
     //=========================================================================
@@ -230,7 +230,7 @@ namespace
       std::atomic<int*> compare(&data[0]);
       etl::atomic<int*> test(&data[0]);
 
-      CHECK_EQUAL((int*)compare.fetch_add(std::ptrdiff_t(10)), (int*)test.fetch_add(std::ptrdiff_t(10)));
+      CHECK((int*)compare.fetch_add(std::ptrdiff_t(10)) == (int*)test.fetch_add(std::ptrdiff_t(10)));
     }
 
     //=========================================================================
@@ -242,7 +242,7 @@ namespace
       compare += 2;
       test += 2;
 
-      CHECK_EQUAL((int)compare, (int)test);
+      CHECK((int)compare == (int)test);
     }
 
     //=========================================================================
@@ -256,7 +256,7 @@ namespace
       compare += 2;
       test += 2;
 
-      CHECK_EQUAL((int*)compare, (int*)test);
+      CHECK((int*)compare == (int*)test);
     }
 
     //=========================================================================
@@ -268,7 +268,7 @@ namespace
       compare -= 2;
       test -= 2;
 
-      CHECK_EQUAL((int)compare, (int)test);
+      CHECK((int)compare == (int)test);
     }
 
     //=========================================================================
@@ -282,7 +282,7 @@ namespace
       compare -= 2;
       test -= 2;
 
-      CHECK_EQUAL((int*)compare, (int*)test);
+      CHECK((int*)compare == (int*)test);
     }
 
     //=========================================================================
@@ -294,7 +294,7 @@ namespace
       compare &= 0x55AA55AA;
       test &= 0x55AA55AA;
 
-      CHECK_EQUAL((int)compare, (int)test);
+      CHECK((int)compare == (int)test);
     }
 
     //=========================================================================
@@ -306,7 +306,7 @@ namespace
       compare |= 0x55AA55AA;
       test |= 0x55AA55AA;
 
-      CHECK_EQUAL((int)compare, (int)test);
+      CHECK((int)compare == (int)test);
     }
 
     //=========================================================================
@@ -318,7 +318,7 @@ namespace
       compare ^= 0x55AA55AA;
       test ^= 0x55AA55AA;
 
-      CHECK_EQUAL((int)compare, (int)test);
+      CHECK((int)compare == (int)test);
     }
 
     //=========================================================================
@@ -327,7 +327,7 @@ namespace
       std::atomic<int> compare(1);
       etl::atomic<int> test(1);
 
-      CHECK_EQUAL((int)compare.fetch_sub(2), (int)test.fetch_sub(2));
+      CHECK((int)compare.fetch_sub(2) == (int)test.fetch_sub(2));
     }
 
     //=========================================================================
@@ -338,7 +338,7 @@ namespace
       std::atomic<int*> compare(&data[0]);
       etl::atomic<int*> test(&data[0]);
 
-      CHECK_EQUAL((int*)compare.fetch_add(std::ptrdiff_t(10)), (int*)test.fetch_add(std::ptrdiff_t(10)));
+      CHECK((int*)compare.fetch_add(std::ptrdiff_t(10)) == (int*)test.fetch_add(std::ptrdiff_t(10)));
     }
 
     //=========================================================================
@@ -347,7 +347,7 @@ namespace
       std::atomic<int> compare(0xFFFFFFFF);
       etl::atomic<int> test(0xFFFFFFFF);
 
-      CHECK_EQUAL((int)compare.fetch_and(0x55AA55AA), (int)test.fetch_and(0x55AA55AA));
+      CHECK((int)compare.fetch_and(0x55AA55AA) == (int)test.fetch_and(0x55AA55AA));
     }
 
     //=========================================================================
@@ -356,7 +356,7 @@ namespace
       std::atomic<int> compare(0x0000FFFF);
       etl::atomic<int> test(0x0000FFFF);
 
-      CHECK_EQUAL((int)compare.fetch_or(0x55AA55AA), (int)test.fetch_or(0x55AA55AA));
+      CHECK((int)compare.fetch_or(0x55AA55AA) == (int)test.fetch_or(0x55AA55AA));
     }
 
     //=========================================================================
@@ -365,7 +365,7 @@ namespace
       std::atomic<int> compare(0x0000FFFF);
       etl::atomic<int> test(0x0000FFFF);
 
-      CHECK_EQUAL((int)compare.fetch_xor(0x55AA55AA), (int)test.fetch_xor(0x55AA55AA));
+      CHECK((int)compare.fetch_xor(0x55AA55AA) == (int)test.fetch_xor(0x55AA55AA));
     }
 
     //=========================================================================
@@ -374,7 +374,7 @@ namespace
       std::atomic<int> compare(1);
       etl::atomic<int> test(1);
 
-      CHECK_EQUAL((int)compare.exchange(2), (int)test.exchange(2));
+      CHECK((int)compare.exchange(2) == (int)test.exchange(2));
     }
 
     //=========================================================================
@@ -386,7 +386,7 @@ namespace
       std::atomic<int*> compare(&i);
       etl::atomic<int*> test(&i);
 
-      CHECK_EQUAL((int*)compare.exchange(&j), (int*)test.exchange(&j));
+      CHECK((int*)compare.exchange(&j) == (int*)test.exchange(&j));
     }
 
     //=========================================================================
@@ -407,9 +407,9 @@ namespace
       bool compare_result = compare.compare_exchange_weak(compare_expected, desired);
       bool test_result    = test.compare_exchange_weak(test_expected, desired);
 
-      CHECK_EQUAL(compare_result,   test_result);
-      CHECK_EQUAL(compare_expected, test_expected);
-      CHECK_EQUAL(compare.load(),   test.load());
+      CHECK(compare_result ==   test_result);
+      CHECK(compare_expected == test_expected);
+      CHECK(compare.load() ==   test.load());
     }
 
     //=========================================================================
@@ -430,9 +430,9 @@ namespace
       bool compare_result = compare.compare_exchange_weak(compare_expected, desired);
       bool test_result    = test.compare_exchange_weak(test_expected, desired);
 
-      CHECK_EQUAL(compare_result,   test_result);
-      CHECK_EQUAL(compare_expected, test_expected);
-      CHECK_EQUAL(compare.load(),   test.load());
+      CHECK(compare_result ==   test_result);
+      CHECK(compare_expected == test_expected);
+      CHECK(compare.load() ==   test.load());
     }
 
     //=========================================================================
@@ -453,9 +453,9 @@ namespace
       bool compare_result = compare.compare_exchange_strong(compare_expected, desired);
       bool test_result = test.compare_exchange_strong(test_expected, desired);
 
-      CHECK_EQUAL(compare_result, test_result);
-      CHECK_EQUAL(compare_expected, test_expected);
-      CHECK_EQUAL(compare.load(), test.load());
+      CHECK(compare_result == test_result);
+      CHECK(compare_expected == test_expected);
+      CHECK(compare.load() == test.load());
     }
 
     //=========================================================================
@@ -476,9 +476,9 @@ namespace
       bool compare_result = compare.compare_exchange_strong(compare_expected, desired);
       bool test_result = test.compare_exchange_strong(test_expected, desired);
 
-      CHECK_EQUAL(compare_result, test_result);
-      CHECK_EQUAL(compare_expected, test_expected);
-      CHECK_EQUAL(compare.load(), test.load());
+      CHECK(compare_result == test_result);
+      CHECK(compare_expected == test_expected);
+      CHECK(compare.load() == test.load());
     }
   };
 }
