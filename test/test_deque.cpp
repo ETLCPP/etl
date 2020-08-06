@@ -538,6 +538,9 @@ namespace
 
       CHECK(first < second);
       CHECK(!(second < first));
+
+      CHECK(second > first);
+      CHECK(!(first > second));
     }
 
     //*************************************************************************
@@ -550,6 +553,9 @@ namespace
 
       CHECK(first < second);
       CHECK(!(second < first));
+
+      CHECK(second > first);
+      CHECK(!(first > second));
     }
 
     //*************************************************************************
