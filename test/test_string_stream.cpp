@@ -41,10 +41,10 @@ SOFTWARE.
 
 namespace
 {
-  using String  = etl::string<50>;
+  using String = etl::string<50>;
   using IString = etl::istring;
-  using Stream  = etl::string_stream;
-  using Format  = etl::format_spec;
+  using Stream = etl::string_stream;
+  using Format = etl::format_spec;
 
   //***********************************
   struct Custom
@@ -82,7 +82,10 @@ namespace
 
     return os;
   }
+}
 
+namespace
+{
   SUITE(test_string_stream)
   {
     //*************************************************************************
