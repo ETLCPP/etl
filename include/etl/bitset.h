@@ -874,7 +874,7 @@ namespace etl
   /// The class emulates an array of bool elements, but optimized for space allocation.
   /// Will accommodate any number of bits.
   /// Does not use std::string.
-  ///\tparam N The number of bits.
+  ///\tparam MAXN The number of bits.
   ///\ingroup bitset
   //*************************************************************************
   template <const size_t MAXN>
