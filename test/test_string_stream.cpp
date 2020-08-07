@@ -61,6 +61,18 @@ namespace
   }
 
   //***********************************
+  template <size_t SIZE>
+  std::ostream& operator << (std::ostream& os, const etl::string<SIZE>& str)
+  {
+    for (auto c : str)
+    {
+      os << c;
+    }
+
+    return os;
+  }
+
+  //***********************************
   std::ostream& operator << (std::ostream& os, const IString& str)
   {
     for (auto c : str)
