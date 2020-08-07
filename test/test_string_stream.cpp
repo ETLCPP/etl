@@ -59,19 +59,10 @@ namespace
     ss << STR("X = ") << value.x << STR(" : Y = ") << value.y;
     return ss;
   }
+}
 
-  //***********************************
-  template <size_t SIZE>
-  std::ostream& operator << (std::ostream& os, const etl::string<SIZE>& str)
-  {
-    for (auto c : str)
-    {
-      os << c;
-    }
-
-    return os;
-  }
-
+namespace etl
+{
   //***********************************
   std::ostream& operator << (std::ostream& os, const IString& str)
   {
