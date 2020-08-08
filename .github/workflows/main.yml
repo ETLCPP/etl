@@ -34,19 +34,14 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
-
-    - name: Setup cmake
+    - name: Build and run
       run: |
-          export CC=clang-9
-          export CXX=clang++-9
-          cmake -D BUILD_TESTS=ON ./
+        export CC=clang-9
+        export CXX=clang++-9
+        cmake -D BUILD_TESTS=ON ./
+        make
+        ./test/etl_tests
 
-    - name: Compile
-      run: make
-    
-    - name: Run tests
-      run: ./test/etl_tests
-    
     - name: Save artifacts
       uses: actions/upload-artifact@v2
       with:
