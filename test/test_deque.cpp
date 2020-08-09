@@ -533,11 +533,39 @@ namespace
     {
       DataNDC data(SIZE, N0);
 
-      DataNDC::iterator first = data.begin() + 1;
-      DataNDC::iterator second = data.begin() + 4;
+      DataNDC::iterator first  = data.begin() + 1;
+      DataNDC::iterator second = data.begin() + 1;
+      DataNDC::iterator third  = data.begin() + 4;
 
-      CHECK(first < second);
+      CHECK(first    == second);
+      CHECK(second   == first);
+      CHECK(!(first  == third));
+      CHECK(!(third  == first));
+
+      CHECK(!(first  != second));
+      CHECK(!(second != first));
+      CHECK(first    != third);
+      CHECK(third    != first);
+
+      CHECK(!(first  < second));
       CHECK(!(second < first));
+      CHECK(first    < third);
+      CHECK(!(third  < first));
+
+      CHECK(first    <= second);
+      CHECK(second   <= first);
+      CHECK(first    <= third);
+      CHECK(!(third  <= first));
+
+      CHECK(!(first  > second));
+      CHECK(!(second > first));
+      CHECK(!(first  > third));
+      CHECK(third    > first);
+
+      CHECK(first    >= second);
+      CHECK(second   >= first);
+      CHECK(!(first  >= third));
+      CHECK(third    >= first);
     }
 
     //*************************************************************************
@@ -545,11 +573,39 @@ namespace
     {
       DataNDC data(SIZE, N0);
 
-      DataNDC::const_iterator first  = data.cbegin() + 1;
-      DataNDC::const_iterator second = data.cbegin() + 4;
+      DataNDC::const_iterator first  = data.begin() + 1;
+      DataNDC::const_iterator second = data.begin() + 1;
+      DataNDC::const_iterator third  = data.begin() + 4;
 
-      CHECK(first < second);
+      CHECK(first    == second);
+      CHECK(second   == first);
+      CHECK(!(first  == third));
+      CHECK(!(third  == first));
+
+      CHECK(!(first  != second));
+      CHECK(!(second != first));
+      CHECK(first    != third);
+      CHECK(third    != first);
+
+      CHECK(!(first  < second));
       CHECK(!(second < first));
+      CHECK(first    < third);
+      CHECK(!(third  < first));
+
+      CHECK(first    <= second);
+      CHECK(second   <= first);
+      CHECK(first    <= third);
+      CHECK(!(third  <= first));
+
+      CHECK(!(first  > second));
+      CHECK(!(second > first));
+      CHECK(!(first  > third));
+      CHECK(third    > first);
+
+      CHECK(first    >= second);
+      CHECK(second   >= first);
+      CHECK(!(first  >= third));
+      CHECK(third    >= first);
     }
 
     //*************************************************************************

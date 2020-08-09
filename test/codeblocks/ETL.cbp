@@ -63,6 +63,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-m32" />
+					<Add option="-lpthread" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="${TARGET_OUTPUT_DIR}${TARGET_OUTPUT_BASENAME}" />
@@ -97,6 +98,9 @@
 					<Add option="-D_DEBUG" />
 					<Add option="-DETL_NO_STL" />
 				</Compiler>
+				<Linker>
+					<Add option="-lpthread" />
+				</Linker>
 				<ExtraCommands>
 					<Add after="${TARGET_OUTPUT_DIR}${TARGET_OUTPUT_BASENAME}" />
 					<Mode after="always" />

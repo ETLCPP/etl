@@ -41,7 +41,7 @@ SOFTWARE.
 
 #if ETL_HAS_MUTEX
 
-#if defined(ETL_COMPILER_MICROSOFT)
+#if defined(ETL_TARGET_OS_WINDOWS)
   #include <Windows.h>
 #endif
 

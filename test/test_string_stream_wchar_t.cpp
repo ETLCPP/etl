@@ -59,7 +59,10 @@ namespace
     ss << STR("X = ") << value.x << STR(" : Y = ") << value.y;
     return ss;
   }
+}
 
+namespace etl
+{
   //***********************************
   std::ostream& operator << (std::ostream& os, const IString& str)
   {
@@ -70,6 +73,10 @@ namespace
 
     return os;
   }
+}
+
+namespace
+{
 
   SUITE(test_string_stream)
   {

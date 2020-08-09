@@ -252,7 +252,7 @@ namespace etl
     };
 
   public:
-
+   
     //*************************************************************************
     /// Iterator
     //*************************************************************************
@@ -378,12 +378,6 @@ namespace etl
       }
 
       //***************************************************
-      bool operator <(const iterator& other) const
-      {
-        return ideque::distance(*this, other) > 0;
-      }
-
-      //***************************************************
       friend iterator operator +(const iterator& lhs, difference_type offset)
       {
         iterator result(lhs);
@@ -409,6 +403,38 @@ namespace etl
       friend bool operator != (const iterator& lhs, const iterator& rhs)
       {
         return !(lhs == rhs);
+      }
+
+      //***************************************************
+      friend bool operator < (const iterator& lhs, const iterator& rhs)
+      {
+        const difference_type lhs_index = lhs.get_index();
+        const difference_type rhs_index = rhs.get_index();
+        const difference_type reference_index = lhs.get_deque().begin().get_index();
+        const size_t buffer_size = lhs.get_deque().max_size() + 1;
+
+        const difference_type lhs_distance = (lhs_index < reference_index) ? buffer_size + lhs_index - reference_index : lhs_index - reference_index;
+        const difference_type rhs_distance = (rhs_index < reference_index) ? buffer_size + rhs_index - reference_index : rhs_index - reference_index;
+
+        return lhs_distance < rhs_distance;
+      }
+
+      //***************************************************
+      friend bool operator <= (const iterator& lhs, const iterator& rhs)
+      {
+        return !(lhs > rhs);
+      }
+
+      //***************************************************
+      friend bool operator > (const iterator& lhs, const iterator& rhs)
+      {
+        return (rhs < lhs);
+      }
+
+      //***************************************************
+      friend bool operator >= (const iterator& lhs, const iterator& rhs)
+      {
+        return !(lhs < rhs);
       }
 
       //***************************************************
@@ -438,6 +464,19 @@ namespace etl
       }
 
     private:
+
+      //***************************************************
+      difference_type distance(difference_type firstIndex, difference_type index_) const
+      {
+        if (index_ < firstIndex)
+        {
+          return p_deque->BUFFER_SIZE + index_ - firstIndex;
+        }
+        else
+        {
+          return index_ - firstIndex;
+        }
+      }
 
       //***************************************************
       iterator(difference_type index_, ideque& the_deque, pointer p_buffer_)
@@ -580,11 +619,7 @@ namespace etl
         return &p_buffer[index];
       }
 
-      //***************************************************
-      bool operator <(const const_iterator& other) const
-      {
-        return ideque::distance(*this, other) > 0;
-      }
+
 
       //***************************************************
       friend const_iterator operator +(const const_iterator& lhs, difference_type offset)
@@ -615,6 +650,38 @@ namespace etl
       }
 
       //***************************************************
+      friend bool operator < (const const_iterator& lhs, const const_iterator& rhs)
+      {
+        const difference_type lhs_index = lhs.get_index();
+        const difference_type rhs_index = rhs.get_index();
+        const difference_type reference_index = lhs.get_deque().begin().get_index();
+        const size_t buffer_size = lhs.get_deque().max_size() + 1;
+
+        const difference_type lhs_distance = (lhs_index < reference_index) ? buffer_size + lhs_index - reference_index : lhs_index - reference_index;
+        const difference_type rhs_distance = (rhs_index < reference_index) ? buffer_size + rhs_index - reference_index : rhs_index - reference_index;
+
+        return lhs_distance < rhs_distance;
+      }
+
+      //***************************************************
+      friend bool operator <= (const const_iterator& lhs, const const_iterator& rhs)
+      {
+        return !(lhs > rhs);
+      }
+
+      //***************************************************
+      friend bool operator > (const const_iterator& lhs, const const_iterator& rhs)
+      {
+        return (rhs < lhs);
+      }
+
+      //***************************************************
+      friend bool operator >= (const const_iterator& lhs, const const_iterator& rhs)
+      {
+        return !(lhs < rhs);
+      }
+
+      //***************************************************
       difference_type get_index() const
       {
         return index;
@@ -641,7 +708,7 @@ namespace etl
     private:
 
       //***************************************************
-      difference_type distance(difference_type firstIndex, difference_type index_)
+      difference_type distance(difference_type firstIndex, difference_type index_) const
       {
         if (index_ < firstIndex)
         {

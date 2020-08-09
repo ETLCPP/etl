@@ -41,10 +41,10 @@ SOFTWARE.
 
 namespace
 {
-  using String  = etl::string<50>;
+  using String = etl::string<50>;
   using IString = etl::istring;
-  using Stream  = etl::string_stream;
-  using Format  = etl::format_spec;
+  using Stream = etl::string_stream;
+  using Format = etl::format_spec;
 
   //***********************************
   struct Custom
@@ -59,7 +59,10 @@ namespace
     ss << STR("X = ") << value.x << STR(" : Y = ") << value.y;
     return ss;
   }
+}
 
+namespace etl
+{
   //***********************************
   std::ostream& operator << (std::ostream& os, const IString& str)
   {
@@ -70,7 +73,10 @@ namespace
 
     return os;
   }
+}
 
+namespace
+{
   SUITE(test_string_stream)
   {
     //*************************************************************************

@@ -173,7 +173,13 @@ add_executable(etl_tests
 
 if(UNIX AND NOT APPLE)
   # atomic is need on Linux with Clang
-  target_link_libraries(etl_tests UnitTest++ atomic)
+  set(THREADS_PREFER_PTHREAD_FLAG ON)
+  find_package(Threads REQUIRED)
+  target_link_libraries(etl_tests UnitTest++ atomic Threads::Threads)
+elseif(NOT UNIX AND APPLE)
+  set(THREADS_PREFER_PTHREAD_FLAG ON)
+  find_package(Threads REQUIRED)
+  target_link_libraries(etl_tests UnitTest++)
 else()
   target_link_libraries(etl_tests UnitTest++)
 endif()
