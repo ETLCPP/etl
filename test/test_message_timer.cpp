@@ -601,7 +601,8 @@ namespace
     #define RAISE_THREAD_PRIORITY  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST)
     #define FIX_PROCESSOR_AFFINITY SetThreadAffinityMask(GetCurrentThread(), 1);
   #else
-    #error No thread priority modifier defined
+    #define RAISE_THREAD_PRIORITY
+    #define FIX_PROCESSOR_AFFINITY
   #endif
 
     etl::message_timer<3> controller;

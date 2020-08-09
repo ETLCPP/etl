@@ -571,12 +571,13 @@ namespace
     }
 
     //*************************************************************************
-#if REALTIME_TEST && defined(ETL_COMPILER_MICROSOFT)
+#if REALTIME_TEST
   #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported
     #define RAISE_THREAD_PRIORITY  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST)
     #define FIX_PROCESSOR_AFFINITY SetThreadAffinityMask(GetCurrentThread(), 1);
   #else
-    #error No thread priority modifier defined
+    #define RAISE_THREAD_PRIORITY
+    #define FIX_PROCESSOR_AFFINITY
   #endif
 
     size_t ticks = 0;

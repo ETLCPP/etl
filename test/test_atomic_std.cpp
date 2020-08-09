@@ -32,6 +32,13 @@ SOFTWARE.
 #include "etl/atomic/atomic_std.h"
 
 #include <atomic>
+#include <thread>
+
+#if defined(ETL_TARGET_OS_WINDOWS)
+  #include <Windows.h>
+#endif
+
+#define REALTIME_TEST 1
 
 namespace
 {
@@ -480,5 +487,61 @@ namespace
       CHECK_EQUAL(compare_expected, test_expected);
       CHECK_EQUAL(compare.load(), test.load());
     }
+
+    //=========================================================================
+#if REALTIME_TEST
+
+#if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported
+  #define RAISE_THREAD_PRIORITY  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST)
+  #define FIX_PROCESSOR_AFFINITY1 SetThreadAffinityMask(GetCurrentThread(), 1)
+  #define FIX_PROCESSOR_AFFINITY2 SetThreadAffinityMask(GetCurrentThread(), 2)
+#else
+  #define RAISE_THREAD_PRIORITY
+  #define FIX_PROCESSOR_AFFINITY1
+  #define FIX_PROCESSOR_AFFINITY2
+#endif
+
+    etl::atomic_int32_t atomic_value = 0U;
+    etl::atomic<int>    start = false;
+
+    void thread1()
+    {
+      RAISE_THREAD_PRIORITY;
+      FIX_PROCESSOR_AFFINITY1;
+
+      while (!start.load());
+
+      for (int i = 0; i < 10000000; ++i)
+      {
+        ++atomic_value;
+      }
+    }
+
+    void thread2()
+    {
+      RAISE_THREAD_PRIORITY;
+      FIX_PROCESSOR_AFFINITY2;
+
+      while (!start.load());
+
+      for (int i = 0; i < 10000000; ++i)
+      {
+        --atomic_value;
+      }
+    }
+
+    TEST(test_atomic_multi_thread)
+    {
+      std::thread t1(thread1);
+      std::thread t2(thread2);
+
+      start.store(true);
+
+      t1.join();
+      t2.join();
+
+      CHECK_EQUAL(0, atomic_value.load());
+    }
+#endif
   };
 }
