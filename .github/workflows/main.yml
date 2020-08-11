@@ -16,4 +16,13 @@ jobs:
       with:
           submodules: recursive
 
+    - name: Installing vcpkg
+      run: |
+        cd ..
+        git clone https://github.com/Microsoft/vcpkg.git
+        cd vcpkg
+        git checkout --force 2020.01
+        .\bootstrap-vcpkg.bat
+        .\vcpkg.exe install cppzmq:x64-windows
+
 
