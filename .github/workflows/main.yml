@@ -20,5 +20,4 @@ jobs:
     - name: Build and run
       working-directory: test/vs2019
       run: |
-        msbuild etl.sln /property:Configuration=DebugNoSTL
-        msbuild etl.sln /property:Configuration=Debug
+        msbuild etl.sln /p:Configuration=Debug
