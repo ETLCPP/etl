@@ -18,6 +18,6 @@ jobs:
       uses: warrenbuckley/Setup-MSBuild@v1
 
     - name: Build and run
-      working-directory: test
+      working-directory: test/vs2019
       run: |
         msbuild etl.sln
