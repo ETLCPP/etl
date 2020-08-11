@@ -1,14 +1,14 @@
 name: CI
 on:
   push:
-    branches: [feature/github-actions-for-windows-compilers ]
+    branches: [ feature/github-actions-for-windows-compilers ]
   pull_request:
     branches: [ master ]
 
 jobs:
 
   build-visual-studio:
-    runs-on: [windows]
+    runs-on: windows
 
     steps:
     - name: Checkout
