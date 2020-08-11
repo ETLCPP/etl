@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: [ feature/github-actions-for-windows-compilers ]
+    branches: [ master, feature/github-actions-for-windows-compilers ]
   pull_request:
     branches: [ master ]
 
@@ -20,8 +20,15 @@ jobs:
         cmake ./
         MSBuild etl.sln
 
-    - name: Save artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: Testfile
-        path: test/etl_tests
+  build-visual-studio-no-stl:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup MSBuild.exe
+      uses: warrenbuckley/Setup-MSBuild@v1
+
+    - name: Build and run
+      run: |
+        cmake -DETL_NO_STL ./
+        MSBuild etl.sln
