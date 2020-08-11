@@ -13,18 +13,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-      with:
-          submodules: recursive
-
-    - name: Running cmake
-      run: |
-        cd ${{ github.workspace }}
-        mkdir build
-        cd build
-        cmake .. -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}
 
     - name: Build and run
       run: |
-        cmake -D BUILD_TESTS=ON ./
-        cd build
         MSBuild.exe etl.sln
