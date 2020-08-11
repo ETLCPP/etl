@@ -25,4 +25,16 @@ jobs:
         .\bootstrap-vcpkg.bat
         .\vcpkg.exe install cppzmq:x64-windows
 
+    - name: Running cmake
+      run: |
+        cd ${{ github.workspace }}
+        mkdir build
+        cd build
+        cmake .. -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}
+                  /../vcpkg/scripts/buildsystems/vcpkg.cmake
 
+    - name: Build and run
+      run: |
+        cmake -D BUILD_TESTS=ON ./
+        cd build
+        MSBuild.exe etl.sln
