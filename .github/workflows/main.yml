@@ -14,15 +14,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Installing vcpkg
-      run: |
-        cd ..
-        git clone https://github.com/Microsoft/vcpkg.git
-        cd vcpkg
-        git checkout
-        .\bootstrap-vcpkg.bat
-        .\vcpkg.exe install cppzmq:x64-windows
+    - name: Setup MSBuild.exe
+      uses: warrenbuckley/Setup-MSBuild@v1
 
     - name: Build and run
       run: |
-        MSBuild.exe etl.sln
+        working-directory: test
+        msbuild etl.sln
