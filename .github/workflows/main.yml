@@ -18,7 +18,7 @@ jobs:
     - name: Build and run
       run: |
         cmake -D BUILD_TESTS=ON ./
-        msbuild
+        cmake --build .
         ./test/etl_tests
 
     - name: Save artifacts
