@@ -17,9 +17,8 @@ jobs:
 
     - name: Build and run
       run: |
-        cmake -DBUILD_TESTS=ON -DCMAKE_CXX_COMPILER_ID="MSVC" ./
-        cmake --build .
-        ./test/etl_tests
+        cmake -DBUILD_TESTS=ON ./
+        MSBuild etl.sln
 
     - name: Save artifacts
       uses: actions/upload-artifact@v2
