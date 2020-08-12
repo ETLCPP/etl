@@ -17,7 +17,7 @@ jobs:
 
     - name: Build and run
       run: |
-        cmake -DNO_STL=0 ./
+        cmake ./
         MSBuild etl.sln
 
   build-visual-studio-no-stl:
