@@ -3,6 +3,10 @@ project(etl_unit_tests)
 
 add_definitions(-DETL_DEBUG)
 
+if (NO_STL EQUAL 1)
+	add_definitions(-DETL_NO_STL)
+endif()
+
 if(NOT UnitTest++_FOUND)
   # Add unittest-cpp as an ExternalProject
   include(cmake/unit-test_external_project.cmake)
