@@ -1,4 +1,10 @@
 ===============================================================================
+18.12.5
+Fixed issue for incorrect operation of erase(const_iterator, const_iterator) when 
+the terminating iterator was end() for etl::unordered_map, etl::unordered_multimap,
+etl::unordered_set and etl::unordered_multiset. 
+
+===============================================================================
 18.12.4
 Resolve clang 9 compatibility issues.
 
@@ -84,7 +90,7 @@ Allows set_callback() function to be given run-time and compile-time pointers to
 
 ===============================================================================
 18.3.4
-Changed std::move to etl::move in std::optional and std::queue
+Changed std::move to etl::move in etl::optional and etl::queue
 Fixed etl::span subspan with etl::dynamic_extent
 
 ===============================================================================

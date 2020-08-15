@@ -1444,6 +1444,9 @@
     <None Include="..\..\.github\workflows\main.yml">
       <Filter>Resource Files\CI\Github</Filter>
     </None>
+    <None Include="..\cmake\unit-test_external_project.cmake">
+      <Filter>Resource Files\Make</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\include\etl\file_error_numbers.txt">
@@ -1457,6 +1460,9 @@
     </Text>
     <Text Include="..\..\todo.txt">
       <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="..\..\CMakeLists.txt">
+      <Filter>Resource Files\Make</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
