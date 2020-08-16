@@ -1687,9 +1687,11 @@
     <None Include="..\..\library.json" />
     <None Include="..\..\library.properties" />
     <None Include="..\..\README.md" />
+    <None Include="..\cmake\unit-test_external_project.cmake" />
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="..\..\CMakeLists.txt" />
     <Text Include="..\..\include\etl\file_error_numbers.txt" />
     <Text Include="..\..\support\Release notes.txt" />
     <Text Include="..\..\todo.txt" />
