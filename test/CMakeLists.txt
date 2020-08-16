@@ -172,10 +172,10 @@ set(TEST_SOURCE_FILES
 	test_xor_rotate_checksum.cpp
   )
 
-if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-  list(APPEND TEST_SOURCE_FILES "test_atomic_gcc_sync.cpp")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
-endif()
+#if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+#  list(APPEND TEST_SOURCE_FILES "test_atomic_gcc_sync.cpp")
+#  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
+#endif()
 add_executable(etl_tests
   ${TEST_SOURCE_FILES}
   )
