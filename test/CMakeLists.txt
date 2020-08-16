@@ -8,6 +8,8 @@ option(NO_STL "No STL" OFF)
 if (NO_STL)
 	message(STATUS "Compiling for No STL")
 	add_definitions(-DETL_NO_STL)
+else()
+	message(STATUS "Compiling for STL")
 endif()
 
 if(NOT UnitTest++_FOUND)
