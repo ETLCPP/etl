@@ -18,7 +18,7 @@ jobs:
     - name: Build and run
       run: |
         cmake -DBUILD_TESTS=ON ./
-        MSBuild etl.sln
+        MSBuild etl.sln /property:Configuration=Debug
 
   build-visual-studio-no-stl:
     runs-on: windows-latest
@@ -31,4 +31,4 @@ jobs:
     - name: Build and run
       run: |
         cmake -DBUILD_TESTS=ON -DNO_STL=ON ./
-        MSBuild etl.sln
+        MSBuild etl.sln /property:Configuration=Debug
