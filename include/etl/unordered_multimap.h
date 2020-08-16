@@ -926,7 +926,7 @@ namespace etl
       local_iterator icurrent    = first_.get_local_iterator();
       local_iterator iend        = last_.get_local_iterator(); // Note: May not be in the same bucket as icurrent.
 
-                                                       // Find the node previous to the first one.
+      // Find the node previous to the first one.
       while (iprevious->etl_next != &*icurrent)
       {
         ++iprevious;
