@@ -3,7 +3,9 @@ project(etl_unit_tests)
 
 add_definitions(-DETL_DEBUG)
 
-if (${NO_STL})
+option(NO_STL "No STL" OFF)
+
+if (NO_STL)
 	message(STATUS "Compiling for No STL")
 	add_definitions(-DETL_NO_STL)
 endif()
