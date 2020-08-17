@@ -19,18 +19,5 @@ jobs:
       run: |
         cmake -DBUILD_TESTS=ON ./
         MSBuild etl.sln /property:Configuration=Debug /property:Platform="Any CPU"
-        Debug/etl.exe
+        dir
 
-  build-visual-studio-no-stl:
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Setup MSBuild.exe
-      uses: warrenbuckley/Setup-MSBuild@v1
-
-    - name: Build and run
-      run: |
-        cmake -DBUILD_TESTS=ON ./
-        MSBuild etl.sln /property:Configuration=DebugNoSTL /property:Platform="Any CPU"
-        DebugNoSTL/etl.exe
