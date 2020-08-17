@@ -18,6 +18,7 @@ jobs:
     - name: Build and run
       run: |
         cmake -DBUILD_TESTS=ON ./
-        MSBuild etl.sln /property:Configuration=Debug /property:Platform="Any CPU"
+        cd test/vs2019
         dir
+        MSBuild etl.sln /property:Configuration=Debug /property:Platform="Any CPU"
 
