@@ -20,5 +20,5 @@ jobs:
         cmake -DBUILD_TESTS=ON ./
         cd test/vs2019
         dir
-        MSBuild etl.sln /property:Configuration=Debug /property:Platform="Any CPU"
+        MSBuild etl.sln /property:Configuration="Debug" /property:Platform="Win32"
 
