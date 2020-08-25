@@ -41,7 +41,7 @@ namespace etl
 {
   //***************************************************************************
   /// A pseudo-container that generates points on a line, using Bresenham's
-  ///  line algorithm.
+  /// line algorithm.
   //***************************************************************************
   template <typename TPoint, typename TIntegral = int>
   class bresenham_line
@@ -153,21 +153,19 @@ namespace etl
       dx = (end_.x < start_.x) ? start_.x - end_.x : end_.x - start_.x;
       dy = (end_.y < start_.y) ? start_.y - end_.y : end_.y - start_.y;
 
-      major_axis = (dx < dy) ? Axis::Y : Axis::X;
-
-      if (major_axis == Axis::X)
-      {
-        total_count = dx;
-        dy          *= 2;
-        balance     = dy - dx;
-        dx          *= 2;
-      }
-      else
+      if (is_y_major_axis())
       {
         total_count = dy;
         dx          *= 2;
         balance     = dx - dy;
         dy          *= 2;
+      }
+      else
+      {
+        total_count = dx;
+        dy          *= 2;
+        balance     = dy - dx;
+        dx          *= 2;
       }
 
       current_count = total_count;
@@ -230,35 +228,21 @@ namespace etl
   private:
 
     //***************************************************
-    /// The major axis.
+    /// Returns true if Y is the major axis.
     //***************************************************
-    struct Axis
+    int is_y_major_axis() const
     {
-      enum
-      {
-        X,
-        Y
-      };
-    };
+      return dx < dy;
+    }
 
     //***************************************************
     /// Calculate the next point.
     //***************************************************
     void next()
     {
-      if (major_axis == Axis::X)
+      if (is_y_major_axis())
       {
-        if (do_minor_increment)
-        {
-          current.y += y_increment;
-          balance -= dx;
-        }
-
-        current.x += x_increment;
-        balance += dy;
-      }
-      else
-      {
+        // Y major axis.
         if (do_minor_increment)
         {
           current.x += x_increment;
@@ -267,6 +251,18 @@ namespace etl
 
         current.y += y_increment;
         balance += dx;
+      }
+      else
+      {
+        // X major axis.
+        if (do_minor_increment)
+        {
+          current.y += y_increment;
+          balance -= dx;
+        }
+
+        current.x += x_increment;
+        balance += dy;
       }
 
       --current_count;
@@ -289,8 +285,7 @@ namespace etl
     const TIntegral  y_increment;
     TIntegral        dx;
     TIntegral        dy;
-    TIntegral        major_axis;
-    TIntegral        count;
+    TIntegral        total_count;
     TIntegral        current_count;
     TIntegral        balance;
     bool             do_minor_increment;
