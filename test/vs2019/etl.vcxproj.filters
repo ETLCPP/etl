@@ -879,7 +879,7 @@
     <ClInclude Include="..\..\include\etl\string_utilities.h">
       <Filter>ETL\Strings</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\bresenham.h">
+    <ClInclude Include="..\..\include\etl\bresenham_line.h">
       <Filter>ETL\Pseudo Containers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1392,6 +1392,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_string_utilities_std_u32.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bresenham_line.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
