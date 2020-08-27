@@ -31,21 +31,23 @@ SOFTWARE.
 #ifndef ETL_BRESENHAM_LINE_INCLUDED
 #define ETL_BRESENHAM_LINE_INCLUDED
 
-#include <stddef.h>
+#include <stdint.h>
 
 #include "platform.h"
 #include "iterator.h"
-#include "exception.h"
+#include "static_assert.h"
+#include "type_traits.h"
+#include "utility.h"
 
 namespace etl
 {
   //***************************************************************************
   /// A pseudo-container that generates points on a line, using Bresenham's
   /// line algorithm.
-  /// TCoordinate must support integral x & y members.
-  /// TWorking is the internal working variable type. Default is int.
+  /// T is the type for the etl::coordinate_2d value type.
+  /// TWork is the internal working variable type. Default is int16_t.
   //***************************************************************************
-  template <typename TCoordinate, typename TWorking = int>
+  template <typename T, typename TWork = int16_t>
   class bresenham_line
   {
   public:
@@ -53,15 +55,18 @@ namespace etl
     //***************************************************
     /// Standard container types.
     //***************************************************
-    typedef TCoordinate       value_type;
-    typedef size_t            size_type;
-    typedef ptrdiff_t         difference_type;
-    typedef value_type&       reference;
-    typedef const value_type& const_reference;
-    typedef value_type*       pointer;
-    typedef const value_type* const_pointer;
+    typedef etl::coordinate_2d<T> value_type;
+    typedef size_t                size_type;
+    typedef ptrdiff_t             difference_type;
+    typedef value_type&           reference;
+    typedef const value_type&     const_reference;
+    typedef value_type*           pointer;
+    typedef const value_type*     const_pointer;
 
-    class iterator : public etl::iterator<ETL_OR_STD::forward_iterator_tag, TCoordinate>
+    //***************************************************
+    /// Const Iterator
+    //***************************************************
+    class const_iterator : public etl::iterator<ETL_OR_STD::forward_iterator_tag, const value_type>
     {
     public:
 
@@ -70,7 +75,7 @@ namespace etl
       //***************************************************
       /// Default constructor
       //***************************************************
-      iterator()
+      const_iterator()
         : p_bresenham_line(ETL_NULLPTR)
       {
       }
@@ -78,7 +83,7 @@ namespace etl
       //***************************************************
       /// Copy constuctor
       //***************************************************
-      iterator(const iterator& other)
+      const_iterator(const const_iterator& other)
         : p_bresenham_line(other.p_bresenham_line)
       {
       }
@@ -86,7 +91,7 @@ namespace etl
       //***************************************************
       /// Assignment operator
       //***************************************************
-      iterator& operator =(const iterator& rhs)
+      const_iterator& operator =(const const_iterator& rhs)
       {
         p_bresenham_line = rhs.p_bresenham_line;
 
@@ -96,10 +101,10 @@ namespace etl
       //***************************************************
       /// Pre-increment operator
       //***************************************************
-      iterator& operator ++()
+      const_iterator& operator ++()
       {
         // Has the end of the series has been reached?
-        if (p_bresenham_line->n_coordinates_remaining == TWorking(0))
+        if (p_bresenham_line->n_coordinates_remaining == 0)
         {
           // Mark it as an end iterator.
           p_bresenham_line = ETL_NULLPTR;
@@ -123,7 +128,7 @@ namespace etl
       //***************************************************
       /// Equality operator
       //***************************************************
-      friend bool operator ==(const iterator& lhs, const iterator& rhs)
+      friend bool operator ==(const const_iterator& lhs, const const_iterator& rhs)
       {
         return lhs.p_bresenham_line == rhs.p_bresenham_line;
       }
@@ -131,7 +136,7 @@ namespace etl
       //***************************************************
       /// Inequality operator
       //***************************************************
-      friend bool operator !=(const iterator& lhs, const iterator& rhs)
+      friend bool operator !=(const const_iterator& lhs, const const_iterator& rhs)
       {
         return !(lhs == rhs);
       }
@@ -141,27 +146,101 @@ namespace etl
       //***************************************************
       /// Constructor for use by bresenham_line
       //***************************************************
-      iterator(bresenham_line<TCoordinate, TWorking>* pb)
+      const_iterator(bresenham_line<T>* pb)
         : p_bresenham_line(pb)
       {
       }
 
-      bresenham_line<TCoordinate, TWorking>* p_bresenham_line;
+      bresenham_line<T>* p_bresenham_line;
     };
 
     //***************************************************
     /// Constructor.
     /// Supplied first and last coordinates
     //***************************************************
-    bresenham_line(const_reference first_, const_reference last_)
-      : first(first_)
-      , coordinate(first_)
-      , x_increment((last_.x < first_.x) ? -1 : 1)
-      , y_increment((last_.y < first_.y) ? -1 : 1)
-      , dx((last_.x < first_.x) ? first_.x - last_.x : last_.x - first_.x)
-      , dy((last_.y < first_.y) ? first_.y - last_.y : last_.y - first_.y)
-      , do_minor_increment(false)
+    bresenham_line(etl::coordinate_2d<T> first_, etl::coordinate_2d<T> last_)
     {
+      initialise(first_.x, first_.y, last_.x, last_.y);
+    }
+
+    //***************************************************
+    /// Constructor.
+    /// Supplied first and last coordinates
+    //***************************************************
+    bresenham_line(T first_x, T first_y, T last_x, T last_y)
+    {
+      initialise(first_x, first_y, last_x, last_y);
+    }
+
+    //***************************************************
+    /// Update the line.
+    /// Supplied first and last coordinates
+    //***************************************************
+    void update_line(etl::coordinate_2d<T> first_, etl::coordinate_2d<T> last_)
+    {
+      initialise(first_.x, first_.y, last_.x, last_.y);
+    }
+
+    //***************************************************
+    /// Update the line.
+    /// Supplied first and last coordinates
+    //***************************************************
+    void update_line(T first_x, T first_y, T last_x, T last_y)
+    {
+      initialise(first_x, first_y, last_x, last_y);
+    }
+
+    //***************************************************
+    /// Get a const_iterator to the first coordinate.
+    /// Resets the Bresenham line.
+    //***************************************************
+    const_iterator begin()
+    {
+      n_coordinates_remaining = total_n_coordinates - 1; // We already have the first coordinate.
+      coordinate = first;
+
+      return const_iterator(this);
+    }
+
+    //***************************************************
+    /// Get a const_iterator to one past the last coordinate.
+    //***************************************************
+    const_iterator end() const
+    {
+      return const_iterator();
+    }
+
+    //***************************************************
+    /// Get the size of the series.
+    //***************************************************
+    size_t size() const
+    {
+      return size_t(total_n_coordinates);
+    }
+
+    //***************************************************
+    /// Get the current number of generated points.
+    //***************************************************
+    size_t count() const
+    {
+      return size_t(total_n_coordinates - n_coordinates_remaining);
+    }
+
+  private:
+
+    //***************************************************
+    /// Get the current number of generated points.
+    //***************************************************
+    void initialise(T first_x, T first_y, T last_x, T last_y)
+    {
+      first              = value_type(first_x, first_y);
+      coordinate         = value_type(first_x, first_y);
+      x_increment        = (last_x < first_x) ? -1 : 1;
+      y_increment        = (last_y < first_y) ? -1 : 1;
+      dx                 = (last_x < first_x) ? first_x - last_x : last_x - first_x;
+      dy                 = (last_y < first_y) ? first_y - last_y : last_y - first_y;
+      do_minor_increment = false;
+
       if (is_y_major_axis())
       {
         total_n_coordinates = dy + 1;
@@ -181,47 +260,9 @@ namespace etl
     }
 
     //***************************************************
-    /// Get an iterator to the first coordinate.
-    /// Resets the Bresenham line.
-    //***************************************************
-    iterator begin()
-    {
-      n_coordinates_remaining = total_n_coordinates - 1; // We already have the first coordinate.
-      coordinate = first;
-
-      return iterator(this);
-    }
-
-    //***************************************************
-    /// Get an iterator to one past the last coordinate.
-    //***************************************************
-    iterator end() const
-    {
-      return iterator();
-    }
-
-    //***************************************************
-    /// Get the size of the series.
-    //***************************************************
-    size_t size() const
-    {
-      return total_n_coordinates;
-    }
-
-    //***************************************************
-    /// Get the current number of generated points.
-    //***************************************************
-    size_t count() const
-    {
-      return total_n_coordinates - n_coordinates_remaining;
-    }
-
-  private:
-
-    //***************************************************
     /// Returns true if Y is the major axis.
     //***************************************************
-    int is_y_major_axis() const
+    bool is_y_major_axis() const
     {
       return dx < dy;
     }
@@ -236,11 +277,11 @@ namespace etl
         // Y major axis.
         if (do_minor_increment)
         {
-          coordinate.x += x_increment;
+          coordinate.x = T(coordinate.x + x_increment);
           balance -= dy;
         }
 
-        coordinate.y += y_increment;
+        coordinate.y = T(coordinate.y + y_increment);
         balance += dx;
       }
       else
@@ -248,11 +289,11 @@ namespace etl
         // X major axis.
         if (do_minor_increment)
         {
-          coordinate.y += y_increment;
+          coordinate.y = T(coordinate.y + y_increment);
           balance -= dx;
         }
 
-        coordinate.x += x_increment;
+        coordinate.x = T(coordinate.x + x_increment);
         balance += dy;
       }
 
@@ -269,18 +310,18 @@ namespace etl
       return coordinate;
     }
 
-    typedef TWorking working_t;
+    typedef TWork work_t;
 
-    const value_type  first;
-    value_type        coordinate;
-    const working_t   x_increment;
-    const working_t   y_increment;
-    working_t         dx;
-    working_t         dy;
-    working_t         total_n_coordinates;
-    working_t         n_coordinates_remaining;
-    working_t         balance;
-    bool              do_minor_increment;
+    value_type first;
+    value_type coordinate;
+    work_t     x_increment;
+    work_t     y_increment;
+    work_t     dx;
+    work_t     dy;
+    work_t     total_n_coordinates;
+    work_t     n_coordinates_remaining;
+    work_t     balance;
+    bool       do_minor_increment;
   };
 }
 

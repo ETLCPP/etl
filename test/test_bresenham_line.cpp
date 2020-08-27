@@ -26,6 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
+
 #include "UnitTest++/UnitTest++.h"
 
 #include "etl/bresenham_line.h"
@@ -34,11 +35,9 @@ SOFTWARE.
 
 namespace
 {
-  struct Point
-  {
-    int x;
-    int y;
-  };
+  using Value = char;
+
+  using Point = etl::coordinate_2d<Value>;
 
   bool operator ==(Point lhs, Point rhs)
   {
@@ -47,11 +46,11 @@ namespace
 
   std::ostream& operator << (std::ostream& os, Point point)
   {
-    os << "(" << point.x << "," << point.y << ")";
+    os << "(" << point.x << "," << point.x << ")";
     return os;
   }
 
-  using BresenhamLine = etl::bresenham_line<Point>;
+  using BresenhamLine = etl::bresenham_line<Value>;
 
   SUITE(test_bresenham_line)
   {
@@ -61,15 +60,15 @@ namespace
       Point first = { -5, 5 };
       Point last  = {  5, 5 };
 
-      BresenhamLine bl(first, last);
+      BresenhamLine bl(first.x, first.y, last.x, last.y);
 
-      std::vector<Point> expected{ Point{-5, 5 }, Point{-4, 5 }, Point{-3, 5 }, Point{-2, 5 }, Point{-1, 5 }, Point{ 0, 5 }, 
+      std::vector<Point> expected{ Point{-5, 5 }, Point{-4, 5 }, Point{-3, 5 }, Point{-2, 5 }, Point{-1, 5 }, Point{ 0, 5 },
                                    Point{ 1, 5 }, Point{ 2, 5 }, Point{ 3, 5 }, Point{ 4, 5 }, Point{ 5, 5} };
       std::vector<Point> actual;
 
       CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
-      for (BresenhamLine::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
@@ -93,7 +92,7 @@ namespace
 
       CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
-      for (BresenhamLine::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
@@ -117,7 +116,7 @@ namespace
 
       CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
-      for (BresenhamLine::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
@@ -141,7 +140,7 @@ namespace
 
       CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
-      for (BresenhamLine::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
@@ -165,7 +164,7 @@ namespace
 
       CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
-      for (BresenhamLine::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
@@ -189,7 +188,7 @@ namespace
 
       CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
-      for (BresenhamLine::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
@@ -213,7 +212,7 @@ namespace
 
       CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
-      for (BresenhamLine::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
@@ -237,7 +236,7 @@ namespace
 
       CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
-      for (BresenhamLine::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
@@ -261,7 +260,7 @@ namespace
 
       CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
-      for (BresenhamLine::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
@@ -285,7 +284,7 @@ namespace
 
       CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
-      for (BresenhamLine::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
@@ -309,7 +308,7 @@ namespace
 
       CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
-      for (BresenhamLine::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
@@ -333,7 +332,65 @@ namespace
 
       CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
-      for (BresenhamLine::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      {
+        actual.push_back(*itr);
+      }
+
+      CHECK_EQUAL(expected.size(), bl.count());
+      CHECK_EQUAL(expected.size(), actual.size());
+      CHECK_ARRAY_EQUAL(expected.data(), actual.data(), (std::max(expected.size(), actual.size())));
+    }
+
+    //*************************************************************************
+    TEST(update_the_line_from_coordinate_2d)
+    {
+      Point first = { 3,  -5 };
+      Point last  = { -3,  5 };
+
+      BresenhamLine bl(first, last);
+
+      Point new_first = { -3,  5 };
+      Point new_last  = {  3, -5 };
+
+      bl.update_line(new_first, new_last);
+
+      std::vector<Point> expected{ Point{ -3,  5 }, Point{ -3,  4 }, Point{ -2,  3 }, Point{ -1,  2 }, Point{ -1,  1 }, Point{ 0, 0 },
+                                   Point{  1, -1 }, Point{  1, -2 }, Point{  2, -3 }, Point{  2, -4 }, Point{  3, -5 } };
+      std::vector<Point> actual;
+
+      CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
+
+      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      {
+        actual.push_back(*itr);
+      }
+
+      CHECK_EQUAL(expected.size(), bl.count());
+      CHECK_EQUAL(expected.size(), actual.size());
+      CHECK_ARRAY_EQUAL(expected.data(), actual.data(), (std::max(expected.size(), actual.size())));
+    }
+
+    //*************************************************************************
+    TEST(update_the_line_from_individual_coordinates)
+    {
+      Point first = { 3,  -5 };
+      Point last = { -3,  5 };
+
+      BresenhamLine bl(first, last);
+
+      Point new_first = { -3,  5 };
+      Point new_last = { 3, -5 };
+
+      bl.update_line(new_first.x, new_first.y, new_last.x, new_last.y);
+
+      std::vector<Point> expected{ Point{ -3,  5 }, Point{ -3,  4 }, Point{ -2,  3 }, Point{ -1,  2 }, Point{ -1,  1 }, Point{ 0, 0 },
+                                   Point{  1, -1 }, Point{  1, -2 }, Point{  2, -3 }, Point{  2, -4 }, Point{  3, -5 } };
+      std::vector<Point> actual;
+
+      CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
+
+      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }

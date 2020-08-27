@@ -328,6 +328,27 @@ namespace etl
   {
     return t;
   }
+
+  //******************************************************************************
+  /// 2D coordinate type.
+  template <typename T>
+  struct coordinate_2d
+  {
+    coordinate_2d()
+      : x(T(0))
+      , y(T(0))
+    {
+    }
+
+    coordinate_2d(T x_, T y_)
+      : x(x_)
+      , y(y_)
+    {
+    }
+
+    T x;
+    T y;
+  };
 }
 
 #endif
