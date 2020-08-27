@@ -447,8 +447,7 @@ namespace etl
     istack& operator = (istack&& rhs)
     {
       if (&rhs != this)
-      {
-        clear();
+      {        
         clone(etl::move(rhs));
       }
 
@@ -463,6 +462,8 @@ namespace etl
     //*************************************************************************
     void clone(const istack& other)
     {
+      clear();
+
       size_t index = 0;
 
       for (size_t i = 0; i < other.size(); ++i)
@@ -477,6 +478,8 @@ namespace etl
     //*************************************************************************
     void clone(istack&& other)
     {
+      clear();
+
       size_t index = 0;
 
       for (size_t i = 0; i < other.size(); ++i)
