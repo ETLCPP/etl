@@ -437,6 +437,10 @@ namespace
 
       etl::stack<int, 4> stack2;
 
+      // These should be overwritten.
+      stack2.push(5);
+      stack2.push(6);
+
       stack2 = stack;
 
       CHECK(stack.size() == stack2.size());

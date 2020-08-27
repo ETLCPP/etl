@@ -1,4 +1,8 @@
 ===============================================================================
+18.12.6
+Fixed etl::stack top level assignment operator not clearing before copy.
+
+===============================================================================
 18.12.5
 Fixed issue for incorrect operation of erase(const_iterator, const_iterator) when 
 the terminating iterator was end() for etl::unordered_map, etl::unordered_multimap,

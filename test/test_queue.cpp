@@ -485,6 +485,10 @@ namespace
 
       etl::queue<int, 4> queue2;
 
+      // These should be overwritten.
+      queue2.push(5);
+      queue2.push(6);
+
       queue2 = queue;
 
       CHECK(queue.size() == queue2.size());
