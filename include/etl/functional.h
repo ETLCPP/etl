@@ -62,7 +62,7 @@ namespace etl
       return *t;
     }
 
-    reference_wrapper<T>& operator = (T value)
+    reference_wrapper<T>& operator = (T& value)
     {
       *t = value;
       return *this;
