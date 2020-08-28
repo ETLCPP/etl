@@ -184,7 +184,7 @@ namespace etl
         return reinterpret_cast<const T*>(data);
       }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_CPP11_SUPPORTED && !defined(ETL_COMPILER_ARM5)
       alignas(ALIGNMENT) char data[LENGTH];
 #else
       union

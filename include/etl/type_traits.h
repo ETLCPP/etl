@@ -751,7 +751,7 @@ namespace etl
   //***************************************************************************
   /// Alignment templates.
   /// These require compiler specific intrinsics.
-#if ETL_CPP11_SUPPORTED
+#if ETL_CPP11_SUPPORTED && !defined(ETL_COMPILER_ARM5)
   template <typename T> struct alignment_of : integral_constant<size_t, alignof(T)> { };
 #elif ETL_COMPILER_MICROSOFT
   template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof(T))> {};
