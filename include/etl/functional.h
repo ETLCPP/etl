@@ -52,23 +52,23 @@ namespace etl
 
     typedef T type;
 
-    explicit reference_wrapper(T& t_)
+    ETL_CONSTEXPR20 explicit reference_wrapper(T& t_) ETL_NOEXCEPT
       : t(&t_)
     {
     }
 
-    operator T& () const
+    ETL_CONSTEXPR20 reference_wrapper<T>& operator = (const reference_wrapper& rhs) ETL_NOEXCEPT
+    {
+      t = rhs.t;
+      return *this;
+    }
+
+    ETL_CONSTEXPR20 T& get() const ETL_NOEXCEPT
     {
       return *t;
     }
 
-    reference_wrapper<T>& operator = (T& value)
-    {
-      *t = value;
-      return *this;
-    }
-
-    T& get() const
+    ETL_CONSTEXPR20 operator T&() const ETL_NOEXCEPT
     {
       return *t;
     }

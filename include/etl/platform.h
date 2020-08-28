@@ -159,9 +159,11 @@ SOFTWARE.
 #if ETL_CPP20_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)
 #define ETL_LIKELY [[likely]]
 #define ETL_UNLIKELY [[unlikely]]
+#define ETL_CONSTEXPR20 constexpr
 #else
 #define ETL_LIKELY
 #define ETL_UNLIKELY
+#define ETL_CONSTEXPR20
 #endif
 
 // Sort out namespaces for STL/No STL options.

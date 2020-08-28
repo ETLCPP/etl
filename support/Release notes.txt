@@ -1,4 +1,8 @@
 ===============================================================================
+18.12.7
+Made etl::reference_wrapper API closer to the STL version. Does not support invocation of a callable object.
+
+===============================================================================
 18.12.6
 Fixed etl::stack top level assignment operator not clearing before copy.
 
