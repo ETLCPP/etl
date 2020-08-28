@@ -88,7 +88,7 @@ namespace etl
     void add_boolean(const bool value,
                      TIString& str,
                      const etl::basic_format_spec<TIString>& format,
-                     const bool append)
+                     bool append)
     {
       typedef typename TIString::value_type type;
       typedef typename TIString::iterator   iterator;
@@ -136,7 +136,7 @@ namespace etl
     void add_integral(T value,
                       TIString& str,
                       const etl::basic_format_spec<TIString>& format,
-                      const bool append)
+                      bool append)
     {
       typedef typename TIString::value_type type;
       typedef typename TIString::iterator   iterator;
@@ -165,9 +165,40 @@ namespace etl
         }
 
         // If number is negative, append '-'
-        if ((format.get_base() == 10) && negative)
+        if ((format.get_base() == 10U) && negative)
         {
           str.push_back(type('-'));
+        }
+
+        if (format.is_show_base())
+        {
+          switch (format.get_base())
+          {
+            case 2U:
+            {
+              str.push_back(format.is_upper_case() ? type('B') : type('b'));
+              str.push_back(type('0'));
+              break;
+            }
+
+            case 8U:
+            {
+              str.push_back(type('0'));
+              break;
+            }
+
+            case 16U:
+            {
+              str.push_back(format.is_upper_case() ? type('X') : type('x'));
+              str.push_back(type('0'));
+              break;
+            }
+
+            default:
+            {
+              break;
+            }
+          }
         }
 
         // Reverse the string we appended.
@@ -228,7 +259,7 @@ namespace etl
     void add_floating_point(T value,
                             TIString& str,
                             const etl::basic_format_spec<TIString>& format,
-                            const bool append)
+                            bool append)
     {
       typedef typename TIString::iterator   iterator;
       typedef typename TIString::value_type type;
@@ -289,22 +320,64 @@ namespace etl
     void add_pointer(const volatile void* value,
                      TIString& str,
                      const etl::basic_format_spec<TIString>& format,
-                     const bool append)
+                     bool append)
     {
       uintptr_t p = reinterpret_cast<uintptr_t>(value);
 
       return etl::private_to_string::add_integral(p, str, format, append);
     }
 
+    //***************************************************************************
+    /// Helper function for strings.
+    //***************************************************************************
+    template <typename TIString>
+    void add_string(const TIString& value,
+                    TIString& str,
+                    const etl::basic_format_spec<TIString>& format,
+                    bool append)
+    {
+      if (!append)
+      {
+        str.clear();
+      }
+
+      typename TIString::iterator start = str.end();
+
+      str.insert(str.end(), value.begin(), value.end());
+
+      etl::private_to_string::add_alignment(str, start, format);
+    }
+
+    //***************************************************************************
+    /// Helper function for string views.
+    //***************************************************************************
+    template <typename TSringView, typename TIString>
+    void add_string_view(const TSringView& value,
+                         TIString& str,
+                         const etl::basic_format_spec<TIString>& format,
+                         bool append)
+    {
+      if (!append)
+      {
+        str.clear();
+      }
+
+      typename TIString::iterator start = str.end();
+
+      str.insert(str.end(), value.begin(), value.end());
+
+      etl::private_to_string::add_alignment(str, start, format);
+    }
+
     //*********************************************************************************************************
 
     //***************************************************************************
     /// For booleans. Default format spec.
-    //***************************************************************************etl::basic_format_spec<TIString>
+    //***************************************************************************
     template <typename TIString>
     const TIString& to_string(const bool value,
                               TIString& str,
-                              const bool append = false)
+                              bool append = false)
     {
       etl::basic_format_spec<TIString> format;
 
@@ -320,7 +393,7 @@ namespace etl
     const TIString& to_string(const bool value,
                               TIString& str,
                               const etl::basic_format_spec<TIString>& format,
-                              const bool append = false)
+                              bool append = false)
     {
       etl::private_to_string::add_boolean(value, str, format, append);
 
@@ -333,7 +406,7 @@ namespace etl
     template <typename TIString>
     const TIString& to_string(const volatile void* value,
                               TIString& str,
-                              const bool append = false)
+                              bool append = false)
     {
       etl::basic_format_spec<TIString> format;
 
@@ -349,7 +422,7 @@ namespace etl
     const TIString& to_string(const volatile void* value,
                               TIString& str,
                               const etl::basic_format_spec<TIString>& format,
-                              const bool append = false)
+                              bool append = false)
     {
       etl::private_to_string::add_pointer(value, str, format, append);
 
@@ -364,7 +437,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value &&
                             etl::is_signed<T>::value &&
                             !etl::is_same<T, bool>::value>::value, const TIString& > ::type
-      to_string(const T value, TIString& str, const bool append = false)
+      to_string(const T value, TIString& str, bool append = false)
     {
       etl::basic_format_spec<TIString> format;
 
@@ -380,7 +453,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value &&
                             etl::is_signed<T>::value &&
                             !etl::is_same<T, bool>::value>::value, const TIString& > ::type
-      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
+      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, bool append = false)
     {
       etl::private_to_string::add_integral(int32_t(value), str, format, append);
 
@@ -394,7 +467,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value &&
                             etl::is_unsigned<T>::value &&
                             !etl::is_same<T, bool>::value>::value, const TIString& > ::type
-      to_string(const T value, TIString& str, const bool append = false)
+      to_string(const T value, TIString& str, bool append = false)
     {
       etl::basic_format_spec<TIString> format;
 
@@ -410,7 +483,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value &&
                             etl::is_unsigned<T>::value &&
                             !etl::is_same<T, bool>::value>::value, const TIString& > ::type
-      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
+      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, bool append = false)
     {
       etl::private_to_string::add_integral(uint32_t(value), str, format, append);
 
@@ -425,7 +498,7 @@ namespace etl
                             etl::is_signed<T>::value &&
                             !etl::is_same<T, bool>::value &&
                             !etl::is_same<T, int64_t>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const bool append = false)
+      to_string(const T value, TIString& str, bool append = false)
     {
       etl::basic_format_spec<TIString> format;
 
@@ -442,7 +515,7 @@ namespace etl
                             etl::is_signed<T>::value &&
                             !etl::is_same<T, bool>::value &&
                             !etl::is_same<T, int64_t>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
+      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, bool append = false)
     {
       etl::private_to_string::add_integral(int32_t(value), str, format, append);
 
@@ -457,7 +530,7 @@ namespace etl
                             etl::is_unsigned<T>::value &&
                             !etl::is_same<T, bool>::value &&
                             !etl::is_same<T, uint64_t>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const bool append = false)
+      to_string(const T value, TIString& str, bool append = false)
     {
       etl::basic_format_spec<TIString> format;
 
@@ -474,7 +547,7 @@ namespace etl
                             etl::is_unsigned<T>::value &&
                             !etl::is_same<T, bool>::value &&
                             !etl::is_same<T, uint64_t>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
+      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, bool append = false)
     {
       etl::private_to_string::add_integral(uint32_t(value), str, format, append);
 
@@ -489,7 +562,7 @@ namespace etl
                             etl::is_signed<T>::value &&
                             !etl::is_same<T, bool>::value &&
                             etl::is_same<T, int64_t>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const bool append = false)
+      to_string(const T value, TIString& str, bool append = false)
     {
       etl::basic_format_spec<TIString> format;
 
@@ -506,7 +579,7 @@ namespace etl
                             etl::is_signed<T>::value &&
                             !etl::is_same<T, bool>::value &&
                             etl::is_same<T, int64_t>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
+      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, bool append = false)
     {
       etl::private_to_string::add_integral(int64_t(value), str, format, append);
 
@@ -521,7 +594,7 @@ namespace etl
                             etl::is_unsigned<T>::value &&
                             !etl::is_same<T, bool>::value &&
                             etl::is_same<T, uint64_t>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const bool append = false)
+      to_string(const T value, TIString& str, bool append = false)
     {
       etl::basic_format_spec<TIString> format;
 
@@ -538,7 +611,7 @@ namespace etl
                             etl::is_unsigned<T>::value &&
                             !etl::is_same<T, bool>::value &&
                             etl::is_same<T, uint64_t>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
+      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, bool append = false)
     {
       etl::private_to_string::add_integral(uint64_t(value), str, format, append);
 
@@ -551,7 +624,7 @@ namespace etl
     //***************************************************************************
     template <typename T, typename TIString>
     typename etl::enable_if<etl::is_floating_point<T>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const bool append = false)
+      to_string(const T value, TIString& str, bool append = false)
     {
       etl::basic_format_spec<TIString> format;
 
@@ -565,7 +638,7 @@ namespace etl
     //***************************************************************************
     template <typename T, typename TIString>
     typename etl::enable_if<etl::is_floating_point<T>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
+      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, bool append = false)
     {
       etl::private_to_string::add_floating_point(value, str, format, append);
 

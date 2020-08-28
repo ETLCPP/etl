@@ -308,12 +308,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-      base_t::initialise();
-
-      while (first != last)
-      {
-        *p_end++ = (void*)*first++;
-      }
+      base_t::assign(first, last);
     }
 
     //*********************************************************************
@@ -418,13 +413,22 @@ namespace etl
     //*************************************************************************
     ivector& operator = (const ivector& rhs)
     {
-      if (&rhs != this)
-      {
-        assign(rhs.cbegin(), rhs.cend());
-      }
+      base_t::operator = (rhs);
 
       return *this;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    ivector& operator = (ivector&& rhs)
+    {
+      (void)base_t::operator = (etl::move(rhs));
+
+      return *this;
+    }
+#endif
 
 #ifdef ETL_IVECTOR_REPAIR_ENABLE
     //*************************************************************************
@@ -441,24 +445,6 @@ namespace etl
     ivector(T** p_buffer_, size_t MAX_SIZE_)
       : pvoidvector(reinterpret_cast<void**>(p_buffer_), MAX_SIZE_)
     {
-    }
-
-    //*********************************************************************
-    /// Initialise the source vector after a move.
-    //*********************************************************************
-    void initialise_source_external_buffer_after_move()
-    {
-      ETL_SUBTRACT_DEBUG_COUNT(int32_t(etl::distance(p_buffer, p_end)))
-
-        p_end = p_buffer;
-    }
-
-    //*********************************************************************
-    /// Initialise the destination vector after a move.
-    //*********************************************************************
-    void initialise_destination_external_buffer_after_move()
-    {
-      ETL_ADD_DEBUG_COUNT(int32_t(etl::distance(p_buffer, p_end)))
     }
   };
 
@@ -726,12 +712,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-      base_t::initialise();
-
-      while (first != last)
-      {
-        *p_end++ = (void*)*first++;
-      }
+      base_t::assign(first, last);
     }
 
     //*********************************************************************
@@ -836,13 +817,22 @@ namespace etl
     //*************************************************************************
     ivector& operator = (const ivector& rhs)
     {
-      if (&rhs != this)
-      {
-        assign(rhs.cbegin(), rhs.cend());
-      }
+      base_t::operator = (rhs);
 
       return *this;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    ivector& operator = (ivector&& rhs)
+    {
+      (void)base_t::operator = (etl::move(rhs));
+
+      return *this;
+    }
+#endif
 
 #ifdef ETL_IVECTOR_REPAIR_ENABLE
     //*************************************************************************
@@ -859,24 +849,6 @@ namespace etl
     ivector(const T** p_buffer_, size_t MAX_SIZE_)
       : pvoidvector(reinterpret_cast<void**>(const_cast<T**>(p_buffer_)), MAX_SIZE_)
     {
-    }
-
-    //*********************************************************************
-    /// Initialise the source vector after a move.
-    //*********************************************************************
-    void initialise_source_external_buffer_after_move()
-    {
-      ETL_SUBTRACT_DEBUG_COUNT(int32_t(etl::distance(p_buffer, p_end)))
-
-        p_end = p_buffer;
-    }
-
-    //*********************************************************************
-    /// Initialise the destination vector after a move.
-    //*********************************************************************
-    void initialise_destination_external_buffer_after_move()
-    {
-      ETL_ADD_DEBUG_COUNT(int32_t(etl::distance(p_buffer, p_end)))
     }
   };
 

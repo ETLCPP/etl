@@ -1829,6 +1829,59 @@ namespace etl
       join(terminal_node, terminal_node);
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move a forward list
+    //*************************************************************************
+    void move_container(ilist&& rhs)
+    {
+      if (&rhs != this)
+      {
+        this->initialise();
+
+        if (!rhs.empty())
+        {
+          // Are we using the same pool?
+          if (this->get_node_pool() == rhs.get_node_pool())
+          {
+            node_t* p_rhs_node = &rhs.get_head();
+
+            // Just link the nodes to the new forward_list.
+            do
+            {
+              ETL_ASSERT(!full(), ETL_ERROR(list_full));
+
+              node_t* p_node = p_rhs_node;
+              p_rhs_node = p_rhs_node->next;
+              insert_node(terminal_node, *p_node);
+
+              ETL_INCREMENT_DEBUG_COUNT;
+
+            } while (p_rhs_node != &rhs.terminal_node);
+
+            ETL_OBJECT_RESET_DEBUG_COUNT(rhs);
+            rhs.join(rhs.terminal_node, rhs.terminal_node);
+          }
+          else
+          {
+            // Add all of the elements.
+            etl::ilist<T>::iterator first = rhs.begin();
+            etl::ilist<T>::iterator last = rhs.end();
+
+            while (first != last)
+            {
+              ETL_ASSERT(!full(), ETL_ERROR(list_full));
+
+              insert_node(terminal_node, this->allocate_data_node(etl::move(*first++)));
+            }
+
+            rhs.initialise();
+          }
+        }
+      }
+    }
+#endif
+
   private:
 
     //*************************************************************************
@@ -2090,23 +2143,11 @@ namespace etl
 
 #if ETL_CPP11_SUPPORTED
     //*************************************************************************
-    /// Assignment operator.
+    /// Move assignment operator.
     //*************************************************************************
     list& operator = (list&& rhs)
     {
-      if (&rhs != this)
-      {
-        this->initialise();
-
-        typename etl::ilist<T>::iterator itr = rhs.begin();
-        while (itr != rhs.end())
-        {
-          this->push_back(etl::move(*itr));
-          ++itr;
-        }
-
-        rhs.initialise();
-      }
+      this->move_container(etl::move(rhs));
 
       return *this;
     }
@@ -2178,7 +2219,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Copy constructor.
+    /// Copy constructor. Implicit pool.
     //*************************************************************************
     list(const list& other)
       : etl::ilist<T>(*other.p_node_pool, other.p_node_pool->max_size(), true)
@@ -2189,26 +2230,35 @@ namespace etl
       }
     }
 
+    //*************************************************************************
+    /// Copy constructor. Explicit pool.
+    //*************************************************************************
+    list(const list& other, etl::ipool& node_pool)
+      : etl::ilist<T>(node_pool, node_pool.max_size(), true)
+    {
+      if (this != &other)
+      {
+        this->assign(other.cbegin(), other.cend());
+      }
+    }
+
 #if ETL_CPP11_SUPPORTED
     //*************************************************************************
-    /// Move constructor.
+    /// Move constructor. Implicit pool.
     //*************************************************************************
     list(list&& other)
       : etl::ilist<T>(*other.p_node_pool, other.p_node_pool->max_size(), true)
     {
-      if (this != &other)
-      {
-        this->initialise();
+      this->move_container(etl::move(other));
+    }
 
-        typename etl::ilist<T>::iterator itr = other.begin();
-        while (itr != other.end())
-        {
-          this->push_back(etl::move(*itr));
-          ++itr;
-        }
-
-        other.initialise();
-      }
+    //*************************************************************************
+    /// Move constructor. Explicit pool.
+    //*************************************************************************
+    list(list&& other, etl::ipool& node_pool)
+      : etl::ilist<T>(node_pool, node_pool.max_size(), true)
+    {
+      this->move_container(etl::move(other));
     }
 #endif
 
@@ -2252,19 +2302,7 @@ namespace etl
     //*************************************************************************
     list& operator = (list&& rhs)
     {
-      if (&rhs != this)
-      {
-        this->initialise();
-
-        typename etl::ilist<T>::iterator itr = rhs.begin();
-        while (itr != rhs.end())
-        {
-          this->push_back(etl::move(*itr));
-          ++itr;
-        }
-
-        rhs.initialise();
-      }
+      this->move_container(etl::move(rhs));
 
       return *this;
     }
@@ -2282,6 +2320,14 @@ namespace etl
       }
 
       this->set_node_pool(pool);
+    }
+
+    //*************************************************************************
+    /// Get the pool instance.
+    //*************************************************************************
+    etl::ipool& get_pool() const
+    {
+      return *this->p_node_pool;
     }
   };
 

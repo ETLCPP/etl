@@ -460,6 +460,52 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_range_first_half)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      DataNDC::iterator end = data.begin();
+      etl::advance(end, data.size() / 2);
+
+      auto itr = data.erase(data.begin(), end);
+
+      CHECK_EQUAL(initial_data.size() / 2, data.size());
+      CHECK(!data.full());
+      CHECK(!data.empty());
+      CHECK(itr == end);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_range_last_half)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      DataNDC::iterator begin = data.begin();
+      etl::advance(begin, data.size() / 2);
+
+      auto itr = data.erase(begin, data.end());
+
+      CHECK_EQUAL(initial_data.size() / 2, data.size());
+      CHECK(!data.full());
+      CHECK(!data.empty());
+      CHECK(itr == data.end());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_range_all)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      auto itr = data.erase(data.begin(), data.end());
+
+      CHECK_EQUAL(0U, data.size());
+      CHECK(!data.full());
+      CHECK(data.empty());
+      CHECK(itr == data.end());
+    }
+
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_clear)
     {
       DataNDC data(initial_data.begin(), initial_data.end());

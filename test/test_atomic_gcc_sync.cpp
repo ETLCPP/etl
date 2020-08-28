@@ -32,6 +32,9 @@ SOFTWARE.
 #include "etl/atomic/atomic_gcc_sync.h"
 
 #include <atomic>
+#include <thread>
+
+#define REALTIME_TEST 1
 
 namespace
 {
@@ -480,5 +483,44 @@ namespace
       CHECK_EQUAL(compare_expected, test_expected);
       CHECK_EQUAL(compare.load(), test.load());
     }
+
+    //=========================================================================
+    #if REALTIME_TEST
+    etl::atomic_int32_t atomic_value = 0U;
+    etl::atomic<int>    atomic_flag  = false;
+
+    void thread1()
+    {
+      while (!atomic_flag.load());
+
+      for (int i = 0; i < 10000000; ++i)
+      {
+        ++atomic_value;
+      }
+    }
+
+    void thread2()
+    {
+      while (!atomic_flag.load());
+
+      for (int i = 0; i < 10000000; ++i)
+      {
+        --atomic_value;
+      }
+    }
+
+    TEST(test_atomic_multi_thread)
+    {
+      std::thread t1(thread1);
+      std::thread t2(thread2);
+
+      atomic_flag.store(true);
+
+      t1.join();
+      t2.join();
+
+      CHECK_EQUAL(0, atomic_value.load());
+    }
+    #endif
   };
 }

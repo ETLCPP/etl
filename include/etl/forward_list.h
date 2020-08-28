@@ -1478,23 +1478,50 @@ namespace etl
       {
         this->initialise();
 
-        node_t* p_last_node = &start_node;
-
-        etl::iforward_list<T>::iterator first = rhs.begin();
-        etl::iforward_list<T>::iterator last = rhs.end();
-
-        // Add all of the elements.
-        while (first != last)
+        if (!rhs.empty())
         {
-          ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
+          node_t* p_last_node = &this->start_node;
+          node_t* p_rhs_node  = rhs.start_node.next;
 
-          data_node_t& data_node = this->allocate_data_node(etl::move(*first++));
-          join(p_last_node, &data_node);
-          data_node.next = ETL_NULLPTR;
-          p_last_node = &data_node;
+          // Are we using the same pool?
+          if (this->get_node_pool() == rhs.get_node_pool())
+          {
+            // Just link the nodes to the new forward_list.
+            do
+            {
+              node_t* p_node = p_rhs_node;
+              p_rhs_node = p_rhs_node->next;
+
+              insert_node_after(*p_last_node, *p_node);
+
+              p_last_node = p_node;
+
+              ETL_INCREMENT_DEBUG_COUNT;
+
+            } while (p_rhs_node != ETL_NULLPTR);
+
+            ETL_OBJECT_RESET_DEBUG_COUNT(rhs);
+            rhs.start_node.next = ETL_NULLPTR;
+          }
+          else
+          {
+            // Add all of the elements.
+            etl::iforward_list<T>::iterator first = rhs.begin();
+            etl::iforward_list<T>::iterator last = rhs.end();
+
+            while (first != last)
+            {
+              ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
+
+              data_node_t& data_node = this->allocate_data_node(etl::move(*first++));
+              join(p_last_node, &data_node);
+              data_node.next = ETL_NULLPTR;
+              p_last_node = &data_node;
+            }
+
+            rhs.initialise();
+          }
         }
-
-        rhs.initialise();
       }
     }
 #endif
@@ -1762,7 +1789,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Copy constructor.
+    /// Copy constructor. Implicit pool.
     //*************************************************************************
     forward_list(const forward_list& other)
       : etl::iforward_list<T>(*other.p_node_pool, other.p_node_pool->max_size(), true)
@@ -1770,26 +1797,32 @@ namespace etl
       this->assign(other.cbegin(), other.cend());
     }
 
+    //*************************************************************************
+    /// Copy constructor. Explicit pool.
+    //*************************************************************************
+    forward_list(const forward_list& other, etl::ipool& node_pool)
+      : etl::iforward_list<T>(node_pool, node_pool.max_size(), true)
+    {
+      this->assign(other.cbegin(), other.cend());
+    }
+
 #if ETL_CPP11_SUPPORTED
     //*************************************************************************
-    /// Move constructor.
+    /// Move constructor. Implicit pool
     //*************************************************************************
     forward_list(forward_list&& other)
       : etl::iforward_list<T>(*other.p_node_pool, other.p_node_pool->max_size(), true)
     {
-      if (this != &other)
-      {
-        this->initialise();
+      this->move_container(std::move(other));
+    }
 
-        typename etl::iforward_list<T>::iterator itr = other.begin();
-        while (itr != other.end())
-        {
-          this->push_back(etl::move(*itr));
-          ++itr;
-        }
-
-        other.initialise();
-      }
+    //*************************************************************************
+    /// Move constructor. Explicit pool
+    //*************************************************************************
+    forward_list(forward_list&& other, etl::ipool& node_pool)
+      : etl::iforward_list<T>(node_pool, node_pool.max_size(), true)
+    {
+      this->move_container(std::move(other));
     }
 #endif
 
@@ -1859,6 +1892,14 @@ namespace etl
       }
 
       this->set_node_pool(pool);
+    }
+
+    //*************************************************************************
+    /// Get the pool instance.
+    //*************************************************************************
+    etl::ipool& get_pool() const
+    {
+      return *this->p_node_pool;
     }
   };
 

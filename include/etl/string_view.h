@@ -154,7 +154,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Construct from iterator/size.
+    /// Construct from pointer/size.
     //*************************************************************************
     ETL_CONSTEXPR17 basic_string_view(const T* begin_, size_t size_)
       : mbegin(begin_)

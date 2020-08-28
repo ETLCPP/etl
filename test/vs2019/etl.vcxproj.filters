@@ -76,6 +76,9 @@
     <Filter Include="Resource Files\CI\CircleCI">
       <UniqueIdentifier>{0d5824b1-3ef9-43e0-b2d5-15d6246b843e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\CI\Github">
+      <UniqueIdentifier>{c25471f3-451a-4279-925d-cbdcec912ef8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -855,6 +858,24 @@
     <ClInclude Include="..\..\include\etl\parameter_pack.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\string_stream.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\wstring_stream.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\u16string_stream.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\u32string_stream.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\basic_string_stream.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\string_utilities.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1331,6 +1352,42 @@
     <ClCompile Include="..\test_parameter_pack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_string_stream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_stream_u16.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_stream_u32.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_stream_wchar_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_wchar_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_u16.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_u32.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_std.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_std_wchar_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_std_u16.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_std_u32.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -1384,6 +1441,12 @@
     <None Include="..\..\.circleci\config.yml">
       <Filter>Resource Files\CI\CircleCI</Filter>
     </None>
+    <None Include="..\..\.github\workflows\main.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\cmake\unit-test_external_project.cmake">
+      <Filter>Resource Files\Make</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\include\etl\file_error_numbers.txt">
@@ -1397,6 +1460,9 @@
     </Text>
     <Text Include="..\..\todo.txt">
       <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="..\..\CMakeLists.txt">
+      <Filter>Resource Files\Make</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

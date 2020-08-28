@@ -1,4 +1,107 @@
 ===============================================================================
+18.12.6
+Fixed etl::stack top level assignment operator not clearing before copy.
+
+===============================================================================
+18.12.5
+Fixed issue for incorrect operation of erase(const_iterator, const_iterator) when 
+the terminating iterator was end() for etl::unordered_map, etl::unordered_multimap,
+etl::unordered_set and etl::unordered_multiset. 
+
+===============================================================================
+18.12.4
+Resolve clang 9 compatibility issues.
+
+===============================================================================
+18.12.3
+Resolve 0U constant ambiguity in string utility tests
+
+===============================================================================
+18.12.2
+Deleted unused file.
+Updated CMakeLists.txt
+
+===============================================================================
+18.12.1
+Fixed compiler compatibility issues in etl::forward_list and etl::list
+
+===============================================================================
+18.12.0
+Recoded string utility get_token()
+clang 9 compatibility changes
+
+===============================================================================
+18.11.1
+Fix and optimise etl::list and etl::forward_list move constructors and assignment operators.
+
+===============================================================================
+18.11.0
+Added etl::ibitset::span() member function to return a span of the underlying binary data.
+
+===============================================================================
+18.10.0
+Fixed pointer vector move operators.
+Optimised constructors and assignments for pointer vectors.
+
+===============================================================================
+18.9.0
+Added enable/disable observer interface to observable class.
+
+===============================================================================
+18.8.2
+Fixed incorrect return in find() and at() for non-existent key.
+
+===============================================================================
+18.8.1
+Fix C++03 error_handler compatibility
+
+===============================================================================
+18.8.0
+Re-coded string utilities to allow any string-like container to use it.
+
+===============================================================================
+18.7.1
+Removed to_upper_case, to_lower_case & to_sentence_case from
+wstring_utilities, u16string_utilities & u32string_utilities
+
+===============================================================================
+18.7.0
+String utilities added.
+Fixed C++03 compatibility issue in error_handler.h
+
+===============================================================================
+18.6.0
+Added stream manipulators
+
+===============================================================================
+18.5.0
+Added string streams
+etl::string_stream
+etl::wstring_stream
+etl::u16string_stream
+etl::u32string_stream
+
+Added string formatting to etl::to_string from
+etl::string etl::string_view
+etl::wstring etl::wstring_view
+etl::u16string etl::u16string_view
+etl::u32string etl::u32string_view
+
+===============================================================================
+18.4.0
+Refactored etl::error_handler to use etl::delegate style implementation.
+Allows set_callback() function to be given run-time and compile-time pointers to free and member functions without using etl::ifunction.
+
+===============================================================================
+18.3.4
+Changed std::move to etl::move in etl::optional and etl::queue
+Fixed etl::span subspan with etl::dynamic_extent
+
+===============================================================================
+18.3.3
+C++03 compatibility fix for type_traits.h
+
+===============================================================================
 18.3.2
 C++03 compatibility fix for pool.h
 

@@ -46,6 +46,11 @@ SOFTWARE.
 #include <float.h>
 #include <math.h>
 
+#if defined(ETL_COMPILER_MICROSOFT)
+  #pragma warning(push)
+  #pragma warning(disable : 26812)
+#endif
+
 #if ETL_NOT_USING_STL
 #define ETL_LOG10_OF_2(x) (((x) * 301) / 1000)
 
@@ -100,6 +105,7 @@ namespace etl
     denorm_absent        = 0,
     denorm_present       = 1
   };
+
 
   class etl_integral_limits
   {
@@ -619,6 +625,10 @@ namespace etl
   {
   };
 }
+#endif
+
+#if defined(ETL_COMPILER_MICROSOFT)
+  #pragma warning(pop)
 #endif
 
 #endif

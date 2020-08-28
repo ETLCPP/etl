@@ -415,8 +415,8 @@ namespace
       Data data(initial_data.begin(), initial_data.end());
       const Data constData(data);
 
-      CHECK_EQUAL(data.begin(), std::begin(data));
-      CHECK_EQUAL(constData.begin(), std::begin(constData));
+      CHECK(data.begin() == std::begin(data));
+      CHECK(constData.begin() == std::begin(constData));
     }
 
     //*************************************************************************
@@ -425,8 +425,8 @@ namespace
       Data data(initial_data.begin(), initial_data.end());
       const Data constData(data);
 
-      CHECK_EQUAL(data.end(), std::end(data));
-      CHECK_EQUAL(constData.end(), std::end(constData));
+      CHECK(data.end() == std::end(data));
+      CHECK(constData.end() == std::end(constData));
     }
 
     //*************************************************************************
@@ -933,7 +933,7 @@ namespace
       CHECK_EQUAL(3, *it);
 
       it = data.find(11);
-      CHECK_EQUAL(data.end(), it);
+      CHECK(data.end() == it);
     }
 
     //*************************************************************************
@@ -945,7 +945,7 @@ namespace
       CHECK_EQUAL(3, *it);
 
       it = data.find(11);
-      CHECK_EQUAL(data.end(), it);
+      CHECK(data.end() == it);
     }
 
     //*************************************************************************
@@ -986,14 +986,14 @@ namespace
 
 #ifdef TEST_GREATER_THAN
       i_compare = compare_data.lower_bound(-1);
-      CHECK_EQUAL(compare_data.end(), i_compare);
+      CHECK(compare_data.end() == i_compare);
 
       i_data = data.lower_bound(-1);
-      CHECK_EQUAL(data.end(), i_data);
+      CHECK(data.end() == i_data);
 
       i_compare = compare_data.lower_bound(11);
       i_data = data.lower_bound(11);
-      CHECK_EQUAL(*i_compare, *i_data);
+      CHECK(*i_compare == *i_data);
 #else
       i_compare = compare_data.lower_bound(-1);
       i_data = data.lower_bound(-1);
@@ -1019,10 +1019,10 @@ namespace
 
 #ifdef TEST_GREATER_THAN
       i_compare = compare_data.lower_bound(-1);
-      CHECK_EQUAL(compare_data.end(), i_compare);
+      CHECK(compare_data.end() == i_compare);
 
       i_data = data.lower_bound(-1);
-      CHECK_EQUAL(data.end(), i_data);
+      CHECK(data.end() == i_data);
 
       i_compare = compare_data.lower_bound(11);
       i_data = data.lower_bound(11);
@@ -1052,10 +1052,10 @@ namespace
 
 #ifdef TEST_GREATER_THAN
       i_compare = compare_data.upper_bound(-1);
-      CHECK_EQUAL(compare_data.end(), i_compare);
+      CHECK(compare_data.end() == i_compare);
 
       i_data = data.upper_bound(-1);
-      CHECK_EQUAL(data.end(), i_data);
+      CHECK(data.end() == i_data);
 
       i_compare = compare_data.upper_bound(11);
       i_data = data.upper_bound(11);
@@ -1085,10 +1085,10 @@ namespace
 
 #ifdef TEST_GREATER_THAN
       i_compare = compare_data.upper_bound(-1);
-      CHECK_EQUAL(compare_data.end(), i_compare);
+      CHECK(compare_data.end() == i_compare);
 
       i_data = data.upper_bound(-1);
-      CHECK_EQUAL(data.end(), i_data);
+      CHECK(data.end() == i_data);
 
       i_compare = compare_data.upper_bound(11);
       i_data = data.upper_bound(11);

@@ -1,0 +1,61 @@
+name: CI
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, ubuntu-20.04]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup cmake
+      run: cmake -DBUILD_TESTS=ON ./
+
+    - name: Compile
+      run: make
+    
+    - name: Run tests
+      run: ./test/etl_tests
+    
+    - name: Save artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Testfile
+        path: test/etl_tests
+
+  build-clang-9-Linux:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build and run
+      run: |
+        export CC=clang-9
+        export CXX=clang++-9
+        cmake -D BUILD_TESTS=ON ./
+        make
+        ./test/etl_tests
+
+    - name: Save artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Testfile
+        path: test/etl_tests
+
+  build-clang-10-osx:
+    runs-on: macos-10.15
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build and run
+      run: |
+        export CC=clang
+        export CXX=clang++
+        cmake -D BUILD_TESTS=ON ./
+        make
+        ./test/etl_tests

@@ -84,7 +84,7 @@ SOFTWARE.
 //*****************************************************************************
 #define ETL_DECLARE_ENUM_TYPE(TypeName, ValueType) \
   typedef ValueType value_type; \
-	TypeName() {} \
+	TypeName() : value(static_cast<enum_type>(value_type())) {} \
 	TypeName(const TypeName &other) : value(other.value) {} \
 	TypeName(enum_type value_) : value(value_) {} \
   TypeName& operator=(const TypeName &other) {value = other.value; return *this;} \

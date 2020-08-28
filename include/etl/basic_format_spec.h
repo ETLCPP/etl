@@ -39,6 +39,165 @@ SOFTWARE.
 
 namespace etl
 {
+  namespace private_basic_format_spec
+  {
+    //*******************************************************
+    // Structures returned by stream formatting manipulators.
+    //*******************************************************
+    struct base_spec
+    {
+      ETL_CONSTEXPR base_spec(uint_least8_t base_)
+        : base(base_)
+      {
+      }
+
+      const uint_least8_t base;
+    };
+
+    //*********************************
+    struct width_spec
+    {
+      ETL_CONSTEXPR width_spec(uint_least8_t width_)
+        : width(width_)
+      {
+      }
+
+      const uint_least8_t width;
+    };
+
+    //*********************************
+    template <typename TChar>
+    struct fill_spec
+    {
+      ETL_CONSTEXPR fill_spec(TChar fill_)
+        : fill(fill_)
+      {
+      }
+
+      const TChar fill;
+    };
+
+    //*********************************
+    struct precision_spec
+    {
+      ETL_CONSTEXPR precision_spec(uint_least8_t precision_)
+        : precision(precision_)
+      {
+      }
+
+      const uint_least8_t precision;
+    };
+
+    //*********************************
+    struct uppercase_spec
+    {
+      ETL_CONSTEXPR uppercase_spec(bool upper_case_)
+        : upper_case(upper_case_)
+      {
+      }
+
+      const bool upper_case;
+    };
+
+    //*********************************
+    struct boolalpha_spec
+    {
+      ETL_CONSTEXPR boolalpha_spec(bool boolalpha_)
+        : boolalpha(boolalpha_)
+      {
+      }
+
+      const bool boolalpha;
+    };
+
+    //*********************************
+    struct showbase_spec
+    {
+      ETL_CONSTEXPR showbase_spec(bool show_base_)
+        : show_base(show_base_)
+      {
+      }
+
+      const bool show_base;
+    };
+
+    //*********************************
+    struct left_spec
+    {
+    };
+
+    //*********************************
+    struct right_spec
+    {
+    };
+  }
+
+  //***************************************************************************
+  // Stream formatting manipulators.
+  //***************************************************************************
+  static ETL_CONSTEXPR private_basic_format_spec::base_spec setbase(uint32_t base)
+  {
+    return private_basic_format_spec::base_spec(base);
+  }
+
+  //*********************************
+  static ETL_CONSTEXPR private_basic_format_spec::width_spec setw(uint32_t width)
+  {
+    return private_basic_format_spec::width_spec(width);
+  }
+
+  //*********************************
+  template <typename TChar>
+  static ETL_CONSTEXPR private_basic_format_spec::fill_spec<TChar> setfill(TChar fill)
+  {
+    return private_basic_format_spec::fill_spec<TChar>(fill);
+  }
+
+  //*********************************
+  static ETL_CONSTEXPR private_basic_format_spec::precision_spec setprecision(uint32_t precision)
+  {
+    return private_basic_format_spec::precision_spec(precision);
+  }
+
+  //*********************************
+  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::base_spec bin = { 2U };
+
+  //*********************************
+  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::base_spec oct = { 8U };
+
+  //*********************************
+  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::base_spec dec = { 10U };
+
+  //*********************************
+  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::base_spec hex = { 16U };
+
+  //*********************************
+  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::left_spec left;
+
+  //*********************************
+  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::right_spec right;
+
+  //*********************************
+  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::boolalpha_spec boolalpha = { true };
+
+  //*********************************
+  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::boolalpha_spec noboolalpha = { false };
+
+  //*********************************
+  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::uppercase_spec uppercase = { true };
+
+  //*********************************
+  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::uppercase_spec nouppercase = { false };
+
+  //*********************************
+  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::showbase_spec showbase = { true };
+
+  //*********************************
+  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::showbase_spec noshowbase = { false };
+
+  //***************************************************************************
+  /// basic_format_spec
+  //***************************************************************************
   template <typename TString>
   class basic_format_spec
   {
@@ -53,22 +212,30 @@ namespace etl
     /// Left Justified = false
     //***************************************************************************
     basic_format_spec()
-      : base_(10)
-      , width_(0)
-      , precision_(0)
-      , upper_case_(true)
-      , left_justified_(false)
-      , boolalpha_(false)
-      , fill_(typename TString::value_type(' '))
     {
+      clear();
+    }
 
+    //***************************************************************************
+    /// Clears the format spec back to default.
+    //***************************************************************************
+    void clear()
+    {
+      base_           = 10U;
+      width_          = 0U;
+      precision_      = 0U;
+      upper_case_     = false;
+      left_justified_ = false;
+      boolalpha_      = false;
+      show_base_      = false;
+      fill_           = typename TString::value_type(' ');
     }
 
     //***************************************************************************
     /// Sets the base.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    basic_format_spec& base(const uint32_t b)
+    basic_format_spec& base(uint32_t b)
     {
       base_ = static_cast<uint_least8_t>(b);
       return *this;
@@ -123,10 +290,28 @@ namespace etl
     }
 
     //***************************************************************************
+    /// Sets the show base flag.
+    /// \return A reference to the basic_format_spec.
+    //***************************************************************************
+    basic_format_spec& show_base(bool b)
+    {
+      show_base_ = b;
+      return *this;
+    }
+
+    //***************************************************************************
+    /// Gets the show base flag.
+    //***************************************************************************
+    bool is_show_base() const
+    {
+      return show_base_;
+    }
+
+    //***************************************************************************
     /// Sets the width.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    basic_format_spec& width(const uint32_t w)
+    basic_format_spec& width(uint32_t w)
     {
       width_ = static_cast<uint_least8_t>(w);
       return *this;
@@ -144,9 +329,9 @@ namespace etl
     /// Sets the precision.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    basic_format_spec& precision(const uint32_t w)
+    basic_format_spec& precision(uint32_t p)
     {
-      precision_ = static_cast<uint_least8_t>(w);
+      precision_ = static_cast<uint_least8_t>(p);
       return *this;
     }
 
@@ -162,7 +347,7 @@ namespace etl
     /// Sets the upper case flag.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    basic_format_spec& upper_case(const bool u)
+    basic_format_spec& upper_case(bool u)
     {
       upper_case_ = u;
       return *this;
@@ -180,7 +365,7 @@ namespace etl
     /// Sets the fill character.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    basic_format_spec& fill(const typename TString::value_type c)
+    basic_format_spec& fill(typename TString::value_type c)
     {
       fill_ = c;
       return *this;
@@ -248,6 +433,29 @@ namespace etl
       return boolalpha_;
     }
 
+    //***************************************************************************
+    /// Equality operator.
+    //***************************************************************************
+    friend bool operator ==(const basic_format_spec& lhs, const basic_format_spec& rhs)
+    {
+      return (lhs.base_ == rhs.base_) &&
+             (lhs.width_ == rhs.width_) &&
+             (lhs.precision_ == rhs.precision_) &&
+             (lhs.upper_case_ == rhs.upper_case_) &&
+             (lhs.left_justified_ == rhs.left_justified_) &&
+             (lhs.boolalpha_ == rhs.boolalpha_) &&
+             (lhs.show_base_ == rhs.show_base_) &&
+             (lhs.fill_ == rhs.fill_);
+    }
+
+    //***************************************************************************
+    /// Inequality operator.
+    //***************************************************************************
+    friend bool operator !=(const basic_format_spec& lhs, const basic_format_spec& rhs)
+    {
+      return !(lhs == rhs);
+    }
+
   private:
 
     uint_least8_t base_;
@@ -256,6 +464,7 @@ namespace etl
     bool upper_case_;
     bool left_justified_;
     bool boolalpha_;
+    bool show_base_;
     typename TString::value_type fill_;
   };
 }

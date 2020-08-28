@@ -294,8 +294,12 @@ namespace etl
     //*************************************************************************
     /// Obtains a span that is a view from 'offset' over the next 'count' elements of this span.
     //*************************************************************************
-    ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> subspan(size_t offset, size_t count = etl::dynamic_extent) const
+    ETL_CONSTEXPR14 etl::span<element_type, etl::dynamic_extent> subspan(size_t offset, size_t count = etl::dynamic_extent) const
     {
+      if (count == etl::dynamic_extent)
+      {
+        return etl::span<element_type, etl::dynamic_extent>(mbegin + offset, mend);
+      }
       return etl::span<element_type, etl::dynamic_extent>(mbegin + offset, mbegin + offset + count);
     }
 

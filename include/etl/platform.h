@@ -48,7 +48,15 @@ SOFTWARE.
 #define ETL_PLATFORM_64BIT (UINT64_MAX == UINTPTR_MAX)
 
 // Include the user's profile definition.
-#include "etl_profile.h"
+#if !defined(ETL_NO_PROFILE_HEADER) && defined(__has_include)
+  #if !__has_include("etl_profile.h")
+    #define ETL_NO_PROFILE_HEADER
+  #endif
+#endif
+
+#if !defined(ETL_NO_PROFILE_HEADER)
+  #include "etl_profile.h"
+#endif
 
 // Helper macro, so we don't have to use double negatives.
 // The ETL will use the STL, unless ETL_NO_STL is defined.

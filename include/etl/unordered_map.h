@@ -1033,14 +1033,19 @@ namespace etl
     //*********************************************************************
     iterator erase(const_iterator first_, const_iterator last_)
     {
-      // Make a note of the last.
-      iterator result((pbuckets + number_of_buckets), last_.get_bucket_list_iterator(), last_.get_local_iterator());
+      // Erasing everything?
+      if ((first_ == begin()) && (last_ == end()))
+      {
+        clear();
+        return end();
+      }
 
       // Get the starting point.
-      bucket_t*      pbucket   = first_.get_bucket_list_iterator();
-      local_iterator iprevious = pbucket->before_begin();
-      local_iterator icurrent  = first_.get_local_iterator();
-      local_iterator iend      = last_.get_local_iterator(); // Note: May not be in the same bucket as icurrent.
+      bucket_t*      pbucket     = first_.get_bucket_list_iterator();
+      bucket_t*      pend_bucket = last_.get_bucket_list_iterator();
+      local_iterator iprevious   = pbucket->before_begin();
+      local_iterator icurrent    = first_.get_local_iterator();
+      local_iterator iend        = last_.get_local_iterator(); // Note: May not be in the same bucket as icurrent.
 
       // Find the node previous to the first one.
       while (iprevious->etl_next != &*icurrent)
@@ -1048,9 +1053,9 @@ namespace etl
         ++iprevious;
       }
 
-      while (icurrent != iend)
+      // Until we reach the end.
+      while ((icurrent != iend) || (pbucket != pend_bucket))
       {
-
         local_iterator inext = pbucket->erase_after(iprevious); // Unlink from the bucket.
         icurrent->key_value_pair.~value_type(); // Destroy the value.
         pnodepool->release(&*icurrent);         // Release it back to the pool.
@@ -1059,8 +1064,8 @@ namespace etl
 
         icurrent = inext;
 
-        // Are we there yet?
-        if (icurrent != iend)
+        // Have we not reached the end?
+        if ((icurrent != iend) || (pbucket != pend_bucket))
         {
           // At the end of this bucket?
           if ((icurrent == pbucket->end()))
@@ -1072,12 +1077,12 @@ namespace etl
             } while (pbucket->empty());
 
             iprevious = pbucket->before_begin();
-            icurrent = pbucket->begin();
+            icurrent  = pbucket->begin();
           }
         }
       }
 
-      return result;
+      return iterator((pbuckets + number_of_buckets), last_.get_bucket_list_iterator(), last_.get_local_iterator());
     }
 
     //*************************************************************************

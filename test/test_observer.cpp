@@ -97,9 +97,9 @@ public:
 
 	Notification3 data3;
 
-    //*********************************
-    // Notify all of the observers.
-    //*********************************
+  //*********************************
+  // Notify all of the observers.
+  //*********************************
 	void send_notifications()
 	{
     notify_observers(data3);
@@ -281,6 +281,54 @@ namespace
       CHECK_EQUAL(2, observer2.data1_count);
       CHECK_EQUAL(2, observer2.data2_count);
       CHECK_EQUAL(2, observer2.data3_count);
+    }
+
+    //*************************************************************************
+    TEST(test_observable_2_observers_enable_disable)
+    {
+      // The observable objects.
+      Observable1 observable1;
+
+      // The observer objects.
+      Observer1 observer1;
+      Observer2 observer2;
+
+      observable1.add_observer(observer1);
+      observable1.add_observer(observer2);
+
+      // Send the notifications.
+      observable1.send_notifications();
+
+      CHECK_EQUAL(1, observer1.data1_count);
+      CHECK_EQUAL(1, observer2.data1_count);
+
+      // Disable observer1. Send the notifications.
+      observable1.disable_observer(observer1);
+      observable1.send_notifications();
+
+      CHECK_EQUAL(1, observer1.data1_count);
+      CHECK_EQUAL(2, observer2.data1_count);
+
+      // Disable observer2. Send the notifications.
+      observable1.enable_observer(observer2, false);
+      observable1.send_notifications();
+
+      CHECK_EQUAL(1, observer1.data1_count);
+      CHECK_EQUAL(2, observer2.data1_count);
+
+      // Enable observer1. Send the notifications.
+      observable1.enable_observer(observer1);
+      observable1.send_notifications();
+
+      CHECK_EQUAL(2, observer1.data1_count);
+      CHECK_EQUAL(2, observer2.data1_count);
+
+      // Enable observer2. Send the notifications.
+      observable1.enable_observer(observer2, true);
+      observable1.send_notifications();
+
+      CHECK_EQUAL(3, observer1.data1_count);
+      CHECK_EQUAL(3, observer2.data1_count);
     }
 
     //*************************************************************************

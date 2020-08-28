@@ -191,8 +191,8 @@ namespace etl
   // Pointer
   template <typename TIterator1, typename TSize, typename TIterator2>
   typename etl::enable_if<etl::is_pointer<TIterator1>::value &&
-                             etl::is_pointer<TIterator2>::value &&
-                             etl::is_pod<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+                          etl::is_pointer<TIterator2>::value &&
+                          etl::is_pod<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
     copy_n(TIterator1 sb, TSize count, TIterator2 db)
   {
     typedef typename etl::iterator_traits<TIterator1>::value_type value_t;
@@ -203,8 +203,8 @@ namespace etl
   // Other iterator
   template <typename TIterator1, typename TSize, typename TIterator2>
   typename etl::enable_if<!etl::is_pointer<TIterator1>::value ||
-                             !etl::is_pointer<TIterator2>::value ||
-                             !etl::is_pod<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+                          !etl::is_pointer<TIterator2>::value ||
+                          !etl::is_pod<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
     copy_n(TIterator1 sb, TSize count, TIterator2 db)
   {
     while (count != 0)
@@ -935,6 +935,56 @@ namespace etl
   }
 #endif
 
+#if defined (ETL_NO_STL)
+  //***************************************************************************
+  // replace
+  template <typename TIterator, typename T>
+  ETL_CONSTEXPR14 void replace(TIterator first, TIterator last, const T& old_value, const T& new_value)
+  {
+    while (first != last)
+    {
+      if (*first == old_value)
+      {
+        *first = new_value;
+      }
+
+      ++first;
+    }
+  }
+
+  //***************************************************************************
+  // replace_if
+  template <typename TIterator, typename TPredicate, typename T>
+  ETL_CONSTEXPR14 void replace_if(TIterator first, TIterator last, TPredicate predicate, const T& new_value)
+  {
+    while (first != last)
+    {
+      if (predicate(*first))
+      {
+        *first = new_value;
+      }
+
+      ++first;
+    }
+  }
+#else
+  //***************************************************************************
+  // replace
+  template <typename TIterator, typename T>
+  ETL_CONSTEXPR14 void replace(TIterator first, TIterator last, const T& old_value, const T& new_value)
+  {
+    std::replace(first, last, old_value, new_value);
+  }
+
+  //***************************************************************************
+  // replace_if
+  template <typename TIterator, typename TPredicate, typename T>
+  ETL_CONSTEXPR14 void replace_if(TIterator first, TIterator last, TPredicate predicate, const T& new_value)
+  {
+    std::replace_if(first, last, predicate, new_value);
+  }
+#endif
+
   //***************************************************************************
   // Heap
   namespace private_heap
@@ -1186,7 +1236,7 @@ namespace etl
   {
 #if ETL_CPP11_SUPPORTED
     return std::is_heap(first, last);
-#else    
+#else
     typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
     return private_heap::is_heap(first, last - first, compare());
 #endif

@@ -486,6 +486,31 @@ namespace
       CHECK(isEqual);
       CHECK_EQUAL(etl::dynamic_extent, cspan2.extent);
       CHECK_EQUAL(sub2.size(), cspan2.size());
+
+      auto span3 = view.subspan(2, 4);
+      isEqual = std::equal(span3.begin(), span3.end(), sub1.begin());
+      CHECK(isEqual);
+      CHECK_EQUAL(etl::dynamic_extent, span3.extent);
+      CHECK_EQUAL(sub1.size(), span3.size());
+
+      auto cspan3 = cview.subspan(2, 4);
+      isEqual = std::equal(cspan3.begin(), cspan3.end(), sub1.begin());
+      CHECK(isEqual);
+      CHECK_EQUAL(etl::dynamic_extent, cspan3.extent);
+      CHECK_EQUAL(sub1.size(), cspan3.size());
+
+      auto span4 = view.subspan(2);
+      isEqual = std::equal(span4.begin(), span4.end(), sub2.begin());
+      CHECK(isEqual);
+      CHECK_EQUAL(etl::dynamic_extent, span4.extent);
+      CHECK_EQUAL(sub2.size(), span4.size());
+
+      auto cspan4 = cview.subspan(2);
+      isEqual = std::equal(cspan4.begin(), cspan4.end(), sub2.begin());
+      CHECK(isEqual);
+      CHECK_EQUAL(etl::dynamic_extent, cspan4.extent);
+      CHECK_EQUAL(sub2.size(), cspan4.size());
+
     }
 
     //*************************************************************************

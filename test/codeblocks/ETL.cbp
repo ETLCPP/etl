@@ -63,6 +63,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-m32" />
+					<Add option="-lpthread" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="${TARGET_OUTPUT_DIR}${TARGET_OUTPUT_BASENAME}" />
@@ -97,6 +98,9 @@
 					<Add option="-D_DEBUG" />
 					<Add option="-DETL_NO_STL" />
 				</Compiler>
+				<Linker>
+					<Add option="-lpthread" />
+				</Linker>
 				<ExtraCommands>
 					<Add after="${TARGET_OUTPUT_DIR}${TARGET_OUTPUT_BASENAME}" />
 					<Mode after="always" />
@@ -225,6 +229,7 @@
 		<Unit filename="../../include/etl/atomic/atomic_std.h" />
 		<Unit filename="../../include/etl/basic_format_spec.h" />
 		<Unit filename="../../include/etl/basic_string.h" />
+		<Unit filename="../../include/etl/basic_string_stream.h" />
 		<Unit filename="../../include/etl/binary.h" />
 		<Unit filename="../../include/etl/bit_stream.h" />
 		<Unit filename="../../include/etl/bitset.h" />
@@ -433,6 +438,8 @@
 		<Unit filename="../../include/etl/stack.h" />
 		<Unit filename="../../include/etl/state_chart.h" />
 		<Unit filename="../../include/etl/static_assert.h" />
+		<Unit filename="../../include/etl/string_stream.h" />
+		<Unit filename="../../include/etl/string_utilities.h" />
 		<Unit filename="../../include/etl/string_view.h" />
 		<Unit filename="../../include/etl/task.h" />
 		<Unit filename="../../include/etl/temp.h" />
@@ -444,12 +451,14 @@
 		<Unit filename="../../include/etl/type_def.h" />
 		<Unit filename="../../include/etl/type_lookup.h" />
 		<Unit filename="../../include/etl/type_select.h" />
-		<Unit filename="../../include/etl/type_traits - Copy.h" />
 		<Unit filename="../../include/etl/type_traits.h" />
 		<Unit filename="../../include/etl/u16format_spec.h" />
 		<Unit filename="../../include/etl/u16string.h" />
+		<Unit filename="../../include/etl/u16string_stream.h" />
 		<Unit filename="../../include/etl/u32format_spec.h" />
 		<Unit filename="../../include/etl/u32string.h" />
+		<Unit filename="../../include/etl/u32string_stream.h" />
+		<Unit filename="../../include/etl/u32string_utilities.h" />
 		<Unit filename="../../include/etl/unordered_map.h" />
 		<Unit filename="../../include/etl/unordered_multimap.h" />
 		<Unit filename="../../include/etl/unordered_multiset.h" />
@@ -463,6 +472,8 @@
 		<Unit filename="../../include/etl/visitor.h" />
 		<Unit filename="../../include/etl/wformat_spec.h" />
 		<Unit filename="../../include/etl/wstring.h" />
+		<Unit filename="../../include/etl/wstring_stream.h" />
+		<Unit filename="../../include/etl/wstring_utilities.h" />
 		<Unit filename="../ExtraCheckMacros.h" />
 		<Unit filename="../data.h" />
 		<Unit filename="../etl_profile.h" />
@@ -570,8 +581,20 @@
 		<Unit filename="../test_stack.cpp" />
 		<Unit filename="../test_state_chart.cpp" />
 		<Unit filename="../test_string_char.cpp" />
+		<Unit filename="../test_string_stream.cpp" />
+		<Unit filename="../test_string_stream_u16.cpp" />
+		<Unit filename="../test_string_stream_u32.cpp" />
+		<Unit filename="../test_string_stream_wchar_t.cpp" />
 		<Unit filename="../test_string_u16.cpp" />
 		<Unit filename="../test_string_u32.cpp" />
+		<Unit filename="../test_string_utilities.cpp" />
+		<Unit filename="../test_string_utilities_std.cpp" />
+		<Unit filename="../test_string_utilities_std_u16.cpp" />
+		<Unit filename="../test_string_utilities_std_u32.cpp" />
+		<Unit filename="../test_string_utilities_std_wchar_t.cpp" />
+		<Unit filename="../test_string_utilities_u16.cpp" />
+		<Unit filename="../test_string_utilities_u32.cpp" />
+		<Unit filename="../test_string_utilities_wchar_t.cpp" />
 		<Unit filename="../test_string_view.cpp" />
 		<Unit filename="../test_string_wchar_t.cpp" />
 		<Unit filename="../test_task_scheduler.cpp" />
