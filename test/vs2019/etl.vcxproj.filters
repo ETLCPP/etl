@@ -79,6 +79,9 @@
     <Filter Include="Resource Files\CI\Github">
       <UniqueIdentifier>{c25471f3-451a-4279-925d-cbdcec912ef8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ETL\Pseudo Containers">
+      <UniqueIdentifier>{586d2c92-e504-4dea-9b1f-42d725a5272c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -876,6 +879,9 @@
     <ClInclude Include="..\..\include\etl\string_utilities.h">
       <Filter>ETL\Strings</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\bresenham_line.h">
+      <Filter>ETL\Pseudo Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1386,6 +1392,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_string_utilities_std_u32.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bresenham_line.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

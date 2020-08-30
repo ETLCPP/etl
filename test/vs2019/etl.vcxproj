@@ -1015,6 +1015,7 @@
     <ClInclude Include="..\..\include\etl\basic_format_spec.h" />
     <ClInclude Include="..\..\include\etl\basic_string_stream.h" />
     <ClInclude Include="..\..\include\etl\bit_stream.h" />
+    <ClInclude Include="..\..\include\etl\bresenham_line.h" />
     <ClInclude Include="..\..\include\etl\callback_timer.h" />
     <ClInclude Include="..\..\include\etl\combinations.h" />
     <ClInclude Include="..\..\include\etl\compare.h" />
@@ -1265,6 +1266,7 @@
     <ClCompile Include="..\murmurhash3.cpp" />
     <ClCompile Include="..\test_algorithm.cpp" />
     <ClCompile Include="..\test_alignment.cpp" />
+    <ClCompile Include="..\test_bresenham_line.cpp" />
     <ClCompile Include="..\test_callback_service.cpp" />
     <ClCompile Include="..\test_compiler_settings.cpp" />
     <ClCompile Include="..\test_cumulative_moving_average.cpp" />
