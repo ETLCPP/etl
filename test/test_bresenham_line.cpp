@@ -404,5 +404,23 @@ namespace
       CHECK_EQUAL(expected.size(), actual.size());
       CHECK_ARRAY_EQUAL(expected.data(), actual.data(), (std::max(expected.size(), actual.size())));
     }
+
+    //*************************************************************************
+    TEST(test_equality)
+    {
+      BresenhamLine bl1(0, 1, 2, 3);
+      BresenhamLine bl2(0, 1, 2, 3);
+      BresenhamLine bl3(0, 1, 2, 4);
+      BresenhamLine bl4(0, 2, 2, 3);
+
+      CHECK(bl1 == bl2);
+      CHECK(!(bl1 != bl2));
+
+      CHECK(bl1 != bl3);
+      CHECK(!(bl1 == bl3));
+
+      CHECK(bl1 != bl4);
+      CHECK(!(bl1 == bl4));
+    }
   };
 }
