@@ -212,7 +212,7 @@ namespace etl
     //***************************************************
     /// Get the first coordinate.
     //***************************************************
-    const_reference front()
+    const_reference front() const
     {
       return first;
     }
@@ -220,7 +220,7 @@ namespace etl
     //***************************************************
     /// Get the last coordinate.
     //***************************************************
-    const_reference back()
+    const_reference back() const
     {
       return last;
     }
