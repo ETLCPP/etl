@@ -156,6 +156,14 @@ namespace etl
 
     //***************************************************
     /// Constructor.
+    //***************************************************
+    bresenham_line()
+    {
+      initialise(T(0), T(0), T(0), T(0));
+    }
+
+    //***************************************************
+    /// Constructor.
     /// Supplied first and last coordinates
     //***************************************************
     bresenham_line(etl::coordinate_2d<T> first_, etl::coordinate_2d<T> last_)
