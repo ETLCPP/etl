@@ -240,6 +240,22 @@ namespace etl
       }
     }
 
+    //***************************************************
+    /// Equality operator
+    //***************************************************
+    friend bool operator ==(const bresenham_line& lhs, const bresenham_line& rhs)
+    {
+      return (lhs.front() == rhs.front()) && (lhs.back() == rhs.back());
+    }
+
+    //***************************************************
+    /// Inequality operator
+    //***************************************************
+    friend bool operator !=(const bresenham_line& lhs, const bresenham_line& rhs)
+    {
+      return !(lhs == rhs);
+    }
+
   private:
 
     //***************************************************
