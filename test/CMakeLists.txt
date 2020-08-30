@@ -25,6 +25,7 @@ set(TEST_SOURCE_FILES
 	test_bitset.cpp
 	test_bit_stream.cpp
 	test_bloom_filter.cpp
+	test_bresenham_line.cpp
 	test_bsd_checksum.cpp
 	test_callback_service.cpp
 	test_callback_timer.cpp

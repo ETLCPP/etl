@@ -1,4 +1,9 @@
 ===============================================================================
+18.13.0
+Added a line coordinate generator using the Bresenham algorithm.
+The API is similar to a container.
+
+===============================================================================
 18.12.7
 Made etl::reference_wrapper API closer to the STL version. Does not support invocation of a callable object.
 
