@@ -26,7 +26,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-
 #include "UnitTest++/UnitTest++.h"
 
 #include "etl/bresenham_line.h"
@@ -39,14 +38,9 @@ namespace
 
   using Point = etl::coordinate_2d<Value>;
 
-  bool operator ==(Point lhs, Point rhs)
-  {
-    return (lhs.x == rhs.x) && (lhs.y == rhs.y);
-  }
-
   std::ostream& operator << (std::ostream& os, Point point)
   {
-    os << "(" << point.x << "," << point.x << ")";
+    os << "(" << int(point.x) << "," << int(point.y) << ")";
     return os;
   }
 
@@ -62,18 +56,19 @@ namespace
 
       BresenhamLine bl(first.x, first.y, last.x, last.y);
 
+      CHECK_EQUAL(first, bl.front());
+      CHECK_EQUAL(last,  bl.back());
+
       std::vector<Point> expected{ Point{-5, 5 }, Point{-4, 5 }, Point{-3, 5 }, Point{-2, 5 }, Point{-1, 5 }, Point{ 0, 5 },
                                    Point{ 1, 5 }, Point{ 2, 5 }, Point{ 3, 5 }, Point{ 4, 5 }, Point{ 5, 5} };
       std::vector<Point> actual;
-
-      CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
       for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
 
-      CHECK_EQUAL(expected.size(), bl.count());
+      CHECK_EQUAL(expected.size(), bl.size());
       CHECK_EQUAL(expected.size(), actual.size());
       CHECK_ARRAY_EQUAL(expected.data(), actual.data(), (std::max(expected.size(), actual.size())));
     }
@@ -86,18 +81,19 @@ namespace
 
       BresenhamLine bl(first, last);
 
+      CHECK_EQUAL(first, bl.front());
+      CHECK_EQUAL(last,  bl.back());
+
       std::vector<Point> expected{ Point{ 5, 5 }, Point{ 4, 5 }, Point{ 3, 5 }, Point{ 2, 5 }, Point{ 1, 5 }, Point{ 0, 5 },
                                    Point{-1, 5 }, Point{-2, 5 }, Point{-3, 5 }, Point{-4, 5 }, Point{-5, 5} };
       std::vector<Point> actual;
-
-      CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
       for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
 
-      CHECK_EQUAL(expected.size(), bl.count());
+      CHECK_EQUAL(expected.size(), bl.size());
       CHECK_EQUAL(expected.size(), actual.size());
       CHECK_ARRAY_EQUAL(expected.data(), actual.data(), (std::max(expected.size(), actual.size())));
     }
@@ -110,18 +106,19 @@ namespace
 
       BresenhamLine bl(first, last);
 
+      CHECK_EQUAL(first, bl.front());
+      CHECK_EQUAL(last,  bl.back());
+
       std::vector<Point> expected{ Point{ 5, -5 }, Point{ 5, -4 }, Point{ 5, -3 }, Point{ 5, -2 }, Point{ 5, -1 }, Point{ 5,  0 },
                                    Point{ 5,  1 }, Point{ 5,  2 }, Point{ 5,  3 }, Point{ 5,  4 }, Point{ 5,  5} };
       std::vector<Point> actual;
-
-      CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
       for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
 
-      CHECK_EQUAL(expected.size(), bl.count());
+      CHECK_EQUAL(expected.size(), bl.size());
       CHECK_EQUAL(expected.size(), actual.size());
       CHECK_ARRAY_EQUAL(expected.data(), actual.data(), (std::max(expected.size(), actual.size())));
     }
@@ -134,18 +131,19 @@ namespace
 
       BresenhamLine bl(first, last);
 
+      CHECK_EQUAL(first, bl.front());
+      CHECK_EQUAL(last,  bl.back());
+
       std::vector<Point> expected{ Point{ 5,  5 }, Point{ 5,  4 }, Point{ 5,  3 }, Point{ 5,  2 }, Point{ 5,  1 }, Point{ 5,  0 },
                                    Point{ 5, -1 }, Point{ 5, -2 }, Point{ 5, -3 }, Point{ 5, -4 }, Point{ 5, -5} };
       std::vector<Point> actual;
-
-      CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
       for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
 
-      CHECK_EQUAL(expected.size(), bl.count());
+      CHECK_EQUAL(expected.size(), bl.size());
       CHECK_EQUAL(expected.size(), actual.size());
       CHECK_ARRAY_EQUAL(expected.data(), actual.data(), (std::max(expected.size(), actual.size())));
     }
@@ -158,18 +156,19 @@ namespace
 
       BresenhamLine bl(first, last);
 
+      CHECK_EQUAL(first, bl.front());
+      CHECK_EQUAL(last,  bl.back());
+
       std::vector<Point> expected{ Point{ -5, -3 }, Point{ -4, -3 }, Point{ -3, -2 }, Point{ -2, -1 }, Point{ -1, -1 }, Point{ 0, 0 },
                                    Point{ 1,   1 }, Point{  2,  1 }, Point{  3,  2 }, Point{  4,  2 }, Point{  5,  3 } };
       std::vector<Point> actual;
-
-      CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
       for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
 
-      CHECK_EQUAL(expected.size(), bl.count());
+      CHECK_EQUAL(expected.size(), bl.size());
       CHECK_EQUAL(expected.size(), actual.size());
       CHECK_ARRAY_EQUAL(expected.data(), actual.data(), (std::max(expected.size(), actual.size())));
     }
@@ -182,18 +181,19 @@ namespace
 
       BresenhamLine bl(first, last);
 
+      CHECK_EQUAL(first, bl.front());
+      CHECK_EQUAL(last,  bl.back());
+
       std::vector<Point> expected{ Point{  5,  3 }, Point{ 4,   3 }, Point{  3,  2 }, Point{  2,  1 }, Point{  1,  1 }, Point{ 0, 0 },
                                    Point{ -1, -1 }, Point{ -2, -1 }, Point{ -3, -2 }, Point{ -4, -2 }, Point{ -5, -3 } };
       std::vector<Point> actual;
-
-      CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
       for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
 
-      CHECK_EQUAL(expected.size(), bl.count());
+      CHECK_EQUAL(expected.size(), bl.size());
       CHECK_EQUAL(expected.size(), actual.size());
       CHECK_ARRAY_EQUAL(expected.data(), actual.data(), (std::max(expected.size(), actual.size())));
     }
@@ -206,18 +206,19 @@ namespace
 
       BresenhamLine bl(first, last);
 
+      CHECK_EQUAL(first, bl.front());
+      CHECK_EQUAL(last,  bl.back());
+
       std::vector<Point> expected{ Point{  5, -3 }, Point{  4, -3 }, Point{  3, -2 }, Point{  2, -1 }, Point{ 1,  -1 }, Point{ 0, 0 },
                                    Point{ -1,  1 }, Point{ -2,  1 }, Point{ -3,  2 }, Point{ -4,  2 }, Point{ -5,  3 } };
       std::vector<Point> actual;
-
-      CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
       for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
 
-      CHECK_EQUAL(expected.size(), bl.count());
+      CHECK_EQUAL(expected.size(), bl.size());
       CHECK_EQUAL(expected.size(), actual.size());
       CHECK_ARRAY_EQUAL(expected.data(), actual.data(), (std::max(expected.size(), actual.size())));
     }
@@ -230,18 +231,19 @@ namespace
 
       BresenhamLine bl(first, last);
 
+      CHECK_EQUAL(first, bl.front());
+      CHECK_EQUAL(last,  bl.back());
+
       std::vector<Point> expected{ Point{ -5,  3 }, Point{ -4,  3 }, Point{ -3,  2 }, Point{ -2,  1 }, Point{ -1,  1 }, Point{ 0, 0 },
                                    Point{  1, -1 }, Point{  2, -1 }, Point{  3, -2 }, Point{  4, -2 }, Point{  5, -3 } };
       std::vector<Point> actual;
-
-      CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
       for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
 
-      CHECK_EQUAL(expected.size(), bl.count());
+      CHECK_EQUAL(expected.size(), bl.size());
       CHECK_EQUAL(expected.size(), actual.size());
       CHECK_ARRAY_EQUAL(expected.data(), actual.data(), (std::max(expected.size(), actual.size())));
     }
@@ -254,18 +256,19 @@ namespace
 
       BresenhamLine bl(first, last);
 
+      CHECK_EQUAL(first, bl.front());
+      CHECK_EQUAL(last,  bl.back());
+
       std::vector<Point> expected{ Point{ -3, -5 }, Point{ -3, -4 }, Point{ -2, -3 }, Point{ -1, -2 }, Point{ -1, -1 }, Point{ 0, 0 },
                                    Point{ 1,   1 }, Point{  1,  2 }, Point{  2,  3 }, Point{  2,  4 }, Point{  3,  5 } };
       std::vector<Point> actual;
-
-      CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
       for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
 
-      CHECK_EQUAL(expected.size(), bl.count());
+      CHECK_EQUAL(expected.size(), bl.size());
       CHECK_EQUAL(expected.size(), actual.size());
       CHECK_ARRAY_EQUAL(expected.data(), actual.data(), (std::max(expected.size(), actual.size())));
     }
@@ -278,18 +281,19 @@ namespace
 
       BresenhamLine bl(first, last);
 
+      CHECK_EQUAL(first, bl.front());
+      CHECK_EQUAL(last,  bl.back());
+
       std::vector<Point> expected{ Point{  3,  5 }, Point{  3,  4 }, Point{  2,  3 }, Point{  1,  2 }, Point{  1,  1 }, Point{ 0, 0 },
                                    Point{ -1, -1 }, Point{ -1, -2 }, Point{ -2, -3 }, Point{ -2, -4 }, Point{ -3, -5 } };
       std::vector<Point> actual;
-
-      CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
       for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
 
-      CHECK_EQUAL(expected.size(), bl.count());
+      CHECK_EQUAL(expected.size(), bl.size());
       CHECK_EQUAL(expected.size(), actual.size());
       CHECK_ARRAY_EQUAL(expected.data(), actual.data(), (std::max(expected.size(), actual.size())));
     }
@@ -302,18 +306,19 @@ namespace
 
       BresenhamLine bl(first, last);
 
+      CHECK_EQUAL(first, bl.front());
+      CHECK_EQUAL(last,  bl.back());
+
       std::vector<Point> expected{ Point{  3, -5 }, Point{  3, -4 }, Point{  2, -3 }, Point{  1, -2 }, Point{  1, -1 }, Point{ 0, 0 },
                                    Point{ -1,  1 }, Point{ -1,  2 }, Point{ -2,  3 }, Point{ -2,  4 }, Point{ -3,  5 } };
       std::vector<Point> actual;
-
-      CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
       for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
 
-      CHECK_EQUAL(expected.size(), bl.count());
+      CHECK_EQUAL(expected.size(), bl.size());
       CHECK_EQUAL(expected.size(), actual.size());
       CHECK_ARRAY_EQUAL(expected.data(), actual.data(), (std::max(expected.size(), actual.size())));
     }
@@ -326,53 +331,55 @@ namespace
 
       BresenhamLine bl(first, last);
 
+      CHECK_EQUAL(first, bl.front());
+      CHECK_EQUAL(last,  bl.back());
+
       std::vector<Point> expected{ Point{ -3,  5 }, Point{ -3,  4 }, Point{ -2,  3 }, Point{ -1,  2 }, Point{ -1,  1 }, Point{ 0, 0 },
                                    Point{  1, -1 }, Point{  1, -2 }, Point{  2, -3 }, Point{  2, -4 }, Point{  3, -5 } };
       std::vector<Point> actual;
-
-      CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
       for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
 
-      CHECK_EQUAL(expected.size(), bl.count());
+      CHECK_EQUAL(expected.size(), bl.size());
       CHECK_EQUAL(expected.size(), actual.size());
       CHECK_ARRAY_EQUAL(expected.data(), actual.data(), (std::max(expected.size(), actual.size())));
     }
 
     //*************************************************************************
-    TEST(update_the_line_from_coordinate_2d)
+    TEST(reset_the_line_from_coordinate_2d)
     {
       Point first = { 3,  -5 };
       Point last  = { -3,  5 };
 
       BresenhamLine bl(first, last);
 
+      CHECK_EQUAL(first, bl.front());
+      CHECK_EQUAL(last,  bl.back());
+
       Point new_first = { -3,  5 };
       Point new_last  = {  3, -5 };
 
-      bl.update_line(new_first, new_last);
+      bl.reset(new_first, new_last);
 
       std::vector<Point> expected{ Point{ -3,  5 }, Point{ -3,  4 }, Point{ -2,  3 }, Point{ -1,  2 }, Point{ -1,  1 }, Point{ 0, 0 },
                                    Point{  1, -1 }, Point{  1, -2 }, Point{  2, -3 }, Point{  2, -4 }, Point{  3, -5 } };
       std::vector<Point> actual;
-
-      CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
       for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
 
-      CHECK_EQUAL(expected.size(), bl.count());
+      CHECK_EQUAL(expected.size(), bl.size());
       CHECK_EQUAL(expected.size(), actual.size());
       CHECK_ARRAY_EQUAL(expected.data(), actual.data(), (std::max(expected.size(), actual.size())));
     }
 
     //*************************************************************************
-    TEST(update_the_line_from_individual_coordinates)
+    TEST(reset_the_line_from_individual_coordinates)
     {
       Point first = { 3,  -5 };
       Point last = { -3,  5 };
@@ -382,20 +389,18 @@ namespace
       Point new_first = { -3,  5 };
       Point new_last = { 3, -5 };
 
-      bl.update_line(new_first.x, new_first.y, new_last.x, new_last.y);
+      bl.reset(new_first.x, new_first.y, new_last.x, new_last.y);
 
       std::vector<Point> expected{ Point{ -3,  5 }, Point{ -3,  4 }, Point{ -2,  3 }, Point{ -1,  2 }, Point{ -1,  1 }, Point{ 0, 0 },
                                    Point{  1, -1 }, Point{  1, -2 }, Point{  2, -3 }, Point{  2, -4 }, Point{  3, -5 } };
       std::vector<Point> actual;
-
-      CHECK_EQUAL(1U, bl.count()); // We already have the first coordinate.
 
       for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
       {
         actual.push_back(*itr);
       }
 
-      CHECK_EQUAL(expected.size(), bl.count());
+      CHECK_EQUAL(expected.size(), bl.size());
       CHECK_EQUAL(expected.size(), actual.size());
       CHECK_ARRAY_EQUAL(expected.data(), actual.data(), (std::max(expected.size(), actual.size())));
     }

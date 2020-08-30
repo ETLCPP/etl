@@ -234,6 +234,7 @@
 		<Unit filename="../../include/etl/bit_stream.h" />
 		<Unit filename="../../include/etl/bitset.h" />
 		<Unit filename="../../include/etl/bloom_filter.h" />
+		<Unit filename="../../include/etl/bresenham_line.h" />
 		<Unit filename="../../include/etl/callback.h" />
 		<Unit filename="../../include/etl/callback_service.h" />
 		<Unit filename="../../include/etl/callback_timer.h" />
@@ -492,6 +493,7 @@
 		<Unit filename="../test_bit_stream.cpp" />
 		<Unit filename="../test_bitset.cpp" />
 		<Unit filename="../test_bloom_filter.cpp" />
+		<Unit filename="../test_bresenham_line.cpp" />
 		<Unit filename="../test_bsd_checksum.cpp" />
 		<Unit filename="../test_callback_service.cpp" />
 		<Unit filename="../test_callback_timer.cpp" />

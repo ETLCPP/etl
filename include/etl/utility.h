@@ -346,6 +346,16 @@ namespace etl
     {
     }
 
+    friend bool operator ==(const coordinate_2d& lhs, const coordinate_2d& rhs)
+    {
+      return (lhs.x == rhs.x) && (lhs.y == rhs.y);
+    }
+
+    friend bool operator !=(const coordinate_2d& lhs, const coordinate_2d& rhs)
+    {
+      return !(lhs == rhs);
+    }
+
     T x;
     T y;
   };

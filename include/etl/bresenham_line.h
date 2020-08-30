@@ -104,7 +104,7 @@ namespace etl
       const_iterator& operator ++()
       {
         // Has the end of the series has been reached?
-        if (p_bresenham_line->n_coordinates_remaining == 0)
+        if (p_bresenham_line->get_coordinate() == p_bresenham_line->back())
         {
           // Mark it as an end iterator.
           p_bresenham_line = ETL_NULLPTR;
@@ -173,19 +173,19 @@ namespace etl
     }
 
     //***************************************************
-    /// Update the line.
+    /// Resets the line.
     /// Supplied first and last coordinates
     //***************************************************
-    void update_line(etl::coordinate_2d<T> first_, etl::coordinate_2d<T> last_)
+    void reset(etl::coordinate_2d<T> first_, etl::coordinate_2d<T> last_)
     {
       initialise(first_.x, first_.y, last_.x, last_.y);
     }
 
     //***************************************************
-    /// Update the line.
+    /// Resets the line.
     /// Supplied first and last coordinates
     //***************************************************
-    void update_line(T first_x, T first_y, T last_x, T last_y)
+    void reset(T first_x, T first_y, T last_x, T last_y)
     {
       initialise(first_x, first_y, last_x, last_y);
     }
@@ -196,7 +196,6 @@ namespace etl
     //***************************************************
     const_iterator begin()
     {
-      n_coordinates_remaining = total_n_coordinates - 1; // We already have the first coordinate.
       coordinate = first;
 
       return const_iterator(this);
@@ -211,19 +210,34 @@ namespace etl
     }
 
     //***************************************************
+    /// Get the first coordinate.
+    //***************************************************
+    value_type front()
+    {
+      return first;
+    }
+
+    //***************************************************
+    /// Get the last coordinate.
+    //***************************************************
+    value_type back()
+    {
+      return last;
+    }
+
+    //***************************************************
     /// Get the size of the series.
     //***************************************************
     size_t size() const
     {
-      return size_t(total_n_coordinates);
-    }
-
-    //***************************************************
-    /// Get the current number of generated points.
-    //***************************************************
-    size_t count() const
-    {
-      return size_t(total_n_coordinates - n_coordinates_remaining);
+      if (y_is_major_axis())
+      {
+        return (dy / 2) + 1;       
+      }
+      else
+      {
+        return (dx / 2) + 1;
+      }
     }
 
   private:
@@ -234,35 +248,32 @@ namespace etl
     void initialise(T first_x, T first_y, T last_x, T last_y)
     {
       first              = value_type(first_x, first_y);
-      coordinate         = value_type(first_x, first_y);
+      last               = value_type(last_x,  last_y);
+      coordinate         = first;
       x_increment        = (last_x < first_x) ? -1 : 1;
       y_increment        = (last_y < first_y) ? -1 : 1;
       dx                 = (last_x < first_x) ? first_x - last_x : last_x - first_x;
       dy                 = (last_y < first_y) ? first_y - last_y : last_y - first_y;
       do_minor_increment = false;
 
-      if (is_y_major_axis())
+      if (y_is_major_axis())
       {
-        total_n_coordinates = dy + 1;
         dx *= 2;
         balance = dx - dy;
         dy *= 2;
       }
       else
       {
-        total_n_coordinates = dx + 1;
         dy *= 2;
         balance = dy - dx;
         dx *= 2;
       }
-
-      n_coordinates_remaining = total_n_coordinates - 1; // We already have the first coordinate.
     }
 
     //***************************************************
     /// Returns true if Y is the major axis.
     //***************************************************
-    bool is_y_major_axis() const
+    bool y_is_major_axis() const
     {
       return dx < dy;
     }
@@ -272,9 +283,9 @@ namespace etl
     //***************************************************
     void next()
     {
-      if (is_y_major_axis())
+      if (y_is_major_axis())
       {
-        // Y major axis.
+        // Y is major axis.
         if (do_minor_increment)
         {
           coordinate.x = T(coordinate.x + x_increment);
@@ -286,7 +297,7 @@ namespace etl
       }
       else
       {
-        // X major axis.
+        // X is major axis.
         if (do_minor_increment)
         {
           coordinate.y = T(coordinate.y + y_increment);
@@ -296,8 +307,6 @@ namespace etl
         coordinate.x = T(coordinate.x + x_increment);
         balance += dy;
       }
-
-      --n_coordinates_remaining;
 
       do_minor_increment = (balance >= 0);
     }
@@ -313,13 +322,12 @@ namespace etl
     typedef TWork work_t;
 
     value_type first;
+    value_type last;
     value_type coordinate;
     work_t     x_increment;
     work_t     y_increment;
     work_t     dx;
     work_t     dy;
-    work_t     total_n_coordinates;
-    work_t     n_coordinates_remaining;
     work_t     balance;
     bool       do_minor_increment;
   };
