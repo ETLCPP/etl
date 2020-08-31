@@ -33,22 +33,22 @@ SOFTWARE.
 #include <vector>
 #include <ostream>
 
+using Value = char;
+
+using Point = etl::coordinate_2d<Value>;
+
+std::ostream& operator << (std::ostream& os, const Point& point)
+{
+  os << "(" << int(point.x) << "," << int(point.y) << ")";
+  return os;
+}
+
 namespace
 {
-  using Value = char;
-
-  using Point = etl::coordinate_2d<Value>;
-
   using BresenhamLine = etl::bresenham_line<Value>;
 
   SUITE(test_bresenham_line)
   {
-    std::ostream& operator << (std::ostream & os, const Point & point)
-    {
-      os << "(" << int(point.x) << "," << int(point.y) << ")";
-      return os;
-    }
-
     //*************************************************************************
     TEST(horizontal_line_left_right)
     {
