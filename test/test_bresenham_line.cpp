@@ -31,6 +31,7 @@ SOFTWARE.
 #include "etl/bresenham_line.h"
 
 #include <vector>
+#include <ostream>
 
 namespace
 {
