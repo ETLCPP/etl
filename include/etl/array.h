@@ -553,6 +553,15 @@ namespace etl
   };
 
   //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#ifdef ETL_CPP17_SUPPORTED
+  template <typename T, typename... Ts>
+  array(T, Ts...)
+      -> array<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1 + sizeof...(Ts)>;
+#endif  
+
+  //*************************************************************************
   /// Overloaded swap for etl::array<T, SIZE>
   ///\param lhs The first array.
   ///\param rhs The second array.
@@ -670,4 +679,3 @@ namespace etl
 }
 
 #endif
-

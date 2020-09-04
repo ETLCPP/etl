@@ -40,6 +40,7 @@ SOFTWARE.
 #include "hash.h"
 #include "algorithm.h"
 #include "memory.h"
+#include "type_traits.h"
 
 ///\defgroup array array
 /// A wrapper for arrays
@@ -506,6 +507,24 @@ namespace etl
   };
 
   //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#ifdef ETL_CPP17_SUPPORTED
+  template <typename TArray>
+  array_view(TArray& a) 
+    -> array_view<typename TArray::value_type>;
+
+  template <typename TIterator>
+  array_view(const TIterator begin_, const TIterator end_)
+    -> array_view<etl::remove_pointer_t<TIterator>>;
+
+  template <typename TIterator,
+            typename TSize>
+  array_view(const TIterator begin_, const TSize size_)
+    -> array_view<etl::remove_pointer_t<TIterator>>;
+#endif  
+
+  //*************************************************************************
   /// Hash function.
   //*************************************************************************
 #if ETL_8BIT_SUPPORT
@@ -533,4 +552,3 @@ void swap(etl::array_view<T>& lhs, etl::array_view<T>& rhs)
 #undef ETL_FILE
 
 #endif
-
