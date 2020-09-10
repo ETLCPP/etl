@@ -248,6 +248,37 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_cpp17_dedused_constructor)
+    {
+      etl::array data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      
+      etl::array_view view1{ data };
+      etl::array_view view2{ data.begin(), data.end() };
+      etl::array_view view3{ data.begin(), data.size() };
+      etl::array_view view4{ view1 };
+
+      int c_array[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::array_view view5{ c_array };
+
+      bool isEqual = false;
+
+      isEqual = std::equal(view1.begin(), view1.end(), data.begin());
+      CHECK(isEqual);
+
+      isEqual = std::equal(view2.begin(), view2.end(), data.begin());
+      CHECK(isEqual);
+
+      isEqual = std::equal(view3.begin(), view3.end(), data.begin());
+      CHECK(isEqual);
+
+      isEqual = std::equal(view4.begin(), view4.end(), data.begin());
+      CHECK(isEqual);
+
+      isEqual = std::equal(view5.begin(), view5.end(), c_array);
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
     TEST(test_constructor_range)
     {
       View view(etldata.begin() + 2, etldata.end() - 2);

@@ -58,6 +58,16 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_cpp17_deduced_constructor)
+    {
+      etl::array data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      Data compare = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      bool isEqual = std::equal(data.begin(), data.end(), compare.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
     TEST(test_assignment)
     {
       Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };

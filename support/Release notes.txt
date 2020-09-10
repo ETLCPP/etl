@@ -1,4 +1,8 @@
 ===============================================================================
+18.14.0
+Added template deduction guides for array and array_view
+
+===============================================================================
 18.13.0
 Added a line coordinate generator using the Bresenham algorithm.
 The API is similar to a container.
