@@ -1,4 +1,8 @@
 ===============================================================================
+18.14.1
+Fixed conditional compilation macro use for template deduction guides.
+
+===============================================================================
 18.14.0
 Added template deduction guides for array and array_view
 

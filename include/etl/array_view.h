@@ -509,7 +509,7 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#ifdef ETL_CPP17_SUPPORTED
+#if ETL_CPP17_SUPPORTED
   template <typename TArray>
   array_view(TArray& a) 
     -> array_view<typename TArray::value_type>;
