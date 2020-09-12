@@ -37,13 +37,19 @@ namespace
   using Value = char;
 
   using Point = etl::coordinate_2d<Value>;
+}
 
-  std::ostream& operator << (std::ostream& os, const etl::coordinate_2d<char>& point)
+namespace etl
+{
+  std::ostream& operator << (std::ostream& os, const Point& point)
   {
     os << "(" << int(point.x) << "," << int(point.y) << ")";
     return os;
   }
+}
 
+namespace
+{
   using BresenhamLine = etl::bresenham_line<Value>;
 
   SUITE(test_bresenham_line)
