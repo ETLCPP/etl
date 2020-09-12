@@ -248,6 +248,7 @@ namespace
     }
 
     //*************************************************************************
+#ifndef APPVEYOR
     TEST(test_cpp17_dedused_constructor)
     {
       etl::array data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -277,6 +278,7 @@ namespace
       isEqual = std::equal(view5.begin(), view5.end(), c_array);
       CHECK(isEqual);
     }
+#endif
 
     //*************************************************************************
     TEST(test_constructor_range)

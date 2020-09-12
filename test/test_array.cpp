@@ -57,6 +57,7 @@ namespace
       CHECK_EQUAL(data.max_size(), SIZE);
     }
 
+#ifndef APPVEYOR
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor)
     {
@@ -66,6 +67,7 @@ namespace
       bool isEqual = std::equal(data.begin(), data.end(), compare.begin());
       CHECK(isEqual);
     }
+#endif
 
     //*************************************************************************
     TEST(test_assignment)
