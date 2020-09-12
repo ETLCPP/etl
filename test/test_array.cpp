@@ -57,7 +57,7 @@ namespace
       CHECK_EQUAL(data.max_size(), SIZE);
     }
 
-#ifndef APPVEYOR
+#ifndef ETL_COMPILER_MICROSOFT // Temporarily disabled as Appveyor reports an "internal compiler error
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor)
     {
