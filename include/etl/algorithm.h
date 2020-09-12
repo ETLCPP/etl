@@ -690,7 +690,7 @@ namespace etl
   }
 #endif
 
-#if defined (ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // count_if
   template <typename TIterator, typename TUnaryPredicate>
@@ -722,7 +722,7 @@ namespace etl
   }
 #endif
 
-#if defined (ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // equal
   template <typename TIterator1, typename TIterator2>
@@ -761,7 +761,7 @@ namespace etl
   }
 #endif
 
-#if defined (ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // lexicographical_compare
   template <typename TIterator1, typename TIterator2, typename TCompare>
@@ -823,7 +823,7 @@ namespace etl
   }
 #endif
 
-#if defined (ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // min
   template <typename T, typename TCompare>
@@ -859,7 +859,7 @@ namespace etl
   }
 #endif
 
-#if defined (ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // max
   template <typename T, typename TCompare>
@@ -895,7 +895,7 @@ namespace etl
   }
 #endif
 
-#if defined (ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // transform
   template <typename TIteratorIn, typename TIteratorOut, typename TUnaryOperation>
@@ -935,7 +935,7 @@ namespace etl
   }
 #endif
 
-#if defined (ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // replace
   template <typename TIterator, typename T>
@@ -1056,7 +1056,7 @@ namespace etl
     }
   }
 
-  #if defined (ETL_NO_STL)
+  #if ETL_NOT_USING_STL
   // Pop Heap
   template <typename TIterator, typename TCompare>
   void pop_heap(TIterator first, TIterator last, TCompare compare)
@@ -1258,7 +1258,7 @@ namespace etl
 
 #endif
 
-#if defined (ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // Search
   template<typename TIterator1, typename TIterator2, typename TCompare>
@@ -1323,7 +1323,7 @@ namespace etl
   }
 #endif
 
-#if defined (ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // Rotate
   template<typename TIterator>
@@ -1361,7 +1361,7 @@ namespace etl
   }
 #endif
 
-#if defined (ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // find_end
   // Predicate
