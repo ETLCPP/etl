@@ -56,8 +56,10 @@ namespace
 
       BresenhamLine bl(first.x, first.y, last.x, last.y);
 
-      CHECK_EQUAL(first, bl.front());
-      CHECK_EQUAL(last,  bl.back());
+      CHECK_EQUAL(first.x, bl.front().x);
+      CHECK_EQUAL(first.y, bl.front().y);
+      CHECK_EQUAL(last.x,  bl.back().x);
+      CHECK_EQUAL(last.y, bl.back().y);
 
       std::vector<Point> expected{ Point{-5, 5 }, Point{-4, 5 }, Point{-3, 5 }, Point{-2, 5 }, Point{-1, 5 }, Point{ 0, 5 },
                                    Point{ 1, 5 }, Point{ 2, 5 }, Point{ 3, 5 }, Point{ 4, 5 }, Point{ 5, 5} };
@@ -81,8 +83,10 @@ namespace
 
       BresenhamLine bl(first, last);
 
-      CHECK_EQUAL(first, bl.front());
-      CHECK_EQUAL(last,  bl.back());
+      CHECK_EQUAL(first.x, bl.front().x);
+      CHECK_EQUAL(first.y, bl.front().y);
+      CHECK_EQUAL(last.x, bl.back().x);
+      CHECK_EQUAL(last.y, bl.back().y);
 
       std::vector<Point> expected{ Point{ 5, 5 }, Point{ 4, 5 }, Point{ 3, 5 }, Point{ 2, 5 }, Point{ 1, 5 }, Point{ 0, 5 },
                                    Point{-1, 5 }, Point{-2, 5 }, Point{-3, 5 }, Point{-4, 5 }, Point{-5, 5} };
@@ -106,8 +110,10 @@ namespace
 
       BresenhamLine bl(first, last);
 
-      CHECK_EQUAL(first, bl.front());
-      CHECK_EQUAL(last,  bl.back());
+      CHECK_EQUAL(first.x, bl.front().x);
+      CHECK_EQUAL(first.y, bl.front().y);
+      CHECK_EQUAL(last.x, bl.back().x);
+      CHECK_EQUAL(last.y, bl.back().y);
 
       std::vector<Point> expected{ Point{ 5, -5 }, Point{ 5, -4 }, Point{ 5, -3 }, Point{ 5, -2 }, Point{ 5, -1 }, Point{ 5,  0 },
                                    Point{ 5,  1 }, Point{ 5,  2 }, Point{ 5,  3 }, Point{ 5,  4 }, Point{ 5,  5} };
@@ -131,8 +137,10 @@ namespace
 
       BresenhamLine bl(first, last);
 
-      CHECK_EQUAL(first, bl.front());
-      CHECK_EQUAL(last,  bl.back());
+      CHECK_EQUAL(first.x, bl.front().x);
+      CHECK_EQUAL(first.y, bl.front().y);
+      CHECK_EQUAL(last.x, bl.back().x);
+      CHECK_EQUAL(last.y, bl.back().y);
 
       std::vector<Point> expected{ Point{ 5,  5 }, Point{ 5,  4 }, Point{ 5,  3 }, Point{ 5,  2 }, Point{ 5,  1 }, Point{ 5,  0 },
                                    Point{ 5, -1 }, Point{ 5, -2 }, Point{ 5, -3 }, Point{ 5, -4 }, Point{ 5, -5} };
@@ -156,8 +164,10 @@ namespace
 
       BresenhamLine bl(first, last);
 
-      CHECK_EQUAL(first, bl.front());
-      CHECK_EQUAL(last,  bl.back());
+      CHECK_EQUAL(first.x, bl.front().x);
+      CHECK_EQUAL(first.y, bl.front().y);
+      CHECK_EQUAL(last.x, bl.back().x);
+      CHECK_EQUAL(last.y, bl.back().y);
 
       std::vector<Point> expected{ Point{ -5, -3 }, Point{ -4, -3 }, Point{ -3, -2 }, Point{ -2, -1 }, Point{ -1, -1 }, Point{ 0, 0 },
                                    Point{ 1,   1 }, Point{  2,  1 }, Point{  3,  2 }, Point{  4,  2 }, Point{  5,  3 } };
@@ -181,8 +191,10 @@ namespace
 
       BresenhamLine bl(first, last);
 
-      CHECK_EQUAL(first, bl.front());
-      CHECK_EQUAL(last,  bl.back());
+      CHECK_EQUAL(first.x, bl.front().x);
+      CHECK_EQUAL(first.y, bl.front().y);
+      CHECK_EQUAL(last.x, bl.back().x);
+      CHECK_EQUAL(last.y, bl.back().y);
 
       std::vector<Point> expected{ Point{  5,  3 }, Point{ 4,   3 }, Point{  3,  2 }, Point{  2,  1 }, Point{  1,  1 }, Point{ 0, 0 },
                                    Point{ -1, -1 }, Point{ -2, -1 }, Point{ -3, -2 }, Point{ -4, -2 }, Point{ -5, -3 } };
@@ -206,8 +218,10 @@ namespace
 
       BresenhamLine bl(first, last);
 
-      CHECK_EQUAL(first, bl.front());
-      CHECK_EQUAL(last,  bl.back());
+      CHECK_EQUAL(first.x, bl.front().x);
+      CHECK_EQUAL(first.y, bl.front().y);
+      CHECK_EQUAL(last.x, bl.back().x);
+      CHECK_EQUAL(last.y, bl.back().y);
 
       std::vector<Point> expected{ Point{  5, -3 }, Point{  4, -3 }, Point{  3, -2 }, Point{  2, -1 }, Point{ 1,  -1 }, Point{ 0, 0 },
                                    Point{ -1,  1 }, Point{ -2,  1 }, Point{ -3,  2 }, Point{ -4,  2 }, Point{ -5,  3 } };
@@ -231,8 +245,10 @@ namespace
 
       BresenhamLine bl(first, last);
 
-      CHECK_EQUAL(first, bl.front());
-      CHECK_EQUAL(last,  bl.back());
+      CHECK_EQUAL(first.x, bl.front().x);
+      CHECK_EQUAL(first.y, bl.front().y);
+      CHECK_EQUAL(last.x, bl.back().x);
+      CHECK_EQUAL(last.y, bl.back().y);
 
       std::vector<Point> expected{ Point{ -5,  3 }, Point{ -4,  3 }, Point{ -3,  2 }, Point{ -2,  1 }, Point{ -1,  1 }, Point{ 0, 0 },
                                    Point{  1, -1 }, Point{  2, -1 }, Point{  3, -2 }, Point{  4, -2 }, Point{  5, -3 } };
@@ -256,8 +272,10 @@ namespace
 
       BresenhamLine bl(first, last);
 
-      CHECK_EQUAL(first, bl.front());
-      CHECK_EQUAL(last,  bl.back());
+      CHECK_EQUAL(first.x, bl.front().x);
+      CHECK_EQUAL(first.y, bl.front().y);
+      CHECK_EQUAL(last.x, bl.back().x);
+      CHECK_EQUAL(last.y, bl.back().y);
 
       std::vector<Point> expected{ Point{ -3, -5 }, Point{ -3, -4 }, Point{ -2, -3 }, Point{ -1, -2 }, Point{ -1, -1 }, Point{ 0, 0 },
                                    Point{ 1,   1 }, Point{  1,  2 }, Point{  2,  3 }, Point{  2,  4 }, Point{  3,  5 } };
@@ -281,8 +299,10 @@ namespace
 
       BresenhamLine bl(first, last);
 
-      CHECK_EQUAL(first, bl.front());
-      CHECK_EQUAL(last,  bl.back());
+      CHECK_EQUAL(first.x, bl.front().x);
+      CHECK_EQUAL(first.y, bl.front().y);
+      CHECK_EQUAL(last.x, bl.back().x);
+      CHECK_EQUAL(last.y, bl.back().y);
 
       std::vector<Point> expected{ Point{  3,  5 }, Point{  3,  4 }, Point{  2,  3 }, Point{  1,  2 }, Point{  1,  1 }, Point{ 0, 0 },
                                    Point{ -1, -1 }, Point{ -1, -2 }, Point{ -2, -3 }, Point{ -2, -4 }, Point{ -3, -5 } };
@@ -306,8 +326,10 @@ namespace
 
       BresenhamLine bl(first, last);
 
-      CHECK_EQUAL(first, bl.front());
-      CHECK_EQUAL(last,  bl.back());
+      CHECK_EQUAL(first.x, bl.front().x);
+      CHECK_EQUAL(first.y, bl.front().y);
+      CHECK_EQUAL(last.x, bl.back().x);
+      CHECK_EQUAL(last.y, bl.back().y);
 
       std::vector<Point> expected{ Point{  3, -5 }, Point{  3, -4 }, Point{  2, -3 }, Point{  1, -2 }, Point{  1, -1 }, Point{ 0, 0 },
                                    Point{ -1,  1 }, Point{ -1,  2 }, Point{ -2,  3 }, Point{ -2,  4 }, Point{ -3,  5 } };
@@ -331,8 +353,10 @@ namespace
 
       BresenhamLine bl(first, last);
 
-      CHECK_EQUAL(first, bl.front());
-      CHECK_EQUAL(last,  bl.back());
+      CHECK_EQUAL(first.x, bl.front().x);
+      CHECK_EQUAL(first.y, bl.front().y);
+      CHECK_EQUAL(last.x, bl.back().x);
+      CHECK_EQUAL(last.y, bl.back().y);
 
       std::vector<Point> expected{ Point{ -3,  5 }, Point{ -3,  4 }, Point{ -2,  3 }, Point{ -1,  2 }, Point{ -1,  1 }, Point{ 0, 0 },
                                    Point{  1, -1 }, Point{  1, -2 }, Point{  2, -3 }, Point{  2, -4 }, Point{  3, -5 } };
@@ -356,8 +380,10 @@ namespace
 
       BresenhamLine bl(first, last);
 
-      CHECK_EQUAL(first, bl.front());
-      CHECK_EQUAL(last,  bl.back());
+      CHECK_EQUAL(first.x, bl.front().x);
+      CHECK_EQUAL(first.y, bl.front().y);
+      CHECK_EQUAL(last.x, bl.back().x);
+      CHECK_EQUAL(last.y, bl.back().y);
 
       Point new_first = { -3,  5 };
       Point new_last  = {  3, -5 };
