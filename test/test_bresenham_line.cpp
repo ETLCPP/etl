@@ -38,7 +38,7 @@ namespace
 
   using Point = etl::coordinate_2d<Value>;
 
-  std::ostream& operator << (std::ostream& os, const Point& point)
+  std::ostream& operator << (std::ostream& os, const etl::coordinate_2d<char>& point)
   {
     os << "(" << int(point.x) << "," << int(point.y) << ")";
     return os;
