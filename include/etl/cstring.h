@@ -274,18 +274,34 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    string(value_type* buffer, size_t max_size)
-      : istring(buffer, max_size - 1)
+    string(value_type* buffer, size_t buffer_size, bool use_buffer_contents = false)
+      : istring(buffer, buffer_size - 1U)
     {
-      this->initialise();
+      if (use_buffer_contents)
+      {
+        this->current_size = etl::strlen(buffer);
+      }
+      else
+      {
+        this->initialise();
+      }
+    }
+
+    //*************************************************************************
+    /// Constructor direct from buffer.
+    //*************************************************************************
+    string(value_type* buffer)
+      : istring(buffer, etl::strlen(buffer))
+    {
+      this->current_size = etl::strlen(buffer);
     }
 
     //*************************************************************************
     /// Copy constructor.
     ///\param other The other string.
     //*************************************************************************
-    string(const etl::string<0U>& other, value_type* buffer, size_t max_size)
-      : istring(buffer, max_size - 1)
+    string(const etl::string<0U>& other, value_type* buffer, size_t buffer_size)
+      : istring(buffer, buffer_size - 1U)
     {
       this->assign(other);
     }
@@ -294,8 +310,8 @@ namespace etl
     /// From other istring.
     ///\param other The other istring.
     //*************************************************************************
-    string(const etl::istring& other, value_type* buffer, size_t max_size)
-      : istring(buffer, max_size - 1)
+    string(const etl::istring& other, value_type* buffer, size_t buffer_size)
+      : istring(buffer, buffer_size - 1U)
     {
       this->assign(other);
     }
@@ -306,8 +322,8 @@ namespace etl
     ///\param position The position of the first character.
     ///\param length   The number of characters. Default = npos.
     //*************************************************************************
-    string(const etl::istring& other, value_type* buffer, size_t max_size, size_t position, size_t length_ = npos)
-      : istring(buffer, max_size - 1)
+    string(const etl::istring& other, value_type* buffer, size_t buffer_size, size_t position, size_t length_ = npos)
+      : istring(buffer, buffer_size - 1U)
     {
       ETL_ASSERT(position < other.size(), ETL_ERROR(string_out_of_bounds));
 
@@ -327,8 +343,8 @@ namespace etl
     /// Constructor, from null terminated text.
     ///\param text The initial text of the string.
     //*************************************************************************
-    ETL_EXPLICIT_STRING_FROM_CHAR string(const value_type* text, value_type* buffer, size_t max_size)
-      : istring(buffer, max_size - 1)
+    ETL_EXPLICIT_STRING_FROM_CHAR string(const value_type* text, value_type* buffer, size_t buffer_size)
+      : istring(buffer, buffer_size - 1U)
     {
       this->assign(text, text + etl::char_traits<value_type>::length(text));
     }
@@ -338,8 +354,8 @@ namespace etl
     ///\param text  The initial text of the string.
     ///\param count The number of characters to copy.
     //*************************************************************************
-    string(const value_type* text, size_t count, value_type* buffer, size_t max_size)
-      : istring(buffer, max_size - 1)
+    string(const value_type* text, size_t count, value_type* buffer, size_t buffer_size)
+      : istring(buffer, buffer_size - 1U)
     {
       this->assign(text, text + count);
     }
@@ -349,8 +365,8 @@ namespace etl
     ///\param initialSize  The initial size of the string.
     ///\param value        The value to fill the string with.
     //*************************************************************************
-    string(size_t count, value_type c, value_type* buffer, size_t max_size)
-      : istring(buffer, max_size - 1)
+    string(size_t count, value_type c, value_type* buffer, size_t buffer_size)
+      : istring(buffer, buffer_size - 1U)
     {
       this->initialise();
       this->resize(count, c);
@@ -363,8 +379,8 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    string(TIterator first, TIterator last, value_type* buffer, size_t max_size)
-      : istring(buffer, max_size - 1)
+    string(TIterator first, TIterator last, value_type* buffer, size_t buffer_size)
+      : istring(buffer, buffer_size - 1U)
     {
       this->assign(first, last);
     }
@@ -373,8 +389,8 @@ namespace etl
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
-    string(std::initializer_list<value_type> init, value_type* buffer, size_t max_size)
-      : istring(buffer, max_size - 1)
+    string(std::initializer_list<value_type> init, value_type* buffer, size_t buffer_size)
+      : istring(buffer, buffer_size - 1U)
     {
       this->assign(init.begin(), init.end());
     }
@@ -384,8 +400,8 @@ namespace etl
     /// From string_view.
     ///\param view The string_view.
     //*************************************************************************
-    explicit string(const etl::string_view& view, value_type* buffer, size_t max_size)
-      : istring(buffer, max_size - 1)
+    explicit string(const etl::string_view& view, value_type* buffer, size_t buffer_size)
+      : istring(buffer, buffer_size - 1U)
     {
       this->assign(view.begin(), view.end());
     }

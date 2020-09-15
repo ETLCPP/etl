@@ -261,18 +261,34 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    wstring(value_type* buffer, size_t max_size)
-      : iwstring(buffer, max_size - 1)
+    wstring(value_type* buffer, size_t buffer_size, bool use_buffer_contents = false)
+      : iwstring(buffer, buffer_size - 1U)
     {
-      this->initialise();
+      if (use_buffer_contents)
+      {
+        this->current_size = etl::strlen(buffer);
+      }
+      else
+      {
+        this->initialise();
+      }
+    }
+
+    //*************************************************************************
+    /// Constructor direct from buffer.
+    //*************************************************************************
+    wstring(value_type* buffer)
+      : iwstring(buffer, etl::strlen(buffer))
+    {
+      this->current_size = etl::strlen(buffer);
     }
 
     //*************************************************************************
     /// Copy constructor.
     ///\param other The other wstring.
     //*************************************************************************
-    wstring(const etl::wstring<0U>& other, value_type* buffer, size_t max_size)
-      : iwstring(buffer, max_size - 1)
+    wstring(const etl::wstring<0U>& other, value_type* buffer, size_t buffer_size)
+      : iwstring(buffer, buffer_size - 1U)
     {
       this->assign(other);
     }
@@ -281,8 +297,8 @@ namespace etl
     /// From other iwstring.
     ///\param other The other iwstring.
     //*************************************************************************
-    wstring(const etl::iwstring& other, value_type* buffer, size_t max_size)
-      : iwstring(buffer, max_size - 1)
+    wstring(const etl::iwstring& other, value_type* buffer, size_t buffer_size)
+      : iwstring(buffer, buffer_size - 1U)
     {
       this->assign(other);
     }
@@ -293,8 +309,8 @@ namespace etl
     ///\param position The position of the first character.
     ///\param length   The number of characters. Default = npos.
     //*************************************************************************
-    wstring(const etl::iwstring& other, value_type* buffer, size_t max_size, size_t position, size_t length_ = npos)
-      : iwstring(buffer, max_size - 1)
+    wstring(const etl::iwstring& other, value_type* buffer, size_t buffer_size, size_t position, size_t length_ = npos)
+      : iwstring(buffer, buffer_size - 1U)
     {
       ETL_ASSERT(position < other.size(), ETL_ERROR(string_out_of_bounds));
 
@@ -314,8 +330,8 @@ namespace etl
     /// Constructor, from null terminated text.
     ///\param text The initial text of the wstring.
     //*************************************************************************
-    ETL_EXPLICIT_STRING_FROM_CHAR wstring(const value_type* text, value_type* buffer, size_t max_size)
-      : iwstring(buffer, max_size - 1)
+    ETL_EXPLICIT_STRING_FROM_CHAR wstring(const value_type* text, value_type* buffer, size_t buffer_size)
+      : iwstring(buffer, buffer_size - 1U)
     {
       this->assign(text, text + etl::char_traits<value_type>::length(text));
     }
@@ -325,8 +341,8 @@ namespace etl
     ///\param text  The initial text of the wstring.
     ///\param count The number of characters to copy.
     //*************************************************************************
-    wstring(const value_type* text, size_t count, value_type* buffer, size_t max_size)
-      : iwstring(buffer, max_size - 1)
+    wstring(const value_type* text, size_t count, value_type* buffer, size_t buffer_size)
+      : iwstring(buffer, buffer_size - 1U)
     {
       this->assign(text, text + count);
     }
@@ -336,8 +352,8 @@ namespace etl
     ///\param initialSize  The initial size of the wstring.
     ///\param value        The value to fill the wstring with.
     //*************************************************************************
-    wstring(size_t count, value_type c, value_type* buffer, size_t max_size)
-      : iwstring(buffer, max_size - 1)
+    wstring(size_t count, value_type c, value_type* buffer, size_t buffer_size)
+      : iwstring(buffer, buffer_size - 1U)
     {
       this->initialise();
       this->resize(count, c);
@@ -350,8 +366,8 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    wstring(TIterator first, TIterator last, value_type* buffer, size_t max_size)
-      : iwstring(buffer, max_size - 1)
+    wstring(TIterator first, TIterator last, value_type* buffer, size_t buffer_size)
+      : iwstring(buffer, buffer_size - 1U)
     {
       this->assign(first, last);
     }
@@ -360,8 +376,8 @@ namespace etl
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
-    wstring(std::initializer_list<value_type> init, value_type* buffer, size_t max_size)
-      : iwstring(buffer, max_size - 1)
+    wstring(std::initializer_list<value_type> init, value_type* buffer, size_t buffer_size)
+      : iwstring(buffer, buffer_size - 1U)
     {
       this->assign(init.begin(), init.end());
     }
@@ -371,8 +387,8 @@ namespace etl
     /// From wstring_view.
     ///\param view The wstring_view.
     //*************************************************************************
-    explicit wstring(const etl::wstring_view& view, value_type* buffer, size_t max_size)
-      : iwstring(buffer, max_size - 1)
+    explicit wstring(const etl::wstring_view& view, value_type* buffer, size_t buffer_size)
+      : iwstring(buffer, buffer_size - 1U)
     {
       this->assign(view.begin(), view.end());
     }

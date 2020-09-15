@@ -1,4 +1,8 @@
 ===============================================================================
+18.15.0
+Allow strings with external buffers to use a pre-initialised buffer.
+
+===============================================================================
 18.14.1
 Fixed conditional compilation macro use for template deduction guides.
 

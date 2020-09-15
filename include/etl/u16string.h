@@ -260,18 +260,34 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    u16string(value_type* buffer, size_t max_size)
-      : iu16string(buffer, max_size - 1)
+    u16string(value_type* buffer, size_t buffer_size, bool use_buffer_contents = false)
+      : iu16string(buffer, buffer_size - 1U)
     {
-      this->initialise();
+      if (use_buffer_contents)
+      {
+        this->current_size = etl::strlen(buffer);
+      }
+      else
+      {
+        this->initialise();
+      }
+    }
+
+    //*************************************************************************
+    /// Constructor direct from buffer.
+    //*************************************************************************
+    u16string(value_type* buffer)
+      : iu16string(buffer, etl::strlen(buffer))
+    {
+      this->current_size = etl::strlen(buffer);
     }
 
     //*************************************************************************
     /// Copy constructor.
     ///\param other The other u16string.
     //*************************************************************************
-    u16string(const etl::u16string<0U>& other, value_type* buffer, size_t max_size)
-      : iu16string(buffer, max_size - 1)
+    u16string(const etl::u16string<0U>& other, value_type* buffer, size_t buffer_size)
+      : iu16string(buffer, buffer_size - 1U)
     {
       this->assign(other);
     }
@@ -280,8 +296,8 @@ namespace etl
     /// From other iu16string.
     ///\param other The other iu16string.
     //*************************************************************************
-    u16string(const etl::iu16string& other, value_type* buffer, size_t max_size)
-      : iu16string(buffer, max_size - 1)
+    u16string(const etl::iu16string& other, value_type* buffer, size_t buffer_size)
+      : iu16string(buffer, buffer_size - 1U)
     {
       this->assign(other);
     }
@@ -292,8 +308,8 @@ namespace etl
     ///\param position The position of the first character.
     ///\param length   The number of characters. Default = npos.
     //*************************************************************************
-    u16string(const etl::iu16string& other, value_type* buffer, size_t max_size, size_t position, size_t length_ = npos)
-      : iu16string(buffer, max_size - 1)
+    u16string(const etl::iu16string& other, value_type* buffer, size_t buffer_size, size_t position, size_t length_ = npos)
+      : iu16string(buffer, buffer_size - 1U)
     {
       ETL_ASSERT(position < other.size(), ETL_ERROR(string_out_of_bounds));
 
@@ -313,8 +329,8 @@ namespace etl
     /// Constructor, from null terminated text.
     ///\param text The initial text of the u16string.
     //*************************************************************************
-    ETL_EXPLICIT_STRING_FROM_CHAR u16string(const value_type* text, value_type* buffer, size_t max_size)
-      : iu16string(buffer, max_size - 1)
+    ETL_EXPLICIT_STRING_FROM_CHAR u16string(const value_type* text, value_type* buffer, size_t buffer_size)
+      : iu16string(buffer, buffer_size - 1U)
     {
       this->assign(text, text + etl::char_traits<value_type>::length(text));
     }
@@ -324,8 +340,8 @@ namespace etl
     ///\param text  The initial text of the u16string.
     ///\param count The number of characters to copy.
     //*************************************************************************
-    u16string(const value_type* text, size_t count, value_type* buffer, size_t max_size)
-      : iu16string(buffer, max_size - 1)
+    u16string(const value_type* text, size_t count, value_type* buffer, size_t buffer_size)
+      : iu16string(buffer, buffer_size - 1U)
     {
       this->assign(text, text + count);
     }
@@ -335,8 +351,8 @@ namespace etl
     ///\param initialSize  The initial size of the u16string.
     ///\param value        The value to fill the u16string with.
     //*************************************************************************
-    u16string(size_t count, value_type c, value_type* buffer, size_t max_size)
-      : iu16string(buffer, max_size - 1)
+    u16string(size_t count, value_type c, value_type* buffer, size_t buffer_size)
+      : iu16string(buffer, buffer_size - 1U)
     {
       this->initialise();
       this->resize(count, c);
@@ -349,8 +365,8 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    u16string(TIterator first, TIterator last, value_type* buffer, size_t max_size)
-      : iu16string(buffer, max_size - 1)
+    u16string(TIterator first, TIterator last, value_type* buffer, size_t buffer_size)
+      : iu16string(buffer, buffer_size - 1U)
     {
       this->assign(first, last);
     }
@@ -359,8 +375,8 @@ namespace etl
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
-    u16string(std::initializer_list<value_type> init, value_type* buffer, size_t max_size)
-      : iu16string(buffer, max_size - 1)
+    u16string(std::initializer_list<value_type> init, value_type* buffer, size_t buffer_size)
+      : iu16string(buffer, buffer_size - 1U)
     {
       this->assign(init.begin(), init.end());
     }
@@ -370,8 +386,8 @@ namespace etl
     /// From u16string_view.
     ///\param view The u16string_view.
     //*************************************************************************
-    explicit u16string(const etl::u16string_view& view, value_type* buffer, size_t max_size)
-      : iu16string(buffer, max_size - 1)
+    explicit u16string(const etl::u16string_view& view, value_type* buffer, size_t buffer_size)
+      : iu16string(buffer, buffer_size - 1U)
     {
       this->assign(view.begin(), view.end());
     }
