@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include "UnitTest++/UnitTest++.h"
 
-#include "etl/cstring.h"
+#include "etl/string.h"
 #include "etl/string_view.h"
 #include "etl/string_utilities.h"
 #include "etl/vector.h"

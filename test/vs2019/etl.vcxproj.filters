@@ -669,9 +669,6 @@
     <ClInclude Include="..\..\include\etl\delegate_service.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\cstring.h">
-      <Filter>ETL\Strings</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\string_view.h">
       <Filter>ETL\Strings</Filter>
     </ClInclude>
@@ -881,6 +878,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\bresenham_line.h">
       <Filter>ETL\Pseudo Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\string.h">
+      <Filter>ETL\Strings</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
