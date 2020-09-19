@@ -261,26 +261,10 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    wstring(value_type* buffer, size_t buffer_size, bool use_buffer_contents = false)
+    wstring(value_type* buffer, size_t buffer_size)
       : iwstring(buffer, buffer_size - 1U)
     {
-      if (use_buffer_contents)
-      {
-        this->current_size = etl::strlen(buffer);
-      }
-      else
-      {
-        this->initialise();
-      }
-    }
-
-    //*************************************************************************
-    /// Constructor direct from buffer.
-    //*************************************************************************
-    wstring(value_type* buffer)
-      : iwstring(buffer, etl::strlen(buffer))
-    {
-      this->current_size = etl::strlen(buffer);
+      this->initialise();
     }
 
     //*************************************************************************
@@ -330,10 +314,18 @@ namespace etl
     /// Constructor, from null terminated text.
     ///\param text The initial text of the wstring.
     //*************************************************************************
-    ETL_EXPLICIT_STRING_FROM_CHAR wstring(const value_type* text, value_type* buffer, size_t buffer_size)
+    wstring(const value_type* text, value_type* buffer, size_t buffer_size)
       : iwstring(buffer, buffer_size - 1U)
     {
-      this->assign(text, text + etl::char_traits<value_type>::length(text));
+      // Is the initial text at the same address as the buffer?
+      if (text == buffer)
+      {
+        this->current_size = etl::strlen(buffer);
+      }
+      else
+      {
+        this->assign(text, text + etl::strlen(text));
+      }
     }
 
     //*************************************************************************

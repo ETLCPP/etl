@@ -117,19 +117,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_default_constructor_use_buffer_text)
-    {
-      Text text(p_text);
-
-      CHECK_EQUAL(text.size(), etl::strlen(p_text));
-      CHECK(!text.empty());
-      CHECK_EQUAL(etl::strlen(p_text), text.capacity());
-      CHECK_EQUAL(etl::strlen(p_text), text.max_size());
-      CHECK(text.begin() != text.end());
-      CHECK(!text.truncated());
-    }
-
-    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_default_constructor_use_buffer_and_size)
     {
       size_t length = etl::strlen(p_text);
@@ -146,7 +133,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_default_constructor_use_buffer_text_and_size)
     {
-      Text text(p_text, etl::strlen(p_text) + 1, true);
+      Text text(p_text, p_text, etl::strlen(p_text) + 1);
 
       CHECK_EQUAL(text.size(), etl::strlen(p_text));
       CHECK(!text.empty());
@@ -172,7 +159,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_default_constructor_use_array_buffer_text)
     {
-      Text text(array_text, etl::size(array_text), true);
+      Text text(array_text, array_text, etl::size(array_text));
 
       CHECK_EQUAL(text.size(), etl::strlen(array_text));
       CHECK(!text.empty());
@@ -257,16 +244,16 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_char_pointer_size)
     {
-        Compare_Text compare_text(SIZE, STR('A'));
+      Compare_Text compare_text(SIZE, STR('A'));
 
-        TextBuffer buffer;
-        Text text(SIZE, STR('A'), buffer.data(), buffer.size());
+      TextBuffer buffer;
+      Text text(SIZE, STR('A'), buffer.data(), buffer.size());
 
-        CHECK(!text.empty());
+      CHECK(!text.empty());
 
-        bool is_equal = Equal(compare_text, text);
-        CHECK(is_equal);
-        CHECK(!text.truncated());
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************
@@ -287,16 +274,16 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_size_char)
     {
-        Compare_Text compare_text(initial_text.c_str(), initial_text.size() / 2);
+      Compare_Text compare_text(initial_text.c_str(), initial_text.size() / 2);
 
-        TextBuffer buffer;
-        Text text(initial_text.c_str(), initial_text.size() / 2, buffer.data(), buffer.size());
+      TextBuffer buffer;
+      Text text(initial_text.c_str(), initial_text.size() / 2, buffer.data(), buffer.size());
 
-        CHECK(!text.empty());
+      CHECK(!text.empty());
 
-        bool is_equal = Equal(compare_text, text);
-        CHECK(is_equal);
-        CHECK(!text.truncated());
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+      CHECK(!text.truncated());
     }
 
     //*************************************************************************

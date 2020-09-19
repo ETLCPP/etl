@@ -260,26 +260,10 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    u16string(value_type* buffer, size_t buffer_size, bool use_buffer_contents = false)
+    u16string(value_type* buffer, size_t buffer_size)
       : iu16string(buffer, buffer_size - 1U)
     {
-      if (use_buffer_contents)
-      {
-        this->current_size = etl::strlen(buffer);
-      }
-      else
-      {
-        this->initialise();
-      }
-    }
-
-    //*************************************************************************
-    /// Constructor direct from buffer.
-    //*************************************************************************
-    u16string(value_type* buffer)
-      : iu16string(buffer, etl::strlen(buffer))
-    {
-      this->current_size = etl::strlen(buffer);
+      this->initialise();
     }
 
     //*************************************************************************
@@ -329,10 +313,18 @@ namespace etl
     /// Constructor, from null terminated text.
     ///\param text The initial text of the u16string.
     //*************************************************************************
-    ETL_EXPLICIT_STRING_FROM_CHAR u16string(const value_type* text, value_type* buffer, size_t buffer_size)
+    u16string(const value_type* text, value_type* buffer, size_t buffer_size)
       : iu16string(buffer, buffer_size - 1U)
     {
-      this->assign(text, text + etl::char_traits<value_type>::length(text));
+      // Is the initial text at the same address as the buffer?
+      if (text == buffer)
+      {
+        this->current_size = etl::strlen(buffer);
+      }
+      else
+      {
+        this->assign(text, text + etl::strlen(text));
+      }
     }
 
     //*************************************************************************
