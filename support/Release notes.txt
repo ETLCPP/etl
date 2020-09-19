@@ -1,4 +1,9 @@
 ===============================================================================
+18.15.1
+Refactoring of 18.15.0.
+Modified constructor syntax.
+
+===============================================================================
 18.15.0
 Allow strings with external buffers to use a pre-initialised buffer.
 
