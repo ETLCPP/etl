@@ -164,7 +164,7 @@ namespace etl
     /// Construct from C array
     //*************************************************************************
     template<size_t ARRAY_SIZE>
-    ETL_CONSTEXPR explicit array_view(T(&begin_)[ARRAY_SIZE])
+    ETL_CONSTEXPR array_view(T(&begin_)[ARRAY_SIZE])
       : mbegin(begin_),
         mend(begin_ + ARRAY_SIZE)
     {

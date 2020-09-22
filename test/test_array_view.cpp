@@ -92,6 +92,18 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_implicit_constructor_etl_array_1)
+    {
+      View view = etldata;
+
+      CHECK_EQUAL(etldata.size(), view.size());
+      CHECK_EQUAL(etldata.max_size(), view.max_size());
+
+      bool isEqual = std::equal(view.begin(), view.end(), etldata.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
     TEST(test_constructor_etl_array_1_const)
     {
       CView view(cetldata);
@@ -131,6 +143,18 @@ namespace
     TEST(test_constructor_stl_array_1)
     {
       View view(stldata);
+
+      CHECK_EQUAL(stldata.size(), view.size());
+      CHECK_EQUAL(stldata.max_size(), view.max_size());
+
+      bool isEqual = std::equal(view.begin(), view.end(), stldata.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(test_implicit_constructor_stl_array_1)
+    {
+      View view = stldata;
 
       CHECK_EQUAL(stldata.size(), view.size());
       CHECK_EQUAL(stldata.max_size(), view.max_size());
@@ -227,6 +251,18 @@ namespace
     TEST(test_constructor_c_array_2)
     {
       View view(cdata);
+
+      CHECK_EQUAL(SIZE, view.size());
+      CHECK_EQUAL(SIZE, view.max_size());
+
+      bool isEqual = std::equal(view.begin(), view.end(), cdata);
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(test_implicit_constructor_c_array)
+    {
+      View view = cdata;
 
       CHECK_EQUAL(SIZE, view.size());
       CHECK_EQUAL(SIZE, view.max_size());
