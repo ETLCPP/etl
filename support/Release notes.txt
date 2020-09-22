@@ -1,5 +1,6 @@
 ===============================================================================
 18.15.2
+Workaround for Segger ARM Link-Time-Optimisation (LTO) bug.
 etl::array_view constructor from etl or std array is no longer explicit.
 
 ===============================================================================
