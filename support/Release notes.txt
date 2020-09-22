@@ -1,4 +1,8 @@
 ===============================================================================
+18.15.2
+etl::array_view constructor from etl or std array is no longer explicit.
+
+===============================================================================
 18.15.1
 Refactoring of 18.15.0.
 Modified constructor syntax.

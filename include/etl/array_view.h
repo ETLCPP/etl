@@ -133,7 +133,7 @@ namespace etl
     /// data() and size() member functions.
     //*************************************************************************
     template <typename TArray>
-    ETL_CONSTEXPR explicit array_view(TArray& a)
+    ETL_CONSTEXPR array_view(TArray& a)
       : mbegin(a.data()),
         mend(a.data() + a.size())
     {
@@ -163,7 +163,7 @@ namespace etl
     //*************************************************************************
     /// Construct from C array
     //*************************************************************************
-    template<const size_t ARRAY_SIZE>
+    template<size_t ARRAY_SIZE>
     ETL_CONSTEXPR explicit array_view(T(&begin_)[ARRAY_SIZE])
       : mbegin(begin_),
         mend(begin_ + ARRAY_SIZE)
