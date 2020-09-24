@@ -275,7 +275,7 @@ namespace etl
 #if ETL_NOT_USING_STL
   //***************************************************************************
   // move
-  // non-pointer, non-pod
+  // non-pointer or not trivially copyable
   template <typename TIterator1, typename TIterator2>
   typename etl::enable_if<!etl::is_pointer<TIterator1>::value ||
                           !etl::is_pointer<TIterator2>::value ||
@@ -290,7 +290,7 @@ namespace etl
     return db;
   }
 
-  // pointer and pod
+  // pointer and trivially copyable
   template <typename TIterator1, typename TIterator2>
   typename etl::enable_if<etl::is_pointer<TIterator1>::value &&
                           etl::is_pointer<TIterator2>::value &&
@@ -1398,12 +1398,16 @@ namespace etl
     {
       typedef typename etl::iterator_traits<TIterator>::value_type value_type;
 
+      // Save the first item.
       value_type temp(etl::move(*first));
 
+      // Move the rest.
       TIterator result = etl::move(etl::next(first), last, first);
 
+      // Restore the first item in its rotated position.
       *result = etl::move(temp);
 
+      // The new position of the first item.
       return result;
     }
 
@@ -1413,14 +1417,17 @@ namespace etl
     {
       typedef typename etl::iterator_traits<TIterator>::value_type value_type;
 
+      // Save the last item.
       TIterator previous = etl::prev(last);
-
       value_type temp(etl::move(*previous));
 
+      // Move the rest.
       TIterator result = etl::move_backward(first, previous, last);
 
+      // Restore the last item in its rotated position.
       *first = etl::move(temp);
 
+      // The new position of the first item.
       return result;
     }
   }
