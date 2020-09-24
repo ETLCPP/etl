@@ -1,4 +1,10 @@
 ===============================================================================
+18.15.4
+Performance optimisations for etl::rotate, etl::move & etl::move_backward
+when not using the STL, iterators are pointers and the objects are trivially
+copyable (currently POD types).
+
+===============================================================================
 18.15.3
 etl::array_view constructor from C array is no longer explicit.
 

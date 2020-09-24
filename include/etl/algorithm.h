@@ -127,7 +127,7 @@ namespace etl
   template <typename TIterator1, typename TIterator2>
   typename etl::enable_if<etl::is_pointer<TIterator1>::value &&
                              etl::is_pointer<TIterator2>::value &&
-                             etl::is_pod<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+                             etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
     copy(TIterator1 sb, TIterator1 se, TIterator2 db)
   {
     typedef typename etl::iterator_traits<TIterator1>::value_type value_t;
@@ -142,7 +142,7 @@ namespace etl
   template <typename TIterator1, typename TIterator2>
   typename etl::enable_if<!etl::is_pointer<TIterator1>::value ||
                              !etl::is_pointer<TIterator2>::value ||
-                             !etl::is_pod<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+                             !etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
     copy(TIterator1 sb, TIterator1 se, TIterator2 db)
   {
     while (sb != se)
@@ -192,7 +192,7 @@ namespace etl
   template <typename TIterator1, typename TSize, typename TIterator2>
   typename etl::enable_if<etl::is_pointer<TIterator1>::value &&
                           etl::is_pointer<TIterator2>::value &&
-                          etl::is_pod<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+                          etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
     copy_n(TIterator1 sb, TSize count, TIterator2 db)
   {
     typedef typename etl::iterator_traits<TIterator1>::value_type value_t;
@@ -204,7 +204,7 @@ namespace etl
   template <typename TIterator1, typename TSize, typename TIterator2>
   typename etl::enable_if<!etl::is_pointer<TIterator1>::value ||
                           !etl::is_pointer<TIterator2>::value ||
-                          !etl::is_pod<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+                          !etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
     copy_n(TIterator1 sb, TSize count, TIterator2 db)
   {
     while (count != 0)
@@ -236,8 +236,8 @@ namespace etl
   // Pointer
   template <typename TIterator1, typename TIterator2>
   typename etl::enable_if<etl::is_pointer<TIterator1>::value &&
-    etl::is_pointer<TIterator2>::value &&
-    etl::is_pod<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+                          etl::is_pointer<TIterator2>::value &&
+                          etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
     copy_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
   {
     typedef typename etl::iterator_traits<TIterator1>::value_type value_t;
@@ -250,8 +250,8 @@ namespace etl
   // Other iterator
   template <typename TIterator1, typename TIterator2>
   typename etl::enable_if<!etl::is_pointer<TIterator1>::value ||
-    !etl::is_pointer<TIterator2>::value ||
-    !etl::is_pod<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+                          !etl::is_pointer<TIterator2>::value ||
+                          !etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
     copy_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
   {
     while (se != sb)
@@ -275,8 +275,12 @@ namespace etl
 #if ETL_NOT_USING_STL
   //***************************************************************************
   // move
+  // non-pointer, non-pod
   template <typename TIterator1, typename TIterator2>
-  TIterator2 move(TIterator1 sb, TIterator1 se, TIterator2 db)
+  typename etl::enable_if<!etl::is_pointer<TIterator1>::value ||
+                          !etl::is_pointer<TIterator2>::value ||
+                          !etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+    move(TIterator1 sb, TIterator1 se, TIterator2 db)
   {
     while (sb != se)
     {
@@ -284,6 +288,21 @@ namespace etl
     }
 
     return db;
+  }
+
+  // pointer and pod
+  template <typename TIterator1, typename TIterator2>
+  typename etl::enable_if<etl::is_pointer<TIterator1>::value &&
+                          etl::is_pointer<TIterator2>::value &&
+                          etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+    move(TIterator1 sb, TIterator1 se, TIterator2 db)
+  {
+    typedef typename etl::iterator_traits<TIterator1>::value_type      value_t;
+    typedef typename etl::iterator_traits<TIterator1>::difference_type difference_t;
+
+    difference_t count = (se - sb);
+
+    return TIterator2(memmove(db, sb, sizeof(value_t) * count)) + count;
   }
 #else
   //***************************************************************************
@@ -310,8 +329,12 @@ namespace etl
 #if ETL_NOT_USING_STL
   //***************************************************************************
   // move_backward
+  // non-pointer, non-pod
   template <typename TIterator1, typename TIterator2>
-  TIterator2 move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
+  typename etl::enable_if<!etl::is_pointer<TIterator1>::value ||
+                          !etl::is_pointer<TIterator2>::value ||
+                          !etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+    move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
   {
     while (sb != se)
     {
@@ -319,6 +342,22 @@ namespace etl
     }
 
     return de;
+  }
+
+  // pointer and pod
+  template <typename TIterator1, typename TIterator2>
+  typename etl::enable_if<etl::is_pointer<TIterator1>::value &&
+                          etl::is_pointer<TIterator2>::value &&
+                          etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+    move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
+  {
+    typedef typename etl::iterator_traits<TIterator1>::value_type      value_t;
+    typedef typename etl::iterator_traits<TIterator1>::difference_type difference_t;
+
+    difference_t count = (se - sb);
+    TIterator2 db = de - count;
+
+    return TIterator2(memmove(db, sb, sizeof(value_t) * count)) + count;
   }
 #else
   //***************************************************************************
@@ -727,7 +766,7 @@ namespace etl
   // equal
   template <typename TIterator1, typename TIterator2>
   ETL_NODISCARD
-  typename etl::enable_if<!etl::is_pointer<TIterator1>::value || !etl::is_pointer<TIterator2>::value || !etl::is_pod<typename etl::iterator_traits<TIterator1>::value_type>::value, bool>::type
+  typename etl::enable_if<!etl::is_pointer<TIterator1>::value || !etl::is_pointer<TIterator2>::value || !etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, bool>::type
     equal(TIterator1 first1, TIterator1 last1, TIterator2 first2)
   {
     while (first1 != last1)
@@ -743,7 +782,7 @@ namespace etl
 
   template <typename TIterator1, typename TIterator2>
   ETL_NODISCARD
-  typename etl::enable_if<etl::is_pointer<TIterator1>::value && etl::is_pointer<TIterator2>::value && etl::is_pod<typename etl::iterator_traits<TIterator1>::value_type>::value, bool>::type
+  typename etl::enable_if<etl::is_pointer<TIterator1>::value && etl::is_pointer<TIterator2>::value && etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, bool>::type
     equal(TIterator1 first1, TIterator1 last1, TIterator2 first2)
   {
     typedef typename etl::iterator_traits<TIterator1>::value_type value_t;
@@ -1326,30 +1365,81 @@ namespace etl
 #if ETL_NOT_USING_STL
   //***************************************************************************
   // Rotate
+  namespace private_algorithm
+  {
+    //*********************************
+    template <typename TIterator>
+    TIterator rotate_general(TIterator first, TIterator middle, TIterator last)
+    {
+      TIterator next = middle;
+
+      while (first != next)
+      {
+        using ETL_OR_STD::swap; // Allow ADL
+
+        swap(*first++, *next++);
+
+        if (next == last)
+        {
+          next = middle;
+        }
+        else if (first == middle)
+        {
+          middle = next;
+        }
+      }
+
+      return first;
+    }
+
+    //*********************************
+    template <typename TIterator>
+    TIterator rotate_left_by_one(TIterator first, TIterator last)
+    {
+      typedef typename etl::iterator_traits<TIterator>::value_type value_type;
+
+      value_type temp(etl::move(*first));
+
+      TIterator result = etl::move(etl::next(first), last, first);
+
+      *result = etl::move(temp);
+
+      return result;
+    }
+
+    //*********************************
+    template <typename TIterator>
+    TIterator rotate_right_by_one(TIterator first, TIterator last)
+    {
+      typedef typename etl::iterator_traits<TIterator>::value_type value_type;
+
+      TIterator previous = etl::prev(last);
+
+      value_type temp(etl::move(*previous));
+
+      TIterator result = etl::move_backward(first, previous, last);
+
+      *first = etl::move(temp);
+
+      return result;
+    }
+  }
+
+  //*********************************
   template<typename TIterator>
   TIterator rotate(TIterator first, TIterator middle, TIterator last)
   {
-    using ETL_OR_STD::swap; // Allow ADL
-
-    TIterator next = middle;
-
-    while (first != next)
+    if (etl::next(first) == middle)
     {
-      using ETL_OR_STD::swap;
-
-      swap(*first++, *next++);
-
-      if (next == last)
-      {
-        next = middle;
-      }
-      else if (first == middle)
-      {
-        middle = next;
-      }
+      return private_algorithm::rotate_left_by_one(first, last);
     }
 
-    return first;
+    if (etl::next(middle) == last)
+    {
+      return private_algorithm::rotate_right_by_one(first, last);
+    }
+
+    return private_algorithm::rotate_general(first, middle, last);
   }
 #else
   //***************************************************************************
