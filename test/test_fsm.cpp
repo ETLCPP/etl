@@ -338,6 +338,9 @@ namespace
     {
       etl::null_message_router nmr;
 
+      CHECK(motorControl.is_producer());
+      CHECK(motorControl.is_consumer());
+
       motorControl.Initialise(stateList, etl::size(stateList));
       motorControl.reset();
       motorControl.ClearStatistics();
