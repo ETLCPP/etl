@@ -43,6 +43,7 @@ SOFTWARE.
 #include "function.h"
 #include "nullptr.h"
 
+#if defined(ETL_LOG_ERRORS) || defined(ETL_IN_UNIT_TEST)
 namespace etl
 {
   //***************************************************************************
@@ -254,6 +255,7 @@ namespace etl
     }
   };
 }
+#endif
 
 //***************************************************************************
 /// Asserts a condition.
