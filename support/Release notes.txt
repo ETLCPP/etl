@@ -1,4 +1,8 @@
 ===============================================================================
+18.15.5
+Refactored empty(), full(), available() member functions for etl::list and etl::forward_list
+
+===============================================================================
 18.15.4
 Performance optimisations for etl::rotate, etl::move & etl::move_backward
 when not using the STL, iterators are pointers and the objects are trivially

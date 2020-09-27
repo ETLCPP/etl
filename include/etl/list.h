@@ -241,7 +241,7 @@ namespace etl
       if (has_shared_pool())
       {
         // We have to count what we actually own.
-        size_type count = 0;
+        size_type count = 0U;
 
         node_t* p_node = terminal_node.next;
 
@@ -255,7 +255,6 @@ namespace etl
       }
       else
       {
-        ETL_ASSERT(p_node_pool != ETL_NULLPTR, ETL_ERROR(list_no_pool));
         return p_node_pool->size();
       }
     }
@@ -265,15 +264,7 @@ namespace etl
     //*************************************************************************
     bool empty() const
     {
-      if (has_shared_pool())
-      {
-        return (size() == 0);
-      }
-      else
-      {
-        ETL_ASSERT(p_node_pool != ETL_NULLPTR, ETL_ERROR(list_no_pool));
-        return p_node_pool->empty();
-      }
+      return (terminal_node.next == &terminal_node);
     }
 
     //*************************************************************************
@@ -282,17 +273,17 @@ namespace etl
     bool full() const
     {
       ETL_ASSERT(p_node_pool != ETL_NULLPTR, ETL_ERROR(list_no_pool));
-      return p_node_pool->size() == MAX_SIZE;
+      return p_node_pool->full();
     }
 
     //*************************************************************************
     /// Returns the remaining capacity.
     ///\return The remaining capacity.
     //*************************************************************************
-    size_t available() const
+    size_type available() const
     {
       ETL_ASSERT(p_node_pool != ETL_NULLPTR, ETL_ERROR(list_no_pool));
-      return max_size() - p_node_pool->size();
+      return p_node_pool->available();
     }
 
   protected:
@@ -754,6 +745,14 @@ namespace etl
     reverse_iterator rend()
     {
       return reverse_iterator(get_head());
+    }
+
+    //*************************************************************************
+    /// Gets the reverse end of the list.
+    //*************************************************************************
+    const_reverse_iterator rend() const
+    {
+      return const_reverse_iterator(get_head());
     }
 
     //*************************************************************************
