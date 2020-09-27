@@ -173,6 +173,14 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Gets the maximum possible size of the forward_list.
+    //*************************************************************************
+    size_type max_size() const
+    {
+      return MAX_SIZE;
+    }
+
+    //*************************************************************************
     /// Gets the size of the forward_list.
     //*************************************************************************
     size_type size() const
@@ -194,17 +202,8 @@ namespace etl
       }
       else
       {
-        ETL_ASSERT(p_node_pool != ETL_NULLPTR, ETL_ERROR(forward_list_no_pool));
         return p_node_pool->size();
       }
-    }
-
-    //*************************************************************************
-    /// Gets the maximum possible size of the forward_list.
-    //*************************************************************************
-    size_type max_size() const
-    {
-      return MAX_SIZE;
     }
 
     //*************************************************************************
@@ -212,15 +211,7 @@ namespace etl
     //*************************************************************************
     bool empty() const
     {
-      if (has_shared_pool())
-      {
-        return (size() == 0);
-      }
-      else
-      {
-        ETL_ASSERT(p_node_pool != ETL_NULLPTR, ETL_ERROR(forward_list_no_pool));
-        return p_node_pool->empty();
-      }
+      return (start_node.next == ETL_NULLPTR);
     }
 
     //*************************************************************************
