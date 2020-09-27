@@ -281,8 +281,15 @@ namespace etl
     //*************************************************************************
     bool full() const
     {
-      ETL_ASSERT(p_node_pool != ETL_NULLPTR, ETL_ERROR(list_no_pool));
-      return p_node_pool->size() == MAX_SIZE;
+      if (has_shared_pool())
+      {
+        return size() == MAX_SIZE;
+      }
+      else
+      {
+        ETL_ASSERT(p_node_pool != ETL_NULLPTR, ETL_ERROR(list_no_pool));
+        return p_node_pool->size() == MAX_SIZE;
+      }
     }
 
     //*************************************************************************
