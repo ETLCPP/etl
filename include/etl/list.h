@@ -757,6 +757,14 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Gets the reverse end of the list.
+    //*************************************************************************
+    const_reverse_iterator rend() const
+    {
+      return const_reverse_iterator(get_head());
+    }
+
+    //*************************************************************************
     /// Gets the reverse beginning of the list.
     //*************************************************************************
     const_reverse_iterator crbegin() const
