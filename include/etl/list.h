@@ -298,8 +298,15 @@ namespace etl
     //*************************************************************************
     size_t available() const
     {
-      ETL_ASSERT(p_node_pool != ETL_NULLPTR, ETL_ERROR(list_no_pool));
-      return max_size() - p_node_pool->size();
+      if (has_shared_pool())
+      {
+        return max_size() - size();
+      }
+      else
+      {
+        ETL_ASSERT(p_node_pool != ETL_NULLPTR, ETL_ERROR(list_no_pool));
+        return max_size() - p_node_pool->size();
+      }
     }
 
   protected:
