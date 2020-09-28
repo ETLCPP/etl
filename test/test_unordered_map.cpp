@@ -43,6 +43,7 @@ SOFTWARE.
 #include "data.h"
 
 #include "etl/unordered_map.h"
+#include "etl/hash.h"
 
 namespace
 {
@@ -73,18 +74,34 @@ namespace
     return true;
   }
 
+  typedef TestDataDC<std::string>  DC;
+  typedef TestDataNDC<std::string> NDC;
+
+  typedef ETL_OR_STD::pair<std::string, DC>  ElementDC;
+  typedef ETL_OR_STD::pair<std::string, NDC> ElementNDC;
+}
+
+namespace etl
+{
+  template <>
+  struct hash<std::string>
+  {
+    size_t operator ()(const std::string& e) const
+    {
+      size_t sum = 0U;
+      return std::accumulate(e.begin(), e.end(), sum);
+    }
+  };
+}
+
+namespace
+{
   SUITE(test_unordered_map)
   {
     static const size_t SIZE = 10;
 
-    typedef TestDataDC<std::string>  DC;
-    typedef TestDataNDC<std::string> NDC;
-
     using ItemM = TestDataM<int>;
     using DataM = etl::unordered_map<std::string, ItemM, SIZE, SIZE, std::hash<std::string>>;
-
-    typedef ETL_OR_STD::pair<std::string, DC>  ElementDC;
-    typedef ETL_OR_STD::pair<std::string, NDC> ElementNDC;
 
     typedef etl::unordered_map<std::string, DC,  SIZE, SIZE / 2, simple_hash> DataDC;
     typedef etl::unordered_map<std::string, NDC, SIZE, SIZE / 2, simple_hash> DataNDC;
@@ -226,6 +243,26 @@ namespace
       CHECK_EQUAL(data.max_size(), SIZE);
       CHECK(data.begin() == data.end());
     }
+
+#if ETL_USING_STL
+    //*************************************************************************
+    TEST(test_cpp17_deduced_constructor)
+    {
+      etl::unordered_map data{ ElementNDC(K0, N0), ElementNDC(K1, N1), ElementNDC(K2, N2), ElementNDC(K3, N3), ElementNDC(K4, N4),
+                               ElementNDC(K5, N5), ElementNDC(K6, N6), ElementNDC(K7, N7), ElementNDC(K8, N8), ElementNDC(K9, N9) };
+      etl::unordered_map<std::string, NDC, 10U, 10U> check = { ElementNDC(K0, N0), ElementNDC(K1, N1), ElementNDC(K2, N2), ElementNDC(K3, N3), ElementNDC(K4, N4),
+                                                               ElementNDC(K5, N5), ElementNDC(K6, N6), ElementNDC(K7, N7), ElementNDC(K8, N8), ElementNDC(K9, N9) };
+
+      CHECK(!data.empty());
+      CHECK(data.full());
+      CHECK(data.begin() != data.end());
+      CHECK_EQUAL(10U, data.size());
+      CHECK_EQUAL(0U, data.available());
+      CHECK_EQUAL(10U, data.capacity());
+      CHECK_EQUAL(10U, data.max_size());
+      CHECK(data == check);
+    }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_range)

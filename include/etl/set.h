@@ -2221,6 +2221,15 @@ namespace etl
     etl::pool<typename etl::iset<TKey, TCompare>::Data_Node, MAX_SIZE> node_pool;
   };
 
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  template <typename T, typename... Ts>
+  set(T, Ts...)
+    ->set<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
+#endif 
+
   //***************************************************************************
   /// Equal operator.
   ///\param lhs Reference to the first lookup.

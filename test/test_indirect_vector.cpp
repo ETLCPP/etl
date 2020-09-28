@@ -136,6 +136,24 @@ namespace
       CHECK_EQUAL(data.max_size(), SIZE);
     }
 
+#if ETL_USING_STL
+    //*************************************************************************
+    TEST(test_cpp17_deduced_constructor)
+    {
+      etl::indirect_vector data{ NDC("0"), NDC("1"), NDC("2"), NDC("3"), NDC("4"), NDC("5"), NDC("6"), NDC("7"), NDC("8"), NDC("9") };
+      etl::indirect_vector<NDC, 10U> check = { NDC("0"), NDC("1"), NDC("2"), NDC("3"), NDC("4"), NDC("5"), NDC("6"), NDC("7"), NDC("8"), NDC("9") };
+
+      CHECK(!data.empty());
+      CHECK(data.full());
+      CHECK(data.begin() != data.end());
+      CHECK_EQUAL(10U, data.size());
+      CHECK_EQUAL(0U, data.available());
+      CHECK_EQUAL(10U, data.capacity());
+      CHECK_EQUAL(10U, data.max_size());
+      CHECK(data == check);
+    }
+#endif
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_destruct_via_ivector)
     {

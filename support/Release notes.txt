@@ -1,4 +1,8 @@
 ===============================================================================
+18.16.0
+Added template deduction guides for most containers.
+
+===============================================================================
 18.15.5
 Refactored empty(), full(), available() member functions for etl::list and etl::forward_list
 

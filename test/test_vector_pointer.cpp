@@ -55,26 +55,25 @@ namespace
     Compare_Data different_data;
     Compare_Data insert_data;
 
+    int n0 = 0;
+    int n1 = 1;
+    int n2 = 2;
+    int n3 = 3;
+    int n4 = 4;
+    int n5 = 5;
+    int n6 = 6;
+    int n7 = 7;
+    int n8 = 8;
+    int n9 = 9;
+    int n11 = 11;
+    int n12 = 12;
+    int n13 = 13;
+
     //*************************************************************************
     struct SetupFixture
     {
       SetupFixture()
       {
-        int n0 = 0;
-        int n1 = 1;
-        int n2 = 2;
-        int n3 = 3;
-        int n4 = 4;
-        int n5 = 5;
-        int n6 = 6;
-        int n7 = 7;
-        int n8 = 8;
-        int n9 = 9;
-        int n11 = 11;
-        int n12 = 12;
-        int n13 = 13;
-
-
         int* n[]         = { &n0, &n1, &n2, &n3, &n4, &n5, &n6, &n7, &n8, &n9 };
         int* n_insert[]  = { &n11, &n12, &n13 };
         int* n_less[]    = { &n0, &n1, &n2, &n3, &n3, &n5, &n6, &n7, &n8, &n9 };
@@ -99,6 +98,24 @@ namespace
       CHECK_EQUAL(data.capacity(), SIZE);
       CHECK_EQUAL(data.max_size(), SIZE);
     }
+
+#if ETL_USING_STL
+    //*************************************************************************
+    TEST(test_cpp17_deduced_constructor)
+    {
+      etl::vector data{ &n0, &n1, &n2, &n3, &n4, &n5, &n6, &n7, &n8, &n9 };
+      etl::vector<int*, 10U> check = { &n0, &n1, &n2, &n3, &n4, &n5, &n6, &n7, &n8, &n9 };
+
+      CHECK(!data.empty());
+      CHECK(data.full());
+      CHECK(data.begin() != data.end());
+      CHECK_EQUAL(0U, data.available());
+      CHECK_EQUAL(10U, data.capacity());
+      CHECK_EQUAL(10U, data.size());
+      CHECK_EQUAL(10U, data.max_size());
+      CHECK(data == check);
+    }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_default_constructor)

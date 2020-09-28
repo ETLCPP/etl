@@ -244,10 +244,29 @@ namespace
 
       CHECK_EQUAL(data.size(), size_t(0));
       CHECK(data.empty());
-      CHECK_EQUAL(data.capacity(), MAX_SIZE);
-      CHECK_EQUAL(data.max_size(), MAX_SIZE);
+      CHECK_EQUAL(MAX_SIZE, data.available());
+      CHECK_EQUAL(MAX_SIZE, data.capacity());
+      CHECK_EQUAL(MAX_SIZE, data.max_size());
       CHECK(data.begin() == data.end());
     }
+
+#if ETL_USING_STL
+    //*************************************************************************
+    TEST(test_cpp17_deduced_constructor)
+    {
+      etl::set data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::set<int, 10U> check = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      CHECK(!data.empty());
+      CHECK(data.full());
+      CHECK(data.begin() != data.end());
+      CHECK_EQUAL(10U, data.size());
+      CHECK_EQUAL(0U, data.available());
+      CHECK_EQUAL(10U, data.capacity());
+      CHECK_EQUAL(10U, data.max_size());
+      CHECK(data == check);
+    }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_copy_constructor)

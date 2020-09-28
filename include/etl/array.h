@@ -558,7 +558,7 @@ namespace etl
 #if ETL_CPP17_SUPPORTED
   template <typename T, typename... Ts>
   array(T, Ts...)
-      -> array<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1 + sizeof...(Ts)>;
+      -> array<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
 #endif  
 
   //*************************************************************************

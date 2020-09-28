@@ -68,7 +68,6 @@ namespace
       CHECK(!data1.has_value());
       CHECK(!data2.has_value());
 
-
       data1 = Data("Hello");
       CHECK(bool(data1));
       CHECK(data1.has_value());
@@ -97,7 +96,18 @@ namespace
       data4 = etl::nullopt;
       CHECK(!bool(data4));
       CHECK(!data4.has_value());
+    }
 
+    //*************************************************************************
+    TEST(test_deduced_initialisation)
+    {
+      Data data("Hello");
+
+      etl::optional opt{ data };
+
+      CHECK(opt.has_value());
+      CHECK(bool(opt));
+      CHECK_EQUAL(data, opt);
     }
 
     //*************************************************************************

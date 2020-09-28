@@ -181,6 +181,14 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Gets the maximum possible size of the forward_list.
+    //*************************************************************************
+    size_type capacity() const
+    {
+      return MAX_SIZE;
+    }
+
+    //*************************************************************************
     /// Gets the size of the forward_list.
     //*************************************************************************
     size_type size() const
@@ -1725,6 +1733,15 @@ namespace etl
     /// The pool of nodes used in the list.
     etl::pool<typename etl::iforward_list<T>::data_node_t, MAX_SIZE> node_pool;
   };
+
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  template <typename T, typename... Ts>
+  forward_list(T, Ts...)
+    ->forward_list<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
+#endif
 
   //*************************************************************************
   /// A templated forward_list implementation that uses a fixed size pool.

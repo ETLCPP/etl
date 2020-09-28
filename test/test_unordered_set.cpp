@@ -40,15 +40,32 @@ SOFTWARE.
 
 #include "etl/unordered_set.h"
 #include "etl/checksum.h"
+#include "etl/hash.h"
+
+namespace
+{
+  typedef TestDataDC<std::string>  DC;
+  typedef TestDataNDC<std::string> NDC;
+}
+
+namespace etl
+{
+  template <>
+  struct hash<NDC>
+  {
+    size_t operator ()(const NDC& e) const
+    {
+      size_t sum = 0U;
+      return std::accumulate(e.value.begin(), e.value.end(), sum);
+    }
+  };
+}
 
 namespace
 {
   SUITE(test_unordered_set)
   {
     static const size_t SIZE = 10;
-
-    typedef TestDataDC<std::string>  DC;
-    typedef TestDataNDC<std::string> NDC;
 
     using ItemM = TestDataM<int>;
 
@@ -137,6 +154,24 @@ namespace
       CHECK_EQUAL(data.max_size(), SIZE);
       CHECK(data.begin() == data.end());
     }
+
+#if ETL_USING_STL
+    //*************************************************************************
+    TEST(test_cpp17_deduced_constructor)
+    {
+      etl::unordered_set data{ N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
+      etl::unordered_set<NDC, 10U> check = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
+
+      CHECK(!data.empty());
+      CHECK(data.full());
+      CHECK(data.begin() != data.end());
+      CHECK_EQUAL(10U, data.size());
+      CHECK_EQUAL(0U, data.available());
+      CHECK_EQUAL(10U, data.capacity());
+      CHECK_EQUAL(10U, data.max_size());
+      CHECK(data == check);
+    }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_range)
