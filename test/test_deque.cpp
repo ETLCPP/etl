@@ -101,7 +101,7 @@ namespace
       CHECK_EQUAL(SIZE, data.max_size());
     }
 
-#if ETL_USING_STL
+#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor)
     {

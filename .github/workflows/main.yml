@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: [ master ]
+    branches: [ hotfix/fix-ci-errors]
   pull_request:
     branches: [ master ]
 
@@ -10,12 +10,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-18.04, ubuntu-20.04]
+        os: [ubuntu-20.04]
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: name: Build and run
+    - name: Build and run
       run: |
         cmake -DBUILD_TESTS=ON ./
         gcc --version
@@ -25,7 +25,11 @@ jobs:
       run: ./test/etl_tests
 
   build-clang-9-Linux:
-    runs-on: ubuntu-18.04
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+
     steps:
     - uses: actions/checkout@v2
 
@@ -41,7 +45,11 @@ jobs:
       run: ./test/etl_tests
 
   build-clang-10-osx:
-    runs-on: macos-10.15
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-10.15]
+
     steps:
     - uses: actions/checkout@v2
 

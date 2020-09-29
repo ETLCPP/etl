@@ -73,6 +73,7 @@ namespace
       CHECK_EQUAL(2.3, p1.second);
     }
 
+#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
     TEST(test_cpp17_deduced_pair_construct)
     {
@@ -84,6 +85,7 @@ namespace
       CHECK_EQUAL(1,   p1.first);
       CHECK_EQUAL(2.3, p1.second);
     }
+#endif
 
     //*************************************************************************
     TEST(test_pair_move_parameter_construct)
