@@ -1,11 +1,44 @@
 name: CI
 on:
   push:
-    branches: [ master ]
+    branches: [ feature/github-actions-for-windows-compilers ]
   pull_request:
     branches: [ master ]
 
 jobs:
+
+Windows:
+    name: build-windows-vs2019
+    runs-on: [windows]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+          submodules: recursive
+
+    - name: Installing vcpkg
+      run: |
+        cd ..
+        git clone https://github.com/Microsoft/vcpkg.git
+        cd vcpkg
+        git checkout --force 2020.01
+        .\bootstrap-vcpkg.bat
+        .\vcpkg.exe install cppzmq:x64-windows
+
+    - name: Build and run
+      run: |
+        cd ${{ github.workspace }}
+        mkdir build
+        cd build
+        cmake .. -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}
+                  /../vcpkg/scripts/buildsystems/vcpkg.cmake
+        cd build
+        MSBuild.exe etl.sln /property:Configuration=Debug
+
+    - name: Run tests
+      run: ./test/etl_tests
+
   build-gcc-linux:
     runs-on: ${{ matrix.os }}
     strategy:
