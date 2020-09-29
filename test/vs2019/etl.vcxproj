@@ -1868,6 +1868,7 @@
   <ItemGroup>
     <None Include="..\..\.circleci\config.yml" />
     <None Include="..\..\.github\workflows\main.yml" />
+    <None Include="..\..\appveyor.yml" />
     <None Include="..\..\etl.pspimage" />
     <None Include="..\..\etl.xar" />
     <None Include="..\..\include\etl\generators\generate.bat" />
