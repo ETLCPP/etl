@@ -247,6 +247,8 @@ namespace
       CHECK(isEqual);
     }
 
+#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+    //*************************************************************************
     TEST(test_cpp17_deduced_constructor)
     {
       etl::array data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -276,6 +278,7 @@ namespace
       isEqual = std::equal(span5.begin(), span5.end(), c_array);
       CHECK(isEqual);
     }
+#endif
 
     //*************************************************************************
     TEST(test_constructor_range)

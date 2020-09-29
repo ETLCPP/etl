@@ -25,7 +25,11 @@ jobs:
       run: ./test/etl_tests
 
   build-clang-9-Linux:
-    runs-on: ubuntu-18.04
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+
     steps:
     - uses: actions/checkout@v2
 
@@ -41,7 +45,11 @@ jobs:
       run: ./test/etl_tests
 
   build-clang-10-osx:
-    runs-on: macos-10.15
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-10.15]
+
     steps:
     - uses: actions/checkout@v2
 

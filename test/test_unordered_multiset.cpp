@@ -162,7 +162,7 @@ namespace
       CHECK(data.begin() == data.end());
     }
 
-#if ETL_USING_STL
+#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor)
     {
