@@ -6,7 +6,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  build-gcc-linux:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Build and run
+    - name: Build
       run: |
         cmake -DBUILD_TESTS=ON ./
         gcc --version
@@ -24,7 +24,7 @@ jobs:
     - name: Run tests
       run: ./test/etl_tests
 
-  build-clang-9-Linux:
+  build-clang-9-linux:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -33,7 +33,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Build and run
+    - name: Build
       run: |
         export CC=clang-9
         export CXX=clang++-9
@@ -53,7 +53,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Build and run
+    - name: Build
       run: |
         export CC=clang
         export CXX=clang++
