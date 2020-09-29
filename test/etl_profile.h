@@ -105,6 +105,10 @@ SOFTWARE.
 
 #include "../include/etl/profiles/determine_development_os.h"
 
+#if defined(ETL_COMPILER_GCC) && (ETL_COMPILER_VERSION < 8)
+  #define ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED
+#endif
+
 #if defined(ETL_DEVELOPMENT_OS_WINDOWS)
   #define ETL_TARGET_OS_WINDOWS
 #elif defined(ETL_DEVELOPMENT_OS_LINUX)
