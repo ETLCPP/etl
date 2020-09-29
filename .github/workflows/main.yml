@@ -1,24 +1,65 @@
 name: CI
 on:
   push:
-    branches: [ feature/github-actions-for-windows-compilers ]
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 
 jobs:
+  build-gcc-linux:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, ubuntu-20.04]
 
-  build-visual-studio:
-    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-
-    - name: Setup MSBuild.exe
-      uses: warrenbuckley/Setup-MSBuild@v1
 
     - name: Build and run
       run: |
         cmake -DBUILD_TESTS=ON ./
-        cd test/vs2019
-        dir
-        MSBuild etl.sln /property:Configuration="Debug" /property:Platform="Win32"
+        gcc --version
+        make
+    
+    - name: Run tests
+      run: ./test/etl_tests
 
+  build-clang-9-linux:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build and run
+      run: |
+        export CC=clang-9
+        export CXX=clang++-9
+        cmake -D BUILD_TESTS=ON ./
+        clang --version
+        make
+
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-clang-10-osx:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-10.15]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build and run
+      run: |
+        export CC=clang
+        export CXX=clang++
+        cmake -D BUILD_TESTS=ON ./
+        clang --version
+        make
+
+    - name: Run tests
+      run: ./test/etl_tests
