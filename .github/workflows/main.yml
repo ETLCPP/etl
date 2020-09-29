@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: name: Build and run
+    - name: Build and run
       run: |
         cmake -DBUILD_TESTS=ON ./
         gcc --version
