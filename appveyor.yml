@@ -2,17 +2,17 @@ version: 1.0.{build}
 branches:
   only:
   - hotfix/fix-ci-errors
-image: Visual Studio 2017
+image: Visual Studio 2019
 configuration:
-- MSVCDebugAppveyor
-- MSVCDebugNoSTLAppveyor
+- Debug
+- DebugNoSTL
 clone_folder: c:\projects\etl
 install:
 - cmd: git submodule update --init --recursive
 before_build:
 - cmd: git clone https://github.com/unittest-cpp/unittest-cpp.git c:\projects\unittest-cpp
 build:
-  project: test/vs2017/etl.vcxproj
+  project: test/vs2019/etl.vcxproj
   verbosity: minimal
 notifications:
 - provider: Webhook
