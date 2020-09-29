@@ -1,7 +1,7 @@
 version: 1.0.{build}
 branches:
   only:
-  - hotfix/fix-ci-errors
+  - master
 image: Visual Studio 2019
 configuration:
 - Debug
