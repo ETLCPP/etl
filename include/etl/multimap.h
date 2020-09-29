@@ -2033,7 +2033,6 @@ namespace etl
     {
     }
 #endif
-
   };
 
   //*************************************************************************
@@ -2157,6 +2156,17 @@ namespace etl
     /// The pool of data nodes used for the multimap.
     etl::pool<typename etl::imultimap<TKey, TValue, TCompare>::Data_Node, MAX_SIZE> node_pool;
   };
+
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  template <typename T, typename... Ts>
+  multimap(T, Ts...)
+    ->multimap<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), typename T::first_type>,
+                typename T::second_type,
+                1U + sizeof...(Ts)>;
+#endif 
 
   //***************************************************************************
   /// Equal operator.

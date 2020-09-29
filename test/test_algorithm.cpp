@@ -1099,7 +1099,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(rotate)
+    TEST(rotate_pod)
     {
       std::vector<int> initial_data = { 1, 2, 3, 4, 5, 6, 7 };
 
@@ -1107,6 +1107,25 @@ namespace
       {
         std::vector<int> data1(initial_data);
         std::vector<int> data2(initial_data);
+
+        std::rotate(data1.data(), data1.data() + i, data1.data() + data1.size());
+        etl::rotate(data2.data(), data2.data() + i, data2.data() + data2.size());
+
+        bool isEqual = std::equal(std::begin(data1), std::end(data1), std::begin(data2));
+        CHECK(isEqual);
+      }
+    }
+
+
+    //*************************************************************************
+    TEST(rotate_non_pod)
+    {
+      std::vector<NDC> initial_data = { NDC(1), NDC(2), NDC(3), NDC(4), NDC(5), NDC(6), NDC(7) };
+
+      for (size_t i = 0; i < initial_data.size(); ++i)
+      {
+        std::vector<NDC> data1(initial_data);
+        std::vector<NDC> data2(initial_data);
 
         std::rotate(data1.data(), data1.data() + i, data1.data() + data1.size());
         etl::rotate(data2.data(), data2.data() + i, data2.data() + data2.size());

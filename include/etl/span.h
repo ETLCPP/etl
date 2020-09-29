@@ -234,7 +234,7 @@ namespace etl
     //*************************************************************************
     /// Assign from a span.
     //*************************************************************************
-    ETL_CONSTEXPR span& operator =(const span& other) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 span& operator =(const span& other) ETL_NOEXCEPT
     {
       mbegin = other.mbegin;
       mend   = other.mend;
@@ -308,6 +308,24 @@ namespace etl
     element_type* mbegin;
     element_type* mend;
   };
+
+  //*************************************************************************
+/// Template deduction guides.
+//*************************************************************************
+#if ETL_CPP17_SUPPORTED
+  template <typename TArray>
+  span(TArray& a)
+    ->span<typename TArray::value_type>;
+
+  template <typename TIterator>
+  span(const TIterator begin_, const TIterator end_)
+    ->span<etl::remove_pointer_t<TIterator>>;
+
+  template <typename TIterator,
+            typename TSize>
+    span(const TIterator begin_, const TSize size_)
+    ->span<etl::remove_pointer_t<TIterator>>;
+#endif 
 
   //*************************************************************************
   /// Hash function.

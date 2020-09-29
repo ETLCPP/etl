@@ -1286,6 +1286,15 @@ namespace etl
     typename etl::aligned_storage<sizeof(T) * MAX_SIZE, etl::alignment_of<T>::value>::type buffer;
   };
 
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  template <typename T, typename... Ts>
+  vector(T, Ts...)
+    ->vector<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
+#endif
+
   //***************************************************************************
   /// A vector implementation that uses a fixed size buffer.
   /// The buffer is supplied on construction.
@@ -1568,6 +1577,15 @@ namespace etl
 
     typename etl::aligned_storage<sizeof(T*) * MAX_SIZE, etl::alignment_of<T*>::value>::type buffer;
   };
+
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  template <typename T, typename... Ts>
+  vector(T*, Ts*...)
+    ->vector<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T*>, 1U + sizeof...(Ts)>;
+#endif
 
   //***************************************************************************
   /// A vector implementation that uses a fixed size buffer.

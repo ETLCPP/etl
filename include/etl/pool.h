@@ -256,7 +256,8 @@ namespace etl
     //*************************************************************************
     void release(const void* const p_object)
     {
-      release_item((char*)p_object);
+      const uintptr_t p = uintptr_t(p_object);
+      release_item((char*)p);
     }
 
     //*************************************************************************
@@ -264,7 +265,7 @@ namespace etl
     //*************************************************************************
     void release_all()
     {
-      items_allocated = 0;
+      items_allocated   = 0;
       items_initialised = 0;
       p_next = p_buffer;
     }
@@ -274,10 +275,10 @@ namespace etl
     /// \param p_object A pointer to the object to be checked.
     /// \return <b>true<\b> if it does, otherwise <b>false</b>
     //*************************************************************************
-    //template <typename T>
     bool is_in_pool(const void* p_object) const
     {
-      return is_item_in_pool((const char*)p_object);
+      const uintptr_t p = uintptr_t(p_object);
+      return is_item_in_pool((const char*)p);
     }
 
     //*************************************************************************

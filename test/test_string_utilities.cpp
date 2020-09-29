@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include "UnitTest++/UnitTest++.h"
 
-#include "etl/cstring.h"
+#include "etl/string.h"
 #include "etl/string_view.h"
 #include "etl/string_utilities.h"
 #include "etl/vector.h"
@@ -1057,6 +1057,22 @@ namespace
       }
 
       CHECK_EQUAL(1U, tokens.size());
+    }
+
+    //*************************************************************************
+    TEST(test_get_token_delimiters_empty_string_view)
+    {
+      Vector tokens;
+
+      StringView textview;
+      etl::optional<StringView> token;
+
+      while ((token = etl::get_token(textview, Whitespace, token, true)))
+      {
+        tokens.emplace_back(token.value());
+      }
+
+      CHECK_EQUAL(0U, tokens.size());
     }
 
     //*************************************************************************

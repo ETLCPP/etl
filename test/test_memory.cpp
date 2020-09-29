@@ -887,7 +887,6 @@ namespace
     {
       etl::unique_ptr<int> up(new int);
 
-      int* p = new int(1);
       up = nullptr;
 
       CHECK(up.get() == nullptr);
@@ -1018,7 +1017,6 @@ namespace
     {
       etl::unique_ptr<int> up(new int[4]);
 
-      int* p = new int[4];
       up = nullptr;
 
       CHECK(up.get() == nullptr);

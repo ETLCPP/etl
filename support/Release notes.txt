@@ -1,4 +1,61 @@
 ===============================================================================
+18.16.1
+Updates to CI configuration files.
+
+===============================================================================
+18.16.0
+Added template deduction guides for most containers.
+
+===============================================================================
+18.15.5
+Refactored empty(), full(), available() member functions for etl::list and etl::forward_list
+
+===============================================================================
+18.15.4
+Performance optimisations for etl::rotate, etl::move & etl::move_backward
+when not using the STL, iterators are pointers and the objects are trivially
+copyable (currently POD types).
+
+===============================================================================
+18.15.3
+etl::array_view constructor from C array is no longer explicit.
+
+===============================================================================
+18.15.2
+Workaround for Segger ARM Link-Time-Optimisation (LTO) bug.
+etl::array_view constructor from etl or std array is no longer explicit.
+
+===============================================================================
+18.15.1
+Refactoring of 18.15.0.
+Modified constructor syntax.
+
+===============================================================================
+18.15.0
+Allow strings with external buffers to use a pre-initialised buffer.
+
+===============================================================================
+18.14.1
+Fixed conditional compilation macro use for template deduction guides.
+
+===============================================================================
+18.14.0
+Added template deduction guides for array and array_view
+
+===============================================================================
+18.13.0
+Added a line coordinate generator using the Bresenham algorithm.
+The API is similar to a container.
+
+===============================================================================
+18.12.7
+Made etl::reference_wrapper API closer to the STL version. Does not support invocation of a callable object.
+
+===============================================================================
+18.12.6
+Fixed etl::stack top level assignment operator not clearing before copy.
+
+===============================================================================
 18.12.5
 Fixed issue for incorrect operation of erase(const_iterator, const_iterator) when 
 the terminating iterator was end() for etl::unordered_map, etl::unordered_multimap,

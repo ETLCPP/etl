@@ -92,6 +92,18 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_implicit_constructor_etl_array_1)
+    {
+      View view = etldata;
+
+      CHECK_EQUAL(etldata.size(), view.size());
+      CHECK_EQUAL(etldata.max_size(), view.max_size());
+
+      bool isEqual = std::equal(view.begin(), view.end(), etldata.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
     TEST(test_constructor_etl_array_1_const)
     {
       CView view(cetldata);
@@ -131,6 +143,18 @@ namespace
     TEST(test_constructor_stl_array_1)
     {
       View view(stldata);
+
+      CHECK_EQUAL(stldata.size(), view.size());
+      CHECK_EQUAL(stldata.max_size(), view.max_size());
+
+      bool isEqual = std::equal(view.begin(), view.end(), stldata.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(test_implicit_constructor_stl_array_1)
+    {
+      View view = stldata;
 
       CHECK_EQUAL(stldata.size(), view.size());
       CHECK_EQUAL(stldata.max_size(), view.max_size());
@@ -236,6 +260,18 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_implicit_constructor_c_array)
+    {
+      View view = cdata;
+
+      CHECK_EQUAL(SIZE, view.size());
+      CHECK_EQUAL(SIZE, view.max_size());
+
+      bool isEqual = std::equal(view.begin(), view.end(), cdata);
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
     TEST(test_constructor_c_array_2_const)
     {
       CView view(ccdata);
@@ -246,6 +282,39 @@ namespace
       bool isEqual = std::equal(view.begin(), view.end(), ccdata);
       CHECK(isEqual);
     }
+
+    //*************************************************************************
+#if !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+    TEST(test_cpp17_deduced_constructor)
+    {
+      etl::array data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      
+      etl::array_view view1{ data };
+      etl::array_view view2{ data.begin(), data.end() };
+      etl::array_view view3{ data.begin(), data.size() };
+      etl::array_view view4{ view1 };
+
+      int c_array[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::array_view view5{ c_array };
+
+      bool isEqual = false;
+
+      isEqual = std::equal(view1.begin(), view1.end(), data.begin());
+      CHECK(isEqual);
+
+      isEqual = std::equal(view2.begin(), view2.end(), data.begin());
+      CHECK(isEqual);
+
+      isEqual = std::equal(view3.begin(), view3.end(), data.begin());
+      CHECK(isEqual);
+
+      isEqual = std::equal(view4.begin(), view4.end(), data.begin());
+      CHECK(isEqual);
+
+      isEqual = std::equal(view5.begin(), view5.end(), c_array);
+      CHECK(isEqual);
+    }
+#endif
 
     //*************************************************************************
     TEST(test_constructor_range)

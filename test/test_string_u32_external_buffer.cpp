@@ -74,6 +74,9 @@ namespace
 
     const value_t* pinitial_text = STR("Hello World");
 
+    value_t  array_text[12];
+    value_t* p_text = array_text;
+
     //*************************************************************************
     template <typename T1, typename T2>
     bool Equal(const T1& compare_text, const T2& text)
@@ -94,6 +97,8 @@ namespace
         different_text = STR("Byee Planet");
         longer_text    = STR("Hello World There");
         short_text     = STR("Hello");
+
+        std::copy(pinitial_text, pinitial_text + etl::strlen(pinitial_text), array_text);
       }
     };
 
@@ -108,6 +113,59 @@ namespace
       CHECK_EQUAL(SIZE, text.capacity());
       CHECK_EQUAL(SIZE, text.max_size());
       CHECK(text.begin() == text.end());
+      CHECK(!text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_default_constructor_use_buffer_and_size)
+    {
+      size_t length = etl::strlen(p_text);
+      Text text(p_text, length + 1);
+
+      CHECK_EQUAL(0U, text.size());
+      CHECK(text.empty());
+      CHECK_EQUAL(length, text.capacity());
+      CHECK_EQUAL(length, text.max_size());
+      CHECK(text.begin() == text.end());
+      CHECK(!text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_default_constructor_use_buffer_text_and_size)
+    {
+      Text text(p_text, p_text, etl::strlen(p_text) + 1);
+
+      CHECK_EQUAL(text.size(), etl::strlen(p_text));
+      CHECK(!text.empty());
+      CHECK_EQUAL(etl::strlen(p_text), text.capacity());
+      CHECK_EQUAL(etl::strlen(p_text), text.max_size());
+      CHECK(text.begin() != text.end());
+      CHECK(!text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_default_constructor_use_array_buffer)
+    {
+      Text text(array_text, etl::size(array_text));
+
+      CHECK_EQUAL(0U, text.size());
+      CHECK(text.empty());
+      CHECK_EQUAL(etl::size(array_text) - 1, text.capacity());
+      CHECK_EQUAL(etl::size(array_text) - 1, text.max_size());
+      CHECK(text.begin() == text.end());
+      CHECK(!text.truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_default_constructor_use_array_buffer_text)
+    {
+      Text text(array_text, array_text, etl::size(array_text));
+
+      CHECK_EQUAL(text.size(), etl::strlen(array_text));
+      CHECK(!text.empty());
+      CHECK_EQUAL(etl::size(array_text) - 1, text.capacity());
+      CHECK_EQUAL(etl::size(array_text) - 1, text.max_size());
+      CHECK(text.begin() != text.end());
       CHECK(!text.truncated());
     }
 

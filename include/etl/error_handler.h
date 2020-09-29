@@ -43,40 +43,9 @@ SOFTWARE.
 #include "function.h"
 #include "nullptr.h"
 
+#if defined(ETL_LOG_ERRORS) || defined(ETL_IN_UNIT_TEST)
 namespace etl
 {
-  namespace private_error_handler
-  {
-    // A wrapper template to allow static definition in header.
-    template <typename TDummy>
-    struct wrapper
-    {
-      typedef void(*stub_type)(void* object, const etl::exception&);
-
-      //*************************************************************************
-      /// The internal invocation object.
-      //*************************************************************************
-      struct invocation_element
-      {
-        //***********************************************************************
-        invocation_element()
-          : object(ETL_NULLPTR)
-          , stub(ETL_NULLPTR)
-        {
-        }
-
-        //***********************************************************************
-        void*     object;
-        stub_type stub;
-      };
-
-      static invocation_element invocation;
-    };
-
-    template <typename TDummy>
-    typename wrapper<TDummy>::invocation_element wrapper<TDummy>::invocation;
-  }
-
   //***************************************************************************
   /// Error handler for when throwing exceptions is not required.
   ///\ingroup error_handler
@@ -86,7 +55,7 @@ namespace etl
   public:
 
     //*************************************************************************
-    /// Callback class for free handler functions.
+    /// Callback class for free handler functions. Deprecated.
     //*************************************************************************
     struct free_function : public etl::function<void, const etl::exception&>
     {
@@ -97,7 +66,7 @@ namespace etl
     };
 
     //*************************************************************************
-    /// Callback class for member handler functions.
+    /// Callback class for member handler functions. Deprecated.
     //*************************************************************************
     template <typename TObject>
     struct member_function : public etl::function<TObject, const etl::exception&>
@@ -109,7 +78,7 @@ namespace etl
     };
 
     //*****************************************************************************
-    /// Sets the error callback function.
+    /// Sets the error callback function. Deprecated.
     ///\param f A reference to an etl::function object that will handler errors.
     //*****************************************************************************
     static void set_callback(ifunction<const etl::exception&>& f)
@@ -168,9 +137,11 @@ namespace etl
     //*****************************************************************************
     static void error(const etl::exception& e)
     {
-      if (private_error_handler::wrapper<void>::invocation.stub != ETL_NULLPTR)
+      invocation_element& invocation = get_invocation_element();
+
+      if (invocation.stub != ETL_NULLPTR)
       {
-        (*private_error_handler::wrapper<void>::invocation.stub)(private_error_handler::wrapper<void>::invocation.object, e);
+        (*invocation.stub)(invocation.object, e);
       }
     }
 
@@ -183,24 +154,37 @@ namespace etl
     //*************************************************************************
     struct invocation_element
     {
+      //***********************************************************************
       invocation_element()
         : object(ETL_NULLPTR)
         , stub(ETL_NULLPTR)
       {
       }
-      
+
       //***********************************************************************
       void* object;
       stub_type stub;
     };
 
     //*************************************************************************
+    /// Returns the static invocation element.
+    //*************************************************************************
+    static invocation_element& get_invocation_element()
+    {
+      static invocation_element invocation;
+
+      return invocation;
+    }
+
+    //*************************************************************************
     /// Constructs a callback from an object and stub.
     //*************************************************************************
     static void create(void* object, stub_type stub)
     {
-      private_error_handler::wrapper<void>::invocation.object = object;
-      private_error_handler::wrapper<void>::invocation.stub   = stub;
+      invocation_element& invocation = get_invocation_element();
+
+      invocation.object = object;
+      invocation.stub   = stub;
     }
 
     //*************************************************************************
@@ -208,8 +192,10 @@ namespace etl
     //*************************************************************************
     static void create(stub_type stub)
     {
-      private_error_handler::wrapper<void>::invocation.object = ETL_NULLPTR;
-      private_error_handler::wrapper<void>::invocation.stub   = stub;
+      invocation_element& invocation = get_invocation_element();
+
+      invocation.object = ETL_NULLPTR;
+      invocation.stub   = stub;
     }
 
     //*************************************************************************
@@ -269,6 +255,7 @@ namespace etl
     }
   };
 }
+#endif
 
 //***************************************************************************
 /// Asserts a condition.

@@ -187,6 +187,15 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Returns the maximum possible size of the deque.
+    ///\return The maximum size of the deque.
+    //*************************************************************************
+    size_type capacity() const
+    {
+      return CAPACITY;
+    }
+
+    //*************************************************************************
     /// Returns the remaining capacity.
     ///\return The remaining capacity.
     //*************************************************************************
@@ -2456,6 +2465,15 @@ namespace etl
     /// The uninitialised buffer of T used in the deque.
     typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[BUFFER_SIZE];
   };
+
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  template <typename T, typename... Ts>
+  deque(T, Ts...)
+    ->deque<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
+#endif  
 
   //***************************************************************************
   /// Equal operator.

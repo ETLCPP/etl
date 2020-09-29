@@ -33,7 +33,7 @@ SOFTWARE.
 #include <iomanip>
 
 #include "etl/to_string.h"
-#include "etl/cstring.h"
+#include "etl/string.h"
 #include "etl/format_spec.h"
 
 #undef STR

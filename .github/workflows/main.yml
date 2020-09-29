@@ -63,3 +63,4 @@ jobs:
 
     - name: Run tests
       run: ./test/etl_tests
+

@@ -55,6 +55,10 @@ SOFTWARE.
 #include "debug_count.h"
 #include "iterator.h"
 
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  #include <initializer_list>
+#endif
+
 #undef ETL_FILE
 #define ETL_FILE "26"
 
@@ -1121,6 +1125,14 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Gets the maximum possible size of the unordered_multiset.
+    //*************************************************************************
+    size_type capacity() const
+    {
+      return pnodepool->max_size();
+    }
+
+    //*************************************************************************
     /// Checks to see if the unordered_multiset is empty.
     //*************************************************************************
     bool empty() const
@@ -1479,6 +1491,17 @@ namespace etl
       base::assign(first_, last_);
     }
 
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+    //*************************************************************************
+    /// Construct from initializer_list.
+    //*************************************************************************
+    unordered_multiset(std::initializer_list<TKey> init)
+      : base(node_pool, buckets, MAX_BUCKETS)
+    {
+      base::assign(init.begin(), init.end());
+    }
+#endif
+
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
@@ -1526,6 +1549,15 @@ namespace etl
     /// The buckets of node lists.
     etl::intrusive_forward_list<typename base::node_t> buckets[MAX_BUCKETS_];
   };
+
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  template <typename T, typename... Ts>
+  unordered_multiset(T, Ts...)
+    ->unordered_multiset<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
+#endif 
 }
 
 #undef ETL_FILE
