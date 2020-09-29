@@ -6,11 +6,11 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  build-gcc-linux:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-18.04, ubuntu-20.04]
 
     steps:
     - uses: actions/checkout@v2
@@ -24,7 +24,7 @@ jobs:
     - name: Run tests
       run: ./test/etl_tests
 
-  build-clang-9-Linux:
+  build-clang-9-linux:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
