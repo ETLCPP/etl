@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: [ feature/no-stl-variants-for-github-ci ]
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 
