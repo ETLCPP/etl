@@ -6,7 +6,6 @@ on:
     branches: [ master ]
 
 jobs:
-
   build-windows-vs2019:
     name: Windows VS2019 Debug
     runs-on: [windows-latest]
@@ -29,11 +28,6 @@ jobs:
     - name: Build
       run: |
         cd ${{ github.workspace }}
-        mkdir build
-        cd build
-        cmake .. -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}
-                  /../vcpkg/scripts/buildsystems/vcpkg.cmake
-        cd build
         MSBuild.exe etl.sln /property:Configuration=Debug
 
     - name: Run tests
