@@ -1,7 +1,6 @@
 name: CI
 on:
   push:
-    branches: [ 
     branches: [ feature/github-actions-for-windows-compilers ]
   pull_request:
     branches: [ master ]
