@@ -24,18 +24,18 @@ jobs:
     - name: Run tests
       run: ./test/etl_tests
 
-build-gcc-linux-no-stl:
+  build-gcc-linux-no-stl:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-18.04, ubuntu-20.04]
+        os: [ubuntu-20.04]
 
     steps:
     - uses: actions/checkout@v2
 
     - name: Build and run
       run: |
-        cmake -DBUILD_TESTS=ON -DNO_STL ./
+        cmake -DBUILD_TESTS=ON -DNO_STL=ON ./
         gcc --version
         make
     
