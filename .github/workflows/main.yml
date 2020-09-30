@@ -28,7 +28,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-18.04, ubuntu-20.04]
 
     steps:
     - uses: actions/checkout@v2
@@ -62,6 +62,26 @@ jobs:
     - name: Run tests
       run: ./test/etl_tests
 
+  build-clang-9-linux-no-stl:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build and run
+      run: |
+        export CC=clang-9
+        export CXX=clang++-9
+        cmake -D BUILD_TESTS=ON -DNO_STL=ON ./
+        clang --version
+        make
+
+    - name: Run tests
+      run: ./test/etl_tests
+
   build-clang-10-osx:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -82,3 +102,22 @@ jobs:
     - name: Run tests
       run: ./test/etl_tests
 
+  build-clang-10-osx-no-stl:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-10.15]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build and run
+      run: |
+        export CC=clang
+        export CXX=clang++
+        cmake -D BUILD_TESTS=ON -DNO_STL=ON ./
+        clang --version
+        make
+
+    - name: Run tests
+      run: ./test/etl_tests
