@@ -1,44 +1,12 @@
 name: CI
 on:
   push:
+    branches: [ 
     branches: [ feature/github-actions-for-windows-compilers ]
   pull_request:
     branches: [ master ]
 
 jobs:
-
-Windows:
-    name: build-windows-vs2019
-    runs-on: [windows]
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-          submodules: recursive
-
-    - name: Installing vcpkg
-      run: |
-        cd ..
-        git clone https://github.com/Microsoft/vcpkg.git
-        cd vcpkg
-        git checkout --force 2020.01
-        .\bootstrap-vcpkg.bat
-        .\vcpkg.exe install cppzmq:x64-windows
-
-    - name: Build and run
-      run: |
-        cd ${{ github.workspace }}
-        mkdir build
-        cd build
-        cmake .. -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}
-                  /../vcpkg/scripts/buildsystems/vcpkg.cmake
-        cd build
-        MSBuild.exe etl.sln /property:Configuration=Debug
-
-    - name: Run tests
-      run: ./test/etl_tests
-
   build-gcc-linux:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -48,9 +16,27 @@ Windows:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Build and run
+    - name: Build
       run: |
         cmake -DBUILD_TESTS=ON ./
+        gcc --version
+        make
+    
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-gcc-linux-no-stl:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, ubuntu-20.04]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: |
+        cmake -DBUILD_TESTS=ON -DNO_STL=ON ./
         gcc --version
         make
     
@@ -66,11 +52,31 @@ Windows:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Build and run
+    - name: Build
       run: |
         export CC=clang-9
         export CXX=clang++-9
         cmake -D BUILD_TESTS=ON ./
+        clang --version
+        make
+
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-clang-9-linux-no-stl:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: |
+        export CC=clang-9
+        export CXX=clang++-9
+        cmake -D BUILD_TESTS=ON -DNO_STL=ON ./
         clang --version
         make
 
@@ -86,7 +92,7 @@ Windows:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Build and run
+    - name: Build
       run: |
         export CC=clang
         export CXX=clang++
@@ -97,3 +103,53 @@ Windows:
     - name: Run tests
       run: ./test/etl_tests
 
+  build-clang-10-osx-no-stl:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-10.15]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: |
+        export CC=clang
+        export CXX=clang++
+        cmake -D BUILD_TESTS=ON -DNO_STL=ON ./
+        clang --version
+        make
+
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-windows-vs2019:
+    runs-on: [windows]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Installing vcpkg
+      run: |
+        cd ..
+        git clone https://github.com/Microsoft/vcpkg.git
+        cd vcpkg
+        git checkout --force 2020.01
+        .\bootstrap-vcpkg.bat
+        .\vcpkg.exe install cppzmq:x64-windows
+
+    - name: Build
+      run: |
+        cd ${{ github.workspace }}
+        mkdir build
+        cd build
+        cmake .. -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}
+                  /../vcpkg/scripts/buildsystems/vcpkg.cmake
+        cd build
+        MSBuild.exe etl.sln /property:Configuration=Debug
+
+    - name: Run tests
+      run: ./test/etl_tests
