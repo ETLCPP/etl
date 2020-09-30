@@ -1,4 +1,8 @@
 ===============================================================================
+18.16.2
+Updates to CI configuration files to compile 'No STL' variants of the tests.
+
+===============================================================================
 18.16.1
 Updates to CI configuration files.
 
