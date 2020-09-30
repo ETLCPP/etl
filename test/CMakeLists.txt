@@ -3,6 +3,17 @@ project(etl_unit_tests)
 
 add_definitions(-DETL_DEBUG)
 
+option(NO_STL "No STL" OFF)
+
+message(STATUS "CMakeLists.txt for ETL unit tests")
+
+if (NO_STL)
+	message(STATUS "Compiling for No STL")
+	add_definitions(-DETL_NO_STL)
+else()
+	message(STATUS "Compiling for STL")
+endif()
+
 if(NOT UnitTest++_FOUND)
   # Add unittest-cpp as an ExternalProject
   include(cmake/unit-test_external_project.cmake)
