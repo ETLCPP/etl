@@ -8,6 +8,7 @@ on:
 
 jobs:
   build-gcc-linux:
+    name: GCC Linux
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -26,6 +27,7 @@ jobs:
       run: ./test/etl_tests
 
   build-gcc-linux-no-stl:
+    name: GCC Linux No STL
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -44,6 +46,7 @@ jobs:
       run: ./test/etl_tests
 
   build-clang-9-linux:
+    name: Clang-9 Linux
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -64,6 +67,7 @@ jobs:
       run: ./test/etl_tests
 
   build-clang-9-linux-no-stl:
+    name: Clang-9 Linux No STL
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -84,6 +88,7 @@ jobs:
       run: ./test/etl_tests
 
   build-clang-10-osx:
+    name: Clang-10 OSX
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -104,6 +109,7 @@ jobs:
       run: ./test/etl_tests
 
   build-clang-10-osx-no-stl:
+    name: Clang-10 OSX No STL
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -124,6 +130,7 @@ jobs:
       run: ./test/etl_tests
 
   build-windows-vs2019:
+    name: Windows VS2019 Debug
     runs-on: [windows]
 
     steps:
