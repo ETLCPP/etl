@@ -20,10 +20,12 @@ jobs:
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.0.1
 
-    - name: Checkout UnitTest++
+    - name: Directories
       run: |
         echo ${GITHUB_WORKSPACE}
         echo ::set-env name=workspace::$GITHUB_WORKSPACE
+
+    - name: Checkout UnitTest++
       uses: actions/checkout@v2
       with:
         repository: unittest-cpp/unittest-cpp
