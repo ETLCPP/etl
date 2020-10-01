@@ -19,8 +19,10 @@ jobs:
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.0.1
 
-    - name: Build and run
+    - name: Build
       run: |
         cmake -G "Visual Studio 16 2019" -D BUILD_TESTS=ON ./
         MSBuild.exe etl.sln
-        run: ./test/etl_tests
+        
+    -name: Run tests
+     run: ./test/etl_tests
