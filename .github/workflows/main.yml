@@ -26,19 +26,19 @@ jobs:
         echo ${{ github.workspace }}
         echo ${{ github.workspace }}/../unittest-cpp
         pwd
-        ls
+        dir
         cd test
-        ls
+        dir
 
-    - name: Checkout UnitTest++
-      uses: actions/checkout@v2
-      with:
-        repository: unittest-cpp/unittest-cpp
-        path: ${{ github.workspace }}/../unittest-cpp
+#  - name: Checkout UnitTest++
+#    uses: actions/checkout@v2
+#    with:
+#      repository: unittest-cpp/unittest-cpp
+#      path: ${{ github.workspace }}/../unittest-cpp
+#
+#    - name: Build
+#      run: MSBuild.exe test/vs2019/etl.sln
 
-    - name: Build
-      run: MSBuild.exe test/vs2019/etl.sln
-
-    - name: Run tests
-      run: ./test/etl_tests
+#    - name: Run tests
+#      run: ./test/etl_tests
 
