@@ -25,6 +25,8 @@ jobs:
         echo ::set-env name=workspace::$GITHUB_WORKSPACE
         echo ${{ github.workspace }}
         echo ${{ github.workspace }}/../unittest-cpp
+        pwd
+
 
     - name: Checkout UnitTest++
       uses: actions/checkout@v2
