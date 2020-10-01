@@ -23,4 +23,4 @@ jobs:
       run: |
         cmake -G "Visual Studio 16 2019" -D BUILD_TESTS=ON ./
         MSBuild.exe etl.sln
-
+        run: ./test/etl_tests
