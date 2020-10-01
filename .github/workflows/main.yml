@@ -19,6 +19,7 @@ jobs:
     - name: Build and run
       run: |
         cmake -G "Visual Studio 16 2019" -D BUILD_TESTS=ON ./
+        cd test
         ls
         make -f makefile.txt
 
