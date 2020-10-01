@@ -22,14 +22,14 @@ jobs:
 
     - name: Directories
       run: |
-        echo ${GITHUB_WORKSPACE}
         echo ::set-env name=workspace::$GITHUB_WORKSPACE
+        echo ${{ github.workspace }}
 
     - name: Checkout UnitTest++
       uses: actions/checkout@v2
       with:
         repository: unittest-cpp/unittest-cpp
-        path: ${{ env.workspace }}/../../../unittest-cpp
+        path: ${{ github.workspace }}/unittest-cpp
 
     - name: Build
       run: MSBuild.exe test/vs2019/etl.sln
