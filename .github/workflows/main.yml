@@ -128,3 +128,18 @@ jobs:
     - name: Run tests
       run: ./test/etl_tests
 
+  build-windows-vs2019:
+    name: Windows VS2019 Debug
+    runs-on: [windows-latest]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Build
+      run: "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" test/vs2019/etl.sln /p:Configuration=Debug /p:Platform=x86
+
+    - name: Run tests
+      run: ./test/etl_tests
