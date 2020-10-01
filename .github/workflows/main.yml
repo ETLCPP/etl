@@ -23,7 +23,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: unittest-cpp/unittest-cpp
-        path: ../../../unittest-cpp
+        path: ${GITHUB_WORKSPACE}/unittest-cpp
 
     - name: Build
       run: MSBuild.exe test/vs2019/etl.sln
