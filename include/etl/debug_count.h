@@ -123,6 +123,7 @@ namespace etl
   #define ETL_ADD_DEBUG_COUNT(n)
   #define ETL_SUBTRACT_DEBUG_COUNT(n)
   #define ETL_RESET_DEBUG_COUNT
+  #define ETL_OBJECT_RESET_DEBUG_COUNT(object)
 #endif // ETL_DEBUG_COUNT
 
 #endif
