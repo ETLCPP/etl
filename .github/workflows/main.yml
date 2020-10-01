@@ -25,4 +25,4 @@ jobs:
         MSBuild.exe etl.sln
         
     - name: Run tests
-      run: ./test/etl_tests
+      run: ./test/etl_tests.exe
