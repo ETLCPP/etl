@@ -21,10 +21,13 @@ jobs:
       uses: microsoft/setup-msbuild@v1.0.1
 
     - name: Checkout UnitTest++
+      run: |
+        echo ${GITHUB_WORKSPACE}
+        echo ::set-env name=workspace::$GITHUB_WORKSPACE
       uses: actions/checkout@v2
       with:
         repository: unittest-cpp/unittest-cpp
-        path: ${GITHUB_WORKSPACE}/../../../unittest-cpp
+        path: ${{ env.workspace }}/../../../unittest-cpp
 
     - name: Build
       run: MSBuild.exe test/vs2019/etl.sln
