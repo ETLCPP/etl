@@ -12,9 +12,9 @@ jobs:
 
     steps:
     - name: Build and run
-      run: cmake.exe --help
-
-      cmake -G "Visual Studio 16 2019" -D BUILD_TESTS=ON ./
+      run: |
+        cmake.exe --help
+        cmake -G "Visual Studio 16 2019" -D BUILD_TESTS=ON ./
 #        make
 
 #    - name: Run tests
