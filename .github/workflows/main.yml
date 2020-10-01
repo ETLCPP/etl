@@ -19,6 +19,12 @@ jobs:
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.0.1
 
+    - name: Checkout UnitTest++
+      uses: actions/checkout@v2
+      with:
+        repository: unittest-cpp/unittest-cpp
+        path: unittest-cpp
+
     - name: Build
       run: MSBuild.exe test/vs2019/etl.sln
 
