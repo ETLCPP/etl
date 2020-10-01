@@ -11,24 +11,35 @@ jobs:
     name: Windows VS2019 Debug
     runs-on: [windows-latest]
 
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        submodules: recursive
+  steps:
+    - uses: actions/checkout@v2
 
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.1
-
-    - name: Directories
+    - name: Build and run
       run: |
-        echo ::set-env name=workspace::$GITHUB_WORKSPACE
-        echo ${{ github.workspace }}
-        echo ${{ github.workspace }}/../unittest-cpp
-        pwd
-        dir
-        cd test
-        dir
+        cmake.exe --help
+#        export CC=msvc
+#        export CXX=msvc
+#        cmake -D BUILD_TESTS=ON ./
+#        make
+
+#    - name: Run tests
+#      run: ./test/etl_tests
+
+#    steps:
+#    - name: Checkout
+#      uses: actions/checkout@v2
+#      with:
+#        submodules: recursive
+
+#    - name: Add msbuild to PATH
+#      uses: microsoft/setup-msbuild@v1.0.1
+
+#    - name: Directories
+#      run: |
+#        echo ::set-env name=workspace::$GITHUB_WORKSPACE
+#        echo ${{ github.workspace }}
+#        echo ${{ github.workspace }}/../unittest-cpp
+
 
 #  - name: Checkout UnitTest++
 #    uses: actions/checkout@v2
