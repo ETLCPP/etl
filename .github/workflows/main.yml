@@ -6,16 +6,13 @@ on:
     branches: [ master ]
 
 jobs:
-
   build-windows-vs2019:
     name: Windows VS2019 Debug
     runs-on: [windows-latest]
 
   steps:
-
-    - name: Build and run
-      run: |
-        cmake.exe --help
+      - name: Build and run
+      run: cmake.exe --help
 #        export CC=msvc
 #        export CXX=msvc
 #        cmake -D BUILD_TESTS=ON ./
