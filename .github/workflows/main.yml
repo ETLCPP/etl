@@ -10,7 +10,7 @@ jobs:
     name: Windows VS2019 Debug
     runs-on: [windows-latest]
 
-  steps:
+    steps:
     - name: Build and run
       run: cmake.exe --help
 
