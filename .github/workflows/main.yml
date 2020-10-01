@@ -11,7 +11,7 @@ jobs:
     runs-on: [windows-latest]
 
   steps:
-      - name: Build and run
+    - name: Build and run
       run: cmake.exe --help
 
 #        export CC=msvc
