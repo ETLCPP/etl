@@ -13,6 +13,7 @@ jobs:
   steps:
       - name: Build and run
       run: cmake.exe --help
+
 #        export CC=msvc
 #        export CXX=msvc
 #        cmake -D BUILD_TESTS=ON ./
