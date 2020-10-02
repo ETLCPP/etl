@@ -1,4 +1,9 @@
 ===============================================================================
+18.16.3
+Added VS2019 to CI configuration file.
+Created separate VS2019, GCC and clang configuration files.
+
+===============================================================================
 18.16.2
 Updates to CI configuration files to compile 'No STL' variants of the tests.
 
