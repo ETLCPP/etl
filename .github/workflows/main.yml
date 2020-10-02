@@ -6,8 +6,29 @@ on:
     branches: [ master ]
 
 jobs:
-  build-windows-vs2019:
-    name: Windows VS2019 Debug
+#  build-windows-vs2019:
+#    name: Windows VS2019 Debug
+#    runs-on: [windows-latest]
+
+#    steps:
+#    - name: Checkout
+#      uses: actions/checkout@v2
+#      with:
+#        submodules: recursive
+
+#    - name: Add msbuild to PATH
+#      uses: microsoft/setup-msbuild@v1.0.1
+
+#    - name: Build
+#      run: |
+#        cmake -G "Visual Studio 16 2019" -D BUILD_TESTS=ON ./
+#        MSBuild.exe etl.sln
+        
+#    - name: Run tests
+#      run: ./test/debug/etl_tests.exe
+
+  build-windows-vs2019-no-stl:
+    name: Windows VS2019 Debug - No STL
     runs-on: [windows-latest]
 
     steps:
@@ -21,7 +42,7 @@ jobs:
 
     - name: Build
       run: |
-        cmake -G "Visual Studio 16 2019" -D BUILD_TESTS=ON ./
+        cmake -G "Visual Studio 16 2019" -D NO_STL -D BUILD_TESTS=ON ./
         MSBuild.exe etl.sln
         
     - name: Run tests
