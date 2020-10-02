@@ -21,7 +21,7 @@ jobs:
 
 #    - name: Build
 #      run: |
-#        cmake -G "Visual Studio 16 2019" -D BUILD_TESTS=ON ./
+#        cmake -G "Visual Studio 16 2019" -DBUILD_TESTS=ON ./
 #        MSBuild.exe etl.sln
         
 #    - name: Run tests
@@ -42,7 +42,7 @@ jobs:
 
     - name: Build
       run: |
-        cmake -G "Visual Studio 16 2019" -D NO_STL -D BUILD_TESTS=ON ./
+        cmake -G "Visual Studio 16 2019" -DBUILD_TESTS=ON -DNO_STL=ON ./
         MSBuild.exe etl.sln
         
     - name: Run tests
