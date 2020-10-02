@@ -28,7 +28,6 @@ set(TEST_SOURCE_FILES
 	test_array.cpp
 	test_array_view.cpp
 	test_array_wrapper.cpp
-	test_atomic_gcc_sync.cpp
 	test_atomic_std.cpp
 	test_binary.cpp
 	test_bitset.cpp

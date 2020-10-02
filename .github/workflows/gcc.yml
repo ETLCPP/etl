@@ -1,0 +1,45 @@
+name: gcc
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-gcc-linux:
+    name: GCC Linux
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, ubuntu-20.04]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: |
+        cmake -DBUILD_TESTS=ON ./
+        gcc --version
+        make
+    
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-gcc-linux-no-stl:
+    name: GCC Linux - No STL
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, ubuntu-20.04]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: |
+        cmake -DBUILD_TESTS=ON -DNO_STL=ON ./
+        gcc --version
+        make
+    
+    - name: Run tests
+      run: ./test/etl_tests

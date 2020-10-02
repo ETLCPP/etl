@@ -804,14 +804,16 @@ namespace
       std::vector<Data> compare_data;
       etl::indirect_vector<Data, SIZE * 4> data;
 
+      const char* p = (const char* )0x12345678;
+
       std::string s;
       for (size_t i = 0; i < SIZE; ++i)
       {
         s += "x";
 
         // 4 arguments
-        compare_data.emplace_back(s, i, static_cast<double>(i) + 0.1234, "emplace_back");
-        data.emplace_back(s, i, static_cast<double>(i) + 0.1234, "emplace_back");
+        compare_data.emplace_back(s, i, static_cast<double>(i) + 0.1234, p);
+        data.emplace_back(s, i, static_cast<double>(i) + 0.1234, p);
 
         // 3 arguments
         compare_data.emplace_back(s, i, static_cast<double>(i) + 0.1234);

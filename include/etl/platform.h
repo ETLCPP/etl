@@ -38,7 +38,7 @@ SOFTWARE.
 #define ETL_8BIT_SUPPORT (CHAR_BIT == 8)
 
 // Define a debug macro
-#if defined(_DEBUG) || defined(DEBUG)
+#if (defined(_DEBUG) || defined(DEBUG)) && !defined(ETL_DEBUG) 
 #define ETL_DEBUG
 #endif
 
