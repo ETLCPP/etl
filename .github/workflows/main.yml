@@ -27,5 +27,6 @@ jobs:
     - name: Run tests
       run: |
         cd test
+        cd debug
         ls
         etl_tests.exe
