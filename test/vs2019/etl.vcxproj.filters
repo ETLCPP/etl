@@ -1453,14 +1453,20 @@
     <None Include="..\..\.circleci\config.yml">
       <Filter>Resource Files\CI\CircleCI</Filter>
     </None>
-    <None Include="..\..\.github\workflows\main.yml">
-      <Filter>Resource Files\CI\Github</Filter>
-    </None>
     <None Include="..\cmake\unit-test_external_project.cmake">
       <Filter>Resource Files\Make</Filter>
     </None>
     <None Include="..\..\appveyor.yml">
       <Filter>Resource Files\CI\Appveyor</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\clang.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\gcc.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\vs2019.yml">
+      <Filter>Resource Files\CI\Github</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

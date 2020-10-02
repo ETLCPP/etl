@@ -1867,7 +1867,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\.circleci\config.yml" />
-    <None Include="..\..\.github\workflows\main.yml" />
+    <None Include="..\..\.github\workflows\clang.yml" />
+    <None Include="..\..\.github\workflows\gcc.yml" />
+    <None Include="..\..\.github\workflows\vs2019.yml" />
     <None Include="..\..\appveyor.yml" />
     <None Include="..\..\etl.pspimage" />
     <None Include="..\..\etl.xar" />

@@ -1,4 +1,4 @@
-name: GCC
+name: gcc
 on:
   push:
     branches: [ feature/github-actions-for-windows-compilers ]
