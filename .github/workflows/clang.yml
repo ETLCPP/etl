@@ -1,4 +1,4 @@
-name: CI-CLANG
+name: CLANG
 on:
   push:
     branches: [ feature/github-actions-for-windows-compilers ]
