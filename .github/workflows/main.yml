@@ -29,4 +29,4 @@ jobs:
         cd test
         cd debug
         ls
-        etl_tests.exe
+        ./etl_tests.exe
