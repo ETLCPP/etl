@@ -176,25 +176,16 @@ namespace etl
             if (wsize > 0)
             {
                 size_type write_index = write.load(etl::memory_order_relaxed);
+                size_type read_index = read.load(etl::memory_order_acquire);
 
-                // no wraparound
-                if (write_index == windex)
+                // no wraparound so far, also not wrapping around with this block
+                if ((write_index >= read_index) && (windex > 0))
                 {
-                    assert((write_index + wsize) <= capacity());
-
                     // move both indexes forward
-                    last.store(write_index + wsize, etl::memory_order_relaxed);
-                    write.store(write_index + wsize, etl::memory_order_release);
+                    last.store(windex + wsize, etl::memory_order_relaxed);
                 }
-                else if (windex == 0)
-                {
-                    // wrapping around now, only change write index
-                    write.store(0 + wsize, etl::memory_order_release);
-                }
-                else
-                {
-                    assert(false);
-                }
+                // always update write index
+                write.store(windex + wsize, etl::memory_order_release);
             }
         }
 
