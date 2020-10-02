@@ -1,4 +1,4 @@
-name: CI
+name: CI-VS2019
 on:
   push:
     branches: [ feature/github-actions-for-windows-compilers ]

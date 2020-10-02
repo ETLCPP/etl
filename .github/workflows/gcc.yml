@@ -1,4 +1,4 @@
-name: CI
+name: CI-GCC
 on:
   push:
     branches: [ feature/github-actions-for-windows-compilers ]

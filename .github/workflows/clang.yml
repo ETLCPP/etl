@@ -1,4 +1,4 @@
-name: CI
+name: CI-CLANG
 on:
   push:
     branches: [ feature/github-actions-for-windows-compilers ]
@@ -28,7 +28,7 @@ jobs:
       run: ./test/etl_tests
 
   build-clang-9-linux-no-stl:
-    name: Clang-9 Linux No STL
+    name: Clang-9 Linux - No STL
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -70,7 +70,7 @@ jobs:
       run: ./test/etl_tests
 
   build-clang-10-osx-no-stl:
-    name: Clang-10 OSX No STL
+    name: Clang-10 OSX - No STL
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
