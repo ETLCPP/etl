@@ -26,5 +26,5 @@ jobs:
         
     - name: Run tests
       run: |
-        ls *.exe
+        ls
         etl_tests.exe
