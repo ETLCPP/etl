@@ -1,4 +1,8 @@
 ===============================================================================
+18.16.4
+Reduced warnings from cppcheck v2.2
+
+===============================================================================
 18.16.3
 Added VS2019 to CI configuration file.
 Created separate VS2019, GCC and clang configuration files.

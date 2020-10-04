@@ -38,84 +38,84 @@ SOFTWARE.
 #include "etl/integral_limits.h"
 #include "etl/type_traits.h"
 
-// Count bits the easy way.
-template <typename T>
-size_t test_count(T value)
-{
-  size_t count = 0;
-
-  for (int i = 0; i < etl::integral_limits<T>::bits; ++i)
-  {
-    if ((value & (T(1) << i)) != 0)
-    {
-      ++count;
-    }
-  }
-
-  return count;
-}
-
-// Check parity the easy way.
-template <typename T>
-size_t test_parity(T value)
-{
-  size_t count = test_count(value);
-
-  return count & 1;
-}
-
-// Power of 2.
-uint64_t test_power_of_2(int power)
-{
-  uint64_t result = 1;
-
-  for (int i = 0; i < power; ++i)
-  {
-    result *= 2;
-  }
-
-  return result;
-}
-
-// Fold bits.
-template <typename TReturn>
-TReturn test_fold_bits(uint64_t value, int size)
-{
-  int bits_remaining = 64;
-  uint64_t mask = test_power_of_2(size) - 1;
-  TReturn  result = 0;
-
-  while (bits_remaining > size)
-  {
-    result = result ^ (value & mask);
-    value  = value >> size;
-    bits_remaining -= size;
-  }
-
-  result = result ^ (value & mask);
-
-  return result;
-}
-
-// Slow gray to binary
-template <typename T>
-T compare_gray_to_binary(T value_)
-{
-  typedef typename std::make_unsigned<T>::type type;
-
-  type value = type(value_);
-
-  T mask;
-  for (mask = value >> 1; mask != 0; mask = mask >> 1)
-  {
-    value = value ^ mask;
-  }
-
-  return value;
-}
-
 namespace
 {
+  // Count bits the easy way.
+  template <typename T>
+  size_t test_count(T value)
+  {
+    size_t count = 0;
+
+    for (int i = 0; i < etl::integral_limits<T>::bits; ++i)
+    {
+      if ((value & (T(1) << i)) != 0)
+      {
+        ++count;
+      }
+    }
+
+    return count;
+  }
+
+  // Check parity the easy way.
+  template <typename T>
+  size_t test_parity(T value)
+  {
+    size_t count = test_count(value);
+
+    return count & 1;
+  }
+
+  // Power of 2.
+  uint64_t test_power_of_2(int power)
+  {
+    uint64_t result = 1;
+
+    for (int i = 0; i < power; ++i)
+    {
+      result *= 2;
+    }
+
+    return result;
+  }
+
+  // Fold bits.
+  template <typename TReturn>
+  TReturn test_fold_bits(uint64_t value, int size)
+  {
+    int bits_remaining = 64;
+    uint64_t mask = test_power_of_2(size) - 1;
+    TReturn  result = 0;
+
+    while (bits_remaining > size)
+    {
+      result = result ^ (value & mask);
+      value = value >> size;
+      bits_remaining -= size;
+    }
+
+    result = result ^ (value & mask);
+
+    return result;
+  }
+
+  // Slow gray to binary
+  template <typename T>
+  T compare_gray_to_binary(T value_)
+  {
+    typedef typename std::make_unsigned<T>::type type;
+
+    type value = type(value_);
+
+    T mask;
+    for (mask = value >> 1; mask != 0; mask = mask >> 1)
+    {
+      value = value ^ mask;
+    }
+
+    return value;
+  }
+
   SUITE(test_binary)
   {
     //*************************************************************************

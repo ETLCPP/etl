@@ -623,9 +623,9 @@ namespace etl
 
   public:
 
-    static const size_t SIZE      = base_t::SIZE;
-    static const size_t ALIGNMENT = base_t::ALIGNMENT;
-    static const size_t TYPE_SIZE = base_t::TYPE_SIZE;
+    using base_t::SIZE;
+    using base_t::ALIGNMENT;
+    using base_t::TYPE_SIZE;
 
     //*************************************************************************
     /// Constructor
