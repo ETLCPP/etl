@@ -103,6 +103,8 @@ SOFTWARE.
   #error THE UNIT TESTS REQUIRE C++17 SUPPORT
 #endif
 
+#include "../include/etl/profiles/determine_compiler_version.h"
+
 #if defined(ETL_COMPILER_GCC) && (ETL_COMPILER_VERSION < 8)
   #define ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED
 #endif
