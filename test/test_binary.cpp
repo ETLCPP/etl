@@ -172,6 +172,7 @@ namespace
       CHECK_EQUAL(0x6F, int(value));
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_rotate_left8_constexpr)
     {
@@ -179,6 +180,7 @@ namespace
 
       CHECK_EQUAL(etl::rotate_left(uint8_t(0xAA)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_rotate_left16)
@@ -270,6 +272,7 @@ namespace
       CHECK_EQUAL(0x6E79, int(value));
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_rotate_left16_constexpr)
     {
@@ -277,6 +280,7 @@ namespace
 
       CHECK_EQUAL(etl::rotate_left(uint16_t(0xAA)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_rotate_right8)
@@ -332,6 +336,7 @@ namespace
       CHECK_EQUAL(0xDB, int(value));
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_rotate_right8_constexpr)
     {
@@ -339,6 +344,7 @@ namespace
 
       CHECK_EQUAL(etl::rotate_right(uint8_t(0xAA)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_rotate_right16)
@@ -430,6 +436,7 @@ namespace
       CHECK_EQUAL(0x5B9E, int(value));
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_rotate_right16_constexpr)
     {
@@ -437,6 +444,7 @@ namespace
 
       CHECK_EQUAL(etl::rotate_right(uint16_t(0xAA)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_rotate16)
@@ -455,6 +463,7 @@ namespace
       CHECK_EQUAL(0xCB73, int(value));
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_rotate16_constexpr)
     {
@@ -462,6 +471,7 @@ namespace
 
       CHECK_EQUAL(etl::rotate(uint16_t(0xAA), 1), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_reverse_bits8)
@@ -493,6 +503,7 @@ namespace
       CHECK_EQUAL(0x35, int(value));
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_reverse_bits8_constexpr)
     {
@@ -500,6 +511,7 @@ namespace
 
       CHECK_EQUAL(etl::reverse_bits(uint8_t(0xA5)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_reverse_bits16)
@@ -519,6 +531,7 @@ namespace
       CHECK_EQUAL(0xA5A5, value);
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_reverse_bits16_constexpr)
     {
@@ -526,6 +539,7 @@ namespace
 
       CHECK_EQUAL(etl::reverse_bits(uint16_t(0xA500)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_reverse_bits32)
@@ -545,6 +559,7 @@ namespace
       CHECK_EQUAL(uint32_t(0x5A5A5A5A), value);
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_reverse_bits32_constexpr)
     {
@@ -552,6 +567,7 @@ namespace
 
       CHECK_EQUAL(etl::reverse_bits(uint32_t(0xA5000000)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_reverse_bits64)
@@ -571,6 +587,7 @@ namespace
       CHECK_EQUAL(uint64_t(0x5A5A5A5A5A5A5A5A), value);
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_reverse_bits64_constexpr)
     {
@@ -578,6 +595,7 @@ namespace
 
       CHECK_EQUAL(etl::reverse_bits(uint64_t(0xA500000000000000)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_reverse_bytes16)
@@ -597,6 +615,7 @@ namespace
       CHECK_EQUAL(0x5AA5, value);
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_reverse_bytes16_constexpr)
     {
@@ -604,6 +623,7 @@ namespace
 
       CHECK_EQUAL(etl::reverse_bytes(uint16_t(0xA500)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_reverse_bytes32)
@@ -623,6 +643,7 @@ namespace
       CHECK_EQUAL(0xA5A55A5AU, value);
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_reverse_bytes32_constexpr)
     {
@@ -630,6 +651,7 @@ namespace
 
       CHECK_EQUAL(etl::reverse_bytes(uint32_t(0xA5000000)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_reverse_bytes64)
@@ -649,6 +671,7 @@ namespace
       CHECK_EQUAL(0xA5A55A5AA5A55A5AU, value);
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_reverse_bytes64_constexpr)
     {
@@ -656,6 +679,7 @@ namespace
 
       CHECK_EQUAL(etl::reverse_bytes(uint64_t(0xA500000000000000)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_binary_to_gray8)
@@ -675,6 +699,7 @@ namespace
       }
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_binary_to_gray8_constexpr)
     {
@@ -682,6 +707,7 @@ namespace
 
       CHECK_EQUAL(etl::binary_to_gray(uint8_t(0xFF)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_binary_to_gray16)
@@ -701,6 +727,7 @@ namespace
       }
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_binary_to_gray16_constexpr)
     {
@@ -708,6 +735,7 @@ namespace
 
       CHECK_EQUAL(etl::binary_to_gray(uint16_t(0xFF)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_binary_to_gray32)
@@ -733,6 +761,7 @@ namespace
       }
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_binary_to_gray32_constexpr)
     {
@@ -740,6 +769,7 @@ namespace
 
       CHECK_EQUAL(etl::binary_to_gray(uint32_t(0xFF)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_binary_to_gray64)
@@ -765,6 +795,7 @@ namespace
       }
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_binary_to_gray64_constexpr)
     {
@@ -772,6 +803,7 @@ namespace
 
       CHECK_EQUAL(etl::binary_to_gray(uint64_t(0xFF)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_gray_to_binary8)
@@ -783,6 +815,7 @@ namespace
       }
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_gray_to_binary8_constexpr)
     {
@@ -790,6 +823,7 @@ namespace
 
       CHECK_EQUAL(etl::gray_to_binary(uint8_t(0xFF)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_gray_to_binary16)
@@ -801,6 +835,7 @@ namespace
       }
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_gray_to_binary16_constexpr)
     {
@@ -808,6 +843,7 @@ namespace
 
       CHECK_EQUAL(etl::gray_to_binary(uint16_t(0xFF)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_gray_to_binary32)
@@ -824,6 +860,7 @@ namespace
       }
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_gray_to_binary32_constexpr)
     {
@@ -831,6 +868,7 @@ namespace
 
       CHECK_EQUAL(etl::gray_to_binary(uint32_t(0xFF)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_gray_to_binary64)
@@ -847,6 +885,7 @@ namespace
       }
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_gray_to_binary64_constexpr)
     {
@@ -854,6 +893,7 @@ namespace
 
       CHECK_EQUAL(etl::gray_to_binary(uint64_t(0xFF)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_count_bits_8)
@@ -865,6 +905,7 @@ namespace
       }
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_count_bits_8_constexpr)
     {
@@ -872,6 +913,7 @@ namespace
 
       CHECK_EQUAL(etl::count_bits(uint8_t(0xFF)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_count_bits_16)
@@ -883,6 +925,7 @@ namespace
       }
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_count_bits_16_constexpr)
     {
@@ -890,6 +933,7 @@ namespace
 
       CHECK_EQUAL(etl::count_bits(uint16_t(0xFF)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_count_bits_32)
@@ -907,6 +951,7 @@ namespace
       }
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_count_bits_32_constexpr)
     {
@@ -914,6 +959,7 @@ namespace
 
       CHECK_EQUAL(etl::count_bits(uint32_t(0xFF)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_count_bits_64)
@@ -931,6 +977,7 @@ namespace
       }
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_count_bits_64_constexpr)
     {
@@ -938,6 +985,7 @@ namespace
 
       CHECK_EQUAL(etl::count_bits(uint64_t(0xFF)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_parity_8)
@@ -949,6 +997,7 @@ namespace
       }
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_parity_8_constexpr)
     {
@@ -956,6 +1005,7 @@ namespace
 
       CHECK_EQUAL(etl::parity(uint8_t(0xFE)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_parity_16)
@@ -967,6 +1017,7 @@ namespace
       }
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_parity_16_constexpr)
     {
@@ -974,6 +1025,7 @@ namespace
 
       CHECK_EQUAL(etl::parity(uint16_t(0xFE)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_parity_32)
@@ -991,6 +1043,7 @@ namespace
       }
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_parity_32_constexpr)
     {
@@ -998,6 +1051,7 @@ namespace
 
       CHECK_EQUAL(etl::parity(uint32_t(0xFE)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_parity_64)
@@ -1015,6 +1069,7 @@ namespace
       }
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_parity_64_constexpr)
     {
@@ -1022,6 +1077,7 @@ namespace
 
       CHECK_EQUAL(etl::parity(uint64_t(0xFE)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_fold_bits)
@@ -1093,6 +1149,7 @@ namespace
       CHECK_EQUAL(test_fold_bits<uint64_t>(data, 63), (etl::fold_bits<uint64_t, 63>(data)));
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_fold_bits_constexpr)
     {
@@ -1100,6 +1157,7 @@ namespace
 
       CHECK_EQUAL((etl::fold_bits<int64_t, 7>(0xE8C9AACCBC3D9A8F)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_max_value_for_bits)
@@ -1285,6 +1343,7 @@ namespace
       CHECK_EQUAL(178956970, (etl::sign_extend<int64_t, 30>(value32)));
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_sign_extend_template1_constexpr)
     {
@@ -1292,6 +1351,7 @@ namespace
 
       CHECK_EQUAL((etl::sign_extend<int8_t, 6>(0x1A)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_sign_extend_template1b)
@@ -1344,6 +1404,7 @@ namespace
       CHECK_EQUAL(-22, (etl::sign_extend<int64_t, 6, 26>(value)));
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_sign_extend_template1b_constexpr)
     {
@@ -1351,6 +1412,7 @@ namespace
 
       CHECK_EQUAL((etl::sign_extend<int8_t, 6, 0>(0x1A)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_sign_extend_template2)
@@ -1398,6 +1460,7 @@ namespace
       CHECK_EQUAL(178956970, (etl::sign_extend<int64_t>(value32, 30)));
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_sign_extend_template2_constexpr)
     {
@@ -1405,6 +1468,7 @@ namespace
 
       CHECK_EQUAL((etl::sign_extend<int8_t>(0x1A, 6)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_sign_extend_template2b)
@@ -1457,6 +1521,7 @@ namespace
       CHECK_EQUAL(-22, (etl::sign_extend<int64_t>(value, 6, 26)));
     }
 
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_sign_extend_template2b_constexpr)
     {
@@ -1464,6 +1529,7 @@ namespace
 
       CHECK_EQUAL((etl::sign_extend<int8_t>(0x1A, 6, 0)), sizeof(temp));
     }
+#endif
 
     //*************************************************************************
     TEST(test_bit)
