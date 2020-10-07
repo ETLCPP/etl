@@ -122,6 +122,21 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_checksum_add_range_via_iterator)
+    {
+      std::string data("123456789");
+
+      etl::bsd_checksum<uint8_t> checksum_calculator;
+
+      std::copy(data.begin(), data.end(), checksum_calculator.input());
+
+      uint8_t sum = checksum_calculator.value();
+      uint8_t compare = reference_checksum<uint8_t>(data.begin(), data.end());
+
+      CHECK_EQUAL(int(compare), int(sum));
+    }
+
+    //*************************************************************************
     TEST(test_checksum_add_range_sum32)
     {
       std::string data("1");

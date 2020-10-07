@@ -43,6 +43,132 @@ ETL_STATIC_ASSERT(ETL_8BIT_SUPPORT, "This file does not currently support target
 
 namespace etl
 {
+  namespace private_frame_check_sequence
+  {
+    //***************************************************
+    /// Proxy adder.
+    /// Returned by the iterator dereference operator.
+    //***************************************************
+    template <typename TFCS>
+    class proxy_adder
+    {
+    public:
+
+      friend typename TFCS::iterator;
+
+      //***************************************************
+      /// Copy constuctor
+      //***************************************************
+      proxy_adder(const proxy_adder& other)
+        : p_fcs(other.p_fcs)
+      {
+      }
+
+      //***************************************************
+      /// Assignment from proxy_adder
+      //***************************************************
+      proxy_adder& operator =(const proxy_adder& rhs)
+      {
+        p_fcs = rhs.p_fcs;
+        return *this;
+      }
+
+      //***************************************************
+      /// Assignment from value
+      //***************************************************
+      proxy_adder& operator =(uint8_t value)
+      {
+        p_fcs->add(value);
+        return *this;
+      }
+
+    private:
+
+      //***************************************************
+      /// Private constructor
+      //***************************************************
+      proxy_adder(TFCS* p_fcs_)
+        : p_fcs(p_fcs_)
+      {
+      }
+
+      TFCS* p_fcs;
+    };
+
+    //***************************************************
+    /// iterator
+    /// An output iterator used to add new values.
+    //***************************************************
+    template <typename TFCS>
+    class iterator : public etl::iterator<ETL_OR_STD::output_iterator_tag, typename TFCS::value_type>
+    {
+    public:
+
+      friend TFCS;
+
+      //***************************************************
+      /// Default constructor
+      //***************************************************
+      iterator()
+      {
+      }
+
+      //***************************************************
+      /// Copy constuctor
+      //***************************************************
+      iterator(const iterator& other)
+        : adder(other.adder)
+      {
+      }
+
+      //***************************************************
+      /// Assignment operator
+      //***************************************************
+      iterator& operator =(const iterator& rhs)
+      {
+        adder = rhs.adder;
+        return *this;
+      }
+
+      //***************************************************
+      /// Pre-increment operator
+      //***************************************************
+      iterator& operator ++()
+      {
+        return *this;
+      }
+
+      //***************************************************
+      /// Post-increment operator
+      //***************************************************
+      iterator& operator ++(int)
+      {
+        return *this;
+      }
+
+      //***************************************************
+      /// De-reference operator
+      //***************************************************
+      proxy_adder<TFCS> operator *() const
+      {
+        return adder;
+      }
+
+    private:
+
+      //***************************************************
+      /// Private constructor
+      //***************************************************
+      iterator(TFCS* p_fcs)
+        : adder(p_fcs)
+      {
+      }
+
+      ///  The adder proxy returned by an iterator dereference.
+      proxy_adder<TFCS> adder;
+    };
+  }
+
   //***************************************************************************
   /// Calculates a frame check sequence according to the specified policy.
   ///\tparam TPolicy The type used to enact the policy.
@@ -55,6 +181,7 @@ namespace etl
 
     typedef TPolicy policy_type;
     typedef typename policy_type::value_type value_type;
+    typedef private_frame_check_sequence::iterator<frame_check_sequence<TPolicy>> iterator;
 
     ETL_STATIC_ASSERT(etl::is_unsigned<value_type>::value, "Signed frame check type not supported");
 
@@ -126,6 +253,14 @@ namespace etl
     operator value_type ()
     {
       return policy.final(frame_check);
+    }
+
+    //*************************************************************************
+    /// Gets an iterator for input.
+    //*************************************************************************
+    iterator input()
+    {
+      return iterator(this);
     }
 
   private:
