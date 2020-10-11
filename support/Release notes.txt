@@ -1,4 +1,8 @@
 ===============================================================================
+18.17.1
+Fixed incorrect reflected CRC8 0x07 lookup table
+
+===============================================================================
 18.17.0
 Added iterator API to all etl::frame_check_sequence based template classes, such as CRCs and checksums.
 Example:
