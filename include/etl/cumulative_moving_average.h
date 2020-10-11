@@ -39,37 +39,40 @@ namespace etl
   namespace private_cumulative_moving_average
   {
     //***************************************************
-    /// Proxy adder.
-    /// Returned by the iterator dereference operator.
+    /// add_insert_iterator
+    /// An output iterator used to add new values.
     //***************************************************
     template <typename TCMA>
-    class proxy_adder
+    class add_insert_iterator : public etl::iterator<ETL_OR_STD::output_iterator_tag, void, void, void, void>
     {
     public:
 
-      friend typename TCMA::iterator;
-
-      //***************************************************
-      /// Copy constuctor
-      //***************************************************
-      proxy_adder(const proxy_adder& other)
-        : p_cma(other.p_cma)
+      //***********************************
+      explicit add_insert_iterator(TCMA& cma) ETL_NOEXCEPT
+        : p_cma(&cma)
       {
       }
 
-      //***************************************************
-      /// Assignment from proxy_adder
-      //***************************************************
-      proxy_adder& operator =(const proxy_adder& rhs)
+      //***********************************
+      add_insert_iterator& operator*() ETL_NOEXCEPT
       {
-        p_cma = rhs.p_cma;
         return *this;
       }
 
-      //***************************************************
-      /// Assignment from value
-      //***************************************************
-      proxy_adder& operator =(typename TCMA::value_type value)
+      //***********************************
+      add_insert_iterator& operator++() ETL_NOEXCEPT
+      {
+        return *this;
+      }
+
+      //***********************************
+      add_insert_iterator& operator++(int) ETL_NOEXCEPT
+      {
+        return *this;
+      }
+
+      //***********************************
+      add_insert_iterator& operator =(typename TCMA::value_type value)
       {
         p_cma->add(value);
         return *this;
@@ -77,88 +80,7 @@ namespace etl
 
     private:
 
-      //***************************************************
-      /// Private constructor
-      //***************************************************
-      proxy_adder(TCMA* p_cma_)
-        : p_cma(p_cma_)
-      {
-      }
-
       TCMA* p_cma;
-    };
-
-    //***************************************************
-    /// iterator
-    /// An output iterator used to add new values.
-    //***************************************************
-    template <typename TCMA>
-    class iterator : public etl::iterator<ETL_OR_STD::output_iterator_tag, typename TCMA::value_type>
-    {
-    public:
-
-      friend TCMA;
-
-      //***************************************************
-      /// Default constructor
-      //***************************************************
-      iterator()
-      {
-      }
-
-      //***************************************************
-      /// Copy constuctor
-      //***************************************************
-      iterator(const iterator& other)
-        : adder(other.adder)
-      {
-      }
-
-      //***************************************************
-      /// Assignment operator
-      //***************************************************
-      iterator& operator =(const iterator& rhs)
-      {
-        adder = rhs.adder;
-        return *this;
-      }
-
-      //***************************************************
-      /// Pre-increment operator
-      //***************************************************
-      iterator& operator ++()
-      {
-        return *this;
-      }
-
-      //***************************************************
-      /// Post-increment operator
-      //***************************************************
-      iterator& operator ++(int)
-      {
-        return *this;
-      }
-
-      //***************************************************
-      /// De-reference operator
-      //***************************************************
-      proxy_adder<TCMA> operator *() const
-      {
-        return adder;
-      }
-
-    private:
-
-      //***************************************************
-      /// Private constructor
-      //***************************************************
-      iterator(TCMA* p_cma)
-        : adder(p_cma)
-      {
-      }
-
-      ///  The adder proxy returned by an iterator dereference.
-      proxy_adder<TCMA> adder;
     };
   }
 
@@ -198,7 +120,7 @@ namespace etl
   public:
 
     typedef T value_type;
-    typedef private_cumulative_moving_average::iterator<this_t> iterator;
+    typedef private_cumulative_moving_average::add_insert_iterator<this_t> add_insert_iterator;
 
     static const size_t SAMPLE_SIZE = SAMPLE_SIZE_; ///< The number of samples averaged over.
     static const size_t SCALING     = SCALING_;     ///< The sample scaling factor.
@@ -245,9 +167,9 @@ namespace etl
     /// Gets an iterator for input.
     /// \return An iterator.
     //*************************************************************************
-    iterator input()
+    add_insert_iterator input()
     {
-      return iterator(this);
+      return add_insert_iterator(*this);
     }
 
   private:
@@ -274,7 +196,7 @@ namespace etl
   public:
 
     typedef T value_type;
-    typedef private_cumulative_moving_average::iterator<this_t> iterator;
+    typedef private_cumulative_moving_average::add_insert_iterator<this_t> add_insert_iterator;
 
     static const size_t SCALING = SCALING_;     ///< The sample scaling factor.
 
@@ -330,9 +252,9 @@ namespace etl
     /// Gets an iterator for input.
     /// \return An iterator.
     //*************************************************************************
-    iterator input()
+    add_insert_iterator input()
     {
-      return iterator(this);
+      return add_insert_iterator(*this);
     }
 
   private:
@@ -355,7 +277,7 @@ namespace etl
   public:
 
     typedef T value_type;
-    typedef private_cumulative_moving_average::iterator<this_t> iterator;
+    typedef private_cumulative_moving_average::add_insert_iterator<this_t> add_insert_iterator;
 
     static const size_t SAMPLE_SIZE = SAMPLE_SIZE_;
 
@@ -400,9 +322,9 @@ namespace etl
     /// Gets an iterator for input.
     /// \return An iterator.
     //*************************************************************************
-    iterator input()
+    add_insert_iterator input()
     {
-      return iterator(this);
+      return add_insert_iterator(*this);
     }
 
   private:
@@ -425,7 +347,7 @@ namespace etl
   public:
 
     typedef T value_type;
-    typedef private_cumulative_moving_average::iterator<this_t> iterator;
+    typedef private_cumulative_moving_average::add_insert_iterator<this_t> add_insert_iterator;
 
     //*************************************************************************
     /// Constructor
@@ -477,9 +399,9 @@ namespace etl
     /// Gets an iterator for input.
     /// \return An iterator.
     //*************************************************************************
-    iterator input()
+    add_insert_iterator input()
     {
-      return iterator(this);
+      return add_insert_iterator(*this);
     }
 
   private:

@@ -46,37 +46,40 @@ namespace etl
   namespace private_frame_check_sequence
   {
     //***************************************************
-    /// Proxy adder.
-    /// Returned by the iterator dereference operator.
+    /// add_insert_iterator
+    /// An output iterator used to add new values.
     //***************************************************
     template <typename TFCS>
-    class proxy_adder
+    class add_insert_iterator : public etl::iterator<ETL_OR_STD::output_iterator_tag, void, void, void, void>
     {
     public:
 
-      friend typename TFCS::iterator;
-
-      //***************************************************
-      /// Copy constuctor
-      //***************************************************
-      proxy_adder(const proxy_adder& other)
-        : p_fcs(other.p_fcs)
+      //***********************************
+      explicit add_insert_iterator(TFCS& fcs) ETL_NOEXCEPT
+        : p_fcs(&fcs)
       {
       }
 
-      //***************************************************
-      /// Assignment from proxy_adder
-      //***************************************************
-      proxy_adder& operator =(const proxy_adder& rhs)
+      //***********************************
+      add_insert_iterator& operator*() ETL_NOEXCEPT
       {
-        p_fcs = rhs.p_fcs;
         return *this;
       }
 
-      //***************************************************
-      /// Assignment from value
-      //***************************************************
-      proxy_adder& operator =(uint8_t value)
+      //***********************************
+      add_insert_iterator& operator++() ETL_NOEXCEPT
+      {
+        return *this;
+      }
+
+      //***********************************
+      add_insert_iterator& operator++(int) ETL_NOEXCEPT
+      {
+        return *this;
+      }
+
+      //***********************************
+      add_insert_iterator& operator =(uint8_t value)
       {
         p_fcs->add(value);
         return *this;
@@ -84,88 +87,7 @@ namespace etl
 
     private:
 
-      //***************************************************
-      /// Private constructor
-      //***************************************************
-      proxy_adder(TFCS* p_fcs_)
-        : p_fcs(p_fcs_)
-      {
-      }
-
       TFCS* p_fcs;
-    };
-
-    //***************************************************
-    /// iterator
-    /// An output iterator used to add new values.
-    //***************************************************
-    template <typename TFCS>
-    class iterator : public etl::iterator<ETL_OR_STD::output_iterator_tag, typename TFCS::value_type>
-    {
-    public:
-
-      friend TFCS;
-
-      //***************************************************
-      /// Default constructor
-      //***************************************************
-      iterator()
-      {
-      }
-
-      //***************************************************
-      /// Copy constuctor
-      //***************************************************
-      iterator(const iterator& other)
-        : adder(other.adder)
-      {
-      }
-
-      //***************************************************
-      /// Assignment operator
-      //***************************************************
-      iterator& operator =(const iterator& rhs)
-      {
-        adder = rhs.adder;
-        return *this;
-      }
-
-      //***************************************************
-      /// Pre-increment operator
-      //***************************************************
-      iterator& operator ++()
-      {
-        return *this;
-      }
-
-      //***************************************************
-      /// Post-increment operator
-      //***************************************************
-      iterator& operator ++(int)
-      {
-        return *this;
-      }
-
-      //***************************************************
-      /// De-reference operator
-      //***************************************************
-      proxy_adder<TFCS> operator *() const
-      {
-        return adder;
-      }
-
-    private:
-
-      //***************************************************
-      /// Private constructor
-      //***************************************************
-      iterator(TFCS* p_fcs)
-        : adder(p_fcs)
-      {
-      }
-
-      ///  The adder proxy returned by an iterator dereference.
-      proxy_adder<TFCS> adder;
     };
   }
 
@@ -181,7 +103,7 @@ namespace etl
 
     typedef TPolicy policy_type;
     typedef typename policy_type::value_type value_type;
-    typedef private_frame_check_sequence::iterator<frame_check_sequence<TPolicy>> iterator;
+    typedef private_frame_check_sequence::add_insert_iterator<frame_check_sequence<TPolicy> > add_insert_iterator;
 
     ETL_STATIC_ASSERT(etl::is_unsigned<value_type>::value, "Signed frame check type not supported");
 
@@ -256,11 +178,11 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets an iterator for input.
+    /// Gets an add_insert_iterator for input.
     //*************************************************************************
-    iterator input()
+    add_insert_iterator input()
     {
-      return iterator(this);
+      return add_insert_iterator(*this);
     }
 
   private:

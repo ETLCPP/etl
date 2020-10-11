@@ -43,7 +43,7 @@ SOFTWARE.
 
 namespace etl
 {
-  typedef crc8_poly_0x07<0xFF, 0x00, true, true> crc8_rohc;
+  typedef crc8_poly_0x07<0xFF, 0x00, true> crc8_rohc;
 }
 
 #endif
