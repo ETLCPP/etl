@@ -885,6 +885,9 @@
     <ClInclude Include="..\..\include\etl\string.h">
       <Filter>ETL\Strings</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\circular_buffer.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
