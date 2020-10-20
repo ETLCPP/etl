@@ -160,40 +160,40 @@ namespace etl
   }
 
   //*********************************
-  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::base_spec bin = { 2U };
+  static ETL_CONSTANT private_basic_format_spec::base_spec bin = { 2U };
 
   //*********************************
-  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::base_spec oct = { 8U };
+  static ETL_CONSTANT private_basic_format_spec::base_spec oct = { 8U };
 
   //*********************************
-  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::base_spec dec = { 10U };
+  static ETL_CONSTANT private_basic_format_spec::base_spec dec = { 10U };
 
   //*********************************
-  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::base_spec hex = { 16U };
+  static ETL_CONSTANT private_basic_format_spec::base_spec hex = { 16U };
 
   //*********************************
-  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::left_spec left;
+  static ETL_CONSTANT private_basic_format_spec::left_spec left;
 
   //*********************************
-  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::right_spec right;
+  static ETL_CONSTANT private_basic_format_spec::right_spec right;
 
   //*********************************
-  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::boolalpha_spec boolalpha = { true };
+  static ETL_CONSTANT private_basic_format_spec::boolalpha_spec boolalpha = { true };
 
   //*********************************
-  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::boolalpha_spec noboolalpha = { false };
+  static ETL_CONSTANT private_basic_format_spec::boolalpha_spec noboolalpha = { false };
 
   //*********************************
-  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::uppercase_spec uppercase = { true };
+  static ETL_CONSTANT private_basic_format_spec::uppercase_spec uppercase = { true };
 
   //*********************************
-  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::uppercase_spec nouppercase = { false };
+  static ETL_CONSTANT private_basic_format_spec::uppercase_spec nouppercase = { false };
 
   //*********************************
-  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::showbase_spec showbase = { true };
+  static ETL_CONSTANT private_basic_format_spec::showbase_spec showbase = { true };
 
   //*********************************
-  static ETL_CONST_OR_CONSTEXPR private_basic_format_spec::showbase_spec noshowbase = { false };
+  static ETL_CONSTANT private_basic_format_spec::showbase_spec noshowbase = { false };
 
   //***************************************************************************
   /// basic_format_spec

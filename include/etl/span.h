@@ -49,7 +49,7 @@ SOFTWARE.
 
 namespace etl
 {
-  static ETL_CONST_OR_CONSTEXPR size_t dynamic_extent = etl::integral_limits<size_t>::max;
+  static ETL_CONSTANT size_t dynamic_extent = etl::integral_limits<size_t>::max;
 
   //***************************************************************************
   /// Array view.
@@ -71,7 +71,7 @@ namespace etl
     typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
     typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
 
-    static ETL_CONST_OR_CONSTEXPR size_t extent = EXTENT;
+    static ETL_CONSTANT size_t extent = EXTENT;
 
     //*************************************************************************
     /// Default constructor.
