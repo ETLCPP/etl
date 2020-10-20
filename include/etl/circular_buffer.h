@@ -242,20 +242,10 @@ namespace etl
       //*************************************************************************
       const_iterator& operator +=(int n)
       {
-        if (n > 0)
-        {
-          while (n--)
-          {
-            ++*this;
-          }
-        }
-        else
-        {
-          while (n++)
-          {
-            --*this;
-          }
-        }
+        n = picb->BUFFER_SIZE + n;
+         
+        current += n;
+        current %= picb->BUFFER_SIZE;
 
         return (*this);
       }
@@ -617,7 +607,7 @@ namespace etl
   template <typename T, typename... Ts>
   circular_buffer(T, Ts...)
     ->circular_buffer<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
-#endif 
+#endif
 }
 
 #undef ETL_FILE

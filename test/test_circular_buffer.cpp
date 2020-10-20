@@ -416,16 +416,20 @@ namespace
       Data data;
       data.push(test.begin(), test.end());
 
-      Data::const_iterator itr = data.begin();
+      Compare compare = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-      itr = itr + 3U;
-      CHECK_EQUAL(3U, *itr);
+      for (int step = 1; step < int(data.size()); ++step)
+      {
+        Data::const_iterator itr = data.begin();
 
-      itr = itr + 3U;
-      CHECK_EQUAL(6U, *itr);
+        int offset = 0;
 
-      itr = itr + 3U;
-      CHECK_EQUAL(9U, *itr);
+        while ((offset += step) < int(data.size() - 1))
+        {
+          itr = itr + step;
+          CHECK_EQUAL(compare[offset], *itr);
+        }
+      }
     }
 
     //*************************************************************************
@@ -435,16 +439,20 @@ namespace
       Data data;
       data.push(test.begin(), test.end());
 
-      Data::const_iterator itr = data.begin();
+      Compare compare = { 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
 
-      itr = itr + 3U;
-      CHECK_EQUAL(6U, *itr);
+      for (int step = 1; step < int(data.size()); ++step)
+      {
+        Data::const_iterator itr = data.begin();
 
-      itr = itr + 3U;
-      CHECK_EQUAL(9U, *itr);
+        int offset = 0;
 
-      itr = itr + 3U;
-      CHECK_EQUAL(12U, *itr);
+        while ((offset += step) < int(data.size() - 1))
+        {
+          itr = itr + step;
+          CHECK_EQUAL(compare[offset], *itr);
+        }
+      }
     }
 
     //*************************************************************************
@@ -454,16 +462,20 @@ namespace
       Data data;
       data.push(test.begin(), test.end());
 
-      Data::const_iterator itr = data.begin();
+      Compare compare = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-      itr += 3U;
-      CHECK_EQUAL(3U, *itr);
+      for (int step = 1; step < int(data.size()); ++step)
+      {
+        Data::const_iterator itr = data.begin();
 
-      itr += 3U;
-      CHECK_EQUAL(6U, *itr);
+        int offset = 0;
 
-      itr += 3U;
-      CHECK_EQUAL(9U, *itr);
+        while ((offset += step) < int(data.size() - 1))
+        {
+          itr += + step;
+          CHECK_EQUAL(compare[offset], *itr);
+        }
+      }
     }
 
     //*************************************************************************
@@ -473,16 +485,20 @@ namespace
       Data data;
       data.push(test.begin(), test.end());
 
-      Data::const_iterator itr = data.begin();
+      Compare compare = { 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
 
-      itr += 3U;
-      CHECK_EQUAL(6U, *itr);
+      for (int step = 1; step < int(data.size()); ++step)
+      {
+        Data::const_iterator itr = data.begin();
 
-      itr += 3U;
-      CHECK_EQUAL(9U, *itr);
+        int offset = 0;
 
-      itr += 3U;
-      CHECK_EQUAL(12U, *itr);
+        while ((offset += step) < int(data.size() - 1))
+        {
+          itr += step;
+          CHECK_EQUAL(compare[offset], *itr);
+        }
+      }
     }
 
     //*************************************************************************
@@ -492,16 +508,20 @@ namespace
       Data data;
       data.push(test.begin(), test.end());
 
-      Data::const_iterator itr = data.end();
+      Compare compare = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-      itr = itr - 3U;
-      CHECK_EQUAL(7U, *itr);
+      for (int step = 1; step < int(data.size()); ++step)
+      {
+        Data::const_iterator itr = data.end();
 
-      itr = itr - 3U;
-      CHECK_EQUAL(4U, *itr);
+        int offset = int(data.size());
 
-      itr = itr - 3U;
-      CHECK_EQUAL(1U, *itr);
+        while ((offset -= step) > 0)
+        {
+          itr = itr - step;
+          CHECK_EQUAL(compare[offset], *itr);
+        }
+      }
     }
 
     //*************************************************************************
@@ -511,16 +531,20 @@ namespace
       Data data;
       data.push(test.begin(), test.end());
 
-      Data::const_iterator itr = data.end();
+      Compare compare = { 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
 
-      itr = itr - 3U;
-      CHECK_EQUAL(10U, *itr);
+      for (int step = 1; step < int(data.size()); ++step)
+      {
+        Data::const_iterator itr = data.end();
 
-      itr = itr - 3U;
-      CHECK_EQUAL(7U, *itr);
+        int offset = int(data.size());
 
-      itr = itr - 3U;
-      CHECK_EQUAL(4U, *itr);
+        while ((offset -= step) > 0)
+        {
+          itr = itr - step;
+          CHECK_EQUAL(compare[offset], *itr);
+        }
+      }
     }
 
     //*************************************************************************
@@ -530,16 +554,20 @@ namespace
       Data data;
       data.push(test.begin(), test.end());
 
-      Data::const_iterator itr = data.end();
+      Compare compare = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-      itr -= 3U;
-      CHECK_EQUAL(7U, *itr);
+      for (int step = 1; step < int(data.size()); ++step)
+      {
+        Data::const_iterator itr = data.end();
 
-      itr -= 3U;
-      CHECK_EQUAL(4U, *itr);
+        int offset = int(data.size());
 
-      itr -= 3U;
-      CHECK_EQUAL(1U, *itr);
+        while ((offset -= step) > 0)
+        {
+          itr -= step;
+          CHECK_EQUAL(compare[offset], *itr);
+        }
+      }
     }
 
     //*************************************************************************
@@ -549,16 +577,20 @@ namespace
       Data data;
       data.push(test.begin(), test.end());
 
-      Data::const_iterator itr = data.end();
+      Compare compare = { 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
 
-      itr -= 3U;
-      CHECK_EQUAL(10U, *itr);
+      for (int step = 1; step < int(data.size()); ++step)
+      {
+        Data::const_iterator itr = data.end();
 
-      itr -= 3U;
-      CHECK_EQUAL(7U, *itr);
+        int offset = int(data.size());
 
-      itr -= 3U;
-      CHECK_EQUAL(4U, *itr);
+        while ((offset -= step) > 0)
+        {
+          itr -= step;
+          CHECK_EQUAL(compare[offset], *itr);
+        }
+      }
     }
 
 //    ////*************************************************************************
