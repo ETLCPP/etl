@@ -238,6 +238,61 @@ namespace etl
       }
 
       //*************************************************************************
+      /// Add offset.
+      //*************************************************************************
+      const_iterator& operator +=(int n)
+      {
+        if (n > 0)
+        {
+          while (n--)
+          {
+            ++*this;
+          }
+        }
+        else
+        {
+          while (n++)
+          {
+            --*this;
+          }
+        }
+
+        return (*this);
+      }
+
+      //*************************************************************************
+      /// Subtract offset.
+      //*************************************************************************
+      const_iterator& operator -=(int n)
+      {
+        return (this->operator+=(-n));
+      }
+
+      //*************************************************************************
+      /// Add offset.
+      //*************************************************************************
+      friend const_iterator operator +(const const_iterator& lhs, int n)
+      {
+        const_iterator temp = lhs;
+
+        temp += n;
+
+        return temp;
+      }
+
+      //*************************************************************************
+      /// Subtract offset.
+      //*************************************************************************
+      friend const_iterator operator -(const const_iterator& lhs, int n)
+      {
+        const_iterator temp = lhs;
+
+        temp -= n;
+
+        return temp;
+      }
+
+      //*************************************************************************
       /// Equality operator
       //*************************************************************************
       friend bool operator == (const const_iterator& lhs, const const_iterator& rhs)
@@ -545,6 +600,12 @@ namespace etl
     }
 
   private:
+
+    circular_buffer(const circular_buffer&) ETL_DELETE;
+    circular_buffer(circular_buffer&&) ETL_DELETE;
+
+    circular_buffer& operator =(const circular_buffer&) ETL_DELETE;
+    circular_buffer& operator =(circular_buffer&&) ETL_DELETE;
 
     etl::uninitialized_buffer_of<T, MAX_SIZE + 1> buffer;
   };

@@ -36,6 +36,14 @@ SOFTWARE.
 #include <string>
 #include <ostream>
 
+#if defined(ETL_COMPILER_MICROSOFT)
+  #pragma warning(disable : 4996)
+#endif
+
+#ifdef ETL_COMPILER_GCC
+  #pragma GCC diagnostic ignored "-Wno-deprecated"
+#endif
+
 void f(int)
 {
 }

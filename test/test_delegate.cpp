@@ -225,6 +225,7 @@ namespace
       d(VALUE1, VALUE2);
 
       CHECK(function_called);
+      CHECK(parameter_correct);
     }
 
     //*************************************************************************
@@ -237,6 +238,7 @@ namespace
       d(VALUE1, VALUE2);
 
       CHECK(function_called);
+      CHECK(parameter_correct);
     }
 
     //*************************************************************************

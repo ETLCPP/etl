@@ -43,8 +43,6 @@ SOFTWARE.
 #include "utility.h"
 
 #include "container.h"
-#include "alignment.h"
-#include "array.h"
 #include "memory.h"
 #include "exception.h"
 #include "error_handler.h"
@@ -2315,11 +2313,11 @@ namespace etl
   {
   public:
 
-    static const size_t MAX_SIZE = MAX_SIZE_;
+    static ETL_CONSTANT size_t MAX_SIZE = MAX_SIZE_;
 
   private:
 
-    static const size_t BUFFER_SIZE = MAX_SIZE + 1;
+    static ETL_CONSTANT size_t BUFFER_SIZE = MAX_SIZE + 1;
 
   public:
 
@@ -2335,7 +2333,7 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     deque()
-      : etl::ideque<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, BUFFER_SIZE)
+      : etl::ideque<T>(reinterpret_cast<T*>(buffer.raw), MAX_SIZE, BUFFER_SIZE)
     {
       this->initialise();
     }
@@ -2352,7 +2350,7 @@ namespace etl
     /// Copy constructor.
     //*************************************************************************
     deque(const deque& other)
-      : etl::ideque<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, BUFFER_SIZE)
+      : etl::ideque<T>(reinterpret_cast<T*>(buffer.raw), MAX_SIZE, BUFFER_SIZE)
     {
       if (this != &other)
       {
@@ -2365,7 +2363,7 @@ namespace etl
     /// Move constructor.
     //*************************************************************************
     deque(deque&& other)
-      : etl::ideque<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, BUFFER_SIZE)
+      : etl::ideque<T>(reinterpret_cast<T*>(buffer.raw), MAX_SIZE, BUFFER_SIZE)
     {
       if (this != &other)
       {
@@ -2386,7 +2384,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     deque(TIterator begin_, TIterator end_)
-      : etl::ideque<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, BUFFER_SIZE)
+      : etl::ideque<T>(reinterpret_cast<T*>(buffer.raw), MAX_SIZE, BUFFER_SIZE)
     {
       this->assign(begin_, end_);
     }
@@ -2395,7 +2393,7 @@ namespace etl
     /// Assigns data to the deque.
     //*************************************************************************
     explicit deque(size_t n, const_reference value = value_type())
-      : etl::ideque<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, BUFFER_SIZE)
+      : etl::ideque<T>(reinterpret_cast<T*>(buffer.raw), MAX_SIZE, BUFFER_SIZE)
     {
       this->assign(n, value);
     }
@@ -2405,7 +2403,7 @@ namespace etl
     /// Construct from initializer_list.
     //*************************************************************************
     deque(std::initializer_list<T> init)
-      : ideque<T>(reinterpret_cast<T*>(&buffer[0]), MAX_SIZE, BUFFER_SIZE)
+      : ideque<T>(reinterpret_cast<T*>(buffer.raw), MAX_SIZE, BUFFER_SIZE)
     {
       this->assign(init.begin(), init.end());
     }
@@ -2457,13 +2455,13 @@ namespace etl
       ETL_ASSERT(etl::is_trivially_copyable<T>::value, ETL_ERROR(etl::deque_incompatible_type));
 #endif
 
-      etl::ideque<T>::repair_buffer(reinterpret_cast<T*>(&buffer[0]));
+      etl::ideque<T>::repair_buffer(reinterpret_cast<T*>(buffer.raw));
     }
 
   private:
 
     /// The uninitialised buffer of T used in the deque.
-    typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[BUFFER_SIZE];
+    etl::uninitialized_buffer_of<T, BUFFER_SIZE> buffer;
   };
 
   //*************************************************************************

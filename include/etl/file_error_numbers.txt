@@ -53,3 +53,4 @@
 53 indirect_vector
 54 queue_spsc_locked
 55 message_packet
+56 circular_buffer
