@@ -800,6 +800,19 @@ namespace etl
   }
 #endif
 
+template <typename TIterator1, typename TIterator2>
+ETL_NODISCARD
+bool equal(TIterator1 first1, TIterator1 last1, TIterator2 first2, TIterator2 last2)
+{
+	if (etl::distance(first1, last1) !=
+		etl::distance(first2, last2))
+	{
+		return false;
+	}
+	return etl::equal(first1, last1, first2);
+}
+
+
 #if ETL_NOT_USING_STL
   //***************************************************************************
   // lexicographical_compare
