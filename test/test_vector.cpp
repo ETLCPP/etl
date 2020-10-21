@@ -558,6 +558,31 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_back)
+    {
+      Compare_Data compare_data;
+      Data data;
+
+      for (int i = 0; i < int(SIZE); ++i)
+      {
+        compare_data.emplace_back(i);
+      }
+
+      for (int i = 0; i < int(SIZE); ++i)
+      {
+        data.emplace_back(i);
+      }
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+
+      bool is_equal = std::equal(data.begin(),
+                                 data.end(),
+                                 compare_data.begin());
+
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_back_literal)
     {
       Compare_Data compare_data;
@@ -651,6 +676,33 @@ namespace
         bool is_equal = std::equal(data.begin(),
                                    data.end(),
                                    compare_data.begin());
+
+        CHECK(is_equal);
+      }
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_position_value)
+    {
+      const size_t INITIAL_SIZE = 5;
+      const int INITIAL_VALUE = 1;
+
+      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      {
+        Compare_Data compare_data;
+        Data data;
+
+        data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
+        compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
+
+        data.emplace(data.begin() + offset, INITIAL_VALUE);
+        compare_data.emplace(compare_data.begin() + offset, INITIAL_VALUE);
+
+        CHECK_EQUAL(compare_data.size(), data.size());
+
+        bool is_equal = std::equal(data.begin(),
+          data.end(),
+          compare_data.begin());
 
         CHECK(is_equal);
       }

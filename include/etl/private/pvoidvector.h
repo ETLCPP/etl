@@ -399,6 +399,19 @@ namespace etl
       *p_end++ = value;
     }
 
+    //*********************************************************************
+    /// Emplaces a value at the end of the vector.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    ///\param value The value to add.
+    //*********************************************************************
+    void emplace_back(value_type value)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
+#endif
+      * p_end++ = value;
+    }
+
     //*************************************************************************
     /// Removes an element from the end of the vector.
     /// Does nothing if the vector is empty.
@@ -418,6 +431,29 @@ namespace etl
     ///\param value    The value to insert.
     //*********************************************************************
     iterator insert(iterator position, value_type value)
+    {
+      ETL_ASSERT(size() + 1 <= CAPACITY, ETL_ERROR(vector_full));
+
+      if (position != end())
+      {
+        ++p_end;
+        etl::copy_backward(position, end() - 1, end());
+        *position = value;
+      }
+      else
+      {
+        *p_end++ = value;
+      }
+
+      return position;
+    }
+
+
+    //*************************************************************************
+    /// Emplaces a value to the vector at the specified position.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    //*************************************************************************
+    iterator emplace(iterator position, value_type value)
     {
       ETL_ASSERT(size() + 1 <= CAPACITY, ETL_ERROR(vector_full));
 

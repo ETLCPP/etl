@@ -1,4 +1,8 @@
 ===============================================================================
+18.17.2
+Added missing emplace functions from vector-of-pointers specialisation.
+
+===============================================================================
 18.17.1
 Fixed incorrect reflected CRC8 0x07 lookup table
 
