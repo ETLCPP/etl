@@ -1,4 +1,8 @@
 ===============================================================================
+18.18.0
+Added etl::circular_buffer
+
+===============================================================================
 18.17.2
 Added missing emplace functions from vector-of-pointers specialisation.
 
