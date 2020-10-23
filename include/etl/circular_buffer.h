@@ -960,7 +960,7 @@ namespace etl
     //*************************************************************************
     /// Protected constructor.
     //*************************************************************************
-    icircular_buffer(pointer pbuffer_, size_type max_length)
+    icircular_buffer<T>(pointer pbuffer_, size_type max_length)
       : circular_buffer_base(max_length + 1U)
       , pbuffer(pbuffer_)
     {
@@ -1027,13 +1027,13 @@ namespace etl
   {
   public:
 
-    static ETL_CONSTANT size_type MAX_SIZE = size_type(MAX_SIZE_);
+    static ETL_CONSTANT typename icircular_buffer<T>::size_type MAX_SIZE = typename icircular_buffer<T>::size_type(MAX_SIZE_);
 
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
     circular_buffer()
-      : icircular_buffer(reinterpret_cast<T*>(buffer.raw), MAX_SIZE)
+      : icircular_buffer<T>(reinterpret_cast<T*>(buffer.raw), MAX_SIZE)
     {
     }
 
@@ -1043,7 +1043,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     circular_buffer(TIterator first, const TIterator& last)
-      : icircular_buffer(reinterpret_cast<T*>(buffer.raw), MAX_SIZE)
+      : icircular_buffer<T>(reinterpret_cast<T*>(buffer.raw), MAX_SIZE)
     {
       while (first != last)
       {
@@ -1066,7 +1066,7 @@ namespace etl
     /// Copy Constructor.
     //*************************************************************************
     circular_buffer(const circular_buffer& other)
-      : icircular_buffer(reinterpret_cast<T*>(buffer.raw), MAX_SIZE)
+      : icircular_buffer<T>(reinterpret_cast<T*>(buffer.raw), MAX_SIZE)
     {
       if (this != &other)
       {
@@ -1092,7 +1092,7 @@ namespace etl
     /// Move Constructor.
     //*************************************************************************
     circular_buffer(circular_buffer&& other)
-      : icircular_buffer(reinterpret_cast<T*>(buffer.raw), MAX_SIZE)
+      : icircular_buffer<T>(reinterpret_cast<T*>(buffer.raw), MAX_SIZE)
     {
       if (this != &other)
       {
@@ -1112,7 +1112,7 @@ namespace etl
     {
       if (this != &other)
       {
-        for (const_iterator itr = other.begin(); itr != other.end(); ++itr)
+        for (typename etl::icircular_buffer<T>::const_iterator itr = other.begin(); itr != other.end(); ++itr)
         {
           this->push(etl::move(*itr));
         }
@@ -1150,7 +1150,7 @@ namespace etl
     /// Constructor.
     //*************************************************************************
     circular_buffer(void* buffer, size_t max_size)
-      : icircular_buffer(reinterpret_cast<T*>(buffer), max_size)
+      : icircular_buffer<T>(reinterpret_cast<T*>(buffer), max_size)
     {
     }
 
@@ -1160,7 +1160,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     circular_buffer(TIterator first, const TIterator& last, void* buffer, size_t max_size)
-      : icircular_buffer(reinterpret_cast<T*>(buffer), max_size)
+      : icircular_buffer<T>(reinterpret_cast<T*>(buffer), max_size)
     {
       while (first != last)
       {
@@ -1173,7 +1173,7 @@ namespace etl
     /// Construct from initializer_list.
     //*************************************************************************
     circular_buffer(std::initializer_list<T> init, void* buffer, size_t max_size)
-      : icircular_buffer(reinterpret_cast<T*>(buffer), max_size)
+      : icircular_buffer<T>(reinterpret_cast<T*>(buffer), max_size)
     {
       this->push(init.begin(), init.end());
     }
@@ -1183,7 +1183,7 @@ namespace etl
     /// Copy Constructor.
     //*************************************************************************
     circular_buffer(const circular_buffer& other, void* buffer, size_t max_size)
-      : icircular_buffer(reinterpret_cast<T*>(buffer), max_size)
+      : icircular_buffer<T>(reinterpret_cast<T*>(buffer), max_size)
     {
       if (this != &other)
       {
@@ -1209,7 +1209,7 @@ namespace etl
     /// Move Constructor.
     //*************************************************************************
     circular_buffer(circular_buffer&& other, void* buffer, size_t max_size)
-      : icircular_buffer(reinterpret_cast<T*>(buffer), max_size)
+      : icircular_buffer<T>(reinterpret_cast<T*>(buffer), max_size)
     {
       if (this != &other)
       {
@@ -1246,9 +1246,9 @@ namespace etl
     {
       using ETL_OR_STD::swap; // Allow ADL
 
-      swap(in, other.in);
-      swap(out, other.out);
-      swap(pbuffer, other.pbuffer);
+      swap(this->in, other.in);
+      swap(this->out, other.out);
+      swap(this->pbuffer, other.pbuffer);
     }
 
     //*************************************************************************
