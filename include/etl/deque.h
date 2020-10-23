@@ -417,8 +417,8 @@ namespace etl
       {
         const difference_type lhs_index = lhs.get_index();
         const difference_type rhs_index = rhs.get_index();
-        const difference_type reference_index = lhs.get_deque().begin().get_index();
-        const size_t buffer_size = lhs.get_deque().max_size() + 1;
+        const difference_type reference_index = lhs.container().begin().get_index();
+        const size_t buffer_size = lhs.container().max_size() + 1;
 
         const difference_type lhs_distance = (lhs_index < reference_index) ? buffer_size + lhs_index - reference_index : lhs_index - reference_index;
         const difference_type rhs_distance = (rhs_index < reference_index) ? buffer_size + rhs_index - reference_index : rhs_index - reference_index;
@@ -451,7 +451,7 @@ namespace etl
       }
 
       //***************************************************
-      ideque& get_deque() const
+      ideque& container() const
       {
         return *p_deque;
       }
@@ -661,8 +661,8 @@ namespace etl
       {
         const difference_type lhs_index = lhs.get_index();
         const difference_type rhs_index = rhs.get_index();
-        const difference_type reference_index = lhs.get_deque().begin().get_index();
-        const size_t buffer_size = lhs.get_deque().max_size() + 1;
+        const difference_type reference_index = lhs.container().begin().get_index();
+        const size_t buffer_size = lhs.container().max_size() + 1;
 
         const difference_type lhs_distance = (lhs_index < reference_index) ? buffer_size + lhs_index - reference_index : lhs_index - reference_index;
         const difference_type rhs_distance = (rhs_index < reference_index) ? buffer_size + rhs_index - reference_index : rhs_index - reference_index;
@@ -695,7 +695,7 @@ namespace etl
       }
 
       //***************************************************
-      ideque& get_deque() const
+      ideque& container() const
       {
         return *p_deque;
       }
@@ -2269,8 +2269,8 @@ namespace etl
     static difference_type distance(const TIterator& other)
     {
       const difference_type index = other.get_index();
-      const difference_type reference_index = other.get_deque()._begin.index;
-      const size_t buffer_size = other.get_deque().BUFFER_SIZE;
+      const difference_type reference_index = other.container()._begin.index;
+      const size_t buffer_size = other.container().BUFFER_SIZE;
 
       if (index < reference_index)
       {

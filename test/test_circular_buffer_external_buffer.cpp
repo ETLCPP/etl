@@ -45,17 +45,26 @@ namespace
     static const size_t SIZE = 10;
 
     using ItemM    = TestDataM<std::string>;
-    using DataM    = etl::circular_buffer<ItemM, SIZE>;
+    using DataM    = etl::circular_buffer<ItemM, 0>;
     using CompareM = std::vector<ItemM>;
 
     using Ndc     = TestDataNDC<std::string>;
-    using Data    = etl::circular_buffer<Ndc, SIZE>;
+    using Data    = etl::circular_buffer<Ndc, 0>;
     using Compare = std::vector<Ndc>;
+
+    using BufferM_t = etl::uninitialized_buffer_of<ItemM, SIZE + 1>;
+    using Buffer_t  = etl::uninitialized_buffer_of<Ndc, SIZE + 1>;
+
+    BufferM_t bufferm1;
+    BufferM_t bufferm2;
+
+    Buffer_t buffer1;
+    Buffer_t buffer2;
 
     //*************************************************************************
     TEST(test_default_constructor)
     {
-      Data data;
+      Data data(buffer1.raw, SIZE);
 
       CHECK_EQUAL(0U,   data.size());
       CHECK_EQUAL(SIZE, data.max_size());
@@ -70,7 +79,7 @@ namespace
     //*************************************************************************
     TEST(test_constructor_from_literal)
     {
-      Data data = { Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
+      Data data({ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") }, buffer1.raw, SIZE);
       Compare compare = { Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
 
 
@@ -85,7 +94,7 @@ namespace
     //*************************************************************************
     TEST(test_constructor_from_literal_excess)
     {
-      Data data = { Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
+      Data data({ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") }, buffer1.raw, SIZE);
       Compare compare = { Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12")  };
 
       CHECK(data.begin()  != data.end());
@@ -101,7 +110,7 @@ namespace
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor)
     {
-      Data data{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
+      Data data({ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") }, buffer1.raw, SIZE);
       Compare compare{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
 
       CHECK(data.begin()  != data.end());
@@ -115,7 +124,7 @@ namespace
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor_excess)
     {
-      Data data{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
+      Data data({ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") }, buffer1.raw, SIZE);
       Compare compare{ Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12")  };
 
       CHECK(data.begin()  != data.end());
@@ -131,7 +140,7 @@ namespace
     TEST(test_push)
     {
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       for (auto v : test)
       {
         data.push(v);
@@ -150,7 +159,7 @@ namespace
     //*************************************************************************
     TEST(test_move_push)
     {
-      DataM data;
+      DataM data(bufferm1.raw, SIZE);
       CompareM compare;
 
       for (uint32_t i = 0; i < SIZE; ++i)
@@ -171,7 +180,7 @@ namespace
     TEST(test_push_full_range)
     {
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
 
       Compare compare{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
@@ -188,7 +197,7 @@ namespace
     TEST(test_push_full_range_reverse_iterator)
     {
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
 
       Compare compare{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
@@ -205,7 +214,7 @@ namespace
     TEST(test_push_excess_range)
     {
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
 
       Compare compare{ Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12")  };
@@ -222,7 +231,7 @@ namespace
     TEST(test_push_excess_range_reverse_iterator)
     {
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
 
       Compare compare{ Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12")  };
@@ -239,7 +248,7 @@ namespace
     TEST(test_push_short_range_at_start_of_buffer)
     {
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
 
       Compare compare{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4") };
@@ -256,7 +265,7 @@ namespace
     TEST(test_push_short_range_at_start_of_buffer_reverse_iterator)
     {
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
 
       Compare compare{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4") };
@@ -273,7 +282,7 @@ namespace
     TEST(test_push_short_range_at_end_of_buffer)
     {
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
       data.pop(5);
 
@@ -291,7 +300,7 @@ namespace
     TEST(test_push_short_range_at_end_of_buffer_reverse_iterator)
     {
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
       data.pop(5);
 
@@ -310,7 +319,7 @@ namespace
     {
       Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4") };
       Compare input2{ Ndc("5"), Ndc("6"), Ndc("7") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(input1.begin(), input1.end());
       data.pop(3);
       data.push(input2.begin(), input2.end());
@@ -330,7 +339,7 @@ namespace
     {
       Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4") };
       Compare input2{ Ndc("5"), Ndc("6"), Ndc("7") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(input1.begin(), input1.end());
       data.pop(3);
       data.push(input2.begin(), input2.end());
@@ -350,7 +359,7 @@ namespace
     {
       Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
       Compare input2{ Ndc("10"), Ndc("11"), Ndc("12") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(input1.begin(), input1.end());
       data.pop(7);
       data.push(input2.begin(), input2.end());
@@ -370,7 +379,7 @@ namespace
     {
       Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
       Compare input2{ Ndc("10"), Ndc("11"), Ndc("12") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(input1.begin(), input1.end());
       data.pop(7);
       data.push(input2.begin(), input2.end());
@@ -389,7 +398,7 @@ namespace
     TEST(test_front_const)
     {
       Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(input1.begin(), input1.end());
 
       Compare compare = { Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
@@ -402,7 +411,7 @@ namespace
     TEST(test_back_const)
     {
       Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(input1.begin(), input1.end());
 
       Compare compare = { Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
@@ -415,7 +424,7 @@ namespace
     TEST(test_random_iterator_plus)
     {
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
 
       Compare compare = { Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
@@ -438,7 +447,7 @@ namespace
     TEST(test_random_iterator_plus_rollover)
     {
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
 
       Compare compare = { Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12")  };
@@ -461,7 +470,7 @@ namespace
     TEST(test_random_iterator_plus_equals)
     {
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
 
       Compare compare = { Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
@@ -484,7 +493,7 @@ namespace
     TEST(test_random_iterator_plus_equals_rollover)
     {
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
 
       Compare compare = { Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12")  };
@@ -507,7 +516,7 @@ namespace
     TEST(test_random_iterator_minus)
     {
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
 
       Compare compare = { Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
@@ -530,7 +539,7 @@ namespace
     TEST(test_random_iterator_minus_rollover)
     {
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
 
       Compare compare = { Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12")  };
@@ -553,7 +562,7 @@ namespace
     TEST(test_random_iterator_minus_equals)
     {
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
 
       Compare compare = { Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
@@ -576,7 +585,7 @@ namespace
     TEST(test_random_iterator_minus_equals_rollover)
     {
       Compare input{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(input.begin(), input.end());
 
       Compare compare = { Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12")  };
@@ -600,11 +609,11 @@ namespace
     {
       Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
       Compare input2{ Ndc("9"), Ndc("8"), Ndc("7"), Ndc("6"), Ndc("5"), Ndc("4"), Ndc("3"), Ndc("2"), Ndc("1"), Ndc("0") };
-      Data data1;
+      Data data1(buffer1.raw, SIZE);
       data1.push(input1.begin(), input1.end());
 
       // Copy construct from data1
-      Data data2(data1);
+      Data data2(data1, buffer2.raw, SIZE);
 
       // Now change data1
       data1.clear();
@@ -632,14 +641,14 @@ namespace
         compare.push_back(ItemM(std::to_string(i)));
       }
 
-      DataM data1;
+      DataM data1(bufferm1.raw, SIZE);
       for (auto&& v : input1)
       {
         data1.push(std::move(v));
       }
 
       // Move construct from data1
-      DataM data2(std::move(data1));
+      DataM data2(std::move(data1), bufferm2.raw, SIZE);
 
       // Now change data1
       data1.clear();
@@ -661,11 +670,11 @@ namespace
     {
       Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
       Compare input2{ Ndc("9"), Ndc("8"), Ndc("7"), Ndc("6"), Ndc("5"), Ndc("4"), Ndc("3"), Ndc("2"), Ndc("1"), Ndc("0") };
-      Data data1;
+      Data data1(buffer1.raw, SIZE);
       data1.push(input1.begin(), input1.end());
 
       // Copy construct from data1
-      Data data2;
+      Data data2(buffer2.raw, SIZE);
       
       data2 = data1;
 
@@ -685,7 +694,7 @@ namespace
     TEST(test_swap_iterator)
     {
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
 
       Data::iterator itr1 = data.begin() + 2;
@@ -707,7 +716,7 @@ namespace
     TEST(test_swap_const_iterator)
     {
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
 
       Data::const_iterator itr1 = data.begin() + 2;
@@ -729,7 +738,7 @@ namespace
     TEST(test_iterator_difference)
     {
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
 
       Data::iterator begin = data.begin();
@@ -754,7 +763,7 @@ namespace
     TEST(test_const_iterator_difference)
     {
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
-      Data data;
+      Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
 
       Data::const_iterator begin = data.begin();
@@ -781,8 +790,8 @@ namespace
       // Over-write by 3
       Compare input{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
       Compare output{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
-      Data data1;
-      Data data2;
+      Data data1(buffer1.raw, SIZE);
+      Data data2(buffer2.raw, SIZE);
       data1.push(input.begin(), input.end());
       data2.push(input.rbegin(), input.rend());
       
@@ -797,8 +806,8 @@ namespace
     {
       // Over-write by 3
       Compare input{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
-      Data data1;
-      Data data2;
+      Data data1(buffer1.raw, SIZE);
+      Data data2(buffer1.raw, SIZE);
       data1.push(input.begin(), input.end());
       data2.push(input.begin(), input.end());
 
@@ -811,8 +820,8 @@ namespace
       // Over-write by 3
       Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
       Compare input2{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("6"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
-      Data data1;
-      Data data2;
+      Data data1(buffer1.raw, SIZE);
+      Data data2(buffer2.raw, SIZE);
       data1.push(input1.begin(), input1.end());
       data2.push(input2.begin(), input2.end());
 

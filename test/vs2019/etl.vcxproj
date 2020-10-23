@@ -1424,6 +1424,7 @@
     <ClCompile Include="..\test_bresenham_line.cpp" />
     <ClCompile Include="..\test_callback_service.cpp" />
     <ClCompile Include="..\test_circular_buffer.cpp" />
+    <ClCompile Include="..\test_circular_buffer_external_buffer.cpp" />
     <ClCompile Include="..\test_compiler_settings.cpp" />
     <ClCompile Include="..\test_cumulative_moving_average.cpp" />
     <ClCompile Include="..\test_delegate.cpp" />
