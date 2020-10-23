@@ -69,6 +69,7 @@ namespace
       CHECK_EQUAL(0U,   data.size());
       CHECK_EQUAL(SIZE, data.max_size());
       CHECK_EQUAL(SIZE, data.capacity());
+      CHECK_EQUAL(SIZE, data.available());
       CHECK(data.begin()   == data.end());
       CHECK(data.cbegin()  == data.cend());
       CHECK(data.rbegin()  == data.rend());
@@ -151,6 +152,7 @@ namespace
       CHECK(data.begin()  != data.end());
       CHECK(data.cbegin() != data.cend());
       CHECK_EQUAL(compare.size(), data.size());
+      CHECK_EQUAL(SIZE - data.size(), data.available());
 
       bool isEqual = std::equal(compare.begin(), compare.end(), data.begin());
       CHECK(isEqual);
@@ -395,6 +397,35 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_available)
+    {
+      Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
+      Data data(buffer1.raw, SIZE);
+      for (auto v : test)
+      {
+        data.push(v);
+        CHECK_EQUAL(SIZE - data.size(), data.available());
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_front)
+    {
+      Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
+      Data data(buffer1.raw, SIZE);
+      data.push(input1.begin(), input1.end());
+
+      Compare compare = { Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
+
+      Ndc& ref1 = data.front();
+      CHECK(ref1 == compare.front());
+
+      Ndc& ref2 = data.front();
+      ref2 = compare.back();
+      CHECK(ref2 == compare.back());
+    }
+
+    //*************************************************************************
     TEST(test_front_const)
     {
       Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
@@ -408,7 +439,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_back_const)
+    TEST(test_back)
     {
       Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
       Data data(buffer1.raw, SIZE);
@@ -416,8 +447,64 @@ namespace
 
       Compare compare = { Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
 
+      Ndc& ref1 = data.back();
+      CHECK(ref1 == compare.back());
+
+      Ndc& ref2 = data.back();
+      ref2 = compare.front();
+      CHECK(ref2 == compare.front());
+    }
+
+    //*************************************************************************
+    TEST(test_back_const)
+    {
+      Compare input{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
+      Data data(buffer1.raw, SIZE);
+      data.push(input.begin(), input.end());
+
+      Compare compare = { Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
+
       const Ndc& ref = data.back();
       CHECK(ref == compare.back());
+    }
+
+    //*************************************************************************
+    TEST(test_index_operator)
+    {
+      // Overrun by 3
+      Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
+      Compare input2{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
+      Data data(buffer1.raw, SIZE);
+      data.push(input1.begin(), input1.end());
+
+      for (int i = 0; i < SIZE; ++i)
+      {
+        CHECK_EQUAL(input1[i + 3], data[i]);
+      }
+
+      for (int i = 0; i < SIZE; ++i)
+      {
+        data[i] = input2[i];
+      }
+
+      for (int i = 0; i < SIZE; ++i)
+      {
+        CHECK_EQUAL(input2[i], data[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_index_operator_const)
+    {
+      // Overrun by 3
+      Compare input{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
+      Data data(buffer1.raw, SIZE);
+      data.push(input.begin(), input.end());
+
+      for (int i = 0; i < SIZE; ++i)
+      {
+        CHECK_EQUAL(input[i + 3], data[i]);
+      }
     }
 
     //*************************************************************************

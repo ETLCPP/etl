@@ -100,6 +100,12 @@ namespace etl
     }
 
     //*************************************************************************
+    size_type available() const
+    {
+      return max_size() - size();
+    }
+
+    //*************************************************************************
     size_type max_size() const
     {
       return BUFFER_SIZE - 1U;
@@ -154,7 +160,7 @@ namespace etl
     public:
 
       friend class icircular_buffer;
-      
+
       //*************************************************************************
       /// Constructor
       //*************************************************************************
@@ -187,7 +193,7 @@ namespace etl
       //*************************************************************************
       /// * operator
       //*************************************************************************
-      T& operator *()
+      reference operator *()
       {
         return picb->pbuffer[current];
       }
@@ -195,7 +201,7 @@ namespace etl
       //*************************************************************************
       /// * operator
       //*************************************************************************
-      const T& operator *() const
+      const_reference operator *() const
       {
         return picb->pbuffer[current];
       }
@@ -203,7 +209,7 @@ namespace etl
       //*************************************************************************
       /// -> operator
       //*************************************************************************
-      T* operator ->()
+      pointer operator ->()
       {
         return picb->pbuffer[current];
       }
@@ -211,7 +217,7 @@ namespace etl
       //*************************************************************************
       /// -> operator
       //*************************************************************************
-      const T* operator ->() const
+      const_pointer operator ->() const
       {
         return picb->pbuffer[current];
       }
@@ -476,7 +482,7 @@ namespace etl
       //*************************************************************************
       /// * operator
       //*************************************************************************
-      const T& operator *() const
+      const_reference operator *() const
       {
         return picb->pbuffer[current];
       }
@@ -484,7 +490,7 @@ namespace etl
       //*************************************************************************
       /// -> operator
       //*************************************************************************
-      const T* operator ->() const
+      const_pointer operator ->() const
       {
         return picb->pbuffer[current];
       }
@@ -553,7 +559,7 @@ namespace etl
       const_iterator& operator +=(int n)
       {
         n = picb->BUFFER_SIZE + n;
-         
+
         current += n;
         current %= picb->BUFFER_SIZE;
 
@@ -822,6 +828,23 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Get a reference to the item.
+    //*************************************************************************
+    reference operator [](int index)
+    {
+      return pbuffer[(out + index) % BUFFER_SIZE];
+    }
+
+    //*************************************************************************
+    /// Get a const reference to the item at the back of the buffer.
+    /// Asserts an error if the buffer is empty.
+    //*************************************************************************
+    const_reference operator [](int index) const
+    {
+      return pbuffer[(out + index) % BUFFER_SIZE];
+    }
+
+    //*************************************************************************
     /// push.
     /// Adds an item to the buffer.
     /// If the buffer is filled then the oldest item is overwritten.
@@ -834,7 +857,7 @@ namespace etl
       // Did we catch up with the 'out' index?
       if (in == out)
       {
-        // Forget about the oldest one.      
+        // Forget about the oldest one.
         pbuffer[out].~T();
         out = (out + 1U) % BUFFER_SIZE;
       }
@@ -1229,7 +1252,7 @@ namespace etl
     {
       if (this != &other)
       {
-        for (const_iterator itr = other.begin(); itr != other.end(); ++itr)
+        for (typename etl::icircular_buffer<T>::iterator itr = other.begin(); itr != other.end(); ++itr)
         {
           this->push(etl::move(*itr));
         }
