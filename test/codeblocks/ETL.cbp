@@ -498,6 +498,8 @@
 		<Unit filename="../test_callback_service.cpp" />
 		<Unit filename="../test_callback_timer.cpp" />
 		<Unit filename="../test_checksum.cpp" />
+		<Unit filename="../test_circular_buffer.cpp" />
+		<Unit filename="../test_circular_buffer_external_buffer.cpp" />
 		<Unit filename="../test_compare.cpp" />
 		<Unit filename="../test_compiler_settings.cpp" />
 		<Unit filename="../test_constant.cpp" />

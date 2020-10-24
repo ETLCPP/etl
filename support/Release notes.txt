@@ -1,4 +1,8 @@
 ===============================================================================
+18.18.2
+Change to array_view member variable declaration, for constructor from array.
+
+===============================================================================
 18.18.1
 Added [] operators to etl::circular_buffer
 
