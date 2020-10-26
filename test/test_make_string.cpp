@@ -87,19 +87,27 @@ namespace
 
       CHECK_EQUAL(CAPACITY, ctext.max_size());
       CHECK_EQUAL(length, ctext.size());
+#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
       CHECK(!ctext.truncated());
+#endif
 
       CHECK_EQUAL(CAPACITY, wtext.max_size());
       CHECK_EQUAL(length, wtext.size());
+#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
       CHECK(!wtext.truncated());
+#endif
 
       CHECK_EQUAL(CAPACITY, u16text.max_size());
       CHECK_EQUAL(length, u16text.size());
+#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
       CHECK(!u16text.truncated());
+#endif
 
       CHECK_EQUAL(CAPACITY, u32text.max_size());
       CHECK_EQUAL(length, u32text.size());
+#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
       CHECK(!u32text.truncated());
+#endif
 
       CHECK(Equal(std::string("Hello World"), ctext));
       CHECK(Equal(std::wstring(L"Hello World"), ctext));
@@ -126,19 +134,27 @@ namespace
 
       CHECK_EQUAL(CAPACITY, ctext.max_size());
       CHECK_EQUAL(length - 1, ctext.size());
+#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
       CHECK(ctext.truncated());
+#endif
 
       CHECK_EQUAL(CAPACITY, wtext.max_size());
       CHECK_EQUAL(length - 1, wtext.size());
+#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
       CHECK(wtext.truncated());
+#endif
 
       CHECK_EQUAL(CAPACITY, u16text.max_size());
       CHECK_EQUAL(length - 1, u16text.size());
+#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
       CHECK(u16text.truncated());
+#endif
 
       CHECK_EQUAL(CAPACITY, u32text.max_size());
       CHECK_EQUAL(length - 1, u32text.size());
+#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
       CHECK(u32text.truncated());
+#endif
 
       CHECK(Equal(std::string("Hello Worl"), ctext));
       CHECK(Equal(std::wstring(L"Hello Worl"), ctext));

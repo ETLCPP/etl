@@ -1102,7 +1102,7 @@ namespace
     {
       String text(STR("Hello World"));
       String expected(text);
-      expected.insert(size_t(0U), text.capacity() - expected.size(), STR('x'));
+      expected.insert(String::size_type(0U), text.capacity() - expected.size(), STR('x'));
 
       etl::pad_left(text, text.capacity() + 1U, STR('x'));
 
@@ -1170,7 +1170,7 @@ namespace
     {
       String text(STR("Hello World"));
       String expected(text);
-      expected.insert(size_t(0U), text.capacity() - expected.size(), STR('x'));
+      expected.insert(String::size_type(0U), text.capacity() - expected.size(), STR('x'));
 
       etl::pad(text, text.capacity() + 1U, etl::string_pad_direction::LEFT, STR('x'));
 
