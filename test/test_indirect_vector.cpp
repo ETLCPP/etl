@@ -136,6 +136,24 @@ namespace
       CHECK_EQUAL(data.max_size(), SIZE);
     }
 
+#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+    //*************************************************************************
+    TEST(test_cpp17_deduced_constructor)
+    {
+      etl::indirect_vector data{ NDC("0"), NDC("1"), NDC("2"), NDC("3"), NDC("4"), NDC("5"), NDC("6"), NDC("7"), NDC("8"), NDC("9") };
+      etl::indirect_vector<NDC, 10U> check = { NDC("0"), NDC("1"), NDC("2"), NDC("3"), NDC("4"), NDC("5"), NDC("6"), NDC("7"), NDC("8"), NDC("9") };
+
+      CHECK(!data.empty());
+      CHECK(data.full());
+      CHECK(data.begin() != data.end());
+      CHECK_EQUAL(10U, data.size());
+      CHECK_EQUAL(0U, data.available());
+      CHECK_EQUAL(10U, data.capacity());
+      CHECK_EQUAL(10U, data.max_size());
+      CHECK(data == check);
+    }
+#endif
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_destruct_via_ivector)
     {
@@ -786,14 +804,16 @@ namespace
       std::vector<Data> compare_data;
       etl::indirect_vector<Data, SIZE * 4> data;
 
+      const char* p = (const char* )0x12345678;
+
       std::string s;
       for (size_t i = 0; i < SIZE; ++i)
       {
         s += "x";
 
         // 4 arguments
-        compare_data.emplace_back(s, i, static_cast<double>(i) + 0.1234, "emplace_back");
-        data.emplace_back(s, i, static_cast<double>(i) + 0.1234, "emplace_back");
+        compare_data.emplace_back(s, i, static_cast<double>(i) + 0.1234, p);
+        data.emplace_back(s, i, static_cast<double>(i) + 0.1234, p);
 
         // 3 arguments
         compare_data.emplace_back(s, i, static_cast<double>(i) + 0.1234);

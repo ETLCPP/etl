@@ -54,6 +54,10 @@ SOFTWARE.
 #include "debug_count.h"
 #include "iterator.h"
 
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  #include <initializer_list>
+#endif
+
 #undef ETL_FILE
 #define ETL_FILE "25"
 
@@ -1136,6 +1140,14 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Gets the maximum possible size of the unordered_multimap.
+    //*************************************************************************
+    size_type capacity() const
+    {
+      return pnodepool->max_size();
+    }
+
+    //*************************************************************************
     /// Checks to see if the unordered_multimap is empty.
     //*************************************************************************
     bool empty() const
@@ -1491,6 +1503,17 @@ namespace etl
       base::assign(first_, last_);
     }
 
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+    //*************************************************************************
+    /// Construct from initializer_list.
+    //*************************************************************************
+    unordered_multimap(std::initializer_list<ETL_OR_STD::pair<TKey, TValue>> init)
+      : base(node_pool, buckets, MAX_BUCKETS_)
+    {
+      base::assign(init.begin(), init.end());
+    }
+#endif
+
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
@@ -1538,6 +1561,17 @@ namespace etl
     /// The buckets of node lists.
     etl::intrusive_forward_list<typename base::node_t> buckets[MAX_BUCKETS_];
   };
+
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  template <typename T, typename... Ts>
+  unordered_multimap(T, Ts...)
+    ->unordered_multimap<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), typename T::first_type>,
+    typename T::second_type,
+    1U + sizeof...(Ts)>;
+#endif
 }
 
 #undef ETL_FILE

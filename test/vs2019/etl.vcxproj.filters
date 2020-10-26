@@ -79,6 +79,12 @@
     <Filter Include="Resource Files\CI\Github">
       <UniqueIdentifier>{c25471f3-451a-4279-925d-cbdcec912ef8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ETL\Pseudo Containers">
+      <UniqueIdentifier>{586d2c92-e504-4dea-9b1f-42d725a5272c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\CI\Appveyor">
+      <UniqueIdentifier>{74399f00-a7a3-47e3-9b27-d01fb2b5ce87}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -666,9 +672,6 @@
     <ClInclude Include="..\..\include\etl\delegate_service.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\cstring.h">
-      <Filter>ETL\Strings</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\string_view.h">
       <Filter>ETL\Strings</Filter>
     </ClInclude>
@@ -875,6 +878,15 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\string_utilities.h">
       <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\bresenham_line.h">
+      <Filter>ETL\Pseudo Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\string.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\circular_buffer.h">
+      <Filter>ETL\Containers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1388,6 +1400,15 @@
     <ClCompile Include="..\test_string_utilities_std_u32.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_bresenham_line.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_circular_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_circular_buffer_external_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -1441,11 +1462,20 @@
     <None Include="..\..\.circleci\config.yml">
       <Filter>Resource Files\CI\CircleCI</Filter>
     </None>
-    <None Include="..\..\.github\workflows\main.yml">
-      <Filter>Resource Files\CI\Github</Filter>
-    </None>
     <None Include="..\cmake\unit-test_external_project.cmake">
       <Filter>Resource Files\Make</Filter>
+    </None>
+    <None Include="..\..\appveyor.yml">
+      <Filter>Resource Files\CI\Appveyor</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\clang.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\gcc.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\vs2019.yml">
+      <Filter>Resource Files\CI\Github</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

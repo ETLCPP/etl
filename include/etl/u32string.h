@@ -260,8 +260,8 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    u32string(value_type* buffer, size_t max_size)
-      : iu32string(buffer, max_size - 1)
+    u32string(value_type* buffer, size_t buffer_size)
+      : iu32string(buffer, buffer_size - 1U)
     {
       this->initialise();
     }
@@ -270,8 +270,8 @@ namespace etl
     /// Copy constructor.
     ///\param other The other u32string.
     //*************************************************************************
-    u32string(const etl::u32string<0U>& other, value_type* buffer, size_t max_size)
-      : iu32string(buffer, max_size - 1)
+    u32string(const etl::u32string<0U>& other, value_type* buffer, size_t buffer_size)
+      : iu32string(buffer, buffer_size - 1U)
     {
       this->assign(other);
     }
@@ -280,8 +280,8 @@ namespace etl
     /// From other iu32string.
     ///\param other The other iu32string.
     //*************************************************************************
-    u32string(const etl::iu32string& other, value_type* buffer, size_t max_size)
-      : iu32string(buffer, max_size - 1)
+    u32string(const etl::iu32string& other, value_type* buffer, size_t buffer_size)
+      : iu32string(buffer, buffer_size - 1U)
     {
       this->assign(other);
     }
@@ -292,8 +292,8 @@ namespace etl
     ///\param position The position of the first character.
     ///\param length   The number of characters. Default = npos.
     //*************************************************************************
-    u32string(const etl::iu32string& other, value_type* buffer, size_t max_size, size_t position, size_t length_ = npos)
-      : iu32string(buffer, max_size - 1)
+    u32string(const etl::iu32string& other, value_type* buffer, size_t buffer_size, size_t position, size_t length_ = npos)
+      : iu32string(buffer, buffer_size - 1U)
     {
       ETL_ASSERT(position < other.size(), ETL_ERROR(string_out_of_bounds));
 
@@ -313,10 +313,18 @@ namespace etl
     /// Constructor, from null terminated text.
     ///\param text The initial text of the u32string.
     //*************************************************************************
-    ETL_EXPLICIT_STRING_FROM_CHAR u32string(const value_type* text, value_type* buffer, size_t max_size)
-      : iu32string(buffer, max_size - 1)
+    ETL_EXPLICIT_STRING_FROM_CHAR u32string(const value_type* text, value_type* buffer, size_t buffer_size)
+      : iu32string(buffer, buffer_size - 1U)
     {
-      this->assign(text, text + etl::char_traits<value_type>::length(text));
+      // Is the initial text at the same address as the buffer?
+      if (text == buffer)
+      {
+        this->current_size = etl::strlen(buffer);
+      }
+      else
+      {
+        this->assign(text, text + etl::strlen(text));
+      }
     }
 
     //*************************************************************************
@@ -324,8 +332,8 @@ namespace etl
     ///\param text  The initial text of the u32string.
     ///\param count The number of characters to copy.
     //*************************************************************************
-    u32string(const value_type* text, size_t count, value_type* buffer, size_t max_size)
-      : iu32string(buffer, max_size - 1)
+    u32string(const value_type* text, size_t count, value_type* buffer, size_t buffer_size)
+      : iu32string(buffer, buffer_size - 1U)
     {
       this->assign(text, text + count);
     }
@@ -335,8 +343,8 @@ namespace etl
     ///\param initialSize  The initial size of the u32string.
     ///\param value        The value to fill the u32string with.
     //*************************************************************************
-    u32string(size_t count, value_type c, value_type* buffer, size_t max_size)
-      : iu32string(buffer, max_size - 1)
+    u32string(size_t count, value_type c, value_type* buffer, size_t buffer_size)
+      : iu32string(buffer, buffer_size - 1U)
     {
       this->initialise();
       this->resize(count, c);
@@ -349,8 +357,8 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    u32string(TIterator first, TIterator last, value_type* buffer, size_t max_size)
-      : iu32string(buffer, max_size - 1)
+    u32string(TIterator first, TIterator last, value_type* buffer, size_t buffer_size)
+      : iu32string(buffer, buffer_size - 1U)
     {
       this->assign(first, last);
     }
@@ -359,8 +367,8 @@ namespace etl
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
-    u32string(std::initializer_list<value_type> init, value_type* buffer, size_t max_size)
-      : iu32string(buffer, max_size - 1)
+    u32string(std::initializer_list<value_type> init, value_type* buffer, size_t buffer_size)
+      : iu32string(buffer, buffer_size - 1U)
     {
       this->assign(init.begin(), init.end());
     }
@@ -370,8 +378,8 @@ namespace etl
     /// From u32string_view.
     ///\param view The u32string_view.
     //*************************************************************************
-    explicit u32string(const etl::u32string_view& view, value_type* buffer, size_t max_size)
-      : iu32string(buffer, max_size - 1)
+    explicit u32string(const etl::u32string_view& view, value_type* buffer, size_t buffer_size)
+      : iu32string(buffer, buffer_size - 1U)
     {
       this->assign(view.begin(), view.end());
     }

@@ -887,7 +887,6 @@ namespace
     {
       etl::unique_ptr<int> up(new int);
 
-      int* p = new int(1);
       up = nullptr;
 
       CHECK(up.get() == nullptr);
@@ -1018,7 +1017,6 @@ namespace
     {
       etl::unique_ptr<int> up(new int[4]);
 
-      int* p = new int[4];
       up = nullptr;
 
       CHECK(up.get() == nullptr);
@@ -1041,6 +1039,51 @@ namespace
       CHECK_EQUAL(5, up1[1]);
       CHECK_EQUAL(6, up1[2]);
       CHECK_EQUAL(7, up1[3]);
+    }
+
+    //*************************************************************************
+    TEST(test_uninitialized_buffer)
+    {
+      typedef etl::uninitialized_buffer<sizeof(uint32_t), 4, etl::alignment_of_v<uint32_t>> storage32_t;
+
+      size_t alignment = etl::alignment_of_v<storage32_t>;
+      size_t expected  = std::alignment_of_v<uint32_t>;
+
+      CHECK_EQUAL(expected, alignment);
+    }
+
+    //*************************************************************************
+    TEST(test_uninitialized_buffer_of)
+    {
+      typedef etl::uninitialized_buffer_of<uint32_t, 4> storage32_t;
+      static storage32_t buffer;
+
+      uint32_t* i = buffer;
+      const uint32_t* ci = buffer;
+
+      CHECK(i == ci);
+
+      buffer[0] = 0U;
+      buffer[1] = 1U;
+      buffer[2] = 2U;
+      buffer[3] = 3U;
+
+      CHECK_EQUAL(0U, buffer[0]);
+      CHECK_EQUAL(1U, buffer[1]);
+      CHECK_EQUAL(2U, buffer[2]);
+      CHECK_EQUAL(3U, buffer[3]);
+
+      const storage32_t& refbuffer = buffer;
+
+      CHECK_EQUAL(0U, refbuffer[0]);
+      CHECK_EQUAL(1U, refbuffer[1]);
+      CHECK_EQUAL(2U, refbuffer[2]);
+      CHECK_EQUAL(3U, refbuffer[3]);
+
+      size_t alignment = etl::alignment_of_v<storage32_t>;
+      size_t expected  = std::alignment_of_v<uint32_t>;
+
+      CHECK_EQUAL(expected, alignment);
     }
   };
 }

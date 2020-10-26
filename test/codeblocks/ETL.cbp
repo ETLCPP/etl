@@ -234,6 +234,7 @@
 		<Unit filename="../../include/etl/bit_stream.h" />
 		<Unit filename="../../include/etl/bitset.h" />
 		<Unit filename="../../include/etl/bloom_filter.h" />
+		<Unit filename="../../include/etl/bresenham_line.h" />
 		<Unit filename="../../include/etl/callback.h" />
 		<Unit filename="../../include/etl/callback_service.h" />
 		<Unit filename="../../include/etl/callback_timer.h" />
@@ -492,10 +493,13 @@
 		<Unit filename="../test_bit_stream.cpp" />
 		<Unit filename="../test_bitset.cpp" />
 		<Unit filename="../test_bloom_filter.cpp" />
+		<Unit filename="../test_bresenham_line.cpp" />
 		<Unit filename="../test_bsd_checksum.cpp" />
 		<Unit filename="../test_callback_service.cpp" />
 		<Unit filename="../test_callback_timer.cpp" />
 		<Unit filename="../test_checksum.cpp" />
+		<Unit filename="../test_circular_buffer.cpp" />
+		<Unit filename="../test_circular_buffer_external_buffer.cpp" />
 		<Unit filename="../test_compare.cpp" />
 		<Unit filename="../test_compiler_settings.cpp" />
 		<Unit filename="../test_constant.cpp" />
@@ -544,6 +548,7 @@
 		<Unit filename="../test_maths.cpp" />
 		<Unit filename="../test_memory.cpp" />
 		<Unit filename="../test_message_bus.cpp" />
+		<Unit filename="../test_message_packet.cpp" />
 		<Unit filename="../test_message_router.cpp" />
 		<Unit filename="../test_message_timer.cpp" />
 		<Unit filename="../test_multi_array.cpp" />
@@ -578,15 +583,19 @@
 		<Unit filename="../test_scaled_rounding.cpp" />
 		<Unit filename="../test_set.cpp" />
 		<Unit filename="../test_smallest.cpp" />
+		<Unit filename="../test_span.cpp" />
 		<Unit filename="../test_stack.cpp" />
 		<Unit filename="../test_state_chart.cpp" />
 		<Unit filename="../test_string_char.cpp" />
+		<Unit filename="../test_string_char_external_buffer.cpp" />
 		<Unit filename="../test_string_stream.cpp" />
 		<Unit filename="../test_string_stream_u16.cpp" />
 		<Unit filename="../test_string_stream_u32.cpp" />
 		<Unit filename="../test_string_stream_wchar_t.cpp" />
 		<Unit filename="../test_string_u16.cpp" />
+		<Unit filename="../test_string_u16_external_buffer.cpp" />
 		<Unit filename="../test_string_u32.cpp" />
+		<Unit filename="../test_string_u32_external_buffer.cpp" />
 		<Unit filename="../test_string_utilities.cpp" />
 		<Unit filename="../test_string_utilities_std.cpp" />
 		<Unit filename="../test_string_utilities_std_u16.cpp" />
@@ -597,6 +606,7 @@
 		<Unit filename="../test_string_utilities_wchar_t.cpp" />
 		<Unit filename="../test_string_view.cpp" />
 		<Unit filename="../test_string_wchar_t.cpp" />
+		<Unit filename="../test_string_wchar_t_external_buffer.cpp" />
 		<Unit filename="../test_task_scheduler.cpp" />
 		<Unit filename="../test_to_string.cpp" />
 		<Unit filename="../test_to_u16string.cpp" />

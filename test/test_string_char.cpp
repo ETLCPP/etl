@@ -32,7 +32,7 @@ SOFTWARE.
 #include <array>
 #include <algorithm>
 
-#include "etl/cstring.h"
+#include "etl/string.h"
 #include "etl/fnv_1.h"
 
 #undef STR

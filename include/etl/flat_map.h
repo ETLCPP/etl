@@ -1004,6 +1004,17 @@ namespace etl
     /// The vector that stores pointers to the nodes.
     etl::vector<node_t*, MAX_SIZE> lookup;
   };
+
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  template <typename T, typename... Ts>
+  flat_map(T, Ts...)
+    ->flat_map<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), typename T::first_type>,
+               etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), typename T::second_type>,
+               1U + sizeof...(Ts)>;
+#endif 
 }
 
 #undef ETL_FILE

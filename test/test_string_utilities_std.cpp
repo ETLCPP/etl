@@ -1062,6 +1062,22 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_get_token_delimiters_empty_string_view)
+    {
+      Vector tokens;
+
+      StringView textview;
+      etl::optional<StringView> token;
+
+      while ((token = etl::get_token(textview, Whitespace, token, true)))
+      {
+        tokens.emplace_back(token.value());
+      }
+
+      CHECK_EQUAL(0U, tokens.size());
+    }
+
+    //*************************************************************************
     TEST(test_pad_left)
     {
       String text(STR("Hello World"));

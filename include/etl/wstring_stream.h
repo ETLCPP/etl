@@ -34,7 +34,7 @@ SOFTWARE.
 ///\ingroup string
 
 #include "platform.h"
-#include "cstring.h"
+#include "string.h"
 #include "wformat_spec.h"
 #include "to_wstring.h"
 #include "string_view.h"

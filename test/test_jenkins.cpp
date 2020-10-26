@@ -104,6 +104,22 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_jenkins_add_range_via_iterator)
+    {
+      std::string data("123456789");
+
+      etl::jenkins jenkins_calculator;
+
+      std::copy(data.begin(), data.end(), jenkins_calculator.input());
+
+      uint32_t hash = jenkins_calculator.value();
+
+      uint32_t compare = jenkins(data.begin(), data.end());
+
+      CHECK_EQUAL(compare, hash);
+    }
+
+    //*************************************************************************
     TEST(test_jenkins_add_range_endian)
     {
       std::vector<uint8_t>  data1 = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };

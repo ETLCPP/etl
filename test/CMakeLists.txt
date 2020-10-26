@@ -3,6 +3,15 @@ project(etl_unit_tests)
 
 add_definitions(-DETL_DEBUG)
 
+option(NO_STL "No STL" OFF)
+
+if (NO_STL)
+	message(STATUS "Compiling for No STL")
+	add_definitions(-DETL_NO_STL)
+else()
+	message(STATUS "Compiling for STL")
+endif()
+
 if(NOT UnitTest++_FOUND)
   # Add unittest-cpp as an ExternalProject
   include(cmake/unit-test_external_project.cmake)
@@ -19,12 +28,12 @@ set(TEST_SOURCE_FILES
 	test_array.cpp
 	test_array_view.cpp
 	test_array_wrapper.cpp
-	test_atomic_gcc_sync.cpp
 	test_atomic_std.cpp
 	test_binary.cpp
 	test_bitset.cpp
 	test_bit_stream.cpp
 	test_bloom_filter.cpp
+	test_bresenham_line.cpp
 	test_bsd_checksum.cpp
 	test_callback_service.cpp
 	test_callback_timer.cpp

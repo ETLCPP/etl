@@ -1,4 +1,103 @@
 ===============================================================================
+18.18.2
+Change to array_view member variable declaration, for constructor from array.
+
+===============================================================================
+18.18.1
+Added [] operators to etl::circular_buffer
+
+===============================================================================
+18.18.0
+Added etl::circular_buffer
+
+===============================================================================
+18.17.2
+Added missing emplace functions from vector-of-pointers specialisation.
+
+===============================================================================
+18.17.1
+Fixed incorrect reflected CRC8 0x07 lookup table
+
+===============================================================================
+18.17.0
+Added iterator API to all etl::frame_check_sequence based template classes, such as CRCs and checksums.
+Example:
+std::string data("123456789");
+etl::crc32 crc;
+std::copy(data.begin(), data.end(), crc.input());
+uint32_t value = crc.value();
+
+===============================================================================
+18.16.5
+Add missing include in test etl_profile.h
+
+===============================================================================
+18.16.4
+Reduced warnings from cppcheck v2.2
+
+===============================================================================
+18.16.3
+Added VS2019 to CI configuration file.
+Created separate VS2019, GCC and clang configuration files.
+
+===============================================================================
+18.16.2
+Updates to CI configuration files to compile 'No STL' variants of the tests.
+
+===============================================================================
+18.16.1
+Updates to CI configuration files.
+
+===============================================================================
+18.16.0
+Added template deduction guides for most containers.
+
+===============================================================================
+18.15.5
+Refactored empty(), full(), available() member functions for etl::list and etl::forward_list
+
+===============================================================================
+18.15.4
+Performance optimisations for etl::rotate, etl::move & etl::move_backward
+when not using the STL, iterators are pointers and the objects are trivially
+copyable (currently POD types).
+
+===============================================================================
+18.15.3
+etl::array_view constructor from C array is no longer explicit.
+
+===============================================================================
+18.15.2
+Workaround for Segger ARM Link-Time-Optimisation (LTO) bug.
+etl::array_view constructor from etl or std array is no longer explicit.
+
+===============================================================================
+18.15.1
+Refactoring of 18.15.0.
+Modified constructor syntax.
+
+===============================================================================
+18.15.0
+Allow strings with external buffers to use a pre-initialised buffer.
+
+===============================================================================
+18.14.1
+Fixed conditional compilation macro use for template deduction guides.
+
+===============================================================================
+18.14.0
+Added template deduction guides for array and array_view
+
+===============================================================================
+18.13.0
+Added a line coordinate generator using the Bresenham algorithm.
+The API is similar to a container.
+
+===============================================================================
+18.12.7
+Made etl::reference_wrapper API closer to the STL version. Does not support invocation of a callable object.
+
+===============================================================================
 18.12.6
 Fixed etl::stack top level assignment operator not clearing before copy.
 

@@ -55,26 +55,25 @@ namespace
     Compare_Data different_data;
     Compare_Data insert_data;
 
+    int n0 = 0;
+    int n1 = 1;
+    int n2 = 2;
+    int n3 = 3;
+    int n4 = 4;
+    int n5 = 5;
+    int n6 = 6;
+    int n7 = 7;
+    int n8 = 8;
+    int n9 = 9;
+    int n11 = 11;
+    int n12 = 12;
+    int n13 = 13;
+
     //*************************************************************************
     struct SetupFixture
     {
       SetupFixture()
       {
-        int n0 = 0;
-        int n1 = 1;
-        int n2 = 2;
-        int n3 = 3;
-        int n4 = 4;
-        int n5 = 5;
-        int n6 = 6;
-        int n7 = 7;
-        int n8 = 8;
-        int n9 = 9;
-        int n11 = 11;
-        int n12 = 12;
-        int n13 = 13;
-
-
         int* n[]         = { &n0, &n1, &n2, &n3, &n4, &n5, &n6, &n7, &n8, &n9 };
         int* n_insert[]  = { &n11, &n12, &n13 };
         int* n_less[]    = { &n0, &n1, &n2, &n3, &n3, &n5, &n6, &n7, &n8, &n9 };
@@ -99,6 +98,24 @@ namespace
       CHECK_EQUAL(data.capacity(), SIZE);
       CHECK_EQUAL(data.max_size(), SIZE);
     }
+
+#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+    //*************************************************************************
+    TEST(test_cpp17_deduced_constructor)
+    {
+      etl::vector data{ &n0, &n1, &n2, &n3, &n4, &n5, &n6, &n7, &n8, &n9 };
+      etl::vector<int*, 10U> check = { &n0, &n1, &n2, &n3, &n4, &n5, &n6, &n7, &n8, &n9 };
+
+      CHECK(!data.empty());
+      CHECK(data.full());
+      CHECK(data.begin() != data.end());
+      CHECK_EQUAL(0U, data.available());
+      CHECK_EQUAL(10U, data.capacity());
+      CHECK_EQUAL(10U, data.size());
+      CHECK_EQUAL(10U, data.max_size());
+      CHECK(data == check);
+    }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_default_constructor)
@@ -1014,6 +1031,29 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_back)
+    {
+      Compare_Data compare_data;
+      Data data;
+
+      int d;
+
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        compare_data.emplace_back(&d);
+      }
+
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        data.emplace_back(&d);
+      }
+
+      bool is_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_pop_back)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
@@ -1142,6 +1182,31 @@ namespace
       offset = data.size();
 
       CHECK_THROW(data.insert(data.begin() + offset, &INITIAL_VALUE), etl::vector_full);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_position_value)
+    {
+      const size_t INITIAL_SIZE = 5;
+      int INITIAL_VALUE = 1;
+
+      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      {
+        Compare_Data compare_data;
+        Data data;
+
+        data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
+        compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
+
+        data.emplace(data.begin() + offset, &INITIAL_VALUE);
+        compare_data.emplace(compare_data.begin() + offset, &INITIAL_VALUE);
+
+        CHECK_EQUAL(compare_data.size(), data.size());
+
+        bool is_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+        CHECK(is_equal);
+      }
     }
 
     //*************************************************************************

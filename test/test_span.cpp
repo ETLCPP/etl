@@ -247,6 +247,39 @@ namespace
       CHECK(isEqual);
     }
 
+#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+    //*************************************************************************
+    TEST(test_cpp17_deduced_constructor)
+    {
+      etl::array data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      etl::span span1{ data };
+      etl::span span2{ data.begin(), data.end() };
+      etl::span span3{ data.begin(), data.size() };
+      etl::span span4{ span1 };
+
+      int c_array[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::span span5{ c_array };
+
+      bool isEqual = false;
+
+      isEqual = std::equal(span1.begin(), span1.end(), data.begin());
+      CHECK(isEqual);
+
+      isEqual = std::equal(span2.begin(), span2.end(), data.begin());
+      CHECK(isEqual);
+
+      isEqual = std::equal(span3.begin(), span3.end(), data.begin());
+      CHECK(isEqual);
+
+      isEqual = std::equal(span4.begin(), span4.end(), data.begin());
+      CHECK(isEqual);
+
+      isEqual = std::equal(span5.begin(), span5.end(), c_array);
+      CHECK(isEqual);
+    }
+#endif
+
     //*************************************************************************
     TEST(test_constructor_range)
     {

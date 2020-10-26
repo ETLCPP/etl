@@ -697,16 +697,22 @@ namespace etl
   //***************************************************************************
   /// get_token
   //***************************************************************************
-  template <typename TIString, typename TStringView>
-  etl::optional<TStringView> get_token(const TIString& s, typename TIString::const_pointer delimiters, const etl::optional<TStringView>& last_view, bool ignore_empty_tokens)
+  template <typename TInput, typename TStringView>
+  etl::optional<TStringView> get_token(const TInput& input, typename TInput::const_pointer delimiters, const etl::optional<TStringView>& last_view, bool ignore_empty_tokens)
   {
-    typedef typename TIString::const_pointer const_pointer;
+    typedef typename TInput::const_pointer const_pointer;
 
     bool token_found = false;
     size_t position  = 0U;
     TStringView view = last_view.value_or(TStringView());
-    const_pointer begin_ptr = s.data();
-    const_pointer end_ptr   = begin_ptr + s.size();
+    const_pointer begin_ptr = input.data();
+
+    if (begin_ptr == ETL_NULLPTR)
+    {
+      return etl::optional<TStringView>();
+    }
+
+    const_pointer end_ptr   = begin_ptr + input.size();
 
     while (!token_found)
     {
@@ -716,7 +722,7 @@ namespace etl
         position = etl::distance(begin_ptr, view.data() + view.size() + 1U);
 
         // Have we reached the end of the string?
-        if (position > s.size())
+        if (position > input.size())
         {
           return etl::optional<TStringView>();
         }

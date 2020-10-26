@@ -386,7 +386,7 @@ namespace etl
     //********************************************
     bool is_consumer() const ETL_OVERRIDE
     {
-      return false;
+      return true;
     }
 
   private:

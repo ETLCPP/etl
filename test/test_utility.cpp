@@ -60,7 +60,7 @@ namespace
     {
       etl::pair<int, double> p1;
 
-      CHECK_EQUAL(int(), p1.first);
+      CHECK_EQUAL(int(),    p1.first);
       CHECK_EQUAL(double(), p1.second);
     }
 
@@ -69,16 +69,30 @@ namespace
     {
       etl::pair<int, double> p1(1, 2.3);
 
-      CHECK_EQUAL(1, p1.first);
+      CHECK_EQUAL(1,   p1.first);
       CHECK_EQUAL(2.3, p1.second);
     }
+
+#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+    //*************************************************************************
+    TEST(test_cpp17_deduced_pair_construct)
+    {
+      etl::pair p1{ 1, 2.3 };
+
+      CHECK((std::is_same_v<decltype(p1.first), int>));
+      CHECK((std::is_same_v<decltype(p1.second), double>));
+
+      CHECK_EQUAL(1,   p1.first);
+      CHECK_EQUAL(2.3, p1.second);
+    }
+#endif
 
     //*************************************************************************
     TEST(test_pair_move_parameter_construct)
     {
       etl::pair<ItemM1, ItemM2> p1(1, 2.3);
 
-      CHECK_EQUAL(1, p1.first.value);
+      CHECK_EQUAL(1,   p1.first.value);
       CHECK_EQUAL(2.3, p1.second.value);
     }
 
@@ -88,7 +102,7 @@ namespace
       etl::pair<int, double> p1(1, 2.3);
       etl::pair<int, double> p2(p1);
 
-      CHECK_EQUAL(p1.first, p2.first);
+      CHECK_EQUAL(p1.first,  p2.first);
       CHECK_EQUAL(p1.second, p2.second);
     }
 
@@ -101,7 +115,7 @@ namespace
       CHECK(!bool(p1.first));
       CHECK(!bool(p1.second));
 
-      CHECK_EQUAL(1, p2.first.value);
+      CHECK_EQUAL(1,   p2.first.value);
       CHECK_EQUAL(2.3, p2.second.value);
     }
 
@@ -111,7 +125,7 @@ namespace
       etl::pair<char, float> p1(1, 2.3f);
       etl::pair<int, double> p2(p1);
 
-      CHECK_EQUAL(p1.first, p2.first);
+      CHECK_EQUAL(p1.first,  p2.first);
       CHECK_EQUAL(p1.second, p2.second);
     }
 
@@ -122,7 +136,7 @@ namespace
       etl::pair<int, double> p2;
       p2 = etl::make_pair(1, 2.3);
 
-      CHECK_EQUAL(p1.first, p2.first);
+      CHECK_EQUAL(p1.first,  p2.first);
       CHECK_EQUAL(p1.second, p2.second);
     }
 
@@ -146,10 +160,10 @@ namespace
 
       p1.swap(p2);
 
-      CHECK_EQUAL(2, p1.first);
+      CHECK_EQUAL(2,   p1.first);
       CHECK_EQUAL(3.4, p1.second);
 
-      CHECK_EQUAL(1, p2.first);
+      CHECK_EQUAL(1,   p2.first);
       CHECK_EQUAL(2.3, p2.second);
     }
 
@@ -161,10 +175,10 @@ namespace
 
       swap(p1, p2);
 
-      CHECK_EQUAL(2, p1.first);
+      CHECK_EQUAL(2,   p1.first);
       CHECK_EQUAL(3.4, p1.second);
 
-      CHECK_EQUAL(1, p2.first);
+      CHECK_EQUAL(1,   p2.first);
       CHECK_EQUAL(2.3, p2.second);
     }
 

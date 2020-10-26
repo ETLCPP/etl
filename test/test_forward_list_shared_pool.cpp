@@ -97,7 +97,10 @@ namespace
       PoolDC pool;
       DataDC data(pool);
 
+      CHECK_EQUAL(data.size(), size_t(0));
       CHECK(data.empty());
+      CHECK(!data.full());
+      CHECK_EQUAL(data.available(), SIZE);
       CHECK_EQUAL(data.max_size(), SIZE);
       CHECK(data.begin() == data.end());
       CHECK(data.has_shared_pool());
@@ -109,6 +112,8 @@ namespace
       DataNDC data;
 
       CHECK_THROW(data.push_front(ItemNDC("1")), etl::forward_list_no_pool);
+      CHECK_THROW(data.full(), etl::forward_list_no_pool);
+      CHECK_THROW(data.available(), etl::forward_list_no_pool);
     }
 
     //*************************************************************************
@@ -123,6 +128,10 @@ namespace
       CHECK(!data2.empty());
       CHECK_EQUAL(INITIAL_SIZE, data1.size());
       CHECK_EQUAL(INITIAL_SIZE, data2.size());
+
+      CHECK_EQUAL(SIZE - (INITIAL_SIZE * 2), data1.available());
+      CHECK_EQUAL(SIZE - (INITIAL_SIZE * 2), data2.available());
+
       CHECK_EQUAL((2 * INITIAL_SIZE), pool.size());
     }
 
@@ -533,9 +542,14 @@ namespace
       data1.assign(compare_data.begin(), compare_data.end());
       data1.assign(compare_data.begin(), compare_data.end());
 
+      CHECK_EQUAL(pool.available(), data1.available());
+      CHECK_EQUAL(pool.available(), data2.available());
+
       data2.assign(compare_data.begin(), compare_data.end());
       data2.assign(compare_data.begin(), compare_data.end());
 
+      CHECK_EQUAL(pool.available(), data1.available());
+      CHECK_EQUAL(pool.available(), data2.available());
 
       CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data1.size());
       CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data2.size());

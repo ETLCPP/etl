@@ -274,6 +274,24 @@ namespace
       CHECK(data.begin() == data.end());
     }
 
+#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+    //*************************************************************************
+    TEST(test_cpp17_deduced_constructor)
+    {
+      etl::flat_set data{ N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
+      etl::flat_set<NDC, 10U> check = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
+
+      CHECK(!data.empty());
+      CHECK(data.full());
+      CHECK(data.begin() != data.end());
+      CHECK_EQUAL(10U, data.size());
+      CHECK_EQUAL(0U, data.available());
+      CHECK_EQUAL(10U, data.capacity());
+      CHECK_EQUAL(10U, data.max_size());
+      CHECK(data == check);
+    }
+#endif
+
     //*************************************************************************
     TEST(test_destruct_via_iflat_set)
     {

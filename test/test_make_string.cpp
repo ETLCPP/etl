@@ -30,7 +30,7 @@ SOFTWARE.
 
 #include <string>
 
-#include "etl/cstring.h"
+#include "etl/string.h"
 #include "etl/wstring.h"
 #include "etl/u16string.h"
 #include "etl/u32string.h"

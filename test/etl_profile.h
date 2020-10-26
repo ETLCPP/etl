@@ -92,6 +92,7 @@ SOFTWARE.
 //#define ETL_OPTIONAL_FORCE_CPP03
 //#define ETL_LARGEST_TYPE_FORCE_CPP03
 //#define ETL_TYPE_SELECT_FORCE_CPP03
+//#define ETL_UNINITIALIZED_BUFFER_FORCE_CPP03
 
 #if defined(ETL_NO_STL)
   #define ETL_TIMER_SEMAPHORE_TYPE uint32_t
@@ -101,6 +102,14 @@ SOFTWARE.
 
 #if ETL_CPP17_NOT_SUPPORTED
   #error THE UNIT TESTS REQUIRE C++17 SUPPORT
+#endif
+
+#include "../include/etl/profiles/determine_compiler_version.h"
+
+#if defined(ETL_COMPILER_GCC)
+  #if (ETL_COMPILER_VERSION < 8)
+    #define ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED
+  #endif
 #endif
 
 #include "../include/etl/profiles/determine_development_os.h"
