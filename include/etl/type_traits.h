@@ -736,11 +736,15 @@ namespace etl
     template <typename, typename>
     auto nonvoid_convertible(...)->etl::false_type;
   }
-
+#if defined(ETL_COMPILER_ARM5)
+template <typename TFrom, typename TTo>
+  struct is_convertible : etl::integral_constant<bool, __is_convertible_to(TFrom, TTo)> {};
+#else
   template <typename TFrom, typename TTo>
   struct is_convertible : etl::integral_constant<bool, (decltype(private_type_traits::returnable<TTo>(0))::value &&
                                                         decltype(private_type_traits::nonvoid_convertible<TFrom, TTo>(0))::value) ||
                                                         (etl::is_void<TFrom>::value && etl::is_void<TTo>::value)> {};
+#endif
 #endif
 
 #if ETL_CPP17_SUPPORTED
