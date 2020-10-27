@@ -736,8 +736,9 @@ namespace etl
     template <typename, typename>
     auto nonvoid_convertible(...)->etl::false_type;
   }
+
 #if defined(ETL_COMPILER_ARM5)
-template <typename TFrom, typename TTo>
+  template <typename TFrom, typename TTo>
   struct is_convertible : etl::integral_constant<bool, __is_convertible_to(TFrom, TTo)> {};
 #else
   template <typename TFrom, typename TTo>
