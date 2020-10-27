@@ -36,7 +36,7 @@ SOFTWARE.
 #include "char_traits.h"
 #include "integral_limits.h"
 
-#if ETL_NOT_USING_STL && defined(ETL_COMPILER_ARM5)
+#if ETL_NOT_USING_STL && defined(ETL_COMPILER_ARM5) && !defined(__USE_C99_MATH)
   // Required for nan, nanf, nanl
   #define __USE_C99_MATH
 #endif
