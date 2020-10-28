@@ -106,9 +106,9 @@ namespace etl
       this->assign(other.begin() + position, other.begin() + position + length_);
 
 #if ETL_STRING_TRUNCATION_CHECKS_ENABLED
-      if (other.truncated())
+      if (other.is_truncated())
       {
-        this->is_truncated = true;
+        this->set_truncated(true);
 
 #if defined(ETL_STRING_TRUNCATION_IS_ERROR)
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
@@ -317,9 +317,9 @@ namespace etl
       this->assign(other.begin() + position, other.begin() + position + length_);
 
 #if ETL_STRING_TRUNCATION_CHECKS_ENABLED
-      if (other.truncated())
+      if (other.is_truncated())
       {
-        this->is_truncated = true;
+        this->set_truncated(true);
 
 #if defined(ETL_STRING_TRUNCATION_IS_ERROR)
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));

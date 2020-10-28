@@ -888,6 +888,9 @@
     <ClInclude Include="..\..\include\etl\circular_buffer.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\flags.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1407,6 +1410,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_circular_buffer_external_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_flags.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -87,26 +87,26 @@ namespace
 
       CHECK_EQUAL(CAPACITY, ctext.max_size());
       CHECK_EQUAL(length, ctext.size());
-#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
-      CHECK(!ctext.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!ctext.is_truncated());
 #endif
 
       CHECK_EQUAL(CAPACITY, wtext.max_size());
       CHECK_EQUAL(length, wtext.size());
-#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
-      CHECK(!wtext.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!wtext.is_truncated());
 #endif
 
       CHECK_EQUAL(CAPACITY, u16text.max_size());
       CHECK_EQUAL(length, u16text.size());
-#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
-      CHECK(!u16text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!u16text.is_truncated());
 #endif
 
       CHECK_EQUAL(CAPACITY, u32text.max_size());
       CHECK_EQUAL(length, u32text.size());
-#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
-      CHECK(!u32text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!u32text.is_truncated());
 #endif
 
       CHECK(Equal(std::string("Hello World"), ctext));
@@ -134,26 +134,26 @@ namespace
 
       CHECK_EQUAL(CAPACITY, ctext.max_size());
       CHECK_EQUAL(length - 1, ctext.size());
-#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
-      CHECK(ctext.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(ctext.is_truncated());
 #endif
 
       CHECK_EQUAL(CAPACITY, wtext.max_size());
       CHECK_EQUAL(length - 1, wtext.size());
-#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
-      CHECK(wtext.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(wtext.is_truncated());
 #endif
 
       CHECK_EQUAL(CAPACITY, u16text.max_size());
       CHECK_EQUAL(length - 1, u16text.size());
-#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
-      CHECK(u16text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(u16text.is_truncated());
 #endif
 
       CHECK_EQUAL(CAPACITY, u32text.max_size());
       CHECK_EQUAL(length - 1, u32text.size());
-#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
-      CHECK(u32text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(u32text.is_truncated());
 #endif
 
       CHECK(Equal(std::string("Hello Worl"), ctext));
