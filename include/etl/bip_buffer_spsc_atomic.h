@@ -345,7 +345,7 @@ namespace etl
         typedef typename base_t::size_type size_type;
 
     private:
-        static const size_type RESERVED_SIZE = size_type(SIZE);
+        static const size_type RESERVED_SIZE = size_type(SIZE + 1);
 
     public:
         ETL_STATIC_ASSERT((SIZE <= (etl::integral_limits<size_type>::max - 1)), "Size too large for memory model");
@@ -353,12 +353,14 @@ namespace etl
         static const size_type MAX_SIZE = size_type(SIZE);
 
         bip_buffer_spsc_atomic()
-            : base_t(buffer.data(), RESERVED_SIZE)
+            : base_t(reinterpret_cast<T*>(&buffer[0]), RESERVED_SIZE)
         {
         }
 
     private:
-        typename etl::array<T, RESERVED_SIZE> buffer;
+
+        /// The uninitialised buffer of T used in the bip_buffer_spsc.
+        typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[RESERVED_SIZE];
     };
 }
 
