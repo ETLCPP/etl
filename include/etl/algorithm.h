@@ -789,6 +789,15 @@ namespace etl
 
     return (memcmp(first1, first2, sizeof(value_t) * (last1 - first1)) == 0);
   }
+
+  template <typename TIterator1, typename TIterator2>
+  ETL_NODISCARD
+    bool equal(TIterator1 first1, TIterator1 last1, TIterator2 first2, TIterator2 last2)
+  {
+    return (etl::distance(first1, last1) == etl::distance(first2, last2)) &&
+            etl::equal(first1, last1, first2);
+  }
+
 #else
   //***************************************************************************
   // equal
@@ -798,20 +807,24 @@ namespace etl
   {
     return std::equal(first1, last1, first2);
   }
+
+#if ETL_CPP14_SUPPORTED
+  template <typename TIterator1, typename TIterator2>
+  ETL_NODISCARD
+    bool equal(TIterator1 first1, TIterator1 last1, TIterator2 first2, TIterator2 last2)
+  {
+    return std::equal(first1, last1, first2, last2);
+  }
+#else
+  template <typename TIterator1, typename TIterator2>
+  ETL_NODISCARD
+  bool equal(TIterator1 first1, TIterator1 last1, TIterator2 first2, TIterator2 last2)
+  {
+    return (etl::distance(first1, last1) == etl::distance(first2, last2)) &&
+            etl::equal(first1, last1, first2);
+  }
 #endif
-
-template <typename TIterator1, typename TIterator2>
-ETL_NODISCARD
-bool equal(TIterator1 first1, TIterator1 last1, TIterator2 first2, TIterator2 last2)
-{
-	if (etl::distance(first1, last1) !=
-		etl::distance(first2, last2))
-	{
-		return false;
-	}
-	return etl::equal(first1, last1, first2);
-}
-
+#endif
 
 #if ETL_NOT_USING_STL
   //***************************************************************************
