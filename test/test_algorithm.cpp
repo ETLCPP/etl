@@ -703,6 +703,10 @@ namespace
     {
       CHECK(etl::equal(std::begin(dataV), std::end(dataV), std::begin(dataL)));
       CHECK(!etl::equal(std::begin(dataSL), std::end(dataSL), std::begin(dataL)));
+
+      int small[] = { dataS[0] };
+      CHECK(etl::equal(std::begin(dataV), std::end(dataV), std::begin(dataL), std::end(dataL)));
+      CHECK(!etl::equal(std::begin(dataS), std::end(dataS), std::begin(small), std::end(small)));
     }
 
     //*************************************************************************
