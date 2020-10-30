@@ -47,6 +47,7 @@ namespace
     using StringView = etl::string_view;
     using Char       = etl::istring::value_type;
     using Vector     = etl::vector<String, 15>;
+    using SizeType   = etl::istring::size_type;
 
     constexpr auto Whitespace = etl::whitespace_v<String::value_type>;
 
@@ -1102,7 +1103,7 @@ namespace
     {
       String text(STR("Hello World"));
       String expected(text);
-      expected.insert(size_t(0U), text.capacity() - expected.size(), STR('x'));
+      expected.insert(SizeType(0U), text.capacity() - expected.size(), STR('x'));
 
       etl::pad_left(text, text.capacity() + 1U, STR('x'));
 
@@ -1170,7 +1171,7 @@ namespace
     {
       String text(STR("Hello World"));
       String expected(text);
-      expected.insert(size_t(0U), text.capacity() - expected.size(), STR('x'));
+      expected.insert(SizeType(0U), text.capacity() - expected.size(), STR('x'));
 
       etl::pad(text, text.capacity() + 1U, etl::string_pad_direction::LEFT, STR('x'));
 

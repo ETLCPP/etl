@@ -101,6 +101,20 @@ SOFTWARE.
   #define ETL_EXPLICIT_STRING_FROM_CHAR
 #endif
 
+// Option to disable truncation checks for strings.
+#if defined(ETL_DISABLE_STRING_TRUNCATION_CHECKS)
+  #define ETL_STRING_TRUNCATION_CHECKS_ENABLED 0
+#else
+  #define ETL_STRING_TRUNCATION_CHECKS_ENABLED 1
+#endif
+
+// Option to disable clear-after-use functionality for strings.
+#if defined(ETL_DISABLE_STRING_CLEAR_AFTER_USE)
+  #define ETL_STRING_CLEAR_AFTER_USE_ENABLED 0
+#else
+  #define ETL_STRING_CLEAR_AFTER_USE_ENABLED 1
+#endif
+
 // The macros below are dependent on the profile.
 // C++11
 #if ETL_CPP11_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)

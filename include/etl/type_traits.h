@@ -756,7 +756,7 @@ namespace etl
   //***************************************************************************
   /// Alignment templates.
   /// These require compiler specific intrinsics.
-#if ETL_CPP11_SUPPORTED && !defined(ETL_COMPILER_ARM5)
+#if ETL_CPP11_SUPPORTED
   template <typename T> struct alignment_of : integral_constant<size_t, alignof(T)> { };
 #elif ETL_COMPILER_MICROSOFT
   template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof(T))> {};
@@ -1068,12 +1068,11 @@ namespace etl
   //***************************************************************************
   /// is_pod
   ///\ingroup type_traits
-  template <typename T>
-  struct is_pod : std::integral_constant<bool, std::is_standard_layout<T>::value && std::is_trivial<T>::value> {};
+  template <typename T> struct is_pod : std::is_pod<T> {};
 
 #if ETL_CPP17_SUPPORTED
   template <typename T>
-  inline constexpr bool is_pod_v = std::is_standard_layout_v<T> && std::is_trivial_v<T>;
+  inline constexpr bool is_pod_v = std::is_pod_v<T>;
 #endif
 
 #if !defined(ARDUINO) && ETL_NOT_USING_STLPORT
@@ -1562,6 +1561,28 @@ namespace etl
 #if ETL_CPP17_SUPPORTED
   template <typename T>
   inline constexpr size_t size_of_v = etl::size_of<T>::value;
+#endif
+
+#if ETL_CPP11_SUPPORTED
+  //***************************************************************************
+  /// are_all_same
+  template <typename T, typename T1, typename... TRest>
+  struct are_all_same
+  {
+    static const bool value = etl::is_same<T, T1>::value &&
+      etl::are_all_same<T, TRest...>::value;
+  };
+
+  template <typename T, typename T1>
+  struct are_all_same<T, T1>
+  {
+    static const bool value = etl::is_same<T, T1>::value;
+  };
+#endif
+
+#if ETL_CPP17_SUPPORTED
+  template <typename T, typename T1, typename... TRest>
+  inline constexpr bool are_all_same_v = are_all_same<T, T1, TRest...>::value;
 #endif
 }
 

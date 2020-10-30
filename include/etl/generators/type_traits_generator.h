@@ -1570,6 +1570,28 @@ namespace etl
   template <typename T>
   inline constexpr size_t size_of_v = etl::size_of<T>::value;
 #endif
+
+#if ETL_CPP11_SUPPORTED
+  //***************************************************************************
+  /// are_all_same
+  template <typename T, typename T1, typename... TRest>
+  struct are_all_same
+  {
+    static const bool value = etl::is_same<T, T1>::value &&
+      etl::are_all_same<T, TRest...>::value;
+  };
+
+  template <typename T, typename T1>
+  struct are_all_same<T, T1>
+  {
+    static const bool value = etl::is_same<T, T1>::value;
+  };
+#endif
+
+#if ETL_CPP17_SUPPORTED
+  template <typename T, typename T1, typename... TRest>
+  inline constexpr bool are_all_same_v = are_all_same<T, T1, TRest...>::value;
+#endif
 }
 
 #endif // ETL_TYPE_TRAITS_INCLUDED

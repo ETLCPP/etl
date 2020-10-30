@@ -50,6 +50,9 @@ SOFTWARE.
 #include "integral_limits.h"
 #include "exception.h"
 #include "memory.h"
+#include "exception.h"
+#include "binary.h"
+#include "flags.h"
 
 #undef ETL_FILE
 #define ETL_FILE "27"
@@ -149,10 +152,7 @@ namespace etl
 
     typedef size_t size_type;
 
-    enum
-    {
-      npos = etl::integral_limits<size_t>::max
-    };
+    static const size_type npos = etl::integral_limits<size_type>::max;
 
     //*************************************************************************
     /// Gets the current size of the string.
@@ -212,18 +212,30 @@ namespace etl
     /// Returns the remaining capacity.
     ///\return The remaining capacity.
     //*************************************************************************
-    size_t available() const
+    size_type available() const
     {
       return max_size() - size();
+    }
+
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+    //*************************************************************************
+    /// Returns whether the string was truncated by the last operation.
+    /// Deprecated. Use is_truncated()
+    ///\return Whether the string was truncated by the last operation.
+    //*************************************************************************
+    ETL_DEPRECATED 
+    bool truncated() const
+    {
+      return flags.test<IS_TRUNCATED>();
     }
 
     //*************************************************************************
     /// Returns whether the string was truncated by the last operation.
     ///\return Whether the string was truncated by the last operation.
     //*************************************************************************
-    size_t truncated() const
+    bool is_truncated() const
     {
-      return is_truncated;
+      return flags.test<IS_TRUNCATED>();
     }
 
     //*************************************************************************
@@ -231,15 +243,17 @@ namespace etl
     //*************************************************************************
     void clear_truncated()
     {
-      is_truncated = false;
+      flags.set<IS_TRUNCATED, false>();
     }
+#endif
 
+#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
     //*************************************************************************
     /// Sets the 'secure' flag to the requested state.
     //*************************************************************************
     void set_secure()
     {
-      clear_afer_use = true;
+      flags.set<CLEAR_AFTER_USE>();
     }
 
     //*************************************************************************
@@ -247,21 +261,30 @@ namespace etl
     //*************************************************************************
     bool is_secure() const
     {
-      return clear_afer_use;
+      return flags.test<CLEAR_AFTER_USE>();
     }
+#endif
 
   protected:
 
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    string_base(size_t max_size_)
-      : is_truncated(false)
-      , clear_afer_use(false)
-      , current_size(0)
+    string_base(size_type max_size_)
+      : current_size(0)
       , CAPACITY(max_size_)
     {
     }
+
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+    //*************************************************************************
+    /// Sets the 'truncated' flag.
+    //*************************************************************************
+    void set_truncated(bool status)
+    {
+      flags.set<IS_TRUNCATED>(status);
+    }
+#endif
 
     //*************************************************************************
     /// Destructor.
@@ -270,10 +293,15 @@ namespace etl
     {
     }
 
-    bool            is_truncated;   ///< Set to true if the operation truncated the string.
-    bool            clear_afer_use; ///< Set to true if the string must be cleared after use.
+    static const uint_least8_t IS_TRUNCATED    = etl::bit<0>::value;
+    static const uint_least8_t CLEAR_AFTER_USE = etl::bit<1>::value;
+
     size_type       current_size;   ///< The current number of elements in the string.
     const size_type CAPACITY;       ///< The maximum number of elements in the string.
+
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED || ETL_STRING_CLEAR_AFTER_USE_ENABLED
+    etl::flags<uint_least8_t> flags;
+#endif
   };
 
   //***************************************************************************
@@ -297,7 +325,6 @@ namespace etl
     typedef const T*                              const_iterator;
     typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
     typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
-    typedef size_t                                size_type;
 
     typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
@@ -414,7 +441,7 @@ namespace etl
     /// If asserts or exceptions are enabled and the new size is larger than the
     ///\param new_size The new size.
     //*********************************************************************
-    void resize(size_t new_size)
+    void resize(size_type new_size)
     {
       resize(new_size, 0);
     }
@@ -424,14 +451,16 @@ namespace etl
     ///\param new_size The new size.
     ///\param value    The value to fill new elements with. Default = default constructed value.
     //*********************************************************************
-    void resize(size_t new_size, T value)
+    void resize(size_type new_size, T value)
     {
       if (new_size > CAPACITY)
       {
-        is_truncated = true;
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+        set_truncated(true);
 
 #if defined(ETL_STRING_TRUNCATION_IS_ERROR)
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
 #endif
       }
 
@@ -453,7 +482,7 @@ namespace etl
     ///\param i The index.
     ///\return A reference to the value at index 'i'
     //*********************************************************************
-    reference operator [](size_t i)
+    reference operator [](size_type i)
     {
       return p_buffer[i];
     }
@@ -463,7 +492,7 @@ namespace etl
     ///\param i The index.
     ///\return A const reference to the value at index 'i'
     //*********************************************************************
-    const_reference operator [](size_t i) const
+    const_reference operator [](size_type i) const
     {
       return p_buffer[i];
     }
@@ -474,7 +503,7 @@ namespace etl
     ///\param i The index.
     ///\return A reference to the value at index 'i'
     //*********************************************************************
-    reference at(size_t i)
+    reference at(size_type i)
     {
       ETL_ASSERT(i < size(), ETL_ERROR(string_out_of_bounds));
       return p_buffer[i];
@@ -486,7 +515,7 @@ namespace etl
     ///\param i The index.
     ///\return A const reference to the value at index 'i'
     //*********************************************************************
-    const_reference at(size_t i) const
+    const_reference at(size_type i) const
     {
       ETL_ASSERT(i < size(), ETL_ERROR(string_out_of_bounds));
       return p_buffer[i];
@@ -555,14 +584,16 @@ namespace etl
     {
       assign(other.begin(), other.end());
 
-      if (other.truncated())
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      if (other.is_truncated())
       {
-        is_truncated = true;
+        set_truncated(true);
 
 #if defined(ETL_STRING_TRUNCATION_IS_ERROR)
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
       }
+#endif
 
       cleanup();
     }
@@ -574,7 +605,7 @@ namespace etl
     ///\param subposition The position to start from.
     ///\param sublength   The length to copy.
     //*********************************************************************
-    void assign(const etl::ibasic_string<T>& other, size_t subposition, size_t sublength)
+    void assign(const etl::ibasic_string<T>& other, size_type subposition, size_type sublength)
     {
       if (sublength == npos)
       {
@@ -600,10 +631,12 @@ namespace etl
         p_buffer[current_size++] = *other++;
       }
 
-      is_truncated = (*other != 0);
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      set_truncated(*other != 0);
 
 #if defined(ETL_STRING_TRUNCATION_IS_ERROR)
-      ETL_ASSERT(is_truncated == false, ETL_ERROR(string_truncation))
+      ETL_ASSERT(flags.test<IS_TRUNCATED>() == false, ETL_ERROR(string_truncation))
+#endif
 #endif
 
       p_buffer[current_size] = 0;
@@ -615,14 +648,16 @@ namespace etl
     ///\param other The other string.
     ///\param length The length to copy.
     //*********************************************************************
-    void assign(const_pointer other, size_t length_)
+    void assign(const_pointer other, size_type length_)
     {
       initialise();
 
-      is_truncated = (length_ > CAPACITY);
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      set_truncated(length_ > CAPACITY);
 
 #if defined(ETL_STRING_TRUNCATION_IS_ERROR)
-      ETL_ASSERT(is_truncated == false, ETL_ERROR(string_truncation))
+      ETL_ASSERT(flags.test<IS_TRUNCATED>() == false, ETL_ERROR(string_truncation))
+#endif
 #endif
 
       length_ = etl::min(length_, CAPACITY);
@@ -657,10 +692,12 @@ namespace etl
 
       p_buffer[current_size] = 0;
 
-      is_truncated = (first != last);
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      set_truncated(first != last);
 
 #if defined(ETL_STRING_TRUNCATION_IS_ERROR)
-      ETL_ASSERT(is_truncated == false, ETL_ERROR(string_truncation))
+      ETL_ASSERT(flags.test<IS_TRUNCATED>() == false, ETL_ERROR(string_truncation))
+#endif
 #endif
     }
 
@@ -670,14 +707,16 @@ namespace etl
     ///\param n     The number of elements to add.
     ///\param value The value to insert for each element.
     //*********************************************************************
-    void assign(size_t n, T value)
+    void assign(size_type n, T value)
     {
       initialise();
 
-      is_truncated = (n > CAPACITY);
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      set_truncated(n > CAPACITY);
 
 #if defined(ETL_STRING_TRUNCATION_IS_ERROR)
-      ETL_ASSERT(is_truncated == false, ETL_ERROR(string_truncation))
+      ETL_ASSERT(flags.test<IS_TRUNCATED>() == false, ETL_ERROR(string_truncation))
+#endif
 #endif
 
       n = etl::min(n, CAPACITY);
@@ -709,10 +748,12 @@ namespace etl
       }
       else
       {
-        is_truncated = true;
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+        set_truncated(true);
 
 #if defined(ETL_STRING_TRUNCATION_IS_ERROR)
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
 #endif
       }
     }
@@ -737,14 +778,16 @@ namespace etl
     {
       insert(end(), str.begin(), str.end());
 
-      if (str.truncated())
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      if (str.is_truncated())
       {
-        is_truncated = true;
+        set_truncated(true);
 
 #if defined(ETL_STRING_TRUNCATION_IS_ERROR)
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
       }
+#endif
 
       return *this;
     }
@@ -755,7 +798,7 @@ namespace etl
     ///\param subposition The position in str.
     ///\param sublength The number of characters.
     //*********************************************************************
-    ibasic_string& append(const ibasic_string& str, size_t subposition, size_t sublength = npos)
+    ibasic_string& append(const ibasic_string& str, size_type subposition, size_type sublength = npos)
     {
       ETL_ASSERT(subposition <= str.size(), ETL_ERROR(string_out_of_bounds));
 
@@ -779,7 +822,7 @@ namespace etl
     ///\param str The string to append.
     ///\param n   The number of characters.
     //*********************************************************************
-    ibasic_string& append(const T* str, size_t n)
+    ibasic_string& append(const T* str, size_type n)
     {
       insert(size(), str, n);
       return *this;
@@ -790,7 +833,7 @@ namespace etl
     ///\param n The number of characters.
     ///\param c The character.
     //*********************************************************************
-    ibasic_string& append(size_t n, T c)
+    ibasic_string& append(size_type n, T c)
     {
       insert(size(), n, c);
       return *this;
@@ -845,10 +888,12 @@ namespace etl
           *insert_position = value;
         }
 
-        is_truncated = true;
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+        set_truncated(true);
 
 #if defined(ETL_STRING_TRUNCATION_IS_ERROR)
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
 #endif
       }
 
@@ -863,7 +908,7 @@ namespace etl
     ///\param n        The number of elements to add.
     ///\param value    The value to insert.
     //*********************************************************************
-    void insert(const_iterator position, size_t n, T value)
+    void insert(const_iterator position, size_type n, T value)
     {
       if (n == 0)
       {
@@ -872,15 +917,17 @@ namespace etl
 
       // Quick hack, as iterators are pointers.
       iterator insert_position = const_cast<iterator>(position);
-      const size_t start = etl::distance(cbegin(), position);
+      const size_type start = etl::distance(cbegin(), position);
 
       // No effect.
       if (start >= CAPACITY)
       {
-        is_truncated = true;
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+        set_truncated(true);
 
 #if defined(ETL_STRING_TRUNCATION_IS_ERROR)
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
 #endif
         return;
       }
@@ -890,10 +937,12 @@ namespace etl
       {
         if ((current_size + n) > CAPACITY)
         {
-          is_truncated = true;
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+          set_truncated(true);
 
 #if defined(ETL_STRING_TRUNCATION_IS_ERROR)
           ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
 #endif
         }
 
@@ -903,20 +952,23 @@ namespace etl
       else
       {
         // Lets do some shifting.
-        const size_t shift_amount = n;
-        const size_t to_position = start + shift_amount;
-        const size_t remaining_characters = current_size - start;
-        const size_t max_shift_characters = CAPACITY - start - shift_amount;
-        const size_t characters_to_shift = etl::min(max_shift_characters, remaining_characters);
+        const size_type shift_amount = n;
+        const size_type to_position = start + shift_amount;
+        const size_type remaining_characters = current_size - start;
+        const size_type max_shift_characters = CAPACITY - start - shift_amount;
+        const size_type characters_to_shift = etl::min(max_shift_characters, remaining_characters);
 
         // Will the string truncate?
         if ((start + shift_amount + remaining_characters) > CAPACITY)
         {
           current_size = CAPACITY;
-          is_truncated = true;
+
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+          set_truncated(true);
 
 #if defined(ETL_STRING_TRUNCATION_IS_ERROR)
           ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
 #endif
         }
         else
@@ -946,16 +998,18 @@ namespace etl
         return;
       }
 
-      const size_t start = etl::distance(begin(), position);
-      const size_t n = etl::distance(first, last);
+      const size_type start = etl::distance(begin(), position);
+      const size_type n = etl::distance(first, last);
 
       // No effect.
       if (start >= CAPACITY)
       {
-        is_truncated = true;
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+        set_truncated(true);
 
 #if defined(ETL_STRING_TRUNCATION_IS_ERROR)
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
 #endif
         return;
       }
@@ -965,10 +1019,12 @@ namespace etl
       {
         if (((current_size + n) > CAPACITY))
         {
-          is_truncated = true;
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+          set_truncated(true);
 
 #if defined(ETL_STRING_TRUNCATION_IS_ERROR)
           ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
 #endif
         }
 
@@ -982,20 +1038,23 @@ namespace etl
       else
       {
         // Lets do some shifting.
-        const size_t shift_amount = n;
-        const size_t to_position = start + shift_amount;
-        const size_t remaining_characters = current_size - start;
-        const size_t max_shift_characters = CAPACITY - start - shift_amount;
-        const size_t characters_to_shift = etl::min(max_shift_characters, remaining_characters);
+        const size_type shift_amount = n;
+        const size_type to_position = start + shift_amount;
+        const size_type remaining_characters = current_size - start;
+        const size_type max_shift_characters = CAPACITY - start - shift_amount;
+        const size_type characters_to_shift = etl::min(max_shift_characters, remaining_characters);
 
         // Will the string truncate?
         if ((start + shift_amount + remaining_characters) > CAPACITY)
         {
           current_size = CAPACITY;
-          is_truncated = true;
+
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+          set_truncated(true);
 
 #if defined(ETL_STRING_TRUNCATION_IS_ERROR)
           ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
 #endif
         }
         else
@@ -1019,20 +1078,22 @@ namespace etl
     ///\param position The position to insert before.
     ///\param str      The string to insert.
     //*********************************************************************
-    etl::ibasic_string<T>& insert(size_t position, const etl::ibasic_string<T>& str)
+    etl::ibasic_string<T>& insert(size_type position, const etl::ibasic_string<T>& str)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
       insert(begin() + position, str.cbegin(), str.cend());
 
-      if (str.truncated())
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      if (str.is_truncated())
       {
-        is_truncated = true;
+        set_truncated(true);
 
 #if defined(ETL_STRING_TRUNCATION_IS_ERROR)
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
       }
+#endif
 
       return *this;
     }
@@ -1044,7 +1105,7 @@ namespace etl
     ///\param subposition The subposition to start from.
     ///\param sublength   The number of characters to insert.
     //*********************************************************************
-    etl::ibasic_string<T>& insert(size_t position, const etl::ibasic_string<T>& str, size_t subposition, size_t sublength)
+    etl::ibasic_string<T>& insert(size_type position, const etl::ibasic_string<T>& str, size_type subposition, size_type sublength)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
       ETL_ASSERT(subposition <= str.size(), ETL_ERROR(string_out_of_bounds));
@@ -1056,14 +1117,16 @@ namespace etl
 
       insert(begin() + position, str.cbegin() + subposition, str.cbegin() + subposition + sublength);
 
-      if (str.truncated())
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      if (str.is_truncated())
       {
-        is_truncated = true;
+        set_truncated(true);
 
 #if defined(ETL_STRING_TRUNCATION_IS_ERROR)
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
       }
+#endif
 
       return *this;
     }
@@ -1073,7 +1136,7 @@ namespace etl
     ///\param position The position to insert before.
     ///\param s        The string to insert.
     //*********************************************************************
-    etl::ibasic_string<T>& insert(size_t position, const_pointer s)
+    etl::ibasic_string<T>& insert(size_type position, const_pointer s)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
@@ -1087,7 +1150,7 @@ namespace etl
     ///\param s        The string to insert.
     ///\param n        The number of characters to insert.
     //*********************************************************************
-    etl::ibasic_string<T>& insert(size_t position, const_pointer s, size_t n)
+    etl::ibasic_string<T>& insert(size_type position, const_pointer s, size_type n)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
@@ -1101,7 +1164,7 @@ namespace etl
     ///\param n        The number of characters to insert.
     ///\param c        The character to insert.
     //*********************************************************************
-    etl::ibasic_string<T>& insert(size_t position, size_t n, value_type c)
+    etl::ibasic_string<T>& insert(size_type position, size_type n, value_type c)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
@@ -1115,7 +1178,7 @@ namespace etl
     ///\param length   Number of characters.
     ///\return A refernce to this string.
     //*********************************************************************
-    etl::ibasic_string<T>& erase(size_t position, size_t length_ = npos)
+    etl::ibasic_string<T>& erase(size_type position, size_type length_ = npos)
     {
       // Limit the length.
       length_ = etl::min(length_, size() - position);
@@ -1154,7 +1217,7 @@ namespace etl
       }
 
       etl::copy(last, end(), first);
-      size_t n_delete = etl::distance(first, last);
+      size_type n_delete = etl::distance(first, last);
 
       current_size -= n_delete;
       p_buffer[current_size] = 0;
@@ -1177,20 +1240,22 @@ namespace etl
     ///\param len The number of characters to copy.
     ///\param pos The position to start copying from.
     //*********************************************************************
-    size_t copy(pointer s, size_t len, size_t pos = 0)
+    size_type copy(pointer s, size_type len, size_type pos = 0)
     {
       if ((pos + len > size()))
       {
-        is_truncated = true;
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+        set_truncated(true);
 
 #if defined(ETL_STRING_TRUNCATION_IS_ERROR)
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
+#endif
       }
 
-      size_t endpos = etl::min(pos + len, size());
+      size_type endpos = etl::min(pos + len, size());
 
-      for (size_t i = pos; i < endpos; ++i)
+      for (size_type i = pos; i < endpos; ++i)
       {
         *s++ = p_buffer[i];
       }
@@ -1203,7 +1268,7 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_t find(const ibasic_string<T>& str, size_t pos = 0) const
+    size_type find(const ibasic_string<T>& str, size_type pos = 0) const
     {
       if ((pos + str.size()) > size())
       {
@@ -1227,7 +1292,7 @@ namespace etl
     ///\param s   Pointer to the content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_t find(const_pointer s, size_t pos = 0) const
+    size_type find(const_pointer s, size_type pos = 0) const
     {
 #if defined(ETL_DEBUG)
       if ((pos + etl::strlen(s)) > size())
@@ -1254,7 +1319,7 @@ namespace etl
     ///\param pos The position to start searching from.
     ///\param n   The number of characters to search for.
     //*********************************************************************
-    size_t find(const_pointer s, size_t pos, size_t n) const
+    size_type find(const_pointer s, size_type pos, size_type n) const
     {
 #if defined(ETL_DEBUG)
       if ((pos + etl::strlen(s) - n) > size())
@@ -1280,7 +1345,7 @@ namespace etl
     ///\param c        The character to find.
     ///\param position The position to start searching from.
     //*********************************************************************
-    size_t find(T c, size_t position = 0) const
+    size_type find(T c, size_type position = 0) const
     {
       const_iterator i = etl::find(begin() + position, end(), c);
 
@@ -1299,7 +1364,7 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_t rfind(const ibasic_string<T>& str, size_t position = npos) const
+    size_type rfind(const ibasic_string<T>& str, size_type position = npos) const
     {
       if ((str.size()) > size())
       {
@@ -1330,9 +1395,9 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_t rfind(const_pointer s, size_t position = npos) const
+    size_type rfind(const_pointer s, size_type position = npos) const
     {
-      size_t len = etl::strlen(s);
+      size_type len = etl::strlen(s);
 
       if (len > size())
       {
@@ -1366,7 +1431,7 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_t rfind(const_pointer s, size_t position, size_t length_) const
+    size_type rfind(const_pointer s, size_type position, size_type length_) const
     {
       if (length_ > size())
       {
@@ -1400,7 +1465,7 @@ namespace etl
     ///\param c   The character to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_t rfind(T c, size_t position = npos) const
+    size_type rfind(T c, size_type position = npos) const
     {
       if (position >= size())
       {
@@ -1427,7 +1492,7 @@ namespace etl
     ///\param length   The number of characters to replace.
     ///\param str      The string to replace it with.
     //*********************************************************************
-    ibasic_string& replace(size_t position, size_t length_, const ibasic_string& str)
+    ibasic_string& replace(size_type position, size_type length_, const ibasic_string& str)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
@@ -1461,14 +1526,16 @@ namespace etl
       // Insert the new stuff.
       insert(first_, str.begin(), str.end());
 
-      if (str.truncated())
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      if (str.is_truncated())
       {
-        is_truncated = true;
+        set_truncated(true);
 
 #if defined(ETL_STRING_TRUNCATION_IS_ERROR)
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
       }
+#endif
 
       return *this;
     }
@@ -1476,7 +1543,7 @@ namespace etl
     //*********************************************************************
     /// Replace characters from 'position' of 'length' with 'str' from 'subpsotion' of 'sublength'.
     //*********************************************************************
-    ibasic_string& replace(size_t position, size_t length_, const ibasic_string& str, size_t subposition, size_t sublength)
+    ibasic_string& replace(size_type position, size_type length_, const ibasic_string& str, size_type subposition, size_type sublength)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
       ETL_ASSERT(subposition <= str.size(), ETL_ERROR(string_out_of_bounds));
@@ -1491,14 +1558,16 @@ namespace etl
       // Insert the new stuff.
       insert(position, str, subposition, sublength);
 
-      if (str.truncated())
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      if (str.is_truncated())
       {
-        is_truncated = true;
+        set_truncated(true);
 
 #if defined(ETL_STRING_TRUNCATION_IS_ERROR)
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
       }
+#endif
 
       return *this;
     }
@@ -1506,7 +1575,7 @@ namespace etl
     //*********************************************************************
     /// Replace characters from 'position' of 'length' with pointed to string.
     //*********************************************************************
-    ibasic_string& replace(size_t position, size_t length_, const_pointer s)
+    ibasic_string& replace(size_type position, size_type length_, const_pointer s)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
@@ -1543,7 +1612,7 @@ namespace etl
     //*********************************************************************
     /// Replace characters from 'position' of 'length' with 'n' characters from pointed to string.
     //*********************************************************************
-    ibasic_string& replace(size_t position, size_t length_, const_pointer s, size_t n)
+    ibasic_string& replace(size_type position, size_type length_, const_pointer s, size_type n)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
@@ -1562,7 +1631,7 @@ namespace etl
     //*********************************************************************
     /// Replace characters from 'first' to 'last' with 'n' characters from pointed to string.
     //*********************************************************************
-    ibasic_string& replace(const_iterator first, const_iterator last, const_pointer s, size_t n)
+    ibasic_string& replace(const_iterator first, const_iterator last, const_pointer s, size_type n)
     {
       // Quick hack, as iterators are pointers.
       iterator first_ = const_cast<iterator>(first);
@@ -1580,7 +1649,7 @@ namespace etl
     //*********************************************************************
     /// Replace characters from 'position' of 'length' with 'n' copies of 'c'.
     //*********************************************************************
-    ibasic_string& replace(size_t position, size_t length_, size_t n, value_type c)
+    ibasic_string& replace(size_type position, size_type length_, size_type n, value_type c)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
@@ -1599,7 +1668,7 @@ namespace etl
     //*********************************************************************
     /// Replace characters from 'first' of 'last' with 'n' copies of 'c'.
     //*********************************************************************
-    ibasic_string& replace(const_iterator first, const_iterator last, size_t n, value_type c)
+    ibasic_string& replace(const_iterator first, const_iterator last, size_type n, value_type c)
     {
       // Quick hack, as iterators are pointers.
       iterator first_ = const_cast<iterator>(first);
@@ -1647,7 +1716,7 @@ namespace etl
     //*************************************************************************
     /// Compare position / length with string.
     //*************************************************************************
-    int compare(size_t position, size_t length_, const ibasic_string& str) const
+    int compare(size_type position, size_type length_, const ibasic_string& str) const
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
@@ -1663,7 +1732,7 @@ namespace etl
     //*************************************************************************
     /// Compare position / length with string / subposition / sublength.
     //*************************************************************************
-    int compare(size_t position, size_t length_, const ibasic_string& str, size_t subposition, size_t sublength) const
+    int compare(size_type position, size_type length_, const ibasic_string& str, size_type subposition, size_type sublength) const
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
       ETL_ASSERT(subposition <= str.size(), ETL_ERROR(string_out_of_bounds));
@@ -1692,7 +1761,7 @@ namespace etl
     //*************************************************************************
     /// Compare position / length with C string.
     //*************************************************************************
-    int compare(size_t position, size_t length_, const_pointer s) const
+    int compare(size_type position, size_type length_, const_pointer s) const
     {
       return compare(p_buffer + position,
                      p_buffer + position + length_,
@@ -1703,7 +1772,7 @@ namespace etl
     //*************************************************************************
     /// Compare position / length with C string / n.
     //*************************************************************************
-    int compare(size_t position, size_t length_, const_pointer s, size_t n) const
+    int compare(size_type position, size_type length_, const_pointer s, size_type n) const
     {
       return compare(p_buffer + position,
                      p_buffer + position + length_,
@@ -1716,7 +1785,7 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_t find_first_of(const ibasic_string<T>& str, size_t position = 0) const
+    size_type find_first_of(const ibasic_string<T>& str, size_type position = 0) const
     {
       return find_first_of(str.c_str(), position, str.size());
     }
@@ -1726,7 +1795,7 @@ namespace etl
     ///\param s   Pointer to the content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_t find_first_of(const_pointer s, size_t position = 0) const
+    size_type find_first_of(const_pointer s, size_type position = 0) const
     {
       return find_first_of(s, position, etl::strlen(s));
     }
@@ -1737,13 +1806,13 @@ namespace etl
     ///\param pos The position to start searching from.
     ///\param n   The number of characters to search for.
     //*********************************************************************
-    size_t find_first_of(const_pointer s, size_t position, size_t n) const
+    size_type find_first_of(const_pointer s, size_type position, size_type n) const
     {
       if (position < size())
       {
-        for (size_t i = position; i < size(); ++i)
+        for (size_type i = position; i < size(); ++i)
         {
-          for (size_t j = 0; j < n; ++j)
+          for (size_type j = 0; j < n; ++j)
           {
             if (p_buffer[i] == s[j])
             {
@@ -1761,11 +1830,11 @@ namespace etl
     ///\param c   The character to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_t find_first_of(value_type c, size_t position = 0) const
+    size_type find_first_of(value_type c, size_type position = 0) const
     {
       if (position < size())
       {
-        for (size_t i = position; i < size(); ++i)
+        for (size_type i = position; i < size(); ++i)
         {
           if (p_buffer[i] == c)
           {
@@ -1782,7 +1851,7 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_t find_last_of(const ibasic_string<T>& str, size_t position = npos) const
+    size_type find_last_of(const ibasic_string<T>& str, size_type position = npos) const
     {
       return find_last_of(str.c_str(), position, str.size());
     }
@@ -1792,7 +1861,7 @@ namespace etl
     ///\param s   Pointer to the content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_t find_last_of(const_pointer s, size_t position = npos) const
+    size_type find_last_of(const_pointer s, size_type position = npos) const
     {
       return find_last_of(s, position, etl::strlen(s));
     }
@@ -1803,7 +1872,7 @@ namespace etl
     ///\param pos The position to start searching from.
     ///\param n   The number of characters to search for.
     //*********************************************************************
-    size_t find_last_of(const_pointer s, size_t position, size_t n) const
+    size_type find_last_of(const_pointer s, size_type position, size_type n) const
     {
       if (empty())
       {
@@ -1816,7 +1885,7 @@ namespace etl
 
       while (it != rend())
       {
-        for (size_t j = 0; j < n; ++j)
+        for (size_type j = 0; j < n; ++j)
         {
           if (p_buffer[position] == s[j])
           {
@@ -1836,7 +1905,7 @@ namespace etl
     ///\param c   The character to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_t find_last_of(value_type c, size_t position = npos) const
+    size_type find_last_of(value_type c, size_type position = npos) const
     {
       if (empty())
       {
@@ -1866,7 +1935,7 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_t find_first_not_of(const ibasic_string<T>& str, size_t position = 0) const
+    size_type find_first_not_of(const ibasic_string<T>& str, size_type position = 0) const
     {
       return find_first_not_of(str.c_str(), position, str.size());
     }
@@ -1876,7 +1945,7 @@ namespace etl
     ///\param s   Pointer to the content to not find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_t find_first_not_of(const_pointer s, size_t position = 0) const
+    size_type find_first_not_of(const_pointer s, size_type position = 0) const
     {
       return find_first_not_of(s, position, etl::strlen(s));
     }
@@ -1887,15 +1956,15 @@ namespace etl
     ///\param pos The position to start searching from.
     ///\param n   The number of characters to search for.
     //*********************************************************************
-    size_t find_first_not_of(const_pointer s, size_t position, size_t n) const
+    size_type find_first_not_of(const_pointer s, size_type position, size_type n) const
     {
       if (position < size())
       {
-        for (size_t i = position; i < size(); ++i)
+        for (size_type i = position; i < size(); ++i)
         {
           bool found = false;
 
-          for (size_t j = 0; j < n; ++j)
+          for (size_type j = 0; j < n; ++j)
           {
             if (p_buffer[i] == s[j])
             {
@@ -1918,11 +1987,11 @@ namespace etl
     ///\param c   The character to not find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_t find_first_not_of(value_type c, size_t position = 0) const
+    size_type find_first_not_of(value_type c, size_type position = 0) const
     {
       if (position < size())
       {
-        for (size_t i = position; i < size(); ++i)
+        for (size_type i = position; i < size(); ++i)
         {
           if (p_buffer[i] != c)
           {
@@ -1939,7 +2008,7 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_t find_last_not_of(const ibasic_string<T>& str, size_t position = npos) const
+    size_type find_last_not_of(const ibasic_string<T>& str, size_type position = npos) const
     {
       return find_last_not_of(str.c_str(), position, str.size());
     }
@@ -1949,7 +2018,7 @@ namespace etl
     ///\param s   The pointer to the content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_t find_last_not_of(const_pointer s, size_t position = npos) const
+    size_type find_last_not_of(const_pointer s, size_type position = npos) const
     {
       return find_last_not_of(s, position, etl::strlen(s));
     }
@@ -1960,7 +2029,7 @@ namespace etl
     ///\param pos The position to start searching from.
     ///\param n   The number of characters to use.
     //*********************************************************************
-    size_t find_last_not_of(const_pointer s, size_t position, size_t n) const
+    size_type find_last_not_of(const_pointer s, size_type position, size_type n) const
     {
       if (empty())
       {
@@ -1975,7 +2044,7 @@ namespace etl
       {
         bool found = false;
 
-        for (size_t j = 0; j < n; ++j)
+        for (size_type j = 0; j < n; ++j)
         {
           if (p_buffer[position] == s[j])
           {
@@ -1998,7 +2067,7 @@ namespace etl
     //*********************************************************************
     //
     //*********************************************************************
-    size_t find_last_not_of(value_type c, size_t position = npos) const
+    size_type find_last_not_of(value_type c, size_type position = npos) const
     {
       if (empty())
       {
@@ -2071,7 +2140,7 @@ namespace etl
     //*************************************************************************
     ibasic_string& operator += (T rhs)
     {
-      append(size_t(1), rhs);
+      append(size_type(1), rhs);
 
       return *this;
     }
@@ -2088,7 +2157,7 @@ namespace etl
     //*********************************************************************
     /// Constructor.
     //*********************************************************************
-    ibasic_string(T* p_buffer_, size_t MAX_SIZE_)
+    ibasic_string(T* p_buffer_, size_type MAX_SIZE_)
       : string_base(MAX_SIZE_),
         p_buffer(p_buffer_)
     {
@@ -2102,7 +2171,9 @@ namespace etl
       current_size = 0;
       cleanup();
       p_buffer[0] = 0;
-      is_truncated = false;
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      set_truncated(false);
+#endif
     }
 
     //*************************************************************************
@@ -2160,10 +2231,12 @@ namespace etl
     //*************************************************************************
     void cleanup()
     {
+#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
       if (is_secure())
       {
         etl::memory_clear_range(&p_buffer[current_size], &p_buffer[CAPACITY]);
       }
+#endif
     }
 
     //*************************************************************************
@@ -2187,10 +2260,12 @@ namespace etl
 #endif
     ~ibasic_string()
     {
+#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
       if (is_secure())
       {
         initialise();
       }
+#endif
     }
   };
 
