@@ -1,4 +1,14 @@
 ===============================================================================
+18.19.0
+Modified strings for better memory efficiency. String truncation detection and clear-after-use can be disabled.
+Added ETL_DISABLE_STRING_TRUNCATION_CHECKS macro check in platform.h.
+Added ETL_DISABLE_STRING_CLEAR_AFTER_USE macro check in platform.h.
+Added etl::flags to wrap boolean flag functionality.
+Four parameter equal() algorithm variant added.
+Modified is_pod definition when using the STL.
+Added are_all_same trait.
+
+===============================================================================
 18.18.2
 Change to array_view member variable declaration, for constructor from array.
 

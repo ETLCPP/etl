@@ -152,7 +152,14 @@ namespace etl
 
     typedef size_t size_type;
 
-    static const size_type npos = etl::integral_limits<size_type>::max;
+#if ETL_CPP11_SUPPORTED
+    static constexpr size_type npos = etl::integral_limits<size_type>::max;
+#else
+    enum
+    {
+      npos = etl::integral_limits<size_type>::max
+    };
+#endif
 
     //*************************************************************************
     /// Gets the current size of the string.
