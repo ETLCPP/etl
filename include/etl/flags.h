@@ -77,6 +77,11 @@ namespace etl
     {
     }
 
+    flags(const flags<T, MASK>& initial) ETL_NOEXCEPT
+      : data(initial.value())
+    {
+    }
+
     //*************************************************************************
     /// Tests bits.
     //*************************************************************************
@@ -86,6 +91,7 @@ namespace etl
       return (data & position) != value_type(0);
     }
 
+    //*******************************************
     bool test(value_type position) const
     {
       return (data & position) != value_type(0);
@@ -113,16 +119,6 @@ namespace etl
 
     //*******************************************
     template <value_type position>
-    flags<T, MASK>& set() ETL_NOEXCEPT
-    {
-      data |= position;
-      data &= MASK;
-
-      return *this;
-    }
-
-    //*******************************************
-    template <value_type position>
     flags<T, MASK>& set(bool value) ETL_NOEXCEPT
     {
       if (value)
@@ -134,6 +130,16 @@ namespace etl
         data &= ~position;
       }
 
+      data &= MASK;
+
+      return *this;
+    }
+
+    //*******************************************
+    template <value_type position>
+    flags<T, MASK>& set() ETL_NOEXCEPT
+    {
+      data |= position;
       data &= MASK;
 
       return *this;
@@ -166,7 +172,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Reset the flags.
+    /// Clear all of the flags.
     //*************************************************************************
     flags<T, MASK>& clear() ETL_NOEXCEPT
     {
@@ -195,7 +201,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Flip all of the bits.
+    /// Flip bits.
     //*************************************************************************
     flags<T, MASK>& flip() ETL_NOEXCEPT
     {
@@ -205,38 +211,6 @@ namespace etl
       return *this;
     }
 
-    //*************************************************************************
-    /// Flip the bit at the position.
-    //*************************************************************************
-#if ETL_CPP11_SUPPORTED && ETL_USING_STL
-    //*******************************************
-    template <value_type... positions>
-    flags<T, MASK>& flip() ETL_NOEXCEPT
-    {
-      for (value_type position : {positions...})
-      {
-        data ^= position;
-      }
-
-      data &= MASK;
-
-      return *this;
-    }
-
-    //*******************************************
-    template<typename... TArgs>
-    flags<T, MASK>& flip(TArgs... positions) ETL_NOEXCEPT
-    {
-      for (value_type position : {positions...})
-      {
-        data ^= position;
-      }
-
-      data &= MASK;
-
-      return *this;
-    }
-#else
     //*******************************************
     template <value_type position>
     flags<T, MASK>& flip() ETL_NOEXCEPT
@@ -246,16 +220,6 @@ namespace etl
 
       return *this;
     }
-
-    //*******************************************
-    flags<T, MASK>& flip(size_type position) ETL_NOEXCEPT
-    {
-      data ^= position;
-      data &= MASK;
-
-      return *this;
-    }
-#endif
 
     //*******************************************
     flags<T, MASK>& flip(value_type position) ETL_NOEXCEPT
@@ -271,45 +235,21 @@ namespace etl
     //*************************************************************************
     bool all() const ETL_NOEXCEPT
     {
-      return (data & MASK) == ALL_SET;
+      return data == MASK;
     }
 
-#if ETL_CPP11_SUPPORTED&& ETL_USING_STL
     //*******************************************
-    template <value_type... positions>
+    template <value_type position>
     bool all_of() const ETL_NOEXCEPT
     {
-      for (value_type position : {positions...})
-      {
-        if ((data & position) == value_type(0))
-        {
-          return false;
-        }
-      }
-
-      return true;
+      return (data & (position & MASK)) == (position & MASK);
     }
-
-    //*******************************************
-    template<typename... TArgs>
-    bool all_of(TArgs... positions) const ETL_NOEXCEPT
-    {  
-      for (value_type position : {positions...})
-      {
-        if ((data & position) == value_type(0))
-        {
-          return false;
-        }
-      }
-
-      return true;
-    }
-#endif
 
     //*******************************************
     bool all_of(value_type position) const ETL_NOEXCEPT
-    {
-      return (data & position) != value_type(0);
+    {  
+      position &= MASK;
+      return (data & position) == position;
     }
 
     //*************************************************************************
@@ -320,21 +260,12 @@ namespace etl
       return (data & MASK) == ALL_CLEAR;
     }
 
-#if ETL_CPP11_SUPPORTED && ETL_USING_STL
     //*******************************************
-    template <value_type... positions>
+    template <value_type position>
     bool none_of() const ETL_NOEXCEPT
     {
-      return !any_of(positions...);
+      return !any_of(position);
     }
-
-    //*******************************************
-    template<typename... TArgs>
-    bool none_of(TArgs... positions) const ETL_NOEXCEPT
-    {
-      return !any_of(positions...);
-    }
-#endif
 
     //*******************************************
     bool none_of(value_type position) const ETL_NOEXCEPT
@@ -347,119 +278,20 @@ namespace etl
     //*************************************************************************
     bool any() const ETL_NOEXCEPT
     {
-      return !none();
+      return (data & MASK) != value_type(0);
     }
 
-#if ETL_CPP11_SUPPORTED && ETL_USING_STL
     //*******************************************
-    template <value_type... positions>
+    template <value_type position>
     bool any_of() const ETL_NOEXCEPT
     {
-      for (value_type position : {positions...})
-      {
-        if ((data & position) != value_type(0))
-        {
-          return true;
-        }
-      }
-
-      return false;
+      return (data & (position & MASK)) != value_type(0);
     }
-
-    //*******************************************
-    template<typename... TArgs>
-    bool any_of(TArgs... positions) const ETL_NOEXCEPT
-    {
-      for (value_type position : {positions...})
-      {
-        if ((data & position) != value_type(0))
-        {
-          return true;
-        }
-      }
-
-      return false;
-    }
-#endif
 
     //*******************************************
     bool any_of(value_type position) const
     {
-      return (data & position) != value_type(0);
-    }
-
-    //*************************************************************************
-    /// Set from a string.
-    //*************************************************************************
-    flags<T, MASK>& from_string(const char* text) ETL_NOEXCEPT
-    {
-      reset();
-
-      size_t i = etl::min(NBITS, etl::strlen(text));
-
-      while (i > 0)
-      {
-        set(--i, *text++ == L'1');
-      }
-
-      data &= MASK;
-
-      return *this;
-    }
-
-    //*************************************************************************
-    /// Set from a wide string.
-    //*************************************************************************
-    flags<T, MASK>& from_string(const wchar_t* text) ETL_NOEXCEPT
-    {
-      reset();
-
-      size_t i = etl::min(NBITS, etl::strlen(text));
-
-      while (i > 0)
-      {
-        set(--i, *text++ == L'1');
-      }
-
-      data &= MASK;
-
-      return *this;
-    }
-
-    //*************************************************************************
-    /// Set from a u16 string.
-    //*************************************************************************
-    flags<T, MASK>& from_string(const char16_t* text) ETL_NOEXCEPT
-    {
-      reset();
-
-      size_t i = etl::min(NBITS, etl::strlen(text));
-
-      while (i > 0)
-      {
-        set(--i, *text++ == u'1');
-      }
-
-      data &= MASK;
-
-      return *this;
-    }
-
-    //*************************************************************************
-    /// Set from a u32 string.
-    //*************************************************************************
-    flags<T, MASK>& from_string(const char32_t* text) ETL_NOEXCEPT
-    {
-      reset();
-
-      size_t i = etl::min(NBITS, etl::strlen(text));
-
-      while (i > 0)
-      {
-        set(--i, *text++ == U'1');
-      }
-
-      return *this;
+      return (data & (position & MASK)) != value_type(0);
     }
 
     //*************************************************************************
@@ -489,9 +321,9 @@ namespace etl
     //*************************************************************************
     /// operator &=
     //*************************************************************************
-    flags<T, MASK>& operator &=(flags<T, MASK> other) ETL_NOEXCEPT
+    flags<T, MASK>& operator &=(value_type other) ETL_NOEXCEPT
     {
-      data &= other.data;
+      data &= other;
 
       return *this;
     }
@@ -499,9 +331,10 @@ namespace etl
     //*************************************************************************
     /// operator |=
     //*************************************************************************
-    flags<T, MASK>& operator |=(flags<T, MASK> other) ETL_NOEXCEPT
+    flags<T, MASK>& operator |=(value_type other) ETL_NOEXCEPT
     {
-      data |= other.data;
+      data |= other;
+      data &= MASK;
 
       return *this;
     }
@@ -509,29 +342,10 @@ namespace etl
     //*************************************************************************
     /// operator ^=
     //*************************************************************************
-    flags<T, MASK>& operator ^=(flags<T, MASK> other) ETL_NOEXCEPT
+    flags<T, MASK>& operator ^=(value_type other) ETL_NOEXCEPT
     {
-      data ^= other.data;
-
-      return *this;
-    }
-
-    //*************************************************************************
-    /// operator <<=
-    //*************************************************************************
-    flags<T, MASK>& operator <<=(size_t shift) ETL_NOEXCEPT
-    {
-      data <<= shift;
-
-      return *this;
-    }
-
-    //*************************************************************************
-    /// operator >>=
-    //*************************************************************************
-    flags<T, MASK>& operator >>=(size_t shift) ETL_NOEXCEPT
-    {
-      data >>= shift;
+      data ^= other;
+      data &= MASK;
 
       return *this;
     }
@@ -550,6 +364,16 @@ namespace etl
     }
 
     //*************************************************************************
+    /// operator =
+    //*************************************************************************
+    flags<T, MASK>& operator =(value_type other) ETL_NOEXCEPT
+    {
+      data = (other & MASK);
+
+      return *this;
+    }
+
+    //*************************************************************************
     /// swap
     //*************************************************************************
     void swap(flags<T, MASK>& other) ETL_NOEXCEPT
@@ -563,36 +387,12 @@ namespace etl
   };
 
   //***************************************************************************
-  /// operator &
+  /// operator ==
   //***************************************************************************
   template <typename T, T MASK>
-  flags<T, MASK> operator & (flags<T, MASK> lhs, flags<T, MASK> rhs) ETL_NOEXCEPT
+  bool operator == (flags<T, MASK> lhs, flags<T, MASK> rhs) ETL_NOEXCEPT
   {
-    flags<T, MASK> temp(lhs);
-    temp &= rhs;
-    return temp;
-  }
-
-  //***************************************************************************
-  /// operator |
-  //***************************************************************************
-  template <typename T, T MASK>
-  flags<T, MASK> operator | (flags<T, MASK> lhs, flags<T, MASK> rhs) ETL_NOEXCEPT
-  {
-    flags<T, MASK> temp(lhs);
-    temp |= rhs;
-    return temp;
-  }
-
-  //***************************************************************************
-  /// operator ^
-  //***************************************************************************
-  template <typename T, T MASK>
-  flags<T, MASK> operator ^ (flags<T, MASK> lhs, flags<T, MASK> rhs) ETL_NOEXCEPT
-  {
-    flags<T, MASK> temp(lhs);
-    temp ^= rhs;
-    return temp;
+    return lhs.value() == rhs.value();
   }
 
   //***************************************************************************
