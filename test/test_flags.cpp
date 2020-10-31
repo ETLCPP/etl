@@ -75,21 +75,106 @@ namespace
     {
       Flags flags;
 
-      CHECK_EQUAL(0U, flags);
-      CHECK_EQUAL(0U, flags.value());
+      CHECK_EQUAL(int(FNONE), flags);
+      CHECK_EQUAL(int(FNONE), flags.value());
     }
 
     //*************************************************************************
     TEST(test_value)
     {
-      Flags flags;
+      Flags flags(F1346);
 
-      CHECK_EQUAL(int(FNONE), int(flags));
-      CHECK_EQUAL(int(FNONE), int(flags.value()));
-
-      flags.value(int(F1346));
       CHECK_EQUAL(int(F1346), int(flags));
       CHECK_EQUAL(int(F1346), int(flags.value()));
+    }
+
+    //*************************************************************************
+    TEST(test_constexpr)
+    {
+      constexpr Flags cef1;
+      constexpr Flags cef2(F01234567);
+      constexpr Flags cef3(cef2);
+      constexpr Flags cef4(cef2.value());
+      constexpr bool is_f1a     = cef2.test(F1);
+      constexpr bool is_f1b     = cef2.test<F1>();
+      constexpr bool is_all     = cef2.all();
+      constexpr bool is_all_of1= cef2.all_of(F1357);
+      constexpr bool is_all_of2 = cef2.all_of<F1357>();
+
+      constexpr bool is_any     = cef2.any();
+      constexpr bool is_any_of1 = cef2.any_of(F1357);
+      constexpr bool is_any_of2 = cef2.any_of<F1357>();
+
+      constexpr bool is_none     = cef2.none();
+      constexpr bool is_none_of1 = cef2.none_of(F1357);
+      constexpr bool is_none_of2 = cef2.none_of<F1357>();
+
+      constexpr uint8_t value = cef2;
+      constexpr Flags cef5(Flags(F1357).flip());
+      constexpr Flags cef6(Flags(F01234567).flip(F1357));
+      constexpr Flags cef7(Flags(F01234567).flip<F1357>());
+
+      constexpr Flags cef8(Flags(F01234567).reset(F1357));
+      constexpr Flags cef9(Flags(F01234567).reset<F1357>());
+
+      constexpr Flags cef10(Flags(F01234567).clear());
+
+      constexpr Flags cef11(Flags(F1357).set(F0246));
+      constexpr Flags cef12(Flags(F1357).set<F0246>());
+      constexpr Flags cef13(Flags(F1357).set(F0246, true));
+      constexpr Flags cef14(Flags(F1357).set<F0246>(true));
+      constexpr Flags cef15(Flags(F1357).set<F0246, true>());
+
+      constexpr Flags cef16(Flags(F1357).value(F0246));
+
+      constexpr Flags cef17(Flags(F1357).operator =(F01234567));
+      constexpr Flags cef18(Flags(F1357).operator =(cef2));
+
+      constexpr bool is_same1 = (cef3 == cef4);
+      constexpr bool is_same2 = (cef3 == F01234567);
+      constexpr bool is_same3 = (F01234567 == cef3);
+
+      constexpr bool is_not_same1 = (cef3 != cef4);
+      constexpr bool is_not_same2 = (cef3 != F01234567);
+      constexpr bool is_not_same3 = (F01234567 != cef3);
+
+      CHECK_EQUAL(int(FNONE),     int(cef1));
+      CHECK_EQUAL(int(F01234567), int(cef2));
+      CHECK_EQUAL(int(F01234567), int(cef3));
+      CHECK_EQUAL(int(F01234567), int(cef4));
+      CHECK_EQUAL(int(F0246),     int(cef5));
+      CHECK_EQUAL(int(F0246),     int(cef6));
+      CHECK_EQUAL(int(F0246),     int(cef7));
+      CHECK_EQUAL(int(F0246),     int(cef8));
+      CHECK_EQUAL(int(F0246),     int(cef9));
+      CHECK_EQUAL(int(FNONE),     int(cef10));
+      CHECK_EQUAL(int(F01234567), int(cef11));
+      CHECK_EQUAL(int(F01234567), int(cef12));
+      CHECK_EQUAL(int(F01234567), int(cef13));
+      CHECK_EQUAL(int(F01234567), int(cef14));
+      CHECK_EQUAL(int(F01234567), int(cef15));
+      CHECK_EQUAL(int(F0246),     int(cef16));
+      CHECK_EQUAL(int(F01234567), int(cef17));
+      CHECK_EQUAL(int(cef2),      int(cef18));
+      CHECK_EQUAL(int(cef2),      int(value));
+      CHECK(is_f1a);
+      CHECK(is_f1b);
+      CHECK(is_all);
+      CHECK(is_all_of1);
+      CHECK(is_all_of2);
+      CHECK(is_any);
+      CHECK(is_any_of1);
+      CHECK(is_any_of2);
+      CHECK(!is_none);
+      CHECK(!is_none_of1);
+      CHECK(!is_none_of2);
+      CHECK_EQUAL(int(cef2), int(value));
+      CHECK(is_same1);
+      CHECK(is_same2);
+      CHECK(is_same3);
+      CHECK(!is_not_same1);
+      CHECK(!is_not_same2);
+      CHECK(!is_not_same3);
     }
 
     //*************************************************************************
