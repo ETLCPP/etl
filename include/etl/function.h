@@ -148,7 +148,7 @@ namespace etl
     //*************************************************************************
     /// The function operator that calls the destination function.
     //*************************************************************************
-    void operator ()() const ETL_OVERRIDE
+    virtual void operator ()() const ETL_OVERRIDE
     {
       // Call the object's member function.
       (p_object->*p_function)();
@@ -214,7 +214,7 @@ namespace etl
     //*************************************************************************
     /// The function operator that calls the destination function.
     //*************************************************************************
-    void operator ()() const ETL_OVERRIDE
+    virtual void operator ()() const ETL_OVERRIDE
     {
       // Call the function.
       (*p_function)();
@@ -290,7 +290,7 @@ namespace etl
     /// The function operator that calls the destination function.
     ///\param data The data to pass to the function.
     //*************************************************************************
-    void operator ()() const ETL_OVERRIDE
+    virtual void operator ()() const ETL_OVERRIDE
     {
       // Call the object's member function.
       (p_object->*Function)();
@@ -344,7 +344,7 @@ namespace etl
     /// The function operator that calls the destination function.
     ///\param data The data to pass to the function.
     //*************************************************************************
-    void operator ()() const ETL_OVERRIDE
+    virtual void operator ()() const ETL_OVERRIDE
     {
       // Call the object's member function.
       (Instance.*Function)();
@@ -408,7 +408,7 @@ namespace etl
     /// The function operator that calls the destination function.
     ///\param data The data to pass to the function.
     //*************************************************************************
-    void operator ()() const ETL_OVERRIDE
+    virtual void operator ()() const ETL_OVERRIDE
     {
       // Call the function.
       (*Function)();
