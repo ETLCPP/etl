@@ -579,7 +579,7 @@ namespace etl
 
     T* load(etl::memory_order order = etl::memory_order_seq_cst) const volatile
     {
-      return __sync_fetch_and_add(&value, 0);
+      return (T*)__sync_fetch_and_add(&value, 0);
     }
 
     // Fetch add
