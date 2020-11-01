@@ -1,4 +1,8 @@
 ===============================================================================
+18.19.2
+Expanded the use of constexpr in etl::flags
+
+===============================================================================
 18.19.1
 Added ETL_CONSTEXPR for state_chart, transision and state constructors.
 Eliminate ARM compiler v5 warnings for state_chart.
