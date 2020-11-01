@@ -292,7 +292,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR flags<T, MASK>& operator &=(value_type pattern) ETL_NOEXCEPT
     {
-      data &= other;
+      data &= pattern;
 
       return *this;
     }
@@ -302,7 +302,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR flags<T, MASK>& operator |=(value_type pattern) ETL_NOEXCEPT
     {
-      data |= (other & MASK);
+      data |= (pattern & MASK);
 
       return *this;
     }
@@ -312,7 +312,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR flags<T, MASK>& operator ^=(value_type pattern) ETL_NOEXCEPT
     {
-      data ^= (other & MASK);
+      data ^= (pattern & MASK);
 
       return *this;
     }
@@ -332,7 +332,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR flags<T, MASK>& operator =(value_type pattern) ETL_NOEXCEPT
     {
-      data = (other & MASK);
+      data = (pattern & MASK);
 
       return *this;
     }
