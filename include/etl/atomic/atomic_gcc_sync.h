@@ -749,6 +749,7 @@ namespace etl
     mutable volatile uintptr_t value;
   };
 
+  typedef std::atomic<bool>                atomic_bool;
   typedef etl::atomic<char>                atomic_char;
   typedef etl::atomic<signed char>         atomic_schar;
   typedef etl::atomic<unsigned char>       atomic_uchar;

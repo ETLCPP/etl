@@ -487,8 +487,8 @@ namespace
       CHECK_EQUAL(compare_expected, test_expected);
       CHECK_EQUAL(compare.load(), test.load());
     }
-
-    //=========================================================================
+    
+    //*************************************************************************
 #if REALTIME_TEST
 
 #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported

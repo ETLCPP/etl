@@ -35,6 +35,7 @@ set(TEST_SOURCE_FILES
 	test_bloom_filter.cpp
 	test_bresenham_line.cpp
 	test_bsd_checksum.cpp
+	test_buffer_descriptors.cpp
 	test_callback_service.cpp
 	test_callback_timer.cpp
 	test_checksum.cpp
@@ -54,6 +55,7 @@ set(TEST_SOURCE_FILES
 	test_error_handler.cpp
 	test_exception.cpp
 	test_fixed_iterator.cpp
+	test_flags
 	test_flat_map.cpp
 	test_flat_multimap.cpp
 	test_flat_multiset.cpp

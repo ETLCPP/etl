@@ -556,6 +556,7 @@ namespace etl
     std::atomic<T*> value;
   };
 
+  typedef std::atomic<bool>                atomic_bool;
   typedef std::atomic<char>                atomic_char;
   typedef std::atomic<signed char>         atomic_schar;
   typedef std::atomic<unsigned char>       atomic_uchar;
