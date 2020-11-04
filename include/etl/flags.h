@@ -101,7 +101,10 @@ namespace etl
     /// Set the bits.
     //*************************************************************************
     template <value_type pattern, bool value>
-    ETL_CONSTEXPR flags<T, MASK>& set() ETL_NOEXCEPT
+#if !defined(ETL_COMPILER_ARM5)
+    ETL_CONSTEXPR 
+#endif
+    flags<T, MASK>& set() ETL_NOEXCEPT
     {
       value ? data |= (pattern & MASK) : data &= (~pattern & MASK);
 
@@ -110,7 +113,10 @@ namespace etl
 
     //*******************************************
     template <value_type pattern>
-    ETL_CONSTEXPR flags<T, MASK>& set(bool value) ETL_NOEXCEPT
+#if !defined(ETL_COMPILER_ARM5)
+    ETL_CONSTEXPR
+#endif
+    flags<T, MASK>& set(bool value) ETL_NOEXCEPT
     {
       value ? data |= (pattern & MASK) : data &= (~pattern & MASK);
 

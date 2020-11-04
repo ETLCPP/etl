@@ -756,7 +756,7 @@ namespace etl
   //***************************************************************************
   /// Alignment templates.
   /// These require compiler specific intrinsics.
-#if ETL_CPP11_SUPPORTED
+#if ETL_CPP11_SUPPORTED && !defined(ETL_COMPILER_ARM5)
   template <typename T> struct alignment_of : integral_constant<size_t, alignof(T)> { };
 #elif ETL_COMPILER_MICROSOFT
   template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof(T))> {};
@@ -1068,11 +1068,12 @@ namespace etl
   //***************************************************************************
   /// is_pod
   ///\ingroup type_traits
-  template <typename T> struct is_pod : std::is_pod<T> {};
+  template <typename T>
+  struct is_pod : std::integral_constant<bool, std::is_standard_layout<T>::value && std::is_trivial<T>::value> {};
 
 #if ETL_CPP17_SUPPORTED
   template <typename T>
-  inline constexpr bool is_pod_v = std::is_pod_v<T>;
+  inline constexpr bool is_pod_v = std::is_standard_layout_v<T> && std::is_trivial_v<T>;
 #endif
 
 #if !defined(ARDUINO) && ETL_NOT_USING_STLPORT
