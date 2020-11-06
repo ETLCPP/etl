@@ -796,6 +796,38 @@ namespace etl
       }
     }
   }
+
+  //***************************************************************************
+  /// to_upper_case
+  //***************************************************************************
+  template <typename TString>
+  void to_upper_case(TString& s)
+  {
+    etl::transform(s.begin(), s.end(), s.begin(), ::toupper);
+  }
+
+  //***************************************************************************
+  /// to_lower_case
+  //***************************************************************************
+  template <typename TString>
+  void to_lower_case(TString& s)
+  {
+    etl::transform(s.begin(), s.end(), s.begin(), ::tolower);
+  }
+
+  //***************************************************************************
+  /// to_sentence_case
+  //***************************************************************************
+  template <typename TString>
+  void to_sentence_case(TString& s)
+  {
+    typename TString::iterator itr = s.begin();
+
+    *itr = typename TString::value_type(::toupper(*itr));
+    ++itr;
+
+    etl::transform(itr, s.end(), itr, ::tolower);
+  }
 }
 
 #endif

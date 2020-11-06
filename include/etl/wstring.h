@@ -246,7 +246,7 @@ namespace etl
 
   //***************************************************************************
   /// A wstring implementation that uses a fixed size buffer.
-  /// A specilisation that requires an external buffer to be specified.
+  /// A specialisation that requires an external buffer to be specified.
   ///\ingroup wstring
   //***************************************************************************
   template <>
@@ -461,13 +461,41 @@ namespace etl
   };
 #endif
 
-  //***************************************************************************
-  /// Make wstring from wide string literal or wchar_t array
-  //***************************************************************************
-  template<const size_t MAX_SIZE>
-  etl::wstring<MAX_SIZE - 1> make_string(const wchar_t (&text) [MAX_SIZE])
+  namespace private_wstring
   {
-    return etl::wstring<MAX_SIZE - 1>(text, MAX_SIZE - 1);
+    //***********************************
+    template<size_t ARRAY_SIZE = 1U>
+    struct make_string_helper
+    {
+      typedef etl::wstring<ARRAY_SIZE> type;
+
+      static type make(const wchar_t(&text)[ARRAY_SIZE])
+      {
+        return etl::wstring<ARRAY_SIZE - 1>(text, ARRAY_SIZE - 1);
+      }
+    };
+
+    //***********************************
+    template<>
+    struct make_string_helper<1U>
+    {
+      typedef etl::wstring<0> type;
+
+      static type make(const wchar_t(&text)[1U])
+      {
+        static wchar_t c;
+        return etl::wstring<0U>(text, &c, 1U);
+      }
+    };
+  }
+
+  //***************************************************************************
+  /// Make string from string literal or array
+  //***************************************************************************
+  template<size_t ARRAY_SIZE>
+  etl::wstring<ARRAY_SIZE - 1> make_string(const wchar_t(&text)[ARRAY_SIZE])
+  {
+    return private_wstring::make_string_helper<ARRAY_SIZE>::make(text);
   }
 
   //***************************************************************************

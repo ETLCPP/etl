@@ -246,7 +246,7 @@ namespace etl
 
   //***************************************************************************
   /// A u16string implementation that uses a fixed size buffer.
-  /// A specilisation that requires an external buffer to be specified.
+  /// A specialisation that requires an external buffer to be specified.
   ///\ingroup u16string
   //***************************************************************************
   template <>
@@ -461,17 +461,45 @@ namespace etl
   };
 #endif
 
-  //***************************************************************************
-  /// Make u16string from UTF-8 string literal or char16_t array
-  //***************************************************************************
-  template<const size_t MAX_SIZE>
-  etl::u16string<MAX_SIZE - 1> make_string(const char16_t (&text) [MAX_SIZE])
+  namespace private_u16string
   {
-    return etl::u16string<MAX_SIZE - 1>(text, MAX_SIZE - 1);
+    //***********************************
+    template<size_t ARRAY_SIZE = 1U>
+    struct make_string_helper
+    {
+      typedef etl::u16string<ARRAY_SIZE> type;
+
+      static type make(const char16_t(&text)[ARRAY_SIZE])
+      {
+        return etl::u16string<ARRAY_SIZE - 1>(text, ARRAY_SIZE - 1);
+      }
+    };
+
+    //***********************************
+    template<>
+    struct make_string_helper<1U>
+    {
+      typedef etl::u16string<0> type;
+
+      static type make(const char16_t(&text)[1U])
+      {
+        static char16_t c;
+        return etl::u16string<0U>(text, &c, 1U);
+      }
+    };
   }
 
   //***************************************************************************
-  /// Make string with max capacity from string literal or char array
+  /// Make string from string literal or array
+  //***************************************************************************
+  template<size_t ARRAY_SIZE>
+  etl::u16string<ARRAY_SIZE - 1> make_string(const char16_t(&text)[ARRAY_SIZE])
+  {
+    return private_u16string::make_string_helper<ARRAY_SIZE>::make(text);
+  }
+
+  //***************************************************************************
+  /// Make string with max capacity from string literal or array
   //***************************************************************************
   template<const size_t MAX_SIZE, const size_t SIZE>
   etl::u16string<MAX_SIZE> make_string_with_capacity(const char16_t(&text)[SIZE])

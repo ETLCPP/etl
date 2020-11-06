@@ -54,6 +54,27 @@ namespace
     };
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_make_string_empty)
+    {
+      size_t length = strlen("");
+
+      auto ctext = etl::make_string("");
+      auto wtext = etl::make_string(L"");
+      auto u16text = etl::make_string(u"");
+      auto u32text = etl::make_string(U"");
+
+      CHECK_EQUAL(length, ctext.max_size());
+      CHECK_EQUAL(length, wtext.max_size());
+      CHECK_EQUAL(length, u16text.max_size());
+      CHECK_EQUAL(length, u32text.max_size());
+
+      CHECK(Equal(std::string(""), ctext));
+      CHECK(Equal(std::wstring(L""), wtext));
+      CHECK(Equal(std::u16string(u""), u16text));
+      CHECK(Equal(std::u32string(U""), u32text));
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_make_string)
     {
       size_t length = strlen("Hello World");
@@ -69,9 +90,9 @@ namespace
       CHECK_EQUAL(length, u32text.max_size());
 
       CHECK(Equal(std::string("Hello World"), ctext));
-      CHECK(Equal(std::wstring(L"Hello World"), ctext));
-      CHECK(Equal(std::u16string(u"Hello World"), ctext));
-      CHECK(Equal(std::u32string(U"Hello World"), ctext));
+      CHECK(Equal(std::wstring(L"Hello World"), wtext));
+      CHECK(Equal(std::u16string(u"Hello World"), u16text));
+      CHECK(Equal(std::u32string(U"Hello World"), u32text));
     }
 
     //*************************************************************************
@@ -110,9 +131,9 @@ namespace
 #endif
 
       CHECK(Equal(std::string("Hello World"), ctext));
-      CHECK(Equal(std::wstring(L"Hello World"), ctext));
-      CHECK(Equal(std::u16string(u"Hello World"), ctext));
-      CHECK(Equal(std::u32string(U"Hello World"), ctext));
+      CHECK(Equal(std::wstring(L"Hello World"), wtext));
+      CHECK(Equal(std::u16string(u"Hello World"), u16text));
+      CHECK(Equal(std::u32string(U"Hello World"), u32text));
     }
 
     //*************************************************************************
