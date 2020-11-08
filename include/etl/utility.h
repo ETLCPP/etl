@@ -163,13 +163,15 @@ namespace etl
 
 #if defined(ETL_IN_UNIT_TEST) || ETL_USING_STL
     /// Converting from etl::pair to std::pair
-    operator std::pair<T1, T2>()
+    template <typename U1, typename U2>
+    operator std::pair<U1, U2>()
     {
       return std::make_pair(first, second);
     }
 
     /// Constructing from std::pair
-    pair(const std::pair<T1, T2>& other)
+    template <typename U1, typename U2>
+    pair(const std::pair<U1, U2>& other)
       : first(other.first)
       , second(other.second)
     {
@@ -177,9 +179,10 @@ namespace etl
 
 #if ETL_CPP11_SUPPORTED
     /// Constructing from std::pair
-    pair(std::pair<T1, T2>&& other)
-      : first(etl::forward<T1>(other.first))
-      , second(etl::forward<T2>(other.second))
+    template <typename U1, typename U2>
+    pair(std::pair<U1, U2>&& other)
+      : first(etl::forward<U1>(other.first))
+      , second(etl::forward<U2>(other.second))
     {
     }
 #endif
