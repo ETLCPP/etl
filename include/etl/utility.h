@@ -230,14 +230,6 @@ namespace etl
 #endif
   };
 
-//*************************************************************************
-/// Template deduction guides.
-//*************************************************************************
-#if ETL_CPP17_SUPPORTED
-  template <typename T1, typename T2>
-  pair(T1, T2) ->pair<T1, T2>;
-#endif 
-
   //******************************************************************************
 #if ETL_CPP11_SUPPORTED
   template <typename T1, typename T2>

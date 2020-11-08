@@ -133,6 +133,34 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_make_string_view)
+    {
+      auto cview   = etl::make_string_view("Hello World");
+      auto wview   = etl::make_string_view(L"Hello World");
+      auto u16view = etl::make_string_view(u"Hello World");
+      auto u32view = etl::make_string_view(U"Hello World");
+
+      CHECK_EQUAL("Hello World",  cview.data());
+      CHECK_EQUAL(L"Hello World", wview.data());
+      CHECK_EQUAL(u"Hello World", u16view.data());
+      CHECK_EQUAL(U"Hello World", u32view.data());
+    }
+
+    //*************************************************************************
+    TEST(test_template_deduction)
+    {
+      etl::basic_string_view cview{ "Hello World" };
+      etl::basic_string_view wview{ L"Hello World" };
+      etl::basic_string_view u16view{ u"Hello World" };
+      etl::basic_string_view u32view{ U"Hello World" };
+
+      CHECK_EQUAL("Hello World", cview.data());
+      CHECK_EQUAL(L"Hello World", wview.data());
+      CHECK_EQUAL(u"Hello World", u16view.data());
+      CHECK_EQUAL(U"Hello World", u32view.data());
+    }
+
+    //*************************************************************************
     TEST(test_assign_from_string_view)
     {
       View view1(text.c_str());

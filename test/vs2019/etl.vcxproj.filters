@@ -615,9 +615,6 @@
     <ClInclude Include="..\..\include\etl\math_constants.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\atomic\atomic_llvm_sync.h">
-      <Filter>ETL\Utilities\Atomic</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\bit_stream.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
@@ -890,6 +887,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\flags.h">
       <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\atomic\atomic_llvm_sync.h">
+      <Filter>ETL\Utilities\Atomic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
