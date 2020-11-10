@@ -47,11 +47,14 @@ namespace
 
   etl::string<11> etltext    = "Hello World";
   std::string text           = "Hello World";
+  std::wstring wtext         = L"Hello World";
+  std::u16string u16text     = u"Hello World";
+  std::u32string u32text     = U"Hello World";
   std::string text_smaller   = "Hello Worlc";
   std::string text_shorter   = "Hello Worl";
   std::string text_different = "Goodbye!!!!";
 
-  char ctext[] = { 'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd' };
+  char ctext[] = { 'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '\0' };
   char* pctext = ctext;
 
   std::ostream& operator << (std::ostream& os, const View& view)
@@ -139,11 +142,16 @@ namespace
       auto wview   = etl::make_string_view(L"Hello World");
       auto u16view = etl::make_string_view(u"Hello World");
       auto u32view = etl::make_string_view(U"Hello World");
+    
+      size_t l1 = text.size();
+      size_t l2 = cview.size();
 
-      CHECK_EQUAL("Hello World",  cview.data());
-      CHECK_EQUAL(L"Hello World", wview.data());
-      CHECK_EQUAL(u"Hello World", u16view.data());
-      CHECK_EQUAL(U"Hello World", u32view.data());
+      ptrdiff_t d = std::distance(cview.begin(), cview.end());
+
+      CHECK(std::equal(cview.begin(),   cview.end(),   text.begin()));
+      CHECK(std::equal(wview.begin(),   wview.end(),   text.begin()));
+      CHECK(std::equal(u16view.begin(), u16view.end(), text.begin()));
+      CHECK(std::equal(u32view.begin(), u32view.end(), text.begin()));
     }
 
     //*************************************************************************
@@ -154,10 +162,10 @@ namespace
       etl::basic_string_view u16view{ u"Hello World" };
       etl::basic_string_view u32view{ U"Hello World" };
 
-      CHECK_EQUAL("Hello World", cview.data());
-      CHECK_EQUAL(L"Hello World", wview.data());
-      CHECK_EQUAL(u"Hello World", u16view.data());
-      CHECK_EQUAL(U"Hello World", u32view.data());
+      CHECK(std::equal(cview.begin(),   cview.end(),   text.begin()));
+      CHECK(std::equal(wview.begin(),   wview.end(),   text.begin()));
+      CHECK(std::equal(u16view.begin(), u16view.end(), text.begin()));
+      CHECK(std::equal(u32view.begin(), u32view.end(), text.begin()));
     }
 
     //*************************************************************************

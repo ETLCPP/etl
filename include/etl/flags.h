@@ -101,10 +101,7 @@ namespace etl
     /// Set the bits.
     //*************************************************************************
     template <value_type pattern, bool value>
-#if !defined(ETL_COMPILER_ARM5)
-    ETL_CONSTEXPR 
-#endif
-    flags<T, MASK>& set() ETL_NOEXCEPT
+    ETL_CONSTEXPR14 flags<T, MASK>& set() ETL_NOEXCEPT
     {
       value ? data |= (pattern & MASK) : data &= (~pattern & MASK);
 
@@ -113,10 +110,7 @@ namespace etl
 
     //*******************************************
     template <value_type pattern>
-#if !defined(ETL_COMPILER_ARM5)
-    ETL_CONSTEXPR
-#endif
-    flags<T, MASK>& set(bool value) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 flags<T, MASK>& set(bool value) ETL_NOEXCEPT
     {
       value ? data |= (pattern & MASK) : data &= (~pattern & MASK);
 
@@ -144,7 +138,7 @@ namespace etl
     ETL_CONSTEXPR14 flags<T, MASK>& set(value_type pattern, bool value) ETL_NOEXCEPT
     {
       value ? data |= (pattern & MASK) : data &= (~pattern & MASK);
-      
+
       return *this;
     }
 
@@ -192,7 +186,7 @@ namespace etl
     ETL_CONSTEXPR14 flags<T, MASK>& flip() ETL_NOEXCEPT
     {
       data ^= pattern & MASK;
-       
+
       return *this;
     }
 
@@ -221,7 +215,7 @@ namespace etl
 
     //*******************************************
     ETL_CONSTEXPR bool all_of(value_type pattern) const ETL_NOEXCEPT
-    {  
+    {
       return (data & (pattern & MASK)) == (pattern & MASK);
     }
 
@@ -348,7 +342,8 @@ namespace etl
     //*************************************************************************
     void swap(flags<T, MASK>& other) ETL_NOEXCEPT
     {
-      etl::swap(data, other.data);
+      using ETL_OR_STD::swap;
+      swap(data, other.data);
     }
 
   private:

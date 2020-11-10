@@ -162,7 +162,7 @@ namespace etl
 #endif
 
 #if defined(ETL_IN_UNIT_TEST) || ETL_USING_STL
-    /// Converting from etl::pair to std::pair
+    /// Converting to std::pair
     template <typename U1, typename U2>
     operator std::pair<U1, U2>()
     {
@@ -178,7 +178,7 @@ namespace etl
     }
 
 #if ETL_CPP11_SUPPORTED
-    /// Constructing from std::pair
+    /// Constructing to etl::pair
     template <typename U1, typename U2>
     pair(std::pair<U1, U2>&& other)
       : first(etl::forward<U1>(other.first))

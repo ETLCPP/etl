@@ -43,6 +43,9 @@ SOFTWARE.
 #elif defined(ETL_COMPILER_GCC)
   #include "atomic/atomic_gcc_sync.h"
   #define ETL_HAS_ATOMIC 1
+#elif defined(ETL_COMPILER_CLANG)
+  #include "atomic/atomic_clang_sync.h"
+  #define ETL_HAS_ATOMIC 1
 #else
   #define ETL_HAS_ATOMIC 0
 #endif

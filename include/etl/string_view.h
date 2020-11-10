@@ -821,25 +821,25 @@ namespace etl
   template<size_t ARRAY_SIZE>
   string_view make_string_view(const char(&text)[ARRAY_SIZE])
   {
-    return string_view(text, ARRAY_SIZE);
+    return string_view(text, ARRAY_SIZE - 1U);
   }
 
   template<size_t ARRAY_SIZE>
   wstring_view make_string_view(const wchar_t(&text)[ARRAY_SIZE])
   {
-    return wstring_view(text, ARRAY_SIZE);
+    return wstring_view(text, ARRAY_SIZE - 1U);
   }
 
   template<size_t ARRAY_SIZE>
   u16string_view make_string_view(const char16_t(&text)[ARRAY_SIZE])
   {
-    return u16string_view(text, ARRAY_SIZE);
+    return u16string_view(text, ARRAY_SIZE - 1U);
   }
 
   template<size_t ARRAY_SIZE>
   u32string_view make_string_view(const char32_t(&text)[ARRAY_SIZE])
   {
-    return u32string_view(text, ARRAY_SIZE);
+    return u32string_view(text, ARRAY_SIZE - 1U);
   }
 
   //*************************************************************************

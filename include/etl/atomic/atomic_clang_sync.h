@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_ATOMIC_GCC_SYNC_INCLUDED
-#define ETL_ATOMIC_GCC_SYNC_INCLUDED
+#ifndef ETL_ATOMIC_LLVM_SYNC_INCLUDED
+#define ETL_ATOMIC_LLVM_SYNC_INCLUDED
 
 #include "../platform.h"
 #include "../type_traits.h"
@@ -36,13 +36,6 @@ SOFTWARE.
 #include "../char_traits.h"
 
 #include <stdint.h>
-#include <string.h>
-
-#if defined(ETL_COMPILER_GCC)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#pragma GCC diagnostic ignored "-Wunused-value"
-#endif
 
 namespace etl
 {
@@ -62,7 +55,7 @@ namespace etl
   } memory_order;
 
   //***************************************************************************
-  /// For all types except bool and pointers
+  /// For all types except pointers
   //***************************************************************************
   template <typename T>
   class atomic
@@ -433,8 +426,8 @@ namespace etl
 
   private:
 
-    atomic& operator =(const atomic&) ETL_DELETE;
-    atomic& operator =(const atomic&) volatile ETL_DELETE;
+    atomic& operator =(const atomic&);
+    atomic& operator =(const atomic&) volatile;
 
     mutable volatile T value;
   };
@@ -544,7 +537,7 @@ namespace etl
       return (T*)__sync_fetch_and_add(&value, 0);
     }
 
-    operator T*() volatile const
+    operator T* () volatile const
     {
       return (T*)__sync_fetch_and_add(&value, 0);
     }
@@ -746,7 +739,7 @@ namespace etl
     atomic& operator =(const atomic&) ETL_DELETE;
     atomic& operator =(const atomic&) volatile ETL_DELETE;
 
-    mutable uintptr_t value;
+    mutable volatile uintptr_t value;
   };
 
   typedef etl::atomic<char>                atomic_char;
@@ -771,30 +764,30 @@ namespace etl
   typedef etl::atomic<int16_t>             atomic_int16_t;
   typedef etl::atomic<uint32_t>            atomic_uint32_t;
   typedef etl::atomic<int32_t>             atomic_int32_t;
-#if ETL_USING_64BIT_TYPES
+  #if ETL_USING_64BIT_TYPES
   typedef etl::atomic<uint64_t>            atomic_uint64_t;
   typedef etl::atomic<int64_t>             atomic_int64_t;
-#endif
+  #endif
   typedef etl::atomic<int_least8_t>        atomic_int_least8_t;
   typedef etl::atomic<uint_least8_t>       atomic_uint_least8_t;
   typedef etl::atomic<int_least16_t>       atomic_int_least16_t;
   typedef etl::atomic<uint_least16_t>      atomic_uint_least16_t;
   typedef etl::atomic<int_least32_t>       atomic_int_least32_t;
   typedef etl::atomic<uint_least32_t>      atomic_uint_least32_t;
-#if ETL_USING_64BIT_TYPES
+  #if ETL_USING_64BIT_TYPES
   typedef etl::atomic<int_least64_t>       atomic_int_least64_t;
   typedef etl::atomic<uint_least64_t>      atomic_uint_least64_t;
-#endif
+  #endif
   typedef etl::atomic<int_fast8_t>         atomic_int_fast8_t;
   typedef etl::atomic<uint_fast8_t>        atomic_uint_fast8_t;
   typedef etl::atomic<int_fast16_t>        atomic_int_fast16_t;
   typedef etl::atomic<uint_fast16_t>       atomic_uint_fast16_t;
   typedef etl::atomic<int_fast32_t>        atomic_int_fast32_t;
   typedef etl::atomic<uint_fast32_t>       atomic_uint_fast32_t;
-#if ETL_USING_64BIT_TYPES
+  #if ETL_USING_64BIT_TYPES
   typedef etl::atomic<int_fast64_t>        atomic_int_fast64_t;
   typedef etl::atomic<uint_fast64_t>       atomic_uint_fast64_t;
-#endif
+  #endif
   typedef etl::atomic<intptr_t>            atomic_intptr_t;
   typedef etl::atomic<uintptr_t>           atomic_uintptr_t;
   typedef etl::atomic<size_t>              atomic_size_t;
@@ -802,9 +795,5 @@ namespace etl
   typedef etl::atomic<intmax_t>            atomic_intmax_t;
   typedef etl::atomic<uintmax_t>           atomic_uintmax_t;
 }
-
-#if defined(ETL_COMPILER_GCC)
-#pragma GCC diagnostic pop
-#endif
 
 #endif

@@ -888,7 +888,10 @@
     <ClInclude Include="..\..\include\etl\flags.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\atomic\atomic_llvm_sync.h">
+    <ClInclude Include="..\..\include\etl\buffer_descriptors.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\atomic\atomic_clang_sync.h">
       <Filter>ETL\Utilities\Atomic</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1413,6 +1416,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_flags.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_buffer_descriptors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
