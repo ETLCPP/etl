@@ -615,9 +615,6 @@
     <ClInclude Include="..\..\include\etl\math_constants.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\atomic\atomic_llvm_sync.h">
-      <Filter>ETL\Utilities\Atomic</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\bit_stream.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
@@ -890,6 +887,12 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\flags.h">
       <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\buffer_descriptors.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\atomic\atomic_clang_sync.h">
+      <Filter>ETL\Utilities\Atomic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1415,6 +1418,12 @@
     <ClCompile Include="..\test_flags.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_buffer_descriptors.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_atomic_clang_sync.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -1482,6 +1491,9 @@
     </None>
     <None Include="..\..\.github\workflows\vs2019.yml">
       <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\meson.build">
+      <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

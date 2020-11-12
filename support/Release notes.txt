@@ -1,4 +1,18 @@
 ===============================================================================
+18.20.0
+Added etl::buffer_descriptors.
+Added std/etl pair conversions.
+Added etl::make_string_view.
+Resolved issue with zero length literals for etl::make_string
+Resolved etl::flags constexpr issues.
+Added atomics for clang.
+Resolved type_traits issues for GCC < v5
+
+===============================================================================
+18.19.3
+Addressed ARMCC v5 C++11 issues
+
+===============================================================================
 18.19.2
 Expanded the use of constexpr in etl::flags
 

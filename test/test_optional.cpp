@@ -98,7 +98,6 @@ namespace
       CHECK(!data4.has_value());
     }
 
-#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
     TEST(test_deduced_initialisation)
     {
@@ -110,7 +109,6 @@ namespace
       CHECK(bool(opt));
       CHECK_EQUAL(data, opt);
     }
-#endif
 
     //*************************************************************************
     TEST(test_emplace)

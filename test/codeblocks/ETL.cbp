@@ -519,6 +519,7 @@
 		<Unit filename="../test_bloom_filter.cpp" />
 		<Unit filename="../test_bresenham_line.cpp" />
 		<Unit filename="../test_bsd_checksum.cpp" />
+		<Unit filename="../test_buffer_descriptors.cpp" />
 		<Unit filename="../test_callback_service.cpp" />
 		<Unit filename="../test_callback_timer.cpp" />
 		<Unit filename="../test_checksum.cpp" />
@@ -540,6 +541,7 @@
 		<Unit filename="../test_error_handler.cpp" />
 		<Unit filename="../test_exception.cpp" />
 		<Unit filename="../test_fixed_iterator.cpp" />
+		<Unit filename="../test_flags.cpp" />
 		<Unit filename="../test_flat_map.cpp" />
 		<Unit filename="../test_flat_multimap.cpp" />
 		<Unit filename="../test_flat_multiset.cpp" />
@@ -660,8 +662,6 @@
 			<code_completion>
 				<search_path add="../../unittest-cpp" />
 			</code_completion>
-			<debugger />
-			<envvars />
 			<editor_config active="1" use_tabs="0" tab_indents="1" tab_width="2" indent="2" eol_mode="0" />
 		</Extensions>
 	</Project>

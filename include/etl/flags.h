@@ -101,7 +101,7 @@ namespace etl
     /// Set the bits.
     //*************************************************************************
     template <value_type pattern, bool value>
-    ETL_CONSTEXPR flags<T, MASK>& set() ETL_NOEXCEPT
+    ETL_CONSTEXPR14 flags<T, MASK>& set() ETL_NOEXCEPT
     {
       value ? data |= (pattern & MASK) : data &= (~pattern & MASK);
 
@@ -110,7 +110,7 @@ namespace etl
 
     //*******************************************
     template <value_type pattern>
-    ETL_CONSTEXPR flags<T, MASK>& set(bool value) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 flags<T, MASK>& set(bool value) ETL_NOEXCEPT
     {
       value ? data |= (pattern & MASK) : data &= (~pattern & MASK);
 
@@ -119,7 +119,7 @@ namespace etl
 
     //*******************************************
     template <value_type pattern>
-    ETL_CONSTEXPR flags<T, MASK>& set() ETL_NOEXCEPT
+    ETL_CONSTEXPR14 flags<T, MASK>& set() ETL_NOEXCEPT
     {
       data |= (pattern & MASK);
 
@@ -127,7 +127,7 @@ namespace etl
     }
 
     //*******************************************
-    ETL_CONSTEXPR flags<T, MASK>& set(value_type pattern) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 flags<T, MASK>& set(value_type pattern) ETL_NOEXCEPT
     {
       data |= (pattern & MASK);
 
@@ -135,17 +135,17 @@ namespace etl
     }
 
     //*******************************************
-    ETL_CONSTEXPR flags<T, MASK>& set(value_type pattern, bool value) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 flags<T, MASK>& set(value_type pattern, bool value) ETL_NOEXCEPT
     {
       value ? data |= (pattern & MASK) : data &= (~pattern & MASK);
-      
+
       return *this;
     }
 
     //*************************************************************************
     /// Clear all of the flags.
     //*************************************************************************
-    ETL_CONSTEXPR flags<T, MASK>& clear() ETL_NOEXCEPT
+    ETL_CONSTEXPR14 flags<T, MASK>& clear() ETL_NOEXCEPT
     {
       data = ALL_CLEAR;
 
@@ -156,7 +156,7 @@ namespace etl
     /// Reset the bit at the pattern.
     //*************************************************************************
     template <value_type pattern>
-    ETL_CONSTEXPR flags<T, MASK>& reset() ETL_NOEXCEPT
+    ETL_CONSTEXPR14 flags<T, MASK>& reset() ETL_NOEXCEPT
     {
       data &= ~pattern;
 
@@ -164,7 +164,7 @@ namespace etl
     }
 
     //*******************************************
-    ETL_CONSTEXPR flags<T, MASK>& reset(value_type pattern) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 flags<T, MASK>& reset(value_type pattern) ETL_NOEXCEPT
     {
       data &= ~pattern;
 
@@ -174,7 +174,7 @@ namespace etl
     //*************************************************************************
     /// Flip bits.
     //*************************************************************************
-    ETL_CONSTEXPR flags<T, MASK>& flip() ETL_NOEXCEPT
+    ETL_CONSTEXPR14 flags<T, MASK>& flip() ETL_NOEXCEPT
     {
       data = (~data & MASK);
 
@@ -183,15 +183,15 @@ namespace etl
 
     //*******************************************
     template <value_type pattern>
-    ETL_CONSTEXPR flags<T, MASK>& flip() ETL_NOEXCEPT
+    ETL_CONSTEXPR14 flags<T, MASK>& flip() ETL_NOEXCEPT
     {
       data ^= pattern & MASK;
-      
+
       return *this;
     }
 
     //*******************************************
-    ETL_CONSTEXPR flags<T, MASK>& flip(value_type pattern) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 flags<T, MASK>& flip(value_type pattern) ETL_NOEXCEPT
     {
       data ^= pattern & MASK;
 
@@ -215,8 +215,8 @@ namespace etl
 
     //*******************************************
     ETL_CONSTEXPR bool all_of(value_type pattern) const ETL_NOEXCEPT
-    {  
-      return (data & (pattern &= MASK)) == pattern;
+    {
+      return (data & (pattern & MASK)) == (pattern & MASK);
     }
 
     //*************************************************************************
@@ -272,7 +272,7 @@ namespace etl
     //*************************************************************************
     /// Set the value of the flags.
     //*************************************************************************
-    ETL_CONSTEXPR flags<T, MASK>& value(value_type pattern) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 flags<T, MASK>& value(value_type pattern) ETL_NOEXCEPT
     {
       data = pattern & MASK;
 
@@ -290,7 +290,7 @@ namespace etl
     //*************************************************************************
     /// operator &=
     //*************************************************************************
-    ETL_CONSTEXPR flags<T, MASK>& operator &=(value_type pattern) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 flags<T, MASK>& operator &=(value_type pattern) ETL_NOEXCEPT
     {
       data &= pattern;
 
@@ -300,7 +300,7 @@ namespace etl
     //*************************************************************************
     /// operator |=
     //*************************************************************************
-    ETL_CONSTEXPR flags<T, MASK>& operator |=(value_type pattern) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 flags<T, MASK>& operator |=(value_type pattern) ETL_NOEXCEPT
     {
       data |= (pattern & MASK);
 
@@ -310,7 +310,7 @@ namespace etl
     //*************************************************************************
     /// operator ^=
     //*************************************************************************
-    ETL_CONSTEXPR flags<T, MASK>& operator ^=(value_type pattern) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 flags<T, MASK>& operator ^=(value_type pattern) ETL_NOEXCEPT
     {
       data ^= (pattern & MASK);
 
@@ -320,7 +320,7 @@ namespace etl
     //*************************************************************************
     /// operator =
     //*************************************************************************
-    ETL_CONSTEXPR flags<T, MASK>& operator =(flags<T, MASK> other) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 flags<T, MASK>& operator =(flags<T, MASK> other) ETL_NOEXCEPT
     {
       data = other.data;
 
@@ -330,7 +330,7 @@ namespace etl
     //*************************************************************************
     /// operator =
     //*************************************************************************
-    ETL_CONSTEXPR flags<T, MASK>& operator =(value_type pattern) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 flags<T, MASK>& operator =(value_type pattern) ETL_NOEXCEPT
     {
       data = (pattern & MASK);
 
@@ -342,7 +342,8 @@ namespace etl
     //*************************************************************************
     void swap(flags<T, MASK>& other) ETL_NOEXCEPT
     {
-      etl::swap(data, other.data);
+      using ETL_OR_STD::swap;
+      swap(data, other.data);
     }
 
   private:

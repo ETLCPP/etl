@@ -34,9 +34,6 @@ SOFTWARE.
 #include <stdint.h>
 #include <limits.h>
 
-// Some targets do not support 8bit types.
-#define ETL_8BIT_SUPPORT (CHAR_BIT == 8)
-
 // Define a debug macro
 #if (defined(_DEBUG) || defined(DEBUG)) && !defined(ETL_DEBUG) 
   #define ETL_DEBUG
@@ -77,6 +74,17 @@ SOFTWARE.
   #define ETL_USING_STLPORT     0
   #define ETL_NOT_USING_STLPORT 1
 #endif
+
+// Some targets do not support 8bit types.
+#if (CHAR_BIT == 8)
+  #define ETL_USING_8BIT_TYPES     1
+  #define ETL_NOT_USING_8BIT_TYPES 0
+#else
+  #define ETL_USING_8BIT_TYPES     0
+  #define ETL_NOT_USING_8BIT_TYPES 1
+#endif
+
+#define ETL_8BIT_SUPPORT (CHAR_BIT == 8)
 
 // Helper macro for ETL_NO_64BIT_TYPES.
 #if defined(ETL_NO_64BIT_TYPES)
@@ -174,10 +182,14 @@ SOFTWARE.
   #define ETL_LIKELY [[likely]]
   #define ETL_UNLIKELY [[unlikely]]
   #define ETL_CONSTEXPR20 constexpr
+  #define ETL_CONSTEVAL consteval
+  #define ETL_CONSTINIT constinit
 #else
   #define ETL_LIKELY
   #define ETL_UNLIKELY
   #define ETL_CONSTEXPR20
+  #define ETL_CONSTEVAL
+  #define ETL_CONSTINIT
 #endif
 
 // Sort out namespaces for STL/No STL options.

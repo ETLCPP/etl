@@ -259,3 +259,5 @@ test/vs2019/.vs
 Corel Auto-Preserve
 test/vs2019/Debug No Unit Tests
 test/kdevelopbuild
+.vscode/settings.json
+test/CMakeFiles

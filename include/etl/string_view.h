@@ -816,6 +816,33 @@ namespace etl
   typedef etl::basic_string_view<char32_t> u32string_view;
 
   //*************************************************************************
+  /// make_string_view.
+  //*************************************************************************
+  template<size_t ARRAY_SIZE>
+  string_view make_string_view(const char(&text)[ARRAY_SIZE])
+  {
+    return string_view(text, ARRAY_SIZE - 1U);
+  }
+
+  template<size_t ARRAY_SIZE>
+  wstring_view make_string_view(const wchar_t(&text)[ARRAY_SIZE])
+  {
+    return wstring_view(text, ARRAY_SIZE - 1U);
+  }
+
+  template<size_t ARRAY_SIZE>
+  u16string_view make_string_view(const char16_t(&text)[ARRAY_SIZE])
+  {
+    return u16string_view(text, ARRAY_SIZE - 1U);
+  }
+
+  template<size_t ARRAY_SIZE>
+  u32string_view make_string_view(const char32_t(&text)[ARRAY_SIZE])
+  {
+    return u32string_view(text, ARRAY_SIZE - 1U);
+  }
+
+  //*************************************************************************
   /// Hash function.
   //*************************************************************************
 #if ETL_8BIT_SUPPORT
@@ -825,7 +852,7 @@ namespace etl
     size_t operator()(const etl::string_view& text) const
     {
       return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
-                                                         reinterpret_cast<const uint8_t*>(&text[text.size()]));
+                                                     reinterpret_cast<const uint8_t*>(&text[text.size()]));
     }
   };
 
@@ -835,7 +862,7 @@ namespace etl
     size_t operator()(const etl::wstring_view& text) const
     {
       return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
-                                                         reinterpret_cast<const uint8_t*>(&text[text.size()]));
+                                                     reinterpret_cast<const uint8_t*>(&text[text.size()]));
     }
   };
 
@@ -845,7 +872,7 @@ namespace etl
     size_t operator()(const etl::u16string_view& text) const
     {
       return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
-                                                         reinterpret_cast<const uint8_t*>(&text[text.size()]));
+                                                     reinterpret_cast<const uint8_t*>(&text[text.size()]));
     }
   };
 
@@ -855,7 +882,7 @@ namespace etl
     size_t operator()(const etl::u32string_view& text) const
     {
       return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
-                                                         reinterpret_cast<const uint8_t*>(&text[text.size()]));
+                                                     reinterpret_cast<const uint8_t*>(&text[text.size()]));
     }
   };
 #endif

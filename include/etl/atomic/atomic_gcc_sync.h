@@ -62,7 +62,7 @@ namespace etl
   } memory_order;
 
   //***************************************************************************
-  /// For all types except pointers
+  /// For all types except bool and pointers
   //***************************************************************************
   template <typename T>
   class atomic
@@ -433,8 +433,8 @@ namespace etl
 
   private:
 
-    atomic& operator =(const atomic&);
-    atomic& operator =(const atomic&) volatile;
+    atomic& operator =(const atomic&) ETL_DELETE;
+    atomic& operator =(const atomic&) volatile ETL_DELETE;
 
     mutable volatile T value;
   };
@@ -743,10 +743,10 @@ namespace etl
 
   private:
 
-    atomic& operator =(const atomic&);
-    atomic& operator =(const atomic&) volatile;
+    atomic& operator =(const atomic&) ETL_DELETE;
+    atomic& operator =(const atomic&) volatile ETL_DELETE;
 
-    mutable volatile uintptr_t value;
+    mutable uintptr_t value;
   };
 
   typedef etl::atomic<char>                atomic_char;
@@ -763,8 +763,10 @@ namespace etl
   typedef etl::atomic<wchar_t>             atomic_wchar_t;
   typedef etl::atomic<char16_t>            atomic_char16_t;
   typedef etl::atomic<char32_t>            atomic_char32_t;
+#if ETL_USING_8BIT_TYPES
   typedef etl::atomic<uint8_t>             atomic_uint8_t;
   typedef etl::atomic<int8_t>              atomic_int8_t;
+#endif
   typedef etl::atomic<uint16_t>            atomic_uint16_t;
   typedef etl::atomic<int16_t>             atomic_int16_t;
   typedef etl::atomic<uint32_t>            atomic_uint32_t;

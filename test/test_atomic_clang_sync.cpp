@@ -29,7 +29,10 @@ SOFTWARE.
 #include "UnitTest++/UnitTest++.h"
 
 #include "etl/platform.h"
-#include "etl/atomic/atomic_std.h"
+
+#if defined(ETL_COMPILER_CLANG)
+
+#include "etl/atomic/atomic_clang_sync.h"
 
 #include <atomic>
 #include <thread>
@@ -42,7 +45,7 @@ SOFTWARE.
 
 namespace
 {
-  SUITE(test_atomic_std)
+  SUITE(test_atomic_clang)
   {
     //*************************************************************************
     TEST(test_atomic_integer_is_lock_free)
@@ -545,3 +548,5 @@ namespace
 #endif
   };
 }
+
+#endif
