@@ -1504,6 +1504,7 @@
     <ClCompile Include="..\murmurhash3.cpp" />
     <ClCompile Include="..\test_algorithm.cpp" />
     <ClCompile Include="..\test_alignment.cpp" />
+    <ClCompile Include="..\test_atomic_clang_sync.cpp" />
     <ClCompile Include="..\test_bresenham_line.cpp" />
     <ClCompile Include="..\test_buffer_descriptors.cpp" />
     <ClCompile Include="..\test_callback_service.cpp" />
@@ -1993,6 +1994,7 @@
     <None Include="..\..\include\etl\generators\generate_variant_pool.bat" />
     <None Include="..\..\library.json" />
     <None Include="..\..\library.properties" />
+    <None Include="..\..\meson.build" />
     <None Include="..\..\README.md" />
     <None Include="..\cmake\unit-test_external_project.cmake" />
     <None Include="cpp.hint" />

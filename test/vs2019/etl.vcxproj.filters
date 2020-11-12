@@ -1421,6 +1421,9 @@
     <ClCompile Include="..\test_buffer_descriptors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_atomic_clang_sync.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -1488,6 +1491,9 @@
     </None>
     <None Include="..\..\.github\workflows\vs2019.yml">
       <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\meson.build">
+      <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
