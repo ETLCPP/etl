@@ -1,4 +1,8 @@
 ===============================================================================
+18.20.1
+Disabled ASAN option in Visual Studio project.
+
+===============================================================================
 18.20.0
 Added etl::buffer_descriptors.
 Added std/etl pair conversions.
