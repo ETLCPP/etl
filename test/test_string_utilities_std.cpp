@@ -42,8 +42,6 @@ namespace
 {
   SUITE(test_string_utilities_std_char)
   {
-    static const size_t SIZE = 50;
-
     using String     = std::string;
     using IString    = std::string;
     using StringView = std::string_view;

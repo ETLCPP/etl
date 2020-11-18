@@ -434,6 +434,13 @@ namespace etl
 #endif
     {
     }
+
+  private:
+
+    //*************************************************************************
+    /// Deleted.
+    //*************************************************************************
+    wstring(const wstring& other) ETL_DELETE;
   };
 
   //*************************************************************************
@@ -461,41 +468,13 @@ namespace etl
   };
 #endif
 
-  namespace private_wstring
-  {
-    //***********************************
-    template<size_t ARRAY_SIZE = 1U>
-    struct make_string_helper
-    {
-      typedef etl::wstring<ARRAY_SIZE> type;
-
-      static type make(const wchar_t(&text)[ARRAY_SIZE])
-      {
-        return etl::wstring<ARRAY_SIZE - 1>(text, ARRAY_SIZE - 1);
-      }
-    };
-
-    //***********************************
-    template<>
-    struct make_string_helper<1U>
-    {
-      typedef etl::wstring<0> type;
-
-      static type make(const wchar_t(&text)[1U])
-      {
-        static wchar_t c;
-        return etl::wstring<0U>(text, &c, 1U);
-      }
-    };
-  }
-
   //***************************************************************************
   /// Make string from string literal or array
   //***************************************************************************
   template<size_t ARRAY_SIZE>
-  etl::wstring<ARRAY_SIZE - 1> make_string(const wchar_t(&text)[ARRAY_SIZE])
+  etl::wstring<ARRAY_SIZE == 1 ? 1 : ARRAY_SIZE - 1> make_string(const wchar_t(&text)[ARRAY_SIZE])
   {
-    return private_wstring::make_string_helper<ARRAY_SIZE>::make(text);
+    return etl::wstring<ARRAY_SIZE == 1 ? 1 : ARRAY_SIZE - 1>(text, ARRAY_SIZE - 1);
   }
 
   //***************************************************************************

@@ -58,21 +58,6 @@ namespace
   typedef std::multimap<int, DC>  Compare_DataDC;
   typedef std::multimap<int, NDC> Compare_DataNDC;
 
-  //*************************************************************************
-  std::ostream& operator <<(std::ostream& os, const DataNDC::iterator& itr)
-  {
-    os << itr->first;
-
-    return os;
-  }
-
-  //*************************************************************************
-  std::ostream& operator <<(std::ostream& os, const DataNDC::const_iterator& itr)
-  {
-    os << itr->first;
-
-    return os;
-  }
   SUITE(test_reference_flat_multimap)
   {
     NDC N0 = NDC("A");

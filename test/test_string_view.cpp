@@ -57,12 +57,6 @@ namespace
   char ctext[] = { 'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '\0' };
   char* pctext = ctext;
 
-  std::ostream& operator << (std::ostream& os, const View& view)
-  {
-    os << uintptr_t(view.begin()) << " " << uintptr_t(view.end());
-    return os;
-  }
-
   SUITE(test_string_view)
   {
     //*************************************************************************
@@ -143,11 +137,6 @@ namespace
       auto u16view = etl::make_string_view(u"Hello World");
       auto u32view = etl::make_string_view(U"Hello World");
     
-      size_t l1 = text.size();
-      size_t l2 = cview.size();
-
-      ptrdiff_t d = std::distance(cview.begin(), cview.end());
-
       CHECK(std::equal(cview.begin(),   cview.end(),   text.begin()));
       CHECK(std::equal(wview.begin(),   wview.end(),   text.begin()));
       CHECK(std::equal(u16view.begin(), u16view.end(), text.begin()));

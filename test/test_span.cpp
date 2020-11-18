@@ -54,7 +54,6 @@ namespace
     StlVData stlvdata = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
     EtlData etldatasmaller = { 0, 1, 2, 3, 4, 5, 5, 7, 8, 9 };
-    EtlData etldatashorter = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 
     EtlData etloriginal = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     EtlData etlmodified = { 0, 1, 10, 10, 10, 10, 10, 10, 8, 9 };

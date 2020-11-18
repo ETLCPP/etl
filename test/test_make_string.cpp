@@ -63,10 +63,10 @@ namespace
       auto u16text = etl::make_string(u"");
       auto u32text = etl::make_string(U"");
 
-      CHECK_EQUAL(length, ctext.max_size());
-      CHECK_EQUAL(length, wtext.max_size());
-      CHECK_EQUAL(length, u16text.max_size());
-      CHECK_EQUAL(length, u32text.max_size());
+      CHECK_EQUAL(length, ctext.size());
+      CHECK_EQUAL(length, wtext.size());
+      CHECK_EQUAL(length, u16text.size());
+      CHECK_EQUAL(length, u32text.size());
 
       CHECK(Equal(std::string(""), ctext));
       CHECK(Equal(std::wstring(L""), wtext));

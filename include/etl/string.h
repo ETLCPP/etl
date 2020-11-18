@@ -451,6 +451,13 @@ namespace etl
 #endif
     {
     }
+
+  private:
+
+    //*************************************************************************
+    /// Deleted.
+    //*************************************************************************
+    string(const string& other) ETL_DELETE;
   };
 
   //*************************************************************************
@@ -478,41 +485,13 @@ namespace etl
   };
 #endif
 
-  namespace private_string_char
-  {
-    //***********************************
-    template<size_t ARRAY_SIZE = 1U>
-    struct make_string_helper
-    {
-      typedef etl::string<ARRAY_SIZE> type;
-
-      static type make(const char(&text)[ARRAY_SIZE])
-      {
-        return etl::string<ARRAY_SIZE - 1>(text, ARRAY_SIZE - 1);
-      }
-    };
-
-    //***********************************
-    template<>
-    struct make_string_helper<1U>
-    {
-      typedef etl::string<0> type;
-
-      static type make(const char(&text)[1U])
-      {
-        static char c;
-        return etl::string<0U>(text, &c, 1U);
-      }
-    };
-  }
-
   //***************************************************************************
   /// Make string from string literal or array
   //***************************************************************************
   template<size_t ARRAY_SIZE>
-  etl::string<ARRAY_SIZE - 1> make_string(const char(&text)[ARRAY_SIZE])
+  etl::string<ARRAY_SIZE == 1 ? 1 : ARRAY_SIZE - 1> make_string(const char(&text)[ARRAY_SIZE])
   {
-    return private_string_char::make_string_helper<ARRAY_SIZE>::make(text);
+    return etl::string<ARRAY_SIZE == 1 ? 1 : ARRAY_SIZE - 1>(text, ARRAY_SIZE - 1);
   }
 
   //***************************************************************************

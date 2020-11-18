@@ -43,16 +43,6 @@ namespace
 {
   typedef etl::format_spec Format;
 
-  std::ostream& operator << (std::ostream& os, const etl::istring& str)
-  {
-    for (auto c : str)
-    {
-      os << c;
-    }
-
-    return os;
-  }
-
   SUITE(test_to_string)
   {
     //*************************************************************************
