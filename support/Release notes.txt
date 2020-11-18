@@ -1,5 +1,7 @@
 ===============================================================================
 18.20.1
+Resolved issue with zero length literals for etl::make_string (again!)
+Remove redundant test support code.
 Disabled ASAN option in Visual Studio project.
 
 ===============================================================================
