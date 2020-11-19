@@ -17,7 +17,7 @@ jobs:
         submodules: recursive
 
     - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.1
+      uses: microsoft/setup-msbuild@v1.0.2
 
     - name: Build
       run: |
@@ -38,7 +38,7 @@ jobs:
         submodules: recursive
 
     - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.1
+      uses: microsoft/setup-msbuild@v1.0.2
 
     - name: Build
       run: |
