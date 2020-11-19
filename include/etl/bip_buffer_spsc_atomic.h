@@ -20,14 +20,30 @@
 #include "integral_limits.h"
 #include "utility.h"
 
-#include "array.h"
-#include "array_view.h"
-#include "function.h"
+#include "span.h"
 
 #if ETL_HAS_ATOMIC
 
 namespace etl
 {
+    class bip_buffer_exception: public exception
+    {
+    public:
+        bip_buffer_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+                : exception(reason_, file_name_, line_number_)
+        {
+        }
+    };
+
+    class bip_buffer_reserve_invalid: public bip_buffer_exception
+    {
+    public:
+        bip_buffer_reserve_invalid(string_type file_name_, numeric_type line_number_)
+          : bip_buffer_exception("bip_buffer:reserve", file_name_, line_number_)
+        {
+        }
+    };
+
     template <const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
     class bip_buffer_spsc_atomic_base
     {
@@ -227,7 +243,6 @@ namespace etl
         {
             if (rsize > 0)
             {
-                assert((rindex + rsize) <= capacity());
                 read.store(rindex + rsize, etl::memory_order_release);
             }
         }
@@ -248,229 +263,6 @@ namespace etl
         {
         }
 #endif
-    };
-
-    template <typename TCallee, typename TItem>
-    class buffer_reserve
-    {
-    public:
-        typedef const TItem& const_reference;
-        typedef const TItem* const_pointer;
-        typedef const TItem* const_iterator;
-        typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
-        typedef TItem* pointer;
-        typedef TItem& reference;
-        typedef TItem* iterator;
-        typedef ETL_OR_STD::reverse_iterator<iterator> reverse_iterator;
-
-        typedef typename etl::array_view<TItem> view_t;
-        typedef typename etl::function<TCallee, buffer_reserve*> commit_fn_t;
-
-        ETL_CONSTEXPR
-            buffer_reserve()
-        {
-        }
-
-        ETL_CONSTEXPR
-            buffer_reserve(TCallee& callee_, void(TCallee::* p_function_)(buffer_reserve*), TItem* begin_, const size_t size_)
-             : m_view(begin_, size_), m_commit_fn(callee_, p_function_)
-        {
-        }
-
-        buffer_reserve(buffer_reserve&& other)
-            : m_view(other.m_view), m_commit_fn(other.m_commit_fn)
-        {
-            other.cancel();
-        }
-
-        buffer_reserve& operator= (buffer_reserve&& other)
-        {
-            m_view = other.m_view;
-            m_commit_fn = other.m_commit_fn;
-            other.cancel();
-            return *this;
-        }
-
-        buffer_reserve(const buffer_reserve&) = delete;
-        buffer_reserve& operator= (const buffer_reserve&) = delete;
-
-        void truncate(const size_t new_size)
-        {
-            size_t prev_size = size();
-            if (new_size <= prev_size)
-            {
-                m_view.remove_suffix(prev_size - new_size);
-            }
-            else
-            {
-                assert(false);
-            }
-        }
-
-        void cancel()
-        {
-            truncate(0);
-        }
-
-        void commit()
-        {
-            if (size() > 0)
-            {
-                m_commit_fn(this);
-                // prevent multiple commits
-                truncate(0);
-            }
-        }
-
-        void commit(const size_t final_size)
-        {
-            truncate(final_size);
-            commit();
-        }
-
-        ~buffer_reserve()
-        {
-            commit();
-        }
-
-        view_t& view()
-        {
-            return m_view;
-        }
-
-        const view_t& view() const
-        {
-            return m_view;
-        }
-
-        reference front()
-        {
-            return view().front();
-        }
-
-        const_reference front() const
-        {
-            return view().front();
-        }
-
-        reference back()
-        {
-            return view().back();
-        }
-
-        const_reference back() const
-        {
-            return view().back();
-        }
-
-        pointer data()
-        {
-            return view().data();
-        }
-
-        const_pointer data() const
-        {
-            return view().data();
-        }
-
-        iterator begin()
-        {
-            return view().begin();
-        }
-
-        const_iterator begin() const
-        {
-            return view().begin();
-        }
-
-        const_iterator cbegin() const
-        {
-            return view().cbegin();
-        }
-
-        iterator end()
-        {
-            return view().end();
-        }
-
-        const_iterator end() const
-        {
-            return view().end();
-        }
-
-        const_iterator cend() const
-        {
-            return view().cend();
-        }
-
-        reverse_iterator rbegin()
-        {
-            return view().rbegin();
-        }
-
-        const_reverse_iterator rbegin() const
-        {
-            return view().rbegin();
-        }
-
-        const_reverse_iterator crbegin() const
-        {
-            return view().crbegin();
-        }
-
-        reverse_iterator rend()
-        {
-            return view().rend();
-        }
-
-        const_reverse_iterator rend() const
-        {
-            return view().rend();
-        }
-
-        const_reverse_iterator crend() const
-        {
-            return view().crend();
-        }
-
-        bool empty() const
-        {
-            return view().empty();
-        }
-
-        size_t size() const
-        {
-            return view().size();
-        }
-
-        size_t max_size() const
-        {
-            return view().max_size();
-        }
-
-        reference operator[](const size_t i)
-        {
-            return view()[i];
-        }
-
-        const_reference operator[](const size_t i) const
-        {
-            return view()[i];
-        }
-
-        reference at(const size_t i)
-        {
-            return view().at(i);
-        }
-
-        const_reference at(const size_t i) const
-        {
-            return view().at(i);
-        }
-
-    private:
-        view_t m_view = {};
-        commit_fn_t m_commit_fn;
     };
 
     template <typename T, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
@@ -495,21 +287,32 @@ namespace etl
 #endif
         typedef typename base_t::size_type size_type;       ///< The type used for determining the size of the queue.
 
-        using reader_t = buffer_reserve<ibip_buffer_spsc_atomic, const T>;
-        using writer_t = buffer_reserve<ibip_buffer_spsc_atomic, T>;
-
-        reader_t read_reserve(size_type max_reserve_size)
+        span<T> read_reserve(size_type max_reserve_size)
         {
             size_type reserve_size = max_reserve_size;
             auto rindex = get_read_reserve(&reserve_size);
-            return reader_t(*this, &ibip_buffer_spsc_atomic::read_commit, const_cast<const T*>(p_buffer + rindex), reserve_size);
+            return span<T>(p_buffer + rindex, reserve_size);
         }
 
-        writer_t write_reserve(size_type max_reserve_size)
+        void read_commit(const span<T> &reserve)
+        {
+            ETL_ASSERT(reserve == read_reserve(reserve.size()), ETL_ERROR(bip_buffer_reserve_invalid));
+            size_type rindex = etl::distance(p_buffer, reserve.data());
+            apply_read_reserve(rindex, reserve.size());
+        }
+
+        span<T> write_reserve(size_type max_reserve_size)
         {
             size_type reserve_size = max_reserve_size;
             auto windex = get_write_reserve(&reserve_size);
-            return writer_t(*this, &ibip_buffer_spsc_atomic::write_commit, const_cast<T*>(p_buffer + windex), reserve_size);
+            return span<T>(p_buffer + windex, reserve_size);
+        }
+
+        void write_commit(const span<T> &reserve)
+        {
+            ETL_ASSERT(reserve == write_reserve(reserve.size()), ETL_ERROR(bip_buffer_reserve_invalid));
+            size_type windex = etl::distance(p_buffer, reserve.data());
+            apply_write_reserve(windex, reserve.size());
         }
 
     protected:
@@ -529,18 +332,6 @@ namespace etl
         ibip_buffer_spsc_atomic& operator =(ibip_buffer_spsc_atomic&&) = delete;
 #endif
 
-        void write_commit(writer_t* writer)
-        {
-            size_type windex = etl::distance(const_cast<T*>(p_buffer), writer->begin());
-            apply_write_reserve(windex, writer->size());
-        }
-
-        void read_commit(reader_t* reader)
-        {
-            size_type rindex = etl::distance(const_cast<const T*>(p_buffer), reader->begin());
-            apply_read_reserve(rindex, reader->size());
-        }
-
         T* const p_buffer;
     };
 
@@ -554,7 +345,7 @@ namespace etl
         typedef typename base_t::size_type size_type;
 
     private:
-        static const size_type RESERVED_SIZE = size_type(SIZE);
+        static const size_type RESERVED_SIZE = size_type(SIZE + 1);
 
     public:
         ETL_STATIC_ASSERT((SIZE <= (etl::integral_limits<size_type>::max - 1)), "Size too large for memory model");
@@ -562,12 +353,14 @@ namespace etl
         static const size_type MAX_SIZE = size_type(SIZE);
 
         bip_buffer_spsc_atomic()
-            : base_t(buffer.data(), RESERVED_SIZE)
+            : base_t(reinterpret_cast<T*>(&buffer[0]), RESERVED_SIZE)
         {
         }
 
     private:
-        typename etl::array<T, RESERVED_SIZE> buffer;
+
+        /// The uninitialised buffer of T used in the bip_buffer_spsc.
+        typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[RESERVED_SIZE];
     };
 }
 
