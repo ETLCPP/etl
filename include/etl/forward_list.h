@@ -51,6 +51,7 @@ SOFTWARE.
 #include "type_traits.h"
 #include "memory.h"
 #include "iterator.h"
+#include "static_assert.h"
 
 #if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>
