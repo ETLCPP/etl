@@ -39,6 +39,7 @@ SOFTWARE.
 #include "memory_model.h"
 #include "type_traits.h"
 #include "iterator.h"
+#include "static_assert.h"
 
 #undef ETL_FILE
 #define ETL_FILE "56"
@@ -1045,10 +1046,12 @@ namespace etl
   /// A fixed capacity circular buffer.
   /// Internal buffer.
   //***************************************************************************
-  template <typename T, size_t MAX_SIZE_ = 0U>
+  template <typename T, size_t MAX_SIZE_>
   class circular_buffer : public icircular_buffer<T>
   {
   public:
+
+    ETL_STATIC_ASSERT((MAX_SIZE_ > 0U), "Zero sized etl::circular_buffer is not valid. Did you mean circular_buffer_ext?");
 
     static ETL_CONSTANT typename icircular_buffer<T>::size_type MAX_SIZE = typename icircular_buffer<T>::size_type(MAX_SIZE_);
 
@@ -1165,14 +1168,14 @@ namespace etl
   /// External buffer.
   //***************************************************************************
   template <typename T>
-  class circular_buffer<T, 0U> : public icircular_buffer<T>
+  class circular_buffer_ext : public icircular_buffer<T>
   {
   public:
 
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    circular_buffer(void* buffer, size_t max_size)
+    circular_buffer_ext(void* buffer, size_t max_size)
       : icircular_buffer<T>(reinterpret_cast<T*>(buffer), max_size)
     {
     }
@@ -1182,7 +1185,7 @@ namespace etl
     /// Constructs a buffer from an iterator range.
     //*************************************************************************
     template <typename TIterator>
-    circular_buffer(TIterator first, const TIterator& last, void* buffer, size_t max_size)
+    circular_buffer_ext(TIterator first, const TIterator& last, void* buffer, size_t max_size)
       : icircular_buffer<T>(reinterpret_cast<T*>(buffer), max_size)
     {
       while (first != last)
@@ -1195,7 +1198,7 @@ namespace etl
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
-    circular_buffer(std::initializer_list<T> init, void* buffer, size_t max_size)
+    circular_buffer_ext(std::initializer_list<T> init, void* buffer, size_t max_size)
       : icircular_buffer<T>(reinterpret_cast<T*>(buffer), max_size)
     {
       this->push(init.begin(), init.end());
@@ -1205,7 +1208,7 @@ namespace etl
     //*************************************************************************
     /// Copy Constructor.
     //*************************************************************************
-    circular_buffer(const circular_buffer& other, void* buffer, size_t max_size)
+    circular_buffer_ext(const circular_buffer_ext& other, void* buffer, size_t max_size)
       : icircular_buffer<T>(reinterpret_cast<T*>(buffer), max_size)
     {
       if (this != &other)
@@ -1217,7 +1220,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator
     //*************************************************************************
-    circular_buffer& operator =(const circular_buffer& other)
+    circular_buffer_ext& operator =(const circular_buffer_ext& other)
     {
       if (this != &other)
       {
@@ -1231,7 +1234,7 @@ namespace etl
     //*************************************************************************
     /// Move Constructor.
     //*************************************************************************
-    circular_buffer(circular_buffer&& other, void* buffer, size_t max_size)
+    circular_buffer_ext(circular_buffer_ext&& other, void* buffer, size_t max_size)
       : icircular_buffer<T>(reinterpret_cast<T*>(buffer), max_size)
     {
       if (this != &other)
@@ -1248,7 +1251,7 @@ namespace etl
     //*************************************************************************
     /// Move Assignment operator
     //*************************************************************************
-    circular_buffer& operator =(circular_buffer&& other)
+    circular_buffer_ext& operator =(circular_buffer_ext&& other)
     {
       if (this != &other)
       {
@@ -1265,7 +1268,7 @@ namespace etl
     //*************************************************************************
     /// Swap with another circular buffer
     //*************************************************************************
-    void swap(circular_buffer& other)
+    void swap(circular_buffer_ext& other)
     {
       using ETL_OR_STD::swap; // Allow ADL
 
@@ -1277,7 +1280,7 @@ namespace etl
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
-    ~circular_buffer()
+    ~circular_buffer_ext()
     {
       this->clear();
     }
@@ -1293,10 +1296,10 @@ namespace etl
 #endif
 
   //*************************************************************************
-  /// Overloaded swap for etl::circular_buffer<T, 0>
+  /// Overloaded swap for etl::circular_buffer_ext<T, 0>
   //*************************************************************************
   template <typename T>
-  void swap(etl::circular_buffer<T, 0>& lhs, etl::circular_buffer<T, 0>& rhs)
+  void swap(etl::circular_buffer_ext<T>& lhs, etl::circular_buffer_ext<T>& rhs)
   {
     lhs.swap(rhs);
   }

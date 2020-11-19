@@ -45,11 +45,11 @@ namespace
     static const size_t SIZE = 10;
 
     using ItemM    = TestDataM<std::string>;
-    using DataM    = etl::circular_buffer<ItemM, 0>;
+    using DataM    = etl::circular_buffer_ext<ItemM>;
     using CompareM = std::vector<ItemM>;
 
     using Ndc     = TestDataNDC<std::string>;
-    using Data    = etl::circular_buffer<Ndc, 0>;
+    using Data    = etl::circular_buffer_ext<Ndc>;
     using Compare = std::vector<Ndc>;
 
     using BufferM_t = etl::uninitialized_buffer_of<ItemM, SIZE + 1>;
